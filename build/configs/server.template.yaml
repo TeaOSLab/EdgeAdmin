@@ -1,0 +1,16 @@
+# environment code
+env: prod
+
+# http
+http:
+  "on": true
+  listen: [ "0.0.0.0:8001" ]
+
+# https
+https:
+  "on": false
+  listen: [ "0.0.0.0:443"]
+  cert: ""
+  key: ""
+
+
