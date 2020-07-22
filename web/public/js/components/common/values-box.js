@@ -1,0 +1,77 @@
+Vue.component("values-box", {
+	props: ["values", "size", "maxlength", "name"],
+	data: function () {
+		let values = this.values;
+		if (typeof (values) != "object") {
+			values = [];
+		}
+		return {
+			"vValues": values,
+			"isUpdating": false,
+			"isAdding": false,
+			"index": 0,
+			"value": ""
+		}
+	},
+	methods: {
+		create: function () {
+			this.isAdding = true;
+			var that = this;
+			setTimeout(function () {
+				that.$refs.value.focus();
+			}, 200);
+		},
+		update: function (index) {
+			this.cancel()
+			this.isUpdating = true;
+			this.index = index;
+			this.value = this.vValues[index];
+			var that = this;
+			setTimeout(function () {
+				that.$refs.value.focus();
+			}, 200);
+		},
+		confirm: function () {
+			if (this.isUpdating) {
+				Vue.set(this.vValues, this.index, this.value);
+			} else {
+				this.vValues.push(this.value);
+			}
+			this.cancel();
+		},
+		remove: function (index) {
+			this.vValues.$remove(index);
+		},
+		cancel: function () {
+			this.isUpdating = false;
+			this.isAdding = false;
+			this.value = "";
+		}
+	},
+	template: '<div>\
+		<div style="margin-bottom: 1em" v-if="vValues.length > 0">\
+			<div class="ui label tiny" v-for="(value, index) in vValues" style="margin-top:0.4em;margin-bottom:0.4em">{{value}}\
+				<input type="hidden" :name="name" :value="value"/>\
+				&nbsp; <a href="" @click.prevent="update(index)" title="修改"><i class="icon pencil small" ></i></a> \
+				<a href="" @click.prevent="remove(index)" title="删除"><i class="icon remove"></i></a> \
+			</div> \
+		</div> \
+		<!-- 添加|修改 -->\
+		<div v-if="isAdding || isUpdating">\
+			<div class="ui fields inline">\
+				<div class="ui field">\
+					<input type="text" :size="size" :maxlength="maxlength" v-model="value" ref="value" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>\
+				</div> \
+				<div class="ui field">\
+					<button class="ui button small" type="button" @click.prevent="confirm()">确定</button> \
+				</div>\
+				<div class="ui field">\
+					<a href="" @click.prevent="cancel()">取消</a> \
+				</div> \
+			</div> \
+		</div> \
+		<div v-if="!isAdding && !isUpdating">\
+			<button class="ui button small" type="button" @click.prevent="create()">+</button> \
+		</div>\
+</div>'
+});

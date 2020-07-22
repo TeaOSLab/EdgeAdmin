@@ -1,0 +1,28 @@
+{$layout}
+{$template "menu"}
+
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">节点名称 *</td>
+			<td>
+				<input type="text" name="name" maxlength="50" ref="focus"/>
+			</td>
+		</tr>
+		<tr>
+			<td>所属集群</td>
+			<td>
+				<select class="ui dropdown" name="clusterId" style="width:10em">
+					<option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>SSH登录授权</td>
+			<td>
+
+			</td>
+		</tr>
+	</table>
+	<submit-btn></submit-btn>
+</form>

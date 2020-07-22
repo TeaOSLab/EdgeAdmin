@@ -1,0 +1,9 @@
+.sortable-ghost {
+    border: 1px red solid !important;
+}
+
+.sortable-drag {
+    border: 1px red solid !important;
+    background: #fff;
+    opacity: 100%;
+}
