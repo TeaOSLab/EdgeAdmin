@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="shortcut icon" href="/images/favicon.png"/>
+    <title>登录Edge管理员系统</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    {$TEA.VUE}
+    {$TEA.SEMANTIC}
+	<script type="text/javascript" src="/js/md5.min.js"></script>
+	<script type="text/javascript" src="/js/utils.js"></script>
+	<script type="text/javascript" src="/js/sweetalert2/dist/sweetalert2.all.min.js"></script>
+</head>
+<body>
+<div>
+	{$template "/menu"}
+
+
+	<div class="form-box">
+		<form class="ui form" data-tea-action="$" data-tea-before="submitBefore" data-tea-done="submitDone" data-tea-success="submitSuccess" autocomplete="off">
+			<input type="hidden" name="password" v-model="passwordMd5"/>
+			<input type="hidden" name="token" v-model="token"/>
+			<div class="ui segment stacked">
+				<div class="ui header">
+					登录Edge管理员系统
+				</div>
+				<div class="ui field">
+					<div class="ui left icon input">
+						<i class="ui user icon"></i>
+						<input type="text" name="username" v-model="username" placeholder="请输入用户名" maxlength="200" ref="usernameRef"/>
+					</div>
+				</div>
+				<div class="ui field">
+					<div class="ui left icon input">
+						<i class="ui lock icon"></i>
+						<input type="password" v-model="password" placeholder="请输入密码" maxlength="200" @input="changePassword()" ref="passwordRef"/>
+					</div>
+				</div>
+				<div class="ui field">
+					<a href="" @click.prevent="showMoreOptions()">更多选项 <i class="icon angle" :class="{down:!moreOptionsVisible, up:moreOptionsVisible}"></i> </a>
+				</div>
+				<div class="ui field" v-show="moreOptionsVisible">
+					<div class="ui checkbox">
+						<input type="checkbox" name="remember" value="1" checked="checked"/>
+						<label>在这个电脑上记住登录（14天）</label>
+					</div>
+				</div>
+
+				<button class="ui button primary fluid" type="submit" v-if="!isSubmitting">登录</button>
+				<button class="ui button primary fluid disabled" type="submit" v-if="isSubmitting">登录中...</button>
+			</div>
+		</form>
+	</div>
+
+</div>
+
+</body>
+</html>
