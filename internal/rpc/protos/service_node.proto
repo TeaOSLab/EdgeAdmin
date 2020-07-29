@@ -1,0 +1,45 @@
+syntax = "proto3";
+option go_package = "./pb";
+
+package pb;
+import "model_node.proto";
+
+service NodeService {
+	// 创建节点
+	rpc createNode (CreateNodeRequest) returns (CreateNodeResponse);
+
+	// 节点数量
+	rpc countAllEnabledNodes (CountAllEnabledNodesRequest) returns (CountAllEnabledNodesResponse);
+
+	// 列出单页节点
+	rpc listEnabledNodes (ListEnabledNodesRequest) returns (ListEnabledNodesResponse);
+}
+
+// 创建节点
+message CreateNodeRequest {
+	string name = 1;
+	int64 clusterId = 2;
+}
+
+message CreateNodeResponse {
+	int64 nodeId = 1;
+}
+
+// 节点数量
+message CountAllEnabledNodesRequest {
+
+}
+
+message CountAllEnabledNodesResponse {
+	int64 count = 1;
+}
+
+// 列出单页节点
+message ListEnabledNodesRequest {
+	int64 offset = 1;
+	int64 size = 2;
+}
+
+message ListEnabledNodesResponse {
+	repeated Node nodes = 1;
+}

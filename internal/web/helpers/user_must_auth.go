@@ -3,10 +3,9 @@ package helpers
 import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	nodes "github.com/TeaOSLab/EdgeAdmin/internal/rpc"
-	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/admin"
+	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/iwind/TeaGo/actions"
-	"github.com/iwind/TeaGo/logs"
 	"net/http"
 	"reflect"
 )
@@ -38,9 +37,10 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 		return false
 	}
 
-	rpcResp, err := rpc.AdminRPC().CheckAdminExists(rpc.Context(0), &admin.CheckAdminExistsRequest{AdminId: int64(adminId)})
+	rpcResp, err := rpc.AdminRPC().CheckAdminExists(rpc.Context(0), &pb.CheckAdminExistsRequest{AdminId: int64(adminId)})
 	if err != nil {
-		logs.Error(err)
+		utils.PrintError(err)
+		actionPtr.Object().WriteString(teaconst.ErrServer)
 		return false
 	}
 
@@ -80,7 +80,7 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	action.Data["teaTitle"] = teaconst.ProductNameZH
 	action.Data["teaName"] = teaconst.ProductNameZH
 
-	resp, err := rpc.AdminRPC().FindAdminFullname(rpc.Context(0), &admin.FindAdminNameRequest{AdminId: int64(this.AdminId)})
+	resp, err := rpc.AdminRPC().FindAdminFullname(rpc.Context(0), &pb.FindAdminNameRequest{AdminId: int64(this.AdminId)})
 	if err != nil {
 		utils.PrintError(err)
 		action.Data["teaUsername"] = ""

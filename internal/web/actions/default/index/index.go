@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
-	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/admin"
+	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
@@ -77,13 +77,13 @@ func (this *IndexAction) RunPost(params struct {
 	if err != nil {
 		this.Fail("服务器出了点小问题：" + err.Error())
 	}
-	resp, err := rpcClient.AdminRPC().Login(rpcClient.Context(0), &admin.LoginRequest{
+	resp, err := rpcClient.AdminRPC().LoginAdmin(rpcClient.Context(0), &pb.LoginAdminRequest{
 		Username: params.Username,
 		Password: params.Password,
 	})
 
 	if err != nil {
-		_, err = rpcClient.AdminRPC().CreateLog(rpcClient.Context(0), &admin.CreateLogRequest{
+		_, err = rpcClient.AdminRPC().CreateAdminLog(rpcClient.Context(0), &pb.CreateAdminLogRequest{
 			Level:       oplogs.LevelError,
 			Description: "登录时发生系统错误：" + err.Error(),
 			Action:      this.Request.URL.Path,
@@ -97,7 +97,7 @@ func (this *IndexAction) RunPost(params struct {
 	}
 
 	if !resp.IsOk {
-		_, err = rpcClient.AdminRPC().CreateLog(rpcClient.Context(0), &admin.CreateLogRequest{
+		_, err = rpcClient.AdminRPC().CreateAdminLog(rpcClient.Context(0), &pb.CreateAdminLogRequest{
 			Level:       oplogs.LevelWarn,
 			Description: "登录失败，用户名：" + params.Username,
 			Action:      this.Request.URL.Path,
@@ -114,7 +114,7 @@ func (this *IndexAction) RunPost(params struct {
 	params.Auth.StoreAdmin(adminId, params.Remember)
 
 	// 记录日志
-	_, err = rpcClient.AdminRPC().CreateLog(rpcClient.Context(0), &admin.CreateLogRequest{
+	_, err = rpcClient.AdminRPC().CreateAdminLog(rpcClient.Context(0), &pb.CreateAdminLogRequest{
 		Level:       oplogs.LevelInfo,
 		Description: "成功登录系统，用户名：" + params.Username,
 		Action:      this.Request.URL.Path,

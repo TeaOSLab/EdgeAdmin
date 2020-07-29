@@ -12,6 +12,7 @@ func init() {
 			Helper(NewHelper()).
 			Prefix("/servers").
 			Get("", new(IndexAction)).
+			GetPost("/create", new(CreateAction)).
 			EndAll()
 	})
 }

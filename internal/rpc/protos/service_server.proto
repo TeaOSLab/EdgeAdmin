@@ -1,0 +1,50 @@
+syntax = "proto3";
+option go_package = "./pb";
+
+package pb;
+import "model_server.proto";
+
+service ServerService {
+	// 创建服务
+	rpc createServer (CreateServerRequest) returns (CreateServerResponse);
+
+	// 计算服务数量
+	rpc countAllEnabledServers (CountAllEnabledServersRequest) returns (CountAllEnabledServersResponse);
+
+	// 列出单页服务
+	rpc listEnabledServers (ListEnabledServersRequest) returns (ListEnabledServersResponse);
+}
+
+
+// 创建服务
+message CreateServerRequest {
+	int64 userId = 1;
+	int64 adminId = 2;
+	int64 clusterId = 6;
+	bytes config = 3;
+	bytes includeNodesJSON = 4;
+	bytes excludeNodesJSON = 5;
+}
+
+message CreateServerResponse {
+	int64 serverId = 1;
+}
+
+// 计算服务数量
+message CountAllEnabledServersRequest {
+
+}
+
+message CountAllEnabledServersResponse {
+	int64 count = 1;
+}
+
+// 列出单页服务
+message ListEnabledServersRequest {
+	int64 offset = 1;
+	int64 size = 2;
+}
+
+message ListEnabledServersResponse {
+	repeated Server servers = 1;
+}

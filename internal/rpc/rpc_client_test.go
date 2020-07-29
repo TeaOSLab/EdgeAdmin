@@ -2,7 +2,7 @@ package rpc
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/admin"
+	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/pb"
 	_ "github.com/iwind/TeaGo/bootstrap"
 	stringutil "github.com/iwind/TeaGo/utils/string"
 	"testing"
@@ -22,7 +22,7 @@ func TestRPCClient_NodeRPC(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	resp, err := rpc.AdminRPC().Login(rpc.Context(0), &admin.LoginRequest{
+	resp, err := rpc.AdminRPC().Login(rpc.Context(0), &pb.AdminLoginRequest{
 		Username: "admin",
 		Password: stringutil.Md5("123456"),
 	})

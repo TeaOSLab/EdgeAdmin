@@ -1,0 +1,18 @@
+syntax = "proto3";
+option go_package = "./pb";
+
+package pb;
+import "model_node_cluster.proto";
+
+service NodeClusterService {
+	// 获取所有集群的信息
+	rpc findAllEnabledClusters (FindAllEnabledNodeClustersRequest) returns (FindAllEnabledNodeClustersResponse);
+}
+
+message FindAllEnabledNodeClustersRequest {
+
+}
+
+message FindAllEnabledNodeClustersResponse {
+	repeated NodeCluster clusters = 1;
+}

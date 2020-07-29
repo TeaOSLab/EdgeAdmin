@@ -7,7 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/encrypt"
-	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/admin"
+	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/rands"
@@ -17,8 +17,12 @@ import (
 )
 
 type RPCClient struct {
-	apiConfig    *configs.APIConfig
-	adminClients []admin.ServiceClient
+	apiConfig          *configs.APIConfig
+	adminClients       []pb.AdminServiceClient
+	nodeClients        []pb.NodeServiceClient
+	nodeGrantClients   []pb.NodeGrantServiceClient
+	nodeClusterClients []pb.NodeClusterServiceClient
+	serverClients      []pb.ServerServiceClient
 }
 
 func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
@@ -26,7 +30,11 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		return nil, errors.New("api config should not be nil")
 	}
 
-	adminClients := []admin.ServiceClient{}
+	adminClients := []pb.AdminServiceClient{}
+	nodeClients := []pb.NodeServiceClient{}
+	nodeGrantClients := []pb.NodeGrantServiceClient{}
+	nodeClusterClients := []pb.NodeClusterServiceClient{}
+	serverClients := []pb.ServerServiceClient{}
 
 	conns := []*grpc.ClientConn{}
 	for _, endpoint := range apiConfig.RPC.Endpoints {
@@ -42,27 +50,64 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 
 	// node clients
 	for _, conn := range conns {
-		adminClients = append(adminClients, admin.NewServiceClient(conn))
+		adminClients = append(adminClients, pb.NewAdminServiceClient(conn))
+		nodeClients = append(nodeClients, pb.NewNodeServiceClient(conn))
+		nodeGrantClients = append(nodeGrantClients, pb.NewNodeGrantServiceClient(conn))
+		nodeClusterClients = append(nodeClusterClients, pb.NewNodeClusterServiceClient(conn))
+		serverClients = append(serverClients, pb.NewServerServiceClient(conn))
 	}
 
 	return &RPCClient{
-		apiConfig:    apiConfig,
-		adminClients: adminClients,
+		apiConfig:          apiConfig,
+		adminClients:       adminClients,
+		nodeClients:        nodeClients,
+		nodeGrantClients:   nodeGrantClients,
+		nodeClusterClients: nodeClusterClients,
+		serverClients:      serverClients,
 	}, nil
 }
 
-func (this *RPCClient) AdminRPC() admin.ServiceClient {
+func (this *RPCClient) AdminRPC() pb.AdminServiceClient {
 	if len(this.adminClients) > 0 {
 		return this.adminClients[rands.Int(0, len(this.adminClients)-1)]
 	}
 	return nil
 }
 
-func (this *RPCClient) Context(adminId int) context.Context {
+func (this *RPCClient) NodeRPC() pb.NodeServiceClient {
+	if len(this.nodeClients) > 0 {
+		return this.nodeClients[rands.Int(0, len(this.nodeClients)-1)]
+	}
+	return nil
+}
+
+func (this *RPCClient) NodeGrantRPC() pb.NodeGrantServiceClient {
+	if len(this.nodeGrantClients) > 0 {
+		return this.nodeGrantClients[rands.Int(0, len(this.nodeGrantClients)-1)]
+	}
+	return nil
+}
+
+func (this *RPCClient) NodeClusterRPC() pb.NodeClusterServiceClient {
+	if len(this.nodeClusterClients) > 0 {
+		return this.nodeClusterClients[rands.Int(0, len(this.nodeClusterClients)-1)]
+	}
+	return nil
+}
+
+func (this *RPCClient) ServerRPC() pb.ServerServiceClient {
+	if len(this.serverClients) > 0 {
+		return this.serverClients[rands.Int(0, len(this.serverClients)-1)]
+	}
+	return nil
+}
+
+func (this *RPCClient) Context(adminId int64) context.Context {
 	ctx := context.Background()
 	m := maps.Map{
 		"timestamp": time.Now().Unix(),
-		"adminId":   adminId,
+		"type":      "admin",
+		"userId":    adminId,
 	}
 	method, err := encrypt.NewMethodInstance(teaconst.EncryptMethod, this.apiConfig.Secret, this.apiConfig.NodeId)
 	if err != nil {
