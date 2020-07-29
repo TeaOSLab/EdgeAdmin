@@ -1,6 +1,8 @@
 package servers
 
-import "github.com/iwind/TeaGo/actions"
+import (
+	"github.com/iwind/TeaGo/actions"
+)
 
 type Helper struct {
 }

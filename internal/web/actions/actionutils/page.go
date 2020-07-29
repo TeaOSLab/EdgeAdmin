@@ -1,29 +1,29 @@
 package actionutils
 
 import (
+	"fmt"
 	"github.com/iwind/TeaGo/actions"
 	"math"
 	"net/url"
-	"strconv"
 	"strings"
 )
 
 type Page struct {
-	Offset  int // 开始位置
-	Size    int // 每页显示数量
-	Current int // 当前页码
-	Max     int // 最大页码
-	Total   int // 总数量
+	Offset  int64 // 开始位置
+	Size    int64 // 每页显示数量
+	Current int64 // 当前页码
+	Max     int64 // 最大页码
+	Total   int64 // 总数量
 
 	Path  string
 	Query url.Values
 }
 
-func NewActionPage(actionPtr actions.ActionWrapper, total int, size int) *Page {
+func NewActionPage(actionPtr actions.ActionWrapper, total int64, size int64) *Page {
 	action := actionPtr.Object()
-	currentPage := action.ParamInt("page")
+	currentPage := action.ParamInt64("page")
 
-	paramSize := action.ParamInt("pageSize")
+	paramSize := action.ParamInt64("pageSize")
 	if paramSize > 0 {
 		size = paramSize
 	}
@@ -52,7 +52,7 @@ func (this *Page) calculate() {
 	}
 
 	this.Offset = this.Size * (this.Current - 1)
-	this.Max = int(math.Ceil(float64(this.Total) / float64(this.Size)))
+	this.Max = int64(math.Ceil(float64(this.Total) / float64(this.Size)))
 }
 
 func (this *Page) AsHTML() string {
@@ -86,9 +86,9 @@ func (this *Page) AsHTML() string {
 
 	for i := before5; i <= after5; i++ {
 		if i == this.Current {
-			result = append(result, `<a href="`+this.composeURL(i)+`" class="active">`+strconv.Itoa(i)+`</a>`)
+			result = append(result, `<a href="`+this.composeURL(i)+`" class="active">`+fmt.Sprintf("%d", i)+`</a>`)
 		} else {
-			result = append(result, `<a href="`+this.composeURL(i)+`">`+strconv.Itoa(i)+`</a>`)
+			result = append(result, `<a href="`+this.composeURL(i)+`">`+fmt.Sprintf("%d", i)+`</a>`)
 		}
 	}
 
@@ -132,30 +132,30 @@ func (this *Page) IsLastPage() bool {
 	return this.Current == this.Max
 }
 
-func (this *Page) composeURL(page int) string {
-	this.Query["page"] = []string{strconv.Itoa(page)}
+func (this *Page) composeURL(page int64) string {
+	this.Query["page"] = []string{fmt.Sprintf("%d", page)}
 	return this.Path + "?" + this.Query.Encode()
 }
 
-func (this *Page) min(i, j int) int {
+func (this *Page) min(i, j int64) int64 {
 	if i < j {
 		return i
 	}
 	return j
 }
 
-func (this *Page) max(i, j int) int {
+func (this *Page) max(i, j int64) int64 {
 	if i < j {
 		return j
 	}
 	return i
 }
 
-func (this *Page) renderSizeOption(size int) string {
-	o := `<option value="` + strconv.Itoa(size) + `"`
+func (this *Page) renderSizeOption(size int64) string {
+	o := `<option value="` + fmt.Sprintf("%d", size) + `"`
 	if size == this.Size {
 		o += ` selected="selected"`
 	}
-	o += `>` + strconv.Itoa(size) + `条</option>`
+	o += `>` + fmt.Sprintf("%d", size) + `条</option>`
 	return o
 }

@@ -1,6 +1,8 @@
-package nodes
+package servers
 
 import (
+	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/configs/nodes"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/iwind/TeaGo/actions"
@@ -12,7 +14,7 @@ type CreateAction struct {
 }
 
 func (this *CreateAction) Init() {
-	this.Nav("", "node", "create")
+	this.Nav("", "", "create")
 }
 
 func (this *CreateAction) RunGet(params struct{}) {
@@ -45,19 +47,47 @@ func (this *CreateAction) RunPost(params struct {
 }) {
 	params.Must.
 		Field("name", params.Name).
-		Require("请输入节点名称")
+		Require("请输入服务名称")
 
-	// TODO 检查cluster
 	if params.ClusterId <= 0 {
-		this.Fail("请选择所在集群")
+		this.Fail("请选择部署的集群")
 	}
 
-	// TODO 检查SSH授权
+	// TODO 验证集群ID
 
-	// 保存
-	_, err := this.RPC().NodeRPC().CreateNode(this.AdminContext(), &pb.CreateNodeRequest{
-		Name:      params.Name,
-		ClusterId: params.ClusterId,
+	// 配置
+	serverConfig := &nodes.ServerConfig{}
+	serverConfig.IsOn = true
+	serverConfig.Name = params.Name
+	serverConfigJSON, err := serverConfig.AsJSON()
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	// 包含条件
+	includeNodes := []maps.Map{}
+	includeNodesJSON, err := json.Marshal(includeNodes)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	// 排除条件
+	excludeNodes := []maps.Map{}
+	excludeNodesJSON, err := json.Marshal(excludeNodes)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	_, err = this.RPC().ServerRPC().CreateServer(this.AdminContext(), &pb.CreateServerRequest{
+		UserId:           0,
+		AdminId:          this.AdminId(),
+		ClusterId:        params.ClusterId,
+		Config:           serverConfigJSON,
+		IncludeNodesJSON: includeNodesJSON,
+		ExcludeNodesJSON: excludeNodesJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)

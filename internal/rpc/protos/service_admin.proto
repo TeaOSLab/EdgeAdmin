@@ -1,47 +1,47 @@
 syntax = "proto3";
-option go_package = "./admin";
+option go_package = "./pb";
 
-package admin;
+package pb;
 
-service Service {
+
+service AdminService {
 	// 登录
-	rpc login (LoginRequest) returns (LoginResponse) {
+	rpc loginAdmin (LoginAdminRequest) returns (LoginAdminResponse) {
 	}
 
 	// 创建操作日志
-	rpc createLog (CreateLogRequest) returns (CreateLogResponse) {
+	rpc createAdminLog (CreateAdminLogRequest) returns (CreateAdminLogResponse) {
 	}
 
 	// 检查管理员是否存在
 	rpc checkAdminExists (CheckAdminExistsRequest) returns (CheckAdminExistsResponse) {
-
 	}
 
 	// 获取管理员名称
 	rpc findAdminFullname (FindAdminNameRequest) returns (FindAdminNameResponse) {
-
 	}
+
 }
 
-message LoginRequest {
+message LoginAdminRequest {
 	string username = 1;
 	string password = 2;
 }
 
-message LoginResponse {
+message LoginAdminResponse {
 	int64 adminId = 1;
 	bool isOk = 2;
 	string message = 3;
 }
 
-message CreateLogRequest {
+message CreateAdminLogRequest {
 	string level = 1;
 	string description = 2;
 	string action = 3;
 	string ip = 4;
 }
 
-message CreateLogResponse {
+message CreateAdminLogResponse {
 	bool isOk = 1;
 }
 
@@ -62,3 +62,4 @@ message FindAdminNameRequest {
 message FindAdminNameResponse {
 	string fullname = 1;
 }
+

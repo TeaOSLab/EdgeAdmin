@@ -1,3 +1,25 @@
 {$layout}
 {$template "menu"}
 
+<p class="ui message" v-if="servers.length == 0">暂时还没有服务。</p>
+
+<table class="ui table selectable" v-if="servers.length > 0">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>服务名称</th>
+			<th>部署集群</th>
+			<th class="two op">操作</th>
+		</tr>
+	</thead>
+	<tr v-for="server in servers">
+		<td>{{server.id}}</td>
+		<td>{{server.name}}</td>
+		<td>{{server.cluster.name}}</td>
+		<td>
+			<a href="">详情</a> &nbsp; <a href="">删除</a>
+		</td>
+	</tr>
+</table>
+
+<div class="page" v-html="page"></div>

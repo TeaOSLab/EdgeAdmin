@@ -1,0 +1,64 @@
+{$layout}
+{$template "menu"}
+
+<second-menu>
+	<menu-item :href="'/nodes/grants/grant?grantId=' + grant.id">详情</menu-item>
+	<menu-item :href="'/nodes/grants/update?grantId=' + grant.id" active="true">修改</menu-item>
+</second-menu>
+
+<div class="margin"></div>
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+	<input type="hidden" name="grantId" :value="grant.id"/>
+	<table class="ui table selectable definition">
+		<tr>
+			<td>名称 *</td>
+			<td>
+				<input type="text" name="name" maxlength="100" ref="focus" v-model="grant.name"/>
+			</td>
+		</tr>
+
+		<tr>
+			<td class="title">认证方式</td>
+			<td>
+				<select class="ui dropdown" style="width:10em" name="method" v-model="method">
+					<option v-for="method in methods" :value="method.value">{{method.name}}</option>
+				</select>
+			</td>
+		</tr>
+
+		<!-- 用户名/密码 -->
+		<tbody v-if="method == 'user'">
+			<tr>
+				<td>SSH用户名 *</td>
+				<td>
+					<input type="text" name="username" maxlength="100" v-model="grant.username"/>
+					<p class="comment">SSH登录用户名。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>SSH密码</td>
+				<td><input type="password" name="password" maxlength="100" v-model="grant.password"/>
+				<p class="comment">SSH登录用户密码。</p> </td>
+			</tr>
+		</tbody>
+
+		<!-- 私钥 -->
+		<tbody v-if="method == 'privateKey'">
+			<tr>
+				<td>RSA私钥 *</td>
+				<td>
+					<textarea name="privateKey" v-model="grant.privateKey"></textarea>
+					<p class="comment">用来生成登录SSH公钥的私钥</p>
+				</td>
+			</tr>
+		</tbody>
+
+		<tr>
+			<td>描述</td>
+			<td>
+				<textarea name="description" rows="3" v-model="grant.description"></textarea>
+			</td>
+		</tr>
+	</table>
+	<submit-btn></submit-btn>
+</form>

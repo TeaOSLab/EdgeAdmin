@@ -1,19 +1,23 @@
 package actionutils
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
-	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/admin"
+	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/logs"
 	"net/http"
 	"strconv"
 )
 
 type ParentAction struct {
 	actions.ActionObject
+
+	rpcClient *rpc.RPCClient
 }
 
 func (this *ParentAction) ErrorPage(err error) {
@@ -39,7 +43,7 @@ func (this *ParentAction) NotFound(name string, itemId int) {
 	this.ErrorPage(errors.New(name + " id: '" + strconv.Itoa(itemId) + "' is not found"))
 }
 
-func (this *ParentAction) NewPage(total int, size ...int) *Page {
+func (this *ParentAction) NewPage(total int64, size ...int64) *Page {
 	if len(size) > 0 {
 		return NewActionPage(this, total, size[0])
 	}
@@ -56,8 +60,8 @@ func (this *ParentAction) SecondMenu(menuItem string) {
 	this.Data["secondMenuItem"] = menuItem
 }
 
-func (this *ParentAction) AdminId() int {
-	return this.Context.GetInt("adminId")
+func (this *ParentAction) AdminId() int64 {
+	return int64(this.Context.GetInt("adminId"))
 }
 
 func (this *ParentAction) CreateLog(level string, description string, args ...interface{}) {
@@ -66,7 +70,7 @@ func (this *ParentAction) CreateLog(level string, description string, args ...in
 		utils.PrintError(err)
 		return
 	}
-	_, err = rpcClient.AdminRPC().CreateLog(rpcClient.Context(this.AdminId()), &admin.CreateLogRequest{
+	_, err = rpcClient.AdminRPC().CreateAdminLog(rpcClient.Context(this.AdminId()), &pb.CreateAdminLogRequest{
 		Level:       level,
 		Description: fmt.Sprintf(description, args...),
 		Action:      this.Request.URL.Path,
@@ -75,4 +79,26 @@ func (this *ParentAction) CreateLog(level string, description string, args ...in
 	if err != nil {
 		utils.PrintError(err)
 	}
+}
+
+// 获取RPC
+func (this *ParentAction) RPC() *rpc.RPCClient {
+	if this.rpcClient != nil {
+		return this.rpcClient
+	}
+
+	// 所有集群
+	rpcClient, err := rpc.SharedRPC()
+	if err != nil {
+		logs.Fatal(err)
+		return nil
+	}
+	this.rpcClient = rpcClient
+
+	return rpcClient
+}
+
+// 获取Context
+func (this *ParentAction) AdminContext() context.Context {
+	return this.rpcClient.Context(this.AdminId())
 }

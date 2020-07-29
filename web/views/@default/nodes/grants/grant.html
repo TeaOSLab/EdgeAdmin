@@ -1,0 +1,58 @@
+{$layout}
+{$template "menu"}
+
+<second-menu>
+	<menu-item :href="'/nodes/grants/grant?grantId=' + grant.id" active="true">详情</menu-item>
+	<menu-item :href="'/nodes/grants/update?grantId=' + grant.id">修改</menu-item>
+</second-menu>
+
+<table class="ui table selectable definition">
+	<tr>
+		<td>名称</td>
+		<td>
+			{{grant.name}}
+		</td>
+	</tr>
+
+	<tr>
+		<td class="title">认证方式</td>
+		<td>
+			{{grant.methodName}}
+		</td>
+	</tr>
+
+	<!-- 用户名/密码 -->
+	<tbody v-if="grant.method == 'user'">
+	<tr>
+		<td>SSH用户名</td>
+		<td>
+			{{grant.username}}
+			<p class="comment">SSH登录用户名。</p>
+		</td>
+	</tr>
+	<tr>
+		<td>SSH密码</td>
+		<td>{{grant.password}}
+			<p class="comment">SSH登录用户密码。</p> </td>
+	</tr>
+	</tbody>
+
+	<!-- 私钥 -->
+	<tbody v-if="grant.method == 'privateKey'">
+	<tr>
+		<td>RSA私钥</td>
+		<td>
+			{{grant.privateKey}}
+			<p class="comment">用来生成登录SSH公钥的私钥</p>
+		</td>
+	</tr>
+	</tbody>
+
+	<tr>
+		<td>描述</td>
+		<td>
+			<span v-if="grant.description.length > 0">{{grant.description}}</span>
+			<span v-if="grant.description.length == 0">-</span>
+		</td>
+	</tr>
+</table>

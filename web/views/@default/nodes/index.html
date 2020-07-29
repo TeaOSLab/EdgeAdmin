@@ -1,6 +1,30 @@
 {$layout}
 {$template "menu"}
 
-<table class="ui table selectable">
+<p class="comment" v-if="nodes.length == 0">暂时还没有节点。</p>
 
+<table class="ui table selectable" v-if="nodes.length > 0">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>节点名称</th>
+			<th>所属集群</th>
+			<th>状态</th>
+			<th class="two op">操作</th>
+		</tr>
+	</thead>
+	<tr v-for="node in nodes">
+		<td>{{node.id}}</td>
+		<td>{{node.name}}</td>
+		<td>{{node.cluster.name}}</td>
+		<td>
+			已安装|安装中|安装错误|运行中|失去连接
+		</td>
+		<td>
+			<a href="">详情</a> &nbsp; <a href="">删除</a>
+		</td>
+	</tr>
 </table>
+
+
+<div class="page" v-html="page"></div>
