@@ -1,0 +1,57 @@
+{$layout}
+
+<second-menu>
+	<menu-item :href="'/nodes/node?nodeId=' + nodeId" active="true">详情</menu-item>
+	<menu-item :href="'/nodes/update?nodeId=' + nodeId">修改</menu-item>
+</second-menu>
+
+<table class="ui table definition selectable">
+	<tr>
+		<td class="title">节点名称</td>
+		<td>{{node.name}}</td>
+	</tr>
+	<tr>
+		<td>所属集群</td>
+		<td>
+			<span v-if="node.cluster == null">还没有设置集群。</span>
+			<div v-if="node.cluster != null">
+				{{node.cluster.name}}
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>SSH主机地址</td>
+		<td>
+			<div v-if="node.login != null && node.login.params != null && node.login.params.host != null">
+				<span v-if="node.login.params.host.length > 0">{{node.login.params.host}}</span>
+				<span v-if="node.login.params.host.length == 0">尚未设置</span>
+			</div>
+			<div v-if="!(node.login != null && node.login.params != null && node.login.params.host != null)">
+				尚未设置
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>SSH主机端口</td>
+		<td>
+			<div v-if="node.login != null && node.login.params != null && node.login.params.host != null">
+				<span v-if="node.login.params.port > 0">{{node.login.params.port}}</span>
+				<span v-if="node.login.params.port <= 0">尚未设置</span>
+			</div>
+			<div v-if="!(node.login != null && node.login.params != null && node.login.params.port != null)">
+				尚未设置
+			</div>
+		</td>
+	</tr>
+	<tr>
+		<td>SSH登录认证</td>
+		<td>
+			<div v-if="node.login != null && node.login.grant != null && node.login.grant.id > 0">
+				{{node.login.grant.name}}<span class="small">（{{node.login.grant.methodName}}）</span>
+			</div>
+			<div v-if="!(node.login != null && node.login.grant != null && node.login.grant.id > 0)">
+				尚未设置
+			</div>
+		</td>
+	</tr>
+</table>

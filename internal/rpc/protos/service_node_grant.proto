@@ -17,10 +17,13 @@ service NodeGrantService {
 	// 计算认证的数量
 	rpc countAllEnabledNodeGrants (CountAllEnabledNodeGrantsRequest) returns (CountAllEnabledNodeGrantsResponse);
 
-	// 列出所有认证
+	// 列出单页认证
 	rpc ListEnabledNodeGrants (ListEnabledNodeGrantsRequest) returns (ListEnabledNodeGrantsResponse);
 
-	// 获取认证信息
+	// 列出所有认证
+	rpc FindAllEnabledNodeGrants(FindAllEnabledNodeGrantsRequest) returns (FindAllEnabledNodeGrantsResponse);
+
+	// 获取单个认证信息
 	rpc FindEnabledGrant(FindEnabledGrantRequest) returns (FindEnabledGrantResponse);
 }
 
@@ -73,13 +76,22 @@ message CountAllEnabledNodeGrantsResponse {
 	int64 count = 1;
 }
 
-// 列出所有认证
+// 列出单页认证
 message ListEnabledNodeGrantsRequest {
 	int64 offset = 1;
 	int64 size = 2;
 }
 
 message ListEnabledNodeGrantsResponse {
+	repeated NodeGrant grants = 1;
+}
+
+// 获取所有认证信息
+message FindAllEnabledNodeGrantsRequest {
+
+}
+
+message FindAllEnabledNodeGrantsResponse {
 	repeated NodeGrant grants = 1;
 }
 

@@ -14,6 +14,9 @@ func init() {
 			Prefix("/nodes").
 			Get("", new(IndexAction)).
 			GetPost("/create", new(CreateAction)).
+			Post("/delete", new(DeleteAction)).
+			GetPost("/update", new(UpdateAction)).
+			Get("/node", new(NodeAction)).
 
 			// 授权管理
 			Get("/grants", new(grants.IndexAction)).
@@ -21,6 +24,8 @@ func init() {
 			GetPost("/grants/update", new(grants.UpdateAction)).
 			Post("/grants/delete", new(grants.DeleteAction)).
 			Get("/grants/grant", new(grants.GrantAction)).
+			GetPost("/grants/selectPopup", new(grants.SelectPopupAction)).
+			GetPost("/grants/createPopup", new(grants.CreatePopupAction)).
 			EndAll()
 	})
 }
