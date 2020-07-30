@@ -40,6 +40,9 @@ func (this *CreateAction) RunGet(params struct{}) {
 func (this *CreateAction) RunPost(params struct {
 	Name      string
 	ClusterId int64
+	GrantId   int64
+	SshHost   string
+	SshPort   int
 
 	Must *actions.Must
 }) {
@@ -52,12 +55,23 @@ func (this *CreateAction) RunPost(params struct {
 		this.Fail("请选择所在集群")
 	}
 
-	// TODO 检查SSH授权
+	// TODO 检查登录授权
+	loginInfo := &pb.NodeLogin{
+		Id:   0,
+		Name: "SSH",
+		Type: "ssh",
+		Params: maps.Map{
+			"grantId": params.GrantId,
+			"host":    params.SshHost,
+			"port":    params.SshPort,
+		}.AsJSON(),
+	}
 
 	// 保存
 	_, err := this.RPC().NodeRPC().CreateNode(this.AdminContext(), &pb.CreateNodeRequest{
 		Name:      params.Name,
 		ClusterId: params.ClusterId,
+		Login:     loginInfo,
 	})
 	if err != nil {
 		this.ErrorPage(err)

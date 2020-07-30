@@ -1,0 +1,18 @@
+{$layout "layout_popup"}
+
+<h3>选择认证</h3>
+
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+	<input type="hidden" name="grantId" :value="grantId"/>
+	<table class="ui table selectable definition">
+		<tr>
+			<td class="title">选择认证</td>
+			<td>
+				<span v-if="grants.length == 0">暂时还没有可用的认证。</span>
+				<a class="ui label small" v-for="grant in grants" :class="{blue:grantId == grant.id}" @click.prevent="selectGrant(grant)">{{grant.name}} <span class="small">（{{grant.methodName}}）</span></a>
+			</td>
+		</tr>
+	</table>
+
+	<submit-btn>确定</submit-btn>
+</form>

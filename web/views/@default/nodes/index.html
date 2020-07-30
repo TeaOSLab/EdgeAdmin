@@ -8,20 +8,30 @@
 		<tr>
 			<th>ID</th>
 			<th>节点名称</th>
+			<th>IP</th>
 			<th>所属集群</th>
 			<th>状态</th>
+			<th>CPU</th>
+			<th>内存</th>
+			<th>流量</th>
+			<th>连接数</th>
 			<th class="two op">操作</th>
 		</tr>
 	</thead>
 	<tr v-for="node in nodes">
 		<td>{{node.id}}</td>
 		<td>{{node.name}}</td>
+		<td></td>
 		<td>{{node.cluster.name}}</td>
 		<td>
 			已安装|安装中|安装错误|运行中|失去连接
 		</td>
+		<td></td>
+		<td></td>
+		<td></td>
+		<td></td>
 		<td>
-			<a href="">详情</a> &nbsp; <a href="">删除</a>
+			<a :href="'/nodes/node?nodeId=' + node.id">详情</a> &nbsp; <a href="" @click.prevent="deleteNode(node.id)">删除</a>
 		</td>
 	</tr>
 </table>

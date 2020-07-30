@@ -3,6 +3,7 @@ option go_package = "./pb";
 
 package pb;
 import "model_node.proto";
+import "model_node_login.proto";
 
 service NodeService {
 	// 创建节点
@@ -13,12 +14,22 @@ service NodeService {
 
 	// 列出单页节点
 	rpc listEnabledNodes (ListEnabledNodesRequest) returns (ListEnabledNodesResponse);
+
+	// 禁用节点
+	rpc disableNode (DisableNodeRequest) returns (DisableNodeResponse);
+
+	// 修改节点
+	rpc updateNode(UpdateNodeRequest) returns (UpdateNodeResponse);
+
+	// 查看单个节点
+	rpc findEnabledNode(FindEnabledNodeRequest) returns (FindEnabledNodeResponse);
 }
 
 // 创建节点
 message CreateNodeRequest {
 	string name = 1;
 	int64 clusterId = 2;
+	NodeLogin Login = 3;
 }
 
 message CreateNodeResponse {
@@ -42,4 +53,34 @@ message ListEnabledNodesRequest {
 
 message ListEnabledNodesResponse {
 	repeated Node nodes = 1;
+}
+
+// 禁用节点
+message DisableNodeRequest {
+	int64 nodeId = 1;
+}
+
+message DisableNodeResponse {
+
+}
+
+// 修改节点
+message UpdateNodeRequest {
+	int64 nodeId = 1;
+	string name = 2;
+	int64 clusterId = 3;
+	NodeLogin Login = 4;
+}
+
+message UpdateNodeResponse {
+
+}
+
+// 查找节点
+message FindEnabledNodeRequest {
+	int64 nodeId = 1;
+}
+
+message FindEnabledNodeResponse {
+	Node node = 1;
 }

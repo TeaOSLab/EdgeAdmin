@@ -1,19 +1,27 @@
 {$layout}
 {$template "menu"}
+
+<second-menu>
+	<menu-item :href="'/nodes/node?nodeId=' + nodeId">详情</menu-item>
+	<menu-item :href="'/nodes/update?nodeId=' + nodeId" active="true">修改</menu-item>
+</second-menu>
+
 <div class="margin"></div>
 <form class="ui form" data-tea-action="$" data-tea-success="success">
+	<input type="hidden" name="nodeId" :value="node.id"/>
+	<input type="hidden" name="loginId" :value="loginId"/>
 	<input type="hidden" name="grantId" :value="grantId"/>
 	<table class="ui table definition selectable">
 		<tr>
 			<td class="title">节点名称 *</td>
 			<td>
-				<input type="text" name="name" maxlength="50" ref="focus"/>
+				<input type="text" name="name" maxlength="50" ref="focus" v-model="node.name"/>
 			</td>
 		</tr>
 		<tr>
 			<td>所属集群</td>
 			<td>
-				<select class="ui dropdown" name="clusterId" style="width:10em">
+				<select class="ui dropdown" name="clusterId" style="width:10em" v-model="clusterId">
 					<option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
 				</select>
 			</td>
@@ -21,14 +29,14 @@
 		<tr>
 			<td>SSH主机地址</td>
 			<td>
-				<input type="text" name="sshHost" maxlength="64"/>
+				<input type="text" name="sshHost" maxlength="64" v-model="sshHost"/>
 				<p class="comment">比如192.168.1.100</p>
 			</td>
 		</tr>
 		<tr>
 			<td>SSH主机端口</td>
 			<td>
-				<input type="text" name="sshPort" maxlength="5"/>
+				<input type="text" name="sshPort" maxlength="5" v-model="sshPort"/>
 				<p class="comment">比如22。</p>
 			</td>
 		</tr>
