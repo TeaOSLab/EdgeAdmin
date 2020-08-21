@@ -1,4 +1,4 @@
-package server
+package http
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/serverutils"
@@ -11,7 +11,7 @@ func init() {
 		server.
 			Helper(helpers.NewUserMustAuth()).
 			Helper(serverutils.NewServerHelper()).
-			Prefix("/servers/server/http").
+			Prefix("/servers/server/settings/http").
 			Get("", new(IndexAction)).
 			EndAll()
 	})

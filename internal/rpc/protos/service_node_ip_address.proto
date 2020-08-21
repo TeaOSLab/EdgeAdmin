@@ -1,0 +1,97 @@
+syntax = "proto3";
+option go_package = "./pb";
+
+package pb;
+
+import "model_node_ip_address.proto";
+
+service NodeIPAddressService {
+	// 创建IP地址
+	rpc createNodeIPAddress (CreateNodeIPAddressRequest) returns (CreateNodeIPAddressResponse);
+
+	// 修改IP地址
+	rpc updateNodeIPAddress (UpdateNodeIPAddressRequest) returns (UpdateNodeIPAddressResponse);
+
+	// 修改IP地址所属节点
+	rpc updateNodeIPAddressNodeId (UpdateNodeIPAddressNodeIdRequest) returns (UpdateNodeIPAddressNodeIdResponse);
+
+	// 禁用单个IP地址
+	rpc disableNodeIPAddress (DisableNodeIPAddressRequest) returns (DisableNodeIPAddressResponse);
+
+	// 禁用节点的所有IP地址
+	rpc disableAllIPAddressesWithNodeId (DisableAllIPAddressesWithNodeIdRequest) returns (DisableAllIPAddressesWithNodeIdResponse);
+
+	// 查找单个IP地址
+	rpc findEnabledNodeIPAddress (FindEnabledNodeIPAddressRequest) returns (FindEnabledNodeIPAddressResponse);
+
+	// 查找节点的所有地址
+	rpc findAllEnabledIPAddressesWithNodeId (FindAllEnabledIPAddressesWithNodeIdRequest) returns (FindAllEnabledIPAddressesWithNodeIdResponse);
+}
+
+// 创建IP地址
+message CreateNodeIPAddressRequest {
+	int64 nodeId = 1;
+	string name = 2;
+	string ip = 3;
+}
+
+message CreateNodeIPAddressResponse {
+	int64 addressId = 1;
+}
+
+// 修改IP地址
+message UpdateNodeIPAddressRequest {
+	int64 addressId = 1;
+	string name = 2;
+	string ip = 3;
+}
+
+message UpdateNodeIPAddressResponse {
+
+}
+
+// 修改IP地址所属节点
+message UpdateNodeIPAddressNodeIdRequest {
+	int64 addressId = 1;
+	int64 nodeId = 2;
+}
+
+message UpdateNodeIPAddressNodeIdResponse {
+
+}
+
+// 禁用单个IP地址
+message DisableNodeIPAddressRequest {
+	int64 addressId = 1;
+}
+
+message DisableNodeIPAddressResponse {
+
+}
+
+// 禁用节点的所有IP地址
+message DisableAllIPAddressesWithNodeIdRequest {
+	int64 nodeId = 1;
+}
+
+message DisableAllIPAddressesWithNodeIdResponse {
+
+}
+
+// 查找单个IP地址
+message FindEnabledNodeIPAddressRequest {
+	int64 addressId = 1;
+}
+
+message FindEnabledNodeIPAddressResponse {
+	NodeIPAddress ipAddress = 1;
+}
+
+// 查找节点的所有地址
+message FindAllEnabledIPAddressesWithNodeIdRequest {
+	int64 nodeId = 1;
+}
+
+message FindAllEnabledIPAddressesWithNodeIdResponse {
+	repeated NodeIPAddress addresses = 1;
+}

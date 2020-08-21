@@ -8,6 +8,7 @@ type IndexAction struct {
 
 func (this *IndexAction) Init() {
 	this.Nav("", "delete", "")
+	this.SecondMenu("index")
 }
 
 func (this *IndexAction) RunGet(params struct{}) {

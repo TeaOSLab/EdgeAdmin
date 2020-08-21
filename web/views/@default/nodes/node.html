@@ -11,6 +11,21 @@
 		<td>{{node.name}}</td>
 	</tr>
 	<tr>
+		<td>IP地址</td>
+		<td>
+			<div v-if="node.ipAddresses.length > 0">
+				<div>
+					<div v-for="(address, index) in node.ipAddresses" class="ui label small">
+                        {{address.ip}}<span class="small">（{{address.name}}）</span>
+					</div>
+				</div>
+			</div>
+			<div v-else>
+				<span class="disabled">暂时还没有填写IP地址。</span>
+			</div>
+		</td>
+	</tr>
+	<tr>
 		<td>所属集群</td>
 		<td>
 			<span v-if="node.cluster == null">还没有设置集群。</span>

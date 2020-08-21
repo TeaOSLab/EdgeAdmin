@@ -1,7 +1,7 @@
 .left-box {
   width: 8em;
   position: fixed;
-  top: 8em;
+  top: 7.5em;
   bottom: 0.5em;
   overflow-y: auto;
   overflow-x: hidden;
@@ -9,7 +9,6 @@
 }
 .left-box .menu {
   width: 90% !important;
-  /** .header需要在.item下面 **/
 }
 .left-box .menu .item {
   line-height: 1.2;
@@ -21,6 +20,13 @@
   top: 50%;
   left: 0;
   margin-top: -0.4em !important;
+}
+.left-box .menu .item.separator {
+  border-bottom: 1px #eee solid !important;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
 }
 .left-box .menu .header {
   border-bottom: 1px #ddd solid;

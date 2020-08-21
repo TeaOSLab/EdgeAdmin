@@ -40,6 +40,22 @@ func (this *NodeAction) RunGet(params struct {
 		}
 	}
 
+	// IP地址
+	ipAddressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledIPAddressesWithNodeIdRequest{NodeId: params.NodeId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	ipAddressMaps := []maps.Map{}
+	for _, addr := range ipAddressesResp.Addresses {
+		ipAddressMaps = append(ipAddressMaps, maps.Map{
+			"id":   addr.Id,
+			"name": addr.Name,
+			"ip":   addr.Ip,
+		})
+	}
+
+	// 登录信息
 	var loginMap maps.Map = nil
 	if node.Login != nil {
 		loginParams := maps.Map{}
@@ -79,10 +95,11 @@ func (this *NodeAction) RunGet(params struct {
 	}
 
 	this.Data["node"] = maps.Map{
-		"id":      node.Id,
-		"name":    node.Name,
-		"cluster": clusterMap,
-		"login":   loginMap,
+		"id":          node.Id,
+		"name":        node.Name,
+		"ipAddresses": ipAddressMaps,
+		"cluster":     clusterMap,
+		"login":       loginMap,
 	}
 
 	this.Show()
