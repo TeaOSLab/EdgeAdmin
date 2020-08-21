@@ -1,0 +1,21 @@
+{$layout "layout_popup"}
+
+<h3>添加IP地址</h3>
+
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+	<table class="ui table definition selectable">
+		<tr>
+			<td>IP地址 *</td>
+			<td>
+				<input type="text" name="ip" maxlength="128" ref="focus"/>
+			</td>
+		</tr>
+		<tr>
+			<td class="title">简介</td>
+			<td>
+				<input type="text" name="name" maxlength="50"/>
+			</td>
+		</tr>
+	</table>
+	<submit-btn></submit-btn>
+</form>

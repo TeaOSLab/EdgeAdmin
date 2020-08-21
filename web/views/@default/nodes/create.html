@@ -13,10 +13,21 @@
 		<tr>
 			<td>IP地址</td>
 			<td>
-				<div>
+				<input type="hidden" name="ipAddresses" :value="JSON.stringify(ipAddresses)"/>
+				<div v-if="ipAddresses.length > 0">
+					<div>
+						<div v-for="(address, index) in ipAddresses" class="ui label small">
+							{{address.ip}}<span class="small">（{{address.name}}）</span>
+							<a href="" title="修改" @click.prevent="updateIPAddress(index, address)"><i class="icon pencil small"></i></a>
+							<a href="" title="删除" @click.prevent="removeIPAddress(index)"><i class="icon remove"></i></a>
+						</div>
+					</div>
 					<div class="ui divider"></div>
 				</div>
-				<p class="comment">已经绑定的IP地址。</p>
+				<div>
+					<button class="ui button small" type="button" @click.prevent="addIPAddress()">+</button>
+				</div>
+				<p class="comment">添加已经绑定的IP地址，仅做记录用。</p>
 			</td>
 		</tr>
 		<tr>
@@ -38,13 +49,13 @@
 			<td>SSH主机端口</td>
 			<td>
 				<input type="text" name="sshPort" maxlength="5"/>
-				<p class="comment">比如22。</p>
+				<p class="comment">常见的比如22。</p>
 			</td>
 		</tr>
 		<tr>
 			<td>SSH登录认证</td>
 			<td>
-				<div class="ui label small" v-if="grant != null">{{grant.name}}<span class="small">（{{grant.methodName}}）</span> <a href="" title="删除" @click.prevent="removeGrant()"><i class="icon remove"></i></a> </div>
+				<div class="ui label small" v-if="grant != null">{{grant.name}}<span class="small">（{{grant.methodName}}）</span> <a href="" title="修改" @click.prevent="updateGrant()"><i class="icon pencil small"></i></a> <a href="" title="删除" @click.prevent="removeGrant()"><i class="icon remove"></i></a> </div>
 				<div v-if="grant == null">
 					<a href="" @click.prevent="selectGrant()">[选择已有认证]</a> &nbsp; &nbsp; <a href="" @click.prevent="createGrant()">[添加新认证]</a>
 				</div>

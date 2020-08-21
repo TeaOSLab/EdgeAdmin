@@ -1,6 +1,7 @@
 package nodes
 
 import (
+	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/iwind/TeaGo/actions"
@@ -38,11 +39,12 @@ func (this *CreateAction) RunGet(params struct{}) {
 }
 
 func (this *CreateAction) RunPost(params struct {
-	Name      string
-	ClusterId int64
-	GrantId   int64
-	SshHost   string
-	SshPort   int
+	Name        string
+	IPAddresses string `alias:"ipAddresses"`
+	ClusterId   int64
+	GrantId     int64
+	SshHost     string
+	SshPort     int
 
 	Must *actions.Must
 }) {
@@ -68,7 +70,7 @@ func (this *CreateAction) RunPost(params struct {
 	}
 
 	// 保存
-	_, err := this.RPC().NodeRPC().CreateNode(this.AdminContext(), &pb.CreateNodeRequest{
+	createResp, err := this.RPC().NodeRPC().CreateNode(this.AdminContext(), &pb.CreateNodeRequest{
 		Name:      params.Name,
 		ClusterId: params.ClusterId,
 		Login:     loginInfo,
@@ -76,6 +78,26 @@ func (this *CreateAction) RunPost(params struct {
 	if err != nil {
 		this.ErrorPage(err)
 		return
+	}
+	nodeId := createResp.NodeId
+
+	// IP地址
+	ipAddresses := []maps.Map{}
+	err = json.Unmarshal([]byte(params.IPAddresses), &ipAddresses)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	for _, address := range ipAddresses {
+		addressId := address.GetInt64("id")
+		_, err = this.RPC().NodeIPAddressRPC().UpdateNodeIPAddressNodeId(this.AdminContext(), &pb.UpdateNodeIPAddressNodeIdRequest{
+			AddressId: addressId,
+			NodeId:    nodeId,
+		})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
 	}
 
 	this.Success()

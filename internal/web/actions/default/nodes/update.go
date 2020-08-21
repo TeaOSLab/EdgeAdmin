@@ -41,6 +41,22 @@ func (this *UpdateAction) RunGet(params struct {
 		}
 	}
 
+	// IP地址
+	ipAddressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledIPAddressesWithNodeIdRequest{NodeId: params.NodeId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	ipAddressMaps := []maps.Map{}
+	for _, addr := range ipAddressesResp.Addresses {
+		ipAddressMaps = append(ipAddressMaps, maps.Map{
+			"id":   addr.Id,
+			"name": addr.Name,
+			"ip":   addr.Ip,
+		})
+	}
+
+	// 登录信息
 	var loginMap maps.Map = nil
 	if node.Login != nil {
 		loginParams := maps.Map{}
@@ -80,10 +96,11 @@ func (this *UpdateAction) RunGet(params struct {
 	}
 
 	this.Data["node"] = maps.Map{
-		"id":      node.Id,
-		"name":    node.Name,
-		"cluster": clusterMap,
-		"login":   loginMap,
+		"id":          node.Id,
+		"name":        node.Name,
+		"ipAddresses": ipAddressMaps,
+		"cluster":     clusterMap,
+		"login":       loginMap,
 	}
 
 	// 所有集群
@@ -108,13 +125,14 @@ func (this *UpdateAction) RunGet(params struct {
 }
 
 func (this *UpdateAction) RunPost(params struct {
-	LoginId   int64
-	NodeId    int64
-	Name      string
-	ClusterId int64
-	GrantId   int64
-	SshHost   string
-	SshPort   int
+	LoginId     int64
+	NodeId      int64
+	Name        string
+	IPAddresses string `alias:"ipAddresses"`
+	ClusterId   int64
+	GrantId     int64
+	SshHost     string
+	SshPort     int
 
 	Must *actions.Must
 }) {
@@ -153,6 +171,32 @@ func (this *UpdateAction) RunPost(params struct {
 	if err != nil {
 		this.ErrorPage(err)
 		return
+	}
+
+	// 禁用老的IP地址
+	_, err = this.RPC().NodeIPAddressRPC().DisableAllIPAddressesWithNodeId(this.AdminContext(), &pb.DisableAllIPAddressesWithNodeIdRequest{NodeId: params.NodeId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	// 添加新的IP地址
+	ipAddresses := []maps.Map{}
+	err = json.Unmarshal([]byte(params.IPAddresses), &ipAddresses)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	for _, address := range ipAddresses {
+		addressId := address.GetInt64("id")
+		_, err = this.RPC().NodeIPAddressRPC().UpdateNodeIPAddressNodeId(this.AdminContext(), &pb.UpdateNodeIPAddressNodeIdRequest{
+			AddressId: addressId,
+			NodeId:    params.NodeId,
+		})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
 	}
 
 	this.Success()

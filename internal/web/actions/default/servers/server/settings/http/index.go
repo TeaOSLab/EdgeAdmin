@@ -1,4 +1,4 @@
-package server
+package http
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
@@ -16,5 +16,7 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ServerId int64
 }) {
+	// TODO
+
 	this.Show()
 }

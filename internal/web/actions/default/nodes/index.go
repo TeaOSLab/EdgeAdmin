@@ -46,6 +46,21 @@ func (this *IndexAction) RunGet(params struct{}) {
 			status.IsActive = time.Now().Unix()-status.UpdatedAt < 120 // 2分钟之内认为活跃
 		}
 
+		// IP
+		ipAddressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledIPAddressesWithNodeIdRequest{NodeId: node.Id})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		ipAddresses := []maps.Map{}
+		for _, addr := range ipAddressesResp.Addresses {
+			ipAddresses = append(ipAddresses, maps.Map{
+				"id":   addr.Id,
+				"name": addr.Name,
+				"ip":   addr.Ip,
+			})
+		}
+
 		nodeMaps = append(nodeMaps, maps.Map{
 			"id":   node.Id,
 			"name": node.Name,
@@ -62,6 +77,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 				"id":   node.Cluster.Id,
 				"name": node.Cluster.Name,
 			},
+			"ipAddresses": ipAddresses,
 		})
 	}
 	this.Data["nodes"] = nodeMaps

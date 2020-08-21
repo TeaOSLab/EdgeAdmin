@@ -1,12 +1,40 @@
 Tea.context(function () {
-	this.grantId = 0;
-	this.grant = null;
-
-
 	this.clusterId = 0;
 	if (this.node.cluster != null && this.node.cluster.id > 0) {
 		this.clusterId = this.node.cluster.id;
 	}
+
+	this.success = NotifySuccess("保存成功", "/nodes/node?nodeId=" + this.node.id);
+
+	// IP地址相关
+	this.ipAddresses = this.node.ipAddresses;
+
+	// 添加IP地址
+	this.addIPAddress = function () {
+		teaweb.popup("/nodes/ipAddresses/createPopup", {
+			callback: function (resp) {
+				this.ipAddresses.push(resp.data.ipAddress);
+			}
+		})
+	};
+
+	// 修改地址
+	this.updateIPAddress = function (index, address) {
+		teaweb.popup("/nodes/ipAddresses/updatePopup?addressId=" + address.id, {
+			callback: function (resp) {
+				Vue.set(this.ipAddresses, index, resp.data.ipAddress);
+			}
+		})
+	}
+
+	// 删除IP地址
+	this.removeIPAddress = function (index) {
+		this.ipAddresses.$remove(index);
+	};
+
+	// 认证相关
+	this.grantId = 0;
+	this.grant = null;
 
 	this.sshHost = "";
 	this.sshPort = "";
@@ -30,8 +58,6 @@ Tea.context(function () {
 		}
 	}
 
-	this.success = NotifySuccess("保存成功", "/nodes/node?nodeId=" + this.node.id);
-
 	this.selectGrant = function () {
 		var that = this;
 		teaweb.popup("/nodes/grants/selectPopup", {
@@ -42,6 +68,20 @@ Tea.context(function () {
 				}
 			}
 		});
+	};
+
+	// 修改授权
+	this.updateGrant = function () {
+		if (this.grant == null) {
+			window.location.reload();
+			return;
+		}
+		teaweb.popup("/nodes/grants/updatePopup?grantId=" + this.grant.id, {
+			height: "31em",
+			callback: function (resp) {
+				this.grant = resp.data.grant;
+			}
+		})
 	};
 
 	this.createGrant = function () {

@@ -14,7 +14,7 @@ func (this *Helper) BeforeAction(action *actions.ActionObject) {
 	selectedTabbar, _ := action.Data["mainTab"]
 
 	tabbar := actionutils.NewTabbar()
-	tabbar.Add("节点管理", "", "/nodes", "", selectedTabbar == "node")
-	tabbar.Add("认证管理", "", "/nodes/grants", "", selectedTabbar == "grant")
+	tabbar.Add("节点", "", "/nodes", "", selectedTabbar == "node")
+	tabbar.Add("认证", "", "/nodes/grants", "", selectedTabbar == "grant")
 	actionutils.SetTabbar(action, tabbar)
 }
