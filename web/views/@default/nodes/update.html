@@ -43,8 +43,8 @@
 		<tr>
 			<td>SSH登录认证</td>
 			<td>
-				<div class="ui label small" v-if="grant != null">{{grant.name}}<span class="small">（{{grant.methodName}}）</span> <a href="" title="删除" @click.prevent="removeGrant()"><i class="icon remove"></i></a> </div>
-				<div v-if="grant == null">
+				<div class="ui label small" v-if="grant != null && grant.id != null">{{grant.name}}<span class="small">（{{grant.methodName}}）</span> <a href="" title="删除" @click.prevent="removeGrant()"><i class="icon remove"></i></a> </div>
+				<div v-else>
 					<a href="" @click.prevent="selectGrant()">[选择已有认证]</a> &nbsp; &nbsp; <a href="" @click.prevent="createGrant()">[添加新认证]</a>
 				</div>
 			</td>

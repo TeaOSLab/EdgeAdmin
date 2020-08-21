@@ -8,28 +8,37 @@
 		<tr>
 			<th>ID</th>
 			<th>节点名称</th>
-			<th>IP</th>
+			<th>主机名</th>
+			<!--<th>IP</th>-->
 			<th>所属集群</th>
 			<th>状态</th>
 			<th>CPU</th>
 			<th>内存</th>
-			<th>流量</th>
-			<th>连接数</th>
+			<!--<th>流量</th>
+			<th>连接数</th>-->
 			<th class="two op">操作</th>
 		</tr>
 	</thead>
 	<tr v-for="node in nodes">
 		<td>{{node.id}}</td>
 		<td>{{node.name}}</td>
-		<td></td>
+		<td>
+			<span v-if="node.status.hostname != null && node.status.hostname.length > 0">{{node.status.hostname}}</span>
+			<span v-else>-</span>
+		</td>
 		<td>{{node.cluster.name}}</td>
 		<td>
-			已安装|安装中|安装错误|运行中|失去连接
+			<span v-if="node.status.isActive"><span class="green">运行中</span></span>
+			<span v-else-if="node.status.updatedAt == 0" class="red">未连接</span>
 		</td>
-		<td></td>
-		<td></td>
-		<td></td>
-		<td></td>
+		<td>
+			<span v-if="node.status.isActive" :class="{red:node.status.cpuUsage > 0.80}">{{node.status.cpuUsageText}}</span>
+			<span v-else>-</span>
+		</td>
+		<td>
+			<span v-if="node.status.isActive" :class="{red:node.status.memUsage > 0.80}">{{node.status.memUsageText}}</span>
+			<span v-else>-</span>
+		</td>
 		<td>
 			<a :href="'/nodes/node?nodeId=' + node.id">详情</a> &nbsp; <a href="" @click.prevent="deleteNode(node.id)">删除</a>
 		</td>

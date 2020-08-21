@@ -1,10 +1,14 @@
 Tea.context(function () {
 	this.moreOptionsVisible = false;
+	this.globalChangedClusters = [];
 
 	this.$delay(function () {
 		if (this.$refs.focus != null) {
 			this.$refs.focus.focus();
 		}
+
+		// 检查变更
+		this.checkClusterChanges()
 	});
 
 	/**
@@ -23,6 +27,30 @@ Tea.context(function () {
 			});
 		}
 		menu.isActive = !menu.isActive;
+	};
+
+	/**
+	 * 检查集群变更
+	 */
+	this.checkClusterChanges = function () {
+		this.$get("/common/changedClusters")
+			.success(function (resp) {
+				this.globalChangedClusters = resp.data.clusters;
+			}).fail(function () {
+			this.globalChangedClusters = [];
+		})
+	};
+
+	/**
+	 * 同步集群配置
+	 */
+	this.syncClustersConfigs = function () {
+		teaweb.confirm("确定要同步集群服务配置吗？", function () {
+			this.$post("/common/syncClusters")
+				.success(function () {
+					this.globalChangedClusters = [];
+				})
+		})
 	};
 });
 
