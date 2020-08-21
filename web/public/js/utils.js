@@ -108,7 +108,7 @@ window.teaweb = {
 		if (typeof (options["callback"]) == "function") {
 			window.POPUP_CALLBACK = function () {
 				Swal.close();
-				options["callback"].apply(window, arguments);
+				options["callback"].apply(Tea.Vue, arguments);
 			};
 		}
 

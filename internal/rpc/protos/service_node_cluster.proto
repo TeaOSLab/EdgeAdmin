@@ -7,12 +7,25 @@ import "model_node_cluster.proto";
 service NodeClusterService {
 	// 获取所有集群的信息
 	rpc findAllEnabledClusters (FindAllEnabledNodeClustersRequest) returns (FindAllEnabledNodeClustersResponse);
+
+	// 获取变更的集群
+	rpc findAllChangedClusters (FindAllChangedClustersRequest) returns (FindAllChangedClustersResponse);
 }
 
+// 获取所有集群的信息
 message FindAllEnabledNodeClustersRequest {
 
 }
 
 message FindAllEnabledNodeClustersResponse {
+	repeated NodeCluster clusters = 1;
+}
+
+// 获取变更的集群
+message FindAllChangedClustersRequest {
+
+}
+
+message FindAllChangedClustersResponse {
 	repeated NodeCluster clusters = 1;
 }

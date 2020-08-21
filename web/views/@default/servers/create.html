@@ -1,22 +1,112 @@
 {$layout}
 {$template "menu"}
 
+<div class="margin"></div>
+
 <form class="ui form" data-tea-action="$" data-tea-success="success">
 	<table class="ui table selectable definition">
 		<tr>
-			<td class="title">服务名称</td>
+			<td class="title">服务名称 *</td>
 			<td>
 				<input type="text" name="name" maxlength="60" ref="focus"/>
 			</td>
 		</tr>
 		<tr>
-			<td>部署的集群</td>
+			<td>部署的集群 *</td>
 			<td>
-				<select class="ui dropdown" name="clusterId" style="width:10em">
+				<select class="ui dropdown auto-width" name="clusterId">
 					<option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
 				</select>
 			</td>
 		</tr>
+		<tr>
+			<td>服务类型 *</td>
+			<td>
+				<select class="ui dropdown auto-width" name="serverType" v-model="serverType" @change="changeServerType()">
+					<option v-for="serverType in serverTypes" :value="serverType.code">{{serverType.name}}</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>绑定端口 *</td>
+			<td>
+				<input type="hidden" name="addresses" :value="JSON.stringify(addresses)"/>
+				<div v-if="addresses.length > 0">
+					<div class="ui label small" v-for="(addr, index) in addresses">
+						{{addr.protocol}}://<span v-if="addr.host.length > 0">{{addr.host}}</span><span v-if="addr.host.length == 0">*</span>:{{addr.portRange}}
+						<a href="" @click.prevent="removeAddr(index)" title="删除"><i class="icon remove"></i></a> </div>
+					<div class="ui divider"></div>
+				</div>
+				<a href="" @click.prevent="addPort()">[添加端口绑定]</a>
+			</td>
+		</tr>
+
+		<!-- 证书 -->
+		<tbody v-if="tlsProtocolName.length > 0">
+			<tr>
+				<td>{{tlsProtocolName}}证书</td>
+				<td>
+					<input type="file" name="tlsCertFile"/>
+				</td>
+			</tr>
+			<tr>
+				<td>{{tlsProtocolName}}密钥</td>
+				<td>
+					<input type="file" name="tlsKeyFile"/>
+				</td>
+			</tr>
+		</tbody>
+
+		<!-- 域名 -->
+		<tr>
+			<td>绑定域名</td>
+			<td>
+				<input type="hidden" name="serverNames" :value="JSON.stringify(serverNames)"/>
+				<div v-if="serverNames.length > 0">
+					<div v-for="(serverName, index) in serverNames" class="ui label small">
+						<em v-if="serverName.type != 'full'">{{serverName.type}}</em>  {{serverName.name}} <a href="" title="删除" @click.prevent="removeServerName(index)"><i class="icon remove"></i></a>
+					</div>
+					<div class="ui divider"></div>
+				</div>
+				<a href="" @click.prevent="addServerName()">[添加域名绑定]</a>
+			</td>
+		</tr>
+
+		<!-- 源服务器地址 -->
+		<tr v-if="serverType == 'httpProxy' || serverType == 'tcpProxy' || serverType == 'udpProxy'">
+			<td>源站地址</td>
+			<td>
+				<input type="hidden" name="origins" :value="JSON.stringify(origins)"/>
+				<div v-if="origins.length > 0">
+					<div v-for="(origin, index) in origins" class="ui label small">
+                        {{origin.addr.protocol}}://{{origin.addr.host}}:{{origin.addr.portRange}}
+						<a href="" title="删除" @click.prevent="removeOrigin(index)"><i class="icon remove"></i></a>
+					</div>
+					<div class="ui divider"></div>
+				</div>
+				<a href="" @click.prevent="addOrigin">[添加源站地址]</a>
+			</td>
+		</tr>
+
+		<!-- Web Server -->
+		<tr v-if="serverType == 'httpWeb'">
+			<td>Web目录</td>
+			<td>
+				<input type="text" name="webRoot"/>
+			</td>
+		</tr>
+
+		<tr>
+			<td colspan="2"><more-options-indicator></more-options-indicator></td>
+		</tr>
+		<tbody v-show="moreOptionsVisible">
+			<tr>
+				<td>描述</td>
+				<td>
+					<textarea name="description" rows="3"></textarea>
+				</td>
+			</tr>
+		</tbody>
 	</table>
 	<submit-btn></submit-btn>
 </form>

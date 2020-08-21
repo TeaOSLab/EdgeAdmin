@@ -191,6 +191,9 @@ p.margin {
 .autocomplete-box .menu .item {
   border-top: none !important;
 }
+select.auto-width {
+  width: auto !important;
+}
 /** column **/
 @media screen and (max-width: 512px) {
   .column:not(.one) {

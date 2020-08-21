@@ -29,6 +29,7 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
+// 获取所有集群的信息
 type FindAllEnabledNodeClustersRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -114,6 +115,92 @@ func (x *FindAllEnabledNodeClustersResponse) GetClusters() []*NodeCluster {
 	return nil
 }
 
+// 获取变更的集群
+type FindAllChangedClustersRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *FindAllChangedClustersRequest) Reset() {
+	*x = FindAllChangedClustersRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_service_node_cluster_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FindAllChangedClustersRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FindAllChangedClustersRequest) ProtoMessage() {}
+
+func (x *FindAllChangedClustersRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_service_node_cluster_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FindAllChangedClustersRequest.ProtoReflect.Descriptor instead.
+func (*FindAllChangedClustersRequest) Descriptor() ([]byte, []int) {
+	return file_service_node_cluster_proto_rawDescGZIP(), []int{2}
+}
+
+type FindAllChangedClustersResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Clusters []*NodeCluster `protobuf:"bytes,1,rep,name=clusters,proto3" json:"clusters,omitempty"`
+}
+
+func (x *FindAllChangedClustersResponse) Reset() {
+	*x = FindAllChangedClustersResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_service_node_cluster_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *FindAllChangedClustersResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FindAllChangedClustersResponse) ProtoMessage() {}
+
+func (x *FindAllChangedClustersResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_service_node_cluster_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FindAllChangedClustersResponse.ProtoReflect.Descriptor instead.
+func (*FindAllChangedClustersResponse) Descriptor() ([]byte, []int) {
+	return file_service_node_cluster_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *FindAllChangedClustersResponse) GetClusters() []*NodeCluster {
+	if x != nil {
+		return x.Clusters
+	}
+	return nil
+}
+
 var File_service_node_cluster_proto protoreflect.FileDescriptor
 
 var file_service_node_cluster_proto_rawDesc = []byte{
@@ -128,16 +215,29 @@ var file_service_node_cluster_proto_rawDesc = []byte{
 	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2b, 0x0a, 0x08, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72,
 	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x70, 0x62, 0x2e, 0x4e, 0x6f, 0x64,
 	0x65, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x52, 0x08, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65,
-	0x72, 0x73, 0x32, 0x7d, 0x0a, 0x12, 0x4e, 0x6f, 0x64, 0x65, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65,
-	0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x67, 0x0a, 0x16, 0x66, 0x69, 0x6e, 0x64,
-	0x41, 0x6c, 0x6c, 0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65,
-	0x72, 0x73, 0x12, 0x25, 0x2e, 0x70, 0x62, 0x2e, 0x46, 0x69, 0x6e, 0x64, 0x41, 0x6c, 0x6c, 0x45,
-	0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x4e, 0x6f, 0x64, 0x65, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65,
-	0x72, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x26, 0x2e, 0x70, 0x62, 0x2e, 0x46,
-	0x69, 0x6e, 0x64, 0x41, 0x6c, 0x6c, 0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x4e, 0x6f, 0x64,
-	0x65, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x42, 0x06, 0x5a, 0x04, 0x2e, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x33,
+	0x72, 0x73, 0x22, 0x1f, 0x0a, 0x1d, 0x46, 0x69, 0x6e, 0x64, 0x41, 0x6c, 0x6c, 0x43, 0x68, 0x61,
+	0x6e, 0x67, 0x65, 0x64, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x73, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x22, 0x4d, 0x0a, 0x1e, 0x46, 0x69, 0x6e, 0x64, 0x41, 0x6c, 0x6c, 0x43, 0x68,
+	0x61, 0x6e, 0x67, 0x65, 0x64, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x2b, 0x0a, 0x08, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72,
+	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x70, 0x62, 0x2e, 0x4e, 0x6f, 0x64,
+	0x65, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x52, 0x08, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65,
+	0x72, 0x73, 0x32, 0xde, 0x01, 0x0a, 0x12, 0x4e, 0x6f, 0x64, 0x65, 0x43, 0x6c, 0x75, 0x73, 0x74,
+	0x65, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x67, 0x0a, 0x16, 0x66, 0x69, 0x6e,
+	0x64, 0x41, 0x6c, 0x6c, 0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x43, 0x6c, 0x75, 0x73, 0x74,
+	0x65, 0x72, 0x73, 0x12, 0x25, 0x2e, 0x70, 0x62, 0x2e, 0x46, 0x69, 0x6e, 0x64, 0x41, 0x6c, 0x6c,
+	0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x4e, 0x6f, 0x64, 0x65, 0x43, 0x6c, 0x75, 0x73, 0x74,
+	0x65, 0x72, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x26, 0x2e, 0x70, 0x62, 0x2e,
+	0x46, 0x69, 0x6e, 0x64, 0x41, 0x6c, 0x6c, 0x45, 0x6e, 0x61, 0x62, 0x6c, 0x65, 0x64, 0x4e, 0x6f,
+	0x64, 0x65, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x5f, 0x0a, 0x16, 0x66, 0x69, 0x6e, 0x64, 0x41, 0x6c, 0x6c, 0x43, 0x68, 0x61,
+	0x6e, 0x67, 0x65, 0x64, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x73, 0x12, 0x21, 0x2e, 0x70,
+	0x62, 0x2e, 0x46, 0x69, 0x6e, 0x64, 0x41, 0x6c, 0x6c, 0x43, 0x68, 0x61, 0x6e, 0x67, 0x65, 0x64,
+	0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x22, 0x2e, 0x70, 0x62, 0x2e, 0x46, 0x69, 0x6e, 0x64, 0x41, 0x6c, 0x6c, 0x43, 0x68, 0x61, 0x6e,
+	0x67, 0x65, 0x64, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x42, 0x06, 0x5a, 0x04, 0x2e, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x33,
 }
 
 var (
@@ -152,21 +252,26 @@ func file_service_node_cluster_proto_rawDescGZIP() []byte {
 	return file_service_node_cluster_proto_rawDescData
 }
 
-var file_service_node_cluster_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_service_node_cluster_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_service_node_cluster_proto_goTypes = []interface{}{
 	(*FindAllEnabledNodeClustersRequest)(nil),  // 0: pb.FindAllEnabledNodeClustersRequest
 	(*FindAllEnabledNodeClustersResponse)(nil), // 1: pb.FindAllEnabledNodeClustersResponse
-	(*NodeCluster)(nil),                        // 2: pb.NodeCluster
+	(*FindAllChangedClustersRequest)(nil),      // 2: pb.FindAllChangedClustersRequest
+	(*FindAllChangedClustersResponse)(nil),     // 3: pb.FindAllChangedClustersResponse
+	(*NodeCluster)(nil),                        // 4: pb.NodeCluster
 }
 var file_service_node_cluster_proto_depIdxs = []int32{
-	2, // 0: pb.FindAllEnabledNodeClustersResponse.clusters:type_name -> pb.NodeCluster
-	0, // 1: pb.NodeClusterService.findAllEnabledClusters:input_type -> pb.FindAllEnabledNodeClustersRequest
-	1, // 2: pb.NodeClusterService.findAllEnabledClusters:output_type -> pb.FindAllEnabledNodeClustersResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	4, // 0: pb.FindAllEnabledNodeClustersResponse.clusters:type_name -> pb.NodeCluster
+	4, // 1: pb.FindAllChangedClustersResponse.clusters:type_name -> pb.NodeCluster
+	0, // 2: pb.NodeClusterService.findAllEnabledClusters:input_type -> pb.FindAllEnabledNodeClustersRequest
+	2, // 3: pb.NodeClusterService.findAllChangedClusters:input_type -> pb.FindAllChangedClustersRequest
+	1, // 4: pb.NodeClusterService.findAllEnabledClusters:output_type -> pb.FindAllEnabledNodeClustersResponse
+	3, // 5: pb.NodeClusterService.findAllChangedClusters:output_type -> pb.FindAllChangedClustersResponse
+	4, // [4:6] is the sub-list for method output_type
+	2, // [2:4] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_service_node_cluster_proto_init() }
@@ -200,6 +305,30 @@ func file_service_node_cluster_proto_init() {
 				return nil
 			}
 		}
+		file_service_node_cluster_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FindAllChangedClustersRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_service_node_cluster_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*FindAllChangedClustersResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -207,7 +336,7 @@ func file_service_node_cluster_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_service_node_cluster_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -235,6 +364,8 @@ const _ = grpc.SupportPackageIsVersion6
 type NodeClusterServiceClient interface {
 	// 获取所有集群的信息
 	FindAllEnabledClusters(ctx context.Context, in *FindAllEnabledNodeClustersRequest, opts ...grpc.CallOption) (*FindAllEnabledNodeClustersResponse, error)
+	// 获取变更的集群
+	FindAllChangedClusters(ctx context.Context, in *FindAllChangedClustersRequest, opts ...grpc.CallOption) (*FindAllChangedClustersResponse, error)
 }
 
 type nodeClusterServiceClient struct {
@@ -254,10 +385,21 @@ func (c *nodeClusterServiceClient) FindAllEnabledClusters(ctx context.Context, i
 	return out, nil
 }
 
+func (c *nodeClusterServiceClient) FindAllChangedClusters(ctx context.Context, in *FindAllChangedClustersRequest, opts ...grpc.CallOption) (*FindAllChangedClustersResponse, error) {
+	out := new(FindAllChangedClustersResponse)
+	err := c.cc.Invoke(ctx, "/pb.NodeClusterService/findAllChangedClusters", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // NodeClusterServiceServer is the server API for NodeClusterService service.
 type NodeClusterServiceServer interface {
 	// 获取所有集群的信息
 	FindAllEnabledClusters(context.Context, *FindAllEnabledNodeClustersRequest) (*FindAllEnabledNodeClustersResponse, error)
+	// 获取变更的集群
+	FindAllChangedClusters(context.Context, *FindAllChangedClustersRequest) (*FindAllChangedClustersResponse, error)
 }
 
 // UnimplementedNodeClusterServiceServer can be embedded to have forward compatible implementations.
@@ -266,6 +408,9 @@ type UnimplementedNodeClusterServiceServer struct {
 
 func (*UnimplementedNodeClusterServiceServer) FindAllEnabledClusters(context.Context, *FindAllEnabledNodeClustersRequest) (*FindAllEnabledNodeClustersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindAllEnabledClusters not implemented")
+}
+func (*UnimplementedNodeClusterServiceServer) FindAllChangedClusters(context.Context, *FindAllChangedClustersRequest) (*FindAllChangedClustersResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FindAllChangedClusters not implemented")
 }
 
 func RegisterNodeClusterServiceServer(s *grpc.Server, srv NodeClusterServiceServer) {
@@ -290,6 +435,24 @@ func _NodeClusterService_FindAllEnabledClusters_Handler(srv interface{}, ctx con
 	return interceptor(ctx, in, info, handler)
 }
 
+func _NodeClusterService_FindAllChangedClusters_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FindAllChangedClustersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NodeClusterServiceServer).FindAllChangedClusters(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.NodeClusterService/FindAllChangedClusters",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NodeClusterServiceServer).FindAllChangedClusters(ctx, req.(*FindAllChangedClustersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _NodeClusterService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "pb.NodeClusterService",
 	HandlerType: (*NodeClusterServiceServer)(nil),
@@ -297,6 +460,10 @@ var _NodeClusterService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "findAllEnabledClusters",
 			Handler:    _NodeClusterService_FindAllEnabledClusters_Handler,
+		},
+		{
+			MethodName: "findAllChangedClusters",
+			Handler:    _NodeClusterService_FindAllChangedClusters_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

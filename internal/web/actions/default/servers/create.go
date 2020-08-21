@@ -2,9 +2,10 @@ package servers
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeAdmin/internal/configs/nodes"
+	"github.com/TeaOSLab/EdgeAdmin/internal/configs/serverconfigs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/serverutils"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 )
@@ -14,7 +15,7 @@ type CreateAction struct {
 }
 
 func (this *CreateAction) Init() {
-	this.Nav("", "", "create")
+	this.Nav("", "server", "create")
 }
 
 func (this *CreateAction) RunGet(params struct{}) {
@@ -36,12 +37,23 @@ func (this *CreateAction) RunGet(params struct{}) {
 	}
 	this.Data["clusters"] = clusterMaps
 
+	// 服务类型
+	this.Data["serverTypes"] = serverutils.AllServerTypes()
+
 	this.Show()
 }
 
 func (this *CreateAction) RunPost(params struct {
-	Name      string
-	ClusterId int64
+	Name        string
+	Description string
+	ClusterId   int64
+
+	ServerType  string
+	Addresses   string
+	ServerNames string
+	Origins     string
+
+	WebRoot string
 
 	Must *actions.Must
 }) {
@@ -56,9 +68,114 @@ func (this *CreateAction) RunPost(params struct {
 	// TODO 验证集群ID
 
 	// 配置
-	serverConfig := &nodes.ServerConfig{}
+	serverConfig := &serverconfigs.ServerConfig{}
 	serverConfig.IsOn = true
 	serverConfig.Name = params.Name
+	serverConfig.Description = params.Description
+
+	// 端口地址
+	switch params.ServerType {
+	case serverutils.ServerTypeHTTPProxy, serverutils.ServerTypeHTTPWeb:
+		listen := []*serverconfigs.NetworkAddressConfig{}
+		err := json.Unmarshal([]byte(params.Addresses), &listen)
+		if err != nil {
+			this.Fail("端口地址解析失败：" + err.Error())
+		}
+
+		for _, addr := range listen {
+			switch addr.Protocol {
+			case serverconfigs.ProtocolHTTP, serverconfigs.ProtocolHTTP4, serverconfigs.ProtocolHTTP6:
+				if serverConfig.HTTP == nil {
+					serverConfig.HTTP = &serverconfigs.HTTPProtocolConfig{
+						BaseProtocol: serverconfigs.BaseProtocol{
+							IsOn: true,
+						},
+					}
+				}
+				serverConfig.HTTP.AddListen(addr)
+			case serverconfigs.ProtocolHTTPS, serverconfigs.ProtocolHTTPS4, serverconfigs.ProtocolHTTPS6:
+				if serverConfig.HTTPS == nil {
+					serverConfig.HTTPS = &serverconfigs.HTTPSProtocolConfig{
+						BaseProtocol: serverconfigs.BaseProtocol{
+							IsOn: true,
+						},
+					}
+				}
+				serverConfig.HTTPS.AddListen(addr)
+			}
+		}
+	case serverutils.ServerTypeTCPProxy:
+		listen := []*serverconfigs.NetworkAddressConfig{}
+		err := json.Unmarshal([]byte(params.Addresses), &listen)
+		if err != nil {
+			this.Fail("端口地址解析失败：" + err.Error())
+		}
+
+		for _, addr := range listen {
+			switch addr.Protocol {
+			case serverconfigs.ProtocolTCP, serverconfigs.ProtocolTCP4, serverconfigs.ProtocolTCP6:
+				if serverConfig.TCP == nil {
+					serverConfig.TCP = &serverconfigs.TCPProtocolConfig{
+						BaseProtocol: serverconfigs.BaseProtocol{
+							IsOn: true,
+						},
+					}
+				}
+				serverConfig.TCP.AddListen(addr)
+			case serverconfigs.ProtocolTLS, serverconfigs.ProtocolTLS4, serverconfigs.ProtocolTLS6:
+				if serverConfig.TLS == nil {
+					serverConfig.TLS = &serverconfigs.TLSProtocolConfig{
+						BaseProtocol: serverconfigs.BaseProtocol{
+							IsOn: true,
+						},
+					}
+				}
+				serverConfig.TLS.AddListen(addr)
+			}
+		}
+	default:
+		this.Fail("请选择正确的服务类型")
+	}
+
+	// TODO 证书
+
+	// 域名
+	serverNames := []*serverconfigs.ServerNameConfig{}
+	err := json.Unmarshal([]byte(params.ServerNames), &serverNames)
+	if err != nil {
+		this.Fail("域名解析失败：" + err.Error())
+	}
+	serverConfig.ServerNames = serverNames
+
+	// 源站地址
+	switch params.ServerType {
+	case serverutils.ServerTypeHTTPProxy, serverutils.ServerTypeTCPProxy:
+		origins := []*serverconfigs.OriginServerConfig{}
+		err = json.Unmarshal([]byte(params.Origins), &origins)
+		if err != nil {
+			this.Fail("源站地址解析失败：" + err.Error())
+		}
+		serverConfig.ReverseProxy = &serverconfigs.ReverseProxyConfig{
+			IsOn:    true,
+			Origins: origins,
+		}
+	}
+
+	// Web地址
+	switch params.ServerType {
+	case serverutils.ServerTypeHTTPWeb:
+		serverConfig.Web = &serverconfigs.WebConfig{
+			IsOn: true,
+			Root: params.WebRoot,
+		}
+	}
+
+	// 校验
+	err = serverConfig.Init()
+	if err != nil {
+		this.Fail("配置校验失败：" + err.Error())
+	}
+
 	serverConfigJSON, err := serverConfig.AsJSON()
 	if err != nil {
 		this.ErrorPage(err)

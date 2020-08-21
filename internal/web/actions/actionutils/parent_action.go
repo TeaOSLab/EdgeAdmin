@@ -61,7 +61,7 @@ func (this *ParentAction) SecondMenu(menuItem string) {
 }
 
 func (this *ParentAction) AdminId() int64 {
-	return int64(this.Context.GetInt("adminId"))
+	return this.Context.GetInt64("adminId")
 }
 
 func (this *ParentAction) CreateLog(level string, description string, args ...interface{}) {

@@ -1,0 +1,36 @@
+.left-box {
+  width: 8em;
+  position: fixed;
+  top: 7.5em;
+  bottom: 0.5em;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-right: 1px #ddd solid;
+}
+.left-box .menu {
+  width: 90% !important;
+  /** .header需要在.item下面 **/
+}
+.left-box .menu .item {
+  line-height: 1.2;
+  position: relative;
+  padding-left: 1em !important;
+}
+.left-box .menu .item .icon {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  margin-top: -0.4em !important;
+}
+.left-box .menu .header {
+  border-bottom: 1px #ddd solid;
+  padding-left: 0 !important;
+  padding-bottom: 1em !important;
+}
+.left-box::-webkit-scrollbar {
+  width: 4px;
+}
+.right-box {
+  margin-left: 9em;
+}
+/*# sourceMappingURL=index.css.map */

@@ -152,6 +152,9 @@ body.expanded .main {
   font-size: 0.9em;
   padding-left: 0.2em;
 }
+.top-nav .item.red {
+  color: red !important;
+}
 /** 顶部菜单 **/
 .top-secondary-menu {
   position: fixed;
@@ -500,6 +503,9 @@ body.expanded .main {
 }
 .autocomplete-box .menu .item {
   border-top: none !important;
+}
+select.auto-width {
+  width: auto !important;
 }
 /** column **/
 @media screen and (max-width: 512px) {
