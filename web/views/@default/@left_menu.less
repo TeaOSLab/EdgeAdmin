@@ -1,0 +1,63 @@
+.left-box {
+	width: 8em;
+	position: fixed;
+	top: 7.5em;
+	bottom: 0.5em;
+	overflow-y: auto;
+	overflow-x: hidden;
+	border-right: 1px #ddd solid;
+
+	.menu {
+		width: 90% !important;
+
+		.item {
+			line-height: 1.2;
+			position: relative;
+			padding-left: 1em !important;
+
+			.icon {
+				position: absolute;
+				top: 50%;
+				left: 0;
+				margin-top: -0.4em !important;
+			}
+		}
+
+		.item.separator {
+			border-bottom: 1px #eee solid !important;
+			padding-top: 0;
+			padding-bottom: 0;
+			margin-top: 0 !important;
+			margin-bottom: 0 !important;
+		}
+
+		// .header需要在.item下面
+		.header {
+			border-bottom: 1px #ddd solid;
+			padding-left: 0 !important;
+			padding-bottom: 1em !important;
+		}
+
+		.item.active {
+		}
+	}
+}
+
+.left-box::-webkit-scrollbar {
+	width: 4px;
+}
+
+.right-box {
+	position: fixed;
+	top: 7.5em;
+	bottom: 0;
+	right: 0;
+	left: 18em;
+	padding-right: 2em;
+	padding-bottom: 1em;
+	overflow-y: auto;
+}
+
+.right-box::-webkit-scrollbar {
+	width: 4px;
+}

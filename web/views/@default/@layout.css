@@ -1,3 +1,54 @@
+.left-box {
+  width: 8em;
+  position: fixed;
+  top: 7.5em;
+  bottom: 0.5em;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-right: 1px #ddd solid;
+}
+.left-box .menu {
+  width: 90% !important;
+}
+.left-box .menu .item {
+  line-height: 1.2;
+  position: relative;
+  padding-left: 1em !important;
+}
+.left-box .menu .item .icon {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  margin-top: -0.4em !important;
+}
+.left-box .menu .item.separator {
+  border-bottom: 1px #eee solid !important;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+.left-box .menu .header {
+  border-bottom: 1px #ddd solid;
+  padding-left: 0 !important;
+  padding-bottom: 1em !important;
+}
+.left-box::-webkit-scrollbar {
+  width: 4px;
+}
+.right-box {
+  position: fixed;
+  top: 7.5em;
+  bottom: 0;
+  right: 0;
+  left: 18em;
+  padding-right: 2em;
+  padding-bottom: 1em;
+  overflow-y: auto;
+}
+.right-box::-webkit-scrollbar {
+  width: 4px;
+}
 /** 通用 **/
 .clear {
   clear: both;
@@ -235,6 +286,7 @@ body.expanded .main {
 .main h3 {
   font-weight: normal;
   margin-top: 1em !important;
+  position: relative;
 }
 .main h3 span {
   font-size: 0.8em;
@@ -246,12 +298,6 @@ body.expanded .main {
   margin-left: 1em;
   font-size: 14px !important;
   right: 1em;
-}
-.main h3 a::before {
-  content: "[";
-}
-.main h3 a::after {
-  content: "]";
 }
 .main h4 {
   font-weight: normal;
@@ -600,5 +646,8 @@ var.dash {
 }
 .swal2-cancel {
   margin-left: 2em !important;
+}
+form .fields {
+  margin-bottom: 0 !important;
 }
 /*# sourceMappingURL=@layout.css.map */

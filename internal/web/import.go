@@ -1,6 +1,11 @@
 package web
 
 import (
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/api"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/api/node"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/common"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dashboard"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/index"

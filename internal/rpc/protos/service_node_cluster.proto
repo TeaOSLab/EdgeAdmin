@@ -5,11 +5,29 @@ package pb;
 import "model_node_cluster.proto";
 
 service NodeClusterService {
+	// 创建集群
+	rpc createNodeCluster (CreateNodeClusterRequest) returns (CreateNodeClusterResponse);
+
+	// 修改集群
+	rpc updateNodeCluster (UpdateNodeClusterRequest) returns (UpdateNodeClusterResponse);
+
+	// 禁用集群
+	rpc disableNodeCluster (DisableNodeClusterRequest) returns (DisableNodeClusterResponse);
+
+	// 查找单个集群信息
+	rpc findEnabledNodeCluster (FindEnabledNodeClusterRequest) returns (FindEnabledNodeClusterResponse);
+
 	// 获取所有集群的信息
-	rpc findAllEnabledClusters (FindAllEnabledNodeClustersRequest) returns (FindAllEnabledNodeClustersResponse);
+	rpc findAllEnabledNodeClusters (FindAllEnabledNodeClustersRequest) returns (FindAllEnabledNodeClustersResponse);
 
 	// 获取变更的集群
-	rpc findAllChangedClusters (FindAllChangedClustersRequest) returns (FindAllChangedClustersResponse);
+	rpc findAllChangedNodeClusters (FindAllChangedNodeClustersRequest) returns (FindAllChangedNodeClustersResponse);
+
+	// 计算所有集群数量
+	rpc countAllEnabledNodeClusters (CountAllEnabledNodeClustersRequest) returns (CountAllEnabledNodeClustersResponse);
+
+	// 列出单页集群
+	rpc listEnabledNodeClusters (ListEnabledNodeClustersRequest) returns (ListEnabledNodeClustersResponse);
 }
 
 // 获取所有集群的信息
@@ -22,10 +40,70 @@ message FindAllEnabledNodeClustersResponse {
 }
 
 // 获取变更的集群
-message FindAllChangedClustersRequest {
+message FindAllChangedNodeClustersRequest {
 
 }
 
-message FindAllChangedClustersResponse {
+message FindAllChangedNodeClustersResponse {
+	repeated NodeCluster clusters = 1;
+}
+
+// 创建集群
+message CreateNodeClusterRequest {
+	string name = 1;
+	int64 grantId = 2;
+	string installDir = 3;
+}
+
+message CreateNodeClusterResponse {
+	int64 clusterId = 1;
+}
+
+// 修改集群
+message UpdateNodeClusterRequest {
+	int64 clusterId = 1;
+	string name = 2;
+	int64 grantId = 3;
+	string installDir = 4;
+}
+
+message UpdateNodeClusterResponse {
+
+}
+
+// 禁用集群
+message DisableNodeClusterRequest {
+	int64 clusterId = 1;
+}
+
+message DisableNodeClusterResponse {
+
+}
+
+// 查找单个集群信息
+message FindEnabledNodeClusterRequest {
+	int64 clusterId = 1;
+}
+
+message FindEnabledNodeClusterResponse {
+	NodeCluster cluster = 1;
+}
+
+// 计算所有集群数量
+message CountAllEnabledNodeClustersRequest {
+
+}
+
+message CountAllEnabledNodeClustersResponse {
+	int64 count = 1;
+}
+
+// 列出单页集群
+message ListEnabledNodeClustersRequest {
+	int64 offset = 1;
+	int64 size = 2;
+}
+
+message ListEnabledNodeClustersResponse {
 	repeated NodeCluster clusters = 1;
 }

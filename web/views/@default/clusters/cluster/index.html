@@ -1,0 +1,87 @@
+{$layout}
+{$template "/left_menu"}
+
+<div class="right-box">
+	<second-menu>
+		<menu-item :href="'/clusters/cluster/node/create?clusterId=' + clusterId">添加节点</menu-item>
+		<menu-item>安装节点</menu-item>
+	</second-menu>
+
+	<h3>节点列表</h3>
+
+	<p class="comment" v-if="nodes.length == 0">暂时还没有节点。</p>
+
+	<div v-show="nodes.length > 0">
+		<form class="ui form segment" action="/clusters/cluster">
+			<input type="hidden" name="clusterId" :value="clusterId"/>
+			<div class="ui fields inline">
+				<div class="ui field">
+					安装状态：
+				</div>
+				<div class="ui field">
+					<select class="ui dropdown" name="installedState">
+						<option value="0">[全部]</option>
+						<option value="1">已安装</option>
+						<option value="2">未安装</option>
+					</select>
+				</div>
+				<div class="ui field">
+					<button class="ui button" type="submit">搜索</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<table class="ui table selectable" v-if="nodes.length > 0">
+		<thead>
+		<tr>
+			<th>ID</th>
+			<th>节点名称</th>
+			<th>主机名</th>
+			<th>IP</th>
+			<th>CPU</th>
+			<th>内存</th>
+			<!--<th>流量</th>
+			<th>连接数</th>-->
+			<th>状态</th>
+			<th class="two op">操作</th>
+		</tr>
+		</thead>
+		<tr v-for="node in nodes">
+			<td>{{node.id}}</td>
+			<td>{{node.name}}</td>
+			<td>
+				<span v-if="node.status.hostname != null && node.status.hostname.length > 0">{{node.status.hostname}}</span>
+				<span v-else>-</span>
+			</td>
+			<td>
+				<span v-if="node.ipAddresses.length == 0">-</span>
+				<div v-else class="address-box">
+					<div v-for="addr in node.ipAddresses" class="ui label small">{{addr.ip}} <span class="small">（{{addr.name}}）</span></div>
+				</div>
+			</td>
+			<td>
+				<span v-if="node.status.isActive" :class="{red:node.status.cpuUsage > 0.80}">{{node.status.cpuUsageText}}</span>
+				<span v-else>-</span>
+			</td>
+			<td>
+				<span v-if="node.status.isActive" :class="{red:node.status.memUsage > 0.80}">{{node.status.memUsageText}}</span>
+				<span v-else>-</span>
+			</td>
+			<td>
+				<div v-if="node.isInstalled">
+					<span v-if="node.status.isActive"><span class="green">运行中</span></span>
+					<span v-else-if="node.status.updatedAt > 0" class="red">已断开</span>
+					<span v-else-if="node.status.updatedAt == 0" class="red">未连接</span>
+				</div>
+				<span v-else class="red">未安装</span>
+			</td>
+			<td>
+				<a :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id">详情</a> &nbsp; <a href="" @click.prevent="deleteNode(node.id)">删除</a>
+			</td>
+		</tr>
+	</table>
+
+
+	<div class="page" v-html="page"></div>
+</div>

@@ -24,6 +24,7 @@ type RPCClient struct {
 	nodeClusterClients   []pb.NodeClusterServiceClient
 	nodeIPAddressClients []pb.NodeIPAddressServiceClient
 	serverClients        []pb.ServerServiceClient
+	apiNodeClients       []pb.APINodeServiceClient
 }
 
 func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
@@ -37,6 +38,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 	nodeClusterClients := []pb.NodeClusterServiceClient{}
 	nodeIPAddressClients := []pb.NodeIPAddressServiceClient{}
 	serverClients := []pb.ServerServiceClient{}
+	apiNodeClients := []pb.APINodeServiceClient{}
 
 	conns := []*grpc.ClientConn{}
 	for _, endpoint := range apiConfig.RPC.Endpoints {
@@ -58,6 +60,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		nodeClusterClients = append(nodeClusterClients, pb.NewNodeClusterServiceClient(conn))
 		nodeIPAddressClients = append(nodeIPAddressClients, pb.NewNodeIPAddressServiceClient(conn))
 		serverClients = append(serverClients, pb.NewServerServiceClient(conn))
+		apiNodeClients = append(apiNodeClients, pb.NewAPINodeServiceClient(conn))
 	}
 
 	return &RPCClient{
@@ -68,6 +71,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		nodeClusterClients:   nodeClusterClients,
 		nodeIPAddressClients: nodeIPAddressClients,
 		serverClients:        serverClients,
+		apiNodeClients:       apiNodeClients,
 	}, nil
 }
 
@@ -109,6 +113,13 @@ func (this *RPCClient) NodeIPAddressRPC() pb.NodeIPAddressServiceClient {
 func (this *RPCClient) ServerRPC() pb.ServerServiceClient {
 	if len(this.serverClients) > 0 {
 		return this.serverClients[rands.Int(0, len(this.serverClients)-1)]
+	}
+	return nil
+}
+
+func (this *RPCClient) APINodeRPC() pb.APINodeServiceClient {
+	if len(this.serverClients) > 0 {
+		return this.apiNodeClients[rands.Int(0, len(this.apiNodeClients)-1)]
 	}
 	return nil
 }

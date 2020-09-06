@@ -1,3 +1,5 @@
+@import "./@left_menu";
+
 /** 通用 **/
 .clear {
 	clear: both;
@@ -283,6 +285,7 @@ body.expanded .main {
 .main h3 {
 	font-weight: normal;
 	margin-top: 1em !important;
+	position: relative;
 }
 
 .main h3 span {
@@ -297,14 +300,6 @@ body.expanded .main {
 	margin-left: 1em;
 	font-size: 14px !important;
 	right: 1em;
-}
-
-.main h3 a::before {
-	content: "[";
-}
-
-.main h3 a::after {
-	content: "]";
 }
 
 .main h4 {
@@ -724,4 +719,11 @@ var.dash {
 
 .swal2-cancel {
 	margin-left: 2em !important;
+}
+
+// fields
+form {
+	.fields {
+		margin-bottom: 0 !important;
+	}
 }

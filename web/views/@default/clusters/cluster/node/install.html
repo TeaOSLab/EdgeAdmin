@@ -1,0 +1,37 @@
+{$layout}
+{$template "/left_menu"}
+
+<div class="right-box">
+	{$template "node_menu"}
+
+	<!-- 已安装 -->
+	<div v-if="node.isInstalled">
+		<div class="ui message green">当前节点为已安装状态。</div>
+		<a href="" @click.prevent="updateNodeIsInstalled(false)">[修改为未安装状态]</a>
+	</div>
+
+	<!-- 未安装 -->
+	<div v-if="!node.isInstalled">
+		<h3>方法1：自动安装</h3>
+
+		<h3>方法2：手动安装</h3>
+		<table class="ui table definition selectable">
+			<tr>
+				<td>配置文件<em>（configs/api.yaml）</em></td>
+				<td>
+					<pre>rpc:
+  endpoints: [ "${endpoint}" ]
+nodeId: "{{node.uniqueId}}"
+secret: "{{node.secret}}"</pre>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">安装目录</td>
+				<td>
+					<div v-if="node.installDir.length == 0">使用集群设置<span v-if="node.cluster != null && node.cluster.installDir.length > 0">（{{node.cluster.installDir}}）</span></div>
+					<span v-else>{{node.installDir}}</span>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>

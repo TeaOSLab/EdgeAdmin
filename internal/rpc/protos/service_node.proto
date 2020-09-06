@@ -12,8 +12,11 @@ service NodeService {
 	// 节点数量
 	rpc countAllEnabledNodes (CountAllEnabledNodesRequest) returns (CountAllEnabledNodesResponse);
 
+	// 计算匹配的节点数量
+	rpc countAllEnabledNodesMatch (CountAllEnabledNodesMatchRequest) returns (CountAllEnabledNodesMatchResponse);
+
 	// 列出单页节点
-	rpc listEnabledNodes (ListEnabledNodesRequest) returns (ListEnabledNodesResponse);
+	rpc listEnabledNodesMatch (ListEnabledNodesMatchRequest) returns (ListEnabledNodesMatchResponse);
 
 	// 禁用节点
 	rpc disableNode (DisableNodeRequest) returns (DisableNodeResponse);
@@ -35,6 +38,9 @@ service NodeService {
 
 	// 同步集群中的节点版本
 	rpc syncNodesVersionWithCluster (SyncNodesVersionWithClusterRequest) returns (SyncNodesVersionWithClusterResponse);
+
+	// 修改节点安装状态
+	rpc updateNodeIsInstalled (UpdateNodeIsInstalledRequest) returns (UpdateNodeIsInstalledResponse);
 }
 
 // 创建节点
@@ -58,12 +64,13 @@ message CountAllEnabledNodesResponse {
 }
 
 // 列出单页节点
-message ListEnabledNodesRequest {
+message ListEnabledNodesMatchRequest {
 	int64 offset = 1;
 	int64 size = 2;
+	int64 clusterId = 3;
 }
 
-message ListEnabledNodesResponse {
+message ListEnabledNodesMatchResponse {
 	repeated Node nodes = 1;
 }
 
@@ -131,4 +138,23 @@ message SyncNodesVersionWithClusterRequest {
 }
 
 message SyncNodesVersionWithClusterResponse {
+}
+
+// 计算匹配的节点数量
+message CountAllEnabledNodesMatchRequest {
+	int64 clusterId = 1;
+}
+
+message CountAllEnabledNodesMatchResponse {
+	int64 count = 1;
+}
+
+// 修改节点安装状态
+message UpdateNodeIsInstalledRequest {
+	int64 nodeId = 1;
+	bool isInstalled = 2;
+}
+
+message UpdateNodeIsInstalledResponse {
+
 }
