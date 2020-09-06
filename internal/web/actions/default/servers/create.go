@@ -20,7 +20,7 @@ func (this *CreateAction) Init() {
 
 func (this *CreateAction) RunGet(params struct{}) {
 	// 所有集群
-	resp, err := this.RPC().NodeClusterRPC().FindAllEnabledClusters(this.AdminContext(), &pb.FindAllEnabledNodeClustersRequest{})
+	resp, err := this.RPC().NodeClusterRPC().FindAllEnabledNodeClusters(this.AdminContext(), &pb.FindAllEnabledNodeClustersRequest{})
 	if err != nil {
 		this.ErrorPage(err)
 	}

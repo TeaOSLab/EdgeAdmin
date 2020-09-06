@@ -67,13 +67,18 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	modules := []map[string]interface{}{
 		{
 			"code":     "servers",
-			"menuName": "服务管理",
+			"menuName": "代理服务",
 			"icon":     "clone outsize",
 		},
 		{
-			"code":     "nodes",
-			"menuName": "节点管理",
-			"icon":     "server",
+			"code":     "clusters",
+			"menuName": "节点集群",
+			"icon":     "cloud",
+		},
+		{
+			"code":     "api",
+			"menuName": "API节点",
+			"icon":     "exchange",
 		},
 	}
 

@@ -1,0 +1,28 @@
+{$layout}
+{$template "menu"}
+
+<div class="margin"></div>
+
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+	<table class="ui table selectable definition">
+		<tr>
+			<td class="title">集群名称 *</td>
+			<td><input type="text" name="name" maxlength="50" ref="focus"/></td>
+		</tr>
+		<tr>
+			<td>默认SSH登录方式</td>
+			<td>
+				<grant-selector></grant-selector>
+				<p class="comment">当节点没有单独设置SSH登录方式时，默认使用此设置。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>默认安装目录</td>
+			<td>
+				<input type="text" name="installDir" maxlength="100"/>
+				<p class="comment">当节点没有单独设置安装目录时，默认使用此设置。如果集群和节点都没有设置安装目录，则使用<span class="ui label tiny">/$登录用户/edge-node</span> 目录。</p>
+			</td>
+		</tr>
+	</table>
+	<submit-btn></submit-btn>
+</form>

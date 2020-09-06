@@ -1,0 +1,90 @@
+{$layout}
+{$template "/left_menu"}
+
+<div class="right-box">
+	{$template "node_menu"}
+
+	<h3>节点详情</h3>
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">节点名称</td>
+			<td>{{node.name}}</td>
+		</tr>
+		<tr>
+			<td>IP地址</td>
+			<td>
+				<div v-if="node.ipAddresses.length > 0">
+					<div>
+						<div v-for="(address, index) in node.ipAddresses" class="ui label small">
+                            {{address.ip}}<span class="small">（{{address.name}}）</span>
+						</div>
+					</div>
+				</div>
+				<div v-else>
+					<span class="disabled">暂时还没有填写IP地址。</span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>SSH主机地址</td>
+			<td>
+				<div v-if="node.login != null && node.login.params != null && node.login.params.host != null">
+					<span v-if="node.login.params.host.length > 0">{{node.login.params.host}}</span>
+					<span v-else class="disabled">尚未设置</span>
+				</div>
+				<div v-else class="disabled">
+					尚未设置
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>SSH主机端口</td>
+			<td>
+				<div v-if="node.login != null && node.login.params != null && node.login.params.host != null">
+					<span v-if="node.login.params.port > 0">{{node.login.params.port}}</span>
+					<span v-else class="disabled">尚未设置</span>
+				</div>
+				<span v-else class="disabled">
+					尚未设置
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<td>SSH登录认证</td>
+			<td>
+				<div v-if="node.login != null && node.login.grant != null && node.login.grant.id > 0">
+                    {{node.login.grant.name}}<span class="small">（{{node.login.grant.methodName}}）</span>
+				</div>
+				<span v-else class="disabled">
+					尚未设置
+				</span>
+			</td>
+		</tr>
+	</table>
+
+	<h3>安装信息</h3>
+	<table class="ui table definition selectable">
+		<tr>
+			<td>节点ID<em>（id）</em></td>
+			<td>{{node.uniqueId}}</td>
+		</tr>
+		<tr>
+			<td>密钥<em>（secret）</em></td>
+			<td>{{node.secret}}</td>
+		</tr>
+		<tr>
+			<td class="title">安装目录</td>
+			<td>
+				<div v-if="node.installDir.length == 0">使用集群设置<span v-if="node.cluster != null && node.cluster.installDir.length > 0">（{{node.cluster.installDir}}）</span></div>
+				<span v-else>{{node.installDir}}</span>
+			</td>
+		</tr>
+		<tr>
+			<td>是否已安装</td>
+			<td>
+				<span v-if="node.isInstalled" class="green">已安装</span>
+				<a v-else :href="'/clusters/cluster/installNode?clusterId=' + clusterId + '&nodeId=' + nodeId" class="underline" title="点击进入安装界面"><span class="red">未安装</span></a>
+			</td>
+		</tr>
+	</table>
+</div>

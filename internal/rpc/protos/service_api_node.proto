@@ -1,0 +1,99 @@
+syntax = "proto3";
+option go_package = "./pb";
+
+package pb;
+import "model_api_node.proto";
+
+service APINodeService {
+	// 创建API节点
+	rpc createAPINode (CreateAPINodeRequest) returns (CreateAPINodeResponse);
+
+	// 修改API节点
+	rpc updateAPINode (UpdateAPINodeRequest) returns (UpdateAPINodeResponse);
+
+	// 删除API节点
+	rpc deleteAPINode (DeleteAPINodeRequest) returns (DeleteAPINodeResponse);
+
+	// 列出所有可用API节点
+	rpc findAllEnabledAPINodes (FindAllEnabledAPINodesRequest) returns (FindAllEnabledAPINodesResponse);
+
+	// 计算API节点数量
+	rpc countAllEnabledAPINodes (CountAllEnabledAPINodesRequest) returns (CountAllEnabledAPINodesResponse);
+
+	// 列出单页的API节点
+	rpc listEnabledAPINodes (ListEnabledAPINodesRequest) returns (ListEnabledAPINodesResponse);
+
+	// 根据ID查找节点
+	rpc findEnabledAPINode (FindEnabledAPINodeRequest) returns (FindEnabledAPINodeResponse);
+}
+
+// 创建API节点
+message CreateAPINodeRequest {
+	string name = 1;
+	string description = 2;
+	string host = 3;
+	int32 port = 4;
+}
+
+message CreateAPINodeResponse {
+	int64 nodeId = 1;
+}
+
+// 修改API节点
+message UpdateAPINodeRequest {
+	int64 nodeId = 1;
+	string name = 2;
+	string description = 3;
+	string host = 4;
+	int32 port = 5;
+}
+
+message UpdateAPINodeResponse {
+
+}
+
+// 删除API节点
+message DeleteAPINodeRequest {
+	int64 nodeId = 1;
+}
+
+message DeleteAPINodeResponse {
+
+}
+
+// 列出所有可用API节点
+message FindAllEnabledAPINodesRequest {
+
+}
+
+message FindAllEnabledAPINodesResponse {
+	repeated APINode nodes = 1;
+}
+
+// 计算API节点数量
+message CountAllEnabledAPINodesRequest {
+
+}
+
+message CountAllEnabledAPINodesResponse {
+	int64 count = 1;
+}
+
+// 列出单页的API节点
+message ListEnabledAPINodesRequest {
+	int64 offset = 1;
+	int64 size = 2;
+}
+
+message ListEnabledAPINodesResponse {
+	repeated APINode nodes = 1;
+}
+
+// 根据ID查找节点
+message FindEnabledAPINodeRequest {
+	int64 nodeId = 1;
+}
+
+message FindEnabledAPINodeResponse {
+	APINode node = 1;
+}

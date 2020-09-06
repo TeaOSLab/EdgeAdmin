@@ -67,6 +67,14 @@ window.NotifySuccess = function (message, url, params) {
 	};
 };
 
+window.NotifyReloadSuccess = function (message) {
+	return function () {
+		teaweb.success(message, function () {
+			window.location.reload()
+		})
+	}
+}
+
 window.NotifyDelete = function (message, url, params) {
 	teaweb.confirm(message, function () {
 		Tea.Vue.$post(url)

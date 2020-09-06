@@ -1,0 +1,40 @@
+{$layout}
+{$template "../menu"}
+<div class="margin"></div>
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+	<table class="ui table selectable definition">
+		<tr>
+			<td class="title">节点名称 *</td>
+			<td>
+				<input type="text" name="name" maxlength="100" ref="focus"/>
+			</td>
+		</tr>
+		<tr>
+			<td>主机地址 *</td>
+			<td>
+				<input type="text" name="host" maxlength="100"/>
+				<p class="comment">IP地址或者域名。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>端口 *</td>
+			<td>
+				<input type="text" name="port" maxlength="5" style="width:6em"/>
+				<p class="comment">1-65535之间。</p>
+			</td>
+		</tr>
+
+		<tr>
+			<td colspan="2"><more-options-indicator></more-options-indicator></td>
+		</tr>
+		<tbody v-show="moreOptionsVisible">
+			<tr>
+				<td>描述</td>
+				<td>
+					<textarea name="description" maxlength="200" rows="3"></textarea>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<submit-btn></submit-btn>
+</form>

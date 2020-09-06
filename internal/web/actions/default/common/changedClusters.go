@@ -15,7 +15,7 @@ func (this *ChangedClustersAction) Init() {
 }
 
 func (this *ChangedClustersAction) RunGet(params struct{}) {
-	resp, err := this.RPC().NodeClusterRPC().FindAllChangedClusters(this.AdminContext(), &pb.FindAllChangedClustersRequest{})
+	resp, err := this.RPC().NodeClusterRPC().FindAllChangedNodeClusters(this.AdminContext(), &pb.FindAllChangedNodeClustersRequest{})
 	if err != nil {
 		this.ErrorPage(err)
 		return

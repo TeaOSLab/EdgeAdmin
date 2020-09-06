@@ -13,11 +13,7 @@ func init() {
 			Helper(new(helpers.UserMustAuth)).
 			Helper(new(Helper)).
 			Prefix("/nodes").
-			Get("", new(IndexAction)).
-			GetPost("/create", new(CreateAction)).
 			Post("/delete", new(DeleteAction)).
-			GetPost("/update", new(UpdateAction)).
-			Get("/node", new(NodeAction)).
 
 			// IP地址
 			GetPost("/ipAddresses/createPopup", new(ipAddresses.CreatePopupAction)).
