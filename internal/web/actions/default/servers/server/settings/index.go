@@ -1,7 +1,15 @@
 package settings
 
-import "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (
+	"errors"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
+	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/maps"
+)
 
+// 服务基本信息设置
 type IndexAction struct {
 	actionutils.ParentAction
 }
@@ -11,6 +19,91 @@ func (this *IndexAction) Init() {
 	this.SecondMenu("basic")
 }
 
-func (this *IndexAction) RunGet(params struct{}) {
+func (this *IndexAction) RunGet(params struct {
+	ServerId int64
+}) {
+	// 所有集群
+	resp, err := this.RPC().NodeClusterRPC().FindAllEnabledNodeClusters(this.AdminContext(), &pb.FindAllEnabledNodeClustersRequest{})
+	if err != nil {
+		this.ErrorPage(err)
+	}
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	clusterMaps := []maps.Map{}
+	for _, cluster := range resp.Clusters {
+		clusterMaps = append(clusterMaps, maps.Map{
+			"id":   cluster.Id,
+			"name": cluster.Name,
+		})
+	}
+	this.Data["clusters"] = clusterMaps
+
+	// 当前服务信息
+	serverResp, err := this.RPC().ServerRPC().FindEnabledServer(this.AdminContext(), &pb.FindEnabledServerRequest{ServerId: params.ServerId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	server := serverResp.Server
+	if server == nil {
+		this.NotFound("Server", params.ServerId)
+		return
+	}
+
+	clusterId := int64(0)
+	if server.Cluster != nil {
+		clusterId = server.Cluster.Id
+	}
+
+	this.Data["server"] = maps.Map{
+		"id":          server.Id,
+		"clusterId":   clusterId,
+		"type":        server.Type,
+		"name":        server.Name,
+		"description": server.Description,
+	}
+
+	serverType := serverconfigs.FindServerType(server.Type)
+	if serverType == nil {
+		this.ErrorPage(errors.New("invalid server type '" + server.Type + "'"))
+		return
+	}
+
+	typeName := serverType.GetString("name")
+	this.Data["typeName"] = typeName
+
 	this.Show()
+}
+
+// 保存
+func (this *IndexAction) RunPost(params struct {
+	ServerId    int64
+	Name        string
+	Description string
+	ClusterId   int64
+
+	Must *actions.Must
+}) {
+	params.Must.
+		Field("name", params.Name).
+		Require("请输入服务名称")
+
+	if params.ClusterId <= 0 {
+		this.Fail("请选择部署的集群")
+	}
+
+	_, err := this.RPC().ServerRPC().UpdateServerBasic(this.AdminContext(), &pb.UpdateServerBasicRequest{
+		ServerId:    params.ServerId,
+		Name:        params.Name,
+		Description: params.Description,
+		ClusterId:   params.ClusterId,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	this.Success()
 }

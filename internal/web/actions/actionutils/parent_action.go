@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
-	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/logs"
 	"net/http"
@@ -39,8 +39,8 @@ func (this *ParentAction) ErrorText(err string) {
 	this.ErrorPage(errors.New(err))
 }
 
-func (this *ParentAction) NotFound(name string, itemId int) {
-	this.ErrorPage(errors.New(name + " id: '" + strconv.Itoa(itemId) + "' is not found"))
+func (this *ParentAction) NotFound(name string, itemId int64) {
+	this.ErrorPage(errors.New(name + " id: '" + strconv.FormatInt(itemId, 10) + "' is not found"))
 }
 
 func (this *ParentAction) NewPage(total int64, size ...int64) *Page {
@@ -54,6 +54,10 @@ func (this *ParentAction) Nav(mainMenu string, tab string, firstMenu string) {
 	this.Data["mainMenu"] = mainMenu
 	this.Data["mainTab"] = tab
 	this.Data["firstMenuItem"] = firstMenu
+}
+
+func (this *ParentAction) FirstMenu(menuItem string) {
+	this.Data["firstMenuItem"] = menuItem
 }
 
 func (this *ParentAction) SecondMenu(menuItem string) {

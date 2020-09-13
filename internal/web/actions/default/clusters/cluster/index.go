@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs/nodes"
-	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/iwind/TeaGo/types"
 	"time"
 )
 
@@ -16,15 +17,19 @@ type IndexAction struct {
 }
 
 func (this *IndexAction) Init() {
-	this.Nav("", "node", "")
+	this.Nav("", "node", "index")
 	this.SecondMenu("nodes")
 }
 
 func (this *IndexAction) RunGet(params struct {
-	ClusterId int64
+	ClusterId      int64
+	InstalledState int
 }) {
+	this.Data["installState"] = params.InstalledState
+
 	countResp, err := this.RPC().NodeRPC().CountAllEnabledNodesMatch(this.AdminContext(), &pb.CountAllEnabledNodesMatchRequest{
-		ClusterId: params.ClusterId,
+		ClusterId:    params.ClusterId,
+		InstallState: types.Int32(params.InstalledState),
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -35,9 +40,10 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["page"] = page.AsHTML()
 
 	nodesResp, err := this.RPC().NodeRPC().ListEnabledNodesMatch(this.AdminContext(), &pb.ListEnabledNodesMatchRequest{
-		Offset:    page.Offset,
-		Size:      page.Size,
-		ClusterId: params.ClusterId,
+		Offset:       page.Offset,
+		Size:         page.Size,
+		ClusterId:    params.ClusterId,
+		InstallState: types.Int32(params.InstalledState),
 	})
 	nodeMaps := []maps.Map{}
 	for _, node := range nodesResp.Nodes {
@@ -71,6 +77,12 @@ func (this *IndexAction) RunGet(params struct {
 			"id":          node.Id,
 			"name":        node.Name,
 			"isInstalled": node.IsInstalled,
+			"installStatus": maps.Map{
+				"isRunning":  node.InstallStatus.IsRunning,
+				"isFinished": node.InstallStatus.IsFinished,
+				"isOk":       node.InstallStatus.IsOk,
+				"error":      node.InstallStatus.Error,
+			},
 			"status": maps.Map{
 				"isActive":     status.IsActive,
 				"updatedAt":    status.UpdatedAt,

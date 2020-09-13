@@ -3,8 +3,8 @@ package helpers
 import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	nodes "github.com/TeaOSLab/EdgeAdmin/internal/rpc"
-	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"net/http"
 	"reflect"
@@ -80,12 +80,27 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 			"menuName": "API节点",
 			"icon":     "exchange",
 		},
+		{
+			"code":     "db",
+			"menuName": "数据库节点",
+			"icon":     "database",
+		},
+		{
+			"code":     "log",
+			"menuName": "日志节点",
+			"icon":     "dot circle",
+		},
+		{
+			"code":     "dns",
+			"menuName": "DNS",
+			"icon":     "globe",
+		},
 	}
 
 	action.Data["teaTitle"] = teaconst.ProductNameZH
 	action.Data["teaName"] = teaconst.ProductNameZH
 
-	resp, err := rpc.AdminRPC().FindAdminFullname(rpc.Context(0), &pb.FindAdminNameRequest{AdminId: int64(this.AdminId)})
+	resp, err := rpc.AdminRPC().FindAdminFullname(rpc.Context(0), &pb.FindAdminFullnameRequest{AdminId: int64(this.AdminId)})
 	if err != nil {
 		utils.PrintError(err)
 		action.Data["teaUsername"] = ""

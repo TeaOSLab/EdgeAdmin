@@ -1,10 +1,10 @@
 package servers
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/configs/serverconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
-	"github.com/iwind/TeaGo/rands"
 	"regexp"
 	"strings"
 )
@@ -43,8 +43,22 @@ func (this *AddOriginPopupAction) RunPost(params struct {
 	host := addr[:portIndex]
 	port := addr[portIndex+1:]
 
+	resp, err := this.RPC().OriginServerRPC().CreateOriginServer(this.AdminContext(), &pb.CreateOriginServerRequest{
+		Name: "",
+		Addr: &pb.NetworkAddress{
+			Protocol:  params.Protocol,
+			Host:      host,
+			PortRange: port,
+		},
+		Description: "",
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
 	origin := &serverconfigs.OriginServerConfig{
-		Id:   rands.HexString(32),
+		Id:   resp.OriginId,
 		IsOn: true,
 		Addr: &serverconfigs.NetworkAddressConfig{
 			Protocol:  params.Protocol,

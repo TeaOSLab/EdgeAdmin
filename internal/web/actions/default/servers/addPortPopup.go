@@ -2,7 +2,7 @@ package servers
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/serverutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 	"regexp"
@@ -20,7 +20,7 @@ func (this *AddPortPopupAction) Init() {
 func (this *AddPortPopupAction) RunGet(params struct {
 	ServerType string
 }) {
-	this.Data["protocols"] = serverutils.AllServerProtocolsForType(params.ServerType)
+	this.Data["protocols"] = serverconfigs.AllServerProtocolsForType(params.ServerType)
 
 	this.Show()
 }

@@ -1,7 +1,7 @@
 package settings
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/grants/grantutils"
 	"github.com/iwind/TeaGo/actions"

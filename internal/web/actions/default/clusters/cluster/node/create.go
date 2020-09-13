@@ -2,18 +2,19 @@ package node
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 )
 
+// 创建节点
 type CreateAction struct {
 	actionutils.ParentAction
 }
 
 func (this *CreateAction) Init() {
-	this.Nav("", "node", "")
+	this.Nav("", "node", "create")
 	this.SecondMenu("nodes")
 }
 

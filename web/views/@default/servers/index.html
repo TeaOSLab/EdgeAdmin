@@ -6,7 +6,6 @@
 <table class="ui table selectable" v-if="servers.length > 0">
 	<thead>
 		<tr>
-			<th>ID</th>
 			<th>服务名称</th>
 			<th>服务类型</th>
 			<th>部署集群</th>
@@ -16,7 +15,6 @@
 		</tr>
 	</thead>
 	<tr v-for="server in servers">
-		<td>{{server.id}}</td>
 		<td>{{server.name}}</td>
 		<td>{{server.serverTypeName}}</td>
 		<td>{{server.cluster.name}}</td>

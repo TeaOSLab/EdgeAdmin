@@ -3,10 +3,10 @@ package serverutils
 import (
 	"encoding/json"
 	"errors"
-	"github.com/TeaOSLab/EdgeAdmin/internal/configs/serverconfigs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
-	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
@@ -41,6 +41,7 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 
 	serverId := action.ParamInt64("serverId")
 	serverIdString := strconv.FormatInt(serverId, 10)
+	action.Data["serverId"] = serverId
 
 	// 读取server信息
 	rpcClient, err := rpc.SharedRPC()
@@ -60,7 +61,7 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 		return
 	}
 
-	// 源站管理
+	// 服务管理
 	serverConfig := &serverconfigs.ServerConfig{}
 	err = json.Unmarshal(server.Config, serverConfig)
 	if err != nil {
@@ -233,6 +234,11 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"name":     "TCP",
 			"url":      "/servers/server/settings/tcp?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "tcp",
+		})
+		menuItems = append(menuItems, maps.Map{
+			"name":     "反向代理",
+			"url":      "/servers/server/settings/reverseProxy?serverId=" + serverIdString,
+			"isActive": secondMenuItem == "reverseProxy",
 		})
 	} else if serverConfig.IsUnix() {
 		menuItems = append(menuItems, maps.Map{

@@ -2,10 +2,9 @@ package servers
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeAdmin/internal/configs/serverconfigs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/serverutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 )
@@ -38,7 +37,7 @@ func (this *CreateAction) RunGet(params struct{}) {
 	this.Data["clusters"] = clusterMaps
 
 	// 服务类型
-	this.Data["serverTypes"] = serverutils.AllServerTypes()
+	this.Data["serverTypes"] = serverconfigs.AllServerTypes()
 
 	this.Show()
 }
@@ -75,7 +74,7 @@ func (this *CreateAction) RunPost(params struct {
 
 	// 端口地址
 	switch params.ServerType {
-	case serverutils.ServerTypeHTTPProxy, serverutils.ServerTypeHTTPWeb:
+	case serverconfigs.ServerTypeHTTPProxy, serverconfigs.ServerTypeHTTPWeb:
 		listen := []*serverconfigs.NetworkAddressConfig{}
 		err := json.Unmarshal([]byte(params.Addresses), &listen)
 		if err != nil {
@@ -104,7 +103,7 @@ func (this *CreateAction) RunPost(params struct {
 				serverConfig.HTTPS.AddListen(addr)
 			}
 		}
-	case serverutils.ServerTypeTCPProxy:
+	case serverconfigs.ServerTypeTCPProxy:
 		listen := []*serverconfigs.NetworkAddressConfig{}
 		err := json.Unmarshal([]byte(params.Addresses), &listen)
 		if err != nil {
@@ -149,7 +148,7 @@ func (this *CreateAction) RunPost(params struct {
 
 	// 源站地址
 	switch params.ServerType {
-	case serverutils.ServerTypeHTTPProxy, serverutils.ServerTypeTCPProxy:
+	case serverconfigs.ServerTypeHTTPProxy, serverconfigs.ServerTypeTCPProxy:
 		origins := []*serverconfigs.OriginServerConfig{}
 		err = json.Unmarshal([]byte(params.Origins), &origins)
 		if err != nil {
@@ -163,7 +162,7 @@ func (this *CreateAction) RunPost(params struct {
 
 	// Web地址
 	switch params.ServerType {
-	case serverutils.ServerTypeHTTPWeb:
+	case serverconfigs.ServerTypeHTTPWeb:
 		serverConfig.Web = &serverconfigs.WebConfig{
 			IsOn: true,
 			Root: params.WebRoot,
@@ -201,6 +200,9 @@ func (this *CreateAction) RunPost(params struct {
 	_, err = this.RPC().ServerRPC().CreateServer(this.AdminContext(), &pb.CreateServerRequest{
 		UserId:           0,
 		AdminId:          this.AdminId(),
+		Type:             params.ServerType,
+		Name:             params.Name,
+		Description:      params.Description,
 		ClusterId:        params.ClusterId,
 		Config:           serverConfigJSON,
 		IncludeNodesJSON: includeNodesJSON,

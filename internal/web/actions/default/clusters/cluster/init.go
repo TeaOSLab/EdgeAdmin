@@ -21,6 +21,7 @@ func init() {
 			GetPost("/node/update", new(node.UpdateAction)).
 			GetPost("/node/install", new(node.InstallAction)).
 			Post("/node/updateInstallStatus", new(node.UpdateInstallStatusAction)).
+			Post("/node/status", new(node.StatusAction)).
 			EndAll()
 	})
 }
