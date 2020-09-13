@@ -2,35 +2,28 @@
 {$template "/left_menu"}
 
 <div class="right-box">
-	<second-menu>
-		<menu-item :href="'/clusters/cluster/node/create?clusterId=' + clusterId">添加节点</menu-item>
-		<menu-item>安装节点</menu-item>
-	</second-menu>
+	{$template "menu"}
 
-	<h3>节点列表</h3>
+	<form class="ui form segment" action="/clusters/cluster">
+		<input type="hidden" name="clusterId" :value="clusterId"/>
+		<div class="ui fields inline">
+			<div class="ui field">
+				安装状态：
+			</div>
+			<div class="ui field">
+				<select class="ui dropdown" name="installedState" v-model="installState">
+					<option value="0">[全部]</option>
+					<option value="1">已安装</option>
+					<option value="2">未安装</option>
+				</select>
+			</div>
+			<div class="ui field">
+				<button class="ui button" type="submit">搜索</button>
+			</div>
+		</div>
+	</form>
 
 	<p class="comment" v-if="nodes.length == 0">暂时还没有节点。</p>
-
-	<div v-show="nodes.length > 0">
-		<form class="ui form segment" action="/clusters/cluster">
-			<input type="hidden" name="clusterId" :value="clusterId"/>
-			<div class="ui fields inline">
-				<div class="ui field">
-					安装状态：
-				</div>
-				<div class="ui field">
-					<select class="ui dropdown" name="installedState">
-						<option value="0">[全部]</option>
-						<option value="1">已安装</option>
-						<option value="2">未安装</option>
-					</select>
-				</div>
-				<div class="ui field">
-					<button class="ui button" type="submit">搜索</button>
-				</div>
-			</div>
-		</form>
-	</div>
 
 	<table class="ui table selectable" v-if="nodes.length > 0">
 		<thead>
@@ -74,7 +67,11 @@
 					<span v-else-if="node.status.updatedAt > 0" class="red">已断开</span>
 					<span v-else-if="node.status.updatedAt == 0" class="red">未连接</span>
 				</div>
-				<span v-else class="red">未安装</span>
+				<div v-else>
+					<span v-if="node.installStatus.isRunning" class="red">安装中</span>
+					<a v-if="node.installStatus.isFinished && !node.installStatus.isOk" :href="'/clusters/cluster/node/install?clusterId=' + clusterId + '&nodeId=' + node.id" title="点击看安装错误"><span class="red">安装出错</span></a>
+					<a v-else class="red" :href="'/clusters/cluster/node/install?clusterId=' + clusterId + '&nodeId=' + node.id" title="点击进安装界面"><span class="red">未安装</span></a>
+				</div>
 			</td>
 			<td>
 				<a :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id">详情</a> &nbsp; <a href="" @click.prevent="deleteNode(node.id)">删除</a>

@@ -1,11 +1,14 @@
 package node
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"strings"
 )
 
+// 安装节点
 type InstallAction struct {
 	actionutils.ParentAction
 }
@@ -32,6 +35,19 @@ func (this *InstallAction) RunGet(params struct {
 		return
 	}
 
+	// 安装信息
+	if node.InstallStatus != nil {
+		this.Data["installStatus"] = maps.Map{
+			"isRunning":  node.InstallStatus.IsRunning,
+			"isFinished": node.InstallStatus.IsFinished,
+			"isOk":       node.InstallStatus.IsOk,
+			"updatedAt":  node.InstallStatus.UpdatedAt,
+			"error":      node.InstallStatus.Error,
+		}
+	} else {
+		this.Data["installStatus"] = nil
+	}
+
 	// 集群
 	var clusterMap maps.Map = nil
 	if node.Cluster != nil {
@@ -51,6 +67,19 @@ func (this *InstallAction) RunGet(params struct {
 		}
 	}
 
+	// API节点列表
+	apiNodesResp, err := this.RPC().APINodeRPC().FindAllEnabledAPINodes(this.AdminContext(), &pb.FindAllEnabledAPINodesRequest{})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	apiNodes := apiNodesResp.Nodes
+	apiEndpoints := []string{}
+	for _, apiNode := range apiNodes {
+		apiEndpoints = append(apiEndpoints, apiNode.Address)
+	}
+	this.Data["apiEndpoints"] = "\"" + strings.Join(apiEndpoints, "\", \"") + "\""
+
 	this.Data["node"] = maps.Map{
 		"id":          node.Id,
 		"name":        node.Name,
@@ -62,4 +91,21 @@ func (this *InstallAction) RunGet(params struct {
 	}
 
 	this.Show()
+}
+
+// 开始安装
+func (this *InstallAction) RunPost(params struct {
+	NodeId int64
+
+	Must *actions.Must
+}) {
+	_, err := this.RPC().NodeRPC().InstallNode(this.AdminContext(), &pb.InstallNodeRequest{
+		NodeId: params.NodeId,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	this.Success()
 }

@@ -1,6 +1,5 @@
 Tea.context(function () {
 	this.serverType = "httpProxy";
-	this.addresses = [];
 	this.tlsProtocolName = ""
 
 	this.serverNames = [];
@@ -10,27 +9,8 @@ Tea.context(function () {
 	this.success = NotifySuccess("保存成功", "/servers");
 
 	this.changeServerType = function () {
-		this.addresses = [];
 		this.origins = [];
 		this.tlsProtocolName = "";
-	};
-
-	this.addPort = function () {
-		teaweb.popup("/servers/addPortPopup?serverType=" + this.serverType, {
-			callback: function (resp) {
-				var addr = resp.data.address;
-				this.addresses.push(addr);
-				if (["https", "https4", "https6"].$contains(addr.protocol)) {
-					this.tlsProtocolName = "HTTPS";
-				} else if (["tls", "tls4", "tls6"].$contains(addr.protocol)) {
-					this.tlsProtocolName = "TLS";
-				}
-			}
-		})
-	};
-
-	this.removeAddr = function (index) {
-		this.addresses.$remove(index);
 	};
 
 	this.addServerName = function () {

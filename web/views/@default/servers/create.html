@@ -30,14 +30,7 @@
 		<tr>
 			<td>绑定端口 *</td>
 			<td>
-				<input type="hidden" name="addresses" :value="JSON.stringify(addresses)"/>
-				<div v-if="addresses.length > 0">
-					<div class="ui label small" v-for="(addr, index) in addresses">
-						{{addr.protocol}}://<span v-if="addr.host.length > 0">{{addr.host}}</span><span v-if="addr.host.length == 0">*</span>:{{addr.portRange}}
-						<a href="" @click.prevent="removeAddr(index)" title="删除"><i class="icon remove"></i></a> </div>
-					<div class="ui divider"></div>
-				</div>
-				<a href="" @click.prevent="addPort()">[添加端口绑定]</a>
+				<network-addresses-box :v-server-type="serverType"></network-addresses-box>
 			</td>
 		</tr>
 

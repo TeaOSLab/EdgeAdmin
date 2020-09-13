@@ -12,7 +12,7 @@ func init() {
 			Helper(helpers.NewUserMustAuth()).
 			Helper(serverutils.NewServerHelper()).
 			Prefix("/servers/server/delete").
-			Get("", new(IndexAction)).
+			GetPost("", new(IndexAction)).
 			EndAll()
 	})
 }

@@ -2,9 +2,9 @@ package servers
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeAdmin/internal/configs/serverconfigs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
 	"strings"
@@ -112,7 +112,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 
 		serverMaps = append(serverMaps, maps.Map{
 			"id":   server.Id,
-			"name": serverConfig.Name,
+			"name": server.Name,
 			"cluster": maps.Map{
 				"id":   server.Cluster.Id,
 				"name": server.Cluster.Name,

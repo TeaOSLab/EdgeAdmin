@@ -10,6 +10,7 @@ type IndexAction struct {
 
 func (this *IndexAction) Init() {
 	this.Nav("", "component", "index")
+	this.SecondMenu("global")
 }
 
 func (this *IndexAction) RunGet(params struct{}) {

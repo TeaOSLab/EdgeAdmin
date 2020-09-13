@@ -7,8 +7,8 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/encrypt"
-	"github.com/TeaOSLab/EdgeAdmin/internal/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/rands"
 	"google.golang.org/grpc"
@@ -25,6 +25,7 @@ type RPCClient struct {
 	nodeIPAddressClients []pb.NodeIPAddressServiceClient
 	serverClients        []pb.ServerServiceClient
 	apiNodeClients       []pb.APINodeServiceClient
+	originNodeClients    []pb.OriginServerServiceClient
 }
 
 func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
@@ -39,6 +40,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 	nodeIPAddressClients := []pb.NodeIPAddressServiceClient{}
 	serverClients := []pb.ServerServiceClient{}
 	apiNodeClients := []pb.APINodeServiceClient{}
+	originNodeClients := []pb.OriginServerServiceClient{}
 
 	conns := []*grpc.ClientConn{}
 	for _, endpoint := range apiConfig.RPC.Endpoints {
@@ -61,6 +63,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		nodeIPAddressClients = append(nodeIPAddressClients, pb.NewNodeIPAddressServiceClient(conn))
 		serverClients = append(serverClients, pb.NewServerServiceClient(conn))
 		apiNodeClients = append(apiNodeClients, pb.NewAPINodeServiceClient(conn))
+		originNodeClients = append(originNodeClients, pb.NewOriginServerServiceClient(conn))
 	}
 
 	return &RPCClient{
@@ -72,6 +75,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		nodeIPAddressClients: nodeIPAddressClients,
 		serverClients:        serverClients,
 		apiNodeClients:       apiNodeClients,
+		originNodeClients:    originNodeClients,
 	}, nil
 }
 
@@ -118,8 +122,15 @@ func (this *RPCClient) ServerRPC() pb.ServerServiceClient {
 }
 
 func (this *RPCClient) APINodeRPC() pb.APINodeServiceClient {
-	if len(this.serverClients) > 0 {
+	if len(this.apiNodeClients) > 0 {
 		return this.apiNodeClients[rands.Int(0, len(this.apiNodeClients)-1)]
+	}
+	return nil
+}
+
+func (this *RPCClient) OriginServerRPC() pb.OriginServerServiceClient {
+	if len(this.originNodeClients) > 0 {
+		return this.originNodeClients[rands.Int(0, len(this.originNodeClients)-1)]
 	}
 	return nil
 }
