@@ -35,6 +35,7 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/http"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/https"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/locations"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/origins"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/pages"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/reverseProxy"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/stat"

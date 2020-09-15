@@ -26,6 +26,8 @@ type RPCClient struct {
 	serverClients        []pb.ServerServiceClient
 	apiNodeClients       []pb.APINodeServiceClient
 	originNodeClients    []pb.OriginServerServiceClient
+	httpWebClients       []pb.HTTPWebServiceClient
+	reverseProxyClients  []pb.ReverseProxyServiceClient
 }
 
 func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
@@ -41,6 +43,8 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 	serverClients := []pb.ServerServiceClient{}
 	apiNodeClients := []pb.APINodeServiceClient{}
 	originNodeClients := []pb.OriginServerServiceClient{}
+	httpWebClients := []pb.HTTPWebServiceClient{}
+	reverseProxyClients := []pb.ReverseProxyServiceClient{}
 
 	conns := []*grpc.ClientConn{}
 	for _, endpoint := range apiConfig.RPC.Endpoints {
@@ -64,6 +68,8 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		serverClients = append(serverClients, pb.NewServerServiceClient(conn))
 		apiNodeClients = append(apiNodeClients, pb.NewAPINodeServiceClient(conn))
 		originNodeClients = append(originNodeClients, pb.NewOriginServerServiceClient(conn))
+		httpWebClients = append(httpWebClients, pb.NewHTTPWebServiceClient(conn))
+		reverseProxyClients = append(reverseProxyClients, pb.NewReverseProxyServiceClient(conn))
 	}
 
 	return &RPCClient{
@@ -76,6 +82,8 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		serverClients:        serverClients,
 		apiNodeClients:       apiNodeClients,
 		originNodeClients:    originNodeClients,
+		httpWebClients:       httpWebClients,
+		reverseProxyClients:  reverseProxyClients,
 	}, nil
 }
 
@@ -131,6 +139,20 @@ func (this *RPCClient) APINodeRPC() pb.APINodeServiceClient {
 func (this *RPCClient) OriginServerRPC() pb.OriginServerServiceClient {
 	if len(this.originNodeClients) > 0 {
 		return this.originNodeClients[rands.Int(0, len(this.originNodeClients)-1)]
+	}
+	return nil
+}
+
+func (this *RPCClient) HTTPWebRPC() pb.HTTPWebServiceClient {
+	if len(this.httpWebClients) > 0 {
+		return this.httpWebClients[rands.Int(0, len(this.httpWebClients)-1)]
+	}
+	return nil
+}
+
+func (this *RPCClient) ReverseProxyRPC() pb.ReverseProxyServiceClient {
+	if len(this.reverseProxyClients) > 0 {
+		return this.reverseProxyClients[rands.Int(0, len(this.reverseProxyClients)-1)]
 	}
 	return nil
 }

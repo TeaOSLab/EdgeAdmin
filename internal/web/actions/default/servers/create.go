@@ -66,13 +66,16 @@ func (this *CreateAction) RunPost(params struct {
 
 	// TODO 验证集群ID
 
-	// 配置
-	serverConfig := &serverconfigs.ServerConfig{}
-	serverConfig.IsOn = true
-	serverConfig.Name = params.Name
-	serverConfig.Description = params.Description
-
 	// 端口地址
+	var httpConfig *serverconfigs.HTTPProtocolConfig = nil
+	var httpsConfig *serverconfigs.HTTPSProtocolConfig = nil
+	var tcpConfig *serverconfigs.TCPProtocolConfig = nil
+	var tlsConfig *serverconfigs.TLSProtocolConfig = nil
+	var unixConfig *serverconfigs.UnixProtocolConfig = nil
+	var udpConfig *serverconfigs.UDPProtocolConfig = nil
+	var webId int64 = 0
+	var reverseProxyId int64 = 0
+
 	switch params.ServerType {
 	case serverconfigs.ServerTypeHTTPProxy, serverconfigs.ServerTypeHTTPWeb:
 		listen := []*serverconfigs.NetworkAddressConfig{}
@@ -80,27 +83,30 @@ func (this *CreateAction) RunPost(params struct {
 		if err != nil {
 			this.Fail("端口地址解析失败：" + err.Error())
 		}
+		if len(listen) == 0 {
+			this.Fail("至少需要绑定一个端口")
+		}
 
 		for _, addr := range listen {
-			switch addr.Protocol {
-			case serverconfigs.ProtocolHTTP, serverconfigs.ProtocolHTTP4, serverconfigs.ProtocolHTTP6:
-				if serverConfig.HTTP == nil {
-					serverConfig.HTTP = &serverconfigs.HTTPProtocolConfig{
+			switch addr.Protocol.Primary() {
+			case serverconfigs.ProtocolHTTP:
+				if httpConfig == nil {
+					httpConfig = &serverconfigs.HTTPProtocolConfig{
 						BaseProtocol: serverconfigs.BaseProtocol{
 							IsOn: true,
 						},
 					}
 				}
-				serverConfig.HTTP.AddListen(addr)
-			case serverconfigs.ProtocolHTTPS, serverconfigs.ProtocolHTTPS4, serverconfigs.ProtocolHTTPS6:
-				if serverConfig.HTTPS == nil {
-					serverConfig.HTTPS = &serverconfigs.HTTPSProtocolConfig{
+				httpConfig.AddListen(addr)
+			case serverconfigs.ProtocolHTTPS:
+				if httpsConfig == nil {
+					httpsConfig = &serverconfigs.HTTPSProtocolConfig{
 						BaseProtocol: serverconfigs.BaseProtocol{
 							IsOn: true,
 						},
 					}
 				}
-				serverConfig.HTTPS.AddListen(addr)
+				httpsConfig.AddListen(addr)
 			}
 		}
 	case serverconfigs.ServerTypeTCPProxy:
@@ -109,27 +115,30 @@ func (this *CreateAction) RunPost(params struct {
 		if err != nil {
 			this.Fail("端口地址解析失败：" + err.Error())
 		}
+		if len(listen) == 0 {
+			this.Fail("至少需要绑定一个端口")
+		}
 
 		for _, addr := range listen {
-			switch addr.Protocol {
-			case serverconfigs.ProtocolTCP, serverconfigs.ProtocolTCP4, serverconfigs.ProtocolTCP6:
-				if serverConfig.TCP == nil {
-					serverConfig.TCP = &serverconfigs.TCPProtocolConfig{
+			switch addr.Protocol.Primary() {
+			case serverconfigs.ProtocolTCP:
+				if tcpConfig == nil {
+					tcpConfig = &serverconfigs.TCPProtocolConfig{
 						BaseProtocol: serverconfigs.BaseProtocol{
 							IsOn: true,
 						},
 					}
 				}
-				serverConfig.TCP.AddListen(addr)
-			case serverconfigs.ProtocolTLS, serverconfigs.ProtocolTLS4, serverconfigs.ProtocolTLS6:
-				if serverConfig.TLS == nil {
-					serverConfig.TLS = &serverconfigs.TLSProtocolConfig{
+				tcpConfig.AddListen(addr)
+			case serverconfigs.ProtocolTLS:
+				if tlsConfig == nil {
+					tlsConfig = &serverconfigs.TLSProtocolConfig{
 						BaseProtocol: serverconfigs.BaseProtocol{
 							IsOn: true,
 						},
 					}
 				}
-				serverConfig.TLS.AddListen(addr)
+				tlsConfig.AddListen(addr)
 			}
 		}
 	default:
@@ -139,46 +148,44 @@ func (this *CreateAction) RunPost(params struct {
 	// TODO 证书
 
 	// 域名
-	serverNames := []*serverconfigs.ServerNameConfig{}
-	err := json.Unmarshal([]byte(params.ServerNames), &serverNames)
-	if err != nil {
-		this.Fail("域名解析失败：" + err.Error())
+	if len(params.ServerNames) > 0 {
+		serverNames := []*serverconfigs.ServerNameConfig{}
+		err := json.Unmarshal([]byte(params.ServerNames), &serverNames)
+		if err != nil {
+			this.Fail("域名解析失败：" + err.Error())
+		}
 	}
-	serverConfig.ServerNames = serverNames
 
 	// 源站地址
 	switch params.ServerType {
 	case serverconfigs.ServerTypeHTTPProxy, serverconfigs.ServerTypeTCPProxy:
 		origins := []*serverconfigs.OriginServerConfig{}
-		err = json.Unmarshal([]byte(params.Origins), &origins)
+		err := json.Unmarshal([]byte(params.Origins), &origins)
 		if err != nil {
 			this.Fail("源站地址解析失败：" + err.Error())
 		}
-		serverConfig.ReverseProxy = &serverconfigs.ReverseProxyConfig{
-			IsOn:    true,
-			Origins: origins,
+
+		resp, err := this.RPC().ReverseProxyRPC().CreateReverseProxy(this.AdminContext(), &pb.CreateReverseProxyRequest{
+			SchedulingJSON:     nil,
+			PrimaryOriginsJSON: []byte(params.Origins),
+			BackupOriginsJSON:  nil,
+		})
+		if err != nil {
+			this.ErrorPage(err)
+			return
 		}
+		reverseProxyId = resp.ReverseProxyId
 	}
 
 	// Web地址
 	switch params.ServerType {
 	case serverconfigs.ServerTypeHTTPWeb:
-		serverConfig.Web = &serverconfigs.WebConfig{
-			IsOn: true,
-			Root: params.WebRoot,
+		webResp, err := this.RPC().HTTPWebRPC().CreateHTTPWeb(this.AdminContext(), &pb.CreateHTTPWebRequest{Root: params.WebRoot})
+		if err != nil {
+			this.ErrorPage(err)
+			return
 		}
-	}
-
-	// 校验
-	err = serverConfig.Init()
-	if err != nil {
-		this.Fail("配置校验失败：" + err.Error())
-	}
-
-	serverConfigJSON, err := serverConfig.AsJSON()
-	if err != nil {
-		this.ErrorPage(err)
-		return
+		webId = webResp.WebId
 	}
 
 	// 包含条件
@@ -197,17 +204,68 @@ func (this *CreateAction) RunPost(params struct {
 		return
 	}
 
-	_, err = this.RPC().ServerRPC().CreateServer(this.AdminContext(), &pb.CreateServerRequest{
+	req := &pb.CreateServerRequest{
 		UserId:           0,
 		AdminId:          this.AdminId(),
 		Type:             params.ServerType,
 		Name:             params.Name,
+		ServerNamesJON:   []byte(params.ServerNames),
 		Description:      params.Description,
 		ClusterId:        params.ClusterId,
-		Config:           serverConfigJSON,
 		IncludeNodesJSON: includeNodesJSON,
 		ExcludeNodesJSON: excludeNodesJSON,
-	})
+		WebId:            webId,
+		ReverseProxyId:   reverseProxyId,
+	}
+	if httpConfig != nil {
+		data, err := json.Marshal(httpConfig)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		req.HttpJSON = data
+	}
+	if httpsConfig != nil {
+		data, err := json.Marshal(httpsConfig)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		req.HttpsJSON = data
+	}
+	if tcpConfig != nil {
+		data, err := json.Marshal(tcpConfig)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		req.TcpJSON = data
+	}
+	if tlsConfig != nil {
+		data, err := json.Marshal(tlsConfig)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		req.TlsJSON = data
+	}
+	if unixConfig != nil {
+		data, err := json.Marshal(unixConfig)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		req.UnixJSON = data
+	}
+	if udpConfig != nil {
+		data, err := json.Marshal(udpConfig)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		req.UdpJSON = data
+	}
+	_, err = this.RPC().ServerRPC().CreateServer(this.AdminContext(), req)
 	if err != nil {
 		this.ErrorPage(err)
 		return
