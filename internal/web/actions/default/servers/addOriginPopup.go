@@ -1,8 +1,8 @@
 package servers
 
 import (
-	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"regexp"
@@ -61,7 +61,7 @@ func (this *AddOriginPopupAction) RunPost(params struct {
 		Id:   resp.OriginId,
 		IsOn: true,
 		Addr: &serverconfigs.NetworkAddressConfig{
-			Protocol:  params.Protocol,
+			Protocol:  serverconfigs.Protocol(params.Protocol),
 			Host:      host,
 			PortRange: port,
 		},

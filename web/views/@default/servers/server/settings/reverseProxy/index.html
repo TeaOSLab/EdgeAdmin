@@ -1,7 +1,8 @@
 {$layout}
-
 {$template "/left_menu"}
 
 <div class="right-box">
-	<p class="ui message">此功能暂未开放，敬请期待。</p>
+	{$template "menu"}
+
+	<origin-list-box :v-primary-origins="primaryOrigins" :v-backup-origins="backupOrigins" :v-server-type="serverType" :v-params="'type=server&serverId=' + serverId + '&reverseProxyId=' + reverseProxyId"></origin-list-box>
 </div>

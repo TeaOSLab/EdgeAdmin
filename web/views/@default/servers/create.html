@@ -51,7 +51,7 @@
 		</tbody>
 
 		<!-- 域名 -->
-		<tr>
+		<tr v-if="serverType == 'httpProxy' || serverType == 'httpWeb'">
 			<td>绑定域名</td>
 			<td>
 				<input type="hidden" name="serverNames" :value="JSON.stringify(serverNames)"/>

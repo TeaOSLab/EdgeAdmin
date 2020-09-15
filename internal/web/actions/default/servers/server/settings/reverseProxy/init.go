@@ -11,8 +11,12 @@ func init() {
 		server.
 			Helper(helpers.NewUserMustAuth()).
 			Helper(serverutils.NewServerHelper()).
+			Data("mainTab", "setting").
+			Data("secondMenuItem", "reverseProxy").
 			Prefix("/servers/server/settings/reverseProxy").
 			Get("", new(IndexAction)).
+			GetPost("/scheduling", new(SchedulingAction)).
+			GetPost("/updateSchedulingPopup", new(UpdateSchedulingPopupAction)).
 			EndAll()
 	})
 }
