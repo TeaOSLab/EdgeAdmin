@@ -28,6 +28,7 @@ type RPCClient struct {
 	originNodeClients    []pb.OriginServerServiceClient
 	httpWebClients       []pb.HTTPWebServiceClient
 	reverseProxyClients  []pb.ReverseProxyServiceClient
+	httpGzipClients      []pb.HTTPGzipServiceClient
 }
 
 func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
@@ -45,6 +46,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 	originNodeClients := []pb.OriginServerServiceClient{}
 	httpWebClients := []pb.HTTPWebServiceClient{}
 	reverseProxyClients := []pb.ReverseProxyServiceClient{}
+	httpGzipClients := []pb.HTTPGzipServiceClient{}
 
 	conns := []*grpc.ClientConn{}
 	for _, endpoint := range apiConfig.RPC.Endpoints {
@@ -70,6 +72,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		originNodeClients = append(originNodeClients, pb.NewOriginServerServiceClient(conn))
 		httpWebClients = append(httpWebClients, pb.NewHTTPWebServiceClient(conn))
 		reverseProxyClients = append(reverseProxyClients, pb.NewReverseProxyServiceClient(conn))
+		httpGzipClients = append(httpGzipClients, pb.NewHTTPGzipServiceClient(conn))
 	}
 
 	return &RPCClient{
@@ -84,6 +87,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		originNodeClients:    originNodeClients,
 		httpWebClients:       httpWebClients,
 		reverseProxyClients:  reverseProxyClients,
+		httpGzipClients:      httpGzipClients,
 	}, nil
 }
 
@@ -153,6 +157,13 @@ func (this *RPCClient) HTTPWebRPC() pb.HTTPWebServiceClient {
 func (this *RPCClient) ReverseProxyRPC() pb.ReverseProxyServiceClient {
 	if len(this.reverseProxyClients) > 0 {
 		return this.reverseProxyClients[rands.Int(0, len(this.reverseProxyClients)-1)]
+	}
+	return nil
+}
+
+func (this *RPCClient) HTTPGzipRPC() pb.HTTPGzipServiceClient {
+	if len(this.httpGzipClients) > 0 {
+		return this.httpGzipClients[rands.Int(0, len(this.httpGzipClients)-1)]
 	}
 	return nil
 }

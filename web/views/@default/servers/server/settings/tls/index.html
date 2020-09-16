@@ -10,7 +10,7 @@
 			<tr>
 				<td class="title">绑定端口 *</td>
 				<td>
-					<network-addresses-box :v-server-type="serverType" :v-addresses="httpConfig.addresses" :v-protocol="'http'"></network-addresses-box>
+					<network-addresses-box :v-server-type="serverType" :v-addresses="tlsConfig.listen" :v-protocol="'tls'"></network-addresses-box>
 				</td>
 			</tr>
 		</table>

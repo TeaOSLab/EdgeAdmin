@@ -54,14 +54,7 @@
 		<tr v-if="serverType == 'httpProxy' || serverType == 'httpWeb'">
 			<td>绑定域名</td>
 			<td>
-				<input type="hidden" name="serverNames" :value="JSON.stringify(serverNames)"/>
-				<div v-if="serverNames.length > 0">
-					<div v-for="(serverName, index) in serverNames" class="ui label small">
-						<em v-if="serverName.type != 'full'">{{serverName.type}}</em>  {{serverName.name}} <a href="" title="删除" @click.prevent="removeServerName(index)"><i class="icon remove"></i></a>
-					</div>
-					<div class="ui divider"></div>
-				</div>
-				<a href="" @click.prevent="addServerName()">[添加域名绑定]</a>
+				<server-name-box></server-name-box>
 			</td>
 		</tr>
 

@@ -19,8 +19,19 @@ func (this *AddPortPopupAction) Init() {
 
 func (this *AddPortPopupAction) RunGet(params struct {
 	ServerType string
+	Protocol   string
 }) {
-	this.Data["protocols"] = serverconfigs.AllServerProtocolsForType(params.ServerType)
+	protocols := serverconfigs.AllServerProtocolsForType(params.ServerType)
+	if len(params.Protocol) > 0 {
+		result := []maps.Map{}
+		for _, p := range protocols {
+			if p.GetString("code") == params.Protocol {
+				result = append(result, p)
+			}
+		}
+		protocols = result
+	}
+	this.Data["protocols"] = protocols
 
 	this.Show()
 }
