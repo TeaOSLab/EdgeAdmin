@@ -17,18 +17,20 @@ import (
 )
 
 type RPCClient struct {
-	apiConfig            *configs.APIConfig
-	adminClients         []pb.AdminServiceClient
-	nodeClients          []pb.NodeServiceClient
-	nodeGrantClients     []pb.NodeGrantServiceClient
-	nodeClusterClients   []pb.NodeClusterServiceClient
-	nodeIPAddressClients []pb.NodeIPAddressServiceClient
-	serverClients        []pb.ServerServiceClient
-	apiNodeClients       []pb.APINodeServiceClient
-	originNodeClients    []pb.OriginServerServiceClient
-	httpWebClients       []pb.HTTPWebServiceClient
-	reverseProxyClients  []pb.ReverseProxyServiceClient
-	httpGzipClients      []pb.HTTPGzipServiceClient
+	apiConfig               *configs.APIConfig
+	adminClients            []pb.AdminServiceClient
+	nodeClients             []pb.NodeServiceClient
+	nodeGrantClients        []pb.NodeGrantServiceClient
+	nodeClusterClients      []pb.NodeClusterServiceClient
+	nodeIPAddressClients    []pb.NodeIPAddressServiceClient
+	serverClients           []pb.ServerServiceClient
+	apiNodeClients          []pb.APINodeServiceClient
+	originNodeClients       []pb.OriginServerServiceClient
+	httpWebClients          []pb.HTTPWebServiceClient
+	reverseProxyClients     []pb.ReverseProxyServiceClient
+	httpGzipClients         []pb.HTTPGzipServiceClient
+	httpHeaderPolicyClients []pb.HTTPHeaderPolicyServiceClient
+	httpHeaderClients       []pb.HTTPHeaderServiceClient
 }
 
 func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
@@ -47,6 +49,8 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 	httpWebClients := []pb.HTTPWebServiceClient{}
 	reverseProxyClients := []pb.ReverseProxyServiceClient{}
 	httpGzipClients := []pb.HTTPGzipServiceClient{}
+	httpHeaderPolicyClients := []pb.HTTPHeaderPolicyServiceClient{}
+	httpHeaderClients := []pb.HTTPHeaderServiceClient{}
 
 	conns := []*grpc.ClientConn{}
 	for _, endpoint := range apiConfig.RPC.Endpoints {
@@ -73,21 +77,25 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		httpWebClients = append(httpWebClients, pb.NewHTTPWebServiceClient(conn))
 		reverseProxyClients = append(reverseProxyClients, pb.NewReverseProxyServiceClient(conn))
 		httpGzipClients = append(httpGzipClients, pb.NewHTTPGzipServiceClient(conn))
+		httpHeaderPolicyClients = append(httpHeaderPolicyClients, pb.NewHTTPHeaderPolicyServiceClient(conn))
+		httpHeaderClients = append(httpHeaderClients, pb.NewHTTPHeaderServiceClient(conn))
 	}
 
 	return &RPCClient{
-		apiConfig:            apiConfig,
-		adminClients:         adminClients,
-		nodeClients:          nodeClients,
-		nodeGrantClients:     nodeGrantClients,
-		nodeClusterClients:   nodeClusterClients,
-		nodeIPAddressClients: nodeIPAddressClients,
-		serverClients:        serverClients,
-		apiNodeClients:       apiNodeClients,
-		originNodeClients:    originNodeClients,
-		httpWebClients:       httpWebClients,
-		reverseProxyClients:  reverseProxyClients,
-		httpGzipClients:      httpGzipClients,
+		apiConfig:               apiConfig,
+		adminClients:            adminClients,
+		nodeClients:             nodeClients,
+		nodeGrantClients:        nodeGrantClients,
+		nodeClusterClients:      nodeClusterClients,
+		nodeIPAddressClients:    nodeIPAddressClients,
+		serverClients:           serverClients,
+		apiNodeClients:          apiNodeClients,
+		originNodeClients:       originNodeClients,
+		httpWebClients:          httpWebClients,
+		reverseProxyClients:     reverseProxyClients,
+		httpGzipClients:         httpGzipClients,
+		httpHeaderPolicyClients: httpHeaderPolicyClients,
+		httpHeaderClients:       httpHeaderClients,
 	}, nil
 }
 
@@ -164,6 +172,20 @@ func (this *RPCClient) ReverseProxyRPC() pb.ReverseProxyServiceClient {
 func (this *RPCClient) HTTPGzipRPC() pb.HTTPGzipServiceClient {
 	if len(this.httpGzipClients) > 0 {
 		return this.httpGzipClients[rands.Int(0, len(this.httpGzipClients)-1)]
+	}
+	return nil
+}
+
+func (this *RPCClient) HTTPHeaderRPC() pb.HTTPHeaderServiceClient {
+	if len(this.httpHeaderClients) > 0 {
+		return this.httpHeaderClients[rands.Int(0, len(this.httpHeaderClients)-1)]
+	}
+	return nil
+}
+
+func (this *RPCClient) HTTPHeaderPolicyRPC() pb.HTTPHeaderPolicyServiceClient {
+	if len(this.httpHeaderPolicyClients) > 0 {
+		return this.httpHeaderPolicyClients[rands.Int(0, len(this.httpHeaderPolicyClients)-1)]
 	}
 	return nil
 }
