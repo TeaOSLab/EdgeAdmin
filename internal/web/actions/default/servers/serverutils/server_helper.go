@@ -201,7 +201,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 		})
 
 		menuItems = append(menuItems, maps.Map{
-			"name":     "字符集",
+			"name":     "字符编码",
 			"url":      "/servers/server/settings/charset?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "charset",
 		})

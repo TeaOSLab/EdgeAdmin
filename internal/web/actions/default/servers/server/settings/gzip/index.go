@@ -2,9 +2,7 @@ package gzip
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/serverutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -22,32 +20,26 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ServerId int64
 }) {
-	server, _, isOk := serverutils.FindServer(&this.ParentAction, params.ServerId)
-	if !isOk {
+	webConfigResp, err := this.RPC().ServerRPC().FindAndInitServerWebConfig(this.AdminContext(), &pb.FindAndInitServerWebRequest{ServerId: params.ServerId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	webConfig := &serverconfigs.HTTPWebConfig{}
+	err = json.Unmarshal(webConfigResp.Config, webConfig)
+	if err != nil {
+		this.ErrorPage(err)
 		return
 	}
 
-	webId := server.WebId
-	if webId <= 0 {
-		resp, err := this.RPC().ServerRPC().InitServerWeb(this.AdminContext(), &pb.InitServerWebRequest{ServerId: params.ServerId})
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-		webId = resp.WebId
-	}
-
-	webResp, err := this.RPC().HTTPWebRPC().FindEnabledHTTPWeb(this.AdminContext(), &pb.FindEnabledHTTPWebRequest{WebId: webId})
+	webResp, err := this.RPC().HTTPWebRPC().FindEnabledHTTPWeb(this.AdminContext(), &pb.FindEnabledHTTPWebRequest{WebId: webConfig.Id})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 	web := webResp.Web
-	if web == nil {
-		this.ErrorPage(errors.New("web should not be nil"))
-		return
-	}
-	this.Data["webId"] = web.Id
+
+	this.Data["webId"] = webConfig.Id
 
 	gzipId := web.GzipId
 	gzipConfig := &serverconfigs.HTTPGzipConfig{

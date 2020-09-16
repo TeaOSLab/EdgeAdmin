@@ -13,6 +13,11 @@ func init() {
 			Helper(serverutils.NewServerHelper()).
 			Prefix("/servers/server/settings/headers").
 			Get("", new(IndexAction)).
+			GetPost("/createSetPopup", new(CreateSetPopupAction)).
+			GetPost("/updateSetPopup", new(UpdateSetPopupAction)).
+			GetPost("/createDeletePopup", new(CreateDeletePopupAction)).
+			Post("/deleteDeletingHeader", new(DeleteDeletingHeaderAction)).
+			Post("/delete", new(DeleteAction)).
 			EndAll()
 	})
 }
