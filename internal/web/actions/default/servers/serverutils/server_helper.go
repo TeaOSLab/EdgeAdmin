@@ -142,6 +142,12 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 	// HTTP
 	if serverConfig.IsHTTP() {
 		menuItems = append(menuItems, maps.Map{
+			"name":     "域名",
+			"url":      "/servers/server/settings/serverNames?serverId=" + serverIdString,
+			"isActive": secondMenuItem == "serverName",
+		})
+
+		menuItems = append(menuItems, maps.Map{
 			"name":     "HTTP",
 			"url":      "/servers/server/settings/http?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "http",
@@ -234,6 +240,11 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"name":     "TCP",
 			"url":      "/servers/server/settings/tcp?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "tcp",
+		})
+		menuItems = append(menuItems, maps.Map{
+			"name":     "TLS",
+			"url":      "/servers/server/settings/tls?serverId=" + serverIdString,
+			"isActive": secondMenuItem == "tls",
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "反向代理",

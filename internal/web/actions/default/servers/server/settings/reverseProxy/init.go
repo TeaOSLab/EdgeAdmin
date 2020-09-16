@@ -17,6 +17,7 @@ func init() {
 			Get("", new(IndexAction)).
 			GetPost("/scheduling", new(SchedulingAction)).
 			GetPost("/updateSchedulingPopup", new(UpdateSchedulingPopupAction)).
+			Post("/updateOn", new(UpdateOnAction)).
 			EndAll()
 	})
 }

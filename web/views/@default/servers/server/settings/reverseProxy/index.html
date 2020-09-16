@@ -2,7 +2,12 @@
 {$template "/left_menu"}
 
 <div class="right-box">
-	{$template "menu"}
+	{$ if not .isOn}
+		<div class="ui message">暂未启用反向代理功能，<a href="" @click.prevent="updateOn(true)">[启用]</a>。</div>
+	{$end}
+	{$ if .isOn}
+		{$template "menu"}
 
-	<origin-list-box :v-primary-origins="primaryOrigins" :v-backup-origins="backupOrigins" :v-server-type="serverType" :v-params="'type=server&serverId=' + serverId + '&reverseProxyId=' + reverseProxyId"></origin-list-box>
+		<origin-list-box :v-primary-origins="primaryOrigins" :v-backup-origins="backupOrigins" :v-server-type="serverType" :v-params="'type=server&serverId=' + serverId + '&reverseProxyId=' + reverseProxyId"></origin-list-box>
+	{$end}
 </div>

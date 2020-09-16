@@ -1,4 +1,4 @@
-package web
+package serverNames
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/serverutils"
@@ -11,7 +11,9 @@ func init() {
 		server.
 			Helper(helpers.NewUserMustAuth()).
 			Helper(serverutils.NewServerHelper()).
-			Prefix("/servers/server/settings/web").
+			Data("mainTab", "setting").
+			Data("secondMenuItem", "serverName").
+			Prefix("/servers/server/settings/serverNames").
 			GetPost("", new(IndexAction)).
 			EndAll()
 	})
