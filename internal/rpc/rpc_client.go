@@ -34,6 +34,7 @@ type RPCClient struct {
 	httpPageClients            []pb.HTTPPageServiceClient
 	httpAccessLogPolicyClients []pb.HTTPAccessLogPolicyServiceClient
 	httpCachePolicyClients     []pb.HTTPCachePolicyServiceClient
+	httpFirewallPolicyClients  []pb.HTTPFirewallPolicyServiceClient
 }
 
 func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
@@ -57,6 +58,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 	httpPageClients := []pb.HTTPPageServiceClient{}
 	httpAccessLogPolicyClients := []pb.HTTPAccessLogPolicyServiceClient{}
 	httpCachePolicyClients := []pb.HTTPCachePolicyServiceClient{}
+	httpFirewallPolicyClients := []pb.HTTPFirewallPolicyServiceClient{}
 
 	conns := []*grpc.ClientConn{}
 	for _, endpoint := range apiConfig.RPC.Endpoints {
@@ -88,6 +90,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		httpPageClients = append(httpPageClients, pb.NewHTTPPageServiceClient(conn))
 		httpAccessLogPolicyClients = append(httpAccessLogPolicyClients, pb.NewHTTPAccessLogPolicyServiceClient(conn))
 		httpCachePolicyClients = append(httpCachePolicyClients, pb.NewHTTPCachePolicyServiceClient(conn))
+		httpFirewallPolicyClients = append(httpFirewallPolicyClients, pb.NewHTTPFirewallPolicyServiceClient(conn))
 	}
 
 	return &RPCClient{
@@ -108,6 +111,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		httpPageClients:            httpPageClients,
 		httpAccessLogPolicyClients: httpAccessLogPolicyClients,
 		httpCachePolicyClients:     httpCachePolicyClients,
+		httpFirewallPolicyClients:  httpFirewallPolicyClients,
 	}, nil
 }
 
@@ -219,6 +223,13 @@ func (this *RPCClient) HTTPAccessLogPolicyRPC() pb.HTTPAccessLogPolicyServiceCli
 func (this *RPCClient) HTTPCachePolicyRPC() pb.HTTPCachePolicyServiceClient {
 	if len(this.httpCachePolicyClients) > 0 {
 		return this.httpCachePolicyClients[rands.Int(0, len(this.httpCachePolicyClients)-1)]
+	}
+	return nil
+}
+
+func (this *RPCClient) HTTPFirewallPolicyRPC() pb.HTTPFirewallPolicyServiceClient {
+	if len(this.httpFirewallPolicyClients) > 0 {
+		return this.httpFirewallPolicyClients[rands.Int(0, len(this.httpFirewallPolicyClients)-1)]
 	}
 	return nil
 }
