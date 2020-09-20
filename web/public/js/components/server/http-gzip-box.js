@@ -1,4 +1,4 @@
-Vue.component("gzip-box", {
+Vue.component("http-gzip-box", {
 	props: ["v-gzip-config"],
 	data: function () {
 		let gzip = this.vGzipConfig

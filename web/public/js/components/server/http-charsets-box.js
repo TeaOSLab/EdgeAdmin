@@ -1,4 +1,4 @@
-Vue.component("charsets-box", {
+Vue.component("http-charsets-box", {
 	props: ["v-usual-charsets", "v-all-charsets", "v-charset"],
 	data: function () {
 		let charset = this.vCharset

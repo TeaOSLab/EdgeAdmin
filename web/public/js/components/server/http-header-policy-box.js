@@ -1,4 +1,4 @@
-Vue.component("header-policy-box", {
+Vue.component("http-header-policy-box", {
 	props: ["v-request-header-policy", "v-response-header-policy", "v-params"],
 	data: function () {
 		let type = "request"
