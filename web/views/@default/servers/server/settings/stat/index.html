@@ -3,5 +3,9 @@
 {$template "/left_menu"}
 
 <div class="right-box">
-	<p class="ui message">此功能暂未开放，敬请期待。</p>
+	<form class="ui form" data-tea-action="$" data-tea-success="success">
+		<input type="hidden" name="webId" :value="webId"/>
+		<http-stat-config-box :v-stat-config="statConfig"></http-stat-config-box>
+		<submit-btn></submit-btn>
+	</form>
 </div>
