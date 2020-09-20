@@ -40,6 +40,9 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 	secondMenuItem, _ := action.Data["secondMenuItem"]
 
 	serverId := action.ParamInt64("serverId")
+	if serverId == 0 {
+		return
+	}
 	serverIdString := strconv.FormatInt(serverId, 10)
 	action.Data["serverId"] = serverId
 
