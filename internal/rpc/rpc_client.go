@@ -17,21 +17,22 @@ import (
 )
 
 type RPCClient struct {
-	apiConfig               *configs.APIConfig
-	adminClients            []pb.AdminServiceClient
-	nodeClients             []pb.NodeServiceClient
-	nodeGrantClients        []pb.NodeGrantServiceClient
-	nodeClusterClients      []pb.NodeClusterServiceClient
-	nodeIPAddressClients    []pb.NodeIPAddressServiceClient
-	serverClients           []pb.ServerServiceClient
-	apiNodeClients          []pb.APINodeServiceClient
-	originNodeClients       []pb.OriginServerServiceClient
-	httpWebClients          []pb.HTTPWebServiceClient
-	reverseProxyClients     []pb.ReverseProxyServiceClient
-	httpGzipClients         []pb.HTTPGzipServiceClient
-	httpHeaderPolicyClients []pb.HTTPHeaderPolicyServiceClient
-	httpHeaderClients       []pb.HTTPHeaderServiceClient
-	httpPageClients         []pb.HTTPPageServiceClient
+	apiConfig                  *configs.APIConfig
+	adminClients               []pb.AdminServiceClient
+	nodeClients                []pb.NodeServiceClient
+	nodeGrantClients           []pb.NodeGrantServiceClient
+	nodeClusterClients         []pb.NodeClusterServiceClient
+	nodeIPAddressClients       []pb.NodeIPAddressServiceClient
+	serverClients              []pb.ServerServiceClient
+	apiNodeClients             []pb.APINodeServiceClient
+	originNodeClients          []pb.OriginServerServiceClient
+	httpWebClients             []pb.HTTPWebServiceClient
+	reverseProxyClients        []pb.ReverseProxyServiceClient
+	httpGzipClients            []pb.HTTPGzipServiceClient
+	httpHeaderPolicyClients    []pb.HTTPHeaderPolicyServiceClient
+	httpHeaderClients          []pb.HTTPHeaderServiceClient
+	httpPageClients            []pb.HTTPPageServiceClient
+	httpAccessLogPolicyClients []pb.HTTPAccessLogPolicyServiceClient
 }
 
 func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
@@ -53,6 +54,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 	httpHeaderPolicyClients := []pb.HTTPHeaderPolicyServiceClient{}
 	httpHeaderClients := []pb.HTTPHeaderServiceClient{}
 	httpPageClients := []pb.HTTPPageServiceClient{}
+	httpAccessLogPolicyClients := []pb.HTTPAccessLogPolicyServiceClient{}
 
 	conns := []*grpc.ClientConn{}
 	for _, endpoint := range apiConfig.RPC.Endpoints {
@@ -82,24 +84,26 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		httpHeaderPolicyClients = append(httpHeaderPolicyClients, pb.NewHTTPHeaderPolicyServiceClient(conn))
 		httpHeaderClients = append(httpHeaderClients, pb.NewHTTPHeaderServiceClient(conn))
 		httpPageClients = append(httpPageClients, pb.NewHTTPPageServiceClient(conn))
+		httpAccessLogPolicyClients = append(httpAccessLogPolicyClients, pb.NewHTTPAccessLogPolicyServiceClient(conn))
 	}
 
 	return &RPCClient{
-		apiConfig:               apiConfig,
-		adminClients:            adminClients,
-		nodeClients:             nodeClients,
-		nodeGrantClients:        nodeGrantClients,
-		nodeClusterClients:      nodeClusterClients,
-		nodeIPAddressClients:    nodeIPAddressClients,
-		serverClients:           serverClients,
-		apiNodeClients:          apiNodeClients,
-		originNodeClients:       originNodeClients,
-		httpWebClients:          httpWebClients,
-		reverseProxyClients:     reverseProxyClients,
-		httpGzipClients:         httpGzipClients,
-		httpHeaderPolicyClients: httpHeaderPolicyClients,
-		httpHeaderClients:       httpHeaderClients,
-		httpPageClients:         httpPageClients,
+		apiConfig:                  apiConfig,
+		adminClients:               adminClients,
+		nodeClients:                nodeClients,
+		nodeGrantClients:           nodeGrantClients,
+		nodeClusterClients:         nodeClusterClients,
+		nodeIPAddressClients:       nodeIPAddressClients,
+		serverClients:              serverClients,
+		apiNodeClients:             apiNodeClients,
+		originNodeClients:          originNodeClients,
+		httpWebClients:             httpWebClients,
+		reverseProxyClients:        reverseProxyClients,
+		httpGzipClients:            httpGzipClients,
+		httpHeaderPolicyClients:    httpHeaderPolicyClients,
+		httpHeaderClients:          httpHeaderClients,
+		httpPageClients:            httpPageClients,
+		httpAccessLogPolicyClients: httpAccessLogPolicyClients,
 	}, nil
 }
 
@@ -197,6 +201,13 @@ func (this *RPCClient) HTTPHeaderPolicyRPC() pb.HTTPHeaderPolicyServiceClient {
 func (this *RPCClient) HTTPPageRPC() pb.HTTPPageServiceClient {
 	if len(this.httpPageClients) > 0 {
 		return this.httpPageClients[rands.Int(0, len(this.httpPageClients)-1)]
+	}
+	return nil
+}
+
+func (this *RPCClient) HTTPAccessLogPolicyRPC() pb.HTTPAccessLogPolicyServiceClient {
+	if len(this.httpAccessLogPolicyClients) > 0 {
+		return this.httpAccessLogPolicyClients[rands.Int(0, len(this.httpAccessLogPolicyClients)-1)]
 	}
 	return nil
 }

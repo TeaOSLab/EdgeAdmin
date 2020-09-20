@@ -12,7 +12,7 @@ func init() {
 			Helper(helpers.NewUserMustAuth()).
 			Helper(serverutils.NewServerHelper()).
 			Prefix("/servers/server/settings/accessLog").
-			Get("", new(IndexAction)).
+			GetPost("", new(IndexAction)).
 			EndAll()
 	})
 }

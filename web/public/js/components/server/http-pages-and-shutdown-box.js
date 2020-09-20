@@ -1,4 +1,4 @@
-Vue.component("pages-and-shutdown-box", {
+Vue.component("http-pages-and-shutdown-box", {
 	props: ["v-pages", "v-shutdown-config"],
 	data: function () {
 		let pages = []
