@@ -12,6 +12,11 @@ Vue.component("http-cache-config-box", {
 			cacheConfig: cacheConfig
 		}
 	},
+	methods: {
+		changePolicyId: function () {
+			this.cacheConfig.cachePolicyId = parseInt(this.cacheConfig.cachePolicyId)
+		}
+	},
 	template: `<div>
 	<input type="hidden" name="cacheJSON" :value="JSON.stringify(cacheConfig)"/>
 	<table class="ui table definition selectable">
@@ -32,7 +37,7 @@ Vue.component("http-cache-config-box", {
 			<td>
 				<span class="disabled" v-if="vCachePolicies.length == 0">暂时没有可选的缓存策略</span>
 				<div v-if="vCachePolicies.length > 0">
-					<select class="ui dropdown auto-width" v-model="cacheConfig.cachePolicyId">
+					<select class="ui dropdown auto-width" v-model="cacheConfig.cachePolicyId" @change="changePolicyId">
 						<option value="0">[不使用缓存策略]</option>
 						<option v-for="policy in vCachePolicies" :value="policy.id">{{policy.name}}</option>
 					</select>
