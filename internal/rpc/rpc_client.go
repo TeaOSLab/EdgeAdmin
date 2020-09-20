@@ -31,6 +31,7 @@ type RPCClient struct {
 	httpGzipClients         []pb.HTTPGzipServiceClient
 	httpHeaderPolicyClients []pb.HTTPHeaderPolicyServiceClient
 	httpHeaderClients       []pb.HTTPHeaderServiceClient
+	httpPageClients         []pb.HTTPPageServiceClient
 }
 
 func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
@@ -51,6 +52,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 	httpGzipClients := []pb.HTTPGzipServiceClient{}
 	httpHeaderPolicyClients := []pb.HTTPHeaderPolicyServiceClient{}
 	httpHeaderClients := []pb.HTTPHeaderServiceClient{}
+	httpPageClients := []pb.HTTPPageServiceClient{}
 
 	conns := []*grpc.ClientConn{}
 	for _, endpoint := range apiConfig.RPC.Endpoints {
@@ -79,6 +81,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		httpGzipClients = append(httpGzipClients, pb.NewHTTPGzipServiceClient(conn))
 		httpHeaderPolicyClients = append(httpHeaderPolicyClients, pb.NewHTTPHeaderPolicyServiceClient(conn))
 		httpHeaderClients = append(httpHeaderClients, pb.NewHTTPHeaderServiceClient(conn))
+		httpPageClients = append(httpPageClients, pb.NewHTTPPageServiceClient(conn))
 	}
 
 	return &RPCClient{
@@ -96,6 +99,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		httpGzipClients:         httpGzipClients,
 		httpHeaderPolicyClients: httpHeaderPolicyClients,
 		httpHeaderClients:       httpHeaderClients,
+		httpPageClients:         httpPageClients,
 	}, nil
 }
 
@@ -186,6 +190,13 @@ func (this *RPCClient) HTTPHeaderRPC() pb.HTTPHeaderServiceClient {
 func (this *RPCClient) HTTPHeaderPolicyRPC() pb.HTTPHeaderPolicyServiceClient {
 	if len(this.httpHeaderPolicyClients) > 0 {
 		return this.httpHeaderPolicyClients[rands.Int(0, len(this.httpHeaderPolicyClients)-1)]
+	}
+	return nil
+}
+
+func (this *RPCClient) HTTPPageRPC() pb.HTTPPageServiceClient {
+	if len(this.httpPageClients) > 0 {
+		return this.httpPageClients[rands.Int(0, len(this.httpPageClients)-1)]
 	}
 	return nil
 }

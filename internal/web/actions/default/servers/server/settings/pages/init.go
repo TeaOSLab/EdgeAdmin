@@ -12,7 +12,9 @@ func init() {
 			Helper(helpers.NewUserMustAuth()).
 			Helper(serverutils.NewServerHelper()).
 			Prefix("/servers/server/settings/pages").
-			Get("", new(IndexAction)).
+			GetPost("", new(IndexAction)).
+			GetPost("/createPopup", new(CreatePopupAction)).
+			GetPost("/updatePopup", new(UpdatePopupAction)).
 			EndAll()
 	})
 }
