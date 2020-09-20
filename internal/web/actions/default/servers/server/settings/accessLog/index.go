@@ -34,7 +34,7 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 	this.Data["webId"] = webConfig.Id
-	this.Data["accessLogConfig"] = webConfig.AccessLog
+	this.Data["accessLogConfig"] = webConfig.AccessLogRef
 
 	// 可选的缓存策略
 	policiesResp, err := this.RPC().HTTPAccessLogPolicyRPC().FindAllEnabledHTTPAccessLogPolicies(this.AdminContext(), &pb.FindAllEnabledHTTPAccessLogPoliciesRequest{})

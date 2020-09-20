@@ -6,6 +6,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/types"
 )
 
 type IndexAction struct {
@@ -32,16 +33,12 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 
-	webResp, err := this.RPC().HTTPWebRPC().FindEnabledHTTPWeb(this.AdminContext(), &pb.FindEnabledHTTPWebRequest{WebId: webConfig.Id})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	web := webResp.Web
-
 	this.Data["webId"] = webConfig.Id
 
-	gzipId := web.GzipId
+	gzipId := int64(0)
+	if webConfig.GzipRef != nil {
+		gzipId = webConfig.GzipRef.GzipId
+	}
 	gzipConfig := &serverconfigs.HTTPGzipConfig{
 		Id:   0,
 		IsOn: true,
@@ -95,11 +92,10 @@ func (this *IndexAction) RunPost(params struct {
 		}
 	}
 
-
 	if params.GzipId > 0 {
 		_, err := this.RPC().HTTPGzipRPC().UpdateHTTPGzip(this.AdminContext(), &pb.UpdateHTTPGzipRequest{
 			GzipId:    params.GzipId,
-			Level:     int32(params.Level),
+			Level:     types.Int32(params.Level),
 			MinLength: minLength,
 			MaxLength: maxLength,
 		})
@@ -109,9 +105,9 @@ func (this *IndexAction) RunPost(params struct {
 		}
 	} else {
 		resp, err := this.RPC().HTTPGzipRPC().CreateHTTPGzip(this.AdminContext(), &pb.CreateHTTPGzipRequest{
-			Level:     0,
-			MinLength: nil,
-			MaxLength: nil,
+			Level:     types.Int32(params.Level),
+			MinLength: minLength,
+			MaxLength: maxLength,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -119,9 +115,19 @@ func (this *IndexAction) RunPost(params struct {
 		}
 		gzipId := resp.GzipId
 
-		_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebGzip(this.AdminContext(), &pb.UpdateHTTPWebGzipRequest{
-			WebId:  params.WebId,
+		gzipRef := &serverconfigs.HTTPGzipRef{
+			IsOn:   true,
 			GzipId: gzipId,
+		}
+		gzipRefJSON, err := json.Marshal(gzipRef)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+
+		_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebGzip(this.AdminContext(), &pb.UpdateHTTPWebGzipRequest{
+			WebId:    params.WebId,
+			GzipJSON: gzipRefJSON,
 		})
 		if err != nil {
 			this.ErrorPage(err)
