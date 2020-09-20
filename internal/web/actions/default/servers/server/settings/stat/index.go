@@ -33,7 +33,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	this.Data["webId"] = webConfig.Id
-	this.Data["statConfig"] = webConfig.Stat
+	this.Data["statConfig"] = webConfig.StatRef
 
 	this.Show()
 }

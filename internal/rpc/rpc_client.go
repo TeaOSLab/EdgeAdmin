@@ -33,6 +33,7 @@ type RPCClient struct {
 	httpHeaderClients          []pb.HTTPHeaderServiceClient
 	httpPageClients            []pb.HTTPPageServiceClient
 	httpAccessLogPolicyClients []pb.HTTPAccessLogPolicyServiceClient
+	httpCachePolicyClients     []pb.HTTPCachePolicyServiceClient
 }
 
 func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
@@ -55,6 +56,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 	httpHeaderClients := []pb.HTTPHeaderServiceClient{}
 	httpPageClients := []pb.HTTPPageServiceClient{}
 	httpAccessLogPolicyClients := []pb.HTTPAccessLogPolicyServiceClient{}
+	httpCachePolicyClients := []pb.HTTPCachePolicyServiceClient{}
 
 	conns := []*grpc.ClientConn{}
 	for _, endpoint := range apiConfig.RPC.Endpoints {
@@ -85,6 +87,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		httpHeaderClients = append(httpHeaderClients, pb.NewHTTPHeaderServiceClient(conn))
 		httpPageClients = append(httpPageClients, pb.NewHTTPPageServiceClient(conn))
 		httpAccessLogPolicyClients = append(httpAccessLogPolicyClients, pb.NewHTTPAccessLogPolicyServiceClient(conn))
+		httpCachePolicyClients = append(httpCachePolicyClients, pb.NewHTTPCachePolicyServiceClient(conn))
 	}
 
 	return &RPCClient{
@@ -104,6 +107,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		httpHeaderClients:          httpHeaderClients,
 		httpPageClients:            httpPageClients,
 		httpAccessLogPolicyClients: httpAccessLogPolicyClients,
+		httpCachePolicyClients:     httpCachePolicyClients,
 	}, nil
 }
 
@@ -208,6 +212,13 @@ func (this *RPCClient) HTTPPageRPC() pb.HTTPPageServiceClient {
 func (this *RPCClient) HTTPAccessLogPolicyRPC() pb.HTTPAccessLogPolicyServiceClient {
 	if len(this.httpAccessLogPolicyClients) > 0 {
 		return this.httpAccessLogPolicyClients[rands.Int(0, len(this.httpAccessLogPolicyClients)-1)]
+	}
+	return nil
+}
+
+func (this *RPCClient) HTTPCachePolicyRPC() pb.HTTPCachePolicyServiceClient {
+	if len(this.httpCachePolicyClients) > 0 {
+		return this.httpCachePolicyClients[rands.Int(0, len(this.httpCachePolicyClients)-1)]
 	}
 	return nil
 }
