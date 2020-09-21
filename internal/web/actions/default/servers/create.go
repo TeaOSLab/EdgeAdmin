@@ -74,7 +74,6 @@ func (this *CreateAction) RunPost(params struct {
 	var unixConfig *serverconfigs.UnixProtocolConfig = nil
 	var udpConfig *serverconfigs.UDPProtocolConfig = nil
 	var webId int64 = 0
-	var reverseProxyId int64 = 0
 
 	switch params.ServerType {
 	case serverconfigs.ServerTypeHTTPProxy, serverconfigs.ServerTypeHTTPWeb:
@@ -157,6 +156,7 @@ func (this *CreateAction) RunPost(params struct {
 	}
 
 	// 源站地址
+	reverseProxyRefJSON := []byte{}
 	switch params.ServerType {
 	case serverconfigs.ServerTypeHTTPProxy, serverconfigs.ServerTypeTCPProxy:
 		origins := []*serverconfigs.OriginServerConfig{}
@@ -174,7 +174,15 @@ func (this *CreateAction) RunPost(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		reverseProxyId = resp.ReverseProxyId
+		reverseProxyRef := &serverconfigs.ReverseProxyRef{
+			IsOn:           true,
+			ReverseProxyId: resp.ReverseProxyId,
+		}
+		reverseProxyRefJSON, err = json.Marshal(reverseProxyRef)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
 	}
 
 	// Web地址
@@ -215,7 +223,7 @@ func (this *CreateAction) RunPost(params struct {
 		IncludeNodesJSON: includeNodesJSON,
 		ExcludeNodesJSON: excludeNodesJSON,
 		WebId:            webId,
-		ReverseProxyId:   reverseProxyId,
+		ReverseProxyJSON: reverseProxyRefJSON,
 	}
 	if httpConfig != nil {
 		data, err := json.Marshal(httpConfig)

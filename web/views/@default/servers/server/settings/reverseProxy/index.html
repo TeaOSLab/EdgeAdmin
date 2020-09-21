@@ -2,12 +2,29 @@
 {$template "/left_menu"}
 
 <div class="right-box">
-	{$ if not .isOn}
-		<div class="ui message">暂未启用反向代理功能，<a href="" @click.prevent="updateOn(true)">[启用]</a>。</div>
-	{$end}
-	{$ if .isOn}
-		{$template "menu"}
+	{$template "menu"}
 
-		<origin-list-box :v-primary-origins="primaryOrigins" :v-backup-origins="backupOrigins" :v-server-type="serverType" :v-params="'type=server&serverId=' + serverId + '&reverseProxyId=' + reverseProxyId"></origin-list-box>
-	{$end}
+	<div class="margin"></div>
+	<form class="ui form" data-tea-action="$" data-tea-success="success">
+		<input type="hidden" name="serverId" :value="serverId"/>
+		<input type="hidden" name="reverseProxyRefJSON" :value="JSON.stringify(reverseProxyRef)"/>
+		<table class="ui table selectable definition">
+			<tr>
+				<td class="title">是否启用</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="reverseProxyRef.isOn"/>
+						<label></label>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<submit-btn></submit-btn>
+	</form>
+
+	<div v-if="reverseProxyRef.isOn">
+		<div class="ui divider"></div>
+		<origin-list-box :v-primary-origins="primaryOrigins" :v-backup-origins="backupOrigins" :v-server-type="serverType"
+					 :v-params="'type=server&serverId=' + serverId + '&reverseProxyId=' + reverseProxyConfig.id"></origin-list-box>
+	</div>
 </div>
