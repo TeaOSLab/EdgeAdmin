@@ -3,6 +3,7 @@ package gzip
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -21,18 +22,12 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ServerId int64
 }) {
-	webConfigResp, err := this.RPC().ServerRPC().FindAndInitServerWebConfig(this.AdminContext(), &pb.FindAndInitServerWebRequest{ServerId: params.ServerId})
+	webConfig, err := webutils.FindWebConfigWithServerId(this.Parent(), params.ServerId)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	webConfig := &serverconfigs.HTTPWebConfig{}
-	err = json.Unmarshal(webConfigResp.Config, webConfig)
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-
+	
 	this.Data["webId"] = webConfig.Id
 
 	gzipId := int64(0)
@@ -49,7 +44,7 @@ func (this *IndexAction) RunGet(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		err = json.Unmarshal(resp.Config, gzipConfig)
+		err = json.Unmarshal(resp.GzipJSON, gzipConfig)
 		if err != nil {
 			this.ErrorPage(err)
 			return

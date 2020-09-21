@@ -36,7 +36,7 @@ func (this *CreateDeletePopupAction) RunPost(params struct {
 		return
 	}
 	policyConfig := &shared.HTTPHeaderPolicy{}
-	err = json.Unmarshal(policyConfigResp.Config, policyConfig)
+	err = json.Unmarshal(policyConfigResp.HeaderPolicyJSON, policyConfig)
 	if err != nil {
 		this.ErrorPage(err)
 		return

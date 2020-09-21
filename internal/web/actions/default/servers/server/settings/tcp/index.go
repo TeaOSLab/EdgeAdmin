@@ -22,7 +22,7 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ServerId int64
 }) {
-	server, _, isOk := serverutils.FindServer(&this.ParentAction, params.ServerId)
+	server, _, isOk := serverutils.FindServer(this.Parent(), params.ServerId)
 	if !isOk {
 		return
 	}
@@ -49,7 +49,7 @@ func (this *IndexAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
-	server, _, isOk := serverutils.FindServer(&this.ParentAction, params.ServerId)
+	server, _, isOk := serverutils.FindServer(this.Parent(), params.ServerId)
 	if !isOk {
 		return
 	}

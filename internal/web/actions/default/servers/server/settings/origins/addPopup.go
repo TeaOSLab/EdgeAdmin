@@ -75,7 +75,7 @@ func (this *AddPopupAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	originConfigData := originConfigResp.Config
+	originConfigData := originConfigResp.OriginJSON
 	var originConfig = &serverconfigs.OriginServerConfig{}
 	err = json.Unmarshal(originConfigData, originConfig)
 	if err != nil {

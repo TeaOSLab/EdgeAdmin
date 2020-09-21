@@ -1,0 +1,77 @@
+{$layout}
+{$template "/left_menu"}
+
+<div class="right-box">
+	{$template "menu"}
+	<div class="margin"></div>
+	<form class="ui form" data-tea-action="$" data-tea-success="success">
+		<input type="hidden" name="webId" :value="webId"/>
+		<table class="ui table selectable definition">
+			<tr>
+				<td>路径匹配规则 *</td>
+				<td>
+					<input type="text" name="pattern" maxlength="500"/>
+					<p class="comment">路径通常以斜杠(/)开头，比如/hello。如果匹配类型是正则表达式匹配，则可以是一个正则表达式</p>
+				</td>
+			</tr>
+			<tr>
+				<td>匹配类型</td>
+				<td>
+					<select class="ui dropdown auto-width" name="patternType" v-model="type" @change="changePatternType(type)">
+						<option v-for="patternType in patternTypes" :value="patternType.type">{{patternType.name}}</option>
+					</select>
+					<p class="comment" v-if="selectedType != null" v-html="selectedType.description"></p>
+				</td>
+			</tr>
+			<tr>
+				<td>是否终止往下匹配</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" name="isBreak" value="1"/>
+						<label></label>
+					</div>
+					<p class="comment">如果选中了此选项，一旦匹配成功，不会继续匹配其他的路径规则。</p>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">名称</td>
+				<td>
+					<input type="text" name="name" ref="focus" maxlength="100"/>
+					<p class="comment">可以用来说明此规则用途。。</p>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"><more-options-indicator></more-options-indicator></td>
+			</tr>
+			<tbody v-show="moreOptionsVisible">
+				<tr>
+					<td>不区分大小写</td>
+					<td>
+						<div class="ui checkbox">
+							<input type="checkbox" name="isCaseInsensitive" value="1"/>
+							<label></label>
+						</div>
+						<p class="comment">选中表示匹配规则中的路径中的英文字母不区分大小写。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>反向匹配</td>
+					<td>
+						<div class="ui checkbox">
+							<input type="checkbox" name="isReverse" value="1"/>
+							<label></label>
+						</div>
+						<p class="comment">选中表示匹配所有<strong>不符合规则</strong>的路径。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>描述</td>
+					<td>
+						<textarea rows="3" name="description" maxlength="200"></textarea>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<submit-btn></submit-btn>
+	</form>
+</div>

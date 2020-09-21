@@ -27,7 +27,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 	}
 
 	pageConfig := &serverconfigs.HTTPPageConfig{}
-	err = json.Unmarshal(configResp.Config, pageConfig)
+	err = json.Unmarshal(configResp.PageJSON, pageConfig)
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -71,7 +71,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	}
 
 	pageConfig := &serverconfigs.HTTPPageConfig{}
-	err = json.Unmarshal(configResp.Config, pageConfig)
+	err = json.Unmarshal(configResp.PageJSON, pageConfig)
 	if err != nil {
 		this.ErrorPage(err)
 		return

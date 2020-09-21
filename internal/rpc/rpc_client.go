@@ -35,6 +35,7 @@ type RPCClient struct {
 	httpAccessLogPolicyClients []pb.HTTPAccessLogPolicyServiceClient
 	httpCachePolicyClients     []pb.HTTPCachePolicyServiceClient
 	httpFirewallPolicyClients  []pb.HTTPFirewallPolicyServiceClient
+	httpLocationClients        []pb.HTTPLocationServiceClient
 }
 
 func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
@@ -59,6 +60,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 	httpAccessLogPolicyClients := []pb.HTTPAccessLogPolicyServiceClient{}
 	httpCachePolicyClients := []pb.HTTPCachePolicyServiceClient{}
 	httpFirewallPolicyClients := []pb.HTTPFirewallPolicyServiceClient{}
+	httpLocationClients := []pb.HTTPLocationServiceClient{}
 
 	conns := []*grpc.ClientConn{}
 	for _, endpoint := range apiConfig.RPC.Endpoints {
@@ -91,6 +93,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		httpAccessLogPolicyClients = append(httpAccessLogPolicyClients, pb.NewHTTPAccessLogPolicyServiceClient(conn))
 		httpCachePolicyClients = append(httpCachePolicyClients, pb.NewHTTPCachePolicyServiceClient(conn))
 		httpFirewallPolicyClients = append(httpFirewallPolicyClients, pb.NewHTTPFirewallPolicyServiceClient(conn))
+		httpLocationClients = append(httpLocationClients, pb.NewHTTPLocationServiceClient(conn))
 	}
 
 	return &RPCClient{
@@ -112,6 +115,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		httpAccessLogPolicyClients: httpAccessLogPolicyClients,
 		httpCachePolicyClients:     httpCachePolicyClients,
 		httpFirewallPolicyClients:  httpFirewallPolicyClients,
+		httpLocationClients:        httpLocationClients,
 	}, nil
 }
 
@@ -230,6 +234,13 @@ func (this *RPCClient) HTTPCachePolicyRPC() pb.HTTPCachePolicyServiceClient {
 func (this *RPCClient) HTTPFirewallPolicyRPC() pb.HTTPFirewallPolicyServiceClient {
 	if len(this.httpFirewallPolicyClients) > 0 {
 		return this.httpFirewallPolicyClients[rands.Int(0, len(this.httpFirewallPolicyClients)-1)]
+	}
+	return nil
+}
+
+func (this *RPCClient) HTTPLocationRPC() pb.HTTPLocationServiceClient {
+	if len(this.httpLocationClients) > 0 {
+		return this.httpLocationClients[rands.Int(0, len(this.httpLocationClients)-1)]
 	}
 	return nil
 }

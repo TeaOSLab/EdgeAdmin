@@ -20,6 +20,11 @@ type ParentAction struct {
 	rpcClient *rpc.RPCClient
 }
 
+// 可以调用自身的一个简便方法
+func (this *ParentAction) Parent() *ParentAction {
+	return this
+}
+
 func (this *ParentAction) ErrorPage(err error) {
 	if err == nil {
 		return
@@ -62,6 +67,10 @@ func (this *ParentAction) FirstMenu(menuItem string) {
 
 func (this *ParentAction) SecondMenu(menuItem string) {
 	this.Data["secondMenuItem"] = menuItem
+}
+
+func (this *ParentAction) TinyMenu(menuItem string) {
+	this.Data["tinyMenuItem"] = menuItem
 }
 
 func (this *ParentAction) AdminId() int64 {

@@ -42,7 +42,7 @@ func (this *CreateSetPopupAction) RunPost(params struct {
 		return
 	}
 	policyConfig := &shared.HTTPHeaderPolicy{}
-	err = json.Unmarshal(configResp.Config, policyConfig)
+	err = json.Unmarshal(configResp.HeaderPolicyJSON, policyConfig)
 	if err != nil {
 		this.ErrorPage(err)
 		return

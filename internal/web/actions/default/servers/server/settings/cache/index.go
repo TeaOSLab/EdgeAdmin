@@ -1,10 +1,9 @@
 package cache
 
 import (
-	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
-	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 )
@@ -21,13 +20,7 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ServerId int64
 }) {
-	webConfigResp, err := this.RPC().ServerRPC().FindAndInitServerWebConfig(this.AdminContext(), &pb.FindAndInitServerWebRequest{ServerId: params.ServerId})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	webConfig := &serverconfigs.HTTPWebConfig{}
-	err = json.Unmarshal(webConfigResp.Config, webConfig)
+	webConfig, err := webutils.FindWebConfigWithServerId(this.Parent(), params.ServerId)
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -63,7 +56,7 @@ func (this *IndexAction) RunPost(params struct {
 }) {
 	// TODO 校验配置
 
-	_, err := this.RPC().HTTPWebRPC().UpdateHTTPCache(this.AdminContext(), &pb.UpdateHTTPCacheRequest{
+	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebCache(this.AdminContext(), &pb.UpdateHTTPWebCacheRequest{
 		WebId:     params.WebId,
 		CacheJSON: params.CacheJSON,
 	})

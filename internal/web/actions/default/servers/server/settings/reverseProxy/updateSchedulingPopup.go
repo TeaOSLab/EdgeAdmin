@@ -30,7 +30,7 @@ func (this *UpdateSchedulingPopupAction) RunGet(params struct {
 	this.Data["serverId"] = params.ServerId
 	this.Data["reverseProxyId"] = params.ReverseProxyId
 
-	_, serverConfig, isOk := serverutils.FindServer(&this.ParentAction, params.ServerId)
+	_, serverConfig, isOk := serverutils.FindServer(this.Parent(), params.ServerId)
 	if !isOk {
 		return
 	}
@@ -42,7 +42,7 @@ func (this *UpdateSchedulingPopupAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	configData := reverseProxyResp.Config
+	configData := reverseProxyResp.ReverseProxyJSON
 
 	reverseProxyConfig := &serverconfigs.ReverseProxyConfig{}
 	err = json.Unmarshal(configData, reverseProxyConfig)
@@ -98,7 +98,7 @@ func (this *UpdateSchedulingPopupAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	configData := reverseProxyResp.Config
+	configData := reverseProxyResp.ReverseProxyJSON
 	reverseProxy := &serverconfigs.ReverseProxyConfig{}
 	err = json.Unmarshal(configData, reverseProxy)
 	if err != nil {

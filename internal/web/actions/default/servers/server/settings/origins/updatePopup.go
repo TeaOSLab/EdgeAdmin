@@ -46,7 +46,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	configData := originResp.Config
+	configData := originResp.OriginJSON
 	config := &serverconfigs.OriginServerConfig{}
 	err = json.Unmarshal(configData, config)
 	if err != nil {
@@ -105,7 +105,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	originConfigData := originConfigResp.Config
+	originConfigData := originConfigResp.OriginJSON
 	var originConfig = &serverconfigs.OriginServerConfig{}
 	err = json.Unmarshal(originConfigData, originConfig)
 	if err != nil {
