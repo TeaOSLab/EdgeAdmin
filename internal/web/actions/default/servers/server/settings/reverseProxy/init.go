@@ -14,7 +14,7 @@ func init() {
 			Data("mainTab", "setting").
 			Data("secondMenuItem", "reverseProxy").
 			Prefix("/servers/server/settings/reverseProxy").
-			Get("", new(IndexAction)).
+			GetPost("", new(IndexAction)).
 			GetPost("/scheduling", new(SchedulingAction)).
 			GetPost("/updateSchedulingPopup", new(UpdateSchedulingPopupAction)).
 			Post("/updateOn", new(UpdateOnAction)).

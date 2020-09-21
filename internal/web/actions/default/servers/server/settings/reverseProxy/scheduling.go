@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/serverutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/schedulingconfigs"
@@ -21,31 +20,18 @@ func (this *SchedulingAction) Init() {
 func (this *SchedulingAction) RunGet(params struct {
 	ServerId int64
 }) {
-	server, _, isOk := serverutils.FindServer(&this.ParentAction, params.ServerId)
-	if !isOk {
-		return
-	}
-
-	if server.ReverseProxyId <= 0 {
-		// TODO 在界面上提示用户未开通，并提供开通按钮，用户点击后开通
-		this.WriteString("此服务尚未开通反向代理功能")
-		return
-	}
-	this.Data["reverseProxyId"] = server.ReverseProxyId
-
-	reverseProxyResp, err := this.RPC().ReverseProxyRPC().FindEnabledReverseProxyConfig(this.AdminContext(), &pb.FindEnabledReverseProxyConfigRequest{
-		ReverseProxyId: server.ReverseProxyId,
-	})
+	reverseProxyResp, err := this.RPC().ServerRPC().FindAndInitServerReverseProxyConfig(this.AdminContext(), &pb.FindAndInitServerReverseProxyConfigRequest{ServerId: params.ServerId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 	reverseProxy := &serverconfigs.ReverseProxyConfig{}
-	err = json.Unmarshal(reverseProxyResp.Config, reverseProxy)
+	err = json.Unmarshal(reverseProxyResp.ReverseProxy, reverseProxy)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
+	this.Data["reverseProxyId"] = reverseProxy.Id
 
 	schedulingCode := reverseProxy.FindSchedulingConfig().Code
 	schedulingMap := schedulingconfigs.FindSchedulingType(schedulingCode)

@@ -2,11 +2,10 @@ package reverseProxy
 
 import (
 	"encoding/json"
-	"errors"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/serverutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
+	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 )
 
@@ -22,67 +21,76 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ServerId int64
 }) {
-	server, _, isOk := serverutils.FindServer(&this.ParentAction, params.ServerId)
-	if !isOk {
+	serverTypeResp, err := this.RPC().ServerRPC().FindEnabledServerType(this.AdminContext(), &pb.FindEnabledServerTypeRequest{ServerId: params.ServerId})
+	if err != nil {
+		this.ErrorPage(err)
 		return
 	}
-	this.Data["serverType"] = server.Type
-	this.Data["reverseProxyId"] = server.ReverseProxyId
+	serverType := serverTypeResp.Type
 
-	isOn := false
-	if server.ReverseProxyId > 0 {
-		reverseProxyResp, err := this.RPC().ReverseProxyRPC().FindEnabledReverseProxy(this.AdminContext(), &pb.FindEnabledReverseProxyRequest{ReverseProxyId: server.ReverseProxyId})
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-		reverseProxy := reverseProxyResp.ReverseProxy
-		if reverseProxy == nil {
-			// TODO 应该在界面上提示用户开启
-			this.ErrorPage(errors.New("reverse proxy should not be nil"))
-			return
-		}
-		isOn = true
-
-		primaryOrigins := []*serverconfigs.OriginServerConfig{}
-		backupOrigins := []*serverconfigs.OriginServerConfig{}
-		if len(reverseProxy.PrimaryOriginsJSON) > 0 {
-			err = json.Unmarshal(reverseProxy.PrimaryOriginsJSON, &primaryOrigins)
-			if err != nil {
-				this.ErrorPage(err)
-				return
-			}
-		}
-		if len(reverseProxy.BackupOriginsJSON) > 0 {
-			err = json.Unmarshal(reverseProxy.BackupOriginsJSON, &backupOrigins)
-			if err != nil {
-				this.ErrorPage(err)
-				return
-			}
-		}
-
-		primaryOriginMaps := []maps.Map{}
-		backupOriginMaps := []maps.Map{}
-		for _, originConfig := range primaryOrigins {
-			m := maps.Map{
-				"id":     originConfig.Id,
-				"weight": originConfig.Weight,
-				"addr":   originConfig.Addr.Protocol.String() + "://" + originConfig.Addr.Host + ":" + originConfig.Addr.PortRange,
-			}
-			primaryOriginMaps = append(primaryOriginMaps, m)
-		}
-		for _, originConfig := range backupOrigins {
-			m := maps.Map{
-				"id":     originConfig.Id,
-				"weight": originConfig.Weight,
-				"addr":   originConfig.Addr.Protocol.String() + "://" + originConfig.Addr.Host + ":" + originConfig.Addr.PortRange,
-			}
-			backupOriginMaps = append(backupOriginMaps, m)
-		}
-		this.Data["primaryOrigins"] = primaryOriginMaps
-		this.Data["backupOrigins"] = backupOriginMaps
+	reverseProxyResp, err := this.RPC().ServerRPC().FindAndInitServerReverseProxyConfig(this.AdminContext(), &pb.FindAndInitServerReverseProxyConfigRequest{ServerId: params.ServerId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
 	}
-	this.Data["isOn"] = isOn
+	reverseProxyRef := &serverconfigs.ReverseProxyRef{}
+	err = json.Unmarshal(reverseProxyResp.ReverseProxyRef, reverseProxyRef)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	reverseProxy := &serverconfigs.ReverseProxyConfig{}
+	err = json.Unmarshal(reverseProxyResp.ReverseProxy, reverseProxy)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	this.Data["serverType"] = serverType
+	this.Data["reverseProxyRef"] = reverseProxyRef
+	this.Data["reverseProxyConfig"] = reverseProxy
+
+	primaryOriginMaps := []maps.Map{}
+	backupOriginMaps := []maps.Map{}
+	for _, originConfig := range reverseProxy.PrimaryOrigins {
+		m := maps.Map{
+			"id":     originConfig.Id,
+			"weight": originConfig.Weight,
+			"addr":   originConfig.Addr.Protocol.String() + "://" + originConfig.Addr.Host + ":" + originConfig.Addr.PortRange,
+		}
+		primaryOriginMaps = append(primaryOriginMaps, m)
+	}
+	for _, originConfig := range reverseProxy.BackupOrigins {
+		m := maps.Map{
+			"id":     originConfig.Id,
+			"weight": originConfig.Weight,
+			"addr":   originConfig.Addr.Protocol.String() + "://" + originConfig.Addr.Host + ":" + originConfig.Addr.PortRange,
+		}
+		backupOriginMaps = append(backupOriginMaps, m)
+	}
+	this.Data["primaryOrigins"] = primaryOriginMaps
+	this.Data["backupOrigins"] = backupOriginMaps
 
 	this.Show()
+}
+
+func (this *IndexAction) RunPost(params struct {
+	ServerId            int64
+	ReverseProxyRefJSON []byte
+
+	Must *actions.Must
+}) {
+	// TODO 校验配置
+
+	_, err := this.RPC().ServerRPC().UpdateServerReverseProxy(this.AdminContext(), &pb.UpdateServerReverseProxyRequest{
+		ServerId:         params.ServerId,
+		ReverseProxyJSON: params.ReverseProxyRefJSON,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	this.Success()
 }

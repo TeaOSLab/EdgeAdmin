@@ -1,8 +1,10 @@
 package reverseProxy
 
 import (
+	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 )
 
 type UpdateOnAction struct {
@@ -29,10 +31,21 @@ func (this *UpdateOnAction) RunPost(params struct {
 			this.ErrorPage(err)
 			return
 		}
+
 		reverseProxyId := resp.ReverseProxyId
-		_, err = this.RPC().ServerRPC().UpdateServerReverseProxy(this.AdminContext(), &pb.UpdateServerReverseProxyRequest{
-			ServerId:       params.ServerId,
+		ref := &serverconfigs.ReverseProxyRef{
+			IsOn:           true,
 			ReverseProxyId: reverseProxyId,
+		}
+		refJSON, err := json.Marshal(ref)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+
+		_, err = this.RPC().ServerRPC().UpdateServerReverseProxy(this.AdminContext(), &pb.UpdateServerReverseProxyRequest{
+			ServerId:         params.ServerId,
+			ReverseProxyJSON: refJSON,
 		})
 		if err != nil {
 			this.ErrorPage(err)

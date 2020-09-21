@@ -17,5 +17,6 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ServerId int64
 }) {
-	this.RedirectURL("/servers/server/board?serverId=" + strconv.FormatInt(params.ServerId, 10))
+	// TODO 等看板实现后，需要跳转到看板
+	this.RedirectURL("/servers/server/settings?serverId=" + strconv.FormatInt(params.ServerId, 10))
 }
