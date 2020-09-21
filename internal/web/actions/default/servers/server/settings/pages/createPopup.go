@@ -53,7 +53,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	}
 
 	pageConfig := &serverconfigs.HTTPPageConfig{}
-	err = json.Unmarshal(configResp.Config, pageConfig)
+	err = json.Unmarshal(configResp.PageJSON, pageConfig)
 	if err != nil {
 		this.ErrorPage(err)
 		return

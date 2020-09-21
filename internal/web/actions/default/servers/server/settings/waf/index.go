@@ -1,10 +1,9 @@
 package waf
 
 import (
-	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
-	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 )
@@ -21,17 +20,12 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ServerId int64
 }) {
-	webConfigResp, err := this.RPC().ServerRPC().FindAndInitServerWebConfig(this.AdminContext(), &pb.FindAndInitServerWebRequest{ServerId: params.ServerId})
+	webConfig, err := webutils.FindWebConfigWithServerId(this.Parent(), params.ServerId)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	webConfig := &serverconfigs.HTTPWebConfig{}
-	err = json.Unmarshal(webConfigResp.Config, webConfig)
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
+
 	this.Data["webId"] = webConfig.Id
 	this.Data["firewallConfig"] = webConfig.FirewallRef
 
@@ -62,7 +56,7 @@ func (this *IndexAction) RunPost(params struct {
 }) {
 	// TODO 检查配置
 
-	_, err := this.RPC().HTTPWebRPC().UpdateHTTPFirewall(this.AdminContext(), &pb.UpdateHTTPFirewallRequest{
+	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebFirewall(this.AdminContext(), &pb.UpdateHTTPWebFirewallRequest{
 		WebId:        params.WebId,
 		FirewallJSON: params.FirewallJSON,
 	})

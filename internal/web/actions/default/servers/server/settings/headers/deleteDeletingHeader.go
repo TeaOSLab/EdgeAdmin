@@ -20,7 +20,7 @@ func (this *DeleteDeletingHeaderAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	policyConfigJSON := policyConfigResp.Config
+	policyConfigJSON := policyConfigResp.HeaderPolicyJSON
 	policyConfig := &shared.HTTPHeaderPolicy{}
 	err = json.Unmarshal(policyConfigJSON, policyConfig)
 	if err != nil {

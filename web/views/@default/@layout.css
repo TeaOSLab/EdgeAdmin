@@ -36,6 +36,12 @@
 .left-box::-webkit-scrollbar {
   width: 4px;
 }
+.left-box.disabled {
+  opacity: 0.3;
+}
+.left-box.tiny {
+  top: 10em;
+}
 .right-box {
   position: fixed;
   top: 7.5em;

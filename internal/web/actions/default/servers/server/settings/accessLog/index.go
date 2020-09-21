@@ -1,8 +1,8 @@
 package accessLog
 
 import (
-	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -22,13 +22,7 @@ func (this *IndexAction) RunGet(params struct {
 	ServerId int64
 }) {
 	// 获取配置
-	webResp, err := this.RPC().ServerRPC().FindAndInitServerWebConfig(this.AdminContext(), &pb.FindAndInitServerWebRequest{ServerId: params.ServerId})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	webConfig := &serverconfigs.HTTPWebConfig{}
-	err = json.Unmarshal(webResp.Config, webConfig)
+	webConfig, err := webutils.FindWebConfigWithServerId(this.Parent(), params.ServerId)
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -67,7 +61,7 @@ func (this *IndexAction) RunPost(params struct {
 }) {
 	// TODO 检查参数
 
-	_, err := this.RPC().HTTPWebRPC().UpdateHTTPAccessLog(this.AdminContext(), &pb.UpdateHTTPAccessLogRequest{
+	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebAccessLog(this.AdminContext(), &pb.UpdateHTTPWebAccessLogRequest{
 		WebId:         params.WebId,
 		AccessLogJSON: params.AccessLogJSON,
 	})

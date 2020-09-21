@@ -35,6 +35,9 @@ func (this *ServerHelper) BeforeAction(action *actions.ActionObject) {
 
 func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 	// 初始化
+	if !action.Data.Has("leftMenuItemIsDisabled") {
+		action.Data["leftMenuItemIsDisabled"] = false
+	}
 	action.Data["leftMenuItems"] = []maps.Map{}
 	mainTab, _ := action.Data["mainTab"]
 	secondMenuItem, _ := action.Data["secondMenuItem"]

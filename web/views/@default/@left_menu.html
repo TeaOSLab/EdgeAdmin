@@ -1,6 +1,6 @@
 <div class="margin"></div>
 
-<div class="left-box">
+<div class="left-box" :class="{disabled:leftMenuItemIsDisabled}">
 	<div class="ui menu text blue vertical small">
 		<a class="item" v-for="item in leftMenuItems" :href="item.url" :class="{active:item.isActive, separator:item.name == '-'}">
 			<span v-if="item.name != '-'"><i class="icon play tiny" :style="{'visibility':item.isActive ? 'visible' : 'hidden'}"></i>{{item.name}}</span>

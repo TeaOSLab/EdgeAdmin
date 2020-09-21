@@ -1,11 +1,10 @@
 package headers
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
-	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 )
 
 type IndexAction struct {
@@ -20,13 +19,7 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ServerId int64
 }) {
-	webConfigResp, err := this.RPC().ServerRPC().FindAndInitServerWebConfig(this.AdminContext(), &pb.FindAndInitServerWebRequest{ServerId: params.ServerId})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	webConfig := &serverconfigs.HTTPWebConfig{}
-	err = json.Unmarshal(webConfigResp.Config, webConfig)
+	webConfig, err := webutils.FindWebConfigWithServerId(this.Parent(), params.ServerId)
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -73,12 +66,7 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 重新获取配置
 	if isChanged {
-		webConfigResp, err := this.RPC().ServerRPC().FindAndInitServerWebConfig(this.AdminContext(), &pb.FindAndInitServerWebRequest{ServerId: params.ServerId})
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-		err = json.Unmarshal(webConfigResp.Config, webConfig)
+		webConfig, err = webutils.FindWebConfigWithServerId(this.Parent(), params.ServerId)
 		if err != nil {
 			this.ErrorPage(err)
 			return

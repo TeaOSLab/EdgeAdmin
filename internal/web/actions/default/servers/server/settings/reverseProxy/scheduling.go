@@ -26,7 +26,7 @@ func (this *SchedulingAction) RunGet(params struct {
 		return
 	}
 	reverseProxy := &serverconfigs.ReverseProxyConfig{}
-	err = json.Unmarshal(reverseProxyResp.ReverseProxy, reverseProxy)
+	err = json.Unmarshal(reverseProxyResp.ReverseProxyJSON, reverseProxy)
 	if err != nil {
 		this.ErrorPage(err)
 		return

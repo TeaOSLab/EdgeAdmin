@@ -34,14 +34,14 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 	reverseProxyRef := &serverconfigs.ReverseProxyRef{}
-	err = json.Unmarshal(reverseProxyResp.ReverseProxyRef, reverseProxyRef)
+	err = json.Unmarshal(reverseProxyResp.ReverseProxyRefJSON, reverseProxyRef)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 
 	reverseProxy := &serverconfigs.ReverseProxyConfig{}
-	err = json.Unmarshal(reverseProxyResp.ReverseProxy, reverseProxy)
+	err = json.Unmarshal(reverseProxyResp.ReverseProxyJSON, reverseProxy)
 	if err != nil {
 		this.ErrorPage(err)
 		return

@@ -29,7 +29,7 @@ func (this *UpdateSetPopupAction) RunGet(params struct {
 		return
 	}
 	headerConfig := &shared.HTTPHeaderConfig{}
-	err = json.Unmarshal(headerResp.Config, headerConfig)
+	err = json.Unmarshal(headerResp.HeaderJSON, headerConfig)
 	if err != nil {
 		this.ErrorPage(err)
 		return
