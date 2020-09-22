@@ -1,0 +1,28 @@
+{$layout "layout_popup"}
+<h3>添加特殊页面</h3>
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+	<table class="ui table selectable definition">
+		<tr>
+			<td class="title">响应状态码 *</td>
+			<td>
+				<input type="text" name="status" size="3" placeholder="状态码" maxlength="3" style="width:5.2em" ref="focus"/>
+				<p class="comment">比如404，或者50x。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>URL *</td>
+			<td>
+				<input type="text" name="url" maxlength="500" placeholder="页面文件路径或者完整的URL"/>
+				<p class="comment">页面文件是相对于节点安装目录的页面文件比如web/pages/40x.html，或者一个完整的URL。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>新状态码</td>
+			<td>
+				<input type="text" name="newStatus" size="3" placeholder="状态码" maxlength="3" style="width:5.2em"/>
+				<p class="comment">可以用来修改响应的状态码，不填表示不改变原有状态码。</p>
+			</td>
+		</tr>
+	</table>
+	<submit-btn></submit-btn>
+</form>

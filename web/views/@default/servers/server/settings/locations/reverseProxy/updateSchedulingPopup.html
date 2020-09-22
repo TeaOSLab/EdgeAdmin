@@ -1,0 +1,60 @@
+{$layout "layout_popup"}
+
+<h3>修改调度算法</h3>
+
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+	<input type="hidden" name="dataType" :value="dataType"/>
+	<input type="hidden" name="serverId" :value="serverId"/>
+	<input type="hidden" name="reverseProxyId" :value="reverseProxyId"/>
+
+	<table class="ui table selectable definition">
+		<tr>
+			<td class="title">选择调度算法</td>
+			<td>
+				<select class="ui dropdown auto-width" name="type" v-model="selectedType"
+						@change="changeSchedulingType()">
+					<option v-for="schedulingType in schedulingTypes"
+							:value="schedulingType.code">{{schedulingType.name}}</option>
+				</select>
+				<p class="comment">{{schedulingTypeDescription}}</p>
+			</td>
+		</tr>
+		<tr v-if="selectedType == 'hash'">
+			<td>
+				Key
+			</td>
+			<td>
+				<input type="text" name="hashKey" v-model="hashKey" maxlength="500"/>
+				<p class="comment">用来计算Hash的字符串，其中可以使用变量。</p>
+			</td>
+		</tr>
+		<tr v-if="selectedType == 'hash'">
+			<td>常用变量</td>
+			<td>
+				<select class="ui dropdown" style="width:12em" v-model="hashVar" @change="changeHashVar()">
+					<option></option>
+					<option value="${remoteAddr}">客户端IP</option>
+					<option value="${host}${requestURI}">请求URL</option>
+				</select>
+			</td>
+		</tr>
+		<tr v-if="selectedType == 'sticky'">
+			<td>参数类型</td>
+			<td>
+				<select class="ui dropdown" style="width:12em" name="stickyType" v-model="stickyType">
+					<option value="cookie">Cookie</option>
+					<option value="header">HTTP Header</option>
+					<option value="argument">URL参数</option>
+				</select>
+			</td>
+		</tr>
+		<tr v-if="selectedType == 'sticky'">
+			<td>参数名</td>
+			<td>
+				<input type="text" name="stickyParam" v-model="stickyParam" maxlength="50"/>
+				<p class="comment">记录或指定后端服务器的参数名，只能是英文字母和数字的组合，不允许有下划线（因为在HTTP Header中下划线是不标准的）</p>
+			</td>
+		</tr>
+	</table>
+	<submit-btn></submit-btn>
+</form>

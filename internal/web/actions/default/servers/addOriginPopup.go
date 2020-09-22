@@ -43,7 +43,7 @@ func (this *AddOriginPopupAction) RunPost(params struct {
 	host := addr[:portIndex]
 	port := addr[portIndex+1:]
 
-	resp, err := this.RPC().OriginServerRPC().CreateOriginServer(this.AdminContext(), &pb.CreateOriginServerRequest{
+	resp, err := this.RPC().OriginRPC().CreateOrigin(this.AdminContext(), &pb.CreateOriginRequest{
 		Name: "",
 		Addr: &pb.NetworkAddress{
 			Protocol:  params.Protocol,
@@ -57,7 +57,7 @@ func (this *AddOriginPopupAction) RunPost(params struct {
 		return
 	}
 
-	origin := &serverconfigs.OriginServerConfig{
+	origin := &serverconfigs.OriginConfig{
 		Id:   resp.OriginId,
 		IsOn: true,
 		Addr: &serverconfigs.NetworkAddressConfig{

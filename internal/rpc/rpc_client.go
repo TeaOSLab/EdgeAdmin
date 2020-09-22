@@ -25,7 +25,7 @@ type RPCClient struct {
 	nodeIPAddressClients       []pb.NodeIPAddressServiceClient
 	serverClients              []pb.ServerServiceClient
 	apiNodeClients             []pb.APINodeServiceClient
-	originNodeClients          []pb.OriginServerServiceClient
+	originClients              []pb.OriginServiceClient
 	httpWebClients             []pb.HTTPWebServiceClient
 	reverseProxyClients        []pb.ReverseProxyServiceClient
 	httpGzipClients            []pb.HTTPGzipServiceClient
@@ -50,7 +50,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 	nodeIPAddressClients := []pb.NodeIPAddressServiceClient{}
 	serverClients := []pb.ServerServiceClient{}
 	apiNodeClients := []pb.APINodeServiceClient{}
-	originNodeClients := []pb.OriginServerServiceClient{}
+	originClients := []pb.OriginServiceClient{}
 	httpWebClients := []pb.HTTPWebServiceClient{}
 	reverseProxyClients := []pb.ReverseProxyServiceClient{}
 	httpGzipClients := []pb.HTTPGzipServiceClient{}
@@ -83,7 +83,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		nodeIPAddressClients = append(nodeIPAddressClients, pb.NewNodeIPAddressServiceClient(conn))
 		serverClients = append(serverClients, pb.NewServerServiceClient(conn))
 		apiNodeClients = append(apiNodeClients, pb.NewAPINodeServiceClient(conn))
-		originNodeClients = append(originNodeClients, pb.NewOriginServerServiceClient(conn))
+		originClients = append(originClients, pb.NewOriginServiceClient(conn))
 		httpWebClients = append(httpWebClients, pb.NewHTTPWebServiceClient(conn))
 		reverseProxyClients = append(reverseProxyClients, pb.NewReverseProxyServiceClient(conn))
 		httpGzipClients = append(httpGzipClients, pb.NewHTTPGzipServiceClient(conn))
@@ -105,7 +105,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		nodeIPAddressClients:       nodeIPAddressClients,
 		serverClients:              serverClients,
 		apiNodeClients:             apiNodeClients,
-		originNodeClients:          originNodeClients,
+		originClients:              originClients,
 		httpWebClients:             httpWebClients,
 		reverseProxyClients:        reverseProxyClients,
 		httpGzipClients:            httpGzipClients,
@@ -168,9 +168,9 @@ func (this *RPCClient) APINodeRPC() pb.APINodeServiceClient {
 	return nil
 }
 
-func (this *RPCClient) OriginServerRPC() pb.OriginServerServiceClient {
-	if len(this.originNodeClients) > 0 {
-		return this.originNodeClients[rands.Int(0, len(this.originNodeClients)-1)]
+func (this *RPCClient) OriginRPC() pb.OriginServiceClient {
+	if len(this.originClients) > 0 {
+		return this.originClients[rands.Int(0, len(this.originClients)-1)]
 	}
 	return nil
 }

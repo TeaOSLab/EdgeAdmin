@@ -1,9 +1,11 @@
 package locationutils
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 	"net/http"
+	"reflect"
 )
 
 type LocationHelper struct {
@@ -13,7 +15,8 @@ func NewLocationHelper() *LocationHelper {
 	return &LocationHelper{}
 }
 
-func (this *LocationHelper) BeforeAction(action *actions.ActionObject) {
+func (this *LocationHelper) BeforeAction(actionPtr actions.ActionWrapper) {
+	action := actionPtr.Object()
 	if action.Request.Method != http.MethodGet {
 		return
 	}
@@ -26,6 +29,21 @@ func (this *LocationHelper) BeforeAction(action *actions.ActionObject) {
 	action.Data["mainTab"] = "setting"
 	action.Data["secondMenuItem"] = "locations"
 	action.Data["tinyLeftMenuItems"] = this.createMenus(serverIdString, locationIdString, action.Data.GetString("tinyMenuItem"))
+
+	// 路径信息
+	parentActionValue := reflect.ValueOf(actionPtr).Elem().FieldByName("ParentAction")
+	if parentActionValue.IsValid() {
+		parentAction, isOk := parentActionValue.Interface().(actionutils.ParentAction)
+		if isOk {
+			locationId := action.ParamInt64("locationId")
+			locationConfig, isOk := FindLocationConfig(&parentAction, locationId)
+			if !isOk {
+				return
+			}
+			action.Data["locationId"] = locationId
+			action.Data["locationConfig"] = locationConfig
+		}
+	}
 }
 
 func (this *LocationHelper) createMenus(serverIdString string, locationIdString string, secondMenuItem string) []maps.Map {

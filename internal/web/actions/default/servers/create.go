@@ -159,7 +159,7 @@ func (this *CreateAction) RunPost(params struct {
 	reverseProxyRefJSON := []byte{}
 	switch params.ServerType {
 	case serverconfigs.ServerTypeHTTPProxy, serverconfigs.ServerTypeTCPProxy:
-		origins := []*serverconfigs.OriginServerConfig{}
+		origins := []*serverconfigs.OriginConfig{}
 		err := json.Unmarshal([]byte(params.Origins), &origins)
 		if err != nil {
 			this.Fail("源站地址解析失败：" + err.Error())

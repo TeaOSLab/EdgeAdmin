@@ -28,7 +28,7 @@ func (this *DeleteAction) RunPost(params struct {
 		return
 	}
 
-	origins := []*serverconfigs.OriginServerConfig{}
+	origins := []*serverconfigs.OriginRef{}
 	switch params.OriginType {
 	case "primary":
 		err = json.Unmarshal(reverseProxy.PrimaryOriginsJSON, &origins)
@@ -47,9 +47,9 @@ func (this *DeleteAction) RunPost(params struct {
 		return
 	}
 
-	result := []*serverconfigs.OriginServerConfig{}
+	result := []*serverconfigs.OriginRef{}
 	for _, origin := range origins {
-		if origin.Id == params.OriginId {
+		if origin.OriginId == params.OriginId {
 			continue
 		}
 		result = append(result, origin)
