@@ -56,7 +56,7 @@ func (this *AddPopupAction) RunPost(params struct {
 	host := addr[:portIndex]
 	port := addr[portIndex+1:]
 
-	resp, err := this.RPC().OriginServerRPC().CreateOriginServer(this.AdminContext(), &pb.CreateOriginServerRequest{
+	resp, err := this.RPC().OriginRPC().CreateOrigin(this.AdminContext(), &pb.CreateOriginRequest{
 		Name: "",
 		Addr: &pb.NetworkAddress{
 			Protocol:  params.Protocol,
@@ -70,17 +70,9 @@ func (this *AddPopupAction) RunPost(params struct {
 		return
 	}
 	originId := resp.OriginId
-	originConfigResp, err := this.RPC().OriginServerRPC().FindEnabledOriginServerConfig(this.AdminContext(), &pb.FindEnabledOriginServerConfigRequest{OriginId: originId})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	originConfigData := originConfigResp.OriginJSON
-	var originConfig = &serverconfigs.OriginServerConfig{}
-	err = json.Unmarshal(originConfigData, originConfig)
-	if err != nil {
-		this.ErrorPage(err)
-		return
+	originRef := &serverconfigs.OriginRef{
+		IsOn:     true,
+		OriginId: originId,
 	}
 
 	reverseProxyResp, err := this.RPC().ReverseProxyRPC().FindEnabledReverseProxy(this.AdminContext(), &pb.FindEnabledReverseProxyRequest{ReverseProxyId: params.ReverseProxyId})
@@ -94,7 +86,7 @@ func (this *AddPopupAction) RunPost(params struct {
 		return
 	}
 
-	origins := []*serverconfigs.OriginServerConfig{}
+	origins := []*serverconfigs.OriginRef{}
 	switch params.OriginType {
 	case "primary":
 		if len(reverseProxy.PrimaryOriginsJSON) > 0 {
@@ -113,7 +105,7 @@ func (this *AddPopupAction) RunPost(params struct {
 			}
 		}
 	}
-	origins = append(origins, originConfig)
+	origins = append(origins, originRef)
 	originsData, err := json.Marshal(origins)
 	if err != nil {
 		this.ErrorPage(err)

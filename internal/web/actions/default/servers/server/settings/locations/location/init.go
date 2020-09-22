@@ -13,6 +13,7 @@ func init() {
 			Helper(helpers.NewUserMustAuth()).
 			Helper(locationutils.NewLocationHelper()).
 			Helper(serverutils.NewServerHelper()).
+			Data("tinyMenuItem", "basic").
 			Prefix("/servers/server/settings/locations/location").
 			GetPost("", new(IndexAction)).
 			EndAll()

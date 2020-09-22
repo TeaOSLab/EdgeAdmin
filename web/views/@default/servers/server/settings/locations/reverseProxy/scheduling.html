@@ -1,0 +1,13 @@
+{$layout}
+{$template "/left_menu"}
+
+<div class="right-box">
+	{$template "../location_menu"}
+	{$template "../left_menu"}
+
+	<div class="right-box tiny">
+		{$template "menu"}
+
+		<origin-scheduling-view-box :v-scheduling="scheduling" :v-params="'type=server&serverId=' + serverId + '&reverseProxyId=' + reverseProxyId"></origin-scheduling-view-box>
+	</div>
+</div>
