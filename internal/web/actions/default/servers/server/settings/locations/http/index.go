@@ -1,10 +1,9 @@
-package charset
+package http
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
-	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/configutils"
 	"github.com/iwind/TeaGo/actions"
 )
 
@@ -18,30 +17,29 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	LocationId int64
 }) {
+	// 跳转相关设置
 	webConfig, err := webutils.FindWebConfigWithLocationId(this.Parent(), params.LocationId)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-
 	this.Data["webId"] = webConfig.Id
-	this.Data["charsetConfig"] = webConfig.Charset
-
-	this.Data["usualCharsets"] = configutils.UsualCharsets
-	this.Data["allCharsets"] = configutils.AllCharsets
+	this.Data["redirectToHTTPSConfig"] = webConfig.RedirectToHttps
 
 	this.Show()
 }
 
 func (this *IndexAction) RunPost(params struct {
-	WebId       int64
-	CharsetJSON []byte
+	WebId               int64
+	RedirectToHTTPSJSON []byte
 
 	Must *actions.Must
 }) {
-	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebCharset(this.AdminContext(), &pb.UpdateHTTPWebCharsetRequest{
-		WebId:       params.WebId,
-		CharsetJSON: params.CharsetJSON,
+	// 设置跳转到HTTPS
+	// TODO 校验设置
+	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebRedirectToHTTPS(this.AdminContext(), &pb.UpdateHTTPWebRedirectToHTTPSRequest{
+		WebId:               params.WebId,
+		RedirectToHTTPSJSON: params.RedirectToHTTPSJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)

@@ -1,4 +1,4 @@
-package headers
+package http
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/locations/locationutils"
@@ -13,8 +13,8 @@ func init() {
 			Helper(helpers.NewUserMustAuth()).
 			Helper(locationutils.NewLocationHelper()).
 			Helper(serverutils.NewServerHelper()).
-			Data("tinyMenuItem", "header").
-			Prefix("/servers/server/settings/locations/headers").
+			Data("tinyMenuItem", "http").
+			Prefix("/servers/server/settings/locations/http").
 			GetPost("", new(IndexAction)).
 			EndAll()
 	})

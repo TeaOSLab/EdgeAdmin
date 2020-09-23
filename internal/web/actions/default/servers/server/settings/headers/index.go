@@ -1,10 +1,11 @@
 package headers
 
 import (
-	"errors"
+	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 )
 
 type IndexAction struct {
@@ -24,42 +25,52 @@ func (this *IndexAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
+	webId := webConfig.Id
 
-	// 初始化Header
-	webResp, err := this.RPC().HTTPWebRPC().FindEnabledHTTPWeb(this.AdminContext(), &pb.FindEnabledHTTPWebRequest{WebId: webConfig.Id})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	web := webResp.Web
-	if web == nil {
-		this.ErrorPage(errors.New("web should not be nil"))
-		return
-	}
 	isChanged := false
-	if web.RequestHeaderPolicyId <= 0 {
+	if webConfig.RequestHeaderPolicy == nil {
 		createHeaderPolicyResp, err := this.RPC().HTTPHeaderPolicyRPC().CreateHTTPHeaderPolicy(this.AdminContext(), &pb.CreateHTTPHeaderPolicyRequest{})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
 		headerPolicyId := createHeaderPolicyResp.HeaderPolicyId
-		_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebRequestHeaderPolicy(this.AdminContext(), &pb.UpdateHTTPWebRequestHeaderPolicyRequest{
-			WebId:          web.Id,
+		ref := &shared.HTTPHeaderPolicyRef{
+			IsPrior:        false,
+			IsOn:           true,
 			HeaderPolicyId: headerPolicyId,
+		}
+		refJSON, err := json.Marshal(ref)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebRequestHeader(this.AdminContext(), &pb.UpdateHTTPWebRequestHeaderRequest{
+			WebId:      webId,
+			HeaderJSON: refJSON,
 		})
 		isChanged = true
 	}
-	if web.ResponseHeaderPolicyId <= 0 {
+	if webConfig.ResponseHeaderPolicy == nil {
 		createHeaderPolicyResp, err := this.RPC().HTTPHeaderPolicyRPC().CreateHTTPHeaderPolicy(this.AdminContext(), &pb.CreateHTTPHeaderPolicyRequest{})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
 		headerPolicyId := createHeaderPolicyResp.HeaderPolicyId
-		_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebResponseHeaderPolicy(this.AdminContext(), &pb.UpdateHTTPWebResponseHeaderPolicyRequest{
-			WebId:          web.Id,
+		ref := &shared.HTTPHeaderPolicyRef{
+			IsPrior:        false,
+			IsOn:           true,
 			HeaderPolicyId: headerPolicyId,
+		}
+		refJSON, err := json.Marshal(ref)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebResponseHeader(this.AdminContext(), &pb.UpdateHTTPWebResponseHeaderRequest{
+			WebId:      webId,
+			HeaderJSON: refJSON,
 		})
 		isChanged = true
 	}
@@ -73,8 +84,10 @@ func (this *IndexAction) RunGet(params struct {
 		}
 	}
 
-	this.Data["requestHeaderPolicy"] = webConfig.RequestHeaders
-	this.Data["responseHeaderPolicy"] = webConfig.ResponseHeaders
+	this.Data["requestHeaderRef"] = webConfig.RequestHeaderPolicyRef
+	this.Data["requestHeaderPolicy"] = webConfig.RequestHeaderPolicy
+	this.Data["responseHeaderRef"] = webConfig.ResponseHeaderPolicyRef
+	this.Data["responseHeaderPolicy"] = webConfig.ResponseHeaderPolicy
 
 	this.Show()
 }

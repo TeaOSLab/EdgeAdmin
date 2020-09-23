@@ -1,5 +1,5 @@
 Vue.component("http-access-log-config-box", {
-	props: ["v-access-log-config", "v-fields", "v-default-field-codes", "v-access-log-policies"],
+	props: ["v-access-log-config", "v-fields", "v-default-field-codes", "v-access-log-policies", "v-is-location"],
 	data: function () {
 		let that = this
 
@@ -10,6 +10,7 @@ Vue.component("http-access-log-config-box", {
 		}, 100)
 
 		let accessLog = {
+			isPrior: false,
 			isOn: true,
 			fields: [],
 			status1: true,
@@ -59,7 +60,8 @@ Vue.component("http-access-log-config-box", {
 	template: `<div>
 	<input type="hidden" name="accessLogJSON" :value="JSON.stringify(accessLog)"/>
 	<table class="ui table definition selectable">
-		<tbody>
+		<prior-checkbox :v-config="accessLog" v-if="vIsLocation"></prior-checkbox>
+		<tbody v-show="!vIsLocation || accessLog.isPrior">
 			<tr>
 				<td class="title">是否开启访问日志存储</td>
 				<td>
@@ -71,7 +73,7 @@ Vue.component("http-access-log-config-box", {
 				</td>
 			</tr>
 		</tbody>
-		<tbody  v-show="accessLog.isOn">
+		<tbody  v-show="(!vIsLocation || accessLog.isPrior) && accessLog.isOn">
 			<tr>
 				<td>要存储的访问日志字段</td>
 				<td>

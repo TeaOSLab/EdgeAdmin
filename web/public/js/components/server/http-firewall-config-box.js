@@ -1,9 +1,10 @@
 Vue.component("http-firewall-config-box", {
-	props: ["v-firewall-config", "v-firewall-policies"],
+	props: ["v-firewall-config", "v-firewall-policies", "v-is-location"],
 	data: function () {
 		let firewall = this.vFirewallConfig
 		if (firewall == null) {
 			firewall = {
+				isPrior: false,
 				isOn: false,
 				firewallPolicyId: 0
 			}
@@ -21,7 +22,8 @@ Vue.component("http-firewall-config-box", {
 	template: `<div>
 	<input type="hidden" name="firewallJSON" :value="JSON.stringify(firewall)"/>
 	<table class="ui table selectable definition">
-		<tbody>
+		<prior-checkbox :v-config="firewall" v-if="vIsLocation"></prior-checkbox>
+		<tbody v-show="!vIsLocation || firewall.isPrior">
 			<tr>
 				<td class="title">是否启用Web防火墙</td>
 				<td>
@@ -32,7 +34,7 @@ Vue.component("http-firewall-config-box", {
 				</td>
 			</tr>
 		</tbody>
-		<tbody v-show="firewall.isOn">
+		<tbody v-show="(!vIsLocation || firewall.isPrior) && firewall.isOn">
 			<tr>
 				<td>选择Web防火墙策略</td>
 				<td>

@@ -56,6 +56,12 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 	}
 
 	menuItems = append(menuItems, maps.Map{
+		"name":     "HTTP",
+		"url":      "/servers/server/settings/locations/http?serverId=" + serverIdString + "&locationId=" + locationIdString,
+		"isActive": secondMenuItem == "http",
+	})
+
+	menuItems = append(menuItems, maps.Map{
 		"name":     "Web设置",
 		"url":      "/servers/server/settings/locations/web?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "web",

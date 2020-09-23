@@ -111,6 +111,9 @@ tbody {
 .table td {
   font-size: 0.9em !important;
 }
+.table tr.active td {
+  background: rgba(0, 0, 0, 0.01) !important;
+}
 p.comment,
 div.comment {
   color: rgba(0, 0, 0, 0.3);

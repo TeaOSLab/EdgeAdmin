@@ -9,7 +9,7 @@
 	<div class="right-box tiny">
 		<form class="ui form" data-tea-action="$"  data-tea-success="success">
 			<input type="hidden" name="webId" :value="webId"/>
-			<http-firewall-config-box :v-firewall-config="firewallConfig" :v-firewall-policies="firewallPolicies"></http-firewall-config-box>
+			<http-firewall-config-box :v-firewall-config="firewallConfig" :v-firewall-policies="firewallPolicies" :v-is-location="true"></http-firewall-config-box>
 			<submit-btn></submit-btn>
 		</form>
 	</div>
