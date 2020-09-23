@@ -27,7 +27,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	this.Data["webId"] = webConfig.Id
-	this.Data["charset"] = webConfig.Charset
+	this.Data["charsetConfig"] = webConfig.Charset
 
 	this.Data["usualCharsets"] = configutils.UsualCharsets
 	this.Data["allCharsets"] = configutils.AllCharsets
@@ -36,14 +36,14 @@ func (this *IndexAction) RunGet(params struct {
 }
 
 func (this *IndexAction) RunPost(params struct {
-	WebId   int64
-	Charset string
+	WebId       int64
+	CharsetJSON []byte
 
 	Must *actions.Must
 }) {
 	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebCharset(this.AdminContext(), &pb.UpdateHTTPWebCharsetRequest{
-		WebId:   params.WebId,
-		Charset: params.Charset,
+		WebId:       params.WebId,
+		CharsetJSON: params.CharsetJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)

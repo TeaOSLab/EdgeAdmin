@@ -27,7 +27,7 @@ func (this *IndexAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	
+
 	this.Data["webId"] = webConfig.Id
 
 	gzipId := int64(0)
@@ -52,6 +52,15 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	this.Data["gzipConfig"] = gzipConfig
+
+	if webConfig.GzipRef == nil {
+		webConfig.GzipRef = &serverconfigs.HTTPGzipRef{
+			IsPrior: false,
+			IsOn:    false,
+			GzipId:  0,
+		}
+	}
+	this.Data["gzipRef"] = webConfig.GzipRef
 
 	this.Show()
 }

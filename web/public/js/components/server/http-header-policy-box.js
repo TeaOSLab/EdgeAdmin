@@ -1,10 +1,29 @@
 Vue.component("http-header-policy-box", {
-	props: ["v-request-header-policy", "v-response-header-policy", "v-params"],
+	props: ["v-request-header-policy", "v-request-header-ref", "v-response-header-policy", "v-response-header-ref", "v-params", "v-is-location"],
 	data: function () {
 		let type = "request"
 		let hash = window.location.hash
 		if (hash == "#response") {
 			type = "response"
+		}
+
+		// ref
+		let requestHeaderRef = this.vRequestHeaderRef
+		if (requestHeaderRef == null) {
+			requestHeaderRef = {
+				isPrior: false,
+				isOn: true,
+				headerPolicyId: 0
+			}
+		}
+
+		let responseHeaderRef = this.vResponseHeaderRef
+		if (responseHeaderRef == null) {
+			responseHeaderRef = {
+				isPrior: false,
+				isOn: true,
+				headerPolicyId: 0
+			}
 		}
 
 		// 请求相关
@@ -37,6 +56,9 @@ Vue.component("http-header-policy-box", {
 
 		return {
 			type: type,
+			typeName: (type == "request") ? "请求" : "响应",
+			requestHeaderRef: requestHeaderRef,
+			responseHeaderRef: responseHeaderRef,
 			requestSettingHeaders: requestSettingHeaders,
 			requestDeletingHeaders: requestDeletingHeaders,
 			responseSettingHeaders: responseSettingHeaders,
@@ -47,6 +69,7 @@ Vue.component("http-header-policy-box", {
 		selectType: function (type) {
 			this.type = type
 			window.location.hash = "#" + type
+			window.location.reload()
 		},
 		addSettingHeader: function (policyId) {
 			teaweb.popup("/servers/server/settings/headers/createSetPopup?" + this.vParams + "&headerPolicyId=" + policyId, {
@@ -101,9 +124,19 @@ Vue.component("http-header-policy-box", {
 	
 	<div class="margin"></div>
 	
+	<input type="hidden" name="type" :value="type"/>
+	
 	<!-- 请求 -->
-	<div v-if="type == 'request'">
-		<h3>设置Header <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)">[添加新Header]</a></h3>
+	<div v-if="vIsLocation && type == 'request'">
+		<input type="hidden" name="requestHeaderJSON" :value="JSON.stringify(requestHeaderRef)"/>
+		<table class="ui table definition selectable">
+			<prior-checkbox :v-config="requestHeaderRef"></prior-checkbox>
+		</table>
+		<submit-btn></submit-btn>
+	</div>
+	
+	<div v-if="(!vIsLocation || requestHeaderRef.isPrior) && type == 'request'">
+		<h3>设置请求Header <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)">[添加新Header]</a></h3>
 		<p class="comment" v-if="requestSettingHeaders.length == 0">暂时还没有Header。</p>
 		<table class="ui table selectable" v-if="requestSettingHeaders.length > 0">
 			<thead>
@@ -120,7 +153,7 @@ Vue.component("http-header-policy-box", {
 			</tr>
 		</table>
 		
-		<h3>删除Header</h3>
+		<h3>删除请求Header</h3>
 		<p class="comment">这里可以设置需要从请求中删除的Header。</p>
 		
 		<table class="ui table definition selectable">
@@ -136,8 +169,16 @@ Vue.component("http-header-policy-box", {
 	</div>
 	
 	<!-- 响应 -->
+	<div v-if="vIsLocation && type == 'response'">
+		<input type="hidden" name="responseHeaderJSON" :value="JSON.stringify(responseHeaderRef)"/>
+		<table class="ui table definition selectable">
+			<prior-checkbox :v-config="responseHeaderRef"></prior-checkbox>
+		</table>
+		<submit-btn></submit-btn>
+	</div>
+	
 	<div v-if="type == 'response'">
-		<h3>设置Header <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)">[添加新Header]</a></h3>
+		<h3>设置响应Header <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)">[添加新Header]</a></h3>
 		<p class="comment" v-if="responseSettingHeaders.length == 0">暂时还没有Header。</p>
 		<table class="ui table selectable" v-if="responseSettingHeaders.length > 0">
 			<thead>
@@ -154,7 +195,7 @@ Vue.component("http-header-policy-box", {
 			</tr>
 		</table>
 		
-		<h3>删除Header</h3>
+		<h3>删除响应Header</h3>
 		<p class="comment">这里可以设置需要从响应中删除的Header。</p>
 		
 		<table class="ui table definition selectable">
@@ -168,6 +209,6 @@ Vue.component("http-header-policy-box", {
 			</td>
 		</table>
 	</div>
-	
+	<div class="margin"></div>
 </div>`
 })

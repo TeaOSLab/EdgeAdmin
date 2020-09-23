@@ -2,6 +2,10 @@ Tea.context(function () {
 	this.moreOptionsVisible = false;
 	this.globalChangedClusters = [];
 
+	if (typeof this.leftMenuItemIsDisabled == "undefined") {
+		this.leftMenuItemIsDisabled = false
+	}
+
 	this.$delay(function () {
 		if (this.$refs.focus != null) {
 			this.$refs.focus.focus();

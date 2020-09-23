@@ -3,6 +3,7 @@ package http
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/serverutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -43,12 +44,24 @@ func (this *IndexAction) RunGet(params struct {
 		"addresses": httpConfig.Listen,
 	}
 
+	// 跳转相关设置
+	webConfig, err := webutils.FindWebConfigWithServerId(this.Parent(), params.ServerId)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["webId"] = webConfig.Id
+	this.Data["redirectToHTTPSConfig"] = webConfig.RedirectToHttps
+
 	this.Show()
 }
 
 func (this *IndexAction) RunPost(params struct {
 	ServerId  int64
 	Addresses string
+
+	WebId               int64
+	RedirectToHTTPSJSON []byte
 
 	Must *actions.Must
 }) {
@@ -83,6 +96,17 @@ func (this *IndexAction) RunPost(params struct {
 	_, err = this.RPC().ServerRPC().UpdateServerHTTP(this.AdminContext(), &pb.UpdateServerHTTPRequest{
 		ServerId: params.ServerId,
 		Config:   configData,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	// 设置跳转到HTTPS
+	// TODO 校验设置
+	_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebRedirectToHTTPS(this.AdminContext(), &pb.UpdateHTTPWebRedirectToHTTPSRequest{
+		WebId:               params.WebId,
+		RedirectToHTTPSJSON: params.RedirectToHTTPSJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)
