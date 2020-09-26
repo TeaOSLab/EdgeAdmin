@@ -36,6 +36,7 @@ type RPCClient struct {
 	httpCachePolicyClients     []pb.HTTPCachePolicyServiceClient
 	httpFirewallPolicyClients  []pb.HTTPFirewallPolicyServiceClient
 	httpLocationClients        []pb.HTTPLocationServiceClient
+	httpWebsocketClients       []pb.HTTPWebsocketServiceClient
 }
 
 func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
@@ -61,6 +62,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 	httpCachePolicyClients := []pb.HTTPCachePolicyServiceClient{}
 	httpFirewallPolicyClients := []pb.HTTPFirewallPolicyServiceClient{}
 	httpLocationClients := []pb.HTTPLocationServiceClient{}
+	httpWebsocketClients := []pb.HTTPWebsocketServiceClient{}
 
 	conns := []*grpc.ClientConn{}
 	for _, endpoint := range apiConfig.RPC.Endpoints {
@@ -94,6 +96,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		httpCachePolicyClients = append(httpCachePolicyClients, pb.NewHTTPCachePolicyServiceClient(conn))
 		httpFirewallPolicyClients = append(httpFirewallPolicyClients, pb.NewHTTPFirewallPolicyServiceClient(conn))
 		httpLocationClients = append(httpLocationClients, pb.NewHTTPLocationServiceClient(conn))
+		httpWebsocketClients = append(httpWebsocketClients, pb.NewHTTPWebsocketServiceClient(conn))
 	}
 
 	return &RPCClient{
@@ -116,6 +119,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		httpCachePolicyClients:     httpCachePolicyClients,
 		httpFirewallPolicyClients:  httpFirewallPolicyClients,
 		httpLocationClients:        httpLocationClients,
+		httpWebsocketClients:       httpWebsocketClients,
 	}, nil
 }
 
@@ -241,6 +245,13 @@ func (this *RPCClient) HTTPFirewallPolicyRPC() pb.HTTPFirewallPolicyServiceClien
 func (this *RPCClient) HTTPLocationRPC() pb.HTTPLocationServiceClient {
 	if len(this.httpLocationClients) > 0 {
 		return this.httpLocationClients[rands.Int(0, len(this.httpLocationClients)-1)]
+	}
+	return nil
+}
+
+func (this *RPCClient) HTTPWebsocketRPC() pb.HTTPWebsocketServiceClient {
+	if len(this.httpWebsocketClients) > 0 {
+		return this.httpWebsocketClients[rands.Int(0, len(this.httpWebsocketClients)-1)]
 	}
 	return nil
 }
