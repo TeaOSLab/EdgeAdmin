@@ -188,7 +188,21 @@ func (this *CreateAction) RunPost(params struct {
 	// Web地址
 	switch params.ServerType {
 	case serverconfigs.ServerTypeHTTPWeb:
-		webResp, err := this.RPC().HTTPWebRPC().CreateHTTPWeb(this.AdminContext(), &pb.CreateHTTPWebRequest{Root: params.WebRoot})
+		var rootJSON []byte
+		var err error
+		if len(params.WebRoot) > 0 {
+			rootConfig := &serverconfigs.HTTPRootConfig{}
+			rootConfig.IsOn = true
+			rootConfig.Dir = params.WebRoot
+			rootConfig.Indexes = []string{"index.html", "index.htm"}
+			rootJSON, err = json.Marshal(rootConfig)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+		}
+
+		webResp, err := this.RPC().HTTPWebRPC().CreateHTTPWeb(this.AdminContext(), &pb.CreateHTTPWebRequest{RootJSON: rootJSON})
 		if err != nil {
 			this.ErrorPage(err)
 			return

@@ -25,7 +25,8 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 
-	this.Data["webConfig"] = webConfig
+	this.Data["webId"] = webConfig.Id
+	this.Data["rootConfig"] = webConfig.Root
 
 	this.Show()
 }
@@ -33,14 +34,14 @@ func (this *IndexAction) RunGet(params struct {
 func (this *IndexAction) RunPost(params struct {
 	ServerId int64
 	WebId    int64
-	Root     string
+	RootJSON []byte
 
 	Must *actions.Must
 }) {
 
 	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWeb(this.AdminContext(), &pb.UpdateHTTPWebRequest{
-		WebId: params.WebId,
-		Root:  params.Root,
+		WebId:    params.WebId,
+		RootJSON: params.RootJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)

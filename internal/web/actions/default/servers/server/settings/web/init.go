@@ -13,6 +13,7 @@ func init() {
 			Helper(serverutils.NewServerHelper()).
 			Prefix("/servers/server/settings/web").
 			GetPost("", new(IndexAction)).
+			GetPost("/createIndex", new(CreateIndexAction)).
 			EndAll()
 	})
 }
