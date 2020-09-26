@@ -60,14 +60,12 @@ func (this *CreateSetPopupAction) RunPost(params struct {
 	headerId := createHeaderResp.HeaderId
 
 	// 保存
-	policyConfig.SetHeaders = append(policyConfig.SetHeaders, &shared.HTTPHeaderConfig{
-		Id:     headerId,
-		IsOn:   true,
-		Name:   params.Name,
-		Value:  params.Value,
-		Status: nil,
+	refs := policyConfig.SetHeaderRefs
+	refs = append(refs, &shared.HTTPHeaderRef{
+		IsOn:     true,
+		HeaderId: headerId,
 	})
-	setHeadersJSON, err := json.Marshal(policyConfig.SetHeaders)
+	refsJSON, err := json.Marshal(refs)
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -75,7 +73,7 @@ func (this *CreateSetPopupAction) RunPost(params struct {
 
 	_, err = this.RPC().HTTPHeaderPolicyRPC().UpdateHTTPHeaderPolicySettingHeaders(this.AdminContext(), &pb.UpdateHTTPHeaderPolicySettingHeadersRequest{
 		HeaderPolicyId: params.HeaderPolicyId,
-		HeadersJSON:    setHeadersJSON,
+		HeadersJSON:    refsJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)

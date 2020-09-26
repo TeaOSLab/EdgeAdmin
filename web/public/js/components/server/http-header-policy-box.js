@@ -53,7 +53,7 @@ Vue.component("http-header-policy-box", {
 				responseDeletingHeaders = responsePolicy.deleteHeaders
 			}
 		}
-
+		
 		return {
 			type: type,
 			typeName: (type == "request") ? "请求" : "响应",

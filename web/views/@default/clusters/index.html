@@ -8,13 +8,21 @@
 		<tr>
 			<th>集群名称</th>
 			<th>节点数量</th>
+			<th>在线节点数量</th>
 			<th>默认认证</th>
 			<th class="two op">操作</th>
 		</tr>
 	</thead>
 	<tr v-for="cluster in clusters">
 		<td>{{cluster.name}}</td>
-		<td>{{cluster.countNodes}}</td>
+		<td>
+			<a :href="'/clusters/cluster?clusterId=' + cluster.id" v-if="cluster.countAllNodes > 0">{{cluster.countAllNodes}}</a>
+			<span class="disabled" v-else="">-</span>
+		</td>
+		<td>
+			<a :href="'/clusters/cluster?clusterId=' + cluster.id + '&activeState=1'" v-if="cluster.countActiveNodes > 0"><span class="green">{{cluster.countActiveNodes}}</span></a>
+			<span class="disabled" v-else>-</span>
+		</td>
 		<td>
 			<span v-if="cluster.hasGrant" class="green">Y</span>
 			<span v-else class="disabled">N</span>

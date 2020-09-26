@@ -29,7 +29,7 @@ func (this *DeleteDeletingHeaderAction) RunPost(params struct {
 	}
 
 	headerNames := []string{}
-	for _, h := range policyConfig.DeletedHeaders {
+	for _, h := range policyConfig.DeleteHeaders {
 		if h == params.HeaderName {
 			continue
 		}

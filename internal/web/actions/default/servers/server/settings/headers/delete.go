@@ -33,9 +33,9 @@ func (this *DeleteAction) RunPost(params struct {
 
 	switch params.Type {
 	case "addHeader":
-		result := []*shared.HTTPHeaderConfig{}
-		for _, h := range policyConfig.AddHeaders {
-			if h.Id != params.HeaderId {
+		result := []*shared.HTTPHeaderRef{}
+		for _, h := range policyConfig.AddHeaderRefs {
+			if h.HeaderId != params.HeaderId {
 				result = append(result, h)
 			}
 		}
@@ -53,9 +53,9 @@ func (this *DeleteAction) RunPost(params struct {
 			return
 		}
 	case "setHeader":
-		result := []*shared.HTTPHeaderConfig{}
-		for _, h := range policyConfig.SetHeaders {
-			if h.Id != params.HeaderId {
+		result := []*shared.HTTPHeaderRef{}
+		for _, h := range policyConfig.SetHeaderRefs {
+			if h.HeaderId != params.HeaderId {
 				result = append(result, h)
 			}
 		}
@@ -73,9 +73,9 @@ func (this *DeleteAction) RunPost(params struct {
 			return
 		}
 	case "replace":
-		result := []*shared.HTTPHeaderConfig{}
-		for _, h := range policyConfig.ReplaceHeaders {
-			if h.Id != params.HeaderId {
+		result := []*shared.HTTPHeaderRef{}
+		for _, h := range policyConfig.ReplaceHeaderRefs {
+			if h.HeaderId != params.HeaderId {
 				result = append(result, h)
 			}
 		}
@@ -93,9 +93,9 @@ func (this *DeleteAction) RunPost(params struct {
 			return
 		}
 	case "addTrailer":
-		result := []*shared.HTTPHeaderConfig{}
-		for _, h := range policyConfig.AddTrailers {
-			if h.Id != params.HeaderId {
+		result := []*shared.HTTPHeaderRef{}
+		for _, h := range policyConfig.AddTrailerRefs {
+			if h.HeaderId != params.HeaderId {
 				result = append(result, h)
 			}
 		}

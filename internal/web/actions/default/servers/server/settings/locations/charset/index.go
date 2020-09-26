@@ -3,8 +3,8 @@ package charset
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
-	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/configutils"
 	"github.com/iwind/TeaGo/actions"
 )
 

@@ -38,11 +38,21 @@ Tea.context(function () {
 	 */
 	this.checkClusterChanges = function () {
 		this.$get("/common/changedClusters")
+			.params({
+				isNotifying: (this.globalChangedClusters.length > 0) ? 1 : 0
+			})
+			.timeout(60)
 			.success(function (resp) {
 				this.globalChangedClusters = resp.data.clusters;
-			}).fail(function () {
-			this.globalChangedClusters = [];
-		})
+			})
+			.fail(function () {
+				this.globalChangedClusters = [];
+			})
+			.done(function () {
+				this.$delay(function () {
+					this.checkClusterChanges()
+				}, 3000)
+			})
 	};
 
 	/**
