@@ -36,6 +36,9 @@ Vue.component("http-web-root-box", {
 		},
 		removeIndex: function (i) {
 			this.rootConfig.indexes.$remove(i)
+		},
+		isOn: function () {
+			return (!this.vIsLocation || this.rootConfig.isPrior) && this.rootConfig.isOn
 		}
 	},
 	template: `<div>
@@ -44,7 +47,7 @@ Vue.component("http-web-root-box", {
 		<prior-checkbox :v-config="rootConfig" v-if="vIsLocation"></prior-checkbox>
 		<tbody v-show="!vIsLocation || rootConfig.isPrior">
 			<tr>
-				<td>是否开启</td>
+				<td class="title">是否开启</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="rootConfig.isOn"/>
@@ -52,6 +55,8 @@ Vue.component("http-web-root-box", {
 					</div>
 				</td>
 			</tr>
+		</tbody>
+		<tbody v-show="isOn()">
 			<tr>
 				<td class="title">文档根目录</td>
 				<td>
@@ -60,9 +65,9 @@ Vue.component("http-web-root-box", {
 				</td>
 			</tr>
 		</tbody>
-		<more-options-tbody @change="changeAdvancedVisible" v-if="!vIsLocation || rootConfig.isPrior"></more-options-tbody>
+		<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
 
-		<tbody v-show="(!vIsLocation || rootConfig.isPrior) && advancedVisible">
+		<tbody v-show="isOn() && advancedVisible">
 			<tr>
 				<td>首页文件</td>
 				<td>
