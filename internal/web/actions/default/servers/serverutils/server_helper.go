@@ -152,7 +152,6 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"url":      "/servers/server/settings/serverNames?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "serverName",
 		})
-
 		menuItems = append(menuItems, maps.Map{
 			"name":     "HTTP",
 			"url":      "/servers/server/settings/http?serverId=" + serverIdString,
@@ -163,83 +162,80 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"url":      "/servers/server/settings/https?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "https",
 		})
-
 		menuItems = append(menuItems, maps.Map{
 			"name":     "Web设置",
 			"url":      "/servers/server/settings/web?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "web",
 		})
-
 		menuItems = append(menuItems, maps.Map{
 			"name":     "反向代理",
 			"url":      "/servers/server/settings/reverseProxy?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "reverseProxy",
 		})
-
 		menuItems = append(menuItems, maps.Map{
 			"name":     "路径规则",
 			"url":      "/servers/server/settings/locations?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "locations",
 		})
-
+		menuItems = append(menuItems, maps.Map{
+			"name":     "重写规则",
+			"url":      "/servers/server/settings/rewrite?serverId=" + serverIdString,
+			"isActive": secondMenuItem == "rewrite",
+		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "访问控制",
 			"url":      "/servers/server/settings/access?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "access",
 		})
-
 		menuItems = append(menuItems, maps.Map{
 			"name":     "WAF",
 			"url":      "/servers/server/settings/waf?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "waf",
 		})
-
 		menuItems = append(menuItems, maps.Map{
 			"name":     "缓存",
 			"url":      "/servers/server/settings/cache?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "cache",
 		})
-
 		menuItems = append(menuItems, maps.Map{
 			"name":     "-",
 			"url":      "",
 			"isActive": false,
 		})
-
 		menuItems = append(menuItems, maps.Map{
 			"name":     "字符编码",
 			"url":      "/servers/server/settings/charset?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "charset",
 		})
-
 		menuItems = append(menuItems, maps.Map{
 			"name":     "访问日志",
 			"url":      "/servers/server/settings/accessLog?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "accessLog",
 		})
-
 		menuItems = append(menuItems, maps.Map{
 			"name":     "统计",
 			"url":      "/servers/server/settings/stat?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "stat",
 		})
-
 		menuItems = append(menuItems, maps.Map{
 			"name":     "Gzip压缩",
 			"url":      "/servers/server/settings/gzip?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "gzip",
 		})
-
 		menuItems = append(menuItems, maps.Map{
 			"name":     "特殊页面",
 			"url":      "/servers/server/settings/pages?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "pages",
 		})
-
 		menuItems = append(menuItems, maps.Map{
 			"name":     "HTTP Header",
 			"url":      "/servers/server/settings/headers?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "header",
+		})
+		menuItems = append(menuItems, maps.Map{
+			"name":     "Websocket",
+			"url":      "/servers/server/settings/websocket?serverId=" + serverIdString,
+			"isActive": secondMenuItem == "websocket",
 		})
 	} else if serverConfig.IsTCP() {
 		menuItems = append(menuItems, maps.Map{
