@@ -54,83 +54,80 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 			"isActive": secondMenuItem == "basic",
 		},
 	}
-
 	menuItems = append(menuItems, maps.Map{
 		"name":     "HTTP",
 		"url":      "/servers/server/settings/locations/http?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "http",
 	})
-
 	menuItems = append(menuItems, maps.Map{
 		"name":     "Web设置",
 		"url":      "/servers/server/settings/locations/web?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "web",
 	})
-
 	menuItems = append(menuItems, maps.Map{
 		"name":     "反向代理",
 		"url":      "/servers/server/settings/locations/reverseProxy?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "reverseProxy",
 	})
-
+	menuItems = append(menuItems, maps.Map{
+		"name":     "重写规则",
+		"url":      "/servers/server/settings/locations/rewrite?serverId=" + serverIdString + "&locationId=" + locationIdString,
+		"isActive": secondMenuItem == "rewrite",
+	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "访问控制",
 		"url":      "/servers/server/settings/locations/access?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "access",
 	})
-
 	menuItems = append(menuItems, maps.Map{
 		"name":     "WAF",
 		"url":      "/servers/server/settings/locations/waf?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "waf",
 	})
-
 	menuItems = append(menuItems, maps.Map{
 		"name":     "缓存",
 		"url":      "/servers/server/settings/locations/cache?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "cache",
 	})
-
 	menuItems = append(menuItems, maps.Map{
 		"name":     "-",
 		"url":      "",
 		"isActive": false,
 	})
-
 	menuItems = append(menuItems, maps.Map{
 		"name":     "字符编码",
 		"url":      "/servers/server/settings/locations/charset?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "charset",
 	})
-
 	menuItems = append(menuItems, maps.Map{
 		"name":     "访问日志",
 		"url":      "/servers/server/settings/locations/accessLog?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "accessLog",
 	})
-
 	menuItems = append(menuItems, maps.Map{
 		"name":     "统计",
 		"url":      "/servers/server/settings/locations/stat?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "stat",
 	})
-
 	menuItems = append(menuItems, maps.Map{
 		"name":     "Gzip压缩",
 		"url":      "/servers/server/settings/locations/gzip?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "gzip",
 	})
-
 	menuItems = append(menuItems, maps.Map{
 		"name":     "特殊页面",
 		"url":      "/servers/server/settings/locations/pages?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "pages",
 	})
-
 	menuItems = append(menuItems, maps.Map{
 		"name":     "HTTP Header",
 		"url":      "/servers/server/settings/locations/headers?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "header",
+	})
+	menuItems = append(menuItems, maps.Map{
+		"name":     "Websocket",
+		"url":      "/servers/server/settings/locations/websocket?serverId=" + serverIdString + "&locationId=" + locationIdString,
+		"isActive": secondMenuItem == "websocket",
 	})
 
 	return menuItems

@@ -1,0 +1,15 @@
+{$layout "layout_popup"}
+
+<h3>添加来源域</h3>
+<form class="ui form" data-tea-success="success" data-tea-action="$">
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">来源域 *</td>
+			<td>
+				<input type="text" name="origin" maxlength="200" placeholder="比如 example.com" ref="focus"/>
+				<p class="comment">允许客户端通过Websocket可以访问的域名，可以使用星号通配符（*）来表示匹配一组域名，比如www.example.com *.google.com</p>
+			</td>
+		</tr>
+	</table>
+	<submit-btn></submit-btn>
+</form>
