@@ -1,11 +1,12 @@
 Vue.component("http-pages-and-shutdown-box", {
-	props: ["v-pages", "v-shutdown-config"],
+	props: ["v-pages", "v-shutdown-config", "v-is-location"],
 	data: function () {
 		let pages = []
 		if (this.vPages != null) {
 			pages = this.vPages
 		}
 		let shutdownConfig = {
+			isPrior: false,
 			isOn: false,
 			url: "",
 			status: 0
@@ -84,25 +85,33 @@ Vue.component("http-pages-and-shutdown-box", {
 		<td>临时关闭页面</td>
 		<td>
 			<div>
-				<div class="ui checkbox">
-					<input type="checkbox" value="1" v-model="shutdownConfig.isOn" />
-					<label></label>
-				</div>
-				<div v-show="shutdownConfig.isOn">
-					<table class="ui table selectable definition">
+				<table class="ui table selectable definition">
+					<prior-checkbox :v-config="shutdownConfig" v-if="vIsLocation"></prior-checkbox>
+					<tbody v-show="!vIsLocation || shutdownConfig.isPrior">
+						<tr>
+							<td class="title">是否开启</td>
+							<td>
+								<div class="ui checkbox">
+									<input type="checkbox" value="1" v-model="shutdownConfig.isOn" />
+									<label></label>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+					<tbody v-show="(!vIsLocation || shutdownConfig.isPrior) && shutdownConfig.isOn">
 						<tr>
 							<td class="title">页面URL</td>
 							<td>
 								<input type="text" v-model="shutdownConfig.url" placeholder="页面文件路径或一个完整URL"/>
-								<p class="comment">页面文件是相对于节点安装目录的页面文件比如web/pages/40x.html，或者一个完整的URL。</p>
+								<p class="comment">页面文件是相对于节点安装目录的页面文件比如pages/40x.html，或者一个完整的URL。</p>
 							</td>
 						</tr>
 						<tr>
 							<td>状态码</td>
 							<td><input type="text" size="3" maxlength="3" name="shutdownStatus" style="width:5.2em" placeholder="状态码" v-model="shutdownStatus"/></td>
 						</tr>
-					</table>
-				</div>
+					</tbody>
+				</table>
 				<p class="comment">开启临时关闭页面时，所有请求的响应都会显示此页面。可用于临时升级网站使用。</p>
 			</div>
 		</td>

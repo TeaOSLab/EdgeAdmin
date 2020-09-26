@@ -9,6 +9,8 @@
 			<th>服务名称</th>
 			<th>服务类型</th>
 			<th>部署集群</th>
+			<th>运行节点数</th>
+			<th>未运行节点数</th>
 			<th>端口</th>
 			<th>状态</th>
 			<th class="two op">操作</th>
@@ -18,13 +20,17 @@
 		<td>{{server.name}}</td>
 		<td>{{server.serverTypeName}}</td>
 		<td>{{server.cluster.name}}</td>
+		<td><span class="disabled">[暂无]</span></td>
+		<td><span class="disabled">[暂无]</span></td>
 		<td>
 			<span v-if="server.ports.length == 0">-</span>
 			<div v-for="port in server.ports" class="ui label small">
 				{{port.portRange}}<span class="small">（{{port.protocol}}）</span>
 			</div>
 		</td>
-		<td></td>
+		<td>
+			<span class="disabled">[暂无]</span>
+		</td>
 		<td>
 			<a :href="'/servers/server?serverId=' + server.id">详情</a>
 		</td>

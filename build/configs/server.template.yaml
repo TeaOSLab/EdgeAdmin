@@ -4,7 +4,7 @@ env: prod
 # http
 http:
   "on": true
-  listen: [ "0.0.0.0:8001" ]
+  listen: [ "0.0.0.0:7788" ]
 
 # https
 https:

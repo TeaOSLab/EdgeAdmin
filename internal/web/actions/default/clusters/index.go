@@ -1,9 +1,11 @@
 package clusters
 
 import (
-	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/iwind/TeaGo/types"
 )
 
 type IndexAction struct {
@@ -35,19 +37,30 @@ func (this *IndexAction) RunGet(params struct{}) {
 			return
 		}
 		for _, cluster := range clustersResp.Clusters {
-			// 节点数量
+			// 全部节点数量
 			countNodesResp, err := this.RPC().NodeRPC().CountAllEnabledNodesMatch(this.AdminContext(), &pb.CountAllEnabledNodesMatchRequest{ClusterId: cluster.Id})
 			if err != nil {
 				this.ErrorPage(err)
 				return
 			}
 
+			// 在线节点
+			countActiveNodesResp, err := this.RPC().NodeRPC().CountAllEnabledNodesMatch(this.AdminContext(), &pb.CountAllEnabledNodesMatchRequest{
+				ClusterId:   cluster.Id,
+				ActiveState: types.Int32(configutils.BoolStateYes),
+			})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+
 			clusterMaps = append(clusterMaps, maps.Map{
-				"id":         cluster.Id,
-				"name":       cluster.Name,
-				"installDir": cluster.InstallDir,
-				"hasGrant":   cluster.GrantId > 0,
-				"countNodes": countNodesResp.Count,
+				"id":               cluster.Id,
+				"name":             cluster.Name,
+				"installDir":       cluster.InstallDir,
+				"hasGrant":         cluster.GrantId > 0,
+				"countAllNodes":    countNodesResp.Count,
+				"countActiveNodes": countActiveNodesResp.Count,
 			})
 		}
 	}

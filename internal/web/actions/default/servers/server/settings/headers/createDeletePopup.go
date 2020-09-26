@@ -42,7 +42,7 @@ func (this *CreateDeletePopupAction) RunPost(params struct {
 		return
 	}
 
-	deleteHeaders := policyConfig.DeletedHeaders
+	deleteHeaders := policyConfig.DeleteHeaders
 	deleteHeaders = append(deleteHeaders, params.Name)
 	_, err = this.RPC().HTTPHeaderPolicyRPC().UpdateHTTPHeaderPolicyDeletingHeaders(this.AdminContext(), &pb.UpdateHTTPHeaderPolicyDeletingHeadersRequest{
 		HeaderPolicyId: params.HeaderPolicyId,

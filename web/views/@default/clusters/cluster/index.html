@@ -18,6 +18,16 @@
 				</select>
 			</div>
 			<div class="ui field">
+				在线状态：
+			</div>
+			<div class="ui field">
+				<select class="ui dropdown" name="activeState" v-model="activeState">
+					<option value="0">[全部]</option>
+					<option value="1">在线</option>
+					<option value="2">不在线</option>
+				</select>
+			</div>
+			<div class="ui field">
 				<button class="ui button" type="submit">搜索</button>
 			</div>
 		</div>
@@ -63,7 +73,10 @@
 			</td>
 			<td>
 				<div v-if="node.isInstalled">
-					<span v-if="node.status.isActive"><span class="green">运行中</span></span>
+					<div v-if="node.status.isActive">
+						<span v-if="!node.isSynced" class="red">同步中</span>
+						<span v-else class="green">运行中</span>
+					</div>
 					<span v-else-if="node.status.updatedAt > 0" class="red">已断开</span>
 					<span v-else-if="node.status.updatedAt == 0" class="red">未连接</span>
 				</div>

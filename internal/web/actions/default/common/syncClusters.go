@@ -1,10 +1,11 @@
 package common
 
 import (
-	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
+// 同步集群
 type SyncClustersAction struct {
 	actionutils.ParentAction
 }

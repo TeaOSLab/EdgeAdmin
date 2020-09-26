@@ -6,7 +6,9 @@ Tea.context(function () {
 					"serverId": serverId
 				})
 				.success(function () {
-					teaweb.successURL("删除成功", "/servers")
+					teaweb.success("删除成功", function () {
+						window.location = "/servers"
+					})
 				})
 		})
 	}
