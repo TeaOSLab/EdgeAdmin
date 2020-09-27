@@ -5,7 +5,6 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
-	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 )
 
@@ -39,6 +38,7 @@ func (this *IndexAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
+	this.Data["reverseProxyRef"] = reverseProxyRef
 
 	reverseProxy := &serverconfigs.ReverseProxyConfig{}
 	err = json.Unmarshal(reverseProxyResp.ReverseProxyJSON, reverseProxy)
@@ -46,10 +46,9 @@ func (this *IndexAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
+	this.Data["reverseProxyConfig"] = reverseProxy
 
 	this.Data["serverType"] = serverType
-	this.Data["reverseProxyRef"] = reverseProxyRef
-	this.Data["reverseProxyConfig"] = reverseProxy
 
 	primaryOriginMaps := []maps.Map{}
 	backupOriginMaps := []maps.Map{}
@@ -73,24 +72,4 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["backupOrigins"] = backupOriginMaps
 
 	this.Show()
-}
-
-func (this *IndexAction) RunPost(params struct {
-	ServerId            int64
-	ReverseProxyRefJSON []byte
-
-	Must *actions.Must
-}) {
-	// TODO 校验配置
-
-	_, err := this.RPC().ServerRPC().UpdateServerReverseProxy(this.AdminContext(), &pb.UpdateServerReverseProxyRequest{
-		ServerId:         params.ServerId,
-		ReverseProxyJSON: params.ReverseProxyRefJSON,
-	})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-
-	this.Success()
 }

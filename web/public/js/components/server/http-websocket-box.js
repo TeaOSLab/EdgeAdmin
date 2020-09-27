@@ -91,7 +91,7 @@ Vue.component("http-websocket-box", {
 		</tbody>
 		<tbody v-show="isOn()">
 			<tr>
-				<td>允许所有来源域<em>（Origin）</em></td>
+				<td class="color-border">允许所有来源域<em>（Origin）</em></td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="websocketConfig.allowAllOrigins"/>
@@ -103,7 +103,7 @@ Vue.component("http-websocket-box", {
 		</tbody>
 		<tbody v-show="isOn() && !websocketConfig.allowAllOrigins">
 			<tr>
-				<td>允许的来源域列表<em>（Origin）</em></td>
+				<td class="color-border">允许的来源域列表<em>（Origin）</em></td>
 				<td>
 					<div v-if="websocketConfig.allowedOrigins.length > 0">
 						<div class="ui label tiny" v-for="(origin, index) in websocketConfig.allowedOrigins">
@@ -119,7 +119,7 @@ Vue.component("http-websocket-box", {
 		<more-options-tbody @change="changeAdvancedVisible" v-show="isOn()"></more-options-tbody>
 		<tbody v-show="isOn() && advancedVisible">
 			<tr>
-				<td>是否传递请求来源域</td>
+				<td class="color-border">是否传递请求来源域</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="websocketConfig.requestSameOrigin"/>
@@ -131,7 +131,7 @@ Vue.component("http-websocket-box", {
 		</tbody>
 		<tbody v-show="isOn() && advancedVisible && !websocketConfig.requestSameOrigin">
 			<tr>
-				<td>指定传递的来源域</td>
+				<td class="color-border">指定传递的来源域</td>
 				<td>
 					<input type="text" v-model="websocketConfig.requestOrigin" maxlength="200"/>
 					<p class="comment">指定向源站传递的<span class="ui label tiny">Origin</span>字段值。</p>

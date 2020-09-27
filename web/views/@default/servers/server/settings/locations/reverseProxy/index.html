@@ -8,17 +8,13 @@
 	<div class="right-box tiny">
 		{$template "menu"}
 		<div class="margin"></div>
-		<form class="ui form" data-tea-action="$" data-tea-success="success">
-			<input type="hidden" name="locationId" :value="locationId"/>
-			<reverse-proxy-box :v-reverse-proxy-ref="reverseProxyRef" :v-is-location="true"></reverse-proxy-box>
-			<submit-btn></submit-btn>
-		</form>
-
-		<div v-if="reverseProxyRef.isPrior && reverseProxyRef.isOn">
-			<div class="ui divider"></div>
-			<origin-list-box :v-primary-origins="primaryOrigins" :v-backup-origins="backupOrigins"
-							 :v-server-type="serverType"
-							 :v-params="'type=server&serverId=' + serverId + '&reverseProxyId=' + reverseProxyConfig.id"></origin-list-box>
+		<div v-if="!reverseProxyRef.isPrior || !reverseProxyRef.isOn">
+			<div class="margin"></div>
+			<p class="ui message warning">当前代理服务没有开启，可以通过点击 <a :href="'/servers/server/settings/locations/reverseProxy/setting?serverId=' + serverId + '&locationId=' + locationId">[更多设置]</a> 开启 。</p>
 		</div>
+
+		<origin-list-box :v-primary-origins="primaryOrigins" :v-backup-origins="backupOrigins"
+						 :v-server-type="serverType"
+						 :v-params="'type=server&serverId=' + serverId + '&reverseProxyId=' + reverseProxyConfig.id"></origin-list-box>
 	</div>
 </div>
