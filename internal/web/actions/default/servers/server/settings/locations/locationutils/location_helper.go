@@ -2,6 +2,7 @@ package locationutils
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 	"net/http"
@@ -28,9 +29,9 @@ func (this *LocationHelper) BeforeAction(actionPtr actions.ActionWrapper) {
 	action.Data["mainMenu"] = "server"
 	action.Data["mainTab"] = "setting"
 	action.Data["secondMenuItem"] = "locations"
-	action.Data["tinyLeftMenuItems"] = this.createMenus(serverIdString, locationIdString, action.Data.GetString("tinyMenuItem"))
 
 	// 路径信息
+	var currentLocationConfig *serverconfigs.HTTPLocationConfig = nil
 	parentActionValue := reflect.ValueOf(actionPtr).Elem().FieldByName("ParentAction")
 	if parentActionValue.IsValid() {
 		parentAction, isOk := parentActionValue.Interface().(actionutils.ParentAction)
@@ -42,32 +43,41 @@ func (this *LocationHelper) BeforeAction(actionPtr actions.ActionWrapper) {
 			}
 			action.Data["locationId"] = locationId
 			action.Data["locationConfig"] = locationConfig
+			currentLocationConfig = locationConfig
 		}
 	}
+
+	// 左侧菜单
+	action.Data["tinyLeftMenuItems"] = this.createMenus(serverIdString, locationIdString, action.Data.GetString("tinyMenuItem"), currentLocationConfig)
 }
 
-func (this *LocationHelper) createMenus(serverIdString string, locationIdString string, secondMenuItem string) []maps.Map {
+func (this *LocationHelper) createMenus(serverIdString string, locationIdString string, secondMenuItem string, locationConfig *serverconfigs.HTTPLocationConfig) []maps.Map {
 	menuItems := []maps.Map{
-		{
-			"name":     "基本信息",
-			"url":      "/servers/server/settings/locations/location?serverId=" + serverIdString + "&locationId=" + locationIdString,
-			"isActive": secondMenuItem == "basic",
-		},
+
 	}
+	menuItems = append(menuItems, maps.Map{
+		"name":     "基本信息",
+		"url":      "/servers/server/settings/locations/location?serverId=" + serverIdString + "&locationId=" + locationIdString,
+		"isActive": secondMenuItem == "basic",
+		"isOff":    locationConfig != nil && !locationConfig.IsOn,
+	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "HTTP",
 		"url":      "/servers/server/settings/locations/http?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "http",
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.RedirectToHttps != nil && locationConfig.Web.RedirectToHttps.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "Web设置",
 		"url":      "/servers/server/settings/locations/web?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "web",
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.Root != nil && locationConfig.Web.Root.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "反向代理",
 		"url":      "/servers/server/settings/locations/reverseProxy?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "reverseProxy",
+		"isOn":     locationConfig != nil && locationConfig.ReverseProxyRef != nil && locationConfig.ReverseProxyRef.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "重写规则",
@@ -83,11 +93,13 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"name":     "WAF",
 		"url":      "/servers/server/settings/locations/waf?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "waf",
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.FirewallRef != nil && locationConfig.Web.FirewallRef.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "缓存",
 		"url":      "/servers/server/settings/locations/cache?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "cache",
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.CacheRef != nil && locationConfig.Web.CacheRef.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "-",
@@ -98,36 +110,43 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"name":     "字符编码",
 		"url":      "/servers/server/settings/locations/charset?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "charset",
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.Charset != nil && locationConfig.Web.Charset.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "访问日志",
 		"url":      "/servers/server/settings/locations/accessLog?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "accessLog",
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.AccessLogRef != nil && locationConfig.Web.AccessLogRef.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "统计",
 		"url":      "/servers/server/settings/locations/stat?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "stat",
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.StatRef != nil && locationConfig.Web.StatRef.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "Gzip压缩",
 		"url":      "/servers/server/settings/locations/gzip?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "gzip",
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.GzipRef != nil && locationConfig.Web.GzipRef.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "特殊页面",
 		"url":      "/servers/server/settings/locations/pages?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "pages",
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && (len(locationConfig.Web.Pages) > 0 || (locationConfig.Web.Shutdown != nil && locationConfig.Web.Shutdown.IsPrior)),
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "HTTP Header",
 		"url":      "/servers/server/settings/locations/headers?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "header",
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && ((locationConfig.Web.RequestHeaderPolicyRef != nil && locationConfig.Web.RequestHeaderPolicyRef.IsPrior) || (locationConfig.Web.ResponseHeaderPolicyRef != nil && locationConfig.Web.ResponseHeaderPolicyRef.IsPrior)),
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "Websocket",
 		"url":      "/servers/server/settings/locations/websocket?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "websocket",
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.WebsocketRef != nil && locationConfig.Web.WebsocketRef.IsPrior,
 	})
 
 	return menuItems

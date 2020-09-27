@@ -15,11 +15,27 @@ Vue.component("http-gzip-box", {
 			gzip: gzip,
 		}
 	},
+	methods: {
+		isOn: function () {
+			return (!this.vIsLocation || this.vGzipRef.isPrior) && this.vGzipRef.isOn
+		}
+	},
 	template: `<div>
 <input type="hidden" name="gzipRefJSON" :value="JSON.stringify(vGzipRef)"/> 
 <table class="ui table selectable definition">
 	<prior-checkbox :v-config="vGzipRef" v-if="vIsLocation"></prior-checkbox>
 	<tbody v-show="!vIsLocation || vGzipRef.isPrior">
+		<tr>
+			<td class="title">启用压缩</td>
+			<td>
+				<div class="ui checkbox">
+					<input type="checkbox" v-model="vGzipRef.isOn"/>
+					<label></label>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+	<tbody v-show="isOn()">
 		<tr>
 			<td class="title">压缩级别</td>
 			<td>

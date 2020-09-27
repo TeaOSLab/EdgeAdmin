@@ -76,6 +76,7 @@ func (this *SettingAction) RunPost(params struct {
 		RequestHost:    reverseProxyConfig.RequestHost,
 		RequestURI:     reverseProxyConfig.RequestURI,
 		StripPrefix:    reverseProxyConfig.StripPrefix,
+		AutoFlush:      reverseProxyConfig.AutoFlush,
 	})
 
 	this.Success()

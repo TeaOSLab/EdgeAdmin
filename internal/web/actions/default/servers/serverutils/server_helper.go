@@ -142,6 +142,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"name":     "基本信息",
 			"url":      "/servers/server/settings?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "basic",
+			"isOff":    !serverConfig.IsOn,
 		},
 	}
 
@@ -151,31 +152,37 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"name":     "域名",
 			"url":      "/servers/server/settings/serverNames?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "serverName",
+			"isOn":     len(serverConfig.ServerNames) > 0,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "HTTP",
 			"url":      "/servers/server/settings/http?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "http",
+			"isOn":     (serverConfig.HTTP != nil && serverConfig.HTTP.IsOn && len(serverConfig.HTTP.Listen) > 0) || (serverConfig.Web != nil && serverConfig.Web.RedirectToHttps != nil && serverConfig.Web.RedirectToHttps.IsOn),
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "HTTPS",
 			"url":      "/servers/server/settings/https?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "https",
+			"isOn":     serverConfig.HTTPS != nil && serverConfig.HTTPS.IsOn && len(serverConfig.HTTPS.Listen) > 0,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "Web设置",
 			"url":      "/servers/server/settings/web?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "web",
+			"isOn":     serverConfig.Web != nil && serverConfig.Web.Root != nil && serverConfig.Web.Root.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "反向代理",
 			"url":      "/servers/server/settings/reverseProxy?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "reverseProxy",
+			"isOn":     serverConfig.ReverseProxyRef != nil && serverConfig.ReverseProxyRef.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "路径规则",
 			"url":      "/servers/server/settings/locations?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "locations",
+			"isOn":     serverConfig.Web != nil && len(serverConfig.Web.Locations) > 0,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "重写规则",
@@ -191,11 +198,13 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"name":     "WAF",
 			"url":      "/servers/server/settings/waf?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "waf",
+			"isOn":     serverConfig.Web != nil && serverConfig.Web.FirewallRef != nil && serverConfig.Web.FirewallRef.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "缓存",
 			"url":      "/servers/server/settings/cache?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "cache",
+			"isOn":     serverConfig.Web != nil && serverConfig.Web.CacheRef != nil && serverConfig.Web.CacheRef.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "-",
@@ -206,64 +215,76 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"name":     "字符编码",
 			"url":      "/servers/server/settings/charset?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "charset",
+			"isOn":     serverConfig.Web != nil && serverConfig.Web.Charset != nil && serverConfig.Web.Charset.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "访问日志",
 			"url":      "/servers/server/settings/accessLog?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "accessLog",
+			"isOn":     serverConfig.Web != nil && serverConfig.Web.AccessLogRef != nil && serverConfig.Web.AccessLogRef.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "统计",
 			"url":      "/servers/server/settings/stat?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "stat",
+			"isOn":     serverConfig.Web != nil && serverConfig.Web.StatRef != nil && serverConfig.Web.StatRef.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "Gzip压缩",
 			"url":      "/servers/server/settings/gzip?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "gzip",
+			"isOn":     serverConfig.Web != nil && serverConfig.Web.GzipRef != nil && serverConfig.Web.GzipRef.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "特殊页面",
 			"url":      "/servers/server/settings/pages?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "pages",
+			"isOn":     serverConfig.Web != nil && (len(serverConfig.Web.Pages) > 0 || (serverConfig.Web.Shutdown != nil && serverConfig.Web.Shutdown.IsOn)),
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "HTTP Header",
 			"url":      "/servers/server/settings/headers?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "header",
+			"isOn":     serverConfig.Web != nil && ((serverConfig.Web.RequestHeaderPolicyRef != nil && serverConfig.Web.RequestHeaderPolicyRef.IsOn) || (serverConfig.Web.ResponseHeaderPolicyRef != nil && serverConfig.Web.ResponseHeaderPolicyRef.IsOn)),
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "Websocket",
 			"url":      "/servers/server/settings/websocket?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "websocket",
+			"isOn":     serverConfig.Web != nil && serverConfig.Web.WebsocketRef != nil && serverConfig.Web.WebsocketRef.IsOn,
 		})
 	} else if serverConfig.IsTCP() {
 		menuItems = append(menuItems, maps.Map{
 			"name":     "TCP",
 			"url":      "/servers/server/settings/tcp?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "tcp",
+			"isOn":     serverConfig.TCP != nil && serverConfig.TCP.IsOn && len(serverConfig.TCP.Listen) > 0,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "TLS",
 			"url":      "/servers/server/settings/tls?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "tls",
+			"isOn":     serverConfig.TLS != nil && serverConfig.TLS.IsOn && len(serverConfig.TLS.Listen) > 0,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "反向代理",
 			"url":      "/servers/server/settings/reverseProxy?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "reverseProxy",
+			"isOn":     serverConfig.ReverseProxyRef != nil && serverConfig.ReverseProxyRef.IsOn,
 		})
 	} else if serverConfig.IsUnix() {
 		menuItems = append(menuItems, maps.Map{
 			"name":     "Unix",
 			"url":      "/servers/server/settings/unix?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "unix",
+			"isOn":     serverConfig.Unix != nil && serverConfig.Unix.IsOn && len(serverConfig.Unix.Listen) > 0,
 		})
 	} else if serverConfig.IsUDP() {
 		menuItems = append(menuItems, maps.Map{
 			"name":     "UDP",
 			"url":      "/servers/server/settings/udp?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "udp",
+			"isOn":     serverConfig.UDP != nil && serverConfig.UDP.IsOn && len(serverConfig.UDP.Listen) > 0,
 		})
 	}
 

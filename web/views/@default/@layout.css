@@ -28,6 +28,18 @@
   margin-top: 0 !important;
   margin-bottom: 0 !important;
 }
+.left-box .menu .item.on span {
+  border-bottom: 1px #666 dashed;
+}
+.left-box .menu .item.off span var {
+  font-style: normal;
+  background: #db2828;
+  color: white;
+  font-size: 8px;
+  padding: 2px;
+  border-radius: 2px;
+  margin-left: 1em;
+}
 .left-box .menu .header {
   border-bottom: 1px #ddd solid;
   padding-left: 0 !important;
