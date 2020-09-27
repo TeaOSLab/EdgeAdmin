@@ -2,8 +2,8 @@
 
 <div class="left-box tiny">
 	<div class="ui menu text blue vertical tiny">
-		<a class="item" v-for="item in tinyLeftMenuItems" :href="item.url" :class="{active:item.isActive, separator:item.name == '-'}">
-			<span v-if="item.name != '-'"><i class="icon play tiny" :style="{'visibility':item.isActive ? 'visible' : 'hidden'}"></i>{{item.name}}</span>
+		<a class="item" v-for="item in tinyLeftMenuItems" :href="item.url" :class="{active:item.isActive, separator:item.name == '-', on:item.isOn, off:item.isOff}">
+			<i class="icon play tiny" :style="{'visibility':item.isActive ? 'visible' : 'hidden'}"></i><span v-if="item.name != '-'">{{item.name}}<var v-if="item.isOff">关</var></span>
 		</a>
 	</div>
 </div>

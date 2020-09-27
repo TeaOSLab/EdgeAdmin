@@ -16,7 +16,10 @@
 			</tr>
 		</thead>
 		<tr v-for="location in locations">
-			<td>{{location.pattern}}</td>
+			<td>
+				{{location.pattern}}
+				<http-location-labels :v-location-config="location"></http-location-labels>
+			</td>
 			<td>
 				<label-on :v-is-on="location.isOn"></label-on>
 			</td>

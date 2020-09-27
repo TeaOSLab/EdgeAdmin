@@ -58,17 +58,27 @@ Vue.component("reverse-proxy-box", {
 				</td>
 			</tr>
 			<tr>
-				<td>请求URI</td>
+				<td>请求URI<em>（RequestURI）</em></td>
 				<td>
 					<input type="text" placeholder="\${requestURI}" v-model="reverseProxyConfig.requestURI"/>
 					<p class="comment">\${requestURI}为完整的请求URI，可以使用类似于"\${requestURI}?arg1=value1&arg2=value2"的形式添加你的参数。</p>
 				</td>
 			</tr>
 			<tr>
-				<td>去除URL前缀</td>
+				<td>去除URL前缀<em>（StripPrefix）</em></td>
 				<td>
 					<input type="text" v-model="reverseProxyConfig.stripPrefix" placeholder="/PREFIX"/>
 					<p class="comment">可以把请求的路径部分前缀去除后再查找文件，比如把 <span class="ui label tiny">/web/app/index.html</span> 去除前缀 <span class="ui label tiny">/web</span> 后就变成 <span class="ui label tiny">/app/index.html</span>。 </p>
+				</td>
+			</tr>
+			<tr>
+				<td>是否自动刷新缓存区<em>（AutoFlush）</em></td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="reverseProxyConfig.autoFlush"/>
+						<label></label>
+					</div>
+					<p class="comment">开启后将自动刷新缓冲区数据到客户端，在类似于SSE（server-sent events）等场景下很有用。</p>
 				</td>
 			</tr>
 		</tbody>
