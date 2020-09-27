@@ -16,8 +16,9 @@ func init() {
 			Data("mainTab", "setting").
 			Data("tinyMenuItem", "reverseProxy").
 			Prefix("/servers/server/settings/locations/reverseProxy").
-			GetPost("", new(IndexAction)).
+			Get("", new(IndexAction)).
 			GetPost("/scheduling", new(SchedulingAction)).
+			GetPost("/setting", new(SettingAction)).
 			EndAll()
 	})
 }

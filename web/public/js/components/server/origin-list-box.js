@@ -41,7 +41,7 @@ Vue.component("origin-list-box", {
 	},
 	template: `<div>
 	<h3>主要源站 <a href="" @click.prevent="createPrimaryOrigin()">[添加主要源站]</a> </h3>
-	<p class="comment" v-if="primaryOrigins.length == 0">暂时还没有优先源站。</p>
+	<p class="comment" v-if="primaryOrigins.length == 0">暂时还没有主要源站。</p>
 	<origin-list-table v-if="primaryOrigins.length > 0" :v-origins="vPrimaryOrigins" :v-origin-type="'primary'" @deleteOrigin="deleteOrigin" @updateOrigin="updateOrigin"></origin-list-table>
 
 	<h3>备用源站 <a href="" @click.prevent="createBackupOrigin()">[添加备用源站]</a></h3>

@@ -42,6 +42,7 @@ Vue.component("http-web-root-box", {
 		}
 	},
 	template: `<div>
+	<p class="ui message">在这里可以设置如何分发静态文件资源。</p>
 	<input type="hidden" name="rootJSON" :value="JSON.stringify(rootConfig)"/>
 	<table class="ui table selectable definition">
 		<prior-checkbox :v-config="rootConfig" v-if="vIsLocation"></prior-checkbox>
@@ -86,7 +87,7 @@ Vue.component("http-web-root-box", {
 				<td>去除URL前缀</td>
 				<td>
 					<input type="text" v-model="rootConfig.stripPrefix" placeholder="/PREFIX"/>
-					<p class="comment">可以把请求的路径部分前缀去除后再查找文件，比如把 <span class="ui label tiny">/web/app/index.html</span> 去除前缀 <span class="ui label tiny">/web</span> 后就变成 <span class="ui label tiny">/app/index.html</span> </p>
+					<p class="comment">可以把请求的路径部分前缀去除后再查找文件，比如把 <span class="ui label tiny">/web/app/index.html</span> 去除前缀 <span class="ui label tiny">/web</span> 后就变成 <span class="ui label tiny">/app/index.html</span>。 </p>
 				</td>
 			</tr>
 			<tr>
