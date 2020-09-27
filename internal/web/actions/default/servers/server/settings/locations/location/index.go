@@ -43,6 +43,7 @@ func (this *IndexAction) RunPost(params struct {
 	IsBreak           bool
 	IsCaseInsensitive bool
 	IsReverse         bool
+	IsOn              bool
 
 	Must *actions.Must
 }) {
@@ -74,6 +75,7 @@ func (this *IndexAction) RunPost(params struct {
 		Description: params.Description,
 		Pattern:     resultPattern,
 		IsBreak:     params.IsBreak,
+		IsOn:        params.IsOn,
 	})
 	if err != nil {
 		this.ErrorPage(err)

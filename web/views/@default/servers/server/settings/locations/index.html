@@ -11,11 +11,15 @@
 		<thead>
 			<tr>
 				<th>匹配规则</th>
+				<th class="two wide">状态</th>
 				<th class="two op">操作</th>
 			</tr>
 		</thead>
 		<tr v-for="location in locations">
 			<td>{{location.pattern}}</td>
+			<td>
+				<label-on :v-is-on="location.isOn"></label-on>
+			</td>
 			<td>
 				<a :href="'/servers/server/settings/locations/location?serverId=' + serverId + '&locationId=' + location.id">详情</a> &nbsp;
 				<a href="" @click.prevent="deleteLocation(location.id)">删除</a>
