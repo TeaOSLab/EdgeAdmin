@@ -53,6 +53,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	Mode           string
 	RedirectStatus int
 	ProxyHost      string
+	WithQuery      bool
 	IsBreak        bool
 	IsOn           bool
 
@@ -81,6 +82,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		Mode:           params.Mode,
 		RedirectStatus: types.Int32(params.RedirectStatus),
 		ProxyHost:      params.ProxyHost,
+		WithQuery:      params.WithQuery,
 		IsBreak:        params.IsBreak,
 		IsOn:           params.IsOn,
 	})
