@@ -49,10 +49,20 @@
 				</td>
 			</tr>
 			<tr>
+				<td>是否保留URL参数</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" name="withQuery" value="1" checked="checked"/>
+						<label></label>
+					</div>
+					<p class="comment">选中此选项，将会把用户输入的URL中的参数部分转发到目标URL上。</p>
+				</td>
+			</tr>
+			<tr>
 				<td>是否终止往下匹配</td>
 				<td>
 					<div class="ui checkbox">
-						<input type="checkbox" name="isBreak" value="1" checked="checked"/>
+						<input type="checkbox" name="isBreak" value="1"/>
 						<label></label>
 					</div>
 					<p class="comment">如果选中了此选项，一旦匹配成功，不会继续匹配其他的重写规则或路径规则。</p>
