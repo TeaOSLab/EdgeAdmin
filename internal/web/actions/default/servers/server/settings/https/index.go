@@ -48,6 +48,7 @@ func (this *IndexAction) RunGet(params struct {
 
 func (this *IndexAction) RunPost(params struct {
 	ServerId  int64
+	IsOn      bool
 	Addresses string
 
 	Must *actions.Must
@@ -69,10 +70,9 @@ func (this *IndexAction) RunPost(params struct {
 			this.ErrorPage(err)
 			return
 		}
-	} else {
-		httpsConfig.IsOn = true
 	}
 
+	httpsConfig.IsOn = params.IsOn
 	httpsConfig.Listen = addresses
 	configData, err := json.Marshal(httpsConfig)
 	if err != nil {

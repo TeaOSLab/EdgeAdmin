@@ -21,6 +21,11 @@ Vue.component("http-location-labels", {
 	},
 	template: `	<div class="labels-box">
 	<!-- TODO 思考是否给各个标签加上链接 -->
+	
+	<!-- 基本信息 -->
+	<http-location-labels-label v-if="location.name != null && location.name.length > 0" :class="'olive'">{{location.name}}</http-location-labels-label>
+	<http-location-labels-label v-if="location.isBreak">BREAK</http-location-labels-label>
+	
 	<!-- redirectToHTTPS -->
 	<http-location-labels-label v-if="location.web != null && configIsOn(location.web.redirectToHTTPS)">自动跳转HTTPS</http-location-labels-label>
 	
@@ -57,15 +62,18 @@ Vue.component("http-location-labels", {
 	
 	<!-- 特殊页面 -->
 	<div v-if="location.web != null && location.web.pages != null && location.web.pages.length > 0">
-		<http-location-labels-label v-for="page in location.web.pages">[状态码{{page.status[0]}}] -&gt; {{page.url}}</http-location-labels-label>
+		<div v-for="page in location.web.pages" :key="page.id"><http-location-labels-label>PAGE [状态码{{page.status[0]}}] -&gt; {{page.url}}</http-location-labels-label></div>
 	</div>
 	<div v-if="location.web != null && configIsOn(location.web.shutdown)">
 		<http-location-labels-label :v-class="'red'">临时关闭</http-location-labels-label>
 	</div>
+	
+	<!-- 重写规则 -->
+	<!-- TODO -->
 </div>`
 })
 
 Vue.component("http-location-labels-label", {
 	props: ["v-class"],
-	template: `<span class="ui label tiny" :class="vClass" style="font-size:0.8em;padding:4px;margin-top:0.3em;margin-bottom:0.3em"><slot></slot></span>`
+	template: `<span class="ui label tiny" :class="vClass" style="font-size:0.7em;padding:4px;margin-top:0.3em;margin-bottom:0.3em"><slot></slot></span>`
 })

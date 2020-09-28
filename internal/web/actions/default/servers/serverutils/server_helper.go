@@ -159,12 +159,14 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"url":      "/servers/server/settings/http?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "http",
 			"isOn":     (serverConfig.HTTP != nil && serverConfig.HTTP.IsOn && len(serverConfig.HTTP.Listen) > 0) || (serverConfig.Web != nil && serverConfig.Web.RedirectToHttps != nil && serverConfig.Web.RedirectToHttps.IsOn),
+			"isOff":    serverConfig.HTTP != nil && !serverConfig.HTTP.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "HTTPS",
 			"url":      "/servers/server/settings/https?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "https",
 			"isOn":     serverConfig.HTTPS != nil && serverConfig.HTTPS.IsOn && len(serverConfig.HTTPS.Listen) > 0,
+			"isOff":    serverConfig.HTTPS != nil && !serverConfig.HTTPS.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "Web设置",
@@ -179,6 +181,11 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":     serverConfig.ReverseProxyRef != nil && serverConfig.ReverseProxyRef.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
+			"name":     "-",
+			"url":      "",
+			"isActive": false,
+		})
+		menuItems = append(menuItems, maps.Map{
 			"name":     "路径规则",
 			"url":      "/servers/server/settings/locations?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "locations",
@@ -188,11 +195,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"name":     "重写规则",
 			"url":      "/servers/server/settings/rewrite?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "rewrite",
-		})
-		menuItems = append(menuItems, maps.Map{
-			"name":     "访问控制",
-			"url":      "/servers/server/settings/access?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "access",
+			"isOn":     serverConfig.Web != nil && len(serverConfig.Web.RewriteRefs) > 0,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "WAF",
@@ -207,9 +210,9 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":     serverConfig.Web != nil && serverConfig.Web.CacheRef != nil && serverConfig.Web.CacheRef.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     "-",
-			"url":      "",
-			"isActive": false,
+			"name":     "访问控制",
+			"url":      "/servers/server/settings/access?serverId=" + serverIdString,
+			"isActive": secondMenuItem == "access",
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "字符编码",

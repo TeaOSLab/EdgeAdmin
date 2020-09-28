@@ -1,0 +1,73 @@
+{$layout "layout_popup"}
+
+<h3>创建重写规则</h3>
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+	<input type="hidden" name="webId" :value="webId"/>
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">匹配规则 *</td>
+			<td>
+				<input type="text" name="pattern" maxlength="500" placeholder="比如 /post/(.+)" ref="focus"/>
+				<p class="comment">需要符合正则表达式规范，<a href="http://teaos.cn/doc/regexp/Regexp.md" target="_blank">正则表达式语法 &raquo;</a></p>
+			</td>
+		</tr>
+		<tr>
+			<td>目标URL *</td>
+			<td>
+				<input type="text" name="replace" placeholder="比如 /post/${1}.html" maxlength="500"/>
+				<p class="comment">URL中可以包含一些<a href="http://teaos.cn/doc/proxy/Variables.md" target="_blank">内置的变量</a>，也可以是一个完整的URL，比如：http://example.com/hello。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>转发方式</td>
+			<td>
+				<select class="ui dropdown auto-width" name="mode" v-model="rewriteRule.mode">
+					<option value="proxy">隐式</option>
+					<option value="redirect">显式</option>
+				</select>
+				<p class="comment">隐式表示不在客户端显示重写后的URL；显式表示在客户端跳转URL，将会显示重写后的URL。</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"><more-options-indicator></more-options-indicator></td>
+		</tr>
+		<tbody v-show="moreOptionsVisible">
+			<tr v-show="rewriteRule.mode == 'redirect'">
+				<td>跳转状态码</td>
+				<td>
+					<select class="ui dropdown auto-width" name="redirectStatus" v-model="rewriteRule.redirectStatus">
+						<option v-for="status in statusOptions" :value="status.code">{{status.code}} {{status.text}}</option>
+					</select>
+					<p class="comment">通常使用默认的307即可。</p>
+				</td>
+			</tr>
+			<tr v-show="rewriteRule.mode == 'proxy'">
+				<td>代理主机名</td>
+				<td>
+					<input type="text" name="proxyHost" placeholder="比如 example.com" maxlength="100"/>
+					<p class="comment">如果转发的方式为隐式而且目标URL为不同的域名时需要用到此选项，用于修改被代理服务接收到的域名，默认和客户端请求的主机名一致，通常不必填写，支持<a href="http://teaos.cn/doc/proxy/Variables.md#%E8%AF%B7%E6%B1%82%E7%9B%B8%E5%85%B3%E5%8F%98%E9%87%8F" target="_blank">请求变量</a>。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>是否终止往下匹配</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" name="isBreak" value="1" checked="checked"/>
+						<label></label>
+					</div>
+					<p class="comment">如果选中了此选项，一旦匹配成功，不会继续匹配其他的重写规则或路径规则。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>是否启用</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" name="isOn" value="1" checked="checked"/>
+						<label></label>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<submit-btn></submit-btn>
+</form>
