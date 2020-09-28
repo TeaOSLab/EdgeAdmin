@@ -1,32 +1,41 @@
 {$layout}
-
 {$template "/left_menu"}
+
+{$var "header"}
+<script type="text/javascript" src="/js/sortable.min.js"></script>
+{$end}
 
 <div class="right-box">
 	{$template "menu"}
 
 	<p class="comment" v-if="locations.length == 0">暂时还没有路径规则。</p>
 
-	<table class="ui table selectable" v-if="locations.length > 0">
+	<table class="ui table selectable" v-if="locations.length > 0" id="sortable-table">
 		<thead>
 			<tr>
+				<th style="width:1em"></th>
 				<th>匹配规则</th>
 				<th class="two wide">状态</th>
 				<th class="two op">操作</th>
 			</tr>
 		</thead>
-		<tr v-for="location in locations">
-			<td>
-				{{location.pattern}}
-				<http-location-labels :v-location-config="location"></http-location-labels>
-			</td>
-			<td>
-				<label-on :v-is-on="location.isOn"></label-on>
-			</td>
-			<td>
-				<a :href="'/servers/server/settings/locations/location?serverId=' + serverId + '&locationId=' + location.id">详情</a> &nbsp;
-				<a href="" @click.prevent="deleteLocation(location.id)">删除</a>
-			</td>
-		</tr>
+		<tbody v-for="location in locations" :v-id="location.id">
+			<tr>
+				<td><i class="icon bars grey handle"></i></td>
+				<td>
+					{{location.pattern}}
+					<http-location-labels :v-location-config="location"></http-location-labels>
+				</td>
+				<td>
+					<label-on :v-is-on="location.isOn"></label-on>
+				</td>
+				<td>
+					<a :href="'/servers/server/settings/locations/location?serverId=' + serverId + '&locationId=' + location.id">详情</a> &nbsp;
+					<a href="" @click.prevent="deleteLocation(location.id)">删除</a> &nbsp;
+					<!--<a :href="'/servers/server/settings/locations/create?serverId=' + serverId + '&webId=' + webId + '&parentId=' + location.id" title="添加子规则">+</a>-->
+				</td>
+			</tr>
+		</tbody>
 	</table>
+	<p class="comment" v-if="locations.length > 0">拖动左侧的<i class="icon bars grey"></i>图标可以对路径规则进行排序。</p>
 </div>

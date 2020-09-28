@@ -80,14 +80,15 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"isOn":     locationConfig != nil && locationConfig.ReverseProxyRef != nil && locationConfig.ReverseProxyRef.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
+		"name":     "-",
+		"url":      "",
+		"isActive": false,
+	})
+	menuItems = append(menuItems, maps.Map{
 		"name":     "重写规则",
 		"url":      "/servers/server/settings/locations/rewrite?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "rewrite",
-	})
-	menuItems = append(menuItems, maps.Map{
-		"name":     "访问控制",
-		"url":      "/servers/server/settings/locations/access?serverId=" + serverIdString + "&locationId=" + locationIdString,
-		"isActive": secondMenuItem == "access",
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && len(locationConfig.Web.RewriteRefs) > 0,
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "WAF",
@@ -102,9 +103,9 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.CacheRef != nil && locationConfig.Web.CacheRef.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
-		"name":     "-",
-		"url":      "",
-		"isActive": false,
+		"name":     "访问控制",
+		"url":      "/servers/server/settings/locations/access?serverId=" + serverIdString + "&locationId=" + locationIdString,
+		"isActive": secondMenuItem == "access",
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "字符编码",

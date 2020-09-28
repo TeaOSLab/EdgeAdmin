@@ -65,7 +65,7 @@
   overflow-y: auto;
 }
 .right-box.tiny {
-  top: 10em;
+  top: 10.4em;
   left: 26.5em;
 }
 .right-box::-webkit-scrollbar {
@@ -130,6 +130,7 @@ p.comment,
 div.comment {
   color: rgba(0, 0, 0, 0.3);
   padding-top: 0.4em;
+  font-size: 0.9em;
 }
 p.comment em,
 div.comment em {
@@ -584,7 +585,6 @@ select.auto-width {
     width: 100% !important;
   }
 }
-/** label **/
 label[for] {
   cursor: pointer !important;
 }
@@ -674,5 +674,31 @@ var.dash {
 }
 form .fields {
   margin-bottom: 0 !important;
+}
+/** 排序 **/
+.sortable-ghost {
+  background: #ddd !important;
+  opacity: 0.1;
+}
+.sortable-drag {
+  opacity: 1.0;
+}
+.icon.handle {
+  cursor: pointer;
+}
+.label.port-label {
+  margin-top: 0.4em !important;
+  margin-bottom: 0.4em !important;
+  display: block;
+  line-height: 1.5;
+}
+.label {
+  word-break: break-all;
+}
+td .label.small {
+  margin-bottom: 0.2em !important;
+}
+td {
+  word-break: break-all;
 }
 /*# sourceMappingURL=@layout.css.map */

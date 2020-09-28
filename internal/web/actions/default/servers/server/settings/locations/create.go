@@ -11,6 +11,7 @@ import (
 	"strings"
 )
 
+// 创建路径规则
 type CreateAction struct {
 	actionutils.ParentAction
 }
@@ -22,6 +23,7 @@ func (this *CreateAction) Init() {
 
 func (this *CreateAction) RunGet(params struct {
 	ServerId int64
+	ParentId int64 // 父节点
 }) {
 	webConfig, err := webutils.FindWebConfigWithServerId(this.Parent(), params.ServerId)
 	if err != nil {

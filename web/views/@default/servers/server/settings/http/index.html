@@ -9,17 +9,28 @@
 		<input type="hidden" name="serverType" :value="serverType"/>
 		<table class="ui table selectable definition">
 			<tr>
-				<td class="title">绑定端口 *</td>
+				<td class="title">是否启用HTTP</td>
 				<td>
-					<network-addresses-box :v-server-type="serverType" :v-addresses="httpConfig.addresses" :v-protocol="'http'"></network-addresses-box>
+					<div class="ui checkbox">
+						<input type="checkbox" name="isOn" value="1" v-model="httpConfig.isOn"/>
+						<label></label>
+					</div>
 				</td>
 			</tr>
-			<tr>
-				<td>自动跳转到HTTPS</td>
-				<td>
-					<http-redirect-to-https-box :v-redirect-to-https-config="redirectToHTTPSConfig"></http-redirect-to-https-box>
-				</td>
-			</tr>
+			<tbody v-show="httpConfig.isOn">
+				<tr>
+					<td class="title">绑定端口 *</td>
+					<td>
+						<network-addresses-box :v-server-type="serverType" :v-addresses="httpConfig.addresses" :v-protocol="'http'"></network-addresses-box>
+					</td>
+				</tr>
+				<tr>
+					<td>自动跳转到HTTPS</td>
+					<td>
+						<http-redirect-to-https-box :v-redirect-to-https-config="redirectToHTTPSConfig"></http-redirect-to-https-box>
+					</td>
+				</tr>
+			</tbody>
 		</table>
 		<submit-btn></submit-btn>
 	</form>

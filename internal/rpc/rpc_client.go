@@ -37,6 +37,7 @@ type RPCClient struct {
 	httpFirewallPolicyClients  []pb.HTTPFirewallPolicyServiceClient
 	httpLocationClients        []pb.HTTPLocationServiceClient
 	httpWebsocketClients       []pb.HTTPWebsocketServiceClient
+	httpRewriteRuleClients     []pb.HTTPRewriteRuleServiceClient
 }
 
 func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
@@ -63,6 +64,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 	httpFirewallPolicyClients := []pb.HTTPFirewallPolicyServiceClient{}
 	httpLocationClients := []pb.HTTPLocationServiceClient{}
 	httpWebsocketClients := []pb.HTTPWebsocketServiceClient{}
+	httpRewriteRuleClients := []pb.HTTPRewriteRuleServiceClient{}
 
 	conns := []*grpc.ClientConn{}
 	for _, endpoint := range apiConfig.RPC.Endpoints {
@@ -97,6 +99,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		httpFirewallPolicyClients = append(httpFirewallPolicyClients, pb.NewHTTPFirewallPolicyServiceClient(conn))
 		httpLocationClients = append(httpLocationClients, pb.NewHTTPLocationServiceClient(conn))
 		httpWebsocketClients = append(httpWebsocketClients, pb.NewHTTPWebsocketServiceClient(conn))
+		httpRewriteRuleClients = append(httpRewriteRuleClients, pb.NewHTTPRewriteRuleServiceClient(conn))
 	}
 
 	return &RPCClient{
@@ -120,6 +123,7 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		httpFirewallPolicyClients:  httpFirewallPolicyClients,
 		httpLocationClients:        httpLocationClients,
 		httpWebsocketClients:       httpWebsocketClients,
+		httpRewriteRuleClients:     httpRewriteRuleClients,
 	}, nil
 }
 
@@ -252,6 +256,13 @@ func (this *RPCClient) HTTPLocationRPC() pb.HTTPLocationServiceClient {
 func (this *RPCClient) HTTPWebsocketRPC() pb.HTTPWebsocketServiceClient {
 	if len(this.httpWebsocketClients) > 0 {
 		return this.httpWebsocketClients[rands.Int(0, len(this.httpWebsocketClients)-1)]
+	}
+	return nil
+}
+
+func (this *RPCClient) HTTPRewriteRuleRPC() pb.HTTPRewriteRuleServiceClient {
+	if len(this.httpRewriteRuleClients) > 0 {
+		return this.httpRewriteRuleClients[rands.Int(0, len(this.httpRewriteRuleClients)-1)]
 	}
 	return nil
 }

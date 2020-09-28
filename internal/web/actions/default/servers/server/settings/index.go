@@ -63,6 +63,7 @@ func (this *IndexAction) RunGet(params struct {
 		"type":        server.Type,
 		"name":        server.Name,
 		"description": server.Description,
+		"isOn":        server.IsOn,
 	}
 
 	serverType := serverconfigs.FindServerType(server.Type)
@@ -83,6 +84,7 @@ func (this *IndexAction) RunPost(params struct {
 	Name        string
 	Description string
 	ClusterId   int64
+	IsOn        bool
 
 	Must *actions.Must
 }) {
@@ -99,6 +101,7 @@ func (this *IndexAction) RunPost(params struct {
 		Name:        params.Name,
 		Description: params.Description,
 		ClusterId:   params.ClusterId,
+		IsOn:        params.IsOn,
 	})
 	if err != nil {
 		this.ErrorPage(err)

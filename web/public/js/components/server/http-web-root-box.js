@@ -42,13 +42,12 @@ Vue.component("http-web-root-box", {
 		}
 	},
 	template: `<div>
-	<p class="ui message">在这里可以设置如何分发静态文件资源。</p>
 	<input type="hidden" name="rootJSON" :value="JSON.stringify(rootConfig)"/>
 	<table class="ui table selectable definition">
 		<prior-checkbox :v-config="rootConfig" v-if="vIsLocation"></prior-checkbox>
 		<tbody v-show="!vIsLocation || rootConfig.isPrior">
 			<tr>
-				<td class="title">是否开启</td>
+				<td class="title">是否开启静态资源分发</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="rootConfig.isOn"/>
@@ -59,7 +58,7 @@ Vue.component("http-web-root-box", {
 		</tbody>
 		<tbody v-show="isOn()">
 			<tr>
-				<td class="title">文档根目录</td>
+				<td class="title">静态资源根目录</td>
 				<td>
 					<input type="text" name="root" v-model="rootConfig.dir" ref="focus" placeholder="类似于 /home/www"/>
 					<p class="comment">可以访问此根目录下的静态资源。</p>

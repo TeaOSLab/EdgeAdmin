@@ -6,6 +6,9 @@
 	{$template "../left_menu"}
 
 	<div class="right-box tiny">
-		<p class="ui message">此功能暂未开放，敬请期待。</p>
+		<first-menu>
+			<a class="item" @click.prevent="createRewriteRule()">[创建]</a>
+		</first-menu>
+		<http-rewrite-rule-list :v-web-id="webId" :v-rewrite-rules="rewriteRules"></http-rewrite-rule-list>
 	</div>
 </div>
