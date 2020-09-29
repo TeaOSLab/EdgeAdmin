@@ -1,12 +1,16 @@
 Vue.component("http-request-conds-tbody", {
-	props: ["v-cond-groups"],
+	props: ["v-conds"],
 	data: function () {
-		let groups = this.vCondGroups
-		if (groups == null) {
-			groups = []
+		let conds = this.vConds
+		if (conds == null) {
+			conds = {
+				isOn: true,
+				connector: "or",
+				groups: []
+			}
 		}
 		return {
-			groups: groups,
+			conds: conds,
 			components: window.REQUEST_COND_COMPONENTS
 		}
 	},
@@ -16,7 +20,7 @@ Vue.component("http-request-conds-tbody", {
 			teaweb.popup("/servers/server/settings/conds/addGroupPopup", {
 				height: "30em",
 				callback: function (resp) {
-					that.groups.push(resp.data.group)
+					that.conds.groups.push(resp.data.group)
 				}
 			})
 		},
@@ -26,14 +30,14 @@ Vue.component("http-request-conds-tbody", {
 			teaweb.popup("/servers/server/settings/conds/addGroupPopup", {
 				height: "30em",
 				callback: function (resp) {
-					Vue.set(that.groups, groupIndex, resp.data.group)
+					Vue.set(that.conds.groups, groupIndex, resp.data.group)
 				}
 			})
 		},
 		removeGroup: function (groupIndex) {
 			let that = this
 			teaweb.confirm("确定要删除这一组条件吗？", function () {
-				that.groups.$remove(groupIndex)
+				that.conds.groups.$remove(groupIndex)
 			})
 		},
 		typeName: function (cond) {
@@ -50,11 +54,11 @@ Vue.component("http-request-conds-tbody", {
 		<tr>
 			<td>匹配条件</td>
 			<td>
-				<input type="hidden" name="condGroupsJSON" :value="JSON.stringify(groups)"/>
+				<input type="hidden" name="condsJSON" :value="JSON.stringify(conds)"/>
 				<div class="margin"></div>
-				<div v-if="groups.length > 0">
+				<div v-if="conds.groups.length > 0">
 					<table class="ui table">
-						<tr v-for="(group, groupIndex) in groups">
+						<tr v-for="(group, groupIndex) in conds.groups">
 							<td style="background: white">
 								<var v-for="(cond, index) in group.conds" style="font-style: normal;display: inline-block; margin-bottom:0.5em">
 									<span class="ui label tiny">

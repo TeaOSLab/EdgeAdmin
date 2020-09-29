@@ -5,6 +5,7 @@ Vue.component("http-cond-url-extension", {
 		let cond = this.vCond
 		if (cond == null) {
 			cond = {
+				isRequest: true,
 				param: "${requestPathExtension}",
 				operator: "in",
 				value: "[]"
@@ -85,7 +86,7 @@ Vue.component("http-cond-mime-type", {
 		let cond = this.vCond
 		if (cond == null) {
 			cond = {
-				type: "mime-type",
+				isRequest: false,
 				param: "${response.contentType}",
 				operator: "mime type",
 				value: "[]"
@@ -144,7 +145,7 @@ Vue.component("http-cond-mime-type", {
 	</div>
 	<div class="ui fields inline" v-if="isAdding">
 		<div class="ui field">
-			<input type="text" size="16" maxlength="100" v-model="addingMimeType" ref="addingMimeType" placeholder="xxxxx/xxx" @keyup.enter="confirmAdding" @keypress.enter.prevent="1" />
+			<input type="text" size="16" maxlength="100" v-model="addingMimeType" ref="addingMimeType" placeholder="类似于image/png" @keyup.enter="confirmAdding" @keypress.enter.prevent="1" />
 		</div>
 		<div class="ui field">
 			<button class="ui button tiny" type="button" @click.prevent="confirmAdding">确认</button>
