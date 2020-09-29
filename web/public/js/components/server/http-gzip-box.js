@@ -8,7 +8,7 @@ Vue.component("http-gzip-box", {
 				level: 0,
 				minLength: null,
 				maxLength: null,
-				condGroups: []
+				conds: null
 			}
 		}
 
@@ -69,7 +69,7 @@ Vue.component("http-gzip-box", {
 			</td>
 		</tr>
 	</tbody>
-	<http-request-conds-tbody v-show="isOn() && advancedVisible" :v-cond-groups="gzip.condGroups"></http-request-conds-tbody>
+	<http-request-conds-tbody v-show="isOn() && advancedVisible" :v-conds="gzip.conds"></http-request-conds-tbody>
 </table>
 </div>`
 })

@@ -66,12 +66,12 @@ func (this *IndexAction) RunGet(params struct {
 }
 
 func (this *IndexAction) RunPost(params struct {
-	WebId          int64
-	GzipId         int64
-	Level          int
-	MinLength      string
-	MaxLength      string
-	CondGroupsJSON []byte
+	WebId     int64
+	GzipId    int64
+	Level     int
+	MinLength string
+	MaxLength string
+	CondsJSON []byte
 
 	Must *actions.Must
 }) {
@@ -99,11 +99,11 @@ func (this *IndexAction) RunPost(params struct {
 
 	if params.GzipId > 0 {
 		_, err := this.RPC().HTTPGzipRPC().UpdateHTTPGzip(this.AdminContext(), &pb.UpdateHTTPGzipRequest{
-			GzipId:         params.GzipId,
-			Level:          types.Int32(params.Level),
-			MinLength:      minLength,
-			MaxLength:      maxLength,
-			CondGroupsJSON: params.CondGroupsJSON,
+			GzipId:    params.GzipId,
+			Level:     types.Int32(params.Level),
+			MinLength: minLength,
+			MaxLength: maxLength,
+			CondsJSON: params.CondsJSON,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -111,10 +111,10 @@ func (this *IndexAction) RunPost(params struct {
 		}
 	} else {
 		resp, err := this.RPC().HTTPGzipRPC().CreateHTTPGzip(this.AdminContext(), &pb.CreateHTTPGzipRequest{
-			Level:          types.Int32(params.Level),
-			MinLength:      minLength,
-			MaxLength:      maxLength,
-			CondGroupsJSON: params.CondGroupsJSON,
+			Level:     types.Int32(params.Level),
+			MinLength: minLength,
+			MaxLength: maxLength,
+			CondsJSON: params.CondsJSON,
 		})
 		if err != nil {
 			this.ErrorPage(err)
