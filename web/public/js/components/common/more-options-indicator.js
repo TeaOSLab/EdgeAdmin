@@ -15,5 +15,5 @@ Vue.component("more-options-indicator", {
 			}
 		}
 	},
-	template: '<a href="" style="font-weight: normal" @click.prevent="changeVisible()">更多选项 <i class="icon angle" :class="{down:!visible, up:visible}"></i> </a>'
+	template: '<a href="" style="font-weight: normal" @click.prevent="changeVisible()"><span v-if="!visible">更多选项</span><span v-if="visible">收起选项</span> <i class="icon angle" :class="{down:!visible, up:visible}"></i> </a>'
 });

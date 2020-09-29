@@ -7,7 +7,7 @@
 		<input type="hidden" name="webId" :value="webId"/>
 		<input type="hidden" name="gzipId" :value="gzipConfig.id"/>
 
-		<http-gzip-box :v-gzip-config="gzipConfig"></http-gzip-box>
+		<http-gzip-box :v-gzip-ref="gzipRef" :v-gzip-config="gzipConfig"></http-gzip-box>
 
 		<div class="margin"></div>
 		<submit-btn></submit-btn>
