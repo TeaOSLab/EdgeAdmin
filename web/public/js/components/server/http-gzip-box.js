@@ -7,17 +7,22 @@ Vue.component("http-gzip-box", {
 				isOn: true,
 				level: 0,
 				minLength: null,
-				maxLength: null
+				maxLength: null,
+				condGroups: []
 			}
 		}
 
 		return {
 			gzip: gzip,
+			advancedVisible: false
 		}
 	},
 	methods: {
 		isOn: function () {
 			return (!this.vIsLocation || this.vGzipRef.isPrior) && this.vGzipRef.isOn
+		},
+		changeAdvancedVisible: function (v) {
+			this.advancedVisible = v
 		}
 	},
 	template: `<div>
@@ -26,7 +31,7 @@ Vue.component("http-gzip-box", {
 	<prior-checkbox :v-config="vGzipRef" v-if="vIsLocation"></prior-checkbox>
 	<tbody v-show="!vIsLocation || vGzipRef.isPrior">
 		<tr>
-			<td class="title">启用压缩</td>
+			<td class="title">启用Gzip压缩</td>
 			<td>
 				<div class="ui checkbox">
 					<input type="checkbox" v-model="vGzipRef.isOn"/>
@@ -45,7 +50,10 @@ Vue.component("http-gzip-box", {
 				</select>
 				<p class="comment">级别越高，压缩比例越大。</p>
 			</td>
-		</tr>	
+		</tr>
+	</tbody>
+	<more-options-tbody @change="changeAdvancedVisible"></more-options-tbody>
+	<tbody v-show="isOn() && advancedVisible">
 		<tr>
 			<td>Gzip内容最小长度</td>
 			<td>
@@ -61,6 +69,7 @@ Vue.component("http-gzip-box", {
 			</td>
 		</tr>
 	</tbody>
+	<http-request-conds-tbody v-show="isOn() && advancedVisible" :v-cond-groups="gzip.condGroups"></http-request-conds-tbody>
 </table>
 </div>`
 })

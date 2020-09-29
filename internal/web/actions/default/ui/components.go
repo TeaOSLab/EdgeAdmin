@@ -1,7 +1,8 @@
 package ui
 
 import (
-	"bytes"
+	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/conds/condutils"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/files"
@@ -21,7 +22,6 @@ func (this *ComponentsAction) RunGet(params struct{}) {
 	}
 	f := files.NewFile(webRoot)
 
-	buf := bytes.NewBuffer([]byte{})
 	f.Range(func(file *files.File) {
 		if !file.IsFile() {
 			return
@@ -34,9 +34,17 @@ func (this *ComponentsAction) RunGet(params struct{}) {
 			logs.Error(err)
 			return
 		}
-		buf.Write(data)
-		buf.WriteByte('\n')
-		buf.WriteByte('\n')
+		this.Write(data)
+		this.Write([]byte{'\n', '\n'})
 	})
-	this.Write(buf.Bytes())
+
+	// 条件组件
+	typesJSON, err := json.Marshal(condutils.ReadAllAvailableCondTypes())
+	if err != nil {
+		logs.Println("ComponentsAction: " + err.Error())
+	} else {
+		this.WriteString("window.REQUEST_COND_COMPONENTS = ")
+		this.Write(typesJSON)
+		this.Write([]byte{'\n', '\n'})
+	}
 }
