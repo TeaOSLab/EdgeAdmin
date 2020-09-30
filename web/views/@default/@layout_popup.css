@@ -211,9 +211,6 @@ td .label.tiny {
   padding: 2px;
   font-size: 0.9em;
 }
-td .label.small {
-  margin-bottom: 0.6em;
-}
 /** Menu **/
 .first-menu .menu.text {
   margin-top: 0 !important;

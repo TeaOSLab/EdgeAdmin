@@ -6,4 +6,7 @@
 .ui.toggle.checkbox input:checked ~ label:before {
   background-color: #21ba45 !important;
 }
+.ui.label.basic {
+  background-color: white !important;
+}
 /*# sourceMappingURL=@layout_override.css.map */

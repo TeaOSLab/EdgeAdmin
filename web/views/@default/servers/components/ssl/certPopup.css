@@ -1,0 +1,15 @@
+.pre-box {
+  padding: 1em;
+  margin: 0;
+  line-height: 1.7;
+  -ms-word-break: break-all;
+  word-break: break-all;
+  font-size: 0.9em;
+  background: rgba(0, 0, 0, 0.05);
+  overflow-y: auto;
+  max-height: 20em;
+}
+.pre-box::-webkit-scrollbar {
+  width: 6px;
+}
+/*# sourceMappingURL=certPopup.css.map */

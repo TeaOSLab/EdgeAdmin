@@ -18,7 +18,7 @@ func (this *ComponentHelper) BeforeAction(action *actions.ActionObject) {
 	if action.Request.Method != http.MethodGet {
 		return
 	}
-	action.Data["teaMenu"] = "server"
+	action.Data["teaMenu"] = "servers"
 	action.Data["mainTab"] = "component"
 
 	// 顶部标签栏
