@@ -2,5 +2,55 @@
 {$template "/left_menu"}
 
 <div class="right-box">
-	<p class="ui message">此功能暂未开放敬请期待。</p>
+	<second-menu>
+		<menu-item href="/servers/components/ssl" :active="type == ''">所有证书({{countAll}})</menu-item>
+		<menu-item href="/servers/components/ssl?type=ca" :active="type == 'ca'">CA证书({{countCA}})</menu-item>
+		<menu-item href="/servers/components/ssl?type=available" :active="type == 'available'">有效证书({{countAvailable}})</menu-item>
+		<menu-item href="/servers/components/ssl?type=expired" :active="type == 'expired'">过期证书<span :class="{red: countExpired > 0}">({{countExpired}})</span></menu-item>
+		<menu-item href="/servers/components/ssl?type=7days" :active="type == '7days'">7天内过期<span :class="{red: count7Days > 0}">({{count7Days}})</span></menu-item>
+		<menu-item href="/servers/components/ssl?type=30days" :active="type == '30days'">30天过期({{count30Days}})</menu-item>
+		<span class="item">|</span>
+		<a href="" class="item" @click.prevent="uploadCert">[上传证书]</a>
+	</second-menu>
+
+	<p class="comment" v-if="certs.length == 0">暂时还没有相关的证书。</p>
+	<table class="ui table selectable" v-if="certs.length > 0">
+		<thead>
+			<tr>
+				<th>证书说明</th>
+				<th>顶级发行组织</th>
+				<th>域名</th>
+				<th>生效日期</th>
+				<th>过期日期</th>
+				<th>引用服务</th>
+				<th>状态</th>
+				<th class="three op">操作</th>
+			</tr>
+		</thead>
+		<tr v-for="(cert, index) in certs">
+			<td>{{cert.name}}</td>
+			<td>
+				<span v-if="cert.commonNames != null && cert.commonNames.length > 0">{{cert.commonNames[cert.commonNames.length-1]}}</span>
+			</td>
+			<td>
+				<div v-for="dnsName in cert.dnsNames" style="margin-bottom:0.4em">
+					<span class="ui label tiny">{{dnsName}}</span>
+				</div>
+			</td>
+			<td>{{certInfos[index].beginDay}}</td>
+			<td>{{certInfos[index].endDay}}</td>
+			<td>{{certInfos[index].countServers}}</td>
+			<td nowrap="">
+				<span class="ui label red tiny basic" v-if="certInfos[index].isExpired">已过期</span>
+				<span class="ui label green tiny basic" v-else>有效中</span>
+			</td>
+			<td>
+				<a href="" @click.prevent="viewCert(cert.id)">详情</a> &nbsp;
+				<a href="" @click.prevent="updateCert(cert.id)">修改</a> &nbsp;
+				<a href="" @click.prevent="deleteCert(cert.id)">删除</a>
+			</td>
+		</tr>
+	</table>
+
+	<div class="page" v-html="page"></div>
 </div>

@@ -1,0 +1,59 @@
+{$layout "layout_popup"}
+
+<h3>上传证书</h3>
+
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">证书说明 *</td>
+			<td>
+				<input type="text" name="name" maxlength="100" ref="focus"/>
+				<p class="comment">可以简单说明证书的用途。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>证书类型</td>
+			<td>
+				<select class="ui dropdown auto-width" name="isCA" v-model="isCA">
+					<option value="0">加密证书</option>
+					<option value="1">CA证书</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>选择证书文件 *</td>
+			<td>
+				<input type="file" name="certFile" accept="application/x-pem-file, application/pkcs10, application/x-pkcs12, application/x-x509-user-cert, application/x-x509-ca-cert, application/pkix-cert"/>
+				<p class="comment">内容中通常含有"-----BEGIN CERTIFICATE-----"类似的信息。</p
+			</td>
+		</tr>
+		<tr v-show="isCA == 0">
+			<td>选择私钥文件 *</td>
+			<td>
+				<input type="file" name="keyFile" accept="application/pkcs8"/>
+				<p class="comment">内容中通常含有"-----BEGIN RSA PRIVATE KEY-----"类似的信息。</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"><more-options-indicator></more-options-indicator></td>
+		</tr>
+		<tbody v-show="moreOptionsVisible">
+			<tr>
+				<td>详细说明</td>
+				<td>
+					<textarea rows="3" name="description" maxlength="200"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>是否启用</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" name="isOn" value="1" checked="checked"/>
+						<label></label>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<submit-btn></submit-btn>
+</form>

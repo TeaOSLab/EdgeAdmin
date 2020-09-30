@@ -52,7 +52,7 @@ Vue.component("http-gzip-box", {
 			</td>
 		</tr>
 	</tbody>
-	<more-options-tbody @change="changeAdvancedVisible"></more-options-tbody>
+	<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
 	<tbody v-show="isOn() && advancedVisible">
 		<tr>
 			<td>Gzip内容最小长度</td>

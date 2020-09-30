@@ -14,6 +14,15 @@ func init() {
 			Helper(componentutils.NewComponentHelper()).
 			Prefix("/servers/components/ssl").
 			Get("", new(IndexAction)).
+			GetPost("/uploadPopup", new(UploadPopupAction)).
+			Post("/delete", new(DeleteAction)).
+			GetPost("/updatePopup", new(UpdatePopupAction)).
+			Get("/certPopup", new(CertPopupAction)).
+			Get("/viewKey", new(ViewKeyAction)).
+			Get("/viewCert", new(ViewCertAction)).
+			Get("/downloadKey", new(DownloadKeyAction)).
+			Get("/downloadCert", new(DownloadCertAction)).
+			Get("/downloadZip", new(DownloadZipAction)).
 			EndAll()
 	})
 }
