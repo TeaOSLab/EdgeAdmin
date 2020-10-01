@@ -315,7 +315,7 @@ Vue.component("ssl-config-box", {
 	<input type="hidden" name="sslPolicyJSON" :value="JSON.stringify(policy)"/>
 	<table class="ui table definition selectable">
 		<tbody>
-			<tr>
+			<tr v-show="vProtocol == 'https'">
 				<td class="title">用HTTP/2</td>
 				<td>
 					<div class="ui checkbox">
@@ -325,7 +325,7 @@ Vue.component("ssl-config-box", {
 				</td>
 			</tr>
 			<tr>
-				<td>选择证书</td>
+				<td class="title">选择证书</td>
 				<td>
 					<div v-if="policy.certs != null && policy.certs.length > 0">
 						<div class="ui label small" v-for="(cert, index) in policy.certs">
