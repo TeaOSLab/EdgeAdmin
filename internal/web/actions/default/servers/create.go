@@ -159,15 +159,30 @@ func (this *CreateAction) RunPost(params struct {
 	reverseProxyRefJSON := []byte{}
 	switch params.ServerType {
 	case serverconfigs.ServerTypeHTTPProxy, serverconfigs.ServerTypeTCPProxy:
-		origins := []*serverconfigs.OriginConfig{}
-		err := json.Unmarshal([]byte(params.Origins), &origins)
+		originConfigs := []*serverconfigs.OriginConfig{}
+		err := json.Unmarshal([]byte(params.Origins), &originConfigs)
 		if err != nil {
 			this.Fail("源站地址解析失败：" + err.Error())
 		}
 
+		originRefs := []*serverconfigs.OriginRef{}
+		for _, originConfig := range originConfigs {
+			if originConfig.Id > 0 {
+				originRefs = append(originRefs, &serverconfigs.OriginRef{
+					IsOn:     true,
+					OriginId: originConfig.Id,
+				})
+			}
+		}
+		originRefsJSON, err := json.Marshal(originRefs)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+
 		resp, err := this.RPC().ReverseProxyRPC().CreateReverseProxy(this.AdminContext(), &pb.CreateReverseProxyRequest{
 			SchedulingJSON:     nil,
-			PrimaryOriginsJSON: []byte(params.Origins),
+			PrimaryOriginsJSON: originRefsJSON,
 			BackupOriginsJSON:  nil,
 		})
 		if err != nil {
