@@ -1,6 +1,7 @@
 package ssl
 
 import (
+	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
@@ -73,7 +74,7 @@ func (this *UploadPopupAction) RunPost(params struct {
 	}
 
 	// 保存
-	_, err = this.RPC().SSLCertRPC().CreateSSLCert(this.AdminContext(), &pb.CreateSSLCertRequest{
+	createResp, err := this.RPC().SSLCertRPC().CreateSSLCert(this.AdminContext(), &pb.CreateSSLCertRequest{
 		IsOn:        params.IsOn,
 		Name:        params.Name,
 		Description: params.Description,
@@ -89,6 +90,27 @@ func (this *UploadPopupAction) RunPost(params struct {
 	if err != nil {
 		this.ErrorPage(err)
 		return
+	}
+
+	// 查询已创建的证书并返回，方便调用者进行后续处理
+	certId := createResp.CertId
+	configResp, err := this.RPC().SSLCertRPC().FindEnabledSSLCertConfig(this.AdminContext(), &pb.FindEnabledSSLCertConfigRequest{CertId: certId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	certConfig := &sslconfigs.SSLCertConfig{}
+	err = json.Unmarshal(configResp.CertJSON, certConfig)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	certConfig.CertData = nil // 去掉不必要的数据
+	certConfig.KeyData = nil  // 去掉不必要的数据
+	this.Data["cert"] = certConfig
+	this.Data["certRef"] = &sslconfigs.SSLCertRef{
+		IsOn:   true,
+		CertId: certId,
 	}
 
 	this.Success()

@@ -1,6 +1,10 @@
 {$layout}
-
 {$template "/left_menu"}
+
+{$var "header"}
+	<script src="/servers/components/ssl/datajs" type="text/javascript"></script>
+	<script src="/js/sortable.min.js" type="text/javascript"></script>
+{$end}
 
 <div class="right-box">
 	<p class="comment">提醒：HTTP2、证书等信息修改后，可能需要清空浏览器缓存后才能浏览效果。</p>
@@ -26,6 +30,10 @@
 				</tr>
 			</tbody>
 		</table>
+
+		<!-- SSL配置 -->
+		<ssl-config-box :v-ssl-policy="httpsConfig.sslPolicy" :v-protocol="'https'" v-show="httpsConfig.isOn"></ssl-config-box>
+
 		<submit-btn></submit-btn>
 	</form>
 </div>

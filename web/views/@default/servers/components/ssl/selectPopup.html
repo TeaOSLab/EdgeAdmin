@@ -1,0 +1,43 @@
+{$layout "layout_popup"}
+
+<h3>选择证书</h3>
+<p class="comment" v-if="certs.length == 0">暂时还没有相关的证书。</p>
+<table class="ui table selectable" v-if="certs.length > 0">
+	<thead>
+	<tr>
+		<th>证书说明</th>
+		<th>顶级发行组织</th>
+		<th>域名</th>
+		<th>过期日期</th>
+		<th>引用服务</th>
+		<th>状态</th>
+		<th class="one op">操作</th>
+	</tr>
+	</thead>
+	<tr v-for="(cert, index) in certs">
+		<td>{{cert.name}}
+			<div v-if="cert.isCA" style="margin-top:0.5em">
+				<span class="ui label olive tiny">CA</span>
+			</div>
+		</td>
+		<td>
+			<span v-if="cert.commonNames != null && cert.commonNames.length > 0">{{cert.commonNames[cert.commonNames.length-1]}}</span>
+		</td>
+		<td>
+			<div v-for="dnsName in cert.dnsNames" style="margin-bottom:0.4em">
+				<span class="ui label tiny">{{dnsName}}</span>
+			</div>
+		</td>
+		<td>{{certInfos[index].endDay}}</td>
+		<td>{{certInfos[index].countServers}}</td>
+		<td nowrap="">
+			<span class="ui label red tiny basic" v-if="certInfos[index].isExpired">已过期</span>
+			<span class="ui label green tiny basic" v-else>有效中</span>
+		</td>
+		<td>
+			<a href="" @click.prevent="selectCert(cert)">选择</a>
+		</td>
+	</tr>
+</table>
+
+<div class="page" v-html="page"></div>
