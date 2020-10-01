@@ -23,6 +23,8 @@ func init() {
 			Get("/downloadKey", new(DownloadKeyAction)).
 			Get("/downloadCert", new(DownloadCertAction)).
 			Get("/downloadZip", new(DownloadZipAction)).
+			Get("/selectPopup", new(SelectPopupAction)).
+			Get("/datajs", new(DatajsAction)).
 			EndAll()
 	})
 }

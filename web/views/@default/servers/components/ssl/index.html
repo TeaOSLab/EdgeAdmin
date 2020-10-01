@@ -28,7 +28,11 @@
 			</tr>
 		</thead>
 		<tr v-for="(cert, index) in certs">
-			<td>{{cert.name}}</td>
+			<td>{{cert.name}}
+				<div v-if="cert.isCA" style="margin-top:0.5em">
+					<span class="ui label olive tiny">CA</span>
+				</div>
+			</td>
 			<td>
 				<span v-if="cert.commonNames != null && cert.commonNames.length > 0">{{cert.commonNames[cert.commonNames.length-1]}}</span>
 			</td>
