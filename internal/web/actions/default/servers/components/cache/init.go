@@ -14,6 +14,15 @@ func init() {
 			Helper(componentutils.NewComponentHelper()).
 			Prefix("/servers/components/cache").
 			Get("", new(IndexAction)).
+			GetPost("/createPopup", new(CreatePopupAction)).
+			Get("/policy", new(PolicyAction)).
+			GetPost("/updatePopup", new(UpdatePopupAction)).
+			GetPost("/clean", new(CleanAction)).
+			GetPost("/preheat", new(PreheatAction)).
+			GetPost("/purge", new(PurgeAction)).
+			GetPost("/stat", new(StatAction)).
+			GetPost("/test", new(TestAction)).
+			Post("/delete", new(DeleteAction)).
 			EndAll()
 	})
 }

@@ -2,5 +2,24 @@
 {$template "/left_menu"}
 
 <div class="right-box">
-	<p class="ui message">此功能暂未开放敬请期待。</p>
+	<form class="ui form" data-tea-action="$" data-tea-success="success">
+		<input type="hidden" name="globalConfigJSON" :value="JSON.stringify(globalConfig)"/>
+		<table class="ui table selectable definition">
+			<tr>
+				<td colspan="2">HTTP/HTTPS通用设置</td>
+			</tr>
+			<tr>
+				<td class="title">是否严格匹配域名</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" name="matchDomainStrictly" value="1" v-model="globalConfig.httpAll.matchDomainStrictly"/>
+						<label></label>
+					</div>
+					<p class="comment">如果选择了严格匹配域名，则没有在Edge里绑定过的域名访问时都会返回404。</p>
+				</td>
+			</tr>
+		</table>
+		<submit-btn>保存</submit-btn>
+	</form>
+
 </div>

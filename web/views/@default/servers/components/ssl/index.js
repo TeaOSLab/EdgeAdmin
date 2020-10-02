@@ -30,4 +30,16 @@ Tea.context(function () {
 			width: "48em"
 		})
 	}
+
+	// 修改证书
+	this.updateCert = function (certId) {
+		teaweb.popup("/servers/components/ssl/updatePopup?certId=" + certId, {
+			height: "28em",
+			callback: function () {
+				teaweb.success("上传成功", function () {
+					window.location.reload()
+				})
+			}
+		})
+	}
 })

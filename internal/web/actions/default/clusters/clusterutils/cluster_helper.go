@@ -2,8 +2,8 @@ package clusters
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
-	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
@@ -48,9 +48,13 @@ func (this *ClusterHelper) BeforeAction(action *actions.ActionObject) {
 	}
 
 	tabbar := actionutils.NewTabbar()
-	tabbar.Add("当前集群："+cluster.Name, "", "/clusters", "left long alternate arrow", false)
+	tabbar.Add("集群列表", "", "/clusters", "", false)
 	tabbar.Add("节点", "", "/clusters/cluster?clusterId="+clusterIdString, "server", selectedTabbar == "node")
 	tabbar.Add("设置", "", "/clusters/cluster/settings?clusterId="+clusterIdString, "setting", selectedTabbar == "setting")
+	{
+		m := tabbar.Add("当前集群："+cluster.Name, "", "/clusters/cluster?clusterId="+clusterIdString, "", false)
+		m["right"] = true
+	}
 	actionutils.SetTabbar(action, tabbar)
 
 	// 左侧菜单

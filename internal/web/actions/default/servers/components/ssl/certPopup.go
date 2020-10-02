@@ -57,7 +57,7 @@ func (this *CertPopupAction) RunGet(params struct {
 	}
 
 	// 引入的服务
-	serversResp, err := this.RPC().ServerRPC().FindAllServersWithSSLCertId(this.AdminContext(), &pb.FindAllServersWithSSLCertIdRequest{CertId: params.CertId})
+	serversResp, err := this.RPC().ServerRPC().FindAllEnabledServersWithSSLCertId(this.AdminContext(), &pb.FindAllEnabledServersWithSSLCertIdRequest{CertId: params.CertId})
 	if err != nil {
 		this.ErrorPage(err)
 		return

@@ -13,7 +13,7 @@ func init() {
 			Helper(NewHelper()).
 			Helper(componentutils.NewComponentHelper()).
 			Prefix("/servers/components").
-			Get("", new(IndexAction)).
+			GetPost("", new(IndexAction)).
 			EndAll()
 	})
 }

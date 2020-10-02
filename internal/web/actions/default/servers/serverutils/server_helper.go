@@ -78,12 +78,16 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 	// TABBAR
 	selectedTabbar, _ := action.Data["mainTab"]
 	tabbar := actionutils.NewTabbar()
-	tabbar.Add("当前服务："+server.Name, "", "/servers", "left long alternate arrow", false)
+	tabbar.Add("服务首页", "", "/servers", "", false)
 	//tabbar.Add("看板", "", "/servers/server/board?serverId="+serverIdString, "dashboard", selectedTabbar == "board")
 	tabbar.Add("日志", "", "/servers/server/log?serverId="+serverIdString, "history", selectedTabbar == "log")
 	//tabbar.Add("统计", "", "/servers/server/stat?serverId="+serverIdString, "chart area", selectedTabbar == "stat")
 	tabbar.Add("设置", "", "/servers/server/settings?serverId="+serverIdString, "setting", selectedTabbar == "setting")
 	tabbar.Add("删除", "", "/servers/server/delete?serverId="+serverIdString, "trash", selectedTabbar == "delete")
+	{
+		m := tabbar.Add("当前服务："+server.Name, "", "/servers/server?serverId="+serverIdString, "", false)
+		m["right"] = true
+	}
 
 	actionutils.SetTabbar(action, tabbar)
 
@@ -207,7 +211,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"name":     "缓存",
 			"url":      "/servers/server/settings/cache?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "cache",
-			"isOn":     serverConfig.Web != nil && serverConfig.Web.CacheRef != nil && serverConfig.Web.CacheRef.IsOn,
+			"isOn":     serverConfig.Web != nil && len(serverConfig.Web.CacheRefs) > 0,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "访问控制",

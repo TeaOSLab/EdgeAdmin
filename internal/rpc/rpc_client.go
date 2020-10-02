@@ -134,6 +134,10 @@ func (this *RPCClient) SSLPolicyRPC() pb.SSLPolicyServiceClient {
 	return pb.NewSSLPolicyServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) SysSettingRPC() pb.SysSettingServiceClient {
+	return pb.NewSysSettingServiceClient(this.pickConn())
+}
+
 // 构造上下文
 func (this *RPCClient) Context(adminId int64) context.Context {
 	ctx := context.Background()

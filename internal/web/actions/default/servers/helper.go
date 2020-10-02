@@ -19,6 +19,6 @@ func (this *Helper) BeforeAction(action *actions.ActionObject) {
 
 	tabbar := actionutils.NewTabbar()
 	tabbar.Add("服务", "", "/servers", "", selectedTabbar == "server")
-	tabbar.Add("组件", "", "/servers/components", "", selectedTabbar == "component")
+	tabbar.Add("通用", "", "/servers/components", "", selectedTabbar == "component")
 	actionutils.SetTabbar(action, tabbar)
 }
