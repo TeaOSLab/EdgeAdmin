@@ -45,7 +45,8 @@
 			<td>{{certInfos[index].endDay}}</td>
 			<td>{{certInfos[index].countServers}}</td>
 			<td nowrap="">
-				<span class="ui label red tiny basic" v-if="certInfos[index].isExpired">已过期</span>
+				<span class="ui label red tiny basic" v-if="!certInfos[index].isOn">未启用</span>
+				<span class="ui label red tiny basic" v-else-if="certInfos[index].isExpired">已过期</span>
 				<span class="ui label green tiny basic" v-else>有效中</span>
 			</td>
 			<td>

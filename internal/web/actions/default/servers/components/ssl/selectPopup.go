@@ -48,7 +48,7 @@ func (this *SelectPopupAction) RunGet(params struct{}) {
 	certMaps := []maps.Map{}
 	nowTime := time.Now().Unix()
 	for _, certConfig := range certConfigs {
-		countServersResp, err := this.RPC().ServerRPC().CountServersWithSSLCertId(this.AdminContext(), &pb.CountServersWithSSLCertIdRequest{CertId: certConfig.Id})
+		countServersResp, err := this.RPC().ServerRPC().CountAllEnabledServersWithSSLCertId(this.AdminContext(), &pb.CountAllEnabledServersWithSSLCertIdRequest{CertId: certConfig.Id})
 		if err != nil {
 			this.ErrorPage(err)
 			return

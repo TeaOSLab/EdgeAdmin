@@ -13,7 +13,7 @@ func (this *DeleteAction) RunPost(params struct {
 	CertId int64
 }) {
 	// 是否正在被使用
-	countResp, err := this.RPC().ServerRPC().CountServersWithSSLCertId(this.AdminContext(), &pb.CountServersWithSSLCertIdRequest{CertId: params.CertId})
+	countResp, err := this.RPC().ServerRPC().CountAllEnabledServersWithSSLCertId(this.AdminContext(), &pb.CountAllEnabledServersWithSSLCertIdRequest{CertId: params.CertId})
 	if err != nil {
 		this.ErrorPage(err)
 		return

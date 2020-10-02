@@ -68,8 +68,13 @@ Vue.component("http-gzip-box", {
 				<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
 			</td>
 		</tr>
+		<tr>
+			<td>匹配条件</td>
+			<td>
+				<http-request-conds-box :v-conds="gzip.conds"></http-request-conds-box>
+</td>
+		</tr>
 	</tbody>
-	<http-request-conds-tbody v-show="isOn() && advancedVisible" :v-conds="gzip.conds"></http-request-conds-tbody>
 </table>
 </div>`
 })

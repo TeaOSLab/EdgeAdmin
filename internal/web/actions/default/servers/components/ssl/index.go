@@ -141,13 +141,14 @@ func (this *IndexAction) RunGet(params struct {
 	certMaps := []maps.Map{}
 	nowTime := time.Now().Unix()
 	for _, certConfig := range certConfigs {
-		countServersResp, err := this.RPC().ServerRPC().CountServersWithSSLCertId(this.AdminContext(), &pb.CountServersWithSSLCertIdRequest{CertId: certConfig.Id})
+		countServersResp, err := this.RPC().ServerRPC().CountAllEnabledServersWithSSLCertId(this.AdminContext(), &pb.CountAllEnabledServersWithSSLCertIdRequest{CertId: certConfig.Id})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
 
 		certMaps = append(certMaps, maps.Map{
+			"isOn":         certConfig.IsOn,
 			"beginDay":     timeutil.FormatTime("Y-m-d", certConfig.TimeBeginAt),
 			"endDay":       timeutil.FormatTime("Y-m-d", certConfig.TimeEndAt),
 			"isExpired":    nowTime > certConfig.TimeEndAt,

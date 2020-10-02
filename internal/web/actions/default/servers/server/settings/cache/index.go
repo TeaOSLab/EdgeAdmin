@@ -27,7 +27,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	this.Data["webId"] = webConfig.Id
-	this.Data["cacheConfig"] = webConfig.CacheRef
+	this.Data["cacheConfig"] = webConfig.CacheRefs
 
 	// 所有缓存策略
 	cachePoliciesResp, err := this.RPC().HTTPCachePolicyRPC().FindAllEnabledHTTPCachePolicies(this.AdminContext(), &pb.FindAllEnabledHTTPCachePoliciesRequest{})

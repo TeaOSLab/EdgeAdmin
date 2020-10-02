@@ -207,10 +207,6 @@ label[for] {
 label.blue {
   color: #2185d0 !important;
 }
-td .label.tiny {
-  padding: 2px;
-  font-size: 0.9em;
-}
 /** Menu **/
 .first-menu .menu.text {
   margin-top: 0 !important;

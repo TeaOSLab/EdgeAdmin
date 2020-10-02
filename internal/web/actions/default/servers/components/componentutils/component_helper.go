@@ -25,7 +25,7 @@ func (this *ComponentHelper) BeforeAction(action *actions.ActionObject) {
 	selectedTabbar := action.Data.GetString("mainTab")
 	tabbar := actionutils.NewTabbar()
 	tabbar.Add("服务", "", "/servers", "", selectedTabbar == "server")
-	tabbar.Add("组件", "", "/servers/components", "", selectedTabbar == "component")
+	tabbar.Add("通用", "", "/servers/components", "", selectedTabbar == "component")
 	actionutils.SetTabbar(action, tabbar)
 
 	// 创建左侧菜单
@@ -39,11 +39,11 @@ func (this *ComponentHelper) createLeftMenus(secondMenuItem string) (items []map
 		"url":      "/servers/components",
 		"isActive": secondMenuItem == "global",
 	})
-	items = append(items, maps.Map{
+	/**items = append(items, maps.Map{
 		"name":     "分组设置",
 		"url":      "/servers/components/group",
 		"isActive": secondMenuItem == "group",
-	})
+	})**/
 	items = append(items, maps.Map{
 		"name":     "缓存策略",
 		"url":      "/servers/components/cache",

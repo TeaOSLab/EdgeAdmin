@@ -2,5 +2,38 @@
 {$template "/left_menu"}
 
 <div class="right-box">
-	<p class="ui message">此功能暂未开放敬请期待。</p>
+	<second-menu>
+		<menu-item href="/servers/components/cache" code="index">列表</menu-item>
+		<span class="item">|</span>
+		<a href="" class="item" @click.prevent="createPolicy()">[创建]</a>
+	</second-menu>
+
+	<p class="comment" v-if="cachePolicies.length == 0">暂时还没有缓存策略。</p>
+	<table class="ui table selectable" v-if="cachePolicies.length > 0">
+		<thead>
+			<tr>
+				<th>策略名称</th>
+				<th>策略类型</th>
+				<th>容量</th>
+				<th>引用服务</th>
+				<th>状态</th>
+				<th class="three op">操作</th>
+			</tr>
+		</thead>
+		<tr v-for="(policy, index) in cachePolicies">
+			<td>{{policy.name}}</td>
+			<td>{{infos[index].typeName}} <span class="small">（{{policy.type}}）</span></td>
+			<td>
+				<span v-if="policy.capacity != null && policy.capacity.count > 0">{{policy.capacity.count}}{{policy.capacity.unit.toUpperCase()}}</span>
+				<span v-else class="disabled">不限</span>
+			</td>
+			<td>{{infos[index].countServers}}</td>
+			<td><label-on :v-is-on="policy.isOn"></label-on></td>
+			<td>
+				<a :href="'/servers/components/cache/policy?cachePolicyId=' + policy.id">详情</a> &nbsp; <a href="" @click.prevent="updatePolicy(policy.id)">修改</a> &nbsp; <a href="" @click.prevent="deletePolicy(policy.id)">删除</a>
+			</td>
+		</tr>
+	</table>
+
+	<div class="page" v-html="page"></div>
 </div>
