@@ -8,15 +8,21 @@
 	<thead>
 		<tr>
 			<th>节点名称</th>
-			<th>主机地址</th>
-			<th>端口</th>
+			<th>访问地址</th>
+			<th class="two wide">状态</th>
 			<th class="two op">操作</th>
 		</tr>
 	</thead>
 	<tr v-for="node in nodes">
 		<td>{{node.name}}</td>
-		<td>{{node.host}}</td>
-		<td>{{node.port}}</td>
+		<td>
+			<div v-if="node.accessAddrs != null && node.accessAddrs.length > 0">
+				<span class="ui label tiny" v-for="addr in node.accessAddrs">{{addr}}</span>
+			</div>
+		</td>
+		<td>
+			<label-on :v-is-on="node.isOn"></label-on>
+		</td>
 		<td>
 			<a :href="'/api/node/settings?nodeId=' + node.id">设置</a>
 		</td>

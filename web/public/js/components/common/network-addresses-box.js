@@ -1,5 +1,5 @@
 Vue.component("network-addresses-box", {
-	props: ["v-server-type", "v-addresses", "v-protocol"],
+	props: ["v-server-type", "v-addresses", "v-protocol", "v-name"],
 	data: function () {
 		let addresses = this.vAddresses
 		if (addresses == null) {
@@ -9,9 +9,16 @@ Vue.component("network-addresses-box", {
 		if (protocol == null) {
 			protocol = ""
 		}
+
+		let name = this.vName
+		if (name == null) {
+			name = "addresses"
+		}
+
 		return {
 			addresses: addresses,
-			protocol: protocol
+			protocol: protocol,
+			name: name
 		}
 	},
 	watch: {
@@ -24,22 +31,28 @@ Vue.component("network-addresses-box", {
 			let that = this
 			teaweb.popup("/servers/addPortPopup?serverType=" + this.vServerType + "&protocol=" + this.protocol, {
 				callback: function (resp) {
-					var addr = resp.data.address;
-					that.addresses.push(addr);
+					var addr = resp.data.address
+					that.addresses.push(addr)
 					if (["https", "https4", "https6"].$contains(addr.protocol)) {
-						this.tlsProtocolName = "HTTPS";
+						this.tlsProtocolName = "HTTPS"
 					} else if (["tls", "tls4", "tls6"].$contains(addr.protocol)) {
-						this.tlsProtocolName = "TLS";
+						this.tlsProtocolName = "TLS"
 					}
+
+					// 发送事件
+					that.$emit("change", that.addresses)
 				}
 			})
 		},
 		removeAddr: function (index) {
 			this.addresses.$remove(index);
+
+			// 发送事件
+			this.$emit("change", this.addresses)
 		}
 	},
 	template: `<div>
-	<input type="hidden" name="addresses" :value="JSON.stringify(addresses)"/>
+	<input type="hidden" :name="name" :value="JSON.stringify(addresses)"/>
 	<div v-if="addresses.length > 0">
 		<div class="ui label small" v-for="(addr, index) in addresses">
 			{{addr.protocol}}://<span v-if="addr.host.length > 0">{{addr.host}}</span><span v-if="addr.host.length == 0">*</span>:{{addr.portRange}}

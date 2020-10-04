@@ -1,0 +1,73 @@
+{$layout}
+{$template "/left_menu"}
+
+<div class="right-box">
+	{$template "policy_menu"}
+
+	<h3>选择集群</h3>
+	<select class="ui dropdown auto-width" v-model="clusterId">
+		<option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
+	</select>
+
+	<div class="ui divider"></div>
+
+	<h3>测试写入</h3>
+	<form class="ui form" data-tea-action=".testWrite" data-tea-before="beforeWrite" data-tea-done="doneWrite" data-tea-success="successWrite" data-tea-fail="failWrite">
+		<input type="hidden" name="clusterId" :value="clusterId"/>
+		<input type="hidden" name="cachePolicyId" :value="cachePolicyId"/>
+		<table class="ui table selectable definition">
+			<tr>
+				<td class="title">Key</td>
+				<td>
+					<input type="text" name="key" value="my-key"/>
+				</td>
+			</tr>
+			<tr>
+				<td>Value</td>
+				<td>
+					<textarea name="value" rows="3">my-value</textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>操作结果</td>
+				<td>
+					<div v-if="isRequestingWrite">数据发送中...</div>
+					<span class="red" v-if="!isRequestingWrite && !writeOk && writeMessage.length > 0">失败：{{writeMessage}}</span>
+					<div v-if="!isRequestingWrite && writeOk">
+						<span v-if="writeResults.length == 0" class="red">此集群下没有任何可用的节点。</span>
+						<div class="ui label tiny" v-for="result in writeResults" :class="{green:result.isOk, red:!result.isOk}" style="margin-bottom:0.5em">节点{{result.nodeName}}：{{result.message}}</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<submit-btn v-if="!isRequestingWrite">提交</submit-btn>
+	</form>
+
+	<div class="ui divider"></div>
+
+	<h3>测试读取</h3>
+	<form class="ui form" data-tea-action=".testRead" data-tea-before="beforeRead" data-tea-done="doneRead" data-tea-success="successRead" data-tea-fail="failRead">
+		<input type="hidden" name="clusterId" :value="clusterId"/>
+		<input type="hidden" name="cachePolicyId" :value="cachePolicyId"/>
+		<table class="ui table selectable definition">
+			<tr>
+				<td class="title">Key</td>
+				<td>
+					<input type="text" name="key" value="my-key"/>
+				</td>
+			</tr>
+			<tr>
+				<td>操作结果</td>
+				<td>
+					<div v-if="isRequestingRead">数据发送中...</div>
+					<span class="red" v-if="!isRequestingRead && !readOk && readMessage.length > 0">失败：{{readMessage}}</span>
+					<div v-if="!isRequestingRead && readOk">
+						<span v-if="readResults.length == 0" class="red">此集群下没有任何可用的节点。</span>
+						<div class="ui label tiny" v-for="result in readResults" :class="{green:result.isOk, red:!result.isOk}" style="margin-bottom: 0.5em">节点{{result.nodeName}}：{{result.message}}</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<submit-btn v-if="!isRequestingRead">提交</submit-btn>
+	</form>
+</div>
