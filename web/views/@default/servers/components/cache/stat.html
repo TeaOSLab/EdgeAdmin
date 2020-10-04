@@ -1,0 +1,34 @@
+{$layout}
+{$template "/left_menu"}
+
+<div class="right-box">
+	{$template "policy_menu"}
+
+	<h3>选择集群</h3>
+	<select class="ui dropdown auto-width" v-model="clusterId">
+		<option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
+	</select>
+
+	<div class="ui divider"></div>
+
+	<h3>统计</h3>
+	<form data-tea-action="$" data-tea-before="before" data-tea-success="success" data-tea-fail="fail" data-tea-done="done">
+		<input type="hidden" name="cachePolicyId" :value="cachePolicyId"/>
+		<input type="hidden" name="clusterId" :value="clusterId"/>
+
+		<table class="ui table definition selectable">
+			<tr>
+				<td class="title">操作结果</td>
+				<td>
+					<div v-if="isRequesting">数据发送中...</div>
+					<span class="red" v-if="!isRequesting && !isOk && message.length > 0">失败：{{message}}</span>
+					<div v-if="!isRequesting && isOk">
+						<span v-if="results.length == 0" class="red">此集群下没有任何可用的节点。</span>
+						<div class="ui label tiny" v-for="one in results" :class="{green:one.isOk, red:!one.isOk}" style="margin-bottom: 0.5em">{{one.nodeName}}：{{one.message}}</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<submit-btn v-if="!isRequesting">提交</submit-btn>
+	</form>
+</div>

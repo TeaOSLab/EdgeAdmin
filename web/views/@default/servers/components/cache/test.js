@@ -1,8 +1,10 @@
 Tea.context(function () {
-	if (this.clusters.length > 0) {
-		this.clusterId = this.clusters[0].id
-	} else {
-		this.clusterId = 0
+	if (this.clusterId == null) {
+		if (this.clusters.length > 0) {
+			this.clusterId = this.clusters[0].id
+		} else {
+			this.clusterId = 0
+		}
 	}
 
 	this.isRequestingWrite = false
