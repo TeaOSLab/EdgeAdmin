@@ -7,7 +7,7 @@ type PurgeAction struct {
 }
 
 func (this *PurgeAction) Init() {
-	this.Nav("", "", "")
+	this.Nav("", "", "purge")
 }
 
 func (this *PurgeAction) RunGet(params struct{}) {

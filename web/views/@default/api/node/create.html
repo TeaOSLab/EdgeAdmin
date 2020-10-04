@@ -10,17 +10,23 @@
 			</td>
 		</tr>
 		<tr>
-			<td>主机地址 *</td>
+			<td>进程监听端口 *</td>
 			<td>
-				<input type="text" name="host" maxlength="100"/>
-				<p class="comment">IP地址或者域名。</p>
+				<network-addresses-box :v-name="'listensJSON'" :v-server-type="'httpWeb'" @change="changeListens"></network-addresses-box>
+				<p class="comment">API节点进程监听的网络端口。</p>
+			</td>
+		</tr>
+		<tr v-if="hasHTTPS">
+			<td>HTTPS证书 *</td>
+			<td>
+				<ssl-certs-box :v-protocol="'https'"></ssl-certs-box>
 			</td>
 		</tr>
 		<tr>
-			<td>端口 *</td>
+			<td>外部访问地址 *</td>
 			<td>
-				<input type="text" name="port" maxlength="5" style="width:6em"/>
-				<p class="comment">1-65535之间。</p>
+				<api-node-addresses-box :v-name="'accessAddrsJSON'"></api-node-addresses-box>
+				<p class="comment">外部访问API节点的网络地址。</p>
 			</td>
 		</tr>
 
@@ -32,6 +38,15 @@
 				<td>描述</td>
 				<td>
 					<textarea name="description" maxlength="200" rows="3"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>是否启用</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" name="isOn" value="1" checked="checked"/>
+						<label></label>
+					</div>
 				</td>
 			</tr>
 		</tbody>

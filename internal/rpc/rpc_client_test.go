@@ -1,8 +1,8 @@
 package rpc
 
 import (
-	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	_ "github.com/iwind/TeaGo/bootstrap"
 	stringutil "github.com/iwind/TeaGo/utils/string"
 	"testing"
@@ -30,4 +30,67 @@ func TestRPCClient_NodeRPC(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(resp)
+}
+
+func TestRPC_Dial_HTTP(t *testing.T) {
+	client, err := NewRPCClient(&configs.APIConfig{
+		RPC: struct {
+			Endpoints []string `yaml:"endpoints"`
+		}{
+			Endpoints: []string{"127.0.0.1:8003"},
+		},
+		NodeId: "a7e55782dab39bce0901058a1e14a0e6",
+		Secret: "lvyPobI3BszkJopz5nPTocOs0OLkEJ7y",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	resp, err := client.NodeRPC().FindEnabledNode(client.Context(1), &pb.FindEnabledNodeRequest{NodeId: 4})
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(resp.Node)
+}
+
+func TestRPC_Dial_HTTP_2(t *testing.T) {
+	client, err := NewRPCClient(&configs.APIConfig{
+		RPC: struct {
+			Endpoints []string `yaml:"endpoints"`
+		}{
+			Endpoints: []string{"http://127.0.0.1:8003"},
+		},
+		NodeId: "a7e55782dab39bce0901058a1e14a0e6",
+		Secret: "lvyPobI3BszkJopz5nPTocOs0OLkEJ7y",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	resp, err := client.NodeRPC().FindEnabledNode(client.Context(1), &pb.FindEnabledNodeRequest{NodeId: 4})
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(resp.Node)
+}
+
+func TestRPC_Dial_HTTPS(t *testing.T) {
+	client, err := NewRPCClient(&configs.APIConfig{
+		RPC: struct {
+			Endpoints []string `yaml:"endpoints"`
+		}{
+			Endpoints: []string{"https://127.0.0.1:8004"},
+		},
+		NodeId: "a7e55782dab39bce0901058a1e14a0e6",
+		Secret: "lvyPobI3BszkJopz5nPTocOs0OLkEJ7y",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	resp, err := client.NodeRPC().FindEnabledNode(client.Context(1), &pb.FindEnabledNodeRequest{NodeId: 4})
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(resp.Node)
 }

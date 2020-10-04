@@ -13,6 +13,7 @@ import (
 	"github.com/iwind/TeaGo/rands"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
+	"net/url"
 	"time"
 )
 
@@ -30,7 +31,19 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 
 	conns := []*grpc.ClientConn{}
 	for _, endpoint := range apiConfig.RPC.Endpoints {
-		conn, err := grpc.Dial(endpoint, grpc.WithInsecure())
+		u, err := url.Parse(endpoint)
+		if err != nil {
+			return nil, errors.New("parse endpoint failed: " + err.Error())
+		}
+		var conn *grpc.ClientConn
+		if u.Scheme == "http" {
+			conn, err = grpc.Dial(u.Host, grpc.WithInsecure())
+		} else if u.Scheme == "https" {
+			// TODO 暂不支持HTTPS
+			conn, err = grpc.Dial(u.Host)
+		} else {
+			return nil, errors.New("parse endpoint failed: invalid scheme '" + u.Scheme + "'")
+		}
 		if err != nil {
 			return nil, err
 		}

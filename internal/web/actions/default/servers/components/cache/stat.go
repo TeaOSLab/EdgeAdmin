@@ -7,7 +7,7 @@ type StatAction struct {
 }
 
 func (this *StatAction) Init() {
-	this.Nav("", "", "")
+	this.Nav("", "", "stat")
 }
 
 func (this *StatAction) RunGet(params struct{}) {

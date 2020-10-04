@@ -17,7 +17,7 @@
 				<th>容量</th>
 				<th>引用服务</th>
 				<th>状态</th>
-				<th class="three op">操作</th>
+				<th class="two op">操作</th>
 			</tr>
 		</thead>
 		<tr v-for="(policy, index) in cachePolicies">
@@ -30,7 +30,7 @@
 			<td>{{infos[index].countServers}}</td>
 			<td><label-on :v-is-on="policy.isOn"></label-on></td>
 			<td>
-				<a :href="'/servers/components/cache/policy?cachePolicyId=' + policy.id">详情</a> &nbsp; <a href="" @click.prevent="updatePolicy(policy.id)">修改</a> &nbsp; <a href="" @click.prevent="deletePolicy(policy.id)">删除</a>
+				<a :href="'/servers/components/cache/policy?cachePolicyId=' + policy.id">详情</a> &nbsp; <a href="" @click.prevent="deletePolicy(policy.id)">删除</a>
 			</td>
 		</tr>
 	</table>

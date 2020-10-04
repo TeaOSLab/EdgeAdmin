@@ -37,11 +37,10 @@ func (this *IndexAction) RunGet(params struct{}) {
 
 		for _, node := range nodesResp.Nodes {
 			nodeMaps = append(nodeMaps, maps.Map{
-				"id":   node.Id,
-				"isOn": node.IsOn,
-				"name": node.Name,
-				"host": node.Host,
-				"port": node.Port,
+				"id":          node.Id,
+				"isOn":        node.IsOn,
+				"name":        node.Name,
+				"accessAddrs": node.AccessAddrs,
 			})
 		}
 	}

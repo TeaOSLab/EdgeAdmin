@@ -7,7 +7,7 @@ type CleanAction struct {
 }
 
 func (this *CleanAction) Init() {
-	this.Nav("", "", "")
+	this.Nav("", "", "clean")
 }
 
 func (this *CleanAction) RunGet(params struct{}) {

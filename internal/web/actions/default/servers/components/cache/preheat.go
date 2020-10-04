@@ -7,7 +7,7 @@ type PreheatAction struct {
 }
 
 func (this *PreheatAction) Init() {
-	this.Nav("", "", "")
+	this.Nav("", "", "preheat")
 }
 
 func (this *PreheatAction) RunGet(params struct{}) {

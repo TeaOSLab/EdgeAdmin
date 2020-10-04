@@ -1,8 +1,8 @@
 package node
 
 import (
-	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 	"strings"
@@ -76,7 +76,7 @@ func (this *InstallAction) RunGet(params struct {
 	apiNodes := apiNodesResp.Nodes
 	apiEndpoints := []string{}
 	for _, apiNode := range apiNodes {
-		apiEndpoints = append(apiEndpoints, apiNode.Address)
+		apiEndpoints = append(apiEndpoints, apiNode.AccessAddrs...)
 	}
 	this.Data["apiEndpoints"] = "\"" + strings.Join(apiEndpoints, "\", \"") + "\""
 

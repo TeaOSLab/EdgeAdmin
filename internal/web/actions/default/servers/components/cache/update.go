@@ -8,15 +8,15 @@ import (
 	"github.com/iwind/TeaGo/actions"
 )
 
-type UpdatePopupAction struct {
+type UpdateAction struct {
 	actionutils.ParentAction
 }
 
-func (this *UpdatePopupAction) Init() {
-	this.Nav("", "", "")
+func (this *UpdateAction) Init() {
+	this.Nav("", "", "update")
 }
 
-func (this *UpdatePopupAction) RunGet(params struct {
+func (this *UpdateAction) RunGet(params struct {
 	CachePolicyId int64
 }) {
 	configResp, err := this.RPC().HTTPCachePolicyRPC().FindEnabledHTTPCachePolicyConfig(this.AdminContext(), &pb.FindEnabledHTTPCachePolicyConfigRequest{CachePolicyId: params.CachePolicyId})
@@ -44,7 +44,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 	this.Show()
 }
 
-func (this *UpdatePopupAction) RunPost(params struct {
+func (this *UpdateAction) RunPost(params struct {
 	CachePolicyId int64
 
 	Name string

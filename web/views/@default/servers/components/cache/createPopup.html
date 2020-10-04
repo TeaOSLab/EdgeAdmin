@@ -9,7 +9,7 @@
 			<td><input type="text" name="name" maxlength="100" ref="focus"/> </td>
 		</tr>
 		<tr>
-			<td>缓存类型 *</td>
+			<td class="color-border">缓存类型 *</td>
 			<td>
 				<select class="ui dropdown auto-width" name="type" v-model="policyType">
 					<option v-for="type in types" :value="type.type">{{type.name}}</option>
@@ -19,7 +19,7 @@
 		<!-- 文件缓存选项 -->
 		<tbody v-if="policyType == 'file'">
 			<tr>
-				<td>缓存目录 *</td>
+				<td class="color-border">缓存目录 *</td>
 				<td>
 					<input type="text" name="fileDir" maxlength="500"/>
 					<p class="comment">存放文件缓存的目录，通常填写绝对路径。</p>

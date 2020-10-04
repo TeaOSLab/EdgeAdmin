@@ -1,8 +1,11 @@
 package node
 
 import (
-	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 )
@@ -32,12 +35,69 @@ func (this *SettingsAction) RunGet(params struct {
 		return
 	}
 
+	httpConfig := &serverconfigs.HTTPProtocolConfig{}
+	if len(node.HttpJSON) > 0 {
+		err = json.Unmarshal(node.HttpJSON, httpConfig)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+	httpsConfig := &serverconfigs.HTTPSProtocolConfig{}
+	if len(node.HttpsJSON) > 0 {
+		err = json.Unmarshal(node.HttpsJSON, httpsConfig)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+
+	// 监听地址
+	listens := []*serverconfigs.NetworkAddressConfig{}
+	listens = append(listens, httpConfig.Listen...)
+	listens = append(listens, httpsConfig.Listen...)
+
+	// 证书信息
+	certs := []*sslconfigs.SSLCertConfig{}
+	sslPolicyId := int64(0)
+	if httpsConfig.SSLPolicyRef != nil && httpsConfig.SSLPolicyRef.SSLPolicyId > 0 {
+		sslPolicyConfigResp, err := this.RPC().SSLPolicyRPC().FindEnabledSSLPolicyConfig(this.AdminContext(), &pb.FindEnabledSSLPolicyConfigRequest{SslPolicyId: httpsConfig.SSLPolicyRef.SSLPolicyId})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		sslPolicyConfigJSON := sslPolicyConfigResp.SslPolicyJSON
+		if len(sslPolicyConfigJSON) > 0 {
+			sslPolicyId = httpsConfig.SSLPolicyRef.SSLPolicyId
+
+			sslPolicy := &sslconfigs.SSLPolicy{}
+			err = json.Unmarshal(sslPolicyConfigJSON, sslPolicy)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			certs = sslPolicy.Certs
+		}
+	}
+
+	accessAddrs := []*serverconfigs.NetworkAddressConfig{}
+	if len(node.AccessAddrsJSON) > 0 {
+		err = json.Unmarshal(node.AccessAddrsJSON, &accessAddrs)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+
 	this.Data["node"] = maps.Map{
 		"id":          node.Id,
 		"name":        node.Name,
 		"description": node.Description,
-		"host":        node.Host,
-		"port":        node.Port,
+		"isOn":        node.IsOn,
+		"listens":     listens,
+		"certs":       certs,
+		"sslPolicyId": sslPolicyId,
+		"accessAddrs": accessAddrs,
 	}
 
 	this.Show()
@@ -45,29 +105,128 @@ func (this *SettingsAction) RunGet(params struct {
 
 // 保存基础设置
 func (this *SettingsAction) RunPost(params struct {
-	NodeId      int64
-	Name        string
-	Host        string
-	Port        int
-	Description string
+	NodeId          int64
+	Name            string
+	SslPolicyId     int64
+	ListensJSON     []byte
+	CertIdsJSON     []byte
+	AccessAddrsJSON []byte
+	Description     string
+	IsOn            bool
 
 	Must *actions.Must
 }) {
 	params.Must.
 		Field("name", params.Name).
-		Require("请输入API节点").
-		Field("host", params.Host).
-		Require("请输入主机地址").
-		Field("port", params.Port).
-		Gt(0, "端口不能小于1").
-		Lte(65535, "端口不能大于65535")
+		Require("请输入API节点名称")
 
-	_, err := this.RPC().APINodeRPC().UpdateAPINode(this.AdminContext(), &pb.UpdateAPINodeRequest{
-		NodeId:      params.NodeId,
-		Name:        params.Name,
-		Description: params.Description,
-		Host:        params.Host,
-		Port:        int32(params.Port),
+	httpConfig := &serverconfigs.HTTPProtocolConfig{}
+	httpsConfig := &serverconfigs.HTTPSProtocolConfig{}
+
+	// 监听地址
+	listens := []*serverconfigs.NetworkAddressConfig{}
+	err := json.Unmarshal(params.ListensJSON, &listens)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	if len(listens) == 0 {
+		this.Fail("请添加至少一个进程监听地址")
+	}
+	for _, addr := range listens {
+		if addr.Protocol.IsHTTPFamily() {
+			httpConfig.IsOn = true
+			httpConfig.Listen = append(httpConfig.Listen, addr)
+		} else if addr.Protocol.IsHTTPSFamily() {
+			httpsConfig.IsOn = true
+			httpsConfig.Listen = append(httpsConfig.Listen, addr)
+		}
+	}
+
+	// 证书
+	certIds := []int64{}
+	if len(params.CertIdsJSON) > 0 {
+		err = json.Unmarshal(params.CertIdsJSON, &certIds)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+	if httpsConfig.IsOn && len(httpsConfig.Listen) > 0 && len(certIds) == 0 {
+		this.Fail("请添加至少一个证书")
+	}
+
+	certRefs := []*sslconfigs.SSLCertRef{}
+	for _, certId := range certIds {
+		certRefs = append(certRefs, &sslconfigs.SSLCertRef{
+			IsOn:   true,
+			CertId: certId,
+		})
+	}
+	certRefsJSON, err := json.Marshal(certRefs)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	// 创建策略
+	sslPolicyId := params.SslPolicyId
+	if sslPolicyId == 0 {
+		if len(certIds) > 0 {
+			sslPolicyCreateResp, err := this.RPC().SSLPolicyRPC().CreateSSLPolicy(this.AdminContext(), &pb.CreateSSLPolicyRequest{
+				CertsJSON: certRefsJSON,
+			})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			sslPolicyId = sslPolicyCreateResp.SslPolicyId
+		}
+	} else {
+		_, err = this.RPC().SSLPolicyRPC().UpdateSSLPolicy(this.AdminContext(), &pb.UpdateSSLPolicyRequest{
+			SslPolicyId: sslPolicyId,
+			CertsJSON:   certRefsJSON,
+		})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+	httpsConfig.SSLPolicyRef = &sslconfigs.SSLPolicyRef{
+		IsOn:        true,
+		SSLPolicyId: sslPolicyId,
+	}
+
+	// 访问地址
+	accessAddrs := []*serverconfigs.NetworkAddressConfig{}
+	err = json.Unmarshal(params.AccessAddrsJSON, &accessAddrs)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	if len(accessAddrs) == 0 {
+		this.Fail("请添加至少一个外部访问地址")
+	}
+
+	httpJSON, err := json.Marshal(httpConfig)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	httpsJSON, err := json.Marshal(httpsConfig)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	_, err = this.RPC().APINodeRPC().UpdateAPINode(this.AdminContext(), &pb.UpdateAPINodeRequest{
+		NodeId:          params.NodeId,
+		Name:            params.Name,
+		Description:     params.Description,
+		HttpJSON:        httpJSON,
+		HttpsJSON:       httpsJSON,
+		AccessAddrsJSON: params.AccessAddrsJSON,
+		IsOn:            params.IsOn,
 	})
 	if err != nil {
 		this.ErrorPage(err)

@@ -16,13 +16,15 @@ func init() {
 			Get("", new(IndexAction)).
 			GetPost("/createPopup", new(CreatePopupAction)).
 			Get("/policy", new(PolicyAction)).
-			GetPost("/updatePopup", new(UpdatePopupAction)).
+			GetPost("/update", new(UpdateAction)).
 			GetPost("/clean", new(CleanAction)).
 			GetPost("/preheat", new(PreheatAction)).
 			GetPost("/purge", new(PurgeAction)).
 			GetPost("/stat", new(StatAction)).
 			GetPost("/test", new(TestAction)).
 			Post("/delete", new(DeleteAction)).
+			Post("/testRead", new(TestReadAction)).
+			Post("/testWrite", new(TestWriteAction)).
 			EndAll()
 	})
 }
