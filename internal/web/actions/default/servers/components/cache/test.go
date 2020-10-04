@@ -4,6 +4,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/iwind/TeaGo/types"
 )
 
 type TestAction struct {
@@ -15,6 +16,12 @@ func (this *TestAction) Init() {
 }
 
 func (this *TestAction) RunGet(params struct{}) {
+	// 默认的集群ID
+	cookie, err := this.Request.Cookie("cache_cluster_id")
+	if cookie != nil && err == nil {
+		this.Data["clusterId"] = types.Int64(cookie.Value)
+	}
+
 	// 集群列表
 	clustersResp, err := this.RPC().NodeClusterRPC().FindAllEnabledNodeClusters(this.AdminContext(), &pb.FindAllEnabledNodeClustersRequest{})
 	if err != nil {

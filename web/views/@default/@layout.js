@@ -49,9 +49,13 @@ Tea.context(function () {
 				this.globalChangedClusters = [];
 			})
 			.done(function () {
+				let delay = 3000
+				if (this.globalChangedClusters.length > 0) {
+					delay = 30000
+				}
 				this.$delay(function () {
 					this.checkClusterChanges()
-				}, 3000)
+				}, delay)
 			})
 	};
 

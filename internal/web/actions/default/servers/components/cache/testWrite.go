@@ -5,6 +5,8 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/nodeutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/messageconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"net/http"
+	"strconv"
 )
 
 type TestWriteAction struct {
@@ -17,6 +19,12 @@ func (this *TestWriteAction) RunPost(params struct {
 	Key           string
 	Value         string
 }) {
+	// 记录clusterId
+	this.AddCookie(&http.Cookie{
+		Name:  "cache_cluster_id",
+		Value: strconv.FormatInt(params.ClusterId, 10),
+	})
+
 	cachePolicyResp, err := this.RPC().HTTPCachePolicyRPC().FindEnabledHTTPCachePolicyConfig(this.AdminContext(), &pb.FindEnabledHTTPCachePolicyConfigRequest{CachePolicyId: params.CachePolicyId})
 	if err != nil {
 		this.ErrorPage(err)
