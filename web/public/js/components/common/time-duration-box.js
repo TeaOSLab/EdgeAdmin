@@ -12,7 +12,7 @@ Vue.component("time-duration-box", {
 			v["count"] = -1
 		}
 		return {
-			"size": v,
+			duration: v,
 			countString: (v.count >= 0) ? v.count.toString() : ""
 		}
 	},
@@ -20,22 +20,28 @@ Vue.component("time-duration-box", {
 		"countString": function (newValue) {
 			let value = newValue.trim()
 			if (value.length == 0) {
-				this.size.count = -1
+				this.duration.count = -1
 				return
 			}
 			let count = parseInt(value)
 			if (!isNaN(count)) {
-				this.size.count = count
+				this.duration.count = count
 			}
+			this.change()
+		}
+	},
+	methods: {
+		change: function () {
+			this.$emit("change", this.duration)
 		}
 	},
 	template: `<div class="ui fields inline">
-	<input type="hidden" :name="vName" :value="JSON.stringify(size)"/>
+	<input type="hidden" :name="vName" :value="JSON.stringify(duration)"/>
 	<div class="ui field">
 		<input type="text" v-model="countString" maxlength="11" size="11"/>
 	</div>
 	<div class="ui field">
-		<select class="ui dropdown" v-model="size.unit">
+		<select class="ui dropdown" v-model="duration.unit" @change="change">
 			<option value="ms">毫秒</option>
 			<option value="second">秒</option>
 			<option value="minute">分钟</option>

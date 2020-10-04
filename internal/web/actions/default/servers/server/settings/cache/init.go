@@ -13,6 +13,7 @@ func init() {
 			Helper(serverutils.NewServerHelper()).
 			Prefix("/servers/server/settings/cache").
 			GetPost("", new(IndexAction)).
+			GetPost("/createPopup", new(CreatePopupAction)).
 			EndAll()
 	})
 }

@@ -39,7 +39,7 @@ func (this *UpdateAction) RunGet(params struct {
 	this.Data["cachePolicy"] = cachePolicy
 
 	// 其他选项
-	this.Data["types"] = serverconfigs.AllCachePolicyTypes
+	this.Data["types"] = serverconfigs.AllCachePolicyStorageTypes
 
 	this.Show()
 }
@@ -69,15 +69,15 @@ func (this *UpdateAction) RunPost(params struct {
 	// 校验选项
 	var options interface{}
 	switch params.Type {
-	case serverconfigs.CachePolicyTypeFile:
+	case serverconfigs.CachePolicyStorageFile:
 		params.Must.
 			Field("fileDir", params.FileDir).
 			Require("请输入缓存目录")
-		options = &serverconfigs.HTTPFileCacheConfig{
+		options = &serverconfigs.HTTPFileCacheStorage{
 			Dir: params.FileDir,
 		}
-	case serverconfigs.CachePolicyTypeMemory:
-		options = &serverconfigs.HTTPMemoryCacheConfig{
+	case serverconfigs.CachePolicyStorageMemory:
+		options = &serverconfigs.HTTPMemoryCacheStorage{
 		}
 	default:
 		this.Fail("请选择正确的缓存类型")
