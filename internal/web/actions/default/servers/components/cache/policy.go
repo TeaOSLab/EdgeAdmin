@@ -24,7 +24,7 @@ func (this *PolicyAction) RunGet(params struct {
 	}
 	this.Data["cachePolicy"] = cachePolicy
 
-	this.Data["typeName"] = serverconfigs.FindCachePolicyTypeName(cachePolicy.Type)
+	this.Data["typeName"] = serverconfigs.FindCachePolicyStorageName(cachePolicy.Type)
 
 	this.Show()
 }

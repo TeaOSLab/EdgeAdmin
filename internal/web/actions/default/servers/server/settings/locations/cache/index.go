@@ -1,11 +1,12 @@
 package cache
 
 import (
+	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
-	"github.com/iwind/TeaGo/maps"
 )
 
 type IndexAction struct {
@@ -25,23 +26,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	this.Data["webId"] = webConfig.Id
-	this.Data["cacheConfig"] = webConfig.CacheRefs
-
-	// 所有缓存策略
-	cachePoliciesResp, err := this.RPC().HTTPCachePolicyRPC().FindAllEnabledHTTPCachePolicies(this.AdminContext(), &pb.FindAllEnabledHTTPCachePoliciesRequest{})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	policyMaps := []maps.Map{}
-	for _, policy := range cachePoliciesResp.CachePolicies {
-		policyMaps = append(policyMaps, maps.Map{
-			"id":   policy.Id,
-			"name": policy.Name,
-			"isOn": policy.IsOn,
-		})
-	}
-	this.Data["policies"] = policyMaps
+	this.Data["cacheConfig"] = webConfig.Cache
 
 	this.Show()
 }
@@ -53,10 +38,27 @@ func (this *IndexAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	// TODO 校验配置
+	cacheConfig := &serverconfigs.HTTPCacheConfig{}
+	err := json.Unmarshal(params.CacheJSON, cacheConfig)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 
-	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebCache(this.AdminContext(), &pb.UpdateHTTPWebCacheRequest{
+	// 去除不必要的部分
+	for _, cacheRef := range cacheConfig.CacheRefs {
+		cacheRef.CachePolicy = nil
+	}
+
+	cacheJSON, err := json.Marshal(cacheConfig)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebCache(this.AdminContext(), &pb.UpdateHTTPWebCacheRequest{
 		WebId:     params.WebId,
-		CacheJSON: params.CacheJSON,
+		CacheJSON: cacheJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)

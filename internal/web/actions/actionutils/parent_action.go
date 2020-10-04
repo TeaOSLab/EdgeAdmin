@@ -113,5 +113,13 @@ func (this *ParentAction) RPC() *rpc.RPCClient {
 
 // 获取Context
 func (this *ParentAction) AdminContext() context.Context {
+	if this.rpcClient == nil {
+		rpcClient, err := rpc.SharedRPC()
+		if err != nil {
+			logs.Fatal(err)
+			return nil
+		}
+		this.rpcClient = rpcClient
+	}
 	return this.rpcClient.Context(this.AdminId())
 }

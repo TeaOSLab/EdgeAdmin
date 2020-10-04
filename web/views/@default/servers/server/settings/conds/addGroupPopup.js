@@ -13,6 +13,9 @@ Tea.context(function () {
 	this.$delay(function () {
 		if (window.parent.UPDATING_COND_GROUP != null) {
 			this.group = window.parent.UPDATING_COND_GROUP
+		} else if (this.group.conds.length == 0) {
+			// 如果尚未有条件，则自动弹出添加界面
+			this.addCond()
 		}
 	})
 

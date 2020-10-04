@@ -12,7 +12,7 @@ Vue.component("size-capacity-box", {
 			v["count"] = -1
 		}
 		return {
-			"size": v,
+			size: v,
 			countString: (v.count >= 0) ? v.count.toString() : ""
 		}
 	},
@@ -21,12 +21,19 @@ Vue.component("size-capacity-box", {
 			let value = newValue.trim()
 			if (value.length == 0) {
 				this.size.count = -1
+				this.change()
 				return
 			}
 			let count = parseInt(value)
 			if (!isNaN(count)) {
 				this.size.count = count
 			}
+			this.change()
+		}
+	},
+	methods: {
+		change: function () {
+			this.$emit("change", this.size)
 		}
 	},
 	template: `<div class="ui fields inline">
@@ -35,7 +42,7 @@ Vue.component("size-capacity-box", {
 		<input type="text" v-model="countString" maxlength="11" size="11"/>
 	</div>
 	<div class="ui field">
-		<select class="ui dropdown" v-model="size.unit">
+		<select class="ui dropdown" v-model="size.unit" @change="change">
 			<option value="byte">字节</option>
 			<option value="kb">KB</option>
 			<option value="mb">MB</option>

@@ -53,7 +53,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 		countServers := countServersResp.Count
 
 		infos = append(infos, maps.Map{
-			"typeName": serverconfigs.FindCachePolicyTypeName(cachePolicy.Type),
+			"typeName":     serverconfigs.FindCachePolicyStorageName(cachePolicy.Type),
 			"countServers": countServers,
 		})
 	}

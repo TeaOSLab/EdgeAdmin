@@ -15,12 +15,18 @@ Vue.component("http-request-conds-box", {
 		}
 	},
 	methods: {
+		change: function () {
+			this.$emit("change", this.conds)
+		},
 		addGroup: function () {
+			window.UPDATING_COND_GROUP = null
+
 			let that = this
 			teaweb.popup("/servers/server/settings/conds/addGroupPopup", {
 				height: "30em",
 				callback: function (resp) {
 					that.conds.groups.push(resp.data.group)
+					that.change()
 				}
 			})
 		},
@@ -31,6 +37,7 @@ Vue.component("http-request-conds-box", {
 				height: "30em",
 				callback: function (resp) {
 					Vue.set(that.conds.groups, groupIndex, resp.data.group)
+					that.change()
 				}
 			})
 		},
@@ -38,6 +45,7 @@ Vue.component("http-request-conds-box", {
 			let that = this
 			teaweb.confirm("确定要删除这一组条件吗？", function () {
 				that.conds.groups.$remove(groupIndex)
+				that.change()
 			})
 		},
 		typeName: function (cond) {
