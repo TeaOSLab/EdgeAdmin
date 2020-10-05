@@ -61,7 +61,8 @@
 		<tr>
 			<td>描述</td>
 			<td>
-				{{cachePolicy.description}}
+				<span v-if="cachePolicy.description.length > 0">{{cachePolicy.description}}</span>
+				<span v-else class="disabled">暂时还没有描述。</span>
 			</td>
 		</tr>
 		</tbody>
