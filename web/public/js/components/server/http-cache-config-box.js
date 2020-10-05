@@ -108,7 +108,7 @@ Vue.component("http-cache-config-box", {
 					<th class="two op">操作</th>
 				</tr>
 				<tr v-for="(cacheRef, index) in cacheConfig.cacheRefs">
-					<td>{{cacheRef.cachePolicy.name}}</td>
+					<td><a :href="'/servers/components/cache/policy?cachePolicyId=' + cacheRef.cachePolicyId">{{cacheRef.cachePolicy.name}}</a></td>
 					<td>
 						<http-request-conds-view :v-conds="cacheRef.conds"></http-request-conds-view>
 					</td>
