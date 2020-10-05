@@ -66,12 +66,13 @@ func (this *IndexAction) RunGet(params struct {
 }
 
 func (this *IndexAction) RunPost(params struct {
-	WebId     int64
-	GzipId    int64
-	Level     int
-	MinLength string
-	MaxLength string
-	CondsJSON []byte
+	WebId       int64
+	GzipId      int64
+	Level       int
+	MinLength   string
+	MaxLength   string
+	CondsJSON   []byte
+	GzipRefJSON []byte
 
 	Must *actions.Must
 }) {
@@ -97,6 +98,13 @@ func (this *IndexAction) RunPost(params struct {
 		}
 	}
 
+	gzipRef := &serverconfigs.HTTPGzipRef{}
+	err := json.Unmarshal(params.GzipRefJSON, gzipRef)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
 	if params.GzipId > 0 {
 		_, err := this.RPC().HTTPGzipRPC().UpdateHTTPGzip(this.AdminContext(), &pb.UpdateHTTPGzipRequest{
 			GzipId:    params.GzipId,
@@ -120,25 +128,21 @@ func (this *IndexAction) RunPost(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		gzipId := resp.GzipId
+		gzipRef.GzipId = resp.GzipId
+	}
 
-		gzipRef := &serverconfigs.HTTPGzipRef{
-			IsOn:   true,
-			GzipId: gzipId,
-		}
-		gzipRefJSON, err := json.Marshal(gzipRef)
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
+	gzipRefJSON, err := json.Marshal(gzipRef)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 
-		_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebGzip(this.AdminContext(), &pb.UpdateHTTPWebGzipRequest{
-			WebId:    params.WebId,
-			GzipJSON: gzipRefJSON,
-		})
-		if err != nil {
-			this.ErrorPage(err)
-		}
+	_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebGzip(this.AdminContext(), &pb.UpdateHTTPWebGzipRequest{
+		WebId:    params.WebId,
+		GzipJSON: gzipRefJSON,
+	})
+	if err != nil {
+		this.ErrorPage(err)
 	}
 
 	this.Success()
