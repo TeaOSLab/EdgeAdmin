@@ -14,6 +14,16 @@ func init() {
 			Helper(componentutils.NewComponentHelper()).
 			Prefix("/servers/components/waf").
 			Get("", new(IndexAction)).
+			GetPost("/createPopup", new(CreatePopupAction)).
+			Post("/delete", new(DeleteAction)).
+			Get("/policy", new(PolicyAction)).
+			Get("/groups", new(GroupsAction)).
+			Get("/sets", new(SetsAction)).
+			Get("/log", new(LogAction)).
+			GetPost("/update", new(UpdateAction)).
+			GetPost("/test", new(TestAction)).
+			GetPost("/export", new(ExportAction)).
+			GetPost("/import", new(ImportAction)).
 			EndAll()
 	})
 }
