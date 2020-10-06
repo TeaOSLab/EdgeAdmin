@@ -1,0 +1,32 @@
+{$layout}
+{$template "/left_menu"}
+
+<div class="right-box">
+	{$template "waf_menu"}
+
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">策略名称</td>
+			<td>{{firewallPolicy.name}}</td>
+		</tr>
+		<tr>
+			<td>是否启用</td>
+			<td>
+				<label-on :v-is-on="firewallPolicy.isOn"></label-on>
+			</td>
+		</tr>
+		<tr>
+			<td>预置的规则分组</td>
+			<td>
+				<span class="ui label tiny" v-for="group in firewallPolicy.groups" style="margin-bottom:0.5em" :class="{disabled:!group.isOn}">{{group.name}}</span>
+			</td>
+		</tr>
+		<tr>
+			<td>描述</td>
+			<td>
+				<span v-if="firewallPolicy.description.length > 0">{{firewallPolicy.description}}</span>
+				<span v-else class="disabled">暂时还没有描述。</span>
+			</td>
+		</tr>
+	</table>
+</div>

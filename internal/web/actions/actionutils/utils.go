@@ -33,6 +33,18 @@ func MatchPath(action *actions.ActionObject, path string) bool {
 	return action.Request.URL.Path == path
 }
 
+// 查找父级Action
+func FindParentAction(actionPtr actions.ActionWrapper) *ParentAction {
+	parentActionValue := reflect.ValueOf(actionPtr).Elem().FieldByName("ParentAction")
+	if parentActionValue.IsValid() {
+		parentAction, isOk := parentActionValue.Interface().(ParentAction)
+		if isOk {
+			return &parentAction
+		}
+	}
+	return nil
+}
+
 func findStack(err string) string {
 	_, currentFilename, _, currentOk := runtime.Caller(1)
 	if currentOk {

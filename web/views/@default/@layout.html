@@ -48,10 +48,12 @@
             </a>-->
 
             <!-- 模块 -->
-            <a v-for="module in teaModules" class="item" :href="Tea.url(module.code)" :class="{active:teaMenu == module.code}">
-                <i class="window restore outline icon" v-if="module.icon == null"></i>
-                <i class="ui icon" v-if="module.icon != null" :class="module.icon"></i>
-                <span>{{module.menuName}}</span>
+            <a v-for="module in teaModules" class="item" :href="Tea.url(module.code)" :class="{active:teaMenu == module.code, separator:module.code.length == 0}">
+                <span v-if="module.code.length > 0">
+					<i class="window restore outline icon" v-if="module.icon == null"></i>
+                	<i class="ui icon" v-if="module.icon != null" :class="module.icon"></i>
+                	<span>{{module.menuName}}</span>
+				</span>
             </a>
         </div>
     </div>
