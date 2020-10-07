@@ -7,7 +7,7 @@ type LogAction struct {
 }
 
 func (this *LogAction) Init() {
-	this.Nav("", "", "")
+	this.Nav("", "", "log")
 }
 
 func (this *LogAction) RunGet(params struct{}) {

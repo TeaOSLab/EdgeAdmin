@@ -7,7 +7,7 @@ type ImportAction struct {
 }
 
 func (this *ImportAction) Init() {
-	this.Nav("", "", "")
+	this.Nav("", "", "import")
 }
 
 func (this *ImportAction) RunGet(params struct{}) {

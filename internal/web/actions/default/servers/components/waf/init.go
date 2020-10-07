@@ -24,6 +24,11 @@ func init() {
 			GetPost("/test", new(TestAction)).
 			GetPost("/export", new(ExportAction)).
 			GetPost("/import", new(ImportAction)).
+			Post("/updateGroupOn", new(UpdateGroupOnAction)).
+			Post("/deleteGroup", new(DeleteGroupAction)).
+			GetPost("/ipadmin", new(IpadminAction)).
+			GetPost("/createGroupPopup", new(CreateGroupPopupAction)).
+			Post("/sortGroups", new(SortGroupsAction)).
 			EndAll()
 	})
 }

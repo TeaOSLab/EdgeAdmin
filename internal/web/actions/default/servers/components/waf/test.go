@@ -7,7 +7,7 @@ type TestAction struct {
 }
 
 func (this *TestAction) Init() {
-	this.Nav("", "", "")
+	this.Nav("", "", "test")
 }
 
 func (this *TestAction) RunGet(params struct{}) {
