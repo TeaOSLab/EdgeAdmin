@@ -158,6 +158,22 @@ window.teaweb = {
 			}
 		});
 	},
+	successToast: function (message, timeout) {
+		if (timeout == null) {
+			timeout = 2000
+		}
+		var width = "20em";
+		if (message.length > 30) {
+			width = "30em";
+		}
+		Swal.fire({
+			text: message,
+			icon: "success",
+			width: width,
+			timer: timeout,
+			showConfirmButton: false
+		});
+	},
 	warn: function (message, callback) {
 		var width = "20em";
 		if (message.length > 30) {

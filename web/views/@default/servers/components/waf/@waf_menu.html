@@ -2,8 +2,8 @@
 	<menu-item href="/servers/components/waf">列表</menu-item>
 	<span class="item">|</span>
 	<menu-item :href="'/servers/components/waf/policy?firewallPolicyId=' + firewallPolicyId" code="index">{{firewallPolicyName}}</menu-item>
-	<menu-item :href="'/servers/components/waf/groups?type=firewallPolicyId=' + firewallPolicyId + '&type=inbound'" code="inbound">入站规则集({{countInboundGroups}})</menu-item>
-	<menu-item :href="'/servers/components/waf/groups?firewallPolicyId=' + firewallPolicyId + '&type=outbound'" code="outbound">出站规则集({{countOutboundGroups}})</menu-item>
+	<menu-item :href="'/servers/components/waf/groups?firewallPolicyId=' + firewallPolicyId + '&type=inbound'" code="inbound">入站规则({{countInboundGroups}})</menu-item>
+	<menu-item :href="'/servers/components/waf/groups?firewallPolicyId=' + firewallPolicyId + '&type=outbound'" code="outbound">出站规则({{countOutboundGroups}})</menu-item>
 	<menu-item :href="'/servers/components/waf/ipadmin?firewallPolicyId=' + firewallPolicyId" code="ipadmin">IP管理</menu-item>
 	<menu-item :href="'/servers/components/waf/log?firewallPolicyId=' + firewallPolicyId" code="log">拦截日志</menu-item>
 	<menu-item :href="'/servers/components/waf/test?firewallPolicyId=' + firewallPolicyId" code="test">测试</menu-item>

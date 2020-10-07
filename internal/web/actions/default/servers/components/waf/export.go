@@ -7,7 +7,7 @@ type ExportAction struct {
 }
 
 func (this *ExportAction) Init() {
-	this.Nav("", "", "")
+	this.Nav("", "", "export")
 }
 
 func (this *ExportAction) RunGet(params struct{}) {
