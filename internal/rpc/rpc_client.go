@@ -131,6 +131,10 @@ func (this *RPCClient) HTTPFirewallRuleGroupRPC() pb.HTTPFirewallRuleGroupServic
 	return pb.NewHTTPFirewallRuleGroupServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) HTTPFirewallRuleSetRPC() pb.HTTPFirewallRuleSetServiceClient {
+	return pb.NewHTTPFirewallRuleSetServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) HTTPLocationRPC() pb.HTTPLocationServiceClient {
 	return pb.NewHTTPLocationServiceClient(this.pickConn())
 }

@@ -1,0 +1,38 @@
+{$layout "layout_popup"}
+
+<h3>修改分组</h3>
+
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+	<input type="hidden" name="groupId" :value="group.id"/>
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">分组名称 *</td>
+			<td>
+				<input type="text" name="name" maxlength="100" ref="focus" v-model="group.name"/>
+				<p class="comment">给分组起一个容易识别的名称</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"><more-options-indicator></more-options-indicator></td>
+		</tr>
+		<tbody v-show="moreOptionsVisible">
+			<tr>
+				<td>分组描述</td>
+				<td>
+					<textarea name="description" maxlength="200" rows="3" v-model="group.description"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>是否启用</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" name="isOn" value="1" v-model="group.isOn" />
+						<label></label>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<submit-btn></submit-btn>
+</form>
