@@ -6,6 +6,9 @@ function sortTable(callback) {
 	jsFile.addEventListener("load", function () {
 		// 初始化
 		let box = document.querySelector("#sortable-table")
+		if (box == null) {
+			return
+		}
 		Sortable.create(box, {
 			draggable: "tbody",
 			handle: ".icon.handle",

@@ -18,7 +18,7 @@ func init() {
 			Post("/delete", new(DeleteAction)).
 			Get("/policy", new(PolicyAction)).
 			Get("/groups", new(GroupsAction)).
-			Get("/sets", new(SetsAction)).
+			Get("/group", new(GroupAction)).
 			Get("/log", new(LogAction)).
 			GetPost("/update", new(UpdateAction)).
 			GetPost("/test", new(TestAction)).
@@ -29,6 +29,13 @@ func init() {
 			GetPost("/ipadmin", new(IpadminAction)).
 			GetPost("/createGroupPopup", new(CreateGroupPopupAction)).
 			Post("/sortGroups", new(SortGroupsAction)).
+			GetPost("/updateGroupPopup", new(UpdateGroupPopupAction)).
+			GetPost("/createSetPopup", new(CreateSetPopupAction)).
+			GetPost("/createRulePopup", new(CreateRulePopupAction)).
+			Post("/sortSets", new(SortSetsAction)).
+			Post("/updateSetOn", new(UpdateSetOnAction)).
+			Post("/deleteSet", new(DeleteSetAction)).
+			GetPost("/updateSetPopup", new(UpdateSetPopupAction)).
 			EndAll()
 	})
 }
