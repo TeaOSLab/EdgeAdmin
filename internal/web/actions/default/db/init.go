@@ -12,6 +12,9 @@ func init() {
 			Helper(new(Helper)).
 			Prefix("/db").
 			Get("", new(IndexAction)).
+			GetPost("/createPopup", new(CreatePopupAction)).
+			GetPost("/updatePopup", new(UpdatePopupAction)).
+			Post("/delete", new(DeleteAction)).
 
 			EndAll()
 	})

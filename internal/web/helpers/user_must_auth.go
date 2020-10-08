@@ -82,7 +82,7 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 		},
 		{
 			"code":     "db",
-			"menuName": "数据库",
+			"menuName": "日志数据库",
 			"icon":     "database",
 		},
 		{

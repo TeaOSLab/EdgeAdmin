@@ -1,3 +1,31 @@
 {$layout}
 
-<p class="ui message">此功能暂未开放，敬请期待。</p>
+<first-menu>
+	<a href="" class="item" @click.prevent="createNode()">[添加节点]</a>
+</first-menu>
+
+<p class="comment" v-if="nodes.length == 0">暂时还没有数据库节点。</p>
+
+<table class="ui table selectable" v-if="nodes.length > 0">
+	<thead>
+		<tr>
+			<th>节点名称</th>
+			<th>连接地址</th>
+			<th>数据库名</th>
+			<th class="two wide">状态</th>
+			<th class="two op">操作</th>
+		</tr>
+	</thead>
+	<tr v-for="node in nodes">
+		<td>{{node.name}}</td>
+		<td>{{node.host}}:{{node.port}}</td>
+		<td>{{node.database}}</td>
+		<td><label-on :v-is-on="node.isOn"></label-on></td>
+		<td>
+			<a href="" @click.prevent="updateNode(node.id)">修改</a> &nbsp;
+			<a href="" @click.prevent="deleteNode(node.id)">删除</a>
+		</td>
+	</tr>
+</table>
+
+<div class="page" v-html="page"></div>
