@@ -36,9 +36,10 @@ func (this *IndexAction) RunGet(params struct {
 	policyMaps := []maps.Map{}
 	for _, p := range policiesResp.FirewallPolicies {
 		policyMaps = append(policyMaps, maps.Map{
-			"id":   p.Id,
-			"name": p.Name,
-			"isOn": p.IsOn,
+			"id":          p.Id,
+			"name":        p.Name,
+			"isOn":        p.IsOn,
+			"description": p.Description,
 		})
 	}
 	this.Data["firewallPolicies"] = policyMaps
