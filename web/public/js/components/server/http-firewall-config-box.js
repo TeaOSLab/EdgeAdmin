@@ -11,12 +11,22 @@ Vue.component("http-firewall-config-box", {
 		}
 
 		return {
-			firewall: firewall
+			firewall: firewall,
+			selectedPolicy: this.lookupPolicy(firewall.firewallPolicyId)
 		}
 	},
 	methods: {
 		changePolicyId: function () {
 			this.firewall.firewallPolicyId = parseInt(this.firewall.firewallPolicyId)
+			this.selectedPolicy = this.lookupPolicy(this.firewall.firewallPolicyId)
+		},
+		lookupPolicy: function (policyId) {
+			if (policyId <= 0) {
+				return null
+			}
+			return this.vFirewallPolicies.$find(function (k, v) {
+				return v.id == policyId
+			})
 		}
 	},
 	template: `<div>
@@ -44,6 +54,7 @@ Vue.component("http-firewall-config-box", {
 							<option value="0">[请选择]</option>
 							<option v-for="policy in vFirewallPolicies" :value="policy.id">{{policy.name}}</option>
 						</select>
+						<p class="comment" v-if="selectedPolicy != null"><span v-if="!selectedPolicy.isOn" class="red">[正在停用的策略]</span>{{selectedPolicy.description}}</p>
 					</div>
 				</td>
 			</tr>
