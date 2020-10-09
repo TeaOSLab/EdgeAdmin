@@ -1,4 +1,4 @@
-package common
+package clusters
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
@@ -8,15 +8,15 @@ import (
 )
 
 // 检查变更的集群列表
-type ChangedClustersAction struct {
+type CheckChangeAction struct {
 	actionutils.ParentAction
 }
 
-func (this *ChangedClustersAction) Init() {
+func (this *CheckChangeAction) Init() {
 	this.Nav("", "", "")
 }
 
-func (this *ChangedClustersAction) RunGet(params struct {
+func (this *CheckChangeAction) RunPost(params struct {
 	IsNotifying bool
 }) {
 	timeout := time.NewTimer(55 * time.Second) // 比客户端提前结束，避免在客户端产生一个请求错误
