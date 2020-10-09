@@ -16,7 +16,7 @@
 	<tr v-for="cluster in clusters">
 		<td>{{cluster.name}}</td>
 		<td>
-			<a :href="'/clusters/cluster?clusterId=' + cluster.id" v-if="cluster.countAllNodes > 0">{{cluster.countAllNodes}}</a>
+			<a :href="'/clusters/cluster?clusterId=' + cluster.id" v-if="cluster.countAllNodes > 0"><span :class="{red:cluster.countAllNodes > cluster.countActiveNodes}">{{cluster.countAllNodes}}</span></a>
 			<span class="disabled" v-else="">-</span>
 		</td>
 		<td>

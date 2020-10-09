@@ -22,6 +22,7 @@ func init() {
 			GetPost("/node/install", new(node.InstallAction)).
 			Post("/node/updateInstallStatus", new(node.UpdateInstallStatusAction)).
 			Post("/node/status", new(node.StatusAction)).
+			Get("/node/logs", new(node.LogsAction)).
 			EndAll()
 	})
 }
