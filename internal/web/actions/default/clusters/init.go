@@ -13,6 +13,8 @@ func init() {
 			Prefix("/clusters").
 			Get("", new(IndexAction)).
 			GetPost("/create", new(CreateAction)).
+			Post("/sync", new(SyncAction)).
+			Post("/checkChange", new(CheckChangeAction)).
 			EndAll()
 	})
 }

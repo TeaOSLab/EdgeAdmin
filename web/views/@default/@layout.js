@@ -37,7 +37,7 @@ Tea.context(function () {
 	 * 检查集群变更
 	 */
 	this.checkClusterChanges = function () {
-		this.$get("/common/changedClusters")
+		this.$post("/clusters/checkChange")
 			.params({
 				isNotifying: (this.globalChangedClusters.length > 0) ? 1 : 0
 			})
@@ -64,7 +64,7 @@ Tea.context(function () {
 	 */
 	this.syncClustersConfigs = function () {
 		teaweb.confirm("确定要同步集群服务配置吗？", function () {
-			this.$post("/common/syncClusters")
+			this.$post("/clusters/sync")
 				.success(function () {
 					this.globalChangedClusters = [];
 				})

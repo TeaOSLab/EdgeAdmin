@@ -14,10 +14,7 @@
 		</thead>
 		<tr v-for="log in logs">
 			<td>
-				<span :class="{red:log.level == 'error', yellow:log.level == 'warning'}">
-					<span v-if="!log.isToday">[{{log.createdTime}}]</span>
-					<strong v-if="log.isToday">[{{log.createdTime}}]</strong>
-				[{{log.tag}}]{{log.description}}</span>
+				<pre class="log-box"><span :class="{red:log.level == 'error', yellow:log.level == 'warning'}"><span v-if="!log.isToday">[{{log.createdTime}}]</span><strong v-if="log.isToday">[{{log.createdTime}}]</strong>[{{log.tag}}]{{log.description}}</span></pre>
 			</td>
 		</tr>
 	</table>

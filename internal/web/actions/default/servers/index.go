@@ -97,6 +97,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 
 		serverMaps = append(serverMaps, maps.Map{
 			"id":   server.Id,
+			"isOn": server.IsOn,
 			"name": server.Name,
 			"cluster": maps.Map{
 				"id":   server.Cluster.Id,
