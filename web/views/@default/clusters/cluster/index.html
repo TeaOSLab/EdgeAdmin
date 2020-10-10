@@ -72,7 +72,10 @@
 				<span v-else>-</span>
 			</td>
 			<td>
-				<div v-if="node.isInstalled">
+				<div v-if="!node.isOn">
+					<label-on :v-is-on="node.isOn"></label-on>
+				</div>
+				<div v-else-if="node.isInstalled">
 					<div v-if="node.status.isActive">
 						<span v-if="!node.isSynced" class="red">同步中</span>
 						<span v-else class="green">运行中</span>

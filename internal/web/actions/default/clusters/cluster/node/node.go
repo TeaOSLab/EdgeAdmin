@@ -2,9 +2,9 @@ package node
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/grants/grantutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 )
 
@@ -115,6 +115,8 @@ func (this *NodeAction) RunGet(params struct {
 		"isInstalled": node.IsInstalled,
 		"uniqueId":    node.UniqueId,
 		"secret":      node.Secret,
+		"maxCPU":      node.MaxCPU,
+		"isOn":        node.IsOn,
 	}
 
 	this.Show()
