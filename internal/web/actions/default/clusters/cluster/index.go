@@ -83,6 +83,7 @@ func (this *IndexAction) RunGet(params struct {
 			"id":          node.Id,
 			"name":        node.Name,
 			"isInstalled": node.IsInstalled,
+			"isOn":        node.IsOn,
 			"installStatus": maps.Map{
 				"isRunning":  node.InstallStatus.IsRunning,
 				"isFinished": node.InstallStatus.IsFinished,

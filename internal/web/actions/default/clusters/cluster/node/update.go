@@ -2,9 +2,9 @@ package node
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/grants/grantutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 )
@@ -102,6 +102,8 @@ func (this *UpdateAction) RunGet(params struct {
 		"ipAddresses": ipAddressMaps,
 		"cluster":     clusterMap,
 		"login":       loginMap,
+		"maxCPU":      node.MaxCPU,
+		"isOn":        node.IsOn,
 	}
 
 	// 所有集群
@@ -134,6 +136,8 @@ func (this *UpdateAction) RunPost(params struct {
 	GrantId     int64
 	SshHost     string
 	SshPort     int
+	MaxCPU      int32
+	IsOn        bool
 
 	Must *actions.Must
 }) {
@@ -168,6 +172,8 @@ func (this *UpdateAction) RunPost(params struct {
 		Name:      params.Name,
 		ClusterId: params.ClusterId,
 		Login:     loginInfo,
+		MaxCPU:    params.MaxCPU,
+		IsOn:      params.IsOn,
 	})
 	if err != nil {
 		this.ErrorPage(err)

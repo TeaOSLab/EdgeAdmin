@@ -11,6 +11,10 @@
 			<td>{{node.name}}</td>
 		</tr>
 		<tr>
+			<td>状态</td>
+			<td><label-on :v-is-on="node.isOn"></label-on></td>
+		</tr>
+		<tr>
 			<td>IP地址</td>
 			<td>
 				<div v-if="node.ipAddresses.length > 0">
@@ -58,6 +62,13 @@
 				<span v-else class="disabled">
 					尚未设置
 				</span>
+			</td>
+		</tr>
+		<tr>
+			<td>CPU线程数</td>
+			<td>
+				<span v-if="node.maxCPU > 0">{{node.maxCPU}}线程</span>
+				<span v-else class="disabled">没有限制。</span>
 			</td>
 		</tr>
 	</table>
