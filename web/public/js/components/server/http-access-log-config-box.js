@@ -108,7 +108,7 @@ Vue.component("http-access-log-config-box", {
 					</div>
 				</td>
 			</tr>
-			<tr>
+			<tr v-show="vAccessLogPolicies.length > 0">
 				<td>选择输出的日志策略</td>
 				<td>
 					<span class="disabled" v-if="vAccessLogPolicies.length == 0">暂时还没有缓存策略。</span>
@@ -120,7 +120,7 @@ Vue.component("http-access-log-config-box", {
 					</div>
 				</td>
 			</tr>
-			<tr>
+			<tr v-show="vAccessLogPolicies.length > 0">
 				<td>是否只输出到日志策略</td>
 				<td>
 					<div class="ui checkbox">
