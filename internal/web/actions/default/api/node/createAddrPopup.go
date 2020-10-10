@@ -29,6 +29,7 @@ func (this *CreateAddrPopupAction) RunPost(params struct {
 	params.Must.
 		Field("addr", params.Addr).
 		Require("请输入访问地址")
+
 	host, port, err := net.SplitHostPort(params.Addr)
 	if err != nil {
 		this.FailField("addr", "错误的访问地址")

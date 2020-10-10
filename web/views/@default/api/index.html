@@ -26,7 +26,8 @@
 			<label-on :v-is-on="node.isOn"></label-on>
 		</td>
 		<td>
-			<a :href="'/api/node/settings?nodeId=' + node.id">设置</a>
+			<a :href="'/api/node/settings?nodeId=' + node.id">设置</a> &nbsp;
+			<a href="" @click.prevent="deleteNode(node.id)">删除</a>
 		</td>
 	</tr>
 </table>

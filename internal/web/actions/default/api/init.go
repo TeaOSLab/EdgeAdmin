@@ -16,6 +16,7 @@ func init() {
 			Prefix("/api").
 			Get("", new(IndexAction)).
 			GetPost("/node/createPopup", new(node.CreatePopupAction)).
+			Post("/delete", new(DeleteAction)).
 			EndAll()
 	})
 }
