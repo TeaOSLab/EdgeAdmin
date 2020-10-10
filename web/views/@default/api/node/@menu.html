@@ -1,0 +1,5 @@
+<first-menu>
+	<menu-item href="/api" code="index">节点列表</menu-item>
+	<span class="item">|</span>
+	<menu-item :href="'/api/node/settings?nodeId=' + node.id" active="true">{{node.name}}</menu-item>
+</first-menu>

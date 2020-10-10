@@ -76,19 +76,14 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 			"icon":     "cloud",
 		},
 		{
-			"code":     "api",
-			"menuName": "API节点",
-			"icon":     "exchange",
-		},
-		{
-			"code":     "db",
-			"menuName": "日志数据库",
-			"icon":     "database",
-		},
-		{
 			"code":     "dns",
 			"menuName": "DNS",
 			"icon":     "globe",
+		},
+		{
+			"code":     "settings",
+			"menuName": "系统设置",
+			"icon":     "setting",
 		},
 	}
 

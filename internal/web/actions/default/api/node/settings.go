@@ -15,7 +15,7 @@ type SettingsAction struct {
 }
 
 func (this *SettingsAction) Init() {
-	this.Nav("", "setting", "")
+	this.Nav("", "setting", "setting")
 	this.SecondMenu("basic")
 }
 

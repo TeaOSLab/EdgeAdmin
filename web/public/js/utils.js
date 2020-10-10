@@ -224,5 +224,8 @@ window.teaweb = {
 				}
 			}
 		});
+	},
+	reload: function () {
+		window.location.reload()
 	}
 };

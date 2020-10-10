@@ -1,4 +1,4 @@
-package settings
+package login
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/settingutils"
@@ -10,9 +10,8 @@ func init() {
 	TeaGo.BeforeStart(func(server *TeaGo.Server) {
 		server.
 			Helper(helpers.NewUserMustAuth()).
-			Helper(NewHelper()).
-			Helper(settingutils.NewHelper("console")).
-			Prefix("/settings").
+			Helper(settingutils.NewHelper("login")).
+			Prefix("/settings/login").
 			Get("", new(IndexAction)).
 			EndAll()
 	})

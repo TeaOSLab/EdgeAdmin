@@ -9,19 +9,19 @@ import (
 	"github.com/iwind/TeaGo/actions"
 )
 
-type CreateAction struct {
+type CreatePopupAction struct {
 	actionutils.ParentAction
 }
 
-func (this *CreateAction) Init() {
+func (this *CreatePopupAction) Init() {
 	this.Nav("", "node", "create")
 }
 
-func (this *CreateAction) RunGet(params struct{}) {
+func (this *CreatePopupAction) RunGet(params struct{}) {
 	this.Show()
 }
 
-func (this *CreateAction) RunPost(params struct {
+func (this *CreatePopupAction) RunPost(params struct {
 	Name            string
 	Description     string
 	ListensJSON     []byte
