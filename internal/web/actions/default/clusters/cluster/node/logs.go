@@ -30,7 +30,7 @@ func (this *LogsAction) RunGet(params struct {
 		return
 	}
 	count := countResp.Count
-	page := this.NewPage(count)
+	page := this.NewPage(count, 20)
 
 	logsResp, err := this.RPC().NodeLogRPC().ListNodeLogs(this.AdminContext(), &pb.ListNodeLogsRequest{
 		NodeId: params.NodeId,
