@@ -29,7 +29,7 @@
         <div class="right menu">
 			<a href="" class="item" v-if="globalChangedClusters.length > 0" @click.prevent="syncClustersConfigs()"><i class="icon refresh"></i>{{globalChangedClusters.length}}个集群服务已变更，点此同步</a>
 			<a href="/monitor/messages" class="item" v-if="teaBadge > 0"><span :class="{'blink':teaBadge > 0}"><i class="icon bell"></i>告警({{teaBadge}}) </span></a>
-			<a href="/settings" class="item"  :class="{active: teaMenu == 'settings'}">
+			<a href="/settings/profile" class="item"  :class="{active: teaMenu == 'settings'}">
 				<i class="icon user" v-if="teaUserAvatar.length == 0"></i>
 				<img class="avatar" alt="" :src="teaUserAvatar" v-if="teaUserAvatar.length > 0"/>
                 {{teaUsername}}
