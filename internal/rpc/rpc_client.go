@@ -155,6 +155,11 @@ func (this *RPCClient) HTTPRewriteRuleRPC() pb.HTTPRewriteRuleServiceClient {
 	return pb.NewHTTPRewriteRuleServiceClient(this.pickConn())
 }
 
+// 访问日志
+func (this *RPCClient) HTTPAccessLogRPC() pb.HTTPAccessLogServiceClient {
+	return pb.NewHTTPAccessLogServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) SSLCertRPC() pb.SSLCertServiceClient {
 	return pb.NewSSLCertServiceClient(this.pickConn())
 }

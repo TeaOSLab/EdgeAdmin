@@ -2,5 +2,12 @@
 
 {$template "/left_menu"}
 <div class="right-box">
-	<div class="ui message">此功能暂未开放，敬请期待。</div>
+	<p class="comment" v-if="isLoaded && accessLogs.length == 0">今天暂时还没有访问日志。</p>
+
+	<table class="ui table selectable" v-if="accessLogs.length > 0">
+		<!-- 这里之所以需要添加 :key，是因为要不然不会刷新显示 -->
+		<tr v-for="accessLog in accessLogs" :key="accessLog.requestId">
+			<td><http-access-log-box :v-access-log="accessLog"></http-access-log-box></td>
+		</tr>
+	</table>
 </div>
