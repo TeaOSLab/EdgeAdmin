@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/base64"
 	"errors"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
@@ -12,6 +13,7 @@ import (
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/rands"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
 	"net/url"
 	"time"
@@ -39,8 +41,9 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		if u.Scheme == "http" {
 			conn, err = grpc.Dial(u.Host, grpc.WithInsecure())
 		} else if u.Scheme == "https" {
-			// TODO 暂不支持HTTPS
-			conn, err = grpc.Dial(u.Host)
+			conn, err = grpc.Dial(u.Host, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{
+				InsecureSkipVerify: true,
+			})))
 		} else {
 			return nil, errors.New("parse endpoint failed: invalid scheme '" + u.Scheme + "'")
 		}
