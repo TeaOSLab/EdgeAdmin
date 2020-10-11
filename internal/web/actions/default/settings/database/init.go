@@ -13,6 +13,7 @@ func init() {
 			Helper(settingutils.NewHelper("database")).
 			Prefix("/settings/database").
 			Get("", new(IndexAction)).
+			GetPost("/update", new(UpdateAction)).
 			EndAll()
 	})
 }
