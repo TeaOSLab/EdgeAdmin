@@ -1,0 +1,11 @@
+default:
+  db: "prod"
+  prefix: ""
+
+dbs:
+  prod:
+    driver: "mysql"
+    dsn: "root:123456@tcp(127.0.0.1:3306)/db_edge?charset=utf8mb4&timeout=30s"
+    prefix: "edge"
+    models:
+      package: internal/web/models

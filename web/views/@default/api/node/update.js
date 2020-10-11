@@ -1,5 +1,5 @@
 Tea.context(function () {
-	this.success = NotifySuccess("保存成功", "/api/node/settings?nodeId=" + this.node.id)
+	this.success = NotifySuccess("保存成功", "/api/node?nodeId=" + this.node.id)
 
 	this.hasHTTPS = this.node.listens.$any(function (k, v) {
 		return v.protocol == "https"

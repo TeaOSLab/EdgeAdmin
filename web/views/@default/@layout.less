@@ -341,34 +341,37 @@ body.expanded .main {
 	width: 2px;
 }
 
-.main .tab-menu {
-	margin-top: 1em !important;
-	margin-bottom: 0 !important;
-}
+.main {
 
-.main .tab-menu .item {
-	padding: 1em !important;
-}
-
-.main .tab-menu .item var {
-	font-style: normal;
-}
-
-.main .tab-menu .item span {
-	font-size: 0.8em;
-	padding-left: 0.3em;
-}
-
-@media screen and (max-width: 512px) {
-	.main .tab-menu {
+	.tab-menu {
+		margin-top: 1em !important;
+		margin-bottom: 0 !important;
 		overflow-x: auto;
 		overflow-y: hidden;
+
+		.item {
+			padding: 1em !important;
+
+			var {
+				font-style: normal;
+			}
+
+			span {
+				font-size: 0.8em;
+				padding-left: 0.3em;
+			}
+
+			.icon {
+				margin-left: 0.6em;
+			}
+		}
 	}
 
-	.main .tab-menu::-webkit-scrollbar {
+	.tab-menu::-webkit-scrollbar {
 		height: 4px;
 	}
 }
+
 
 .main .go-top-btn {
 	position: fixed;

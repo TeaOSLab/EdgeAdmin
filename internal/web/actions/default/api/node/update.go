@@ -10,16 +10,15 @@ import (
 	"github.com/iwind/TeaGo/maps"
 )
 
-type SettingsAction struct {
+type UpdateAction struct {
 	actionutils.ParentAction
 }
 
-func (this *SettingsAction) Init() {
-	this.Nav("", "setting", "setting")
-	this.SecondMenu("basic")
+func (this *UpdateAction) Init() {
+	this.Nav("", "", "update")
 }
 
-func (this *SettingsAction) RunGet(params struct {
+func (this *UpdateAction) RunGet(params struct {
 	NodeId int64
 }) {
 	nodeResp, err := this.RPC().APINodeRPC().FindEnabledAPINode(this.AdminContext(), &pb.FindEnabledAPINodeRequest{
@@ -104,7 +103,7 @@ func (this *SettingsAction) RunGet(params struct {
 }
 
 // 保存基础设置
-func (this *SettingsAction) RunPost(params struct {
+func (this *UpdateAction) RunPost(params struct {
 	NodeId          int64
 	Name            string
 	SslPolicyId     int64

@@ -8,8 +8,11 @@ import (
 func init() {
 	TeaGo.BeforeStart(func(server *TeaGo.Server) {
 		server.
-			Helper(new(actions.Gzip)).
 			Prefix("/ui").
+			Get("/download", new(DownloadAction)).
+
+			// 以下的需要压缩
+			Helper(new(actions.Gzip)).
 			Get("/components.js", new(ComponentsAction)).
 			EndAll()
 	})
