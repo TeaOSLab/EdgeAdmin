@@ -11,7 +11,7 @@ func init() {
 		server.
 			Helper(new(helpers.UserMustAuth)).
 			Helper(new(Helper)).
-			Helper(settingutils.NewHelper("db")).
+			Helper(settingutils.NewHelper("dbNodes")).
 			Prefix("/db").
 			Get("", new(IndexAction)).
 			GetPost("/createPopup", new(CreatePopupAction)).

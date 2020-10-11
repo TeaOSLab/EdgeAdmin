@@ -1,6 +1,7 @@
 {$layout "layout_popup"}
-<h3>添加端口绑定</h3>
 
+<h3 v-if="!isUpdating">添加端口绑定</h3>
+<h3 v-if="isUpdating">修改端口绑定</h3>
 <form class="ui form" data-tea-action="$" data-tea-success="success">
 	<table class="ui table definition selectable">
 		<tr>
@@ -14,7 +15,7 @@
 		<tr>
 			<td class="title">端口</td>
 			<td>
-				<input type="text" name="address" ref="focus"/>
+				<input type="text" name="address" ref="focus" v-model="address"/>
 				<p class="comment">可以是一个数字端口（通常不超过65535），也可以是"地址:端口"的方式。</p>
 			</td>
 		</tr>

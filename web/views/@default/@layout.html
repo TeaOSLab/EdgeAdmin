@@ -76,7 +76,7 @@
         <!-- 操作菜单 -->
         <div class="ui top menu tabular tab-menu small" v-if="teaTabbar.length > 0">
             <a class="item" v-for="item in teaTabbar" :class="{'active':item.active,right:item.right}"  :href="item.url">
-                <var>{{item.name}}<span v-if="item.subName.length > 0">({{item.subName}})</span> &nbsp;<i class="icon small" :class="item.icon" v-if="item.icon != null"></i> </var>
+                <var>{{item.name}}<span v-if="item.subName.length > 0">({{item.subName}})</span><i class="icon small" :class="item.icon" v-if="item.icon != null && item.icon.length > 0"></i> </var>
             </a>
         </div>
 

@@ -10,7 +10,7 @@ func init() {
 	TeaGo.BeforeStart(func(server *TeaGo.Server) {
 		server.
 			Helper(helpers.NewUserMustAuth()).
-			Helper(settingutils.NewHelper("api")).
+			Helper(settingutils.NewHelper("apiNodes")).
 			Prefix("/api/node").
 
 			// 这里不受Helper的约束
@@ -19,8 +19,9 @@ func init() {
 
 			// 节点相关
 			Helper(NewHelper()).
-			GetPost("/settings", new(SettingsAction)).
-
+			Get("", new(IndexAction)).
+			GetPost("/update", new(UpdateAction)).
+			Get("/install", new(InstallAction)).
 
 			EndAll()
 	})

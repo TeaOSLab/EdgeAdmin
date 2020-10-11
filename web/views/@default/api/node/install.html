@@ -1,0 +1,33 @@
+{$layout}
+{$template "menu"}
+
+<h3>安装步骤</h3>
+<ol class="ui list">
+	<li>按照下面的配置信息替换<code-label>configs/api.yaml</code-label>内容</li>
+	<li>按照下面的配置信息替换<code-label>configs/db.yaml</code-label>内容</li>
+	<li>使用<code-label>bin/edge-api start</code-label>启动节点</li>
+	<li>可以在<code-label>logs/run.log</code-label>中查看启动是否有异常</li>
+</ol>
+
+<div class="ui divider"></div>
+<h3>配置信息</h3>
+<table class="ui table definition selectable">
+	<tr>
+		<td class="title">configs/api.yaml<em><br/><download-link :v-element="'api-code'" :v-file="'api.yaml'">[下载]</download-link></em></td>
+		<td>
+			<pre id="api-code">nodeId: "{{node.uniqueId}}"
+secret: "{{node.secret}}"</pre>
+		</td>
+	</tr>
+	<tr>
+		<td>configs/db.yaml<em><br/><download-link :v-element="'db-code'" :v-file="'db.yaml'">[下载]</download-link></em></td>
+		<td>
+			<span class="red" v-if="dbConfig.error.length > 0">
+				<span v-if="dbConfig.isNotFound">找不到数据库配置文件：configs/api_db.yaml ，请重新 <a href="/settings/database">[配置数据库]</a>：</span>
+				<span v-else class="red">无法生成配置内容，错误原因：</span>
+				{{dbConfig.error}}
+			</span>
+			<pre v-show="dbConfig.config.length > 0" id="db-code">{{dbConfig.config}}</pre>
+		</td>
+	</tr>
+</table>

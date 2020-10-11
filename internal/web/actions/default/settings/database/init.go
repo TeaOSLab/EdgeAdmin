@@ -1,7 +1,6 @@
-package api
+package profile
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/api/node"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/settingutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/iwind/TeaGo"
@@ -11,12 +10,9 @@ func init() {
 	TeaGo.BeforeStart(func(server *TeaGo.Server) {
 		server.
 			Helper(helpers.NewUserMustAuth()).
-			Helper(NewHelper()).
-			Helper(settingutils.NewHelper("apiNodes")).
-			Prefix("/api").
+			Helper(settingutils.NewHelper("database")).
+			Prefix("/settings/database").
 			Get("", new(IndexAction)).
-			GetPost("/node/createPopup", new(node.CreatePopupAction)).
-			Post("/delete", new(DeleteAction)).
 			EndAll()
 	})
 }

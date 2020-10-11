@@ -66,6 +66,7 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/stat"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/backup"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/database"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/login"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/profile"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/security"
