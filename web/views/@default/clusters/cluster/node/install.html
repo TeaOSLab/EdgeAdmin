@@ -32,9 +32,10 @@
 		<h3>方法2：手动安装</h3>
 		<table class="ui table definition selectable">
 			<tr>
-				<td>配置文件<em>（configs/api.yaml）</em></td>
+				<td>配置文件<em>（configs/api.yaml）</em><br/>
+				<em><download-link :v-element="'rpc-code'" :v-file="'api.yaml'">[下载]</download-link ></em></td>
 				<td>
-					<pre>rpc:
+					<pre id="rpc-code">rpc:
   endpoints: [ {{apiEndpoints}} ]
 nodeId: "{{node.uniqueId}}"
 secret: "{{node.secret}}"</pre>
