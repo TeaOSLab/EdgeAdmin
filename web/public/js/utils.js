@@ -138,8 +138,8 @@ window.teaweb = {
 		if (message.length > 30) {
 			width = "30em";
 		}
-		Swal.fire({
-			text: message,
+
+		let config = {
 			confirmButtonText: "确定",
 			buttonsStyling: false,
 			icon: "success",
@@ -154,9 +154,19 @@ window.teaweb = {
 					setTimeout(function () {
 						callback();
 					});
+				} else if (typeof (callback) == "string") {
+					window.location = callback
 				}
 			}
-		});
+		}
+
+		if (message.startsWith("html:")) {
+			config.html = message.substring(5)
+		} else {
+			config.text = message
+		}
+
+		Swal.fire(config);
 	},
 	successToast: function (message, timeout) {
 		if (timeout == null) {

@@ -3,6 +3,7 @@ package helpers
 import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	nodes "github.com/TeaOSLab/EdgeAdmin/internal/rpc"
+	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -23,6 +24,12 @@ func NewUserMustAuth() *UserMustAuth {
 func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramName string) (goNext bool) {
 	var action = actionPtr.Object()
 
+	// 检查系统是否已经配置过
+	if !setup.IsConfigured() {
+		action.RedirectURL("/setup")
+		return
+	}
+
 	var session = action.Session()
 	var adminId = session.GetInt("adminId")
 	if adminId <= 0 {
@@ -33,6 +40,7 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	// 检查用户是否存在
 	rpc, err := nodes.SharedRPC()
 	if err != nil {
+		action.WriteString("setup rpc error: " + err.Error())
 		utils.PrintError(err)
 		return false
 	}
@@ -40,7 +48,7 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	rpcResp, err := rpc.AdminRPC().CheckAdminExists(rpc.Context(0), &pb.CheckAdminExistsRequest{AdminId: int64(adminId)})
 	if err != nil {
 		utils.PrintError(err)
-		actionPtr.Object().WriteString(teaconst.ErrServer)
+		action.WriteString(teaconst.ErrServer)
 		return false
 	}
 

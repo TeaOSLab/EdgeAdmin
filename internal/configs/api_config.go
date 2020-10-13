@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 )
 
+// API配置
 type APIConfig struct {
 	RPC struct {
 		Endpoints []string `yaml:"endpoints"`
@@ -14,6 +15,7 @@ type APIConfig struct {
 	Secret string `yaml:"secret"`
 }
 
+// 加载API配置
 func LoadAPIConfig() (*APIConfig, error) {
 	data, err := ioutil.ReadFile(Tea.ConfigFile("api.yaml"))
 	if err != nil {
@@ -27,4 +29,13 @@ func LoadAPIConfig() (*APIConfig, error) {
 	}
 
 	return config, nil
+}
+
+// 写入API配置
+func (this *APIConfig) WriteFile(path string) error {
+	data, err := yaml.Marshal(this)
+	if err != nil {
+		return err
+	}
+	return ioutil.WriteFile(path, data, 0666)
 }

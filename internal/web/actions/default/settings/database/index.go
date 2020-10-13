@@ -41,16 +41,15 @@ func (this *IndexAction) RunGet(params struct{}) {
 	}
 
 	if config.DBs == nil {
-		this.Data["error"] = "can not find valid database config: api_db.yaml"
+		this.Data["error"] = "no database configured in config file: api_db.yaml"
 		this.Show()
 		return
 	}
 
-	dbConfig, ok := config.DBs[config.Default.DB]
-	if !ok {
-		this.Data["error"] = "can not find valid database config: api_db.yaml"
-		this.Show()
-		return
+	var dbConfig *dbs.DBConfig
+	for _, db := range config.DBs {
+		dbConfig = db
+		break
 	}
 	dsn := dbConfig.Dsn
 	dsn = regexp.MustCompile(`tcp\((.+)\)`).ReplaceAllString(dsn, "$1")

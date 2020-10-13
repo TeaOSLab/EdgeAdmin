@@ -1,0 +1,54 @@
+.install-box {
+  width: 50em;
+  position: fixed;
+  left: 50%;
+  margin-left: -25em;
+  top: 1em;
+  bottom: 1em;
+  overflow-y: auto;
+}
+.install-box .button.margin {
+  margin-top: 1em;
+}
+.install-box .button.primary {
+  float: right;
+}
+.install-box table td.title {
+  width: 10em;
+}
+.install-box .radio {
+  margin-right: 1em;
+}
+.install-box .radio label {
+  cursor: pointer !important;
+  font-size: 0.9em !important;
+}
+.install-box h3 {
+  font-weight: normal;
+}
+.install-box .content-box {
+  overflow-y: auto;
+  position: fixed;
+  top: 5em;
+  bottom: 5em;
+  left: 50%;
+  width: 50em;
+  padding-right: 1em;
+  margin-left: -25em;
+  z-index: 1;
+}
+.install-box .content-box::-webkit-scrollbar {
+  width: 4px;
+}
+.install-box .button-group {
+  position: fixed;
+  left: 50%;
+  margin-left: -25em;
+  z-index: 1;
+  width: 50em;
+  bottom: 1em;
+}
+.install-box::-webkit-scrollbar {
+  width: 4px;
+}
+/*# sourceMappingURL=index.css.map */

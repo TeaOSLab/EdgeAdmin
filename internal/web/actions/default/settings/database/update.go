@@ -50,11 +50,12 @@ func (this *UpdateAction) RunGet(params struct{}) {
 		return
 	}
 
-	dbConfig, ok := config.DBs[config.Default.DB]
-	if !ok {
-		this.Show()
-		return
+	var dbConfig *dbs.DBConfig
+	for _, db := range config.DBs {
+		dbConfig = db
+		break
 	}
+	
 	dsn := dbConfig.Dsn
 	dsn = regexp.MustCompile(`tcp\((.+)\)`).ReplaceAllString(dsn, "$1")
 	dsnURL, err := url.Parse("mysql://" + dsn)

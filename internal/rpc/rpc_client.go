@@ -175,13 +175,36 @@ func (this *RPCClient) SysSettingRPC() pb.SysSettingServiceClient {
 	return pb.NewSysSettingServiceClient(this.pickConn())
 }
 
-// 构造上下文
+// 构造Admin上下文
 func (this *RPCClient) Context(adminId int64) context.Context {
 	ctx := context.Background()
 	m := maps.Map{
 		"timestamp": time.Now().Unix(),
 		"type":      "admin",
 		"userId":    adminId,
+	}
+	method, err := encrypt.NewMethodInstance(teaconst.EncryptMethod, this.apiConfig.Secret, this.apiConfig.NodeId)
+	if err != nil {
+		utils.PrintError(err)
+		return context.Background()
+	}
+	data, err := method.Encrypt(m.AsJSON())
+	if err != nil {
+		utils.PrintError(err)
+		return context.Background()
+	}
+	token := base64.StdEncoding.EncodeToString(data)
+	ctx = metadata.AppendToOutgoingContext(ctx, "nodeId", this.apiConfig.NodeId, "token", token)
+	return ctx
+}
+
+// 构造API上下文
+func (this *RPCClient) APIContext(apiNodeId int64) context.Context {
+	ctx := context.Background()
+	m := maps.Map{
+		"timestamp": time.Now().Unix(),
+		"type":      "api",
+		"userId":    apiNodeId,
 	}
 	method, err := encrypt.NewMethodInstance(teaconst.EncryptMethod, this.apiConfig.Secret, this.apiConfig.NodeId)
 	if err != nil {
