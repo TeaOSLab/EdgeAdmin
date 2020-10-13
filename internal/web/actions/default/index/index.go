@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
-	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/types"
 	stringutil "github.com/iwind/TeaGo/utils/string"
@@ -25,6 +26,12 @@ func (this *IndexAction) RunGet(params struct {
 
 	Auth *helpers.UserShouldAuth
 }) {
+	// 检查系统是否已经配置过
+	if !setup.IsConfigured() {
+		this.RedirectURL("/setup")
+		return
+	}
+
 	// 已登录跳转到dashboard
 	if params.Auth.IsUser() {
 		this.RedirectURL("/dashboard")

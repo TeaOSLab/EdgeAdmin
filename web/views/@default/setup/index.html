@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="zh">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="shortcut icon" href="/images/favicon.png"/>
+	<title>安装Edge管理系统</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	{$TEA.VUE}
+	{$TEA.SEMANTIC}
+	<script type="text/javascript" src="/js/md5.min.js"></script>
+	<script type="text/javascript" src="/js/utils.js"></script>
+	<script type="text/javascript" src="/js/sweetalert2/dist/sweetalert2.all.min.js"></script>
+	<script type="text/javascript" src="/ui/components.js"></script>
+	<link rel="stylesheet" href="/_/@default/@layout.css"/>
+</head>
+<body>
+
+<div class="install-box">
+	<!-- 步骤列表 -->
+	<div class="ui steps fluid small">
+		<div class="ui step" :class="{active: step == STEP_INTRO}">
+			<div class="content">
+				<div :class="{title: step == STEP_INTRO}">1. 介绍</div>
+			</div>
+		</div>
+		<div class="ui step" :class="{active: step == STEP_API}">
+			<div class="content">
+				<div :class="{title: step == STEP_API}">2. 设置API节点</div>
+			</div>
+		</div>
+		<div class="ui step" :class="{active: step == STEP_DB}">
+			<div class="content">
+				<div :class="{title: step == STEP_DB}">3. 设置MySQL数据库</div>
+			</div>
+		</div>
+		<div class="ui step" :class="{active: step == STEP_ADMIN}">
+			<div class="content">
+				<div :class="{title: step == STEP_ADMIN}">4. 设置管理员账号</div>
+			</div>
+		</div>
+		<div class="ui step" :class="{active: step == STEP_FINISH}">
+			<div class="content">
+				<div :class="{title: step == STEP_FINISH}">5. 完成安装</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 介绍 -->
+	<div v-show="step == STEP_INTRO">
+		<div>感谢你选择使用<strong>Edge</strong>集群服务系统，下面让我们一起开始配置系统。</div>
+		<div class="margin">在这之前如果你还没有可用的MySQL数据库，请先安装数据库再进行。</div>
+		<button class="ui button primary" style="margin-top: 10em" type="button" @click.prevent="goIntroNext()">开始<i class="icon long arrow right"></i></button>
+	</div>
+
+	<!-- 设置API节点 -->
+	<div v-show="step == STEP_API">
+		<div class="ui message"><strong>API节点</strong>是管理系统和数据库之间通讯的桥梁，新安装时可以先使用自动启动的API节点，等系统变得庞大时再扩展新的API节点。</div>
+		<form class="ui form" data-tea-action=".validateApi" data-tea-success="apiSuccess" data-tea-before="apiSubmit" data-tea-done="apiDone">
+			<table class="ui table definition selectable">
+				<tr>
+					<td class="title">API节点类型</td>
+					<td>
+						<div class="ui radio checkbox">
+							<input type="radio" name="mode" value="new" id="auto-start-api-node" v-model="apiNodeMode"/>
+							<label for="auto-start-api-node">自动启动新API节点</label>
+						</div>
+						<div class="ui radio checkbox">
+							<input type="radio" name="mode" value="old" id="use-old-api-node" v-model="apiNodeMode"/>
+							<label for="use-old-api-node">使用已安装节点</label>
+						</div>
+					</td>
+				</tr>
+
+				<tbody v-show="apiNodeMode == 'new'">
+					<tr>
+						<td>节点端口 *</td>
+						<td>
+							<input type="text" name="newPort" style="width:6em" maxlength="5" v-model="newAPINodePort"/>
+							<p class="comment">选一个在1024-65535之间并且没有正在使用的端口作为要启动的节点端口。</p>
+						</td>
+					</tr>
+					<tr>
+						<td>节点主机地址</td>
+						<td>
+							<div v-if="serverIPs.length > 0">
+								<select name="newHost" class="ui dropdown auto-width">
+									<option v-for="ip in serverIPs" :value="ip">{{ip}}</option>
+								</select>
+							</div>
+							<div v-else="">
+								<input type="text" name="newHost" value=""/>
+							</div>
+							<p class="comment">其他节点访问此API节点的主机地址，可以是IP或者域名，第一次安装时通常是<strong>当前服务器</strong>的IP地址。后期可以修改这个地址。</p>
+						</td>
+					</tr>
+				</tbody>
+
+				<tbody v-show="apiNodeMode == 'old'">
+					<tr>
+						<td>节点协议 *</td>
+						<td>
+							<select class="ui dropdown auto-width" name="oldProtocol">
+								<option value="http">HTTP</option>
+								<option value="https">HTTPS</option>
+							</select>
+							<p class="comment">API节点使用的协议。</p>
+						</td>
+					</tr>
+					<tr>
+						<td>主机地址 *</td>
+						<td>
+							<input type="text" name="oldHost" maxlength="100" style="width:20em"/>
+							<p class="comment">API节点所在主机地址。</p>
+						</td>
+					</tr>
+					<tr>
+						<td>服务端口 *</td>
+						<td>
+							<input type="text" name="oldPort" style="width:6em" maxlength="5"/>
+							<p class="comment">API节点启动的端口。</p>
+						</td>
+					</tr>
+					<tr>
+						<td>节点nodeId *</td>
+						<td>
+							<input type="text" name="oldNodeId" maxlength="100"/>
+							<p class="comment">在节点的配置文件中<code-label>configs/api.yaml</code-label>中获取，不需要带双引号。</p>
+						</td>
+					</tr>
+					<tr>
+						<td>节点secret *</td>
+						<td>
+							<input type="password" name="oldNodeSecret" maxlength="100"/>
+							<p class="comment">在节点的配置文件中<code-label>configs/api.yaml</code-label>中获取，不需要带双引号。</p>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<button class="ui button" type="button" @click.prevent="goBackIntro"><i class="icon long arrow left"></i>上一步</button> &nbsp;
+			<button class="ui button primary" type="submit" v-if="!apiRequesting">下一步<i class="icon long arrow right"></i></button>
+			<button class="ui button primary" type="button" v-if="apiRequesting">提交中</button>
+		</form>
+	</div>
+
+	<!-- 设置数据库 -->
+	<div v-show="step == STEP_DB">
+		<div v-show="apiNodeMode == 'new'">
+			<form class="ui form" data-tea-action=".validateDb" data-tea-success="dbSuccess" data-tea-before="dbSubmit" data-tea-done="dbDone">
+				<table class="ui table definition selectable">
+					<tr>
+						<td class="title">MySQL主机地址 *</td>
+						<td>
+							<input type="text" name="host" maxlength="100" placeholder="比如 192.168.1.100" style="width:16em" ref="dbHost"/>
+						</td>
+					</tr>
+					<tr>
+						<td>数据库连接端口 *</td>
+						<td>
+							<input type="text" name="port" maxlength="5" placeholder="比如 3306" style="width:7em"/>
+						</td>
+					</tr>
+					<tr>
+						<td>数据库名称 *</td>
+						<td>
+							<input type="text" name="database" value="edges" style="width:16em"/>
+							<p class="comment">请事先创建好此数据库，如果不存在，则会尝试自动创建。</p>
+						</td>
+					</tr>
+					<tr>
+						<td>连接用户名 *</td>
+						<td>
+							<input type="text" name="username" style="width:16em" maxlength="100"/>
+							<p class="comment">此用户需要可以在数据库中有操作数据和创建数据表的权限。</p>
+						</td>
+					</tr>
+					<tr>
+						<td>连接密码</td>
+						<td>
+							<input type="password" name="password" style="width:16em" maxlength="100"/>
+							<p class="comment">连接数据库所需密码，没有密码的话就不需要填写。</p>
+						</td>
+					</tr>
+				</table>
+
+				<button class="ui button" type="button" @click.prevent="goBackAPI"><i class="icon long arrow left"></i>上一步</button> &nbsp;
+				<button class="ui button primary" v-if="!dbRequesting" type="submit">下一步<i class="icon long arrow right"></i></button>
+				<button class="ui button primary" v-if="dbRequesting" type="button">提交中...</button>
+			</form>
+		</div>
+
+		<div v-show="apiNodeMode == 'old'">
+			<div style="margin-bottom: 2em">你选择使用了已安装节点，无需重新配置数据库。</div>
+			<button class="ui button margin" type="button" @click.prevent="goBackAPI"><i class="icon long arrow left"></i>上一步</button> &nbsp;
+			<button class="ui button primary margin" type="button" @click.prevent="goDBNext()">下一步<i class="icon long arrow right"></i></button>
+		</div>
+	</div>
+
+	<!-- 设置管理员账号 -->
+	<div v-show="step == STEP_ADMIN">
+		<form class="ui form" data-tea-action=".validateAdmin" data-tea-success="adminSuccess">
+			<table class="ui table definition selectable">
+				<tr>
+					<td class="title">登录用户名 *</td>
+					<td>
+						<input type="text" name="adminUsername" style="width:16em" maxlength="100" value="admin"/>
+						<p class="comment">只能是英文、数字和下划线的组合。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>登录密码 *</td>
+					<td>
+						<input type="password" name="adminPassword" maxlength="100" style="width:16em" v-model="adminPassword" v-show="!adminPasswordVisible"/>
+						<input type="text" value="" v-model="adminPassword" style="width:16em" v-show="adminPasswordVisible"/>
+						<p class="comment">只能是英文、数字和下划线的组合 <a href="" title="显示明文密码" @click.prevent="showAdminPassword"><i class="icon eye grey"></i></a>。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>确认密码 *</td>
+					<td>
+						<input type="password" name="adminPassword2" maxlength="100" style="width:16em" v-model="adminPassword2" v-show="!adminPasswordVisible"/>
+						<input type="text" value="" v-model="adminPassword2" style="width:16em" v-show="adminPasswordVisible"/>
+						<p class="comment">再次输入密码以便于确认  <a href="" title="显示明文密码" @click.prevent="showAdminPassword"><i class="icon eye grey"></i></a>。</p>
+					</td>
+				</tr>
+			</table>
+
+			<button class="ui button margin" type="button" @click.prevent="goBackDB"><i class="icon long arrow left"></i>上一步</button> &nbsp;
+			<button class="ui button primary margin" type="submit">下一步<i class="icon long arrow right"></i></button>
+		</form>
+	</div>
+
+	<!-- 完成安装 -->
+	<div v-show="step == STEP_FINISH">
+		<form class="ui form" data-tea-action=".install" data-tea-success="finishSuccess" data-tea-before="finishSubmit" data-tea-done="finishDone">
+			<input type="hidden" name="apiNodeJSON" :value="JSON.stringify(apiNodeInfo)"/>
+			<input type="hidden" name="dbJSON" :value="JSON.stringify(dbInfo)"/>
+			<input type="hidden" name="adminJSON" :value="JSON.stringify(adminInfo)"/>
+
+			<div class="content-box">
+				<h3>API节点信息</h3>
+				<table class="ui table definition selectable">
+					<tr>
+						<td class="title">API节点类型</td>
+						<td>
+							<span v-if="apiNodeInfo.mode == 'new'">自动启动新API节点</span>
+							<span v-if="apiNodeInfo.mode == 'old'">使用已安装节点</span>
+						</td>
+					</tr>
+
+					<tbody v-show="apiNodeInfo.mode == 'new'">
+					<tr>
+						<td>节点端口 *</td>
+						<td>
+							{{apiNodeInfo.newPort}}
+						</td>
+					</tr>
+					<tr>
+						<td>节点主机地址</td>
+						<td>
+							{{apiNodeInfo.newHost}}
+						</td>
+					</tr>
+					</tbody>
+
+					<tbody v-show="apiNodeInfo.mode == 'old'">
+					<tr>
+						<td>节点协议 *</td>
+						<td>
+							{{apiNodeInfo.oldProtocol}}
+						</td>
+					</tr>
+					<tr>
+						<td>主机地址 *</td>
+						<td>
+							{{apiNodeInfo.oldHost}}
+						</td>
+					</tr>
+					<tr>
+						<td>服务端口 *</td>
+						<td>
+							{{apiNodeInfo.oldPort}}
+						</td>
+					</tr>
+					</tbody>
+				</table>
+
+				<h3 v-if="apiNodeMode == 'new'">数据库信息</h3>
+				<table class="ui table definition selectable" v-if="apiNodeMode == 'new'">
+					<tr>
+						<td class="title">MySQL主机地址 *</td>
+						<td>
+							{{dbInfo.host}}
+						</td>
+					</tr>
+					<tr>
+						<td>数据库连接端口 *</td>
+						<td>
+							{{dbInfo.port}}
+						</td>
+					</tr>
+					<tr>
+						<td>数据库名称 *</td>
+						<td>
+							{{dbInfo.database}}
+						</td>
+					</tr>
+					<tr>
+						<td>连接用户名 *</td>
+						<td>
+							{{dbInfo.username}}
+						</td>
+					</tr>
+					<tr>
+						<td>连接密码</td>
+						<td>
+							<span v-if="dbInfo.passwordMask != null && dbInfo.passwordMask.length > 0">{{dbInfo.passwordMask}}</span>
+							<span v-else class="disabled">未填入密码</span>
+						</td>
+					</tr>
+				</table>
+
+				<h3>管理员信息</h3>
+				<table class="ui table definition selectable">
+					<tr>
+						<td class="title">登录用户名</td>
+						<td>{{adminInfo.username}}</td>
+					</tr>
+					<tr>
+						<td>登录密码</td>
+						<td>{{adminInfo.passwordMask}}</td>
+					</tr>
+				</table>
+			</div>
+
+			<div class="button-group">
+				<div class="ui divider"></div>
+				<button class="ui button" type="button" @click.prevent="goBackAdmin"><i class="icon long arrow left"></i>上一步</button>
+				<button class="ui button primary" type="submit" v-if="!isInstalling">确认并开始安装</button>
+				<button class="ui button primary" type="button" v-if="isInstalling">安装中...</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+</body>
+</html>

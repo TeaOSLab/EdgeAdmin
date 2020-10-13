@@ -2,7 +2,7 @@
 {$template "menu"}
 
 <p class="ui message error" v-if="error.length > 0">{{error}}</p>
-<div v-show="error.length == 0 && dbConfig != null">
+<div v-if="error.length == 0 && dbConfig != null">
 	<table class="ui table selectable definition">
 		<tr>
 			<td class="title">主机地址</td>
