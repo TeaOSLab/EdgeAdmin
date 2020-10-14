@@ -10,9 +10,12 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"os/signal"
+	"syscall"
 )
 
 type AdminNode struct {
+	subPIDs []int
 }
 
 func NewAdminNode() *AdminNode {
@@ -21,18 +24,28 @@ func NewAdminNode() *AdminNode {
 
 func (this *AdminNode) Run() {
 	// 启动管理界面
-	secret := rands.String(32)
-
-	// 测试环境下设置一个固定的key，方便我们调试
-	if Tea.IsTesting() {
-		secret = "8f983f4d69b83aaa0d74b21a212f6967"
-	}
+	secret := this.genSecret()
 
 	// 检查server配置
 	err := this.checkServer()
 	if err != nil {
 		return
 	}
+
+	// 监听信号
+	sigQueue := make(chan os.Signal)
+	signal.Notify(sigQueue, syscall.SIGTERM, syscall.SIGINT, syscall.SIGKILL, syscall.SIGQUIT)
+	go func() {
+		for range sigQueue {
+			for _, pid := range this.subPIDs {
+				p, err := os.FindProcess(pid)
+				if err == nil && p != nil {
+					_ = p.Kill()
+				}
+			}
+			os.Exit(0)
+		}
+	}()
 
 	// 启动API节点
 	this.startAPINode()
@@ -91,13 +104,28 @@ https:
 }
 
 // 启动API节点
-func (this AdminNode) startAPINode() {
+func (this *AdminNode) startAPINode() {
 	_, err := os.Stat(Tea.Root + "/edge-api/configs/api.yaml")
 	if err == nil {
 		logs.Println("start edge-api")
-		err = exec.Command(Tea.Root + "/edge-api/bin/edge-api").Start()
+		cmd := exec.Command(Tea.Root + "/edge-api/bin/edge-api")
+		err = cmd.Start()
 		if err != nil {
 			logs.Println("[ERROR]start edge-api failed: " + err.Error())
+		} else {
+			this.subPIDs = append(this.subPIDs, cmd.Process.Pid)
 		}
 	}
+}
+
+// 生成Secret
+func (this *AdminNode) genSecret() string {
+	tmpFile := os.TempDir() + "/edge-secret.tmp"
+	data, err := ioutil.ReadFile(tmpFile)
+	if err == nil && len(data) == 32 {
+		return string(data)
+	}
+	secret := rands.String(32)
+	_ = ioutil.WriteFile(tmpFile, []byte(secret), 0666)
+	return secret
 }

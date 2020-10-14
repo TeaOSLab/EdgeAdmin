@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"runtime"
 	"strconv"
+	"syscall"
 	"time"
 )
 
@@ -199,7 +200,7 @@ func (this *AppCmd) runStop() {
 	}
 
 	// 停止进程
-	_ = proc.Kill()
+	_ = proc.Signal(syscall.SIGQUIT)
 
 	// 在Windows上经常不能及时释放资源
 	_ = DeletePid(Tea.Root + "/bin/pid")
