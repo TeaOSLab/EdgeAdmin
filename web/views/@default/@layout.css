@@ -370,6 +370,9 @@ body.expanded .main {
 .main .tab-menu .item .icon {
   margin-left: 0.6em;
 }
+.main .tab-menu .item.active {
+  background: #f8f8f9 !important;
+}
 .main .tab-menu::-webkit-scrollbar {
   height: 4px;
 }
