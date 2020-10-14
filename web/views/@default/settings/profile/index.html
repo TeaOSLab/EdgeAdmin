@@ -1,3 +1,15 @@
 {$layout}
 
-<p class="comment">此功能暂未开放，敬请期待。</p>
+<div class="margin"></div>
+
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">你的姓名 *</td>
+			<td>
+				<input type="text" name="fullname" maxlength="50" ref="focus" v-model="admin.fullname"/>
+			</td>
+		</tr>
+	</table>
+	<submit-btn></submit-btn>
+</form>
