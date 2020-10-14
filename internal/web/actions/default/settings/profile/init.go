@@ -12,7 +12,7 @@ func init() {
 			Helper(helpers.NewUserMustAuth()).
 			Helper(settingutils.NewHelper("profile")).
 			Prefix("/settings/profile").
-			Get("", new(IndexAction)).
+			GetPost("", new(IndexAction)).
 			EndAll()
 	})
 }

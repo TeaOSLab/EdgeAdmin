@@ -1,3 +1,30 @@
 {$layout}
 
-<p class="comment">此功能暂未开放，敬请期待。</p>
+<div class="margin"></div>
+
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">登录用户名 *</td>
+			<td>
+				<input type="text" name="username" maxlength="50" v-model="admin.username" ref="focus"/>
+				<p class="comment">只能含有英文、数字或下划线。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>登录密码</td>
+			<td>
+				<input type="password" name="password" maxlength="50"/>
+				<p class="comment">不填表示保留原有密码。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>确认密码</td>
+			<td>
+				<input type="password" name="password2" maxlength="50"/>
+				<p class="comment">不填表示保留原有密码。</p>
+			</td>
+		</tr>
+	</table>
+	<submit-btn></submit-btn>
+</form>
