@@ -1,1 +1,1 @@
-![架构](doc/architect-zh.jpeg)
+![架构](doc/architect-zh.jpg)
