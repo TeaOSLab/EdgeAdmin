@@ -1,5 +1,5 @@
 Vue.component("ssl-certs-box", {
-	props: ["v-certs", "v-protocol"],
+	props: ["v-certs", "v-protocol", "v-view-size", "v-single-mode"],
 	data: function () {
 		let certs = this.vCerts
 		if (certs == null) {
@@ -26,9 +26,19 @@ Vue.component("ssl-certs-box", {
 		// 选择证书
 		selectCert: function () {
 			let that = this
-			teaweb.popup("/servers/components/ssl/selectPopup", {
-				width: "50em",
-				height: "30em",
+			let width = "50em"
+			let height = "30em"
+			let viewSize = this.vViewSize
+			if (viewSize == null) {
+				viewSize = "normal"
+			}
+			if (viewSize == "mini") {
+				width = "35em"
+				height = "20em"
+			}
+			teaweb.popup("/servers/components/ssl/selectPopup?viewSize=" + viewSize, {
+				width: width,
+				height: height,
 				callback: function (resp) {
 					that.certs.push(resp.data.cert)
 				}
@@ -51,6 +61,11 @@ Vue.component("ssl-certs-box", {
 		// 格式化时间
 		formatTime: function (timestamp) {
 			return new Date(timestamp * 1000).format("Y-m-d")
+		},
+
+		// 判断是否显示选择｜上传按钮
+		buttonsVisible: function () {
+			return this.vSingleMode == null || !this.vSingleMode || this.certs == null || this.certs.length == 0
 		}
 	},
 	template: `<div>
@@ -59,13 +74,15 @@ Vue.component("ssl-certs-box", {
 		<div class="ui label small" v-for="(cert, index) in certs">
 			{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp; <a href="" title="删除" @click.prevent="removeCert()"><i class="icon remove"></i></a>
 		</div>
-		<div class="ui divider"></div>
+		<div class="ui divider" v-if="buttonsVisible()"></div>
 	</div>
 	<div v-else>
 		<span class="red">选择或上传证书后<span v-if="vProtocol == 'https'">HTTPS</span><span v-if="vProtocol == 'tls'">TLS</span>服务才能生效。</span>
-		<div class="ui divider"></div>
+		<div class="ui divider" v-if="buttonsVisible()"></div>
 	</div>
-	<button class="ui button tiny" type="button" @click.prevent="selectCert()">选择已有证书</button> &nbsp;
-	<button class="ui button tiny" type="button" @click.prevent="uploadCert()">上传新证书</button>
+	<div v-if="buttonsVisible()">
+		<button class="ui button tiny" type="button" @click.prevent="selectCert()">选择已有证书</button> &nbsp;
+		<button class="ui button tiny" type="button" @click.prevent="uploadCert()">上传新证书</button>
+	</div>
 </div>`
 })
