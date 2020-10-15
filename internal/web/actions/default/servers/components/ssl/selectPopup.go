@@ -19,9 +19,16 @@ func (this *SelectPopupAction) Init() {
 	this.Nav("", "", "")
 }
 
-func (this *SelectPopupAction) RunGet(params struct{}) {
+func (this *SelectPopupAction) RunGet(params struct {
+	ViewSize string
+}) {
 	// TODO 支持关键词搜索
 	// TODO 列出常用的证书供用户选择
+
+	if len(params.ViewSize) == 0 {
+		params.ViewSize = "normal"
+	}
+	this.Data["viewSize"] = params.ViewSize
 
 	countResp, err := this.RPC().SSLCertRPC().CountSSLCerts(this.AdminContext(), &pb.CountSSLCertRequest{})
 	if err != nil {

@@ -1,6 +1,7 @@
 Tea.context(function () {
-	this.moreOptionsVisible = false;
-	this.globalChangedClusters = [];
+	this.moreOptionsVisible = false
+	this.globalChangedClusters = []
+	this.teaDemoEnabled = false
 
 	if (typeof this.leftMenuItemIsDisabled == "undefined") {
 		this.leftMenuItemIsDisabled = false
@@ -8,29 +9,29 @@ Tea.context(function () {
 
 	this.$delay(function () {
 		if (this.$refs.focus != null) {
-			this.$refs.focus.focus();
+			this.$refs.focus.focus()
 		}
 
 		// 检查变更
 		this.checkClusterChanges()
-	});
+	})
 
 	/**
 	 * 左侧子菜单
 	 */
 	this.showSubMenu = function (menu) {
 		if (menu.alwaysActive) {
-			return;
+			return
 		}
 		if (this.teaSubMenus.menus != null && this.teaSubMenus.menus.length > 0) {
 			this.teaSubMenus.menus.$each(function (k, v) {
 				if (menu.id == v.id) {
-					return;
+					return
 				}
-				v.isActive = false;
-			});
+				v.isActive = false
+			})
 		}
-		menu.isActive = !menu.isActive;
+		menu.isActive = !menu.isActive
 	};
 
 	/**
@@ -70,6 +71,16 @@ Tea.context(function () {
 				})
 		})
 	};
+
+	/**
+	 * 底部伸展框
+	 */
+	this.showQQGroupQrcode = function () {
+		teaweb.popup("/about/qq", {
+			width: "21em",
+			height: "24em"
+		})
+	}
 });
 
 window.NotifySuccess = function (message, url, params) {

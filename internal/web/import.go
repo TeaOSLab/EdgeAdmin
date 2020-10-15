@@ -1,6 +1,7 @@
 package web
 
 import (
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/about"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/api"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/api/node"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters"
@@ -70,6 +71,7 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/login"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/profile"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/security"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/ui"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/upgrade"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/setup"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ui"
