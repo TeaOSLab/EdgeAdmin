@@ -33,5 +33,5 @@ Vue.component("download-link", {
 			})
 		}
 	},
-	template: `<a :href="url" target="_blank"><slot></slot></a>`,
+	template: `<a :href="url" target="_blank" style="font-weight: normal"><slot></slot></a>`,
 })
