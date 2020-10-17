@@ -60,9 +60,10 @@ func (this *NodeAction) RunGet(params struct {
 	ipAddressMaps := []maps.Map{}
 	for _, addr := range ipAddressesResp.Addresses {
 		ipAddressMaps = append(ipAddressMaps, maps.Map{
-			"id":   addr.Id,
-			"name": addr.Name,
-			"ip":   addr.Ip,
+			"id":        addr.Id,
+			"name":      addr.Name,
+			"ip":        addr.Ip,
+			"canAccess": addr.CanAccess,
 		})
 	}
 

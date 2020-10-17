@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/grants/grantutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/ipAddresses/ipaddressutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -51,9 +52,10 @@ func (this *UpdateAction) RunGet(params struct {
 	ipAddressMaps := []maps.Map{}
 	for _, addr := range ipAddressesResp.Addresses {
 		ipAddressMaps = append(ipAddressMaps, maps.Map{
-			"id":   addr.Id,
-			"name": addr.Name,
-			"ip":   addr.Ip,
+			"id":        addr.Id,
+			"name":      addr.Name,
+			"ip":        addr.Ip,
+			"canAccess": addr.CanAccess,
 		})
 	}
 
@@ -128,16 +130,16 @@ func (this *UpdateAction) RunGet(params struct {
 }
 
 func (this *UpdateAction) RunPost(params struct {
-	LoginId     int64
-	NodeId      int64
-	Name        string
-	IPAddresses string `alias:"ipAddresses"`
-	ClusterId   int64
-	GrantId     int64
-	SshHost     string
-	SshPort     int
-	MaxCPU      int32
-	IsOn        bool
+	LoginId         int64
+	NodeId          int64
+	Name            string
+	IPAddressesJSON []byte `alias:"ipAddressesJSON"`
+	ClusterId       int64
+	GrantId         int64
+	SshHost         string
+	SshPort         int
+	MaxCPU          int32
+	IsOn            bool
 
 	Must *actions.Must
 }) {
@@ -188,22 +190,10 @@ func (this *UpdateAction) RunPost(params struct {
 	}
 
 	// 添加新的IP地址
-	ipAddresses := []maps.Map{}
-	err = json.Unmarshal([]byte(params.IPAddresses), &ipAddresses)
+	err = ipaddressutils.UpdateNodeIPAddresses(this.Parent(), params.NodeId, params.IPAddressesJSON)
 	if err != nil {
 		this.ErrorPage(err)
 		return
-	}
-	for _, address := range ipAddresses {
-		addressId := address.GetInt64("id")
-		_, err = this.RPC().NodeIPAddressRPC().UpdateNodeIPAddressNodeId(this.AdminContext(), &pb.UpdateNodeIPAddressNodeIdRequest{
-			AddressId: addressId,
-			NodeId:    params.NodeId,
-		})
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
 	}
 
 	this.Success()

@@ -1,10 +1,10 @@
 package ipAddresses
 
 import (
-	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"net"
 )
 
 type CreatePopupAction struct {
@@ -20,31 +20,28 @@ func (this *CreatePopupAction) RunGet(params struct{}) {
 }
 
 func (this *CreatePopupAction) RunPost(params struct {
-	IP   string `alias:"ip"`
-	Name string
+	IP        string `alias:"ip"`
+	CanAccess bool
+	Name      string
 
 	Must *actions.Must
 }) {
 	// TODO 严格校验IP地址
 
+	ip := net.ParseIP(params.IP)
+	if len(ip) == 0 {
+		this.Fail("请输入正确的IP")
+	}
+
 	params.Must.
 		Field("ip", params.IP).
 		Require("请输入IP地址")
 
-	resp, err := this.RPC().NodeIPAddressRPC().CreateNodeIPAddress(this.AdminContext(), &pb.CreateNodeIPAddressRequest{
-		NodeId: 0,
-		Name:   params.Name,
-		Ip:     params.IP,
-	})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-
 	this.Data["ipAddress"] = maps.Map{
-		"name": params.Name,
-		"ip":   params.IP,
-		"id":   resp.AddressId,
+		"name":      params.Name,
+		"canAccess": params.CanAccess,
+		"ip":        params.IP,
+		"id":        0,
 	}
 	this.Success()
 }

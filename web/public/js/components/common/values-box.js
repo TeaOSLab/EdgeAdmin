@@ -37,10 +37,12 @@ Vue.component("values-box", {
 			} else {
 				this.vValues.push(this.value);
 			}
-			this.cancel();
+			this.cancel()
+			this.$emit("change", this.vValues)
 		},
 		remove: function (index) {
-			this.vValues.$remove(index);
+			this.vValues.$remove(index)
+			this.$emit("change", this.vValues)
 		},
 		cancel: function () {
 			this.isUpdating = false;

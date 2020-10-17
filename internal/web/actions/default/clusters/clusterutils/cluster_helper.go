@@ -84,5 +84,10 @@ func (this *ClusterHelper) createSettingMenu(clusterId string, selectedItem stri
 		"url":      "/clusters/cluster/settings?clusterId=" + clusterId,
 		"isActive": selectedItem == "basic",
 	})
+	items = append(items, maps.Map{
+		"name":     "健康检查",
+		"url":      "/clusters/cluster/settings/health?clusterId=" + clusterId,
+		"isActive": selectedItem == "health",
+	})
 	return
 }
