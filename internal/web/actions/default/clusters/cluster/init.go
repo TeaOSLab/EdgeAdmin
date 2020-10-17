@@ -14,6 +14,7 @@ func init() {
 			Helper(clusters.NewClusterHelper()).
 			Prefix("/clusters/cluster").
 			Get("", new(IndexAction)).
+			GetPost("/installNodes", new(InstallNodesAction)).
 
 			// 节点相关
 			Get("/node", new(node.NodeAction)).
