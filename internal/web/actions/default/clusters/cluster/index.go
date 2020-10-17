@@ -73,9 +73,10 @@ func (this *IndexAction) RunGet(params struct {
 		ipAddresses := []maps.Map{}
 		for _, addr := range ipAddressesResp.Addresses {
 			ipAddresses = append(ipAddresses, maps.Map{
-				"id":   addr.Id,
-				"name": addr.Name,
-				"ip":   addr.Ip,
+				"id":        addr.Id,
+				"name":      addr.Name,
+				"ip":        addr.Ip,
+				"canAccess": addr.CanAccess,
 			})
 		}
 

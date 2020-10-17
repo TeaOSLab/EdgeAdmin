@@ -13,6 +13,8 @@ func init() {
 			Helper(clusters.NewClusterHelper()).
 			Prefix("/clusters/cluster/settings").
 			GetPost("", new(IndexAction)).
+			GetPost("/health", new(HealthAction)).
+			GetPost("/healthRun", new(HealthRunAction)).
 			EndAll()
 	})
 }

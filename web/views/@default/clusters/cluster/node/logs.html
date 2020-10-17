@@ -1,7 +1,5 @@
 {$layout}
-{$template "/left_menu"}
 
-<div class="right-box">
 	{$template "node_menu"}
 
 	<p class="comment" v-if="logs.length == 0">暂时还没有日志。</p>
@@ -20,4 +18,3 @@
 	</table>
 
 	<div class="page" v-html="page"></div>
-</div>

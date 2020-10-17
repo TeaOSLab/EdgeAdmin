@@ -8,6 +8,8 @@ Vue.component("node-ip-addresses-box", {
 	methods: {
 		// 添加IP地址
 		addIPAddress: function () {
+			window.UPDATING_NODE_IP_ADDRESS = null
+
 			let that = this;
 			teaweb.popup("/nodes/ipAddresses/createPopup", {
 				callback: function (resp) {
@@ -18,8 +20,10 @@ Vue.component("node-ip-addresses-box", {
 
 		// 修改地址
 		updateIPAddress: function (index, address) {
+			window.UPDATING_NODE_IP_ADDRESS = address
+
 			let that = this;
-			teaweb.popup("/nodes/ipAddresses/updatePopup?addressId=" + address.id, {
+			teaweb.popup("/nodes/ipAddresses/updatePopup", {
 				callback: function (resp) {
 					Vue.set(that.ipAddresses, index, resp.data.ipAddress);
 				}
@@ -32,11 +36,13 @@ Vue.component("node-ip-addresses-box", {
 		}
 	},
 	template: `<div>
-	<input type="hidden" name="ipAddresses" :value="JSON.stringify(ipAddresses)"/>
+	<input type="hidden" name="ipAddressesJSON" :value="JSON.stringify(ipAddresses)"/>
 	<div v-if="ipAddresses.length > 0">
 		<div>
 			<div v-for="(address, index) in ipAddresses" class="ui label small">
-				{{address.ip}}<span class="small" v-if="address.name.length > 0">（{{address.name}}）</span>
+				{{address.ip}}
+				<span class="small" v-if="address.name.length > 0">（{{address.name}}<span v-if="!address.canAccess">，不可访问</span>）</span>
+				<span class="small" v-if="address.name.length == 0 && !address.canAccess">（不可访问）</span>
 				<a href="" title="修改" @click.prevent="updateIPAddress(index, address)"><i class="icon pencil small"></i></a>
 				<a href="" title="删除" @click.prevent="removeIPAddress(index)"><i class="icon remove"></i></a>
 			</div>
@@ -46,6 +52,5 @@ Vue.component("node-ip-addresses-box", {
 	<div>
 		<button class="ui button small" type="button" @click.prevent="addIPAddress()">+</button>
 	</div>
-	<p class="comment">添加已经绑定的IP地址，仅做记录用。</p>
 </div>`
 })

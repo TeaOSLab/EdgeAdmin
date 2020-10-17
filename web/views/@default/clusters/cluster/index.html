@@ -1,7 +1,5 @@
 {$layout}
-{$template "/left_menu"}
 
-<div class="right-box">
 	{$template "menu"}
 
 	<form class="ui form segment" action="/clusters/cluster">
@@ -61,7 +59,10 @@
 				<span v-if="node.ipAddresses.length == 0">-</span>
 				<div v-else class="address-box">
 					<div v-for="addr in node.ipAddresses" style="margin-bottom:0.3em">
-						<div class="ui label tiny">{{addr.ip}} <span class="small">（{{addr.name}}）</span></div>
+						<div class="ui label tiny">{{addr.ip}}
+							<span class="small" v-if="addr.name.length > 0">（{{addr.name}}<span v-if="!addr.canAccess">，不可访问</span>）</span>
+							<span class="small" v-if="addr.name.length == 0 && !addr.canAccess">（不可访问）</span>
+						</div>
 					</div>
 				</div>
 			</td>
@@ -99,4 +100,3 @@
 
 
 	<div class="page" v-html="page"></div>
-</div>

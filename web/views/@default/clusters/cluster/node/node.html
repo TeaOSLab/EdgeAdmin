@@ -1,7 +1,5 @@
 {$layout}
-{$template "/left_menu"}
 
-<div class="right-box">
 	{$template "node_menu"}
 
 	<h3>节点详情</h3>
@@ -19,8 +17,10 @@
 			<td>
 				<div v-if="node.ipAddresses.length > 0">
 					<div>
-						<div v-for="(address, index) in node.ipAddresses" class="ui label small">
-                            {{address.ip}}<span class="small">（{{address.name}}）</span>
+						<div v-for="(address, index) in node.ipAddresses" class="ui label tiny">
+                            {{address.ip}}
+							<span class="small" v-if="address.name.length > 0">（{{address.name}}<span v-if="!address.canAccess">，不可访问</span>）</span>
+							<span class="small" v-if="address.name.length == 0 && !address.canAccess">（不可访问）</span>
 						</div>
 					</div>
 				</div>
@@ -98,4 +98,3 @@
 			</td>
 		</tr>
 	</table>
-</div>
