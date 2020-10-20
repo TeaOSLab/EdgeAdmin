@@ -175,6 +175,10 @@ func (this *RPCClient) SysSettingRPC() pb.SysSettingServiceClient {
 	return pb.NewSysSettingServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) MessageRPC() pb.MessageServiceClient {
+	return pb.NewMessageServiceClient(this.pickConn())
+}
+
 // 构造Admin上下文
 func (this *RPCClient) Context(adminId int64) context.Context {
 	ctx := context.Background()
