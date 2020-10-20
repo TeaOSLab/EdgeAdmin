@@ -88,7 +88,7 @@ Tea.context(function () {
 	 * 同步集群配置
 	 */
 	this.syncClustersConfigs = function () {
-		teaweb.confirm("确定要同步集群服务配置吗？", function () {
+		teaweb.confirm("html:有若干个集群配置已变更！<br/>确定要同步配置到边缘节点吗？", function () {
 			this.$post("/clusters/sync")
 				.success(function () {
 					this.globalChangedClusters = [];

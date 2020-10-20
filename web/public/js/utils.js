@@ -210,12 +210,11 @@ window.teaweb = {
 		});
 	},
 	confirm: function (message, callback) {
-		var width = "20em";
+		let width = "20em";
 		if (message.length > 30) {
 			width = "30em";
 		}
-		Swal.fire({
-			text: message,
+		let config = {
 			confirmButtonText: "确定",
 			cancelButtonText: "取消",
 			showCancelButton: true,
@@ -233,7 +232,13 @@ window.teaweb = {
 					callback.call(Tea.Vue);
 				}
 			}
-		});
+		}
+		if (message.startsWith("html:")) {
+			config.html = message.substring(5)
+		} else {
+			config.text = message
+		}
+		Swal.fire(config);
 	},
 	reload: function () {
 		window.location.reload()
