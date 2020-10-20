@@ -1,6 +1,7 @@
 Tea.context(function () {
 	this.moreOptionsVisible = false
 	this.globalChangedClusters = []
+	this.globalMessageBadge = 0
 	this.teaDemoEnabled = false
 
 	if (typeof this.leftMenuItemIsDisabled == "undefined") {
@@ -14,6 +15,9 @@ Tea.context(function () {
 
 		// 检查变更
 		this.checkClusterChanges()
+
+		// 检查消息
+		this.checkMessages()
 	})
 
 	/**
@@ -58,7 +62,27 @@ Tea.context(function () {
 					this.checkClusterChanges()
 				}, delay)
 			})
-	};
+	}
+
+	/**
+	 * 检查消息
+	 */
+	this.checkMessages = function () {
+		this.$post("/messages/badge")
+			.params({})
+			.success(function (resp) {
+				this.globalMessageBadge = resp.data.count
+			})
+			.done(function () {
+				let delay = 6000
+				if (this.globalMessageBadge > 0) {
+					delay = 30000
+				}
+				this.$delay(function () {
+					this.checkMessages()
+				}, delay)
+			})
+	}
 
 	/**
 	 * 同步集群配置

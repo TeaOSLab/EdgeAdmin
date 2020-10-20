@@ -1,0 +1,13 @@
+{$layout}
+
+<first-menu v-if="messages.length > 0">
+	<a href="" class="item" @click.prevent="updatePageRead()">[设置当前页为已读]</a>
+	<a href="" class="item" @click.prevent="updateAllRead()">[设置全部为已读]</a>
+</first-menu>
+<div class="margin"></div>
+
+<p class="comment" v-if="messages.length == 0">暂时还没有消息。</p>
+
+<message-row v-for="message in messages" :v-message="message" :key="message.id"></message-row>
+
+<div class="page" v-html="page"></div>
