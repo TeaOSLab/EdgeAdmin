@@ -14,7 +14,7 @@ func init() {
 			Prefix("/clusters/cluster/settings").
 			GetPost("", new(IndexAction)).
 			GetPost("/health", new(HealthAction)).
-			GetPost("/healthRun", new(HealthRunAction)).
+			GetPost("/healthRunPopup", new(HealthRunPopupAction)).
 			EndAll()
 	})
 }
