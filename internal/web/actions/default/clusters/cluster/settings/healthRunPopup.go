@@ -6,20 +6,20 @@ import (
 	"github.com/iwind/TeaGo/actions"
 )
 
-type HealthRunAction struct {
+type HealthRunPopupAction struct {
 	actionutils.ParentAction
 }
 
-func (this *HealthRunAction) Init() {
+func (this *HealthRunPopupAction) Init() {
 	this.Nav("", "", "")
 }
 
-func (this *HealthRunAction) RunGet(params struct{}) {
+func (this *HealthRunPopupAction) RunGet(params struct{}) {
 
 	this.Show()
 }
 
-func (this *HealthRunAction) RunPost(params struct {
+func (this *HealthRunPopupAction) RunPost(params struct {
 	ClusterId int64
 
 	Must *actions.Must

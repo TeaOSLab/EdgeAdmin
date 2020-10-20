@@ -1,7 +1,7 @@
 Tea.context(function () {
 	this.success = NotifyPopup
 
-	this.isRequesting = false
+	this.isRequesting = true
 	this.results = []
 	this.countSuccess = 0
 	this.countFail = 0
