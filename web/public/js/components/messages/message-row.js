@@ -28,7 +28,7 @@ Vue.component("message-row", {
 			{{message.body}}
 			
 			<div v-if="message.type == 'HealthCheckFail'" style="margin-top: 0.8em">
-				<a :href="'/clusters/cluster/node?clusterId=' + message.cluster.id + '&nodeId=' + param.node.id" v-for="param in params" class="ui label tiny">{{param.node.name}}</a>
+				<a :href="'/clusters/cluster/node?clusterId=' + message.cluster.id + '&nodeId=' + param.node.id" v-for="param in params" class="ui label tiny" style="margin-bottom: 0.5em">{{param.node.name}}: {{param.error}}</a>
 			</div>
 		</td>
 	</tr>
