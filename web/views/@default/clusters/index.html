@@ -28,7 +28,8 @@
 			<span v-else class="disabled">N</span>
 		</td>
 		<td>
-			<a :href="'/clusters/cluster?clusterId=' + cluster.id">详情</a>
+			<a :href="'/clusters/cluster?clusterId=' + cluster.id">详情</a> &nbsp;
+			<a href="" @click.prevent="deleteCluster(cluster.id)">删除</a>
 		</td>
 	</tr>
 </table>
