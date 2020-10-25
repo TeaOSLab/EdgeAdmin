@@ -1,4 +1,4 @@
-package clusters
+package cluster
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
@@ -8,6 +8,17 @@ import (
 type DeleteAction struct {
 	actionutils.ParentAction
 }
+
+func (this *DeleteAction) Init() {
+	this.Nav("", "delete", "index")
+	this.SecondMenu("nodes")
+}
+
+func (this *DeleteAction) RunGet(params struct{}) {
+	this.Show()
+}
+
+
 
 func (this *DeleteAction) RunPost(params struct {
 	ClusterId int64

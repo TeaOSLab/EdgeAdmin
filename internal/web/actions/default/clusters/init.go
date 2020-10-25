@@ -15,7 +15,6 @@ func init() {
 			GetPost("/create", new(CreateAction)).
 			Post("/sync", new(SyncAction)).
 			Post("/checkChange", new(CheckChangeAction)).
-			Post("/delete", new(DeleteAction)).
 			EndAll()
 	})
 }
