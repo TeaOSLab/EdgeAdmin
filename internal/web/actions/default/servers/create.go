@@ -2,6 +2,7 @@ package servers
 
 import (
 	"encoding/json"
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -109,6 +110,11 @@ func (this *CreateAction) RunPost(params struct {
 			}
 		}
 	case serverconfigs.ServerTypeTCPProxy:
+		// 在DEMO模式下不能创建
+		if teaconst.IsDemo {
+			this.Fail("DEMO模式下不能创建TCP反向代理")
+		}
+
 		listen := []*serverconfigs.NetworkAddressConfig{}
 		err := json.Unmarshal([]byte(params.Addresses), &listen)
 		if err != nil {
