@@ -1,10 +1,5 @@
 {$layout}
-{$template "menu"}
-
-<second-menu>
-	<menu-item :href="'/nodes/grants/grant?grantId=' + grant.id" active="true">详情</menu-item>
-	<menu-item :href="'/nodes/grants/update?grantId=' + grant.id">修改</menu-item>
-</second-menu>
+{$template "grant_menu"}
 
 <table class="ui table selectable definition">
 	<tr>
@@ -56,3 +51,17 @@
 		</td>
 	</tr>
 </table>
+
+<div class="ui divider"></div>
+<h3>使用此认证的集群</h3>
+<div>
+	<p v-if="clusters.length == 0" class="comment">暂时还没有集群使用此认证。</p>
+	<a :href="'/clusters/cluster?clusterId=' + cluster.id" class="ui label small" v-for="cluster in clusters">{{cluster.name}}</a>
+</div>
+
+<div class="ui divider"></div>
+<h3>使用此认证的节点</h3>
+<div>
+	<p v-if="nodes.length == 0" class="comment">暂时还没有节点使用此认证。</p>
+	<a :href="'/clusters/cluster/node?clusterId=' + node.cluster.id + '&nodeId=' + node.id" class="ui label small" :class="{red:!node.isOn}" v-for="node in nodes">{{node.name}}<span class="small">（{{node.cluster.name}}）</span></a>
+</div>

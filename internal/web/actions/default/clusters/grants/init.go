@@ -1,4 +1,4 @@
-package clusters
+package grants
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/clusterutils"
@@ -11,11 +11,17 @@ func init() {
 		server.
 			Helper(helpers.NewUserMustAuth()).
 			Helper(clusterutils.NewClustersHelper()).
-			Prefix("/clusters").
+			Prefix("/clusters/grants").
+
+			// 授权管理
 			Get("", new(IndexAction)).
 			GetPost("/create", new(CreateAction)).
-			Post("/sync", new(SyncAction)).
-			Post("/checkChange", new(CheckChangeAction)).
+			GetPost("/update", new(UpdateAction)).
+			Post("/delete", new(DeleteAction)).
+			Get("/grant", new(GrantAction)).
+			GetPost("/selectPopup", new(SelectPopupAction)).
+			GetPost("/createPopup", new(CreatePopupAction)).
+			GetPost("/updatePopup", new(UpdatePopupAction)).
 			EndAll()
 	})
 }

@@ -1,9 +1,9 @@
 package grants
 
 import (
-	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/grants/grantutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 )
@@ -13,7 +13,7 @@ type UpdateAction struct {
 }
 
 func (this *UpdateAction) Init() {
-	this.Nav("", "", "")
+	this.Nav("", "grant", "update")
 }
 
 func (this *UpdateAction) RunGet(params struct {

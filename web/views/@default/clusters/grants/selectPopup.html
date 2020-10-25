@@ -9,7 +9,8 @@
 			<td class="title">选择认证</td>
 			<td>
 				<span v-if="grants.length == 0">暂时还没有可用的认证。</span>
-				<a class="ui label small" v-for="grant in grants" :class="{blue:grantId == grant.id}" @click.prevent="selectGrant(grant)">{{grant.name}} <span class="small">（{{grant.methodName}}）</span></a>
+				<a class="ui label small" v-for="grant in grants" :class="{blue:grantId == grant.id}" @click.prevent="selectGrant(grant)" style="margin-bottom:0.5em">{{grant.name}} <span class="small">（{{grant.methodName}}）</span></a>
+				<p class="comment">请点击选中某个认证。</p>
 			</td>
 		</tr>
 	</table>
