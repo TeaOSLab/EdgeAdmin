@@ -10,7 +10,7 @@ Vue.component("grant-selector", {
 		// 选择授权
 		select: function () {
 			let that = this;
-			teaweb.popup("/nodes/grants/selectPopup", {
+			teaweb.popup("/clusters/grants/selectPopup", {
 				callback: (resp) => {
 					that.grantId = resp.data.grant.id;
 					if (that.grantId > 0) {
@@ -22,7 +22,7 @@ Vue.component("grant-selector", {
 
 		// 创建授权
 		create: function () {
-			teaweb.popup("/nodes/grants/createPopup", {
+			teaweb.popup("/clusters/grants/createPopup", {
 				height: "31em",
 				callback: (resp) => {
 					this.grantId = resp.data.grant.id;
@@ -39,7 +39,7 @@ Vue.component("grant-selector", {
 				window.location.reload();
 				return;
 			}
-			teaweb.popup("/nodes/grants/updatePopup?grantId=" + this.grant.id, {
+			teaweb.popup("/clusters/grants/updatePopup?grantId=" + this.grant.id, {
 				height: "31em",
 				callback: (resp) => {
 					this.grant = resp.data.grant;

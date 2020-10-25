@@ -1,9 +1,9 @@
 package grants
 
 import (
-	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/grants/grantutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 )
 
@@ -34,6 +34,22 @@ func (this *IndexAction) RunGet(params struct{}) {
 	}
 	grantMaps := []maps.Map{}
 	for _, grant := range grantsResp.Grants {
+		// 集群数
+		countClustersResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClustersWithGrantId(this.AdminContext(), &pb.CountAllEnabledNodeClustersWithGrantIdRequest{GrantId: grant.Id})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		countClusters := countClustersResp.Count
+
+		// 节点数
+		countNodesResp, err := this.RPC().NodeRPC().CountAllEnabledNodesWithGrantId(this.AdminContext(), &pb.CountAllEnabledNodesWithGrantIdRequest{GrantId: grant.Id})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		countNodes := countNodesResp.Count
+
 		grantMaps = append(grantMaps, maps.Map{
 			"id":   grant.Id,
 			"name": grant.Name,
@@ -41,6 +57,8 @@ func (this *IndexAction) RunGet(params struct{}) {
 				"type": grant.Method,
 				"name": grantutils.FindGrantMethodName(grant.Method),
 			},
+			"countClusters": countClusters,
+			"countNodes":    countNodes,
 		})
 	}
 	this.Data["grants"] = grantMaps
