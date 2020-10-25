@@ -10,6 +10,7 @@
 	<script type="text/javascript" src="/js/md5.min.js"></script>
 	<script type="text/javascript" src="/js/utils.js"></script>
 	<script type="text/javascript" src="/js/sweetalert2/dist/sweetalert2.all.min.js"></script>
+	<script type="text/javascript" src="/ui/components.js?v=1.0.0"></script>
 </head>
 <body>
 <div>
@@ -17,6 +18,7 @@
 
 	<div class="form-box">
 		<form class="ui form" data-tea-action="$" data-tea-before="submitBefore" data-tea-done="submitDone" data-tea-success="submitSuccess" autocomplete="off">
+			<csrf-token></csrf-token>
 			<input type="hidden" name="password" v-model="passwordMd5"/>
 			<input type="hidden" name="token" v-model="token"/>
 			<div class="ui segment stacked">

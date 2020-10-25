@@ -15,7 +15,9 @@ import (
 	"time"
 )
 
-type IndexAction actions.Action
+type IndexAction struct {
+	actionutils.ParentAction
+}
 
 // 首页（登录页）
 
@@ -56,6 +58,7 @@ func (this *IndexAction) RunPost(params struct {
 	Remember bool
 	Must     *actions.Must
 	Auth     *helpers.UserShouldAuth
+	CSRF     *actionutils.CSRF
 }) {
 	params.Must.
 		Field("username", params.Username).

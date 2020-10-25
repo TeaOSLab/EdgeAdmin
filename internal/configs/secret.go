@@ -1,0 +1,3 @@
+package configs
+
+var Secret = ""
