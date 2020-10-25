@@ -46,6 +46,12 @@ func (this *IndexAction) RunGet(params struct{}) {
 		}
 
 		nodeMap := maps.Map{}
+		if message.Node != nil {
+			nodeMap = maps.Map{
+				"id":   message.Node.Id,
+				"name": message.Node.Name,
+			}
+		}
 
 		messages = append(messages, maps.Map{
 			"id":       message.Id,

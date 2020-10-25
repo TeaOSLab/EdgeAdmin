@@ -21,6 +21,10 @@ Vue.component("message-row", {
 				<span> | </span>
 				<a :href="'/clusters/cluster?clusterId=' + message.cluster.id">集群：{{message.cluster.name}}</a>
 			</span>
+			<span v-if="message.node != null && message.node.id != null">
+				<span> | </span>
+				<a :href="'/clusters/cluster/node?clusterId=' + message.cluster.id + '&nodeId=' + message.node.id">节点：{{message.node.name}}</a>
+			</span>
 		</td>
 	</tr>
 	<tr :class="{error: message.level == 'error'}">
