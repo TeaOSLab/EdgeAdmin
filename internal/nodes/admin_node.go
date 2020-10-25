@@ -1,6 +1,7 @@
 package nodes
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/errors"
 	"github.com/iwind/TeaGo"
 	"github.com/iwind/TeaGo/Tea"
@@ -25,6 +26,7 @@ func NewAdminNode() *AdminNode {
 func (this *AdminNode) Run() {
 	// 启动管理界面
 	secret := this.genSecret()
+	configs.Secret = secret
 
 	// 检查server配置
 	err := this.checkServer()
