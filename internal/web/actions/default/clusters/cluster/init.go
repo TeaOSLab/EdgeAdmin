@@ -15,6 +15,7 @@ func init() {
 			Prefix("/clusters/cluster").
 			Get("", new(IndexAction)).
 			GetPost("/installNodes", new(InstallNodesAction)).
+			GetPost("/delete", new(DeleteAction)).
 
 			// 节点相关
 			Get("/node", new(node.NodeAction)).
