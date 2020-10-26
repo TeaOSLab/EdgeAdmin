@@ -57,7 +57,7 @@
 			<td>SSH登录认证</td>
 			<td>
 				<div v-if="node.login != null && node.login.grant != null && node.login.grant.id > 0">
-                    {{node.login.grant.name}}<span class="small">（{{node.login.grant.methodName}}）</span>
+					<a :href="'/clusters/grants/grant?grantId=' + node.login.grant.id">{{node.login.grant.name}}<span class="small">（{{node.login.grant.methodName}}）</span></a>
 				</div>
 				<span v-else class="disabled">
 					尚未设置
