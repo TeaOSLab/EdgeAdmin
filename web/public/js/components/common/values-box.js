@@ -2,7 +2,7 @@ Vue.component("values-box", {
 	props: ["values", "size", "maxlength", "name"],
 	data: function () {
 		let values = this.values;
-		if (typeof (values) != "object") {
+		if (values == null) {
 			values = [];
 		}
 		return {

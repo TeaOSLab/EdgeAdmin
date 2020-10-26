@@ -15,11 +15,15 @@ func init() {
 			Prefix("/clusters/cluster").
 			Get("", new(IndexAction)).
 			GetPost("/installNodes", new(InstallNodesAction)).
+			GetPost("/installRemote", new(InstallRemoteAction)).
+			Post("/installStatus", new(InstallStatusAction)).
 			GetPost("/delete", new(DeleteAction)).
+			GetPost("/createNode", new(CreateNodeAction)).
+			GetPost("/createBatch", new(CreateBatchAction)).
+			GetPost("/updateNodeSSH", new(UpdateNodeSSHAction)).
 
 			// 节点相关
 			Get("/node", new(node.NodeAction)).
-			GetPost("/node/create", new(node.CreateAction)).
 			GetPost("/node/update", new(node.UpdateAction)).
 			GetPost("/node/install", new(node.InstallAction)).
 			Post("/node/updateInstallStatus", new(node.UpdateInstallStatusAction)).

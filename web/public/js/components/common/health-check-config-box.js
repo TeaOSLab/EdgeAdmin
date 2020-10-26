@@ -21,12 +21,28 @@ Vue.component("health-check-config-box", {
 				that.changeURL()
 			}, 500)
 		} else {
-			let url = new URL(healthCheckConfig.url)
-			urlProtocol = url.protocol.substring(0, url.protocol.length - 1)
-			urlPort = url.port
-			urlRequestURI = url.pathname
-			if (url.search.length > 0) {
-				urlRequestURI += url.search
+			try {
+				let url = new URL(healthCheckConfig.url)
+				urlProtocol = url.protocol.substring(0, url.protocol.length - 1)
+				urlPort = url.port
+				urlRequestURI = url.pathname
+				if (url.search.length > 0) {
+					urlRequestURI += url.search
+				}
+			} catch (e) {
+			}
+
+			if (healthCheckConfig.statusCodes == null) {
+				healthCheckConfig.statusCodes = [200]
+			}
+			if (healthCheckConfig.interval == null) {
+				healthCheckConfig.interval = {count: 60, unit: "second"}
+			}
+			if (healthCheckConfig.timeout == null) {
+				healthCheckConfig.timeout = {count: 10, unit: "second"}
+			}
+			if (healthCheckConfig.tryDelay == null) {
+				healthCheckConfig.tryDelay = {count: 100, unit: "ms"}
 			}
 		}
 		return {
@@ -81,7 +97,6 @@ Vue.component("health-check-config-box", {
 					return status
 				}
 			})
-			console.log(this.healthCheck.statusCodes)
 		}
 	},
 	template: `<div>

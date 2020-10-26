@@ -76,6 +76,9 @@ func (this *InstallAction) RunGet(params struct {
 	apiNodes := apiNodesResp.Nodes
 	apiEndpoints := []string{}
 	for _, apiNode := range apiNodes {
+		if !apiNode.IsOn {
+			continue
+		}
 		apiEndpoints = append(apiEndpoints, apiNode.AccessAddrs...)
 	}
 	this.Data["apiEndpoints"] = "\"" + strings.Join(apiEndpoints, "\", \"") + "\""
