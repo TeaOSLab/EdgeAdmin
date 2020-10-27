@@ -3,8 +3,8 @@ package cluster
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/TeaOSLab/EdgeAdmin/internal/configs/nodes"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
@@ -53,14 +53,14 @@ func (this *IndexAction) RunGet(params struct {
 	for _, node := range nodesResp.Nodes {
 		// 状态
 		isSynced := false
-		status := &nodes.NodeStatus{}
-		if len(node.Status) > 0 && node.Status != "null" {
-			err = json.Unmarshal([]byte(node.Status), &status)
+		status := &nodeconfigs.NodeStatus{}
+		if len(node.StatusJSON) > 0 {
+			err = json.Unmarshal(node.StatusJSON, &status)
 			if err != nil {
 				logs.Error(err)
 				continue
 			}
-			status.IsActive = time.Now().Unix()-status.UpdatedAt <= 60 // N秒之内认为活跃
+			status.IsActive = status.IsActive && time.Now().Unix()-status.UpdatedAt <= 60 // N秒之内认为活跃
 			isSynced = status.ConfigVersion == node.Version
 		}
 
