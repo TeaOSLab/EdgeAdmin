@@ -56,6 +56,20 @@ Tea.context(function () {
 											})
 										})
 										return
+									case "CREATE_ROOT_DIRECTORY_FAILED":
+										teaweb.warn("创建根目录失败，请检查目录权限或者手工创建：" + errMsg)
+										return
+									case "INSTALL_HELPER_FAILED":
+										teaweb.warn("安装助手失败：" + errMsg)
+										return
+									case "TEST_FAILED":
+										teaweb.warn("环境测试失败：" + errMsg)
+										return
+									case "RPC_TEST_FAILED":
+										teaweb.confirm("html:要安装的节点到API服务之间的RPC通讯测试失败，具体错误：" + errMsg + "，<br/>现在修改API信息？", function () {
+											window.location = "/api"
+										})
+										return
 									default:
 										teaweb.warn("安装失败：" + errMsg)
 								}

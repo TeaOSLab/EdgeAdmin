@@ -30,49 +30,84 @@
 			</td>
 		</tr>
 		<tr>
-			<td>SSH主机地址</td>
+			<td colspan="2"><more-options-indicator>SSH等更多选项</more-options-indicator></td>
+		</tr>
+		<tbody v-show="moreOptionsVisible">
+			<tr>
+				<td>SSH主机地址</td>
+				<td>
+					<div v-if="node.login != null && node.login.params != null && node.login.params.host != null">
+						<span v-if="node.login.params.host.length > 0">{{node.login.params.host}}</span>
+						<span v-else class="disabled">尚未设置</span>
+					</div>
+					<div v-else class="disabled">
+						尚未设置
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>SSH主机端口</td>
+				<td>
+					<div v-if="node.login != null && node.login.params != null && node.login.params.host != null">
+						<span v-if="node.login.params.port > 0">{{node.login.params.port}}</span>
+						<span v-else class="disabled">尚未设置</span>
+					</div>
+					<span v-else class="disabled">
+						尚未设置
+					</span>
+				</td>
+			</tr>
+			<tr>
+				<td>SSH登录认证</td>
+				<td>
+					<div v-if="node.login != null && node.login.grant != null && node.login.grant.id > 0">
+						<a :href="'/clusters/grants/grant?grantId=' + node.login.grant.id">{{node.login.grant.name}}<span class="small">（{{node.login.grant.methodName}}）</span></a>
+					</div>
+					<span v-else class="disabled">
+						尚未设置
+					</span>
+				</td>
+			</tr>
+			<tr>
+				<td>CPU线程数</td>
+				<td>
+					<span v-if="node.maxCPU > 0">{{node.maxCPU}}线程</span>
+					<span v-else class="disabled">没有限制。</span>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="ui divider"></div>
+
+	<h3>运行状态</h3>
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">是否在运行</td>
 			<td>
-				<div v-if="node.login != null && node.login.params != null && node.login.params.host != null">
-					<span v-if="node.login.params.host.length > 0">{{node.login.params.host}}</span>
-					<span v-else class="disabled">尚未设置</span>
+				<div  v-if="node.status.isActive">
+					<span class="green">运行中</span> &nbsp; 
+					<a href="" @click.prevent="stopNode()" v-if="!isStopping"><span>[通过SSH停止]</span></a>
+					<span v-if="isStopping">[停止中...]</span>
 				</div>
-				<div v-else class="disabled">
-					尚未设置
+				<div v-else>
+					<span class="red">已断开</span> &nbsp;
+					<a href="" @click.prevent="startNode()" v-if="node.isInstalled && !isStarting"><span>[通过SSH启动]</span></a>
+					<span v-if="node.isInstalled && isStarting">[启动中...]</span>
+					<a v-if="!node.isInstalled" :href="'/clusters/cluster/node/install?clusterId=' + clusterId + '&nodeId=' + node.id" ><span>去安装&gt;</span></a>
 				</div>
 			</td>
 		</tr>
-		<tr>
-			<td>SSH主机端口</td>
-			<td>
-				<div v-if="node.login != null && node.login.params != null && node.login.params.host != null">
-					<span v-if="node.login.params.port > 0">{{node.login.params.port}}</span>
-					<span v-else class="disabled">尚未设置</span>
-				</div>
-				<span v-else class="disabled">
-					尚未设置
-				</span>
-			</td>
+		<tr v-show="node.status.isActive">
+			<td>CPU</td>
+			<td>{{node.status.cpuUsageText}}</td>
 		</tr>
-		<tr>
-			<td>SSH登录认证</td>
-			<td>
-				<div v-if="node.login != null && node.login.grant != null && node.login.grant.id > 0">
-					<a :href="'/clusters/grants/grant?grantId=' + node.login.grant.id">{{node.login.grant.name}}<span class="small">（{{node.login.grant.methodName}}）</span></a>
-				</div>
-				<span v-else class="disabled">
-					尚未设置
-				</span>
-			</td>
-		</tr>
-		<tr>
-			<td>CPU线程数</td>
-			<td>
-				<span v-if="node.maxCPU > 0">{{node.maxCPU}}线程</span>
-				<span v-else class="disabled">没有限制。</span>
-			</td>
+		<tr v-show="node.status.isActive">
+			<td>内存</td>
+			<td>{{node.status.memUsageText}}</td>
 		</tr>
 	</table>
 
+	<div class="ui divider"></div>
 	<h3>安装信息</h3>
 	<table class="ui table definition selectable">
 		<tr>
