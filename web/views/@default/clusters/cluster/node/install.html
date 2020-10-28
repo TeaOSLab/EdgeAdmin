@@ -10,7 +10,7 @@
 
 	<!-- 未安装 -->
 	<div v-if="!node.isInstalled">
-		<h3>方法1：自动安装</h3>
+		<h3>方法1：通过SSH自动安装</h3>
 
 		<div v-if="installStatus != null && (installStatus.isRunning || installStatus.isFinished)"
 			 class="ui segment installing-box">

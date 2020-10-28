@@ -25,14 +25,17 @@ func (this *IndexAction) RunGet(params struct {
 	ClusterId      int64
 	InstalledState int
 	ActiveState    int
+	Keyword        string
 }) {
 	this.Data["installState"] = params.InstalledState
 	this.Data["activeState"] = params.ActiveState
+	this.Data["keyword"] = params.Keyword
 
 	countResp, err := this.RPC().NodeRPC().CountAllEnabledNodesMatch(this.AdminContext(), &pb.CountAllEnabledNodesMatchRequest{
 		ClusterId:    params.ClusterId,
 		InstallState: types.Int32(params.InstalledState),
 		ActiveState:  types.Int32(params.ActiveState),
+		Keyword:      params.Keyword,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -48,6 +51,7 @@ func (this *IndexAction) RunGet(params struct {
 		ClusterId:    params.ClusterId,
 		InstallState: types.Int32(params.InstalledState),
 		ActiveState:  types.Int32(params.ActiveState),
+		Keyword:      params.Keyword,
 	})
 	nodeMaps := []maps.Map{}
 	for _, node := range nodesResp.Nodes {
