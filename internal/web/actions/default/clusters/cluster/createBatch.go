@@ -45,6 +45,7 @@ func (this *CreateBatchAction) RunPost(params struct {
 	IpList    string
 
 	Must *actions.Must
+	CSRF *actionutils.CSRF
 }) {
 	if params.ClusterId <= 0 {
 		this.Fail("请选择正确的集群")

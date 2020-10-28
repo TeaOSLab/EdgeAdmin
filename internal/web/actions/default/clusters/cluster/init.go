@@ -17,6 +17,8 @@ func init() {
 			GetPost("/installNodes", new(InstallNodesAction)).
 			GetPost("/installRemote", new(InstallRemoteAction)).
 			Post("/installStatus", new(InstallStatusAction)).
+			GetPost("/upgradeRemote", new(UpgradeRemoteAction)).
+			Post("/upgradeStatus", new(UpgradeStatusAction)).
 			GetPost("/delete", new(DeleteAction)).
 			GetPost("/createNode", new(CreateNodeAction)).
 			GetPost("/createBatch", new(CreateBatchAction)).

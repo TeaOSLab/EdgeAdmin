@@ -2,7 +2,6 @@ package cluster
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -21,18 +20,7 @@ func (this *InstallRemoteAction) Init() {
 func (this *InstallRemoteAction) RunGet(params struct {
 	ClusterId int64
 }) {
-	this.Data["leftMenuItems"] = []maps.Map{
-		{
-			"name":     "自动注册",
-			"url":      "/clusters/cluster/installNodes?clusterId=" + numberutils.FormatInt64(params.ClusterId),
-			"isActive": false,
-		},
-		{
-			"name":     "远程安装",
-			"url":      "/clusters/cluster/installRemote?clusterId=" + numberutils.FormatInt64(params.ClusterId),
-			"isActive": true,
-		},
-	}
+	this.Data["leftMenuItems"] = LeftMenuItemsForInstall(params.ClusterId, "install")
 
 	nodesResp, err := this.RPC().NodeRPC().FindAllNotInstalledNodesWithClusterId(this.AdminContext(), &pb.FindAllNotInstalledNodesWithClusterIdRequest{ClusterId: params.ClusterId})
 	if err != nil {
