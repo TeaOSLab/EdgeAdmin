@@ -3,16 +3,17 @@
 {$template "/left_menu"}
 
 <div class="right-box">
-	<p class="comment" v-if="nodes.length == 0">暂时没有需要远程安装的节点。</p>
+	<p class="comment" v-if="nodes.length == 0">暂时没有需要升级的节点。</p>
 
 	<div v-if="nodes.length > 0">
-		<h3>所有未安装节点</h3>
+		<h3>所有需要升级的节点</h3>
 		<table class="ui table selectable">
 			<thead>
 				<tr>
 					<th>节点名</th>
 					<th>访问IP</th>
 					<th>SSH地址</th>
+					<th>版本变化</th>
 					<th class="four wide">节点状态</th>
 					<th class="two op">操作</th>
 				</tr>
@@ -30,20 +31,21 @@
 					</span>
 					<span v-else class="disabled">没有设置</span>
 				</td>
+				<td>v{{node.oldVersion}} -&gt; v{{node.newVersion}}</td>
 				<td>
 					<div v-if="node.installStatus != null && (node.installStatus.isRunning || node.installStatus.isFinished)">
-						<div v-if="node.installStatus.isRunning" class="blue">安装中...</div>
+						<div v-if="node.installStatus.isRunning" class="blue">升级中...</div>
 						<div v-if="node.installStatus.isFinished">
-							<span v-if="node.installStatus.isOk" class="green">已安装成功</span>
-							<span v-if="!node.installStatus.isOk" class="red">安装过程中发生错误：{{node.installStatus.error}}</span>
+							<span v-if="node.installStatus.isOk" class="green">已升级成功</span>
+							<span v-if="!node.installStatus.isOk" class="red">升级过程中发生错误：{{node.installStatus.error}}</span>
 						</div>
 					</div>
-					<span v-else class="disabled">等待安装</span>
+					<span v-else class="disabled">等待升级</span>
 				</td>
 				<td>
-					<a href="" @click.prevent="installNode(node)" v-if="!isInstalling">安装</a>
-					<span v-if="isInstalling && node.isInstalling">安装中...</span>
-					<span v-if="isInstalling && !node.isInstalling" class="disabled">安装</span>
+					<a href="" @click.prevent="installNode(node)" v-if="!isInstalling">升级</a>
+					<span v-if="isInstalling && node.isInstalling">升级中...</span>
+					<span v-if="isInstalling && !node.isInstalling" class="disabled">升级</span>
 				</td>
 			</tr>
 		</table>

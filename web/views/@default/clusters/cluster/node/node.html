@@ -85,7 +85,7 @@
 			<td class="title">是否在运行</td>
 			<td>
 				<div  v-if="node.status.isActive">
-					<span class="green">运行中</span> &nbsp; 
+					<span class="green">运行中</span> &nbsp;
 					<a href="" @click.prevent="stopNode()" v-if="!isStopping"><span>[通过SSH停止]</span></a>
 					<span v-if="isStopping">[停止中...]</span>
 				</div>
