@@ -13,7 +13,8 @@ type UpgradeRemoteAction struct {
 }
 
 func (this *UpgradeRemoteAction) Init() {
-	this.Nav("", "", "")
+	this.Nav("", "node", "install")
+	this.SecondMenu("nodes")
 }
 
 func (this *UpgradeRemoteAction) RunGet(params struct {

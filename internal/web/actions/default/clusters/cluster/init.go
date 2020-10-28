@@ -1,6 +1,7 @@
 package cluster
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/groups"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node"
 	clusters "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/clusterutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
@@ -34,6 +35,14 @@ func init() {
 			Get("/node/logs", new(node.LogsAction)).
 			Post("/node/start", new(node.StartAction)).
 			Post("/node/stop", new(node.StopAction)).
+
+			// 分组相关
+			Get("/groups", new(groups.IndexAction)).
+			GetPost("/groups/createPopup", new(groups.CreatePopupAction)).
+			GetPost("/groups/updatePopup", new(groups.UpdatePopupAction)).
+			Post("/groups/delete", new(groups.DeleteAction)).
+			Post("/groups/sort", new(groups.SortAction)).
+
 			EndAll()
 	})
 }

@@ -82,6 +82,10 @@ func (this *RPCClient) NodeClusterRPC() pb.NodeClusterServiceClient {
 	return pb.NewNodeClusterServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) NodeGroupRPC() pb.NodeGroupServiceClient {
+	return pb.NewNodeGroupServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) NodeIPAddressRPC() pb.NodeIPAddressServiceClient {
 	return pb.NewNodeIPAddressServiceClient(this.pickConn())
 }
