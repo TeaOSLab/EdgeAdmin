@@ -120,6 +120,14 @@ func (this *NodeAction) RunGet(params struct {
 		status.IsActive = status.IsActive && time.Now().Unix()-status.UpdatedAt <= 60 // N秒之内认为活跃
 	}
 
+	var groupMap maps.Map = nil
+	if node.Group != nil {
+		groupMap = maps.Map{
+			"id":   node.Group.Id,
+			"name": node.Group.Name,
+		}
+	}
+
 	this.Data["node"] = maps.Map{
 		"id":          node.Id,
 		"name":        node.Name,
@@ -142,6 +150,8 @@ func (this *NodeAction) RunGet(params struct {
 			"memUsage":     status.MemoryUsage,
 			"memUsageText": fmt.Sprintf("%.2f%%", status.MemoryUsage*100),
 		},
+
+		"group": groupMap,
 	}
 
 	this.Show()

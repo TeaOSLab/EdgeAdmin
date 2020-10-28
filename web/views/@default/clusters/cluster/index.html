@@ -5,6 +5,15 @@
 <form class="ui form segment" action="/clusters/cluster">
 	<input type="hidden" name="clusterId" :value="clusterId"/>
 	<div class="ui fields inline">
+		<div class="ui field" v-if="groups.length > 0">
+			所属分组：
+		</div>
+		<div class="ui field" v-if="groups.length > 0">
+			<select class="ui dropdown" name="groupId" v-model="groupId">
+				<option value="0">[全部]</option>
+				<option v-for="group in groups" :value="group.id">{{group.name}}</option>
+			</select>
+		</div>
 		<div class="ui field">
 			安装状态：
 		</div>
@@ -41,8 +50,8 @@
 	<tr>
 		<th class="one wide">ID</th>
 		<th>节点名称</th>
-		<th>主机名</th>
-		<th>IP</th>
+		<th class="two wide">所属分组</th>
+		<th class="three wide">IP</th>
 		<th class="two wide">CPU</th>
 		<th class="two wide">内存</th>
 		<!--<th>流量</th>
@@ -52,14 +61,14 @@
 	</tr>
 	</thead>
 	<tr v-for="node in nodes">
-		<td>{{node.id}}</td>
+		<td nowrap="">{{node.id}}</td>
 		<td>{{node.name}}</td>
 		<td>
-			<span v-if="node.status.hostname != null && node.status.hostname.length > 0">{{node.status.hostname}}</span>
-			<span v-else>-</span>
+			<span v-if="node.group != null" class="ui label tiny">{{node.group.name}}</span>
+			<span v-else class="disabled">-</span>
 		</td>
 		<td>
-			<span v-if="node.ipAddresses.length == 0">-</span>
+			<span v-if="node.ipAddresses.length == 0" class="disabled">-</span>
 			<div v-else class="address-box">
 				<div v-for="addr in node.ipAddresses" style="margin-bottom:0.3em">
 					<div class="ui label tiny">{{addr.ip}}
@@ -71,11 +80,11 @@
 		</td>
 		<td>
 			<span v-if="node.status.isActive" :class="{red:node.status.cpuUsage > 0.80}">{{node.status.cpuUsageText}}</span>
-			<span v-else>-</span>
+			<span v-else class="disabled">-</span>
 		</td>
 		<td>
 			<span v-if="node.status.isActive" :class="{red:node.status.memUsage > 0.80}">{{node.status.memUsageText}}</span>
-			<span v-else>-</span>
+			<span v-else class="disabled">-</span>
 		</td>
 		<td>
 			<div v-if="!node.isOn">

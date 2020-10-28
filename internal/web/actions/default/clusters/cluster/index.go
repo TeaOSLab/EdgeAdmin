@@ -23,16 +23,19 @@ func (this *IndexAction) Init() {
 
 func (this *IndexAction) RunGet(params struct {
 	ClusterId      int64
+	GroupId        int64
 	InstalledState int
 	ActiveState    int
 	Keyword        string
 }) {
+	this.Data["groupId"] = params.GroupId
 	this.Data["installState"] = params.InstalledState
 	this.Data["activeState"] = params.ActiveState
 	this.Data["keyword"] = params.Keyword
 
 	countResp, err := this.RPC().NodeRPC().CountAllEnabledNodesMatch(this.AdminContext(), &pb.CountAllEnabledNodesMatchRequest{
 		ClusterId:    params.ClusterId,
+		GroupId:      params.GroupId,
 		InstallState: types.Int32(params.InstalledState),
 		ActiveState:  types.Int32(params.ActiveState),
 		Keyword:      params.Keyword,
@@ -49,6 +52,7 @@ func (this *IndexAction) RunGet(params struct {
 		Offset:       page.Offset,
 		Size:         page.Size,
 		ClusterId:    params.ClusterId,
+		GroupId:      params.GroupId,
 		InstallState: types.Int32(params.InstalledState),
 		ActiveState:  types.Int32(params.ActiveState),
 		Keyword:      params.Keyword,
@@ -84,6 +88,14 @@ func (this *IndexAction) RunGet(params struct {
 			})
 		}
 
+		var groupMap maps.Map = nil
+		if node.Group != nil {
+			groupMap = maps.Map{
+				"id":   node.Group.Id,
+				"name": node.Group.Name,
+			}
+		}
+
 		nodeMaps = append(nodeMaps, maps.Map{
 			"id":          node.Id,
 			"name":        node.Name,
@@ -110,9 +122,35 @@ func (this *IndexAction) RunGet(params struct {
 			},
 			"isSynced":    isSynced,
 			"ipAddresses": ipAddresses,
+			"group":       groupMap,
 		})
 	}
 	this.Data["nodes"] = nodeMaps
+
+	// 所有分组
+	groupMaps := []maps.Map{}
+	groupsResp, err := this.RPC().NodeGroupRPC().FindAllEnabledNodeGroupsWithClusterId(this.AdminContext(), &pb.FindAllEnabledNodeGroupsWithClusterIdRequest{
+		ClusterId: params.ClusterId,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	for _, group := range groupsResp.Groups {
+		countResp, err := this.RPC().NodeRPC().CountAllEnabledNodesWithGroupId(this.AdminContext(), &pb.CountAllEnabledNodesWithGroupIdRequest{GroupId: group.Id})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		countNodes := countResp.Count
+
+		groupMaps = append(groupMaps, maps.Map{
+			"id":         group.Id,
+			"name":       group.Name,
+			"countNodes": countNodes,
+		})
+	}
+	this.Data["groups"] = groupMaps
 
 	this.Show()
 }
