@@ -23,6 +23,7 @@ func init() {
 			GetPost("/createNode", new(CreateNodeAction)).
 			GetPost("/createBatch", new(CreateBatchAction)).
 			GetPost("/updateNodeSSH", new(UpdateNodeSSHAction)).
+			GetPost("/installManual", new(InstallManualAction)).
 
 			// 节点相关
 			Get("/node", new(node.NodeAction)).

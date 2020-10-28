@@ -9,6 +9,11 @@ import (
 func LeftMenuItemsForInstall(clusterId int64, selectedItem string) []maps.Map {
 	return []maps.Map{
 		{
+			"name":     "手动安装",
+			"url":      "/clusters/cluster/installManual?clusterId=" + numberutils.FormatInt64(clusterId),
+			"isActive": selectedItem == "manual",
+		},
+		{
 			"name":     "自动注册",
 			"url":      "/clusters/cluster/installNodes?clusterId=" + numberutils.FormatInt64(clusterId),
 			"isActive": selectedItem == "register",
