@@ -30,7 +30,14 @@
 			</td>
 		</tr>
 		<tr>
-			<td colspan="2"><more-options-indicator>SSH等更多选项</more-options-indicator></td>
+			<td>所属分组</td>
+			<td>
+				<span v-if="node.group != null" class="ui label tiny">{{node.group.name}}</span>
+				<span v-else class="disabled">没有设置分组。</span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"><more-options-indicator>更多选项</more-options-indicator></td>
 		</tr>
 		<tbody v-show="moreOptionsVisible">
 			<tr>

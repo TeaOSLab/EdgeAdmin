@@ -42,6 +42,7 @@ func (this *CreateBatchAction) RunGet(params struct {
 
 func (this *CreateBatchAction) RunPost(params struct {
 	ClusterId int64
+	GroupId   int64
 	IpList    string
 
 	Must *actions.Must
@@ -76,6 +77,7 @@ func (this *CreateBatchAction) RunPost(params struct {
 		resp, err := this.RPC().NodeRPC().CreateNode(this.AdminContext(), &pb.CreateNodeRequest{
 			Name:      ip,
 			ClusterId: params.ClusterId,
+			GroupId:   params.GroupId,
 			Login:     nil,
 		})
 		if err != nil {

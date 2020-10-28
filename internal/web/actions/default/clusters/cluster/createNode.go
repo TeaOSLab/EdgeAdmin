@@ -43,6 +43,7 @@ func (this *CreateNodeAction) RunPost(params struct {
 	Name            string
 	IpAddressesJSON []byte
 	ClusterId       int64
+	GroupId         int64
 	GrantId         int64
 	SshHost         string
 	SshPort         int
@@ -78,6 +79,7 @@ func (this *CreateNodeAction) RunPost(params struct {
 	createResp, err := this.RPC().NodeRPC().CreateNode(this.AdminContext(), &pb.CreateNodeRequest{
 		Name:      params.Name,
 		ClusterId: params.ClusterId,
+		GroupId:   params.GroupId,
 		Login:     loginInfo,
 	})
 	if err != nil {

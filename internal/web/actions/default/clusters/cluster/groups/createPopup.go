@@ -4,6 +4,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/maps"
 )
 
 type CreatePopupAction struct {
@@ -31,13 +32,18 @@ func (this *CreatePopupAction) RunPost(params struct {
 	params.Must.
 		Field("name", params.Name).
 		Require("请输入分组名称")
-	_, err := this.RPC().NodeGroupRPC().CreateNodeGroup(this.AdminContext(), &pb.CreateNodeGroupRequest{
+	createResp, err := this.RPC().NodeGroupRPC().CreateNodeGroup(this.AdminContext(), &pb.CreateNodeGroupRequest{
 		ClusterId: params.ClusterId,
 		Name:      params.Name,
 	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
+	}
+
+	this.Data["group"] = maps.Map{
+		"id":   createResp.GroupId,
+		"name": params.Name,
 	}
 
 	this.Success()
