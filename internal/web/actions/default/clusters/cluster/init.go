@@ -42,7 +42,6 @@ func init() {
 			GetPost("/groups/updatePopup", new(groups.UpdatePopupAction)).
 			Post("/groups/delete", new(groups.DeleteAction)).
 			Post("/groups/sort", new(groups.SortAction)).
-			Post("/groups/options", new(groups.OptionsAction)).
 			GetPost("/groups/selectPopup", new(groups.SelectPopupAction)).
 
 			EndAll()

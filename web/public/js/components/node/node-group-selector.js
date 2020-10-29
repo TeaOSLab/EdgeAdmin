@@ -1,20 +1,8 @@
 Vue.component("node-group-selector", {
 	props: ["v-cluster-id", "v-group"],
-	mounted: function () {
-		let that = this
-		Tea.action("/clusters/cluster/groups/options")
-			.post()
-			.params({
-				clusterId: this.vClusterId
-			})
-			.success(function (resp) {
-
-			})
-	},
 	data: function () {
 		return {
-			groups: [],
-			selectedGroup: this.vGroup,
+			selectedGroup: this.vGroup
 		}
 	},
 	methods: {

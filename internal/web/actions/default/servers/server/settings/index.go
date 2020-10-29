@@ -57,6 +57,17 @@ func (this *IndexAction) RunGet(params struct {
 		clusterId = server.Cluster.Id
 	}
 
+	// 分组
+	groupMaps := []maps.Map{}
+	if len(server.Groups) > 0 {
+		for _, group := range server.Groups {
+			groupMaps = append(groupMaps, maps.Map{
+				"id":   group.Id,
+				"name": group.Name,
+			})
+		}
+	}
+
 	this.Data["server"] = maps.Map{
 		"id":          server.Id,
 		"clusterId":   clusterId,
@@ -64,6 +75,7 @@ func (this *IndexAction) RunGet(params struct {
 		"name":        server.Name,
 		"description": server.Description,
 		"isOn":        server.IsOn,
+		"groups":      groupMaps,
 	}
 
 	serverType := serverconfigs.FindServerType(server.Type)
@@ -84,6 +96,7 @@ func (this *IndexAction) RunPost(params struct {
 	Name        string
 	Description string
 	ClusterId   int64
+	GroupIds    []int64
 	IsOn        bool
 
 	Must *actions.Must
@@ -102,6 +115,7 @@ func (this *IndexAction) RunPost(params struct {
 		Description: params.Description,
 		ClusterId:   params.ClusterId,
 		IsOn:        params.IsOn,
+		GroupIds:    params.GroupIds,
 	})
 	if err != nil {
 		this.ErrorPage(err)

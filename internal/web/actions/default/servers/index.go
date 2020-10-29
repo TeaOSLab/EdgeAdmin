@@ -95,6 +95,17 @@ func (this *IndexAction) RunGet(params struct{}) {
 			}
 		}
 
+		// 分组
+		groupMaps := []maps.Map{}
+		if len(server.Groups) > 0 {
+			for _, group := range server.Groups {
+				groupMaps = append(groupMaps, maps.Map{
+					"id":   group.Id,
+					"name": group.Name,
+				})
+			}
+		}
+
 		serverMaps = append(serverMaps, maps.Map{
 			"id":   server.Id,
 			"isOn": server.IsOn,
@@ -105,6 +116,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 			},
 			"ports":          portMaps,
 			"serverTypeName": serverconfigs.FindServerType(server.Type).GetString("name"),
+			"groups":         groupMaps,
 		})
 	}
 	this.Data["servers"] = serverMaps
