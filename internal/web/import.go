@@ -20,7 +20,7 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/cache"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/group"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/groups"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/log"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/ssl"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/waf"
