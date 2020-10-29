@@ -47,6 +47,7 @@ func (this *CreateAction) RunPost(params struct {
 	Name        string
 	Description string
 	ClusterId   int64
+	GroupIds    []int64
 
 	ServerType  string
 	Addresses   string
@@ -259,6 +260,7 @@ func (this *CreateAction) RunPost(params struct {
 		ExcludeNodesJSON: excludeNodesJSON,
 		WebId:            webId,
 		ReverseProxyJSON: reverseProxyRefJSON,
+		GroupIds:         params.GroupIds,
 	}
 	if httpConfig != nil {
 		data, err := json.Marshal(httpConfig)
