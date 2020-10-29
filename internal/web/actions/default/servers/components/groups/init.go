@@ -1,4 +1,4 @@
-package group
+package groups
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/componentutils"
@@ -12,8 +12,14 @@ func init() {
 			Helper(helpers.NewUserMustAuth()).
 			Helper(NewHelper()).
 			Helper(componentutils.NewComponentHelper()).
-			Prefix("/servers/components/group").
+			Prefix("/servers/components/groups").
 			Get("", new(IndexAction)).
+			GetPost("/createPopup", new(CreatePopupAction)).
+			GetPost("/updatePopup", new(UpdatePopupAction)).
+			Post("/options", new(OptionsAction)).
+			GetPost("/selectPopup", new(SelectPopupAction)).
+			Post("/delete", new(DeleteAction)).
+			Post("/sort", new(SortAction)).
 			EndAll()
 	})
 }

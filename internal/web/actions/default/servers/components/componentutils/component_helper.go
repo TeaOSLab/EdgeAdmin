@@ -39,11 +39,11 @@ func (this *ComponentHelper) createLeftMenus(secondMenuItem string) (items []map
 		"url":      "/servers/components",
 		"isActive": secondMenuItem == "global",
 	})
-	/**items = append(items, maps.Map{
-		"name":     "分组设置",
-		"url":      "/servers/components/group",
+	items = append(items, maps.Map{
+		"name":     "服务分组",
+		"url":      "/servers/components/groups",
 		"isActive": secondMenuItem == "group",
-	})**/
+	})
 	items = append(items, maps.Map{
 		"name":     "缓存策略",
 		"url":      "/servers/components/cache",
