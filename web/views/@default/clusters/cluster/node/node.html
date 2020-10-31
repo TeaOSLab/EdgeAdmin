@@ -104,15 +104,22 @@
 				</div>
 			</td>
 		</tr>
-		<tr v-show="node.status.isActive">
-			<td>CPU</td>
-			<td>{{node.status.cpuUsageText}}</td>
-		</tr>
-		<tr v-show="node.status.isActive">
-			<td>内存</td>
-			<td>{{node.status.memUsageText}}</td>
-		</tr>
+		<tbody v-show="node.status.isActive">
+			<tr>
+				<td>CPU</td>
+				<td>{{node.status.cpuUsageText}}</td>
+			</tr>
+			<tr>
+				<td>内存</td>
+				<td>{{node.status.memUsageText}}</td>
+			</tr>
+			<tr>
+				<td>连接数</td>
+				<td>{{node.status.connectionCount}}</td>
+			</tr>
+		</tbody>
 	</table>
+	<p class="comment" v-if="node.status.isActive">每隔30秒钟更新一次运行状态。</p>
 
 	<div class="ui divider"></div>
 	<h3>安装信息</h3>

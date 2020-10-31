@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	SettingCodeGlobalConfig = "globalConfig"
+	SettingCodeServerGlobalConfig = "serverGlobalConfig"
 )
 
 type IndexAction struct {
@@ -22,7 +22,7 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct{}) {
-	valueJSONResp, err := this.RPC().SysSettingRPC().ReadSysSetting(this.AdminContext(), &pb.ReadSysSettingRequest{Code: SettingCodeGlobalConfig})
+	valueJSONResp, err := this.RPC().SysSettingRPC().ReadSysSetting(this.AdminContext(), &pb.ReadSysSettingRequest{Code: SettingCodeServerGlobalConfig})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -57,7 +57,7 @@ func (this *IndexAction) RunPost(params struct {
 
 	// 修改配置
 	_, err = this.RPC().SysSettingRPC().UpdateSysSetting(this.AdminContext(), &pb.UpdateSysSettingRequest{
-		Code:      SettingCodeGlobalConfig,
+		Code:      SettingCodeServerGlobalConfig,
 		ValueJSON: params.GlobalConfigJSON,
 	})
 	if err != nil {

@@ -13,6 +13,8 @@ func init() {
 			Helper(serverutils.NewServerHelper()).
 			Prefix("/servers/server/log").
 			GetPost("", new(IndexAction)).
+			GetPost("/today", new(TodayAction)).
+			GetPost("/history", new(HistoryAction)).
 			EndAll()
 	})
 }
