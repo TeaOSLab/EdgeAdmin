@@ -142,13 +142,14 @@ func (this *NodeAction) RunGet(params struct {
 		"isOn":        node.IsOn,
 
 		"status": maps.Map{
-			"isActive":     status.IsActive,
-			"updatedAt":    status.UpdatedAt,
-			"hostname":     status.Hostname,
-			"cpuUsage":     status.CPUUsage,
-			"cpuUsageText": fmt.Sprintf("%.2f%%", status.CPUUsage*100),
-			"memUsage":     status.MemoryUsage,
-			"memUsageText": fmt.Sprintf("%.2f%%", status.MemoryUsage*100),
+			"isActive":        status.IsActive,
+			"updatedAt":       status.UpdatedAt,
+			"hostname":        status.Hostname,
+			"cpuUsage":        status.CPUUsage,
+			"cpuUsageText":    fmt.Sprintf("%.2f%%", status.CPUUsage*100),
+			"memUsage":        status.MemoryUsage,
+			"memUsageText":    fmt.Sprintf("%.2f%%", status.MemoryUsage*100),
+			"connectionCount": status.ConnectionCount,
 		},
 
 		"group": groupMap,

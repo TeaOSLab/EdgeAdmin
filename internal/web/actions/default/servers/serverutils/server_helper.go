@@ -125,6 +125,16 @@ func (this *ServerHelper) createLogMenu(secondMenuItem string, serverIdString st
 		"url":      "/servers/server/log?serverId=" + serverIdString,
 		"isActive": secondMenuItem == "index",
 	})
+	menuItems = append(menuItems, maps.Map{
+		"name":     "今天",
+		"url":      "/servers/server/log/today?serverId=" + serverIdString,
+		"isActive": secondMenuItem == "today",
+	})
+	menuItems = append(menuItems, maps.Map{
+		"name":     "历史",
+		"url":      "/servers/server/log/history?serverId=" + serverIdString,
+		"isActive": secondMenuItem == "history",
+	})
 	return menuItems
 }
 

@@ -1,0 +1,26 @@
+{$layout}
+
+{$template "/left_menu"}
+<div class="right-box">
+	<first-menu>
+		<menu-item :href="path + '?serverId=' + serverId" :active="hasError == 0">所有日志</menu-item>
+		<menu-item :href="path + '?serverId=' + serverId + '&hasError=1'" :active="hasError > 0">错误日志</menu-item>
+	</first-menu>
+
+	<p class="comment" v-if="accessLogs.length == 0">今天暂时还没有访问日志。</p>
+
+	<table class="ui table selectable" v-if="accessLogs.length > 0">
+		<!-- 这里之所以需要添加 :key，是因为要不然不会刷新显示 -->
+		<tr v-for="accessLog in accessLogs" :key="accessLog.requestId">
+			<td><http-access-log-box :v-access-log="accessLog"></http-access-log-box></td>
+		</tr>
+	</table>
+
+	<div v-if="accessLogs.length > 0">
+		<a :href="path + '?serverId=' + serverId + '&requestId=' + lastRequestId + '&hasError=' + hasError" v-if="hasPrev">上一页</a>
+		<span v-else class="disabled">上一页</span>
+		<span class="disabled">&nbsp; | &nbsp;</span>
+		<a :href="path + '?serverId=' + serverId + '&requestId=' + nextRequestId + '&hasError=' + hasError" v-if="hasMore">下一页</a>
+		<span v-else class="disabled">下一页</span>
+	</div>
+</div>
