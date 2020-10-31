@@ -2,10 +2,10 @@
 
 {$template "menu"}
 
-<form class="ui form segment" action="/clusters/cluster">
+<form class="ui form" action="/clusters/cluster">
 	<input type="hidden" name="clusterId" :value="clusterId"/>
 	<div class="ui fields inline">
-		<div class="ui field" v-if="groups.length > 0">
+		<div class="ui field" v-if="groups.length > 0" style="padding-right: 0">
 			所属分组：
 		</div>
 		<div class="ui field" v-if="groups.length > 0">
@@ -14,7 +14,7 @@
 				<option v-for="group in groups" :value="group.id">{{group.name}}</option>
 			</select>
 		</div>
-		<div class="ui field">
+		<div class="ui field" style="padding-right: 0">
 			安装状态：
 		</div>
 		<div class="ui field">
@@ -24,7 +24,7 @@
 				<option value="2">未安装</option>
 			</select>
 		</div>
-		<div class="ui field">
+		<div class="ui field" style="padding-right: 0">
 			在线状态：
 		</div>
 		<div class="ui field">

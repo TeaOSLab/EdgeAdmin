@@ -16,8 +16,17 @@ func (this *IndexAction) Init() {
 	this.Nav("", "server", "index")
 }
 
-func (this *IndexAction) RunGet(params struct{}) {
-	countResp, err := this.RPC().ServerRPC().CountAllEnabledServers(this.AdminContext(), &pb.CountAllEnabledServersRequest{})
+func (this *IndexAction) RunGet(params struct {
+	GroupId int64
+	Keyword string
+}) {
+	this.Data["groupId"] = params.GroupId
+	this.Data["keyword"] = params.Keyword
+
+	countResp, err := this.RPC().ServerRPC().CountAllEnabledServersMatch(this.AdminContext(), &pb.CountAllEnabledServersMatchRequest{
+		GroupId: params.GroupId,
+		Keyword: params.Keyword,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -27,9 +36,11 @@ func (this *IndexAction) RunGet(params struct{}) {
 	this.Data["page"] = page.AsHTML()
 
 	// 服务列表
-	serversResp, err := this.RPC().ServerRPC().ListEnabledServers(this.AdminContext(), &pb.ListEnabledServersRequest{
-		Offset: page.Offset,
-		Size:   page.Size,
+	serversResp, err := this.RPC().ServerRPC().ListEnabledServersMatch(this.AdminContext(), &pb.ListEnabledServersMatchRequest{
+		Offset:  page.Offset,
+		Size:    page.Size,
+		GroupId: params.GroupId,
+		Keyword: params.Keyword,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -106,6 +117,16 @@ func (this *IndexAction) RunGet(params struct{}) {
 			}
 		}
 
+		// 域名列表
+		serverNames := []*serverconfigs.ServerNameConfig{}
+		if len(server.ServerNamesJON) > 0 {
+			err = json.Unmarshal(server.ServerNamesJON, &serverNames)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+		}
+
 		serverMaps = append(serverMaps, maps.Map{
 			"id":   server.Id,
 			"isOn": server.IsOn,
@@ -117,9 +138,25 @@ func (this *IndexAction) RunGet(params struct{}) {
 			"ports":          portMaps,
 			"serverTypeName": serverconfigs.FindServerType(server.Type).GetString("name"),
 			"groups":         groupMaps,
+			"serverNames":    serverNames,
 		})
 	}
 	this.Data["servers"] = serverMaps
+
+	// 分组
+	groupsResp, err := this.RPC().ServerGroupRPC().FindAllEnabledServerGroups(this.AdminContext(), &pb.FindAllEnabledServerGroupsRequest{})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	groupMaps := []maps.Map{}
+	for _, group := range groupsResp.Groups {
+		groupMaps = append(groupMaps, maps.Map{
+			"id":   group.Id,
+			"name": group.Name,
+		})
+	}
+	this.Data["groups"] = groupMaps
 
 	this.Show()
 }
