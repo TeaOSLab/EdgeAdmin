@@ -16,14 +16,14 @@
 		<menu-item :href="path + '?serverId=' + serverId + '&day=' + day" :active="hasError == 0">所有日志</menu-item>
 		<menu-item :href="path + '?serverId=' + serverId + '&day=' + day + '&hasError=1'" :active="hasError > 0">错误日志</menu-item>
 		<div class="item right">
-			<form class="ui form" :action="path" autocomplete="off">
+			<form class="ui form small" :action="path" autocomplete="off">
 				<input type="hidden" name="serverId" :value="serverId"/>
 				<div class="ui fields inline">
 					<div class="ui field">
 						<input type="text" name="day" maxlength="10" placeholder="选择日期" style="width:7.8em" id="day-input" v-model="day"/>
 					</div>
 					<div class="ui field">
-						<button class="ui button" type="submit">查找</button>
+						<button class="ui button small" type="submit">查找</button>
 					</div>
 				</div>
 			</form>
