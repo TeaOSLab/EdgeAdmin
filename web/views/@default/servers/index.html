@@ -53,7 +53,8 @@
 		<td>{{server.cluster.name}}</td>
 		<td>
 			<div v-for="serverName in server.serverNames">
-				<tiny-label>{{serverName.name}}</tiny-label>
+				<tiny-label v-if="serverName.subNames == null || serverName.subNames.length == 0">{{serverName.name}}</tiny-label>
+				<tiny-label v-else>{{serverName.subNames[0]}}等{{serverName.subNames.length}}个域名</tiny-label>
 			</div>
 		</td>
 		<td>

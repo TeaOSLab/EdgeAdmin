@@ -1,14 +1,24 @@
 {$layout "layout_popup"}
 
-<h3>添加域名绑定</h3>
+<h3 v-if="!isUpdating">添加域名绑定</h3>
+<h3 v-if="isUpdating">修改域名绑定</h3>
 <form class="ui form" data-tea-action="$" data-tea-success="success">
+	<input type="hidden" name="mode" :value="mode"/>
 	<table class="ui table selectable definition">
-		<tr>
-			<td class="title">域名</td>
+		<tr v-if="mode == 'single'">
+			<td class="title">单个域名</td>
 			<td>
-				<input type="text" name="serverName" ref="focus"/>
+				<input type="text" name="serverName" ref="focus" maxlength="1024" v-model="serverName.name"/>
+				<p class="comment">请输入单个域名。</p>
+			</td>
+		</tr>
+		<tr v-if="mode == 'multiple'">
+			<td class="title">多个域名</td>
+			<td>
+				<textarea name="serverNames" ref="serverNames" v-model="multipleServerNames"></textarea>
+				<p class="comment">每行一个域名。</p>
 			</td>
 		</tr>
 	</table>
-	<submit-btn></submit-btn>
+	<submit-btn></submit-btn> &nbsp; <a href="" v-if="mode == 'single'" @click.prevent="switchMode('multiple')">批量添加</a><a href="" v-if="mode == 'multiple'" @click.prevent="switchMode('single')">单个添加</a>
 </form>
