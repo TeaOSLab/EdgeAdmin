@@ -13,9 +13,11 @@ import (
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/rands"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
 	"net/url"
+	"sync"
 	"time"
 )
 
@@ -23,6 +25,8 @@ import (
 type RPCClient struct {
 	apiConfig *configs.APIConfig
 	conns     []*grpc.ClientConn
+
+	locker sync.Mutex
 }
 
 // 构造新的RPC客户端
@@ -31,35 +35,16 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 		return nil, errors.New("api config should not be nil")
 	}
 
-	conns := []*grpc.ClientConn{}
-	for _, endpoint := range apiConfig.RPC.Endpoints {
-		u, err := url.Parse(endpoint)
-		if err != nil {
-			return nil, errors.New("parse endpoint failed: " + err.Error())
-		}
-		var conn *grpc.ClientConn
-		if u.Scheme == "http" {
-			conn, err = grpc.Dial(u.Host, grpc.WithInsecure())
-		} else if u.Scheme == "https" {
-			conn, err = grpc.Dial(u.Host, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{
-				InsecureSkipVerify: true,
-			})))
-		} else {
-			return nil, errors.New("parse endpoint failed: invalid scheme '" + u.Scheme + "'")
-		}
-		if err != nil {
-			return nil, err
-		}
-		conns = append(conns, conn)
-	}
-	if len(conns) == 0 {
-		return nil, errors.New("[RPC]no available endpoints")
+	client := &RPCClient{
+		apiConfig: apiConfig,
 	}
 
-	return &RPCClient{
-		apiConfig: apiConfig,
-		conns:     conns,
-	}, nil
+	err := client.init()
+	if err != nil {
+		return nil, err
+	}
+
+	return client, nil
 }
 
 func (this *RPCClient) AdminRPC() pb.AdminServiceClient {
@@ -233,10 +218,66 @@ func (this *RPCClient) APIContext(apiNodeId int64) context.Context {
 	return ctx
 }
 
+// 初始化
+func (this *RPCClient) init() error {
+	// 重新连接
+	conns := []*grpc.ClientConn{}
+	for _, endpoint := range this.apiConfig.RPC.Endpoints {
+		u, err := url.Parse(endpoint)
+		if err != nil {
+			return errors.New("parse endpoint failed: " + err.Error())
+		}
+		var conn *grpc.ClientConn
+		if u.Scheme == "http" {
+			conn, err = grpc.Dial(u.Host, grpc.WithInsecure())
+		} else if u.Scheme == "https" {
+			conn, err = grpc.Dial(u.Host, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{
+				InsecureSkipVerify: true,
+			})))
+		} else {
+			return errors.New("parse endpoint failed: invalid scheme '" + u.Scheme + "'")
+		}
+		if err != nil {
+			return err
+		}
+		conns = append(conns, conn)
+	}
+	if len(conns) == 0 {
+		return errors.New("[RPC]no available endpoints")
+	}
+	this.conns = conns
+	return nil
+}
+
 // 随机选择一个连接
 func (this *RPCClient) pickConn() *grpc.ClientConn {
+	this.locker.Lock()
+	defer this.locker.Unlock()
+
+	// 检查连接状态
+	if len(this.conns) > 0 {
+		availableConns := []*grpc.ClientConn{}
+		for _, conn := range this.conns {
+			if conn.GetState() == connectivity.Ready {
+				availableConns = append(availableConns, conn)
+			}
+		}
+
+		if len(availableConns) > 0 {
+			return availableConns[rands.Int(0, len(availableConns)-1)]
+		}
+	}
+
+	// 重新初始化
+	err := this.init()
+	if err != nil {
+		// 错误提示已经在构造对象时打印过，所以这里不再重复打印
+		return nil
+	}
+
 	if len(this.conns) == 0 {
 		return nil
 	}
+
 	return this.conns[rands.Int(0, len(this.conns)-1)]
 }
