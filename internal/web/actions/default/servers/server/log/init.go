@@ -15,6 +15,7 @@ func init() {
 			GetPost("", new(IndexAction)).
 			GetPost("/today", new(TodayAction)).
 			GetPost("/history", new(HistoryAction)).
+			Get("/viewPopup", new(ViewPopupAction)).
 			EndAll()
 	})
 }

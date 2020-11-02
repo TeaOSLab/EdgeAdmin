@@ -19,7 +19,7 @@ func (this *HTTPFirewallRuleSetDAO) FindRuleSetConfig(ctx context.Context, setId
 	if err != nil {
 		return nil, err
 	}
-	resp, err := client.HTTPFirewallRuleSetRPC().FindHTTPFirewallRuleSetConfig(ctx, &pb.FindHTTPFirewallRuleSetConfigRequest{FirewallRuleSetId: setId})
+	resp, err := client.HTTPFirewallRuleSetRPC().FindEnabledHTTPFirewallRuleSetConfig(ctx, &pb.FindEnabledHTTPFirewallRuleSetConfigRequest{FirewallRuleSetId: setId})
 	if err != nil {
 		return nil, err
 	}

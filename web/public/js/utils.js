@@ -118,7 +118,12 @@ window.teaweb = {
 			padding: "0.5em",
 			showConfirmButton: false,
 			showCloseButton: true,
-			focusConfirm: false
+			focusConfirm: false,
+			onClose: function (popup) {
+				if (typeof (options["onClose"]) == "function") {
+					options["onClose"].apply(Tea.Vue, arguments)
+				}
+			}
 		});
 	},
 	popupFinish: function () {

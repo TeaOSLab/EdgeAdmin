@@ -20,7 +20,7 @@ func (this *HTTPFirewallRuleGroupDAO) FindRuleGroupConfig(ctx context.Context, g
 		return nil, err
 	}
 
-	groupResp, err := client.HTTPFirewallRuleGroupRPC().FindHTTPFirewallRuleGroupConfig(ctx, &pb.FindHTTPFirewallRuleGroupConfigRequest{FirewallRuleGroupId: groupId})
+	groupResp, err := client.HTTPFirewallRuleGroupRPC().FindEnabledHTTPFirewallRuleGroupConfig(ctx, &pb.FindEnabledHTTPFirewallRuleGroupConfigRequest{FirewallRuleGroupId: groupId})
 	if err != nil {
 		return nil, err
 	}

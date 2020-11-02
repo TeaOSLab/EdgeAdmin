@@ -1,0 +1,116 @@
+{$layout "layout_popup"}
+
+<div class="ui menu tabular tiny">
+	<a class="item" :class="{active: tab == 'summary'}" @click.prevent="switchTab('summary')">综合信息</a>
+	<a class="item" :class="{active: tab == 'response'}" @click.prevent="switchTab('response')">响应数据（Response）</a>
+	<a class="item" :class="{active: tab == 'request'}" @click.prevent="switchTab('request')">请求数据（Request）</a>
+	<a class="item" :class="{active: tab == 'cookie'}" @click.prevent="switchTab('cookie')">Cookie</a>
+	<a class="item" :class="{active: tab == 'client'}" @click.prevent="switchTab('client')">终端信息</a>
+</div>
+
+<div v-if="tab == 'summary'">
+	<table class="ui table selectable small">
+		<tr>
+			<td style="width: 50%">请求概要(Request)：{{accessLog.request}}</td>
+			<td>请求URI(RequestURI)：{{accessLog.requestURI}}</td>
+		</tr>
+		<tr>
+			<td>请求方法(RequestMethod)：{{accessLog.requestMethod}}</td>
+			<td>主机地址(Host)：{{accessLog.host}}</td>
+		</tr>
+		<tr>
+			<td>请求来源(Referer)：
+				<span v-if="accessLog.referer != null && accessLog.referer.length > 0">{{accessLog.referer}}</span>
+				<span v-else>-</span>
+			</td>
+			<td>终端地址(RemoteAddr:RemotePort)：{{accessLog.remoteAddr}}:{{accessLog.remotePort}}</td>
+		</tr>
+		<tr>
+			<td>终端信息(UserAgent)：
+				<span v-if="accessLog.userAgent != null && accessLog.userAgent.length > 0">{{accessLog.userAgent}}</span>
+				<span v-else>-</span>
+			</td>
+			<td>协议(Proto)：{{accessLog.proto}}</td>
+		</tr>
+		<tr>
+			<td>状态(StatusMessage)：<span :class="{red:accessLog.status>=400, green:accessLog.status<400}">{{accessLog.status}} {{accessLog.statusMessage}}</span></td>
+			<td>文件类型(ContentType)：
+				<span v-if="accessLog.contentType != null && accessLog.contentType.length > 0">{{accessLog.contentType}}</span>
+				<span v-else>-</span>
+			</td>
+		</tr>
+		<tr>
+			<td>发送字节(BytesSent)：{{accessLog.bytesSent}}</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>ISO8601时间：{{accessLog.timeISO8601}}</td>
+			<td>本地时间(TimeLocal)：{{accessLog.timeLocal}}</td>
+		</tr>
+		<tr v-if="wafInfo != null">
+			<td class="color-border">WAF策略：{{wafInfo.policy.name}}</td>
+			<td>WAF规则分组：
+				<span v-if="wafInfo.group != null">{{wafInfo.group.name}}</span>
+				<span v-else>-</span>
+			</td>
+		</tr>
+		<tr v-if="wafInfo != null && wafInfo.set != null">
+			<td class="color-border">WAF规则集：{{wafInfo.set.name}}</td>
+			<td></td>
+		</tr>
+		<tr v-if="accessLog.errors != null && accessLog.errors.length > 0">
+			<td colspan="2">
+				<div v-for="error in accessLog.errors">
+					<span class="red">{{error}}</span>
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div v-if="tab == 'response'">
+	<table class="ui table selectable small">
+		<tr>
+			<td class="title">Status</td>
+			<td>{{accessLog.status}} {{accessLog.statusMessage}}</td>
+		</tr>
+		<tr v-if="accessLog.sentHeader != null" v-for="(v, k) in accessLog.sentHeader">
+			<td>{{k}}</td>
+			<td>{{v.values[0]}}</td>
+		</tr>
+	</table>
+</div>
+
+<div v-if="tab == 'request'">
+	<table class="ui table selectable small">
+		<tr v-if="accessLog.header != null" v-for="(v, k) in accessLog.header">
+			<td class="title">{{k}}</td>
+			<td>{{v.values[0]}}</td>
+		</tr>
+	</table>
+</div>
+
+<div v-if="tab == 'cookie'">
+	<div v-if="accessLog.cookie == null">暂时没有Cookie数据。</div>
+	<div v-else>
+		<table class="ui table selectable small">
+			<tr v-for="(v, k) in accessLog.cookie">
+				<td class="title">{{k}}</td>
+				<td>{{v}}</td>
+			</tr>
+		</table>
+	</div>
+</div>
+
+<div v-if="tab == 'client'">
+	<table class="ui table selectable small">
+		<tr>
+			<td class="title">综合信息(UserAgent)</td>
+			<td>{{accessLog.userAgent}}</td>
+		</tr>
+		<tr>
+			<td>IP</td>
+			<td>{{accessLog.remoteAddr}}</td>
+		</tr>
+	</table>
+</div>
