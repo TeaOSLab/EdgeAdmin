@@ -2,6 +2,7 @@ package clusters
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
@@ -54,11 +55,28 @@ func (this *IndexAction) RunGet(params struct{}) {
 				return
 			}
 
+			// grant
+			var grantMap maps.Map = nil
+			if cluster.GrantId > 0 {
+				grantResp, err := this.RPC().NodeGrantRPC().FindEnabledGrant(this.AdminContext(), &pb.FindEnabledGrantRequest{GrantId: cluster.GrantId})
+				if err != nil {
+					this.ErrorPage(err)
+					return
+				}
+				if grantResp.Grant != nil {
+					grantMap = maps.Map{
+						"id":         grantResp.Grant.Id,
+						"name":       grantResp.Grant.Name,
+						"methodName": grantutils.FindGrantMethodName(grantResp.Grant.Method),
+					}
+				}
+			}
+
 			clusterMaps = append(clusterMaps, maps.Map{
 				"id":               cluster.Id,
 				"name":             cluster.Name,
 				"installDir":       cluster.InstallDir,
-				"hasGrant":         cluster.GrantId > 0,
+				"grant":            grantMap,
 				"countAllNodes":    countNodesResp.Count,
 				"countActiveNodes": countActiveNodesResp.Count,
 			})
