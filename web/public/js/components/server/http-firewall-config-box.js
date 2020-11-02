@@ -54,7 +54,7 @@ Vue.component("http-firewall-config-box", {
 							<option value="0">[请选择]</option>
 							<option v-for="policy in vFirewallPolicies" :value="policy.id">{{policy.name}}</option>
 						</select>
-						<p class="comment" v-if="selectedPolicy != null"><span v-if="!selectedPolicy.isOn" class="red">[正在停用的策略]</span>{{selectedPolicy.description}}</p>
+						<p class="comment" v-if="selectedPolicy != null"><span v-if="!selectedPolicy.isOn" class="red">[正在停用的策略]</span>{{selectedPolicy.description}} &nbsp; <a :href="'/servers/components/waf/policy?firewallPolicyId=' + selectedPolicy.id">详情&raquo;</a> </p>
 					</div>
 				</td>
 			</tr>
