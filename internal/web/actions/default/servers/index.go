@@ -6,6 +6,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/maps"
+	"strconv"
 )
 
 type IndexAction struct {
@@ -151,9 +152,19 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	groupMaps := []maps.Map{}
 	for _, group := range groupsResp.Groups {
+		countResp, err := this.RPC().ServerRPC().CountAllEnabledServersWithGroupId(this.AdminContext(), &pb.CountAllEnabledServersWithGroupIdRequest{GroupId: group.Id})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+
+		groupName := group.Name
+		if countResp.Count > 0 {
+			groupName += "(" + strconv.FormatInt(countResp.Count, 10) + ")"
+		}
 		groupMaps = append(groupMaps, maps.Map{
 			"id":   group.Id,
-			"name": group.Name,
+			"name": groupName,
 		})
 	}
 	this.Data["groups"] = groupMaps
