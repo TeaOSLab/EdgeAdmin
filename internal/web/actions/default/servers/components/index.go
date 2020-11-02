@@ -65,5 +65,12 @@ func (this *IndexAction) RunPost(params struct {
 		return
 	}
 
+	//  通知更新
+	_, err = this.RPC().ServerRPC().NotifyServersChange(this.AdminContext(), &pb.NotifyServersChangeRequest{})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
 	this.Success()
 }
