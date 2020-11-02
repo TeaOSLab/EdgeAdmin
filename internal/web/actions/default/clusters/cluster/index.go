@@ -9,6 +9,7 @@ import (
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
+	"strconv"
 	"time"
 )
 
@@ -143,10 +144,13 @@ func (this *IndexAction) RunGet(params struct {
 			return
 		}
 		countNodes := countResp.Count
-
+		groupName := group.Name
+		if countNodes > 0 {
+			groupName += "(" + strconv.FormatInt(countNodes, 10) + ")"
+		}
 		groupMaps = append(groupMaps, maps.Map{
 			"id":         group.Id,
-			"name":       group.Name,
+			"name":       groupName,
 			"countNodes": countNodes,
 		})
 	}
