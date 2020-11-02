@@ -24,8 +24,8 @@
 			<span class="disabled" v-else>-</span>
 		</td>
 		<td>
-			<span v-if="cluster.hasGrant" class="green">Y</span>
-			<span v-else class="disabled">N</span>
+			<span v-if="cluster.grant != null">{{cluster.grant.name}}<span class="small">（{{cluster.grant.methodName}}）</span></span>
+			<span v-else class="disabled">-</span>
 		</td>
 		<td>
 			<a :href="'/clusters/cluster?clusterId=' + cluster.id">详情</a>
