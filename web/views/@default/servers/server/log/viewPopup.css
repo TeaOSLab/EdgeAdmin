@@ -1,4 +1,7 @@
 table td {
   word-break: break-all;
 }
+table td.title {
+  width: 12em !important;
+}
 /*# sourceMappingURL=viewPopup.css.map */
