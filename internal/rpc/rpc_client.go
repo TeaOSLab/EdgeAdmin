@@ -172,6 +172,18 @@ func (this *RPCClient) MessageRPC() pb.MessageServiceClient {
 	return pb.NewMessageServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) IPLibraryRPC() pb.IPLibraryServiceClient {
+	return pb.NewIPLibraryServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) FileRPC() pb.FileServiceClient {
+	return pb.NewFileServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) FileChunkRPC() pb.FileChunkServiceClient {
+	return pb.NewFileChunkServiceClient(this.pickConn())
+}
+
 // 构造Admin上下文
 func (this *RPCClient) Context(adminId int64) context.Context {
 	ctx := context.Background()

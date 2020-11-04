@@ -1,0 +1,25 @@
+{$layout "layout_popup"}
+
+<h3>上传IP库</h3>
+
+<form class="ui form" data-tea-action="$" data-tea-success="success" data-tea-timeout="120" data-tea-before="before" data-tea-done="done">
+	<table class="ui table definition selectable">
+		<tr>
+			<td>IP库类型 *</td>
+			<td>
+				<select name="type" class="ui dropdown auto-width" @change="changeType()" v-model="selectedTypeCode">
+					<option v-for="type in types" :value="type.code">{{type.name}}</option>
+				</select>
+				<p class="comment">{{selectedTypeDescription}}</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="title">选择IP库文件 *</td>
+			<td>
+				<input type="file" name="file" :accept="selectedTypeExt"/>
+			</td>
+		</tr>
+	</table>
+	<submit-btn v-if="!isRequesting"></submit-btn>
+	<button class="ui button disabled" type="button" v-if="isRequesting">上传中...</button>
+</form>

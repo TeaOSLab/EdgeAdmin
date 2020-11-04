@@ -64,6 +64,11 @@ func (this *ComponentHelper) createLeftMenus(secondMenuItem string) (items []map
 		"url":      "/servers/components/ssl",
 		"isActive": secondMenuItem == "ssl",
 	})
+	items = append(items, maps.Map{
+		"name":     "IP库",
+		"url":      "/servers/components/ip-library",
+		"isActive": secondMenuItem == "ip-library",
+	})
 	/**items = append(items, maps.Map{
 		"name":     "Gzip规则",
 		"url":      "/servers/components/gzip",
