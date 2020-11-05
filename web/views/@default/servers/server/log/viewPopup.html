@@ -112,5 +112,13 @@
 			<td>IP</td>
 			<td>{{accessLog.remoteAddr}}</td>
 		</tr>
+		<tr v-if="region != null">
+			<td>区域</td>
+			<td>{{region.full}}</td>
+		</tr>
+		<tr v-if="region.isp.length > 0">
+			<td>ISP</td>
+			<td>{{region.isp}}</td>
+		</tr>
 	</table>
 </div>
