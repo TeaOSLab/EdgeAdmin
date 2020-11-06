@@ -20,7 +20,9 @@
 			<tr>
 				<td>选择封禁区域</td>
 				<td>
-					<div class="ui menu tabular tiny region-letter-group">
+					<more-options-indicator>选择区域</more-options-indicator>
+
+					<div class="ui menu tabular tiny region-letter-group" v-show="moreOptionsVisible">
 						<a href="" v-for="group in letterGroups" class="item" :class="{active: group == selectedGroup}" @click.prevent="selectGroup(group)">{{group}}</a>
 						<div class="item right">
 							<div class="ui checkbox" @click.prevent="checkAll">
@@ -29,7 +31,7 @@
 							</div>
 						</div>
 					</div>
-					<div v-for="group in letterGroups">
+					<div v-for="group in letterGroups"  v-show="moreOptionsVisible">
 						<div v-for="letter in group" v-if="letterCountries[letter] != null && group == selectedGroup" class="country-group">
 							<h4>{{letter}}</h4>
 							<div class="country-list">

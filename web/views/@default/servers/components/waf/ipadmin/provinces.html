@@ -4,4 +4,36 @@
 <div class="right-box">
 	{$template "../waf_menu"}
 	{$template "menu"}
+
+	<form class="ui form" data-tea-action="$" data-tea-success="success">
+		<input type="hidden" name="firewallPolicyId" :value="firewallPolicyId"/>
+		<table class="ui table selectable definition">
+			<tr>
+				<td class="title">已封禁</td>
+				<td>
+					<div class="ui label tiny" v-for="province in provinces" v-if="province.isChecked" style="margin-bottom: 0.5em">
+						<input type="hidden" name="provinceIds" :value="province.id"/>
+						{{province.name}} <a href="" @click.prevent="deselectProvince(province)" title="取消封禁"><i class="icon remove"></i></a>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>选择封禁区域</td>
+				<td>
+					<more-options-indicator>选择省份/自治区</more-options-indicator>
+
+					<div class="province-list" v-show="moreOptionsVisible">
+						<div class="item" v-for="province in provinces">
+							<div class="ui checkbox" @click.prevent="selectProvince(province)">
+								<input type="checkbox" v-model="province.isChecked"/>
+								<label>{{province.name}}</label>
+							</div>
+						</div>
+					</div>
+					<div class="clear"></div>
+				</td>
+			</tr>
+		</table>
+		<submit-btn></submit-btn>
+	</form>
 </div>
