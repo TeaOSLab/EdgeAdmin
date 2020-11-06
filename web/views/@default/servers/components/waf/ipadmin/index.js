@@ -3,7 +3,6 @@ Tea.context(function () {
 		"ABC", "DEF", "GHI", "JKL", "MNO", "PQR", "STU", "VWX", "YZ"
 	];
 	this.selectedGroup = "ABC"
-	this.selectedCountries = []
 	this.letterCountries = {}
 	let that = this
 	this.countries.forEach(function (country) {

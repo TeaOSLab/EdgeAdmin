@@ -1,0 +1,9 @@
+.province-list .item {
+  float: left;
+  width: 12em;
+  margin-bottom: 0.5em;
+}
+.province-list .item .checkbox label {
+  font-size: 12px !important;
+}
+/*# sourceMappingURL=provinces.css.map */
