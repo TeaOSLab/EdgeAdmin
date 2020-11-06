@@ -184,6 +184,14 @@ func (this *RPCClient) FileChunkRPC() pb.FileChunkServiceClient {
 	return pb.NewFileChunkServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) RegionCountryRPC() pb.RegionCountryServiceClient {
+	return pb.NewRegionCountryServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) RegionProvinceRPC() pb.RegionProvinceServiceClient {
+	return pb.NewRegionProvinceServiceClient(this.pickConn())
+}
+
 // 构造Admin上下文
 func (this *RPCClient) Context(adminId int64) context.Context {
 	ctx := context.Background()
