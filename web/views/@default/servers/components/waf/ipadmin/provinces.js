@@ -20,4 +20,16 @@ Tea.context(function () {
 	this.success = function () {
 		teaweb.successToast("保存成功")
 	}
+
+	/**
+	 * 添加IP名单菜单
+	 */
+	this.createIP = function (type) {
+		teaweb.popup("/servers/components/waf/ipadmin/createIPPopup?firewallPolicyId=" + this.firewallPolicyId + '&type=' + type, {
+			height: "23em",
+			callback: function () {
+				window.location = "/servers/components/waf/ipadmin/lists?firewallPolicyId=" + this.firewallPolicyId + "&type=" + type
+			}
+		})
+	}
 })
