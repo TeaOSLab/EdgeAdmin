@@ -35,7 +35,7 @@ Vue.component("time-duration-box", {
 			this.$emit("change", this.duration)
 		}
 	},
-	template: `<div class="ui fields inline">
+	template: `<div class="ui fields inline" style="padding-bottom: 0; margin-bottom: 0">
 	<input type="hidden" :name="vName" :value="JSON.stringify(duration)"/>
 	<div class="ui field">
 		<input type="text" v-model="countString" maxlength="11" size="11"/>

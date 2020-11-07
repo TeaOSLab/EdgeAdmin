@@ -176,6 +176,14 @@ func (this *RPCClient) IPLibraryRPC() pb.IPLibraryServiceClient {
 	return pb.NewIPLibraryServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) IPListRPC() pb.IPListServiceClient {
+	return pb.NewIPListServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) IPItemRPC() pb.IPItemServiceClient {
+	return pb.NewIPItemServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) FileRPC() pb.FileServiceClient {
 	return pb.NewFileServiceClient(this.pickConn())
 }

@@ -22,7 +22,7 @@
 				<td>
 					<more-options-indicator>选择省份/自治区</more-options-indicator>
 
-					<div class="province-list" v-show="moreOptionsVisible">
+					<div class="province-list" v-show="moreOptionsVisible" style="margin-top:0.5em">
 						<div class="item" v-for="province in provinces">
 							<div class="ui checkbox" @click.prevent="selectProvince(province)">
 								<input type="checkbox" v-model="province.isChecked"/>
