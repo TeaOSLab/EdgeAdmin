@@ -34,7 +34,9 @@ Tea.context(function () {
 	}
 
 	this.success = function () {
-		teaweb.successToast("保存成功")
+		teaweb.success("保存成功", function () {
+			teaweb.reload()
+		})
 	}
 
 
