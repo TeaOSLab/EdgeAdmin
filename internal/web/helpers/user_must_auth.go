@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/maps"
 	"net/http"
 	"reflect"
 )
@@ -78,26 +79,33 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	})
 
 	// 初始化变量
-	modules := []map[string]interface{}{
+	modules := []maps.Map{
 		{
-			"code":     "servers",
-			"menuName": "代理服务",
-			"icon":     "clone outsize",
+			"code": "servers",
+			"name": "代理服务",
+			"icon": "clone outsize",
+			"subItems": []maps.Map{
+				{
+					"name": "通用组件",
+					"url":  "/servers/components",
+					"code": "components",
+				},
+			},
 		},
 		{
-			"code":     "clusters",
-			"menuName": "节点集群",
-			"icon":     "cloud",
+			"code": "clusters",
+			"name": "节点集群",
+			"icon": "cloud",
 		},
 		{
-			"code":     "dns",
-			"menuName": "DNS",
-			"icon":     "globe",
+			"code": "dns",
+			"name": "DNS",
+			"icon": "globe",
 		},
 		{
-			"code":     "settings",
-			"menuName": "系统设置",
-			"icon":     "setting",
+			"code": "settings",
+			"name": "系统设置",
+			"icon": "setting",
 		},
 	}
 
@@ -121,6 +129,7 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	action.Data["teaVersion"] = teaconst.Version
 	action.Data["teaIsSuper"] = false
 	action.Data["teaDemoEnabled"] = teaconst.IsDemo
+	action.Data["teaSubMenu"] = ""
 
 	// 菜单
 	action.Data["firstMenuItem"] = ""

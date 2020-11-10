@@ -54,6 +54,9 @@
 .left-box.tiny {
   top: 10.5em;
 }
+.left-box.without-tabbar {
+  top: 3em;
+}
 .right-box {
   position: fixed;
   top: 7.5em;
@@ -70,6 +73,9 @@
 }
 .right-box::-webkit-scrollbar {
   width: 4px;
+}
+.right-box.without-tabbar {
+  top: 3em;
 }
 /** 通用 **/
 .clear {
@@ -181,6 +187,12 @@ p.margin {
 }
 .main-menu .ui.labeled.icon.menu .item {
   font-size: 0.9em;
+}
+.main-menu .ui.menu .sub-items .item {
+  padding-left: 2.8em !important;
+}
+.main-menu .ui.menu .sub-items .item.active {
+  background-color: #2185d0 !important;
 }
 /** 扩展UI **/
 .field.text {
