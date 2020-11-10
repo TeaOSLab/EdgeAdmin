@@ -96,6 +96,13 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 			"code": "clusters",
 			"name": "节点集群",
 			"icon": "cloud",
+			"subItems": []maps.Map{
+				{
+					"name": "SSH认证",
+					"url":  "/clusters/grants",
+					"code": "grant",
+				},
+			},
 		},
 		{
 			"code": "dns",
@@ -129,7 +136,9 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	action.Data["teaVersion"] = teaconst.Version
 	action.Data["teaIsSuper"] = false
 	action.Data["teaDemoEnabled"] = teaconst.IsDemo
-	action.Data["teaSubMenu"] = ""
+	if !action.Data.Has("teaSubMenu") {
+		action.Data["teaSubMenu"] = ""
+	}
 
 	// 菜单
 	action.Data["firstMenuItem"] = ""

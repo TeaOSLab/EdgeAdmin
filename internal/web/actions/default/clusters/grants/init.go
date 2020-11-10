@@ -11,6 +11,7 @@ func init() {
 		server.
 			Helper(helpers.NewUserMustAuth()).
 			Helper(clusterutils.NewClustersHelper()).
+			Data("teaSubMenu", "grant").
 			Prefix("/clusters/grants").
 
 			// 授权管理
