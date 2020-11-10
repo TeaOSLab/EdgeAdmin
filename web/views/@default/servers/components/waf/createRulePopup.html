@@ -3,7 +3,7 @@
 <h3 v-if="!isUpdating">添加规则</h3>
 <h3 v-if="isUpdating">修改规则</h3>
 
-<form class="ui form" data-tea-action="$" data-tea-success="success">
+<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 	<input type="hidden" name="ruleId" :value="rule.id"/>
 	<input type="hidden" name="optionsJSON" v-if="checkpoint != null && checkpoint.options != null" :value="JSON.stringify(checkpoint.options)"/>
 	<table class="ui table definition selectable">

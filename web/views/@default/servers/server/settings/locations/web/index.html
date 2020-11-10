@@ -6,7 +6,7 @@
 	{$template "../left_menu"}
 
 	<div class="right-box tiny">
-		<form class="ui form" data-tea-success="success" data-tea-action="$">
+		<form method="post" class="ui form" data-tea-success="success" data-tea-action="$">
 			<input type="hidden" name="webId" :value="webId"/>
 			<http-web-root-box :v-root-config="rootConfig" :v-is-location="true"></http-web-root-box>
 			<submit-btn></submit-btn>

@@ -14,7 +14,7 @@
 <div class="right-box">
 	{$template "waf_menu"}
 
-	<form class="ui form small" :action="path" autocomplete="off">
+	<form method="get" class="ui form small" :action="path" autocomplete="off">
 	<first-menu style="margin-top: -1em">
 		<div class="item">
 			<select class="ui dropdown" name="groupId" v-model="groupId">

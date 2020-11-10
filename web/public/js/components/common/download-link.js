@@ -20,7 +20,7 @@ Vue.component("download-link", {
 		composeURL: function () {
 			let e = document.getElementById(this.vElement)
 			if (e == null) {
-				teaweb.warn("<download-link>找不到要下载的内容")
+				teaweb.warn("找不到要下载的内容")
 				return
 			}
 			let text = e.innerText

@@ -10,7 +10,7 @@
 	</select>
 	<div class="ui divider"></div>
 
-	<form class="ui form" data-tea-action="$" data-tea-before="before" data-tea-success="success" data-tea-fail="fail" data-tea-done="done" data-tea-timeout="3600">
+	<form method="post" class="ui form" data-tea-action="$" data-tea-before="before" data-tea-success="success" data-tea-fail="fail" data-tea-done="done" data-tea-timeout="3600">
 		<input type="hidden" name="cachePolicyId" :value="cachePolicyId"/>
 		<input type="hidden" name="clusterId" :value="clusterId"/>
 		<table class="ui table definition selectable">

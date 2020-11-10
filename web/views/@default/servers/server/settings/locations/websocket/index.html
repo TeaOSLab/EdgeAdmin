@@ -6,7 +6,7 @@
 	{$template "../left_menu"}
 
 	<div class="right-box tiny">
-		<form class="ui form" data-tea-action="$" data-tea-success="success">
+		<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 			<input type="hidden" name="webId" :value="webId"/>
 			<http-websocket-box :v-websocket-ref="websocketRef"
 								:v-websocket-config="websocketConfig"

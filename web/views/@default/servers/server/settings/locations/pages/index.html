@@ -7,7 +7,7 @@
 	{$template "../left_menu"}
 
 	<div class="right-box tiny">
-		<form class="ui form" data-tea-action="$" data-tea-success="success">
+		<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 			<input type="hidden" name="webId" :value="webId"/>
 			<http-pages-and-shutdown-box :v-pages="pages" :v-shutdown-config="shutdownConfig" :v-is-location="true"></http-pages-and-shutdown-box>
 			<submit-btn></submit-btn>

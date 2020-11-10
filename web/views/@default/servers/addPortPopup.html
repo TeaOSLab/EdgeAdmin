@@ -2,7 +2,7 @@
 
 <h3 v-if="!isUpdating">添加端口绑定</h3>
 <h3 v-if="isUpdating">修改端口绑定</h3>
-<form class="ui form" data-tea-action="$" data-tea-success="success">
+<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 	<table class="ui table definition selectable">
 		<tr>
 			<td>网络协议</td>

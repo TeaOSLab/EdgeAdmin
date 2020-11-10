@@ -12,7 +12,7 @@
 	<div class="ui divider"></div>
 
 	<h3>测试写入</h3>
-	<form class="ui form" data-tea-action=".testWrite" data-tea-before="beforeWrite" data-tea-done="doneWrite" data-tea-success="successWrite" data-tea-fail="failWrite">
+	<form method="post" class="ui form" data-tea-action=".testWrite" data-tea-before="beforeWrite" data-tea-done="doneWrite" data-tea-success="successWrite" data-tea-fail="failWrite">
 		<input type="hidden" name="clusterId" :value="clusterId"/>
 		<input type="hidden" name="cachePolicyId" :value="cachePolicyId"/>
 		<table class="ui table selectable definition">
@@ -46,7 +46,7 @@
 	<div class="ui divider"></div>
 
 	<h3>测试读取</h3>
-	<form class="ui form" data-tea-action=".testRead" data-tea-before="beforeRead" data-tea-done="doneRead" data-tea-success="successRead" data-tea-fail="failRead">
+	<form method="post" class="ui form" data-tea-action=".testRead" data-tea-before="beforeRead" data-tea-done="doneRead" data-tea-success="successRead" data-tea-fail="failRead">
 		<input type="hidden" name="clusterId" :value="clusterId"/>
 		<input type="hidden" name="cachePolicyId" :value="cachePolicyId"/>
 		<table class="ui table selectable definition">

@@ -2,7 +2,7 @@
 
 <h3>修改IP</h3>
 
-<form class="ui form" data-tea-action="$" data-tea-success="success">
+<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 	<input type="hidden" name="firewallPolicyId" :value="firewallPolicyId"/>
 	<input type="hidden" name="itemId" :value="item.id"/>
 	<csrf-token></csrf-token>
