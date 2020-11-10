@@ -4,6 +4,7 @@
 <h3 v-if="type == 'black'">添加IP到黑名单</h3>
 
 <form class="ui form" data-tea-action="$" data-tea-success="success">
+	<input type="hidden" name="firewallPolicyId" :value="firewallPolicyId"/>
 	<input type="hidden" name="listId" :value="listId"/>
 	<csrf-token></csrf-token>
 	<table class="ui table definition selectable">

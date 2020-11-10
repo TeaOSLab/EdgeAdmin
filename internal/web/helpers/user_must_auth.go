@@ -114,6 +114,7 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	action.Data["teaTabbar"] = []map[string]interface{}{}
 	action.Data["teaVersion"] = teaconst.Version
 	action.Data["teaIsSuper"] = false
+	action.Data["teaDemoEnabled"] = teaconst.IsDemo
 
 	// 菜单
 	action.Data["firstMenuItem"] = ""

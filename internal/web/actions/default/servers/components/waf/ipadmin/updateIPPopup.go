@@ -2,6 +2,7 @@ package ipadmin
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/waf/ipadmin/ipadminutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -41,7 +42,8 @@ func (this *UpdateIPPopupAction) RunGet(params struct {
 }
 
 func (this *UpdateIPPopupAction) RunPost(params struct {
-	ItemId int64
+	FirewallPolicyId int64
+	ItemId           int64
 
 	IpFrom    string
 	IpTo      string
@@ -65,6 +67,13 @@ func (this *UpdateIPPopupAction) RunPost(params struct {
 		ExpiredAt: params.ExpiredAt,
 		Reason:    params.Reason,
 	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	// 发送通知
+	err = ipadminutils.NotifyUpdateToClustersWithFirewallPolicyId(this.AdminContext(), params.FirewallPolicyId)
 	if err != nil {
 		this.ErrorPage(err)
 		return

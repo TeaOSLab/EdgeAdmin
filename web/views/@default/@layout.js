@@ -2,7 +2,6 @@ Tea.context(function () {
 	this.moreOptionsVisible = false
 	this.globalChangedClusters = []
 	this.globalMessageBadge = 0
-	this.teaDemoEnabled = false
 
 	if (typeof this.leftMenuItemIsDisabled == "undefined") {
 		this.leftMenuItemIsDisabled = false

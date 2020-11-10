@@ -1,6 +1,6 @@
 Tea.context(function () {
 	this.updateItem = function (itemId) {
-		teaweb.popup(Tea.url(".updateIPPopup", {itemId: itemId}), {
+		teaweb.popup(Tea.url(".updateIPPopup?firewallPolicyId=" + this.firewallPolicyId, {itemId: itemId}), {
 			height: "23em",
 			callback: function () {
 				teaweb.success("保存成功", function () {
@@ -15,6 +15,7 @@ Tea.context(function () {
 		teaweb.confirm("确定要删除这个IP吗？", function () {
 			that.$post(".deleteIP")
 				.params({
+					"firewallPolicyId": this.firewallPolicyId,
 					"itemId": itemId
 				})
 				.refresh()
