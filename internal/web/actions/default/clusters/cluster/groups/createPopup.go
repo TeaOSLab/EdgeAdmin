@@ -1,6 +1,7 @@
 package groups
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -45,6 +46,9 @@ func (this *CreatePopupAction) RunPost(params struct {
 		"id":   createResp.GroupId,
 		"name": params.Name,
 	}
+
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "创建集群分组", createResp.GroupId)
 
 	this.Success()
 }

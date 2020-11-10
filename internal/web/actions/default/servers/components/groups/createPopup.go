@@ -1,6 +1,7 @@
 package groups
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -19,7 +20,7 @@ func (this *CreatePopupAction) RunGet(params struct{}) {
 	this.Show()
 }
 
-func (this *CreatePopupAction) RunPost(params struct{
+func (this *CreatePopupAction) RunPost(params struct {
 	Name string
 
 	Must *actions.Must
@@ -28,7 +29,7 @@ func (this *CreatePopupAction) RunPost(params struct{
 		Field("name", params.Name).
 		Require("请输入分组名称")
 	createResp, err := this.RPC().ServerGroupRPC().CreateServerGroup(this.AdminContext(), &pb.CreateServerGroupRequest{
-		Name:      params.Name,
+		Name: params.Name,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -39,6 +40,9 @@ func (this *CreatePopupAction) RunPost(params struct{
 		"id":   createResp.GroupId,
 		"name": params.Name,
 	}
+
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "创建代理服务分组 %d", createResp.GroupId)
 
 	this.Success()
 }

@@ -3,6 +3,7 @@ package servers
 import (
 	"encoding/json"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -310,11 +311,14 @@ func (this *CreateAction) RunPost(params struct {
 		}
 		req.UdpJSON = data
 	}
-	_, err = this.RPC().ServerRPC().CreateServer(this.AdminContext(), req)
+	createResp, err := this.RPC().ServerRPC().CreateServer(this.AdminContext(), req)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
+
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "创建代理服务 %d", createResp.ServerId)
 
 	this.Success()
 }

@@ -2,6 +2,7 @@ package node
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -231,6 +232,9 @@ func (this *UpdateAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
+
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "修改API节点 %d", params.NodeId)
 
 	this.Success()
 }

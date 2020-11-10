@@ -1,6 +1,7 @@
 package node
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -109,6 +110,9 @@ func (this *InstallAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
+
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "安装节点 %d", params.NodeId)
 
 	this.Success()
 }

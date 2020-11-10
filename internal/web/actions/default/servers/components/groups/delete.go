@@ -1,6 +1,7 @@
 package groups
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
@@ -12,6 +13,9 @@ type DeleteAction struct {
 func (this *DeleteAction) RunPost(params struct {
 	GroupId int64
 }) {
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "删除代理服务分组 %d", params.GroupId)
+
 	// 检查是否正在使用
 	countResp, err := this.RPC().ServerRPC().CountAllEnabledServersWithGroupId(this.AdminContext(), &pb.CountAllEnabledServersWithGroupIdRequest{GroupId: params.GroupId})
 	if err != nil {

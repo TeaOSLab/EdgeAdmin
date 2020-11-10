@@ -1,6 +1,7 @@
 package grants
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -69,6 +70,9 @@ func (this *CreatePopupAction) RunPost(params struct {
 		"method":     params.Method,
 		"methodName": grantutils.FindGrantMethodName(params.Method),
 	}
+
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "创建SSH认证 %d", createResp.GrantId)
 
 	this.Success()
 }

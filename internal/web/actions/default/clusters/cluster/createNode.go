@@ -2,6 +2,7 @@ package cluster
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -117,6 +118,9 @@ func (this *CreateNodeAction) RunPost(params struct {
 			}
 		}
 	}
+
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "创建节点 %d", nodeId)
 
 	this.Success()
 }

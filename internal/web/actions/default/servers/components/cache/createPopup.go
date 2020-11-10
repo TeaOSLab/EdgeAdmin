@@ -2,6 +2,7 @@ package cache
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -63,7 +64,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	_, err = this.RPC().HTTPCachePolicyRPC().CreateHTTPCachePolicy(this.AdminContext(), &pb.CreateHTTPCachePolicyRequest{
+	createResp, err := this.RPC().HTTPCachePolicyRPC().CreateHTTPCachePolicy(this.AdminContext(), &pb.CreateHTTPCachePolicyRequest{
 		IsOn:         params.IsOn,
 		Name:         params.Name,
 		Description:  params.Description,
@@ -77,6 +78,9 @@ func (this *CreatePopupAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
+
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "创建缓存策略：%d", createResp.CachePolicyId)
 
 	this.Success()
 }

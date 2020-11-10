@@ -106,8 +106,15 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 		},
 		{
 			"code": "dns",
-			"name": "DNS",
+			"name": "域名解析",
 			"icon": "globe",
+			"subItems": []maps.Map{
+				{
+					"name": "第三方DNS",
+					"url":  "/dns/providers",
+					"code": "provider",
+				},
+			},
 		},
 		{
 			"code": "settings",

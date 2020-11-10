@@ -1,6 +1,7 @@
 package db
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -60,6 +61,9 @@ func (this *UpdatePopupAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "修改数据库节点 %d", params.NodeId)
+
 	params.Must.
 		Field("name", params.Name).
 		Require("请输入节点名称").

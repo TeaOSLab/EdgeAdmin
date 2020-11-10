@@ -2,6 +2,7 @@ package components
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -45,6 +46,9 @@ func (this *IndexAction) RunPost(params struct {
 	GlobalConfigJSON []byte
 	Must             *actions.Must
 }) {
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "保存代理服务全局配置")
+
 	if len(params.GlobalConfigJSON) == 0 {
 		this.Fail("错误的配置信息，请刷新当前页面后重试")
 	}
