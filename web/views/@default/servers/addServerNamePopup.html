@@ -2,7 +2,7 @@
 
 <h3 v-if="!isUpdating">添加域名绑定</h3>
 <h3 v-if="isUpdating">修改域名绑定</h3>
-<form class="ui form" data-tea-action="$" data-tea-success="success">
+<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 	<input type="hidden" name="mode" :value="mode"/>
 	<table class="ui table selectable definition">
 		<tr v-if="mode == 'single'">

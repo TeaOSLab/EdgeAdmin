@@ -17,7 +17,7 @@
 	{$template "/menu"}
 
 	<div class="form-box">
-		<form class="ui form" data-tea-action="$" data-tea-before="submitBefore" data-tea-done="submitDone" data-tea-success="submitSuccess" autocomplete="off">
+		<form method="post" class="ui form" data-tea-action="$" data-tea-before="submitBefore" data-tea-done="submitDone" data-tea-success="submitSuccess" autocomplete="off">
 			<csrf-token></csrf-token>
 			<input type="hidden" name="password" v-model="passwordMd5"/>
 			<input type="hidden" name="token" v-model="token"/>

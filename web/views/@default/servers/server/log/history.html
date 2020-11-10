@@ -16,7 +16,7 @@
 		<menu-item :href="path + '?serverId=' + serverId + '&day=' + day" :active="hasError == 0">所有日志</menu-item>
 		<menu-item :href="path + '?serverId=' + serverId + '&day=' + day + '&hasError=1'" :active="hasError > 0">错误日志</menu-item>
 		<div class="item right">
-			<form class="ui form small" :action="path" autocomplete="off">
+			<form method="get" class="ui form small" :action="path" autocomplete="off">
 				<input type="hidden" name="serverId" :value="serverId"/>
 				<div class="ui fields inline">
 					<div class="ui field">

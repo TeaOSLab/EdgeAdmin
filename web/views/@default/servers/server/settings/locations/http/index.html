@@ -6,7 +6,7 @@
 	{$template "../left_menu"}
 
 	<div class="right-box tiny">
-		<form class="ui form" data-tea-action="$" data-tea-success="success">
+		<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 			<input type="hidden" name="webId" :value="webId"/>
 
 			<http-redirect-to-https-box :v-redirect-to-https-config="redirectToHTTPSConfig" :v-is-location="true"></http-redirect-to-https-box>

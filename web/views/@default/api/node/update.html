@@ -2,7 +2,7 @@
 
 {$template "menu"}
 
-<form class="ui form" data-tea-action="$" data-tea-success="success">
+<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 	<input type="hidden" name="nodeId" :value="node.id"/>
 	<input type="hidden" name="sslPolicyId" :value="node.sslPolicyId"/>
 	<table class="ui table selectable definition">

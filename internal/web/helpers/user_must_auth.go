@@ -24,6 +24,12 @@ func NewUserMustAuth() *UserMustAuth {
 func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramName string) (goNext bool) {
 	var action = actionPtr.Object()
 
+	// 安全相关
+	if !teaconst.EnabledFrame {
+		action.AddHeader("X-Frame-Options", "SAMEORIGIN")
+	}
+	action.AddHeader("Content-Security-Policy", "default-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'")
+
 	// 检查系统是否已经配置过
 	if !setup.IsConfigured() {
 		action.RedirectURL("/setup")

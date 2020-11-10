@@ -1,7 +1,7 @@
 {$layout "layout_popup"}
 
 <h3>修改认证</h3>
-<form class="ui form" data-tea-action="$" data-tea-success="success">
+<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 	<input type="hidden" name="grantId" :value="grant.id"/>
 	<input type="hidden" name="nodeId" :value="grant.nodeId"/>
 	<table class="ui table selectable definition">

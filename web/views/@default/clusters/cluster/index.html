@@ -2,7 +2,7 @@
 
 {$template "menu"}
 
-<form class="ui form" action="/clusters/cluster">
+<form method="post" class="ui form" action="/clusters/cluster">
 	<input type="hidden" name="clusterId" :value="clusterId"/>
 	<div class="ui fields inline">
 		<div class="ui field" v-if="groups.length > 0" style="padding-right: 0">

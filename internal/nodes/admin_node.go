@@ -13,6 +13,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 type AdminNode struct {
@@ -52,12 +53,13 @@ func (this *AdminNode) Run() {
 	// 启动API节点
 	this.startAPINode()
 
-	server := TeaGo.NewServer(false).
+	TeaGo.NewServer(false).
 		AccessLog(false).
 		EndAll().
-
-		Session(sessions.NewFileSessionManager(86400, secret))
-	server.Start()
+		Session(sessions.NewFileSessionManager(86400, secret)).
+		ReadHeaderTimeout(3 * time.Second).
+		ReadTimeout(600 * time.Second).
+		Start()
 }
 
 // 检查Server配置

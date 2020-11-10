@@ -4,7 +4,7 @@
 <div class="right-box">
 	{$template "policy_menu"}
 
-	<form class="ui form" data-tea-action="$" data-tea-success="success">
+	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 		<input type="hidden" name="cachePolicyId" :value="cachePolicy.id"/>
 		<table class="ui table definition selectable">
 			<tr>

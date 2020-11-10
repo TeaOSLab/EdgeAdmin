@@ -55,7 +55,7 @@
 	<!-- 设置API节点 -->
 	<div v-show="step == STEP_API">
 		<div class="ui message"><strong>API节点</strong>是管理系统和数据库之间通讯的桥梁，新安装时可以先使用自动启动的API节点，等系统变得庞大时再扩展新的API节点。</div>
-		<form class="ui form" data-tea-action=".validateApi" data-tea-success="apiSuccess" data-tea-before="apiSubmit" data-tea-done="apiDone">
+		<form method="post" class="ui form" data-tea-action=".validateApi" data-tea-success="apiSuccess" data-tea-before="apiSubmit" data-tea-done="apiDone">
 			<table class="ui table definition selectable">
 				<tr>
 					<td class="title">API节点类型</td>
@@ -145,7 +145,7 @@
 	<!-- 设置数据库 -->
 	<div v-show="step == STEP_DB">
 		<div v-show="apiNodeMode == 'new'">
-			<form class="ui form" data-tea-action=".validateDb" data-tea-success="dbSuccess" data-tea-before="dbSubmit" data-tea-done="dbDone">
+			<form method="post" class="ui form" data-tea-action=".validateDb" data-tea-success="dbSuccess" data-tea-before="dbSubmit" data-tea-done="dbDone">
 				<table class="ui table definition selectable">
 					<tr>
 						<td class="title">MySQL主机地址 *</td>
@@ -197,7 +197,7 @@
 
 	<!-- 设置管理员账号 -->
 	<div v-show="step == STEP_ADMIN">
-		<form class="ui form" data-tea-action=".validateAdmin" data-tea-success="adminSuccess">
+		<form method="post" class="ui form" data-tea-action=".validateAdmin" data-tea-success="adminSuccess">
 			<table class="ui table definition selectable">
 				<tr>
 					<td class="title">登录用户名 *</td>
@@ -231,7 +231,7 @@
 
 	<!-- 完成安装 -->
 	<div v-show="step == STEP_FINISH">
-		<form class="ui form" data-tea-action=".install" data-tea-success="finishSuccess" data-tea-before="finishSubmit" data-tea-done="finishDone">
+		<form method="post" class="ui form" data-tea-action=".install" data-tea-success="finishSuccess" data-tea-before="finishSubmit" data-tea-done="finishDone">
 			<input type="hidden" name="apiNodeJSON" :value="JSON.stringify(apiNodeInfo)"/>
 			<input type="hidden" name="dbJSON" :value="JSON.stringify(dbInfo)"/>
 			<input type="hidden" name="adminJSON" :value="JSON.stringify(adminInfo)"/>

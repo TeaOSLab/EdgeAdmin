@@ -3,7 +3,7 @@
 	{$template "node_menu"}
 
 	<h3>修改节点</h3>
-	<form class="ui form" data-tea-action="$" data-tea-success="success">
+	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 		<input type="hidden" name="nodeId" :value="node.id"/>
 		<input type="hidden" name="loginId" :value="loginId"/>
 		<table class="ui table definition selectable">

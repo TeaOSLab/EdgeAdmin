@@ -13,4 +13,6 @@ const (
 	EncryptMethod = "aes-256-cfb"
 
 	ErrServer = "服务器出了点小问题，请联系技术人员处理。"
+
+	EnabledFrame = false // 是否允许被嵌入到别的网站中 TODO 做成可配置
 )

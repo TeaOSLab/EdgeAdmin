@@ -13,7 +13,7 @@
 
 	<h3>清理</h3>
 	<p class=""><span class="red">严重注意：该操作将清理集群所有节点上的所有对应缓存。</span></p>
-	<form data-tea-action="$" data-tea-before="before" data-tea-success="success" data-tea-fail="fail" data-tea-done="done">
+	<form method="post" data-tea-action="$" data-tea-before="before" data-tea-success="success" data-tea-fail="fail" data-tea-done="done">
 		<input type="hidden" name="cachePolicyId" :value="cachePolicyId"/>
 		<input type="hidden" name="clusterId" :value="clusterId"/>
 		<table class="ui table definition selectable">

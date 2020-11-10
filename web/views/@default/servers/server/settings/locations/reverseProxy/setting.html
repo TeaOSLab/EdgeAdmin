@@ -8,7 +8,7 @@
 	<div class="right-box tiny">
 		{$template "menu"}
 		<div class="margin"></div>
-		<form class="ui form" data-tea-action="$" data-tea-success="success">
+		<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 			<input type="hidden" name="locationId" :value="locationId"/>
 			<input type="hidden" name="reverseProxyRefJSON" :value="JSON.stringify(reverseProxyRef)"/>
 			<reverse-proxy-box :v-reverse-proxy-ref="reverseProxyRef"
