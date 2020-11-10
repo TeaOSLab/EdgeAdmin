@@ -1,7 +1,7 @@
 {$layout}
-{$template "/left_menu"}
+{$template "/left_menu_top"}
 
-<div class="right-box">
+<div class="right-box without-tabbar">
 	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 		<input type="hidden" name="globalConfigJSON" :value="JSON.stringify(globalConfig)"/>
 		<table class="ui table selectable definition">

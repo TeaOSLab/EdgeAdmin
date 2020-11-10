@@ -1,7 +1,6 @@
 package componentutils
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 	"net/http"
@@ -19,14 +18,8 @@ func (this *ComponentHelper) BeforeAction(action *actions.ActionObject) {
 		return
 	}
 	action.Data["teaMenu"] = "servers"
+	action.Data["teaSubMenu"] = "components"
 	action.Data["mainTab"] = "component"
-
-	// 顶部标签栏
-	selectedTabbar := action.Data.GetString("mainTab")
-	tabbar := actionutils.NewTabbar()
-	tabbar.Add("服务", "", "/servers", "", selectedTabbar == "server")
-	tabbar.Add("通用", "", "/servers/components", "", selectedTabbar == "component")
-	actionutils.SetTabbar(action, tabbar)
 
 	// 创建左侧菜单
 	secondMenuItem := action.Data.GetString("secondMenuItem")

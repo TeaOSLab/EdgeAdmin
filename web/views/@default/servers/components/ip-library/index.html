@@ -1,7 +1,7 @@
 {$layout}
-{$template "/left_menu"}
+{$template "/left_menu_top"}
 
-<div class="right-box">
+<div class="right-box without-tabbar">
 	<first-menu>
 		<menu-item v-for="type in types" :href="'/servers/components/ip-library?type=' + type.code" :active="type.code == selectedType">{{type.name}}</menu-item>
 		<span class="item">|</span>
