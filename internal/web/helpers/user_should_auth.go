@@ -2,9 +2,9 @@ package helpers
 
 import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/iwind/TeaGo/actions"
 	"net/http"
-	"strconv"
 )
 
 type UserShouldAuth struct {
@@ -25,7 +25,7 @@ func (this *UserShouldAuth) BeforeAction(actionPtr actions.ActionWrapper, paramN
 }
 
 // 存储用户名到SESSION
-func (this *UserShouldAuth) StoreAdmin(adminId int, remember bool) {
+func (this *UserShouldAuth) StoreAdmin(adminId int64, remember bool) {
 	// 修改sid的时间
 	if remember {
 		cookie := &http.Cookie{
@@ -54,7 +54,7 @@ func (this *UserShouldAuth) StoreAdmin(adminId int, remember bool) {
 		}
 		this.action.AddCookie(cookie)
 	}
-	this.action.Session().Write("adminId", strconv.Itoa(adminId))
+	this.action.Session().Write("adminId", numberutils.FormatInt64(adminId))
 }
 
 func (this *UserShouldAuth) IsUser() bool {

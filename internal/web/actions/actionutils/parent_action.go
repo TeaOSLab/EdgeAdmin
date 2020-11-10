@@ -7,7 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
-	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/models"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/logs"
 	"net/http"
@@ -78,17 +78,7 @@ func (this *ParentAction) AdminId() int64 {
 }
 
 func (this *ParentAction) CreateLog(level string, description string, args ...interface{}) {
-	rpcClient, err := rpc.SharedRPC()
-	if err != nil {
-		utils.PrintError(err)
-		return
-	}
-	_, err = rpcClient.AdminRPC().CreateAdminLog(rpcClient.Context(this.AdminId()), &pb.CreateAdminLogRequest{
-		Level:       level,
-		Description: fmt.Sprintf(description, args...),
-		Action:      this.Request.URL.Path,
-		Ip:          this.RequestRemoteIP(),
-	})
+	err := models.SharedLogDAO.CreateAdminLog(this.AdminContext(), level, this.Request.URL.Path, fmt.Sprintf(description, args...), this.RequestRemoteIP())
 	if err != nil {
 		utils.PrintError(err)
 	}

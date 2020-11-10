@@ -114,6 +114,11 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 			"name": "系统设置",
 			"icon": "setting",
 		},
+		{
+			"code": "log",
+			"name": "操作日志",
+			"icon": "history",
+		},
 	}
 
 	action.Data["teaTitle"] = teaconst.ProductNameZH

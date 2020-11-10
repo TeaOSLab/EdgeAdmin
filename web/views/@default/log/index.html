@@ -1,3 +1,14 @@
 {$layout}
 
-<p class="ui message">此功能暂未开放，敬请期待。</p>
+<p class="comment" v-if="logs.length == 0">暂时还没有日志。</p>
+
+<table class="ui table selectable" v-for="log in logs">
+	<tr>
+		<td>{{log.createdTime}} <span v-if="log.userName.length > 0">@ {{log.userName}}</span> @ {{log.ip}}</td>
+	</tr>
+	<tr>
+		<td>{{log.description}}</td>
+	</tr>
+</table>
+
+<div class="page" v-html="page"></div>

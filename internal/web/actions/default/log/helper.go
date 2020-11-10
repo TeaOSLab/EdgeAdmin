@@ -1,7 +1,6 @@
 package log
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/iwind/TeaGo/actions"
 	"net/http"
 )
@@ -15,10 +14,4 @@ func (this *Helper) BeforeAction(action *actions.ActionObject) {
 	}
 
 	action.Data["teaMenu"] = "log"
-
-	selectedTabbar, _ := action.Data["mainTab"]
-
-	tabbar := actionutils.NewTabbar()
-	tabbar.Add("日志节点", "", "/log", "", selectedTabbar == "log")
-	actionutils.SetTabbar(action, tabbar)
 }
