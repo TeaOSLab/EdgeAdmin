@@ -38,7 +38,6 @@ func (this *IndexAction) RunGet(params struct{}) {
 	logMaps := []maps.Map{}
 	for _, log := range logsResp.Logs {
 		regionName := ""
-		log.Ip = "123.123.88.220" // TODO
 		regionResp, err := this.RPC().IPLibraryRPC().LookupIPRegion(this.AdminContext(), &pb.LookupIPRegionRequest{Ip: log.Ip})
 		if err != nil {
 			this.ErrorPage(err)
@@ -56,7 +55,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 				pieces = append(pieces, regionResp.Region.City)
 			}
 			if len(regionResp.Region.Isp) > 0 && !lists.ContainsString(pieces, regionResp.Region.Isp) {
-				pieces = append(pieces, regionResp.Region.Isp)
+				pieces = append(pieces, "| "+regionResp.Region.Isp)
 			}
 			regionName = strings.Join(pieces, " ")
 		}
