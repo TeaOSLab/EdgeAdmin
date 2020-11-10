@@ -4,7 +4,7 @@
 
 <table class="ui table selectable" v-for="log in logs">
 	<tr>
-		<td>{{log.createdTime}} <span v-if="log.userName.length > 0">@ {{log.userName}}</span> @ {{log.ip}}</td>
+		<td>{{log.createdTime}} <span class="grey"> <span v-if="log.userName.length > 0">| {{log.userName}}</span> | {{log.ip}}<span v-if="log.region.length > 0"> | {{log.region}}</span></span></td>
 	</tr>
 	<tr>
 		<td>{{log.description}}</td>
