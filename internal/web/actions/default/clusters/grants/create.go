@@ -1,6 +1,7 @@
 package grants
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -48,7 +49,7 @@ func (this *CreateAction) RunPost(params struct {
 		this.Fail("请选择正确的认证方式")
 	}
 
-	_, err := this.RPC().NodeGrantRPC().CreateNodeGrant(this.AdminContext(), &pb.CreateNodeGrantRequest{
+	createResp, err := this.RPC().NodeGrantRPC().CreateNodeGrant(this.AdminContext(), &pb.CreateNodeGrantRequest{
 		Name:        params.Name,
 		Method:      params.Method,
 		Username:    params.Username,
@@ -61,6 +62,9 @@ func (this *CreateAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
+
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "创建SSH认证 %d", createResp.GrantId)
 
 	this.Success()
 }

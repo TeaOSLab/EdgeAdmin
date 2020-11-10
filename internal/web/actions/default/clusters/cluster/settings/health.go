@@ -2,6 +2,7 @@ package settings
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -44,6 +45,9 @@ func (this *HealthAction) RunPost(params struct {
 	HealthCheckJSON []byte
 	Must            *actions.Must
 }) {
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "修改集群健康检查设置 %d", params.ClusterId)
+
 	config := &serverconfigs.HealthCheckConfig{}
 	err := json.Unmarshal(params.HealthCheckJSON, config)
 	if err != nil {

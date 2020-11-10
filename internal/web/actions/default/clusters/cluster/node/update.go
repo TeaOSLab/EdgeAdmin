@@ -2,6 +2,7 @@ package node
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/ipAddresses/ipaddressutils"
@@ -153,6 +154,9 @@ func (this *UpdateAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "修改节点 %d", params.NodeId)
+
 	if params.NodeId <= 0 {
 		this.Fail("要操作的节点不存在")
 	}

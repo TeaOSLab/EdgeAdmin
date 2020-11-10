@@ -1,6 +1,7 @@
 package db
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -44,7 +45,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Field("username", params.Username).
 		Require("请输入连接数据库的用户名")
 
-	_, err := this.RPC().DBNodeRPC().CreateDBNode(this.AdminContext(), &pb.CreateDBNodeRequest{
+	createResp, err := this.RPC().DBNodeRPC().CreateDBNode(this.AdminContext(), &pb.CreateDBNodeRequest{
 		IsOn:        params.IsOn,
 		Name:        params.Name,
 		Description: params.Description,
@@ -59,6 +60,9 @@ func (this *CreatePopupAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
+
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "创建数据库节点 %d", createResp.NodeId)
 
 	this.Success()
 }

@@ -1,6 +1,7 @@
 package ssl
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
@@ -12,6 +13,9 @@ type DeleteAction struct {
 func (this *DeleteAction) RunPost(params struct {
 	CertId int64
 }) {
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "删除SSL证书 %d", params.CertId)
+
 	// 是否正在被使用
 	countResp, err := this.RPC().ServerRPC().CountAllEnabledServersWithSSLCertId(this.AdminContext(), &pb.CountAllEnabledServersWithSSLCertIdRequest{CertId: params.CertId})
 	if err != nil {

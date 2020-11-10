@@ -1,6 +1,7 @@
 package iplibrary
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -93,7 +94,7 @@ func (this *UploadPopupAction) RunPost(params struct {
 	}
 
 	// 保存
-	_, err = this.RPC().IPLibraryRPC().CreateIPLibrary(this.AdminContext(), &pb.CreateIPLibraryRequest{
+	createResp, err := this.RPC().IPLibraryRPC().CreateIPLibrary(this.AdminContext(), &pb.CreateIPLibraryRequest{
 		Type:   params.Type,
 		FileId: fileId,
 	})
@@ -101,6 +102,9 @@ func (this *UploadPopupAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
+
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "上传IP库 %d", createResp.IpLibraryId)
 
 	this.Success()
 }

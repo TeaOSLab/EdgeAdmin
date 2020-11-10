@@ -1,8 +1,9 @@
 package clusters
 
 import (
-	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 )
 
@@ -29,7 +30,7 @@ func (this *CreateAction) RunPost(params struct {
 		Field("name", params.Name).
 		Require("请输入集群名称")
 
-	_, err := this.RPC().NodeClusterRPC().CreateNodeCluster(this.AdminContext(), &pb.CreateNodeClusterRequest{
+	createResp, err := this.RPC().NodeClusterRPC().CreateNodeCluster(this.AdminContext(), &pb.CreateNodeClusterRequest{
 		Name:       params.Name,
 		GrantId:    params.GrantId,
 		InstallDir: params.InstallDir,
@@ -38,6 +39,9 @@ func (this *CreateAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
+
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "创建集群：%d", createResp.ClusterId)
 
 	this.Success()
 }

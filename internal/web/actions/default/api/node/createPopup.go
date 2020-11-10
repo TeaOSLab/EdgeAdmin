@@ -2,6 +2,7 @@ package node
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -122,7 +123,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		return
 	}
 
-	_, err = this.RPC().APINodeRPC().CreateAPINode(this.AdminContext(), &pb.CreateAPINodeRequest{
+	createResp, err := this.RPC().APINodeRPC().CreateAPINode(this.AdminContext(), &pb.CreateAPINodeRequest{
 		Name:            params.Name,
 		Description:     params.Description,
 		HttpJSON:        httpJSON,
@@ -134,6 +135,9 @@ func (this *CreatePopupAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
+
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "创建API节点 %d", createResp.NodeId)
 
 	this.Success()
 }

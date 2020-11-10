@@ -1,6 +1,7 @@
 package servers
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -68,5 +69,9 @@ func (this *AddOriginPopupAction) RunPost(params struct {
 	}
 
 	this.Data["origin"] = origin
+
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "创建源站 %d", resp.OriginId)
+
 	this.Success()
 }

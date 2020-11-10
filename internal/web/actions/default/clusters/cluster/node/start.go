@@ -1,6 +1,7 @@
 package node
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
@@ -17,6 +18,10 @@ func (this *StartAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
+
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "远程启动节点 %d", params.NodeId)
+
 	if resp.IsOk {
 		this.Success()
 	}
