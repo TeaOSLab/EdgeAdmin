@@ -1,0 +1,46 @@
+{$layout "layout_popup"}
+
+<h3>添加DNS服务商账号</h3>
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+	<csrf-token></csrf-token>
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">账号说明 *</td>
+			<td>
+				<input type="text" name="name" maxlength="50" ref="focus"/>
+				<p class="comment">用来方便区分不同的账号。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>服务商厂家 *</td>
+			<td>
+				<select class="ui dropdown auto-width" name="type" v-model="type">
+					<option value="">[请选择]</option>
+					<option v-for="type in types" :value="type.code">{{type.name}}</option>
+				</select>
+				<p class="comment">创建后无法修改此选项。</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">API参数</td>
+		</tr>
+
+		<!-- DNSPod -->
+		<tbody v-if="type == 'dnspod'">
+			<tr>
+				<td>密钥ID *</td>
+				<td>
+					<input type="text" name="paramId" maxlength="100"/>
+				</td>
+			</tr>
+			<tr>
+				<td>密钥Token *</td>
+				<td>
+					<input type="text" name="paramToken" maxlength="100"/>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<submit-btn></submit-btn>
+</form>

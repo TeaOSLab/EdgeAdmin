@@ -2,6 +2,7 @@ package serverNames
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/serverutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -36,6 +37,9 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	this.Data["serverNames"] = serverNamesConfig
 
+	// DNS
+	this.Data["dnsName"] = server.DnsName
+
 	this.Show()
 }
 
@@ -44,6 +48,9 @@ func (this *IndexAction) RunPost(params struct {
 	ServerNames string
 	Must        *actions.Must
 }) {
+	// 记录日志
+	this.CreateLog(oplogs.LevelInfo, "修改代理服务 %d 域名", params.ServerId)
+
 	serverNames := []*serverconfigs.ServerNameConfig{}
 	err := json.Unmarshal([]byte(params.ServerNames), &serverNames)
 	if err != nil {
