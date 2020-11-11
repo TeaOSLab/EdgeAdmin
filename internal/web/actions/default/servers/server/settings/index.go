@@ -2,6 +2,7 @@ package settings
 
 import (
 	"errors"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -101,6 +102,9 @@ func (this *IndexAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	// 记录日志
+	this.CreateLog(oplogs.LevelInfo, "修改代理服务 %d 基本信息", params.ServerId)
+
 	params.Must.
 		Field("name", params.Name).
 		Require("请输入服务名称")

@@ -17,6 +17,9 @@ func init() {
 			Prefix("/dns/providers").
 			Data("teaSubMenu", "provider").
 			Get("", new(providers.IndexAction)).
+			GetPost("/createPopup", new(providers.CreatePopupAction)).
+			GetPost("/updatePopup", new(providers.UpdatePopupAction)).
+			Post("/delete", new(providers.DeleteAction)).
 			EndData().
 
 			EndAll()

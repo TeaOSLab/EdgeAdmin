@@ -204,6 +204,10 @@ func (this *RPCClient) LogRPC() pb.LogServiceClient {
 	return pb.NewLogServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) DNSProviderRPC() pb.DNSProviderServiceClient {
+	return pb.NewDNSProviderServiceClient(this.pickConn())
+}
+
 // 构造Admin上下文
 func (this *RPCClient) Context(adminId int64) context.Context {
 	ctx := context.Background()

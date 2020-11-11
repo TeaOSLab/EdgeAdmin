@@ -110,7 +110,7 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 			"icon": "globe",
 			"subItems": []maps.Map{
 				{
-					"name": "第三方DNS",
+					"name": "DNS服务商",
 					"url":  "/dns/providers",
 					"code": "provider",
 				},
