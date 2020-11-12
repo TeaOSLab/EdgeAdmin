@@ -40,12 +40,21 @@ func (this *IndexAction) RunGet(params struct{}) {
 			dataUpdatedTime = timeutil.FormatTime("Y-m-d H:i:s", provider.DataUpdatedAt)
 		}
 
+		// 域名
+		countDomainsResp, err := this.RPC().DNSDomainRPC().CountAllEnabledDNSDomainsWithDNSProviderId(this.AdminContext(), &pb.CountAllEnabledDNSDomainsWithDNSProviderIdRequest{DnsProviderId: provider.Id})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		countDomains := countDomainsResp.Count
+
 		providerMaps = append(providerMaps, maps.Map{
 			"id":              provider.Id,
 			"name":            provider.Name,
 			"type":            provider.Type,
 			"typeName":        provider.TypeName,
 			"dataUpdatedTime": dataUpdatedTime,
+			"countDomains":    countDomains,
 		})
 	}
 	this.Data["providers"] = providerMaps
