@@ -11,21 +11,24 @@
 		<tr>
 			<th>账号说明</th>
 			<th>服务商</th>
-			<th>可用线路</th>
-			<th>最近更新时间</th>
+			<th>域名</th>
+			<th>数据更新时间</th>
 			<th class="two op">操作</th>
 		</tr>
 	</thead>
-	<tr v-for="provider in providers">
+	<tr v-for="(provider, index) in providers">
 		<td>{{provider.name}}</td>
 		<td>{{provider.typeName}}</td>
-		<td></td>
+		<td>
+			<span v-if="provider.countDomains == 0" class="disabled">0个域名</span>
+			<span v-else>{{provider.countDomains}}个域名</span>
+		</td>
 		<td>
 			<span v-if="provider.dataUpdatedTime.length > 0">{{provider.dataUpdatedTime}}</span>
 			<span v-else class="disabled">-</span>
 		</td>
 		<td>
-			<a href="" @click.prevent="updateProvider(provider.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteProvider(provider.id)">删除</a>
+			<a :href="'/dns/providers/provider?providerId=' + provider.id">详情</a> &nbsp; &nbsp; <a href="" @click.prevent="deleteProvider(provider.id)">删除</a>
 		</td>
 	</tr>
 </table>

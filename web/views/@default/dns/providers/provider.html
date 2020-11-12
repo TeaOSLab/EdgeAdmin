@@ -1,0 +1,59 @@
+{$layout}
+
+<first-menu>
+	<a href="/dns/providers" class="item">DNS账号列表</a>
+	<span class="item">|</span>
+	<a :href="'/dns/providers/provider?providerId=' + provider.id" class="item active">{{provider.name}}</a>
+</first-menu>
+
+
+<h3>账号信息 <a href="" @click.prevent="updateProvider(provider.id)">[修改]</a> </h3>
+
+<table class="ui table selectable definition">
+	<tr>
+		<td class="title">账号说明</td>
+		<td>{{provider.name}}</td>
+	</tr>
+	<tr>
+		<td>服务商</td>
+		<td>{{provider.typeName}}</td>
+	</tr>
+	<!-- DNSPod -->
+	<tbody v-if="provider.type == 'dnspod'">
+		<tr>
+			<td>密钥ID</td>
+			<td>{{provider.apiParams.id}}</td>
+		</tr>
+		<tr>
+			<td>密钥Token</td>
+			<td>{{provider.apiParams.token}}</td>
+		</tr>
+	</tbody>
+</table>
+
+
+<h3>管理的域名 <a href="" @click.prevent="createDomain()">[添加域名]</a> </h3>
+<p class="comment" v-if="domains.length == 0">暂时还没有可以管理的域名。</p>
+
+<table class="ui table selectable" v-if="domains.length > 0">
+	<thead>
+		<tr>
+			<th>域名</th>
+			<th>数据更新时间</th>
+			<th>状态</th>
+			<th class="two op">操作</th>
+		</tr>
+	</thead>
+	<tr v-for="domain in domains">
+		<td>{{domain.name}}</td>
+		<td>
+			<span v-if="domain.dataUpdatedTime.length > 0">{{domain.dataUpdatedTime}}</span>
+			<span v-else class="disabled">尚未更新</span>
+		</td>
+		<td><label-on :v-is-on="domain.isOn"></label-on></td>
+		<td>
+			<a href="">修改</a> &nbsp;
+			<a href="" @click.prevent="deleteDomain(domain)">删除</a>
+		</td>
+	</tr>
+</table>

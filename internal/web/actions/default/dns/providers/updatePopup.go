@@ -38,7 +38,6 @@ func (this *UpdatePopupAction) RunGet(params struct {
 			this.ErrorPage(err)
 			return
 		}
-
 	}
 
 	this.Data["provider"] = maps.Map{
@@ -107,7 +106,6 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		DnsProviderId: params.ProviderId,
 		Name:          params.Name,
 		ApiParamsJSON: apiParams.AsJSON(),
-		RoutesJSON:    nil,
 	})
 	if err != nil {
 		this.ErrorPage(err)

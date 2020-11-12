@@ -71,7 +71,6 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Name:          params.Name,
 		Type:          params.Type,
 		ApiParamsJSON: apiParams.AsJSON(),
-		RoutesJSON:    nil,
 	})
 	if err != nil {
 		this.ErrorPage(err)

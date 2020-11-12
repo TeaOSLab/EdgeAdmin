@@ -1,0 +1,19 @@
+{$layout "layout_popup"}
+
+<h3>添加管理域名</h3>
+
+<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+	<input type="hidden" name="providerId" :value="providerId"/>
+	<csrf-token></csrf-token>
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">域名 *</td>
+			<td>
+				<input type="text" name="name" maxlength="64" ref="focus"/>
+				<p class="comment">在DNS服务商中可以管理的域名。</p>
+			</td>
+		</tr>
+	</table>
+
+	<submit-btn></submit-btn>
+</form>
