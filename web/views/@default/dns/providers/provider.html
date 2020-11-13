@@ -39,21 +39,46 @@
 	<thead>
 		<tr>
 			<th>域名</th>
+			<th>线路</th>
+			<th>集群域名</th>
+			<th>服务域名</th>
 			<th>数据更新时间</th>
 			<th>状态</th>
-			<th class="two op">操作</th>
+			<th class="three op">操作</th>
 		</tr>
 	</thead>
-	<tr v-for="domain in domains">
+	<tr v-for="(domain, index) in domains">
 		<td>{{domain.name}}</td>
+		<td>
+			<a href="" v-if="domain.countRoutes > 0" @click.prevent="showRoutes(domain.id)">{{domain.countRoutes}}个</a>
+			<span v-else class="disabled">0个</span>
+		</td>
+		<td>
+			<a href="" v-if="domain.countClusterRecords > 0">{{domain.countClusterRecords}}个</a>
+			<span v-else class="disabled">0个</span>
+		</td>
+		<td>
+			<a href="" v-if="domain.countServerRecords > 0">{{domain.countServerRecords}}个</a>
+			<span v-else class="disabled">0个</span>
+		</td>
 		<td>
 			<span v-if="domain.dataUpdatedTime.length > 0">{{domain.dataUpdatedTime}}</span>
 			<span v-else class="disabled">尚未更新</span>
 		</td>
-		<td><label-on :v-is-on="domain.isOn"></label-on></td>
 		<td>
-			<a href="">修改</a> &nbsp;
-			<a href="" @click.prevent="deleteDomain(domain)">删除</a>
+			<div v-if="domain.countRoutes == 0 || !domain.allClustersResolved || !domain.allServersResolved">
+				<a href=""  style="border-bottom: 1px #db2828 dashed" title="点击和DNS服务商系统同步" @click.prevent="syncDomain(index,domain)" v-if="!domain.isSyncing"><span class="red">需要同步</span></a>
+				<span v-else>正在同步...</span>
+			</div>
+			<div v-else>
+				<label-on :v-is-on="domain.isOn"></label-on>
+			</div>
+		</td>
+		<td>
+			<a href="" @click.prevent="syncDomain(index, domain)" v-if="!domain.isSyncing">同步</a>
+			<span v-else>正在同步...</span>&nbsp;
+			<a href="" @click.prevent="updateDomain(domain.id)" v-if="!domain.isSyncing">修改</a> &nbsp;
+			<a href="" @click.prevent="deleteDomain(domain)" v-if="!domain.isSyncing">删除</a>
 		</td>
 	</tr>
 </table>

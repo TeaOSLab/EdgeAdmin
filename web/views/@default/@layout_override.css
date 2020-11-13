@@ -9,4 +9,7 @@
 .ui.label.basic {
   background-color: white !important;
 }
+form .fields {
+  margin-bottom: 0 !important;
+}
 /*# sourceMappingURL=@layout_override.css.map */

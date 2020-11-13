@@ -110,6 +110,11 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 			"icon": "globe",
 			"subItems": []maps.Map{
 				{
+					"name": "问题修复",
+					"url":  "/dns/issues",
+					"code": "issue",
+				},
+				{
 					"name": "DNS服务商",
 					"url":  "/dns/providers",
 					"code": "provider",
