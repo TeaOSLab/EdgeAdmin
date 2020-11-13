@@ -684,9 +684,6 @@ var.dash {
 .swal2-cancel {
   margin-left: 2em !important;
 }
-form .fields {
-  margin-bottom: 0 !important;
-}
 /** 排序 **/
 .sortable-ghost {
   background: #ddd !important;

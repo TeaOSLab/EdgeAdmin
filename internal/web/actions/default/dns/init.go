@@ -2,6 +2,7 @@ package dns
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/issues"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/providers"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/iwind/TeaGo"
@@ -14,6 +15,9 @@ func init() {
 			Helper(new(Helper)).
 			Prefix("/dns").
 			Get("", new(IndexAction)).
+			GetPost("/updateClusterPopup", new(UpdateClusterPopupAction)).
+			Post("/providerOptions", new(ProviderOptionsAction)).
+			Post("/domainOptions", new(DomainOptionsAction)).
 
 			// 服务商
 			Prefix("/dns/providers").
@@ -31,6 +35,14 @@ func init() {
 			GetPost("/createPopup", new(domains.CreatePopupAction)).
 			GetPost("/updatePopup", new(domains.UpdatePopupAction)).
 			Post("/delete", new(domains.DeleteAction)).
+			Post("/sync", new(domains.SyncAction)).
+			Get("/routesPopup", new(domains.RoutesPopupAction)).
+			EndData().
+
+			// 问题修复
+			Prefix("/dns/issues").
+			Data("teaSubMenu", "issue").
+			Get("", new(issues.IndexAction)).
 			EndData().
 
 			EndAll()

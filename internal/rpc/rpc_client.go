@@ -306,6 +306,11 @@ func (this *RPCClient) pickConn() *grpc.ClientConn {
 		if len(availableConns) > 0 {
 			return availableConns[rands.Int(0, len(availableConns)-1)]
 		}
+
+		// 关闭
+		for _, conn := range this.conns {
+			_ = conn.Close()
+		}
 	}
 
 	// 重新初始化

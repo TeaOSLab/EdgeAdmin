@@ -1,0 +1,17 @@
+{$layout "layout_popup"}
+
+<h3>域名支持的线路</h3>
+
+<table class="ui table definition selectable">
+	<tr>
+		<td class="title">线路</td>
+		<td>
+			<p class="comment" v-if="routes.length == 0">暂时还没有支持的线路。</p>
+			<div v-if="routes.length > 0">
+				<div class="ui label tiny" v-for="route in routes" style="margin-bottom: 0.5em">{{route}}</div>
+			</div>
+		</td>
+	</tr>
+</table>
+
+<button class="ui button primary" @click.prevent="close" type="button">确定</button>
