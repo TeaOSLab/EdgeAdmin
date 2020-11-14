@@ -7,7 +7,7 @@
 	<thead>
 		<tr>
 			<th>集群</th>
-			<th>域名解析</th>
+			<th>子域名</th>
 			<th>DNS服务商</th>
 			<th>DNS服务商账号</th>
 			<th class="two op">操作</th>
@@ -30,7 +30,7 @@
 			<span v-else="" class="disabled">-</span>
 		</td>
 		<td>
-			<a href="" @click.prevent="updateCluster(cluster.id)">修改</a>
+			<a :href="'/dns/clusters/cluster?clusterId=' + cluster.id">详情</a> &nbsp; <a href="" @click.prevent="updateCluster(cluster.id)">修改</a>
 		</td>
 	</tr>
 </table>

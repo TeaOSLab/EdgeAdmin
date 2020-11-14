@@ -1,0 +1,70 @@
+{$layout}
+
+<first-menu>
+	<menu-item :href="'/dns'">所有集群</menu-item>
+	<span class="item">|</span>
+	<menu-item :href="'/dns/clusters/cluster?clusterId=' + cluster.id" active="true">{{cluster.name}}</menu-item>
+</first-menu>
+
+<table class="ui table definition selectable">
+	<tr>
+		<td class="title">集群</td>
+		<td>{{cluster.name}}</td>
+	</tr>
+	<tr>
+		<td>子域名</td>
+		<td>
+			<span v-if="dnsInfo.domainName.length > 0"><var>{{dnsInfo.dnsName}}</var>.{{dnsInfo.domainName}}</span>
+			<span v-else class="disabled">没有设置</span>
+
+			&nbsp; <a href="" @click.prevent="updateClusterDNS(cluster.id)">[修改]</a>
+		</td>
+	</tr>
+	<tr>
+		<td>DNS服务商</td>
+		<td>
+			<div v-if="dnsInfo.providerName.length > 0">
+				<a :href="'/dns/providers/provider?providerId=' + dnsInfo.providerId">{{dnsInfo.providerTypeName}} - {{dnsInfo.providerName}}</a>
+			</div>
+			<span v-else-if="dnsInfo.domainName.length == 0" class="disabled">请先设置域名</span>
+			<span v-else class="disabled">没有设置</span>
+		</td>
+	</tr>
+</table>
+
+<p class="comment">下面的DNS解析记录可以手工在DNS服务商提供的管理平台添加。</p>
+
+<h3>节点DNS解析记录</h3>
+<p class="comment" v-if="nodes.length == 0">暂时没有需要设置的DNS记录。</p>
+<table class="ui table selectable" v-if="nodes.length > 0">
+	<thead>
+		<tr>
+			<th>节点</th>
+			<th>记录类型</th>
+			<th>记录值</th>
+			<th>线路</th>
+			<th class="two op">操作</th>
+		</tr>
+	</thead>
+	<tr v-for="node in nodes">
+		<td><a :href="'/clusters/cluster/node?nodeId=' + node.id">{{node.name}}</a></td>
+		<td>A</td>
+		<td>
+			<span v-if="node.ipAddr.length > 0">{{node.ipAddr}}</span>
+			<a href="" v-else style="border-bottom: 1px #db2828 dashed" @click.prevent="updateNode(node.id)"><span class="red">没有设置</span></a>
+		</td>
+		<td>
+			<span v-if="node.route.length > 0">{{node.route}}</span>
+			<a href="" v-else style="border-bottom: 1px #db2828 dashed" @click.prevent="updateNode(node.id)"><span class="red">没有设置</span></a>
+		</td>
+		<td>
+			<a href="" @click.prevent="updateNode(node.id)">修改</a>
+		</td>
+	</tr>
+</table>
+
+<h3>代理服务解析记录</h3>
+<p class="comment" v-if="servers.length == 0">暂时没有需要设置的DNS记录。</p>
+<table class="ui table selectable" v-if="servers.length > 0">
+
+</table>

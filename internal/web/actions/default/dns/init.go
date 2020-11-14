@@ -1,6 +1,7 @@
 package dns
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/clusters"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/issues"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/providers"
@@ -18,6 +19,10 @@ func init() {
 			GetPost("/updateClusterPopup", new(UpdateClusterPopupAction)).
 			Post("/providerOptions", new(ProviderOptionsAction)).
 			Post("/domainOptions", new(DomainOptionsAction)).
+
+			// 集群
+			Prefix("/dns/clusters").
+			Get("/cluster", new(clusters.ClusterAction)).
 
 			// 服务商
 			Prefix("/dns/providers").
@@ -43,6 +48,8 @@ func init() {
 			Prefix("/dns/issues").
 			Data("teaSubMenu", "issue").
 			Get("", new(issues.IndexAction)).
+			GetPost("/updateNodePopup", new(issues.UpdateNodePopupAction)).
+			GetPost("/updateServerPopup", new(issues.UpdateServerPopupAction)).
 			EndData().
 
 			EndAll()
