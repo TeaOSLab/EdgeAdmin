@@ -35,6 +35,17 @@ Vue.component("link-popup", {
 	template: `<a href="" :title="title" @click.prevent="clickPrevent"><slot></slot></a>`
 })
 
+// 小提示
+Vue.component("tip-icon", {
+	props: ["content"],
+	methods: {
+		showTip: function () {
+			teaweb.popupTip(this.content)
+		}
+	},
+	template: `<a href="" title="查看帮助" @click.prevent="showTip"><i class="icon question circle"></i></a>`
+})
+
 // 提交点击事件
 function emitClick(obj, arguments) {
 	let event = "click"

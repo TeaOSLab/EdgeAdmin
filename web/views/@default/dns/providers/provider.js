@@ -43,29 +43,33 @@ Tea.context(function () {
 	}
 
 	this.syncDomain = function (index, domain) {
-		domain.isSyncing = true
-		Vue.set(this.domains, index, domain)
+		let that = this
+		teaweb.confirm("确定要同步此域名下的所有解析记录吗？", function () {
+			domain.isSyncing = true
+			Vue.set(that.domains, index, domain)
 
-		this.$post("/dns/domains/sync")
-			.params({
-				domainId: domain.id
-			})
-			.success(function () {
-				teaweb.success("同步成功", function () {
-					teaweb.reload()
+			this.$post("/dns/domains/sync")
+				.params({
+					domainId: domain.id
 				})
-			})
-			.fail(function (resp) {
-				teaweb.warn(resp.message, function () {
-					if (resp.data.shouldFix) {
-						window.location = "/dns/issues"
-					}
+				.success(function () {
+					teaweb.success("同步成功", function () {
+						teaweb.reload()
+					})
 				})
-			})
-			.done(function () {
-				domain.isSyncing = false
-				Vue.set(this.domains, index, domain)
-			})
+				.fail(function (resp) {
+					teaweb.warn(resp.message, function () {
+						if (resp.data.shouldFix) {
+							window.location = "/dns/issues"
+						}
+					})
+				})
+				.done(function () {
+					domain.isSyncing = false
+					that.dnsHasChanges = false
+					Vue.set(that.domains, index, domain)
+				})
+		})
 	}
 
 	this.showRoutes = function (domainId) {

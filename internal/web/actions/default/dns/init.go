@@ -23,6 +23,7 @@ func init() {
 			// 集群
 			Prefix("/dns/clusters").
 			Get("/cluster", new(clusters.ClusterAction)).
+			Post("/sync", new(clusters.SyncAction)).
 
 			// 服务商
 			Prefix("/dns/providers").
@@ -47,9 +48,8 @@ func init() {
 			// 问题修复
 			Prefix("/dns/issues").
 			Data("teaSubMenu", "issue").
-			Get("", new(issues.IndexAction)).
+			GetPost("", new(issues.IndexAction)).
 			GetPost("/updateNodePopup", new(issues.UpdateNodePopupAction)).
-			GetPost("/updateServerPopup", new(issues.UpdateServerPopupAction)).
 			EndData().
 
 			EndAll()

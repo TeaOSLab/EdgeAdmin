@@ -1,40 +1,41 @@
 Tea.context(function () {
+	this.isRequesting = true
+
+	this.$delay(function () {
+		this.reload()
+	})
+
 	this.updateCluster = function (clusterId) {
+		let that = this
 		teaweb.popup("/dns/updateClusterPopup?clusterId=" + clusterId, {
 			height: "22em",
 			callback: function () {
 				teaweb.success("保存成功", function () {
-					teaweb.reload()
+					that.reload()
 				})
 			}
 		})
 	}
 
 	this.updateNode = function (nodeId) {
+		let that = this
 		teaweb.popup("/dns/issues/updateNodePopup?nodeId=" + nodeId, {
 			callback: function () {
 				teaweb.success("保存成功", function () {
-					teaweb.reload()
+					that.reload()
 				})
 			}
 		})
 	}
 
-	this.isSyncing = false
-	this.syncCluster = function (clusterId) {
-		let that = this
-		teaweb.confirm("确定要执行数据同步吗？", function () {
-			that.isSyncing = true
-			that.$post(".sync")
-				.params({clusterId: clusterId})
-				.done(function () {
-					that.isSyncing = false
-				})
-				.success(function () {
-					teaweb.success("同步成功", function () {
-						teaweb.reload()
-					})
-				})
-		})
+	this.reload = function () {
+		this.isRequesting = true
+		this.$post("$")
+			.success(function (resp) {
+				this.issues = resp.data.issues;
+			})
+			.done(function () {
+				this.isRequesting = false
+			})
 	}
 })

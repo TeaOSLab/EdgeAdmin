@@ -60,15 +60,15 @@ func (this *ProviderAction) RunGet(params struct {
 			dataUpdatedTime = timeutil.FormatTime("Y-m-d H:i:s", domain.DataUpdatedAt)
 		}
 		domainMaps = append(domainMaps, maps.Map{
-			"id":                  domain.Id,
-			"name":                domain.Name,
-			"isOn":                domain.IsOn,
-			"dataUpdatedTime":     dataUpdatedTime,
-			"countRoutes":         len(domain.Routes),
-			"countServerRecords":  domain.ServerRecords,
-			"allServersResolved":  domain.AllServersResolved,
-			"countClusterRecords": domain.ClusterRecords,
-			"allClustersResolved": domain.AllClustersResolved,
+			"id":                 domain.Id,
+			"name":               domain.Name,
+			"isOn":               domain.IsOn,
+			"dataUpdatedTime":    dataUpdatedTime,
+			"countRoutes":        len(domain.Routes),
+			"countServerRecords": domain.CountServerRecords,
+			"serversChanged":     domain.ServersChanged,
+			"countNodeRecords":   domain.CountNodeRecords,
+			"nodesChanged":       domain.NodesChanged,
 		})
 	}
 	this.Data["domains"] = domainMaps
