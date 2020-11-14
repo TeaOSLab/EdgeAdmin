@@ -1,6 +1,7 @@
 package dns
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains/domainutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -69,6 +70,9 @@ func (this *UpdateClusterPopupAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
+	// 日志
+	this.CreateLog(oplogs.LevelInfo, "修改集群 %d DNS设置", params.ClusterId)
+
 	params.Must.
 		Field("dnsName", params.DnsName).
 		Require("请输入子域名")
