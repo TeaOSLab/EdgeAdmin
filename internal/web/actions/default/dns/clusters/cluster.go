@@ -77,9 +77,20 @@ func (this *ClusterAction) RunGet(params struct {
 	this.Data["nodes"] = nodeMaps
 
 	// 代理服务解析记录
-	// TODO
-
-	this.Data["servers"] = []interface{}{}
+	serversResp, err := this.RPC().ServerRPC().FindAllEnabledServersDNSWithClusterId(this.AdminContext(), &pb.FindAllEnabledServersDNSWithClusterIdRequest{ClusterId: params.ClusterId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	serverMaps := []maps.Map{}
+	for _, server := range serversResp.Servers {
+		serverMaps = append(serverMaps, maps.Map{
+			"id":      server.Id,
+			"name":    server.Name,
+			"dnsName": server.DnsName,
+		})
+	}
+	this.Data["servers"] = serverMaps
 
 	this.Show()
 }
