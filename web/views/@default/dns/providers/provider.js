@@ -66,7 +66,6 @@ Tea.context(function () {
 				})
 				.done(function () {
 					domain.isSyncing = false
-					that.dnsHasChanges = false
 					Vue.set(that.domains, index, domain)
 				})
 		})

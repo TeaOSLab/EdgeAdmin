@@ -29,6 +29,7 @@ Tea.context(function () {
 				.params({clusterId: clusterId})
 				.done(function () {
 					that.isSyncing = false
+					that.dnsHasChanges = false
 				})
 				.success(function () {
 					teaweb.success("同步成功", function () {
