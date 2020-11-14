@@ -131,6 +131,16 @@ window.teaweb = {
 			window.POPUP_CALLBACK.apply(window, arguments);
 		}
 	},
+	popupTip: function (html) {
+		Swal.fire({
+			html: '<i class="icon question circle"></i><span style="line-height: 1.7">' + html + "</span>",
+			width: "30em",
+			padding: "5em",
+			showConfirmButton: false,
+			showCloseButton: true,
+			focusConfirm: false
+		});
+	},
 	isPopup: function () {
 		var hash = window.location.hash;
 		return hash != null && hash.startsWith("#popup");

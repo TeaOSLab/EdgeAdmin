@@ -17,7 +17,7 @@
 			<span v-if="dnsInfo.domainName.length > 0"><var>{{dnsInfo.dnsName}}</var>.{{dnsInfo.domainName}}</span>
 			<span v-else class="disabled">没有设置</span>
 
-			&nbsp; <a href="" @click.prevent="updateClusterDNS(cluster.id)">[修改]</a>
+			&nbsp; <a href="" @click.prevent="updateCluster(cluster.id)">[修改]</a>
 		</td>
 	</tr>
 	<tr>
@@ -28,6 +28,16 @@
 			</div>
 			<span v-else-if="dnsInfo.domainName.length == 0" class="disabled">请先设置域名</span>
 			<span v-else class="disabled">没有设置</span>
+		</td>
+	</tr>
+	<tr v-if="dnsInfo.domainName.length > 0">
+		<td>操作</td>
+		<td>
+			<div v-if="!isSyncing">
+				<link-red v-if="dnsHasChanges" @click.prevent="syncCluster(cluster.id)">检测到解析记录有变化，需要同步</link-red>
+				<a href="" @click.prevent="syncCluster(cluster.id)" v-else>DNS服务商同步</a>
+			</div>
+			<span v-else>DNS服务商同步中...</span>
 		</td>
 	</tr>
 </table>
@@ -48,10 +58,10 @@
 		</tr>
 	</thead>
 	<tr v-for="node in nodes">
-		<td><link-icon :href="'/clusters/cluster/node?nodeId=' + node.id">{{node.name}}</link-icon></td>
+		<td><link-icon :href="'/clusters/cluster/node?clusterId=' + node.clusterId + '&nodeId=' + node.id">{{node.name}}</link-icon></td>
 		<td>
 			<span v-if="dnsInfo.dnsName.length > 0">{{dnsInfo.dnsName}}</span>
-			<link-red v-else @click.prevent="updateClusterDNS(cluster.id)">没有设置</link-red>
+			<link-red v-else @click.prevent="updateCluster(cluster.id)">没有设置</link-red>
 		</td>
 		<td>A</td>
 		<td>
@@ -85,7 +95,7 @@
 		<td>CNAME</td>
 		<td>
 			<span v-if="dnsInfo.domainName.length > 0"><var>{{dnsInfo.dnsName}}</var>.{{dnsInfo.domainName}}.</span>
-			<link-red title="点击设置"  v-else @click.prevent="updateClusterDNS(cluster.id)">没有设置</link-red>
+			<link-red title="点击设置"  v-else @click.prevent="updateCluster(cluster.id)">没有设置</link-red>
 		</td>
 	</tr>
 </table>

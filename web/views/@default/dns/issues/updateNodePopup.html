@@ -8,6 +8,12 @@
 	<csrf-token></csrf-token>
 
 	<table class="ui table definition selectable">
+		<tr v-if="domainName.length > 0">
+			<td>主域名</td>
+			<td>{{domainName}}
+				<p class="comment">由当前节点所属集群设置。</p>
+			</td>
+		</tr>
 		<tr>
 			<td class="title">IP地址 *</td>
 			<td>

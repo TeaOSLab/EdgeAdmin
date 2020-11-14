@@ -1,3 +1,50 @@
 {$layout}
 
-<p class="ui message">此功能暂未开放，敬请期待。</p>
+<first-menu>
+	<span class="item" v-if="issues.length > 0">共<span class="red">{{issues.length}}</span>个问题</span>
+	<span class="item" v-if="issues.length > 0">|</span>
+	<a href="/dns/issues" title="刷新" class="item" @click.prevent="reload">刷新</a>
+	<span class="item">|</span>
+	<span class="item"><tip-icon content="这里是一个全局的DNS解析问题发现页，方便我们诊断并修复问题。"></tip-icon></span>
+</first-menu>
+
+<div v-if="isRequesting">
+	<div class="margin"></div>
+	正在检查系统问题，请耐心等待...
+</div>
+
+<div v-if="issues.length == 0 && !isRequesting">
+	<div class="margin"></div>
+	<p class="comment">暂时没有发现问题。</p>
+</div>
+
+<table class="ui table selectable" v-if="issues.length > 0">
+	<thead>
+		<tr>
+			<th style="width: 50%">问题对象</th>
+			<th>问题描述</th>
+			<th class="two op">操作</th>
+		</tr>
+	</thead>
+	<tr v-for="issue in issues">
+		<td>
+			<div v-if="issue.type == 'cluster'">
+				集群 "{{issue.target}}" <link-icon :href="'/clusters/cluster?clusterId=' + issue.targetId"></link-icon>
+			</div>
+			<div v-if="issue.type == 'node'">
+				集群 "{{issue.params.clusterName}}" 节点 "{{issue.target}}" <link-icon :href="'/clusters/cluster/node?clusterId=' + issue.params.clusterId + '&nodeId=' + issue.targetId"></link-icon>
+			</div>
+		</td>
+		<td>
+			<span>{{issue.description}}</span>
+		</td>
+		<td>
+			<div v-if="issue.type == 'cluster'">
+				<link-red @click.prevent="updateCluster(issue.targetId)">修复</link-red>
+			</div>
+			<div v-if="issue.type == 'node'">
+				<link-red @click.prevent="updateNode(issue.targetId)">修复</link-red>
+			</div>
+		</td>
+	</tr>
+</table>

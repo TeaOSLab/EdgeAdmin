@@ -68,10 +68,11 @@ func (this *ClusterAction) RunGet(params struct {
 	nodeMaps := []maps.Map{}
 	for _, node := range nodesResp.Nodes {
 		nodeMaps = append(nodeMaps, maps.Map{
-			"id":     node.Id,
-			"name":   node.Name,
-			"ipAddr": node.IpAddr,
-			"route":  node.Route,
+			"id":        node.Id,
+			"name":      node.Name,
+			"ipAddr":    node.IpAddr,
+			"route":     node.Route,
+			"clusterId": node.ClusterId,
 		})
 	}
 	this.Data["nodes"] = nodeMaps
@@ -91,6 +92,14 @@ func (this *ClusterAction) RunGet(params struct {
 		})
 	}
 	this.Data["servers"] = serverMaps
+
+	// 检查解析记录是否有变化
+	checkChangesResp, err := this.RPC().NodeClusterRPC().CheckNodeClusterDNSChanges(this.AdminContext(), &pb.CheckNodeClusterDNSChangesRequest{NodeClusterId: params.ClusterId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["dnsHasChanges"] = checkChangesResp.IsChanged
 
 	this.Show()
 }

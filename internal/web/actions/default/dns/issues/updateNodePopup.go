@@ -35,6 +35,7 @@ func (this *UpdateNodePopupAction) RunGet(params struct {
 	this.Data["ipAddr"] = dnsInfo.IpAddr
 	this.Data["route"] = dnsInfo.Route
 	this.Data["domainId"] = dnsInfo.DnsDomainId
+	this.Data["domainName"] = dnsInfo.DnsDomainName
 
 	// 读取所有线路
 	routes := []string{}
