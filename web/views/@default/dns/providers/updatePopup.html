@@ -29,13 +29,33 @@
 			<tr>
 				<td>密钥ID *</td>
 				<td>
-					<input type="text" name="paramId" maxlength="100" :value="provider.params.id"/>
+					<input type="text" name="paramId" maxlength="100" v-model="provider.params.id"/>
+					<p class="comment">获取方法参考：<a href="https://docs.dnspod.cn/account/5f2d466de8320f1a740d9ff3/" target="_blank">文档</a> </p>
 				</td>
 			</tr>
 			<tr>
 				<td>密钥Token *</td>
 				<td>
-					<input type="text" name="paramToken" maxlength="100" :value="provider.params.token"/>
+					<input type="text" name="paramToken" maxlength="100" v-model="provider.params.token"/>
+					<p class="comment">获取方法参考：<a href="https://docs.dnspod.cn/account/5f2d466de8320f1a740d9ff3/" target="_blank">文档</a> </p>
+				</td>
+			</tr>
+		</tbody>
+
+		<!-- AliDNS -->
+		<tbody v-if="provider.type == 'alidns'">
+			<tr>
+				<td>AccessKeyId *</td>
+				<td>
+					<input type="text" name="paramAccessKeyId" maxlength="100" v-model="provider.params.accessKeyId"/>
+					<p class="comment">登录阿里云控制台 -- 在"访问控制"中创建和获取。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>AccessKeySecret *</td>
+				<td>
+					<input type="text" name="paramAccessKeySecret" maxlength="100" v-model="provider.params.accessKeySecret"/>
+					<p class="comment">登录阿里云控制台 -- 在"访问控制"中创建和获取。</p>
 				</td>
 			</tr>
 		</tbody>

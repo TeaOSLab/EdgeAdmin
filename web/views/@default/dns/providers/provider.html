@@ -18,6 +18,7 @@
 		<td>服务商</td>
 		<td>{{provider.typeName}}</td>
 	</tr>
+
 	<!-- DNSPod -->
 	<tbody v-if="provider.type == 'dnspod'">
 		<tr>
@@ -27,6 +28,18 @@
 		<tr>
 			<td>密钥Token</td>
 			<td>{{provider.apiParams.token}}</td>
+		</tr>
+	</tbody>
+
+	<!-- AliDNS -->
+	<tbody v-if="provider.type == 'alidns'">
+		<tr>
+			<td>AccessKeyId</td>
+			<td>{{provider.apiParams.accessKeyId}}</td>
+		</tr>
+		<tr>
+			<td>AccessKeySecret</td>
+			<td>{{provider.apiParams.accessKeySecret}}</td>
 		</tr>
 	</tbody>
 </table>

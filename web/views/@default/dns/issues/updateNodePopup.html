@@ -26,7 +26,7 @@
 			<td>
 				<p class="comment" v-if="routes.length == 0">没有可选的线路。</p>
 				<select class="ui dropdown auto-width" name="route" v-if="routes.length > 0" v-model="route">
-					<option v-for="route in routes" :value="route">{{route}}</option>
+					<option v-for="route in routes" :value="route.code">{{route.name}}</option>
 				</select>
 				<p class="comment" v-if="routes.length > 0">当前节点IP对应的线路。</p>
 			</td>

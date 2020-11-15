@@ -39,9 +39,17 @@ func (this *CreatePopupAction) RunPost(params struct {
 	Name string
 	Type string
 
-	// dnspod
+	// DNSPod
 	ParamId    string
 	ParamToken string
+
+	// AliDNS
+	ParamAccessKeyId     string
+	ParamAccessKeySecret string
+
+	// DNS.COM
+	ParamApiKey    string
+	ParamApiSecret string
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -63,6 +71,24 @@ func (this *CreatePopupAction) RunPost(params struct {
 
 		apiParams["id"] = params.ParamId
 		apiParams["token"] = params.ParamToken
+	case "alidns":
+		params.Must.
+			Field("paramAccessKeyId", params.ParamAccessKeyId).
+			Require("请输入AccessKeyId").
+			Field("paramAccessKeySecret", params.ParamAccessKeySecret).
+			Require("请输入AccessKeySecret")
+
+		apiParams["accessKeyId"] = params.ParamAccessKeyId
+		apiParams["accessKeySecret"] = params.ParamAccessKeySecret
+	case "dnscom":
+		params.Must.
+			Field("paramApiKey", params.ParamApiKey).
+			Require("请输入ApiKey").
+			Field("paramApiSecret", params.ParamApiSecret).
+			Require("请输入ApiSecret")
+
+		apiParams["apiKey"] = params.ParamApiKey
+		apiParams["apiSecret"] = params.ParamApiSecret
 	default:
 		this.Fail("暂时不支持此服务商'" + params.Type + "'")
 	}

@@ -3,6 +3,7 @@ package domains
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/iwind/TeaGo/maps"
 )
 
 type RoutesPopupAction struct {
@@ -21,10 +22,14 @@ func (this *RoutesPopupAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	if len(routesResp.Routes) == 0 {
-		routesResp.Routes = []string{}
+	routeMaps := []maps.Map{}
+	for _, route := range routesResp.Routes {
+		routeMaps = append(routeMaps, maps.Map{
+			"name": route.Name,
+			"code": route.Code,
+		})
 	}
-	this.Data["routes"] = routesResp.Routes
+	this.Data["routes"] = routeMaps
 
 	this.Show()
 }
