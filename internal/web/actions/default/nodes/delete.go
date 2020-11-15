@@ -13,7 +13,7 @@ type DeleteAction struct {
 func (this *DeleteAction) RunPost(params struct {
 	NodeId int64
 }) {
-	_, err := this.RPC().NodeRPC().DisableNode(this.AdminContext(), &pb.DisableNodeRequest{NodeId: params.NodeId})
+	_, err := this.RPC().NodeRPC().DeleteNode(this.AdminContext(), &pb.DeleteNodeRequest{NodeId: params.NodeId})
 	if err != nil {
 		this.ErrorPage(err)
 		return

@@ -39,6 +39,8 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 	this.Data["dnsName"] = dnsInfoResp.Name
+	this.Data["nodesAutoSync"] = dnsInfoResp.NodesAutoSync
+	this.Data["serversAutoSync"] = dnsInfoResp.ServersAutoSync
 	if dnsInfoResp.Domain != nil {
 		this.Data["domainId"] = dnsInfoResp.Domain.Id
 		this.Data["domainName"] = dnsInfoResp.Domain.Name
@@ -50,8 +52,10 @@ func (this *IndexAction) RunGet(params struct {
 func (this *IndexAction) RunPost(params struct {
 	ClusterId int64
 
-	DnsDomainId int64
-	DnsName     string
+	DnsDomainId     int64
+	DnsName         string
+	NodesAutoSync   bool
+	ServersAutoSync bool
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -80,9 +84,11 @@ func (this *IndexAction) RunPost(params struct {
 	}
 
 	_, err := this.RPC().NodeClusterRPC().UpdateNodeClusterDNS(this.AdminContext(), &pb.UpdateNodeClusterDNSRequest{
-		NodeClusterId: params.ClusterId,
-		DnsName:       params.DnsName,
-		DnsDomainId:   params.DnsDomainId,
+		NodeClusterId:   params.ClusterId,
+		DnsName:         params.DnsName,
+		DnsDomainId:     params.DnsDomainId,
+		NodesAutoSync:   params.NodesAutoSync,
+		ServersAutoSync: params.ServersAutoSync,
 	})
 	if err != nil {
 		this.ErrorPage(err)
