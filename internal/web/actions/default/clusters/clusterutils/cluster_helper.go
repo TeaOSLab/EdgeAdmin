@@ -11,6 +11,7 @@ import (
 	"strconv"
 )
 
+// 单个集群的帮助
 type ClusterHelper struct {
 }
 
@@ -80,6 +81,11 @@ func (this *ClusterHelper) createSettingMenu(clusterId string, selectedItem stri
 		"name":     "健康检查",
 		"url":      "/clusters/cluster/settings/health?clusterId=" + clusterId,
 		"isActive": selectedItem == "health",
+	})
+	items = append(items, maps.Map{
+		"name":     "DNS设置",
+		"url":      "/clusters/cluster/settings/dns?clusterId=" + clusterId,
+		"isActive": selectedItem == "dns",
 	})
 	return
 }

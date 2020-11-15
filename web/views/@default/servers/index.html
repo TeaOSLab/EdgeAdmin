@@ -52,10 +52,12 @@
 		</td>
 		<td>{{server.cluster.name}}</td>
 		<td>
-			<div v-for="serverName in server.serverNames">
-				<tiny-label v-if="serverName.subNames == null || serverName.subNames.length == 0">{{serverName.name}}</tiny-label>
-				<tiny-label v-else>{{serverName.subNames[0]}}等{{serverName.subNames.length}}个域名</tiny-label>
-			</div>
+			<span v-if="server.serverNames.length > 0">
+				<span v-if="server.serverNames[0].subNames == null || server.serverNames[0].subNames.length == 0">{{server.serverNames[0].name}}</span>
+				<span v-else>{{server.serverNames[0].subNames[0]}}</span>
+				<span v-if="server.countServerNames > 1">等{{server.countServerNames}}个域名</span>
+			</span>
+			<span v-else class="disabled">-</span>
 		</td>
 		<td>
 			<span v-if="server.ports.length == 0">-</span>

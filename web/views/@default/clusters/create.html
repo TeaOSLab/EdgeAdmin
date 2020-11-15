@@ -9,20 +9,47 @@
 			<td class="title">集群名称 *</td>
 			<td><input type="text" name="name" maxlength="50" ref="focus"/></td>
 		</tr>
+	</table>
+
+	<h4>节点安装选项</h4>
+	<table class="ui table selectable definition">
 		<tr>
-			<td>默认SSH登录方式</td>
+			<td class="title">默认SSH登录方式</td>
 			<td>
 				<grant-selector></grant-selector>
 				<p class="comment">当节点没有单独设置SSH登录方式时，默认使用此设置。</p>
 			</td>
 		</tr>
 		<tr>
-			<td>默认安装目录</td>
+			<td>节点安装目录</td>
 			<td>
 				<input type="text" name="installDir" maxlength="100"/>
-				<p class="comment">当节点没有单独设置安装目录时，默认使用此设置。如果集群和节点都没有设置安装目录，则使用<span class="ui label tiny">/$登录用户/edge-node</span> 目录。</p>
+				<p class="comment">当节点没有单独设置安装目录时，默认使用此设置。如果集群和节点都没有设置安装目录，则使用<span class="ui label tiny">/$登录用户/edge-node</span>
+					目录。</p>
 			</td>
 		</tr>
 	</table>
+
+	<h4>DNS设置选项</h4>
+	<table class="ui table selectable definition">
+		<tr v-if="hasDomains">
+			<td>选择主域名</td>
+			<td>
+				<dns-domain-selector></dns-domain-selector>
+				<p class="comment">用于生成集群节点和网站服务的DNS解析记录。</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="title">DNS子域名</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" name="dnsName" maxlength="64" style="width:10em"/>
+					<span class="ui label">.主域名</span>
+				</div>
+				<p class="comment">和主域名一起组成子域名。</p>
+			</td>
+		</tr>
+	</table>
+
 	<submit-btn></submit-btn>
 </form>

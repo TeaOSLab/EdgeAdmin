@@ -1,6 +1,7 @@
 package settings
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/dns"
 	clusters "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/clusterutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/iwind/TeaGo"
@@ -15,6 +16,10 @@ func init() {
 			GetPost("", new(IndexAction)).
 			GetPost("/health", new(HealthAction)).
 			GetPost("/healthRunPopup", new(HealthRunPopupAction)).
+
+			// DNS
+			GetPost("/dns", new(dns.IndexAction)).
+
 			EndAll()
 	})
 }

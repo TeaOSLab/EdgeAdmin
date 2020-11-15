@@ -127,6 +127,14 @@ func (this *IndexAction) RunGet(params struct {
 				return
 			}
 		}
+		countServerNames := 0
+		for _, serverName := range serverNames {
+			if len(serverName.SubNames) == 0 {
+				countServerNames++
+			} else {
+				countServerNames += len(serverName.SubNames)
+			}
+		}
 
 		serverMaps = append(serverMaps, maps.Map{
 			"id":   server.Id,
@@ -136,10 +144,11 @@ func (this *IndexAction) RunGet(params struct {
 				"id":   server.Cluster.Id,
 				"name": server.Cluster.Name,
 			},
-			"ports":          portMaps,
-			"serverTypeName": serverconfigs.FindServerType(server.Type).GetString("name"),
-			"groups":         groupMaps,
-			"serverNames":    serverNames,
+			"ports":            portMaps,
+			"serverTypeName":   serverconfigs.FindServerType(server.Type).GetString("name"),
+			"groups":           groupMaps,
+			"serverNames":      serverNames,
+			"countServerNames": countServerNames,
 		})
 	}
 	this.Data["servers"] = serverMaps

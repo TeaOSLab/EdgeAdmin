@@ -1,4 +1,4 @@
-package clusters
+package dns
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
@@ -8,15 +8,19 @@ import (
 	"github.com/iwind/TeaGo/actions"
 )
 
-type CreateAction struct {
+type IndexAction struct {
 	actionutils.ParentAction
 }
 
-func (this *CreateAction) Init() {
-	this.Nav("", "cluster", "create")
+func (this *IndexAction) Init() {
+	this.Nav("", "setting", "")
+	this.SecondMenu("dns")
 }
 
-func (this *CreateAction) RunGet(params struct{}) {
+func (this *IndexAction) RunGet(params struct {
+	ClusterId int64
+}) {
+	// 是否有域名可选
 	hasDomainsResp, err := this.RPC().DNSDomainRPC().ExistAvailableDomains(this.AdminContext(), &pb.ExistAvailableDomainsRequest{})
 	if err != nil {
 		this.ErrorPage(err)
@@ -24,25 +28,36 @@ func (this *CreateAction) RunGet(params struct{}) {
 	}
 	this.Data["hasDomains"] = hasDomainsResp.Exist
 
+	// 当前集群的DNS信息
+	this.Data["domainId"] = 0
+	this.Data["domainName"] = ""
+	this.Data["dnsName"] = ""
+
+	dnsInfoResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeClusterDNS(this.AdminContext(), &pb.FindEnabledNodeClusterDNSRequest{NodeClusterId: params.ClusterId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["dnsName"] = dnsInfoResp.Name
+	if dnsInfoResp.Domain != nil {
+		this.Data["domainId"] = dnsInfoResp.Domain.Id
+		this.Data["domainName"] = dnsInfoResp.Domain.Name
+	}
+
 	this.Show()
 }
 
-func (this *CreateAction) RunPost(params struct {
-	Name string
+func (this *IndexAction) RunPost(params struct {
+	ClusterId int64
 
-	// SSH相关
-	GrantId    int64
-	InstallDir string
-
-	// DNS相关
 	DnsDomainId int64
 	DnsName     string
 
 	Must *actions.Must
+	CSRF *actionutils.CSRF
 }) {
-	params.Must.
-		Field("name", params.Name).
-		Require("请输入集群名称")
+	// 创建日志
+	this.CreateLog(oplogs.LevelInfo, "修改集群 %d DNS设置", params.ClusterId)
 
 	// 检查DNS名称
 	if len(params.DnsName) > 0 {
@@ -52,7 +67,7 @@ func (this *CreateAction) RunPost(params struct {
 
 		// 检查是否已经被使用
 		resp, err := this.RPC().NodeClusterRPC().CheckNodeClusterDNSName(this.AdminContext(), &pb.CheckNodeClusterDNSNameRequest{
-			NodeClusterId: 0,
+			NodeClusterId: params.ClusterId,
 			DnsName:       params.DnsName,
 		})
 		if err != nil {
@@ -64,22 +79,14 @@ func (this *CreateAction) RunPost(params struct {
 		}
 	}
 
-	// TODO 检查DnsDomainId的有效性
-
-	createResp, err := this.RPC().NodeClusterRPC().CreateNodeCluster(this.AdminContext(), &pb.CreateNodeClusterRequest{
-		Name:        params.Name,
-		GrantId:     params.GrantId,
-		InstallDir:  params.InstallDir,
-		DnsDomainId: params.DnsDomainId,
-		DnsName:     params.DnsName,
+	_, err := this.RPC().NodeClusterRPC().UpdateNodeClusterDNS(this.AdminContext(), &pb.UpdateNodeClusterDNSRequest{
+		NodeClusterId: params.ClusterId,
+		DnsName:       params.DnsName,
+		DnsDomainId:   params.DnsDomainId,
 	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-
-	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "创建节点集群：%d", createResp.ClusterId)
-
 	this.Success()
 }

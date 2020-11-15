@@ -43,6 +43,7 @@ func init() {
 			Post("/delete", new(domains.DeleteAction)).
 			Post("/sync", new(domains.SyncAction)).
 			Get("/routesPopup", new(domains.RoutesPopupAction)).
+			GetPost("/selectPopup", new(domains.SelectPopupAction)).
 			EndData().
 
 			// 问题修复
