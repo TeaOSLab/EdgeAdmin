@@ -1,0 +1,38 @@
+{$layout "layout_popup"}
+
+<h3>修改集群DNS设置</h3>
+
+<form method="post" class="ui form" data-tea-success="success" data-tea-action="$">
+	<csrf-token></csrf-token>
+
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">DNS服务商</td>
+			<td>
+				<select name="providerType" class="ui dropdown auto-width" v-model="providerType" @change="changeProviderType">
+					<option v-for="providerType in providerTypes" :value="providerType.code">{{providerType.name}}</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td>账号</td>
+			<td>
+				<p class="comment" v-if="providers.length == 0">没有账号可选</p>
+				<select name="providerId" class="ui dropdown auto-width" v-model="providerId" v-show="providers.length > 0">
+					<option v-for="provider in providers" :value="provider.id">{{provider.name}}</option>
+				</select>
+			</td>
+		</tr>
+		<tr v-show="providerId > 0">
+			<td>域名</td>
+			<td>
+				<p class="comment" v-if="domains.length == 0">没有域名可选</p>
+				<select name="domainId" class="ui dropdown auto-width" v-model="domainId" v-show="domains.length > 0">
+					<option v-for="domain in domains" :value="domain.id">{{domain.name}}</option>
+				</select>
+			</td>
+		</tr>
+	</table>
+
+	<submit-btn></submit-btn>
+</form>

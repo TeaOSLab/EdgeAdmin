@@ -82,7 +82,7 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	modules := []maps.Map{
 		{
 			"code": "servers",
-			"name": "代理服务",
+			"name": "网站服务",
 			"icon": "clone outsize",
 			"subItems": []maps.Map{
 				{
@@ -94,7 +94,7 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 		},
 		{
 			"code": "clusters",
-			"name": "节点集群",
+			"name": "边缘节点",
 			"icon": "cloud",
 			"subItems": []maps.Map{
 				{
