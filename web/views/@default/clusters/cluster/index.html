@@ -87,7 +87,10 @@
 			<span v-else class="disabled">-</span>
 		</td>
 		<td>
-			<div v-if="!node.isOn">
+			<div v-if="!node.isUp">
+				<span class="red">健康问题</span>
+			</div>
+			<div v-else-if="!node.isOn">
 				<label-on :v-is-on="node.isOn"></label-on>
 			</div>
 			<div v-else-if="node.isInstalled">

@@ -37,6 +37,33 @@ func (this *CreateNodeAction) RunGet(params struct {
 	}
 	this.Data["leftMenuItems"] = leftMenuItems
 
+	// DNS线路
+	clusterDNSResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeClusterDNS(this.AdminContext(), &pb.FindEnabledNodeClusterDNSRequest{NodeClusterId: params.ClusterId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	dnsRouteMaps := []maps.Map{}
+	this.Data["dnsDomainId"] = 0
+	if clusterDNSResp.Domain != nil {
+		domainId := clusterDNSResp.Domain.Id
+		this.Data["dnsDomainId"] = domainId
+		if domainId > 0 {
+			routesResp, err := this.RPC().DNSDomainRPC().FindAllDNSDomainRoutes(this.AdminContext(), &pb.FindAllDNSDomainRoutesRequest{DnsDomainId: domainId})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			for _, route := range routesResp.Routes {
+				dnsRouteMaps = append(dnsRouteMaps, maps.Map{
+					"name": route.Name,
+					"code": route.Code,
+				})
+			}
+		}
+	}
+	this.Data["dnsRoutes"] = dnsRouteMaps
+
 	this.Show()
 }
 
@@ -48,6 +75,9 @@ func (this *CreateNodeAction) RunPost(params struct {
 	GrantId         int64
 	SshHost         string
 	SshPort         int
+
+	DnsDomainId int64
+	DnsRoute    string
 
 	Must *actions.Must
 }) {
@@ -78,10 +108,12 @@ func (this *CreateNodeAction) RunPost(params struct {
 
 	// 保存
 	createResp, err := this.RPC().NodeRPC().CreateNode(this.AdminContext(), &pb.CreateNodeRequest{
-		Name:      params.Name,
-		ClusterId: params.ClusterId,
-		GroupId:   params.GroupId,
-		Login:     loginInfo,
+		Name:        params.Name,
+		ClusterId:   params.ClusterId,
+		GroupId:     params.GroupId,
+		Login:       loginInfo,
+		DnsDomainId: params.DnsDomainId,
+		DnsRoute:    params.DnsRoute,
 	})
 	if err != nil {
 		this.ErrorPage(err)

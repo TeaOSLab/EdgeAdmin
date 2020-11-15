@@ -14,7 +14,10 @@ Vue.component("health-check-config-box", {
 				statusCodes: [200],
 				timeout: {count: 10, unit: "second"},
 				countTries: 3,
-				tryDelay: {count: 100, unit: "ms"}
+				tryDelay: {count: 100, unit: "ms"},
+				autoDown: true,
+				countUp: 1,
+				countDown: 1
 			}
 			let that = this
 			setTimeout(function () {
@@ -44,7 +47,14 @@ Vue.component("health-check-config-box", {
 			if (healthCheckConfig.tryDelay == null) {
 				healthCheckConfig.tryDelay = {count: 100, unit: "ms"}
 			}
+			if (healthCheckConfig.countUp == null || healthCheckConfig.countUp < 1) {
+				healthCheckConfig.countUp = 1
+			}
+			if (healthCheckConfig.countDown == null || healthCheckConfig.countDown < 1) {
+				healthCheckConfig.countDown = 1
+			}
 		}
+		console.log(healthCheckConfig.countUp, healthCheckConfig.countDown)
 		return {
 			healthCheck: healthCheckConfig,
 			advancedVisible: false,
@@ -78,6 +88,22 @@ Vue.component("health-check-config-box", {
 				this.healthCheck.countTries = count
 			} else {
 				this.healthCheck.countTries = 0
+			}
+		},
+		"healthCheck.countUp": function (v) {
+			let count = parseInt(v)
+			if (!isNaN(count)) {
+				this.healthCheck.countUp = count
+			} else {
+				this.healthCheck.countUp = 0
+			}
+		},
+		"healthCheck.countDown": function (v) {
+			let count = parseInt(v)
+			if (!isNaN(count)) {
+				this.healthCheck.countDown = count
+			} else {
+				this.healthCheck.countDown = 0
 			}
 		}
 	},
@@ -145,6 +171,30 @@ Vue.component("health-check-config-box", {
 				<time-duration-box :v-value="healthCheck.interval"></time-duration-box>
 			</td>
 		</tr>
+		<tr>
+			<td>是否自动下线</td>
+			<td>
+				<div class="ui checkbox">
+					<input type="checkbox" value="1" v-model="healthCheck.autoDown"/>
+					<label></label>
+				</div>
+				<p class="comment">选中后系统会根据健康检查的结果自动标记节点的上线/下线状态。</p>
+			</td>
+		</tr>
+		<tr v-show="healthCheck.autoDown">
+			<td>连续上线次数</td>
+			<td>
+				<input type="text" v-model="healthCheck.countUp" style="width:5em" maxlength="6"/>
+				<p class="comment">连续N次检查成功后自动恢复上线。</p>
+			</td>
+		</tr>
+		<tr v-show="healthCheck.autoDown">
+			<td>连续下线次数</td>
+			<td>
+				<input type="text" v-model="healthCheck.countDown" style="width:5em" maxlength="6"/>
+				<p class="comment">连续N次检查失败后自动下线。</p>
+			</td>
+		</tr>
 	</tbody>	
 	<tbody v-show="healthCheck.isOn">
 		<tr>
@@ -176,7 +226,7 @@ Vue.component("health-check-config-box", {
 				<time-duration-box :v-value="healthCheck.tryDelay"></time-duration-box>
 			</td>
 		</tr>
-		</tbody>
+	</tbody>
 </table>
 <div class="margin"></div>
 </div>`

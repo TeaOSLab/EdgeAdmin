@@ -43,6 +43,29 @@
 				<p class="comment">子域名和主域名共同组成集群的域名。</p>
 			</td>
 		</tr>
+		<tr>
+			<td colspan="2"><more-options-indicator></more-options-indicator></td>
+		</tr>
+		<tbody v-show="moreOptionsVisible">
+			<tr>
+				<td>是否同步节点DNS状态</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" name="nodesAutoSync" value="1" v-model="nodesAutoSync"/>
+						<label></label>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>是否同步网站服务DNS状态</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" name="serversAutoSync" value="1" v-model="serversAutoSync"/>
+						<label></label>
+					</div>
+				</td>
+			</tr>
+		</tbody>
 	</table>
 
 	<submit-btn></submit-btn>

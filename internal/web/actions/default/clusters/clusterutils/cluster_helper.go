@@ -51,9 +51,9 @@ func (this *ClusterHelper) BeforeAction(action *actions.ActionObject) {
 
 		tabbar := actionutils.NewTabbar()
 		tabbar.Add("集群列表", "", "/clusters", "", false)
-		tabbar.Add("节点", "", "/clusters/cluster?clusterId="+clusterIdString, "server", selectedTabbar == "node")
-		tabbar.Add("设置", "", "/clusters/cluster/settings?clusterId="+clusterIdString, "setting", selectedTabbar == "setting")
-		tabbar.Add("删除", "", "/clusters/cluster/delete?clusterId="+clusterIdString, "trash", selectedTabbar == "delete")
+		tabbar.Add("集群节点", "", "/clusters/cluster?clusterId="+clusterIdString, "server", selectedTabbar == "node")
+		tabbar.Add("集群设置", "", "/clusters/cluster/settings?clusterId="+clusterIdString, "setting", selectedTabbar == "setting")
+		tabbar.Add("删除集群", "", "/clusters/cluster/delete?clusterId="+clusterIdString, "trash", selectedTabbar == "delete")
 
 		{
 			m := tabbar.Add("当前集群："+cluster.Name, "", "/clusters/cluster?clusterId="+clusterIdString, "", false)
