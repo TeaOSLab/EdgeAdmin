@@ -5,7 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
-	"github.com/iwind/TeaGo/lists"
+	"github.com/iwind/TeaGo/maps"
 	"net"
 )
 
@@ -33,12 +33,12 @@ func (this *UpdateNodePopupAction) RunGet(params struct {
 		return
 	}
 	this.Data["ipAddr"] = dnsInfo.IpAddr
-	this.Data["route"] = dnsInfo.Route
+	this.Data["route"] = dnsInfo.Route.Code
 	this.Data["domainId"] = dnsInfo.DnsDomainId
 	this.Data["domainName"] = dnsInfo.DnsDomainName
 
 	// 读取所有线路
-	routes := []string{}
+	routeMaps := []maps.Map{}
 	if dnsInfo.DnsDomainId > 0 {
 		routesResp, err := this.RPC().DNSDomainRPC().FindAllDNSDomainRoutes(this.AdminContext(), &pb.FindAllDNSDomainRoutesRequest{DnsDomainId: dnsInfo.DnsDomainId})
 		if err != nil {
@@ -46,13 +46,28 @@ func (this *UpdateNodePopupAction) RunGet(params struct {
 			return
 		}
 		if len(routesResp.Routes) > 0 {
-			routes = routesResp.Routes
+			for _, route := range routesResp.Routes {
+				routeMaps = append(routeMaps, maps.Map{
+					"name": route.Name,
+					"code": route.Code,
+				})
+			}
 		}
 	}
-	this.Data["routes"] = routes
+	this.Data["routes"] = routeMaps
 
-	if len(routes) > 0 && !lists.ContainsString(routes, dnsInfo.Route) {
-		this.Data["route"] = routes[0]
+	// 是否包含现有线路
+	if len(routeMaps) > 0 {
+		isRouteValid := false
+		for _, route := range routeMaps {
+			if route.GetString("code") == dnsInfo.Route.Code {
+				isRouteValid = true
+				break
+			}
+		}
+		if !isRouteValid {
+			this.Data["route"] = routeMaps[0].GetString("code")
+		}
 	}
 
 	this.Show()

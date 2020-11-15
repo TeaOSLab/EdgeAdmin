@@ -301,9 +301,14 @@ func (this *RPCClient) pickConn() *grpc.ClientConn {
 	// 检查连接状态
 	if len(this.conns) > 0 {
 		availableConns := []*grpc.ClientConn{}
-		for _, conn := range this.conns {
-			if conn.GetState() == connectivity.Ready {
-				availableConns = append(availableConns, conn)
+		for _, state := range []connectivity.State{connectivity.Ready, connectivity.Idle, connectivity.Connecting} {
+			for _, conn := range this.conns {
+				if conn.GetState() == state {
+					availableConns = append(availableConns, conn)
+				}
+			}
+			if len(availableConns) > 0 {
+				break
 			}
 		}
 

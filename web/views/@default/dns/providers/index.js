@@ -1,7 +1,7 @@
 Tea.context(function () {
 	this.createProvider = function () {
 		teaweb.popup(Tea.url(".createPopup"), {
-			height: "26em",
+			height: "28em",
 			callback: function () {
 				teaweb.success("保存成功", function () {
 					teaweb.reload()

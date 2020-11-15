@@ -1,7 +1,7 @@
 Tea.context(function () {
 	this.updateProvider = function (providerId) {
 		teaweb.popup(Tea.url(".updatePopup?providerId=" + providerId), {
-			height: "26em",
+			height: "28em",
 			callback: function () {
 				teaweb.success("保存成功", function () {
 					teaweb.reload()
@@ -65,7 +65,6 @@ Tea.context(function () {
 					})
 				})
 				.done(function () {
-					domain.isSyncing = false
 					Vue.set(that.domains, index, domain)
 				})
 		})
