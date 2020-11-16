@@ -13,3 +13,8 @@ Vue.component("code-label", {
 Vue.component("tiny-label", {
 	template: `<span class="ui label tiny" style="margin-bottom: 0.5em"><slot></slot></span>`
 })
+
+Vue.component("tiny-basic-label", {
+	template: `<span class="ui label tiny basic" style="margin-bottom: 0.5em"><slot></slot></span>`
+})
+

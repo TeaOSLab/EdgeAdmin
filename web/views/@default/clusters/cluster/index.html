@@ -50,11 +50,11 @@
 	<tr>
 		<th class="one wide center">ID</th>
 		<th>节点名称</th>
-		<th class="two wide">所属分组</th>
-		<th style="width:10em">IP</th>
-		<th>DNS线路</th>
-		<th style="width:5em" class="center">CPU</th>
-		<th style="width:5em" class="center">内存</th>
+		<th class="width10">所属分组</th>
+		<th class="width10">IP</th>
+		<th class="width10">DNS线路</th>
+		<th class="width5 center">CPU</th>
+		<th class="width5 center">内存</th>
 		<!--<th>流量</th>
 		<th>连接数</th>-->
 		<th class="two wide center">状态</th>
@@ -65,14 +65,14 @@
 		<td nowrap="" class="center">{{node.id}}</td>
 		<td>{{node.name}}</td>
 		<td>
-			<span v-if="node.group != null" class="ui label tiny">{{node.group.name}}</span>
+			<tiny-basic-label v-if="node.group != null">{{node.group.name}}</tiny-basic-label>
 			<span v-else class="disabled">-</span>
 		</td>
 		<td>
 			<span v-if="node.ipAddresses.length == 0" class="disabled">-</span>
 			<div v-else class="address-box">
 				<div v-for="addr in node.ipAddresses" style="margin-bottom:0.3em">
-					<div class="ui label tiny">{{addr.ip}}
+					<div class="ui label tiny basic">{{addr.ip}}
 						<span class="small" v-if="addr.name.length > 0">（{{addr.name}}<span v-if="!addr.canAccess">，不可访问</span>）</span>
 						<span class="small" v-if="addr.name.length == 0 && !addr.canAccess">（不可访问）</span>
 					</div>
@@ -81,7 +81,9 @@
 		</td>
 		<td>
 			<div v-if="node.dnsRouteNames.length > 0">
-				<div v-for="routeName in node.dnsRouteNames" style="margin-bottom: 0.4em">{{routeName}}</div>
+				<div v-for="routeName in node.dnsRouteNames">
+					<tiny-basic-label>{{routeName}}</tiny-basic-label>
+				</div>
 			</div>
 			<span v-else class="disabled">-</span>
 		</td>

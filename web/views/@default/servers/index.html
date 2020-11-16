@@ -38,14 +38,14 @@
 	</thead>
 	<tr v-for="server in servers">
 		<td>{{server.name}}
-			<div style="margin-top:0.2em">
-				<tiny-label>{{server.serverTypeName}}</tiny-label>
+			<div style="margin-top:0.4em">
+				<tiny-basic-label>{{server.serverTypeName}}</tiny-basic-label>
 			</div>
 		</td>
 		<td>
 			<div v-if="server.groups.length > 0">
 				<div  v-for="group in server.groups">
-					<tiny-label>{{group.name}}</tiny-label>
+					<tiny-basic-label>{{group.name}}</tiny-basic-label>
 				</div>
 			</div>
 			<span class="disabled" v-else>-</span>
@@ -62,7 +62,7 @@
 		<td>
 			<span v-if="server.ports.length == 0">-</span>
 			<div v-for="port in server.ports">
-				<tiny-label>{{port.portRange}}<span class="small">（{{port.protocol}}）</span></tiny-label>
+				<tiny-basic-label>{{port.portRange}}<span class="small">（{{port.protocol}}）</span></tiny-basic-label>
 			</div>
 		</td>
 		<td class="center">

@@ -22,4 +22,10 @@ table th.center,
 table td.center {
   text-align: center !important;
 }
+table th.width10 {
+  width: 10em;
+}
+table th.width5 {
+  width: 5em;
+}
 /*# sourceMappingURL=@layout_override.css.map */
