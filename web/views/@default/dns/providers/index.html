@@ -10,9 +10,8 @@
 	<thead>
 		<tr>
 			<th>账号说明</th>
-			<th>服务商</th>
-			<th class="center">域名</th>
-			<th>数据更新时间</th>
+			<th class="width10">服务商</th>
+			<th class="width5 center">域名</th>
 			<th class="two op">操作</th>
 		</tr>
 	</thead>
@@ -22,10 +21,6 @@
 		<td class="center">
 			<span v-if="provider.countDomains == 0" class="disabled">0</span>
 			<span v-else>{{provider.countDomains}}</span>
-		</td>
-		<td>
-			<span v-if="provider.dataUpdatedTime.length > 0">{{provider.dataUpdatedTime}}</span>
-			<span v-else class="disabled">-</span>
 		</td>
 		<td>
 			<a :href="'/dns/providers/provider?providerId=' + provider.id">详情</a> &nbsp; &nbsp; <a href="" @click.prevent="deleteProvider(provider.id)">删除</a>

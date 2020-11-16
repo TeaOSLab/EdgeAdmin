@@ -52,9 +52,9 @@
 	<thead>
 		<tr>
 			<th>域名</th>
-			<th>线路</th>
-			<th>节点域名</th>
-			<th>服务域名</th>
+			<th class="width10 center">线路</th>
+			<th class="width10 center">节点域名</th>
+			<th class="width10 center">服务域名</th>
 			<th>数据更新时间</th>
 			<th>状态</th>
 			<th class="three op">操作</th>
@@ -62,15 +62,15 @@
 	</thead>
 	<tr v-for="(domain, index) in domains">
 		<td>{{domain.name}}</td>
-		<td>
+		<td class="center">
 			<a href="" v-if="domain.countRoutes > 0" @click.prevent="showRoutes(domain.id)">{{domain.countRoutes}}个</a>
 			<span v-else class="disabled">0个</span>
 		</td>
-		<td>
+		<td class="center">
 			<span v-if="domain.countNodeRecords > 0">{{domain.countNodeRecords}}个</span>
 			<span v-else class="disabled">0个</span>
 		</td>
-		<td>
+		<td class="center">
 			<span v-if="domain.countServerRecords > 0">{{domain.countServerRecords}}个</span>
 			<span v-else class="disabled">0个</span>
 		</td>
