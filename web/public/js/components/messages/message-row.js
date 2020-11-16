@@ -27,7 +27,7 @@ Vue.component("message-row", {
 			</span>
 		</td>
 	</tr>
-	<tr :class="{error: message.level == 'error'}">
+	<tr :class="{error: message.level == 'error', positive: message.level == 'success'}">
 		<td>
 			{{message.body}}
 			
