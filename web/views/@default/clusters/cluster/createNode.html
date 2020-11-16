@@ -23,10 +23,7 @@
 				<td>DNS线路</td>
 				<td>
 					<input type="hidden" name="dnsDomainId" :value="dnsDomainId"/>
-					<select class="ui dropdown auto-width" name="dnsRoute">
-						<option value="">[请选择]</option>
-						<option v-for="route in dnsRoutes" :value="route.code">{{route.name}}</option>
-					</select>
+					<dns-route-selector :v-all-routes="dnsRoutes"></dns-route-selector>
 					<p class="comment">可用线路是根据集群设置的域名获取的，注意DNS服务商可能对这些线路有所限制。</p>
 				</td>
 			</tr>

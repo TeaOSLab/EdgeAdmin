@@ -27,7 +27,7 @@
 
 	<h3 style="padding-top:0.8em">规则集<a href="" @click.prevent="createSet(group.id)">[添加规则集]</a> </h3>
 	<p class="comment" v-if="sets == null || sets.length == 0">暂时还没有规则。</p>
-	<table class="ui table selectable" id="sortable-table" v-if="sets != null && sets.length > 0">
+	<table class="ui table selectable celled" id="sortable-table" v-if="sets != null && sets.length > 0">
 		<thead>
 			<tr>
 				<th style="width:3em"></th>

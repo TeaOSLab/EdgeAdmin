@@ -70,6 +70,21 @@ func (this *NodeAction) RunGet(params struct {
 		})
 	}
 
+	// DNS相关
+	dnsInfoResp, err := this.RPC().NodeRPC().FindEnabledNodeDNS(this.AdminContext(), &pb.FindEnabledNodeDNSRequest{NodeId: params.NodeId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	dnsRouteMaps := []maps.Map{}
+	for _, dnsInfo := range dnsInfoResp.Node.Routes {
+		dnsRouteMaps = append(dnsRouteMaps, maps.Map{
+			"name": dnsInfo.Name,
+			"code": dnsInfo.Code,
+		})
+	}
+	this.Data["dnsRoutes"] = dnsRouteMaps
+
 	// 登录信息
 	var loginMap maps.Map = nil
 	if node.Login != nil {

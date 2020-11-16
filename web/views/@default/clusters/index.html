@@ -3,28 +3,31 @@
 
 <p class="comment" v-if="clusters.length == 0">暂时还没有集群。</p>
 
-<table class="ui table selectable" v-if="clusters.length > 0">
+<table class="ui table selectable celled" v-if="clusters.length > 0">
 	<thead>
 		<tr>
 			<th>集群名称</th>
-			<th>节点数量</th>
-			<th>在线节点数量</th>
-			<th>默认认证</th>
+			<th class="center">节点数量</th>
+			<th class="center">在线节点数量</th>
+			<th>DNS域名</th>
 			<th class="two op">操作</th>
 		</tr>
 	</thead>
 	<tr v-for="cluster in clusters">
 		<td>{{cluster.name}}</td>
-		<td>
+		<td class="center">
 			<a :href="'/clusters/cluster?clusterId=' + cluster.id" v-if="cluster.countAllNodes > 0"><span :class="{red:cluster.countAllNodes > cluster.countActiveNodes}">{{cluster.countAllNodes}}</span></a>
 			<span class="disabled" v-else="">-</span>
 		</td>
-		<td>
+		<td class="center">
 			<a :href="'/clusters/cluster?clusterId=' + cluster.id + '&activeState=1'" v-if="cluster.countActiveNodes > 0"><span class="green">{{cluster.countActiveNodes}}</span></a>
 			<span class="disabled" v-else>-</span>
 		</td>
 		<td>
-			<span v-if="cluster.grant != null">{{cluster.grant.name}}<span class="small">（{{cluster.grant.methodName}}）</span></span>
+			<span v-if="cluster.dnsName.length > 0">
+				<var>{{cluster.dnsName}}</var>.<span v-if="cluster.dnsDomainName.length > 0">{{cluster.dnsDomainName}}</span><span v-else class="disabled">主域名</span>
+				<span v-if="cluster.dnsDomainId > 0"><link-icon :href="'/dns/clusters/cluster?clusterId=' + cluster.id"></link-icon></span>
+			</span>
 			<span v-else class="disabled">-</span>
 		</td>
 		<td>

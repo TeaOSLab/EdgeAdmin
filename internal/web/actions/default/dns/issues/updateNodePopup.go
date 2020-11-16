@@ -1,8 +1,10 @@
 package issues
 
 import (
+	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains/domainutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -33,12 +35,12 @@ func (this *UpdateNodePopupAction) RunGet(params struct {
 		return
 	}
 	this.Data["ipAddr"] = dnsInfo.IpAddr
-	this.Data["route"] = dnsInfo.Route.Code
+	this.Data["routes"] = domainutils.ConvertRoutesToMaps(dnsInfo.Routes)
 	this.Data["domainId"] = dnsInfo.DnsDomainId
 	this.Data["domainName"] = dnsInfo.DnsDomainName
 
 	// 读取所有线路
-	routeMaps := []maps.Map{}
+	allRouteMaps := []maps.Map{}
 	if dnsInfo.DnsDomainId > 0 {
 		routesResp, err := this.RPC().DNSDomainRPC().FindAllDNSDomainRoutes(this.AdminContext(), &pb.FindAllDNSDomainRoutesRequest{DnsDomainId: dnsInfo.DnsDomainId})
 		if err != nil {
@@ -47,43 +49,39 @@ func (this *UpdateNodePopupAction) RunGet(params struct {
 		}
 		if len(routesResp.Routes) > 0 {
 			for _, route := range routesResp.Routes {
-				routeMaps = append(routeMaps, maps.Map{
+				allRouteMaps = append(allRouteMaps, maps.Map{
 					"name": route.Name,
 					"code": route.Code,
 				})
 			}
-		}
-	}
-	this.Data["routes"] = routeMaps
 
-	// 是否包含现有线路
-	if len(routeMaps) > 0 {
-		isRouteValid := false
-		for _, route := range routeMaps {
-			if route.GetString("code") == dnsInfo.Route.Code {
-				isRouteValid = true
-				break
-			}
-		}
-		if !isRouteValid {
-			this.Data["route"] = routeMaps[0].GetString("code")
+			// 筛选
+			this.Data["routes"] = domainutils.ConvertRoutesToMaps(domainutils.FilterRoutes(dnsInfo.Routes, routesResp.Routes))
 		}
 	}
+	this.Data["allRoutes"] = allRouteMaps
 
 	this.Show()
 }
 
 func (this *UpdateNodePopupAction) RunPost(params struct {
-	NodeId   int64
-	IpAddr   string
-	DomainId int64
-	Route    string
+	NodeId        int64
+	IpAddr        string
+	DomainId      int64
+	DnsRoutesJSON []byte
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
 	// 操作日志
 	this.CreateLog(oplogs.LevelInfo, "修改节点 %d 的DNS设置", params.NodeId)
+
+	routes := []string{}
+	err := json.Unmarshal(params.DnsRoutesJSON, &routes)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 
 	params.Must.
 		Field("ipAddr", params.IpAddr).
@@ -94,11 +92,11 @@ func (this *UpdateNodePopupAction) RunPost(params struct {
 	}
 
 	// 执行修改
-	_, err := this.RPC().NodeRPC().UpdateNodeDNS(this.AdminContext(), &pb.UpdateNodeDNSRequest{
+	_, err = this.RPC().NodeRPC().UpdateNodeDNS(this.AdminContext(), &pb.UpdateNodeDNSRequest{
 		NodeId:      params.NodeId,
 		IpAddr:      params.IpAddr,
 		DnsDomainId: params.DomainId,
-		Route:       params.Route,
+		Routes:      routes,
 	})
 	if err != nil {
 		this.ErrorPage(err)

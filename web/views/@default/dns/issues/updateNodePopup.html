@@ -24,11 +24,11 @@
 		<tr v-if="domainId > 0">
 			<td>线路</td>
 			<td>
-				<p class="comment" v-if="routes.length == 0">没有可选的线路。</p>
-				<select class="ui dropdown auto-width" name="route" v-if="routes.length > 0" v-model="route">
-					<option v-for="route in routes" :value="route.code">{{route.name}}</option>
-				</select>
-				<p class="comment" v-if="routes.length > 0">当前节点IP对应的线路。</p>
+				<p class="comment" v-if="allRoutes.length == 0">没有可选的线路。</p>
+				<div v-if="allRoutes.length > 0">
+					<dns-route-selector :v-all-routes="allRoutes" :v-routes="routes"></dns-route-selector>
+					<p class="comment">当前节点IP对应的线路。</p>
+				</div>
 			</td>
 		</tr>
 	</table>

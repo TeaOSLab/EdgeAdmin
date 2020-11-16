@@ -20,6 +20,13 @@
 					<p class="comment">用于访问节点和域名解析等。</p>
 				</td>
 			</tr>
+			<tr v-if="allDNSRoutes.length > 0">
+				<td>DNS线路</td>
+				<td>
+					<input type="hidden" name="dnsDomainId" :value="dnsDomainId"/>
+					<dns-route-selector :v-all-routes="allDNSRoutes" :v-routes="dnsRoutes"></dns-route-selector>
+				</td>
+			</tr>
 			<tr>
 				<td>所属集群</td>
 				<td>

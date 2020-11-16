@@ -18,4 +18,8 @@ form .fields {
 .link.grey:hover {
   color: #4183c4 !important;
 }
+table th.center,
+table td.center {
+  text-align: center !important;
+}
 /*# sourceMappingURL=@layout_override.css.map */

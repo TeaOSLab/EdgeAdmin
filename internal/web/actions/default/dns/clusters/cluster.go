@@ -67,16 +67,31 @@ func (this *ClusterAction) RunGet(params struct {
 	}
 	nodeMaps := []maps.Map{}
 	for _, node := range nodesResp.Nodes {
-		nodeMaps = append(nodeMaps, maps.Map{
-			"id":     node.Id,
-			"name":   node.Name,
-			"ipAddr": node.IpAddr,
-			"route": maps.Map{
-				"name": node.Route.Name,
-				"code": node.Route.Code,
-			},
-			"clusterId": node.ClusterId,
-		})
+		if len(node.Routes) > 0 {
+			for _, route := range node.Routes {
+				nodeMaps = append(nodeMaps, maps.Map{
+					"id":     node.Id,
+					"name":   node.Name,
+					"ipAddr": node.IpAddr,
+					"route": maps.Map{
+						"name": route.Name,
+						"code": route.Code,
+					},
+					"clusterId": node.ClusterId,
+				})
+			}
+		} else {
+			nodeMaps = append(nodeMaps, maps.Map{
+				"id":     node.Id,
+				"name":   node.Name,
+				"ipAddr": node.IpAddr,
+				"route": maps.Map{
+					"name": "",
+					"code": "",
+				},
+				"clusterId": node.ClusterId,
+			})
+		}
 	}
 	this.Data["nodes"] = nodeMaps
 

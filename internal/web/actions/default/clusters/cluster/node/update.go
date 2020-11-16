@@ -60,6 +60,38 @@ func (this *UpdateAction) RunGet(params struct {
 		})
 	}
 
+	// DNS相关
+	dnsInfoResp, err := this.RPC().NodeRPC().FindEnabledNodeDNS(this.AdminContext(), &pb.FindEnabledNodeDNSRequest{NodeId: params.NodeId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	dnsRouteMaps := []maps.Map{}
+	for _, dnsInfo := range dnsInfoResp.Node.Routes {
+		dnsRouteMaps = append(dnsRouteMaps, maps.Map{
+			"name": dnsInfo.Name,
+			"code": dnsInfo.Code,
+		})
+	}
+	this.Data["dnsRoutes"] = dnsRouteMaps
+	this.Data["allDNSRoutes"] = []maps.Map{}
+	this.Data["dnsDomainId"] = dnsInfoResp.Node.DnsDomainId
+	if dnsInfoResp.Node.DnsDomainId > 0 {
+		routesMaps := []maps.Map{}
+		routesResp, err := this.RPC().DNSDomainRPC().FindAllDNSDomainRoutes(this.AdminContext(), &pb.FindAllDNSDomainRoutesRequest{DnsDomainId: dnsInfoResp.Node.DnsDomainId})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		for _, route := range routesResp.Routes {
+			routesMaps = append(routesMaps, maps.Map{
+				"name": route.Name,
+				"code": route.Code,
+			})
+		}
+		this.Data["allDNSRoutes"] = routesMaps
+	}
+
 	// 登录信息
 	var loginMap maps.Map = nil
 	if node.Login != nil {
@@ -152,6 +184,9 @@ func (this *UpdateAction) RunPost(params struct {
 	MaxCPU          int32
 	IsOn            bool
 
+	DnsDomainId   int64
+	DnsRoutesJSON []byte
+
 	Must *actions.Must
 }) {
 	// 创建日志
@@ -170,6 +205,13 @@ func (this *UpdateAction) RunPost(params struct {
 		this.Fail("请选择所在集群")
 	}
 
+	dnsRouteCodes := []string{}
+	err := json.Unmarshal(params.DnsRoutesJSON, &dnsRouteCodes)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
 	// TODO 检查登录授权
 	loginInfo := &pb.NodeLogin{
 		Id:   params.LoginId,
@@ -183,14 +225,16 @@ func (this *UpdateAction) RunPost(params struct {
 	}
 
 	// 保存
-	_, err := this.RPC().NodeRPC().UpdateNode(this.AdminContext(), &pb.UpdateNodeRequest{
-		NodeId:    params.NodeId,
-		GroupId:   params.GroupId,
-		Name:      params.Name,
-		ClusterId: params.ClusterId,
-		Login:     loginInfo,
-		MaxCPU:    params.MaxCPU,
-		IsOn:      params.IsOn,
+	_, err = this.RPC().NodeRPC().UpdateNode(this.AdminContext(), &pb.UpdateNodeRequest{
+		NodeId:      params.NodeId,
+		GroupId:     params.GroupId,
+		Name:        params.Name,
+		ClusterId:   params.ClusterId,
+		Login:       loginInfo,
+		MaxCPU:      params.MaxCPU,
+		IsOn:        params.IsOn,
+		DnsDomainId: params.DnsDomainId,
+		DnsRoutes:   dnsRouteCodes,
 	})
 	if err != nil {
 		this.ErrorPage(err)

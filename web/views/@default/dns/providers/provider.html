@@ -48,7 +48,7 @@
 <h3>管理的域名 <a href="" @click.prevent="createDomain()">[添加域名]</a> </h3>
 <p class="comment" v-if="domains.length == 0">暂时还没有可以管理的域名。</p>
 
-<table class="ui table selectable" v-if="domains.length > 0">
+<table class="ui table selectable celled" v-if="domains.length > 0">
 	<thead>
 		<tr>
 			<th>域名</th>

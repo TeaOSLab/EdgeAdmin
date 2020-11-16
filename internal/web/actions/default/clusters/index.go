@@ -2,7 +2,6 @@ package clusters
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
@@ -55,20 +54,16 @@ func (this *IndexAction) RunGet(params struct{}) {
 				return
 			}
 
-			// grant
-			var grantMap maps.Map = nil
-			if cluster.GrantId > 0 {
-				grantResp, err := this.RPC().NodeGrantRPC().FindEnabledGrant(this.AdminContext(), &pb.FindEnabledGrantRequest{GrantId: cluster.GrantId})
+			// DNS
+			dnsDomainName := ""
+			if cluster.DnsDomainId > 0 {
+				dnsInfoResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeClusterDNS(this.AdminContext(), &pb.FindEnabledNodeClusterDNSRequest{NodeClusterId: cluster.Id})
 				if err != nil {
 					this.ErrorPage(err)
 					return
 				}
-				if grantResp.Grant != nil {
-					grantMap = maps.Map{
-						"id":         grantResp.Grant.Id,
-						"name":       grantResp.Grant.Name,
-						"methodName": grantutils.FindGrantMethodName(grantResp.Grant.Method),
-					}
+				if dnsInfoResp.Domain != nil {
+					dnsDomainName = dnsInfoResp.Domain.Name
 				}
 			}
 
@@ -76,9 +71,11 @@ func (this *IndexAction) RunGet(params struct{}) {
 				"id":               cluster.Id,
 				"name":             cluster.Name,
 				"installDir":       cluster.InstallDir,
-				"grant":            grantMap,
 				"countAllNodes":    countNodesResp.Count,
 				"countActiveNodes": countActiveNodesResp.Count,
+				"dnsDomainId":      cluster.DnsDomainId,
+				"dnsName":          cluster.DnsName,
+				"dnsDomainName":    dnsDomainName,
 			})
 		}
 	}

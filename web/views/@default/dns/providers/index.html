@@ -6,12 +6,12 @@
 
 <p class="comment" v-if="providers.length == 0">暂时还没有第三方DNS服务商。</p>
 
-<table class="ui table selectable" v-if="providers.length > 0">
+<table class="ui table selectable celled" v-if="providers.length > 0">
 	<thead>
 		<tr>
 			<th>账号说明</th>
 			<th>服务商</th>
-			<th>域名</th>
+			<th class="center">域名</th>
 			<th>数据更新时间</th>
 			<th class="two op">操作</th>
 		</tr>
@@ -19,9 +19,9 @@
 	<tr v-for="(provider, index) in providers">
 		<td>{{provider.name}}</td>
 		<td>{{provider.typeName}}</td>
-		<td>
-			<span v-if="provider.countDomains == 0" class="disabled">0个域名</span>
-			<span v-else>{{provider.countDomains}}个域名</span>
+		<td class="center">
+			<span v-if="provider.countDomains == 0" class="disabled">0</span>
+			<span v-else>{{provider.countDomains}}</span>
 		</td>
 		<td>
 			<span v-if="provider.dataUpdatedTime.length > 0">{{provider.dataUpdatedTime}}</span>
