@@ -3,28 +3,28 @@
 
 <div class="ui message" v-if="grants.length == 0">暂时还没有认证信息。</div>
 
-<table class="ui table selectable" v-if="grants.length > 0">
+<table class="ui table selectable celled" v-if="grants.length > 0">
 	<thead>
 		<tr>
-			<th>ID</th>
+			<th class="center">ID</th>
 			<th>名称</th>
 			<th>类型</th>
-			<th>集群数</th>
-			<th>节点数</th>
+			<th class="center">集群数</th>
+			<th class="center">节点数</th>
 			<th class="two op">操作</th>
 		</tr>
 	</thead>
 	<tr v-for="grant in grants">
-		<td>{{grant.id}}</td>
+		<td class="center">{{grant.id}}</td>
 		<td>{{grant.name}}</td>
 		<td>
 			<span class="ui label tiny">{{grant.method.name}}</span>
 		</td>
-		<td>
+		<td class="center">
 			<span v-if="grant.countClusters > 0">{{grant.countClusters}}</span>
 			<span v-else class="disabled">0</span>
 		</td>
-		<td>
+		<td class="center">
 			<span v-if="grant.countNodes > 0">{{grant.countNodes}}</span>
 			<span v-else class="disabled">0</span>
 		</td>

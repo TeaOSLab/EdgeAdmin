@@ -8,12 +8,12 @@
 <p class="comment" v-if="groups.length == 0">暂时还没有分组。</p>
 <div v-show="groups.length > 0">
 	<div class="margin"></div>
-	<table class="ui table selectable" id="sortable-table">
+	<table class="ui table selectable celled" id="sortable-table">
 		<thead>
 			<tr>
 				<th style="width:3em"></th>
 				<th>分组名称</th>
-				<th>节点数</th>
+				<th class="center">节点数</th>
 				<th class="two op">操作</th>
 			</tr>
 		</thead>
@@ -21,7 +21,7 @@
 			<tr>
 				<td style="text-align: center;"><i class="icon bars handle grey"></i> </td>
 				<td>{{group.name}}</td>
-				<td>
+				<td class="center">
 					<span v-if="group.countNodes.length > 0">{{group.countNodes}}</span>
 					<span v-else class="disabled">0</span>
 				</td>

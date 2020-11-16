@@ -24,7 +24,7 @@
 
 <p class="ui message" v-if="servers.length == 0">暂时还没有服务。</p>
 
-<table class="ui table selectable" v-if="servers.length > 0">
+<table class="ui table selectable celled" v-if="servers.length > 0">
 	<thead>
 		<tr>
 			<th>服务名称</th>
@@ -32,7 +32,7 @@
 			<th>部署集群</th>
 			<th>域名</th>
 			<th>端口</th>
-			<th class="two wide">状态</th>
+			<th class="two wide center">状态</th>
 			<th class="two op">操作</th>
 		</tr>
 	</thead>
@@ -65,7 +65,7 @@
 				<tiny-label>{{port.portRange}}<span class="small">（{{port.protocol}}）</span></tiny-label>
 			</div>
 		</td>
-		<td>
+		<td class="center">
 			<label-on :v-is-on="server.isOn"></label-on>
 		</td>
 		<td>

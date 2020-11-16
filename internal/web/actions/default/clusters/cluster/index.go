@@ -97,6 +97,12 @@ func (this *IndexAction) RunGet(params struct {
 			}
 		}
 
+		// DNS
+		dnsRouteNames := []string{}
+		for _, route := range node.DnsRoutes {
+			dnsRouteNames = append(dnsRouteNames, route.Name)
+		}
+
 		nodeMaps = append(nodeMaps, maps.Map{
 			"id":          node.Id,
 			"name":        node.Name,
@@ -122,9 +128,10 @@ func (this *IndexAction) RunGet(params struct {
 				"id":   node.Cluster.Id,
 				"name": node.Cluster.Name,
 			},
-			"isSynced":    isSynced,
-			"ipAddresses": ipAddresses,
-			"group":       groupMap,
+			"isSynced":      isSynced,
+			"ipAddresses":   ipAddresses,
+			"group":         groupMap,
+			"dnsRouteNames": dnsRouteNames,
 		})
 	}
 	this.Data["nodes"] = nodeMaps

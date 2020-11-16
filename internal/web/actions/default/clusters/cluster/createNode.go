@@ -76,8 +76,8 @@ func (this *CreateNodeAction) RunPost(params struct {
 	SshHost         string
 	SshPort         int
 
-	DnsDomainId int64
-	DnsRoute    string
+	DnsDomainId   int64
+	DnsRoutesJSON []byte
 
 	Must *actions.Must
 }) {
@@ -92,6 +92,13 @@ func (this *CreateNodeAction) RunPost(params struct {
 	// TODO 检查cluster
 	if params.ClusterId <= 0 {
 		this.Fail("请选择所在集群")
+	}
+
+	dnsRouteCodes := []string{}
+	err := json.Unmarshal(params.DnsRoutesJSON, &dnsRouteCodes)
+	if err != nil {
+		this.ErrorPage(err)
+		return
 	}
 
 	// TODO 检查登录授权
@@ -113,7 +120,7 @@ func (this *CreateNodeAction) RunPost(params struct {
 		GroupId:     params.GroupId,
 		Login:       loginInfo,
 		DnsDomainId: params.DnsDomainId,
-		DnsRoute:    params.DnsRoute,
+		DnsRoutes:   dnsRouteCodes,
 	})
 	if err != nil {
 		this.ErrorPage(err)

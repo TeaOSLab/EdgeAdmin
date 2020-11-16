@@ -46,7 +46,7 @@
 
 <h3>节点DNS解析记录 <span>&nbsp; ({{nodes.length}}个)</span></h3>
 <p class="comment" v-if="nodes.length == 0">暂时没有需要设置的DNS记录。</p>
-<table class="ui table selectable" v-if="nodes.length > 0">
+<table class="ui table selectable celled" v-if="nodes.length > 0">
 	<thead>
 		<tr>
 			<th>节点</th>
@@ -80,7 +80,7 @@
 
 <h3>代理服务解析记录 <span>&nbsp; ({{servers.length}}个)</span></h3>
 <p class="comment" v-if="servers.length == 0">暂时没有需要设置的DNS记录。</p>
-<table class="ui table selectable" v-if="servers.length > 0">
+<table class="ui table selectable celled" v-if="servers.length > 0">
 	<thead>
 		<tr>
 			<th>服务</th>

@@ -29,6 +29,12 @@
 				</div>
 			</td>
 		</tr>
+		<tr v-if="dnsRoutes.length > 0">
+			<td>DNS线路</td>
+			<td>
+				<span class="ui label tiny" v-for="route in dnsRoutes">{{route.name}}</span>
+			</td>
+		</tr>
 		<tr>
 			<td>所属分组</td>
 			<td>
