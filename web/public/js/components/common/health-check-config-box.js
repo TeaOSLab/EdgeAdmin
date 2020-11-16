@@ -178,7 +178,7 @@ Vue.component("health-check-config-box", {
 					<input type="checkbox" value="1" v-model="healthCheck.autoDown"/>
 					<label></label>
 				</div>
-				<p class="comment">选中后系统会根据健康检查的结果自动标记节点的上线/下线状态。</p>
+				<p class="comment">选中后系统会根据健康检查的结果自动标记节点的上线/下线状态，并可能自动同步DNS设置。</p>
 			</td>
 		</tr>
 		<tr v-show="healthCheck.autoDown">
