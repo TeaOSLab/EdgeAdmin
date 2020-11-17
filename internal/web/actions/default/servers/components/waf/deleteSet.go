@@ -2,6 +2,7 @@ package waf
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/models"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -16,6 +17,9 @@ func (this *DeleteSetAction) RunPost(params struct {
 	GroupId int64
 	SetId   int64
 }) {
+	// 日志
+	this.CreateLog(oplogs.LevelInfo, "删除WAF规则分组 %d 中的规则集 %d", params.GroupId, params.SetId)
+
 	groupConfig, err := models.SharedHTTPFirewallRuleGroupDAO.FindRuleGroupConfig(this.AdminContext(), params.GroupId)
 	if err != nil {
 		this.ErrorPage(err)

@@ -1,6 +1,7 @@
 package ipadmin
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/waf/ipadmin/ipadminutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -53,6 +54,9 @@ func (this *UpdateIPPopupAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
+	// 日志
+	this.CreateLog(oplogs.LevelInfo, "修改WAF策略 %d 名单中的IP %d", params.FirewallPolicyId, params.ItemId)
+
 	// TODO 校验ItemId所属用户
 	// TODO 校验IP格式（ipFrom/ipTo）
 

@@ -1,6 +1,7 @@
 package waf
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/models"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -93,6 +94,9 @@ func (this *CreateGroupPopupAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
+
+	// 日志
+	this.CreateLog(oplogs.LevelInfo, "创建规则分组 %d，名称：%s", groupId, params.Name)
 
 	this.Success()
 }

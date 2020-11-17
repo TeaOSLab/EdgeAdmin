@@ -1,6 +1,7 @@
 package waf
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/models"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -47,6 +48,9 @@ func (this *UpdateGroupPopupAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	// 日志
+	this.CreateLog(oplogs.LevelInfo, "修改WAF规则分组 %d 基本信息", params.GroupId)
+
 	params.Must.
 		Field("name", params.Name).
 		Require("请输入分组名称")

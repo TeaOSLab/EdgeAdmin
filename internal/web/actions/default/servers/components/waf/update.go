@@ -1,6 +1,7 @@
 package waf
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/models"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -67,6 +68,9 @@ func (this *UpdateAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	// 日志
+	this.CreateLog(oplogs.LevelInfo, "修改WAF策略 %d 基本信息", params.FirewallPolicyId)
+
 	params.Must.
 		Field("name", params.Name).
 		Require("请输入策略名称")

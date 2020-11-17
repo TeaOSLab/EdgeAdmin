@@ -1,0 +1,15 @@
+{$layout}
+
+{$template "/left_menu"}
+
+<div class="right-box">
+	<table class="ui table selectable definition">
+		<tr>
+			<td class="title">当前服务CNAME</td>
+			<td>
+				<span id="cname-text">{{dnsName}}.<span v-if="dnsDomain.length > 0">{{dnsDomain}}.</span><span v-else>根域名</span></span> &nbsp; <copy-to-clipboard :v-target="'cname-text'"></copy-to-clipboard>
+				<p class="comment">可以在DNS设置一个CNAME记录，名字为你自己的域名，值为上面这个值。</p>
+			</td>
+		</tr>
+	</table>
+</div>
