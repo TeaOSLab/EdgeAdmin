@@ -3,6 +3,7 @@ package origins
 import (
 	"encoding/json"
 	"errors"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -80,6 +81,9 @@ func (this *DeleteAction) RunPost(params struct {
 			return
 		}
 	}
+
+	// 日志
+	this.CreateLog(oplogs.LevelInfo, "删除反向代理服务 %d 的源站 %d", params.ReverseProxyId, params.OriginId)
 
 	this.Success()
 }
