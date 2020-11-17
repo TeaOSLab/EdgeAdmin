@@ -29,6 +29,13 @@
 				<p class="comment">源站服务器地址，通常是一个IP（或域名）加端口<span v-if="serverType == 'httpProxy'">，不需要加 http:// 或 https://</span>。</p>
 			</td>
 		</tr>
+		<tr>
+			<td>权重</td>
+			<td>
+				<input type="text" name="weight" maxlength="4" value="10"  style="width:5em"/>
+				<p class="comment">数字越大，代表分配的请求比例越多。</p>
+			</td>
+		</tr>
 	</table>
 	<submit-btn></submit-btn>
 </form>

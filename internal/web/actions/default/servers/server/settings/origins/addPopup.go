@@ -3,6 +3,7 @@ package origins
 import (
 	"encoding/json"
 	"errors"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -39,6 +40,7 @@ func (this *AddPopupAction) RunPost(params struct {
 	OriginType string
 
 	ReverseProxyId int64
+	Weight         int32
 	Protocol       string
 	Addr           string
 
@@ -56,7 +58,7 @@ func (this *AddPopupAction) RunPost(params struct {
 	host := addr[:portIndex]
 	port := addr[portIndex+1:]
 
-	resp, err := this.RPC().OriginRPC().CreateOrigin(this.AdminContext(), &pb.CreateOriginRequest{
+	createResp, err := this.RPC().OriginRPC().CreateOrigin(this.AdminContext(), &pb.CreateOriginRequest{
 		Name: "",
 		Addr: &pb.NetworkAddress{
 			Protocol:  params.Protocol,
@@ -64,12 +66,13 @@ func (this *AddPopupAction) RunPost(params struct {
 			PortRange: port,
 		},
 		Description: "",
+		Weight:      params.Weight,
 	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	originId := resp.OriginId
+	originId := createResp.OriginId
 	originRef := &serverconfigs.OriginRef{
 		IsOn:     true,
 		OriginId: originId,
@@ -127,6 +130,9 @@ func (this *AddPopupAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
+
+	// 日志
+	this.CreateLog(oplogs.LevelInfo, "为反向代理服务 %d 添加源站 %d", params.ReverseProxyId, originId)
 
 	this.Success()
 }

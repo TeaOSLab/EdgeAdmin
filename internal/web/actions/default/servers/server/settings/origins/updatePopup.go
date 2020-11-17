@@ -2,6 +2,7 @@ package origins
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -57,6 +58,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		"id":       config.Id,
 		"protocol": config.Addr.Protocol,
 		"addr":     config.Addr.Host + ":" + config.Addr.PortRange,
+		"weight":   config.Weight,
 	}
 
 	this.Show()
@@ -69,6 +71,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	ReverseProxyId int64
 	Protocol       string
 	Addr           string
+	Weight         int32
 
 	Must *actions.Must
 }) {
@@ -93,11 +96,15 @@ func (this *UpdatePopupAction) RunPost(params struct {
 			PortRange: port,
 		},
 		Description: "",
+		Weight:      params.Weight,
 	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
+
+	// 日志
+	this.CreateLog(oplogs.LevelInfo, "修改反向代理服务 %d 的源站 %d", params.ReverseProxyId, params.OriginId)
 
 	this.Success()
 }
