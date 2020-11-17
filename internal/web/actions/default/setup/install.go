@@ -124,6 +124,9 @@ func (this *InstallAction) RunPost(params struct {
 			if err != nil {
 				this.Fail("API节点启动失败：" + err.Error())
 			}
+
+			// 等待API节点初始化完成
+			time.Sleep(2 * time.Second)
 		}
 
 		// 写入API节点配置，完成安装

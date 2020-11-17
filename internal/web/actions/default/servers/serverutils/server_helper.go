@@ -158,6 +158,11 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isActive": secondMenuItem == "basic",
 			"isOff":    !serverConfig.IsOn,
 		},
+		{
+			"name":     "DNS",
+			"url":      "/servers/server/settings/dns?serverId=" + serverIdString,
+			"isActive": secondMenuItem == "dns",
+		},
 	}
 
 	// HTTP

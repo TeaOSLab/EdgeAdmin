@@ -77,11 +77,13 @@ func (this *NodeAction) RunGet(params struct {
 		return
 	}
 	dnsRouteMaps := []maps.Map{}
-	for _, dnsInfo := range dnsInfoResp.Node.Routes {
-		dnsRouteMaps = append(dnsRouteMaps, maps.Map{
-			"name": dnsInfo.Name,
-			"code": dnsInfo.Code,
-		})
+	if dnsInfoResp.Node != nil {
+		for _, dnsInfo := range dnsInfoResp.Node.Routes {
+			dnsRouteMaps = append(dnsRouteMaps, maps.Map{
+				"name": dnsInfo.Name,
+				"code": dnsInfo.Code,
+			})
+		}
 	}
 	this.Data["dnsRoutes"] = dnsRouteMaps
 

@@ -2,6 +2,7 @@ package ipadmin
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/models"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -65,6 +66,9 @@ func (this *IndexAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	// 日志
+	this.CreateLog(oplogs.LevelInfo, "WAF策略 %d 设置禁止访问的国家和地区", params.FirewallPolicyId)
+
 	policyConfig, err := models.SharedHTTPFirewallPolicyDAO.FindEnabledPolicyConfig(this.AdminContext(), params.FirewallPolicyId)
 	if err != nil {
 		this.ErrorPage(err)

@@ -3,6 +3,7 @@ package https
 import (
 	"encoding/json"
 	"errors"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/serverutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -77,6 +78,9 @@ func (this *IndexAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	// 记录日志
+	this.CreateLog(oplogs.LevelInfo, "修改服务 %d 的HTTPS设置", params.ServerId)
+
 	addresses := []*serverconfigs.NetworkAddressConfig{}
 	err := json.Unmarshal([]byte(params.Addresses), &addresses)
 	if err != nil {

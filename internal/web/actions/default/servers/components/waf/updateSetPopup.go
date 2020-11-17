@@ -2,6 +2,7 @@ package waf
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/models"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -25,6 +26,9 @@ func (this *UpdateSetPopupAction) RunGet(params struct {
 	Type             string
 	SetId            int64
 }) {
+	// 日志
+	this.CreateLog(oplogs.LevelInfo, "修改WAF规则集 %d 基本信息", params.SetId)
+
 	this.Data["groupId"] = params.GroupId
 	this.Data["type"] = params.Type
 

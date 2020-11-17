@@ -1,6 +1,7 @@
 package ipadmin
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/waf/ipadmin/ipadminutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/models"
@@ -50,7 +51,7 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 		Field("ipFrom", params.IpFrom).
 		Require("请输入开始IP")
 
-	_, err := this.RPC().IPItemRPC().CreateIPItem(this.AdminContext(), &pb.CreateIPItemRequest{
+	createResp, err := this.RPC().IPItemRPC().CreateIPItem(this.AdminContext(), &pb.CreateIPItemRequest{
 		IpListId:  params.ListId,
 		IpFrom:    params.IpFrom,
 		IpTo:      params.IpTo,
@@ -61,6 +62,7 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
+	itemId := createResp.IpItemId
 
 	// 发送通知
 	err = ipadminutils.NotifyUpdateToClustersWithFirewallPolicyId(this.AdminContext(), params.FirewallPolicyId)
@@ -68,6 +70,9 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
+
+	// 日志
+	this.CreateLog(oplogs.LevelInfo, "在WAF策略 %d 名单中添加IP %d", params.FirewallPolicyId, itemId)
 
 	this.Success()
 }
