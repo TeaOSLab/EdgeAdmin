@@ -12,7 +12,10 @@
 			<td>
 				<select name="prefix" class="ui dropdown auto-width" @change="changeCheckpoint()" v-model="rule.checkpointPrefix">
 					<option value="">[选择参数]</option>
-					<option v-for="cp in checkpoints" :value="cp.prefix">{{cp.name}} - [ {{cp.prefix}}]</option>
+					<optgroup label="特殊参数"></optgroup>
+					<option v-for="cp in checkpoints" v-if="cp.isComposed" :value="cp.prefix">{{cp.name}} - [ {{cp.prefix}}]</option>
+					<optgroup label="通用参数"></optgroup>
+					<option v-for="cp in checkpoints" v-if="!cp.isComposed" :value="cp.prefix">{{cp.name}} - [ {{cp.prefix}}]</option>
 				</select>
 				<p class="comment" v-if="checkpoint != null"><span class="ui label tiny">${<em style="font-style: normal;">{{checkpoint.prefix}}</em>}</span>{{checkpoint.description}}</p>
 			</td>
@@ -27,59 +30,71 @@
 			</td>
 		</tr>
 
-		<!-- 选项 -->
-		<tbody v-if="checkpoint != null && checkpoint.options != null && checkpoint.options.length > 0">
-		<tr v-for="option in checkpoint.options">
-			<td>{{option.name}}</td>
-			<td>
-				<div class="ui fields inline" v-if="option.type == 'field'">
-					<div class="ui field">
-						<input type="text" name="" :placeholder="option.placeholder" :maxlength="(option.maxLength > 0)?option.maxLength:1024" :size="option.size" v-model="option.value"/>
-					</div>
-					<div class="ui field">
-                        {{option.rightLabel}}
-					</div>
-				</div>
-				<div class="ui fields inline" v-if="option.type == 'options'">
-					<div class="ui field">
-						<select class="ui dropdown" :style="'width:' + option.size + 'em'" name="" v-model="option.value">
-							<option v-for="opt in option.options" :value="opt.value">{{opt.name}}</option>
-						</select>
-					</div>
-					<div class="ui field">
-                        {{option.rightLabel}}
-					</div>
-				</div>
-				<p class="comment" v-if="option.comment != null && option.comment.length > 0">{{option.comment}}</p>
-			</td>
-		</tr>
+		<!-- 组合规则的选项 -->
+		<tbody v-if="checkpoint != null && checkpoint.isComposed">
+			<tr>
+				<td>配置选项</td>
+				<td>
+					<http-cond-general-header-length v-if="checkpoint.prefix == 'requestGeneralHeaderLength' || checkpoint.prefix == 'responseGeneralHeaderLength'" :v-checkpoint="checkpoint"></http-cond-general-header-length>
+				</td>
+			</tr>
 		</tbody>
 
-		<tr>
-			<td>操作符</td>
-			<td>
-				<select class="ui dropdown" name="operator" style="width:10em" v-model="rule.operator" @change="changeOperator()">
-					<option v-for="op in operators" :value="op.code">{{op.name}}</option>
-				</select>
-				<p class="comment" v-if="operator != null" v-html="operator.description"></p>
-			</td>
-		</tr>
-		<tr v-if="operator.case != 'none'">
-			<td>开启大小写不敏感</td>
-			<td>
-				<div class="ui checkbox">
-					<input name="case" type="checkbox" value="1"  v-model="rule.isCaseInsensitive"/>
-					<label></label>
-				</div>
-				<p class="comment">开启后忽略英文字母大小写</p>
-			</td>
-		</tr>
-		<tr>
-			<td>对比值</td>
-			<td>
-				<textarea rows="3" maxlength="4096" name="value" v-model="rule.value"></textarea>
-			</td>
-		</tr>
+		<!-- 选项 -->
+		<tbody v-if="checkpoint != null && !checkpoint.isComposed && checkpoint.options != null && checkpoint.options.length > 0">
+			<tr v-for="option in checkpoint.options">
+				<td>{{option.name}}</td>
+				<td>
+					<div class="ui fields inline" v-if="option.type == 'field'">
+						<div class="ui field">
+							<input type="text" name="" :placeholder="option.placeholder" :maxlength="(option.maxLength > 0)?option.maxLength:1024" :size="option.size" v-model="option.value"/>
+						</div>
+						<div class="ui field">
+							{{option.rightLabel}}
+						</div>
+					</div>
+					<div class="ui fields inline" v-if="option.type == 'options'">
+						<div class="ui field">
+							<select class="ui dropdown" :style="'width:' + option.size + 'em'" name="" v-model="option.value">
+								<option v-for="opt in option.options" :value="opt.value">{{opt.name}}</option>
+							</select>
+						</div>
+						<div class="ui field">
+							{{option.rightLabel}}
+						</div>
+					</div>
+					<p class="comment" v-if="option.comment != null && option.comment.length > 0">{{option.comment}}</p>
+				</td>
+			</tr>
+		</tbody>
+
+		<tbody v-show="checkpoint != null && !checkpoint.isComposed">
+			<tr>
+				<td>操作符</td>
+				<td>
+					<select class="ui dropdown" name="operator" style="width:10em" v-model="rule.operator" @change="changeOperator()">
+						<option v-for="op in operators" :value="op.code">{{op.name}}</option>
+					</select>
+					<p class="comment" v-if="operator != null" v-html="operator.description"></p>
+				</td>
+			</tr>
+			<tr v-if="operator.case != 'none'">
+				<td>开启大小写不敏感</td>
+				<td>
+					<div class="ui checkbox">
+						<input name="case" type="checkbox" value="1"  v-model="rule.isCaseInsensitive"/>
+						<label></label>
+					</div>
+					<p class="comment">开启后忽略英文字母大小写</p>
+				</td>
+			</tr>
+			<tr>
+				<td>对比值</td>
+				<td>
+					<textarea rows="3" maxlength="4096" name="value" v-model="rule.value"></textarea>
+				</td>
+			</tr>
+		</tbody>
 	</table>
 
 	<submit-btn></submit-btn>

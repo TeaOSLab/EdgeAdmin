@@ -22,15 +22,16 @@ func (this *CreateRulePopupAction) RunGet(params struct {
 }) {
 	// check points
 	checkpointList := []maps.Map{}
-	for _, def := range firewallconfigs.AllCheckpoints {
-		if (params.Type == "inbound" && def.IsRequest) || (params.Type == "outbound" && !def.IsRequest) {
+	for _, checkpoint := range firewallconfigs.AllCheckpoints {
+		if (params.Type == "inbound" && checkpoint.IsRequest) || (params.Type == "outbound" && !checkpoint.IsRequest) {
 			checkpointList = append(checkpointList, maps.Map{
-				"name":        def.Name,
-				"prefix":      def.Prefix,
-				"description": def.Description,
-				"hasParams":   len(def.Params) > 0,
-				"params":      def.Params,
-				"options":     def.Options,
+				"name":        checkpoint.Name,
+				"prefix":      checkpoint.Prefix,
+				"description": checkpoint.Description,
+				"hasParams":   len(checkpoint.Params) > 0,
+				"params":      checkpoint.Params,
+				"options":     checkpoint.Options,
+				"isComposed":  checkpoint.IsComposed,
 			})
 		}
 	}
@@ -89,7 +90,7 @@ func (this *CreateRulePopupAction) RunPost(params struct {
 
 		rule.CheckpointOptions = map[string]interface{}{}
 		for _, option := range options {
-			rule.CheckpointOptions[option.GetString("code")] = option.GetString("value")
+			rule.CheckpointOptions[option.GetString("code")] = option.Get("value")
 		}
 	}
 
