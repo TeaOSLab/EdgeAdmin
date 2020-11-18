@@ -4,29 +4,24 @@
 <div class="right-box without-tabbar">
 	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 		<input type="hidden" name="globalConfigJSON" :value="JSON.stringify(globalConfig)"/>
+		<h4 style="margin-top:0.5em">域名相关配置</h4>
 		<table class="ui table selectable definition">
 			<tr>
-				<td colspan="2">HTTP/HTTPS通用设置</td>
-			</tr>
-			<tr>
-				<td class="title color-border">是否严格匹配域名</td>
+				<td class="title">是否严格匹配域名</td>
 				<td>
-					<div class="ui checkbox">
-						<input type="checkbox" name="matchDomainStrictly" value="1" v-model="globalConfig.httpAll.matchDomainStrictly"/>
-						<label></label>
-					</div>
+					<checkbox name="matchDomainStrictly" v-model="globalConfig.httpAll.matchDomainStrictly"></checkbox>
 					<p class="comment">如果选择了严格匹配域名，找不到匹配的域名时会采取对应的动作。</p>
 				</td>
 			</tr>
 			<tr>
-				<td class="color-border">默认域名</td>
+				<td>默认域名</td>
 				<td>
 					<input type="text" name="defaultDomain" v-model="globalConfig.httpAll.defaultDomain" maxlength="100"/>
 					<p class="comment">当找不到匹配的域名时，自动使用此域名。</p>
 				</td>
 			</tr>
 			<tr>
-				<td class="color-border">允许不匹配的域名</td>
+				<td>允许不匹配的域名</td>
 				<td>
 					<values-box :name="'allowMismatchDomains'" :values="globalConfig.httpAll.allowMismatchDomains" :size="40" :maxlength="100" :placeholder="'域名'"></values-box>
 					<p class="comment">允许这些域名即时不匹配也可以访问。</p>
@@ -35,15 +30,10 @@
 			<tr>
 				<td class="color-border">域名不匹配时的动作</td>
 				<td>
-					<div class="ui checkbox radio">
-						<input type="radio" name="domainMismatchAction" value="close" v-model="domainMismatchAction"/>
-						<label>断开连接</label>
-					</div>
-					&nbsp;
-					<div class="ui checkbox radio">
-						<input type="radio" name="domainMismatchAction" value="page" v-model="domainMismatchAction"/>
-						<label>显示提示页面</label>
-					</div>
+					<radio name="domainMismatchAction" :v-value="'close'" v-model="domainMismatchAction">断开连接</radio>
+					&nbsp; &nbsp;
+					<radio name="domainMismatchAction" :v-value="'page'" v-model="domainMismatchAction">显示提示页面</radio>
+
 					<p class="comment" v-if="domainMismatchAction == 'close'">当找不到要访问的域名时关闭客户端连接。</p>
 					<p class="comment" v-if="domainMismatchAction == 'page'">当找不到访问的域名时显示一个提示页面。</p>
 				</td>
