@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/maps"
 )
 
 const (
@@ -45,6 +46,14 @@ func (this *IndexAction) RunGet(params struct{}) {
 func (this *IndexAction) RunPost(params struct {
 	GlobalConfigJSON []byte
 	Must             *actions.Must
+
+	// 不匹配域名相关
+	AllowMismatchDomains                []string
+	DomainMismatchAction                string
+	DomainMismatchActionPageStatusCode  int
+	DomainMismatchActionPageContentHTML string
+
+	DefaultDomain string
 }) {
 	// 创建日志
 	this.CreateLog(oplogs.LevelInfo, "保存代理服务全局配置")
@@ -59,10 +68,44 @@ func (this *IndexAction) RunPost(params struct {
 		this.Fail("配置校验失败：" + err.Error())
 	}
 
+	// 允许不匹配的域名
+	allowMismatchDomains := []string{}
+	for _, domain := range params.AllowMismatchDomains {
+		if len(domain) > 0 {
+			allowMismatchDomains = append(allowMismatchDomains, domain)
+		}
+	}
+	globalConfig.HTTPAll.AllowMismatchDomains = allowMismatchDomains
+
+	// 不匹配域名的动作
+	switch params.DomainMismatchAction {
+	case "close":
+		globalConfig.HTTPAll.DomainMismatchAction = &serverconfigs.DomainMismatchAction{
+			Code:    "close",
+			Options: nil,
+		}
+	case "page":
+		if params.DomainMismatchActionPageStatusCode <= 0 {
+			params.DomainMismatchActionPageStatusCode = 404
+		}
+		globalConfig.HTTPAll.DomainMismatchAction = &serverconfigs.DomainMismatchAction{
+			Code: "page",
+			Options: maps.Map{
+				"statusCode":  params.DomainMismatchActionPageStatusCode,
+				"contentHTML": params.DomainMismatchActionPageContentHTML,
+			},
+		}
+	}
+
 	// 修改配置
+	globalConfigJSON, err := json.Marshal(globalConfig)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 	_, err = this.RPC().SysSettingRPC().UpdateSysSetting(this.AdminContext(), &pb.UpdateSysSettingRequest{
 		Code:      SettingCodeServerGlobalConfig,
-		ValueJSON: params.GlobalConfigJSON,
+		ValueJSON: globalConfigJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)
