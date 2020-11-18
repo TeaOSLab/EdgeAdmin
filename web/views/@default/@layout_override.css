@@ -28,4 +28,7 @@ table th.width10 {
 table th.width5 {
   width: 5em;
 }
+textarea::-webkit-scrollbar {
+  width: 6px !important;
+}
 /*# sourceMappingURL=@layout_override.css.map */
