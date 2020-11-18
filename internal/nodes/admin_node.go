@@ -3,6 +3,7 @@ package nodes
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/errors"
+	"github.com/TeaOSLab/EdgeAdmin/internal/events"
 	"github.com/iwind/TeaGo"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/logs"
@@ -49,6 +50,9 @@ func (this *AdminNode) Run() {
 			os.Exit(0)
 		}
 	}()
+
+	// 触发事件
+	events.Notify(events.EventStart)
 
 	// 启动API节点
 	this.startAPINode()

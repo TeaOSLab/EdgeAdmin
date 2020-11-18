@@ -1,6 +1,7 @@
 package web
 
 import (
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/tasks"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/about"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/api"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/api/node"

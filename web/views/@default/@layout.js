@@ -1,6 +1,5 @@
 Tea.context(function () {
 	this.moreOptionsVisible = false
-	this.globalChangedClusters = []
 	this.globalMessageBadge = 0
 
 	if (typeof this.leftMenuItemIsDisabled == "undefined") {
@@ -11,9 +10,6 @@ Tea.context(function () {
 		if (this.$refs.focus != null) {
 			this.$refs.focus.focus()
 		}
-
-		// 检查变更
-		this.checkClusterChanges()
 
 		// 检查消息
 		this.checkMessages()
@@ -38,32 +34,6 @@ Tea.context(function () {
 	};
 
 	/**
-	 * 检查集群变更
-	 */
-	this.checkClusterChanges = function () {
-		this.$post("/clusters/checkChange")
-			.params({
-				isNotifying: (this.globalChangedClusters.length > 0) ? 1 : 0
-			})
-			.timeout(60)
-			.success(function (resp) {
-				this.globalChangedClusters = resp.data.clusters;
-			})
-			.fail(function () {
-				this.globalChangedClusters = [];
-			})
-			.done(function () {
-				let delay = 3000
-				if (this.globalChangedClusters.length > 0) {
-					delay = 30000
-				}
-				this.$delay(function () {
-					this.checkClusterChanges()
-				}, delay)
-			})
-	}
-
-	/**
 	 * 检查消息
 	 */
 	this.checkMessages = function () {
@@ -82,18 +52,6 @@ Tea.context(function () {
 				}, delay)
 			})
 	}
-
-	/**
-	 * 同步集群配置
-	 */
-	this.syncClustersConfigs = function () {
-		teaweb.confirm("html:有若干个集群配置已变更！<br/>确定要同步配置到边缘节点吗？", function () {
-			this.$post("/clusters/sync")
-				.success(function () {
-					this.globalChangedClusters = [];
-				})
-		})
-	};
 
 	/**
 	 * 底部伸展框
