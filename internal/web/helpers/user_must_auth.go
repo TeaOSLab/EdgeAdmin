@@ -86,7 +86,7 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 			"icon": "clone outsize",
 			"subItems": []maps.Map{
 				{
-					"name": "通用组件",
+					"name": "通用设置",
 					"url":  "/servers/components",
 					"code": "components",
 				},
