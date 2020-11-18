@@ -39,7 +39,7 @@ Vue.component("http-firewall-rules-box", {
 		<input type="hidden" name="rulesJSON" :value="JSON.stringify(rules)"/>
 		<div v-if="rules.length > 0">
 			<div v-for="(rule, index) in rules" class="ui label tiny" style="margin-bottom: 0.5em">
-				<span>{{rule.param}} <var>{{rule.operator}}</var> {{rule.value}}</span>
+				<span>{{rule.param}} <var v-if="rule.value.length > 0">{{rule.operator}}</var> {{rule.value}}</span>
 				<a href="" title="修改" @click.prevent="updateRule(index, rule)"><i class="icon pencil small"></i></a>
 				<a href="" title="删除" @click.prevent="removeRule(index)"><i class="icon remove"></i></a>
 			</div>

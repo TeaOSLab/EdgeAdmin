@@ -29,4 +29,12 @@
 			</td>
 		</tr>
 	</table>
+
+	<h4>使用此策略的服务</h4>
+	<p class="comment" v-if="servers.length == 0">暂时还没有代理服务使用此策略。</p>
+	<table class="ui table selectable" v-if="servers.length > 0">
+		<tr v-for="server in servers">
+			<td>{{server.name}}<link-icon :href="'/servers/server?serverId=' + server.id"></link-icon></td>
+		</tr>
+	</table>
 </div>
