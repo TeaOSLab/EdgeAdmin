@@ -1,16 +1,52 @@
 package helpers
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/events"
 	nodes "github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/securitymanager"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/logs"
 	"net"
+	"sync"
 )
 
-// 检查用户IP
+var ipCacheMap = map[string]bool{} // ip => bool
+var ipCacheLocker = sync.Mutex{}
+
+func init() {
+	events.On(events.EventSecurityConfigChanged, func() {
+		ipCacheLocker.Lock()
+		ipCacheMap = map[string]bool{}
+		ipCacheLocker.Unlock()
+	})
+}
+
+// 检查用户IP并支持缓存
 func checkIP(config *securitymanager.SecurityConfig, ipAddr string) bool {
+	ipCacheLocker.Lock()
+	ipCache, ok := ipCacheMap[ipAddr]
+	if ok && ipCache {
+		ipCacheLocker.Unlock()
+		return ipCache
+	}
+	ipCacheLocker.Unlock()
+
+	result := checkIPWithoutCache(config, ipAddr)
+	ipCacheLocker.Lock()
+
+	// 缓存的内容不能过多
+	if len(ipCacheMap) > 100_000 {
+		ipCacheMap = map[string]bool{}
+	}
+
+	ipCacheMap[ipAddr] = result
+	ipCacheLocker.Unlock()
+	return result
+}
+
+// 检查用户IP
+func checkIPWithoutCache(config *securitymanager.SecurityConfig, ipAddr string) bool {
 	if config == nil {
 		return true
 	}

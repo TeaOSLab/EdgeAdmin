@@ -2,6 +2,7 @@ package securitymanager
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/events"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/logs"
@@ -61,6 +62,10 @@ func UpdateSecurityConfig(securityConfig *SecurityConfig) error {
 		return err
 	}
 	sharedSecurityConfig = securityConfig
+
+	// 通知更新
+	events.Notify(events.EventSecurityConfigChanged)
+
 	return nil
 }
 
