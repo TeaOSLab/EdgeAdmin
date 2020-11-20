@@ -2,6 +2,7 @@ package headers
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
@@ -46,6 +47,9 @@ func (this *UpdateSetPopupAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	// 日志
+	defer this.CreateLog(oplogs.LevelInfo, "修改设置请求Header，HeaderPolicyId:%d, Name:%s, Value:%s", params.HeaderId, params.Name, params.Value)
+
 	params.Must.
 		Field("name", params.Name).
 		Require("请输入Header名称")

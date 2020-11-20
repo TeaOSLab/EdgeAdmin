@@ -109,7 +109,7 @@ func (this *PurgeAction) RunPost(params struct {
 	this.Data["results"] = results
 
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "删除缓存，缓存策略：%d", params.CachePolicyId)
+	defer this.CreateLog(oplogs.LevelInfo, "删除缓存，缓存策略：%d", params.CachePolicyId)
 
 	this.Success()
 }

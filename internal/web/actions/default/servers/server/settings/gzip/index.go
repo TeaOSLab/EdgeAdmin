@@ -2,6 +2,7 @@ package gzip
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -76,6 +77,9 @@ func (this *IndexAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	// 日志
+	defer this.CreateLog(oplogs.LevelInfo, "修改Web %d 的GZip配置", params.WebId)
+
 	if params.Level < 0 || params.Level > 9 {
 		this.Fail("请选择正确的压缩级别")
 	}

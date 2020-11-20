@@ -46,7 +46,7 @@ func (this *HealthAction) RunPost(params struct {
 	Must            *actions.Must
 }) {
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "修改集群健康检查设置 %d", params.ClusterId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改集群健康检查设置 %d", params.ClusterId)
 
 	config := &serverconfigs.HealthCheckConfig{}
 	err := json.Unmarshal(params.HealthCheckJSON, config)

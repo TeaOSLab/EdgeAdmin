@@ -2,6 +2,7 @@ package pages
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -46,6 +47,9 @@ func (this *UpdatePopupAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	// 日志
+	defer this.CreateLog(oplogs.LevelInfo, "修改特殊页面 %d", params.PageId)
+
 	params.Must.
 		Field("status", params.Status).
 		Require("请输入响应状态码").

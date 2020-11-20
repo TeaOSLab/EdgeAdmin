@@ -48,7 +48,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "创建集群分组", createResp.GroupId)
+	defer this.CreateLog(oplogs.LevelInfo, "创建集群分组", createResp.GroupId)
 
 	this.Success()
 }

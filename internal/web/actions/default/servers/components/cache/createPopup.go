@@ -80,7 +80,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "创建缓存策略：%d", createResp.CachePolicyId)
+	defer this.CreateLog(oplogs.LevelInfo, "创建缓存策略：%d", createResp.CachePolicyId)
 
 	this.Success()
 }

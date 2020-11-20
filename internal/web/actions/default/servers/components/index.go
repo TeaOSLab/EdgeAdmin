@@ -56,7 +56,7 @@ func (this *IndexAction) RunPost(params struct {
 	DefaultDomain string
 }) {
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "保存代理服务全局配置")
+	defer this.CreateLog(oplogs.LevelInfo, "保存代理服务全局配置")
 
 	if len(params.GlobalConfigJSON) == 0 {
 		this.Fail("错误的配置信息，请刷新当前页面后重试")

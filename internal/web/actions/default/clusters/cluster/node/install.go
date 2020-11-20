@@ -112,7 +112,7 @@ func (this *InstallAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "安装节点 %d", params.NodeId)
+	defer this.CreateLog(oplogs.LevelInfo, "安装节点 %d", params.NodeId)
 
 	this.Success()
 }

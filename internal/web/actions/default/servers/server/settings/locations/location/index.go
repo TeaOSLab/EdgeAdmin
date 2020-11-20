@@ -47,6 +47,8 @@ func (this *IndexAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	defer this.CreateLogInfo("修改路径规则 %d 设置", params.LocationId)
+
 	params.Must.
 		Field("pattern", params.Pattern).
 		Require("请输入路径匹配规则")

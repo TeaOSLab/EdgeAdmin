@@ -68,7 +68,7 @@ func (this *IndexAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	// 记录日志
-	this.CreateLog(oplogs.LevelInfo, "修改服务 %d 的HTTP设置", params.ServerId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改服务 %d 的HTTP设置", params.ServerId)
 
 	addresses := []*serverconfigs.NetworkAddressConfig{}
 	err := json.Unmarshal([]byte(params.Addresses), &addresses)

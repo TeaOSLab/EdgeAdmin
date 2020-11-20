@@ -103,7 +103,7 @@ func (this *IndexAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	// 记录日志
-	this.CreateLog(oplogs.LevelInfo, "修改代理服务 %d 基本信息", params.ServerId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改代理服务 %d 基本信息", params.ServerId)
 
 	params.Must.
 		Field("name", params.Name).

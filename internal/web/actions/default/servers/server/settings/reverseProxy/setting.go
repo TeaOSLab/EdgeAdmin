@@ -51,6 +51,8 @@ func (this *SettingAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	defer this.CreateLogInfo("修改代理服务 %d 的反向代理设置", params.ServerId)
+
 	// TODO 校验配置
 
 	reverseProxyConfig := &serverconfigs.ReverseProxyConfig{}

@@ -78,10 +78,23 @@ func (this *ParentAction) AdminId() int64 {
 }
 
 func (this *ParentAction) CreateLog(level string, description string, args ...interface{}) {
-	err := models.SharedLogDAO.CreateAdminLog(this.AdminContext(), level, this.Request.URL.Path, fmt.Sprintf(description, args...), this.RequestRemoteIP())
+	desc := fmt.Sprintf(description, args...)
+	if level == oplogs.LevelInfo {
+		if this.Code != 200 {
+			level = oplogs.LevelWarn
+			if len(this.Message) > 0 {
+				desc += " 失败：" + this.Message
+			}
+		}
+	}
+	err := models.SharedLogDAO.CreateAdminLog(this.AdminContext(), level, this.Request.URL.Path, desc, this.RequestRemoteIP())
 	if err != nil {
 		utils.PrintError(err)
 	}
+}
+
+func (this *ParentAction) CreateLogInfo(description string, args ...interface{}) {
+	this.CreateLog(oplogs.LevelInfo, description, args...)
 }
 
 // 获取RPC

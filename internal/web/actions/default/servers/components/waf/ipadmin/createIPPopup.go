@@ -72,7 +72,7 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 	}
 
 	// 日志
-	this.CreateLog(oplogs.LevelInfo, "在WAF策略 %d 名单中添加IP %d", params.FirewallPolicyId, itemId)
+	defer this.CreateLog(oplogs.LevelInfo, "在WAF策略 %d 名单中添加IP %d", params.FirewallPolicyId, itemId)
 
 	this.Success()
 }

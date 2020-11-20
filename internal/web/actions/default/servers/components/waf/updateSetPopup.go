@@ -27,7 +27,7 @@ func (this *UpdateSetPopupAction) RunGet(params struct {
 	SetId            int64
 }) {
 	// 日志
-	this.CreateLog(oplogs.LevelInfo, "修改WAF规则集 %d 基本信息", params.SetId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改WAF规则集 %d 基本信息", params.SetId)
 
 	this.Data["groupId"] = params.GroupId
 	this.Data["type"] = params.Type

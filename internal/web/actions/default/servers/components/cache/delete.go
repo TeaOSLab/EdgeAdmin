@@ -30,7 +30,7 @@ func (this *DeleteAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "删除缓存策略：%d", params.CachePolicyId)
+	defer this.CreateLog(oplogs.LevelInfo, "删除缓存策略：%d", params.CachePolicyId)
 
 	this.Success()
 }

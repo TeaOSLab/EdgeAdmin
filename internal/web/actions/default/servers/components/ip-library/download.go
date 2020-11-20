@@ -18,7 +18,7 @@ func (this *DownloadAction) RunGet(params struct {
 	LibraryId int64
 }) {
 	// 日志
-	this.CreateLog(oplogs.LevelInfo, "下载IP库 %d", params.LibraryId)
+	defer this.CreateLog(oplogs.LevelInfo, "下载IP库 %d", params.LibraryId)
 
 	libraryResp, err := this.RPC().IPLibraryRPC().FindEnabledIPLibrary(this.AdminContext(), &pb.FindEnabledIPLibraryRequest{IpLibraryId: params.LibraryId})
 	if err != nil {

@@ -18,7 +18,7 @@ func (this *SortGroupsAction) RunPost(params struct {
 	GroupIds         []int64
 }) {
 	// 日志
-	this.CreateLog(oplogs.LevelInfo, "修改WAF策略 %d 中的规则分组中的排序", params.FirewallPolicyId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改WAF策略 %d 中的规则分组中的排序", params.FirewallPolicyId)
 
 	firewallPolicy, err := models.SharedHTTPFirewallPolicyDAO.FindEnabledPolicyConfig(this.AdminContext(), params.FirewallPolicyId)
 	if err != nil {

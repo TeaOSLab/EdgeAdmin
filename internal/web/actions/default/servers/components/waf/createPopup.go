@@ -57,7 +57,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	}
 
 	// 日志
-	this.CreateLog(oplogs.LevelInfo, "创建WAF策略 %d", createResp.FirewallPolicyId)
+	defer this.CreateLog(oplogs.LevelInfo, "创建WAF策略 %d", createResp.FirewallPolicyId)
 
 	this.Success()
 }

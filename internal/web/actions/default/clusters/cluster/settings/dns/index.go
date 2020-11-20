@@ -61,7 +61,7 @@ func (this *IndexAction) RunPost(params struct {
 	CSRF *actionutils.CSRF
 }) {
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "修改集群 %d DNS设置", params.ClusterId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改集群 %d DNS设置", params.ClusterId)
 
 	// 检查DNS名称
 	if len(params.DnsName) > 0 {

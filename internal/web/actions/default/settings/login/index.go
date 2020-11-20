@@ -41,6 +41,8 @@ func (this *IndexAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	defer this.CreateLogInfo("修改登录设置")
+
 	params.Must.
 		Field("username", params.Username).
 		Require("请输入登录用户名").

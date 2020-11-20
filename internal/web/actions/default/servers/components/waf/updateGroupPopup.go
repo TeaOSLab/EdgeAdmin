@@ -49,7 +49,7 @@ func (this *UpdateGroupPopupAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	// 日志
-	this.CreateLog(oplogs.LevelInfo, "修改WAF规则分组 %d 基本信息", params.GroupId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改WAF规则分组 %d 基本信息", params.GroupId)
 
 	params.Must.
 		Field("name", params.Name).

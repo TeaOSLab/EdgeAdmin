@@ -79,7 +79,7 @@ func (this *CreateAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "创建节点集群：%d", createResp.ClusterId)
+	defer this.CreateLog(oplogs.LevelInfo, "创建节点集群：%d", createResp.ClusterId)
 
 	this.Success()
 }

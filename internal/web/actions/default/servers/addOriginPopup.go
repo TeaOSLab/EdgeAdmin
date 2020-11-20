@@ -71,7 +71,7 @@ func (this *AddOriginPopupAction) RunPost(params struct {
 	this.Data["origin"] = origin
 
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "创建源站 %d", resp.OriginId)
+	defer this.CreateLog(oplogs.LevelInfo, "创建源站 %d", resp.OriginId)
 
 	this.Success()
 }

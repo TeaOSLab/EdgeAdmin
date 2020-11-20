@@ -39,6 +39,8 @@ func (this *IndexAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	defer this.CreateLogInfo("修改个人资料")
+
 	params.Must.
 		Field("fullname", params.Fullname).
 		Require("请输入你的姓名")

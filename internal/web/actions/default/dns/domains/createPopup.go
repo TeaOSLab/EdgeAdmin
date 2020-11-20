@@ -54,7 +54,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		return
 	}
 
-	this.CreateLog(oplogs.LevelInfo, "添加管理域名到DNS服务商 %d", createResp.DnsDomainId)
+	defer this.CreateLog(oplogs.LevelInfo, "添加管理域名到DNS服务商 %d", createResp.DnsDomainId)
 
 	this.Success()
 }

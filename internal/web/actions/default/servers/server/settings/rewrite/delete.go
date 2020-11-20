@@ -16,6 +16,8 @@ func (this *DeleteAction) RunPost(params struct {
 	WebId         int64
 	RewriteRuleId int64
 }) {
+	defer this.CreateLogInfo("从Web %d 中删除重写规则 %d", params.WebId, params.RewriteRuleId)
+
 	webConfig, err := webutils.FindWebConfigWithId(this.Parent(), params.WebId)
 	if err != nil {
 		this.ErrorPage(err)

@@ -98,5 +98,8 @@ func (this *CreatePopupAction) RunPost(params struct {
 		return
 	}
 
+	// 日志
+	defer this.CreateLogInfo("在Web %d 中创建重写规则 %d", params.WebId, createResp.RewriteRuleId)
+
 	this.Success()
 }

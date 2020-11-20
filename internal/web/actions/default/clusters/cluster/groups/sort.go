@@ -20,7 +20,7 @@ func (this *SortAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "修改集群分组排序")
+	defer this.CreateLog(oplogs.LevelInfo, "修改集群分组排序")
 
 	this.Success()
 }

@@ -55,7 +55,7 @@ func (this *UpdateIPPopupAction) RunPost(params struct {
 	CSRF *actionutils.CSRF
 }) {
 	// 日志
-	this.CreateLog(oplogs.LevelInfo, "修改WAF策略 %d 名单中的IP %d", params.FirewallPolicyId, params.ItemId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改WAF策略 %d 名单中的IP %d", params.FirewallPolicyId, params.ItemId)
 
 	// TODO 校验ItemId所属用户
 	// TODO 校验IP格式（ipFrom/ipTo）

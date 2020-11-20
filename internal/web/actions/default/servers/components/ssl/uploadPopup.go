@@ -115,7 +115,7 @@ func (this *UploadPopupAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "上传SSL证书 %d", certId)
+	defer this.CreateLog(oplogs.LevelInfo, "上传SSL证书 %d", certId)
 
 	this.Success()
 }

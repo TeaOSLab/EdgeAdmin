@@ -3,10 +3,10 @@
 <p class="comment" v-if="logs.length == 0">暂时还没有日志。</p>
 
 <table class="ui table selectable" v-for="log in logs">
-	<tr>
+	<tr :class="{error: log.level == 'error', warning: log.level == 'warn'}">
 		<td>{{log.createdTime}} <span class="grey"> <span v-if="log.userName.length > 0">| {{log.userName}}</span> | {{log.ip}}<span v-if="log.region.length > 0"> | {{log.region}}</span></span></td>
 	</tr>
-	<tr>
+	<tr :class="{error: log.level == 'error', warning: log.level == 'warn'}">
 		<td>{{log.description}}</td>
 	</tr>
 </table>

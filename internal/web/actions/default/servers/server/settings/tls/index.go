@@ -78,6 +78,8 @@ func (this *IndexAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	defer this.CreateLogInfo("修改代理服务 %d TLS设置", params.ServerId)
+
 	server, _, isOk := serverutils.FindServer(this.Parent(), params.ServerId)
 	if !isOk {
 		return

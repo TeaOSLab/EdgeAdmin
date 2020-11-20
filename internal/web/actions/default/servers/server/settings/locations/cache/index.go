@@ -37,6 +37,8 @@ func (this *IndexAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	defer this.CreateLogInfo("修改Web %d 的缓存设置", params.WebId)
+
 	// TODO 校验配置
 	cacheConfig := &serverconfigs.HTTPCacheConfig{}
 	err := json.Unmarshal(params.CacheJSON, cacheConfig)

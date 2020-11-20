@@ -52,7 +52,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	// TODO 检查DomainId
 
 	// 记录日志
-	this.CreateLog(oplogs.LevelInfo, "修改管理域名到DNS服务商 %d", params.DomainId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改管理域名到DNS服务商 %d", params.DomainId)
 
 	params.Must.
 		Field("name", params.Name).

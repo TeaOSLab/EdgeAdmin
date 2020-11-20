@@ -318,7 +318,7 @@ func (this *CreateAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "创建代理服务 %d", createResp.ServerId)
+	defer this.CreateLog(oplogs.LevelInfo, "创建代理服务 %d", createResp.ServerId)
 
 	this.Success()
 }

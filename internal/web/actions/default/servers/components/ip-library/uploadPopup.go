@@ -104,7 +104,7 @@ func (this *UploadPopupAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "上传IP库 %d", createResp.IpLibraryId)
+	defer this.CreateLog(oplogs.LevelInfo, "上传IP库 %d", createResp.IpLibraryId)
 
 	this.Success()
 }

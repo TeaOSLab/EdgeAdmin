@@ -25,7 +25,7 @@ func (this *IndexAction) RunPost(params struct {
 	Must     *actions.Must
 }) {
 	// 记录日志
-	this.CreateLog(oplogs.LevelInfo, "删除代理服务 %d", params.ServerId)
+	defer this.CreateLog(oplogs.LevelInfo, "删除代理服务 %d", params.ServerId)
 
 	// 执行删除
 	_, err := this.RPC().ServerRPC().DisableServer(this.AdminContext(), &pb.DisableServerRequest{ServerId: params.ServerId})

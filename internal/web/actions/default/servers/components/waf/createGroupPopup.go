@@ -96,7 +96,7 @@ func (this *CreateGroupPopupAction) RunPost(params struct {
 	}
 
 	// 日志
-	this.CreateLog(oplogs.LevelInfo, "创建规则分组 %d，名称：%s", groupId, params.Name)
+	defer this.CreateLog(oplogs.LevelInfo, "创建规则分组 %d，名称：%s", groupId, params.Name)
 
 	this.Success()
 }

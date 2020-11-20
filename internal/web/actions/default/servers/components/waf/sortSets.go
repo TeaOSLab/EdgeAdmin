@@ -18,7 +18,7 @@ func (this *SortSetsAction) RunPost(params struct {
 	SetIds  []int64
 }) {
 	// 日志
-	this.CreateLog(oplogs.LevelInfo, "修改WAF规则分组 %d 中的规则集排序", params.GroupId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改WAF规则分组 %d 中的规则集排序", params.GroupId)
 
 	groupConfig, err := models.SharedHTTPFirewallRuleGroupDAO.FindRuleGroupConfig(this.AdminContext(), params.GroupId)
 	if err != nil {
