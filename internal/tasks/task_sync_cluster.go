@@ -41,7 +41,7 @@ func (this *SyncClusterTask) loop() error {
 	if err != nil {
 		return err
 	}
-	ctx := rpcClient.Context(1)
+	ctx := rpcClient.Context(0)
 	resp, err := rpcClient.NodeClusterRPC().FindAllChangedNodeClusters(ctx, &pb.FindAllChangedNodeClustersRequest{})
 	if err != nil {
 		return err

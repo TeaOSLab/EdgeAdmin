@@ -22,7 +22,10 @@ const (
 var sharedSecurityConfig *SecurityConfig = nil
 
 type SecurityConfig struct {
-	Frame string `json:"frame"`
+	Frame            string  `json:"frame"`
+	AllowCountryIds  []int64 `json:"allowCountryIds"`
+	AllowProvinceIds []int64 `json:"allowProvinceIds"`
+	AllowLocal       bool    `json:"allowLocal"`
 }
 
 func LoadSecurityConfig() (*SecurityConfig, error) {
@@ -50,7 +53,7 @@ func UpdateSecurityConfig(securityConfig *SecurityConfig) error {
 	if err != nil {
 		return err
 	}
-	_, err = rpcClient.SysSettingRPC().UpdateSysSetting(rpcClient.Context(1), &pb.UpdateSysSettingRequest{
+	_, err = rpcClient.SysSettingRPC().UpdateSysSetting(rpcClient.Context(0), &pb.UpdateSysSettingRequest{
 		Code:      SecuritySettingName,
 		ValueJSON: valueJSON,
 	})
@@ -69,7 +72,7 @@ func loadSecurityConfig() (*SecurityConfig, error) {
 	if err != nil {
 		return nil, err
 	}
-	resp, err := rpcClient.SysSettingRPC().ReadSysSetting(rpcClient.Context(1), &pb.ReadSysSettingRequest{
+	resp, err := rpcClient.SysSettingRPC().ReadSysSetting(rpcClient.Context(0), &pb.ReadSysSettingRequest{
 		Code: SecuritySettingName,
 	})
 	if err != nil {
@@ -93,6 +96,7 @@ func loadSecurityConfig() (*SecurityConfig, error) {
 
 func defaultSecurityConfig() *SecurityConfig {
 	return &SecurityConfig{
-		Frame: FrameSameOrigin,
+		Frame:      FrameSameOrigin,
+		AllowLocal: true,
 	}
 }

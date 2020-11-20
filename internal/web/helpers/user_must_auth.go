@@ -35,6 +35,12 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	}
 	action.AddHeader("Content-Security-Policy", "default-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'")
 
+	// 检查IP
+	if !checkIP(securityConfig, action.RequestRemoteIP()) {
+		action.ResponseWriter.WriteHeader(http.StatusForbidden)
+		return false
+	}
+
 	// 检查系统是否已经配置过
 	if !setup.IsConfigured() {
 		action.RedirectURL("/setup")
@@ -82,8 +88,48 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 		return action.Data["teaTitle"].(string)
 	})
 
-	// 初始化变量
-	modules := []maps.Map{
+	action.Data["teaTitle"] = teaconst.ProductNameZH
+	action.Data["teaName"] = teaconst.ProductNameZH
+
+	resp, err := rpc.AdminRPC().FindAdminFullname(rpc.Context(0), &pb.FindAdminFullnameRequest{AdminId: int64(this.AdminId)})
+	if err != nil {
+		utils.PrintError(err)
+		action.Data["teaUsername"] = ""
+	} else {
+		action.Data["teaUsername"] = resp.Fullname
+	}
+
+	action.Data["teaUserAvatar"] = ""
+
+	action.Data["teaMenu"] = ""
+	action.Data["teaModules"] = this.modules()
+	action.Data["teaSubMenus"] = []map[string]interface{}{}
+	action.Data["teaTabbar"] = []map[string]interface{}{}
+	action.Data["teaVersion"] = teaconst.Version
+	action.Data["teaIsSuper"] = false
+	action.Data["teaDemoEnabled"] = teaconst.IsDemo
+	if !action.Data.Has("teaSubMenu") {
+		action.Data["teaSubMenu"] = ""
+	}
+
+	// 菜单
+	action.Data["firstMenuItem"] = ""
+
+	// 未读消息数
+	action.Data["teaBadge"] = 0
+
+	// 调用Init
+	initMethod := reflect.ValueOf(actionPtr).MethodByName("Init")
+	if initMethod.IsValid() {
+		initMethod.Call([]reflect.Value{})
+	}
+
+	return true
+}
+
+// 菜单配置
+func (this *UserMustAuth) modules() []maps.Map {
+	return []maps.Map{
 		{
 			"code": "servers",
 			"name": "网站服务",
@@ -136,46 +182,9 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 			"icon": "history",
 		},
 	}
-
-	action.Data["teaTitle"] = teaconst.ProductNameZH
-	action.Data["teaName"] = teaconst.ProductNameZH
-
-	resp, err := rpc.AdminRPC().FindAdminFullname(rpc.Context(0), &pb.FindAdminFullnameRequest{AdminId: int64(this.AdminId)})
-	if err != nil {
-		utils.PrintError(err)
-		action.Data["teaUsername"] = ""
-	} else {
-		action.Data["teaUsername"] = resp.Fullname
-	}
-
-	action.Data["teaUserAvatar"] = ""
-
-	action.Data["teaMenu"] = ""
-	action.Data["teaModules"] = modules
-	action.Data["teaSubMenus"] = []map[string]interface{}{}
-	action.Data["teaTabbar"] = []map[string]interface{}{}
-	action.Data["teaVersion"] = teaconst.Version
-	action.Data["teaIsSuper"] = false
-	action.Data["teaDemoEnabled"] = teaconst.IsDemo
-	if !action.Data.Has("teaSubMenu") {
-		action.Data["teaSubMenu"] = ""
-	}
-
-	// 菜单
-	action.Data["firstMenuItem"] = ""
-
-	// 未读消息数
-	action.Data["teaBadge"] = 0
-
-	// 调用Init
-	initMethod := reflect.ValueOf(actionPtr).MethodByName("Init")
-	if initMethod.IsValid() {
-		initMethod.Call([]reflect.Value{})
-	}
-
-	return true
 }
 
+// 跳转到登录页
 func (this *UserMustAuth) login(action *actions.ActionObject) {
 	action.RedirectURL("/")
 }

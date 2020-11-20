@@ -11,6 +11,8 @@ func init() {
 		server.
 			Prefix("/ui").
 			Get("/download", new(DownloadAction)).
+			GetPost("/selectProvincesPopup", new(SelectProvincesPopupAction)).
+			GetPost("/selectCountriesPopup", new(SelectCountriesPopupAction)).
 
 			// 以下的需要压缩
 			Helper(&actions.Gzip{Level: gzip.BestCompression}).

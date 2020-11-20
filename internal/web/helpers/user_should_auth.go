@@ -24,6 +24,12 @@ func (this *UserShouldAuth) BeforeAction(actionPtr actions.ActionWrapper, paramN
 	}
 	action.AddHeader("Content-Security-Policy", "default-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'")
 
+	// 检查IP
+	if !checkIP(securityConfig, action.RequestRemoteIP()) {
+		action.ResponseWriter.WriteHeader(http.StatusForbidden)
+		return false
+	}
+
 	return true
 }
 

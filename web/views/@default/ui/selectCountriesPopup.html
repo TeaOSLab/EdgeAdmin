@@ -1,0 +1,27 @@
+{$layout "layout_popup"}
+
+<h3>选择国家和地区</h3>
+<form method="post" data-tea-success="success" data-tea-action="$" class="ui form">
+	<csrf-token></csrf-token>
+	<table class="ui table selectable">
+		<tr>
+			<td>
+				<div class="ui menu tabular tiny region-letter-group">
+					<a href="" v-for="group in letterGroups" class="item" :class="{active: group == selectedGroup}" @click.prevent="selectGroup(group)">{{group}}</a>
+				</div>
+				<div v-for="group in letterGroups">
+					<div v-for="letter in group" v-show="letterCountries[letter] != null && group == selectedGroup" class="country-group">
+						<h4>{{letter}}</h4>
+						<div class="country-list">
+							<div class="item" v-for="country in letterCountries[letter]">
+								<checkbox name="countryIds" :v-value="country.id" v-model="country.isChecked">{{country.name}}</checkbox>
+							</div>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+			</td>
+		</tr>
+	</table>
+	<submit-btn></submit-btn>
+</form>
