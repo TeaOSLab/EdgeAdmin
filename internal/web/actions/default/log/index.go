@@ -17,8 +17,20 @@ func (this *IndexAction) Init() {
 	this.Nav("log", "log", "")
 }
 
-func (this *IndexAction) RunGet(params struct{}) {
-	countResp, err := this.RPC().LogRPC().CountLogs(this.AdminContext(), &pb.CountLogRequest{})
+func (this *IndexAction) RunGet(params struct {
+	DayFrom string
+	DayTo   string
+	Keyword string
+}) {
+	this.Data["dayFrom"] = params.DayFrom
+	this.Data["dayTo"] = params.DayTo
+	this.Data["keyword"] = params.Keyword
+
+	countResp, err := this.RPC().LogRPC().CountLogs(this.AdminContext(), &pb.CountLogRequest{
+		DayFrom: params.DayFrom,
+		DayTo:   params.DayTo,
+		Keyword: params.Keyword,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -28,8 +40,11 @@ func (this *IndexAction) RunGet(params struct{}) {
 	this.Data["page"] = page.AsHTML()
 
 	logsResp, err := this.RPC().LogRPC().ListLogs(this.AdminContext(), &pb.ListLogsRequest{
-		Offset: page.Offset,
-		Size:   page.Size,
+		Offset:  page.Offset,
+		Size:    page.Size,
+		DayFrom: params.DayFrom,
+		DayTo:   params.DayTo,
+		Keyword: params.Keyword,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -68,6 +83,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 			"type":        log.Type,
 			"ip":          log.Ip,
 			"region":      regionName,
+			"action":      log.Action,
 		})
 	}
 	this.Data["logs"] = logMaps
