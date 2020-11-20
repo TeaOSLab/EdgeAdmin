@@ -1,7 +1,7 @@
 package helpers
 
 import (
-	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
+	"github.com/TeaOSLab/EdgeAdmin/internal/securitymanager"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/iwind/TeaGo/actions"
 	"net/http"
@@ -16,8 +16,11 @@ func (this *UserShouldAuth) BeforeAction(actionPtr actions.ActionWrapper, paramN
 
 	// 安全相关
 	action := this.action
-	if !teaconst.EnabledFrame {
+	securityConfig, _ := securitymanager.LoadSecurityConfig()
+	if securityConfig == nil {
 		action.AddHeader("X-Frame-Options", "SAMEORIGIN")
+	} else if len(securityConfig.Frame) > 0 {
+		action.AddHeader("X-Frame-Options", securityConfig.Frame)
 	}
 	action.AddHeader("Content-Security-Policy", "default-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'")
 

@@ -12,7 +12,7 @@ func init() {
 			Helper(helpers.NewUserMustAuth()).
 			Helper(settingutils.NewHelper("security")).
 			Prefix("/settings/security").
-			Get("", new(IndexAction)).
+			GetPost("", new(IndexAction)).
 			EndAll()
 	})
 }
