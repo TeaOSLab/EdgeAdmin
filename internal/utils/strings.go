@@ -1,6 +1,9 @@
 package utils
 
-import "strings"
+import (
+	"github.com/iwind/TeaGo/types"
+	"strings"
+)
 
 // format address
 func FormatAddress(addr string) string {
@@ -12,4 +15,17 @@ func FormatAddress(addr string) string {
 	addr = strings.Replace(addr, "：", ":", -1)
 	addr = strings.TrimSpace(addr)
 	return addr
+}
+
+// 分割数字
+func SplitNumbers(numbers string) (result []int64) {
+	if len(numbers) == 0 {
+		return
+	}
+	pieces := strings.Split(numbers, ",")
+	for _, piece := range pieces {
+		number := types.Int64(strings.TrimSpace(piece))
+		result = append(result, number)
+	}
+	return
 }

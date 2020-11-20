@@ -1,0 +1,19 @@
+{$layout "layout_popup"}
+
+<h3>选择省份</h3>
+
+<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+	<csrf-token></csrf-token>
+	<table class="ui table selectable">
+		<tr>
+			<td>
+				<div class="province-list">
+					<div class="item" v-for="province in provinces">
+						<checkbox name="provinceIds" :v-value="province.id" v-model="province.isChecked">{{province.name}}</checkbox>
+					</div>
+				</div>
+			</td>
+		</tr>
+	</table>
+	<submit-btn></submit-btn>
+</form>
