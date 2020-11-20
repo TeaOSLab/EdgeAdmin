@@ -9,6 +9,9 @@
 <link rel="stylesheet" href="/js/pikaday.triangle.css"/>
 {$end}
 
+
+<div class="margin"></div>
+
 <form method="get" action="/log" class="ui form" autocomplete="off">
 	<div class="ui fields inline">
 		<div class="ui field">
@@ -25,6 +28,9 @@
 		</div>
 		<div class="ui field" v-if="dayFrom.length > 0 || dayTo.length > 0 || keyword.length > 0">
 			<a href="/log">[清除条件]</a>
+		</div>
+		<div class="ui field">
+			<a href="" @click.prevent="exportExcel">[导出到Excel]</a>
 		</div>
 	</div>
 </form>

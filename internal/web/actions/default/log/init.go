@@ -12,6 +12,7 @@ func init() {
 			Helper(new(Helper)).
 			Prefix("/log").
 			Get("", new(IndexAction)).
+			Get("/exportExcel", new(ExportExcelAction)).
 
 			EndAll()
 	})
