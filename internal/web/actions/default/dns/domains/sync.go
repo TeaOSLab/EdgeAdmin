@@ -14,7 +14,7 @@ func (this *SyncAction) RunPost(params struct {
 	DomainId int64
 }) {
 	// 记录日志
-	this.CreateLog(oplogs.LevelInfo, "同步DNS域名数据 %d", params.DomainId)
+	defer this.CreateLog(oplogs.LevelInfo, "同步DNS域名数据 %d", params.DomainId)
 
 	// 执行同步
 	resp, err := this.RPC().DNSDomainRPC().SyncDNSDomainData(this.AdminContext(), &pb.SyncDNSDomainDataRequest{DnsDomainId: params.DomainId})

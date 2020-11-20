@@ -74,7 +74,7 @@ func (this *UpdateNodePopupAction) RunPost(params struct {
 	CSRF *actionutils.CSRF
 }) {
 	// 操作日志
-	this.CreateLog(oplogs.LevelInfo, "修改节点 %d 的DNS设置", params.NodeId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改节点 %d 的DNS设置", params.NodeId)
 
 	routes := []string{}
 	err := json.Unmarshal(params.DnsRoutesJSON, &routes)

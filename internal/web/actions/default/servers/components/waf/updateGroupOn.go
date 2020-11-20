@@ -15,7 +15,7 @@ func (this *UpdateGroupOnAction) RunPost(params struct {
 	IsOn    bool
 }) {
 	// 日志
-	this.CreateLog(oplogs.LevelInfo, "设置WAF规则分组 %d 开启状态", params.GroupId)
+	defer this.CreateLog(oplogs.LevelInfo, "设置WAF规则分组 %d 开启状态", params.GroupId)
 
 	_, err := this.RPC().HTTPFirewallRuleGroupRPC().UpdateHTTPFirewallRuleGroupIsOn(this.AdminContext(), &pb.UpdateHTTPFirewallRuleGroupIsOnRequest{
 		FirewallRuleGroupId: params.GroupId,

@@ -15,7 +15,7 @@ func (this *UpdateSetOnAction) RunPost(params struct {
 	IsOn  bool
 }) {
 	// 日志
-	this.CreateLog(oplogs.LevelInfo, "修改WAF规则集 %d 开启状态", params.SetId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改WAF规则集 %d 开启状态", params.SetId)
 
 	_, err := this.RPC().HTTPFirewallRuleSetRPC().UpdateHTTPFirewallRuleSetIsOn(this.AdminContext(), &pb.UpdateHTTPFirewallRuleSetIsOnRequest{
 		FirewallRuleSetId: params.SetId,

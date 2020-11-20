@@ -15,7 +15,7 @@ func (this *DeleteAction) RunPost(params struct {
 	DomainId int64
 }) {
 	// 记录日志
-	this.CreateLog(oplogs.LevelInfo, "从DNS服务商中删除域名 %d", params.DomainId)
+	defer this.CreateLog(oplogs.LevelInfo, "从DNS服务商中删除域名 %d", params.DomainId)
 
 	// 检查是否正在使用
 	countResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClustersWithDNSDomainId(this.AdminContext(), &pb.CountAllEnabledNodeClustersWithDNSDomainIdRequest{DnsDomainId: params.DomainId})

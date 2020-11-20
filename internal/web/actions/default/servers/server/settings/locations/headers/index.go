@@ -102,6 +102,8 @@ func (this *IndexAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	defer this.CreateLogInfo("修改Web %d 的Header设置", params.WebId)
+
 	// TODO 检查配置
 
 	switch params.Type {

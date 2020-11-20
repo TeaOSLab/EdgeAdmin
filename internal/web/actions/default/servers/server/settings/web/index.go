@@ -38,6 +38,7 @@ func (this *IndexAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	defer this.CreateLogInfo("修改Web %d 的首页文件名", params.WebId)
 
 	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWeb(this.AdminContext(), &pb.UpdateHTTPWebRequest{
 		WebId:    params.WebId,

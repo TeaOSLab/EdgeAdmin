@@ -33,7 +33,7 @@
 				<th style="width:3em"></th>
 				<th nowrap="">规则集名称</th>
 				<th nowrap="">规则</th>
-				<th nowrap="">关系</th>
+				<th nowrap="" class="center">关系</th>
 				<th nowrap="">动作</th>
 				<th class="three op">操作</th>
 			</tr>
@@ -52,7 +52,7 @@
 				</div>
 				<span class="ui disabled" v-if="set.rules.length == 0">暂时还没有规则</span>
 			</td>
-			<td>{{set.connector.toUpperCase()}}</td>
+			<td class="center">{{set.connector.toUpperCase()}}</td>
 			<td><span :class="{red:set.action == 'BLOCK' || set.action == 'CAPTCHA', green:set.action != 'BLOCK' && set.action != 'CAPTCHA'}">{{set.actionName}}[{{set.action.toUpperCase()}}]</span>
 				<div v-if="set.actionLinks != null && set.actionLinks.length > 0" style="margin-top:0.3em">
 					<span class="disabled">-&gt;</span> <span v-for="link in set.actionLinks"><a :href="link.url"><span class="disabled">[{{link.name}}]</span></a> &nbsp;</span>

@@ -16,6 +16,8 @@ func (this *SortAction) RunPost(params struct {
 	WebId          int64
 	RewriteRuleIds []int64
 }) {
+	defer this.CreateLogInfo("对Web %d 中的重写规则进行排序", params.WebId)
+
 	webConfig, err := webutils.FindWebConfigWithId(this.Parent(), params.WebId)
 	if err != nil {
 		this.ErrorPage(err)

@@ -20,7 +20,7 @@ func (this *StopAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "远程停止节点 %d", params.NodeId)
+	defer this.CreateLog(oplogs.LevelInfo, "远程停止节点 %d", params.NodeId)
 
 	if resp.IsOk {
 		this.Success()

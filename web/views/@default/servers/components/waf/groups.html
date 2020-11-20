@@ -15,7 +15,7 @@
 		<tr>
 			<th style="width:3em"></th>
 			<th>规则分组</th>
-			<th>规则集</th>
+			<th class="center">规则集</th>
 			<th class="three op">操作</th>
 		</tr>
 		</thead>
@@ -31,7 +31,7 @@
 						<span v-if="group.code.length == 0" class="ui label tiny">自定义</span>
 					</p>
 				</td>
-				<td>
+				<td class="center">
 					<a :href="'/servers/components/waf/group?firewallPolicyId=' + firewallPolicyId + '&type=' + type + '&groupId=' + group.id">{{group.countSets}}</a>
 				</td>
 				<td>

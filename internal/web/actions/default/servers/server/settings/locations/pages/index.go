@@ -36,6 +36,8 @@ func (this *IndexAction) RunPost(params struct {
 	ShutdownJSON string
 	Must         *actions.Must
 }) {
+	defer this.CreateLogInfo("修改Web %d 的特殊页面设置", params.WebId)
+
 	// TODO 检查配置
 
 	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebPages(this.AdminContext(), &pb.UpdateHTTPWebPagesRequest{

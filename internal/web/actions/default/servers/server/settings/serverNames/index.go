@@ -49,7 +49,7 @@ func (this *IndexAction) RunPost(params struct {
 	Must        *actions.Must
 }) {
 	// 记录日志
-	this.CreateLog(oplogs.LevelInfo, "修改代理服务 %d 域名", params.ServerId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改代理服务 %d 域名", params.ServerId)
 
 	serverNames := []*serverconfigs.ServerNameConfig{}
 	err := json.Unmarshal([]byte(params.ServerNames), &serverNames)

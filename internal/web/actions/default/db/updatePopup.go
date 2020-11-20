@@ -62,7 +62,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "修改数据库节点 %d", params.NodeId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改数据库节点 %d", params.NodeId)
 
 	params.Must.
 		Field("name", params.Name).

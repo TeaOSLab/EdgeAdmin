@@ -1,6 +1,7 @@
 package accessLog
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -59,6 +60,9 @@ func (this *IndexAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	// 日志
+	defer this.CreateLog(oplogs.LevelInfo, "修改Web %d 的访问日志设置", params.WebId)
+
 	// TODO 检查参数
 
 	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebAccessLog(this.AdminContext(), &pb.UpdateHTTPWebAccessLogRequest{

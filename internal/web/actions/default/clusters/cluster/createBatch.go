@@ -99,7 +99,7 @@ func (this *CreateBatchAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "批量创建节点")
+	defer this.CreateLog(oplogs.LevelInfo, "批量创建节点")
 
 	this.Success()
 }

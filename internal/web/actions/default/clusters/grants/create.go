@@ -64,7 +64,7 @@ func (this *CreateAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "创建SSH认证 %d", createResp.GrantId)
+	defer this.CreateLog(oplogs.LevelInfo, "创建SSH认证 %d", createResp.GrantId)
 
 	this.Success()
 }

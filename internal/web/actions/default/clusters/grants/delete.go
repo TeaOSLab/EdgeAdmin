@@ -14,7 +14,7 @@ func (this *DeleteAction) RunPost(params struct {
 	GrantId int64
 }) {
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "删除SSH认证 %d", params.GrantId)
+	defer this.CreateLog(oplogs.LevelInfo, "删除SSH认证 %d", params.GrantId)
 
 	// 检查是否有别的集群或节点正在使用
 	countResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClustersWithGrantId(this.AdminContext(), &pb.CountAllEnabledNodeClustersWithGrantIdRequest{

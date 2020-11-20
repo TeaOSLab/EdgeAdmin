@@ -14,7 +14,7 @@ func (this *DeleteAction) RunPost(params struct {
 	FirewallPolicyId int64
 }) {
 	// 日志
-	this.CreateLog(oplogs.LevelInfo, "删除WAF策略 %d", params.FirewallPolicyId)
+	defer this.CreateLog(oplogs.LevelInfo, "删除WAF策略 %d", params.FirewallPolicyId)
 
 	countResp, err := this.RPC().ServerRPC().CountAllEnabledServersWithHTTPFirewallPolicyId(this.AdminContext(), &pb.CountAllEnabledServersWithHTTPFirewallPolicyIdRequest{FirewallPolicyId: params.FirewallPolicyId})
 	if err != nil {

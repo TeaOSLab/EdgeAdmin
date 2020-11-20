@@ -16,7 +16,7 @@ func (this *DeleteIPAction) RunPost(params struct {
 	ItemId           int64
 }) {
 	// 日志
-	this.CreateLog(oplogs.LevelInfo, "从WAF策略 %d 名单中删除IP %d", params.FirewallPolicyId, params.ItemId)
+	defer this.CreateLog(oplogs.LevelInfo, "从WAF策略 %d 名单中删除IP %d", params.FirewallPolicyId, params.ItemId)
 
 	// TODO 判断权限
 

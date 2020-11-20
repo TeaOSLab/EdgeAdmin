@@ -14,7 +14,7 @@ func (this *SyncAction) RunPost(params struct {
 	ClusterId int64
 }) {
 	// 记录日志
-	this.CreateLog(oplogs.LevelInfo, "同步集群 %d 的DNS设置", params.ClusterId)
+	defer this.CreateLog(oplogs.LevelInfo, "同步集群 %d 的DNS设置", params.ClusterId)
 
 	dnsInfoResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeClusterDNS(this.AdminContext(), &pb.FindEnabledNodeClusterDNSRequest{NodeClusterId: params.ClusterId})
 	if err != nil {

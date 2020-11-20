@@ -87,7 +87,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	this.CreateLog(oplogs.LevelInfo, "修改DNS服务商 %d", params.ProviderId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改DNS服务商 %d", params.ProviderId)
 
 	params.Must.
 		Field("name", params.Name).

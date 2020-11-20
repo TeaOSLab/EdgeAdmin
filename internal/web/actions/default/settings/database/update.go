@@ -55,7 +55,7 @@ func (this *UpdateAction) RunGet(params struct{}) {
 		dbConfig = db
 		break
 	}
-	
+
 	dsn := dbConfig.Dsn
 	dsn = regexp.MustCompile(`tcp\((.+)\)`).ReplaceAllString(dsn, "$1")
 	dsnURL, err := url.Parse("mysql://" + dsn)
@@ -93,6 +93,8 @@ func (this *UpdateAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	defer this.CreateLogInfo("修改API节点数据库设置")
+
 	params.Must.
 		Field("host", params.Host).
 		Require("请输入主机地址").

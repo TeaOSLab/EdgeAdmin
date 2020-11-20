@@ -234,7 +234,7 @@ func (this *UpdateAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "修改API节点 %d", params.NodeId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改API节点 %d", params.NodeId)
 
 	this.Success()
 }

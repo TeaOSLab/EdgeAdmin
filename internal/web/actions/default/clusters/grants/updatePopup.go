@@ -61,7 +61,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "修改SSH认证 %d", params.GrantId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改SSH认证 %d", params.GrantId)
 
 	params.Must.
 		Field("name", params.Name).

@@ -67,7 +67,7 @@ func (this *IndexAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	// 日志
-	this.CreateLog(oplogs.LevelInfo, "WAF策略 %d 设置禁止访问的国家和地区", params.FirewallPolicyId)
+	defer this.CreateLog(oplogs.LevelInfo, "WAF策略 %d 设置禁止访问的国家和地区", params.FirewallPolicyId)
 
 	policyConfig, err := models.SharedHTTPFirewallPolicyDAO.FindEnabledPolicyConfig(this.AdminContext(), params.FirewallPolicyId)
 	if err != nil {

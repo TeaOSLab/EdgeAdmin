@@ -93,6 +93,8 @@ func (this *UpdateSchedulingPopupAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	defer this.CreateLogInfo("修改反向代理 %d 负载均衡算法", params.ReverseProxyId)
+
 	reverseProxyResp, err := this.RPC().ReverseProxyRPC().FindEnabledReverseProxyConfig(this.AdminContext(), &pb.FindEnabledReverseProxyConfigRequest{ReverseProxyId: params.ReverseProxyId})
 	if err != nil {
 		this.ErrorPage(err)

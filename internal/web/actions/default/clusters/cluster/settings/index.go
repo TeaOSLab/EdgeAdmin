@@ -72,7 +72,7 @@ func (this *IndexAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "修改集群基础设置 %d", params.ClusterId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改集群基础设置 %d", params.ClusterId)
 
 	params.Must.
 		Field("name", params.Name).

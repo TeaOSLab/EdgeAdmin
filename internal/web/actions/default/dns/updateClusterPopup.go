@@ -75,7 +75,7 @@ func (this *UpdateClusterPopupAction) RunPost(params struct {
 	CSRF *actionutils.CSRF
 }) {
 	// 日志
-	this.CreateLog(oplogs.LevelInfo, "修改集群 %d DNS设置", params.ClusterId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改集群 %d DNS设置", params.ClusterId)
 
 	params.Must.
 		Field("dnsName", params.DnsName).

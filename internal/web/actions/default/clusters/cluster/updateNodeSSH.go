@@ -117,7 +117,7 @@ func (this *UpdateNodeSSHAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "修改节点 %d 配置", params.NodeId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改节点 %d 配置", params.NodeId)
 
 	this.Success()
 }

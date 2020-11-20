@@ -83,7 +83,7 @@ func (this *DeleteAction) RunPost(params struct {
 	}
 
 	// 日志
-	this.CreateLog(oplogs.LevelInfo, "删除反向代理服务 %d 的源站 %d", params.ReverseProxyId, params.OriginId)
+	defer this.CreateLog(oplogs.LevelInfo, "删除反向代理服务 %d 的源站 %d", params.ReverseProxyId, params.OriginId)
 
 	this.Success()
 }

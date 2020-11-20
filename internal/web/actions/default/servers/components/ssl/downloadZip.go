@@ -20,6 +20,8 @@ func (this *DownloadZipAction) Init() {
 func (this *DownloadZipAction) RunGet(params struct {
 	CertId int64
 }) {
+	defer this.CreateLogInfo("下载SSL证书压缩包 %d", params.CertId)
+
 	certResp, err := this.RPC().SSLCertRPC().FindEnabledSSLCertConfig(this.AdminContext(), &pb.FindEnabledSSLCertConfigRequest{CertId: params.CertId})
 	if err != nil {
 		this.ErrorPage(err)

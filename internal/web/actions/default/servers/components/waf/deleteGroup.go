@@ -16,7 +16,7 @@ func (this *DeleteGroupAction) RunPost(params struct {
 	GroupId          int64
 }) {
 	// 日志
-	this.CreateLog(oplogs.LevelInfo, "删除WAF策略 %d 的规则分组 %d", params.FirewallPolicyId, params.GroupId)
+	defer this.CreateLog(oplogs.LevelInfo, "删除WAF策略 %d 的规则分组 %d", params.FirewallPolicyId, params.GroupId)
 
 	firewallPolicy, err := models.SharedHTTPFirewallPolicyDAO.FindEnabledPolicyConfig(this.AdminContext(), params.FirewallPolicyId)
 	if err != nil {

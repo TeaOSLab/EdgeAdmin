@@ -35,6 +35,8 @@ func (this *IndexAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	defer this.CreateLogInfo("修改Web %d 的通用设置", params.WebId)
+
 	// 设置跳转到HTTPS
 	// TODO 校验设置
 	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebRedirectToHTTPS(this.AdminContext(), &pb.UpdateHTTPWebRedirectToHTTPSRequest{

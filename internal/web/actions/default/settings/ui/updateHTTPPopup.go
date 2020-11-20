@@ -32,6 +32,8 @@ func (this *UpdateHTTPPopupAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	defer this.CreateLogInfo("修改管理界面的HTTP设置")
+
 	if len(params.Listens) == 0 {
 		this.Fail("请输入绑定地址")
 	}

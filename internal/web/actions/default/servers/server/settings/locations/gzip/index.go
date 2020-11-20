@@ -75,6 +75,8 @@ func (this *IndexAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	defer this.CreateLogInfo("修改Web %d 的Gzip设置", params.WebId)
+
 	if params.Level < 0 || params.Level > 9 {
 		this.Fail("请选择正确的压缩级别")
 	}

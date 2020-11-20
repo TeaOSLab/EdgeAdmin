@@ -159,7 +159,7 @@ func (this *CreateNodeAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "创建节点 %d", nodeId)
+	defer this.CreateLog(oplogs.LevelInfo, "创建节点 %d", nodeId)
 
 	this.Success()
 }

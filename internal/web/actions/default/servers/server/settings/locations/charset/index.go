@@ -39,6 +39,8 @@ func (this *IndexAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	defer this.CreateLogInfo("修改Web %d 的字符集设置", params.WebId)
+
 	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebCharset(this.AdminContext(), &pb.UpdateHTTPWebCharsetRequest{
 		WebId:       params.WebId,
 		CharsetJSON: params.CharsetJSON,

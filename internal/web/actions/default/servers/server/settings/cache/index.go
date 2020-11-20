@@ -2,6 +2,7 @@ package cache
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -39,6 +40,9 @@ func (this *IndexAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	// 日志
+	defer this.CreateLog(oplogs.LevelInfo, "修改Web %d 的缓存设置", params.WebId)
+
 	// TODO 校验配置
 	cacheConfig := &serverconfigs.HTTPCacheConfig{}
 	err := json.Unmarshal(params.CacheJSON, cacheConfig)

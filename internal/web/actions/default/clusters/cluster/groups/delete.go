@@ -31,7 +31,7 @@ func (this *DeleteAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "删除集群分组 %d", params.GroupId)
+	defer this.CreateLog(oplogs.LevelInfo, "删除集群分组 %d", params.GroupId)
 
 	this.Success()
 }

@@ -190,7 +190,7 @@ func (this *UpdateAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "修改节点 %d", params.NodeId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改节点 %d", params.NodeId)
 
 	if params.NodeId <= 0 {
 		this.Fail("要操作的节点不存在")

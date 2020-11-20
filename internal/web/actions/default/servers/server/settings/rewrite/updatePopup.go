@@ -59,6 +59,8 @@ func (this *UpdatePopupAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	defer this.CreateLogInfo("修改Web %d 中的重写规则 %d", params.WebId, params.RewriteRuleId)
+
 	params.Must.
 		Field("pattern", params.Pattern).
 		Require("请输入匹配规则").

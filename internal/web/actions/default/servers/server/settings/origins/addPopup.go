@@ -132,7 +132,7 @@ func (this *AddPopupAction) RunPost(params struct {
 	}
 
 	// 日志
-	this.CreateLog(oplogs.LevelInfo, "为反向代理服务 %d 添加源站 %d", params.ReverseProxyId, originId)
+	defer this.CreateLog(oplogs.LevelInfo, "为反向代理服务 %d 添加源站 %d", params.ReverseProxyId, originId)
 
 	this.Success()
 }

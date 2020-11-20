@@ -103,7 +103,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		return
 	}
 
-	this.CreateLog(oplogs.LevelInfo, "创建DNS服务商 %d", createResp.DnsProviderId)
+	defer this.CreateLog(oplogs.LevelInfo, "创建DNS服务商 %d", createResp.DnsProviderId)
 
 	this.Success()
 }

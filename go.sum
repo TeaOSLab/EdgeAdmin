@@ -52,6 +52,8 @@ github.com/iwind/TeaGo v0.0.0-20201110022333-4505cfeba483 h1:iQlMhGYBNrvbyp90f4W
 github.com/iwind/TeaGo v0.0.0-20201110022333-4505cfeba483/go.mod h1:KU4mS7QNiZ7QWEuDBk1zw0/Q2LrAPZv3tycEFBsuUwc=
 github.com/iwind/TeaGo v0.0.0-20201110043415-859f4b3b98f3 h1:fJ32s0nZmhH780KYG9oWi11chljyaZ4JLRTvKV8nzb0=
 github.com/iwind/TeaGo v0.0.0-20201110043415-859f4b3b98f3/go.mod h1:KU4mS7QNiZ7QWEuDBk1zw0/Q2LrAPZv3tycEFBsuUwc=
+github.com/iwind/TeaGo v0.0.0-20201120063500-ee2d7090f4bc h1:AOKJWsgCX5e7xnW2f7evcrgj6vzvvHIoDmA+xxL3BMI=
+github.com/iwind/TeaGo v0.0.0-20201120063500-ee2d7090f4bc/go.mod h1:KU4mS7QNiZ7QWEuDBk1zw0/Q2LrAPZv3tycEFBsuUwc=
 github.com/json-iterator/go v1.1.10 h1:Kz6Cvnvv2wGdaG/V8yMvfkmNiXq9Ya2KUv4rouJJr68=
 github.com/json-iterator/go v1.1.10/go.mod h1:KdQUCv79m/52Kvf8AW2vK1V8akMuk1QjK/uOdHXbAo4=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=

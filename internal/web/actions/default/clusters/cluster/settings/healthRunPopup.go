@@ -26,7 +26,7 @@ func (this *HealthRunPopupAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "执行集群健康检查设置 %d", params.ClusterId)
+	defer this.CreateLog(oplogs.LevelInfo, "执行集群健康检查设置 %d", params.ClusterId)
 
 	resp, err := this.RPC().NodeClusterRPC().ExecuteNodeClusterHealthCheck(this.AdminContext(), &pb.ExecuteNodeClusterHealthCheckRequest{ClusterId: params.ClusterId})
 	if err != nil {

@@ -69,7 +69,7 @@ func (this *UpgradeRemoteAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "远程升级节点 %d", params.NodeId)
+	defer this.CreateLog(oplogs.LevelInfo, "远程升级节点 %d", params.NodeId)
 
 	this.Success()
 }

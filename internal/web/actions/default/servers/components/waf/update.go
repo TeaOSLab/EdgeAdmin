@@ -69,7 +69,7 @@ func (this *UpdateAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	// 日志
-	this.CreateLog(oplogs.LevelInfo, "修改WAF策略 %d 基本信息", params.FirewallPolicyId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改WAF策略 %d 基本信息", params.FirewallPolicyId)
 
 	params.Must.
 		Field("name", params.Name).

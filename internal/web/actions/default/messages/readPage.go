@@ -14,7 +14,7 @@ func (this *ReadPageAction) RunPost(params struct {
 	MessageIds []int64
 }) {
 	// 创建日志
-	this.CreateLog(oplogs.LevelInfo, "将一组消息置为已读")
+	defer this.CreateLog(oplogs.LevelInfo, "将一组消息置为已读")
 
 	_, err := this.RPC().MessageRPC().UpdateMessagesRead(this.AdminContext(), &pb.UpdateMessagesReadRequest{
 		MessageIds: params.MessageIds,

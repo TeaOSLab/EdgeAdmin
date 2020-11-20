@@ -17,7 +17,7 @@ func (this *DeleteAction) RunPost(params struct {
 	// TODO 检查权限
 
 	// 记录日志
-	this.CreateLog(oplogs.LevelInfo, "删除DNS服务商 %d", params.ProviderId)
+	defer this.CreateLog(oplogs.LevelInfo, "删除DNS服务商 %d", params.ProviderId)
 
 	// 检查是否被使用
 	countClustersResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClustersWithDNSProviderId(this.AdminContext(), &pb.CountAllEnabledNodeClustersWithDNSProviderIdRequest{DnsProviderId: params.ProviderId})

@@ -19,6 +19,8 @@ func (this *DownloadCertAction) Init() {
 func (this *DownloadCertAction) RunGet(params struct {
 	CertId int64
 }) {
+	defer this.CreateLogInfo("下载SSL证书 %d", params.CertId)
+
 	certResp, err := this.RPC().SSLCertRPC().FindEnabledSSLCertConfig(this.AdminContext(), &pb.FindEnabledSSLCertConfigRequest{CertId: params.CertId})
 	if err != nil {
 		this.ErrorPage(err)
