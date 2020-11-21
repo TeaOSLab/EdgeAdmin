@@ -206,10 +206,12 @@ func (this *UpdateAction) RunPost(params struct {
 	}
 
 	dnsRouteCodes := []string{}
-	err := json.Unmarshal(params.DnsRoutesJSON, &dnsRouteCodes)
-	if err != nil {
-		this.ErrorPage(err)
-		return
+	if len(params.DnsRoutesJSON) > 0 {
+		err := json.Unmarshal(params.DnsRoutesJSON, &dnsRouteCodes)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
 	}
 
 	// TODO 检查登录授权
@@ -225,7 +227,7 @@ func (this *UpdateAction) RunPost(params struct {
 	}
 
 	// 保存
-	_, err = this.RPC().NodeRPC().UpdateNode(this.AdminContext(), &pb.UpdateNodeRequest{
+	_, err := this.RPC().NodeRPC().UpdateNode(this.AdminContext(), &pb.UpdateNodeRequest{
 		NodeId:      params.NodeId,
 		GroupId:     params.GroupId,
 		Name:        params.Name,
