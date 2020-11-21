@@ -9,7 +9,7 @@
 			<td class="title">选择分组</td>
 			<td>
 				<div v-if="groups.length > 0">
-					<a href="" class="ui label tiny" v-for="group in groups" :class="{blue:group.id == groupId}" style="margin-bottom:0.5em" @click.prevent="selectGroup(group)">{{group.name}}</a>
+					<a href="" class="ui label small basic" v-for="group in groups" :class="{blue:group.id == groupId}" style="margin-bottom:0.5em" @click.prevent="selectGroup(group)">{{group.name}}</a>
 					<p class="comment">点击可已选中要使用的分组。</p>
 				</div>
 				<div v-else>
