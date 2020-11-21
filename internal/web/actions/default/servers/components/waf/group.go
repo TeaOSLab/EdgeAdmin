@@ -88,6 +88,7 @@ func (this *GroupAction) RunGet(params struct {
 				rule := v.(*firewallconfigs.HTTPFirewallRule)
 				return maps.Map{
 					"param":             rule.Param,
+					"paramFilters":      rule.ParamFilters,
 					"operator":          rule.Operator,
 					"value":             rule.Value,
 					"isCaseInsensitive": rule.IsCaseInsensitive,

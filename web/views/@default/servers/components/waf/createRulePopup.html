@@ -20,13 +20,15 @@
 				<p class="comment" v-if="checkpoint != null"><span class="ui label tiny">${<em style="font-style: normal;">{{checkpoint.prefix}}</em>}</span>{{checkpoint.description}}</p>
 			</td>
 		</tr>
+
+		<!-- 参数名 -->
 		<tr v-if="checkpoint != null && checkpoint.hasParams">
 			<td>参数名</td>
 			<td>
 				<select name="param" v-model="rule.checkpointParam" class="ui dropdown auto-width" v-if="checkpoint.params != null">
 					<option v-for="o in checkpoint.params" :value="o.value">{{o.name}}</option>
 				</select>
-				<input type="text" maxlength="100" v-model="rule.checkpointParam" v-if="checkpoint.params == null"/>
+				<input type="text" name="param" maxlength="100" v-model="rule.checkpointParam" v-if="checkpoint.params == null"/>
 			</td>
 		</tr>
 
@@ -39,6 +41,14 @@
 				</td>
 			</tr>
 		</tbody>
+
+		<!-- 参数过滤器 -->
+		<tr v-if="checkpoint != null && !checkpoint.isComposed">
+			<td>编解码</td>
+			<td>
+				<http-firewall-param-filters-box :v-filters="rule.paramFilters"></http-firewall-param-filters-box>
+			</td>
+		</tr>
 
 		<!-- 选项 -->
 		<tbody v-if="checkpoint != null && !checkpoint.isComposed && checkpoint.options != null && checkpoint.options.length > 0">
@@ -91,7 +101,18 @@
 			<tr>
 				<td>对比值</td>
 				<td>
-					<textarea rows="3" maxlength="4096" name="value" v-model="rule.value"></textarea>
+					<!-- 二进制数据 -->
+					<div v-if="rule.operator != 'contains binary'">
+						<textarea rows="3" maxlength="4096" name="value" v-model="rule.value"></textarea>
+						<p class="comment">将二进制进行Base64Encode后放在这里，比如<code-label>Hello</code-label>对应<code-label>SGVsbG8=</code-label>。</p>
+					</div>
+					<div v-else-if="rule.operator != 'not contains binary'">
+						<textarea rows="3" maxlength="4096" name="value" v-model="rule.value"></textarea>
+						<p class="comment">将二进制进行Base64Encode后放在这里，比如<code-label>Hello</code-label>对应<code-label>SGVsbG8=</code-label>。</p>
+					</div>
+
+					<!-- 其余数据 -->
+					<textarea rows="3" maxlength="4096" name="value" v-model="rule.value" v-else></textarea>
 				</td>
 			</tr>
 		</tbody>

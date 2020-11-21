@@ -5,6 +5,7 @@ Tea.context(function () {
 	this.rule = {
 		id: 0,
 		param: "",
+		paramFilters: [],
 		checkpointPrefix: "",
 		checkpointParam: "",
 		value: "",
