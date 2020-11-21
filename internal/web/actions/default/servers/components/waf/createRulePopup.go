@@ -28,7 +28,7 @@ func (this *CreateRulePopupAction) RunGet(params struct {
 				"name":        checkpoint.Name,
 				"prefix":      checkpoint.Prefix,
 				"description": checkpoint.Description,
-				"hasParams":   len(checkpoint.Params) > 0,
+				"hasParams":   checkpoint.HasParams,
 				"params":      checkpoint.Params,
 				"options":     checkpoint.Options,
 				"isComposed":  checkpoint.IsComposed,
@@ -53,13 +53,14 @@ func (this *CreateRulePopupAction) RunGet(params struct {
 }
 
 func (this *CreateRulePopupAction) RunPost(params struct {
-	RuleId      int64
-	Prefix      string
-	Operator    string
-	Param       string
-	OptionsJSON []byte
-	Value       string
-	Case        bool
+	RuleId           int64
+	Prefix           string
+	Operator         string
+	Param            string
+	ParamFiltersJSON []byte
+	OptionsJSON      []byte
+	Value            string
+	Case             bool
 
 	Must *actions.Must
 }) {
@@ -76,6 +77,17 @@ func (this *CreateRulePopupAction) RunPost(params struct {
 	} else {
 		rule.Param = "${" + params.Prefix + "}"
 	}
+
+	paramFilters := []*firewallconfigs.ParamFilter{}
+	if len(params.ParamFiltersJSON) > 0 {
+		err := json.Unmarshal(params.ParamFiltersJSON, &paramFilters)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+	rule.ParamFilters = paramFilters
+
 	rule.Operator = params.Operator
 	rule.Value = params.Value
 	rule.IsCaseInsensitive = params.Case
