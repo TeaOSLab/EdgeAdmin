@@ -14,19 +14,19 @@
 		<thead>
 			<tr>
 				<th>策略名称</th>
-				<th>入站规则分组</th>
-				<th>出站规则分组</th>
-				<th>引用服务</th>
-				<th class="two wide">状态</th>
+				<th class="center">入站规则分组</th>
+				<th class="center">出站规则分组</th>
+				<th class="center">引用服务</th>
+				<th class="two wide center">状态</th>
 				<th class="two op">操作</th>
 			</tr>
 		</thead>
 		<tr v-for="policy in policies">
 			<td>{{policy.name}}</td>
-			<td>{{policy.countInbound}}</td>
-			<td>{{policy.countOutbound}}</td>
-			<td>{{policy.countServers}}</td>
-			<td><label-on :v-is-on="policy.isOn"></label-on></td>
+			<td class="center">{{policy.countInbound}}</td>
+			<td class="center">{{policy.countOutbound}}</td>
+			<td class="center">{{policy.countServers}}</td>
+			<td class="center"><label-on :v-is-on="policy.isOn"></label-on></td>
 			<td>
 				<a :href="'/servers/components/waf/policy?firewallPolicyId=' + policy.id">详情</a> &nbsp;
 				<a href="" @click.prevent="deletePolicy(policy.id)">删除</a>

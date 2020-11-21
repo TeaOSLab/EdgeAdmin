@@ -56,7 +56,7 @@ Vue.component("values-box", {
 	},
 	template: `<div>
 		<div style="margin-bottom: 1em" v-if="vValues.length > 0">
-			<div class="ui label tiny" v-for="(value, index) in vValues" style="margin-top:0.4em;margin-bottom:0.4em">{{value}}
+			<div class="ui label tiny basic" v-for="(value, index) in vValues" style="margin-top:0.4em;margin-bottom:0.4em">{{value}}
 				<input type="hidden" :name="name" :value="value"/>
 				&nbsp; <a href="" @click.prevent="update(index)" title="修改"><i class="icon pencil small" ></i></a> 
 				<a href="" @click.prevent="remove(index)" title="删除"><i class="icon remove"></i></a> 

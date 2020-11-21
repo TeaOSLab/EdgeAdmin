@@ -1,9 +1,11 @@
 Vue.component("copy-to-clipboard", {
 	props: ["v-target"],
 	created: function () {
-		let jsFile = document.createElement("script")
-		jsFile.setAttribute("src", "/js/clipboard.min.js")
-		document.head.appendChild(jsFile)
+		if (typeof ClipboardJS == "undefined") {
+			let jsFile = document.createElement("script")
+			jsFile.setAttribute("src", "/js/clipboard.min.js")
+			document.head.appendChild(jsFile)
+		}
 	},
 	methods: {
 		copy: function () {

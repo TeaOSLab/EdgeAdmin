@@ -70,7 +70,7 @@ Vue.component("http-pages-and-shutdown-box", {
 		<td class="title">特殊页面</td>
 		<td>
 			<div v-if="pages.length > 0">
-				<div class="ui label small" v-for="(page,index) in pages">
+				<div class="ui label small basic" v-for="(page,index) in pages">
 					{{page.status}} -&gt; {{page.url}} <a href="" title="修改" @click.prevent="updatePage(index, page.id)"><i class="icon pencil small"></i></a> <a href="" title="删除" @click.prevent="removePage(index)"><i class="icon remove"></i></a>
 				</div>
 				<div class="ui divider"></div>

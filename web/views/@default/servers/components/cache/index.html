@@ -15,8 +15,8 @@
 				<th>策略名称</th>
 				<th>策略类型</th>
 				<th>容量</th>
-				<th>引用服务</th>
-				<th>状态</th>
+				<th class="center">引用服务</th>
+				<th class="center">状态</th>
 				<th class="two op">操作</th>
 			</tr>
 		</thead>
@@ -27,8 +27,8 @@
 				<span v-if="policy.capacity != null && policy.capacity.count > 0">{{policy.capacity.count}}{{policy.capacity.unit.toUpperCase()}}</span>
 				<span v-else class="disabled">不限</span>
 			</td>
-			<td>{{infos[index].countServers}}</td>
-			<td><label-on :v-is-on="policy.isOn"></label-on></td>
+			<td class="center">{{infos[index].countServers}}</td>
+			<td class="center"><label-on :v-is-on="policy.isOn"></label-on></td>
 			<td>
 				<a :href="'/servers/components/cache/policy?cachePolicyId=' + policy.id">详情</a> &nbsp; <a href="" @click.prevent="deletePolicy(policy.id)">删除</a>
 			</td>

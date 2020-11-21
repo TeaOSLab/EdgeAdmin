@@ -14,7 +14,7 @@
 	<tr>
 		<td class="title">绑定地址</td>
 		<td>
-			<span v-for="listen in serverConfig.http.listen" class="ui label tiny">{{listen}}</span>
+			<span v-for="listen in serverConfig.http.listen" class="ui label tiny basic">{{listen}}</span>
 			<p class="ui comment">如果地址中的IP是0.0.0.0，表示服务器的所有IP都可以用来使用访问此服务。</p>
 		</td>
 	</tr>
@@ -33,7 +33,7 @@
 	<tr>
 		<td class="title">绑定地址</td>
 		<td>
-			<span v-for="listen in serverConfig.https.listen" class="ui label tiny">{{listen}}</span>
+			<span v-for="listen in serverConfig.https.listen" class="ui label tiny basic">{{listen}}</span>
 			<p class="ui comment">如果地址中的IP是0.0.0.0，表示服务器的所有IP都可以用来使用访问此服务。</p>
 		</td>
 	</tr>

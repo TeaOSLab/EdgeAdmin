@@ -53,9 +53,9 @@ Vue.component("dns-route-selector", {
 	template: `<div>
 	<input type="hidden" name="dnsRoutesJSON" :value="JSON.stringify(routeCodes)"/>
 	<div v-if="routes.length > 0">
-		<tiny-label v-for="route in routes" :key="route.code">
+		<tiny-basic-label v-for="route in routes" :key="route.code">
 			{{route.name}} <a href="" @click.prevent="remove(route)"><i class="icon remove"></i></a>
-		</tiny-label>
+		</tiny-basic-label>
 		<div class="ui divider"></div>
 	</div>
 	<button type="button" class="ui button small" @click.prevent="add" v-if="!isAdding">+</button>

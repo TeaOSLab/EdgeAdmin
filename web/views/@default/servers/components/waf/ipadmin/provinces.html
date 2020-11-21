@@ -11,7 +11,7 @@
 			<tr>
 				<td class="title">已封禁</td>
 				<td>
-					<div class="ui label tiny" v-for="province in provinces" v-if="province.isChecked" style="margin-bottom: 0.5em">
+					<div class="ui label tiny basic" v-for="province in provinces" v-if="province.isChecked" style="margin-bottom: 0.5em">
 						<input type="hidden" name="provinceIds" :value="province.id"/>
 						{{province.name}} <a href="" @click.prevent="deselectProvince(province)" title="取消封禁"><i class="icon remove"></i></a>
 					</div>

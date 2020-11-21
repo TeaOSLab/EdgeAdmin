@@ -9,8 +9,8 @@
 			<th class="center">ID</th>
 			<th>名称</th>
 			<th>类型</th>
-			<th class="center">集群数</th>
-			<th class="center">节点数</th>
+			<th class="center width5">集群数</th>
+			<th class="center width5">节点数</th>
 			<th class="two op">操作</th>
 		</tr>
 	</thead>
@@ -18,7 +18,7 @@
 		<td class="center">{{grant.id}}</td>
 		<td>{{grant.name}}</td>
 		<td>
-			<span class="ui label tiny">{{grant.method.name}}</span>
+			<span class="ui label tiny basic">{{grant.method.name}}</span>
 		</td>
 		<td class="center">
 			<span v-if="grant.countClusters > 0">{{grant.countClusters}}</span>

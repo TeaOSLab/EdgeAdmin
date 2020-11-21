@@ -22,8 +22,8 @@
 				<th>域名</th>
 				<th>生效日期</th>
 				<th>过期日期</th>
-				<th>引用服务</th>
-				<th>状态</th>
+				<th class="center">引用服务</th>
+				<th class="center">状态</th>
 				<th class="three op">操作</th>
 			</tr>
 		</thead>
@@ -38,13 +38,13 @@
 			</td>
 			<td>
 				<div v-for="dnsName in cert.dnsNames" style="margin-bottom:0.4em">
-					<span class="ui label tiny">{{dnsName}}</span>
+					<span class="ui label tiny basic">{{dnsName}}</span>
 				</div>
 			</td>
 			<td>{{certInfos[index].beginDay}}</td>
 			<td>{{certInfos[index].endDay}}</td>
-			<td>{{certInfos[index].countServers}}</td>
-			<td nowrap="">
+			<td class="center">{{certInfos[index].countServers}}</td>
+			<td nowrap="" class="center">
 				<span class="ui label red tiny basic" v-if="!certInfos[index].isOn">未启用</span>
 				<span class="ui label red tiny basic" v-else-if="certInfos[index].isExpired">已过期</span>
 				<span class="ui label green tiny basic" v-else>有效中</span>

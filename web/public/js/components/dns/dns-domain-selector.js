@@ -41,7 +41,7 @@ Vue.component("dns-domain-selector", {
 	template: `<div>
 	<input type="hidden" name="dnsDomainId" :value="domainId"/>
 	<div v-if="domainName.length > 0">
-		<span class="ui label small">
+		<span class="ui label small basic">
 			{{domainName}}
 			<a href="" @click.prevent="update"><i class="icon pencil small"></i></a>
 			<a href="" @click.prevent="remove()"><i class="icon remove"></i></a>

@@ -364,7 +364,7 @@ Vue.component("ssl-config-box", {
 						<div class="ui divider"></div>
 						<div class="cipher-suites-box">
 							已添加套件({{policy.cipherSuites.length}})：
-							<div v-for="cipherSuite in policy.cipherSuites" class="ui label tiny" style="margin-bottom: 0.5em">
+							<div v-for="cipherSuite in policy.cipherSuites" class="ui label tiny basic" style="margin-bottom: 0.5em">
 								<input type="hidden" name="cipherSuites" :value="cipherSuite"/>
 								<span v-html="formatCipherSuite(cipherSuite)"></span> &nbsp; <a href="" title="删除套件" @click.prevent="removeCipherSuite(cipherSuite)"><i class="icon remove"></i></a>
 								<a href="" title="拖动改变顺序"><i class="icon bars handle"></i></a>
@@ -431,7 +431,7 @@ Vue.component("ssl-config-box", {
 				<td class="color-border">HSTS生效的域名</td>
 				<td colspan="2">
 					<div class="names-box">
-					<span class="ui label tiny" v-for="(domain, arrayIndex) in hsts.domains" :class="{blue:hstsDomainEditingIndex == arrayIndex}">{{domain}}
+					<span class="ui label tiny basic" v-for="(domain, arrayIndex) in hsts.domains" :class="{blue:hstsDomainEditingIndex == arrayIndex}">{{domain}}
 						<input type="hidden" name="hstsDomains" :value="domain"/> &nbsp;
 						<a href="" @click.prevent="editHstsDomain(arrayIndex)" title="修改"><i class="icon pencil"></i></a>
 						<a href="" @click.prevent="removeHstsDomain(arrayIndex)" title="删除"><i class="icon remove"></i></a>

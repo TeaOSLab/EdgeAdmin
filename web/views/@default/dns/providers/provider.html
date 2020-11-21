@@ -56,7 +56,7 @@
 			<th class="width10 center">节点域名</th>
 			<th class="width10 center">服务域名</th>
 			<th>数据更新时间</th>
-			<th>状态</th>
+			<th class="center width10">状态</th>
 			<th class="three op">操作</th>
 		</tr>
 	</thead>
@@ -78,7 +78,7 @@
 			<span v-if="domain.dataUpdatedTime.length > 0">{{domain.dataUpdatedTime}}</span>
 			<span v-else class="disabled">尚未更新</span>
 		</td>
-		<td>
+		<td class="center">
 			<div v-if="domain.countRoutes == 0 || domain.nodesChanged || domain.serversChanged">
 				<a href=""  style="border-bottom: 1px #db2828 dashed" title="点击和DNS服务商系统同步" @click.prevent="syncDomain(index,domain)" v-if="!domain.isSyncing"><span class="red">需要同步</span></a>
 				<span v-else>正在同步...</span>
