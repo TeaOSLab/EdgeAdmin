@@ -95,10 +95,12 @@ func (this *CreateNodeAction) RunPost(params struct {
 	}
 
 	dnsRouteCodes := []string{}
-	err := json.Unmarshal(params.DnsRoutesJSON, &dnsRouteCodes)
-	if err != nil {
-		this.ErrorPage(err)
-		return
+	if len(params.DnsRoutesJSON) > 0 {
+		err := json.Unmarshal(params.DnsRoutesJSON, &dnsRouteCodes)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
 	}
 
 	// TODO 检查登录授权
