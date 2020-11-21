@@ -12,7 +12,7 @@
 			<th>节点名称</th>
 			<th>连接地址</th>
 			<th>数据库名</th>
-			<th class="two wide">状态</th>
+			<th class="center width10">状态</th>
 			<th class="two op">操作</th>
 		</tr>
 	</thead>
@@ -20,7 +20,7 @@
 		<td>{{node.name}}</td>
 		<td>{{node.host}}:{{node.port}}</td>
 		<td>{{node.database}}</td>
-		<td><label-on :v-is-on="node.isOn"></label-on></td>
+		<td class="center"><label-on :v-is-on="node.isOn"></label-on></td>
 		<td>
 			<a href="" @click.prevent="updateNode(node.id)">修改</a> &nbsp;
 			<a href="" @click.prevent="deleteNode(node.id)">删除</a>

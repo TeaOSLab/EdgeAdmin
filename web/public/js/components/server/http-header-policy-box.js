@@ -160,7 +160,7 @@ Vue.component("http-header-policy-box", {
 			<td class="title">需要删除的Header</td>
 			<td>
 				<div v-if="requestDeletingHeaders.length > 0">
-					<div class="ui label small" v-for="headerName in requestDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
+					<div class="ui label small basic" v-for="headerName in requestDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
 					<div class="ui divider" ></div>
 				</div>
 				<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vRequestHeaderPolicy.id, 'request')">+</button>
@@ -202,7 +202,7 @@ Vue.component("http-header-policy-box", {
 			<td class="title">需要删除的Header</td>
 			<td>
 				<div v-if="responseDeletingHeaders.length > 0">
-					<div class="ui label small" v-for="headerName in responseDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vResponseHeaderPolicy.id, headerName)"></i></a> </div>
+					<div class="ui label small basic" v-for="headerName in responseDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vResponseHeaderPolicy.id, headerName)"></i></a> </div>
 					<div class="ui divider" ></div>
 				</div>
 				<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vResponseHeaderPolicy.id, 'response')">+</button>

@@ -39,7 +39,7 @@ Vue.component("node-ip-addresses-box", {
 	<input type="hidden" name="ipAddressesJSON" :value="JSON.stringify(ipAddresses)"/>
 	<div v-if="ipAddresses.length > 0">
 		<div>
-			<div v-for="(address, index) in ipAddresses" class="ui label small">
+			<div v-for="(address, index) in ipAddresses" class="ui label tiny basic">
 				{{address.ip}}
 				<span class="small" v-if="address.name.length > 0">（{{address.name}}<span v-if="!address.canAccess">，不可访问</span>）</span>
 				<span class="small" v-if="address.name.length == 0 && !address.canAccess">（不可访问）</span>

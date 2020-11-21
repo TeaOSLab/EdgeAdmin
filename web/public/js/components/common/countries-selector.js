@@ -41,11 +41,11 @@ Vue.component("countries-selector", {
 	template: `<div>
 	<input type="hidden" name="countryIdsJSON" :value="JSON.stringify(countryIds)"/>
 	<div v-if="countries.length > 0" style="margin-bottom: 0.5em">
-		<div v-for="(country, index) in countries" class="ui label tiny">{{country.name}} <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove"></i></a></div>
+		<div v-for="(country, index) in countries" class="ui label tiny basic">{{country.name}} <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove"></i></a></div>
 		<div class="ui divider"></div>
 	</div>
 	<div>
-		<button class="ui button small" type="button" @click.prevent="add">+</button>
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
 	</div>
 </div>`
 })

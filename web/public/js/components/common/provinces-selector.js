@@ -41,11 +41,11 @@ Vue.component("provinces-selector", {
 	template: `<div>
 	<input type="hidden" name="provinceIdsJSON" :value="JSON.stringify(provinceIds)"/>
 	<div v-if="provinces.length > 0" style="margin-bottom: 0.5em">
-		<div v-for="(province, index) in provinces" class="ui label tiny">{{province.name}} <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove"></i></a></div>
+		<div v-for="(province, index) in provinces" class="ui label tiny basic">{{province.name}} <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove"></i></a></div>
 		<div class="ui divider"></div>
 	</div>
 	<div>
-		<button class="ui button small" type="button" @click.prevent="add">+</button>
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
 	</div>
 </div>`
 })

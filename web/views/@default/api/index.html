@@ -11,7 +11,7 @@
 		<tr>
 			<th>节点名称</th>
 			<th>访问地址</th>
-			<th class="two wide">状态</th>
+			<th class="center width10">状态</th>
 			<th class="two op">操作</th>
 		</tr>
 	</thead>
@@ -19,10 +19,10 @@
 		<td>{{node.name}}</td>
 		<td>
 			<div v-if="node.accessAddrs != null && node.accessAddrs.length > 0">
-				<span class="ui label tiny" v-for="addr in node.accessAddrs">{{addr}}</span>
+				<span class="ui label tiny basic" v-for="addr in node.accessAddrs">{{addr}}</span>
 			</div>
 		</td>
-		<td>
+		<td class="center">
 			<label-on :v-is-on="node.isOn"></label-on>
 		</td>
 		<td>

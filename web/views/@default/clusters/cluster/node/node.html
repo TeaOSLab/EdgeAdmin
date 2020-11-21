@@ -17,7 +17,7 @@
 			<td>
 				<div v-if="node.ipAddresses.length > 0">
 					<div>
-						<div v-for="(address, index) in node.ipAddresses" class="ui label tiny">
+						<div v-for="(address, index) in node.ipAddresses" class="ui label tiny basic">
                             {{address.ip}}
 							<span class="small" v-if="address.name.length > 0">（{{address.name}}<span v-if="!address.canAccess">，不可访问</span>）</span>
 							<span class="small" v-if="address.name.length == 0 && !address.canAccess">（不可访问）</span>
@@ -32,7 +32,7 @@
 		<tr v-if="dnsRoutes.length > 0">
 			<td>DNS线路</td>
 			<td>
-				<span class="ui label tiny" v-for="route in dnsRoutes">{{route.name}}</span>
+				<span class="ui label tiny basic" v-for="route in dnsRoutes">{{route.name}}</span>
 			</td>
 		</tr>
 		<tr>
