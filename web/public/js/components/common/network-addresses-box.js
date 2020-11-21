@@ -79,7 +79,7 @@ Vue.component("network-addresses-box", {
 	template: `<div>
 	<input type="hidden" :name="name" :value="JSON.stringify(addresses)"/>
 	<div v-if="addresses.length > 0">
-		<div class="ui label small" v-for="(addr, index) in addresses">
+		<div class="ui label small basic" v-for="(addr, index) in addresses">
 			{{addr.protocol}}://<span v-if="addr.host.length > 0">{{addr.host}}</span><span v-if="addr.host.length == 0">*</span>:{{addr.portRange}}
 			<a href="" @click.prevent="updateAddr(index, addr)" title="修改"><i class="icon pencil small"></i></a>
 			<a href="" @click.prevent="removeAddr(index)" title="删除"><i class="icon remove"></i></a> </div>

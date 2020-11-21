@@ -33,7 +33,7 @@ Vue.component("message-row", {
 			
 			<!-- 健康检查 -->
 			<div v-if="message.type == 'HealthCheckFailed'" style="margin-top: 0.8em">
-				<a :href="'/clusters/cluster/node?clusterId=' + message.cluster.id + '&nodeId=' + param.node.id" v-for="param in params" class="ui label tiny" style="margin-bottom: 0.5em">{{param.node.name}}: {{param.error}}</a>
+				<a :href="'/clusters/cluster/node?clusterId=' + message.cluster.id + '&nodeId=' + param.node.id" v-for="param in params" class="ui label small basic" style="margin-bottom: 0.5em">{{param.node.name}}: {{param.error}}</a>
 			</div>
 			
 			<!-- 集群DNS设置 -->

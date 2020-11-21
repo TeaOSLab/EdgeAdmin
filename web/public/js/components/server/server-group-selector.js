@@ -40,7 +40,7 @@ Vue.component("server-group-selector", {
 	},
 	template: `<div>
 	<div v-if="groups.length > 0">
-		<div class="ui label tiny" v-if="groups.length > 0" v-for="(group, index) in groups">
+		<div class="ui label small basic" v-if="groups.length > 0" v-for="(group, index) in groups">
 			<input type="hidden" name="groupIds" :value="group.id"/>
 			{{group.name}} &nbsp;<a href="" title="删除" @click.prevent="removeGroup(index)"><i class="icon remove"></i></a>
 		</div>
