@@ -1,4 +1,4 @@
-package ui
+package server
 
 import (
 	"github.com/iwind/TeaGo"

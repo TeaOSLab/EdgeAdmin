@@ -1,7 +1,9 @@
-package ui
+package server
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/uimanager"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/iwind/TeaGo/actions"
 )
 
 type IndexAction struct {
@@ -13,15 +15,47 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct{}) {
-	this.Data["serverIsChanged"] = serverConfigIsChanged
+	config, err := uimanager.LoadUIConfig()
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["config"] = config
 
-	serverConfig, err := loadServerConfig()
+	this.Show()
+}
+
+func (this *IndexAction) RunPost(params struct {
+	ProductName        string
+	AdminSystemName    string
+	ShowOpenSourceInfo bool
+	ShowVersion        bool
+	Version            string
+
+	Must *actions.Must
+	CSRF *actionutils.CSRF
+}) {
+	params.Must.
+		Field("productName", params.ProductName).
+		Require("请输入产品名称").
+		Field("adminSystemName", params.AdminSystemName).
+		Require("请输入管理员系统名称")
+
+	config, err := uimanager.LoadUIConfig()
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	config.ProductName = params.ProductName
+	config.AdminSystemName = params.AdminSystemName
+	config.ShowOpenSourceInfo = params.ShowOpenSourceInfo
+	config.ShowVersion = params.ShowVersion
+	config.Version = params.Version
+	err = uimanager.UpdateUIConfig(config)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 
-	this.Data["serverConfig"] = serverConfig
-
-	this.Show()
+	this.Success()
 }

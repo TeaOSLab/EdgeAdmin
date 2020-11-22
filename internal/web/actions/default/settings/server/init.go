@@ -10,9 +10,11 @@ func init() {
 	TeaGo.BeforeStart(func(server *TeaGo.Server) {
 		server.
 			Helper(helpers.NewUserMustAuth()).
-			Helper(settingutils.NewHelper("ui")).
-			Prefix("/settings/ui").
-			GetPost("", new(IndexAction)).
+			Helper(settingutils.NewHelper("server")).
+			Prefix("/settings/server").
+			Get("", new(IndexAction)).
+			GetPost("/updateHTTPPopup", new(UpdateHTTPPopupAction)).
+			GetPost("/updateHTTPSPopup", new(UpdateHTTPSPopupAction)).
 			EndAll()
 	})
 }

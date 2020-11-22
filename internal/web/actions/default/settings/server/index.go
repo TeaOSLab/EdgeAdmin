@@ -1,4 +1,4 @@
-package settings
+package server
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
@@ -13,5 +13,15 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct{}) {
-	this.RedirectURL("/settings/server")
+	this.Data["serverIsChanged"] = serverConfigIsChanged
+
+	serverConfig, err := loadServerConfig()
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	this.Data["serverConfig"] = serverConfig
+
+	this.Show()
 }

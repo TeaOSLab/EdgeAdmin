@@ -5,6 +5,7 @@ import (
 	nodes "github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/securitymanager"
 	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
+	"github.com/TeaOSLab/EdgeAdmin/internal/uimanager"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -83,13 +84,20 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 		return true
 	}
 
+	config, err := uimanager.LoadUIConfig()
+	if err != nil {
+		action.WriteString(err.Error())
+		return false
+	}
+
 	// 初始化内置方法
 	action.ViewFunc("teaTitle", func() string {
 		return action.Data["teaTitle"].(string)
 	})
 
-	action.Data["teaTitle"] = teaconst.ProductNameZH
-	action.Data["teaName"] = teaconst.ProductNameZH
+	action.Data["teaShowVersion"] = config.ShowVersion
+	action.Data["teaTitle"] = config.AdminSystemName
+	action.Data["teaName"] = config.ProductName
 
 	resp, err := rpc.AdminRPC().FindAdminFullname(rpc.Context(0), &pb.FindAdminFullnameRequest{AdminId: int64(this.AdminId)})
 	if err != nil {
@@ -105,7 +113,12 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	action.Data["teaModules"] = this.modules()
 	action.Data["teaSubMenus"] = []map[string]interface{}{}
 	action.Data["teaTabbar"] = []map[string]interface{}{}
-	action.Data["teaVersion"] = teaconst.Version
+	if len(config.Version) == 0 {
+		action.Data["teaVersion"] = teaconst.Version
+	} else {
+		action.Data["teaVersion"] = config.Version
+	}
+	action.Data["teaShowOpenSourceInfo"] = config.ShowOpenSourceInfo
 	action.Data["teaIsSuper"] = false
 	action.Data["teaDemoEnabled"] = teaconst.IsDemo
 	if !action.Data.Has("teaSubMenu") {
