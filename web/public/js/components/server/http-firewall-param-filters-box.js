@@ -15,7 +15,11 @@ Vue.component("http-firewall-param-filters-box", {
 				{name: "URLDecode", code: "urlDecode"},
 				{name: "BASE64Encode", code: "base64Encode"},
 				{name: "BASE64Decode", code: "base64Decode"},
-				{name: "计算长度", code: "length"}
+				{name: "计算长度", code: "length"},
+				{name: "十六进制->十进制", "code": "hex2dec"},
+				{name: "十进制->十六进制", "code": "dec2hex"},
+				{name: "SHA1", "code": "sha1"},
+				{name: "SHA256", "code": "sha256"}
 			],
 			addingCode: ""
 		}
