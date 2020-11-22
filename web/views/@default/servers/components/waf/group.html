@@ -41,7 +41,7 @@
 		<tbody v-for="set in sets" :data-set-id="set.id">
 		<tr>
 			<td style="text-align: center;"><i class="icon bars handle grey"></i> </td>
-			<td><span :class="{disabled:!set.isOn}">{{set.name}}</span>
+			<td nowrap=""><span :class="{disabled:!set.isOn}">{{set.name}}</span>
 				<p style="margin-top:0.5em">
 					<label-on :v-is-on="set.isOn"></label-on>
 				</p>
@@ -53,7 +53,7 @@
 				<span class="ui disabled" v-if="set.rules.length == 0">暂时还没有规则</span>
 			</td>
 			<td class="center">{{set.connector.toUpperCase()}}</td>
-			<td><span :class="{red:set.action == 'BLOCK' || set.action == 'CAPTCHA', green:set.action != 'BLOCK' && set.action != 'CAPTCHA'}">{{set.actionName}}[{{set.action.toUpperCase()}}]</span>
+			<td nowrap=""><span :class="{red:set.action == 'BLOCK' || set.action == 'CAPTCHA', green:set.action != 'BLOCK' && set.action != 'CAPTCHA'}">{{set.actionName}}[{{set.action.toUpperCase()}}]</span>
 				<div v-if="set.actionLinks != null && set.actionLinks.length > 0" style="margin-top:0.3em">
 					<span class="disabled">-&gt;</span> <span v-for="link in set.actionLinks"><a :href="link.url"><span class="disabled">[{{link.name}}]</span></a> &nbsp;</span>
 				</div>

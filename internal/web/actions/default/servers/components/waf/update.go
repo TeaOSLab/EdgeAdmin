@@ -8,6 +8,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"net/http"
 )
 
 type UpdateAction struct {
@@ -30,11 +31,21 @@ func (this *UpdateAction) RunGet(params struct {
 		this.NotFound("firewallPolicy", params.FirewallPolicyId)
 		return
 	}
+
+	if firewallPolicy.BlockOptions == nil {
+		firewallPolicy.BlockOptions = &firewallconfigs.HTTPFirewallBlockAction{
+			StatusCode: http.StatusForbidden,
+			Body:       "Blocked By WAF",
+			URL:        "",
+		}
+	}
+
 	this.Data["firewallPolicy"] = maps.Map{
-		"id":          firewallPolicy.Id,
-		"name":        firewallPolicy.Name,
-		"description": firewallPolicy.Description,
-		"isOn":        firewallPolicy.IsOn,
+		"id":           firewallPolicy.Id,
+		"name":         firewallPolicy.Name,
+		"description":  firewallPolicy.Description,
+		"isOn":         firewallPolicy.IsOn,
+		"blockOptions": firewallPolicy.BlockOptions,
 	}
 
 	// 预置分组
@@ -63,6 +74,7 @@ func (this *UpdateAction) RunPost(params struct {
 	FirewallPolicyId int64
 	Name             string
 	GroupCodes       []string
+	BlockOptionsJSON []byte
 	Description      string
 	IsOn             bool
 
@@ -81,6 +93,7 @@ func (this *UpdateAction) RunPost(params struct {
 		Name:               params.Name,
 		Description:        params.Description,
 		FirewallGroupCodes: params.GroupCodes,
+		BlockOptionsJSON:   params.BlockOptionsJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)
