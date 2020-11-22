@@ -22,6 +22,24 @@
 			</td>
 		</tr>
 		<tr>
+			<td>阻止动作设置</td>
+			<td>
+				<span v-if="firewallPolicy.blockOptions == null" class="disabled">还没有设置。</span>
+				<div v-else>
+					<table class="ui table">
+						<tr>
+							<td class="title">状态码</td>
+							<td>{{firewallPolicy.blockOptions.statusCode}}</td>
+						</tr>
+						<tr>
+							<td>提示内容</td>
+							<td>{{firewallPolicy.blockOptions.body}}</td>
+						</tr>
+					</table>
+				</div>
+			</td>
+		</tr>
+		<tr>
 			<td>描述</td>
 			<td>
 				<span v-if="firewallPolicy.description.length > 0">{{firewallPolicy.description}}</span>

@@ -47,11 +47,12 @@ func (this *PolicyAction) RunGet(params struct {
 	}
 
 	this.Data["firewallPolicy"] = maps.Map{
-		"id":          firewallPolicy.Id,
-		"name":        firewallPolicy.Name,
-		"isOn":        firewallPolicy.IsOn,
-		"description": firewallPolicy.Description,
-		"groups":      internalGroups,
+		"id":           firewallPolicy.Id,
+		"name":         firewallPolicy.Name,
+		"isOn":         firewallPolicy.IsOn,
+		"description":  firewallPolicy.Description,
+		"groups":       internalGroups,
+		"blockOptions": firewallPolicy.BlockOptions,
 	}
 
 	// 正在使用此策略的服务
