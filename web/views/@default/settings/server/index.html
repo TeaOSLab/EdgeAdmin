@@ -1,0 +1,54 @@
+{$layout}
+
+<div class="ui message warning" v-if="serverIsChanged">服务配置已修改，请在命令行下重启后生效。</div>
+
+<h3>HTTP <a href="/settings/server/http" v-if="!teaDemoEnabled" @click.prevent="updateHTTP()">修改</a><a v-if="teaDemoEnabled">[演示版无法修改]</a></h3>
+
+<table class="ui table definition selectable">
+	<tr>
+		<td>状态</td>
+		<td>
+			<label-on :v-is-on="serverConfig.http.on"></label-on>
+		</td>
+	</tr>
+	<tr>
+		<td class="title">绑定地址</td>
+		<td>
+			<span v-for="listen in serverConfig.http.listen" class="ui label tiny basic">{{listen}}</span>
+			<p class="ui comment">如果地址中的IP是0.0.0.0，表示服务器的所有IP都可以用来使用访问此服务。</p>
+		</td>
+	</tr>
+</table>
+
+<div class="ui divider"></div>
+
+<h3>HTTPS <a href="" v-if="!teaDemoEnabled" @click.prevent="updateHTTPS()">修改</a><a v-if="teaDemoEnabled">[演示版无法修改]</a></h3>
+<table class="ui table definition selectable">
+	<tr>
+		<td>状态</td>
+		<td>
+			<label-on :v-is-on="serverConfig.https.on"></label-on>
+		</td>
+	</tr>
+	<tr>
+		<td class="title">绑定地址</td>
+		<td>
+			<span v-for="listen in serverConfig.https.listen" class="ui label tiny basic">{{listen}}</span>
+			<p class="ui comment">如果地址中的IP是0.0.0.0，表示服务器的所有IP都可以用来使用访问此服务。</p>
+		</td>
+	</tr>
+	<tr>
+		<td>证书文件<span class="small">（Cert）</span></td>
+		<td>
+			<span v-if="serverConfig.https.cert.length > 0">{{serverConfig.https.cert}}</span>
+			<span class="disabled" v-else>还没有设置证书</span>
+		</td>
+	</tr>
+	<tr>
+		<td>私钥文件<span class="small">（Key）</span></td>
+		<td>
+			<span v-if="serverConfig.https.key.length > 0">{{serverConfig.https.key}}</span>
+			<span class="disabled" v-else>还没有设置私钥</span>
+		</td>
+	</tr>
+</table>

@@ -25,7 +25,8 @@ func (this *Helper) BeforeAction(actionPtr actions.ActionWrapper) (goNext bool) 
 
 	// 标签栏
 	tabbar := actionutils.NewTabbar()
-	tabbar.Add("管理界面", "", "/settings", "", this.tab == "ui")
+	tabbar.Add("Web服务", "", "/settings/server", "", this.tab == "server")
+	tabbar.Add("界面设置", "", "/settings/ui", "", this.tab == "ui")
 	tabbar.Add("安全设置", "", "/settings/security", "", this.tab == "security")
 	tabbar.Add("数据库", "", "/settings/database", "", this.tab == "database")
 	tabbar.Add("API节点", "", "/api", "", this.tab == "apiNodes")

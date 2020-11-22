@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <title>{$.teaTitle}管理员系统</title>
+    <title>{$.teaTitle}</title>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
     <link rel="shortcut icon" href="/images/favicon.png"/>
@@ -23,12 +23,12 @@
     <!-- 顶部导航 -->
     <div class="ui menu top-nav blue inverted small borderless" v-cloak="">
         <a href="/" class="item">
-			<i class="ui icon leaf"></i> &nbsp; {{teaName}}管理员系统&nbsp;<sup>v{{teaVersion}}</sup> &nbsp;
+			<i class="ui icon leaf"></i> &nbsp; {{teaTitle}}&nbsp;<sup v-if="teaShowVersion">v{{teaVersion}}</sup> &nbsp;
 		</a>
 
         <div class="right menu">
 			<a href="/messages" class="item" :class="{active:teaMenu == 'message'}"><span :class="{'blink':globalMessageBadge > 0}"><i class="icon bell"></i>消息({{globalMessageBadge}}) </span></a>
-			<a href="/settings/profile" class="item"  :class="{active: teaMenu == 'settings'}">
+			<a href="/settings/profile" class="item">
 				<i class="icon user" v-if="teaUserAvatar.length == 0"></i>
 				<img class="avatar" alt="" :src="teaUserAvatar" v-if="teaUserAvatar.length > 0"/>
                 {{teaUsername}}
@@ -76,7 +76,7 @@
     </div>
 
 	<!-- 底部 -->
-	<div id="footer" class="ui menu inverted light-blue borderless small">
+	<div id="footer" class="ui menu inverted light-blue borderless small" v-if="teaShowOpenSourceInfo">
 		<a  href="/settings/upgrade" class="item" title="点击进入检查版本更新页面">{{teaName}} v{{teaVersion}}</a>
 		<a href="https://github.com/TeaOSLab/EdgeAdmin" target="_blank" class="item">GitHub</a>
 		<!--<a href="http://teaos.cn" target="_blank" class="item">官网</a>

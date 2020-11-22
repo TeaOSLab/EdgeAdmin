@@ -5,6 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
+	"github.com/TeaOSLab/EdgeAdmin/internal/uimanager"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
@@ -47,6 +48,13 @@ func (this *IndexAction) RunGet(params struct {
 	timestamp := fmt.Sprintf("%d", time.Now().Unix())
 	this.Data["token"] = stringutil.Md5(TokenSalt+timestamp) + timestamp
 	this.Data["from"] = params.From
+
+	config, err := uimanager.LoadUIConfig()
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["systemName"] = config.AdminSystemName
 
 	this.Show()
 }
