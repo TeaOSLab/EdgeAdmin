@@ -2,14 +2,12 @@ package profile
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/go-sql-driver/mysql"
 	"github.com/go-yaml/yaml"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/dbs"
 	"github.com/iwind/TeaGo/maps"
 	"io/ioutil"
-	"net/url"
-	"path/filepath"
-	"regexp"
 	"strings"
 )
 
@@ -52,32 +50,31 @@ func (this *IndexAction) RunGet(params struct{}) {
 		break
 	}
 	dsn := dbConfig.Dsn
-	dsn = regexp.MustCompile(`tcp\((.+)\)`).ReplaceAllString(dsn, "$1")
-	dsnURL, err := url.Parse("mysql://" + dsn)
+	cfg, err := mysql.ParseDSN(dsn)
 	if err != nil {
-		this.Data["error"] = "parse dsn failed: " + err.Error()
+		this.Data["error"] = "parse dsn error: " + err.Error()
 		this.Show()
 		return
 	}
 
-	host := dsnURL.Host
+	host := cfg.Addr
 	port := "3306"
-	index := strings.LastIndex(dsnURL.Host, ":")
+	index := strings.LastIndex(host, ":")
 	if index > 0 {
-		host = dsnURL.Host[:index]
-		port = dsnURL.Host[index+1:]
+		port = host[index+1:]
+		host = host[:index]
 	}
 
-	password, _ := dsnURL.User.Password()
+	password := cfg.Passwd
 	if len(password) > 0 {
 		password = strings.Repeat("*", len(password))
 	}
 	this.Data["dbConfig"] = maps.Map{
 		"host":     host,
 		"port":     port,
-		"username": dsnURL.User.Username(),
+		"username": cfg.User,
 		"password": password,
-		"database": filepath.Base(dsnURL.Path),
+		"database": cfg.DBName,
 	}
 
 	// TODO 测试连接

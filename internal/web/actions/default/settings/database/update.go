@@ -109,12 +109,6 @@ func (this *UpdateAction) RunPost(params struct {
 		Require("请输入连接数据库的用户名").
 		Match(`^[\w\.-]+$`, "用户名中不能包含特殊字符")
 
-	if len(params.Password) > 0 {
-		params.Must.
-			Field("password", params.Password).
-			Match(`^[\w\.-]+$`, "密码中不能包含特殊字符")
-	}
-
 	// 保存
 	dsn := params.Username + ":" + params.Password + "@tcp(" + params.Host + ":" + fmt.Sprintf("%d", params.Port) + ")/" + params.Database
 
