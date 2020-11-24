@@ -216,6 +216,10 @@ func (this *RPCClient) DNSRPC() pb.DNSServiceClient {
 	return pb.NewDNSServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) ACMEUserRPC() pb.ACMEUserServiceClient {
+	return pb.NewACMEUserServiceClient(this.pickConn())
+}
+
 // 构造Admin上下文
 func (this *RPCClient) Context(adminId int64) context.Context {
 	ctx := context.Background()

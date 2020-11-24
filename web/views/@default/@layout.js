@@ -62,6 +62,13 @@ Tea.context(function () {
 			height: "24em"
 		})
 	}
+
+	/**
+	 * 弹窗中默认成功回调
+	 */
+	if (window.IS_POPUP === true) {
+		this.success = window.NotifyPopup
+	}
 });
 
 window.NotifySuccess = function (message, url, params) {

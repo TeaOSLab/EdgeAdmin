@@ -36,7 +36,7 @@ Vue.component("ssl-certs-box", {
 				width = "35em"
 				height = "20em"
 			}
-			teaweb.popup("/servers/components/ssl/selectPopup?viewSize=" + viewSize, {
+			teaweb.popup("/servers/certs/selectPopup?viewSize=" + viewSize, {
 				width: width,
 				height: height,
 				callback: function (resp) {
@@ -48,7 +48,7 @@ Vue.component("ssl-certs-box", {
 		// 上传证书
 		uploadCert: function () {
 			let that = this
-			teaweb.popup("/servers/components/ssl/uploadPopup", {
+			teaweb.popup("/servers/certs/uploadPopup", {
 				height: "28em",
 				callback: function (resp) {
 					teaweb.success("上传成功", function () {
