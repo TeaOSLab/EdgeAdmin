@@ -82,13 +82,20 @@
 					<tr>
 						<td>节点主机地址</td>
 						<td>
-							<div v-if="serverIPs.length > 0">
-								<select name="newHost" class="ui dropdown auto-width">
-									<option v-for="ip in serverIPs" :value="ip">{{ip}}</option>
-								</select>
-							</div>
-							<div v-else="">
-								<input type="text" name="newHost" value=""/>
+							<div class="ui fields inline">
+								<div class="ui field">
+									<div v-if="serverIPs.length > 0 && !apiHostInput">
+										<select name="newHost" class="ui dropdown auto-width">
+											<option v-for="ip in serverIPs" :value="ip">{{ip}}</option>
+										</select>
+									</div>
+									<div v-else="">
+										<input type="text" name="newHost" value="" ref="newHostRef" placeholder="x.x.x.x"/>
+									</div>
+								</div>
+								<div class="ui field">
+									<a href="" v-if="!apiHostInput" @click.prevent="inputAPIHost()">[手工输入]</a>
+								</div>
 							</div>
 							<p class="comment">其他节点访问此API节点的主机地址，可以是IP或者域名，第一次安装时通常是<strong>当前服务器</strong>的IP地址。后期可以修改这个地址。</p>
 						</td>
