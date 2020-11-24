@@ -1,0 +1,36 @@
+{$layout}
+{$template "/left_menu_top"}
+
+<div class="right-box without-tabbar">
+	{$template "../menu"}
+
+	<second-menu>
+		<menu-item @click.prevent="createUser">[创建用户]</menu-item>
+		<menu-item><tip-icon content="这里管理用于申请免费证书的用户信息"></tip-icon></menu-item>
+	</second-menu>
+
+	<p class="comment" v-if="users.length == 0">暂时还没有用户。</p>
+
+	<table class="ui table selectable" v-if="users.length > 0">
+		<thead>
+			<tr>
+				<th>Email</th>
+				<th>备注</th>
+				<th class="two op">操作</th>
+			</tr>
+		</thead>
+		<tr v-for="user in users">
+			<td>{{user.email}}</td>
+			<td>
+				<span v-if="user.description.length > 0">{{user.description}}</span>
+				<span v-else class="disabled">-</span>
+			</td>
+			<td>
+				<a href="" @click.prevent="updateUser(user.id)">修改</a> &nbsp;
+				<a href="" @click.prevent="deleteUser(user.id)">删除</a>
+			</td>
+		</tr>
+	</table>
+
+	<div class="page" v-html="page"></div>
+</div>

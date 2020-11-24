@@ -17,7 +17,7 @@ Vue.component("ssl-certs-view", {
 
 		// 查看详情
 		viewCert: function (certId) {
-			teaweb.popup("/servers/components/ssl/certPopup?certId=" + certId, {
+			teaweb.popup("/servers/certs/certPopup?certId=" + certId, {
 				height: "28em",
 				width: "48em"
 			})

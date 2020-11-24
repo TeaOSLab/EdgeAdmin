@@ -95,7 +95,7 @@ Vue.component("ssl-config-box", {
 		// 选择证书
 		selectCert: function () {
 			let that = this
-			teaweb.popup("/servers/components/ssl/selectPopup", {
+			teaweb.popup("/servers/certs/selectPopup", {
 				width: "50em",
 				height: "30em",
 				callback: function (resp) {
@@ -108,7 +108,7 @@ Vue.component("ssl-config-box", {
 		// 上传证书
 		uploadCert: function () {
 			let that = this
-			teaweb.popup("/servers/components/ssl/uploadPopup", {
+			teaweb.popup("/servers/certs/uploadPopup", {
 				height: "28em",
 				callback: function (resp) {
 					teaweb.success("上传成功", function () {
@@ -277,7 +277,7 @@ Vue.component("ssl-config-box", {
 		// 选择客户端CA证书
 		selectClientCACert: function () {
 			let that = this
-			teaweb.popup("/servers/components/ssl/selectPopup?isCA=1", {
+			teaweb.popup("/servers/certs/selectPopup?isCA=1", {
 				width: "50em",
 				height: "30em",
 				callback: function (resp) {
@@ -290,7 +290,7 @@ Vue.component("ssl-config-box", {
 		// 上传CA证书
 		uploadClientCACert: function () {
 			let that = this
-			teaweb.popup("/servers/components/ssl/uploadPopup?isCA=1", {
+			teaweb.popup("/servers/certs/uploadPopup?isCA=1", {
 				height: "28em",
 				callback: function (resp) {
 					teaweb.success("上传成功", function () {

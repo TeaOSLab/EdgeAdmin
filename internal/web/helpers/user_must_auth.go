@@ -153,6 +153,11 @@ func (this *UserMustAuth) modules() []maps.Map {
 					"url":  "/servers/components",
 					"code": "components",
 				},
+				{
+					"name": "证书管理",
+					"url":  "/servers/certs",
+					"code": "cert",
+				},
 			},
 		},
 		{

@@ -1,0 +1,23 @@
+{$layout "layout_popup"}
+
+<h3>修改用户</h3>
+<form method="post" class="ui form" data-tea-success="success" data-tea-action="$">
+	<csrf-token></csrf-token>
+	<input type="hidden" name="userId" :value="user.id"/>
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">用户邮箱 *</td>
+			<td>
+				{{user.email}}
+				<p class="comment">用于自动注册用户的邮箱，不允许修改。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>备注</td>
+			<td>
+				<textarea name="description" rows="3" maxlength="100" v-model="user.description" ref="focus"></textarea>
+			</td>
+		</tr>
+	</table>
+	<submit-btn></submit-btn>
+</form>
