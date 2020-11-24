@@ -3,6 +3,7 @@ package tasks
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
+	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/nodeutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/messageconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -37,6 +38,11 @@ func (this *SyncClusterTask) Start() {
 }
 
 func (this *SyncClusterTask) loop() error {
+	// 如果还没有安装直接返回
+	if !setup.IsConfigured() {
+		return nil
+	}
+
 	rpcClient, err := rpc.SharedRPC()
 	if err != nil {
 		return err
