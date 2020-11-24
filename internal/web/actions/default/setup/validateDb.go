@@ -6,6 +6,7 @@ import (
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/dbs"
 	"github.com/iwind/TeaGo/maps"
+	stringutil "github.com/iwind/TeaGo/utils/string"
 	"strings"
 )
 
@@ -63,6 +64,19 @@ func (this *ValidateDbAction) RunPost(params struct {
 		} else {
 			this.Fail("无法连接到数据库，请检查配置：" + err.Error())
 		}
+	}
+
+	// 检查数据库版本
+	one, err := db.FindOne("SELECT VERSION() AS v")
+	if err != nil {
+		this.Fail("检查数据库版本时出错：" + err.Error())
+	}
+	if one == nil {
+		this.Fail("检查数据库版本时出错：无法获取数据库版本")
+	}
+	version := one.GetString("v")
+	if stringutil.VersionCompare(version, "5.7.8") < 0 {
+		this.Fail("数据库版本至少在v5.7.8以上，你现在使用的是v" + version)
 	}
 
 	this.Data["db"] = maps.Map{
