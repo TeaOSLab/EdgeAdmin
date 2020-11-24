@@ -8,7 +8,6 @@ var isConfigured bool
 
 // 判断系统是否已经配置过
 func IsConfigured() bool {
-	return false//TODO
 	if isConfigured {
 		return true
 	}
