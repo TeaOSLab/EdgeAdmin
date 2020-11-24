@@ -2,6 +2,7 @@ package index
 
 import (
 	"fmt"
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
@@ -55,6 +56,12 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 	this.Data["systemName"] = config.AdminSystemName
+	this.Data["showVersion"] = config.ShowVersion
+	if len(config.Version) > 0 {
+		this.Data["version"] = config.Version
+	} else {
+		this.Data["version"] = teaconst.Version
+	}
 
 	this.Show()
 }
