@@ -1,0 +1,121 @@
+{$layout}
+{$template "/left_menu_top"}
+
+<div class="right-box without-tabbar">
+	{$template "menu"}
+
+	<div class="margin"></div>
+
+	<form class="ui form">
+		<div class="ui steps fluid small">
+			<div class="ui step" :class="{active:step == 'prepare'}">
+				准备工作
+			</div>
+			<div class="ui step" :class="{active:step == 'user'}">
+				选择用户
+			</div>
+			<div class="ui step" :class="{active:step == 'dns'}">
+				设置域名解析
+			</div>
+			<div class="ui step" :class="{active:step == 'finish'}">
+				完成
+			</div>
+		</div>
+
+		<!-- 准备工作 -->
+		<div v-show="step == 'prepare'">
+			我们在申请免费证书的过程中需要自动增加或修改相关域名的TXT记录，请先确保你已经在"域名解析" -- <a href="/dns/providers" target="_blank">"DNS服务商"</a> 中已经添加了对应的DNS服务商账号。
+
+			<div class="button-group">
+				<button type="button" class="ui button primary"  @click.prevent="doPrepare">下一步</button>
+			</div>
+		</div>
+
+		<!-- 选择用户 -->
+		<div v-show="step == 'user'">
+			<table class="ui table definition selectable">
+				<tr>
+					<td class="title">选择用户</td>
+					<td>
+						<div v-if="users.length > 0">
+							<div class="ui fields inline">
+								<div class="ui field">
+									<select class="ui dropdown" v-model="userId">
+										<option value="0">[请选择]</option>
+										<option v-for="user in users" :value="user.id">{{user.email}}{{user.description}}</option>
+									</select>
+								</div>
+								<div class="ui field">
+									<a href="" @click.prevent="createUser">[新创建]</a>
+								</div>
+							</div>
+						</div>
+						<div v-else><a href="" @click.prevent="createUser">暂时还没有用户，点此创建</a></div>
+						<p class="comment">选择一个作为申请证书的用户。</p>
+					</td>
+				</tr>
+			</table>
+
+			<div class="button-group">
+				<button type="button" class="ui button" @click.prevent="goPrepare">上一步</button>
+				<button type="button" class="ui button primary" @click.prevent="doUser">下一步</button>
+			</div>
+		</div>
+
+		<!-- 设置域名解析 -->
+		<div v-show="step == 'dns'">
+			<table class="ui table definition selectable">
+				<tr>
+					<td class="title">选择DNS服务商 *</td>
+					<td>
+						<div v-if="providers.length > 0">
+							<select class="ui dropdown auto-width" v-model="dnsProviderId">
+								<option value="0">[请选择]</option>
+								<option v-for="provider in providers" :value="provider.id">{{provider.name}}（{{provider.typeName}}）</option>
+							</select>
+						</div>
+						<p class="comment">用于自动创建域名解析记录。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>顶级域名 *</td>
+					<td>
+						<input type="text" maxlength="100" v-model="dnsDomain"/>
+						<p class="comment">用于在DNS服务商账号中操作解析记录的域名，比如 example.com，不要输入二级或别的多级域名。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>证书域名列表 *</td>
+					<td>
+						<values-box name="" placeholder="域名" size="30" @change="changeDomains"></values-box>
+						<p class="comment">需要申请的证书中包含的域名列表，所有域名必须是同一个顶级域名。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>自动续期</td>
+					<td>
+						<checkbox v-model="autoRenew"></checkbox>
+						<p class="comment">在免费证书临近到期之前，是否尝试自动续期。</p>
+					</td>
+				</tr>
+			</table>
+
+			<div class="button-group">
+				<button type="button" class="ui button" @click.prevent="goUser">上一步</button>
+				<button type="button" class="ui button primary" @click.prevent="doDNS" v-if="!isRequesting">下一步</button>
+				<button type="button" class="ui button primary disabled" v-if="isRequesting">提交中...</button>
+			</div>
+		</div>
+
+		<!-- 完成 -->
+		<div v-show="step == 'finish'">
+			<div class="success-box">
+				<p><span class="green">恭喜，证书申请成功！</span>你可以在证书列表里看到刚申请的证书，也可以 <a href="" @click.prevent="viewCert">点击这里</a> 查看证书详情。</p>
+			</div>
+
+			<div class="button-group">
+				<button type="button" class="ui button primary" @click.prevent="doFinish">返回</button>
+			</div>
+		</div>
+	</form>
+</div>

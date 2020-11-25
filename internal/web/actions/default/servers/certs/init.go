@@ -35,6 +35,9 @@ func init() {
 			Data("leftMenuItem", "acme").
 			Get("", new(acme.IndexAction)).
 			GetPost("/create", new(acme.CreateAction)).
+			Post("/run", new(acme.RunAction)).
+			GetPost("/updateTaskPopup", new(acme.UpdateTaskPopupAction)).
+			Post("/deleteTask", new(acme.DeleteTaskAction)).
 
 			Prefix("/servers/certs/acme/users").
 			Get("", new(users.IndexAction)).

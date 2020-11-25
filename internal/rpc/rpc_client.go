@@ -220,6 +220,10 @@ func (this *RPCClient) ACMEUserRPC() pb.ACMEUserServiceClient {
 	return pb.NewACMEUserServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) ACMETaskRPC() pb.ACMETaskServiceClient {
+	return pb.NewACMETaskServiceClient(this.pickConn())
+}
+
 // 构造Admin上下文
 func (this *RPCClient) Context(adminId int64) context.Context {
 	ctx := context.Background()

@@ -24,6 +24,11 @@ func (this *ViewCertAction) RunGet(params struct {
 		return
 	}
 
+	if len(certResp.CertJSON) == 0 {
+		this.NotFound("sslCert", params.CertId)
+		return
+	}
+
 	certConfig := &sslconfigs.SSLCertConfig{}
 	err = json.Unmarshal(certResp.CertJSON, certConfig)
 	if err != nil {

@@ -27,7 +27,7 @@ func (this *Helper) BeforeAction(action *actions.ActionObject) {
 			"isActive": action.Data.GetString("leftMenuItem") == "cert",
 		},
 		{
-			"name":     "免费证书",
+			"name":     "申请证书",
 			"url":      "/servers/certs/acme",
 			"isActive": action.Data.GetString("leftMenuItem") == "acme",
 		},
