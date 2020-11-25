@@ -3,4 +3,51 @@
 
 <div class="right-box without-tabbar">
 	{$template "menu"}
+
+	<p class="comment" v-if="tasks.length == 0">暂时还没有证书申请任务。</p>
+
+	<table class="ui table selectable" v-if="tasks.length > 0">
+		<thead>
+			<tr>
+				<th>ACME用户</th>
+				<th>域名服务商</th>
+				<th>顶级域名</th>
+				<th>证书域名</th>
+				<th>到期时间</th>
+				<th class="center width10">自动续期</th>
+				<th>关联证书</th>
+				<th class="three op">操作</th>
+			</tr>
+		</thead>
+		<tr v-for="task in tasks">
+			<td>{{task.acmeUser.email}}</td>
+			<td>{{task.dnsProvider.name}}</td>
+			<td>{{task.dnsDomain}}</td>
+			<td>
+				<div v-for="domain in task.domains">
+					<span class="ui label small basic">{{domain}}</span>
+				</div>
+			</td>
+			<td>
+
+			</td>
+			<td class="center">
+				<span class="green" v-if="task.autoRenew">Y</span>
+				<span v-else class="disabled">N</span>
+			</td>
+			<td>
+				<div v-if="task.cert != null">
+					<a href="" @click.prevent="viewCert(task.cert.id)">{{task.cert.name}}</a>
+				</div>
+				<span class="disabled" v-else="">-</span>
+			</td>
+			<td>
+				<a href="" @click.prevent="updateTask(task.id)">修改</a> &nbsp;
+				<a href="">执行</a> &nbsp;
+				<a href="" @click.prevent="deleteTask(task.id)">删除</a>
+			</td>
+		</tr>
+	</table>
+
+	<div class="page" v-html="page"></div>
 </div>

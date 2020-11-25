@@ -4,6 +4,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/maps"
 )
 
 type CreatePopupAction struct {
@@ -37,6 +38,13 @@ func (this *CreatePopupAction) RunPost(params struct {
 	if err != nil {
 		this.ErrorPage(err)
 		return
+	}
+
+	// 返回数据
+	this.Data["acmeUser"] = maps.Map{
+		"id":          createResp.AcmeUserId,
+		"description": params.Description,
+		"email":       params.Email,
 	}
 
 	// 日志

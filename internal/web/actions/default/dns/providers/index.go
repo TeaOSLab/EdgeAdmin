@@ -16,7 +16,9 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct{}) {
-	countResp, err := this.RPC().DNSProviderRPC().CountAllEnabledDNSProviders(this.AdminContext(), &pb.CountAllEnabledDNSProvidersRequest{})
+	countResp, err := this.RPC().DNSProviderRPC().CountAllEnabledDNSProviders(this.AdminContext(), &pb.CountAllEnabledDNSProvidersRequest{
+		AdminId: this.AdminId(),
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -26,8 +28,9 @@ func (this *IndexAction) RunGet(params struct{}) {
 	this.Data["page"] = page.AsHTML()
 
 	providersResp, err := this.RPC().DNSProviderRPC().ListEnabledDNSProviders(this.AdminContext(), &pb.ListEnabledDNSProvidersRequest{
-		Offset: page.Offset,
-		Size:   page.Size,
+		AdminId: this.AdminId(),
+		Offset:  page.Offset,
+		Size:    page.Size,
 	})
 	if err != nil {
 		this.ErrorPage(err)

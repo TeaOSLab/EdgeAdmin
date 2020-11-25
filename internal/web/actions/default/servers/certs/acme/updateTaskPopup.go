@@ -9,38 +9,60 @@ import (
 	"strings"
 )
 
-type CreateAction struct {
+type UpdateTaskPopupAction struct {
 	actionutils.ParentAction
 }
 
-func (this *CreateAction) Init() {
-	this.Nav("", "", "create")
+func (this *UpdateTaskPopupAction) Init() {
+	this.Nav("", "", "")
 }
 
-func (this *CreateAction) RunGet(params struct{}) {
-	// 获取所有可用的用户
-	usersResp, err := this.RPC().ACMEUserRPC().FindAllACMEUsers(this.AdminContext(), &pb.FindAllACMEUsersRequest{
-		AdminId: this.AdminId(),
-		UserId:  0,
-	})
+func (this *UpdateTaskPopupAction) RunGet(params struct {
+	TaskId int64
+}) {
+	taskResp, err := this.RPC().ACMETaskRPC().FindEnabledACMETask(this.AdminContext(), &pb.FindEnabledACMETaskRequest{AcmeTaskId: params.TaskId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	userMaps := []maps.Map{}
-	for _, user := range usersResp.AcmeUsers {
-		description := user.Description
-		if len(description) > 0 {
-			description = "（" + description + "）"
-		}
-
-		userMaps = append(userMaps, maps.Map{
-			"id":          user.Id,
-			"description": description,
-			"email":       user.Email,
-		})
+	task := taskResp.AcmeTask
+	if task == nil {
+		this.NotFound("acmeTask", params.TaskId)
+		return
 	}
-	this.Data["users"] = userMaps
+
+	var dnsProviderMap maps.Map
+	if task.DnsProvider != nil {
+		dnsProviderMap = maps.Map{
+			"id": task.DnsProvider.Id,
+		}
+	} else {
+		dnsProviderMap = maps.Map{
+			"id": 0,
+		}
+	}
+
+	var acmeUserMap maps.Map
+	if task.AcmeUser != nil {
+		acmeUserMap = maps.Map{
+			"id": task.AcmeUser.Id,
+		}
+	} else {
+		acmeUserMap = maps.Map{
+			"id": 0,
+		}
+	}
+
+	this.Data["task"] = maps.Map{
+		"id":            task.Id,
+		"acmeUser":      acmeUserMap,
+		"dnsProviderId": task.DnsProvider.Id,
+		"dnsDomain":     task.DnsDomain,
+		"domains":       task.Domains,
+		"autoRenew":     task.AutoRenew,
+		"isOn":          task.IsOn,
+		"dnsProvider":   dnsProviderMap,
+	}
 
 	// 域名解析服务商
 	providersResp, err := this.RPC().DNSProviderRPC().FindAllEnabledDNSProviders(this.AdminContext(), &pb.FindAllEnabledDNSProvidersRequest{
@@ -64,7 +86,7 @@ func (this *CreateAction) RunGet(params struct{}) {
 	this.Show()
 }
 
-func (this *CreateAction) RunPost(params struct {
+func (this *UpdateTaskPopupAction) RunPost(params struct {
 	TaskId        int64
 	AcmeUserId    int64
 	DnsProviderId int64
@@ -73,7 +95,10 @@ func (this *CreateAction) RunPost(params struct {
 	AutoRenew     bool
 
 	Must *actions.Must
+	CSRF *actionutils.CSRF
 }) {
+	defer this.CreateLogInfo("修改证书申请任务 %d", params.TaskId)
+
 	if params.AcmeUserId <= 0 {
 		this.Fail("请选择一个申请证书的用户")
 	}
@@ -100,38 +125,18 @@ func (this *CreateAction) RunPost(params struct {
 		realDomains = append(realDomains, domain)
 	}
 
-	if params.TaskId == 0 {
-		createResp, err := this.RPC().ACMETaskRPC().CreateACMETask(this.AdminContext(), &pb.CreateACMETaskRequest{
-			AcmeUserId:    params.AcmeUserId,
-			DnsProviderId: params.DnsProviderId,
-			DnsDomain:     dnsDomain,
-			Domains:       realDomains,
-			AutoRenew:     params.AutoRenew,
-		})
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-		params.TaskId = createResp.AcmeTaskId
-		defer this.CreateLogInfo("创建证书申请任务 %d", createResp.AcmeTaskId)
-	} else {
-		_, err := this.RPC().ACMETaskRPC().UpdateACMETask(this.AdminContext(), &pb.UpdateACMETaskRequest{
-			AcmeTaskId:    params.TaskId,
-			AcmeUserId:    params.AcmeUserId,
-			DnsProviderId: params.DnsProviderId,
-			DnsDomain:     dnsDomain,
-			Domains:       realDomains,
-			AutoRenew:     params.AutoRenew,
-		})
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-
-		defer this.CreateLogInfo("修改证书申请任务 %d", params.TaskId)
+	_, err := this.RPC().ACMETaskRPC().UpdateACMETask(this.AdminContext(), &pb.UpdateACMETaskRequest{
+		AcmeTaskId:    params.TaskId,
+		AcmeUserId:    params.AcmeUserId,
+		DnsProviderId: params.DnsProviderId,
+		DnsDomain:     dnsDomain,
+		Domains:       realDomains,
+		AutoRenew:     params.AutoRenew,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
 	}
-
-	this.Data["taskId"] = params.TaskId
 
 	this.Success()
 }
