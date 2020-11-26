@@ -27,4 +27,32 @@ Tea.context(function () {
 				.refresh()
 		})
 	}
+
+
+	this.isRunning = false
+	this.runningIndex = -1
+
+	this.runTask = function (index, task) {
+		let that = this
+
+		teaweb.confirm("确定要立即执行此任务吗？", function () {
+			that.isRunning = true
+			that.runningIndex = index
+
+			that.$post(".run")
+				.timeout(300)
+				.params({
+					taskId: task.id
+				})
+				.success(function (resp) {
+					teaweb.success("执行成功", function () {
+						teaweb.reload()
+					})
+				})
+				.done(function () {
+					that.isRunning = false
+					that.runningIndex = -1
+				})
+		})
+	}
 })

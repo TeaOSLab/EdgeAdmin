@@ -4,6 +4,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
+	timeutil "github.com/iwind/TeaGo/utils/time"
 )
 
 type IndexAction struct {
@@ -48,8 +49,10 @@ func (this *IndexAction) RunGet(params struct{}) {
 		var certMap maps.Map = nil
 		if task.SslCert != nil {
 			certMap = maps.Map{
-				"id":   task.SslCert.Id,
-				"name": task.SslCert.Name,
+				"id":        task.SslCert.Id,
+				"name":      task.SslCert.Name,
+				"beginTime": timeutil.FormatTime("Y-m-d", task.SslCert.TimeBeginAt),
+				"endTime":   timeutil.FormatTime("Y-m-d", task.SslCert.TimeEndAt),
 			}
 		}
 
