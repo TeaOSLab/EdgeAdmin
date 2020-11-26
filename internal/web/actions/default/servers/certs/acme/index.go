@@ -46,6 +46,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 			continue
 		}
 
+		// 证书
 		var certMap maps.Map = nil
 		if task.SslCert != nil {
 			certMap = maps.Map{
@@ -53,6 +54,17 @@ func (this *IndexAction) RunGet(params struct{}) {
 				"name":      task.SslCert.Name,
 				"beginTime": timeutil.FormatTime("Y-m-d", task.SslCert.TimeBeginAt),
 				"endTime":   timeutil.FormatTime("Y-m-d", task.SslCert.TimeEndAt),
+			}
+		}
+
+		// 日志
+		var logMap maps.Map = nil
+		if task.LatestACMETaskLog != nil {
+			logMap = maps.Map{
+				"id":          task.LatestACMETaskLog.Id,
+				"isOk":        task.LatestACMETaskLog.IsOk,
+				"error":       task.LatestACMETaskLog.Error,
+				"createdTime": timeutil.FormatTime("m-d", task.CreatedAt),
 			}
 		}
 
@@ -70,6 +82,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 			"domains":   task.Domains,
 			"autoRenew": task.AutoRenew,
 			"cert":      certMap,
+			"log":       logMap,
 		})
 	}
 	this.Data["tasks"] = taskMaps
