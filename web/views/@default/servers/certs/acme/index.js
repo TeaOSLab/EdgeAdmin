@@ -45,7 +45,7 @@ Tea.context(function () {
 					taskId: task.id
 				})
 				.success(function (resp) {
-					teaweb.success("执行成功", function () {
+					teaweb.success("任务执行成功", function () {
 						teaweb.reload()
 					})
 				})
@@ -54,5 +54,9 @@ Tea.context(function () {
 					that.runningIndex = -1
 				})
 		})
+	}
+
+	this.showError = function (err) {
+		teaweb.popupTip("任务执行失败：" + err)
 	}
 })
