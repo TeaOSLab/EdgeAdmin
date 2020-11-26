@@ -6,6 +6,8 @@
 
 	<p class="comment" v-if="tasks.length == 0">暂时还没有证书申请任务。</p>
 
+	<div class="ui message blue" v-if="isRunning">有任务在执行中，可能需要的时间较长，请耐心等待。</div>
+
 	<table class="ui table selectable" v-if="tasks.length > 0">
 		<thead>
 			<tr>
@@ -19,7 +21,7 @@
 				<th class="three op">操作</th>
 			</tr>
 		</thead>
-		<tr v-for="task in tasks">
+		<tr v-for="(task, index) in tasks" :class="{warning: runningIndex == index}">
 			<td>{{task.acmeUser.email}}</td>
 			<td>{{task.dnsProvider.name}}</td>
 			<td>{{task.dnsDomain}}</td>
@@ -29,7 +31,10 @@
 				</div>
 			</td>
 			<td>
-
+				<div v-if="task.cert != null">
+					{{task.cert.endTime}}
+				</div>
+				<span class="disabled" v-else>-</span>
 			</td>
 			<td class="center">
 				<span class="green" v-if="task.autoRenew">Y</span>
@@ -37,14 +42,14 @@
 			</td>
 			<td>
 				<div v-if="task.cert != null">
-					<a href="" @click.prevent="viewCert(task.cert.id)">{{task.cert.name}}</a>
+					{{task.cert.name}}<a href="" @click.prevent="viewCert(task.cert.id)"><link-icon></link-icon></a>
 				</div>
 				<span class="disabled" v-else="">-</span>
 			</td>
 			<td>
-				<a href="" @click.prevent="updateTask(task.id)">修改</a> &nbsp;
-				<a href="">执行</a> &nbsp;
-				<a href="" @click.prevent="deleteTask(task.id)">删除</a>
+				<a href="" @click.prevent="updateTask(task.id)" :class="{disabled: isRunning}">修改</a> &nbsp;
+				<a href="" @click.prevent="runTask(index, task)" :class="{disabled: isRunning}">执行</a> &nbsp;
+				<a href="" @click.prevent="deleteTask(task.id)" :class="{disabled: isRunning}">删除</a>
 			</td>
 		</tr>
 	</table>

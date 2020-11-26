@@ -82,6 +82,7 @@ Tea.context(function () {
 
 				this.isRequesting = true
 				this.$post(".run")
+					.timeout(300)
 					.params({
 						taskId: this.taskId
 					})
