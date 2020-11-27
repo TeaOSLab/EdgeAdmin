@@ -35,7 +35,7 @@ Tea.context(function () {
 	this.runTask = function (index, task) {
 		let that = this
 
-		teaweb.confirm("确定要立即执行此任务吗？", function () {
+		teaweb.confirm("html:确定要立即执行此任务吗？<br/>将会重新发起证书申请。", function () {
 			that.isRunning = true
 			that.runningIndex = index
 

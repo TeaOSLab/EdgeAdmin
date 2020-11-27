@@ -12,9 +12,17 @@ Vue.component("message-row", {
 			params: params
 		}
 	},
+	methods: {
+		viewCert: function (certId) {
+			teaweb.popup("/servers/certs/certPopup?certId=" + certId, {
+				height: "28em",
+				width: "48em"
+			})
+		}
+	},
 	template: `<div>
 <table class="ui table selectable">
-	<tr :class="{error: message.level == 'error'}">
+	<tr :class="{error: message.level == 'error', positive: message.level == 'success', warning: message.level == 'warning'}">
 		<td>
 			<strong>{{message.datetime}}</strong>
 			<span v-if="message.cluster != null && message.cluster.id != null">
@@ -27,7 +35,7 @@ Vue.component("message-row", {
 			</span>
 		</td>
 	</tr>
-	<tr :class="{error: message.level == 'error', positive: message.level == 'success'}">
+	<tr :class="{error: message.level == 'error', positive: message.level == 'success', warning: message.level == 'warning'}">
 		<td>
 			{{message.body}}
 			
@@ -39,6 +47,19 @@ Vue.component("message-row", {
 			<!-- 集群DNS设置 -->
 			<div v-if="message.type == 'ClusterDNSSyncFailed'" style="margin-top: 0.8em">
 				<a :href="'/dns/clusters/cluster?clusterId=' + message.cluster.id">查看问题 &raquo;</a>
+			</div>
+			
+			<!-- 证书即将过期 -->
+			<div v-if="message.type == 'SSLCertExpiring'" style="margin-top: 0.8em">
+				<a href="" @click.prevent="viewCert(params.certId)">查看证书</a> &nbsp;|&nbsp; <a :href="'/servers/certs/acme'" v-if="params != null && params.acmeTaskId > 0">查看任务&raquo;</a>
+			</div>
+			
+			<!-- 证书续期成功 -->
+			<div v-if="message.type == 'SSLCertACMETaskSuccess'" style="margin-top: 0.8em">
+				<a href="" @click.prevent="viewCert(params.certId)">查看证书</a> &nbsp;|&nbsp; <a :href="'/servers/certs/acme'" v-if="params != null && params.acmeTaskId > 0">查看任务&raquo;</a>
+			</div>
+			<div v-if="message.type == 'SSLCertACMETaskFailed'" style="margin-top: 0.8em">
+				<a href="" @click.prevent="viewCert(params.certId)">查看证书</a> &nbsp;|&nbsp; <a :href="'/servers/certs/acme'" v-if="params != null && params.acmeTaskId > 0">查看任务&raquo;</a>
 			</div>
 		</td>
 	</tr>

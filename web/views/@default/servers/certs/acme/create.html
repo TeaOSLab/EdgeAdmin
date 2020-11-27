@@ -24,7 +24,11 @@
 
 		<!-- 准备工作 -->
 		<div v-show="step == 'prepare'">
-			我们在申请免费证书的过程中需要自动增加或修改相关域名的TXT记录，请先确保你已经在"域名解析" -- <a href="/dns/providers" target="_blank">"DNS服务商"</a> 中已经添加了对应的DNS服务商账号。
+			<div>此流程用于免费申请一个新的证书。</div>
+			<div class="margin"></div>
+			<div>
+				我们在申请免费证书的过程中需要自动增加或修改相关域名的TXT记录，请先确保你已经在"域名解析" -- <a href="/dns/providers" target="_blank">"DNS服务商"</a> 中已经添加了对应的DNS服务商账号。
+			</div>
 
 			<div class="button-group">
 				<button type="button" class="ui button primary"  @click.prevent="doPrepare">下一步</button>
