@@ -102,11 +102,11 @@
 				<td>对比值</td>
 				<td>
 					<!-- 二进制数据 -->
-					<div v-if="rule.operator != 'contains binary'">
+					<div v-if="rule.operator == 'contains binary'">
 						<textarea rows="3" maxlength="4096" name="value" v-model="rule.value"></textarea>
 						<p class="comment">将二进制进行Base64Encode后放在这里，比如<code-label>Hello</code-label>对应<code-label>SGVsbG8=</code-label>。</p>
 					</div>
-					<div v-else-if="rule.operator != 'not contains binary'">
+					<div v-else-if="rule.operator == 'not contains binary'">
 						<textarea rows="3" maxlength="4096" name="value" v-model="rule.value"></textarea>
 						<p class="comment">将二进制进行Base64Encode后放在这里，比如<code-label>Hello</code-label>对应<code-label>SGVsbG8=</code-label>。</p>
 					</div>
