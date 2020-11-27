@@ -1,7 +1,6 @@
 package log
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/componentutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/iwind/TeaGo"
 )
@@ -11,7 +10,6 @@ func init() {
 		server.
 			Helper(helpers.NewUserMustAuth()).
 			Helper(NewHelper()).
-			Helper(componentutils.NewComponentHelper()).
 			Prefix("/servers/components/log").
 			Get("", new(IndexAction)).
 			EndAll()
