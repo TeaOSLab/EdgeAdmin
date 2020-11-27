@@ -6,7 +6,6 @@
 <table class="ui table selectable celled" v-if="grants.length > 0">
 	<thead>
 		<tr>
-			<th class="center">ID</th>
 			<th>名称</th>
 			<th>类型</th>
 			<th class="center width5">集群数</th>
@@ -15,7 +14,6 @@
 		</tr>
 	</thead>
 	<tr v-for="grant in grants">
-		<td class="center">{{grant.id}}</td>
 		<td>{{grant.name}}</td>
 		<td>
 			<span class="ui label tiny basic">{{grant.method.name}}</span>
