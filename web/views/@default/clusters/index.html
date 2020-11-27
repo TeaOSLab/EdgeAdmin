@@ -7,8 +7,8 @@
 	<thead>
 		<tr>
 			<th>集群名称</th>
-			<th class="center">节点数量</th>
-			<th class="center">在线节点数量</th>
+			<th class="center width10">节点数量</th>
+			<th class="center width10">在线节点数量</th>
 			<th>DNS域名</th>
 			<th class="two op">操作</th>
 		</tr>
@@ -18,6 +18,10 @@
 		<td class="center">
 			<a :href="'/clusters/cluster?clusterId=' + cluster.id" v-if="cluster.countAllNodes > 0"><span :class="{red:cluster.countAllNodes > cluster.countActiveNodes}">{{cluster.countAllNodes}}</span></a>
 			<span class="disabled" v-else="">-</span>
+
+			<div v-if="cluster.countUpgradeNodes > 0" style="margin-top:0.5em">
+				<a :href="'/clusters/cluster/upgradeRemote?clusterId=' + cluster.id" title="点击进入远程升级页面"><span class="red">有节点需要升级</span></a>
+			</div>
 		</td>
 		<td class="center">
 			<a :href="'/clusters/cluster?clusterId=' + cluster.id + '&activeState=1'" v-if="cluster.countActiveNodes > 0"><span class="green">{{cluster.countActiveNodes}}</span></a>

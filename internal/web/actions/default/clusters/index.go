@@ -54,6 +54,13 @@ func (this *IndexAction) RunGet(params struct{}) {
 				return
 			}
 
+			// 需要升级的节点
+			countUpgradeNodesResp, err := this.RPC().NodeRPC().CountAllUpgradeNodesWithClusterId(this.AdminContext(), &pb.CountAllUpgradeNodesWithClusterIdRequest{ClusterId: cluster.Id})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+
 			// DNS
 			dnsDomainName := ""
 			if cluster.DnsDomainId > 0 {
@@ -68,14 +75,15 @@ func (this *IndexAction) RunGet(params struct{}) {
 			}
 
 			clusterMaps = append(clusterMaps, maps.Map{
-				"id":               cluster.Id,
-				"name":             cluster.Name,
-				"installDir":       cluster.InstallDir,
-				"countAllNodes":    countNodesResp.Count,
-				"countActiveNodes": countActiveNodesResp.Count,
-				"dnsDomainId":      cluster.DnsDomainId,
-				"dnsName":          cluster.DnsName,
-				"dnsDomainName":    dnsDomainName,
+				"id":                cluster.Id,
+				"name":              cluster.Name,
+				"installDir":        cluster.InstallDir,
+				"countAllNodes":     countNodesResp.Count,
+				"countActiveNodes":  countActiveNodesResp.Count,
+				"countUpgradeNodes": countUpgradeNodesResp.Count,
+				"dnsDomainId":       cluster.DnsDomainId,
+				"dnsName":           cluster.DnsName,
+				"dnsDomainName":     dnsDomainName,
 			})
 		}
 	}
