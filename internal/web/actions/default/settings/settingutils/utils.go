@@ -31,10 +31,10 @@ func (this *Helper) BeforeAction(actionPtr actions.ActionWrapper) (goNext bool) 
 	tabbar.Add("数据库", "", "/settings/database", "", this.tab == "database")
 	tabbar.Add("API节点", "", "/api", "", this.tab == "apiNodes")
 	tabbar.Add("日志数据库", "", "/db", "", this.tab == "dbNodes")
+	tabbar.Add("IP库", "", "/settings/ip-library", "", this.tab == "ipLibrary")
 	tabbar.Add("备份", "", "/settings/backup", "", this.tab == "backup")
 	tabbar.Add("个人资料", "", "/settings/profile", "", this.tab == "profile")
 	tabbar.Add("登录设置", "", "/settings/login", "", this.tab == "login")
-	tabbar.Add("检查新版本", "", "/settings/upgrade", "", this.tab == "upgrade")
 	actionutils.SetTabbar(actionPtr, tabbar)
 
 	return

@@ -1,7 +1,5 @@
 {$layout}
-{$template "/left_menu_top"}
 
-<div class="right-box without-tabbar">
 	{$template "waf_menu"}
 
 	<h3>分组<a href="" @click.prevent="updateGroup(group.id)">[修改]</a></h3>
@@ -66,4 +64,3 @@
 	</table>
 
 	<p class="comment" v-if="group.sets != null && group.sets.length > 1">所有规则匹配顺序为从上到下，可以拖动左侧的<i class="icon bars"></i>排序。</p>
-</div>

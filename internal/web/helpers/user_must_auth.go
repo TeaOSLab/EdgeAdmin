@@ -109,7 +109,9 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 
 	action.Data["teaUserAvatar"] = ""
 
-	action.Data["teaMenu"] = ""
+	if !action.Data.Has("teaMenu") {
+		action.Data["teaMenu"] = ""
+	}
 	action.Data["teaModules"] = this.modules()
 	action.Data["teaSubMenus"] = []map[string]interface{}{}
 	action.Data["teaTabbar"] = []map[string]interface{}{}
@@ -151,7 +153,22 @@ func (this *UserMustAuth) modules() []maps.Map {
 				{
 					"name": "通用设置",
 					"url":  "/servers/components",
-					"code": "components",
+					"code": "global",
+				},
+				{
+					"name": "服务分组",
+					"url":  "/servers/components/groups",
+					"code": "group",
+				},
+				{
+					"name": "缓存策略",
+					"url":  "/servers/components/cache",
+					"code": "cache",
+				},
+				{
+					"name": "WAF策略",
+					"url":  "/servers/components/waf",
+					"code": "waf",
 				},
 				{
 					"name": "证书管理",

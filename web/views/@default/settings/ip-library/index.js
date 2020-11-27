@@ -1,6 +1,6 @@
 Tea.context(function () {
 	this.upload = function () {
-		teaweb.popup("/servers/components/ip-library/uploadPopup", {
+		teaweb.popup("/settings/ip-library/uploadPopup", {
 			callback: function () {
 				teaweb.success("上传成功", function () {
 					teaweb.reload()

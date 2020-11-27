@@ -1,7 +1,6 @@
 package cache
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/componentutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/iwind/TeaGo"
 )
@@ -11,7 +10,8 @@ func init() {
 		server.
 			Helper(helpers.NewUserMustAuth()).
 			Helper(NewHelper()).
-			Helper(componentutils.NewComponentHelper()).
+			Data("teaMenu", "servers").
+			Data("teaSubMenu", "cache").
 			Prefix("/servers/components/cache").
 			Get("", new(IndexAction)).
 			GetPost("/createPopup", new(CreatePopupAction)).

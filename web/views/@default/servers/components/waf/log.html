@@ -9,9 +9,7 @@
 <link rel="stylesheet" href="/js/pikaday.triangle.css"/>
 {$end}
 
-{$template "/left_menu_top"}
 
-<div class="right-box without-tabbar">
 	{$template "waf_menu"}
 
 	<form method="get" class="ui form small" :action="path" autocomplete="off">
@@ -52,4 +50,3 @@
 		<a :href="path + '?requestId=' + nextRequestId + '&day=' + day + '&firewallPolicyId=' + firewallPolicyId + '&groupId=' + groupId" v-if="hasMore">下一页</a>
 		<span v-else class="disabled">下一页</span>
 	</div>
-</div>
