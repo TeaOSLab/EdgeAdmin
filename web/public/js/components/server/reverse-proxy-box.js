@@ -15,7 +15,9 @@ Vue.component("reverse-proxy-box", {
 			reverseProxyConfig = {
 				requestPath: "",
 				stripPrefix: "",
-				requestURI: ""
+				requestURI: "",
+				requestHost: "",
+				requestHostType: 0
 			}
 		}
 		return {
@@ -24,7 +26,16 @@ Vue.component("reverse-proxy-box", {
 			advancedVisible: false
 		}
 	},
-	methods:  {
+	watch: {
+		"reverseProxyConfig.requestHostType": function (v) {
+			let requestHostType = parseInt(v)
+			if (isNaN(requestHostType)) {
+				requestHostType = 0
+			}
+			this.reverseProxyConfig.requestHostType = requestHostType
+		}
+	},
+	methods: {
 		isOn: function () {
 			return (!this.vIsLocation || this.reverseProxyRef.isPrior) && this.reverseProxyRef.isOn
 		},
@@ -47,16 +58,24 @@ Vue.component("reverse-proxy-box", {
 					</div>
 				</td>
 			</tr>
+			<tr>
+				<td>请求主机名<em>（Host）</em></td>
+				<td>	
+					<radio :v-value="0" v-model="reverseProxyConfig.requestHostType">跟随代理服务</radio> &nbsp;
+					<radio :v-value="1" v-model="reverseProxyConfig.requestHostType">跟随源站</radio> &nbsp;
+					<radio :v-value="2" v-model="reverseProxyConfig.requestHostType">自定义</radio>
+					<div v-show="reverseProxyConfig.requestHostType == 2" style="margin-top: 0.8em">
+						<input type="text" placeholder="比如example.com" v-model="reverseProxyConfig.requestHost"/>
+					</div>
+					<p class="comment">请求源站时的Host，用于修改源站接收到的域名
+					<span v-if="reverseProxyConfig.requestHostType == 0">，"跟随代理服务"是指源站接收到的域名和当前代理服务保持一致</span>
+					<span v-if="reverseProxyConfig.requestHostType == 1">，"跟随源站"是指源站接收到的域名仍然是填写的源站地址中的信息，不随代理服务域名改变而改变</span>					
+					<span v-if="reverseProxyConfig.requestHostType == 2">，自定义Host内容中支持请求变量</span>。</p>
+				</td>
+			</tr>
 		</tbody>
 		<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
 		<tbody v-show="isOn() && advancedVisible">
-			<tr>
-				<td>请求主机名<em>（Host）</em></td>
-				<td>
-					<input type="text" placeholder="比如example.com" v-model="reverseProxyConfig.requestHost"/>
-					<p class="comment">请求后端服务器时的Host，用于修改后端服务器接收到的域名，默认和客户端请求的主机名一致，通常不必填写，支持请求变量。</p>
-				</td>
-			</tr>
 			<tr>
 				<td>请求URI<em>（RequestURI）</em></td>
 				<td>
