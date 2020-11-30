@@ -316,7 +316,7 @@ Vue.component("ssl-config-box", {
 	<table class="ui table definition selectable">
 		<tbody>
 			<tr v-show="vProtocol == 'https'">
-				<td class="title">用HTTP/2</td>
+				<td class="title">启用HTTP/2</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" value="1" v-model="policy.http2Enabled"/>
