@@ -43,6 +43,9 @@ func (this *AddPopupAction) RunPost(params struct {
 	Weight         int32
 	Protocol       string
 	Addr           string
+	Name           string
+	Description    string
+	IsOn           bool
 
 	Must *actions.Must
 }) {
@@ -59,14 +62,15 @@ func (this *AddPopupAction) RunPost(params struct {
 	port := addr[portIndex+1:]
 
 	createResp, err := this.RPC().OriginRPC().CreateOrigin(this.AdminContext(), &pb.CreateOriginRequest{
-		Name: "",
+		Name: params.Name,
 		Addr: &pb.NetworkAddress{
 			Protocol:  params.Protocol,
 			Host:      host,
 			PortRange: port,
 		},
-		Description: "",
+		Description: params.Description,
 		Weight:      params.Weight,
+		IsOn:        params.IsOn,
 	})
 	if err != nil {
 		this.ErrorPage(err)

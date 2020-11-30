@@ -9,7 +9,7 @@ Vue.component("origin-list-box", {
 	methods: {
 		createPrimaryOrigin: function () {
 			teaweb.popup("/servers/server/settings/origins/addPopup?originType=primary&" + this.vParams, {
-				height: "22em",
+				height: "24em",
 				callback: function (resp) {
 					window.location.reload()
 				}
@@ -17,7 +17,7 @@ Vue.component("origin-list-box", {
 		},
 		createBackupOrigin: function () {
 			teaweb.popup("/servers/server/settings/origins/addPopup?originType=backup&" + this.vParams, {
-				height: "22em",
+				height: "24em",
 				callback: function (resp) {
 					window.location.reload()
 				}
@@ -25,7 +25,7 @@ Vue.component("origin-list-box", {
 		},
 		updateOrigin: function (originId, originType) {
 			teaweb.popup("/servers/server/settings/origins/updatePopup?originType=" + originType + "&" + this.vParams + "&originId=" + originId, {
-				height: "22em",
+				height: "24em",
 				callback: function (resp) {
 					window.location.reload()
 				}
@@ -72,12 +72,20 @@ Vue.component("origin-list-table", {
 		<tr>
 			<th>源站地址</th>
 			<th>权重</th>
+			<th class="width10">状态</th>
 			<th class="two op">操作</th>
 		</tr>	
 	</thead>
 	<tr v-for="origin in vOrigins">
-		<td>{{origin.addr}}</td>
+		<td>{{origin.addr}}
+			<div v-if="origin.name.length > 0" style="margin-top: 0.5em">
+				<tiny-basic-label>{{origin.name}}</tiny-basic-label>
+			</div>
+		</td>
 		<td>{{origin.weight}}</td>
+		<td>
+			<label-on :v-is-on="origin.isOn"></label-on>
+		</td>
 		<td>
 			<a href="" @click.prevent="updateOrigin(origin.id)">修改</a> &nbsp;
 			<a href="" @click.prevent="deleteOrigin(origin.id)">删除</a>

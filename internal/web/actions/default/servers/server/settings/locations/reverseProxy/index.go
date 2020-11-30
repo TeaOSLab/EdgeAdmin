@@ -58,6 +58,8 @@ func (this *IndexAction) RunGet(params struct {
 			"id":     originConfig.Id,
 			"weight": originConfig.Weight,
 			"addr":   originConfig.Addr.Protocol.String() + "://" + originConfig.Addr.Host + ":" + originConfig.Addr.PortRange,
+			"name":   originConfig.Name,
+			"isOn":   originConfig.IsOn,
 		}
 		primaryOriginMaps = append(primaryOriginMaps, m)
 	}
@@ -66,6 +68,8 @@ func (this *IndexAction) RunGet(params struct {
 			"id":     originConfig.Id,
 			"weight": originConfig.Weight,
 			"addr":   originConfig.Addr.Protocol.String() + "://" + originConfig.Addr.Host + ":" + originConfig.Addr.PortRange,
+			"name":   originConfig.Name,
+			"isOn":   originConfig.IsOn,
 		}
 		backupOriginMaps = append(backupOriginMaps, m)
 	}

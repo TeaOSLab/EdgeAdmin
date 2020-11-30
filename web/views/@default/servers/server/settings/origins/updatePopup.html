@@ -1,6 +1,6 @@
 {$layout "layout_popup"}
 
-<h3>添加源站地址</h3>
+<h3>修改源站</h3>
 
 <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 	<input type="hidden" name="reverseProxyId" :value="reverseProxyId"/>
@@ -38,6 +38,30 @@
 				<p class="comment">数字越大，代表分配的请求比例越多。</p>
 			</td>
 		</tr>
+		<tr>
+			<td colspan="2"><more-options-indicator></more-options-indicator></td>
+		</tr>
+		<tbody v-show="moreOptionsVisible">
+			<tr>
+				<td>名称</td>
+				<td>
+					<input type="text" name="name" maxlength="100" v-model="origin.name"/>
+					<p class="comment">给当前源站起一个容易识别的名称。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>备注</td>
+				<td>
+					<textarea name="description" rows="3" maxlength="100" v-model="origin.description"></textarea>
+				</td>
+			</tr>
+			<tr>
+				<td>是否启用</td>
+				<td>
+					<checkbox name="isOn" :value="origin.isOn"></checkbox>
+				</td>
+			</tr>
+		</tbody>
 	</table>
 	<submit-btn></submit-btn>
 </form>
