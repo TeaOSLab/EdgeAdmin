@@ -55,10 +55,13 @@ func (this *UpdatePopupAction) RunGet(params struct {
 	}
 
 	this.Data["origin"] = maps.Map{
-		"id":       config.Id,
-		"protocol": config.Addr.Protocol,
-		"addr":     config.Addr.Host + ":" + config.Addr.PortRange,
-		"weight":   config.Weight,
+		"id":          config.Id,
+		"protocol":    config.Addr.Protocol,
+		"addr":        config.Addr.Host + ":" + config.Addr.PortRange,
+		"weight":      config.Weight,
+		"name":        config.Name,
+		"description": config.Description,
+		"isOn":        config.IsOn,
 	}
 
 	this.Show()
@@ -72,6 +75,9 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	Protocol       string
 	Addr           string
 	Weight         int32
+	Name           string
+	Description    string
+	IsOn           bool
 
 	Must *actions.Must
 }) {
@@ -89,14 +95,15 @@ func (this *UpdatePopupAction) RunPost(params struct {
 
 	_, err := this.RPC().OriginRPC().UpdateOrigin(this.AdminContext(), &pb.UpdateOriginRequest{
 		OriginId: params.OriginId,
-		Name:     "",
+		Name:     params.Name,
 		Addr: &pb.NetworkAddress{
 			Protocol:  params.Protocol,
 			Host:      host,
 			PortRange: port,
 		},
-		Description: "",
+		Description: params.Description,
 		Weight:      params.Weight,
+		IsOn:        params.IsOn,
 	})
 	if err != nil {
 		this.ErrorPage(err)
