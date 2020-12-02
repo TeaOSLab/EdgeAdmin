@@ -24,6 +24,7 @@ func init() {
 			GetPost("/update", new(UpdateAction)).
 			GetPost("/test", new(TestAction)).
 			GetPost("/export", new(ExportAction)).
+			Get("/exportDownload", new(ExportDownloadAction)).
 			GetPost("/import", new(ImportAction)).
 			Post("/updateGroupOn", new(UpdateGroupOnAction)).
 			Post("/deleteGroup", new(DeleteGroupAction)).

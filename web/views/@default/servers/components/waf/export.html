@@ -1,5 +1,33 @@
 {$layout}
+{$template "waf_menu"}
 
-	{$template "waf_menu"}
+<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+	<csrf-token></csrf-token>
+	<input type="hidden" name="firewallPolicyId" :value="firewallPolicyId"/>
 
-	<p class="ui message">此功能暂未开放，敬请期待。</p>
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">选择入站规则</td>
+			<td>
+				<span v-if="inboundGroups.length == 0" class="disabled">暂时还没有入站规则。</span>
+				<div class="groups-box" v-show="inboundGroups.length > 0">
+					<div v-for="g in inboundGroups" class="group-box">
+						<checkbox name="inboundGroupIds" :value="true" :v-value="g.id">{{g.name}}</checkbox>
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>选择出站规则</td>
+			<td>
+				<span v-if="outboundGroups.length == 0" class="disabled">暂时还没有出站规则。</span>
+				<div class="groups-box" v-show="outboundGroups.length > 0">
+					<div v-for="g in outboundGroups" class="group-box">
+						<checkbox name="outboundGroupIds" :value="true" :v-value="g.id">{{g.name}}</checkbox>
+					</div>
+				</div>
+			</td>
+		</tr>
+	</table>
+	<submit-btn>导出</submit-btn>
+</form>
