@@ -33,6 +33,7 @@ func (this *SettingsAction) RunPost(params struct {
 	CanClean     bool
 	CapacityJSON []byte
 	Days         int
+	CanChange    bool
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -49,10 +50,13 @@ func (this *SettingsAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	config.CanDelete = params.CanDelete
-	config.CanClean = params.CanClean
-	config.Days = params.Days
+	if config.CanChange {
+		config.CanDelete = params.CanDelete
+		config.CanClean = params.CanClean
+		config.Days = params.Days
+	}
 	config.Capacity = capacity
+	config.CanChange = params.CanChange
 	err = configloaders.UpdateLogConfig(config)
 	if err != nil {
 		this.ErrorPage(err)
