@@ -45,7 +45,7 @@ func (this *IndexAction) RunPost(params struct {
 		Field("fullname", params.Fullname).
 		Require("请输入你的姓名")
 
-	_, err := this.RPC().AdminRPC().UpdateAdmin(this.AdminContext(), &pb.UpdateAdminRequest{
+	_, err := this.RPC().AdminRPC().UpdateAdminInfo(this.AdminContext(), &pb.UpdateAdminInfoRequest{
 		AdminId:  this.AdminId(),
 		Fullname: params.Fullname,
 	})

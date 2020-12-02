@@ -38,6 +38,8 @@ func (this *SettingsAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
+	defer this.CreateLogInfo("修改日志相关配置")
+
 	capacity := &shared.SizeCapacity{}
 	err := json.Unmarshal(params.CapacityJSON, capacity)
 	if err != nil {

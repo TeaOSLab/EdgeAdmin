@@ -13,6 +13,9 @@ type DeleteAction struct {
 func (this *DeleteAction) RunPost(params struct {
 	LogId int64
 }) {
+	// 记录日志
+	defer this.CreateLogInfo("删除单个操作日志 %d", params.LogId)
+
 	// 读取配置
 	config, err := configloaders.LoadLogConfig()
 	if err != nil {
@@ -22,9 +25,6 @@ func (this *DeleteAction) RunPost(params struct {
 	if !config.CanDelete {
 		this.Fail("已设置不能删除")
 	}
-
-	// 记录日志
-	defer this.CreateLogInfo("删除单个操作日志 %d", params.LogId)
 
 	// 执行删除
 	_, err = this.RPC().LogRPC().DeleteLogPermanently(this.AdminContext(), &pb.DeleteLogPermanentlyRequest{LogId: params.LogId})

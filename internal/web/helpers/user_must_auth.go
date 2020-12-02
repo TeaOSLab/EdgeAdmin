@@ -206,6 +206,11 @@ func (this *UserMustAuth) modules() []maps.Map {
 			},
 		},
 		{
+			"code": "admins",
+			"name": "系统用户",
+			"icon": "users",
+		},
+		{
 			"code": "log",
 			"name": "日志审计",
 			"icon": "history",
