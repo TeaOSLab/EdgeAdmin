@@ -6,6 +6,7 @@ replace github.com/TeaOSLab/EdgeCommon => ../EdgeCommon
 
 require (
 	github.com/TeaOSLab/EdgeCommon v0.0.0-00010101000000-000000000000
+	github.com/cespare/xxhash v1.1.0
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/iwind/TeaGo v0.0.0-20201120063500-ee2d7090f4bc
