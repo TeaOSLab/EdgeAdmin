@@ -1,7 +1,7 @@
 package server
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/uimanager"
+	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/iwind/TeaGo/actions"
 )
@@ -15,7 +15,7 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct{}) {
-	config, err := uimanager.LoadUIConfig()
+	config, err := configloaders.LoadUIConfig()
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -41,7 +41,7 @@ func (this *IndexAction) RunPost(params struct {
 		Field("adminSystemName", params.AdminSystemName).
 		Require("请输入管理员系统名称")
 
-	config, err := uimanager.LoadUIConfig()
+	config, err := configloaders.LoadUIConfig()
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -51,7 +51,7 @@ func (this *IndexAction) RunPost(params struct {
 	config.ShowOpenSourceInfo = params.ShowOpenSourceInfo
 	config.ShowVersion = params.ShowVersion
 	config.Version = params.Version
-	err = uimanager.UpdateUIConfig(config)
+	err = configloaders.UpdateUIConfig(config)
 	if err != nil {
 		this.ErrorPage(err)
 		return

@@ -18,4 +18,15 @@ Tea.context(function () {
 			window.location = "/log/exportExcel?dayFrom=" + that.dayFrom + "&dayTo=" + that.dayTo + "&keyword=" + that.keyword
 		})
 	}
+
+	this.deleteLog = function (logId) {
+		let that = this
+		teaweb.confirm("确定要删除此日志吗？", function () {
+			that.$post(".delete")
+				.params({
+					logId: logId
+				})
+				.refresh()
+		})
+	}
 })

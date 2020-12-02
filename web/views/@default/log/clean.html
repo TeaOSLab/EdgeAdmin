@@ -1,0 +1,31 @@
+{$layout}
+{$template "menu"}
+
+<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+	<csrf-token></csrf-token>
+
+	<table class="ui table definition selectable">
+		<!--<tr>
+			<td>当前用量</td>
+			<td>{{size}}</td>
+		</tr>-->
+		<tr>
+			<td class="title" :class="{'color-border':cleanType == 'days'}">清理方式</td>
+			<td>
+				<radio name="type" v-model="cleanType" :v-value="'all'">全部清除</radio> &nbsp; &nbsp;
+				<radio name="type" v-model="cleanType" :v-value="'days'">按天数清除</radio>
+			</td>
+		</tr>
+		<tr v-show="cleanType == 'days'">
+			<td :class="{'color-border':cleanType == 'days'}">天数</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" name="days" v-model="days" style="width:5em" maxlength="3"/>
+					<span class="ui label">天以外</span>
+				</div>
+				<p class="comment">表示清除此天数以外的日志数据。</p>
+			</td>
+		</tr>
+	</table>
+	<submit-btn></submit-btn>
+</form>

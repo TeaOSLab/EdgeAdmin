@@ -1,4 +1,4 @@
-package uimanager
+package configloaders
 
 import (
 	_ "github.com/iwind/TeaGo/bootstrap"
@@ -9,7 +9,7 @@ import (
 func TestLoadSecurityConfig(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		before := time.Now()
-		config, err := LoadUIConfig()
+		config, err := LoadSecurityConfig()
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -18,12 +18,15 @@ func TestLoadSecurityConfig(t *testing.T) {
 	}
 }
 
-func TestLoadUIConfig2(t *testing.T) {
+func TestLoadSecurityConfig2(t *testing.T) {
 	for i := 0; i < 10; i++ {
-		config, err := LoadUIConfig()
+		config, err := LoadSecurityConfig()
 		if err != nil {
 			t.Fatal(err)
 		}
-		t.Log(config)
+		if i == 0 {
+			config.Frame = "DENY"
+		}
+		t.Log(config.Frame)
 	}
 }

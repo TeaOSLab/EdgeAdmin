@@ -1,6 +1,7 @@
 package log
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/lists"
@@ -14,7 +15,7 @@ type IndexAction struct {
 }
 
 func (this *IndexAction) Init() {
-	this.Nav("log", "log", "")
+	this.Nav("log", "log", "list")
 }
 
 func (this *IndexAction) RunGet(params struct {
@@ -22,6 +23,14 @@ func (this *IndexAction) RunGet(params struct {
 	DayTo   string
 	Keyword string
 }) {
+	// 读取配置
+	config, err := configloaders.LoadLogConfig()
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["logConfig"] = config
+
 	this.Data["dayFrom"] = params.DayFrom
 	this.Data["dayTo"] = params.DayTo
 	this.Data["keyword"] = params.Keyword
@@ -76,6 +85,7 @@ func (this *IndexAction) RunGet(params struct {
 		}
 
 		logMaps = append(logMaps, maps.Map{
+			"id":          log.Id,
 			"description": log.Description,
 			"userName":    log.UserName,
 			"createdTime": timeutil.FormatTime("Y-m-d H:i:s", log.CreatedAt),

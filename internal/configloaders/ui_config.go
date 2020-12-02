@@ -1,30 +1,21 @@
-package uimanager
+package configloaders
 
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/iwind/TeaGo/logs"
 	"reflect"
-	"sync"
 )
 
-var sharedUIConfig *UIConfig = nil
-var locker sync.Mutex
+var sharedUIConfig *systemconfigs.UIConfig = nil
 
 const (
 	UISettingName = "adminUIConfig"
 )
 
-type UIConfig struct {
-	ProductName        string `json:"productName"`        // 产品名
-	AdminSystemName    string `json:"adminSystemName"`    // 管理员系统名称
-	ShowOpenSourceInfo bool   `json:"showOpenSourceInfo"` // 是否显示开源信息
-	ShowVersion        bool   `json:"showVersion"`        // 是否显示版本号
-	Version            string `json:"version"`            // 显示的版本号
-}
-
-func LoadUIConfig() (*UIConfig, error) {
+func LoadUIConfig() (*systemconfigs.UIConfig, error) {
 	locker.Lock()
 	defer locker.Unlock()
 
@@ -33,11 +24,11 @@ func LoadUIConfig() (*UIConfig, error) {
 		return nil, err
 	}
 
-	v := reflect.Indirect(reflect.ValueOf(config)).Interface().(UIConfig)
+	v := reflect.Indirect(reflect.ValueOf(config)).Interface().(systemconfigs.UIConfig)
 	return &v, nil
 }
 
-func UpdateUIConfig(uiConfig *UIConfig) error {
+func UpdateUIConfig(uiConfig *systemconfigs.UIConfig) error {
 	locker.Lock()
 	defer locker.Unlock()
 
@@ -61,7 +52,7 @@ func UpdateUIConfig(uiConfig *UIConfig) error {
 	return nil
 }
 
-func loadUIConfig() (*UIConfig, error) {
+func loadUIConfig() (*systemconfigs.UIConfig, error) {
 	if sharedUIConfig != nil {
 		return sharedUIConfig, nil
 	}
@@ -80,7 +71,7 @@ func loadUIConfig() (*UIConfig, error) {
 		return sharedUIConfig, nil
 	}
 
-	config := &UIConfig{}
+	config := &systemconfigs.UIConfig{}
 	err = json.Unmarshal(resp.ValueJSON, config)
 	if err != nil {
 		logs.Println("[UI_MANAGER]" + err.Error())
@@ -91,8 +82,8 @@ func loadUIConfig() (*UIConfig, error) {
 	return sharedUIConfig, nil
 }
 
-func defaultUIConfig() *UIConfig {
-	return &UIConfig{
+func defaultUIConfig() *systemconfigs.UIConfig {
+	return &systemconfigs.UIConfig{
 		ProductName:        "GoEdge",
 		AdminSystemName:    "GoEdge管理员系统",
 		ShowOpenSourceInfo: true,

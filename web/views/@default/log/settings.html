@@ -1,0 +1,37 @@
+{$layout}
+{$template "menu"}
+
+<form method="post" class="ui form" data-tea-success="success" data-tea-action="$">
+	<csrf-token></csrf-token>
+
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">是否可以手动删除日志</td>
+			<td>
+				<checkbox name="canDelete" v-model="logConfig.canDelete"></checkbox>
+			</td>
+		</tr>
+		<tr>
+			<td>是否可以手动清理</td>
+			<td>
+				<checkbox name="canClean" v-model="logConfig.canClean"></checkbox>
+			</td>
+		</tr>
+		<tr>
+			<td>日志保留天数</td>
+			<td>
+				<input type="text" name="days" v-model="logConfig.days" style="width:5em" maxlength="3"/>
+				<p class="comment">超过此天数的日志将会被自动清理，0表示不自动清理。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>最大容量限制</td>
+			<td>
+				<size-capacity-box :v-name="'capacityJSON'" :v-value="logConfig.capacity"></size-capacity-box>
+				<p class="comment">超出此容量限制后将会发送提醒。</p>
+			</td>
+		</tr>
+	</table>
+
+	<submit-btn></submit-btn>
+</form>

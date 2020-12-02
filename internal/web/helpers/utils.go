@@ -3,8 +3,8 @@ package helpers
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
 	nodes "github.com/TeaOSLab/EdgeAdmin/internal/rpc"
-	"github.com/TeaOSLab/EdgeAdmin/internal/securitymanager"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/logs"
 	"net"
@@ -23,7 +23,7 @@ func init() {
 }
 
 // 检查用户IP并支持缓存
-func checkIP(config *securitymanager.SecurityConfig, ipAddr string) bool {
+func checkIP(config *systemconfigs.SecurityConfig, ipAddr string) bool {
 	ipCacheLocker.Lock()
 	ipCache, ok := ipCacheMap[ipAddr]
 	if ok && ipCache {
@@ -46,7 +46,7 @@ func checkIP(config *securitymanager.SecurityConfig, ipAddr string) bool {
 }
 
 // 检查用户IP
-func checkIPWithoutCache(config *securitymanager.SecurityConfig, ipAddr string) bool {
+func checkIPWithoutCache(config *systemconfigs.SecurityConfig, ipAddr string) bool {
 	if config == nil {
 		return true
 	}
