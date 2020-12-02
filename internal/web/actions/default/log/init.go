@@ -13,6 +13,9 @@ func init() {
 			Prefix("/log").
 			Get("", new(IndexAction)).
 			Get("/exportExcel", new(ExportExcelAction)).
+			Post("/delete", new(DeleteAction)).
+			GetPost("/clean", new(CleanAction)).
+			GetPost("/settings", new(SettingsAction)).
 
 			EndAll()
 	})

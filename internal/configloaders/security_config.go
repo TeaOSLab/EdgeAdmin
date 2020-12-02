@@ -1,16 +1,14 @@
-package securitymanager
+package configloaders
 
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/iwind/TeaGo/logs"
 	"reflect"
-	"sync"
 )
-
-var locker sync.Mutex
 
 const (
 	SecuritySettingName = "adminSecurityConfig"
@@ -20,16 +18,9 @@ const (
 	FrameSameOrigin = "SAMEORIGIN"
 )
 
-var sharedSecurityConfig *SecurityConfig = nil
+var sharedSecurityConfig *systemconfigs.SecurityConfig = nil
 
-type SecurityConfig struct {
-	Frame            string  `json:"frame"`
-	AllowCountryIds  []int64 `json:"allowCountryIds"`
-	AllowProvinceIds []int64 `json:"allowProvinceIds"`
-	AllowLocal       bool    `json:"allowLocal"`
-}
-
-func LoadSecurityConfig() (*SecurityConfig, error) {
+func LoadSecurityConfig() (*systemconfigs.SecurityConfig, error) {
 	locker.Lock()
 	defer locker.Unlock()
 
@@ -38,11 +29,11 @@ func LoadSecurityConfig() (*SecurityConfig, error) {
 		return nil, err
 	}
 
-	v := reflect.Indirect(reflect.ValueOf(config)).Interface().(SecurityConfig)
+	v := reflect.Indirect(reflect.ValueOf(config)).Interface().(systemconfigs.SecurityConfig)
 	return &v, nil
 }
 
-func UpdateSecurityConfig(securityConfig *SecurityConfig) error {
+func UpdateSecurityConfig(securityConfig *systemconfigs.SecurityConfig) error {
 	locker.Lock()
 	defer locker.Unlock()
 
@@ -69,7 +60,7 @@ func UpdateSecurityConfig(securityConfig *SecurityConfig) error {
 	return nil
 }
 
-func loadSecurityConfig() (*SecurityConfig, error) {
+func loadSecurityConfig() (*systemconfigs.SecurityConfig, error) {
 	if sharedSecurityConfig != nil {
 		return sharedSecurityConfig, nil
 	}
@@ -88,7 +79,7 @@ func loadSecurityConfig() (*SecurityConfig, error) {
 		return sharedSecurityConfig, nil
 	}
 
-	config := &SecurityConfig{}
+	config := &systemconfigs.SecurityConfig{}
 	err = json.Unmarshal(resp.ValueJSON, config)
 	if err != nil {
 		logs.Println("[SECURITY_MANAGER]" + err.Error())
@@ -99,8 +90,8 @@ func loadSecurityConfig() (*SecurityConfig, error) {
 	return sharedSecurityConfig, nil
 }
 
-func defaultSecurityConfig() *SecurityConfig {
-	return &SecurityConfig{
+func defaultSecurityConfig() *systemconfigs.SecurityConfig {
+	return &systemconfigs.SecurityConfig{
 		Frame:      FrameSameOrigin,
 		AllowLocal: true,
 	}

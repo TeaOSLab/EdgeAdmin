@@ -1,11 +1,10 @@
 package helpers
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	nodes "github.com/TeaOSLab/EdgeAdmin/internal/rpc"
-	"github.com/TeaOSLab/EdgeAdmin/internal/securitymanager"
 	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
-	"github.com/TeaOSLab/EdgeAdmin/internal/uimanager"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -28,7 +27,7 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	var action = actionPtr.Object()
 
 	// 安全相关
-	securityConfig, _ := securitymanager.LoadSecurityConfig()
+	securityConfig, _ := configloaders.LoadSecurityConfig()
 	if securityConfig == nil {
 		action.AddHeader("X-Frame-Options", "SAMEORIGIN")
 	} else if len(securityConfig.Frame) > 0 {
@@ -84,7 +83,7 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 		return true
 	}
 
-	config, err := uimanager.LoadUIConfig()
+	config, err := configloaders.LoadUIConfig()
 	if err != nil {
 		action.WriteString(err.Error())
 		return false
@@ -207,14 +206,14 @@ func (this *UserMustAuth) modules() []maps.Map {
 			},
 		},
 		{
+			"code": "log",
+			"name": "日志审计",
+			"icon": "history",
+		},
+		{
 			"code": "settings",
 			"name": "系统设置",
 			"icon": "setting",
-		},
-		{
-			"code": "log",
-			"name": "操作日志",
-			"icon": "history",
 		},
 	}
 }

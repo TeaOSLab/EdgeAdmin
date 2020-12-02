@@ -1,7 +1,7 @@
 package helpers
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/securitymanager"
+	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/iwind/TeaGo/actions"
 	"net/http"
@@ -16,7 +16,7 @@ func (this *UserShouldAuth) BeforeAction(actionPtr actions.ActionWrapper, paramN
 
 	// 安全相关
 	action := this.action
-	securityConfig, _ := securitymanager.LoadSecurityConfig()
+	securityConfig, _ := configloaders.LoadSecurityConfig()
 	if securityConfig == nil {
 		action.AddHeader("X-Frame-Options", "SAMEORIGIN")
 	} else if len(securityConfig.Frame) > 0 {

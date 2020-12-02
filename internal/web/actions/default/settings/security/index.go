@@ -2,7 +2,7 @@ package security
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeAdmin/internal/securitymanager"
+	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -18,7 +18,7 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct{}) {
-	config, err := securitymanager.LoadSecurityConfig()
+	config, err := configloaders.LoadSecurityConfig()
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -75,7 +75,7 @@ func (this *IndexAction) RunPost(params struct {
 }) {
 	defer this.CreateLogInfo("修改管理界面安全设置")
 
-	config, err := securitymanager.LoadSecurityConfig()
+	config, err := configloaders.LoadSecurityConfig()
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -109,7 +109,7 @@ func (this *IndexAction) RunPost(params struct {
 	// 允许本地
 	config.AllowLocal = params.AllowLocal
 
-	err = securitymanager.UpdateSecurityConfig(config)
+	err = configloaders.UpdateSecurityConfig(config)
 	if err != nil {
 		this.ErrorPage(err)
 		return

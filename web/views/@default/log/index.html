@@ -1,4 +1,5 @@
 {$layout}
+{$template "menu"}
 
 {$var "header"}
 <!-- datepicker -->
@@ -8,7 +9,6 @@
 <link rel="stylesheet" href="/js/pikaday.theme.css"/>
 <link rel="stylesheet" href="/js/pikaday.triangle.css"/>
 {$end}
-
 
 <div class="margin"></div>
 
@@ -42,9 +42,11 @@
 
 <table class="ui table selectable" v-for="log in logs">
 	<tr :class="{error: log.level == 'error', warning: log.level == 'warn'}">
-		<td>{{log.createdTime}} <span class="grey"> <span
+		<td class="log-row">{{log.createdTime}} <span class="grey"> <span
 						v-if="log.userName.length > 0">| {{log.userName}}</span> | {{log.ip}}<span
-						v-if="log.region.length > 0"> | {{log.region}}</span> &nbsp; <a href="" @click.prevent="showMore(log)" title="显示更多">...</a> &nbsp;<span v-if="log.moreVisible">{{log.action}}</span></span></td>
+						v-if="log.region.length > 0"> | {{log.region}}</span> &nbsp; <a href="" @click.prevent="showMore(log)" title="显示更多">...</a> &nbsp;<span v-if="log.moreVisible">{{log.action}}</span></span>
+			<span class="buttons"><a v-if="logConfig.canDelete" href="" title="删除" @click.prevent="deleteLog(log.id)"><i class="icon remove small"></i></a> </span>
+		</td>
 	</tr>
 	<tr :class="{error: log.level == 'error', warning: log.level == 'warn'}">
 		<td>{{log.description}}</td>
