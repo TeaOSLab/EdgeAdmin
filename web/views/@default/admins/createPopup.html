@@ -1,0 +1,48 @@
+{$layout "layout_popup"}
+
+<h3>创建系统用户</h3>
+
+<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+	<csrf-token></csrf-token>
+
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">全名 *</td>
+			<td>
+				<input type="text" name="fullname" maxlength="100" ref="focus"/>
+				<p class="comment">可以输入姓名、公司名等容易识别的名称。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>登录用户名 *</td>
+			<td>
+				<input type="text" name="username" maxlength="100"/>
+				<p class="comment">用户名只能英文、数字、下划线的组合。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>登录密码 *</td>
+			<td>
+				<input type="password" name="pass1" maxlength="100"/>
+			</td>
+		</tr>
+		<tr>
+			<td>确认登录密码 *</td>
+			<td>
+				<input type="password" name="pass2" maxlength="100"/>
+			</td>
+		</tr>
+		<tr>
+			<td>权限</td>
+			<td>
+				<div class="modules-box">
+					<div class="module-box" v-for="module in modules">
+						<checkbox name="moduleCodes" :v-value="module.code">{{module.name}}</checkbox>
+					</div>
+				</div>
+			</td>
+		</tr>
+	</table>
+
+	<submit-btn></submit-btn>
+</form>

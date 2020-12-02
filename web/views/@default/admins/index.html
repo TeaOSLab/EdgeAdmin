@@ -1,0 +1,31 @@
+{$layout}
+{$template "menu"}
+
+<table class="ui table selectable">
+	<thead>
+		<tr>
+			<th>用户名</th>
+			<th>全名</th>
+			<th>创建时间</th>
+			<th class="center width10">状态</th>
+			<th class="two op">操作</th>
+		</tr>
+	</thead>
+	<tr v-for="admin in admins">
+		<td>{{admin.username}}
+			<div v-if="admin.isSuper" style="margin-top: 0.5em">
+				<tiny-basic-label class="olive">超级管理员</tiny-basic-label>
+			</div>
+		</td>
+		<td>{{admin.fullname}}</td>
+		<td>{{admin.createdTime}}</td>
+		<td class="center">
+			<label-on :v-is-on="admin.isOn"></label-on>
+		</td>
+		<td>
+			<a href="" @click.prevent="updateAdmin(admin.id)">修改</a> &nbsp; <a href="" v-if="!admin.isSuper" @click.prevent="deleteAdmin(admin.id)">删除</a>
+		</td>
+	</tr>
+</table>
+
+<div class="page" v-html="page"></div>
