@@ -11,6 +11,7 @@ func init() {
 		server.
 			Helper(helpers.NewUserMustAuth()).
 			Helper(clusterutils.NewClustersHelper()).
+			Data("teaModule", "node").
 			Prefix("/clusters").
 			Get("", new(IndexAction)).
 			GetPost("/create", new(CreateAction)).

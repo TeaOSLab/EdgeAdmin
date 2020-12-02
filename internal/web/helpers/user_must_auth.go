@@ -15,7 +15,7 @@ import (
 
 // 认证拦截
 type UserMustAuth struct {
-	AdminId int
+	AdminId int64
 	Grant   string
 }
 
@@ -48,9 +48,16 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	}
 
 	var session = action.Session()
-	var adminId = session.GetInt("adminId")
+	var adminId = session.GetInt64("adminId")
 	if adminId <= 0 {
 		this.login(action)
+		return false
+	}
+
+	// 检查用户权限
+	teaModule := action.Data.GetString("teaModule")
+	if len(teaModule) > 0 && !configloaders.AllowModule(adminId, teaModule) {
+		action.WriteString("Permission Denied.")
 		return false
 	}
 
@@ -111,7 +118,7 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	if !action.Data.Has("teaMenu") {
 		action.Data["teaMenu"] = ""
 	}
-	action.Data["teaModules"] = this.modules()
+	action.Data["teaModules"] = this.modules(adminId)
 	action.Data["teaSubMenus"] = []map[string]interface{}{}
 	action.Data["teaTabbar"] = []map[string]interface{}{}
 	if len(config.Version) == 0 {
@@ -142,12 +149,13 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 }
 
 // 菜单配置
-func (this *UserMustAuth) modules() []maps.Map {
-	return []maps.Map{
+func (this *UserMustAuth) modules(adminId int64) []maps.Map {
+	allMaps := []maps.Map{
 		{
-			"code": "servers",
-			"name": "网站服务",
-			"icon": "clone outsize",
+			"code":   "servers",
+			"module": configloaders.AdminModuleCodeServer,
+			"name":   "网站服务",
+			"icon":   "clone outsize",
 			"subItems": []maps.Map{
 				{
 					"name": "通用设置",
@@ -177,9 +185,10 @@ func (this *UserMustAuth) modules() []maps.Map {
 			},
 		},
 		{
-			"code": "clusters",
-			"name": "边缘节点",
-			"icon": "cloud",
+			"code":   "clusters",
+			"module": configloaders.AdminModuleCodeNode,
+			"name":   "边缘节点",
+			"icon":   "cloud",
 			"subItems": []maps.Map{
 				{
 					"name": "SSH认证",
@@ -189,9 +198,10 @@ func (this *UserMustAuth) modules() []maps.Map {
 			},
 		},
 		{
-			"code": "dns",
-			"name": "域名解析",
-			"icon": "globe",
+			"code":   "dns",
+			"module": configloaders.AdminModuleCodeDNS,
+			"name":   "域名解析",
+			"icon":   "globe",
 			"subItems": []maps.Map{
 				{
 					"name": "问题修复",
@@ -206,21 +216,33 @@ func (this *UserMustAuth) modules() []maps.Map {
 			},
 		},
 		{
-			"code": "admins",
-			"name": "系统用户",
-			"icon": "users",
+			"code":   "admins",
+			"module": configloaders.AdminModuleCodeAdmin,
+			"name":   "系统用户",
+			"icon":   "users",
 		},
 		{
-			"code": "log",
-			"name": "日志审计",
-			"icon": "history",
+			"code":   "log",
+			"module": configloaders.AdminModuleCodeLog,
+			"name":   "日志审计",
+			"icon":   "history",
 		},
 		{
-			"code": "settings",
-			"name": "系统设置",
-			"icon": "setting",
+			"code":   "settings",
+			"module": configloaders.AdminModuleCodeSetting,
+			"name":   "系统设置",
+			"icon":   "setting",
 		},
 	}
+
+	result := []maps.Map{}
+	for _, m := range allMaps {
+		module := m.GetString("module")
+		if configloaders.AllowModule(adminId, module) {
+			result = append(result, m)
+		}
+	}
+	return result
 }
 
 // 跳转到登录页
