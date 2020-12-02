@@ -27,9 +27,9 @@ func (this *HealthAction) RunGet(params struct {
 		return
 	}
 	var config *serverconfigs.HealthCheckConfig = nil
-	if len(configResp.HealthCheckConfig) > 0 {
+	if len(configResp.HealthCheckJSON) > 0 {
 		config = &serverconfigs.HealthCheckConfig{}
-		err = json.Unmarshal(configResp.HealthCheckConfig, config)
+		err = json.Unmarshal(configResp.HealthCheckJSON, config)
 		if err != nil {
 			this.ErrorPage(err)
 			return
