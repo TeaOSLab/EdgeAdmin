@@ -10,6 +10,7 @@ func init() {
 		server.
 			Helper(new(helpers.UserMustAuth)).
 			Helper(new(Helper)).
+			Data("teaModule", "log").
 			Prefix("/log").
 			Get("", new(IndexAction)).
 			Get("/exportExcel", new(ExportExcelAction)).

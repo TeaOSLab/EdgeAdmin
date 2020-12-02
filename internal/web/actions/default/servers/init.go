@@ -10,6 +10,7 @@ func init() {
 		server.
 			Helper(helpers.NewUserMustAuth()).
 			Helper(NewHelper()).
+			Data("teaModule", "server").
 			Prefix("/servers").
 			Get("", new(IndexAction)).
 			GetPost("/create", new(CreateAction)).

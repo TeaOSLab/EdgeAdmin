@@ -14,6 +14,7 @@ func init() {
 		server.
 			Helper(new(helpers.UserMustAuth)).
 			Helper(new(Helper)).
+			Data("teaModule", "dns").
 			Prefix("/dns").
 			Get("", new(IndexAction)).
 			GetPost("/updateClusterPopup", new(UpdateClusterPopupAction)).

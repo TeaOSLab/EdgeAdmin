@@ -10,12 +10,12 @@ func init() {
 		server.
 			Helper(helpers.NewUserMustAuth()).
 			Data("teaMenu", "admins").
+			Data("teaModule", "admin").
 			Prefix("/admins").
 			Get("", new(IndexAction)).
 			GetPost("/createPopup", new(CreatePopupAction)).
 			GetPost("/updatePopup", new(UpdatePopupAction)).
 			Post("/delete", new(DeleteAction)).
-			Post("/updateOn", new(UpdateOnAction)).
 			EndAll()
 	})
 }

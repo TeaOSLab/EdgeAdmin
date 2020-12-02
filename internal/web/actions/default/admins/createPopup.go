@@ -88,7 +88,16 @@ func (this *CreatePopupAction) RunPost(params struct {
 		return
 	}
 
+
+
 	defer this.CreateLogInfo("创建系统用户 %d", createResp.AdminId)
+
+	// 通知更改
+	err = configloaders.NotifyAdminModuleMappingChange()
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 
 	this.Success()
 }

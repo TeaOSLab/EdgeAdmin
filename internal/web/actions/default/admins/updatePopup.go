@@ -125,5 +125,12 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		return
 	}
 
+	// 通知更改
+	err = configloaders.NotifyAdminModuleMappingChange()
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
 	this.Success()
 }
