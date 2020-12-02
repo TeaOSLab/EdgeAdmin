@@ -2,6 +2,7 @@ package settings
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/dns"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/toa"
 	clusters "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/clusterutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/iwind/TeaGo"
@@ -18,7 +19,12 @@ func init() {
 			GetPost("/healthRunPopup", new(HealthRunPopupAction)).
 
 			// DNS
-			GetPost("/dns", new(dns.IndexAction)).
+			Prefix("/clusters/cluster/settings/dns").
+			GetPost("", new(dns.IndexAction)).
+
+			// TOA
+			Prefix("/clusters/cluster/settings/toa").
+			GetPost("", new(toa.IndexAction)).
 
 			EndAll()
 	})

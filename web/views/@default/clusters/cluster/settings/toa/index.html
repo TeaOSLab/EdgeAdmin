@@ -1,0 +1,52 @@
+{$layout}
+{$template "/left_menu"}
+
+<div class="right-box">
+	<tip-icon content="TCP Option Address(TOA)可以在TCP选项中传递客户端IP，多用在源站需要获取客户端真实IP的场景。<br/><br/>如需修改配置，请在专业人士指导下操作。"></tip-icon>
+	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+		<input type="hidden" name="clusterId" :value="clusterId"/>
+		<csrf-token></csrf-token>
+
+		<table class="ui table selectable definition">
+			<tr>
+				<td class="title">是否启用TOA</td>
+				<td>
+					<checkbox name="isOn" v-model="toa.isOn"></checkbox>
+					<p class="comment">在启用之前，请确保当前集群下所有节点服务器已经安装TOA模块和libnetfilter_queue，并启用了IPTables。</p>
+				</td>
+			</tr>
+			<tbody v-show="toa.isOn">
+				<tr>
+					<td>是否自动配置</td>
+					<td>
+						<checkbox name="autoSetup" v-model="toa.autoSetup"></checkbox>
+						<p class="comment">TOA功能需要节点服务器安装并开启了IPTables，并将网络数据包转发到NFQueue中。如果选中了自动配置，则每次在启动时都会自动尝试配置IPTables规则。</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">选项类型数值</td>
+					<td>
+						<input type="text" name="optionType" v-model="toa.optionType" style="width:4em" maxlength="3"/>
+						<p class="comment">用来作为附加的TCP OPTION值，通常是254（即0xfe）。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>NFQueue队列开始ID</td>
+					<td>
+						<input type="text" name="minQueueId" v-model="toa.minQueueId" style="width:4em" maxlength="3"/>
+						<p class="comment">不能超过255。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>NFQueue队列结束ID</td>
+					<td>
+						<input type="text" name="maxQueueId" v-model="toa.maxQueueId" style="width:4em" maxlength="3"/>
+						<p class="comment">不能超过255。</p>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<submit-btn></submit-btn>
+	</form>
+</div>
