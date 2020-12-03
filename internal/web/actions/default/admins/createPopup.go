@@ -28,6 +28,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	Pass1       string
 	Pass2       string
 	ModuleCodes []string
+	IsSuper     bool
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -81,14 +82,12 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Password:    params.Pass1,
 		Fullname:    params.Fullname,
 		ModulesJSON: modulesJSON,
-		IsSuper:     false, // TODO 后期再开放创建超级用户
+		IsSuper:     params.IsSuper,
 	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-
-
 
 	defer this.CreateLogInfo("创建系统用户 %d", createResp.AdminId)
 
