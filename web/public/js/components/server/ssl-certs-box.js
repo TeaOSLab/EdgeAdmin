@@ -1,10 +1,16 @@
 Vue.component("ssl-certs-box", {
-	props: ["v-certs", "v-protocol", "v-view-size", "v-single-mode"],
+	props: [
+		"v-certs", // 证书列表
+		"v-protocol", // 协议：https|tls
+		"v-view-size", // 弹窗尺寸
+		"v-single-mode" // 单证书模式
+	],
 	data: function () {
 		let certs = this.vCerts
 		if (certs == null) {
 			certs = []
 		}
+
 		return {
 			certs: certs
 		}
@@ -82,7 +88,7 @@ Vue.component("ssl-certs-box", {
 	</div>
 	<div v-if="buttonsVisible()">
 		<button class="ui button tiny" type="button" @click.prevent="selectCert()">选择已有证书</button> &nbsp;
-		<button class="ui button tiny" type="button" @click.prevent="uploadCert()">上传新证书</button>
+		<button class="ui button tiny" type="button" @click.prevent="uploadCert()">上传新证书</button> &nbsp;
 	</div>
 </div>`
 })

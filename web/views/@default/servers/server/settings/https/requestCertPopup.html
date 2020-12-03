@@ -1,0 +1,43 @@
+{$layout "layout_popup"}
+
+<h3>申请免费证书</h3>
+<form method="post" class="ui form" data-tea-success="success" data-tea-action="$" data-tea-timeout="300" data-tea-before="beforeSubmit" data-tea-fail="fail">
+	<csrf-token></csrf-token>
+
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">证书包含的域名 *</td>
+			<td>
+				<span v-if="serverNames.length == 0" class="disabled">还没有设置域名，暂时不能申请。</span>
+				<div v-if="serverNames.length > 0">
+					<div v-for="(serverName, index) in serverNames" class="ui tiny basic label">
+						<input type="hidden" name="serverNames" :value="serverName"/>
+                        {{serverName}}
+						<a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove"></i></a>
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>证书用户 *</td>
+			<td>
+				<div v-if="users.length > 0">
+					<select class="ui dropdown auto-width" name="userId" v-model="userId">
+						<option value="0">[请选择]</option>
+						<option v-for="user in users" :value="user.id">{{user.email}}{{user.description}}</option>>
+					</select>
+					<p class="comment">用来申请证书的用户。</p>
+				</div>
+
+				<div v-if="users.length == 0">
+					<input type="text" name="userEmail" maxlength="100" placeholder="用户E-mail" ref="focus"/>
+					<p class="comment">用来申请证书的用户邮箱，可以任意填写，只要格式正确即可。</p>
+				</div>
+			</td>
+		</tr>
+	</table>
+
+	<submit-btn v-if="!isRequesting">提交</submit-btn>
+	<button class="ui button" type="button" v-if="isRequesting">处理中...</button>
+</form>
+

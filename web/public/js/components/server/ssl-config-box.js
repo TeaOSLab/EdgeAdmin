@@ -1,5 +1,5 @@
 Vue.component("ssl-config-box", {
-	props: ["v-ssl-policy", "v-protocol"],
+	props: ["v-ssl-policy", "v-protocol", "v-server-id"],
 	created: function () {
 		let that = this
 		setTimeout(function () {
@@ -115,6 +115,25 @@ Vue.component("ssl-config-box", {
 						that.policy.certRefs.push(resp.data.certRef)
 						that.policy.certs.push(resp.data.cert)
 					})
+				}
+			})
+		},
+
+		// 申请证书
+		requestCert: function () {
+			// 已经在证书中的域名
+			let excludeServerNames = []
+			if (this.policy != null && this.policy.certs.length > 0) {
+				this.policy.certs.forEach(function (cert) {
+					excludeServerNames.$pushAll(cert.dnsNames)
+				})
+			}
+
+			let that = this
+			teaweb.popup("/servers/server/settings/https/requestCertPopup?serverId=" + this.vServerId + "&excludeServerNames=" + excludeServerNames.join(","), {
+				callback: function () {
+					that.policy.certRefs.push(resp.data.certRef)
+					that.policy.certs.push(resp.data.cert)
 				}
 			})
 		},
@@ -338,7 +357,8 @@ Vue.component("ssl-config-box", {
 						<div class="ui divider"></div>
 					</div>
 					<button class="ui button tiny" type="button" @click.prevent="selectCert()">选择已有证书</button> &nbsp;
-					<button class="ui button tiny" type="button" @click.prevent="uploadCert()">上传新证书</button>
+					<button class="ui button tiny" type="button" @click.prevent="uploadCert()">上传新证书</button> &nbsp;
+					<button class="ui button tiny" type="button" @click.prevent="requestCert()" v-if="vServerId != null && vServerId > 0">申请免费证书</button>
 				</td>
 			</tr>
 			<tr>

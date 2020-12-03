@@ -11,7 +11,6 @@ func init() {
 		server.
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeServer)).
 			Helper(NewHelper()).
-			Data("teaModule", "server").
 			Prefix("/servers").
 			Get("", new(IndexAction)).
 			GetPost("/create", new(CreateAction)).

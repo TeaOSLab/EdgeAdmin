@@ -14,6 +14,7 @@ func init() {
 			Helper(serverutils.NewServerHelper()).
 			Prefix("/servers/server/settings/https").
 			GetPost("", new(IndexAction)).
+			GetPost("/requestCertPopup", new(RequestCertPopupAction)).
 			EndAll()
 	})
 }
