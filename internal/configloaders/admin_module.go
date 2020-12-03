@@ -16,6 +16,7 @@ const (
 	AdminModuleCodeAdmin   AdminModuleCode = "admin"
 	AdminModuleCodeLog     AdminModuleCode = "log"
 	AdminModuleCodeSetting AdminModuleCode = "setting"
+	AdminModuleCodeCommon  AdminModuleCode = "common" // 只要登录就可以访问的模块
 )
 
 var sharedAdminModuleMapping = map[int64]*AdminModuleList{} // adminId => AdminModuleList
@@ -67,6 +68,10 @@ func NotifyAdminModuleMappingChange() error {
 func AllowModule(adminId int64, module string) bool {
 	locker.Lock()
 	defer locker.Unlock()
+
+	if module == AdminModuleCodeCommon {
+		return true
+	}
 
 	if len(sharedAdminModuleMapping) == 0 {
 		_, _ = loadAdminModuleMapping()

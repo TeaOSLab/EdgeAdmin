@@ -1,6 +1,7 @@
 package settings
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/dns"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/toa"
 	clusters "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/clusterutils"
@@ -11,7 +12,7 @@ import (
 func init() {
 	TeaGo.BeforeStart(func(server *TeaGo.Server) {
 		server.
-			Helper(helpers.NewUserMustAuth()).
+			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeNode)).
 			Helper(clusters.NewClusterHelper()).
 			Prefix("/clusters/cluster/settings").
 			GetPost("", new(IndexAction)).

@@ -1,6 +1,7 @@
 package settingutils
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/iwind/TeaGo/actions"
 )
@@ -25,14 +26,18 @@ func (this *Helper) BeforeAction(actionPtr actions.ActionWrapper) (goNext bool) 
 
 	// 标签栏
 	tabbar := actionutils.NewTabbar()
-	tabbar.Add("Web服务", "", "/settings/server", "", this.tab == "server")
-	tabbar.Add("界面设置", "", "/settings/ui", "", this.tab == "ui")
-	tabbar.Add("安全设置", "", "/settings/security", "", this.tab == "security")
-	tabbar.Add("数据库", "", "/settings/database", "", this.tab == "database")
-	tabbar.Add("API节点", "", "/api", "", this.tab == "apiNodes")
-	tabbar.Add("日志数据库", "", "/db", "", this.tab == "dbNodes")
-	tabbar.Add("IP库", "", "/settings/ip-library", "", this.tab == "ipLibrary")
-	tabbar.Add("备份", "", "/settings/backup", "", this.tab == "backup")
+	var session = action.Session()
+	var adminId = session.GetInt64("adminId")
+	if configloaders.AllowModule(adminId, configloaders.AdminModuleCodeSetting) {
+		tabbar.Add("Web服务", "", "/settings/server", "", this.tab == "server")
+		tabbar.Add("界面设置", "", "/settings/ui", "", this.tab == "ui")
+		tabbar.Add("安全设置", "", "/settings/security", "", this.tab == "security")
+		tabbar.Add("数据库", "", "/settings/database", "", this.tab == "database")
+		tabbar.Add("API节点", "", "/api", "", this.tab == "apiNodes")
+		tabbar.Add("日志数据库", "", "/db", "", this.tab == "dbNodes")
+		tabbar.Add("IP库", "", "/settings/ip-library", "", this.tab == "ipLibrary")
+		tabbar.Add("备份", "", "/settings/backup", "", this.tab == "backup")
+	}
 	tabbar.Add("个人资料", "", "/settings/profile", "", this.tab == "profile")
 	tabbar.Add("登录设置", "", "/settings/login", "", this.tab == "login")
 	actionutils.SetTabbar(actionPtr, tabbar)

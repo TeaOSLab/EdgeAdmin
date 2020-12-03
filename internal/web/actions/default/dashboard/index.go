@@ -24,4 +24,6 @@ func (this *IndexAction) RunGet(params struct{}) {
 			}
 		}
 	}
+
+	this.Show()
 }
