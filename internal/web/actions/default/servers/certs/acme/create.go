@@ -66,6 +66,7 @@ func (this *CreateAction) RunGet(params struct{}) {
 
 func (this *CreateAction) RunPost(params struct {
 	TaskId        int64
+	AuthType      string
 	AcmeUserId    int64
 	DnsProviderId int64
 	DnsDomain     string
@@ -74,18 +75,26 @@ func (this *CreateAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	if params.AuthType != "dns" && params.AuthType != "http" {
+		this.Fail("无法识别的认证方式'" + params.AuthType + "'")
+	}
+
 	if params.AcmeUserId <= 0 {
 		this.Fail("请选择一个申请证书的用户")
 	}
-	if params.DnsProviderId <= 0 {
-		this.Fail("请选择DNS服务商")
-	}
-	if len(params.DnsDomain) == 0 {
-		this.Fail("请输入顶级域名")
-	}
+
+	// 校验DNS相关信息
 	dnsDomain := strings.ToLower(params.DnsDomain)
-	if !domainutils.ValidateDomainFormat(dnsDomain) {
-		this.Fail("请输入正确的顶级域名")
+	if params.AuthType == "dns" {
+		if params.DnsProviderId <= 0 {
+			this.Fail("请选择DNS服务商")
+		}
+		if len(params.DnsDomain) == 0 {
+			this.Fail("请输入顶级域名")
+		}
+		if !domainutils.ValidateDomainFormat(dnsDomain) {
+			this.Fail("请输入正确的顶级域名")
+		}
 	}
 
 	if len(params.Domains) == 0 {
@@ -94,14 +103,21 @@ func (this *CreateAction) RunPost(params struct {
 	realDomains := []string{}
 	for _, domain := range params.Domains {
 		domain = strings.ToLower(domain)
-		if !strings.HasSuffix(domain, "."+dnsDomain) && domain != dnsDomain {
-			this.Fail("证书域名中的" + domain + "和顶级域名不一致")
+		if params.AuthType == "dns" { // DNS认证
+			if !strings.HasSuffix(domain, "."+dnsDomain) && domain != dnsDomain {
+				this.Fail("证书域名中的" + domain + "和顶级域名不一致")
+			}
+		} else if params.AuthType == "http" { // HTTP认证
+			if strings.Contains(domain, "*") {
+				this.Fail("在HTTP认证时域名" + domain + "不能包含通配符")
+			}
 		}
 		realDomains = append(realDomains, domain)
 	}
 
 	if params.TaskId == 0 {
 		createResp, err := this.RPC().ACMETaskRPC().CreateACMETask(this.AdminContext(), &pb.CreateACMETaskRequest{
+			AuthType:      params.AuthType,
 			AcmeUserId:    params.AcmeUserId,
 			DnsProviderId: params.DnsProviderId,
 			DnsDomain:     dnsDomain,

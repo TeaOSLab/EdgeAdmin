@@ -21,7 +21,12 @@
 			</tr>
 		</thead>
 		<tr v-for="(task, index) in tasks" :class="{warning: runningIndex == index}">
-			<td>{{task.acmeUser.email}}</td>
+			<td>{{task.acmeUser.email}}
+				<div style="margin-top: 1em">
+					<tiny-basic-label class="olive" v-if="task.authType == 'dns'">DNS</tiny-basic-label>
+					<tiny-basic-label class="olive" v-if="task.authType == 'http'">HTTP</tiny-basic-label>
+				</div>
+			</td>
 			<td nowrap="">
 				<div v-for="domain in task.domains">
 					<span class="ui label small basic">{{domain}}</span>

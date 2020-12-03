@@ -4,6 +4,8 @@ Tea.context(function () {
 	/**
 	 * 准备工作
 	 */
+	this.authType = "http"
+
 	this.doPrepare = function () {
 		this.step = "user"
 	}
@@ -70,6 +72,7 @@ Tea.context(function () {
 
 		this.$post("$")
 			.params({
+				authType: this.authType,
 				acmeUserId: this.userId,
 				dnsProviderId: this.dnsProviderId,
 				dnsDomain: this.dnsDomain,
