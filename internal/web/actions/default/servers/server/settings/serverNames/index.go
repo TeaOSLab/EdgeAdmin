@@ -28,8 +28,8 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	serverNamesConfig := []*serverconfigs.ServerNameConfig{}
-	if len(server.ServerNamesJON) > 0 {
-		err := json.Unmarshal(server.ServerNamesJON, &serverNamesConfig)
+	if len(server.ServerNamesJSON) > 0 {
+		err := json.Unmarshal(server.ServerNamesJSON, &serverNamesConfig)
 		if err != nil {
 			this.ErrorPage(err)
 			return

@@ -120,8 +120,8 @@ func (this *IndexAction) RunGet(params struct {
 
 		// 域名列表
 		serverNames := []*serverconfigs.ServerNameConfig{}
-		if len(server.ServerNamesJON) > 0 {
-			err = json.Unmarshal(server.ServerNamesJON, &serverNames)
+		if len(server.ServerNamesJSON) > 0 {
+			err = json.Unmarshal(server.ServerNamesJSON, &serverNames)
 			if err != nil {
 				this.ErrorPage(err)
 				return
