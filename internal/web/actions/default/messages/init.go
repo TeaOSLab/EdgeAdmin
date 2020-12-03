@@ -1,6 +1,7 @@
 package messages
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/iwind/TeaGo"
 )
@@ -8,7 +9,7 @@ import (
 func init() {
 	TeaGo.BeforeStart(func(server *TeaGo.Server) {
 		server.
-			Helper(new(helpers.UserMustAuth)).
+			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeCommon)).
 			Helper(new(Helper)).
 			Prefix("/messages").
 			GetPost("", new(IndexAction)).

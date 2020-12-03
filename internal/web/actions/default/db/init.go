@@ -1,6 +1,7 @@
 package db
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/settingutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/iwind/TeaGo"
@@ -9,7 +10,7 @@ import (
 func init() {
 	TeaGo.BeforeStart(func(server *TeaGo.Server) {
 		server.
-			Helper(new(helpers.UserMustAuth)).
+			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeSetting)).
 			Helper(new(Helper)).
 			Helper(settingutils.NewHelper("dbNodes")).
 			Prefix("/db").

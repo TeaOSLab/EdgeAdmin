@@ -14,16 +14,16 @@ import (
 )
 
 // 认证拦截
-type UserMustAuth struct {
+type userMustAuth struct {
 	AdminId int64
-	Grant   string
+	module  string
 }
 
-func NewUserMustAuth() *UserMustAuth {
-	return &UserMustAuth{}
+func NewUserMustAuth(module string) *userMustAuth {
+	return &userMustAuth{module: module}
 }
 
-func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramName string) (goNext bool) {
+func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramName string) (goNext bool) {
 	var action = actionPtr.Object()
 
 	// 安全相关
@@ -55,8 +55,8 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	}
 
 	// 检查用户权限
-	teaModule := action.Data.GetString("teaModule")
-	if len(teaModule) > 0 && !configloaders.AllowModule(adminId, teaModule) {
+	if len(this.module) > 0 && !configloaders.AllowModule(adminId, this.module) {
+		action.ResponseWriter.WriteHeader(http.StatusForbidden)
 		action.WriteString("Permission Denied.")
 		return false
 	}
@@ -69,7 +69,7 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 		return false
 	}
 
-	rpcResp, err := rpc.AdminRPC().CheckAdminExists(rpc.Context(0), &pb.CheckAdminExistsRequest{AdminId: int64(adminId)})
+	rpcResp, err := rpc.AdminRPC().CheckAdminExists(rpc.Context(0), &pb.CheckAdminExistsRequest{AdminId: adminId})
 	if err != nil {
 		utils.PrintError(err)
 		action.WriteString(teaconst.ErrServer)
@@ -105,7 +105,7 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	action.Data["teaTitle"] = config.AdminSystemName
 	action.Data["teaName"] = config.ProductName
 
-	resp, err := rpc.AdminRPC().FindAdminFullname(rpc.Context(0), &pb.FindAdminFullnameRequest{AdminId: int64(this.AdminId)})
+	resp, err := rpc.AdminRPC().FindAdminFullname(rpc.Context(0), &pb.FindAdminFullnameRequest{AdminId: this.AdminId})
 	if err != nil {
 		utils.PrintError(err)
 		action.Data["teaUsername"] = ""
@@ -149,7 +149,7 @@ func (this *UserMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 }
 
 // 菜单配置
-func (this *UserMustAuth) modules(adminId int64) []maps.Map {
+func (this *userMustAuth) modules(adminId int64) []maps.Map {
 	allMaps := []maps.Map{
 		{
 			"code":   "servers",
@@ -246,6 +246,6 @@ func (this *UserMustAuth) modules(adminId int64) []maps.Map {
 }
 
 // 跳转到登录页
-func (this *UserMustAuth) login(action *actions.ActionObject) {
+func (this *userMustAuth) login(action *actions.ActionObject) {
 	action.RedirectURL("/")
 }

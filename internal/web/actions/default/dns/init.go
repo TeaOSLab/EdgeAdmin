@@ -1,6 +1,7 @@
 package dns
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/clusters"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/issues"
@@ -12,9 +13,8 @@ import (
 func init() {
 	TeaGo.BeforeStart(func(server *TeaGo.Server) {
 		server.
-			Helper(new(helpers.UserMustAuth)).
+			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeDNS)).
 			Helper(new(Helper)).
-			Data("teaModule", "dns").
 			Prefix("/dns").
 			Get("", new(IndexAction)).
 			GetPost("/updateClusterPopup", new(UpdateClusterPopupAction)).
