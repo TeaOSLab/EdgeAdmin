@@ -66,17 +66,24 @@ func (this *UpdateAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
+	nodeDNS := dnsInfoResp.Node
 	dnsRouteMaps := []maps.Map{}
-	for _, dnsInfo := range dnsInfoResp.Node.Routes {
-		dnsRouteMaps = append(dnsRouteMaps, maps.Map{
-			"name": dnsInfo.Name,
-			"code": dnsInfo.Code,
-		})
+	if nodeDNS != nil {
+		for _, dnsInfo := range nodeDNS.Routes {
+			dnsRouteMaps = append(dnsRouteMaps, maps.Map{
+				"name": dnsInfo.Name,
+				"code": dnsInfo.Code,
+			})
+		}
 	}
 	this.Data["dnsRoutes"] = dnsRouteMaps
 	this.Data["allDNSRoutes"] = []maps.Map{}
-	this.Data["dnsDomainId"] = dnsInfoResp.Node.DnsDomainId
-	if dnsInfoResp.Node.DnsDomainId > 0 {
+	if nodeDNS != nil {
+		this.Data["dnsDomainId"] = nodeDNS.DnsDomainId
+	} else {
+		this.Data["dnsDomainId"] = 0
+	}
+	if nodeDNS != nil && nodeDNS.DnsDomainId > 0 {
 		routesMaps := []maps.Map{}
 		routesResp, err := this.RPC().DNSDomainRPC().FindAllDNSDomainRoutes(this.AdminContext(), &pb.FindAllDNSDomainRoutesRequest{DnsDomainId: dnsInfoResp.Node.DnsDomainId})
 		if err != nil {
