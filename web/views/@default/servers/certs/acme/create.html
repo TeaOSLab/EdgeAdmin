@@ -9,13 +9,13 @@
 	<form class="ui form">
 		<div class="ui steps fluid small">
 			<div class="ui step" :class="{active:step == 'prepare'}">
-				准备工作
+				选择申请方式
 			</div>
 			<div class="ui step" :class="{active:step == 'user'}">
 				选择用户
 			</div>
 			<div class="ui step" :class="{active:step == 'dns'}">
-				设置域名解析
+				填写域名信息
 			</div>
 			<div class="ui step" :class="{active:step == 'finish'}">
 				完成
@@ -24,9 +24,14 @@
 
 		<!-- 准备工作 -->
 		<div v-show="step == 'prepare'">
-			<div>此流程用于免费申请一个新的证书。</div>
-			<div class="margin"></div>
-			<div>
+			<div style="margin-bottom: 1em">
+				<radio name="authType" :v-value="'http'" v-model="authType">使用HTTP认证</radio> &nbsp;
+				<radio name="authType" :v-value="'dns'" v-model="authType">使用DNS认证</radio>
+			</div>
+			<div v-if="authType == 'http'">
+				使用HTTP的方式请求网址<code-label>/.well-known/acme-challenge/令牌</code-label>校验，该方式要求需要实现将域名解析到集群上，之后系统会自动生成网址信息。
+			</div>
+			<div v-if="authType == 'dns'">
 				我们在申请免费证书的过程中需要自动增加或修改相关域名的TXT记录，请先确保你已经在"域名解析" -- <a href="/dns/providers" target="_blank">"DNS服务商"</a> 中已经添加了对应的DNS服务商账号。
 			</div>
 
@@ -69,7 +74,7 @@
 		<!-- 设置域名解析 -->
 		<div v-show="step == 'dns'">
 			<table class="ui table definition selectable">
-				<tr>
+				<tr v-show="authType == 'dns'">
 					<td class="title">选择DNS服务商 *</td>
 					<td>
 						<div v-if="providers.length > 0">
@@ -81,7 +86,7 @@
 						<p class="comment">用于自动创建域名解析记录。</p>
 					</td>
 				</tr>
-				<tr>
+				<tr v-show="authType == 'dns'">
 					<td>顶级域名 *</td>
 					<td>
 						<input type="text" maxlength="100" v-model="dnsDomain"/>
@@ -92,7 +97,7 @@
 					<td>证书域名列表 *</td>
 					<td>
 						<values-box name="" placeholder="域名" size="30" @change="changeDomains"></values-box>
-						<p class="comment">需要申请的证书中包含的域名列表，所有域名必须是同一个顶级域名。</p>
+						<p class="comment">需要申请的证书中包含的域名列表<span v-if="authType == 'dns'">，所有域名必须是同一个顶级域名</span><span v-if="authType == 'http'">使用HTTP认证方式时，域名中不能含有通配符</span>。</p>
 					</td>
 				</tr>
 				<tr>

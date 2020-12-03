@@ -54,14 +54,14 @@ func (this *UpdateTaskPopupAction) RunGet(params struct {
 	}
 
 	this.Data["task"] = maps.Map{
-		"id":            task.Id,
-		"acmeUser":      acmeUserMap,
-		"dnsProviderId": task.DnsProvider.Id,
-		"dnsDomain":     task.DnsDomain,
-		"domains":       task.Domains,
-		"autoRenew":     task.AutoRenew,
-		"isOn":          task.IsOn,
-		"dnsProvider":   dnsProviderMap,
+		"id":          task.Id,
+		"authType":    task.AuthType,
+		"acmeUser":    acmeUserMap,
+		"dnsDomain":   task.DnsDomain,
+		"domains":     task.Domains,
+		"autoRenew":   task.AutoRenew,
+		"isOn":        task.IsOn,
+		"dnsProvider": dnsProviderMap,
 	}
 
 	// 域名解析服务商
@@ -88,6 +88,7 @@ func (this *UpdateTaskPopupAction) RunGet(params struct {
 
 func (this *UpdateTaskPopupAction) RunPost(params struct {
 	TaskId        int64
+	AuthType      string
 	AcmeUserId    int64
 	DnsProviderId int64
 	DnsDomain     string
@@ -99,18 +100,25 @@ func (this *UpdateTaskPopupAction) RunPost(params struct {
 }) {
 	defer this.CreateLogInfo("修改证书申请任务 %d", params.TaskId)
 
+	if params.AuthType != "dns" && params.AuthType != "http" {
+		this.Fail("无法识别的认证方式'" + params.AuthType + "'")
+	}
+
 	if params.AcmeUserId <= 0 {
 		this.Fail("请选择一个申请证书的用户")
 	}
-	if params.DnsProviderId <= 0 {
-		this.Fail("请选择DNS服务商")
-	}
-	if len(params.DnsDomain) == 0 {
-		this.Fail("请输入顶级域名")
-	}
+
 	dnsDomain := strings.ToLower(params.DnsDomain)
-	if !domainutils.ValidateDomainFormat(dnsDomain) {
-		this.Fail("请输入正确的顶级域名")
+	if params.AuthType == "dns" {
+		if params.DnsProviderId <= 0 {
+			this.Fail("请选择DNS服务商")
+		}
+		if len(params.DnsDomain) == 0 {
+			this.Fail("请输入顶级域名")
+		}
+		if !domainutils.ValidateDomainFormat(dnsDomain) {
+			this.Fail("请输入正确的顶级域名")
+		}
 	}
 
 	if len(params.Domains) == 0 {
@@ -119,8 +127,14 @@ func (this *UpdateTaskPopupAction) RunPost(params struct {
 	realDomains := []string{}
 	for _, domain := range params.Domains {
 		domain = strings.ToLower(domain)
-		if !strings.HasSuffix(domain, "."+dnsDomain) && domain != dnsDomain {
-			this.Fail("证书域名中的" + domain + "和顶级域名不一致")
+		if params.AuthType == "dns" {
+			if !strings.HasSuffix(domain, "."+dnsDomain) && domain != dnsDomain {
+				this.Fail("证书域名中的" + domain + "和顶级域名不一致")
+			}
+		} else if params.AuthType == "http" { // HTTP认证
+			if strings.Contains(domain, "*") {
+				this.Fail("在HTTP认证时域名" + domain + "不能包含通配符")
+			}
 		}
 		realDomains = append(realDomains, domain)
 	}

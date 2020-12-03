@@ -52,7 +52,12 @@ func checkIPWithoutCache(config *systemconfigs.SecurityConfig, ipAddr string) bo
 	}
 
 	// 本地IP
-	ip := net.ParseIP(ipAddr).To4()
+	ipObj := net.ParseIP(ipAddr)
+	if ipObj == nil {
+		logs.Println("[USER_MUST_AUTH]invalid client address: " + ipAddr)
+		return false
+	}
+	ip := ipObj.To4()
 	if ip == nil {
 		logs.Println("[USER_MUST_AUTH]invalid client address: " + ipAddr)
 		return false

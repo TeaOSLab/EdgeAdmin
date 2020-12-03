@@ -42,8 +42,15 @@ func (this *IndexAction) RunGet(params struct{}) {
 
 	taskMaps := []maps.Map{}
 	for _, task := range tasksResp.AcmeTasks {
-		if task.AcmeUser == nil || task.DnsProvider == nil {
+		if task.AcmeUser == nil {
 			continue
+		}
+		dnsProviderMap := maps.Map{}
+		if task.AuthType == "dns" && task.DnsProvider != nil {
+			dnsProviderMap = maps.Map{
+				"id":   task.DnsProvider.Id,
+				"name": task.DnsProvider.Name,
+			}
 		}
 
 		// 证书
@@ -69,20 +76,18 @@ func (this *IndexAction) RunGet(params struct{}) {
 		}
 
 		taskMaps = append(taskMaps, maps.Map{
-			"id": task.Id,
+			"id":       task.Id,
+			"authType": task.AuthType,
 			"acmeUser": maps.Map{
 				"id":    task.AcmeUser.Id,
 				"email": task.AcmeUser.Email,
 			},
-			"dnsProvider": maps.Map{
-				"id":   task.DnsProvider.Id,
-				"name": task.DnsProvider.Name,
-			},
-			"dnsDomain": task.DnsDomain,
-			"domains":   task.Domains,
-			"autoRenew": task.AutoRenew,
-			"cert":      certMap,
-			"log":       logMap,
+			"dnsProvider": dnsProviderMap,
+			"dnsDomain":   task.DnsDomain,
+			"domains":     task.Domains,
+			"autoRenew":   task.AutoRenew,
+			"cert":        certMap,
+			"log":         logMap,
 		})
 	}
 	this.Data["tasks"] = taskMaps
