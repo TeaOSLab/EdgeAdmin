@@ -34,6 +34,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		"fullname": admin.Fullname,
 		"username": admin.Username,
 		"isOn":     admin.IsOn,
+		"isSuper":  admin.IsSuper,
 	}
 
 	moduleMaps := configloaders.AllModuleMaps()
@@ -62,6 +63,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	Pass2       string
 	ModuleCodes []string
 	IsOn        bool
+	IsSuper     bool
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -120,7 +122,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		Password:    params.Pass1,
 		Fullname:    params.Fullname,
 		ModulesJSON: modulesJSON,
-		IsSuper:     false, // TODO 后期再开放创建超级用户
+		IsSuper:     params.IsSuper,
 		IsOn:        params.IsOn,
 	})
 	if err != nil {

@@ -23,7 +23,7 @@
 			<label-on :v-is-on="admin.isOn"></label-on>
 		</td>
 		<td>
-			<a href="" @click.prevent="updateAdmin(admin.id)" v-if="!admin.isSuper">修改</a> &nbsp; <a href="" v-if="!admin.isSuper" @click.prevent="deleteAdmin(admin.id)">删除</a>
+			<a href="" @click.prevent="updateAdmin(admin.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteAdmin(admin.id)">删除</a>
 		</td>
 	</tr>
 </table>

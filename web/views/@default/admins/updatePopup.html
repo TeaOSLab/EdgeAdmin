@@ -36,6 +36,13 @@
 			</td>
 		</tr>
 		<tr>
+			<td>是否为超级管理员</td>
+			<td>
+				<checkbox name="isSuper" v-model="admin.isSuper"></checkbox>
+				<p class="comment">超级管理员自动拥有所有的管理权限。</p>
+			</td>
+		</tr>
+		<tr v-show="!admin.isSuper">
 			<td>权限</td>
 			<td>
 				<div class="modules-box">
