@@ -1,0 +1,37 @@
+{$layout}
+
+<first-menu>
+	<menu-item @click.prevent="createUser">创建</menu-item>
+</first-menu>
+
+<p class="comment" v-if="users.length == 0">暂时还没有用户。</p>
+<table class="ui table selectable" v-if="users.length > 0">
+	<thead>
+		<tr>
+			<th>用户名</th>
+			<th>全名</th>
+			<th>手机号</th>
+			<th>注册时间</th>
+			<th class="center width10">状态</th>
+			<th class="two op">操作</th>
+		</tr>
+	</thead>
+	<tr v-for="user in users">
+        <td :class="{disabled:!user.isOn}">{{user.username}}</td>
+        <td :class="{disabled:!user.isOn}">{{user.fullname}}</td>
+        <td :class="{disabled:!user.isOn}">
+            <span v-if="user.mobile.length > 0">{{user.mobile}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+        <td :class="{disabled:!user.isOn}">{{user.createdTime}}</td>
+        <td class="center">
+            <label-on :v-is-on="user.isOn"></label-on>
+        </td>
+        <td>
+            <a :href="'/users/user?userId=' + user.id">详情</a> &nbsp;
+            <a href="" @click.prevent="deleteUser(user.id)">删除</a>
+        </td>
+	</tr>
+</table>
+
+<div class="page" v-html="page"></div>

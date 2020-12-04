@@ -1,0 +1,6 @@
+<first-menu>
+    <menu-item href="/users">用户列表</menu-item>
+    <span class="item">|</span>
+    <menu-item :href="'/users/user?userId=' + user.id" code="index">{{user.fullname}}&nbsp; <span class="small">({{user.username}})</span></menu-item>
+    <menu-item :href="'/users/update?userId=' + user.id" code="update">修改</menu-item>
+</first-menu>

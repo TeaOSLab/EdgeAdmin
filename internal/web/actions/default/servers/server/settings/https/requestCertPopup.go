@@ -113,7 +113,7 @@ func (this *RequestCertPopupAction) RunPost(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		defer this.CreateLogInfo("创建ACME用户", createUserResp.AcmeUserId)
+		defer this.CreateLogInfo("创建ACME用户 %d", createUserResp.AcmeUserId)
 		acmeUserId = createUserResp.AcmeUserId
 
 		this.Data["acmeUser"] = maps.Map{
