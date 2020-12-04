@@ -5,6 +5,9 @@ Tea.context(function () {
 	this.selectedGroup = "ABC"
 	this.letterCountries = {}
 	let that = this
+	this.countSelectedCountries = this.countries.$count(function (k, country) {
+		return country.isChecked
+	})
 	this.countries.forEach(function (country) {
 		if (typeof (that.letterCountries[country.letter]) == "undefined") {
 			that.letterCountries[country.letter] = []
@@ -19,10 +22,12 @@ Tea.context(function () {
 
 	this.selectCountry = function (country) {
 		country.isChecked = !country.isChecked
+		this.change()
 	}
 
 	this.deselectCountry = function (country) {
 		country.isChecked = false
+		this.change()
 	}
 
 	this.checkAll = function () {
@@ -31,6 +36,8 @@ Tea.context(function () {
 		this.countries.forEach(function (country) {
 			country.isChecked = that.isCheckingAll
 		})
+
+		this.change()
 	}
 
 	this.success = function () {
@@ -39,6 +46,11 @@ Tea.context(function () {
 		})
 	}
 
+	this.change = function () {
+		this.countSelectedCountries = this.countries.$count(function (k, country) {
+			return country.isChecked
+		})
+	}
 
 	/**
 	 * 添加IP名单菜单

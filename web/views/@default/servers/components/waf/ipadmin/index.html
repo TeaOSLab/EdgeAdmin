@@ -9,6 +9,7 @@
 			<tr>
 				<td class="title">已封禁</td>
 				<td>
+					<span v-if="countSelectedCountries == 0" class="disabled">暂时没有选择封禁区域。</span>
 					<div class="ui label tiny basic" v-for="country in countries" v-if="country.isChecked" style="margin-bottom: 0.5em">
 						<input type="hidden" name="countryIds" :value="country.id"/>
 						({{country.letter}}){{country.name}} <a href="" @click.prevent="deselectCountry(country)" title="取消封禁"><i class="icon remove"></i></a>
