@@ -9,6 +9,7 @@
 			<tr>
 				<td class="title">已封禁</td>
 				<td>
+					<span v-if="countSelectedProvinces == 0" class="disabled">暂时没有选择封禁省份。</span>
 					<div class="ui label tiny basic" v-for="province in provinces" v-if="province.isChecked" style="margin-bottom: 0.5em">
 						<input type="hidden" name="provinceIds" :value="province.id"/>
 						{{province.name}} <a href="" @click.prevent="deselectProvince(province)" title="取消封禁"><i class="icon remove"></i></a>
@@ -18,7 +19,16 @@
 			<tr>
 				<td>选择封禁区域</td>
 				<td>
-					<more-options-indicator>选择省份/自治区</more-options-indicator>
+
+					<first-menu>
+						<menu-item><more-options-indicator>选择省份/自治区</more-options-indicator></menu-item>
+						<div class="item right" v-if="moreOptionsVisible">
+							<div class="ui checkbox" @click.prevent="checkAll">
+								<input type="checkbox" v-model="isCheckingAll"/>
+								<label>全选</label>
+							</div>
+						</div>
+					</first-menu>
 
 					<div class="province-list" v-show="moreOptionsVisible" style="margin-top:0.5em">
 						<div class="item" v-for="province in provinces">
