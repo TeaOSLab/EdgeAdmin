@@ -35,7 +35,8 @@
 			<span class="ui label green tiny basic" v-else>有效中</span>
 		</td>
 		<td>
-			<a href="" @click.prevent="selectCert(cert)">选择</a>
+			<a href="" @click.prevent="selectCert(cert)" v-if="!certInfos[index].isSelected">选择</a>
+			<span v-else>已选</span>
 		</td>
 	</tr>
 </table>

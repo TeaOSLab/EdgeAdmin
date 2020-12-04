@@ -95,7 +95,13 @@ Vue.component("ssl-config-box", {
 		// 选择证书
 		selectCert: function () {
 			let that = this
-			teaweb.popup("/servers/certs/selectPopup", {
+			let selectedCertIds = []
+			if (this.policy != null && this.policy.certs.length > 0) {
+				this.policy.certs.forEach(function (cert) {
+					selectedCertIds.push(cert.id.toString())
+				})
+			}
+			teaweb.popup("/servers/certs/selectPopup?selectedCertIds=" + selectedCertIds, {
 				width: "50em",
 				height: "30em",
 				callback: function (resp) {
