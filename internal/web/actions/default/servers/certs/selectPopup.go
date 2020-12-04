@@ -2,11 +2,14 @@ package certs
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
+	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
+	"strings"
 	"time"
 )
 
@@ -20,10 +23,17 @@ func (this *SelectPopupAction) Init() {
 }
 
 func (this *SelectPopupAction) RunGet(params struct {
-	ViewSize string
+	ViewSize        string
+	SelectedCertIds string
 }) {
 	// TODO 支持关键词搜索
-	// TODO 列出常用的证书供用户选择
+	// TODO 列出常用和最新的证书供用户选择
+
+	// 已经选择的证书
+	selectedCertIds := []string{}
+	if len(params.SelectedCertIds) > 0 {
+		selectedCertIds = strings.Split(params.SelectedCertIds, ",")
+	}
 
 	if len(params.ViewSize) == 0 {
 		params.ViewSize = "normal"
@@ -67,6 +77,7 @@ func (this *SelectPopupAction) RunGet(params struct {
 			"isExpired":    nowTime > certConfig.TimeEndAt,
 			"isAvailable":  nowTime <= certConfig.TimeEndAt,
 			"countServers": countServersResp.Count,
+			"isSelected":   lists.ContainsString(selectedCertIds, numberutils.FormatInt64(certConfig.Id)),
 		})
 	}
 	this.Data["certInfos"] = certMaps
