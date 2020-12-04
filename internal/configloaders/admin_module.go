@@ -13,7 +13,8 @@ const (
 	AdminModuleCodeServer  AdminModuleCode = "server"
 	AdminModuleCodeNode    AdminModuleCode = "node"
 	AdminModuleCodeDNS     AdminModuleCode = "dns"
-	AdminModuleCodeAdmin   AdminModuleCode = "admin"
+	AdminModuleCodeAdmin   AdminModuleCode = "admin" // 系统用户
+	AdminModuleCodeUser    AdminModuleCode = "user"  // 平台用户
 	AdminModuleCodeLog     AdminModuleCode = "log"
 	AdminModuleCodeSetting AdminModuleCode = "setting"
 	AdminModuleCodeCommon  AdminModuleCode = "common" // 只要登录就可以访问的模块
@@ -117,6 +118,11 @@ func AllModuleMaps() []maps.Map {
 			"name": "域名解析",
 			"code": AdminModuleCodeDNS,
 			"url":  "/dns",
+		},
+		{
+			"name": "平台用户",
+			"code": AdminModuleCodeUser,
+			"url":  "/users",
 		},
 		{
 			"name": "系统用户",

@@ -1,0 +1,51 @@
+{$layout}
+{$template "user_menu"}
+
+<table class="ui table definition selectable">
+    <tr>
+        <td>状态</td>
+        <td>
+            <label-on :v-is-on="user.isOn"></label-on>
+        </td>
+    </tr>
+    <tr>
+        <td class="title">用户名</td>
+        <td>
+            {{user.username}}
+        </td>
+    </tr>
+    <tr>
+        <td>全名</td>
+        <td>
+            {{user.fullname}}
+        </td>
+    </tr>
+    <tr>
+        <td>手机号</td>
+        <td>
+            <span v-if="user.mobile.length > 0">{{user.mobile}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+    </tr>
+    <tr>
+        <td>联系电话</td>
+        <td>
+            <span v-if="user.tel.length > 0">{{user.tel}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+    </tr>
+    <tr>
+        <td>电子邮箱</td>
+        <td>
+            <span v-if="user.email.length > 0">{{user.email}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+    </tr>
+    <tr>
+        <td>备注</td>
+        <td>
+            <span v-if="user.remark.length > 0">{{user.remark}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+    </tr>
+</table>

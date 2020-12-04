@@ -216,10 +216,16 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 			},
 		},
 		{
+			"code":   "users",
+			"module": configloaders.AdminModuleCodeUser,
+			"name":   "平台用户",
+			"icon":   "users",
+		},
+		{
 			"code":   "admins",
 			"module": configloaders.AdminModuleCodeAdmin,
 			"name":   "系统用户",
-			"icon":   "users",
+			"icon":   "user secret",
 		},
 		{
 			"code":   "log",
