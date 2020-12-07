@@ -19,6 +19,7 @@ func init() {
 			GetPost("/addPortPopup", new(AddPortPopupAction)).
 			GetPost("/addServerNamePopup", new(AddServerNamePopupAction)).
 			GetPost("/addOriginPopup", new(AddOriginPopupAction)).
+			Get("/serverNamesPopup", new(ServerNamesPopupAction)).
 			EndAll()
 	})
 }

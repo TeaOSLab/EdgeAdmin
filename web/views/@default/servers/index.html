@@ -51,7 +51,7 @@
 			<span v-if="server.serverNames.length > 0">
 				<span v-if="server.serverNames[0].subNames == null || server.serverNames[0].subNames.length == 0">{{server.serverNames[0].name}}</span>
 				<span v-else>{{server.serverNames[0].subNames[0]}}</span>
-				<span v-if="server.countServerNames > 1">等{{server.countServerNames}}个域名</span>
+				<span v-if="server.countServerNames > 1">等{{server.countServerNames}}个域名 <popup-icon :href="'/servers/serverNamesPopup?serverId=' + server.id" height="20em"></popup-icon></span>
 			</span>
 			<span v-else class="disabled">-</span>
 		</td>

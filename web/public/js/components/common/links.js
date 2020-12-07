@@ -40,6 +40,18 @@ Vue.component("link-popup", {
 	template: `<a href="" :title="title" @click.prevent="clickPrevent"><slot></slot></a>`
 })
 
+Vue.component("popup-icon", {
+	props: ["title", "href", "height"],
+	methods: {
+		clickPrevent: function () {
+			teaweb.popup(this.href, {
+				height: this.height
+			})
+		}
+	},
+	template: `<span><slot></slot>&nbsp;<a href="" :title="title" @click.prevent="clickPrevent"><i class="icon clone outline small"></i></a></span>`
+})
+
 // 小提示
 Vue.component("tip-icon", {
 	props: ["content"],
