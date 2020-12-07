@@ -28,7 +28,7 @@
 	<thead>
 		<tr>
 			<th>服务名称</th>
-			<th>所属分组</th>
+			<th>所属用户</th>
 			<th>部署集群</th>
 			<th>域名</th>
 			<th>端口</th>
@@ -43,12 +43,8 @@
 			</div>
 		</td>
 		<td>
-			<div v-if="server.groups.length > 0">
-				<div  v-for="group in server.groups">
-					<tiny-basic-label>{{group.name}}</tiny-basic-label>
-				</div>
-			</div>
-			<span class="disabled" v-else>-</span>
+			<span v-if="server.user != null">{{server.user.fullname}}<link-icon v-if="canVisitUser" :href="'/users/user?userId=' + server.user.id"></link-icon></span>
+            <span v-else>-</span>
 		</td>
 		<td>{{server.cluster.name}}</td>
 		<td>

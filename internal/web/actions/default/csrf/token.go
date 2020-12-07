@@ -30,7 +30,7 @@ func (this *TokenAction) RunGet(params struct {
 	}()
 
 	// 没有登录，则限制请求速度
-	if params.Auth.AdminId() <= 0 && lastTimestamp > 0 && time.Now().Unix()-lastTimestamp <= 1 {
+	if params.Auth.AdminId() <= 0 && lastTimestamp > 0 && time.Now().Unix()-lastTimestamp <= 0 {
 		this.Fail("请求速度过快，请稍后刷新后重试")
 	}
 

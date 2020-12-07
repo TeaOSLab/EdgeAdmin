@@ -38,7 +38,8 @@ func loadAdminModuleMapping() (map[int64]*AdminModuleList, error) {
 	mapping := map[int64]*AdminModuleList{}
 	for _, m := range modulesResp.AdminModules {
 		list := &AdminModuleList{
-			IsSuper: m.IsSuper,
+			IsSuper:  m.IsSuper,
+			Fullname: m.Fullname,
 		}
 
 		for _, pbModule := range m.Modules {
@@ -63,6 +64,20 @@ func NotifyAdminModuleMappingChange() error {
 	sharedAdminModuleMapping = map[int64]*AdminModuleList{}
 	_, err := loadAdminModuleMapping()
 	return err
+}
+
+// 检查用户是否存在
+func CheckAdmin(adminId int64) bool {
+	locker.Lock()
+	defer locker.Unlock()
+
+	// 如果还没有数据，则尝试加载
+	if len(sharedAdminModuleMapping) == 0 {
+		_, _ = loadAdminModuleMapping()
+	}
+
+	_, ok := sharedAdminModuleMapping[adminId]
+	return ok
 }
 
 // 检查模块是否允许访问
@@ -99,6 +114,19 @@ func FindFirstAdminModule(adminId int64) (module AdminModuleCode, ok bool) {
 		}
 	}
 	return
+}
+
+
+// 查找某个管理员名称
+func FindAdminFullname(adminId int64) string {
+	locker.Lock()
+	defer locker.Unlock()
+
+	list, ok := sharedAdminModuleMapping[adminId]
+	if ok {
+		return list.Fullname
+	}
+	return ""
 }
 
 // 所有权限列表

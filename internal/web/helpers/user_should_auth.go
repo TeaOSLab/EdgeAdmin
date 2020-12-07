@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/iwind/TeaGo/actions"
 	"net/http"
@@ -38,7 +39,7 @@ func (this *UserShouldAuth) StoreAdmin(adminId int64, remember bool) {
 	// 修改sid的时间
 	if remember {
 		cookie := &http.Cookie{
-			Name:     "sid",
+			Name:     teaconst.CookieSID,
 			Value:    this.action.Session().Sid,
 			Path:     "/",
 			MaxAge:   14 * 86400,
@@ -51,7 +52,7 @@ func (this *UserShouldAuth) StoreAdmin(adminId int64, remember bool) {
 		this.action.AddCookie(cookie)
 	} else {
 		cookie := &http.Cookie{
-			Name:     "sid",
+			Name:     teaconst.CookieSID,
 			Value:    this.action.Session().Sid,
 			Path:     "/",
 			MaxAge:   0,
