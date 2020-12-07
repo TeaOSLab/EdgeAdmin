@@ -2,6 +2,7 @@ package servers
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -136,6 +137,15 @@ func (this *IndexAction) RunGet(params struct {
 			}
 		}
 
+		// 用户
+		var userMap maps.Map = nil
+		if server.User != nil {
+			userMap = maps.Map{
+				"id":       server.User.Id,
+				"fullname": server.User.Fullname,
+			}
+		}
+
 		serverMaps = append(serverMaps, maps.Map{
 			"id":   server.Id,
 			"isOn": server.IsOn,
@@ -149,6 +159,7 @@ func (this *IndexAction) RunGet(params struct {
 			"groups":           groupMaps,
 			"serverNames":      serverNames,
 			"countServerNames": countServerNames,
+			"user":             userMap,
 		})
 	}
 	this.Data["servers"] = serverMaps
@@ -177,6 +188,9 @@ func (this *IndexAction) RunGet(params struct {
 		})
 	}
 	this.Data["groups"] = groupMaps
+
+	// 是否有用户管理权限
+	this.Data["canVisitUser"] = configloaders.AllowModule(this.AdminId(), configloaders.AdminModuleCodeUser)
 
 	this.Show()
 }

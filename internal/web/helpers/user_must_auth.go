@@ -3,10 +3,7 @@ package helpers
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
-	nodes "github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
-	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
-	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 	"net/http"
@@ -49,7 +46,16 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 
 	var session = action.Session()
 	var adminId = session.GetInt64("adminId")
+
 	if adminId <= 0 {
+		this.login(action)
+		return false
+	}
+
+	// 检查用户是否存在
+	if !configloaders.CheckAdmin(adminId) {
+		session.Delete()
+
 		this.login(action)
 		return false
 	}
@@ -58,28 +64,6 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	if len(this.module) > 0 && !configloaders.AllowModule(adminId, this.module) {
 		action.ResponseWriter.WriteHeader(http.StatusForbidden)
 		action.WriteString("Permission Denied.")
-		return false
-	}
-
-	// 检查用户是否存在
-	rpc, err := nodes.SharedRPC()
-	if err != nil {
-		action.WriteString("setup rpc error: " + err.Error())
-		utils.PrintError(err)
-		return false
-	}
-
-	rpcResp, err := rpc.AdminRPC().CheckAdminExists(rpc.Context(0), &pb.CheckAdminExistsRequest{AdminId: adminId})
-	if err != nil {
-		utils.PrintError(err)
-		action.WriteString(teaconst.ErrServer)
-		return false
-	}
-
-	if !rpcResp.IsOk {
-		session.Delete()
-
-		this.login(action)
 		return false
 	}
 
@@ -104,14 +88,7 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	action.Data["teaShowVersion"] = config.ShowVersion
 	action.Data["teaTitle"] = config.AdminSystemName
 	action.Data["teaName"] = config.ProductName
-
-	resp, err := rpc.AdminRPC().FindAdminFullname(rpc.Context(0), &pb.FindAdminFullnameRequest{AdminId: this.AdminId})
-	if err != nil {
-		utils.PrintError(err)
-		action.Data["teaUsername"] = ""
-	} else {
-		action.Data["teaUsername"] = resp.Fullname
-	}
+	action.Data["teaUsername"] = configloaders.FindAdminFullname(adminId)
 
 	action.Data["teaUserAvatar"] = ""
 
