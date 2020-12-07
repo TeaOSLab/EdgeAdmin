@@ -1,0 +1,11 @@
+{$layout "layout_popup"}
+
+<h3>查看域名</h3>
+
+<form class="ui form">
+    <input type="text" name="keyword" v-model="keyword" placeholder="输入关键词搜索" ref="focus" autocomplete="off"/>
+</form>
+
+<div style="margin-top: 1em">
+    <span v-for="serverName in serverNames" class="ui label basic" style="margin-bottom: 0.5em">{{serverName}}</span>
+</div>
