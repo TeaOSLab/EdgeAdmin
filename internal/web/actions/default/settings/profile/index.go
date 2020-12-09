@@ -1,6 +1,7 @@
 package profile
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -49,6 +50,13 @@ func (this *IndexAction) RunPost(params struct {
 		AdminId:  this.AdminId(),
 		Fullname: params.Fullname,
 	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	// 通知更新
+	err = configloaders.NotifyAdminModuleMappingChange()
 	if err != nil {
 		this.ErrorPage(err)
 		return
