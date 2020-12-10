@@ -10,6 +10,7 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/regions"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/csrf"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dashboard"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/db"
