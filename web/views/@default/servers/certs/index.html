@@ -3,15 +3,26 @@
 
 <div class="right-box without-tabbar">
 	<second-menu>
-		<menu-item href="/servers/certs" :active="type == ''">所有证书({{countAll}})</menu-item>
-		<menu-item href="/servers/certs?type=ca" :active="type == 'ca'">CA证书({{countCA}})</menu-item>
-		<menu-item href="/servers/certs?type=available" :active="type == 'available'">有效证书({{countAvailable}})</menu-item>
-		<menu-item href="/servers/certs?type=expired" :active="type == 'expired'">过期证书<span :class="{red: countExpired > 0}">({{countExpired}})</span></menu-item>
-		<menu-item href="/servers/certs?type=7days" :active="type == '7days'">7天内过期<span :class="{red: count7Days > 0}">({{count7Days}})</span></menu-item>
-		<menu-item href="/servers/certs?type=30days" :active="type == '30days'">30天过期({{count30Days}})</menu-item>
+		<menu-item :href="'/servers/certs?keyword=' + keyword" :active="type == ''">所有证书({{countAll}})</menu-item>
+		<menu-item :href="'/servers/certs?type=ca&keyword=' + keyword" :active="type == 'ca'">CA证书({{countCA}})</menu-item>
+		<menu-item :href="'/servers/certs?type=available&keyword=' + keyword" :active="type == 'available'">有效证书({{countAvailable}})</menu-item>
+		<menu-item :href="'/servers/certs?type=expired&keyword=' + keyword" :active="type == 'expired'">过期证书<span :class="{red: countExpired > 0}">({{countExpired}})</span></menu-item>
+		<menu-item :href="'/servers/certs?type=7days&keyword=' + keyword" :active="type == '7days'">7天内过期<span :class="{red: count7Days > 0}">({{count7Days}})</span></menu-item>
+		<menu-item :href="'/servers/certs?type=30days&keyword=' + keyword" :active="type == '30days'">30天过期({{count30Days}})</menu-item>
 		<span class="item">|</span>
 		<a href="" class="item" @click.prevent="uploadCert">[上传证书]</a>
 	</second-menu>
+
+    <form class="ui form">
+        <div class="ui fields inline">
+            <div class="ui field">
+                <input type="text" name="keyword" placeholder="关键词" style="width:10em" v-model="keyword"/>
+            </div>
+            <div class="ui field">
+                <button type="submit" class="ui button">搜索</button>
+            </div>
+        </div>
+    </form>
 
 	<p class="comment" v-if="certs.length == 0">暂时还没有相关的证书。</p>
 	<table class="ui table selectable celled" v-if="certs.length > 0">

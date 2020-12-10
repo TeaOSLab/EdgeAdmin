@@ -19,9 +19,11 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct {
-	Type string
+	Type    string
+	Keyword string
 }) {
 	this.Data["type"] = params.Type
+	this.Data["keyword"] = params.Keyword
 
 	countAll := int64(0)
 	countCA := int64(0)
@@ -33,7 +35,9 @@ func (this *IndexAction) RunGet(params struct {
 	// 计算数量
 	{
 		// all
-		resp, err := this.RPC().SSLCertRPC().CountSSLCerts(this.AdminContext(), &pb.CountSSLCertRequest{})
+		resp, err := this.RPC().SSLCertRPC().CountSSLCerts(this.AdminContext(), &pb.CountSSLCertRequest{
+			Keyword: params.Keyword,
+		})
 		if err != nil {
 			this.ErrorPage(err)
 			return
@@ -42,7 +46,8 @@ func (this *IndexAction) RunGet(params struct {
 
 		// CA
 		resp, err = this.RPC().SSLCertRPC().CountSSLCerts(this.AdminContext(), &pb.CountSSLCertRequest{
-			IsCA: true,
+			IsCA:    true,
+			Keyword: params.Keyword,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -53,6 +58,7 @@ func (this *IndexAction) RunGet(params struct {
 		// available
 		resp, err = this.RPC().SSLCertRPC().CountSSLCerts(this.AdminContext(), &pb.CountSSLCertRequest{
 			IsAvailable: true,
+			Keyword:     params.Keyword,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -63,6 +69,7 @@ func (this *IndexAction) RunGet(params struct {
 		// expired
 		resp, err = this.RPC().SSLCertRPC().CountSSLCerts(this.AdminContext(), &pb.CountSSLCertRequest{
 			IsExpired: true,
+			Keyword:   params.Keyword,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -73,6 +80,7 @@ func (this *IndexAction) RunGet(params struct {
 		// expire in 7 days
 		resp, err = this.RPC().SSLCertRPC().CountSSLCerts(this.AdminContext(), &pb.CountSSLCertRequest{
 			ExpiringDays: 7,
+			Keyword:      params.Keyword,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -83,6 +91,7 @@ func (this *IndexAction) RunGet(params struct {
 		// expire in 30 days
 		resp, err = this.RPC().SSLCertRPC().CountSSLCerts(this.AdminContext(), &pb.CountSSLCertRequest{
 			ExpiringDays: 30,
+			Keyword:      params.Keyword,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -105,25 +114,31 @@ func (this *IndexAction) RunGet(params struct {
 	switch params.Type {
 	case "":
 		page = this.NewPage(countAll)
-		listResp, err = this.RPC().SSLCertRPC().ListSSLCerts(this.AdminContext(), &pb.ListSSLCertsRequest{Offset: page.Offset, Size: page.Size})
+		listResp, err = this.RPC().SSLCertRPC().ListSSLCerts(this.AdminContext(), &pb.ListSSLCertsRequest{
+			Offset:  page.Offset,
+			Size:    page.Size,
+			Keyword: params.Keyword,
+		})
 	case "ca":
 		page = this.NewPage(countCA)
-		listResp, err = this.RPC().SSLCertRPC().ListSSLCerts(this.AdminContext(), &pb.ListSSLCertsRequest{IsCA: true, Offset: page.Offset, Size: page.Size})
+		listResp, err = this.RPC().SSLCertRPC().ListSSLCerts(this.AdminContext(), &pb.ListSSLCertsRequest{IsCA: true, Offset: page.Offset, Size: page.Size, Keyword: params.Keyword})
 	case "available":
 		page = this.NewPage(countAvailable)
-		listResp, err = this.RPC().SSLCertRPC().ListSSLCerts(this.AdminContext(), &pb.ListSSLCertsRequest{IsAvailable: true, Offset: page.Offset, Size: page.Size})
+		listResp, err = this.RPC().SSLCertRPC().ListSSLCerts(this.AdminContext(), &pb.ListSSLCertsRequest{IsAvailable: true, Offset: page.Offset, Size: page.Size, Keyword: params.Keyword})
 	case "expired":
 		page = this.NewPage(countExpired)
-		listResp, err = this.RPC().SSLCertRPC().ListSSLCerts(this.AdminContext(), &pb.ListSSLCertsRequest{IsExpired: true, Offset: page.Offset, Size: page.Size})
+		listResp, err = this.RPC().SSLCertRPC().ListSSLCerts(this.AdminContext(), &pb.ListSSLCertsRequest{IsExpired: true, Offset: page.Offset, Size: page.Size, Keyword: params.Keyword})
 	case "7days":
 		page = this.NewPage(count7Days)
-		listResp, err = this.RPC().SSLCertRPC().ListSSLCerts(this.AdminContext(), &pb.ListSSLCertsRequest{ExpiringDays: 7, Offset: page.Offset, Size: page.Size})
+		listResp, err = this.RPC().SSLCertRPC().ListSSLCerts(this.AdminContext(), &pb.ListSSLCertsRequest{ExpiringDays: 7, Offset: page.Offset, Size: page.Size, Keyword: params.Keyword})
 	case "30days":
 		page = this.NewPage(count30Days)
-		listResp, err = this.RPC().SSLCertRPC().ListSSLCerts(this.AdminContext(), &pb.ListSSLCertsRequest{ExpiringDays: 30, Offset: page.Offset, Size: page.Size})
+		listResp, err = this.RPC().SSLCertRPC().ListSSLCerts(this.AdminContext(), &pb.ListSSLCertsRequest{ExpiringDays: 30, Offset: page.Offset, Size: page.Size, Keyword: params.Keyword})
 	default:
 		page = this.NewPage(countAll)
-		listResp, err = this.RPC().SSLCertRPC().ListSSLCerts(this.AdminContext(), &pb.ListSSLCertsRequest{})
+		listResp, err = this.RPC().SSLCertRPC().ListSSLCerts(this.AdminContext(), &pb.ListSSLCertsRequest{
+			Keyword: params.Keyword,
+		})
 	}
 	if err != nil {
 		this.ErrorPage(err)
