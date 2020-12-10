@@ -11,7 +11,8 @@
     <thead>
         <tr>
             <th style="width:3em"></th>
-            <th>区域名称</th>
+            <th class="width10">区域名称</th>
+            <th>区域说明</th>
             <th class="width10 center">节点数</th>
             <th class="width10">区域状态</th>
             <th class="two op">操作</th>
@@ -21,6 +22,10 @@
         <tr>
             <td style="text-align: center;"><i class="icon bars handle grey"></i> </td>
             <td :class="{disabled: !region.isOn}">{{region.name}}</td>
+            <td>
+                <span v-if="region.description.length > 0">{{region.description}}</span>
+                <span v-else class="disabled">-</span>
+            </td>
             <td class="center">{{region.countNodes}}</td>
             <td>
                 <label-on :v-is-on="region.isOn"></label-on>

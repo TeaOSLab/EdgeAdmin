@@ -30,9 +30,10 @@ func (this *UpdatePopupAction) RunGet(params struct {
 	}
 
 	this.Data["region"] = maps.Map{
-		"id":   region.Id,
-		"isOn": region.IsOn,
-		"name": region.Name,
+		"id":          region.Id,
+		"isOn":        region.IsOn,
+		"name":        region.Name,
+		"description": region.Description,
 	}
 
 	this.Show()
@@ -41,8 +42,9 @@ func (this *UpdatePopupAction) RunGet(params struct {
 func (this *UpdatePopupAction) RunPost(params struct {
 	RegionId int64
 
-	Name string
-	IsOn bool
+	Name        string
+	Description string
+	IsOn        bool
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -56,6 +58,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	_, err := this.RPC().NodeRegionRPC().UpdateNodeRegion(this.AdminContext(), &pb.UpdateNodeRegionRequest{
 		NodeRegionId: params.RegionId,
 		Name:         params.Name,
+		Description:  params.Description,
 		IsOn:         params.IsOn,
 	})
 	if err != nil {

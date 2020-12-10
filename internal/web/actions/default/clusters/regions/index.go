@@ -29,10 +29,11 @@ func (this *IndexAction) RunGet(params struct{}) {
 		}
 
 		regionMaps = append(regionMaps, maps.Map{
-			"id":         region.Id,
-			"isOn":       region.IsOn,
-			"name":       region.Name,
-			"countNodes": countNodesResp.Count,
+			"id":          region.Id,
+			"isOn":        region.IsOn,
+			"name":        region.Name,
+			"description": region.Description,
+			"countNodes":  countNodesResp.Count,
 		})
 	}
 	this.Data["regions"] = regionMaps
