@@ -75,6 +75,10 @@ func (this *RPCClient) NodeRegionRPC() pb.NodeRegionServiceClient {
 	return pb.NewNodeRegionServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) NodePriceItemRPC() pb.NodePriceItemServiceClient {
+	return pb.NewNodePriceItemServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) NodeIPAddressRPC() pb.NodeIPAddressServiceClient {
 	return pb.NewNodeIPAddressServiceClient(this.pickConn())
 }

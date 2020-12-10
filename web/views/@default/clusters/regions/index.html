@@ -1,14 +1,13 @@
 {$layout}
+{$template "menu"}
 
-<first-menu>
+<second-menu>
     <menu-item @click.prevent="createRegion()">创建</menu-item>
-    <span class="item">|</span>
-    <menu-item><tip-icon content="可以设置节点所属区域，从而利用区域设置进行不同的价格设定。"></tip-icon></menu-item>
-</first-menu>
+</second-menu>
 
 <p class="comment" v-if="regions.length == 0">暂时还没有区域。</p>
 
-<table class="ui table selectable" v-if="regions.length > 0" style="width: 35em" id="sortable-table">
+<table class="ui table selectable" v-if="regions.length > 0" id="sortable-table">
     <thead>
         <tr>
             <th style="width:3em"></th>

@@ -11,7 +11,7 @@ type IndexAction struct {
 }
 
 func (this *IndexAction) Init() {
-	this.Nav("", "", "")
+	this.Nav("", "", "region")
 }
 
 func (this *IndexAction) RunGet(params struct{}) {

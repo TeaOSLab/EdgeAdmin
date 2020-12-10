@@ -1,0 +1,30 @@
+{$layout "layout_popup"}
+
+<h3>修改价格</h3>
+<form class="ui form" method="post" data-tea-action="$" data-tea-success="success">
+    <csrf-token></csrf-token>
+    <input type="hidden" name="regionId" :value="region.id"/>
+    <input type="hidden" name="itemId" :value="item.id"/>
+
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">区域</td>
+            <td>{{region.name}}</td>
+        </tr>
+        <tr>
+            <td>价格项</td>
+            <td>{{item.name}}</td>
+        </tr>
+        <tr>
+            <td class="title">单位价格 *</td>
+            <td>
+                <div class="ui input right labeled">
+                    <input type="text" name="price" maxlength="10" style="width:6em" ref="focus" v-model="price"/>
+                    <span class="ui label">元/GB</span>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <submit-btn></submit-btn>
+</form>
