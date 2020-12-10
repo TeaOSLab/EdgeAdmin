@@ -5,9 +5,15 @@
     <csrf-token></csrf-token>
     <table class="ui table definition selectable">
         <tr>
-            <td>区域名称 *</td>
+            <td class="title">区域名称 *</td>
             <td>
                 <input type="text" name="name" maxlength="100" ref="focus"/>
+            </td>
+        </tr>
+        <tr>
+            <td>区域说明</td>
+            <td>
+                <textarea name="description" rows="3" maxlength="200"></textarea>
             </td>
         </tr>
     </table>
