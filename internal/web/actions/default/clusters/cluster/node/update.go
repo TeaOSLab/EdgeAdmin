@@ -138,11 +138,21 @@ func (this *UpdateAction) RunGet(params struct {
 		}
 	}
 
+	// 分组
 	var groupMap maps.Map = nil
 	if node.Group != nil {
 		groupMap = maps.Map{
 			"id":   node.Group.Id,
 			"name": node.Group.Name,
+		}
+	}
+
+	// 区域
+	var regionMap maps.Map = nil
+	if node.Region != nil {
+		regionMap = maps.Map{
+			"id":   node.Region.Id,
+			"name": node.Region.Name,
 		}
 	}
 
@@ -155,6 +165,7 @@ func (this *UpdateAction) RunGet(params struct {
 		"maxCPU":      node.MaxCPU,
 		"isOn":        node.IsOn,
 		"group":       groupMap,
+		"region":      regionMap,
 	}
 
 	// 所有集群
@@ -182,6 +193,7 @@ func (this *UpdateAction) RunPost(params struct {
 	LoginId         int64
 	NodeId          int64
 	GroupId         int64
+	RegionId        int64
 	Name            string
 	IPAddressesJSON []byte `alias:"ipAddressesJSON"`
 	ClusterId       int64
@@ -237,6 +249,7 @@ func (this *UpdateAction) RunPost(params struct {
 	_, err := this.RPC().NodeRPC().UpdateNode(this.AdminContext(), &pb.UpdateNodeRequest{
 		NodeId:      params.NodeId,
 		GroupId:     params.GroupId,
+		RegionId:    params.RegionId,
 		Name:        params.Name,
 		ClusterId:   params.ClusterId,
 		Login:       loginInfo,

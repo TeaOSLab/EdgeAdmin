@@ -44,6 +44,7 @@ func (this *CreateBatchAction) RunGet(params struct {
 func (this *CreateBatchAction) RunPost(params struct {
 	ClusterId int64
 	GroupId   int64
+	RegionId  int64
 	IpList    string
 
 	Must *actions.Must
@@ -79,6 +80,7 @@ func (this *CreateBatchAction) RunPost(params struct {
 			Name:      ip,
 			ClusterId: params.ClusterId,
 			GroupId:   params.GroupId,
+			RegionId:  params.RegionId,
 			Login:     nil,
 		})
 		if err != nil {

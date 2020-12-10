@@ -72,6 +72,7 @@ func (this *CreateNodeAction) RunPost(params struct {
 	IpAddressesJSON []byte
 	ClusterId       int64
 	GroupId         int64
+	RegionId        int64
 	GrantId         int64
 	SshHost         string
 	SshPort         int
@@ -120,6 +121,7 @@ func (this *CreateNodeAction) RunPost(params struct {
 		Name:        params.Name,
 		ClusterId:   params.ClusterId,
 		GroupId:     params.GroupId,
+		RegionId:    params.RegionId,
 		Login:       loginInfo,
 		DnsDomainId: params.DnsDomainId,
 		DnsRoutes:   dnsRouteCodes,

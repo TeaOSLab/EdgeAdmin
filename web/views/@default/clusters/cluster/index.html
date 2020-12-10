@@ -5,31 +5,28 @@
 <form class="ui form" action="/clusters/cluster">
 	<input type="hidden" name="clusterId" :value="clusterId"/>
 	<div class="ui fields inline">
-		<div class="ui field" v-if="groups.length > 0" style="padding-right: 0">
-			所属分组：
-		</div>
+        <div class="ui field" v-if="regions.length > 0">
+            <select class="ui dropdown" name="regionId" v-model="regionId">
+                <option value="0">[全部区域]</option>
+                <option v-for="region in regions" :value="region.id">{{region.name}}</option>
+            </select>
+        </div>
 		<div class="ui field" v-if="groups.length > 0">
 			<select class="ui dropdown" name="groupId" v-model="groupId">
-				<option value="0">[全部]</option>
+				<option value="0">[全部分组]</option>
 				<option v-for="group in groups" :value="group.id">{{group.name}}</option>
 			</select>
 		</div>
-		<div class="ui field" style="padding-right: 0">
-			安装状态：
-		</div>
 		<div class="ui field">
 			<select class="ui dropdown" name="installedState" v-model="installState">
-				<option value="0">[全部]</option>
+				<option value="0">[安装状态]</option>
 				<option value="1">已安装</option>
 				<option value="2">未安装</option>
 			</select>
 		</div>
-		<div class="ui field" style="padding-right: 0">
-			在线状态：
-		</div>
 		<div class="ui field">
 			<select class="ui dropdown" name="activeState" v-model="activeState">
-				<option value="0">[全部]</option>
+				<option value="0">[在线状态]</option>
 				<option value="1">在线</option>
 				<option value="2">不在线</option>
 			</select>
@@ -48,10 +45,10 @@
 <table class="ui table selectable celled" v-if="nodes.length > 0">
 	<thead>
 	<tr>
-		<th class="one wide center">ID</th>
 		<th>节点名称</th>
-		<th class="width10">所属分组</th>
-		<th class="width10">IP</th>
+        <th>所属区域</th>
+		<th>所属分组</th>
+		<th>IP</th>
 		<th class="width10">DNS线路</th>
 		<th class="width5 center">CPU</th>
 		<th class="width5 center">内存</th>
@@ -62,10 +59,13 @@
 	</tr>
 	</thead>
 	<tr v-for="node in nodes">
-		<td nowrap="" class="center">{{node.id}}</td>
 		<td>{{node.name}}</td>
+        <td>
+            <span v-if="node.region != null">{{node.region.name}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
 		<td>
-			<tiny-basic-label v-if="node.group != null">{{node.group.name}}</tiny-basic-label>
+			<span v-if="node.group != null">{{node.group.name}}</span>
 			<span v-else class="disabled">-</span>
 		</td>
 		<td>

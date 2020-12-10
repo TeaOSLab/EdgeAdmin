@@ -25,11 +25,13 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ClusterId      int64
 	GroupId        int64
+	RegionId       int64
 	InstalledState int
 	ActiveState    int
 	Keyword        string
 }) {
 	this.Data["groupId"] = params.GroupId
+	this.Data["regionId"] = params.RegionId
 	this.Data["installState"] = params.InstalledState
 	this.Data["activeState"] = params.ActiveState
 	this.Data["keyword"] = params.Keyword
@@ -37,6 +39,7 @@ func (this *IndexAction) RunGet(params struct {
 	countResp, err := this.RPC().NodeRPC().CountAllEnabledNodesMatch(this.AdminContext(), &pb.CountAllEnabledNodesMatchRequest{
 		ClusterId:    params.ClusterId,
 		GroupId:      params.GroupId,
+		RegionId:     params.RegionId,
 		InstallState: types.Int32(params.InstalledState),
 		ActiveState:  types.Int32(params.ActiveState),
 		Keyword:      params.Keyword,
@@ -54,6 +57,7 @@ func (this *IndexAction) RunGet(params struct {
 		Size:         page.Size,
 		ClusterId:    params.ClusterId,
 		GroupId:      params.GroupId,
+		RegionId:     params.RegionId,
 		InstallState: types.Int32(params.InstalledState),
 		ActiveState:  types.Int32(params.ActiveState),
 		Keyword:      params.Keyword,
@@ -89,11 +93,21 @@ func (this *IndexAction) RunGet(params struct {
 			})
 		}
 
+		// 分组
 		var groupMap maps.Map = nil
 		if node.Group != nil {
 			groupMap = maps.Map{
 				"id":   node.Group.Id,
 				"name": node.Group.Name,
+			}
+		}
+
+		// 区域
+		var regionMap maps.Map = nil
+		if node.Region != nil {
+			regionMap = maps.Map{
+				"id":   node.Region.Id,
+				"name": node.Region.Name,
 			}
 		}
 
@@ -131,6 +145,7 @@ func (this *IndexAction) RunGet(params struct {
 			"isSynced":      isSynced,
 			"ipAddresses":   ipAddresses,
 			"group":         groupMap,
+			"region":        regionMap,
 			"dnsRouteNames": dnsRouteNames,
 		})
 	}
@@ -163,6 +178,21 @@ func (this *IndexAction) RunGet(params struct {
 		})
 	}
 	this.Data["groups"] = groupMaps
+
+	// 所有区域
+	regionsResp, err := this.RPC().NodeRegionRPC().FindAllEnabledAndOnNodeRegions(this.AdminContext(), &pb.FindAllEnabledAndOnNodeRegionsRequest{})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	regionMaps := []maps.Map{}
+	for _, region := range regionsResp.NodeRegions {
+		regionMaps = append(regionMaps, maps.Map{
+			"id":   region.Id,
+			"name": region.Name,
+		})
+	}
+	this.Data["regions"] = regionMaps
 
 	this.Show()
 }

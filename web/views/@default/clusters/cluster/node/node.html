@@ -35,10 +35,17 @@
 				<span class="ui label tiny basic" v-for="route in dnsRoutes">{{route.name}}</span>
 			</td>
 		</tr>
+        <tr>
+            <td>所属区域</td>
+            <td>
+                <span v-if="node.region != null" class="ui label small basic">{{node.region.name}}</span>
+                <span v-else class="disabled">没有设置区域。</span>
+            </td>
+        </tr>
 		<tr>
 			<td>所属分组</td>
 			<td>
-				<span v-if="node.group != null" class="ui label tiny">{{node.group.name}}</span>
+				<span v-if="node.group != null" class="ui label small basic">{{node.group.name}}</span>
 				<span v-else class="disabled">没有设置分组。</span>
 			</td>
 		</tr>
