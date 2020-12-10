@@ -27,7 +27,7 @@ Vue.component("node-group-selector", {
 		}
 	},
 	template: `<div>
-	<div class="ui label tiny" v-if="selectedGroup != null">
+	<div class="ui label small basic" v-if="selectedGroup != null">
 		<input type="hidden" name="groupId" :value="selectedGroup.id"/>
 		{{selectedGroup.name}} &nbsp;<a href="" title="删除" @click.prevent="removeGroup()"><i class="icon remove"></i></a>
 	</div>

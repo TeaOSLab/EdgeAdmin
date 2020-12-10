@@ -1,0 +1,23 @@
+{$layout "layout_popup"}
+
+<h3>选择分组</h3>
+
+<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+    <csrf-token></csrf-token>
+	<input type="hidden" name="regionId" :value="regionId"/>
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">选择区域</td>
+			<td>
+				<div v-if="regions.length > 0">
+					<a href="" class="ui label small basic" v-for="region in regions" :class="{blue:region.id == regionId}" style="margin-bottom:0.5em" @click.prevent="selectRegion(region)">{{region.name}}</a>
+					<p class="comment">点击可已选中要使用的区域。</p>
+				</div>
+				<div v-else>
+					<p class="comment">暂时还没有可以使用的区域。</p>
+				</div>
+			</td>
+		</tr>
+	</table>
+	<submit-btn>确定</submit-btn>
+</form>

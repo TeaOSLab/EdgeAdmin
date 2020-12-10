@@ -137,11 +137,21 @@ func (this *NodeAction) RunGet(params struct {
 		status.IsActive = status.IsActive && time.Now().Unix()-status.UpdatedAt <= 60 // N秒之内认为活跃
 	}
 
+	// 分组
 	var groupMap maps.Map = nil
 	if node.Group != nil {
 		groupMap = maps.Map{
 			"id":   node.Group.Id,
 			"name": node.Group.Name,
+		}
+	}
+
+	// 区域
+	var regionMap maps.Map = nil
+	if node.Region != nil {
+		regionMap = maps.Map{
+			"id":   node.Region.Id,
+			"name": node.Region.Name,
 		}
 	}
 
@@ -169,7 +179,8 @@ func (this *NodeAction) RunGet(params struct {
 			"connectionCount": status.ConnectionCount,
 		},
 
-		"group": groupMap,
+		"group":  groupMap,
+		"region": regionMap,
 	}
 
 	this.Show()
