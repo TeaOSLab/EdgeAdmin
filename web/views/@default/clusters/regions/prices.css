@@ -1,0 +1,15 @@
+th span {
+  font-size: 0.9em;
+  font-weight: normal;
+  color: grey;
+}
+th a {
+  font-weight: normal;
+}
+td a {
+  display: none;
+}
+td:hover a {
+  display: inline;
+}
+/*# sourceMappingURL=prices.css.map */

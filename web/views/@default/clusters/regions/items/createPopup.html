@@ -1,0 +1,36 @@
+{$layout "layout_popup"}
+
+<h3>添加价格项</h3>
+
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+    <csrf-token></csrf-token>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">名称 *</td>
+            <td>
+                <input type="text" name="name" maxlength="100" ref="focus"/>
+            </td>
+        </tr>
+        <tr>
+            <td>最低流量 *</td>
+            <td>
+                <div class="ui input right labeled">
+                    <input type="text" name="bitsFrom" maxlength="16" style="width:10em" v-model="bitsFrom" autocomplete="off"/>
+                    <span class="ui label">MBPS</span>
+                </div>
+                <p class="comment">采用1000进制<span v-if="bitsFromMB.length > 0">，相当于{{bitsFromMB}}</span>。</p>
+            </td>
+        </tr>
+        <tr>
+            <td>最高流量 *</td>
+            <td>
+                <div class="ui input right labeled">
+                    <input type="text" name="bitsTo" maxlength="16" style="width:10em" v-model="bitsTo" autocomplete="off"/>
+                    <span class="ui label">MBPS</span>
+                </div>
+                <p class="comment">采用1000进制<span v-if="bitsToMB.length > 0">，相当于{{bitsToMB}}</span>。</p>
+            </td>
+        </tr>
+    </table>
+    <submit-btn></submit-btn>
+</form>

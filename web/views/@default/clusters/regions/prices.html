@@ -1,0 +1,31 @@
+{$layout}
+{$template "menu"}
+
+<p class="comment" v-if="regions.length == 0">暂时还没有区域。</p>
+
+<table class="ui table selectable">
+    <thead>
+    <tr>
+        <th style="width:7em">区域\范围</th>
+        <th v-for="item in items">
+            {{item.name}}
+            &nbsp; <a href="" title="修改" @click.prevent="updateItem(item.id)"><i class="icon pencil small"></i></a> &nbsp;
+            <a href="" title="删除" @click.prevent="deleteItem(item.id)"><i class="icon remove small"></i></a>
+            <br/>
+            <span>{{item.bitsFromString}}-{{item.bitsToString}}</span>
+        </th>
+        <th class="width10">
+            <a href="" @click.prevent="createItem">[+添加价格项]</a>
+        </th>
+    </tr>
+    </thead>
+    <tr v-for="region in regions">
+        <td>{{region.name}}</td>
+        <td v-for="item in items">
+            <span v-if="region.prices[item.id.toString()] != null">¥{{region.prices[item.id.toString()]}}元/GB &nbsp;</span>
+
+            <a href="" title="修改单位价格" @click.prevent="updatePrice(region.id, item.id)">[设置]</a>
+        </td>
+        <td></td>
+    </tr>
+</table>

@@ -1,4 +1,4 @@
-package regions
+package items
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
@@ -12,15 +12,10 @@ func init() {
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeNode)).
 			Data("teaMenu", "clusters").
 			Data("teaSubMenu", "region").
-			Prefix("/clusters/regions").
-			Get("", new(IndexAction)).
+			Prefix("/clusters/regions/items").
 			GetPost("/createPopup", new(CreatePopupAction)).
 			GetPost("/updatePopup", new(UpdatePopupAction)).
 			Post("/delete", new(DeleteAction)).
-			Post("/sort", new(SortAction)).
-			GetPost("/selectPopup", new(SelectPopupAction)).
-			GetPost("/prices", new(PricesAction)).
-			GetPost("/updatePricePopup", new(UpdatePricePopupAction)).
 			EndAll()
 	})
 }
