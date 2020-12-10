@@ -14,7 +14,7 @@ func (this *DeleteAction) RunPost(params struct {
 	GroupId int64
 }) {
 	// 检查是否正在使用
-	countResp, err := this.RPC().NodeRPC().CountAllEnabledNodesWithGroupId(this.AdminContext(), &pb.CountAllEnabledNodesWithGroupIdRequest{GroupId: params.GroupId})
+	countResp, err := this.RPC().NodeRPC().CountAllEnabledNodesWithNodeGroupId(this.AdminContext(), &pb.CountAllEnabledNodesWithNodeGroupIdRequest{NodeGroupId: params.GroupId})
 	if err != nil {
 		this.ErrorPage(err)
 		return

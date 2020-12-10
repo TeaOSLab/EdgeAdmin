@@ -28,7 +28,7 @@ func (this *IndexAction) RunGet(params struct {
 
 	groupMaps := []maps.Map{}
 	for _, group := range groupsResp.Groups {
-		countResp, err := this.RPC().NodeRPC().CountAllEnabledNodesWithGroupId(this.AdminContext(), &pb.CountAllEnabledNodesWithGroupIdRequest{GroupId: group.Id})
+		countResp, err := this.RPC().NodeRPC().CountAllEnabledNodesWithNodeGroupId(this.AdminContext(), &pb.CountAllEnabledNodesWithNodeGroupIdRequest{NodeGroupId: group.Id})
 		if err != nil {
 			this.ErrorPage(err)
 			return

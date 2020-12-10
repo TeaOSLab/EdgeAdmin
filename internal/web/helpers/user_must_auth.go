@@ -172,6 +172,11 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 					"url":  "/clusters/grants",
 					"code": "grant",
 				},
+				{
+					"name": "区域设置",
+					"url":  "/clusters/regions",
+					"code": "region",
+				},
 			},
 		},
 		{
