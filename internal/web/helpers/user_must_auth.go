@@ -204,6 +204,12 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 			"icon":   "users",
 		},
 		{
+			"code":   "finance",
+			"module": configloaders.AdminModuleCodeFinance,
+			"name":   "财务管理",
+			"icon":   "yen sign",
+		},
+		{
 			"code":   "admins",
 			"module": configloaders.AdminModuleCodeAdmin,
 			"name":   "系统用户",

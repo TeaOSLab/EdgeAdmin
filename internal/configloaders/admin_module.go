@@ -10,14 +10,15 @@ import (
 type AdminModuleCode = string
 
 const (
-	AdminModuleCodeServer  AdminModuleCode = "server"
-	AdminModuleCodeNode    AdminModuleCode = "node"
-	AdminModuleCodeDNS     AdminModuleCode = "dns"
-	AdminModuleCodeAdmin   AdminModuleCode = "admin" // 系统用户
-	AdminModuleCodeUser    AdminModuleCode = "user"  // 平台用户
-	AdminModuleCodeLog     AdminModuleCode = "log"
-	AdminModuleCodeSetting AdminModuleCode = "setting"
-	AdminModuleCodeCommon  AdminModuleCode = "common" // 只要登录就可以访问的模块
+	AdminModuleCodeServer  AdminModuleCode = "server"  // 网站
+	AdminModuleCodeNode    AdminModuleCode = "node"    // 节点
+	AdminModuleCodeDNS     AdminModuleCode = "dns"     // DNS
+	AdminModuleCodeAdmin   AdminModuleCode = "admin"   // 系统用户
+	AdminModuleCodeUser    AdminModuleCode = "user"    // 平台用户
+	AdminModuleCodeFinance AdminModuleCode = "finance" // 财务
+	AdminModuleCodeLog     AdminModuleCode = "log"     // 日志
+	AdminModuleCodeSetting AdminModuleCode = "setting" // 设置
+	AdminModuleCodeCommon  AdminModuleCode = "common"  // 只要登录就可以访问的模块
 )
 
 var sharedAdminModuleMapping = map[int64]*AdminModuleList{} // adminId => AdminModuleList
@@ -116,7 +117,6 @@ func FindFirstAdminModule(adminId int64) (module AdminModuleCode, ok bool) {
 	return
 }
 
-
 // 查找某个管理员名称
 func FindAdminFullname(adminId int64) string {
 	locker.Lock()
@@ -156,6 +156,11 @@ func AllModuleMaps() []maps.Map {
 			"name": "系统用户",
 			"code": AdminModuleCodeAdmin,
 			"url":  "/admins",
+		},
+		{
+			"name": "财务管理",
+			"code": AdminModuleCodeFinance,
+			"url":  "/finance",
 		},
 		{
 			"name": "日志审计",
