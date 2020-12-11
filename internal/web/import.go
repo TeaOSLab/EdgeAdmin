@@ -16,6 +16,8 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dashboard"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/db"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/finance"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/finance/bills"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/index"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/log"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/logout"

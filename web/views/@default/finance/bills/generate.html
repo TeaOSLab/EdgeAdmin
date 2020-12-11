@@ -1,0 +1,8 @@
+{$layout}
+{$template "menu"}
+
+<div class="margin"></div>
+<div>
+    <button type="button" class="ui primary button" @click.prevent="generateBills()">生成上个月({{month}})账单</button>
+    <p class="comment">多次点击不会重复生成同样的账单。</p>
+</div>

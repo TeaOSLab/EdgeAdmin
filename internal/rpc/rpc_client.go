@@ -236,6 +236,10 @@ func (this *RPCClient) UserRPC() pb.UserServiceClient {
 	return pb.NewUserServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) UserBillRPC() pb.UserBillServiceClient {
+	return pb.NewUserBillServiceClient(this.pickConn())
+}
+
 // 构造Admin上下文
 func (this *RPCClient) Context(adminId int64) context.Context {
 	ctx := context.Background()
