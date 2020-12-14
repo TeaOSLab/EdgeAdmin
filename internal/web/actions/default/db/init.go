@@ -12,7 +12,7 @@ func init() {
 		server.
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeSetting)).
 			Helper(new(Helper)).
-			Helper(settingutils.NewHelper("dbNodes")).
+			Helper(settingutils.NewAdvancedHelper("dbNodes")).
 			Prefix("/db").
 			Get("", new(IndexAction)).
 			GetPost("/createPopup", new(CreatePopupAction)).

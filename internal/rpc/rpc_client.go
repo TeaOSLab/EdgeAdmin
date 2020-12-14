@@ -95,6 +95,10 @@ func (this *RPCClient) APINodeRPC() pb.APINodeServiceClient {
 	return pb.NewAPINodeServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) UserNodeRPC() pb.UserNodeServiceClient {
+	return pb.NewUserNodeServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) DBNodeRPC() pb.DBNodeServiceClient {
 	return pb.NewDBNodeServiceClient(this.pickConn())
 }

@@ -9,13 +9,13 @@ import (
 	"reflect"
 )
 
-var sharedUIConfig *systemconfigs.UIConfig = nil
+var sharedUIConfig *systemconfigs.AdminUIConfig = nil
 
 const (
 	UISettingName = "adminUIConfig"
 )
 
-func LoadUIConfig() (*systemconfigs.UIConfig, error) {
+func LoadUIConfig() (*systemconfigs.AdminUIConfig, error) {
 	locker.Lock()
 	defer locker.Unlock()
 
@@ -24,11 +24,11 @@ func LoadUIConfig() (*systemconfigs.UIConfig, error) {
 		return nil, err
 	}
 
-	v := reflect.Indirect(reflect.ValueOf(config)).Interface().(systemconfigs.UIConfig)
+	v := reflect.Indirect(reflect.ValueOf(config)).Interface().(systemconfigs.AdminUIConfig)
 	return &v, nil
 }
 
-func UpdateUIConfig(uiConfig *systemconfigs.UIConfig) error {
+func UpdateUIConfig(uiConfig *systemconfigs.AdminUIConfig) error {
 	locker.Lock()
 	defer locker.Unlock()
 
@@ -52,7 +52,7 @@ func UpdateUIConfig(uiConfig *systemconfigs.UIConfig) error {
 	return nil
 }
 
-func loadUIConfig() (*systemconfigs.UIConfig, error) {
+func loadUIConfig() (*systemconfigs.AdminUIConfig, error) {
 	if sharedUIConfig != nil {
 		return sharedUIConfig, nil
 	}
@@ -71,7 +71,7 @@ func loadUIConfig() (*systemconfigs.UIConfig, error) {
 		return sharedUIConfig, nil
 	}
 
-	config := &systemconfigs.UIConfig{}
+	config := &systemconfigs.AdminUIConfig{}
 	err = json.Unmarshal(resp.ValueJSON, config)
 	if err != nil {
 		logs.Println("[UI_MANAGER]" + err.Error())
@@ -82,8 +82,8 @@ func loadUIConfig() (*systemconfigs.UIConfig, error) {
 	return sharedUIConfig, nil
 }
 
-func defaultUIConfig() *systemconfigs.UIConfig {
-	return &systemconfigs.UIConfig{
+func defaultUIConfig() *systemconfigs.AdminUIConfig {
+	return &systemconfigs.AdminUIConfig{
 		ProductName:        "GoEdge",
 		AdminSystemName:    "GoEdge管理员系统",
 		ShowOpenSourceInfo: true,

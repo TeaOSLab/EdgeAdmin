@@ -13,6 +13,7 @@ func init() {
 			Helper(NewHelper()).
 			Prefix("/settings").
 			Get("", new(IndexAction)).
+			Get("/advanced", new(AdvancedAction)).
 			EndAll()
 	})
 }
