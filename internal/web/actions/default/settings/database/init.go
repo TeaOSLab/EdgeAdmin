@@ -11,7 +11,7 @@ func init() {
 	TeaGo.BeforeStart(func(server *TeaGo.Server) {
 		server.
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeSetting)).
-			Helper(settingutils.NewHelper("database")).
+			Helper(settingutils.NewAdvancedHelper("database")).
 			Prefix("/settings/database").
 			Get("", new(IndexAction)).
 			GetPost("/update", new(UpdateAction)).

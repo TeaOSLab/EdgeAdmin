@@ -226,6 +226,13 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 			"module": configloaders.AdminModuleCodeSetting,
 			"name":   "系统设置",
 			"icon":   "setting",
+			"subItems": []maps.Map{
+				{
+					"name": "高级设置",
+					"url":  "/settings/advanced",
+					"code": "advanced",
+				},
+			},
 		},
 	}
 

@@ -34,6 +34,10 @@ func (this *AdminNode) Run() {
 	// 检查server配置
 	err := this.checkServer()
 	if err != nil {
+		if err != nil {
+			logs.Println("[NODE]" + err.Error())
+			return
+		}
 		return
 	}
 
@@ -58,6 +62,7 @@ func (this *AdminNode) Run() {
 	// 启动API节点
 	this.startAPINode()
 
+	// 启动Web服务
 	TeaGo.NewServer(false).
 		AccessLog(false).
 		EndAll().
@@ -129,7 +134,7 @@ func (this *AdminNode) startAPINode() {
 
 // 生成Secret
 func (this *AdminNode) genSecret() string {
-	tmpFile := os.TempDir() + "/edge-secret.tmp"
+	tmpFile := os.TempDir() + "/edge-admin-secret.tmp"
 	data, err := ioutil.ReadFile(tmpFile)
 	if err == nil && len(data) == 32 {
 		return string(data)

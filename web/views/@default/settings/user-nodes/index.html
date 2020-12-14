@@ -1,0 +1,35 @@
+{$layout}
+
+<first-menu>
+	<a href="" class="item" @click.prevent="createNode()">[添加节点]</a>
+</first-menu>
+
+<p class="comment" v-if="nodes.length == 0">暂时还没有节点。</p>
+
+<table class="ui table selectable celled" v-if="nodes.length > 0">
+	<thead>
+		<tr>
+			<th>节点名称</th>
+			<th>访问地址</th>
+			<th class="center width10">状态</th>
+			<th class="two op">操作</th>
+		</tr>
+	</thead>
+	<tr v-for="node in nodes">
+		<td>{{node.name}}</td>
+		<td>
+			<div v-if="node.accessAddrs != null && node.accessAddrs.length > 0">
+				<span class="ui label tiny basic" v-for="addr in node.accessAddrs">{{addr}}</span>
+			</div>
+		</td>
+		<td class="center">
+			<label-on :v-is-on="node.isOn"></label-on>
+		</td>
+		<td>
+			<a :href="'/settings/userNodes/node?nodeId=' + node.id">详情</a> &nbsp;
+			<a href="" @click.prevent="deleteNode(node.id)">删除</a>
+		</td>
+	</tr>
+</table>
+
+<div class="page" v-html="page"></div>

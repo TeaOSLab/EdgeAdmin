@@ -1,0 +1,44 @@
+{$layout}
+{$template "menu"}
+
+<table class="ui table selectable definition">
+	<tr>
+		<td class="title">节点名称</td>
+		<td>
+			{{node.name}}
+		</td>
+	</tr>
+	<tr>
+		<td>状态</td>
+		<td>
+			<label-on :v-is-on="node.isOn"></label-on>
+		</td>
+	</tr>
+	<tr>
+		<td>进程监听端口</td>
+		<td>
+			<network-addresses-view :v-addresses="node.listens"></network-addresses-view>
+			<p class="comment">用户节点进程监听的网络端口。</p>
+		</td>
+	</tr>
+	<tr v-if="node.hasHTTPS">
+		<td>HTTPS证书</td>
+		<td>
+			<ssl-certs-view :v-certs="node.certs"></ssl-certs-view>
+		</td>
+	</tr>
+	<tr>
+		<td>外部访问地址</td>
+		<td>
+			<network-addresses-view :v-addresses="node.accessAddrs"></network-addresses-view>
+			<p class="comment">可以公开访问的网络地址。</p>
+		</td>
+	</tr>
+	<tr>
+		<td>描述</td>
+		<td>
+			<span v-if="node.description.length > 0">{{node.description}}</span>
+			<span v-else class="disabled">暂时还没有描述。</span>
+		</td>
+	</tr>
+</table>
