@@ -37,7 +37,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Require("请输入用户名").
 		Match(`^[a-zA-Z0-9_]+$`, "用户名中只能含有英文、数字和下划线")
 
-	checkUsernameResp, err := this.RPC().UserRPC().CheckUsername(this.AdminContext(), &pb.CheckUsernameRequest{
+	checkUsernameResp, err := this.RPC().UserRPC().CheckUserUsername(this.AdminContext(), &pb.CheckUserUsernameRequest{
 		UserId:   0,
 		Username: params.Username,
 	})
