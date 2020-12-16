@@ -13,6 +13,4 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct{}) {
 	// TODO 暂时先跳转到账单页，将来做成Dashboard
 	this.RedirectURL("/finance/bills")
-
-	this.Show()
 }

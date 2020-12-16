@@ -34,6 +34,13 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	userMaps := []maps.Map{}
 	for _, user := range usersResp.Users {
+		var clusterMap maps.Map = nil
+		if user.Cluster != nil {
+			clusterMap = maps.Map{
+				"id":   user.Cluster.Id,
+				"name": user.Cluster.Name,
+			}
+		}
 		userMaps = append(userMaps, maps.Map{
 			"id":          user.Id,
 			"username":    user.Username,
@@ -43,6 +50,7 @@ func (this *IndexAction) RunGet(params struct {
 			"mobile":      user.Mobile,
 			"tel":         user.Tel,
 			"createdTime": timeutil.FormatTime("Y-m-d H:i:s", user.CreatedAt),
+			"cluster":     clusterMap,
 		})
 	}
 	this.Data["users"] = userMaps

@@ -21,6 +21,13 @@
         </td>
     </tr>
     <tr>
+        <td>关联集群</td>
+        <td>
+            <span v-if="user.cluster != null">{{user.cluster.name}} <link-icon :href="'/clusters/cluster?clusterId=' + user.cluster.id"></link-icon></span>
+            <span v-else class="disabled">-</span>
+        </td>
+    </tr>
+    <tr>
         <td>手机号</td>
         <td>
             <span v-if="user.mobile.length > 0">{{user.mobile}}</span>

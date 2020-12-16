@@ -50,7 +50,7 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["token"] = stringutil.Md5(TokenSalt+timestamp) + timestamp
 	this.Data["from"] = params.From
 
-	config, err := configloaders.LoadUIConfig()
+	config, err := configloaders.LoadAdminUIConfig()
 	if err != nil {
 		this.ErrorPage(err)
 		return

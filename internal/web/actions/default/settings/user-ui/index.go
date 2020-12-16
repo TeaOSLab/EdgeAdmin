@@ -1,4 +1,4 @@
-package ui
+package userui
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
@@ -15,7 +15,7 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct{}) {
-	config, err := configloaders.LoadAdminUIConfig()
+	config, err := configloaders.LoadUserUIConfig()
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -27,7 +27,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 
 func (this *IndexAction) RunPost(params struct {
 	ProductName        string
-	AdminSystemName    string
+	UserSystemName     string
 	ShowOpenSourceInfo bool
 	ShowVersion        bool
 	Version            string
@@ -38,20 +38,20 @@ func (this *IndexAction) RunPost(params struct {
 	params.Must.
 		Field("productName", params.ProductName).
 		Require("请输入产品名称").
-		Field("adminSystemName", params.AdminSystemName).
+		Field("userSystemName", params.UserSystemName).
 		Require("请输入管理员系统名称")
 
-	config, err := configloaders.LoadAdminUIConfig()
+	config, err := configloaders.LoadUserUIConfig()
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 	config.ProductName = params.ProductName
-	config.AdminSystemName = params.AdminSystemName
+	config.UserSystemName = params.UserSystemName
 	config.ShowOpenSourceInfo = params.ShowOpenSourceInfo
 	config.ShowVersion = params.ShowVersion
 	config.Version = params.Version
-	err = configloaders.UpdateAdminUIConfig(config)
+	err = configloaders.UpdateUserUIConfig(config)
 	if err != nil {
 		this.ErrorPage(err)
 		return

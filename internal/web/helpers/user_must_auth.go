@@ -74,7 +74,7 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 		return true
 	}
 
-	config, err := configloaders.LoadUIConfig()
+	config, err := configloaders.LoadAdminUIConfig()
 	if err != nil {
 		action.WriteString(err.Error())
 		return false
