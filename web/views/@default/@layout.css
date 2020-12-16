@@ -213,9 +213,6 @@ body .ui.menu .item .blink {
 body.expanded .main-menu {
   display: none;
 }
-body.expanded .sub-menu {
-  display: none;
-}
 body.expanded .main {
   left: 1em;
 }
@@ -226,6 +223,7 @@ body.expanded .main {
   width: 100%;
   z-index: 1000;
   overflow-x: auto;
+  border: 0 !important;
   background: #276ac6 !important;
 }
 .top-nav::-webkit-scrollbar {
@@ -362,6 +360,8 @@ body.expanded .main {
 }
 .main-menu .menu {
   background: #276ac6 !important;
+  border: 0 !important;
+  box-shadow: none !important;
 }
 .main-menu::-webkit-scrollbar {
   width: 2px;
@@ -400,113 +400,6 @@ body.expanded .main {
   border-radius: 1em;
   z-index: 999999;
   background: white;
-}
-/** 子菜单 **/
-.main.without-menu .sub-menu {
-  display: none;
-}
-.sub-menu {
-  position: fixed;
-  left: 8em;
-  width: 12.5em;
-  top: 3em;
-  bottom: 2.8em;
-}
-.sub-menu .menus-box {
-  overflow-y: auto;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  padding-right: 0.4em !important;
-}
-.sub-menu .menus-box::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
-}
-.sub-menu .menu {
-  max-width: 12em !important;
-  border-right: 0 !important;
-}
-@media screen and (max-width: 512px) {
-  .sub-menu {
-    position: relative;
-    width: 100%;
-    left: 0;
-    top: 0;
-  }
-  .sub-menu .menus-box {
-    position: relative !important;
-  }
-  .sub-menu .menu {
-    width: 100% !important;
-    max-width: 30em !important;
-  }
-  .sub-menu .menus-box .menu .item {
-    width: 100% !important;
-    max-width: 30em !important;
-  }
-}
-.sub-menu .menu .item.active {
-  font-weight: normal !important;
-  outline: none !important;
-}
-.sub-menu .menu .item:not(.header) {
-  padding-top: 0.7em !important;
-  padding-bottom: 0.7em !important;
-}
-.sub-menu .menu .item:not(.header) span {
-  font-size: 0.8em;
-  display: block;
-  margin-top: 0.6em !important;
-  line-height: 1.5;
-}
-.sub-menu .menu .item:not(.active):hover {
-  background: rgba(0, 0, 0, 0.05) !important;
-  border-top: 1px white solid !important;
-  border-bottom: 1px white solid !important;
-  margin-top: -1px !important;
-  margin-bottom: -1px !important;
-}
-.sub-menu .menu .item.active {
-  background: rgba(0, 0, 0, 0.05) !important;
-}
-.sub-menu .menu .item var {
-  font-style: normal;
-}
-.sub-menu .menu .item:not(.active) var.grey {
-  color: grey;
-}
-.sub-menu .menu .item span:not(.green) {
-  color: grey;
-}
-.sub-menu .menu .item span.red {
-  color: #db2828 !important;
-}
-.sub-menu .menus-box .menu .item.header {
-  padding-right: 0.2em !important;
-  cursor: pointer;
-}
-.sub-menu .menus-box .menu .item.header span {
-  font-weight: normal;
-  color: grey;
-  font-size: 0.8em;
-}
-.sub-menu .menus-box .menu a {
-  display: block;
-  word-break: break-all;
-  line-height: 1.6 !important;
-}
-.sub-menu .menus-box .menu .item .menu {
-  margin-top: 0 !important;
-}
-.sub-menu .fourth-menu {
-  margin-left: 1.2em;
-}
-.sub-menu .fourth-menu .icon,
-.sub-menu .third-menu .icon {
-  float: left !important;
 }
 /** 右侧文本子菜单 **/
 .text.menu {

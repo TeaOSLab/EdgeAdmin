@@ -20,14 +20,15 @@ func (this *CreatePopupAction) RunGet(params struct{}) {
 }
 
 func (this *CreatePopupAction) RunPost(params struct {
-	Username string
-	Pass1    string
-	Pass2    string
-	Fullname string
-	Mobile   string
-	Tel      string
-	Email    string
-	Remark   string
+	Username  string
+	Pass1     string
+	Pass2     string
+	Fullname  string
+	Mobile    string
+	Tel       string
+	Email     string
+	Remark    string
+	ClusterId int64
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -60,6 +61,10 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Field("fullname", params.Fullname).
 		Require("请输入全名")
 
+	if params.ClusterId <= 0 {
+		this.Fail("请选择关联集群")
+	}
+
 	if len(params.Mobile) > 0 {
 		params.Must.
 			Field("mobile", params.Mobile).
@@ -72,14 +77,15 @@ func (this *CreatePopupAction) RunPost(params struct {
 	}
 
 	createResp, err := this.RPC().UserRPC().CreateUser(this.AdminContext(), &pb.CreateUserRequest{
-		Username: params.Username,
-		Password: params.Pass1,
-		Fullname: params.Fullname,
-		Mobile:   params.Mobile,
-		Tel:      params.Tel,
-		Email:    params.Email,
-		Remark:   params.Remark,
-		Source:   "admin:" + numberutils.FormatInt64(this.AdminId()),
+		Username:  params.Username,
+		Password:  params.Pass1,
+		Fullname:  params.Fullname,
+		Mobile:    params.Mobile,
+		Tel:       params.Tel,
+		Email:     params.Email,
+		Remark:    params.Remark,
+		Source:    "admin:" + numberutils.FormatInt64(this.AdminId()),
+		ClusterId: params.ClusterId,
 	})
 	if err != nil {
 		this.ErrorPage(err)

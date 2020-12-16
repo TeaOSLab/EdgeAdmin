@@ -86,6 +86,7 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/ui"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/upgrade"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/user-nodes"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/user-ui"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/setup"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ui"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/users"

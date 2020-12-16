@@ -47,20 +47,26 @@ func (this *UpdateAction) RunGet(params struct {
 		"isOn":     user.IsOn,
 	}
 
+	this.Data["clusterId"] = 0
+	if user.Cluster != nil {
+		this.Data["clusterId"] = user.Cluster.Id
+	}
+
 	this.Show()
 }
 
 func (this *UpdateAction) RunPost(params struct {
-	UserId   int64
-	Username string
-	Pass1    string
-	Pass2    string
-	Fullname string
-	Mobile   string
-	Tel      string
-	Email    string
-	Remark   string
-	IsOn     bool
+	UserId    int64
+	Username  string
+	Pass1     string
+	Pass2     string
+	Fullname  string
+	Mobile    string
+	Tel       string
+	Email     string
+	Remark    string
+	IsOn      bool
+	ClusterId int64
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -109,15 +115,16 @@ func (this *UpdateAction) RunPost(params struct {
 	}
 
 	_, err = this.RPC().UserRPC().UpdateUser(this.AdminContext(), &pb.UpdateUserRequest{
-		UserId:   params.UserId,
-		Username: params.Username,
-		Password: params.Pass1,
-		Fullname: params.Fullname,
-		Mobile:   params.Mobile,
-		Tel:      params.Tel,
-		Email:    params.Email,
-		Remark:   params.Remark,
-		IsOn:     params.IsOn,
+		UserId:    params.UserId,
+		Username:  params.Username,
+		Password:  params.Pass1,
+		Fullname:  params.Fullname,
+		Mobile:    params.Mobile,
+		Tel:       params.Tel,
+		Email:     params.Email,
+		Remark:    params.Remark,
+		IsOn:      params.IsOn,
+		ClusterId: params.ClusterId,
 	})
 	if err != nil {
 		this.ErrorPage(err)

@@ -35,6 +35,14 @@ func (this *UserAction) RunGet(params struct {
 		return
 	}
 
+	var clusterMap maps.Map = nil
+	if user.Cluster != nil {
+		clusterMap = maps.Map{
+			"id":   user.Cluster.Id,
+			"name": user.Cluster.Name,
+		}
+	}
+
 	this.Data["user"] = maps.Map{
 		"id":       user.Id,
 		"username": user.Username,
@@ -44,6 +52,7 @@ func (this *UserAction) RunGet(params struct {
 		"remark":   user.Remark,
 		"mobile":   user.Mobile,
 		"isOn":     user.IsOn,
+		"cluster":  clusterMap,
 	}
 
 	this.Show()

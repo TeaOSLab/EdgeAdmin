@@ -1,4 +1,4 @@
-package ui
+package userui
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
@@ -11,8 +11,8 @@ func init() {
 	TeaGo.BeforeStart(func(server *TeaGo.Server) {
 		server.
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeCommon)).
-			Helper(settingutils.NewHelper("ui")).
-			Prefix("/settings/ui").
+			Helper(settingutils.NewHelper("userUI")).
+			Prefix("/settings/user-ui").
 			GetPost("", new(IndexAction)).
 			EndAll()
 	})

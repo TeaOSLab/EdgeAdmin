@@ -10,6 +10,7 @@
 		<tr>
 			<th>用户名</th>
 			<th>全名</th>
+            <th>关联集群</th>
 			<th>手机号</th>
 			<th>注册时间</th>
 			<th class="center width10">状态</th>
@@ -19,6 +20,10 @@
 	<tr v-for="user in users">
         <td :class="{disabled:!user.isOn}">{{user.username}}</td>
         <td :class="{disabled:!user.isOn}">{{user.fullname}}</td>
+        <td>
+            <span v-if="user.cluster != null">{{user.cluster.name}} <link-icon :href="'/clusters/cluster?clusterId=' + user.cluster.id"></link-icon></span>
+            <span v-else class="disabled">-</span>
+        </td>
         <td :class="{disabled:!user.isOn}">
             <span v-if="user.mobile.length > 0">{{user.mobile}}</span>
             <span v-else class="disabled">-</span>

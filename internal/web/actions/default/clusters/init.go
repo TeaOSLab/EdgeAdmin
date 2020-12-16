@@ -17,6 +17,12 @@ func init() {
 			GetPost("/create", new(CreateAction)).
 			Post("/sync", new(SyncAction)).
 			Post("/checkChange", new(CheckChangeAction)).
+
+			// 只要登录即可访问的Action
+			EndHelpers().
+			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeCommon)).
+			Post("/options", new(OptionsAction)).
+			
 			EndAll()
 	})
 }

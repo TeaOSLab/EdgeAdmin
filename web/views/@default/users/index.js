@@ -1,6 +1,7 @@
 Tea.context(function () {
 	this.createUser = function () {
 		teaweb.popup(Tea.url(".createPopup"), {
+			height: "30em",
 			callback: function () {
 				teaweb.success("保存成功", function () {
 					teaweb.reload()

@@ -9,17 +9,17 @@ import (
 	"reflect"
 )
 
-var sharedUIConfig *systemconfigs.AdminUIConfig = nil
+var sharedAdminUIConfig *systemconfigs.AdminUIConfig = nil
 
 const (
-	UISettingName = "adminUIConfig"
+	AdminUISettingName = "adminUIConfig"
 )
 
-func LoadUIConfig() (*systemconfigs.AdminUIConfig, error) {
+func LoadAdminUIConfig() (*systemconfigs.AdminUIConfig, error) {
 	locker.Lock()
 	defer locker.Unlock()
 
-	config, err := loadUIConfig()
+	config, err := loadAdminUIConfig()
 	if err != nil {
 		return nil, err
 	}
@@ -28,7 +28,7 @@ func LoadUIConfig() (*systemconfigs.AdminUIConfig, error) {
 	return &v, nil
 }
 
-func UpdateUIConfig(uiConfig *systemconfigs.AdminUIConfig) error {
+func UpdateAdminUIConfig(uiConfig *systemconfigs.AdminUIConfig) error {
 	locker.Lock()
 	defer locker.Unlock()
 
@@ -41,48 +41,48 @@ func UpdateUIConfig(uiConfig *systemconfigs.AdminUIConfig) error {
 		return err
 	}
 	_, err = rpcClient.SysSettingRPC().UpdateSysSetting(rpcClient.Context(0), &pb.UpdateSysSettingRequest{
-		Code:      UISettingName,
+		Code:      AdminUISettingName,
 		ValueJSON: valueJSON,
 	})
 	if err != nil {
 		return err
 	}
-	sharedUIConfig = uiConfig
+	sharedAdminUIConfig = uiConfig
 
 	return nil
 }
 
-func loadUIConfig() (*systemconfigs.AdminUIConfig, error) {
-	if sharedUIConfig != nil {
-		return sharedUIConfig, nil
+func loadAdminUIConfig() (*systemconfigs.AdminUIConfig, error) {
+	if sharedAdminUIConfig != nil {
+		return sharedAdminUIConfig, nil
 	}
 	var rpcClient, err = rpc.SharedRPC()
 	if err != nil {
 		return nil, err
 	}
 	resp, err := rpcClient.SysSettingRPC().ReadSysSetting(rpcClient.Context(0), &pb.ReadSysSettingRequest{
-		Code: UISettingName,
+		Code: AdminUISettingName,
 	})
 	if err != nil {
 		return nil, err
 	}
 	if len(resp.ValueJSON) == 0 {
-		sharedUIConfig = defaultUIConfig()
-		return sharedUIConfig, nil
+		sharedAdminUIConfig = defaultAdminUIConfig()
+		return sharedAdminUIConfig, nil
 	}
 
 	config := &systemconfigs.AdminUIConfig{}
 	err = json.Unmarshal(resp.ValueJSON, config)
 	if err != nil {
 		logs.Println("[UI_MANAGER]" + err.Error())
-		sharedUIConfig = defaultUIConfig()
-		return sharedUIConfig, nil
+		sharedAdminUIConfig = defaultAdminUIConfig()
+		return sharedAdminUIConfig, nil
 	}
-	sharedUIConfig = config
-	return sharedUIConfig, nil
+	sharedAdminUIConfig = config
+	return sharedAdminUIConfig, nil
 }
 
-func defaultUIConfig() *systemconfigs.AdminUIConfig {
+func defaultAdminUIConfig() *systemconfigs.AdminUIConfig {
 	return &systemconfigs.AdminUIConfig{
 		ProductName:        "GoEdge",
 		AdminSystemName:    "GoEdge管理员系统",
