@@ -21,7 +21,7 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ClusterId int64
 }) {
-	clusterResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeCluster(this.AdminContext(), &pb.FindEnabledNodeClusterRequest{ClusterId: params.ClusterId})
+	clusterResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeCluster(this.AdminContext(), &pb.FindEnabledNodeClusterRequest{NodeClusterId: params.ClusterId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -79,10 +79,10 @@ func (this *IndexAction) RunPost(params struct {
 		Require("请输入集群名称")
 
 	_, err := this.RPC().NodeClusterRPC().UpdateNodeCluster(this.AdminContext(), &pb.UpdateNodeClusterRequest{
-		ClusterId:  params.ClusterId,
-		Name:       params.Name,
-		GrantId:    params.GrantId,
-		InstallDir: params.InstallDir,
+		NodeClusterId: params.ClusterId,
+		Name:          params.Name,
+		GrantId:       params.GrantId,
+		InstallDir:    params.InstallDir,
 	})
 	if err != nil {
 		this.ErrorPage(err)

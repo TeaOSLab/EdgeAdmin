@@ -38,7 +38,7 @@ func (this *ClusterHelper) BeforeAction(action *actions.ActionObject) {
 	}
 
 	if clusterId > 0 {
-		clusterResp, err := rpcClient.NodeClusterRPC().FindEnabledNodeCluster(rpcClient.Context(action.Context.GetInt64("adminId")), &pb.FindEnabledNodeClusterRequest{ClusterId: clusterId})
+		clusterResp, err := rpcClient.NodeClusterRPC().FindEnabledNodeCluster(rpcClient.Context(action.Context.GetInt64("adminId")), &pb.FindEnabledNodeClusterRequest{NodeClusterId: clusterId})
 		if err != nil {
 			logs.Error(err)
 			return
@@ -76,6 +76,16 @@ func (this *ClusterHelper) createSettingMenu(clusterId string, selectedItem stri
 		"name":     "基础设置",
 		"url":      "/clusters/cluster/settings?clusterId=" + clusterId,
 		"isActive": selectedItem == "basic",
+	})
+	items = append(items, maps.Map{
+		"name":     "缓存设置",
+		"url":      "/clusters/cluster/settings/cache?clusterId=" + clusterId,
+		"isActive": selectedItem == "cache",
+	})
+	items = append(items, maps.Map{
+		"name":     "WAF设置",
+		"url":      "/clusters/cluster/settings/waf?clusterId=" + clusterId,
+		"isActive": selectedItem == "waf",
 	})
 	items = append(items, maps.Map{
 		"name":     "健康检查",

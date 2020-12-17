@@ -14,36 +14,20 @@ var SharedHTTPFirewallPolicyDAO = new(HTTPFirewallPolicyDAO)
 
 // WAF策略相关
 type HTTPFirewallPolicyDAO struct {
-}
-
-// 查找WAF策略基本信息
-func (this *HTTPFirewallPolicyDAO) FindEnabledPolicy(ctx context.Context, policyId int64) (*pb.HTTPFirewallPolicy, error) {
-	client, err := rpc.SharedRPC()
-	if err != nil {
-		return nil, err
-	}
-	resp, err := client.HTTPFirewallPolicyRPC().FindEnabledFirewallPolicy(ctx, &pb.FindEnabledFirewallPolicyRequest{FirewallPolicyId: policyId})
-	if err != nil {
-		return nil, err
-	}
-	return resp.FirewallPolicy, nil
+	BaseDAO
 }
 
 // 查找WAF策略配置
 func (this *HTTPFirewallPolicyDAO) FindEnabledPolicyConfig(ctx context.Context, policyId int64) (*firewallconfigs.HTTPFirewallPolicy, error) {
-	client, err := rpc.SharedRPC()
+	resp, err := this.RPC().HTTPFirewallPolicyRPC().FindEnabledHTTPFirewallPolicyConfig(ctx, &pb.FindEnabledHTTPFirewallPolicyConfigRequest{HttpFirewallPolicyId: policyId})
 	if err != nil {
 		return nil, err
 	}
-	resp, err := client.HTTPFirewallPolicyRPC().FindEnabledFirewallPolicyConfig(ctx, &pb.FindEnabledFirewallPolicyConfigRequest{FirewallPolicyId: policyId})
-	if err != nil {
-		return nil, err
-	}
-	if len(resp.FirewallPolicyJSON) == 0 {
+	if len(resp.HttpFirewallPolicyJSON) == 0 {
 		return nil, nil
 	}
 	firewallPolicy := &firewallconfigs.HTTPFirewallPolicy{}
-	err = json.Unmarshal(resp.FirewallPolicyJSON, firewallPolicy)
+	err = json.Unmarshal(resp.HttpFirewallPolicyJSON, firewallPolicy)
 	if err != nil {
 		return nil, err
 	}
@@ -111,8 +95,8 @@ func (this *HTTPFirewallPolicyDAO) FindEnabledPolicyWhiteIPListId(ctx context.Co
 			return 0, err
 		}
 		_, err = client.HTTPFirewallPolicyRPC().UpdateHTTPFirewallInboundConfig(ctx, &pb.UpdateHTTPFirewallInboundConfigRequest{
-			FirewallPolicyId: policyId,
-			InboundJSON:      inboundJSON,
+			HttpFirewallPolicyId: policyId,
+			InboundJSON:          inboundJSON,
 		})
 		if err != nil {
 			return 0, err
@@ -125,11 +109,6 @@ func (this *HTTPFirewallPolicyDAO) FindEnabledPolicyWhiteIPListId(ctx context.Co
 
 // 查找WAF的黑名单
 func (this *HTTPFirewallPolicyDAO) FindEnabledPolicyBlackIPListId(ctx context.Context, policyId int64) (int64, error) {
-	client, err := rpc.SharedRPC()
-	if err != nil {
-		return 0, err
-	}
-
 	config, err := this.FindEnabledPolicyConfig(ctx, policyId)
 	if err != nil {
 		return 0, err
@@ -141,7 +120,7 @@ func (this *HTTPFirewallPolicyDAO) FindEnabledPolicyBlackIPListId(ctx context.Co
 		config.Inbound = &firewallconfigs.HTTPFirewallInboundConfig{IsOn: true}
 	}
 	if config.Inbound.BlackListRef == nil || config.Inbound.BlackListRef.ListId == 0 {
-		createResp, err := client.IPListRPC().CreateIPList(ctx, &pb.CreateIPListRequest{
+		createResp, err := this.RPC().IPListRPC().CreateIPList(ctx, &pb.CreateIPListRequest{
 			Type:        "black",
 			Name:        "黑名单",
 			Code:        "black",
@@ -159,9 +138,9 @@ func (this *HTTPFirewallPolicyDAO) FindEnabledPolicyBlackIPListId(ctx context.Co
 		if err != nil {
 			return 0, err
 		}
-		_, err = client.HTTPFirewallPolicyRPC().UpdateHTTPFirewallInboundConfig(ctx, &pb.UpdateHTTPFirewallInboundConfigRequest{
-			FirewallPolicyId: policyId,
-			InboundJSON:      inboundJSON,
+		_, err = this.RPC().HTTPFirewallPolicyRPC().UpdateHTTPFirewallInboundConfig(ctx, &pb.UpdateHTTPFirewallInboundConfigRequest{
+			HttpFirewallPolicyId: policyId,
+			InboundJSON:          inboundJSON,
 		})
 		if err != nil {
 			return 0, err
@@ -170,4 +149,42 @@ func (this *HTTPFirewallPolicyDAO) FindEnabledPolicyBlackIPListId(ctx context.Co
 	}
 
 	return config.Inbound.BlackListRef.ListId, nil
+}
+
+// 查找WAF信息
+func (this *HTTPFirewallPolicyDAO) FindEnabledHTTPFirewallPolicy(ctx context.Context, firewallPolicyId int64) (*pb.HTTPFirewallPolicy, error) {
+	resp, err := this.RPC().HTTPFirewallPolicyRPC().FindEnabledHTTPFirewallPolicy(ctx, &pb.FindEnabledHTTPFirewallPolicyRequest{
+		HttpFirewallPolicyId: firewallPolicyId,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return resp.HttpFirewallPolicy, nil
+}
+
+// 根据服务Id查找WAF策略
+func (this *HTTPFirewallPolicyDAO) FindEnabledHTTPFirewallPolicyWithServerId(ctx context.Context, serverId int64) (*pb.HTTPFirewallPolicy, error) {
+	serverResp, err := this.RPC().ServerRPC().FindEnabledServer(ctx, &pb.FindEnabledServerRequest{ServerId: serverId})
+	if err != nil {
+		return nil, err
+	}
+	server := serverResp.Server
+	if server == nil {
+		return nil, nil
+	}
+	if server.Cluster == nil {
+		return nil, nil
+	}
+	clusterId := server.Cluster.Id
+	cluster, err := SharedNodeClusterDAO.FindEnabledNodeCluster(ctx, clusterId)
+	if err != nil {
+		return nil, err
+	}
+	if cluster == nil {
+		return nil, nil
+	}
+	if cluster.HttpFirewallPolicyId == 0 {
+		return nil, nil
+	}
+	return SharedHTTPFirewallPolicyDAO.FindEnabledHTTPFirewallPolicy(ctx, cluster.HttpFirewallPolicyId)
 }

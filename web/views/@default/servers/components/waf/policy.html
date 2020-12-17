@@ -1,55 +1,54 @@
 {$layout}
+{$template "waf_menu"}
 
-	{$template "waf_menu"}
+<table class="ui table definition selectable">
+    <tr>
+        <td class="title">策略名称</td>
+        <td>{{firewallPolicy.name}}</td>
+    </tr>
+    <tr>
+        <td>是否启用</td>
+        <td>
+            <label-on :v-is-on="firewallPolicy.isOn"></label-on>
+        </td>
+    </tr>
+    <tr>
+        <td>预置的规则分组</td>
+        <td>
+            <span class="ui label tiny basic" v-for="group in firewallPolicy.groups" style="margin-bottom:0.5em" :class="{disabled:!group.isOn}">{{group.name}}</span>
+        </td>
+    </tr>
+    <tr>
+        <td>阻止动作设置</td>
+        <td>
+            <span v-if="firewallPolicy.blockOptions == null" class="disabled">还没有设置。</span>
+            <div v-else>
+                <table class="ui table">
+                    <tr>
+                        <td class="title">状态码</td>
+                        <td>{{firewallPolicy.blockOptions.statusCode}}</td>
+                    </tr>
+                    <tr>
+                        <td>提示内容</td>
+                        <td>{{firewallPolicy.blockOptions.body}}</td>
+                    </tr>
+                </table>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>描述</td>
+        <td>
+            <span v-if="firewallPolicy.description.length > 0">{{firewallPolicy.description}}</span>
+            <span v-else class="disabled">暂时还没有描述。</span>
+        </td>
+    </tr>
+</table>
 
-	<table class="ui table definition selectable">
-		<tr>
-			<td class="title">策略名称</td>
-			<td>{{firewallPolicy.name}}</td>
-		</tr>
-		<tr>
-			<td>是否启用</td>
-			<td>
-				<label-on :v-is-on="firewallPolicy.isOn"></label-on>
-			</td>
-		</tr>
-		<tr>
-			<td>预置的规则分组</td>
-			<td>
-				<span class="ui label tiny basic" v-for="group in firewallPolicy.groups" style="margin-bottom:0.5em" :class="{disabled:!group.isOn}">{{group.name}}</span>
-			</td>
-		</tr>
-		<tr>
-			<td>阻止动作设置</td>
-			<td>
-				<span v-if="firewallPolicy.blockOptions == null" class="disabled">还没有设置。</span>
-				<div v-else>
-					<table class="ui table">
-						<tr>
-							<td class="title">状态码</td>
-							<td>{{firewallPolicy.blockOptions.statusCode}}</td>
-						</tr>
-						<tr>
-							<td>提示内容</td>
-							<td>{{firewallPolicy.blockOptions.body}}</td>
-						</tr>
-					</table>
-				</div>
-			</td>
-		</tr>
-		<tr>
-			<td>描述</td>
-			<td>
-				<span v-if="firewallPolicy.description.length > 0">{{firewallPolicy.description}}</span>
-				<span v-else class="disabled">暂时还没有描述。</span>
-			</td>
-		</tr>
-	</table>
-
-	<h4>使用此策略的服务</h4>
-	<p class="comment" v-if="servers.length == 0">暂时还没有代理服务使用此策略。</p>
-	<table class="ui table selectable" v-if="servers.length > 0">
-		<tr v-for="server in servers">
-			<td>{{server.name}}<link-icon :href="'/servers/server?serverId=' + server.id"></link-icon></td>
-		</tr>
-	</table>
+<h4>使用此策略的集群</h4>
+<p class="comment" v-if="clusters.length == 0">暂时还没有集群使用此策略。</p>
+<table class="ui table selectable" v-if="clusters.length > 0">
+    <tr v-for="cluster in clusters">
+        <td>{{cluster.name}}<link-icon :href="'/clusters/cluster?clusterId=' + cluster.id"></link-icon></td>
+    </tr>
+</table>

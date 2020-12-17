@@ -21,7 +21,7 @@ func (this *InstallManualAction) RunGet(params struct {
 }) {
 	this.Data["leftMenuItems"] = LeftMenuItemsForInstall(params.ClusterId, "manual")
 
-	nodesResp, err := this.RPC().NodeRPC().FindAllNotInstalledNodesWithClusterId(this.AdminContext(), &pb.FindAllNotInstalledNodesWithClusterIdRequest{ClusterId: params.ClusterId})
+	nodesResp, err := this.RPC().NodeRPC().FindAllNotInstalledNodesWithClusterId(this.AdminContext(), &pb.FindAllNotInstalledNodesWithClusterIdRequest{NodeClusterId: params.ClusterId})
 	if err != nil {
 		this.ErrorPage(err)
 		return

@@ -17,7 +17,7 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct{}) {
-	countResp, err := this.RPC().HTTPFirewallPolicyRPC().CountAllEnabledFirewallPolicies(this.AdminContext(), &pb.CountAllEnabledFirewallPoliciesRequest{})
+	countResp, err := this.RPC().HTTPFirewallPolicyRPC().CountAllEnabledHTTPFirewallPolicies(this.AdminContext(), &pb.CountAllEnabledHTTPFirewallPoliciesRequest{})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -25,7 +25,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 	count := countResp.Count
 	page := this.NewPage(count)
 
-	listResp, err := this.RPC().HTTPFirewallPolicyRPC().ListEnabledFirewallPolicies(this.AdminContext(), &pb.ListEnabledFirewallPoliciesRequest{
+	listResp, err := this.RPC().HTTPFirewallPolicyRPC().ListEnabledHTTPFirewallPolicies(this.AdminContext(), &pb.ListEnabledHTTPFirewallPoliciesRequest{
 		Offset: page.Offset,
 		Size:   page.Size,
 	})
@@ -34,7 +34,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 		return
 	}
 	policyMaps := []maps.Map{}
-	for _, policy := range listResp.FirewallPolicies {
+	for _, policy := range listResp.HttpFirewallPolicies {
 		countInbound := 0
 		countOutbound := 0
 		if len(policy.InboundJSON) > 0 {
@@ -56,12 +56,12 @@ func (this *IndexAction) RunGet(params struct{}) {
 			countOutbound = len(outboundConfig.GroupRefs)
 		}
 
-		countServersResp, err := this.RPC().ServerRPC().CountAllEnabledServersWithHTTPFirewallPolicyId(this.AdminContext(), &pb.CountAllEnabledServersWithHTTPFirewallPolicyIdRequest{FirewallPolicyId: policy.Id})
+		countClustersResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClustersWithHTTPFirewallPolicyId(this.AdminContext(), &pb.CountAllEnabledNodeClustersWithHTTPFirewallPolicyIdRequest{HttpFirewallPolicyId: policy.Id})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-		countServers := countServersResp.Count
+		countClusters := countClustersResp.Count
 
 		policyMaps = append(policyMaps, maps.Map{
 			"id":            policy.Id,
@@ -69,7 +69,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 			"name":          policy.Name,
 			"countInbound":  countInbound,
 			"countOutbound": countOutbound,
-			"countServers":  countServers,
+			"countClusters": countClusters,
 		})
 	}
 

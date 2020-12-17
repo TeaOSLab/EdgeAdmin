@@ -114,12 +114,12 @@ func (this *IndexAction) RunPost(params struct {
 	}
 
 	_, err := this.RPC().ServerRPC().UpdateServerBasic(this.AdminContext(), &pb.UpdateServerBasicRequest{
-		ServerId:    params.ServerId,
-		Name:        params.Name,
-		Description: params.Description,
-		ClusterId:   params.ClusterId,
-		IsOn:        params.IsOn,
-		GroupIds:    params.GroupIds,
+		ServerId:      params.ServerId,
+		Name:          params.Name,
+		Description:   params.Description,
+		NodeClusterId: params.ClusterId,
+		IsOn:          params.IsOn,
+		GroupIds:      params.GroupIds,
 	})
 	if err != nil {
 		this.ErrorPage(err)

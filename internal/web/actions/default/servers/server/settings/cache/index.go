@@ -5,9 +5,11 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/models"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/maps"
 )
 
 type IndexAction struct {
@@ -30,6 +32,22 @@ func (this *IndexAction) RunGet(params struct {
 
 	this.Data["webId"] = webConfig.Id
 	this.Data["cacheConfig"] = webConfig.Cache
+
+	// 当前集群的缓存策略
+	cachePolicy, err := models.SharedHTTPCachePolicyDAO.FindEnabledHTTPCachePolicyWithServerId(this.AdminContext(), params.ServerId)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	if cachePolicy != nil {
+		this.Data["cachePolicy"] = maps.Map{
+			"id":   cachePolicy.Id,
+			"name": cachePolicy.Name,
+			"isOn": cachePolicy.IsOn,
+		}
+	} else {
+		this.Data["cachePolicy"] = nil
+	}
 
 	this.Show()
 }

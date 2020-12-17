@@ -22,15 +22,15 @@ func FindCachePolicyNameWithoutError(parent *actionutils.ParentAction, cachePoli
 
 // 查找缓存策略配置
 func FindCachePolicy(parent *actionutils.ParentAction, cachePolicyId int64) (*serverconfigs.HTTPCachePolicy, error) {
-	resp, err := parent.RPC().HTTPCachePolicyRPC().FindEnabledHTTPCachePolicyConfig(parent.AdminContext(), &pb.FindEnabledHTTPCachePolicyConfigRequest{CachePolicyId: cachePolicyId})
+	resp, err := parent.RPC().HTTPCachePolicyRPC().FindEnabledHTTPCachePolicyConfig(parent.AdminContext(), &pb.FindEnabledHTTPCachePolicyConfigRequest{HttpCachePolicyId: cachePolicyId})
 	if err != nil {
 		return nil, err
 	}
-	if len(resp.CachePolicyJSON) == 0 {
+	if len(resp.HttpCachePolicyJSON) == 0 {
 		return nil, errors.New("cache policy not found")
 	}
 	config := &serverconfigs.HTTPCachePolicy{}
-	err = json.Unmarshal(resp.CachePolicyJSON, config)
+	err = json.Unmarshal(resp.HttpCachePolicyJSON, config)
 	if err != nil {
 		return nil, err
 	}

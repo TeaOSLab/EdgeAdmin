@@ -88,12 +88,12 @@ func (this *UpdateAction) RunPost(params struct {
 		Require("请输入策略名称")
 
 	_, err := this.RPC().HTTPFirewallPolicyRPC().UpdateHTTPFirewallPolicy(this.AdminContext(), &pb.UpdateHTTPFirewallPolicyRequest{
-		FirewallPolicyId:   params.FirewallPolicyId,
-		IsOn:               params.IsOn,
-		Name:               params.Name,
-		Description:        params.Description,
-		FirewallGroupCodes: params.GroupCodes,
-		BlockOptionsJSON:   params.BlockOptionsJSON,
+		HttpFirewallPolicyId: params.FirewallPolicyId,
+		IsOn:                 params.IsOn,
+		Name:                 params.Name,
+		Description:          params.Description,
+		FirewallGroupCodes:   params.GroupCodes,
+		BlockOptionsJSON:     params.BlockOptionsJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)

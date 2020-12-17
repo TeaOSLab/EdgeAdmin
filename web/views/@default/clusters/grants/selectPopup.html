@@ -2,18 +2,12 @@
 
 <h3>选择认证</h3>
 
-<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
-	<input type="hidden" name="grantId" :value="grantId"/>
-	<table class="ui table selectable definition">
-		<tr>
-			<td class="title">选择认证</td>
-			<td>
-				<span v-if="grants.length == 0">暂时还没有可用的认证。</span>
-				<a class="ui label small basic" v-for="grant in grants" :class="{blue:grantId == grant.id}" @click.prevent="selectGrant(grant)" style="margin-bottom:0.5em">{{grant.name}} <span class="small">（{{grant.methodName}}）</span></a>
-				<p class="comment">请点击选中某个认证。</p>
-			</td>
-		</tr>
-	</table>
-
-	<submit-btn>确定</submit-btn>
-</form>
+<table class="ui table definition">
+    <tr>
+        <td>
+            <span v-if="grants.length == 0">暂时还没有可用的认证。</span>
+            <a class="ui label small basic" v-for="grant in grants" :class="{blue:grantId == grant.id}" @click.prevent="selectGrant(grant)" style="margin-bottom:0.5em">{{grant.name}} <span class="small">（{{grant.methodName}}）</span></a>
+            <p class="comment">请点击选中某个认证。</p>
+        </td>
+    </tr>
+</table>

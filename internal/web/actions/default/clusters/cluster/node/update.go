@@ -247,16 +247,16 @@ func (this *UpdateAction) RunPost(params struct {
 
 	// 保存
 	_, err := this.RPC().NodeRPC().UpdateNode(this.AdminContext(), &pb.UpdateNodeRequest{
-		NodeId:      params.NodeId,
-		GroupId:     params.GroupId,
-		RegionId:    params.RegionId,
-		Name:        params.Name,
-		ClusterId:   params.ClusterId,
-		Login:       loginInfo,
-		MaxCPU:      params.MaxCPU,
-		IsOn:        params.IsOn,
-		DnsDomainId: params.DnsDomainId,
-		DnsRoutes:   dnsRouteCodes,
+		NodeId:        params.NodeId,
+		GroupId:       params.GroupId,
+		RegionId:      params.RegionId,
+		Name:          params.Name,
+		NodeClusterId: params.ClusterId,
+		Login:         loginInfo,
+		MaxCPU:        params.MaxCPU,
+		IsOn:          params.IsOn,
+		DnsDomainId:   params.DnsDomainId,
+		DnsRoutes:     dnsRouteCodes,
 	})
 	if err != nil {
 		this.ErrorPage(err)

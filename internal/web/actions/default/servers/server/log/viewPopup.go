@@ -40,16 +40,16 @@ func (this *ViewPopupAction) RunGet(params struct {
 	// WAF相关
 	var wafMap maps.Map = nil
 	if accessLog.FirewallPolicyId > 0 {
-		policyResp, err := this.RPC().HTTPFirewallPolicyRPC().FindEnabledFirewallPolicy(this.AdminContext(), &pb.FindEnabledFirewallPolicyRequest{FirewallPolicyId: accessLog.FirewallPolicyId})
+		policyResp, err := this.RPC().HTTPFirewallPolicyRPC().FindEnabledHTTPFirewallPolicy(this.AdminContext(), &pb.FindEnabledHTTPFirewallPolicyRequest{HttpFirewallPolicyId: accessLog.FirewallPolicyId})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-		if policyResp.FirewallPolicy != nil {
+		if policyResp.HttpFirewallPolicy != nil {
 			wafMap = maps.Map{
 				"policy": maps.Map{
-					"id":   policyResp.FirewallPolicy.Id,
-					"name": policyResp.FirewallPolicy.Name,
+					"id":   policyResp.HttpFirewallPolicy.Id,
+					"name": policyResp.HttpFirewallPolicy.Name,
 				},
 			}
 			if accessLog.FirewallRuleGroupId > 0 {

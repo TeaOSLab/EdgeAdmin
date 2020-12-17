@@ -118,13 +118,13 @@ func (this *CreateNodeAction) RunPost(params struct {
 
 	// 保存
 	createResp, err := this.RPC().NodeRPC().CreateNode(this.AdminContext(), &pb.CreateNodeRequest{
-		Name:        params.Name,
-		ClusterId:   params.ClusterId,
-		GroupId:     params.GroupId,
-		RegionId:    params.RegionId,
-		Login:       loginInfo,
-		DnsDomainId: params.DnsDomainId,
-		DnsRoutes:   dnsRouteCodes,
+		Name:          params.Name,
+		NodeClusterId: params.ClusterId,
+		GroupId:       params.GroupId,
+		RegionId:      params.RegionId,
+		Login:         loginInfo,
+		DnsDomainId:   params.DnsDomainId,
+		DnsRoutes:     dnsRouteCodes,
 	})
 	if err != nil {
 		this.ErrorPage(err)

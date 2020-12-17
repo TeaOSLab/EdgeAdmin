@@ -33,7 +33,7 @@ func (this *Helper) BeforeAction(actionPtr actions.ActionWrapper) (goNext bool) 
 		action.Data["countOutboundGroups"] = 0
 		parentAction := actionutils.FindParentAction(actionPtr)
 		if parentAction != nil {
-			firewallPolicy, err := models.SharedHTTPFirewallPolicyDAO.FindEnabledPolicy(parentAction.AdminContext(), firewallPolicyId)
+			firewallPolicy, err := models.SharedHTTPFirewallPolicyDAO.FindEnabledHTTPFirewallPolicy(parentAction.AdminContext(), firewallPolicyId)
 			if err != nil {
 				parentAction.ErrorPage(err)
 				return

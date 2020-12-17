@@ -19,7 +19,7 @@ func (this *IndexAction) RunGet(params struct {
 	ClusterId int64
 }) {
 	groupsResp, err := this.RPC().NodeGroupRPC().FindAllEnabledNodeGroupsWithClusterId(this.AdminContext(), &pb.FindAllEnabledNodeGroupsWithClusterIdRequest{
-		ClusterId: params.ClusterId,
+		NodeClusterId: params.ClusterId,
 	})
 	if err != nil {
 		this.ErrorPage(err)

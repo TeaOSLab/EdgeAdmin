@@ -46,18 +46,25 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Require("请输入策略名称")
 
 	createResp, err := this.RPC().HTTPFirewallPolicyRPC().CreateHTTPFirewallPolicy(this.AdminContext(), &pb.CreateHTTPFirewallPolicyRequest{
-		IsOn:               params.IsOn,
-		Name:               params.Name,
-		Description:        params.Description,
-		FirewallGroupCodes: params.GroupCodes,
+		IsOn:                   params.IsOn,
+		Name:                   params.Name,
+		Description:            params.Description,
+		HttpFirewallGroupCodes: params.GroupCodes,
 	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 
+	// 返回数据
+	this.Data["firewallPolicy"] = maps.Map{
+		"id":          createResp.HttpFirewallPolicyId,
+		"name":        params.Name,
+		"description": params.Description,
+	}
+
 	// 日志
-	defer this.CreateLog(oplogs.LevelInfo, "创建WAF策略 %d", createResp.FirewallPolicyId)
+	defer this.CreateLog(oplogs.LevelInfo, "创建WAF策略 %d", createResp.HttpFirewallPolicyId)
 
 	this.Success()
 }

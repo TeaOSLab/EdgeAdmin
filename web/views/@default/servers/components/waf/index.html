@@ -14,7 +14,7 @@
 				<th>策略名称</th>
 				<th class="center">入站规则分组</th>
 				<th class="center">出站规则分组</th>
-				<th class="center">引用服务</th>
+				<th class="center">集群数</th>
 				<th class="two wide center">状态</th>
 				<th class="two op">操作</th>
 			</tr>
@@ -23,7 +23,7 @@
 			<td>{{policy.name}}</td>
 			<td class="center">{{policy.countInbound}}</td>
 			<td class="center">{{policy.countOutbound}}</td>
-			<td class="center">{{policy.countServers}}</td>
+			<td class="center">{{policy.countClusters}}</td>
 			<td class="center"><label-on :v-is-on="policy.isOn"></label-on></td>
 			<td>
 				<a :href="'/servers/components/waf/policy?firewallPolicyId=' + policy.id">详情</a> &nbsp;

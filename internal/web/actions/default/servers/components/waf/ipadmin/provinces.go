@@ -98,8 +98,8 @@ func (this *ProvincesAction) RunPost(params struct {
 	}
 
 	_, err = this.RPC().HTTPFirewallPolicyRPC().UpdateHTTPFirewallInboundConfig(this.AdminContext(), &pb.UpdateHTTPFirewallInboundConfigRequest{
-		FirewallPolicyId: params.FirewallPolicyId,
-		InboundJSON:      inboundJSON,
+		HttpFirewallPolicyId: params.FirewallPolicyId,
+		InboundJSON:          inboundJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)

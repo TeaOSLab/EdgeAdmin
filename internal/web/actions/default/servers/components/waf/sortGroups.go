@@ -73,9 +73,9 @@ func (this *SortGroupsAction) RunPost(params struct {
 	}
 
 	_, err = this.RPC().HTTPFirewallPolicyRPC().UpdateHTTPFirewallPolicyGroups(this.AdminContext(), &pb.UpdateHTTPFirewallPolicyGroupsRequest{
-		FirewallPolicyId: params.FirewallPolicyId,
-		InboundJSON:      inboundJSON,
-		OutboundJSON:     outboundJSON,
+		HttpFirewallPolicyId: params.FirewallPolicyId,
+		InboundJSON:          inboundJSON,
+		OutboundJSON:         outboundJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)

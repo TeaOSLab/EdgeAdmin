@@ -33,7 +33,7 @@ func (this *DeleteAction) RunPost(params struct {
 	}
 
 	// 删除
-	_, err = this.RPC().NodeClusterRPC().DeleteNodeCluster(this.AdminContext(), &pb.DeleteNodeClusterRequest{ClusterId: params.ClusterId})
+	_, err = this.RPC().NodeClusterRPC().DeleteNodeCluster(this.AdminContext(), &pb.DeleteNodeClusterRequest{NodeClusterId: params.ClusterId})
 	if err != nil {
 		this.ErrorPage(err)
 		return

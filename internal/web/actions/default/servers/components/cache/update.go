@@ -20,12 +20,12 @@ func (this *UpdateAction) Init() {
 func (this *UpdateAction) RunGet(params struct {
 	CachePolicyId int64
 }) {
-	configResp, err := this.RPC().HTTPCachePolicyRPC().FindEnabledHTTPCachePolicyConfig(this.AdminContext(), &pb.FindEnabledHTTPCachePolicyConfigRequest{CachePolicyId: params.CachePolicyId})
+	configResp, err := this.RPC().HTTPCachePolicyRPC().FindEnabledHTTPCachePolicyConfig(this.AdminContext(), &pb.FindEnabledHTTPCachePolicyConfigRequest{HttpCachePolicyId: params.CachePolicyId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	configJSON := configResp.CachePolicyJSON
+	configJSON := configResp.HttpCachePolicyJSON
 	if len(configJSON) == 0 {
 		this.NotFound("cachePolicy", params.CachePolicyId)
 		return
@@ -90,7 +90,7 @@ func (this *UpdateAction) RunPost(params struct {
 		return
 	}
 	_, err = this.RPC().HTTPCachePolicyRPC().UpdateHTTPCachePolicy(this.AdminContext(), &pb.UpdateHTTPCachePolicyRequest{
-		CachePolicyId: params.CachePolicyId,
+		HttpCachePolicyId: params.CachePolicyId,
 		IsOn:          params.IsOn,
 		Name:          params.Name,
 		Description:   params.Description,

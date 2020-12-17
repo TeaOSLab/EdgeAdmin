@@ -34,8 +34,8 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Field("name", params.Name).
 		Require("请输入分组名称")
 	createResp, err := this.RPC().NodeGroupRPC().CreateNodeGroup(this.AdminContext(), &pb.CreateNodeGroupRequest{
-		ClusterId: params.ClusterId,
-		Name:      params.Name,
+		NodeClusterId: params.ClusterId,
+		Name:          params.Name,
 	})
 	if err != nil {
 		this.ErrorPage(err)

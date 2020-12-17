@@ -34,7 +34,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 		this.ErrorPage(err)
 		return
 	}
-	cachePoliciesJSON := listResp.CachePoliciesJSON
+	cachePoliciesJSON := listResp.HttpCachePoliciesJSON
 	cachePolicies := []*serverconfigs.HTTPCachePolicy{}
 	err = json.Unmarshal(cachePoliciesJSON, &cachePolicies)
 	if err != nil {
@@ -45,16 +45,16 @@ func (this *IndexAction) RunGet(params struct{}) {
 
 	infos := []maps.Map{}
 	for _, cachePolicy := range cachePolicies {
-		countServersResp, err := this.RPC().ServerRPC().CountAllEnabledServersWithCachePolicyId(this.AdminContext(), &pb.CountAllEnabledServersWithCachePolicyIdRequest{CachePolicyId: cachePolicy.Id})
+		countClustersResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClustersWithHTTPCachePolicyId(this.AdminContext(), &pb.CountAllEnabledNodeClustersWithHTTPCachePolicyIdRequest{HttpCachePolicyId: cachePolicy.Id})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-		countServers := countServersResp.Count
+		countClusters := countClustersResp.Count
 
 		infos = append(infos, maps.Map{
-			"typeName":     serverconfigs.FindCachePolicyStorageName(cachePolicy.Type),
-			"countServers": countServers,
+			"typeName":      serverconfigs.FindCachePolicyStorageName(cachePolicy.Type),
+			"countClusters": countClusters,
 		})
 	}
 	this.Data["infos"] = infos

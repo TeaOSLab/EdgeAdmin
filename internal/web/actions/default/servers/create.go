@@ -256,7 +256,7 @@ func (this *CreateAction) RunPost(params struct {
 		Name:             params.Name,
 		ServerNamesJON:   []byte(params.ServerNames),
 		Description:      params.Description,
-		ClusterId:        params.ClusterId,
+		NodeClusterId:    params.ClusterId,
 		IncludeNodesJSON: includeNodesJSON,
 		ExcludeNodesJSON: excludeNodesJSON,
 		WebId:            webId,

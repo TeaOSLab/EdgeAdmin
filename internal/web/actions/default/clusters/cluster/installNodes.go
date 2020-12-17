@@ -21,7 +21,7 @@ func (this *InstallNodesAction) RunGet(params struct {
 }) {
 	this.Data["leftMenuItems"] = LeftMenuItemsForInstall(params.ClusterId, "register")
 
-	clusterResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeCluster(this.AdminContext(), &pb.FindEnabledNodeClusterRequest{ClusterId: params.ClusterId})
+	clusterResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeCluster(this.AdminContext(), &pb.FindEnabledNodeClusterRequest{NodeClusterId: params.ClusterId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -33,7 +33,7 @@ func (this *InstallNodesAction) RunGet(params struct {
 
 	cluster := clusterResp.Cluster
 
-	clusterAPINodesResp, err := this.RPC().NodeClusterRPC().FindAPINodesWithNodeCluster(this.AdminContext(), &pb.FindAPINodesWithNodeClusterRequest{ClusterId: params.ClusterId})
+	clusterAPINodesResp, err := this.RPC().NodeClusterRPC().FindAPINodesWithNodeCluster(this.AdminContext(), &pb.FindAPINodesWithNodeClusterRequest{NodeClusterId: params.ClusterId})
 	if err != nil {
 		this.ErrorPage(err)
 		return

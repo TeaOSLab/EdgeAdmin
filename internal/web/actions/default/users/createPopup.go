@@ -77,15 +77,15 @@ func (this *CreatePopupAction) RunPost(params struct {
 	}
 
 	createResp, err := this.RPC().UserRPC().CreateUser(this.AdminContext(), &pb.CreateUserRequest{
-		Username:  params.Username,
-		Password:  params.Pass1,
-		Fullname:  params.Fullname,
-		Mobile:    params.Mobile,
-		Tel:       params.Tel,
-		Email:     params.Email,
-		Remark:    params.Remark,
-		Source:    "admin:" + numberutils.FormatInt64(this.AdminId()),
-		ClusterId: params.ClusterId,
+		Username:      params.Username,
+		Password:      params.Pass1,
+		Fullname:      params.Fullname,
+		Mobile:        params.Mobile,
+		Tel:           params.Tel,
+		Email:         params.Email,
+		Remark:        params.Remark,
+		Source:        "admin:" + numberutils.FormatInt64(this.AdminId()),
+		NodeClusterId: params.ClusterId,
 	})
 	if err != nil {
 		this.ErrorPage(err)

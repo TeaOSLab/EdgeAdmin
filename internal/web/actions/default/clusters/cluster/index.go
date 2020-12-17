@@ -37,12 +37,12 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["keyword"] = params.Keyword
 
 	countResp, err := this.RPC().NodeRPC().CountAllEnabledNodesMatch(this.AdminContext(), &pb.CountAllEnabledNodesMatchRequest{
-		ClusterId:    params.ClusterId,
-		GroupId:      params.GroupId,
-		RegionId:     params.RegionId,
-		InstallState: types.Int32(params.InstalledState),
-		ActiveState:  types.Int32(params.ActiveState),
-		Keyword:      params.Keyword,
+		NodeClusterId: params.ClusterId,
+		GroupId:       params.GroupId,
+		RegionId:      params.RegionId,
+		InstallState:  types.Int32(params.InstalledState),
+		ActiveState:   types.Int32(params.ActiveState),
+		Keyword:       params.Keyword,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -53,14 +53,14 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["page"] = page.AsHTML()
 
 	nodesResp, err := this.RPC().NodeRPC().ListEnabledNodesMatch(this.AdminContext(), &pb.ListEnabledNodesMatchRequest{
-		Offset:       page.Offset,
-		Size:         page.Size,
-		ClusterId:    params.ClusterId,
-		GroupId:      params.GroupId,
-		RegionId:     params.RegionId,
-		InstallState: types.Int32(params.InstalledState),
-		ActiveState:  types.Int32(params.ActiveState),
-		Keyword:      params.Keyword,
+		Offset:        page.Offset,
+		Size:          page.Size,
+		NodeClusterId: params.ClusterId,
+		GroupId:       params.GroupId,
+		RegionId:      params.RegionId,
+		InstallState:  types.Int32(params.InstalledState),
+		ActiveState:   types.Int32(params.ActiveState),
+		Keyword:       params.Keyword,
 	})
 	nodeMaps := []maps.Map{}
 	for _, node := range nodesResp.Nodes {
@@ -154,7 +154,7 @@ func (this *IndexAction) RunGet(params struct {
 	// 所有分组
 	groupMaps := []maps.Map{}
 	groupsResp, err := this.RPC().NodeGroupRPC().FindAllEnabledNodeGroupsWithClusterId(this.AdminContext(), &pb.FindAllEnabledNodeGroupsWithClusterIdRequest{
-		ClusterId: params.ClusterId,
+		NodeClusterId: params.ClusterId,
 	})
 	if err != nil {
 		this.ErrorPage(err)

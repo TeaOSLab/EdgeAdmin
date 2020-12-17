@@ -55,7 +55,7 @@ func (this *SyncClusterTask) loop() error {
 
 	for _, cluster := range resp.Clusters {
 		_, err := rpcClient.NodeRPC().SyncNodesVersionWithCluster(ctx, &pb.SyncNodesVersionWithClusterRequest{
-			ClusterId: cluster.Id,
+			NodeClusterId: cluster.Id,
 		})
 		if err != nil {
 			return err
