@@ -18,7 +18,7 @@ func (this *ClusterAction) RunGet(params struct {
 	ClusterId int64
 }) {
 	// 集群信息
-	clusterResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeCluster(this.AdminContext(), &pb.FindEnabledNodeClusterRequest{ClusterId: params.ClusterId})
+	clusterResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeCluster(this.AdminContext(), &pb.FindEnabledNodeClusterRequest{NodeClusterId: params.ClusterId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -77,7 +77,7 @@ func (this *ClusterAction) RunGet(params struct {
 						"name": route.Name,
 						"code": route.Code,
 					},
-					"clusterId": node.ClusterId,
+					"clusterId": node.NodeClusterId,
 				})
 			}
 		} else {
@@ -89,14 +89,14 @@ func (this *ClusterAction) RunGet(params struct {
 					"name": "",
 					"code": "",
 				},
-				"clusterId": node.ClusterId,
+				"clusterId": node.NodeClusterId,
 			})
 		}
 	}
 	this.Data["nodes"] = nodeMaps
 
 	// 代理服务解析记录
-	serversResp, err := this.RPC().ServerRPC().FindAllEnabledServersDNSWithClusterId(this.AdminContext(), &pb.FindAllEnabledServersDNSWithClusterIdRequest{ClusterId: params.ClusterId})
+	serversResp, err := this.RPC().ServerRPC().FindAllEnabledServersDNSWithClusterId(this.AdminContext(), &pb.FindAllEnabledServersDNSWithClusterIdRequest{NodeClusterId: params.ClusterId})
 	if err != nil {
 		this.ErrorPage(err)
 		return

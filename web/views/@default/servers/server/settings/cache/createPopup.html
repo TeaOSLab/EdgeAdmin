@@ -4,14 +4,6 @@
 
 <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 	<table class="ui table definition selectable">
-		<tr>
-			<td class="title">缓存策略 *</td>
-			<td>
-				<select class="ui dropdown auto-width" name="cachePolicyId" v-model="cachePolicyId">
-					<option v-for="cachePolicy in cachePolicies" :value="cachePolicy.id">{{cachePolicy.name}}</option>
-				</select>
-			</td>
-		</tr>
 		<tbody is="http-cache-ref-box" :v-cache-ref="cacheRef"></tbody>
 	</table>
 	<submit-btn></submit-btn>

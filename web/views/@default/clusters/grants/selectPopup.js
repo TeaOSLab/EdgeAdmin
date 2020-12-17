@@ -2,8 +2,11 @@ Tea.context(function () {
 	this.grantId = 0;
 
 	this.selectGrant = function (grant) {
-		this.grantId = grant.id;
+		NotifyPopup({
+			code: 200,
+			data: {
+				grant: grant
+			}
+		})
 	};
-
-	this.success = NotifyPopup;
 });

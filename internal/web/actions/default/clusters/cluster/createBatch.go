@@ -77,11 +77,11 @@ func (this *CreateBatchAction) RunPost(params struct {
 	// 保存
 	for _, ip := range realIPList {
 		resp, err := this.RPC().NodeRPC().CreateNode(this.AdminContext(), &pb.CreateNodeRequest{
-			Name:      ip,
-			ClusterId: params.ClusterId,
-			GroupId:   params.GroupId,
-			RegionId:  params.RegionId,
-			Login:     nil,
+			Name:          ip,
+			NodeClusterId: params.ClusterId,
+			GroupId:       params.GroupId,
+			RegionId:      params.RegionId,
+			Login:         nil,
 		})
 		if err != nil {
 			this.ErrorPage(err)

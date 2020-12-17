@@ -38,6 +38,8 @@ func init() {
 			Post("/updateSetOn", new(UpdateSetOnAction)).
 			Post("/deleteSet", new(DeleteSetAction)).
 			GetPost("/updateSetPopup", new(UpdateSetPopupAction)).
+			Post("/count", new(CountAction)).
+			Get("/selectPopup", new(SelectPopupAction)).
 
 			// IP管理
 			GetPost("/ipadmin", new(ipadmin.IndexAction)).

@@ -1,5 +1,5 @@
 Vue.component("http-cache-config-box", {
-	props: ["v-cache-config", "v-cache-policies", "v-is-location"],
+	props: ["v-cache-config", "v-is-location", "v-cache-policy"],
 	data: function () {
 		let cacheConfig = this.vCacheConfig
 		if (cacheConfig == null) {
@@ -87,6 +87,15 @@ Vue.component("http-cache-config-box", {
 		<prior-checkbox :v-config="cacheConfig" v-if="vIsLocation"></prior-checkbox>
 		<tbody v-show="!vIsLocation || cacheConfig.isPrior">
 			<tr>
+				<td>缓存策略</td>
+				<td>
+					<div v-if="vCachePolicy != null">{{vCachePolicy.name}}
+						<p class="comment">使用当前服务所在集群的设置。</p>
+					</div>
+					<span v-else class="red">当前集群没有设置缓存策略，当前配置无法生效。</span>
+				</td>
+			</tr>
+			<tr>
 				<td class="title">是否开启缓存</td>
 				<td>
 					<div class="ui checkbox">
@@ -102,13 +111,11 @@ Vue.component("http-cache-config-box", {
 		<table class="ui table selectable" v-show="cacheConfig.cacheRefs.length > 0">
 			<thead>
 				<tr>
-					<th>缓存策略</th>
 					<th>条件</th>
 					<th>缓存时间</th>
 					<th class="two op">操作</th>
 				</tr>
 				<tr v-for="(cacheRef, index) in cacheConfig.cacheRefs">
-					<td><a :href="'/servers/components/cache/policy?cachePolicyId=' + cacheRef.cachePolicyId">{{cacheRef.cachePolicy.name}}</a></td>
 					<td>
 						<http-request-conds-view :v-conds="cacheRef.conds"></http-request-conds-view>
 					</td>

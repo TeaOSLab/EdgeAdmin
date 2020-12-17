@@ -25,12 +25,12 @@ func (this *TestReadAction) RunPost(params struct {
 		Value: strconv.FormatInt(params.ClusterId, 10),
 	})
 
-	cachePolicyResp, err := this.RPC().HTTPCachePolicyRPC().FindEnabledHTTPCachePolicyConfig(this.AdminContext(), &pb.FindEnabledHTTPCachePolicyConfigRequest{CachePolicyId: params.CachePolicyId})
+	cachePolicyResp, err := this.RPC().HTTPCachePolicyRPC().FindEnabledHTTPCachePolicyConfig(this.AdminContext(), &pb.FindEnabledHTTPCachePolicyConfigRequest{HttpCachePolicyId: params.CachePolicyId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	cachePolicyJSON := cachePolicyResp.CachePolicyJSON
+	cachePolicyJSON := cachePolicyResp.HttpCachePolicyJSON
 	if len(cachePolicyJSON) == 0 {
 		this.Fail("找不到要操作的缓存策略")
 	}

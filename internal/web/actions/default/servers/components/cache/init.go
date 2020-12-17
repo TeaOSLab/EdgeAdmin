@@ -26,6 +26,9 @@ func init() {
 			Post("/delete", new(DeleteAction)).
 			Post("/testRead", new(TestReadAction)).
 			Post("/testWrite", new(TestWriteAction)).
+			Get("/selectPopup", new(SelectPopupAction)).
+			Post("/count", new(CountAction)).
+
 			EndAll()
 	})
 }

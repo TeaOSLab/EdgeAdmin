@@ -1,0 +1,19 @@
+{$layout}
+{$template "/left_menu"}
+
+<div class="right-box">
+    <form class="ui form" method="post" data-tea-action="$" data-tea-success="success">
+        <csrf-token></csrf-token>
+        <input type="hidden" name="clusterId" :value="clusterId"/>
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title">选择缓存策略 *</td>
+                <td>
+                    <http-cache-policy-selector :v-cache-policy="cachePolicy"></http-cache-policy-selector>
+                    <p class="comment">部署在当前集群上的所有服务都会自动使用此策略，只是服务可以自定义是否开启。</p>
+                </td>
+            </tr>
+        </table>
+        <submit-btn></submit-btn>
+    </form>
+</div>

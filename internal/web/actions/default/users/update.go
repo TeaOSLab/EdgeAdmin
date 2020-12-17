@@ -115,16 +115,16 @@ func (this *UpdateAction) RunPost(params struct {
 	}
 
 	_, err = this.RPC().UserRPC().UpdateUser(this.AdminContext(), &pb.UpdateUserRequest{
-		UserId:    params.UserId,
-		Username:  params.Username,
-		Password:  params.Pass1,
-		Fullname:  params.Fullname,
-		Mobile:    params.Mobile,
-		Tel:       params.Tel,
-		Email:     params.Email,
-		Remark:    params.Remark,
-		IsOn:      params.IsOn,
-		ClusterId: params.ClusterId,
+		UserId:        params.UserId,
+		Username:      params.Username,
+		Password:      params.Pass1,
+		Fullname:      params.Fullname,
+		Mobile:        params.Mobile,
+		Tel:           params.Tel,
+		Email:         params.Email,
+		Remark:        params.Remark,
+		IsOn:          params.IsOn,
+		NodeClusterId: params.ClusterId,
 	})
 	if err != nil {
 		this.ErrorPage(err)

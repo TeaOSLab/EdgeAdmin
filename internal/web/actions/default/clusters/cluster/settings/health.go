@@ -21,7 +21,7 @@ func (this *HealthAction) Init() {
 func (this *HealthAction) RunGet(params struct {
 	ClusterId int64
 }) {
-	configResp, err := this.RPC().NodeClusterRPC().FindNodeClusterHealthCheckConfig(this.AdminContext(), &pb.FindNodeClusterHealthCheckConfigRequest{ClusterId: params.ClusterId})
+	configResp, err := this.RPC().NodeClusterRPC().FindNodeClusterHealthCheckConfig(this.AdminContext(), &pb.FindNodeClusterHealthCheckConfigRequest{NodeClusterId: params.ClusterId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -56,7 +56,7 @@ func (this *HealthAction) RunPost(params struct {
 	}
 
 	_, err = this.RPC().NodeClusterRPC().UpdateNodeClusterHealthCheck(this.AdminContext(), &pb.UpdateNodeClusterHealthCheckRequest{
-		ClusterId:       params.ClusterId,
+		NodeClusterId:   params.ClusterId,
 		HealthCheckJSON: params.HealthCheckJSON,
 	})
 	if err != nil {

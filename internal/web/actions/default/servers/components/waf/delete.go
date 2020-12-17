@@ -16,22 +16,20 @@ func (this *DeleteAction) RunPost(params struct {
 	// 日志
 	defer this.CreateLog(oplogs.LevelInfo, "删除WAF策略 %d", params.FirewallPolicyId)
 
-	countResp, err := this.RPC().ServerRPC().CountAllEnabledServersWithHTTPFirewallPolicyId(this.AdminContext(), &pb.CountAllEnabledServersWithHTTPFirewallPolicyIdRequest{FirewallPolicyId: params.FirewallPolicyId})
+	countResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClustersWithHTTPFirewallPolicyId(this.AdminContext(), &pb.CountAllEnabledNodeClustersWithHTTPFirewallPolicyIdRequest{HttpFirewallPolicyId: params.FirewallPolicyId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 	if countResp.Count > 0 {
-		this.Fail("此WAF策略正在被有些服务引用，请修改后再删除。")
+		this.Fail("此WAF策略正在被有些集群引用，请修改后再删除。")
 	}
 
-	_, err = this.RPC().HTTPFirewallPolicyRPC().DeleteFirewallPolicy(this.AdminContext(), &pb.DeleteFirewallPolicyRequest{FirewallPolicyId: params.FirewallPolicyId})
+	_, err = this.RPC().HTTPFirewallPolicyRPC().DeleteHTTPFirewallPolicy(this.AdminContext(), &pb.DeleteHTTPFirewallPolicyRequest{HttpFirewallPolicyId: params.FirewallPolicyId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-
-
 
 	this.Success()
 }

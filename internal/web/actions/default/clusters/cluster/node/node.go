@@ -39,7 +39,7 @@ func (this *NodeAction) RunGet(params struct {
 	var clusterMap maps.Map = nil
 	if node.Cluster != nil {
 		clusterId := node.Cluster.Id
-		clusterResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeCluster(this.AdminContext(), &pb.FindEnabledNodeClusterRequest{ClusterId: clusterId})
+		clusterResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeCluster(this.AdminContext(), &pb.FindEnabledNodeClusterRequest{NodeClusterId: clusterId})
 		if err != nil {
 			this.ErrorPage(err)
 			return

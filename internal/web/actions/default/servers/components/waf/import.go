@@ -48,8 +48,8 @@ func (this *ImportAction) RunPost(params struct {
 	}
 
 	_, err = this.RPC().HTTPFirewallPolicyRPC().ImportHTTPFirewallPolicy(this.AdminContext(), &pb.ImportHTTPFirewallPolicyRequest{
-		FirewallPolicyId:   params.FirewallPolicyId,
-		FirewallPolicyJSON: data,
+		HttpFirewallPolicyId:   params.FirewallPolicyId,
+		HttpFirewallPolicyJSON: data,
 	})
 	if err != nil {
 		this.Fail("导入失败：" + err.Error())

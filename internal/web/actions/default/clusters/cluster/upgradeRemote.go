@@ -24,7 +24,7 @@ func (this *UpgradeRemoteAction) RunGet(params struct {
 	this.Data["leftMenuItems"] = LeftMenuItemsForInstall(params.ClusterId, "upgrade")
 
 	nodes := []maps.Map{}
-	resp, err := this.RPC().NodeRPC().FindAllUpgradeNodesWithClusterId(this.AdminContext(), &pb.FindAllUpgradeNodesWithClusterIdRequest{ClusterId: params.ClusterId})
+	resp, err := this.RPC().NodeRPC().FindAllUpgradeNodesWithClusterId(this.AdminContext(), &pb.FindAllUpgradeNodesWithClusterIdRequest{NodeClusterId: params.ClusterId})
 	if err != nil {
 		this.ErrorPage(err)
 		return

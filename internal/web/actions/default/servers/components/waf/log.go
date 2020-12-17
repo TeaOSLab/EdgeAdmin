@@ -83,15 +83,15 @@ func (this *LogAction) RunGet(params struct {
 	}
 
 	// 所有分组
-	policyResp, err := this.RPC().HTTPFirewallPolicyRPC().FindEnabledFirewallPolicyConfig(this.AdminContext(), &pb.FindEnabledFirewallPolicyConfigRequest{
-		FirewallPolicyId: params.FirewallPolicyId,
+	policyResp, err := this.RPC().HTTPFirewallPolicyRPC().FindEnabledHTTPFirewallPolicyConfig(this.AdminContext(), &pb.FindEnabledHTTPFirewallPolicyConfigRequest{
+		HttpFirewallPolicyId: params.FirewallPolicyId,
 	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 	policyConfig := &firewallconfigs.HTTPFirewallPolicy{}
-	err = json.Unmarshal(policyResp.FirewallPolicyJSON, policyConfig)
+	err = json.Unmarshal(policyResp.HttpFirewallPolicyJSON, policyConfig)
 	if err != nil {
 		this.ErrorPage(err)
 		return

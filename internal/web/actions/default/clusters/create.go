@@ -30,6 +30,12 @@ func (this *CreateAction) RunGet(params struct{}) {
 func (this *CreateAction) RunPost(params struct {
 	Name string
 
+	// 缓存策略
+	CachePolicyId int64
+
+	// WAF策略
+	HttpFirewallPolicyId int64
+
 	// SSH相关
 	GrantId    int64
 	InstallDir string
@@ -43,6 +49,13 @@ func (this *CreateAction) RunPost(params struct {
 	params.Must.
 		Field("name", params.Name).
 		Require("请输入集群名称")
+
+	if params.CachePolicyId <= 0 {
+		this.Fail("请选择或者创建缓存策略")
+	}
+	if params.HttpFirewallPolicyId <= 0 {
+		this.Fail("请选择或者创建WAF策略")
+	}
 
 	// 检查DNS名称
 	if len(params.DnsName) > 0 {
@@ -67,11 +80,13 @@ func (this *CreateAction) RunPost(params struct {
 	// TODO 检查DnsDomainId的有效性
 
 	createResp, err := this.RPC().NodeClusterRPC().CreateNodeCluster(this.AdminContext(), &pb.CreateNodeClusterRequest{
-		Name:        params.Name,
-		GrantId:     params.GrantId,
-		InstallDir:  params.InstallDir,
-		DnsDomainId: params.DnsDomainId,
-		DnsName:     params.DnsName,
+		Name:                 params.Name,
+		GrantId:              params.GrantId,
+		InstallDir:           params.InstallDir,
+		DnsDomainId:          params.DnsDomainId,
+		DnsName:              params.DnsName,
+		HttpCachePolicyId:    params.CachePolicyId,
+		HttpFirewallPolicyId: params.HttpFirewallPolicyId,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -79,7 +94,7 @@ func (this *CreateAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "创建节点集群：%d", createResp.ClusterId)
+	defer this.CreateLog(oplogs.LevelInfo, "创建节点集群：%d", createResp.NodeClusterId)
 
 	this.Success()
 }

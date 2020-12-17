@@ -55,20 +55,20 @@ func (this *PolicyAction) RunGet(params struct {
 		"blockOptions": firewallPolicy.BlockOptions,
 	}
 
-	// 正在使用此策略的服务
-	listServersResp, err := this.RPC().ServerRPC().FindAllEnabledServersWithHTTPFirewallPolicyId(this.AdminContext(), &pb.FindAllEnabledServersWithHTTPFirewallPolicyIdRequest{FirewallPolicyId: params.FirewallPolicyId})
+	// 正在使用此策略的集群
+	clustersResp, err := this.RPC().NodeClusterRPC().FindAllEnabledNodeClustersWithHTTPFirewallPolicyId(this.AdminContext(), &pb.FindAllEnabledNodeClustersWithHTTPFirewallPolicyIdRequest{HttpFirewallPolicyId: params.FirewallPolicyId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	serverMaps := []maps.Map{}
-	for _, server := range listServersResp.Servers {
-		serverMaps = append(serverMaps, maps.Map{
-			"id":   server.Id,
-			"name": server.Name,
+	clusterMaps := []maps.Map{}
+	for _, cluster := range clustersResp.NodeClusters {
+		clusterMaps = append(clusterMaps, maps.Map{
+			"id":   cluster.Id,
+			"name": cluster.Name,
 		})
 	}
-	this.Data["servers"] = serverMaps
+	this.Data["clusters"] = clusterMaps
 
 	this.Show()
 }

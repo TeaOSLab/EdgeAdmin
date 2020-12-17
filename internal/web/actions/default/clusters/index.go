@@ -38,7 +38,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 		}
 		for _, cluster := range clustersResp.Clusters {
 			// 全部节点数量
-			countNodesResp, err := this.RPC().NodeRPC().CountAllEnabledNodesMatch(this.AdminContext(), &pb.CountAllEnabledNodesMatchRequest{ClusterId: cluster.Id})
+			countNodesResp, err := this.RPC().NodeRPC().CountAllEnabledNodesMatch(this.AdminContext(), &pb.CountAllEnabledNodesMatchRequest{NodeClusterId: cluster.Id})
 			if err != nil {
 				this.ErrorPage(err)
 				return
@@ -46,8 +46,8 @@ func (this *IndexAction) RunGet(params struct{}) {
 
 			// 在线节点
 			countActiveNodesResp, err := this.RPC().NodeRPC().CountAllEnabledNodesMatch(this.AdminContext(), &pb.CountAllEnabledNodesMatchRequest{
-				ClusterId:   cluster.Id,
-				ActiveState: types.Int32(configutils.BoolStateYes),
+				NodeClusterId: cluster.Id,
+				ActiveState:   types.Int32(configutils.BoolStateYes),
 			})
 			if err != nil {
 				this.ErrorPage(err)
@@ -55,7 +55,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 			}
 
 			// 需要升级的节点
-			countUpgradeNodesResp, err := this.RPC().NodeRPC().CountAllUpgradeNodesWithClusterId(this.AdminContext(), &pb.CountAllUpgradeNodesWithClusterIdRequest{ClusterId: cluster.Id})
+			countUpgradeNodesResp, err := this.RPC().NodeRPC().CountAllUpgradeNodesWithClusterId(this.AdminContext(), &pb.CountAllUpgradeNodesWithClusterIdRequest{NodeClusterId: cluster.Id})
 			if err != nil {
 				this.ErrorPage(err)
 				return

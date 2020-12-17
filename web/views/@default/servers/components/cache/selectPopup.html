@@ -1,0 +1,24 @@
+{$layout "layout_popup"}
+
+<h3>选择缓存策略</h3>
+<table class="ui table selectable">
+    <thead>
+        <tr>
+            <th>策略名称</th>
+            <th style="width: 7em">状态</th>
+            <th class="two op">操作</th>
+        </tr>
+    </thead>
+    <tr v-for="cachePolicy in cachePolicies">
+        <td>{{cachePolicy.name}}</td>
+        <td>
+            <label-on :v-is-on="cachePolicy.isOn"></label-on>
+        </td>
+        <td>
+            <span v-if="cachePolicy.isOn">
+                <a href="" @click.prevent="selectPolicy(cachePolicy)">选择</a>
+            </span>
+        </td>
+    </tr>
+</table>
+<div class="page" v-html="page"></div>

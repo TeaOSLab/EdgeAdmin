@@ -3,7 +3,9 @@ package cache
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/cache/cacheutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
+	"github.com/iwind/TeaGo/maps"
 )
 
 type PolicyAction struct {
@@ -25,6 +27,21 @@ func (this *PolicyAction) RunGet(params struct {
 	this.Data["cachePolicy"] = cachePolicy
 
 	this.Data["typeName"] = serverconfigs.FindCachePolicyStorageName(cachePolicy.Type)
+
+	// 正在使用此策略的集群
+	clustersResp, err := this.RPC().NodeClusterRPC().FindAllEnabledNodeClustersWithHTTPCachePolicyId(this.AdminContext(), &pb.FindAllEnabledNodeClustersWithHTTPCachePolicyIdRequest{HttpCachePolicyId: params.CachePolicyId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	clusterMaps := []maps.Map{}
+	for _, cluster := range clustersResp.NodeClusters {
+		clusterMaps = append(clusterMaps, maps.Map{
+			"id":   cluster.Id,
+			"name": cluster.Name,
+		})
+	}
+	this.Data["clusters"] = clusterMaps
 
 	this.Show()
 }
