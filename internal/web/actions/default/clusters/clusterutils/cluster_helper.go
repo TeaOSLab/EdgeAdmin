@@ -2,7 +2,9 @@ package clusterutils
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/models"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/logs"
@@ -19,7 +21,8 @@ func NewClusterHelper() *ClusterHelper {
 	return &ClusterHelper{}
 }
 
-func (this *ClusterHelper) BeforeAction(action *actions.ActionObject) {
+func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) {
+	action := actionPtr.Object()
 	if action.Request.Method != http.MethodGet {
 		return
 	}
@@ -31,19 +34,12 @@ func (this *ClusterHelper) BeforeAction(action *actions.ActionObject) {
 	clusterIdString := strconv.FormatInt(clusterId, 10)
 	action.Data["clusterId"] = clusterId
 
-	rpcClient, err := rpc.SharedRPC()
-	if err != nil {
-		logs.Error(err)
-		return
-	}
-
 	if clusterId > 0 {
-		clusterResp, err := rpcClient.NodeClusterRPC().FindEnabledNodeCluster(rpcClient.Context(action.Context.GetInt64("adminId")), &pb.FindEnabledNodeClusterRequest{NodeClusterId: clusterId})
+		cluster, err := models.SharedNodeClusterDAO.FindEnabledNodeCluster(actionPtr.(rpc.ContextInterface).AdminContext(), clusterId)
 		if err != nil {
 			logs.Error(err)
 			return
 		}
-		cluster := clusterResp.Cluster
 		if cluster == nil {
 			action.WriteString("can not find cluster")
 			return
@@ -65,13 +61,14 @@ func (this *ClusterHelper) BeforeAction(action *actions.ActionObject) {
 		secondMenuItem := action.Data.GetString("secondMenuItem")
 		switch selectedTabbar {
 		case "setting":
-			action.Data["leftMenuItems"] = this.createSettingMenu(clusterIdString, secondMenuItem)
+			action.Data["leftMenuItems"] = this.createSettingMenu(cluster, secondMenuItem)
 		}
 	}
 }
 
 // 设置菜单
-func (this *ClusterHelper) createSettingMenu(clusterId string, selectedItem string) (items []maps.Map) {
+func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, selectedItem string) (items []maps.Map) {
+	clusterId := numberutils.FormatInt64(cluster.Id)
 	items = append(items, maps.Map{
 		"name":     "基础设置",
 		"url":      "/clusters/cluster/settings?clusterId=" + clusterId,
@@ -81,11 +78,13 @@ func (this *ClusterHelper) createSettingMenu(clusterId string, selectedItem stri
 		"name":     "缓存设置",
 		"url":      "/clusters/cluster/settings/cache?clusterId=" + clusterId,
 		"isActive": selectedItem == "cache",
+		"isOn":     cluster.HttpCachePolicyId > 0,
 	})
 	items = append(items, maps.Map{
 		"name":     "WAF设置",
 		"url":      "/clusters/cluster/settings/waf?clusterId=" + clusterId,
 		"isActive": selectedItem == "waf",
+		"isOn":     cluster.HttpFirewallPolicyId > 0,
 	})
 	items = append(items, maps.Map{
 		"name":     "健康检查",

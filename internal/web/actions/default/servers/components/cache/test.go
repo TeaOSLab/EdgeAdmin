@@ -15,7 +15,9 @@ func (this *TestAction) Init() {
 	this.Nav("", "", "test")
 }
 
-func (this *TestAction) RunGet(params struct{}) {
+func (this *TestAction) RunGet(params struct {
+	CachePolicyId int64
+}) {
 	// 默认的集群ID
 	cookie, err := this.Request.Cookie("cache_cluster_id")
 	if cookie != nil && err == nil {
@@ -23,13 +25,13 @@ func (this *TestAction) RunGet(params struct{}) {
 	}
 
 	// 集群列表
-	clustersResp, err := this.RPC().NodeClusterRPC().FindAllEnabledNodeClusters(this.AdminContext(), &pb.FindAllEnabledNodeClustersRequest{})
+	clustersResp, err := this.RPC().NodeClusterRPC().FindAllEnabledNodeClustersWithHTTPCachePolicyId(this.AdminContext(), &pb.FindAllEnabledNodeClustersWithHTTPCachePolicyIdRequest{HttpCachePolicyId: params.CachePolicyId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 	clusterMaps := []maps.Map{}
-	for _, cluster := range clustersResp.Clusters {
+	for _, cluster := range clustersResp.NodeClusters {
 		clusterMaps = append(clusterMaps, maps.Map{
 			"id":   cluster.Id,
 			"name": cluster.Name,

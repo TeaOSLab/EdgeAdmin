@@ -38,10 +38,10 @@ func (this *IndexAction) RunGet(params struct{}) {
 	messages := []maps.Map{}
 	for _, message := range listResp.Messages {
 		clusterMap := maps.Map{}
-		if message.Cluster != nil {
+		if message.NodeCluster != nil {
 			clusterMap = maps.Map{
-				"id":   message.Cluster.Id,
-				"name": message.Cluster.Name,
+				"id":   message.NodeCluster.Id,
+				"name": message.NodeCluster.Name,
 			}
 		}
 

@@ -26,12 +26,12 @@ func (this *InstallNodesAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	if clusterResp.Cluster == nil {
+	if clusterResp.NodeCluster == nil {
 		this.NotFound("nodeCluster", params.ClusterId)
 		return
 	}
 
-	cluster := clusterResp.Cluster
+	cluster := clusterResp.NodeCluster
 
 	clusterAPINodesResp, err := this.RPC().NodeClusterRPC().FindAPINodesWithNodeCluster(this.AdminContext(), &pb.FindAPINodesWithNodeClusterRequest{NodeClusterId: params.ClusterId})
 	if err != nil {

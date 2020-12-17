@@ -26,7 +26,7 @@ func (this *IndexAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	cluster := clusterResp.Cluster
+	cluster := clusterResp.NodeCluster
 	if cluster == nil {
 		this.WriteString("not found cluster")
 		return

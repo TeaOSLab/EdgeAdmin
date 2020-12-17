@@ -17,5 +17,5 @@ func (this *NodeClusterDAO) FindEnabledNodeCluster(ctx context.Context, clusterI
 	if err != nil {
 		return nil, err
 	}
-	return clusterResp.Cluster, nil
+	return clusterResp.NodeCluster, nil
 }

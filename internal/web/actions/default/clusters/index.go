@@ -36,7 +36,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 			this.ErrorPage(err)
 			return
 		}
-		for _, cluster := range clustersResp.Clusters {
+		for _, cluster := range clustersResp.NodeClusters {
 			// 全部节点数量
 			countNodesResp, err := this.RPC().NodeRPC().CountAllEnabledNodesMatch(this.AdminContext(), &pb.CountAllEnabledNodesMatchRequest{NodeClusterId: cluster.Id})
 			if err != nil {

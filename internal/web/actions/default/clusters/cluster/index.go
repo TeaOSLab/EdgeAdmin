@@ -139,8 +139,8 @@ func (this *IndexAction) RunGet(params struct {
 				"memUsageText": fmt.Sprintf("%.2f%%", status.MemoryUsage*100),
 			},
 			"cluster": maps.Map{
-				"id":   node.Cluster.Id,
-				"name": node.Cluster.Name,
+				"id":   node.NodeCluster.Id,
+				"name": node.NodeCluster.Name,
 			},
 			"isSynced":      isSynced,
 			"ipAddresses":   ipAddresses,

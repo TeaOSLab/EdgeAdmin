@@ -23,7 +23,7 @@ func (this *ClusterAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	cluster := clusterResp.Cluster
+	cluster := clusterResp.NodeCluster
 	if cluster == nil {
 		this.NotFound("nodeCluster", params.ClusterId)
 		return

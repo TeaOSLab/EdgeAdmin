@@ -18,7 +18,7 @@ func (this *OptionsAction) RunPost(params struct{}) {
 	}
 
 	clusterMaps := []maps.Map{}
-	for _, cluster := range clustersResp.Clusters {
+	for _, cluster := range clustersResp.NodeClusters {
 		clusterMaps = append(clusterMaps, maps.Map{
 			"id":   cluster.Id,
 			"name": cluster.Name,
