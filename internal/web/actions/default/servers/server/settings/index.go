@@ -33,7 +33,7 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 	clusterMaps := []maps.Map{}
-	for _, cluster := range resp.Clusters {
+	for _, cluster := range resp.NodeClusters {
 		clusterMaps = append(clusterMaps, maps.Map{
 			"id":   cluster.Id,
 			"name": cluster.Name,
@@ -54,8 +54,8 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	clusterId := int64(0)
-	if server.Cluster != nil {
-		clusterId = server.Cluster.Id
+	if server.NodeCluster != nil {
+		clusterId = server.NodeCluster.Id
 	}
 
 	// 分组

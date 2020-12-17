@@ -172,10 +172,10 @@ func (this *HTTPFirewallPolicyDAO) FindEnabledHTTPFirewallPolicyWithServerId(ctx
 	if server == nil {
 		return nil, nil
 	}
-	if server.Cluster == nil {
+	if server.NodeCluster == nil {
 		return nil, nil
 	}
-	clusterId := server.Cluster.Id
+	clusterId := server.NodeCluster.Id
 	cluster, err := SharedNodeClusterDAO.FindEnabledNodeCluster(ctx, clusterId)
 	if err != nil {
 		return nil, err

@@ -32,7 +32,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 		return
 	}
 	clusterMaps := []maps.Map{}
-	for _, cluster := range clustersResp.Clusters {
+	for _, cluster := range clustersResp.NodeClusters {
 		domainId := cluster.DnsDomainId
 		domainName := ""
 		providerId := int64(0)

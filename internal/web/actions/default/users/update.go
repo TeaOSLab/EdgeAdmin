@@ -48,8 +48,8 @@ func (this *UpdateAction) RunGet(params struct {
 	}
 
 	this.Data["clusterId"] = 0
-	if user.Cluster != nil {
-		this.Data["clusterId"] = user.Cluster.Id
+	if user.NodeCluster != nil {
+		this.Data["clusterId"] = user.NodeCluster.Id
 	}
 
 	this.Show()

@@ -25,7 +25,7 @@ func (this *CheckChangeAction) RunPost(params struct {
 	}
 
 	result := []maps.Map{}
-	for _, cluster := range resp.Clusters {
+	for _, cluster := range resp.NodeClusters {
 		result = append(result, maps.Map{
 			"id":   cluster.Id,
 			"name": cluster.Name,

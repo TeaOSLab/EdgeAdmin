@@ -50,7 +50,7 @@ func (this *GrantAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	for _, cluster := range clustersResp.Clusters {
+	for _, cluster := range clustersResp.NodeClusters {
 		clusterMaps = append(clusterMaps, maps.Map{
 			"id":   cluster.Id,
 			"name": cluster.Name,
@@ -66,13 +66,13 @@ func (this *GrantAction) RunGet(params struct {
 		return
 	}
 	for _, node := range nodesResp.Nodes {
-		if node.Cluster == nil {
+		if node.NodeCluster == nil {
 			continue
 		}
 
 		clusterMap := maps.Map{
-			"id":   node.Cluster.Id,
-			"name": node.Cluster.Name,
+			"id":   node.NodeCluster.Id,
+			"name": node.NodeCluster.Name,
 		}
 
 		nodeMaps = append(nodeMaps, maps.Map{

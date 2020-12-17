@@ -21,7 +21,7 @@ func (this *SyncAction) RunPost(params struct{}) {
 		this.ErrorPage(err)
 		return
 	}
-	clusters := clustersResp.Clusters
+	clusters := clustersResp.NodeClusters
 
 	for _, cluster := range clusters {
 		_, err := this.RPC().NodeRPC().SyncNodesVersionWithCluster(this.AdminContext(), &pb.SyncNodesVersionWithClusterRequest{

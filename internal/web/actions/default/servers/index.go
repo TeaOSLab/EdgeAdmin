@@ -151,8 +151,8 @@ func (this *IndexAction) RunGet(params struct {
 			"isOn": server.IsOn,
 			"name": server.Name,
 			"cluster": maps.Map{
-				"id":   server.Cluster.Id,
-				"name": server.Cluster.Name,
+				"id":   server.NodeCluster.Id,
+				"name": server.NodeCluster.Name,
 			},
 			"ports":            portMaps,
 			"serverTypeName":   serverconfigs.FindServerType(server.Type).GetString("name"),

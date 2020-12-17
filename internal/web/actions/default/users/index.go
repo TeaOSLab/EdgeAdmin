@@ -35,10 +35,10 @@ func (this *IndexAction) RunGet(params struct {
 	userMaps := []maps.Map{}
 	for _, user := range usersResp.Users {
 		var clusterMap maps.Map = nil
-		if user.Cluster != nil {
+		if user.NodeCluster != nil {
 			clusterMap = maps.Map{
-				"id":   user.Cluster.Id,
-				"name": user.Cluster.Name,
+				"id":   user.NodeCluster.Id,
+				"name": user.NodeCluster.Name,
 			}
 		}
 		userMaps = append(userMaps, maps.Map{

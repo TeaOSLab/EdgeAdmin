@@ -30,7 +30,7 @@ func (this *CreateAction) RunGet(params struct{}) {
 		return
 	}
 	clusterMaps := []maps.Map{}
-	for _, cluster := range resp.Clusters {
+	for _, cluster := range resp.NodeClusters {
 		clusterMaps = append(clusterMaps, maps.Map{
 			"id":   cluster.Id,
 			"name": cluster.Name,

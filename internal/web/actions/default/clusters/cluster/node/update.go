@@ -37,10 +37,10 @@ func (this *UpdateAction) RunGet(params struct {
 	}
 
 	var clusterMap maps.Map = nil
-	if node.Cluster != nil {
+	if node.NodeCluster != nil {
 		clusterMap = maps.Map{
-			"id":   node.Cluster.Id,
-			"name": node.Cluster.Name,
+			"id":   node.NodeCluster.Id,
+			"name": node.NodeCluster.Name,
 		}
 	}
 
@@ -178,7 +178,7 @@ func (this *UpdateAction) RunGet(params struct {
 		return
 	}
 	clusterMaps := []maps.Map{}
-	for _, cluster := range resp.Clusters {
+	for _, cluster := range resp.NodeClusters {
 		clusterMaps = append(clusterMaps, maps.Map{
 			"id":   cluster.Id,
 			"name": cluster.Name,
