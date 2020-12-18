@@ -150,13 +150,13 @@ func (this *RequestCertPopupAction) RunPost(params struct {
 	if runResp.IsOk {
 		certId := runResp.SslCertId
 
-		configResp, err := this.RPC().SSLCertRPC().FindEnabledSSLCertConfig(this.AdminContext(), &pb.FindEnabledSSLCertConfigRequest{CertId: certId})
+		configResp, err := this.RPC().SSLCertRPC().FindEnabledSSLCertConfig(this.AdminContext(), &pb.FindEnabledSSLCertConfigRequest{SslCertId: certId})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
 		certConfig := &sslconfigs.SSLCertConfig{}
-		err = json.Unmarshal(configResp.CertJSON, certConfig)
+		err = json.Unmarshal(configResp.SslCertJSON, certConfig)
 		if err != nil {
 			this.ErrorPage(err)
 			return

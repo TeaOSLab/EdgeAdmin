@@ -31,4 +31,7 @@ table th.width5 {
 textarea::-webkit-scrollbar {
   width: 6px !important;
 }
+select.dropdown {
+  height: auto!important;
+}
 /*# sourceMappingURL=@layout_override.css.map */

@@ -22,14 +22,14 @@ func (this *DownloadZipAction) RunGet(params struct {
 }) {
 	defer this.CreateLogInfo("下载SSL证书压缩包 %d", params.CertId)
 
-	certResp, err := this.RPC().SSLCertRPC().FindEnabledSSLCertConfig(this.AdminContext(), &pb.FindEnabledSSLCertConfigRequest{CertId: params.CertId})
+	certResp, err := this.RPC().SSLCertRPC().FindEnabledSSLCertConfig(this.AdminContext(), &pb.FindEnabledSSLCertConfigRequest{SslCertId: params.CertId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 
 	certConfig := &sslconfigs.SSLCertConfig{}
-	err = json.Unmarshal(certResp.CertJSON, certConfig)
+	err = json.Unmarshal(certResp.SslCertJSON, certConfig)
 	if err != nil {
 		this.ErrorPage(err)
 		return

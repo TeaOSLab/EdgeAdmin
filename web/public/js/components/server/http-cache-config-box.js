@@ -108,11 +108,11 @@ Vue.component("http-cache-config-box", {
 	</table>
 	
 	<div v-show="isOn()">
-		<table class="ui table selectable" v-show="cacheConfig.cacheRefs.length > 0">
+		<table class="ui table selectable celled" v-show="cacheConfig.cacheRefs.length > 0">
 			<thead>
 				<tr>
 					<th>条件</th>
-					<th>缓存时间</th>
+					<th class="width10">缓存时间</th>
 					<th class="two op">操作</th>
 				</tr>
 				<tr v-for="(cacheRef, index) in cacheConfig.cacheRefs">

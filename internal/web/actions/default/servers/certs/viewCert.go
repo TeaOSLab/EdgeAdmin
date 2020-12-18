@@ -18,19 +18,19 @@ func (this *ViewCertAction) Init() {
 func (this *ViewCertAction) RunGet(params struct {
 	CertId int64
 }) {
-	certResp, err := this.RPC().SSLCertRPC().FindEnabledSSLCertConfig(this.AdminContext(), &pb.FindEnabledSSLCertConfigRequest{CertId: params.CertId})
+	certResp, err := this.RPC().SSLCertRPC().FindEnabledSSLCertConfig(this.AdminContext(), &pb.FindEnabledSSLCertConfigRequest{SslCertId: params.CertId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 
-	if len(certResp.CertJSON) == 0 {
+	if len(certResp.SslCertJSON) == 0 {
 		this.NotFound("sslCert", params.CertId)
 		return
 	}
 
 	certConfig := &sslconfigs.SSLCertConfig{}
-	err = json.Unmarshal(certResp.CertJSON, certConfig)
+	err = json.Unmarshal(certResp.SslCertJSON, certConfig)
 	if err != nil {
 		this.ErrorPage(err)
 		return

@@ -1,5 +1,13 @@
 Tea.context(function () {
-	this.success = NotifyReloadSuccess("保存成功")
+	this.tab = "domainMatch"
+
+	this.selectTab = function (tab) {
+		this.tab = tab
+	}
+
+	this.success = function () {
+		teaweb.success("保存成功")
+	}
 
 	/**
 	 * 域名不匹配动作

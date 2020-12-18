@@ -88,7 +88,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	// 创建策略
 	if len(certIds) > 0 {
 		sslPolicyCreateResp, err := this.RPC().SSLPolicyRPC().CreateSSLPolicy(this.AdminContext(), &pb.CreateSSLPolicyRequest{
-			CertsJSON: certRefsJSON,
+			SslCertsJSON: certRefsJSON,
 		})
 		if err != nil {
 			this.ErrorPage(err)

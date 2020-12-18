@@ -104,18 +104,18 @@ func (this *UpdateHTTPSPopupAction) RunPost(params struct {
 	// 保存证书到本地
 	if len(certIds) > 0 && certIds[0] != 0 {
 		certResp, err := this.RPC().SSLCertRPC().FindEnabledSSLCertConfig(this.AdminContext(), &pb.FindEnabledSSLCertConfigRequest{
-			CertId: certIds[0],
+			SslCertId: certIds[0],
 		})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-		if len(certResp.CertJSON) == 0 {
+		if len(certResp.SslCertJSON) == 0 {
 			this.Fail("选择的证书已失效，请换一个")
 		}
 
 		certConfig := &sslconfigs.SSLCertConfig{}
-		err = json.Unmarshal(certResp.CertJSON, certConfig)
+		err = json.Unmarshal(certResp.SslCertJSON, certConfig)
 		if err != nil {
 			this.ErrorPage(err)
 			return

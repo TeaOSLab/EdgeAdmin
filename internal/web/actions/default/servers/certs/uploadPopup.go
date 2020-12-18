@@ -94,14 +94,14 @@ func (this *UploadPopupAction) RunPost(params struct {
 	}
 
 	// 查询已创建的证书并返回，方便调用者进行后续处理
-	certId := createResp.CertId
-	configResp, err := this.RPC().SSLCertRPC().FindEnabledSSLCertConfig(this.AdminContext(), &pb.FindEnabledSSLCertConfigRequest{CertId: certId})
+	certId := createResp.SslCertId
+	configResp, err := this.RPC().SSLCertRPC().FindEnabledSSLCertConfig(this.AdminContext(), &pb.FindEnabledSSLCertConfigRequest{SslCertId: certId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 	certConfig := &sslconfigs.SSLCertConfig{}
-	err = json.Unmarshal(configResp.CertJSON, certConfig)
+	err = json.Unmarshal(configResp.SslCertJSON, certConfig)
 	if err != nil {
 		this.ErrorPage(err)
 		return
