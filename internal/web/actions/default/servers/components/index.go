@@ -31,6 +31,10 @@ func (this *IndexAction) RunGet(params struct{}) {
 	}
 	valueJSON := valueJSONResp.ValueJSON
 	globalConfig := &serverconfigs.GlobalConfig{}
+
+	// 默认值
+	globalConfig.HTTPAll.DomainAuditingIsOn = true
+
 	if len(valueJSON) > 0 {
 		err = json.Unmarshal(valueJSON, globalConfig)
 		if err != nil {

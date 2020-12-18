@@ -1,5 +1,8 @@
 Vue.component("time-duration-box", {
 	props: ["v-name", "v-value", "v-count", "v-unit"],
+	mounted: function () {
+		this.change()
+	},
 	data: function () {
 		let v = this.vValue
 		if (v == null) {
@@ -38,7 +41,7 @@ Vue.component("time-duration-box", {
 	template: `<div class="ui fields inline" style="padding-bottom: 0; margin-bottom: 0">
 	<input type="hidden" :name="vName" :value="JSON.stringify(duration)"/>
 	<div class="ui field">
-		<input type="text" v-model="countString" maxlength="11" size="11"/>
+		<input type="text" v-model="countString" maxlength="11" size="11" @keypress.enter.prevent="1"/>
 	</div>
 	<div class="ui field">
 		<select class="ui dropdown" v-model="duration.unit" @change="change">

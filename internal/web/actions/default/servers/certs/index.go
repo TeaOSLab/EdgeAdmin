@@ -146,7 +146,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	certConfigs := []*sslconfigs.SSLCertConfig{}
-	err = json.Unmarshal(listResp.CertsJSON, &certConfigs)
+	err = json.Unmarshal(listResp.SslCertsJSON, &certConfigs)
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -156,7 +156,7 @@ func (this *IndexAction) RunGet(params struct {
 	certMaps := []maps.Map{}
 	nowTime := time.Now().Unix()
 	for _, certConfig := range certConfigs {
-		countServersResp, err := this.RPC().ServerRPC().CountAllEnabledServersWithSSLCertId(this.AdminContext(), &pb.CountAllEnabledServersWithSSLCertIdRequest{CertId: certConfig.Id})
+		countServersResp, err := this.RPC().ServerRPC().CountAllEnabledServersWithSSLCertId(this.AdminContext(), &pb.CountAllEnabledServersWithSSLCertIdRequest{SslCertId: certConfig.Id})
 		if err != nil {
 			this.ErrorPage(err)
 			return

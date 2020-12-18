@@ -59,7 +59,7 @@ Vue.component("reverse-proxy-box", {
 				</td>
 			</tr>
 			<tr>
-				<td>请求主机名<em>（Host）</em></td>
+				<td>回源主机名<em>（Host）</em></td>
 				<td>	
 					<radio :v-value="0" v-model="reverseProxyConfig.requestHostType">跟随代理服务</radio> &nbsp;
 					<radio :v-value="1" v-model="reverseProxyConfig.requestHostType">跟随源站</radio> &nbsp;

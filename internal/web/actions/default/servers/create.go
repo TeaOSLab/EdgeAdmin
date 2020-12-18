@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 )
@@ -53,6 +54,7 @@ func (this *CreateAction) RunPost(params struct {
 	ServerType  string
 	Addresses   string
 	ServerNames string
+	CertIdsJSON []byte
 	Origins     string
 
 	WebRoot string
@@ -152,7 +154,49 @@ func (this *CreateAction) RunPost(params struct {
 		this.Fail("请选择正确的服务类型")
 	}
 
-	// TODO 证书
+	// 证书
+	if len(params.CertIdsJSON) > 0 {
+		certIds := []int64{}
+		err := json.Unmarshal(params.CertIdsJSON, &certIds)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		if len(certIds) > 0 {
+			certRefs := []*sslconfigs.SSLCertRef{}
+			for _, certId := range certIds {
+				certRefs = append(certRefs, &sslconfigs.SSLCertRef{
+					IsOn:   true,
+					CertId: certId,
+				})
+			}
+			certRefsJSON, err := json.Marshal(certRefs)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+
+			sslPolicyIdResp, err := this.RPC().SSLPolicyRPC().CreateSSLPolicy(this.AdminContext(), &pb.CreateSSLPolicyRequest{
+				Http2Enabled:      false,     // 默认值
+				MinVersion:        "TLS 1.1", // 默认值
+				SslCertsJSON:      certRefsJSON,
+				HstsJSON:          nil,
+				ClientAuthType:    0,
+				ClientCACertsJSON: nil,
+				CipherSuites:      nil,
+				CipherSuitesIsOn:  false,
+			})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			sslPolicyId := sslPolicyIdResp.SslPolicyId
+			httpsConfig.SSLPolicyRef = &sslconfigs.SSLPolicyRef{
+				IsOn:        true,
+				SSLPolicyId: sslPolicyId,
+			}
+		}
+	}
 
 	// 域名
 	if len(params.ServerNames) > 0 {

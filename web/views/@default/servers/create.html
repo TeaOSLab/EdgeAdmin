@@ -34,21 +34,7 @@
 			</td>
 		</tr>
 
-		<!-- 证书 -->
-		<tbody v-if="tlsProtocolName.length > 0">
-			<tr>
-				<td>{{tlsProtocolName}}证书</td>
-				<td>
-					<input type="file" name="tlsCertFile"/>
-				</td>
-			</tr>
-			<tr>
-				<td>{{tlsProtocolName}}密钥</td>
-				<td>
-					<input type="file" name="tlsKeyFile"/>
-				</td>
-			</tr>
-		</tbody>
+
 
 		<!-- 域名 -->
 		<tr v-if="serverType == 'httpProxy' || serverType == 'httpWeb'">
@@ -57,6 +43,16 @@
 				<server-name-box></server-name-box>
 			</td>
 		</tr>
+
+        <!-- 证书 -->
+        <tbody v-if="tlsProtocolName.length > 0">
+            <tr>
+                <td>{{tlsProtocolName}}证书</td>
+                <td>
+                    <ssl-certs-box></ssl-certs-box>
+                </td>
+            </tr>
+        </tbody>
 
 		<!-- 源服务器地址 -->
 		<tr v-if="serverType == 'httpProxy' || serverType == 'tcpProxy' || serverType == 'udpProxy'">

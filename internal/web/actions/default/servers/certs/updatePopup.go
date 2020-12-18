@@ -20,12 +20,12 @@ func (this *UpdatePopupAction) Init() {
 func (this *UpdatePopupAction) RunGet(params struct {
 	CertId int64
 }) {
-	certConfigResp, err := this.RPC().SSLCertRPC().FindEnabledSSLCertConfig(this.AdminContext(), &pb.FindEnabledSSLCertConfigRequest{CertId: params.CertId})
+	certConfigResp, err := this.RPC().SSLCertRPC().FindEnabledSSLCertConfig(this.AdminContext(), &pb.FindEnabledSSLCertConfigRequest{SslCertId: params.CertId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	certConfigJSON := certConfigResp.CertJSON
+	certConfigJSON := certConfigResp.SslCertJSON
 	if len(certConfigJSON) == 0 {
 		this.NotFound("cert", params.CertId)
 		return
@@ -59,12 +59,12 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	defer this.CreateLog(oplogs.LevelInfo, "修改SSL证书 %d", params.CertId)
 
 	// 查询Cert
-	certConfigResp, err := this.RPC().SSLCertRPC().FindEnabledSSLCertConfig(this.AdminContext(), &pb.FindEnabledSSLCertConfigRequest{CertId: params.CertId})
+	certConfigResp, err := this.RPC().SSLCertRPC().FindEnabledSSLCertConfig(this.AdminContext(), &pb.FindEnabledSSLCertConfigRequest{SslCertId: params.CertId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	certConfigJSON := certConfigResp.CertJSON
+	certConfigJSON := certConfigResp.SslCertJSON
 	if len(certConfigJSON) == 0 {
 		this.NotFound("cert", params.CertId)
 		return
@@ -111,7 +111,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 
 	// 保存
 	_, err = this.RPC().SSLCertRPC().UpdateSSLCert(this.AdminContext(), &pb.UpdateSSLCertRequest{
-		CertId:      params.CertId,
+		SslCertId:   params.CertId,
 		IsOn:        params.IsOn,
 		Name:        params.Name,
 		Description: params.Description,
