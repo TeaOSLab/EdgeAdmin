@@ -23,6 +23,9 @@ func (this *ServerNamesPopupAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
+	if serverNamesResp.IsAuditing {
+		serverNamesResp.ServerNamesJSON = serverNamesResp.AuditingServerNamesJSON
+	}
 	serverNames := []*serverconfigs.ServerNameConfig{}
 	if len(serverNamesResp.ServerNamesJSON) > 0 {
 		err = json.Unmarshal(serverNamesResp.ServerNamesJSON, &serverNames)

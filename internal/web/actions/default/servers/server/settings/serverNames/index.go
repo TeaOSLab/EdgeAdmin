@@ -58,8 +58,8 @@ func (this *IndexAction) RunPost(params struct {
 	}
 
 	_, err = this.RPC().ServerRPC().UpdateServerNames(this.AdminContext(), &pb.UpdateServerNamesRequest{
-		ServerId: params.ServerId,
-		Config:   []byte(params.ServerNames),
+		ServerId:        params.ServerId,
+		ServerNamesJSON: []byte(params.ServerNames),
 	})
 	if err != nil {
 		this.ErrorPage(err)
