@@ -143,8 +143,12 @@ func (this *IndexAction) RunGet(params struct {
 
 		// 域名列表
 		serverNames := []*serverconfigs.ServerNameConfig{}
-		if server.IsAuditing {
+		if server.IsAuditing || (server.AuditingResult != nil && !server.AuditingResult.IsOk) {
 			server.ServerNamesJSON = server.AuditingServerNamesJSON
+		}
+		auditingIsOk := true
+		if !server.IsAuditing && server.AuditingResult != nil && !server.AuditingResult.IsOk {
+			auditingIsOk = false
 		}
 		if len(server.ServerNamesJSON) > 0 {
 			err = json.Unmarshal(server.ServerNamesJSON, &serverNames)
@@ -185,6 +189,7 @@ func (this *IndexAction) RunGet(params struct {
 			"serverNames":      serverNames,
 			"countServerNames": countServerNames,
 			"isAuditing":       server.IsAuditing,
+			"auditingIsOk":     auditingIsOk,
 			"user":             userMap,
 		})
 	}

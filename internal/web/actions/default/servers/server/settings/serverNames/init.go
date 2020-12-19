@@ -16,6 +16,7 @@ func init() {
 			Data("secondMenuItem", "serverName").
 			Prefix("/servers/server/settings/serverNames").
 			GetPost("", new(IndexAction)).
+			Post("/audit", new(AuditAction)).
 			EndAll()
 	})
 }

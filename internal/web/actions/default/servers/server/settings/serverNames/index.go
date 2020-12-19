@@ -4,10 +4,11 @@ import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/serverutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/maps"
+	timeutil "github.com/iwind/TeaGo/utils/time"
 )
 
 // 域名管理
@@ -22,23 +23,38 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ServerId int64
 }) {
-	server, _, isOk := serverutils.FindServer(this.Parent(), params.ServerId)
-	if !isOk {
+	serverNamesResp, err := this.RPC().ServerRPC().FindServerNames(this.AdminContext(), &pb.FindServerNamesRequest{ServerId: params.ServerId})
+	if err != nil {
+		this.ErrorPage(err)
 		return
 	}
 
 	serverNamesConfig := []*serverconfigs.ServerNameConfig{}
-	if len(server.ServerNamesJSON) > 0 {
-		err := json.Unmarshal(server.ServerNamesJSON, &serverNamesConfig)
+	this.Data["isAuditing"] = serverNamesResp.IsAuditing
+	this.Data["auditingResult"] = maps.Map{
+		"isOk": true,
+	}
+	if serverNamesResp.IsAuditing {
+		serverNamesResp.ServerNamesJSON = serverNamesResp.AuditingServerNamesJSON
+	} else if serverNamesResp.AuditingResult != nil {
+		if !serverNamesResp.AuditingResult.IsOk {
+			serverNamesResp.ServerNamesJSON = serverNamesResp.AuditingServerNamesJSON
+		}
+
+		this.Data["auditingResult"] = maps.Map{
+			"isOk":        serverNamesResp.AuditingResult.IsOk,
+			"reason":      serverNamesResp.AuditingResult.Reason,
+			"createdTime": timeutil.FormatTime("Y-m-d H:i:s", serverNamesResp.AuditingResult.CreatedAt),
+		}
+	}
+	if len(serverNamesResp.ServerNamesJSON) > 0 {
+		err := json.Unmarshal(serverNamesResp.ServerNamesJSON, &serverNamesConfig)
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
 	}
 	this.Data["serverNames"] = serverNamesConfig
-
-	// DNS
-	this.Data["dnsName"] = server.DnsName
 
 	this.Show()
 }
@@ -47,6 +63,7 @@ func (this *IndexAction) RunPost(params struct {
 	ServerId    int64
 	ServerNames string
 	Must        *actions.Must
+	CSRF        *actionutils.CSRF
 }) {
 	// 记录日志
 	defer this.CreateLog(oplogs.LevelInfo, "修改代理服务 %d 域名", params.ServerId)
