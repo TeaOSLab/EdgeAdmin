@@ -7,7 +7,6 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/maps"
-	"strconv"
 )
 
 type IndexAction struct {
@@ -19,15 +18,36 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct {
-	GroupId int64
-	Keyword string
+	ClusterId    int64
+	GroupId      int64
+	Keyword      string
+	AuditingFlag int32
 }) {
+	this.Data["clusterId"] = params.ClusterId
 	this.Data["groupId"] = params.GroupId
 	this.Data["keyword"] = params.Keyword
+	this.Data["auditingFlag"] = params.AuditingFlag
 
+	if params.AuditingFlag > 0 {
+		this.Data["firstMenuItem"] = "auditing"
+	}
+
+	// 审核中的数量
+	countAuditingResp, err := this.RPC().ServerRPC().CountAllEnabledServersMatch(this.AdminContext(), &pb.CountAllEnabledServersMatchRequest{
+		AuditingFlag: 1,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["countAuditing"] = countAuditingResp.Count
+
+	// 全部数量
 	countResp, err := this.RPC().ServerRPC().CountAllEnabledServersMatch(this.AdminContext(), &pb.CountAllEnabledServersMatchRequest{
-		GroupId: params.GroupId,
-		Keyword: params.Keyword,
+		ClusterId:    params.ClusterId,
+		GroupId:      params.GroupId,
+		Keyword:      params.Keyword,
+		AuditingFlag: params.AuditingFlag,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -39,10 +59,12 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 服务列表
 	serversResp, err := this.RPC().ServerRPC().ListEnabledServersMatch(this.AdminContext(), &pb.ListEnabledServersMatchRequest{
-		Offset:  page.Offset,
-		Size:    page.Size,
-		GroupId: params.GroupId,
-		Keyword: params.Keyword,
+		Offset:       page.Offset,
+		Size:         page.Size,
+		ClusterId:    params.ClusterId,
+		GroupId:      params.GroupId,
+		Keyword:      params.Keyword,
+		AuditingFlag: params.AuditingFlag,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -121,6 +143,9 @@ func (this *IndexAction) RunGet(params struct {
 
 		// 域名列表
 		serverNames := []*serverconfigs.ServerNameConfig{}
+		if server.IsAuditing {
+			server.ServerNamesJSON = server.AuditingServerNamesJSON
+		}
 		if len(server.ServerNamesJSON) > 0 {
 			err = json.Unmarshal(server.ServerNamesJSON, &serverNames)
 			if err != nil {
@@ -159,10 +184,26 @@ func (this *IndexAction) RunGet(params struct {
 			"groups":           groupMaps,
 			"serverNames":      serverNames,
 			"countServerNames": countServerNames,
+			"isAuditing":       server.IsAuditing,
 			"user":             userMap,
 		})
 	}
 	this.Data["servers"] = serverMaps
+
+	// 集群
+	clustersResp, err := this.RPC().NodeClusterRPC().FindAllEnabledNodeClusters(this.AdminContext(), &pb.FindAllEnabledNodeClustersRequest{})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	clusterMaps := []maps.Map{}
+	for _, cluster := range clustersResp.NodeClusters {
+		clusterMaps = append(clusterMaps, maps.Map{
+			"id":   cluster.Id,
+			"name": cluster.Name,
+		})
+	}
+	this.Data["clusters"] = clusterMaps
 
 	// 分组
 	groupsResp, err := this.RPC().ServerGroupRPC().FindAllEnabledServerGroups(this.AdminContext(), &pb.FindAllEnabledServerGroupsRequest{})
@@ -172,16 +213,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	groupMaps := []maps.Map{}
 	for _, group := range groupsResp.Groups {
-		countResp, err := this.RPC().ServerRPC().CountAllEnabledServersWithGroupId(this.AdminContext(), &pb.CountAllEnabledServersWithGroupIdRequest{GroupId: group.Id})
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-
 		groupName := group.Name
-		if countResp.Count > 0 {
-			groupName += "(" + strconv.FormatInt(countResp.Count, 10) + ")"
-		}
 		groupMaps = append(groupMaps, maps.Map{
 			"id":   group.Id,
 			"name": groupName,

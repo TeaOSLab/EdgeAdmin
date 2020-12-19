@@ -2,14 +2,18 @@
 {$template "menu"}
 
 <form method="get" class="ui form" action="/servers">
+    <input type="hidden" name="auditingFlag" :value="auditingFlag"/>
 	<div class="ui margin"></div>
 	<div class="ui fields inline">
-		<div class="ui field" v-if="groups.length > 0" style="padding-right:0">
-			所属分组：
-		</div>
+        <div class="ui field" v-if="clusters.length > 0">
+            <select class="ui dropdown auto-width" name="clusterId" v-model="clusterId">
+                <option value="0">[选择集群]</option>
+                <option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
+            </select>
+        </div>
 		<div class="ui field" v-if="groups.length > 0">
-			<select class="ui dropdown" name="groupId" v-model="groupId">
-				<option value="0">[全部]</option>
+			<select class="ui dropdown auto-width" name="groupId" v-model="groupId">
+				<option value="0">[选择分组]</option>
 				<option v-for="group in groups" :value="group.id">{{group.name}}</option>
 			</select>
 		</div>
@@ -54,6 +58,10 @@
 				<span v-if="server.countServerNames > 1">等{{server.countServerNames}}个域名 <popup-icon :href="'/servers/serverNamesPopup?serverId=' + server.id" height="20em"></popup-icon></span>
 			</span>
 			<span v-else class="disabled">-</span>
+
+            <div v-if="server.isAuditing" style="margin-top: 0.5em">
+                <span class="ui label basic tiny red">审核中</span>
+            </div>
 		</td>
 		<td>
 			<span v-if="server.ports.length == 0">-</span>
