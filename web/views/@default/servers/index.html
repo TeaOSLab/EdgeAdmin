@@ -59,8 +59,14 @@
 			</span>
 			<span v-else class="disabled">-</span>
 
+            <!-- 审核中 -->
             <div v-if="server.isAuditing" style="margin-top: 0.5em">
-                <span class="ui label basic tiny red">审核中</span>
+                <a class="ui label basic tiny red" title="点击跳到审核页面" :href="'/servers/server/settings/serverNames?serverId=' + server.id">审核中 &nbsp;<i class="icon long arrow right alternate"></i></a>
+            </div>
+
+            <!-- 审核失败 -->
+            <div v-if="!server.auditingIsOk" style="margin-top: 0.5em">
+                <a class="ui label basic tiny red" title="点击跳到审核页面" :href="'/servers/server/settings/serverNames?serverId=' + server.id">审核不通过 &nbsp;<i class="icon long arrow right alternate"></i></a>
             </div>
 		</td>
 		<td>

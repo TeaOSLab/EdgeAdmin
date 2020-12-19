@@ -2,16 +2,58 @@
 {$template "/left_menu"}
 
 <div class="right-box">
-	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
-		<input type="hidden" name="serverId" :value="serverId"/>
-		<table class="ui table definition selectable">
-			<tr>
-				<td class="title">已绑定的域名</td>
-				<td>
-					<server-name-box :v-server-names="serverNames"></server-name-box>
-				</td>
-			</tr>
-		</table>
-		<submit-btn></submit-btn>
-	</form>
+    <!-- 审核中 -->
+    <div v-show="isAuditing">
+        <p class="ui message warning">当前域名正在审核中，请审核域名的所有人、备案情况等。</p>
+        <form method="post" class="ui form" data-tea-action=".audit" data-tea-success="auditSuccess">
+            <csrf-token></csrf-token>
+            <input type="hidden" name="serverId" :value="serverId"/>
+            <table class="ui table definition selectable">
+                <tr>
+                    <td class="title">审核中域名</td>
+                    <td>
+                        <span v-for="serverName in allServerNames" class="ui label basic">
+                            {{serverName}}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>审核结果</td>
+                    <td>
+                        <radio name="auditingOK" :v-value="1" v-model="auditing">审核通过</radio> &nbsp;
+                        <radio name="auditingOK" :v-value="0" v-model="auditing">审核不通过</radio>
+                    </td>
+                </tr>
+                <tr v-show="auditing == 0">
+                    <td>审核不通过原因 *</td>
+                    <td>
+                        <input type="text" name="auditingReason" maxlength="100" placeholder="包含审核不通过的域名等"/>
+                    </td>
+                </tr>
+            </table>
+            <submit-btn>提交审核结果</submit-btn>
+        </form>
+    </div>
+
+    <!-- 审核不通过 -->
+    <div class="ui message error" v-if="!isAuditing && !auditingResult.isOk">
+        审核不通过，原因：{{auditingResult.reason}} （{{auditingResult.createdTime}}）。等待用户重新提交。
+    </div>
+
+    <!-- 不在审核中 -->
+    <div v-show="!isAuditing && auditingResult.isOk">
+        <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+            <csrf-token></csrf-token>
+            <input type="hidden" name="serverId" :value="serverId"/>
+            <table class="ui table definition selectable">
+                <tr>
+                    <td class="title">已绑定的域名</td>
+                    <td>
+                        <server-name-box :v-server-names="serverNames"></server-name-box>
+                    </td>
+                </tr>
+            </table>
+            <submit-btn></submit-btn>
+        </form>
+    </div>
 </div>

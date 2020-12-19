@@ -28,7 +28,7 @@ func (this *IndexAction) RunPost(params struct {
 	defer this.CreateLog(oplogs.LevelInfo, "删除代理服务 %d", params.ServerId)
 
 	// 执行删除
-	_, err := this.RPC().ServerRPC().DisableServer(this.AdminContext(), &pb.DisableServerRequest{ServerId: params.ServerId})
+	_, err := this.RPC().ServerRPC().DeleteServer(this.AdminContext(), &pb.DeleteServerRequest{ServerId: params.ServerId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
