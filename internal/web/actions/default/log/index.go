@@ -19,9 +19,10 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct {
-	DayFrom string
-	DayTo   string
-	Keyword string
+	DayFrom  string
+	DayTo    string
+	Keyword  string
+	UserType string
 }) {
 	// 读取配置
 	config, err := configloaders.LoadLogConfig()
@@ -34,11 +35,13 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["dayFrom"] = params.DayFrom
 	this.Data["dayTo"] = params.DayTo
 	this.Data["keyword"] = params.Keyword
+	this.Data["userType"] = params.UserType
 
 	countResp, err := this.RPC().LogRPC().CountLogs(this.AdminContext(), &pb.CountLogRequest{
-		DayFrom: params.DayFrom,
-		DayTo:   params.DayTo,
-		Keyword: params.Keyword,
+		DayFrom:  params.DayFrom,
+		DayTo:    params.DayTo,
+		Keyword:  params.Keyword,
+		UserType: params.UserType,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -49,11 +52,12 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["page"] = page.AsHTML()
 
 	logsResp, err := this.RPC().LogRPC().ListLogs(this.AdminContext(), &pb.ListLogsRequest{
-		Offset:  page.Offset,
-		Size:    page.Size,
-		DayFrom: params.DayFrom,
-		DayTo:   params.DayTo,
-		Keyword: params.Keyword,
+		Offset:   page.Offset,
+		Size:     page.Size,
+		DayFrom:  params.DayFrom,
+		DayTo:    params.DayTo,
+		Keyword:  params.Keyword,
+		UserType: params.UserType,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -86,6 +90,8 @@ func (this *IndexAction) RunGet(params struct {
 
 		logMaps = append(logMaps, maps.Map{
 			"id":          log.Id,
+			"adminId":     log.AdminId,
+			"userId":      log.UserId,
 			"description": log.Description,
 			"userName":    log.UserName,
 			"createdTime": timeutil.FormatTime("Y-m-d H:i:s", log.CreatedAt),

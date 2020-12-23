@@ -15,7 +15,7 @@ Tea.context(function () {
 	this.exportExcel = function () {
 		let that = this
 		teaweb.confirm("确定要将当前列表导出到Excel吗？", function () {
-			window.location = "/log/exportExcel?dayFrom=" + that.dayFrom + "&dayTo=" + that.dayTo + "&keyword=" + that.keyword
+			window.location = "/log/exportExcel?dayFrom=" + that.dayFrom + "&dayTo=" + that.dayTo + "&keyword=" + that.keyword + "&userType=" + that.userType
 		})
 	}
 
