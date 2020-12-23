@@ -57,6 +57,9 @@ func (this *PreheatAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	// 创建日志
+	defer this.CreateLog(oplogs.LevelInfo, "预热缓存，缓存策略：%d", params.CachePolicyId)
+
 	// 记录clusterId
 	this.AddCookie(&http.Cookie{
 		Name:  "cache_cluster_id",
@@ -110,9 +113,6 @@ func (this *PreheatAction) RunPost(params struct {
 
 	this.Data["isAllOk"] = isAllOk
 	this.Data["results"] = results
-
-	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "预热缓存，缓存策略：%d", params.CachePolicyId)
 
 	this.Success()
 }
