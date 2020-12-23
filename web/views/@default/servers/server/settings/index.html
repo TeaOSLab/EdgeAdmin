@@ -6,6 +6,13 @@
 	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 		<input type="hidden" name="serverId" :value="server.id"/>
 		<table class="ui table selectable definition">
+            <tr>
+                <td>所属用户</td>
+                <td>
+                    <span v-if="user != null">{{user.fullname}} <span class="small">（{{user.username}}）</span><link-icon :href="'/users/user?userId=' + user.id"></link-icon></span>
+                    <span v-else class="disabled">-</span>
+                </td>
+            </tr>
 			<tr>
 				<td class="title">服务名称 *</td>
 				<td>
@@ -15,7 +22,10 @@
 			<tr>
 				<td>部署的集群 *</td>
 				<td>
-					<select class="ui dropdown auto-width" name="clusterId" v-model="server.clusterId">
+                    <div v-if="user != null">{{clusterName}}
+                        <p class="comment">此选项跟随用户设置，不能单独修改。</p>
+                    </div>
+					<select class="ui dropdown auto-width" name="clusterId" v-model="server.clusterId" v-show="user == null">
 						<option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
 					</select>
 				</td>

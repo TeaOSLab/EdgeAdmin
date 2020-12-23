@@ -95,6 +95,19 @@ func (this *CreateNodeAction) RunPost(params struct {
 		this.Fail("请选择所在集群")
 	}
 
+	// IP地址
+	ipAddresses := []maps.Map{}
+	if len(params.IpAddressesJSON) > 0 {
+		err := json.Unmarshal(params.IpAddressesJSON, &ipAddresses)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+	if len(ipAddresses) == 0 {
+		this.Fail("请至少输入一个IP地址")
+	}
+
 	dnsRouteCodes := []string{}
 	if len(params.DnsRoutesJSON) > 0 {
 		err := json.Unmarshal(params.DnsRoutesJSON, &dnsRouteCodes)
@@ -133,32 +146,24 @@ func (this *CreateNodeAction) RunPost(params struct {
 	nodeId := createResp.NodeId
 
 	// IP地址
-	ipAddresses := []maps.Map{}
-	if len(params.IpAddressesJSON) > 0 {
-		err = json.Unmarshal(params.IpAddressesJSON, &ipAddresses)
+	for _, address := range ipAddresses {
+		addressId := address.GetInt64("id")
+		if addressId > 0 {
+			_, err = this.RPC().NodeIPAddressRPC().UpdateNodeIPAddressNodeId(this.AdminContext(), &pb.UpdateNodeIPAddressNodeIdRequest{
+				AddressId: addressId,
+				NodeId:    nodeId,
+			})
+		} else {
+			_, err = this.RPC().NodeIPAddressRPC().CreateNodeIPAddress(this.AdminContext(), &pb.CreateNodeIPAddressRequest{
+				NodeId:    nodeId,
+				Name:      address.GetString("name"),
+				Ip:        address.GetString("ip"),
+				CanAccess: address.GetBool("canAccess"),
+			})
+		}
 		if err != nil {
 			this.ErrorPage(err)
 			return
-		}
-		for _, address := range ipAddresses {
-			addressId := address.GetInt64("id")
-			if addressId > 0 {
-				_, err = this.RPC().NodeIPAddressRPC().UpdateNodeIPAddressNodeId(this.AdminContext(), &pb.UpdateNodeIPAddressNodeIdRequest{
-					AddressId: addressId,
-					NodeId:    nodeId,
-				})
-			} else {
-				_, err = this.RPC().NodeIPAddressRPC().CreateNodeIPAddress(this.AdminContext(), &pb.CreateNodeIPAddressRequest{
-					NodeId:    nodeId,
-					Name:      address.GetString("name"),
-					Ip:        address.GetString("ip"),
-					CanAccess: address.GetBool("canAccess"),
-				})
-			}
-			if err != nil {
-				this.ErrorPage(err)
-				return
-			}
 		}
 	}
 

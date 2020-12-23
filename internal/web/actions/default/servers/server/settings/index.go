@@ -49,13 +49,27 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	server := serverResp.Server
 	if server == nil {
-		this.NotFound("Server", params.ServerId)
+		this.NotFound("server", params.ServerId)
 		return
 	}
 
+	// 用户
+	if server.User != nil {
+		this.Data["user"] = maps.Map{
+			"id":       server.User.Id,
+			"fullname": server.User.Fullname,
+			"username": server.User.Username,
+		}
+	} else {
+		this.Data["user"] = nil
+	}
+
+	// 集群
 	clusterId := int64(0)
+	this.Data["clusterName"] = ""
 	if server.NodeCluster != nil {
 		clusterId = server.NodeCluster.Id
+		this.Data["clusterName"] = server.NodeCluster.Name
 	}
 
 	// 分组

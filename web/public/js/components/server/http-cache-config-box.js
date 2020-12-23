@@ -89,7 +89,7 @@ Vue.component("http-cache-config-box", {
 			<tr>
 				<td>缓存策略</td>
 				<td>
-					<div v-if="vCachePolicy != null">{{vCachePolicy.name}}
+					<div v-if="vCachePolicy != null">{{vCachePolicy.name}} <link-icon :href="'/servers/components/cache/policy?cachePolicyId=' + vCachePolicy.id"></link-icon>
 						<p class="comment">使用当前服务所在集群的设置。</p>
 					</div>
 					<span v-else class="red">当前集群没有设置缓存策略，当前配置无法生效。</span>
