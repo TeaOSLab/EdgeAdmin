@@ -20,16 +20,18 @@ func (this *ExportExcelAction) Init() {
 }
 
 func (this *ExportExcelAction) RunGet(params struct {
-	DayFrom string
-	DayTo   string
-	Keyword string
+	DayFrom  string
+	DayTo    string
+	Keyword  string
+	UserType string
 }) {
 	logsResp, err := this.RPC().LogRPC().ListLogs(this.AdminContext(), &pb.ListLogsRequest{
-		Offset:  0,
-		Size:    1000, // 日志最大导出1000条，TODO 将来可以配置
-		DayFrom: params.DayFrom,
-		DayTo:   params.DayTo,
-		Keyword: params.Keyword,
+		Offset:   0,
+		Size:     1000, // 日志最大导出1000条，TODO 将来可以配置
+		DayFrom:  params.DayFrom,
+		DayTo:    params.DayTo,
+		Keyword:  params.Keyword,
+		UserType: params.UserType,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -88,7 +90,11 @@ func (this *ExportExcelAction) RunGet(params struct {
 		row.SetHeight(25)
 		row.AddCell().SetInt64(log.Id)
 		row.AddCell().SetString(timeutil.FormatTime("Y-m-d H:i:s", log.CreatedAt))
-		row.AddCell().SetString(log.UserName)
+		if log.UserId > 0 {
+			row.AddCell().SetString("用户 | " + log.UserName)
+		} else {
+			row.AddCell().SetString(log.UserName)
+		}
 		row.AddCell().SetString(log.Description)
 		row.AddCell().SetString(log.Ip)
 		row.AddCell().SetString(regionName)

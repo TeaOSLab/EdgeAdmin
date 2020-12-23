@@ -23,6 +23,13 @@
 		<div class="ui field">
 			<input type="text" name="keyword" style="width:10em" v-model="keyword" placeholder="关键词"/>
 		</div>
+        <div class="ui field">
+            <select class="ui dropdown auto-width" name="userType" v-model="userType">
+                <option value="">[用户类型]</option>
+                <option value="admin">管理员</option>
+                <option value="user">用户</option>
+            </select>
+        </div>
 		<div class="ui field">
 			<button type="submit" class="ui button">查询</button>
 		</div>
@@ -43,7 +50,7 @@
 <table class="ui table selectable" v-for="log in logs">
 	<tr :class="{error: log.level == 'error', warning: log.level == 'warn'}">
 		<td class="log-row">{{log.createdTime}} <span class="grey"> <span
-						v-if="log.userName.length > 0">| {{log.userName}}</span> | {{log.ip}}<span
+                v-if="log.userName.length > 0">| <span v-if="log.userId>0">用户 &nbsp;|&nbsp;</span> {{log.userName}}</span> | {{log.ip}}<span
 						v-if="log.region.length > 0"> | {{log.region}}</span> &nbsp; <a href="" @click.prevent="showMore(log)" title="显示更多">...</a> &nbsp;<span v-if="log.moreVisible">{{log.action}}</span></span>
 			<span class="buttons"><a v-if="logConfig.canDelete" href="" title="删除" @click.prevent="deleteLog(log.id)"><i class="icon remove small"></i></a> </span>
 		</td>
