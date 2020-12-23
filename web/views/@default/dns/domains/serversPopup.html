@@ -1,0 +1,39 @@
+{$layout "layout_popup"}
+
+<h3>使用域名"{{domain}}"的节点</h3>
+<form class="ui form">
+    <div class="ui fields inline">
+        <div class="ui field">
+            <input type="text" placeholder="关键词" v-model="keyword"/>
+        </div>
+        <div class="ui field">
+            <select class="ui dropdown auto-width" v-model="status">
+                <option value="">[全部状态]</option>
+                <option value="ok">已解析</option>
+                <option value="notOk">未解析</option>
+            </select>
+        </div>
+    </div>
+</form>
+<div class="ui divider"></div>
+<table class="ui table selectable">
+    <thead>
+        <tr>
+            <th>集群</th>
+            <th>服务</th>
+            <th>子域名</th>
+            <th>CNAME</th>
+            <th class="width10">解析状态</th>
+        </tr>
+    </thead>
+    <tr v-for="server in servers">
+        <td>{{server.cluster.name}}<a :href="'/clusters/cluster?clusterId=' + server.cluster.id" target="_blank"><link-icon></link-icon></a> </td>
+        <td>{{server.name}}<a :href="'/servers/server?clusterId=' + server.cluster.id + '&serverId=' + server.id" target="_blank"><link-icon></link-icon></a></td>
+        <td>{{server.cluster.dnsName}}</td>
+        <td>{{server.dnsName}}</td>
+        <td>
+            <span class="green" v-if="server.isOk">已解析</span>
+            <span class="red" v-else>未解析</span>
+        </td>
+    </tr>
+</table>

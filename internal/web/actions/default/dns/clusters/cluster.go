@@ -39,6 +39,7 @@ func (this *ClusterAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
+	domainName := ""
 	dnsMap := maps.Map{
 		"dnsName":          dnsResp.Name,
 		"domainId":         0,
@@ -48,6 +49,7 @@ func (this *ClusterAction) RunGet(params struct {
 		"providerTypeName": "",
 	}
 	if dnsResp.Domain != nil {
+		domainName = dnsResp.Domain.Name
 		dnsMap["domainId"] = dnsResp.Domain.Id
 		dnsMap["domainName"] = dnsResp.Domain.Name
 	}
@@ -69,6 +71,23 @@ func (this *ClusterAction) RunGet(params struct {
 	for _, node := range nodesResp.Nodes {
 		if len(node.Routes) > 0 {
 			for _, route := range node.Routes {
+				// 检查是否已解析
+				isResolved := false
+				if cluster.DnsDomainId > 0 && len(cluster.DnsName) > 0 && len(node.IpAddr) > 0 {
+					checkResp, err := this.RPC().DNSDomainRPC().ExistDNSDomainRecord(this.AdminContext(), &pb.ExistDNSDomainRecordRequest{
+						DnsDomainId: cluster.DnsDomainId,
+						Name:        cluster.DnsName,
+						Type:        "A",
+						Route:       route.Code,
+						Value:       node.IpAddr,
+					})
+					if err != nil {
+						this.ErrorPage(err)
+						return
+					}
+					isResolved = checkResp.IsOk
+				}
+
 				nodeMaps = append(nodeMaps, maps.Map{
 					"id":     node.Id,
 					"name":   node.Name,
@@ -77,7 +96,8 @@ func (this *ClusterAction) RunGet(params struct {
 						"name": route.Name,
 						"code": route.Code,
 					},
-					"clusterId": node.NodeClusterId,
+					"clusterId":  node.NodeClusterId,
+					"isResolved": isResolved,
 				})
 			}
 		} else {
@@ -89,7 +109,8 @@ func (this *ClusterAction) RunGet(params struct {
 					"name": "",
 					"code": "",
 				},
-				"clusterId": node.NodeClusterId,
+				"clusterId":  node.NodeClusterId,
+				"isResolved": false,
 			})
 		}
 	}
@@ -103,10 +124,27 @@ func (this *ClusterAction) RunGet(params struct {
 	}
 	serverMaps := []maps.Map{}
 	for _, server := range serversResp.Servers {
+		// 检查是否已解析
+		isResolved := false
+		if cluster.DnsDomainId > 0 && len(cluster.DnsName) > 0 && len(server.DnsName) > 0 && len(domainName) > 0 {
+			checkResp, err := this.RPC().DNSDomainRPC().ExistDNSDomainRecord(this.AdminContext(), &pb.ExistDNSDomainRecordRequest{
+				DnsDomainId: cluster.DnsDomainId,
+				Name:        server.DnsName,
+				Type:        "CNAME",
+				Value:       cluster.DnsName + "." + domainName,
+			})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			isResolved = checkResp.IsOk
+		}
+
 		serverMaps = append(serverMaps, maps.Map{
-			"id":      server.Id,
-			"name":    server.Name,
-			"dnsName": server.DnsName,
+			"id":         server.Id,
+			"name":       server.Name,
+			"dnsName":    server.DnsName,
+			"isResolved": isResolved,
 		})
 	}
 	this.Data["servers"] = serverMaps

@@ -54,6 +54,7 @@
 			<th>记录类型</th>
 			<th>记录值</th>
 			<th>线路</th>
+            <th>状态</th>
 			<th class="two op">操作</th>
 		</tr>
 	</thead>
@@ -72,6 +73,10 @@
 			<span v-if="node.route.code.length > 0">{{node.route.name}}</span>
 			<link-red v-else title="点击设置" @click.prevent="updateNode(node.id)">没有设置</link-red>
 		</td>
+        <td>
+            <span class="green" v-if="node.isResolved">已解析</span>
+            <span v-else class="red">未解析</span>
+        </td>
 		<td>
 			<link-popup @click.prevent="updateNode(node.id)">修改</link-popup>
 		</td>
@@ -87,6 +92,7 @@
 			<th>子域名</th>
 			<th>记录类型</th>
 			<th>记录值</th>
+            <th>状态</th>
 		</tr>
 	</thead>
 	<tr v-for="server in servers">
@@ -97,5 +103,9 @@
 			<span v-if="dnsInfo.domainName.length > 0"><var>{{dnsInfo.dnsName}}</var>.{{dnsInfo.domainName}}.</span>
 			<link-red title="点击设置"  v-else @click.prevent="updateCluster(cluster.id)">没有设置</link-red>
 		</td>
+        <td>
+            <span class="green" v-if="server.isResolved">已解析</span>
+            <span v-else class="red">未解析</span>
+        </td>
 	</tr>
 </table>

@@ -21,6 +21,16 @@ func (this *CreateAction) Init() {
 }
 
 func (this *CreateAction) RunGet(params struct{}) {
+	// 审核中的数量
+	countAuditingResp, err := this.RPC().ServerRPC().CountAllEnabledServersMatch(this.AdminContext(), &pb.CountAllEnabledServersMatchRequest{
+		AuditingFlag: 1,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["countAuditing"] = countAuditingResp.Count
+
 	// 所有集群
 	resp, err := this.RPC().NodeClusterRPC().FindAllEnabledNodeClusters(this.AdminContext(), &pb.FindAllEnabledNodeClustersRequest{})
 	if err != nil {

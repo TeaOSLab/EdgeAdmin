@@ -44,9 +44,11 @@ Vue.component("popup-icon", {
 	props: ["title", "href", "height"],
 	methods: {
 		clickPrevent: function () {
-			teaweb.popup(this.href, {
-				height: this.height
-			})
+			if (this.href != null && this.href.length > 0) {
+				teaweb.popup(this.href, {
+					height: this.height
+				})
+			}
 		}
 	},
 	template: `<span><slot></slot>&nbsp;<a href="" :title="title" @click.prevent="clickPrevent"><i class="icon clone outline small"></i></a></span>`
