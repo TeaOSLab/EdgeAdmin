@@ -56,6 +56,9 @@ func (this *PurgeAction) RunPost(params struct {
 	Keys          string
 	Must          *actions.Must
 }) {
+	// 创建日志
+	defer this.CreateLog(oplogs.LevelInfo, "删除缓存，缓存策略：%d", params.CachePolicyId)
+
 	// 记录clusterId
 	this.AddCookie(&http.Cookie{
 		Name:  "cache_cluster_id",
@@ -109,9 +112,6 @@ func (this *PurgeAction) RunPost(params struct {
 
 	this.Data["isAllOk"] = isAllOk
 	this.Data["results"] = results
-
-	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "删除缓存，缓存策略：%d", params.CachePolicyId)
 
 	this.Success()
 }
