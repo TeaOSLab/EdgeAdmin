@@ -2,7 +2,7 @@ package cache
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/models"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -20,7 +20,7 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ClusterId int64
 }) {
-	cluster, err := models.SharedNodeClusterDAO.FindEnabledNodeCluster(this.AdminContext(), params.ClusterId)
+	cluster, err := dao.SharedNodeClusterDAO.FindEnabledNodeCluster(this.AdminContext(), params.ClusterId)
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -33,7 +33,7 @@ func (this *IndexAction) RunGet(params struct {
 	// 缓存设置
 	this.Data["cachePolicy"] = nil
 	if cluster.HttpCachePolicyId > 0 {
-		cachePolicy, err := models.SharedHTTPCachePolicyDAO.FindEnabledHTTPCachePolicy(this.AdminContext(), cluster.HttpCachePolicyId)
+		cachePolicy, err := dao.SharedHTTPCachePolicyDAO.FindEnabledHTTPCachePolicy(this.AdminContext(), cluster.HttpCachePolicyId)
 		if err != nil {
 			this.ErrorPage(err)
 			return

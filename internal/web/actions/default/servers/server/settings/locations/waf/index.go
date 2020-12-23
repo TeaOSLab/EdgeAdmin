@@ -3,7 +3,7 @@ package waf
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/models"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -30,7 +30,7 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["firewallConfig"] = webConfig.FirewallRef
 
 	// 获取当前服务所在集群的WAF设置
-	firewallPolicy, err := models.SharedHTTPFirewallPolicyDAO.FindEnabledHTTPFirewallPolicyWithServerId(this.AdminContext(), params.ServerId)
+	firewallPolicy, err := dao.SharedHTTPFirewallPolicyDAO.FindEnabledHTTPFirewallPolicyWithServerId(this.AdminContext(), params.ServerId)
 	if err != nil {
 		this.ErrorPage(err)
 		return

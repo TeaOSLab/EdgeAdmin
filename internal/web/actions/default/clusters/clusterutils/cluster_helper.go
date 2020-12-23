@@ -4,7 +4,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/models"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/logs"
@@ -35,7 +35,7 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) {
 	action.Data["clusterId"] = clusterId
 
 	if clusterId > 0 {
-		cluster, err := models.SharedNodeClusterDAO.FindEnabledNodeCluster(actionPtr.(rpc.ContextInterface).AdminContext(), clusterId)
+		cluster, err := dao.SharedNodeClusterDAO.FindEnabledNodeCluster(actionPtr.(rpc.ContextInterface).AdminContext(), clusterId)
 		if err != nil {
 			logs.Error(err)
 			return

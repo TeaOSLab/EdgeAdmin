@@ -4,7 +4,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/waf/ipadmin/ipadminutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/models"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 )
@@ -23,7 +23,7 @@ func (this *CreateIPPopupAction) RunGet(params struct {
 }) {
 	this.Data["type"] = params.Type
 
-	listId, err := models.SharedHTTPFirewallPolicyDAO.FindEnabledPolicyIPListIdWithType(this.AdminContext(), params.FirewallPolicyId, params.Type)
+	listId, err := dao.SharedHTTPFirewallPolicyDAO.FindEnabledPolicyIPListIdWithType(this.AdminContext(), params.FirewallPolicyId, params.Type)
 	if err != nil {
 		this.ErrorPage(err)
 		return

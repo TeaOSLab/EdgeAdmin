@@ -3,7 +3,7 @@ package waf
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/models"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"net/http"
@@ -33,7 +33,7 @@ func (this *Helper) BeforeAction(actionPtr actions.ActionWrapper) (goNext bool) 
 		action.Data["countOutboundGroups"] = 0
 		parentAction := actionutils.FindParentAction(actionPtr)
 		if parentAction != nil {
-			firewallPolicy, err := models.SharedHTTPFirewallPolicyDAO.FindEnabledHTTPFirewallPolicy(parentAction.AdminContext(), firewallPolicyId)
+			firewallPolicy, err := dao.SharedHTTPFirewallPolicyDAO.FindEnabledHTTPFirewallPolicy(parentAction.AdminContext(), firewallPolicyId)
 			if err != nil {
 				parentAction.ErrorPage(err)
 				return

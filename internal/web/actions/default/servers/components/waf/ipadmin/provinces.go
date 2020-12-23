@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/models"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -28,7 +28,7 @@ func (this *ProvincesAction) RunGet(params struct {
 	this.Data["subMenuItem"] = "province"
 
 	// 当前选中的省份
-	policyConfig, err := models.SharedHTTPFirewallPolicyDAO.FindEnabledPolicyConfig(this.AdminContext(), params.FirewallPolicyId)
+	policyConfig, err := dao.SharedHTTPFirewallPolicyDAO.FindEnabledHTTPFirewallPolicyConfig(this.AdminContext(), params.FirewallPolicyId)
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -71,7 +71,7 @@ func (this *ProvincesAction) RunPost(params struct {
 	// 日志
 	defer this.CreateLog(oplogs.LevelInfo, "WAF策略 %d 设置禁止访问的省份", params.FirewallPolicyId)
 
-	policyConfig, err := models.SharedHTTPFirewallPolicyDAO.FindEnabledPolicyConfig(this.AdminContext(), params.FirewallPolicyId)
+	policyConfig, err := dao.SharedHTTPFirewallPolicyDAO.FindEnabledHTTPFirewallPolicyConfig(this.AdminContext(), params.FirewallPolicyId)
 	if err != nil {
 		this.ErrorPage(err)
 		return

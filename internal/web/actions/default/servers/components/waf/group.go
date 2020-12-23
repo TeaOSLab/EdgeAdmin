@@ -2,7 +2,7 @@ package waf
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/models"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/maps"
@@ -26,7 +26,7 @@ func (this *GroupAction) RunGet(params struct {
 	this.Data["type"] = params.Type
 
 	// policy
-	firewallPolicy, err := models.SharedHTTPFirewallPolicyDAO.FindEnabledPolicyConfig(this.AdminContext(), params.FirewallPolicyId)
+	firewallPolicy, err := dao.SharedHTTPFirewallPolicyDAO.FindEnabledHTTPFirewallPolicyConfig(this.AdminContext(), params.FirewallPolicyId)
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -37,7 +37,7 @@ func (this *GroupAction) RunGet(params struct {
 	}
 
 	// group config
-	groupConfig, err := models.SharedHTTPFirewallRuleGroupDAO.FindRuleGroupConfig(this.AdminContext(), params.GroupId)
+	groupConfig, err := dao.SharedHTTPFirewallRuleGroupDAO.FindRuleGroupConfig(this.AdminContext(), params.GroupId)
 	if err != nil {
 		this.ErrorPage(err)
 		return

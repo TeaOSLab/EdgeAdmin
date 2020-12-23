@@ -79,6 +79,29 @@ Vue.component("http-cond-url-extension", {
 </div>`
 })
 
+// 根据URL前缀
+Vue.component("http-cond-url-prefix", {
+	props: ["v-cond"],
+	data: function () {
+		let cond = this.vCond
+		if (cond == null) {
+			cond = {
+				isRequest: true,
+				param: "${requestPath}",
+				operator: "prefix",
+				value: ""
+			}
+		}
+		return {
+			cond: cond
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value"/>
+</div>`
+})
+
 // 根据MimeType
 Vue.component("http-cond-mime-type", {
 	props: ["v-cond"],

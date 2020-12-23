@@ -9,6 +9,7 @@ import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/encrypt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/rands"
@@ -43,6 +44,9 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// 设置RPC
+	dao.SetRPC(client)
 
 	return client, nil
 }

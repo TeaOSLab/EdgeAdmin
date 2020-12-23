@@ -81,7 +81,7 @@ func (this *IndexAction) RunPost(params struct {
 
 	_, err = this.RPC().ServerRPC().UpdateServerTCP(this.AdminContext(), &pb.UpdateServerTCPRequest{
 		ServerId: params.ServerId,
-		Config:   configData,
+		TcpJSON:  configData,
 	})
 	if err != nil {
 		this.ErrorPage(err)

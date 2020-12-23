@@ -180,8 +180,8 @@ func (this *IndexAction) RunPost(params struct {
 	}
 
 	_, err = this.RPC().ServerRPC().UpdateServerHTTPS(this.AdminContext(), &pb.UpdateServerHTTPSRequest{
-		ServerId: params.ServerId,
-		Config:   configData,
+		ServerId:  params.ServerId,
+		HttpsJSON: configData,
 	})
 	if err != nil {
 		this.ErrorPage(err)
