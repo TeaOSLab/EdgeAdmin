@@ -180,7 +180,7 @@ func (this *IndexAction) RunPost(params struct {
 
 	_, err = this.RPC().ServerRPC().UpdateServerTLS(this.AdminContext(), &pb.UpdateServerTLSRequest{
 		ServerId: params.ServerId,
-		Config:   configData,
+		TlsJSON:  configData,
 	})
 	if err != nil {
 		this.ErrorPage(err)

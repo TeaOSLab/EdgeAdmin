@@ -6,6 +6,12 @@
     "component": "http-cond-url-extension"
   },
   {
+    "type": "url-prefix",
+    "name": "路径前缀",
+    "description": "根据URL中的文件路径前缀进行过滤",
+    "component": "http-cond-url-prefix"
+  },
+  {
     "type": "mime-type",
     "name": "内容MimeType",
     "description": "根据服务器返回的内容的MimeType进行过滤",

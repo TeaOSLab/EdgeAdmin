@@ -99,7 +99,7 @@ func (this *IndexAction) RunPost(params struct {
 
 	_, err = this.RPC().ServerRPC().UpdateServerHTTP(this.AdminContext(), &pb.UpdateServerHTTPRequest{
 		ServerId: params.ServerId,
-		Config:   configData,
+		HttpJSON: configData,
 	})
 	if err != nil {
 		this.ErrorPage(err)

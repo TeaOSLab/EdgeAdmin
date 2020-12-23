@@ -49,6 +49,10 @@ func (this *IndexAction) RunGet(params struct {
 			WebId:      webId,
 			HeaderJSON: refJSON,
 		})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
 		isChanged = true
 	}
 	if webConfig.ResponseHeaderPolicy == nil {
@@ -72,6 +76,10 @@ func (this *IndexAction) RunGet(params struct {
 			WebId:      webId,
 			HeaderJSON: refJSON,
 		})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
 		isChanged = true
 	}
 

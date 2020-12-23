@@ -2,7 +2,7 @@ package waf
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/models"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -20,7 +20,7 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ClusterId int64
 }) {
-	cluster, err := models.SharedNodeClusterDAO.FindEnabledNodeCluster(this.AdminContext(), params.ClusterId)
+	cluster, err := dao.SharedNodeClusterDAO.FindEnabledNodeCluster(this.AdminContext(), params.ClusterId)
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -33,7 +33,7 @@ func (this *IndexAction) RunGet(params struct {
 	// WAF设置
 	this.Data["firewallPolicy"] = nil
 	if cluster.HttpFirewallPolicyId > 0 {
-		firewallPolicy, err := models.SharedHTTPFirewallPolicyDAO.FindEnabledHTTPFirewallPolicy(this.AdminContext(), cluster.HttpFirewallPolicyId)
+		firewallPolicy, err := dao.SharedHTTPFirewallPolicyDAO.FindEnabledHTTPFirewallPolicy(this.AdminContext(), cluster.HttpFirewallPolicyId)
 		if err != nil {
 			this.ErrorPage(err)
 			return
