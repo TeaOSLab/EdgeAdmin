@@ -52,9 +52,10 @@
 	<thead>
 		<tr>
 			<th>域名</th>
-			<th class="width10 center">线路</th>
-			<th class="width10 center">节点域名</th>
-			<th class="width10 center">服务域名</th>
+			<th class="center" style="width: 7em">线路</th>
+            <th class="center" style="width: 6em">集群</th>
+			<th class="center" style="width: 7em">节点域名</th>
+			<th class="center" style="width: 7em">服务域名</th>
 			<th>数据更新时间</th>
 			<th class="center width10">状态</th>
 			<th class="three op">操作</th>
@@ -63,15 +64,19 @@
 	<tr v-for="(domain, index) in domains">
 		<td>{{domain.name}}</td>
 		<td class="center">
-			<a href="" v-if="domain.countRoutes > 0" @click.prevent="showRoutes(domain.id)">{{domain.countRoutes}}个</a>
+			<a href="" v-if="domain.countRoutes > 0" @click.prevent="showRoutes(domain.id)">{{domain.countRoutes}}个<popup-icon></popup-icon></a>
+			<span v-else class="disabled">0个</span>
+		</td>
+        <td class="center">
+            <a href="" v-if="domain.countClusters > 0" @click.prevent="viewClusters(domain.id)">{{domain.countClusters}}<popup-icon></popup-icon></a>
+            <span v-else class="disabled">0个</span>
+        </td>
+		<td class="center">
+			<a href="" v-if="domain.countAllNodes > 0" @click.prevent="viewNodes(domain.id)">{{domain.countNodeRecords}}/{{domain.countAllNodes}}个<popup-icon></popup-icon></a>
 			<span v-else class="disabled">0个</span>
 		</td>
 		<td class="center">
-			<span v-if="domain.countNodeRecords > 0">{{domain.countNodeRecords}}个</span>
-			<span v-else class="disabled">0个</span>
-		</td>
-		<td class="center">
-			<span v-if="domain.countServerRecords > 0">{{domain.countServerRecords}}个</span>
+			<a href="" v-if="domain.countAllServers > 0" @click.prevent="viewServers(domain.id)">{{domain.countServerRecords}}/{{domain.countAllServers}}个<popup-icon></popup-icon></a>
 			<span v-else class="disabled">0个</span>
 		</td>
 		<td>

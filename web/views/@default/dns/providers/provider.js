@@ -73,4 +73,19 @@ Tea.context(function () {
 	this.showRoutes = function (domainId) {
 		teaweb.popup("/dns/domains/routesPopup?domainId=" + domainId)
 	}
+
+	this.viewClusters = function (domainId) {
+		teaweb.popup("/dns/domains/clustersPopup?domainId=" + domainId)
+	}
+
+	this.viewNodes = function (domainId) {
+		teaweb.popup("/dns/domains/nodesPopup?domainId=" + domainId, {
+			width: "50em",
+			height: "30em"
+		})
+	}
+
+	this.viewServers = function (domainId) {
+		teaweb.popup("/dns/domains/serversPopup?domainId=" + domainId)
+	}
 })

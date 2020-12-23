@@ -26,6 +26,6 @@ Vue.component("checkbox", {
 	},
 	template: `<div class="ui checkbox">
 	<input type="checkbox" :name="name" :value="elementValue" :id="elementId" @change="change" v-model="newValue"/>
-	<label :for="elementId"><slot></slot></label>
+	<label :for="elementId" style="font-size: 0.85em!important;"><slot></slot></label>
 </div>`
 })

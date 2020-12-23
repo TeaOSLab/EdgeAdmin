@@ -1,0 +1,20 @@
+{$layout "layout_popup"}
+
+<h3>使用域名"{{domain}}"的集群</h3>
+<table class="ui table selectable">
+    <thead>
+        <tr>
+            <th>集群</th>
+            <th>域名</th>
+            <th class="width10">解析状态</th>
+        </tr>
+    </thead>
+    <tr v-for="cluster in clusters">
+        <td>{{cluster.name}}<a :href="'/clusters/cluster?clusterId=' + cluster.id" target="_blank"><link-icon></link-icon></a> </td>
+        <td>{{cluster.dnsName}}.{{domain}}</td>
+        <td>
+            <span class="green" v-if="cluster.isOk">已解析</span>
+            <span class="red" v-else>未解析</span>
+        </td>
+    </tr>
+</table>

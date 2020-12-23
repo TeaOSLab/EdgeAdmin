@@ -45,6 +45,9 @@ func init() {
 			Post("/sync", new(domains.SyncAction)).
 			Get("/routesPopup", new(domains.RoutesPopupAction)).
 			GetPost("/selectPopup", new(domains.SelectPopupAction)).
+			Get("/clustersPopup", new(domains.ClustersPopupAction)).
+			Get("/nodesPopup", new(domains.NodesPopupAction)).
+			Get("/serversPopup", new(domains.ServersPopupAction)).
 			EndData().
 
 			// 问题修复

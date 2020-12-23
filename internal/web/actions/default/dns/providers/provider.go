@@ -69,6 +69,9 @@ func (this *ProviderAction) RunGet(params struct {
 			"serversChanged":     domain.ServersChanged,
 			"countNodeRecords":   domain.CountNodeRecords,
 			"nodesChanged":       domain.NodesChanged,
+			"countClusters":      domain.CountNodeClusters,
+			"countAllNodes":      domain.CountAllNodes,
+			"countAllServers":    domain.CountAllServers,
 		})
 	}
 	this.Data["domains"] = domainMaps
