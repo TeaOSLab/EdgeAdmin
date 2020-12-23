@@ -77,7 +77,11 @@ func (this *NodeAction) RunGet(params struct {
 		return
 	}
 	dnsRouteMaps := []maps.Map{}
+	recordName := ""
+	recordValue := ""
 	if dnsInfoResp.Node != nil {
+		recordName = dnsInfoResp.Node.NodeClusterDNSName + "." + dnsInfoResp.Node.DnsDomainName
+		recordValue = dnsInfoResp.Node.IpAddr
 		for _, dnsInfo := range dnsInfoResp.Node.Routes {
 			dnsRouteMaps = append(dnsRouteMaps, maps.Map{
 				"name": dnsInfo.Name,
@@ -86,6 +90,8 @@ func (this *NodeAction) RunGet(params struct {
 		}
 	}
 	this.Data["dnsRoutes"] = dnsRouteMaps
+	this.Data["dnsRecordName"] = recordName
+	this.Data["dnsRecordValue"] = recordValue
 
 	// 登录信息
 	var loginMap maps.Map = nil

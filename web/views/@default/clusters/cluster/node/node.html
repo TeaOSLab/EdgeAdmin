@@ -35,6 +35,12 @@
 				<span class="ui label tiny basic" v-for="route in dnsRoutes">{{route.name}}</span>
 			</td>
 		</tr>
+        <tr v-if="dnsRecordName.length > 0 && dnsRecordValue.length > 0">
+            <td>DNS记录</td>
+            <td>{{dnsRecordName}} -&gt; {{dnsRecordValue}}
+                <p class="comment">通过设置A记录可以将集群上的服务请求转发到不同线路的节点上。</p>
+            </td>
+        </tr>
         <tr>
             <td>所属区域</td>
             <td>

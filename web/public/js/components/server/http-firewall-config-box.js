@@ -22,7 +22,7 @@ Vue.component("http-firewall-config-box", {
 			<tr>
 				<td>WAF策略</td>
 				<td>
-					<div v-if="vFirewallPolicy != null">{{vFirewallPolicy.name}}
+					<div v-if="vFirewallPolicy != null">{{vFirewallPolicy.name}} <link-icon :href="'/servers/components/waf/policy?firewallPolicyId=' + vFirewallPolicy.id"></link-icon>
 						<p class="comment">使用当前服务所在集群的设置。</p>
 					</div>
 					<span v-else class="red">当前集群没有设置WAF策略，当前配置无法生效。</span>

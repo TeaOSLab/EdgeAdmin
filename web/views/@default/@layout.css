@@ -137,7 +137,7 @@ tbody {
 }
 p.comment,
 div.comment {
-  color: rgba(0, 0, 0, 0.3);
+  color: rgba(0, 0, 0, 0.5);
   padding-top: 0.4em;
   font-size: 1em;
 }

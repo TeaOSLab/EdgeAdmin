@@ -224,6 +224,19 @@ func (this *UpdateAction) RunPost(params struct {
 		this.Fail("请选择所在集群")
 	}
 
+	// IP地址
+	ipAddresses := []maps.Map{}
+	if len(params.IPAddressesJSON) > 0 {
+		err := json.Unmarshal(params.IPAddressesJSON, &ipAddresses)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+	if len(ipAddresses) == 0 {
+		this.Fail("请至少输入一个IP地址")
+	}
+
 	dnsRouteCodes := []string{}
 	if len(params.DnsRoutesJSON) > 0 {
 		err := json.Unmarshal(params.DnsRoutesJSON, &dnsRouteCodes)
