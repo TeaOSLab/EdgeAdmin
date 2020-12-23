@@ -22,11 +22,13 @@ func (this *IndexAction) RunGet(params struct {
 	GroupId      int64
 	Keyword      string
 	AuditingFlag int32
+	CheckDNS     bool
 }) {
 	this.Data["clusterId"] = params.ClusterId
 	this.Data["groupId"] = params.GroupId
 	this.Data["keyword"] = params.Keyword
 	this.Data["auditingFlag"] = params.AuditingFlag
+	this.Data["checkDNS"] = params.CheckDNS
 
 	if params.AuditingFlag > 0 {
 		this.Data["firstMenuItem"] = "auditing"

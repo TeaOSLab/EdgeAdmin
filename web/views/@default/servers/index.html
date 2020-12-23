@@ -4,26 +4,33 @@
 <form method="get" class="ui form" action="/servers">
     <input type="hidden" name="auditingFlag" :value="auditingFlag"/>
 	<div class="ui margin"></div>
-	<div class="ui fields inline">
-        <div class="ui field" v-if="clusters.length > 0">
-            <select class="ui dropdown auto-width" name="clusterId" v-model="clusterId">
-                <option value="0">[选择集群]</option>
-                <option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
-            </select>
+    <div class="ui menu basic text">
+        <div class="item">
+            <div class="ui fields inline">
+                <div class="ui field" v-if="clusters.length > 0">
+                    <select class="ui dropdown auto-width" name="clusterId" v-model="clusterId">
+                        <option value="0">[选择集群]</option>
+                        <option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
+                    </select>
+                </div>
+                <div class="ui field" v-if="groups.length > 0">
+                    <select class="ui dropdown auto-width" name="groupId" v-model="groupId">
+                        <option value="0">[选择分组]</option>
+                        <option v-for="group in groups" :value="group.id">{{group.name}}</option>
+                    </select>
+                </div>
+                <div class="ui field">
+                    <input type="text" name="keyword" style="width:10em" placeholder="关键词" v-model="keyword"/>
+                </div>
+                <div class="ui field">
+                    <button type="submit" class="ui button">搜索</button>
+                </div>
+            </div>
         </div>
-		<div class="ui field" v-if="groups.length > 0">
-			<select class="ui dropdown auto-width" name="groupId" v-model="groupId">
-				<option value="0">[选择分组]</option>
-				<option v-for="group in groups" :value="group.id">{{group.name}}</option>
-			</select>
-		</div>
-		<div class="ui field">
-			<input type="text" name="keyword" style="width:10em" placeholder="关键词" v-model="keyword"/>
-		</div>
-		<div class="ui field">
-			<button type="submit" class="ui button">搜索</button>
-		</div>
-	</div>
+        <div class="item right">
+            <checkbox name="checkDNS" :v-value="1" v-model="checkDNS">检查域名解析</checkbox>
+        </div>
+    </div>
 </form>
 
 <p class="ui message" v-if="servers.length == 0">暂时还没有服务。</p>
@@ -76,7 +83,17 @@
 			</div>
 		</td>
 		<td class="center">
-			<label-on :v-is-on="server.isOn"></label-on>
+            <div v-if="!checkDNS">
+                <label-on :v-is-on="server.isOn"></label-on>
+            </div>
+            <div v-else>
+                <span v-if="!server.isOn" class="grey">停用中</span>
+                <span v-else-if="server.status.isOk" class="green">正常</span>
+                <span v-else-if="server.status.message.length == 0">检查中</span>
+                <span v-else class="red">{{server.status.message}}
+                    <tip-icon :content="server.status.todo"></tip-icon>
+                </span>
+            </div>
 		</td>
 		<td>
 			<a :href="'/servers/server?serverId=' + server.id">详情</a>
