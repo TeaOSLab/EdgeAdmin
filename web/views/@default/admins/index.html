@@ -6,7 +6,7 @@
 		<tr>
 			<th>用户名</th>
 			<th>全名</th>
-			<th>创建时间</th>
+            <th>OTP认证</th>
 			<th class="center width10">状态</th>
 			<th class="two op">操作</th>
 		</tr>
@@ -18,12 +18,15 @@
 			</div>
 		</td>
 		<td :class="{disabled:!admin.isOn}">{{admin.fullname}}</td>
-		<td :class="{disabled:!admin.isOn}">{{admin.createdTime}}</td>
+        <td>
+            <span v-if="admin.otpLoginIsOn" class="green">Y</span>
+            <span v-else class="disabled">N</span>
+        </td>
 		<td class="center">
 			<label-on :v-is-on="admin.isOn"></label-on>
 		</td>
 		<td>
-			<a href="" @click.prevent="updateAdmin(admin.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteAdmin(admin.id)">删除</a>
+			<a :href="'/admins/admin?adminId=' + admin.id">详情</a> &nbsp; <a href="" @click.prevent="deleteAdmin(admin.id)">删除</a>
 		</td>
 	</tr>
 </table>

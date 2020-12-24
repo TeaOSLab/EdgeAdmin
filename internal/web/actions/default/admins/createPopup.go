@@ -7,6 +7,8 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/maps"
+	"github.com/xlzd/gotp"
 )
 
 type CreatePopupAction struct {
@@ -29,6 +31,9 @@ func (this *CreatePopupAction) RunPost(params struct {
 	Pass2       string
 	ModuleCodes []string
 	IsSuper     bool
+
+	// OTP
+	OtpOn bool
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -87,6 +92,24 @@ func (this *CreatePopupAction) RunPost(params struct {
 	if err != nil {
 		this.ErrorPage(err)
 		return
+	}
+
+	// OTP
+	if params.OtpOn {
+		_, err = this.RPC().LoginRPC().UpdateLogin(this.AdminContext(), &pb.UpdateLoginRequest{Login: &pb.Login{
+			Id:   0,
+			Type: "otp",
+			ParamsJSON: maps.Map{
+				"secret": gotp.RandomSecret(16), // TODO 改成可以设置secret长度
+			}.AsJSON(),
+			IsOn:    true,
+			AdminId: createResp.AdminId,
+			UserId:  0,
+		}})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
 	}
 
 	defer this.CreateLogInfo("创建系统用户 %d", createResp.AdminId)

@@ -1,6 +1,7 @@
 package index
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
@@ -13,8 +14,10 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
 	stringutil "github.com/iwind/TeaGo/utils/string"
+	"github.com/xlzd/gotp"
 	"time"
 )
 
@@ -71,6 +74,7 @@ func (this *IndexAction) RunPost(params struct {
 	Token    string
 	Username string
 	Password string
+	OtpCode  string
 	Remember bool
 	Must     *actions.Must
 	Auth     *helpers.UserShouldAuth
@@ -124,6 +128,28 @@ func (this *IndexAction) RunPost(params struct {
 		}
 
 		this.Fail("请输入正确的用户名密码")
+	}
+
+	// 检查OTP
+	otpLoginResp, err := this.RPC().LoginRPC().FindEnabledLogin(this.AdminContext(), &pb.FindEnabledLoginRequest{
+		AdminId: resp.AdminId,
+		Type:    "otp",
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	if otpLoginResp.Login != nil && otpLoginResp.Login.IsOn {
+		loginParams := maps.Map{}
+		err = json.Unmarshal(otpLoginResp.Login.ParamsJSON, &loginParams)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		secret := loginParams.GetString("secret")
+		if gotp.NewDefaultTOTP(secret).Now() != params.OtpCode {
+			this.Fail("请输入正确的OTP动态密码")
+		}
 	}
 
 	adminId := resp.AdminId

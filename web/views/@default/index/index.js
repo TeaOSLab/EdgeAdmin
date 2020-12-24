@@ -1,15 +1,27 @@
 Tea.context(function () {
-	this.username = "";
-	this.password = "";
-	this.passwordMd5 = "";
-	this.encodedFrom = window.encodeURIComponent(this.from);
+	this.username = ""
+	this.password = ""
+	this.passwordMd5 = ""
+	this.encodedFrom = window.encodeURIComponent(this.from)
 
-	this.isSubmitting = false;
+	this.showOTP = false
+
+	this.isSubmitting = false
 
 	this.$delay(function () {
-		this.$find("form input[name='username']").focus();
-		this.changePassword();
+		this.$find("form input[name='username']").focus()
+		this.changePassword()
 	});
+
+	this.changeUsername = function () {
+		this.$post("/checkOTP")
+			.params({
+				username: this.username
+			})
+			.success(function (resp) {
+				this.showOTP = resp.data.requireOTP
+			})
+	}
 
 	this.changePassword = function () {
 		this.passwordMd5 = md5(this.password.trim());

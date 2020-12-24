@@ -14,8 +14,10 @@ func init() {
 			Prefix("/admins").
 			Get("", new(IndexAction)).
 			GetPost("/createPopup", new(CreatePopupAction)).
-			GetPost("/updatePopup", new(UpdatePopupAction)).
+			GetPost("/update", new(UpdateAction)).
 			Post("/delete", new(DeleteAction)).
+			Get("/admin", new(AdminAction)).
+			Get("/otpQrcode", new(OtpQrcodeAction)).
 			EndAll()
 	})
 }

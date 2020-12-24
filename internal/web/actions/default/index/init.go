@@ -6,7 +6,9 @@ import (
 
 func init() {
 	TeaGo.BeforeStart(func(server *TeaGo.Server) {
-		server.Prefix("/").
+		server.
+			Post("/checkOTP", new(CheckOTPAction)).
+			Prefix("/").
 			GetPost("", new(IndexAction)).
 			EndAll()
 	})
