@@ -1,0 +1,6 @@
+<first-menu>
+    <menu-item href="/admins">系统用户</menu-item>
+    <span class="item">|</span>
+    <menu-item :href="'/admins/admin?adminId=' + admin.id" code="index">"{{admin.fullname}}" 详情</menu-item>
+    <menu-item :href="'/admins/update?adminId=' + admin.id" code="update">修改</menu-item>
+</first-menu>

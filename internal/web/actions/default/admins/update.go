@@ -8,35 +8,47 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/xlzd/gotp"
 )
 
-type UpdatePopupAction struct {
+type UpdateAction struct {
 	actionutils.ParentAction
 }
 
-func (this *UpdatePopupAction) Init() {
-	this.Nav("", "", "")
+func (this *UpdateAction) Init() {
+	this.Nav("", "", "update")
 }
 
-func (this *UpdatePopupAction) RunGet(params struct {
+func (this *UpdateAction) RunGet(params struct {
 	AdminId int64
 }) {
-
 	adminResp, err := this.RPC().AdminRPC().FindEnabledAdmin(this.AdminContext(), &pb.FindEnabledAdminRequest{AdminId: params.AdminId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 	admin := adminResp.Admin
-
-	this.Data["admin"] = maps.Map{
-		"id":       admin.Id,
-		"fullname": admin.Fullname,
-		"username": admin.Username,
-		"isOn":     admin.IsOn,
-		"isSuper":  admin.IsSuper,
+	if admin == nil {
+		this.NotFound("admin", params.AdminId)
+		return
 	}
 
+	// OTP认证
+	otpLoginIsOn := false
+	if admin.OtpLogin != nil {
+		otpLoginIsOn = admin.OtpLogin.IsOn
+	}
+
+	this.Data["admin"] = maps.Map{
+		"id":           admin.Id,
+		"fullname":     admin.Fullname,
+		"username":     admin.Username,
+		"isOn":         admin.IsOn,
+		"isSuper":      admin.IsSuper,
+		"otpLoginIsOn": otpLoginIsOn,
+	}
+
+	// 权限
 	moduleMaps := configloaders.AllModuleMaps()
 	for _, m := range moduleMaps {
 		code := m.GetString("code")
@@ -54,7 +66,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 	this.Show()
 }
 
-func (this *UpdatePopupAction) RunPost(params struct {
+func (this *UpdateAction) RunPost(params struct {
 	AdminId int64
 
 	Fullname    string
@@ -64,6 +76,9 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	ModuleCodes []string
 	IsOn        bool
 	IsSuper     bool
+
+	// OTP
+	OtpOn bool
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -130,12 +145,58 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		return
 	}
 
-	// 通知更改
-	err = configloaders.NotifyAdminModuleMappingChange()
+	// 修改OTP
+	otpLoginResp, err := this.RPC().LoginRPC().FindEnabledLogin(this.AdminContext(), &pb.FindEnabledLoginRequest{
+		AdminId: params.AdminId,
+		Type:    "otp",
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
+	{
+		otpLogin := otpLoginResp.Login
+		if params.OtpOn {
+			if otpLogin == nil {
+				otpLogin = &pb.Login{
+					Id:   0,
+					Type: "otp",
+					ParamsJSON: maps.Map{
+						"secret": gotp.RandomSecret(16), // TODO 改成可以设置secret长度
+					}.AsJSON(),
+					IsOn:    true,
+					AdminId: params.AdminId,
+					UserId:  0,
+				}
+			} else {
+				// 如果已经有了，就覆盖，这样可以保留既有的参数
+				otpLogin.IsOn = true
+			}
 
-	this.Success()
+			_, err = this.RPC().LoginRPC().UpdateLogin(this.AdminContext(), &pb.UpdateLoginRequest{Login: otpLogin})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+		} else {
+			_, err = this.RPC().LoginRPC().UpdateLogin(this.AdminContext(), &pb.UpdateLoginRequest{Login: &pb.Login{
+				Type:    "otp",
+				IsOn:    false,
+				AdminId: params.AdminId,
+			}})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+		}
+
+		// 通知更改
+		err = configloaders.NotifyAdminModuleMappingChange()
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+
+		this.Success()
+	}
 }

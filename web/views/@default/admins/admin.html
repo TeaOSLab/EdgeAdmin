@@ -1,0 +1,66 @@
+{$layout}
+{$template "admin_menu"}
+
+<table class="ui table definition selectable">
+    <tr>
+        <td class="title">全名</td>
+        <td>
+            {{admin.fullname}}
+        </td>
+    </tr>
+    <tr>
+        <td>状态</td>
+        <td>
+            <label-on :v-is-on="admin.isOn"></label-on>
+        </td>
+    </tr>
+    <tr>
+        <td>登录用户名</td>
+        <td>
+            {{admin.username}}
+        </td>
+    </tr>
+    <tr>
+        <td>是否为超级管理员</td>
+        <td>
+            <span v-if="admin.isSuper" class="green">Y</span>
+            <span v-else class="disabled">N</span>
+        </td>
+    </tr>
+    <tr v-show="!admin.isSuper">
+        <td>权限</td>
+        <td>
+            <div class="modules-box" v-if="modules.length > 0">
+                <div class="module-box" v-for="module in modules">
+                    <i class="icon circle small grey"></i> {{module.name}}
+                </div>
+            </div>
+            <span v-else class="disabled">暂时还没有可以管理的模块。</span>
+        </td>
+    </tr>
+</table>
+
+<h3>OTP认证</h3>
+<table class="ui table definition selectable">
+    <tr>
+        <td class="title">状态</td>
+        <td>
+            <span v-if="otp != null && otp.isOn" class="green">已启用</span>
+            <span v-else class="disabled">未启用</span>
+        </td>
+    </tr>
+    <tr v-if="otp != null && otp.isOn">
+        <td colspan="2"><more-options-indicator>更多信息</more-options-indicator></td>
+    </tr>
+    <tr v-if="otp != null && otp.isOn && moreOptionsVisible">
+        <td>认证二维码</td>
+        <td>
+            <img :src="'/admins/otpQrcode?adminId=' + admin.id"/>
+            <p class="comment">可以通过二维码快速添加OTP认证信息到App中。</p>
+        </td>
+    </tr>
+    <tr v-if="otp != null && otp.isOn && moreOptionsVisible">
+        <td>密钥</td>
+        <td>{{otp.params.secret}}</td>
+    </tr>
+</table>

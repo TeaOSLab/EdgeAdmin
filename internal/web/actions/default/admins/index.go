@@ -35,12 +35,13 @@ func (this *IndexAction) RunGet(params struct{}) {
 	adminMaps := []maps.Map{}
 	for _, admin := range adminsResp.Admins {
 		adminMaps = append(adminMaps, maps.Map{
-			"id":          admin.Id,
-			"isOn":        admin.IsOn,
-			"isSuper":     admin.IsSuper,
-			"username":    admin.Username,
-			"fullname":    admin.Fullname,
-			"createdTime": timeutil.FormatTime("Y-m-d H:i:s", admin.CreatedAt),
+			"id":           admin.Id,
+			"isOn":         admin.IsOn,
+			"isSuper":      admin.IsSuper,
+			"username":     admin.Username,
+			"fullname":     admin.Fullname,
+			"createdTime":  timeutil.FormatTime("Y-m-d H:i:s", admin.CreatedAt),
+			"otpLoginIsOn": admin.OtpLogin != nil && admin.OtpLogin.IsOn,
 		})
 	}
 	this.Data["admins"] = adminMaps

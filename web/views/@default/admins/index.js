@@ -21,15 +21,4 @@ Tea.context(function () {
 				.refresh()
 		})
 	}
-
-	this.updateAdmin = function (adminId) {
-		teaweb.popup("/admins/updatePopup?adminId=" + adminId, {
-			height: "22em",
-			callback: function () {
-				teaweb.success("保存成功", function () {
-					teaweb.reload()
-				})
-			}
-		})
-	}
 })
