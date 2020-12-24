@@ -1,11 +1,15 @@
 package clusters
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
+	"time"
 )
 
 type IndexAction struct {
@@ -16,12 +20,30 @@ func (this *IndexAction) Init() {
 	this.Nav("", "cluster", "index")
 }
 
-func (this *IndexAction) RunGet(params struct{}) {
-	countResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClusters(this.AdminContext(), &pb.CountAllEnabledNodeClustersRequest{})
+func (this *IndexAction) RunGet(params struct {
+	Keyword    string
+	SearchType string
+}) {
+	this.Data["keyword"] = params.Keyword
+	this.Data["searchType"] = params.SearchType
+	this.Data["isSearching"] = len(params.Keyword) > 0
+
+	// 搜索节点
+	if params.SearchType == "node" && len(params.Keyword) > 0 {
+		this.searchNodes(params.Keyword)
+		return
+	}
+
+	// 搜索集群
+	countResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClusters(this.AdminContext(), &pb.CountAllEnabledNodeClustersRequest{
+		Keyword: params.Keyword,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
+	this.Data["countClusters"] = countResp.Count
+
 	count := countResp.Count
 	page := this.NewPage(count)
 	this.Data["page"] = page.AsHTML()
@@ -29,8 +51,9 @@ func (this *IndexAction) RunGet(params struct{}) {
 	clusterMaps := []maps.Map{}
 	if count > 0 {
 		clustersResp, err := this.RPC().NodeClusterRPC().ListEnabledNodeClusters(this.AdminContext(), &pb.ListEnabledNodeClustersRequest{
-			Offset: page.Offset,
-			Size:   page.Size,
+			Keyword: params.Keyword,
+			Offset:  page.Offset,
+			Size:    page.Size,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -88,6 +111,149 @@ func (this *IndexAction) RunGet(params struct{}) {
 		}
 	}
 	this.Data["clusters"] = clusterMaps
+	this.Data["nodes"] = []maps.Map{}
+
+	if len(params.Keyword) > 0 {
+		// 搜索节点
+		countResp, err := this.RPC().NodeRPC().CountAllEnabledNodesMatch(this.AdminContext(), &pb.CountAllEnabledNodesMatchRequest{
+			Keyword: params.Keyword,
+		})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		this.Data["countNodes"] = countResp.Count
+	}
+
+	this.Show()
+}
+
+func (this *IndexAction) searchNodes(keyword string) {
+	// 搜索节点
+	countResp, err := this.RPC().NodeRPC().CountAllEnabledNodesMatch(this.AdminContext(), &pb.CountAllEnabledNodesMatchRequest{
+		Keyword: keyword,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	count := countResp.Count
+	page := this.NewPage(count)
+	this.Data["page"] = page.AsHTML()
+	this.Data["countNodes"] = count
+
+	nodesResp, err := this.RPC().NodeRPC().ListEnabledNodesMatch(this.AdminContext(), &pb.ListEnabledNodesMatchRequest{
+		Offset:  page.Offset,
+		Size:    page.Size,
+		Keyword: keyword,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	nodeMaps := []maps.Map{}
+	for _, node := range nodesResp.Nodes {
+		// 状态
+		isSynced := false
+		status := &nodeconfigs.NodeStatus{}
+		if len(node.StatusJSON) > 0 {
+			err = json.Unmarshal(node.StatusJSON, &status)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			status.IsActive = status.IsActive && time.Now().Unix()-status.UpdatedAt <= 60 // N秒之内认为活跃
+			isSynced = status.ConfigVersion == node.Version
+		}
+
+		// IP
+		ipAddressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledIPAddressesWithNodeIdRequest{NodeId: node.Id})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		ipAddresses := []maps.Map{}
+		for _, addr := range ipAddressesResp.Addresses {
+			ipAddresses = append(ipAddresses, maps.Map{
+				"id":        addr.Id,
+				"name":      addr.Name,
+				"ip":        addr.Ip,
+				"canAccess": addr.CanAccess,
+			})
+		}
+
+		// 分组
+		var groupMap maps.Map = nil
+		if node.Group != nil {
+			groupMap = maps.Map{
+				"id":   node.Group.Id,
+				"name": node.Group.Name,
+			}
+		}
+
+		// 区域
+		var regionMap maps.Map = nil
+		if node.Region != nil {
+			regionMap = maps.Map{
+				"id":   node.Region.Id,
+				"name": node.Region.Name,
+			}
+		}
+
+		// DNS
+		dnsRouteNames := []string{}
+		for _, route := range node.DnsRoutes {
+			dnsRouteNames = append(dnsRouteNames, route.Name)
+		}
+
+		nodeMaps = append(nodeMaps, maps.Map{
+			"id":          node.Id,
+			"name":        node.Name,
+			"isInstalled": node.IsInstalled,
+			"isOn":        node.IsOn,
+			"isUp":        node.IsUp,
+			"installStatus": maps.Map{
+				"isRunning":  node.InstallStatus.IsRunning,
+				"isFinished": node.InstallStatus.IsFinished,
+				"isOk":       node.InstallStatus.IsOk,
+				"error":      node.InstallStatus.Error,
+			},
+			"status": maps.Map{
+				"isActive":     status.IsActive,
+				"updatedAt":    status.UpdatedAt,
+				"hostname":     status.Hostname,
+				"cpuUsage":     status.CPUUsage,
+				"cpuUsageText": fmt.Sprintf("%.2f%%", status.CPUUsage*100),
+				"memUsage":     status.MemoryUsage,
+				"memUsageText": fmt.Sprintf("%.2f%%", status.MemoryUsage*100),
+			},
+			"cluster": maps.Map{
+				"id":   node.NodeCluster.Id,
+				"name": node.NodeCluster.Name,
+			},
+			"isSynced":      isSynced,
+			"ipAddresses":   ipAddresses,
+			"group":         groupMap,
+			"region":        regionMap,
+			"dnsRouteNames": dnsRouteNames,
+		})
+	}
+	this.Data["nodes"] = nodeMaps
+
+	this.Data["clusters"] = []maps.Map{}
+
+	// 搜索集群
+	{
+		countResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClusters(this.AdminContext(), &pb.CountAllEnabledNodeClustersRequest{
+			Keyword: keyword,
+		})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		this.Data["countClusters"] = countResp.Count
+	}
 
 	this.Show()
 }
