@@ -28,10 +28,13 @@ table th.width10 {
 table th.width5 {
   width: 5em;
 }
+table th.width6 {
+  width: 6em;
+}
 textarea::-webkit-scrollbar {
   width: 6px !important;
 }
 select.dropdown {
-  height: auto!important;
+  height: auto !important;
 }
 /*# sourceMappingURL=@layout_override.css.map */
