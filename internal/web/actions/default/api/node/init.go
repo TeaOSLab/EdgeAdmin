@@ -23,6 +23,7 @@ func init() {
 			Get("", new(IndexAction)).
 			GetPost("/update", new(UpdateAction)).
 			Get("/install", new(InstallAction)).
+			Get("/logs", new(LogsAction)).
 
 			EndAll()
 	})

@@ -17,6 +17,7 @@ func init() {
 			Get("/user", new(UserAction)).
 			GetPost("/update", new(UpdateAction)).
 			Post("/delete", new(DeleteAction)).
+			GetPost("/features", new(FeaturesAction)).
 			EndAll()
 	})
 }
