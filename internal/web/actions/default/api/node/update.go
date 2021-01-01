@@ -57,6 +57,28 @@ func (this *UpdateAction) RunGet(params struct {
 	listens = append(listens, httpConfig.Listen...)
 	listens = append(listens, httpsConfig.Listen...)
 
+	restHTTPConfig := &serverconfigs.HTTPProtocolConfig{}
+	if len(node.RestHTTPJSON) > 0 {
+		err = json.Unmarshal(node.RestHTTPJSON, restHTTPConfig)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+	restHTTPSConfig := &serverconfigs.HTTPSProtocolConfig{}
+	if len(node.RestHTTPSJSON) > 0 {
+		err = json.Unmarshal(node.RestHTTPSJSON, restHTTPSConfig)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+
+	// 监听地址
+	restListens := []*serverconfigs.NetworkAddressConfig{}
+	restListens = append(restListens, restHTTPConfig.Listen...)
+	restListens = append(restListens, restHTTPSConfig.Listen...)
+
 	// 证书信息
 	certs := []*sslconfigs.SSLCertConfig{}
 	sslPolicyId := int64(0)
@@ -95,6 +117,8 @@ func (this *UpdateAction) RunGet(params struct {
 		"description": node.Description,
 		"isOn":        node.IsOn,
 		"listens":     listens,
+		"restIsOn":    node.RestIsOn,
+		"restListens": restListens,
 		"certs":       certs,
 		"sslPolicyId": sslPolicyId,
 		"accessAddrs": accessAddrs,
@@ -109,6 +133,8 @@ func (this *UpdateAction) RunPost(params struct {
 	Name            string
 	SslPolicyId     int64
 	ListensJSON     []byte
+	RestIsOn        bool
+	RestListensJSON []byte
 	CertIdsJSON     []byte
 	AccessAddrsJSON []byte
 	Description     string
@@ -143,6 +169,27 @@ func (this *UpdateAction) RunPost(params struct {
 		}
 	}
 
+	// Rest监听地址
+	restHTTPConfig := &serverconfigs.HTTPProtocolConfig{}
+	restHTTPSConfig := &serverconfigs.HTTPSProtocolConfig{}
+	if params.RestIsOn {
+		restListens := []*serverconfigs.NetworkAddressConfig{}
+		err = json.Unmarshal(params.RestListensJSON, &restListens)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		for _, addr := range restListens {
+			if addr.Protocol.IsHTTPFamily() {
+				restHTTPConfig.IsOn = true
+				restHTTPConfig.Listen = append(restHTTPConfig.Listen, addr)
+			} else if addr.Protocol.IsHTTPSFamily() {
+				restHTTPSConfig.IsOn = true
+				restHTTPSConfig.Listen = append(restHTTPSConfig.Listen, addr)
+			}
+		}
+	}
+
 	// 证书
 	certIds := []int64{}
 	if len(params.CertIdsJSON) > 0 {
@@ -152,7 +199,7 @@ func (this *UpdateAction) RunPost(params struct {
 			return
 		}
 	}
-	if httpsConfig.IsOn && len(httpsConfig.Listen) > 0 && len(certIds) == 0 {
+	if ((httpsConfig.IsOn && len(httpsConfig.Listen) > 0) || (restHTTPSConfig.IsOn && len(httpsConfig.Listen) > 0)) && len(certIds) == 0 {
 		this.Fail("请添加至少一个证书")
 	}
 
@@ -196,6 +243,10 @@ func (this *UpdateAction) RunPost(params struct {
 		IsOn:        true,
 		SSLPolicyId: sslPolicyId,
 	}
+	restHTTPSConfig.SSLPolicyRef = &sslconfigs.SSLPolicyRef{
+		IsOn:        true,
+		SSLPolicyId: sslPolicyId,
+	}
 
 	// 访问地址
 	accessAddrs := []*serverconfigs.NetworkAddressConfig{}
@@ -218,6 +269,16 @@ func (this *UpdateAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
+	restHTTPJSON, err := json.Marshal(restHTTPConfig)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	restHTTPSJSON, err := json.Marshal(restHTTPSConfig)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 
 	_, err = this.RPC().APINodeRPC().UpdateAPINode(this.AdminContext(), &pb.UpdateAPINodeRequest{
 		NodeId:          params.NodeId,
@@ -225,6 +286,9 @@ func (this *UpdateAction) RunPost(params struct {
 		Description:     params.Description,
 		HttpJSON:        httpJSON,
 		HttpsJSON:       httpsJSON,
+		RestIsOn:        params.RestIsOn,
+		RestHTTPJSON:    restHTTPJSON,
+		RestHTTPSJSON:   restHTTPSJSON,
 		AccessAddrsJSON: params.AccessAddrsJSON,
 		IsOn:            params.IsOn,
 	})

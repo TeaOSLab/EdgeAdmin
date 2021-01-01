@@ -15,7 +15,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td>进程监听端口</td>
+		<td>GRPC监听端口</td>
 		<td>
 			<network-addresses-view :v-addresses="node.listens"></network-addresses-view>
 			<p class="comment">API节点进程监听的网络端口。</p>
@@ -28,12 +28,19 @@
 		</td>
 	</tr>
 	<tr>
-		<td>外部访问地址</td>
+		<td>GRPC外部访问地址</td>
 		<td>
 			<network-addresses-view :v-addresses="node.accessAddrs"></network-addresses-view>
-			<p class="comment">外部访问API节点的网络地址。</p>
+			<p class="comment">通过GRPC访问API节点的网络地址。</p>
 		</td>
 	</tr>
+    <tr v-if="node.restIsOn">
+        <td>HTTP外部访问地址</td>
+        <td>
+            <network-addresses-view :v-addresses="node.restAccessAddrs"></network-addresses-view>
+            <p class="comment">通过HTTP访问API节点的网络地址。</p>
+        </td>
+    </tr>
 	<tr>
 		<td>描述</td>
 		<td>

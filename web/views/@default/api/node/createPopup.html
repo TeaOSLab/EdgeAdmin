@@ -10,10 +10,10 @@
 			</td>
 		</tr>
 		<tr>
-			<td>进程监听端口 *</td>
+			<td>GRPC监听端口 *</td>
 			<td>
 				<network-addresses-box :v-name="'listensJSON'" :v-server-type="'httpWeb'" @change="changeListens"></network-addresses-box>
-				<p class="comment">API节点进程监听的网络端口。</p>
+				<p class="comment">通过GRPC访问API节点进程监听的网络端口。</p>
 			</td>
 		</tr>
 		<tr v-if="hasHTTPS">
@@ -23,17 +23,30 @@
 			</td>
 		</tr>
 		<tr>
-			<td>外部访问地址 *</td>
+			<td>GRPC 外部访问地址 *</td>
 			<td>
 				<api-node-addresses-box :v-name="'accessAddrsJSON'"></api-node-addresses-box>
-				<p class="comment">边缘节点和管理平台等外部节点访问API节点的网络地址。</p>
+				<p class="comment">边缘节点和管理平台等外部节点访问API节点的网络地址，需要保证其他节点能够通过此地址访问到API节点服务。</p>
 			</td>
 		</tr>
-
 		<tr>
 			<td colspan="2"><more-options-indicator></more-options-indicator></td>
 		</tr>
 		<tbody v-show="moreOptionsVisible">
+            <tr>
+                <td :class="{'color-border': restIsOn}">是否开启HTTP API端口</td>
+                <td>
+                    <checkbox name="restIsOn" v-model="restIsOn">是否启用HTTP API</checkbox>
+                    <p class="comment">启用后用户可以通过HTTP API调用服务接口。</p>
+                </td>
+            </tr>
+            <tr v-if="restIsOn">
+                <td class="color-border">HTTP API监听端口</td>
+                <td>
+                    <network-addresses-box :v-name="'restListensJSON'" :v-server-type="'httpWeb'" @change="changeRestListens"></network-addresses-box>
+                    <p class="comment">HTTP API节点进程监听的网络端口。</p>
+                </td>
+            </tr>
 			<tr>
 				<td>描述</td>
 				<td>
