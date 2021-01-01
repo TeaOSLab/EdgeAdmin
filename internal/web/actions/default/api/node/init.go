@@ -11,7 +11,7 @@ func init() {
 	TeaGo.BeforeStart(func(server *TeaGo.Server) {
 		server.
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeSetting)).
-			Helper(settingutils.NewHelper("apiNodes")).
+			Helper(settingutils.NewAdvancedHelper("apiNodes")).
 			Prefix("/api/node").
 
 			// 这里不受Helper的约束

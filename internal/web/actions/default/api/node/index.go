@@ -87,15 +87,45 @@ func (this *IndexAction) RunGet(params struct {
 		}
 	}
 
+	// Rest地址
+	restAccessAddrs := []*serverconfigs.NetworkAddressConfig{}
+	if node.RestIsOn {
+		if len(node.RestHTTPJSON) > 0 {
+			httpConfig := &serverconfigs.HTTPProtocolConfig{}
+			err = json.Unmarshal(node.RestHTTPJSON, httpConfig)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			if httpConfig.IsOn && len(httpConfig.Listen) > 0 {
+				restAccessAddrs = append(restAccessAddrs, httpConfig.Listen...)
+			}
+		}
+
+		if len(node.RestHTTPSJSON) > 0 {
+			httpsConfig := &serverconfigs.HTTPSProtocolConfig{}
+			err = json.Unmarshal(node.RestHTTPSJSON, httpsConfig)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			if httpsConfig.IsOn && len(httpsConfig.Listen) > 0 {
+				restAccessAddrs = append(restAccessAddrs, httpsConfig.Listen...)
+			}
+		}
+	}
+
 	this.Data["node"] = maps.Map{
-		"id":          node.Id,
-		"name":        node.Name,
-		"description": node.Description,
-		"isOn":        node.IsOn,
-		"listens":     listens,
-		"accessAddrs": accessAddrs,
-		"hasHTTPS":    sslPolicyId > 0,
-		"certs":       certs,
+		"id":              node.Id,
+		"name":            node.Name,
+		"description":     node.Description,
+		"isOn":            node.IsOn,
+		"listens":         listens,
+		"accessAddrs":     accessAddrs,
+		"restIsOn":        node.RestIsOn,
+		"restAccessAddrs": restAccessAddrs,
+		"hasHTTPS":        sslPolicyId > 0,
+		"certs":           certs,
 	}
 
 	this.Show()

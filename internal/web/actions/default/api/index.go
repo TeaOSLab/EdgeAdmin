@@ -6,6 +6,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
 	"time"
@@ -52,11 +53,44 @@ func (this *IndexAction) RunGet(params struct{}) {
 				status.IsActive = status.IsActive && time.Now().Unix()-status.UpdatedAt <= 60 // N秒之内认为活跃
 			}
 
+			// Rest地址
+			restAccessAddrs := []string{}
+			if node.RestIsOn {
+				if len(node.RestHTTPJSON) > 0 {
+					httpConfig := &serverconfigs.HTTPProtocolConfig{}
+					err = json.Unmarshal(node.RestHTTPJSON, httpConfig)
+					if err != nil {
+						this.ErrorPage(err)
+						return
+					}
+					_ = httpConfig.Init()
+					if httpConfig.IsOn && len(httpConfig.Listen) > 0 {
+						for _, listen := range httpConfig.Listen {
+							restAccessAddrs = append(restAccessAddrs, listen.FullAddresses()...)
+						}
+					}
+				}
+
+				if len(node.RestHTTPSJSON) > 0 {
+					httpsConfig := &serverconfigs.HTTPSProtocolConfig{}
+					err = json.Unmarshal(node.RestHTTPSJSON, httpsConfig)
+					if err != nil {
+						this.ErrorPage(err)
+						return
+					}
+					_ = httpsConfig.Init()
+					if httpsConfig.IsOn && len(httpsConfig.Listen) > 0 {
+						restAccessAddrs = append(restAccessAddrs, httpsConfig.FullAddresses()...)
+					}
+				}
+			}
+
 			nodeMaps = append(nodeMaps, maps.Map{
-				"id":          node.Id,
-				"isOn":        node.IsOn,
-				"name":        node.Name,
-				"accessAddrs": node.AccessAddrs,
+				"id":              node.Id,
+				"isOn":            node.IsOn,
+				"name":            node.Name,
+				"accessAddrs":     node.AccessAddrs,
+				"restAccessAddrs": restAccessAddrs,
 				"status": maps.Map{
 					"isActive":     status.IsActive,
 					"updatedAt":    status.UpdatedAt,

@@ -10,7 +10,8 @@
 	<thead>
 		<tr>
 			<th>节点名称</th>
-			<th>访问地址</th>
+			<th>GRPC访问地址</th>
+            <th>HTTP访问地址</th>
             <th class="width6 center">版本号</th>
             <th class="width5 center">CPU</th>
             <th class="width5 center">内存</th>
@@ -22,9 +23,16 @@
 		<td>{{node.name}}</td>
 		<td>
 			<div v-if="node.accessAddrs != null && node.accessAddrs.length > 0">
-				<span class="ui label tiny basic" v-for="addr in node.accessAddrs">{{addr}}</span>
+				<span class="ui label tiny basic" v-for="addr in node.accessAddrs" style="margin-bottom: 0.5em">{{addr}}</span>
 			</div>
+            <div v-else class="disabled">-</div>
 		</td>
+        <td>
+            <div v-if="node.restAccessAddrs != null && node.restAccessAddrs.length > 0">
+                <span class="ui label tiny basic" v-for="addr in node.restAccessAddrs" style="margin-bottom: 0.5em">{{addr}}</span>
+            </div>
+            <div v-else class="disabled">-</div>
+        </td>
         <td class="center">
             <span v-if="node.status.buildVersion.length > 0">v{{node.status.buildVersion}}</span>
             <span v-else class="disabled">-</span>
