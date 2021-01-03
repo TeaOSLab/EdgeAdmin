@@ -2,7 +2,7 @@ package rewrite
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/types"
@@ -22,7 +22,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 }) {
 	this.Data["webId"] = params.WebId
 
-	webConfig, err := webutils.FindWebConfigWithId(this.Parent(), params.WebId)
+	webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithId(this.AdminContext(), params.WebId)
 	if err != nil {
 		this.ErrorPage(err)
 		return

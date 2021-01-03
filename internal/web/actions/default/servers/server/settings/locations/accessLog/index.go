@@ -2,7 +2,7 @@ package accessLog
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -20,7 +20,7 @@ func (this *IndexAction) RunGet(params struct {
 	LocationId int64
 }) {
 	// 获取配置
-	webConfig, err := webutils.FindWebConfigWithLocationId(this.Parent(), params.LocationId)
+	webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithLocationId(this.AdminContext(), params.LocationId)
 	if err != nil {
 		this.ErrorPage(err)
 		return

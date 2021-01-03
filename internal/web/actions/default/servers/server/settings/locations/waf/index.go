@@ -2,7 +2,6 @@ package waf
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -20,7 +19,7 @@ func (this *IndexAction) RunGet(params struct {
 	ServerId   int64
 	LocationId int64
 }) {
-	webConfig, err := webutils.FindWebConfigWithLocationId(this.Parent(), params.LocationId)
+	webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithLocationId(this.AdminContext(), params.LocationId)
 	if err != nil {
 		this.ErrorPage(err)
 		return

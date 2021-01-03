@@ -2,6 +2,7 @@ package ipadmin
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/waf/ipadmin/ipadminutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
@@ -45,11 +46,29 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 	CSRF *actionutils.CSRF
 }) {
 	// TODO 校验ListId所属用户
-	// TODO 校验IP格式（ipFrom/ipTo）
 
 	params.Must.
 		Field("ipFrom", params.IpFrom).
 		Require("请输入开始IP")
+
+	// 校验IP格式（ipFrom/ipTo）
+	ipFromLong := utils.IP2Long(params.IpFrom)
+	if len(params.IpFrom) > 0 {
+		if ipFromLong == 0 {
+			this.Fail("请输入正确的开始IP")
+		}
+	}
+
+	ipToLong := utils.IP2Long(params.IpTo)
+	if len(params.IpTo) > 0 {
+		if ipToLong == 0 {
+			this.Fail("请输入正确的结束IP")
+		}
+	}
+
+	if ipFromLong > 0 && ipToLong > 0 && ipFromLong > ipToLong {
+		params.IpTo, params.IpFrom = params.IpFrom, params.IpTo
+	}
 
 	createResp, err := this.RPC().IPItemRPC().CreateIPItem(this.AdminContext(), &pb.CreateIPItemRequest{
 		IpListId:  params.ListId,
