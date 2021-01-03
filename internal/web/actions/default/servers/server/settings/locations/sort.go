@@ -3,7 +3,7 @@ package locations
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 )
@@ -20,7 +20,7 @@ func (this *SortAction) RunPost(params struct {
 		this.Success()
 	}
 
-	webConfig, err := webutils.FindWebConfigWithId(this.Parent(), params.WebId)
+	webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithId(this.AdminContext(), params.WebId)
 	if err != nil {
 		this.ErrorPage(err)
 		return

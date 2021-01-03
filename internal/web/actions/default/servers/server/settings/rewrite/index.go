@@ -2,7 +2,7 @@ package rewrite
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 )
 
 type IndexAction struct {
@@ -17,7 +17,7 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ServerId int64
 }) {
-	webConfig, err := webutils.FindWebConfigWithServerId(this.Parent(), params.ServerId)
+	webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithServerId(this.AdminContext(), params.ServerId)
 	if err != nil {
 		this.ErrorPage(err)
 		return

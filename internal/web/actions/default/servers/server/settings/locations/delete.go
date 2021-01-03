@@ -3,7 +3,7 @@ package locations
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -15,7 +15,7 @@ func (this *DeleteAction) RunPost(params struct {
 	WebId      int64
 	LocationId int64
 }) {
-	webConfig, err := webutils.FindWebConfigWithId(this.Parent(), params.WebId)
+	webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithId(this.AdminContext(), params.WebId)
 	if err != nil {
 		this.ErrorPage(err)
 		return

@@ -3,7 +3,7 @@ package rewrite
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -55,7 +55,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Require("请输入目标URL")
 
 	// web配置
-	webConfig, err := webutils.FindWebConfigWithId(this.Parent(), params.WebId)
+	webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithId(this.AdminContext(), params.WebId)
 	if err != nil {
 		this.ErrorPage(err)
 		return
