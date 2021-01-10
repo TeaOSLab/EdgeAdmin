@@ -1,0 +1,36 @@
+{$layout "layout_popup"}
+
+<h3 v-if="isCreating">添加URL跳转</h3>
+<h3 v-if="!isCreating">修改URL跳转</h3>
+
+<form class="ui form" data-tea-success="success" data-tea-action="$">
+    <csrf-token></csrf-token>
+
+    <table class="ui table definition selectable">
+        <tr>
+            <td>跳转前URL *</td>
+            <td>
+                <input type="text" name="beforeURL" placeholder="比如 http://www.url1.com" v-model="redirect.beforeURL" ref="focus"/>
+                <p class="comment">需要填写完整的URL，包括<code-label>http://</code-label>或者<code-label>https://</code-label>，如果有非默认端口，也需要带上端口号。</p>
+            </td>
+        </tr>
+        <tr>
+            <td>跳转后URL *</td>
+            <td>
+                <input type="text" name="afterURL" placeholder="比如 https://www.url2.cn" v-model="redirect.afterURL"/>
+                <p class="comment">需要填写完整的URL，包括<code-label>http://</code-label>或者<code-label>https://</code-label>，如果有非默认端口，也需要带上端口号。</p>
+            </td>
+        </tr>
+        <tr>
+            <td class="title">跳转状态码</td>
+            <td>
+                <select class="ui dropdown auto-width" name="status" v-model="redirect.status">
+                    <option value="0">[默认]</option>
+                    <option v-for="status in statusList" :value="status.code">{{status.code}} - {{status.text}}</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    <submit-btn></submit-btn>
+</form>
