@@ -1,6 +1,6 @@
 let checkboxId = 0
 Vue.component("checkbox", {
-	props: ["name", "value", "v-value", "id"],
+	props: ["name", "value", "v-value", "id", "checked"],
 	data: function () {
 		checkboxId++
 		let elementId = this.id
@@ -13,10 +13,15 @@ Vue.component("checkbox", {
 			elementValue = "1"
 		}
 
+		let checkedValue = this.value
+        if (checkedValue == null && this.checked == "checked") {
+            checkedValue = elementValue
+        }
+
 		return {
 			elementId: elementId,
 			elementValue: elementValue,
-			newValue: this.value
+			newValue: checkedValue
 		}
 	},
 	methods: {

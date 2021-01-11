@@ -1,9 +1,11 @@
 package clusters
 
 import (
+	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains/domainutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 )
@@ -37,8 +39,9 @@ func (this *CreateAction) RunPost(params struct {
 	HttpFirewallPolicyId int64
 
 	// SSH相关
-	GrantId    int64
-	InstallDir string
+	GrantId            int64
+	InstallDir         string
+	SystemdServiceIsOn bool
 
 	// DNS相关
 	DnsDomainId int64
@@ -79,6 +82,19 @@ func (this *CreateAction) RunPost(params struct {
 
 	// TODO 检查DnsDomainId的有效性
 
+	// 系统服务
+	systemServices := map[string]interface{}{}
+	if params.SystemdServiceIsOn {
+		systemServices[nodeconfigs.SystemServiceTypeSystemd] = &nodeconfigs.SystemdServiceConfig{
+			IsOn: true,
+		}
+	}
+	systemServicesJSON, err := json.Marshal(systemServices)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
 	createResp, err := this.RPC().NodeClusterRPC().CreateNodeCluster(this.AdminContext(), &pb.CreateNodeClusterRequest{
 		Name:                 params.Name,
 		GrantId:              params.GrantId,
@@ -87,6 +103,7 @@ func (this *CreateAction) RunPost(params struct {
 		DnsName:              params.DnsName,
 		HttpCachePolicyId:    params.CachePolicyId,
 		HttpFirewallPolicyId: params.HttpFirewallPolicyId,
+		SystemServicesJSON:   systemServicesJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)

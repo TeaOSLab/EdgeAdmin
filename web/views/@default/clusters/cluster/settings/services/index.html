@@ -1,0 +1,23 @@
+{$layout}
+{$template "/left_menu"}
+
+<div class="right-box">
+    {$template "menu"}
+
+	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+		<input type="hidden" name="clusterId" :value="clusterId"/>
+		<csrf-token></csrf-token>
+
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title">自动加入Systemd服务</td>
+                <td>
+                    <checkbox name="systemdIsOn" v-model="systemdIsOn"></checkbox>
+                    <p class="comment">加入后可以利用systemd对节点进程进行管理，并可自动随开机启动。</p>
+                </td>
+            </tr>
+        </table>
+
+		<submit-btn></submit-btn>
+	</form>
+</div>
