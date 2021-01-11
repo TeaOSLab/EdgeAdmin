@@ -4,6 +4,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/cache"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/dns"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/services"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/toa"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/waf"
 	clusters "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/clusterutils"
@@ -36,6 +37,11 @@ func init() {
 			// TOA
 			Prefix("/clusters/cluster/settings/toa").
 			GetPost("", new(toa.IndexAction)).
+
+			// 系统服务设置
+			Prefix("/clusters/cluster/settings/services").
+			GetPost("", new(services.IndexAction)).
+			GetPost("/status", new(services.StatusAction)).
 
 			EndAll()
 	})

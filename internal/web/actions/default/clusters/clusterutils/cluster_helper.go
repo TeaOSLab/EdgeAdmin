@@ -97,6 +97,11 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, selectedIt
 		"isActive": selectedItem == "dns",
 	})
 	items = append(items, maps.Map{
+		"name":     "系统服务",
+		"url":      "/clusters/cluster/settings/services?clusterId=" + clusterId,
+		"isActive": selectedItem == "service",
+	})
+	items = append(items, maps.Map{
 		"name":     "TOA设置",
 		"url":      "/clusters/cluster/settings/toa?clusterId=" + clusterId,
 		"isActive": selectedItem == "toa",
