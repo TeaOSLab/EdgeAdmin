@@ -52,6 +52,7 @@ func (this *AddOriginPopupAction) RunPost(params struct {
 			PortRange: port,
 		},
 		Description: "",
+		IsOn:        true,
 	})
 	if err != nil {
 		this.ErrorPage(err)
