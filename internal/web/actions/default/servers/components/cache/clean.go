@@ -74,7 +74,7 @@ func (this *CleanAction) RunPost(params struct {
 	msg := &messageconfigs.CleanCacheMessage{
 		CachePolicyJSON: cachePolicyJSON,
 	}
-	results, err := nodeutils.SendMessageToCluster(this.AdminContext(), params.ClusterId, messageconfigs.MessageCodeCleanCache, msg, 10)
+	results, err := nodeutils.SendMessageToCluster(this.AdminContext(), params.ClusterId, messageconfigs.MessageCodeCleanCache, msg, 60)
 	if err != nil {
 		this.ErrorPage(err)
 		return
