@@ -14,4 +14,6 @@ const (
 
 	ErrServer = "服务器出了点小问题，请联系技术人员处理。"
 	CookieSID = "edgesid"
+
+	SystemdServiceName = "edge-admin"
 )
