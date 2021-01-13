@@ -106,6 +106,7 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	action.Data["teaShowOpenSourceInfo"] = config.ShowOpenSourceInfo
 	action.Data["teaIsSuper"] = false
 	action.Data["teaDemoEnabled"] = teaconst.IsDemo
+	action.Data["teaShowFinance"] = configloaders.ShowFinance()
 	if !action.Data.Has("teaSubMenu") {
 		action.Data["teaSubMenu"] = ""
 	}
@@ -238,6 +239,10 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 
 	result := []maps.Map{}
 	for _, m := range allMaps {
+		if m.GetString("code") == "finance" && !configloaders.ShowFinance() {
+			continue
+		}
+
 		module := m.GetString("module")
 		if configloaders.AllowModule(adminId, module) {
 			result = append(result, m)

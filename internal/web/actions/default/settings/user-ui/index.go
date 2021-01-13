@@ -31,6 +31,7 @@ func (this *IndexAction) RunPost(params struct {
 	ShowOpenSourceInfo bool
 	ShowVersion        bool
 	Version            string
+	ShowFinance        bool
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -51,6 +52,7 @@ func (this *IndexAction) RunPost(params struct {
 	config.ShowOpenSourceInfo = params.ShowOpenSourceInfo
 	config.ShowVersion = params.ShowVersion
 	config.Version = params.Version
+	config.ShowFinance = params.ShowFinance
 	err = configloaders.UpdateUserUIConfig(config)
 	if err != nil {
 		this.ErrorPage(err)
