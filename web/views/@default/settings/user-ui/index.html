@@ -35,7 +35,14 @@
                 <p class="comment">定制自己的版本号，留空表示使用系统自带的版本号。</p>
             </td>
         </tr>
+        <tr>
+            <td>是否显示财务相关功能</td>
+            <td>
+                <checkbox name="showFinance" v-model="config.showFinance"></checkbox>
+            </td>
+        </tr>
     </table>
+    <p class="comment">修改后，可能需要等待数分钟才会生效。</p>
 
     <submit-btn></submit-btn>
 </form>

@@ -52,6 +52,15 @@ func UpdateAdminUIConfig(uiConfig *systemconfigs.AdminUIConfig) error {
 	return nil
 }
 
+// 是否显示财务信息
+func ShowFinance() bool {
+	config, _ := LoadAdminUIConfig()
+	if config != nil && !config.ShowFinance {
+		return false
+	}
+	return true
+}
+
 func loadAdminUIConfig() (*systemconfigs.AdminUIConfig, error) {
 	if sharedAdminUIConfig != nil {
 		return sharedAdminUIConfig, nil
@@ -88,5 +97,6 @@ func defaultAdminUIConfig() *systemconfigs.AdminUIConfig {
 		AdminSystemName:    "GoEdge管理员系统",
 		ShowOpenSourceInfo: true,
 		ShowVersion:        true,
+		ShowFinance:        true,
 	}
 }

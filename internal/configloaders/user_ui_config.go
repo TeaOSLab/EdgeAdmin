@@ -88,5 +88,6 @@ func defaultUserUIConfig() *systemconfigs.UserUIConfig {
 		UserSystemName:     "GoEdge用户系统",
 		ShowOpenSourceInfo: true,
 		ShowVersion:        true,
+		ShowFinance:        true,
 	}
 }
