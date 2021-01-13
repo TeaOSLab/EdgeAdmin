@@ -4,6 +4,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/lists"
 	timeutil "github.com/iwind/TeaGo/utils/time"
 )
 
@@ -45,9 +46,18 @@ func (this *IndexAction) RunPost(params struct {
 		return
 	}
 
+	ipList := []string{}
 	accessLogs := accessLogsResp.AccessLogs
 	if len(accessLogs) == 0 {
 		accessLogs = []*pb.HTTPAccessLog{}
+	} else {
+		for _, accessLog := range accessLogs {
+			if len(accessLog.RemoteAddr) > 0 {
+				if !lists.ContainsString(ipList, accessLog.RemoteAddr) {
+					ipList = append(ipList, accessLog.RemoteAddr)
+				}
+			}
+		}
 	}
 	this.Data["accessLogs"] = accessLogs
 	if len(accessLogs) > 0 {
@@ -56,6 +66,22 @@ func (this *IndexAction) RunPost(params struct {
 		this.Data["requestId"] = params.RequestId
 	}
 	this.Data["hasMore"] = accessLogsResp.HasMore
+
+	// 根据IP查询区域
+	regionMap := map[string]string{} // ip => region
+	if len(ipList) > 0 {
+		resp, err := this.RPC().IPLibraryRPC().LookupIPRegions(this.AdminContext(), &pb.LookupIPRegionsRequest{IpList: ipList})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		if resp.IpRegionMap != nil {
+			for ip, region := range resp.IpRegionMap {
+				regionMap[ip] = region.Summary
+			}
+		}
+	}
+	this.Data["regions"] = regionMap
 
 	this.Success()
 }

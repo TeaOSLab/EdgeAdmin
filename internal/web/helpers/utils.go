@@ -78,13 +78,13 @@ func checkIPWithoutCache(config *systemconfigs.SecurityConfig, ipAddr string) bo
 			logs.Println("[USER_MUST_AUTH][ERROR]" + err.Error())
 			return false
 		}
-		if resp.Region == nil {
+		if resp.IpRegion == nil {
 			return true
 		}
-		if len(config.AllowCountryIds) > 0 && !lists.ContainsInt64(config.AllowCountryIds, resp.Region.CountryId) {
+		if len(config.AllowCountryIds) > 0 && !lists.ContainsInt64(config.AllowCountryIds, resp.IpRegion.CountryId) {
 			return false
 		}
-		if len(config.AllowProvinceIds) > 0 && !lists.ContainsInt64(config.AllowProvinceIds, resp.Region.ProvinceId) {
+		if len(config.AllowProvinceIds) > 0 && !lists.ContainsInt64(config.AllowProvinceIds, resp.IpRegion.ProvinceId) {
 			return false
 		}
 	}

@@ -5,7 +5,6 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 	"net/http"
-	"strings"
 )
 
 type ViewPopupAction struct {
@@ -90,23 +89,10 @@ func (this *ViewPopupAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	region := regionResp.Region
+	region := regionResp.IpRegion
 	if region != nil {
-		pieces := []string{}
-		if len(region.Country) > 0 {
-			pieces = append(pieces, region.Country)
-		}
-		if len(region.Region) > 0 {
-			pieces = append(pieces, region.Region)
-		}
-		if len(region.Province) > 0 {
-			pieces = append(pieces, region.Province)
-		}
-		if len(region.City) > 0 {
-			pieces = append(pieces, region.City)
-		}
 		regionMap = maps.Map{
-			"full": strings.Join(pieces, " "),
+			"full": region.Summary,
 			"isp":  region.Isp,
 		}
 	}
