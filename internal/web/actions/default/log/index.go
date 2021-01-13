@@ -71,19 +71,10 @@ func (this *IndexAction) RunGet(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		if regionResp.Region != nil {
-			pieces := []string{}
-			if len(regionResp.Region.Country) > 0 {
-				pieces = append(pieces, regionResp.Region.Country)
-			}
-			if len(regionResp.Region.Province) > 0 && !lists.ContainsString(pieces, regionResp.Region.Province) {
-				pieces = append(pieces, regionResp.Region.Province)
-			}
-			if len(regionResp.Region.City) > 0 && !lists.ContainsString(pieces, regionResp.Region.City) && !lists.ContainsString(pieces, strings.TrimSuffix(regionResp.Region.Province, "市")) {
-				pieces = append(pieces, regionResp.Region.City)
-			}
-			if len(regionResp.Region.Isp) > 0 && !lists.ContainsString(pieces, regionResp.Region.Isp) {
-				pieces = append(pieces, "| "+regionResp.Region.Isp)
+		if regionResp.IpRegion != nil {
+			pieces := []string{regionResp.IpRegion.Summary}
+			if len(regionResp.IpRegion.Isp) > 0 && !lists.ContainsString(pieces, regionResp.IpRegion.Isp) {
+				pieces = append(pieces, "| "+regionResp.IpRegion.Isp)
 			}
 			regionName = strings.Join(pieces, " ")
 		}
