@@ -1,5 +1,5 @@
 Vue.component("reverse-proxy-box", {
-	props: ["v-reverse-proxy-ref", "v-reverse-proxy-config", "v-is-location"],
+	props: ["v-reverse-proxy-ref", "v-reverse-proxy-config", "v-is-location", "v-family"],
 	data: function () {
 		let reverseProxyRef = this.vReverseProxyRef
 		if (reverseProxyRef == null) {
@@ -23,7 +23,8 @@ Vue.component("reverse-proxy-box", {
 		return {
 			reverseProxyRef: reverseProxyRef,
 			reverseProxyConfig: reverseProxyConfig,
-			advancedVisible: false
+			advancedVisible: false,
+            family: this.vFamily
 		}
 	},
 	watch: {
@@ -58,7 +59,7 @@ Vue.component("reverse-proxy-box", {
 					</div>
 				</td>
 			</tr>
-			<tr>
+			<tr v-show="family == null || family == 'http'">
 				<td>回源主机名<em>（Host）</em></td>
 				<td>	
 					<radio :v-value="0" v-model="reverseProxyConfig.requestHostType">跟随代理服务</radio> &nbsp;
@@ -76,14 +77,14 @@ Vue.component("reverse-proxy-box", {
 		</tbody>
 		<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
 		<tbody v-show="isOn() && advancedVisible">
-			<tr>
+			<tr v-show="family == null || family == 'http'">
 				<td>请求URI<em>（RequestURI）</em></td>
 				<td>
 					<input type="text" placeholder="\${requestURI}" v-model="reverseProxyConfig.requestURI"/>
 					<p class="comment">\${requestURI}为完整的请求URI，可以使用类似于"\${requestURI}?arg1=value1&arg2=value2"的形式添加你的参数。</p>
 				</td>
 			</tr>
-			<tr>
+			<tr v-show="family == null || family == 'http'">
 				<td>去除URL前缀<em>（StripPrefix）</em></td>
 				<td>
 					<input type="text" v-model="reverseProxyConfig.stripPrefix" placeholder="/PREFIX"/>

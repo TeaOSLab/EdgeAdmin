@@ -73,7 +73,7 @@ Vue.component("values-box", {
 					<button class="ui button small" type="button" @click.prevent="confirm()">确定</button> 
 				</div>
 				<div class="ui field">
-					<a href="" @click.prevent="cancel()">取消</a> 
+					<a href="" @click.prevent="cancel()" title="取消"><i class="icon remove small"></i></a> 
 				</div> 
 			</div> 
 		</div> 
