@@ -75,6 +75,19 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 		return
 	}
 
+	// 协议簇
+	family := ""
+	if serverConfig.IsHTTP() {
+		family = "http"
+	} else if serverConfig.IsTCP() {
+		family = "tcp"
+	} else if serverConfig.IsUnix() {
+		family = "unix"
+	} else if serverConfig.IsUDP() {
+		family = "udp"
+	}
+	action.Data["serverFamily"] = family
+
 	// TABBAR
 	selectedTabbar, _ := action.Data["mainTab"]
 	tabbar := actionutils.NewTabbar()

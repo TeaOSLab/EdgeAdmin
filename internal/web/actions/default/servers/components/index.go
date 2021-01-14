@@ -57,6 +57,11 @@ func (this *IndexAction) RunPost(params struct {
 	DomainMismatchActionPageStatusCode  int
 	DomainMismatchActionPageContentHTML string
 
+	// TCP端口设置
+	TcpAllPortRangeMin int
+	TcpAllPortRangeMax int
+	TcpAllDenyPorts    []int
+
 	DefaultDomain string
 }) {
 	// 创建日志
@@ -100,6 +105,22 @@ func (this *IndexAction) RunPost(params struct {
 			},
 		}
 	}
+
+	// TCP端口范围
+	if params.TcpAllPortRangeMin < 1024 {
+		params.TcpAllPortRangeMin = 1024
+	}
+	if params.TcpAllPortRangeMax > 65534 {
+		params.TcpAllPortRangeMax = 65534
+	} else if params.TcpAllPortRangeMax < 1024 {
+		params.TcpAllPortRangeMax = 1024
+	}
+	if params.TcpAllPortRangeMin > params.TcpAllPortRangeMax {
+		params.TcpAllPortRangeMin, params.TcpAllPortRangeMax = params.TcpAllPortRangeMax, params.TcpAllPortRangeMin
+	}
+	globalConfig.TCPAll.DenyPorts = params.TcpAllDenyPorts
+	globalConfig.TCPAll.PortRangeMin = params.TcpAllPortRangeMin
+	globalConfig.TCPAll.PortRangeMax = params.TcpAllPortRangeMax
 
 	// 修改配置
 	globalConfigJSON, err := json.Marshal(globalConfig)

@@ -85,8 +85,8 @@ Vue.component("server-name-box", {
 	</div>
 	<div class="ui fields inline">
 	    <div class="ui field"><a href="" @click.prevent="addServerName()">[添加域名绑定]</a></div>
-	    <div class="ui field"><span class="grey">|</span> </div>
-	    <div class="ui field">
+	    <div class="ui field" v-if="serverNames.length > 0"><span class="grey">|</span> </div>
+	    <div class="ui field" v-if="serverNames.length > 0">
 	        <a href="" @click.prevent="showSearchBox()" v-if="!isSearching"><i class="icon search small"></i></a>
 	        <a href="" @click.prevent="showSearchBox()" v-if="isSearching"><i class="icon close small"></i></a>
         </div>
