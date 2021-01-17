@@ -252,6 +252,10 @@ func (this *RPCClient) LoginRPC() pb.LoginServiceClient {
 	return pb.NewLoginServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) NodeTaskRPC() pb.NodeTaskServiceClient {
+	return pb.NewNodeTaskServiceClient(this.pickConn())
+}
+
 // 构造Admin上下文
 func (this *RPCClient) Context(adminId int64) context.Context {
 	ctx := context.Background()

@@ -1,4 +1,4 @@
-package clusters
+package tasks
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
@@ -12,14 +12,10 @@ func init() {
 		server.
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeNode)).
 			Helper(clusterutils.NewClustersHelper()).
-			Prefix("/clusters").
-			Get("", new(IndexAction)).
-			GetPost("/create", new(CreateAction)).
-
-			// 只要登录即可访问的Action
-			EndHelpers().
-			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeCommon)).
-			Post("/options", new(OptionsAction)).
+			Prefix("/clusters/tasks").
+			GetPost("/listPopup", new(ListPopupAction)).
+			Post("/check", new(CheckAction)).
+			Post("/delete", new(DeleteAction)).
 
 			EndAll()
 	})
