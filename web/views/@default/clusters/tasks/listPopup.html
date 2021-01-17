@@ -1,0 +1,38 @@
+{$layout "layout_popup"}
+
+<h3>正在同步的任务<span v-if="countTasks > 0">(共{{countTasks}}个)</span></h3>
+<p class="comment" v-if="clusters.length == 0">暂时没有同步的集群。</p>
+<div v-if="clusters.length > 0">
+    <table class="ui table selectable">
+        <thead>
+            <tr>
+                <th>集群</th>
+                <th>节点</th>
+                <th>任务</th>
+                <th>状态</th>
+                <th>触发时间</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody v-for="cluster in clusters">
+            <tr v-for="task in cluster.tasks">
+                <td>{{cluster.name}}</td>
+                <td>
+                   {{task.node.name}} &nbsp; <a :href="'/clusters/cluster/node?clusterId=' + cluster.id + '&nodeId=' + task.node.id" target="_blank"><i class="icon linkify small grey"></i></a>
+                </td>
+                <td>
+                    <span v-if="task.type == 'configChanged'">同步配置</span>
+                    <span v-if="task.type == 'ipItemChanged'">同步IP名单</span>
+                </td>
+                <td>
+                    <span v-if="task.isDone" class="red">{{task.error}}</span>
+                    <span v-else>正在同步...</span>
+                </td>
+                <td>{{task.updatedTime}}</td>
+                <td>
+                    <a href="" title="删除" class="remove-btn" @click.prevent="deleteTask(task.id)"><i class="icon remove small grey"></i></a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

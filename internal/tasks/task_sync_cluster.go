@@ -8,6 +8,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/messageconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	_ "github.com/iwind/TeaGo/bootstrap"
+	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/logs"
 	"time"
 )
@@ -48,24 +49,32 @@ func (this *SyncClusterTask) loop() error {
 		return err
 	}
 	ctx := rpcClient.Context(0)
-	resp, err := rpcClient.NodeClusterRPC().FindAllChangedNodeClusters(ctx, &pb.FindAllChangedNodeClustersRequest{})
+
+	tasksResp, err := rpcClient.NodeTaskRPC().FindNotifyingNodeTasks(ctx, &pb.FindNotifyingNodeTasksRequest{Size: 100})
+	if err != nil {
+		return err
+	}
+	nodeIds := []int64{}
+	taskIds := []int64{}
+	for _, task := range tasksResp.NodeTasks {
+		if !lists.ContainsInt64(nodeIds, task.Node.Id) {
+			nodeIds = append(nodeIds, task.Node.Id)
+		}
+		taskIds = append(taskIds, task.Id)
+	}
+	if len(nodeIds) == 0 {
+		return nil
+	}
+	_, err = nodeutils.SendMessageToNodeIds(ctx, nodeIds, messageconfigs.MessageCodeNewNodeTask, &messageconfigs.NewNodeTaskMessage{}, 3)
 	if err != nil {
 		return err
 	}
 
-	for _, cluster := range resp.NodeClusters {
-		_, err := rpcClient.NodeRPC().SyncNodesVersionWithCluster(ctx, &pb.SyncNodesVersionWithClusterRequest{
-			NodeClusterId: cluster.Id,
-		})
-		if err != nil {
-			return err
-		}
-
-		// 发送通知
-		_, err = nodeutils.SendMessageToCluster(ctx, cluster.Id, messageconfigs.MessageCodeConfigChanged, &messageconfigs.ConfigChangedMessage{}, 10)
-		if err != nil {
-			return err
-		}
+	// 设置已通知
+	_, err = rpcClient.NodeTaskRPC().UpdateNodeTasksNotified(ctx, &pb.UpdateNodeTasksNotifiedRequest{NodeTaskIds: taskIds})
+	if err != nil {
+		return err
 	}
+
 	return nil
 }
