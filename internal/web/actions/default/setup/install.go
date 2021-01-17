@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
+	"github.com/TeaOSLab/EdgeAdmin/internal/nodes"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -91,9 +92,44 @@ func (this *InstallAction) RunPost(params struct {
 			this.Fail("保存数据库配置失败：" + err.Error())
 		}
 
+		// 生成备份文件
+		homeDir, _ := os.UserHomeDir()
+		backupDirs := []string{"/etc/edge-api"}
+		if len(homeDir) > 0 {
+			backupDirs = append(backupDirs, homeDir+"/.edge-api")
+		}
+		for _, backupDir := range backupDirs {
+			stat, err := os.Stat(backupDir)
+			if err == nil && stat.IsDir() {
+				_ = ioutil.WriteFile(backupDir+"/db.yaml", dbConfigData, 0666)
+			} else if err != nil && os.IsNotExist(err) {
+				err = os.Mkdir(backupDir, 0777)
+				if err == nil {
+					_ = ioutil.WriteFile(backupDir+"/db.yaml", dbConfigData, 0666)
+				}
+			}
+		}
+
 		err = ioutil.WriteFile(Tea.ConfigFile("/api_db.yaml"), dbConfigData, 0666)
 		if err != nil {
 			this.Fail("保存数据库配置失败：" + err.Error())
+		}
+
+		// 生成备份文件
+		backupDirs = []string{"/etc/edge-admin"}
+		if len(homeDir) > 0 {
+			backupDirs = append(backupDirs, homeDir+"/.edge-admin")
+		}
+		for _, backupDir := range backupDirs {
+			stat, err := os.Stat(backupDir)
+			if err == nil && stat.IsDir() {
+				_ = ioutil.WriteFile(backupDir+"/api_db.yaml", dbConfigData, 0666)
+			} else if err != nil && os.IsNotExist(err) {
+				err = os.Mkdir(backupDir, 0777)
+				if err == nil {
+					_ = ioutil.WriteFile(backupDir+"/api_db.yaml", dbConfigData, 0666)
+				}
+			}
 		}
 
 		// 开始安装
@@ -124,6 +160,9 @@ func (this *InstallAction) RunPost(params struct {
 			if err != nil {
 				this.Fail("API节点启动失败：" + err.Error())
 			}
+
+			// 记录子PID方便退出的时候一起退出
+			nodes.SharedAdminNode.AddSubPID(cmd.Process.Pid)
 
 			// 等待API节点初始化完成
 			time.Sleep(2 * time.Second)
