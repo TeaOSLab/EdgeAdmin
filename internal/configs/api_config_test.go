@@ -12,3 +12,18 @@ func TestLoadAPIConfig(t *testing.T) {
 	}
 	t.Log(config)
 }
+
+func TestAPIConfig_WriteFile(t *testing.T) {
+	config := &APIConfig{
+		RPC: struct {
+			Endpoints []string `yaml:"endpoints"`
+		}{},
+		NodeId: "1",
+		Secret: "2",
+	}
+	err := config.WriteFile("/tmp/api_config.yaml")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log("ok")
+}

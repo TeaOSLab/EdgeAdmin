@@ -22,6 +22,8 @@ import (
 	"time"
 )
 
+var SharedAdminNode *AdminNode = nil
+
 type AdminNode struct {
 	subPIDs []int
 }
@@ -31,6 +33,8 @@ func NewAdminNode() *AdminNode {
 }
 
 func (this *AdminNode) Run() {
+	SharedAdminNode = this
+
 	// 启动管理界面
 	secret := this.genSecret()
 	configs.Secret = secret
@@ -145,6 +149,11 @@ func (this *AdminNode) InstallSystemService() error {
 	return nil
 }
 
+// 添加子PID
+func (this *AdminNode) AddSubPID(pid int) {
+	this.subPIDs = append(this.subPIDs, pid)
+}
+
 // 检查Server配置
 func (this *AdminNode) checkServer() error {
 	configFile := Tea.ConfigFile("server.yaml")
@@ -192,8 +201,61 @@ https:
 
 // 启动API节点
 func (this *AdminNode) startAPINode() {
-	_, err := os.Stat(Tea.Root + "/edge-api/configs/api.yaml")
+	configPath := Tea.Root + "/edge-api/configs/api.yaml"
+	_, err := os.Stat(configPath)
+	canStart := false
 	if err == nil {
+		canStart = true
+	} else if err != nil && os.IsNotExist(err) {
+		// 尝试恢复api.yaml
+		homeDir, _ := os.UserHomeDir()
+		paths := []string{}
+		if len(homeDir) > 0 {
+			paths = append(paths, homeDir+"/.edge-api/api.yaml")
+		}
+		paths = append(paths, "/etc/edge-api/api.yaml")
+		for _, path := range paths {
+			_, err = os.Stat(path)
+			if err == nil {
+				data, err := ioutil.ReadFile(path)
+				if err == nil {
+					err = ioutil.WriteFile(configPath, data, 0666)
+					if err == nil {
+						logs.Println("[NODE]recover 'edge-api/configs/api.yaml' from '" + path + "'")
+						canStart = true
+						break
+					}
+				}
+			}
+		}
+	}
+
+	dbPath := Tea.Root + "/edge-api/configs/db.yaml"
+	_, err = os.Stat(dbPath)
+	if err != nil && os.IsNotExist(err) {
+		// 尝试恢复db.yaml
+		homeDir, _ := os.UserHomeDir()
+		paths := []string{}
+		if len(homeDir) > 0 {
+			paths = append(paths, homeDir+"/.edge-api/db.yaml")
+		}
+		paths = append(paths, "/etc/edge-api/db.yaml")
+		for _, path := range paths {
+			_, err = os.Stat(path)
+			if err == nil {
+				data, err := ioutil.ReadFile(path)
+				if err == nil {
+					err = ioutil.WriteFile(dbPath, data, 0666)
+					if err == nil {
+						logs.Println("[NODE]recover 'edge-api/configs/db.yaml' from '" + path + "'")
+						break
+					}
+				}
+			}
+		}
+	}
+
+	if canStart {
 		logs.Println("start edge-api")
 		cmd := exec.Command(Tea.Root + "/edge-api/bin/edge-api")
 		err = cmd.Start()
