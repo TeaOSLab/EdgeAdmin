@@ -18,9 +18,11 @@ func (this *DenyListAction) Init() {
 }
 
 func (this *DenyListAction) RunGet(params struct {
-	ServerId int64
+	FirewallPolicyId int64
+	ServerId         int64
 }) {
 	this.Data["featureIsOn"] = true
+	this.Data["firewallPolicyId"] = params.FirewallPolicyId
 
 	listId, err := dao.SharedIPListDAO.FindDenyIPListIdWithServerId(this.AdminContext(), params.ServerId)
 	if err != nil {

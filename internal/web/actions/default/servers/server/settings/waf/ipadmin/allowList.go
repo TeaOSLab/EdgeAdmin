@@ -18,9 +18,11 @@ func (this *AllowListAction) Init() {
 }
 
 func (this *AllowListAction) RunGet(params struct {
-	ServerId int64
+	ServerId         int64
+	FirewallPolicyId int64
 }) {
 	this.Data["featureIsOn"] = true
+	this.Data["firewallPolicyId"] = params.FirewallPolicyId
 
 	listId, err := dao.SharedIPListDAO.FindAllowIPListIdWithServerId(this.AdminContext(), params.ServerId)
 	if err != nil {
