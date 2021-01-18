@@ -83,6 +83,7 @@ func (this *InstallAction) RunPost(params struct {
 					Prefix: "edge",
 				}},
 		}
+		dbConfig.Default.DB = "prod"
 		dbConfigData, err := yaml.Marshal(dbConfig)
 		if err != nil {
 			this.Fail("生成数据库配置失败：" + err.Error())
