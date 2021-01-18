@@ -110,7 +110,7 @@ func (this *ServiceManager) installInitService(exePath string, args []string) er
 // install systemd service
 func (this *ServiceManager) installSystemdService(systemd, exePath string, args []string) error {
 	shortName := teaconst.SystemdServiceName
-	longName := "GoEdge API" // TODO 将来可以修改
+	longName := "GoEdge Admin" // TODO 将来可以修改
 
 	desc := `# Provides:          ` + shortName + `
 # Required-Start:    $all
