@@ -12,7 +12,7 @@ Tea.context(function () {
             .done(function () {
                 this.$delay(function () {
                     this.reload()
-                }, 5000)
+                }, 3000)
             })
     }
 

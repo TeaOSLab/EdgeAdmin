@@ -1,0 +1,42 @@
+{$layout "layout_popup"}
+
+<h3 v-if="type == 'white'">添加IP到白名单</h3>
+<h3 v-if="type == 'black'">添加IP到黑名单</h3>
+
+<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+	<input type="hidden" name="listId" :value="listId"/>
+	<csrf-token></csrf-token>
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">开始IP *</td>
+			<td>
+				<input type="text" name="ipFrom" maxlength="64" placeholder="x.x.x.x" ref="focus"/>
+			</td>
+		</tr>
+		<tr>
+			<td>结束IP</td>
+			<td>
+				<input type="text" name="ipTo" maxlength="64" placeholder="x.x.x.x"/>
+				<p class="comment">表示IP段的时候需要填写此项。</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"><more-options-indicator></more-options-indicator></td>
+		</tr>
+		<tbody v-show="moreOptionsVisible">
+			<tr>
+				<td>过期时间</td>
+				<td>
+					<datetime-input :v-name="'expiredAt'"></datetime-input>
+					<p class="comment">在加入名单某一段时间后会失效，留空表示永久有效。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>备注</td>
+				<td><input type="text" name="reason" maxlength="100"/></td>
+			</tr>
+		</tbody>
+	</table>
+    <p class="comment">添加后将会在5分钟后生效。</p>
+	<submit-btn></submit-btn>
+</form>
