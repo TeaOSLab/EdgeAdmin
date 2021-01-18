@@ -1,0 +1,46 @@
+{$layout}
+{$template "/left_menu"}
+
+<div class="right-box">
+    {$template "../menu"}
+
+    <div class="ui message warning" v-if="!featureIsOn">尚未为当前用户开通此功能。</div>
+
+    {$ if .featureIsOn}
+    <second-menu>
+        <menu-item @click.prevent="createIP('white')">添加IP</menu-item>
+        <span class="item">|</span>
+        <span class="item">ID: {{listId}} &nbsp; <tip-icon content="ID可以用于使用API操作此IP名单"></tip-icon></span>
+    </second-menu>
+
+    <p class="comment" v-if="items.length == 0">暂时还没有IP。</p>
+
+    <table class="ui table selectable celled" v-if="items.length > 0">
+        <thead>
+            <tr>
+                <th>IP</th>
+                <th>过期时间</th>
+                <th>备注</th>
+                <th class="two op">操作</th>
+            </tr>
+        </thead>
+        <tr v-for="item in items">
+            <td>{{item.ipFrom}}<span v-if="item.ipTo.length > 0"> - {{item.ipTo}}</span></td>
+            <td>
+                <span v-if="item.expiredTime.length > 0">{{item.expiredTime}}</span>
+                <span v-else class="disabled">不过期</span>
+            </td>
+            <td>
+                <span v-if="item.reason.length > 0">{{item.reason}}</span>
+                <span v-else class="disabled">-</span>
+            </td>
+            <td>
+                <a href="" @click.prevent="updateItem(item.id)">修改</a> &nbsp;
+                <a href="" @click.prevent="deleteItem(item.id)">删除</a>
+            </td>
+        </tr>
+    </table>
+
+    <div class="page" v-html="page"></div>
+    {$end}
+</div>
