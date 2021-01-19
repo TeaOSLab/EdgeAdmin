@@ -11,7 +11,7 @@ func init() {
 	TeaGo.BeforeStart(func(server *TeaGo.Server) {
 		server.
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeSetting)).
-			Helper(settingutils.NewHelper("backup")).
+			Helper(settingutils.NewAdvancedHelper("backup")).
 			Prefix("/settings/backup").
 			Get("", new(IndexAction)).
 			EndAll()
