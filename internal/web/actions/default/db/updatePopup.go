@@ -19,13 +19,13 @@ func (this *UpdatePopupAction) Init() {
 func (this *UpdatePopupAction) RunGet(params struct {
 	NodeId int64
 }) {
-	nodeResp, err := this.RPC().DBNodeRPC().FindEnabledDBNode(this.AdminContext(), &pb.FindEnabledDBNodeRequest{NodeId: params.NodeId})
+	nodeResp, err := this.RPC().DBNodeRPC().FindEnabledDBNode(this.AdminContext(), &pb.FindEnabledDBNodeRequest{DbNodeId: params.NodeId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 
-	node := nodeResp.Node
+	node := nodeResp.DbNode
 	if node == nil {
 		this.NotFound("dbNode", params.NodeId)
 		return
@@ -78,7 +78,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		Require("请输入连接数据库的用户名")
 
 	_, err := this.RPC().DBNodeRPC().UpdateDBNode(this.AdminContext(), &pb.UpdateDBNodeRequest{
-		NodeId:      params.NodeId,
+		DbNodeId:    params.NodeId,
 		IsOn:        params.IsOn,
 		Name:        params.Name,
 		Description: params.Description,

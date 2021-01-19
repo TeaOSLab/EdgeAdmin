@@ -34,4 +34,14 @@ Tea.context(function () {
 				.refresh()
 		})
 	}
+
+    // 清理节点
+    this.cleanNode = function (nodeId) {
+        teaweb.popup("/db/cleanPopup?nodeId=" + nodeId)
+    }
+
+	// 显示错误信息
+    this.showError = function (err) {
+	    teaweb.popupTip("<span style=\"color:#db2828\">错误信息：" + err + "</span>")
+    }
 })

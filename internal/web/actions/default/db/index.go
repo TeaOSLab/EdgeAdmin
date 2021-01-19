@@ -1,6 +1,7 @@
 package db
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
@@ -32,7 +33,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 		return
 	}
 	nodeMaps := []maps.Map{}
-	for _, node := range listResp.Nodes {
+	for _, node := range listResp.DbNodes {
 		nodeMaps = append(nodeMaps, maps.Map{
 			"id":       node.Id,
 			"isOn":     node.IsOn,
@@ -40,6 +41,11 @@ func (this *IndexAction) RunGet(params struct{}) {
 			"host":     node.Host,
 			"port":     node.Port,
 			"database": node.Database,
+			"status": maps.Map{
+				"isOk":  node.Status.IsOk,
+				"error": node.Status.Error,
+				"size":  numberutils.FormatBytes(node.Status.Size),
+			},
 		})
 	}
 

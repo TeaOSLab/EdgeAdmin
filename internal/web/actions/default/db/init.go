@@ -18,6 +18,9 @@ func init() {
 			GetPost("/createPopup", new(CreatePopupAction)).
 			GetPost("/updatePopup", new(UpdatePopupAction)).
 			Post("/delete", new(DeleteAction)).
+			GetPost("/cleanPopup", new(CleanPopupAction)).
+			Post("/deleteTable", new(DeleteTableAction)).
+			Post("/truncateTable", new(TruncateTableAction)).
 
 			EndAll()
 	})

@@ -1,4 +1,4 @@
-package database
+package db
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
@@ -8,29 +8,37 @@ import (
 	"github.com/iwind/TeaGo/maps"
 )
 
-type CleanAction struct {
+type CleanPopupAction struct {
 	actionutils.ParentAction
 }
 
-func (this *CleanAction) Init() {
-	this.Nav("", "", "clean")
+func (this *CleanPopupAction) Init() {
+	this.Nav("", "", "")
 }
 
-func (this *CleanAction) RunGet(params struct{}) {
+func (this *CleanPopupAction) RunGet(params struct {
+	NodeId int64
+}) {
+	this.Data["nodeId"] = params.NodeId
+
 	this.Show()
 }
 
-func (this *CleanAction) RunPost(params struct {
+func (this *CleanPopupAction) RunPost(params struct {
+	NodeId int64
+
 	Must *actions.Must
 }) {
-	tablesResp, err := this.RPC().DBRPC().FindAllDBTables(this.AdminContext(), &pb.FindAllDBTablesRequest{})
+	tablesResp, err := this.RPC().DBNodeRPC().FindAllDBNodeTables(this.AdminContext(), &pb.FindAllDBNodeTablesRequest{
+		DbNodeId: params.NodeId,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 
 	tableMaps := []maps.Map{}
-	for _, table := range tablesResp.DbTables {
+	for _, table := range tablesResp.DbNodeTables {
 		if !table.IsBaseTable || (!table.CanClean && !table.CanDelete) {
 			continue
 		}
