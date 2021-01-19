@@ -15,6 +15,8 @@ func init() {
 			Prefix("/settings/database").
 			Get("", new(IndexAction)).
 			GetPost("/update", new(UpdateAction)).
+			GetPost("/clean", new(CleanAction)).
+			GetPost("/cleanSetting", new(CleanSettingAction)).
 			EndAll()
 	})
 }
