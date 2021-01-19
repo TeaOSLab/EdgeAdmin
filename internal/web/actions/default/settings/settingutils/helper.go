@@ -34,7 +34,6 @@ func (this *Helper) BeforeAction(actionPtr actions.ActionWrapper) (goNext bool) 
 		tabbar.Add("用户界面设置", "", "/settings/user-ui", "", this.tab == "userUI")
 		tabbar.Add("安全设置", "", "/settings/security", "", this.tab == "security")
 		tabbar.Add("IP库", "", "/settings/ip-library", "", this.tab == "ipLibrary")
-		tabbar.Add("备份", "", "/settings/backup", "", this.tab == "backup")
 	}
 	tabbar.Add("个人资料", "", "/settings/profile", "", this.tab == "profile")
 	tabbar.Add("登录设置", "", "/settings/login", "", this.tab == "login")
