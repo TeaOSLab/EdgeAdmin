@@ -1,0 +1,21 @@
+{$layout}
+{$template "menu"}
+
+<form class="ui form" data-tea-success="success" data-tea-action="$">
+    <csrf-token></csrf-token>
+
+    <h4 style="margin-top: 0">服务访问日志</h4>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">保存天数 *</td>
+            <td>
+                <div class="ui input right labeled">
+                    <input type="text" name="days" v-model="config.days" style="width:6em" maxlength="6"/>
+                    <span class="ui label">天</span>
+                </div>
+                <p class="comment">天数包括当天。如果填0表示不自动清理。</p>
+            </td>
+        </tr>
+    </table>
+    <submit-btn></submit-btn>
+</form>
