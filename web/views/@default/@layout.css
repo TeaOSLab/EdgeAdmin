@@ -119,6 +119,13 @@ pre:not(.CodeMirror-line) {
 tbody {
   background: transparent;
 }
+.table-box {
+  margin-top: 1em;
+  overflow-x: auto;
+}
+.table-box::-webkit-scrollbar {
+  height: 6px;
+}
 .table.width30 {
   width: 30em !important;
 }
@@ -127,6 +134,9 @@ tbody {
 }
 .table.width40 {
   width: 40em !important;
+}
+.table.width1024 {
+  width: 1024px !important;
 }
 .table th,
 .table td {
