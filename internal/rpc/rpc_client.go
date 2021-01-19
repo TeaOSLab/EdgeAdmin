@@ -107,6 +107,10 @@ func (this *RPCClient) DBNodeRPC() pb.DBNodeServiceClient {
 	return pb.NewDBNodeServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) DBRPC() pb.DBServiceClient {
+	return pb.NewDBServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) OriginRPC() pb.OriginServiceClient {
 	return pb.NewOriginServiceClient(this.pickConn())
 }

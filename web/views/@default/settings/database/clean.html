@@ -1,2 +1,24 @@
 {$layout}
 {$template "menu"}
+
+<div class="ui message" v-if="isLoading">正在加载中...</div>
+
+<table class="ui table selectable">
+    <thead>
+        <tr>
+            <th>表名</th>
+            <th>占用空间</th>
+            <th>用途</th>
+            <th class="two op">操作</th>
+        </tr>
+    </thead>
+    <tr v-for="table in tables">
+        <td>{{table.name}}</td>
+        <td>{{table.size}}</td>
+        <td>{{table.comment}}</td>
+        <td>
+            <a href="" v-if="table.canDelete" @click.prevent="deleteTable(table.name)">删除</a><span v-if="table.canDelete"> &nbsp;</span>
+            <a href="" v-if="table.canClean" @click.prevent="truncateTable(table.name)">清空</a>
+        </td>
+    </tr>
+</table>
