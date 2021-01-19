@@ -1,4 +1,4 @@
-package profile
+package database
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"

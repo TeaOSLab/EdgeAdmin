@@ -12,16 +12,30 @@
 			<th>节点名称</th>
 			<th>连接地址</th>
 			<th>数据库名</th>
+            <th>用量</th>
 			<th class="center width10">状态</th>
-			<th class="two op">操作</th>
+			<th class="three op">操作</th>
 		</tr>
 	</thead>
 	<tr v-for="node in nodes">
 		<td>{{node.name}}</td>
 		<td>{{node.host}}:{{node.port}}</td>
 		<td>{{node.database}}</td>
-		<td class="center"><label-on :v-is-on="node.isOn"></label-on></td>
+        <td>
+            <span v-if="node.status.isOk">{{node.status.size}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+		<td class="center">
+            <div v-if="node.isOn">
+                <span v-if="node.status.isOk" class="green">连接正常</span>
+                <a href="" title="点击查看具体错误" v-else @click.prevent="showError(node.status.error)"><span class="red" style="border-bottom: 1px #db2828 dashed">连接错误</span></a>
+            </div>
+            <span v-else>
+                <label-on :v-is-on="node.isOn"></label-on>
+            </span>
+        </td>
 		<td>
+            <a href="" @click.prevent="cleanNode(node.id)" v-if="node.isOn && node.status.isOk">清理</a><span v-else class="disabled">清理 </span> &nbsp;
 			<a href="" @click.prevent="updateNode(node.id)">修改</a> &nbsp;
 			<a href="" @click.prevent="deleteNode(node.id)">删除</a>
 		</td>
