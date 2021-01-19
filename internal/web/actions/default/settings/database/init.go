@@ -17,6 +17,8 @@ func init() {
 			GetPost("/update", new(UpdateAction)).
 			GetPost("/clean", new(CleanAction)).
 			GetPost("/cleanSetting", new(CleanSettingAction)).
+			GetPost("/truncateTable", new(TruncateTableAction)).
+			GetPost("/deleteTable", new(DeleteTableAction)).
 			EndAll()
 	})
 }
