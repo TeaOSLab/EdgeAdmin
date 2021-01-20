@@ -5,6 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
+	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
 	"regexp"
@@ -35,6 +36,7 @@ func (this *LogAction) RunGet(params struct {
 	this.Data["accessLogs"] = []interface{}{}
 
 	day := params.Day
+	ipList := []string{}
 	if len(day) > 0 && regexp.MustCompile(`\d{4}-\d{2}-\d{2}`).MatchString(day) {
 		day = strings.ReplaceAll(day, "-", "")
 		size := int64(10)
@@ -55,6 +57,13 @@ func (this *LogAction) RunGet(params struct {
 			this.Data["accessLogs"] = []interface{}{}
 		} else {
 			this.Data["accessLogs"] = resp.AccessLogs
+			for _, accessLog := range resp.AccessLogs {
+				if len(accessLog.RemoteAddr) > 0 {
+					if !lists.ContainsString(ipList, accessLog.RemoteAddr) {
+						ipList = append(ipList, accessLog.RemoteAddr)
+					}
+				}
+			}
 		}
 		this.Data["hasMore"] = resp.HasMore
 		this.Data["nextRequestId"] = resp.RequestId
@@ -105,6 +114,22 @@ func (this *LogAction) RunGet(params struct {
 		})
 	}
 	this.Data["groups"] = groupMaps
+
+	// 根据IP查询区域
+	regionMap := map[string]string{} // ip => region
+	if len(ipList) > 0 {
+		resp, err := this.RPC().IPLibraryRPC().LookupIPRegions(this.AdminContext(), &pb.LookupIPRegionsRequest{IpList: ipList})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		if resp.IpRegionMap != nil {
+			for ip, region := range resp.IpRegionMap {
+				regionMap[ip] = region.Summary
+			}
+		}
+	}
+	this.Data["regions"] = regionMap
 
 	this.Show()
 }
