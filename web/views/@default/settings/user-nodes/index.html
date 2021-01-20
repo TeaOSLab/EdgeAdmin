@@ -11,7 +11,10 @@
 		<tr>
 			<th>节点名称</th>
 			<th>访问地址</th>
-			<th class="center width10">状态</th>
+            <th class="width6 center">版本号</th>
+            <th class="width5 center">CPU</th>
+            <th class="width5 center">内存</th>
+            <th class="center width10">状态</th>
 			<th class="two op">操作</th>
 		</tr>
 	</thead>
@@ -22,9 +25,26 @@
 				<span class="ui label tiny basic" v-for="addr in node.accessAddrs">{{addr}}</span>
 			</div>
 		</td>
-		<td class="center">
-			<label-on :v-is-on="node.isOn"></label-on>
-		</td>
+        <td class="center">
+            <span v-if="node.status.buildVersion.length > 0">v{{node.status.buildVersion}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+        <td class="center">
+            <span v-if="node.status.isActive" :class="{red:node.status.cpuUsage > 0.80}">{{node.status.cpuUsageText}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+        <td class="center">
+            <span v-if="node.status.isActive" :class="{red:node.status.memUsage > 0.80}">{{node.status.memUsageText}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+        <td class="center">
+            <span v-if="!node.isOn"><label-on :v-is-on="node.isOn"></label-on></span>
+            <div v-else-if="node.status.isActive">
+                <span class="green">运行中</span>
+            </div>
+            <span v-else-if="node.status.updatedAt > 0" class="red">已断开</span>
+            <span v-else-if="node.status.updatedAt == 0" class="red">未连接</span>
+        </td>
 		<td>
 			<a :href="'/settings/userNodes/node?nodeId=' + node.id">详情</a> &nbsp;
 			<a href="" @click.prevent="deleteNode(node.id)">删除</a>
