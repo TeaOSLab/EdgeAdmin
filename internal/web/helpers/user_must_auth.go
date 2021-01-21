@@ -133,7 +133,7 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 		{
 			"code":   "dashboard",
 			"module": configloaders.AdminModuleCodeDashboard,
-			"name":   "看板",
+			"name":   "数据看板",
 			"icon":   "dashboard",
 		},
 		{

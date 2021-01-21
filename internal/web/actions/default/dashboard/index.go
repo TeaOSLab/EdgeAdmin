@@ -46,6 +46,11 @@ func (this *IndexAction) RunGet(params struct{}) {
 		"countAPINodes":     resp.CountAPINodes,
 		"countDBNodes":      resp.CountDBNodes,
 		"countUserNodes":    resp.CountUserNodes,
+
+		"canGoServers":  configloaders.AllowModule(this.AdminId(), configloaders.AdminModuleCodeServer),
+		"canGoNodes":    configloaders.AllowModule(this.AdminId(), configloaders.AdminModuleCodeNode),
+		"canGoSettings": configloaders.AllowModule(this.AdminId(), configloaders.AdminModuleCodeSetting),
+		"canGoUsers":    configloaders.AllowModule(this.AdminId(), configloaders.AdminModuleCodeUser),
 	}
 
 	// 今日流量
