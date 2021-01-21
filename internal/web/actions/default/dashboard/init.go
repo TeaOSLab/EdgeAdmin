@@ -9,6 +9,7 @@ import (
 func init() {
 	TeaGo.BeforeStart(func(server *TeaGo.Server) {
 		server.Prefix("/dashboard").
+			Data("teaMenu", "dashboard").
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeCommon)).
 			GetPost("", new(IndexAction)).
 			EndAll()

@@ -1,2 +1,52 @@
 {$layout}
 
+
+{$var "header"}
+<!-- echart -->
+<script type="text/javascript" src="/js/echarts/echarts.min.js"></script>
+{$end}
+
+<div class="ui three columns grid">
+    <div class="ui column">
+        <h4>当前集群数</h4>
+        <div class="value"><span>{{dashboard.countNodeClusters}}</span>个</div>
+    </div>
+
+    <div class="ui column">
+        <h4>当前边缘节点数</h4>
+        <div class="value"><span>{{dashboard.countNodes}}</span>个</div>
+    </div>
+
+    <div class="ui column no-border">
+        <h4>当前API节点数</h4>
+        <div class="value"><span>{{dashboard.countAPINodes}}</span>个</div>
+    </div>
+
+    <div class="ui column">
+        <h4>当前用户数</h4>
+        <div class="value"><span>{{dashboard.countUsers}}</span>个</div>
+    </div>
+
+    <div class="ui column">
+        <h4>当前服务数</h4>
+        <div class="value"><span>{{dashboard.countServers}}</span>个</div>
+    </div>
+
+    <div class="ui column no-border">
+        <h4>今日总流量</h4>
+        <div class="value"><span>{{todayTraffic}}</span>{{todayTrafficUnit}}</div>
+    </div>
+</div>
+
+<div class="ui divider"></div>
+
+<div class="ui menu tabular">
+    <a href="" class="item" :class="{active: trafficTab == 'hourly'}" @click.prevent="selectTrafficTab('hourly')">24小时流量趋势（GB）</a>
+    <a href="" class="item" :class="{active: trafficTab == 'daily'}" @click.prevent="selectTrafficTab('daily')">15天流量趋势（GB）</a>
+</div>
+
+<!-- 按小时统计 -->
+<div class="chart-box" id="hourly-traffic-chart-box" v-show="trafficTab == 'hourly'"></div>
+
+<!-- 按日统计 -->
+<div class="chart-box" id="daily-traffic-chart-box" v-show="trafficTab == 'daily'"></div>
