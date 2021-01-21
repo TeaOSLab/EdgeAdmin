@@ -131,6 +131,12 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 func (this *userMustAuth) modules(adminId int64) []maps.Map {
 	allMaps := []maps.Map{
 		{
+			"code":   "dashboard",
+			"module": configloaders.AdminModuleCodeDashboard,
+			"name":   "看板",
+			"icon":   "dashboard",
+		},
+		{
 			"code":   "servers",
 			"module": configloaders.AdminModuleCodeServer,
 			"name":   "网站服务",

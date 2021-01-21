@@ -10,15 +10,16 @@ import (
 type AdminModuleCode = string
 
 const (
-	AdminModuleCodeServer  AdminModuleCode = "server"  // 网站
-	AdminModuleCodeNode    AdminModuleCode = "node"    // 节点
-	AdminModuleCodeDNS     AdminModuleCode = "dns"     // DNS
-	AdminModuleCodeAdmin   AdminModuleCode = "admin"   // 系统用户
-	AdminModuleCodeUser    AdminModuleCode = "user"    // 平台用户
-	AdminModuleCodeFinance AdminModuleCode = "finance" // 财务
-	AdminModuleCodeLog     AdminModuleCode = "log"     // 日志
-	AdminModuleCodeSetting AdminModuleCode = "setting" // 设置
-	AdminModuleCodeCommon  AdminModuleCode = "common"  // 只要登录就可以访问的模块
+	AdminModuleCodeDashboard AdminModuleCode = "dashboard" // 看板
+	AdminModuleCodeServer    AdminModuleCode = "server"    // 网站
+	AdminModuleCodeNode      AdminModuleCode = "node"      // 节点
+	AdminModuleCodeDNS       AdminModuleCode = "dns"       // DNS
+	AdminModuleCodeAdmin     AdminModuleCode = "admin"     // 系统用户
+	AdminModuleCodeUser      AdminModuleCode = "user"      // 平台用户
+	AdminModuleCodeFinance   AdminModuleCode = "finance"   // 财务
+	AdminModuleCodeLog       AdminModuleCode = "log"       // 日志
+	AdminModuleCodeSetting   AdminModuleCode = "setting"   // 设置
+	AdminModuleCodeCommon    AdminModuleCode = "common"    // 只要登录就可以访问的模块
 )
 
 var sharedAdminModuleMapping = map[int64]*AdminModuleList{} // adminId => AdminModuleList
@@ -109,7 +110,7 @@ func FindFirstAdminModule(adminId int64) (module AdminModuleCode, ok bool) {
 	list, ok2 := sharedAdminModuleMapping[adminId]
 	if ok2 {
 		if list.IsSuper {
-			return AdminModuleCodeServer, true
+			return AdminModuleCodeDashboard, true
 		} else if len(list.Modules) > 0 {
 			return list.Modules[0].Code, true
 		}
@@ -132,6 +133,11 @@ func FindAdminFullname(adminId int64) string {
 // 所有权限列表
 func AllModuleMaps() []maps.Map {
 	return []maps.Map{
+		{
+			"name": "看板",
+			"code": AdminModuleCodeDashboard,
+			"url":  "/dashboard",
+		},
 		{
 			"name": "网站服务",
 			"code": AdminModuleCodeServer,
