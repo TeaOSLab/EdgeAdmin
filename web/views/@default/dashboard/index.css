@@ -16,6 +16,12 @@
 .grid .column.no-border {
   border-right: 0;
 }
+.grid h4 a {
+  display: none;
+}
+.grid .column:hover a {
+  display: inline;
+}
 .chart-box {
   height: 20em;
 }
