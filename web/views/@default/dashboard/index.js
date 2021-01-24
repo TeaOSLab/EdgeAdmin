@@ -4,17 +4,35 @@ Tea.context(function () {
 
     this.$delay(function () {
         this.reloadHourlyTrafficChart()
+
+        let that = this
+        window.addEventListener("resize", function () {
+            if (that.trafficTab == "hourly") {
+                that.resizeHourlyTrafficChart()
+            }
+            if (that.trafficTab == "daily") {
+                that.resizeDailyTrafficChart()
+            }
+        })
     })
 
     this.selectTrafficTab = function (tab) {
         this.trafficTab = tab
         if (tab == "hourly") {
-
+            this.$delay(function () {
+                this.reloadHourlyTrafficChart()
+            })
         } else if (tab == "daily") {
             this.$delay(function () {
                 this.reloadDailyTrafficChart()
             })
         }
+    }
+
+    this.resizeHourlyTrafficChart = function () {
+        let chartBox = document.getElementById("hourly-traffic-chart-box")
+        let chart = echarts.init(chartBox)
+        chart.resize()
     }
 
     this.reloadHourlyTrafficChart = function () {
@@ -58,6 +76,13 @@ Tea.context(function () {
             animation: false
         }
         chart.setOption(option)
+        chart.resize()
+    }
+
+    this.resizeDailyTrafficChart = function () {
+        let chartBox = document.getElementById("daily-traffic-chart-box")
+        let chart = echarts.init(chartBox)
+        chart.resize()
     }
 
     this.reloadDailyTrafficChart = function () {
@@ -101,5 +126,6 @@ Tea.context(function () {
             animation: false
         }
         chart.setOption(option)
+        chart.resize()
     }
 })

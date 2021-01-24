@@ -75,7 +75,7 @@
     </div>
 
     <!-- 右侧主操作栏 -->
-    <div class="main" :class="{'without-menu':teaSubMenus.menus == null || teaSubMenus.menus.length == 0 || (teaSubMenus.menus.length == 1 && teaSubMenus.menus[0].alwaysActive), 'without-secondary-menu':teaSubMenus.alwaysMenu == null || teaSubMenus.alwaysMenu.items.length <= 1}" v-cloak="">
+    <div class="main" :class="{'without-menu':teaSubMenus.menus == null || teaSubMenus.menus.length == 0 || (teaSubMenus.menus.length == 1 && teaSubMenus.menus[0].alwaysActive), 'without-secondary-menu':teaSubMenus.alwaysMenu == null || teaSubMenus.alwaysMenu.items.length <= 1, 'without-footer':!teaShowOpenSourceInfo}" v-cloak="">
         <!-- 操作菜单 -->
         <div class="ui top menu tabular tab-menu small" v-if="teaTabbar.length > 0">
             <a class="item" v-for="item in teaTabbar" :class="{'active':item.active,right:item.right}"  :href="item.url">

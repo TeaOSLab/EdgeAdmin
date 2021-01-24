@@ -138,7 +138,7 @@ Vue.component("datetime-input", {
 	<input type="hidden" :name="vName" :value="timestamp"/>
 	<div class="ui fields inline" style="padding: 0; margin:0">
 		<div class="ui field" :class="{error: hasDayError}">
-			<input type="text" v-model="day" placeholder="YYYY-mm-dd" style="width:8em" maxlength="10" @input="change"/>
+			<input type="text" v-model="day" placeholder="YYYY-MM-DD" style="width:8em" maxlength="10" @input="change"/>
 		</div>
 		<div class="ui field" :class="{error: hasHourError}"><input type="text" v-model="hour" maxlength="2" style="width:4em" placeholder="时" @input="change"/></div>
 		<div class="ui field">:</div>
