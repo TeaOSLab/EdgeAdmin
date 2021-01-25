@@ -70,10 +70,10 @@ func (this *UpdateSchedulingPopupAction) RunGet(params struct {
 		if !types.IsSlice(networks) {
 			continue
 		}
-		if (serverConfig.IsHTTP() && lists.Contains(networks, "http")) ||
-			(serverConfig.IsTCP() && lists.Contains(networks, "tcp")) ||
-			(serverConfig.IsUDP() && lists.Contains(networks, "udp")) ||
-			(serverConfig.IsUnix() && lists.Contains(networks, "unix")) {
+		if (serverConfig.IsHTTPFamily() && lists.Contains(networks, "http")) ||
+			(serverConfig.IsTCPFamily() && lists.Contains(networks, "tcp")) ||
+			(serverConfig.IsUDPFamily() && lists.Contains(networks, "udp")) ||
+			(serverConfig.IsUnixFamily() && lists.Contains(networks, "unix")) {
 			schedulingTypes = append(schedulingTypes, m)
 		}
 	}

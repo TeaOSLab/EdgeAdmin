@@ -5,7 +5,7 @@ Vue.component("http-stat-config-box", {
 		if (stat == null) {
 			stat = {
 				isPrior: false,
-				isOn: true
+				isOn: false
 			}
 		}
 		return {

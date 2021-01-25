@@ -14,3 +14,6 @@
 
 ## 联系我们
 有什么问题和建议都可以加入QQ群 `659832182`。
+
+## 感谢
+* 感谢[JetBrains公司](https://www.jetbrains.com/)提供免费的IDE开发Licence。

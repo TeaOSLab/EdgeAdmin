@@ -14,7 +14,7 @@ Vue.component("http-websocket-box", {
 		if (websocketConfig == null) {
 			websocketConfig = {
 				id: 0,
-				isOn: true,
+				isOn: false,
 				handshakeTimeout: {
 					count: 30,
 					unit: "second"
