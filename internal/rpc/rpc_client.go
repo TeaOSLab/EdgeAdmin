@@ -91,6 +91,30 @@ func (this *RPCClient) ServerRPC() pb.ServerServiceClient {
 	return pb.NewServerServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) ServerClientSystemMonthlyStatRPC() pb.ServerClientSystemMonthlyStatServiceClient {
+	return pb.NewServerClientSystemMonthlyStatServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) ServerClientBrowserMonthlyStatRPC() pb.ServerClientBrowserMonthlyStatServiceClient {
+	return pb.NewServerClientBrowserMonthlyStatServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) ServerRegionCountryMonthlyStatRPC() pb.ServerRegionCountryMonthlyStatServiceClient {
+	return pb.NewServerRegionCountryMonthlyStatServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) ServerRegionProvinceMonthlyStatRPC() pb.ServerRegionProvinceMonthlyStatServiceClient {
+	return pb.NewServerRegionProvinceMonthlyStatServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) ServerRegionCityMonthlyStatRPC() pb.ServerRegionCityMonthlyStatServiceClient {
+	return pb.NewServerRegionCityMonthlyStatServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) ServerRegionProviderMonthlyStatRPC() pb.ServerRegionProviderMonthlyStatServiceClient {
+	return pb.NewServerRegionProviderMonthlyStatServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) ServerGroupRPC() pb.ServerGroupServiceClient {
 	return pb.NewServerGroupServiceClient(this.pickConn())
 }

@@ -14,6 +14,8 @@ func init() {
 			Helper(serverutils.NewServerHelper()).
 			Prefix("/servers/server/stat").
 			Get("", new(IndexAction)).
+			Get("/providers", new(ProvidersAction)).
+			Get("/clients", new(ClientsAction)).
 			EndAll()
 	})
 }
