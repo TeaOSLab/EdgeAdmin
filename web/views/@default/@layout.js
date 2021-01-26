@@ -92,7 +92,7 @@ Tea.context(function () {
             .done(function () {
                 this.$delay(function () {
                     this.loadNodeTasks()
-                }, 5000)
+                }, 3000)
             })
     }
 
