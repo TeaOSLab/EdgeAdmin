@@ -115,6 +115,10 @@ func (this *RPCClient) ServerRegionProviderMonthlyStatRPC() pb.ServerRegionProvi
 	return pb.NewServerRegionProviderMonthlyStatServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) ServerHTTPFirewallDailyStatRPC() pb.ServerHTTPFirewallDailyStatServiceClient {
+	return pb.NewServerHTTPFirewallDailyStatServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) ServerGroupRPC() pb.ServerGroupServiceClient {
 	return pb.NewServerGroupServiceClient(this.pickConn())
 }

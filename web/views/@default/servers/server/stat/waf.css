@@ -1,0 +1,26 @@
+.grid {
+  margin-top: 2em !important;
+  margin-left: 2em !important;
+}
+.grid .column {
+  margin-bottom: 2em;
+  border-right: 1px #eee solid;
+}
+.grid .column div.value {
+  margin-top: 1.5em;
+}
+.grid .column div.value span {
+  font-size: 2em;
+  margin-right: 0.2em;
+}
+.grid .column.no-border {
+  border-right: 0;
+}
+.chart-box {
+  height: 20em;
+}
+h4 .color-span {
+  font-size: 0.6em;
+  padding: 2px 4px;
+}
+/*# sourceMappingURL=waf.css.map */

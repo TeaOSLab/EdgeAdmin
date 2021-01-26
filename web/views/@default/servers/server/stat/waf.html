@@ -1,0 +1,47 @@
+{$layout}
+
+{$var "header"}
+<!-- echart -->
+<script type="text/javascript" src="/js/echarts/echarts.min.js"></script>
+{$end}
+
+{$template "/left_menu"}
+<div class="right-box">
+    <div class="ui three columns grid">
+        <div class="ui column">
+            <h4>今日拦截</h4>
+            <div class="value"><span>{{countDailyBlock}}</span>次</div>
+        </div>
+
+        <div class="ui column">
+            <h4>今日验证码验证</h4>
+            <div class="value"><span>{{countDailyCaptcha}}</span>次</div>
+        </div>
+
+        <div class="ui column no-border">
+            <h4>今日记录</h4>
+            <div class="value"><span>{{countDailyLog}}</span>次</div>
+        </div>
+
+        <div class="ui column">
+            <h4>本周拦截</h4>
+            <div class="value"><span>{{countWeeklyBlock}}</span>次</div>
+        </div>
+
+        <div class="ui column no-border">
+            <h4>本月拦截</h4>
+            <div class="value"><span>{{countMonthlyBlock}}</span>次</div>
+        </div>
+    </div>
+
+    <h4>近15日趋势
+        <span class="color-span" style="background: #9DD3E8">全部</span>
+        <span class="color-span" style="background: #F39494">拦截</span>
+        <span class="color-span" style="background: #FBD88A">验证码</span>
+        <span class="color-span" style="background: #879BD7">记录</span>
+    </h4>
+    <div class="chart-box" id="daily-chart"></div>
+
+    <h4>拦截类型分布</h4>
+    <div class="chart-box" id="group-chart"></div>
+</div>
