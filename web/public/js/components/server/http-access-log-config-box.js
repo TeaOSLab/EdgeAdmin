@@ -20,7 +20,9 @@ Vue.component("http-access-log-config-box", {
 			status5: true,
 
 			storageOnly: false,
-			storagePolicies: []
+			storagePolicies: [],
+
+            firewallOnly: false
 		}
 		if (this.vAccessLogConfig != null) {
 			accessLog = this.vAccessLogConfig
@@ -130,6 +132,13 @@ Vue.component("http-access-log-config-box", {
 					<p class="comment">选中表示只输出日志到日志策略，而停止默认的日志存储。</p>
 				</td>
 			</tr>
+			<tr>
+			    <td>是否只记录WAF相关日志</td>
+			    <td>
+			        <checkbox v-model="accessLog.firewallOnly"></checkbox>
+			        <p class="comment">选中后只记录WAF相关的日志。通过此选项可有效减少访问日志数量，降低网络带宽和存储压力。</p>
+                </td>
+            </tr>
 		</tbody>
 	</table>
 	<div class="margin"></div>
