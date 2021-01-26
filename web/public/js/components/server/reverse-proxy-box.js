@@ -117,10 +117,12 @@ Vue.component("reverse-proxy-box", {
 		        <td>自动添加的Header</td>
 		        <td>
 		            <div>
-		                <div style="width: 20em; float: left; margin-bottom: 1em" v-for="header in forwardHeaders" :key="header.name">
+		                <div style="width: 14em; float: left; margin-bottom: 1em" v-for="header in forwardHeaders" :key="header.name">
 		                    <checkbox v-model="header.isChecked" @input="changeAddHeader">{{header.name}}</checkbox>
                         </div>
+                        <div style="clear: both"></div>
                     </div>
+                    <p class="comment">选中后，会自动向源站请求添加这些Header。</p>
                 </td> 
             </tr>
 			<tr v-show="family == null || family == 'http'">
