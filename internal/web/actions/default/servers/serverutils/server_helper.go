@@ -171,6 +171,11 @@ func (this *ServerHelper) createStatMenu(secondMenuItem string, serverIdString s
 		"url":      "/servers/server/stat/clients?serverId=" + serverIdString,
 		"isActive": secondMenuItem == "client",
 	})
+	menuItems = append(menuItems, maps.Map{
+		"name":     "WAF",
+		"url":      "/servers/server/stat/waf?serverId=" + serverIdString,
+		"isActive": secondMenuItem == "waf",
+	})
 	return menuItems
 }
 
