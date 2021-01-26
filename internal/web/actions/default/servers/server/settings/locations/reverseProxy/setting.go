@@ -86,6 +86,7 @@ func (this *SettingAction) RunPost(params struct {
 		RequestURI:      reverseProxyConfig.RequestURI,
 		StripPrefix:     reverseProxyConfig.StripPrefix,
 		AutoFlush:       reverseProxyConfig.AutoFlush,
+		AddHeaders:      reverseProxyConfig.AddHeaders,
 	})
 
 	this.Success()
