@@ -95,6 +95,7 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, selectedIt
 		"name":     "DNS设置",
 		"url":      "/clusters/cluster/settings/dns?clusterId=" + clusterId,
 		"isActive": selectedItem == "dns",
+		"isOn":     cluster.DnsDomainId > 0 || len(cluster.DnsName) > 0,
 	})
 	items = append(items, maps.Map{
 		"name":     "系统服务",

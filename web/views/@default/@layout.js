@@ -16,6 +16,9 @@ Tea.context(function () {
 
         // 检查集群节点同步
         this.loadNodeTasks();
+
+        // 检查DNS同步
+        this.loadDNSTasks()
     })
 
     /**
@@ -83,6 +86,9 @@ Tea.context(function () {
     }
 
     this.loadNodeTasks = function () {
+        if (!Tea.Vue.teaCheckNodeTasks) {
+            return
+        }
         this.$post("/clusters/tasks/check")
             .success(function (resp) {
                 this.doingNodeTasks.isDoing = resp.data.isDoing
@@ -98,6 +104,39 @@ Tea.context(function () {
 
     this.showNodeTasks = function () {
         teaweb.popup("/clusters/tasks/listPopup", {
+            height: "24em",
+            width: "50em"
+        })
+    }
+
+    /**
+     * DNS同步任务
+     */
+    this.doingDNSTasks = {
+        isDoing: false,
+        hasError: false,
+        isUpdated: false
+    }
+
+    this.loadDNSTasks = function () {
+        if (!Tea.Vue.teaCheckDNSTasks) {
+            return
+        }
+        this.$post("/dns/tasks/check")
+            .success(function (resp) {
+                this.doingDNSTasks.isDoing = resp.data.isDoing
+                this.doingDNSTasks.hasError = resp.data.hasError
+                this.doingDNSTasks.isUpdated = true
+            })
+            .done(function () {
+                this.$delay(function () {
+                    this.loadDNSTasks()
+                }, 3000)
+            })
+    }
+
+    this.showDNSTasks = function () {
+        teaweb.popup("/dns/tasks/listPopup", {
             height: "24em",
             width: "50em"
         })

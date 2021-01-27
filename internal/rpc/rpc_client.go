@@ -264,6 +264,10 @@ func (this *RPCClient) DNSRPC() pb.DNSServiceClient {
 	return pb.NewDNSServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) DNSTaskRPC() pb.DNSTaskServiceClient {
+	return pb.NewDNSTaskServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) ACMEUserRPC() pb.ACMEUserServiceClient {
 	return pb.NewACMEUserServiceClient(this.pickConn())
 }

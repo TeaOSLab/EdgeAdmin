@@ -176,8 +176,21 @@ div.margin, p.margin {
 	}
 }
 
+@keyframes rotation {
+	from {
+		transform: rotate(0);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
 body .ui.menu .item .blink {
 	animation: blink 1s infinite;
+}
+
+body .ui.menu .item:not(:hover) span.rotate {
+	animation: rotation 3s infinite;
 }
 
 body.expanded .main-menu {
@@ -197,30 +210,47 @@ body.expanded .main {
 	overflow-x: auto;
 	border: 0 !important;
 	background: #276ac6 !important;
+
+	img.avatar {
+		width: 1.6em !important;
+		height: 1.6em !important;
+		padding: 0.2em;
+		background: #fff;
+		border-radius: 0.9em;
+		margin-right: 0.5em !important;
+	}
+
+	em {
+		font-style: normal;
+		font-size: 0.9em;
+		padding-left: 0.2em;
+	}
+
+	.item {
+		.hover-span {
+			span {
+				display: none;
+			}
+		}
+	}
+
+	.item:hover {
+		.hover-span {
+			span {
+				display: inline;
+			}
+		}
+	}
+
+	.item.red {
+		color: red !important;
+	}
 }
 
 .top-nav::-webkit-scrollbar {
 	height: 2px;
 }
 
-.top-nav img.avatar {
-	width: 1.6em !important;
-	height: 1.6em !important;
-	padding: 0.2em;
-	background: #fff;
-	border-radius: 0.9em;
-	margin-right: 0.5em !important;
-}
-
-.top-nav em {
-	font-style: normal;
-	font-size: 0.9em;
-	padding-left: 0.2em;
-}
-
-.top-nav .item.red {
-	color: red !important;
-}
 
 /** 顶部菜单 **/
 .top-secondary-menu {

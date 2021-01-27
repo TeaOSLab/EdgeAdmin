@@ -1,6 +1,6 @@
 {$layout "layout_popup"}
 
-<h3>正在同步的任务<span v-if="countTasks > 0">(共{{countTasks}}个)</span></h3>
+<h3>正在同步的节点任务<span v-if="countTasks > 0">(共{{countTasks}}个)</span></h3>
 <p class="comment" v-if="clusters.length == 0">暂时没有同步的集群。</p>
 <div v-if="clusters.length > 0">
     <table class="ui table selectable">
