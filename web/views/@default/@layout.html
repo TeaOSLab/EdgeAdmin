@@ -28,10 +28,17 @@
 
         <div class="right menu">
             <!-- 集群同步 -->
-            <a href="" class="item" v-if="teaCheckClusterTask && doingNodeTasks.isUpdated" @click.prevent="showNodeTasks()">
-                <span v-if="!doingNodeTasks.isDoing && !doingNodeTasks.hasError"><i class="icon sync"></i>已同步</span>
-                <span v-if="doingNodeTasks.isDoing && !doingNodeTasks.hasError"><i class="icon sync"></i>正在同步...</span>
-                <span v-if="doingNodeTasks.hasError" class="red"><i class="icon sync"></i>同步失败</span>
+            <a href="" class="item" v-if="teaCheckNodeTasks && doingNodeTasks.isUpdated" @click.prevent="showNodeTasks()">
+                <span v-if="!doingNodeTasks.isDoing && !doingNodeTasks.hasError" class="hover-span"><i class="icon cloud disabled"></i><span class="disabled">已同步节点</span></span>
+                <span v-if="doingNodeTasks.isDoing && !doingNodeTasks.hasError" class="hover-span rotate"><i class="icon cloud"></i><span>正在同步节点...</span></span>
+                <span v-if="doingNodeTasks.hasError" class="red"><i class="icon cloud"></i>节点同步失败</span>
+            </a>
+
+            <!-- DNS同步 -->
+            <a href="" class="item" v-if="teaCheckDNSTasks && doingDNSTasks.isUpdated" @click.prevent="showDNSTasks()">
+                <span v-if="!doingDNSTasks.isDoing && !doingDNSTasks.hasError" class="hover-span"><i class="icon globe disabled"></i><span class="disabled">已同步DNS</span></span>
+                <span v-if="doingDNSTasks.isDoing && !doingDNSTasks.hasError" class="hover-span rotate"><i class="icon globe"></i><span>正在同步DNS...</span></span>
+                <span v-if="doingDNSTasks.hasError" class="red"><i class="icon globe"></i>DNS同步失败</span>
             </a>
 
             <!-- 消息 -->
@@ -45,7 +52,7 @@
 			</a>
 
             <!-- 退出登录 -->
-            <a :href="Tea.url('logout')" class="item" title="安全退出登录"><i class="icon sign out"></i>退出</a>
+            <a :href="Tea.url('logout')" class="item" title="安全退出登录"><i class="icon sign out"></i></a>
         </div>
     </div>
 
