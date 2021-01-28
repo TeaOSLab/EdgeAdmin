@@ -40,6 +40,7 @@ func (this *ListPopupAction) retrieveTasks() {
 		var clusterMap maps.Map = nil
 		var nodeMap maps.Map = nil
 		var serverMap maps.Map = nil
+		var domainMap maps.Map = nil
 
 		if task.NodeCluster != nil {
 			clusterMap = maps.Map{
@@ -59,6 +60,12 @@ func (this *ListPopupAction) retrieveTasks() {
 				"name": task.Server.Name,
 			}
 		}
+		if task.DnsDomain != nil {
+			domainMap = maps.Map{
+				"id":   task.DnsDomain.Id,
+				"name": task.DnsDomain.Name,
+			}
+		}
 
 		taskMaps = append(taskMaps, maps.Map{
 			"id":          task.Id,
@@ -70,6 +77,7 @@ func (this *ListPopupAction) retrieveTasks() {
 			"cluster":     clusterMap,
 			"node":        nodeMap,
 			"server":      serverMap,
+			"domain":      domainMap,
 		})
 	}
 	this.Data["tasks"] = taskMaps
