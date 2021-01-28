@@ -84,6 +84,10 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	ParamApiKey    string
 	ParamApiSecret string
 
+	// CustomHTTP
+	ParamCustomHTTPURL    string
+	ParamCustomHTTPSecret string
+
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
@@ -124,6 +128,15 @@ func (this *UpdatePopupAction) RunPost(params struct {
 
 		apiParams["apiKey"] = params.ParamApiKey
 		apiParams["apiSecret"] = params.ParamApiSecret
+	case "customHTTP":
+		params.Must.
+			Field("paramCustomHTTPURL", params.ParamCustomHTTPURL).
+			Require("请输入HTTP URL").
+			Match("^(?i)(http|https):", "URL必须以http://或者https://开头").
+			Field("paramCustomHTTPSecret", params.ParamCustomHTTPSecret).
+			Require("请输入私钥")
+		apiParams["url"] = params.ParamCustomHTTPURL
+		apiParams["secret"] = params.ParamCustomHTTPSecret
 	default:
 		this.Fail("暂时不支持此服务商'" + params.Type + "'")
 	}

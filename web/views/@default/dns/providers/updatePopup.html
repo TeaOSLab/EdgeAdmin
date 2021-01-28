@@ -59,6 +59,24 @@
 				</td>
 			</tr>
 		</tbody>
+
+        <!-- 自定义HTTP-->
+        <tbody v-if="provider.type == 'customHTTP'">
+        <tr>
+            <td>HTTP URL *</td>
+            <td>
+                <input type="text" name="paramCustomHTTPURL" maxlength="200" v-model="provider.params.url"/>
+                <p class="comment">HTTP URL完整地址，DNS所有操作都会以POST的方式转发到此地址。</p>
+            </td>
+        </tr>
+        <tr>
+            <td>私钥 *</td>
+            <td>
+                <input type="text" name="paramCustomHTTPSecret" maxlength="64" v-model="provider.params.secret"/>
+                <p class="comment">通讯用的私钥，转发请求时会在Header中加入相关信息，方便开发者校验请求是否合法。</p>
+            </td>
+        </tr>
+        </tbody>
 	</table>
 
 	<submit-btn></submit-btn>
