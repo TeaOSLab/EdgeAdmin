@@ -1,18 +1,30 @@
 package ui
 
 import (
+	"bytes"
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/conds/condutils"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/files"
 	"github.com/iwind/TeaGo/logs"
+	"strconv"
 )
 
 type ComponentsAction actions.Action
 
+var componentsData = []byte{}
+
 func (this *ComponentsAction) RunGet(params struct{}) {
 	this.AddHeader("Content-Type", "text/javascript; charset=utf-8")
+
+	if !Tea.IsTesting() && len(componentsData) > 0 {
+		this.AddHeader("Content-Length", strconv.Itoa(len(componentsData)))
+		this.Write(componentsData)
+		return
+	}
+
+	var buffer = bytes.NewBuffer([]byte{})
 
 	var webRoot string
 	if Tea.IsTesting() {
@@ -34,8 +46,8 @@ func (this *ComponentsAction) RunGet(params struct{}) {
 			logs.Error(err)
 			return
 		}
-		this.Write(data)
-		this.Write([]byte{'\n', '\n'})
+		buffer.Write(data)
+		buffer.Write([]byte{'\n', '\n'})
 	})
 
 	// 条件组件
@@ -43,8 +55,12 @@ func (this *ComponentsAction) RunGet(params struct{}) {
 	if err != nil {
 		logs.Println("ComponentsAction: " + err.Error())
 	} else {
-		this.WriteString("window.REQUEST_COND_COMPONENTS = ")
-		this.Write(typesJSON)
-		this.Write([]byte{'\n', '\n'})
+		buffer.WriteString("window.REQUEST_COND_COMPONENTS = ")
+		buffer.Write(typesJSON)
+		buffer.Write([]byte{'\n', '\n'})
 	}
+
+	componentsData = buffer.Bytes()
+	this.AddHeader("Content-Length", strconv.Itoa(len(componentsData)))
+	this.Write(componentsData)
 }
