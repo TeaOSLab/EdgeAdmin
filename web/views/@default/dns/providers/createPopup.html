@@ -18,7 +18,6 @@
 					<option value="">[请选择]</option>
 					<option v-for="type in types" :value="type.code">{{type.name}}</option>
 				</select>
-				<p class="comment">创建后无法修改此选项。</p>
 			</td>
 		</tr>
 		<tr>
@@ -78,6 +77,24 @@
 				</td>
 			</tr>
 		</tbody>
+
+        <!-- 自定义HTTP-->
+        <tbody v-if="type == 'customHTTP'">
+            <tr>
+                <td>HTTP URL *</td>
+                <td>
+                    <input type="text" name="paramCustomHTTPURL" maxlength="200"/>
+                    <p class="comment">HTTP URL完整地址，DNS所有操作都会以POST的方式转发到此地址。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>私钥 *</td>
+                <td>
+                    <input type="text" name="paramCustomHTTPSecret" maxlength="64" v-model="paramCustomHTTPSecret"/>
+                    <p class="comment">通讯用的私钥，转发请求时会在Header中加入相关信息，方便开发者校验请求是否合法。</p>
+                </td>
+            </tr>
+        </tbody>
 	</table>
 
 	<submit-btn></submit-btn>

@@ -6,6 +6,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/iwind/TeaGo/rands"
 )
 
 type CreatePopupAction struct {
@@ -32,6 +33,9 @@ func (this *CreatePopupAction) RunGet(params struct{}) {
 	}
 	this.Data["types"] = typeMaps
 
+	// 自动生成CustomHTTP私钥
+	this.Data["paramCustomHTTPSecret"] = rands.HexString(32)
+
 	this.Show()
 }
 
@@ -50,6 +54,10 @@ func (this *CreatePopupAction) RunPost(params struct {
 	// DNS.COM
 	ParamApiKey    string
 	ParamApiSecret string
+
+	// CustomHTTP
+	ParamCustomHTTPURL    string
+	ParamCustomHTTPSecret string
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -89,6 +97,15 @@ func (this *CreatePopupAction) RunPost(params struct {
 
 		apiParams["apiKey"] = params.ParamApiKey
 		apiParams["apiSecret"] = params.ParamApiSecret
+	case "customHTTP":
+		params.Must.
+			Field("paramCustomHTTPURL", params.ParamCustomHTTPURL).
+			Require("请输入HTTP URL").
+			Match("^(?i)(http|https):", "URL必须以http://或者https://开头").
+			Field("paramCustomHTTPSecret", params.ParamCustomHTTPSecret).
+			Require("请输入私钥")
+		apiParams["url"] = params.ParamCustomHTTPURL
+		apiParams["secret"] = params.ParamCustomHTTPSecret
 	default:
 		this.Fail("暂时不支持此服务商'" + params.Type + "'")
 	}

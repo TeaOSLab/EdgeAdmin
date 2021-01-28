@@ -42,6 +42,18 @@
 			<td>{{provider.apiParams.accessKeySecret}}</td>
 		</tr>
 	</tbody>
+
+    <!-- CustomHTTP -->
+    <tbody v-if="provider.type == 'customHTTP'">
+        <tr>
+            <td>HTTP URL</td>
+            <td>{{provider.apiParams.url}}</td>
+        </tr>
+        <tr>
+            <td>私钥</td>
+            <td>{{provider.apiParams.secret}}</td>
+        </tr>
+    </tbody>
 </table>
 
 
