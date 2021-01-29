@@ -8,7 +8,6 @@ import (
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/files"
 	"github.com/iwind/TeaGo/logs"
-	"strconv"
 )
 
 type ComponentsAction actions.Action
@@ -19,7 +18,7 @@ func (this *ComponentsAction) RunGet(params struct{}) {
 	this.AddHeader("Content-Type", "text/javascript; charset=utf-8")
 
 	if !Tea.IsTesting() && len(componentsData) > 0 {
-		this.AddHeader("Content-Length", strconv.Itoa(len(componentsData)))
+		this.AddHeader("Last-Modified", "Fri, 06 Sep 2019 08:29:50 GMT")
 		this.Write(componentsData)
 		return
 	}
@@ -61,6 +60,5 @@ func (this *ComponentsAction) RunGet(params struct{}) {
 	}
 
 	componentsData = buffer.Bytes()
-	this.AddHeader("Content-Length", strconv.Itoa(len(componentsData)))
 	this.Write(componentsData)
 }

@@ -248,7 +248,7 @@ body.expanded .main {
   z-index: 1000;
   overflow-x: auto;
   border: 0 !important;
-  background: #276ac6 !important;
+  background: #14539A !important;
 }
 .top-nav img.avatar {
   width: 1.6em !important;
@@ -385,11 +385,11 @@ body.expanded .main {
   top: 2em;
   bottom: 0;
   overflow-y: auto;
-  background: #276ac6 !important;
+  background: #14539A !important;
   z-index: 10;
 }
 .main-menu .menu {
-  background: #276ac6 !important;
+  background: #14539A !important;
   border: 0 !important;
   box-shadow: none !important;
 }
