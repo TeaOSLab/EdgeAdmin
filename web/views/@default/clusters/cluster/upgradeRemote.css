@@ -4,4 +4,12 @@
 .right-box {
   top: 10em;
 }
+h3 {
+  position: relative;
+}
+h3 button {
+  position: absolute;
+  right: 1em;
+  top: -0.2em;
+}
 /*# sourceMappingURL=upgradeRemote.css.map */
