@@ -89,6 +89,12 @@ func (this *NodeAction) RunGet(params struct {
 			})
 		}
 	}
+	if len(dnsRouteMaps) == 0 {
+		dnsRouteMaps = append(dnsRouteMaps, maps.Map{
+			"name": "",
+			"code": "",
+		})
+	}
 	this.Data["dnsRoutes"] = dnsRouteMaps
 	this.Data["dnsRecordName"] = recordName
 	this.Data["dnsRecordValue"] = recordValue

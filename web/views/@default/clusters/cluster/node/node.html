@@ -29,7 +29,7 @@
 				</div>
 			</td>
 		</tr>
-		<tr v-if="dnsRoutes.length > 0">
+		<tr v-if="dnsRoutes.length > 0 && dnsRoutes[0].name.length > 0">
 			<td>DNS线路</td>
 			<td>
 				<span class="ui label tiny basic" v-for="route in dnsRoutes">{{route.name}}</span>
@@ -51,7 +51,10 @@
                         <tr v-for="route in dnsRoutes">
                             <td>{{dnsRecordName}}</td>
                             <td>A</td>
-                            <td>{{route.name}}</td>
+                            <td>
+                                <span v-if="route.name.length > 0">{{route.name}}</span>
+                                <span v-else class="disabled">默认</span>
+                            </td>
                             <td>{{address.ip}}</td>
                         </tr>
                     </tbody>
