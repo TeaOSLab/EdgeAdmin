@@ -1,8 +1,8 @@
 package node
 
 import (
-	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 )
 
@@ -34,6 +34,7 @@ func (this *StatusAction) RunPost(params struct {
 			"isOk":       node.InstallStatus.IsOk,
 			"updatedAt":  node.InstallStatus.UpdatedAt,
 			"error":      node.InstallStatus.Error,
+			"errorCode":  node.InstallStatus.ErrorCode,
 		}
 	} else {
 		this.Data["installStatus"] = nil

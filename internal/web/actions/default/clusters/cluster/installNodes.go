@@ -19,7 +19,7 @@ func (this *InstallNodesAction) Init() {
 func (this *InstallNodesAction) RunGet(params struct {
 	ClusterId int64
 }) {
-	this.Data["leftMenuItems"] = LeftMenuItemsForInstall(params.ClusterId, "register")
+	this.Data["leftMenuItems"] = LeftMenuItemsForInstall(this.AdminContext(), params.ClusterId, "register")
 
 	clusterResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeCluster(this.AdminContext(), &pb.FindEnabledNodeClusterRequest{NodeClusterId: params.ClusterId})
 	if err != nil {

@@ -6,10 +6,15 @@
 	<p class="comment" v-if="nodes.length == 0">暂时没有需要远程安装的节点。</p>
 
 	<div v-if="nodes.length > 0">
-		<h3>所有未安装节点</h3>
+		<h3>所有未安装节点
+            <button class="ui button primary tiny" v-if="countCheckedNodes() > 0" @click.prevent="installBatch()">批量安装({{countCheckedNodes()}})</button>
+        </h3>
 		<table class="ui table selectable celled">
 			<thead>
 				<tr>
+                    <th style="width:3em">
+                        <checkbox @input="checkNodes"></checkbox>
+                    </th>
 					<th>节点名</th>
 					<th>访问IP</th>
 					<th>SSH地址</th>
@@ -18,8 +23,11 @@
 				</tr>
 			</thead>
 			<tr v-for="node in nodes">
+                <td>
+                    <checkbox v-model="node.isChecked" v-if="node.installStatus == null || !node.installStatus.isOk"></checkbox>
+                </td>
 				<td>
-					<a :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id">{{node.name}}</a>
+					<link-icon :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id">{{node.name}}</link-icon>
 				</td>
 				<td>
 					<span v-for="addr in node.addresses" v-if="addr.canAccess" class="ui label tiny">{{addr.ip}}</span>
