@@ -37,7 +37,25 @@
 		</tr>
         <tr v-if="dnsRecordName.length > 0 && dnsRecordValue.length > 0">
             <td>DNS记录</td>
-            <td>{{dnsRecordName}} -&gt; {{dnsRecordValue}}
+            <td>
+                <table class="ui table celled">
+                   <thead class="full-width">
+                   <tr>
+                       <th>记录名</th>
+                       <th>记录类型</th>
+                       <th>线路</th>
+                       <th>记录值</th>
+                   </tr>
+                   </thead>
+                    <tbody v-for="address in node.ipAddresses" v-if="address.canAccess">
+                        <tr v-for="route in dnsRoutes">
+                            <td>{{dnsRecordName}}</td>
+                            <td>A</td>
+                            <td>{{route.name}}</td>
+                            <td>{{address.ip}}</td>
+                        </tr>
+                    </tbody>
+                </table>
                 <p class="comment">通过设置A记录可以将集群上的服务请求转发到不同线路的节点上。</p>
             </td>
         </tr>
@@ -125,17 +143,34 @@
 		</tr>
 		<tbody v-show="node.status.isActive">
 			<tr>
-				<td>CPU</td>
+				<td>CPU用量</td>
 				<td>{{node.status.cpuUsageText}}</td>
 			</tr>
 			<tr>
-				<td>内存</td>
+				<td>内存用量</td>
 				<td>{{node.status.memUsageText}}</td>
 			</tr>
 			<tr>
 				<td>连接数</td>
 				<td>{{node.status.connectionCount}}</td>
 			</tr>
+            <tr>
+                <td>版本</td>
+                <td>v{{node.status.buildVersion}}
+                    &nbsp; <a :href="'/clusters/cluster/upgradeRemote?clusterId=' + clusterId" v-if="shouldUpgrade"><span class="red">发现新版本v{{newVersion}} &raquo;</span></a>
+                </td>
+            </tr>
+            <tr>
+                <td>CPU</td>
+                <td>
+                    <span v-if="node.status.cpuPhysicalCount > 0">{{node.status.cpuPhysicalCount}}核心/{{node.status.cpuLogicalCount}}线程</span>
+                    <span v-else class="disabled">-/-</span>
+                </td>
+            </tr>
+            <tr>
+                <td>负载</td>
+                <td>{{node.status.load1m}} &nbsp; {{node.status.load5m}} &nbsp; {{node.status.load15m}} &nbsp; <tip-icon content="三个数字分别代表1分钟、5分钟、15分钟平均负载"></tip-icon></td>
+            </tr>
 		</tbody>
 	</table>
 	<p class="comment" v-if="node.status.isActive">每隔30秒钟更新一次运行状态。</p>
