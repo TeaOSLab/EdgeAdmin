@@ -143,6 +143,24 @@ func (this *NodeAction) RunGet(params struct {
 		status.IsActive = status.IsActive && time.Now().Unix()-status.UpdatedAt <= 60 // N秒之内认为活跃
 	}
 
+	// 检查是否有新版本
+	if len(status.OS) > 0 {
+		checkVersionResp, err := this.RPC().NodeRPC().CheckNodeLatestVersion(this.AdminContext(), &pb.CheckNodeLatestVersionRequest{
+			Os:             status.OS,
+			Arch:           status.Arch,
+			CurrentVersion: status.BuildVersion,
+		})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		this.Data["shouldUpgrade"] = checkVersionResp.HasNewVersion
+		this.Data["newVersion"] = checkVersionResp.NewVersion
+	} else {
+		this.Data["shouldUpgrade"] = false
+		this.Data["newVersion"] = ""
+	}
+
 	// 分组
 	var groupMap maps.Map = nil
 	if node.Group != nil {
@@ -175,14 +193,20 @@ func (this *NodeAction) RunGet(params struct {
 		"isOn":        node.IsOn,
 
 		"status": maps.Map{
-			"isActive":        status.IsActive,
-			"updatedAt":       status.UpdatedAt,
-			"hostname":        status.Hostname,
-			"cpuUsage":        status.CPUUsage,
-			"cpuUsageText":    fmt.Sprintf("%.2f%%", status.CPUUsage*100),
-			"memUsage":        status.MemoryUsage,
-			"memUsageText":    fmt.Sprintf("%.2f%%", status.MemoryUsage*100),
-			"connectionCount": status.ConnectionCount,
+			"isActive":         status.IsActive,
+			"updatedAt":        status.UpdatedAt,
+			"hostname":         status.Hostname,
+			"cpuUsage":         status.CPUUsage,
+			"cpuUsageText":     fmt.Sprintf("%.2f%%", status.CPUUsage*100),
+			"memUsage":         status.MemoryUsage,
+			"memUsageText":     fmt.Sprintf("%.2f%%", status.MemoryUsage*100),
+			"connectionCount":  status.ConnectionCount,
+			"buildVersion":     status.BuildVersion,
+			"cpuPhysicalCount": status.CPUPhysicalCount,
+			"cpuLogicalCount":  status.CPULogicalCount,
+			"load1m":           fmt.Sprintf("%.2f", status.Load1m),
+			"load5m":           fmt.Sprintf("%.2f", status.Load5m),
+			"load15m":          fmt.Sprintf("%.2f", status.Load15m),
 		},
 
 		"group":  groupMap,

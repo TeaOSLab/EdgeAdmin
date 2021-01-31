@@ -20,7 +20,7 @@
 			</thead>
 			<tr v-for="node in nodes">
 				<td>
-					<a :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id">{{node.name}}</a>
+					<link-icon :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id">{{node.name}}</link-icon>
 				</td>
 				<td>
 					<span v-for="addr in node.addresses" v-if="addr.canAccess" class="ui label tiny">{{addr.ip}}</span>
