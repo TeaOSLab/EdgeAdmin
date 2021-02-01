@@ -30,7 +30,7 @@
 					<link-icon :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id">{{node.name}}</link-icon>
 				</td>
 				<td>
-					<span v-for="addr in node.addresses" v-if="addr.canAccess" class="ui label tiny">{{addr.ip}}</span>
+					<span v-for="addr in node.addresses" v-if="addr.canAccess" class="ui label tiny basic">{{addr.ip}}</span>
 				</td>
 				<td>
 					<span v-if="node.login != null && node.login.type == 'ssh' && node.loginParams != null && node.loginParams.host != null && node.loginParams.host.length > 0">

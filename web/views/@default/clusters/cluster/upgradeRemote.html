@@ -7,7 +7,7 @@
 
 	<div v-if="nodes.length > 0">
 		<h3>所有需要升级的节点
-            <button class="ui button primary tiny" v-if="countCheckedNodes() > 0" @click.prevent="installBatch()">批量安装({{countCheckedNodes()}})</button>
+            <button class="ui button primary tiny" v-if="countCheckedNodes() > 0" @click.prevent="installBatch()">批量升级({{countCheckedNodes()}})</button>
         </h3>
 		<table class="ui table selectable celled">
 			<thead>
@@ -31,7 +31,7 @@
 					<link-icon :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id">{{node.name}}</link-icon>
 				</td>
 				<td>
-					<span v-for="addr in node.addresses" v-if="addr.canAccess" class="ui label tiny">{{addr.ip}}</span>
+					<span v-for="addr in node.addresses" v-if="addr.canAccess" class="ui label tiny basic">{{addr.ip}}</span>
 				</td>
 				<td>
 					<span v-if="node.login != null && node.login.type == 'ssh' && node.loginParams != null && node.loginParams.host != null && node.loginParams.host.length > 0">
