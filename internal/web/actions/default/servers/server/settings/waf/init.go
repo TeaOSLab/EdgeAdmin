@@ -17,8 +17,8 @@ func init() {
 			GetPost("", new(IndexAction)).
 			Get("/ipadmin/allowList", new(ipadmin.AllowListAction)).
 			Get("/ipadmin/denyList", new(ipadmin.DenyListAction)).
-			//GetPost("/ipadmin", new(ipadmin.IndexAction)).
-			//GetPost("/ipadmin/provinces", new(ipadmin.ProvincesAction)).
+			GetPost("/ipadmin/countries", new(ipadmin.CountriesAction)).
+			GetPost("/ipadmin/provinces", new(ipadmin.ProvincesAction)).
 			GetPost("/ipadmin/createIPPopup", new(ipadmin.CreateIPPopupAction)).
 			GetPost("/ipadmin/updateIPPopup", new(ipadmin.UpdateIPPopupAction)).
 			Post("/ipadmin/deleteIP", new(ipadmin.DeleteIPAction)).
