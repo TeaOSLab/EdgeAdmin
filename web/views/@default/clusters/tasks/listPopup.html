@@ -1,11 +1,14 @@
 {$layout "layout_popup"}
 
-<h3>正在同步的节点任务<span v-if="countTasks > 0">(共{{countTasks}}个)</span></h3>
+<h3>正在同步的节点任务<span v-if="countTasks > 0">(共{{countTasks}}个)</span>
+    <a href="" v-if="countCheckedTasks() > 0" @click.prevent="deleteBatch">批量删除{{countCheckedTasks()}}个任务</a>
+</h3>
 <p class="comment" v-if="clusters.length == 0">暂时没有同步的集群。</p>
 <div v-if="clusters.length > 0">
-    <table class="ui table selectable">
+    <table class="ui table selectable celled">
         <thead>
             <tr>
+                <th style="width:3em"><checkbox @input="checkAll"></checkbox></th>
                 <th>集群</th>
                 <th>节点</th>
                 <th>任务</th>
@@ -16,6 +19,9 @@
         </thead>
         <tbody v-for="cluster in clusters">
             <tr v-for="task in cluster.tasks">
+                <td>
+                    <checkbox v-model="task.isChecked" @input="checkTask"></checkbox>
+                </td>
                 <td>{{cluster.name}}</td>
                 <td>
                    {{task.node.name}} &nbsp; <a :href="'/clusters/cluster/node?clusterId=' + cluster.id + '&nodeId=' + task.node.id" target="_blank"><i class="icon linkify small grey"></i></a>

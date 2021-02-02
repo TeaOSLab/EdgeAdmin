@@ -1,7 +1,39 @@
 Tea.context(function () {
+    let checkedAll = false
+
     this.$delay(function () {
         this.reload()
     })
+
+    this.checkAll = function (b) {
+        checkedAll = b
+        let that = this
+        this.clusters.forEach(function (cluster, index) {
+            cluster.tasks.forEach(function (task) {
+                task.isChecked = checkedAll
+            })
+            Vue.set(that.clusters, index, cluster)
+        })
+    }
+
+    this.checkTask = function (b) {
+        this.clusters.forEach(function (cluster, index) {
+            Vue.set(that.clusters, index, cluster)
+        })
+    }
+
+    let that = this
+    this.countCheckedTasks = function () {
+        let count = 0
+        that.clusters.forEach(function (cluster) {
+            cluster.tasks.forEach(function (task) {
+                if (task.isChecked) {
+                    count++
+                }
+            })
+        })
+        return count
+    }
 
     this.reload = function () {
         this.$post("$")
@@ -11,7 +43,10 @@ Tea.context(function () {
             })
             .done(function () {
                 this.$delay(function () {
-                    this.reload()
+                    // 没有选中任务的时候才重新刷新
+                    if (this.countCheckedTasks() == 0) {
+                        this.reload()
+                    }
                 }, 3000)
             })
     }
@@ -22,6 +57,28 @@ Tea.context(function () {
             that.$post(".delete")
                 .params({
                     taskId: taskId
+                })
+                .success(function () {
+                    teaweb.reload()
+                })
+        })
+    }
+
+    this.deleteBatch = function () {
+        var taskIds = []
+        this.clusters.forEach(function (cluster) {
+            cluster.tasks.forEach(function (task) {
+                if (task.isChecked) {
+                    taskIds.push(task.id)
+                }
+            })
+        })
+
+        let that = this
+        teaweb.confirm("确定要批量删除选中的任务吗？", function () {
+            that.$post(".deleteBatch")
+                .params({
+                    taskIds: taskIds
                 })
                 .success(function () {
                     teaweb.reload()
