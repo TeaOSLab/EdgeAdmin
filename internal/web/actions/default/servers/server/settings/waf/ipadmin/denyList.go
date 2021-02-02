@@ -6,6 +6,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
+	"time"
 )
 
 type DenyListAction struct {
@@ -74,9 +75,19 @@ func (this *DenyListAction) RunGet(params struct {
 			"ipTo":        item.IpTo,
 			"expiredTime": expiredTime,
 			"reason":      item.Reason,
+			"type":        item.Type,
+			"isExpired":   item.ExpiredAt > 0 && item.ExpiredAt < time.Now().Unix(),
 		})
 	}
 	this.Data["items"] = itemMaps
+
+	// WAF是否启用
+	webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithServerId(this.AdminContext(), params.ServerId)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["wafIsOn"] = webConfig.FirewallRef != nil && webConfig.FirewallRef.IsOn
 
 	this.Show()
 }
