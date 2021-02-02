@@ -16,6 +16,7 @@ func init() {
 			GetPost("/listPopup", new(ListPopupAction)).
 			Post("/check", new(CheckAction)).
 			Post("/delete", new(DeleteAction)).
+			Post("/deleteBatch", new(DeleteBatchAction)).
 
 			EndAll()
 	})
