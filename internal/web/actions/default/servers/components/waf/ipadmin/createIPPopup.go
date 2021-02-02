@@ -21,7 +21,7 @@ func (this *CreateIPPopupAction) RunGet(params struct {
 	FirewallPolicyId int64
 	Type             string
 }) {
-	this.Data["type"] = params.Type
+	this.Data["listType"] = params.Type
 
 	listId, err := dao.SharedHTTPFirewallPolicyDAO.FindEnabledPolicyIPListIdWithType(this.AdminContext(), params.FirewallPolicyId, params.Type)
 	if err != nil {
@@ -40,33 +40,46 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 	IpTo             string
 	ExpiredAt        int64
 	Reason           string
+	Type             string
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
 	// TODO 校验ListId所属用户
 
-	params.Must.
-		Field("ipFrom", params.IpFrom).
-		Require("请输入开始IP")
+	switch params.Type {
+	case "ipv4":
+		params.Must.
+			Field("ipFrom", params.IpFrom).
+			Require("请输入开始IP")
 
-	// 校验IP格式（ipFrom/ipTo）
-	ipFromLong := utils.IP2Long(params.IpFrom)
-	if len(params.IpFrom) > 0 {
-		if ipFromLong == 0 {
+		// 校验IP格式（ipFrom/ipTo）
+		var ipFromLong uint64
+		if !utils.IsIPv4(params.IpFrom) {
 			this.Fail("请输入正确的开始IP")
 		}
-	}
+		ipFromLong = utils.IP2Long(params.IpFrom)
 
-	ipToLong := utils.IP2Long(params.IpTo)
-	if len(params.IpTo) > 0 {
-		if ipToLong == 0 {
+		var ipToLong uint64
+		if len(params.IpTo) > 0 && !utils.IsIPv4(params.IpTo) {
+			ipToLong = utils.IP2Long(params.IpTo)
 			this.Fail("请输入正确的结束IP")
 		}
-	}
 
-	if ipFromLong > 0 && ipToLong > 0 && ipFromLong > ipToLong {
-		params.IpTo, params.IpFrom = params.IpFrom, params.IpTo
+		if ipFromLong > 0 && ipToLong > 0 && ipFromLong > ipToLong {
+			params.IpTo, params.IpFrom = params.IpFrom, params.IpTo
+		}
+	case "ipv6":
+		params.Must.
+			Field("ipFrom", params.IpFrom).
+			Require("请输入IP")
+
+		// 校验IP格式（ipFrom）
+		if !utils.IsIPv6(params.IpFrom) {
+			this.Fail("请输入正确的IPv6地址")
+		}
+	case "all":
+		params.IpFrom = "0.0.0.0"
 	}
 
 	createResp, err := this.RPC().IPItemRPC().CreateIPItem(this.AdminContext(), &pb.CreateIPItemRequest{
@@ -75,6 +88,7 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 		IpTo:      params.IpTo,
 		ExpiredAt: params.ExpiredAt,
 		Reason:    params.Reason,
+		Type:      params.Type,
 	})
 	if err != nil {
 		this.ErrorPage(err)

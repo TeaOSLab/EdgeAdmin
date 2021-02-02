@@ -63,6 +63,7 @@ func (this *ListsAction) RunGet(params struct {
 			"ipTo":        item.IpTo,
 			"expiredTime": expiredTime,
 			"reason":      item.Reason,
+			"type":        item.Type,
 		})
 	}
 	this.Data["items"] = itemMaps

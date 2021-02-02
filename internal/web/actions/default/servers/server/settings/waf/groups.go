@@ -16,6 +16,7 @@ func (this *GroupsAction) Init() {
 }
 
 func (this *GroupsAction) RunGet(params struct {
+	ServerId         int64
 	FirewallPolicyId int64
 	Type             string
 }) {
@@ -69,6 +70,14 @@ func (this *GroupsAction) RunGet(params struct {
 	}
 
 	this.Data["groups"] = groupMaps
+
+	// WAF是否启用
+	webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithServerId(this.AdminContext(), params.ServerId)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["wafIsOn"] = webConfig.FirewallRef != nil && webConfig.FirewallRef.IsOn
 
 	this.Show()
 }

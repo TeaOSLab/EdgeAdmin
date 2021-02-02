@@ -50,7 +50,41 @@ window.teaweb = {
         return true;
     },
 
+    loadJS: function (file, callback) {
+        let element = document.createElement("script")
+        element.setAttribute("type", "text/javascript")
+        element.setAttribute("src", file)
+        if (typeof callback == "function") {
+            element.addEventListener("load", callback)
+        }
+        document.head.append(element)
+    },
+    loadCSS: function (file, callback) {
+        let element = document.createElement("link")
+        element.setAttribute("rel", "stylesheet")
+        element.setAttribute("type", "text/css")
+        element.setAttribute("href", file)
+        if (typeof callback == "function") {
+            element.addEventListener("load", callback)
+        }
+        document.head.append(element)
+    },
     datepicker: function (element, callback) {
+        // 加载
+        if (typeof Pikaday == "undefined") {
+            let that = this
+            this.loadJS("/js/moment.min.js")
+            this.loadJS("/js/pikaday.js", function () {
+                that.datepicker(element, callback)
+            })
+            this.loadCSS("/js/pikaday.css")
+            this.loadCSS("/js/pikaday.theme.css")
+            this.loadCSS("/js/pikaday.triangle.css")
+
+            return
+        }
+
+
         if (typeof (element) == "string") {
             element = document.getElementById(element);
         }
