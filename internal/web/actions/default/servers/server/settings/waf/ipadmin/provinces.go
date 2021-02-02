@@ -19,12 +19,16 @@ type ProvincesAction struct {
 }
 
 func (this *ProvincesAction) Init() {
-	this.Nav("", "", "ipadmin")
+	this.Nav("", "setting", "province")
+	this.SecondMenu("waf")
 }
 
 func (this *ProvincesAction) RunGet(params struct {
 	FirewallPolicyId int64
+	ServerId         int64
 }) {
+	this.Data["featureIsOn"] = true
+	this.Data["firewallPolicyId"] = params.FirewallPolicyId
 	this.Data["subMenuItem"] = "province"
 
 	// 当前选中的省份
@@ -58,6 +62,14 @@ func (this *ProvincesAction) RunGet(params struct {
 		})
 	}
 	this.Data["provinces"] = provinceMaps
+
+	// WAF是否启用
+	webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithServerId(this.AdminContext(), params.ServerId)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["wafIsOn"] = webConfig.FirewallRef != nil && webConfig.FirewallRef.IsOn
 
 	this.Show()
 }

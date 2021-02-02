@@ -13,17 +13,22 @@ import (
 	"strings"
 )
 
-type IndexAction struct {
+type CountriesAction struct {
 	actionutils.ParentAction
 }
 
-func (this *IndexAction) Init() {
-	this.Nav("", "", "ipadmin")
+func (this *CountriesAction) Init() {
+	this.Nav("", "setting", "country")
+	this.SecondMenu("waf")
 }
 
-func (this *IndexAction) RunGet(params struct {
+func (this *CountriesAction) RunGet(params struct {
 	FirewallPolicyId int64
+	ServerId         int64
 }) {
+	this.Data["featureIsOn"] = true
+	this.Data["firewallPolicyId"] = params.FirewallPolicyId
+
 	this.Data["subMenuItem"] = "region"
 
 	// 当前选中的地区
@@ -57,10 +62,18 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	this.Data["countries"] = countryMaps
 
+	// WAF是否启用
+	webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithServerId(this.AdminContext(), params.ServerId)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["wafIsOn"] = webConfig.FirewallRef != nil && webConfig.FirewallRef.IsOn
+
 	this.Show()
 }
 
-func (this *IndexAction) RunPost(params struct {
+func (this *CountriesAction) RunPost(params struct {
 	FirewallPolicyId int64
 	CountryIds       []int64
 

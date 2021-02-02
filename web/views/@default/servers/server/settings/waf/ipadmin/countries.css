@@ -1,0 +1,16 @@
+.region-letter-group .item {
+  padding-left: 1em !important;
+  padding-right: 1em !important;
+}
+.country-group {
+  padding-bottom: 1em;
+}
+.country-group .country-list .item {
+  float: left;
+  width: 12em;
+  margin-bottom: 0.5em;
+}
+.country-group .country-list .item .checkbox label {
+  font-size: 12px !important;
+}
+/*# sourceMappingURL=countries.css.map */
