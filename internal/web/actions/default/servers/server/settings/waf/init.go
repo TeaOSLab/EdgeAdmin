@@ -22,6 +22,7 @@ func init() {
 			GetPost("/ipadmin/createIPPopup", new(ipadmin.CreateIPPopupAction)).
 			GetPost("/ipadmin/updateIPPopup", new(ipadmin.UpdateIPPopupAction)).
 			Post("/ipadmin/deleteIP", new(ipadmin.DeleteIPAction)).
+			GetPost("/ipadmin/test", new(ipadmin.TestAction)).
 
 			// 规则相关
 			Get("/groups", new(GroupsAction)).
