@@ -42,8 +42,8 @@
             </a>
 
             <!-- 消息 -->
-			<a href="/messages" class="item" :class="{active:teaMenu == 'message'}">
-                <span v-if="globalMessageBadge > 0" class="blink"><i class="icon bell"></i>消息({{globalMessageBadge}}) </span>
+			<a href="" class="item" :class="{active:teaMenu == 'message'}" @click.prevent="showMessages()">
+                <span v-if="globalMessageBadge > 0" class="blink hover-span"><i class="icon bell"></i><span>消息({{globalMessageBadge}}) </span></span>
                 <span v-if="globalMessageBadge == 0" class="hover-span"><i class="icon bell disabled"></i><span class="disabled">消息(0)</span></span>
             </a>
 

@@ -59,6 +59,13 @@ Tea.context(function () {
             })
     }
 
+    this.showMessages = function () {
+        teaweb.popup("/messages", {
+            height: "24em",
+            width: "50em"
+        })
+    }
+
     /**
      * 底部伸展框
      */
