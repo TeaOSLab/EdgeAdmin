@@ -27,18 +27,17 @@ func (this *CreateIPPopupAction) RunGet(params struct {
 }
 
 func (this *CreateIPPopupAction) RunPost(params struct {
-	ListId    int64
-	IpFrom    string
-	IpTo      string
-	ExpiredAt int64
-	Reason    string
-	Type      string
+	ListId     int64
+	IpFrom     string
+	IpTo       string
+	ExpiredAt  int64
+	Reason     string
+	Type       string
+	EventLevel string
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	// TODO 校验ListId所属用户
-
 	switch params.Type {
 	case "ipv4":
 		params.Must.
@@ -75,12 +74,13 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 	}
 
 	createResp, err := this.RPC().IPItemRPC().CreateIPItem(this.AdminContext(), &pb.CreateIPItemRequest{
-		IpListId:  params.ListId,
-		IpFrom:    params.IpFrom,
-		IpTo:      params.IpTo,
-		ExpiredAt: params.ExpiredAt,
-		Reason:    params.Reason,
-		Type:      params.Type,
+		IpListId:   params.ListId,
+		IpFrom:     params.IpFrom,
+		IpTo:       params.IpTo,
+		ExpiredAt:  params.ExpiredAt,
+		Reason:     params.Reason,
+		Type:       params.Type,
+		EventLevel: params.EventLevel,
 	})
 	if err != nil {
 		this.ErrorPage(err)

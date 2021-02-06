@@ -32,12 +32,13 @@ func (this *UpdateIPPopupAction) RunGet(params struct {
 	}
 
 	this.Data["item"] = maps.Map{
-		"id":        item.Id,
-		"ipFrom":    item.IpFrom,
-		"ipTo":      item.IpTo,
-		"expiredAt": item.ExpiredAt,
-		"reason":    item.Reason,
-		"type":      item.Type,
+		"id":         item.Id,
+		"ipFrom":     item.IpFrom,
+		"ipTo":       item.IpTo,
+		"expiredAt":  item.ExpiredAt,
+		"reason":     item.Reason,
+		"type":       item.Type,
+		"eventLevel": item.EventLevel,
 	}
 
 	this.Data["type"] = item.Type
@@ -49,11 +50,12 @@ func (this *UpdateIPPopupAction) RunPost(params struct {
 	FirewallPolicyId int64
 	ItemId           int64
 
-	IpFrom    string
-	IpTo      string
-	ExpiredAt int64
-	Reason    string
-	Type      string
+	IpFrom     string
+	IpTo       string
+	ExpiredAt  int64
+	Reason     string
+	Type       string
+	EventLevel string
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -99,12 +101,13 @@ func (this *UpdateIPPopupAction) RunPost(params struct {
 	}
 
 	_, err := this.RPC().IPItemRPC().UpdateIPItem(this.AdminContext(), &pb.UpdateIPItemRequest{
-		IpItemId:  params.ItemId,
-		IpFrom:    params.IpFrom,
-		IpTo:      params.IpTo,
-		ExpiredAt: params.ExpiredAt,
-		Reason:    params.Reason,
-		Type:      params.Type,
+		IpItemId:   params.ItemId,
+		IpFrom:     params.IpFrom,
+		IpTo:       params.IpTo,
+		ExpiredAt:  params.ExpiredAt,
+		Reason:     params.Reason,
+		Type:       params.Type,
+		EventLevel: params.EventLevel,
 	})
 	if err != nil {
 		this.ErrorPage(err)

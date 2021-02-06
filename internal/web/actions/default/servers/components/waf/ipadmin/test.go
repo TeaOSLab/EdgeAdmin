@@ -3,6 +3,7 @@ package ipadmin
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
@@ -55,13 +56,14 @@ func (this *TestAction) RunPost(params struct {
 	}
 	if resp.IpItem != nil {
 		resultMap["item"] = maps.Map{
-			"id":          resp.IpItem.Id,
-			"ipFrom":      resp.IpItem.IpFrom,
-			"ipTo":        resp.IpItem.IpTo,
-			"reason":      resp.IpItem.Reason,
-			"expiredAt":   resp.IpItem.ExpiredAt,
-			"expiredTime": timeutil.FormatTime("Y-m-d H:i:s", resp.IpItem.ExpiredAt),
-			"type":        resp.IpItem.Type,
+			"id":             resp.IpItem.Id,
+			"ipFrom":         resp.IpItem.IpFrom,
+			"ipTo":           resp.IpItem.IpTo,
+			"reason":         resp.IpItem.Reason,
+			"expiredAt":      resp.IpItem.ExpiredAt,
+			"expiredTime":    timeutil.FormatTime("Y-m-d H:i:s", resp.IpItem.ExpiredAt),
+			"type":           resp.IpItem.Type,
+			"eventLevelName": firewallconfigs.FindFirewallEventLevelName(resp.IpItem.EventLevel),
 		}
 	}
 

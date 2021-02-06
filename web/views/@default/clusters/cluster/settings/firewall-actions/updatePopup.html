@@ -1,0 +1,97 @@
+{$layout "layout_popup"}
+
+<h3>修改动作</h3>
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+    <input type="hidden" name="actionId" :value="action.id"/>
+    <csrf-token></csrf-token>
+
+    <table class="ui table selectable definition">
+        <tr>
+            <td class="title">名称 *</td>
+            <td>
+                <input type="text" name="name" maxlength="50" ref="focus" v-model="action.name"/>
+            </td>
+        </tr>
+        <tr>
+            <td>级别</td>
+            <td>
+                <firewall-event-level-options :v-value="eventLevel"></firewall-event-level-options>
+            </td>
+        </tr>
+        <tr>
+            <td>类型</td>
+            <td>
+                <select class="ui dropdown auto-width" name="type" v-model="type">
+                    <option value="">[请选择]</option>
+                    <option v-for="type in actionTypes" :value="type.code">{{type.name}}</option>
+                </select>
+                <p class="comment">{{typeDescription}}</p>
+            </td>
+        </tr>
+
+        <!-- IPSet -->
+        <tbody v-if="type == 'ipset'">
+            <tr>
+                <td>IPSet白名单名称 *</td>
+                <td>
+                    <input type="text" name="ipsetWhiteName" value="edge_white_list" maxlength="64" v-model="action.params.whiteName"/>
+                    <p class="comment">只能是英文、数字、下划线的组合。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>IPSet黑名单名称 *</td>
+                <td>
+                    <input type="text" name="ipsetBlackName" value="edge_black_list" maxlength="64" v-model="action.params.blackName"/>
+                    <p class="comment">只能是英文、数字、下划线的组合。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>创建IPTables规则</td>
+                <td>
+                    <checkbox name="ipsetAutoAddToIPTables" v-model="action.params.autoAddToIPTables"></checkbox>
+                    <p class="comment">是否尝试自动创建包含有此IPSet的IPTables规则。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>创建Firewalld规则</td>
+                <td>
+                    <checkbox name="ipsetAutoAddToFirewalld" v-model="action.params.autoAddToFirewalld"></checkbox>
+                    <p class="comment">是否尝试自动创建包含有此IPSet的Firewalld规则。</p>
+                </td>
+            </tr>
+        </tbody>
+
+        <!-- Firewalld -->
+        <tbody v-if="type == 'firewalld'">
+
+        </tbody>
+
+        <!-- IPTables -->
+        <tbody v-if="type == 'iptables'">
+
+        </tbody>
+
+        <!-- 脚本 -->
+        <tbody v-if="type == 'script'">
+            <tr>
+                <td>脚本路径 *</td>
+                <td>
+                    <input type="text" name="scriptPath" maxlength="200" v-model="action.params.path"/>
+                    <p class="comment">可执行脚本文件的完整路径。</p>
+                </td>
+            </tr>
+        </tbody>
+
+        <!-- HTTP API -->
+        <tbody v-if="type == 'httpAPI'">
+            <tr>
+                <td>API URL *</td>
+                <td>
+                    <input type="text" name="httpAPIURL" maxlength="200" placeholder="http|https://..." v-model="action.params.url"/>
+                    <p class="comment">完整的API地址。</p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <submit-btn></submit-btn>
+</form>

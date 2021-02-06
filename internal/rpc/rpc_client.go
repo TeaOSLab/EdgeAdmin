@@ -71,6 +71,10 @@ func (this *RPCClient) NodeClusterRPC() pb.NodeClusterServiceClient {
 	return pb.NewNodeClusterServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) NodeClusterFirewallActionRPC() pb.NodeClusterFirewallActionServiceClient {
+	return pb.NewNodeClusterFirewallActionServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) NodeGroupRPC() pb.NodeGroupServiceClient {
 	return pb.NewNodeGroupServiceClient(this.pickConn())
 }

@@ -19,6 +19,7 @@ Vue.component("ip-list-table", {
             <tr>
                 <th style="width:18em">IP</th>
                 <th>类型</th>
+                <th>级别</th>
                 <th>过期时间</th>
                 <th>备注</th>
                 <th class="two op">操作</th>
@@ -34,6 +35,10 @@ Vue.component("ip-list-table", {
                 <span v-else-if="item.type == 'ipv4'">IPv4</span>
                 <span v-else-if="item.type == 'ipv6'">IPv6</span>
                 <span v-else-if="item.type == 'all'"><strong>所有IP</strong></span>
+            </td>
+            <td>
+                <span v-if="item.eventLevelName != null && item.eventLevelName.length > 0">{{item.eventLevelName}}</span>
+                <span v-else class="disabled">-</span>
             </td>
             <td>
                 <div v-if="item.expiredTime.length > 0">

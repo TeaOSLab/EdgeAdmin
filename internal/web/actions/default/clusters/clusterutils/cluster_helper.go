@@ -87,6 +87,11 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, selectedIt
 		"isOn":     cluster.HttpFirewallPolicyId > 0,
 	})
 	items = append(items, maps.Map{
+		"name":     "WAF动作",
+		"url":      "/clusters/cluster/settings/firewall-actions?clusterId=" + clusterId,
+		"isActive": selectedItem == "firewallAction",
+	})
+	items = append(items, maps.Map{
 		"name":     "健康检查",
 		"url":      "/clusters/cluster/settings/health?clusterId=" + clusterId,
 		"isActive": selectedItem == "health",

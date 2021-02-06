@@ -1,0 +1,36 @@
+{$layout}
+{$template "/left_menu"}
+
+<div class="right-box">
+    <first-menu>
+        <menu-item @click.prevent="createAction">添加动作</menu-item>
+        <span class="item disabled">|</span>
+        <span class="item"><tip-icon content="可以设置WAF中的规则集和IP名单中的IP级别，从而在匹配时触发对应的动作。"></tip-icon></span>
+    </first-menu>
+
+    <div class="margin"></div>
+    <div v-if="!hasActions">
+        <p class="comment">暂时还没有自定义动作。</p>
+    </div>
+    <div v-for="level in levels" v-if="level.actions.length > 0">
+        <h4 style="margin-bottom: 0">{{level.name}}级别</h4>
+        <p class="comment" v-if="level.actions.length == 0">暂时还没有定义动作。</p>
+        <table class="ui table selectable" v-if="level.actions.length > 0">
+            <thead>
+                <tr>
+                    <th>名称</th>
+                    <th class="four wide">类型</th>
+                    <th class="two op">操作</th>
+                </tr>
+            </thead>
+            <tr v-for="action in level.actions">
+                <td>{{action.name}}</td>
+                <td>{{action.typeName}}</td>
+                <td>
+                    <a href="" @click.prevent="updateAction(action.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteAction(action.id)">删除</a>
+                </td>
+            </tr>
+        </table>
+        <div class="ui divider"></div>
+    </div>
+</div>

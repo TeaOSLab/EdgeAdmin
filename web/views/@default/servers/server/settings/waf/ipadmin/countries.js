@@ -57,7 +57,7 @@ Tea.context(function () {
 	 */
 	this.createIP = function (type) {
 		teaweb.popup("/servers/components/waf/ipadmin/createIPPopup?firewallPolicyId=" + this.firewallPolicyId + '&type=' + type, {
-			height: "23em",
+			height: "30em",
 			callback: function () {
 				window.location = "/servers/components/waf/ipadmin/lists?firewallPolicyId=" + this.firewallPolicyId + "&type=" + type
 			}

@@ -59,6 +59,14 @@ Tea.context(function () {
             })
     }
 
+    this.checkMessagesOnce = function () {
+        this.$post("/messages/badge")
+            .params({})
+            .success(function (resp) {
+                this.globalMessageBadge = resp.data.count
+            })
+    }
+
     this.showMessages = function () {
         teaweb.popup("/messages", {
             height: "24em",
