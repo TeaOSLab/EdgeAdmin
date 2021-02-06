@@ -10,6 +10,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"strings"
 )
 
 type CreateAction struct {
@@ -214,6 +215,22 @@ func (this *CreateAction) RunPost(params struct {
 		err := json.Unmarshal([]byte(params.ServerNames), &serverNames)
 		if err != nil {
 			this.Fail("域名解析失败：" + err.Error())
+		}
+
+		// 检查域名是否已经存在
+		allServerNames := serverconfigs.PlainServerNames(serverNames)
+		if len(allServerNames) > 0 {
+			dupResp, err := this.RPC().ServerRPC().CheckServerNameDuplicationInNodeCluster(this.AdminContext(), &pb.CheckServerNameDuplicationInNodeClusterRequest{
+				ServerNames:   allServerNames,
+				NodeClusterId: params.ClusterId,
+			})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			if len(dupResp.DuplicatedServerNames) > 0 {
+				this.Fail("域名 " + strings.Join(dupResp.DuplicatedServerNames, ", ") + " 已经被其他服务所占用，不能重复使用")
+			}
 		}
 	}
 
