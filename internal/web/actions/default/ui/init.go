@@ -23,6 +23,7 @@ func init() {
 			Get("/download", new(DownloadAction)).
 			GetPost("/selectProvincesPopup", new(SelectProvincesPopupAction)).
 			GetPost("/selectCountriesPopup", new(SelectCountriesPopupAction)).
+			Post("/eventLevelOptions", new(EventLevelOptionsAction)).
 
 			EndAll()
 	})

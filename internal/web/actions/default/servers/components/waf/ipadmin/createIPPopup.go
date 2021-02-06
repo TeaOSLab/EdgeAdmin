@@ -41,6 +41,7 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 	ExpiredAt        int64
 	Reason           string
 	Type             string
+	EventLevel       string
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -83,12 +84,13 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 	}
 
 	createResp, err := this.RPC().IPItemRPC().CreateIPItem(this.AdminContext(), &pb.CreateIPItemRequest{
-		IpListId:  params.ListId,
-		IpFrom:    params.IpFrom,
-		IpTo:      params.IpTo,
-		ExpiredAt: params.ExpiredAt,
-		Reason:    params.Reason,
-		Type:      params.Type,
+		IpListId:   params.ListId,
+		IpFrom:     params.IpFrom,
+		IpTo:       params.IpTo,
+		ExpiredAt:  params.ExpiredAt,
+		Reason:     params.Reason,
+		Type:       params.Type,
+		EventLevel: params.EventLevel,
 	})
 	if err != nil {
 		this.ErrorPage(err)

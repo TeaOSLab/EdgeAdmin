@@ -4,6 +4,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
 	"time"
@@ -70,13 +71,14 @@ func (this *DenyListAction) RunGet(params struct {
 		}
 
 		itemMaps = append(itemMaps, maps.Map{
-			"id":          item.Id,
-			"ipFrom":      item.IpFrom,
-			"ipTo":        item.IpTo,
-			"expiredTime": expiredTime,
-			"reason":      item.Reason,
-			"type":        item.Type,
-			"isExpired":   item.ExpiredAt > 0 && item.ExpiredAt < time.Now().Unix(),
+			"id":             item.Id,
+			"ipFrom":         item.IpFrom,
+			"ipTo":           item.IpTo,
+			"expiredTime":    expiredTime,
+			"reason":         item.Reason,
+			"type":           item.Type,
+			"isExpired":      item.ExpiredAt > 0 && item.ExpiredAt < time.Now().Unix(),
+			"eventLevelName": firewallconfigs.FindFirewallEventLevelName(item.EventLevel),
 		})
 	}
 	this.Data["items"] = itemMaps

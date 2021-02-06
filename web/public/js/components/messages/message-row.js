@@ -1,34 +1,40 @@
 Vue.component("message-row", {
-	props: ["v-message"],
-	data: function () {
-		let paramsJSON = this.vMessage.params
-		let params = null
-		if (paramsJSON != null && paramsJSON.length > 0) {
-			params = JSON.parse(paramsJSON)
-		}
+    props: ["v-message"],
+    data: function () {
+        let paramsJSON = this.vMessage.params
+        let params = null
+        if (paramsJSON != null && paramsJSON.length > 0) {
+            params = JSON.parse(paramsJSON)
+        }
 
-		return {
-			message: this.vMessage,
-			params: params
-		}
-	},
-	methods: {
-		viewCert: function (certId) {
-			teaweb.popup("/servers/certs/certPopup?certId=" + certId, {
-				height: "28em",
-				width: "48em"
-			})
-		},
+        return {
+            message: this.vMessage,
+            params: params
+        }
+    },
+    methods: {
+        viewCert: function (certId) {
+            teaweb.popup("/servers/certs/certPopup?certId=" + certId, {
+                height: "28em",
+                width: "48em"
+            })
+        },
         readMessage: function (messageId) {
             Tea.action("/messages/readPage")
                 .params({"messageIds": [messageId]})
                 .post()
                 .success(function () {
+                    // 刷新父级页面Badge
+                    if (window.parent.Tea != null && window.parent.Tea.Vue != null) {
+                        window.parent.Tea.Vue.checkMessagesOnce()
+                    }
+
+                    // 刷新当前页面
                     teaweb.reload()
                 })
         }
-	},
-	template: `<div>
+    },
+    template: `<div>
 <table class="ui table selectable">
 	<tr :class="{error: message.level == 'error', positive: message.level == 'success', warning: message.level == 'warning'}">
 		<td style="position: relative">

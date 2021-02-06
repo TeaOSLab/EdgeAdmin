@@ -39,6 +39,13 @@
         </tr>
         </tbody>
 
+        <tr>
+            <td>级别</td>
+            <td>
+                <firewall-event-level-options :v-value="item.eventLevel"></firewall-event-level-options>
+            </td>
+        </tr>
+
         <!-- IPv6 -->
         <tbody v-if="type == 'ipv6'">
         <tr>

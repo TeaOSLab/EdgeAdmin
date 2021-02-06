@@ -49,6 +49,13 @@
             </tr>
         </tbody>
 
+        <tr>
+            <td>级别</td>
+            <td>
+                <firewall-event-level-options :v-value="eventLevel"></firewall-event-level-options>
+            </td>
+        </tr>
+
 		<tr>
 			<td colspan="2"><more-options-indicator></more-options-indicator></td>
 		</tr>
@@ -66,6 +73,5 @@
 			</tr>
 		</tbody>
 	</table>
-    <p class="comment">添加后将会在5分钟内生效。</p>
 	<submit-btn></submit-btn>
 </form>

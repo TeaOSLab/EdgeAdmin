@@ -24,7 +24,7 @@ Tea.context(function () {
 
     this.updateItem = function (listId, itemId) {
         teaweb.popup(Tea.url(".updateIPPopup?listId=" + listId, {itemId: itemId}), {
-            height: "24em",
+            height: "26em",
             callback: function () {
                 teaweb.success("保存成功", function () {
 

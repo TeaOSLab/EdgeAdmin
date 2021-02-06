@@ -4,6 +4,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/cache"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/dns"
+	firewallActions "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/firewall-actions"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/services"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/toa"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/waf"
@@ -42,6 +43,13 @@ func init() {
 			Prefix("/clusters/cluster/settings/services").
 			GetPost("", new(services.IndexAction)).
 			GetPost("/status", new(services.StatusAction)).
+
+			// 防火墙动作
+			Prefix("/clusters/cluster/settings/firewall-actions").
+			Get("", new(firewallActions.IndexAction)).
+			GetPost("/createPopup", new(firewallActions.CreatePopupAction)).
+			GetPost("/updatePopup", new(firewallActions.UpdatePopupAction)).
+			Post("/delete", new(firewallActions.DeleteAction)).
 
 			EndAll()
 	})
