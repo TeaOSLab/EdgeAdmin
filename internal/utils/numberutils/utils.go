@@ -35,7 +35,7 @@ func FormatBits(bits int64) string {
 	} else if bits < 1000*1000*1000 {
 		return fmt.Sprintf("%.2fMB", float64(bits)/1000/1000)
 	} else if bits < 1000*1000*1000*1000 {
-		return fmt.Sprintf("%.2fGB", float64(bits)/1000/10001000)
+		return fmt.Sprintf("%.2fGB", float64(bits)/1000/1000/1000)
 	} else {
 		return fmt.Sprintf("%.2fPB", float64(bits)/1000/1000/1000/1000)
 	}
