@@ -75,7 +75,7 @@ func (this *ClientsAction) RunGet(params struct {
 					"count": stat.Count,
 					"system": maps.Map{
 						"id":   stat.ClientSystem.Id,
-						"name": stat.ClientSystem.Name,
+						"name": stat.ClientSystem.Name + " " + stat.Version,
 					},
 				})
 			}
@@ -97,7 +97,7 @@ func (this *ClientsAction) RunGet(params struct {
 					"count": stat.Count,
 					"browser": maps.Map{
 						"id":   stat.ClientBrowser.Id,
-						"name": stat.ClientBrowser.Name,
+						"name": stat.ClientBrowser.Name + " " + stat.Version,
 					},
 				})
 			}
