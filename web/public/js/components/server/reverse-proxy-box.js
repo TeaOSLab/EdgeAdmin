@@ -20,6 +20,8 @@ Vue.component("reverse-proxy-box", {
                 requestHostType: 0,
                 addHeaders: []
             }
+        } else if (reverseProxyConfig.addHeaders == null) {
+            reverseProxyConfig.addHeaders = []
         }
 
         let forwardHeaders = [
