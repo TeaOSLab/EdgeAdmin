@@ -21,7 +21,10 @@ Tea.context(function () {
         let chart = echarts.init(chartBox)
         let option = {
             xAxis: {
-                data: stats.map(xFunc)
+                data: stats.map(xFunc),
+                axisLabel: {
+                    interval: 0
+                }
             },
             yAxis: {
                 axisLabel: {
