@@ -36,6 +36,7 @@ func init() {
 			Get("/node/logs", new(node.LogsAction)).
 			Post("/node/start", new(node.StartAction)).
 			Post("/node/stop", new(node.StopAction)).
+			Post("/node/up", new(node.UpAction)).
 
 			// 分组相关
 			Get("/groups", new(groups.IndexAction)).
