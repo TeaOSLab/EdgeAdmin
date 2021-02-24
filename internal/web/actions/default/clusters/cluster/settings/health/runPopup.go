@@ -1,4 +1,4 @@
-package settings
+package health
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
@@ -7,20 +7,19 @@ import (
 	"github.com/iwind/TeaGo/actions"
 )
 
-type HealthRunPopupAction struct {
+type RunPopupAction struct {
 	actionutils.ParentAction
 }
 
-func (this *HealthRunPopupAction) Init() {
+func (this *RunPopupAction) Init() {
 	this.Nav("", "", "")
 }
 
-func (this *HealthRunPopupAction) RunGet(params struct{}) {
-
+func (this *RunPopupAction) RunGet(params struct{}) {
 	this.Show()
 }
 
-func (this *HealthRunPopupAction) RunPost(params struct {
+func (this *RunPopupAction) RunPost(params struct {
 	ClusterId int64
 
 	Must *actions.Must

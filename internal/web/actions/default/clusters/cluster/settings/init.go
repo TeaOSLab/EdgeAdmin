@@ -5,6 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/cache"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/dns"
 	firewallActions "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/firewall-actions"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/health"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/services"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/toa"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/waf"
@@ -22,8 +23,8 @@ func init() {
 			GetPost("", new(IndexAction)).
 
 			// 健康检查
-			GetPost("/health", new(HealthAction)).
-			GetPost("/healthRunPopup", new(HealthRunPopupAction)).
+			GetPost("/health", new(health.IndexAction)).
+			GetPost("/health/runPopup", new(health.RunPopupAction)).
 
 			// 缓存
 			GetPost("/cache", new(cache.IndexAction)).

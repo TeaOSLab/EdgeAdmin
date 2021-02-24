@@ -1,11 +1,13 @@
 package clusterutils
 
 import (
+	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
@@ -86,16 +88,27 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, selectedIt
 		"isActive": selectedItem == "waf",
 		"isOn":     cluster.HttpFirewallPolicyId > 0,
 	})
-	items = append(items, maps.Map{
-		"name":     "WAF动作",
-		"url":      "/clusters/cluster/settings/firewall-actions?clusterId=" + clusterId,
-		"isActive": selectedItem == "firewallAction",
-	})
-	items = append(items, maps.Map{
-		"name":     "健康检查",
-		"url":      "/clusters/cluster/settings/health?clusterId=" + clusterId,
-		"isActive": selectedItem == "health",
-	})
+
+	{
+		hasActions, _ := this.checkFirewallActions(cluster.Id)
+		items = append(items, maps.Map{
+			"name":     "WAF动作",
+			"url":      "/clusters/cluster/settings/firewall-actions?clusterId=" + clusterId,
+			"isActive": selectedItem == "firewallAction",
+			"isOn":     hasActions,
+		})
+	}
+
+	{
+		healthCheckIsOn, _ := this.checkHealthCheckIsOn(cluster.Id)
+		items = append(items, maps.Map{
+			"name":     "健康检查",
+			"url":      "/clusters/cluster/settings/health?clusterId=" + clusterId,
+			"isActive": selectedItem == "health",
+			"isOn":     healthCheckIsOn,
+		})
+	}
+
 	items = append(items, maps.Map{
 		"name":     "DNS设置",
 		"url":      "/clusters/cluster/settings/dns?clusterId=" + clusterId,
@@ -113,4 +126,38 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, selectedIt
 		"isActive": selectedItem == "toa",
 	})
 	return
+}
+
+// 检查健康检查是否开启
+func (this *ClusterHelper) checkHealthCheckIsOn(clusterId int64) (bool, error) {
+	rpcClient, err := rpc.SharedRPC()
+	if err != nil {
+		return false, err
+	}
+	resp, err := rpcClient.NodeClusterRPC().FindNodeClusterHealthCheckConfig(rpcClient.Context(0), &pb.FindNodeClusterHealthCheckConfigRequest{NodeClusterId: clusterId})
+	if err != nil {
+		return false, err
+	}
+	if len(resp.HealthCheckJSON) > 0 {
+		healthCheckConfig := &serverconfigs.HealthCheckConfig{}
+		err = json.Unmarshal(resp.HealthCheckJSON, healthCheckConfig)
+		if err != nil {
+			return false, err
+		}
+		return healthCheckConfig.IsOn, nil
+	}
+	return false, nil
+}
+
+// 检查是否有WAF动作
+func (this *ClusterHelper) checkFirewallActions(clusterId int64) (bool, error) {
+	rpcClient, err := rpc.SharedRPC()
+	if err != nil {
+		return false, err
+	}
+	resp, err := rpcClient.NodeClusterFirewallActionRPC().CountAllEnabledNodeClusterFirewallActions(rpcClient.Context(0), &pb.CountAllEnabledNodeClusterFirewallActionsRequest{NodeClusterId: clusterId})
+	if err != nil {
+		return false, err
+	}
+	return resp.Count > 0, nil
 }
