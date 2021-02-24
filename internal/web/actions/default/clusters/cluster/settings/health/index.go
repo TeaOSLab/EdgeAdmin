@@ -1,4 +1,4 @@
-package settings
+package health
 
 import (
 	"encoding/json"
@@ -9,16 +9,16 @@ import (
 	"github.com/iwind/TeaGo/actions"
 )
 
-type HealthAction struct {
+type IndexAction struct {
 	actionutils.ParentAction
 }
 
-func (this *HealthAction) Init() {
+func (this *IndexAction) Init() {
 	this.Nav("", "setting", "")
 	this.SecondMenu("health")
 }
 
-func (this *HealthAction) RunGet(params struct {
+func (this *IndexAction) RunGet(params struct {
 	ClusterId int64
 }) {
 	configResp, err := this.RPC().NodeClusterRPC().FindNodeClusterHealthCheckConfig(this.AdminContext(), &pb.FindNodeClusterHealthCheckConfigRequest{NodeClusterId: params.ClusterId})
@@ -40,7 +40,7 @@ func (this *HealthAction) RunGet(params struct {
 	this.Show()
 }
 
-func (this *HealthAction) RunPost(params struct {
+func (this *IndexAction) RunPost(params struct {
 	ClusterId       int64
 	HealthCheckJSON []byte
 	Must            *actions.Must
