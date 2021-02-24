@@ -97,7 +97,10 @@
 		</td>
 		<td class="center">
 			<div v-if="!node.isUp">
-				<span class="red">健康问题</span>
+				<span class="red">健康问题下线</span>
+                <div>
+                    <a href="" @click.prevent="upNode(node.id)">[上线]</a>
+                </div>
 			</div>
 			<div v-else-if="!node.isOn">
 				<label-on :v-is-on="node.isOn"></label-on>
