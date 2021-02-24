@@ -375,9 +375,9 @@ func (this *RPCClient) init() error {
 	if len(conns) == 0 {
 		return errors.New("[RPC]no available endpoints")
 	}
-	this.locker.Lock()
+
+	// 这里不需要加锁，因为会和pickConn冲突
 	this.conns = conns
-	this.locker.Unlock()
 	return nil
 }
 
