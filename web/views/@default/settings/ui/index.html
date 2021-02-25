@@ -41,6 +41,36 @@
                 <checkbox name="showFinance" v-model="config.showFinance"></checkbox>
             </td>
         </tr>
+        <tr>
+            <td>浏览器图标</td>
+            <td>
+                <div v-if="config.faviconFileId > 0">
+                    <a :href="'/ui/image/' + config.faviconFileId" target="_blank"><img :src="'/ui/image/' + config.faviconFileId" style="width:32px;border:1px #ccc solid;"/></a>
+                </div>
+                <div v-else>
+                    <span class="disabled">还没有上传。</span>
+                </div>
+                <div style="margin-top: 0.8em">
+                    <input type="file" name="faviconFile" accept=".png"/>
+                </div>
+                <p class="comment">在浏览器标签栏显示的图标，请使用PNG格式。</p>
+            </td>
+        </tr>
+        <tr>
+            <td>Logo</td>
+            <td>
+                <div v-if="config.logoFileId > 0">
+                    <a :href="'/ui/image/' + config.logoFileId" target="_blank"><img :src="'/ui/image/' + config.logoFileId" style="width:32px;border:1px #ccc solid;"/></a>
+                </div>
+                <div v-else>
+                    <span class="disabled">还没有上传。</span>
+                </div>
+                <div style="margin-top: 0.8em">
+                    <input type="file" name="logoFile" accept=".png"/>
+                </div>
+                <p class="comment">显示在系统界面上的图标，请使用PNG格式。</p>
+            </td>
+        </tr>
 	</table>
 
 	<submit-btn></submit-btn>

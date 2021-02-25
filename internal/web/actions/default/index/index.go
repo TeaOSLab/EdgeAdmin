@@ -65,6 +65,7 @@ func (this *IndexAction) RunGet(params struct {
 	} else {
 		this.Data["version"] = teaconst.Version
 	}
+	this.Data["faviconFileId"] = config.FaviconFileId
 
 	this.Show()
 }

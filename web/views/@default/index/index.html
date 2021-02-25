@@ -2,7 +2,11 @@
 <html lang="zh">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    {$if eq .faviconFileId 0}
     <link rel="shortcut icon" href="/images/favicon.png"/>
+    {$else}
+    <link rel="shortcut icon" href="/ui/image/{$ .faviconFileId}"/>
+    {$end}
     <title>登录{$.systemName}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
     {$TEA.VUE}

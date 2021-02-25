@@ -13,6 +13,9 @@ func init() {
 		server.
 			Prefix("/ui").
 
+			// 公共可以访问的链接
+			Get("/image/:fileId", new(ImageAction)).
+
 			// 以下的需要压缩
 			Helper(&actions.Gzip{Level: gzip.BestCompression}).
 			Get("/components.js", new(ComponentsAction)).

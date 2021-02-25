@@ -88,6 +88,8 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	action.Data["teaShowVersion"] = config.ShowVersion
 	action.Data["teaTitle"] = config.AdminSystemName
 	action.Data["teaName"] = config.ProductName
+	action.Data["teaFaviconFileId"] = config.FaviconFileId
+	action.Data["teaLogoFileId"] = config.LogoFileId
 	action.Data["teaUsername"] = configloaders.FindAdminFullname(adminId)
 
 	action.Data["teaUserAvatar"] = ""

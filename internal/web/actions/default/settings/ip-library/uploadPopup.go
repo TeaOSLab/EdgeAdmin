@@ -91,6 +91,7 @@ func (this *UploadPopupAction) RunPost(params struct {
 	_, err = this.RPC().FileRPC().UpdateFileFinished(this.AdminContext(), &pb.UpdateFileFinishedRequest{FileId: fileId})
 	if err != nil {
 		this.ErrorPage(err)
+		return
 	}
 
 	// 保存
