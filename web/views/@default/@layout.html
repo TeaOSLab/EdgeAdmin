@@ -4,7 +4,11 @@
     <title>{$.teaTitle}</title>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    {$if eq .teaFaviconFileId 0}
     <link rel="shortcut icon" href="/images/favicon.png"/>
+    {$else}
+    <link rel="shortcut icon" href="/ui/image/{$.teaFaviconFileId}"/>
+    {$end}
     <link rel="stylesheet" type="text/css" href="/_/@default/@layout.css" media="all"/>
     {$TEA.SEMANTIC}
 	<link rel="stylesheet" type="text/css" href="/_/@default/@layout_override.css" media="all"/>
@@ -23,7 +27,7 @@
     <!-- 顶部导航 -->
     <div class="ui menu top-nav blue inverted small borderless" v-cloak="">
         <a href="/" class="item">
-			<i class="ui icon leaf"></i> &nbsp; {{teaTitle}}&nbsp;<sup v-if="teaShowVersion">v{{teaVersion}}</sup> &nbsp;
+			<i class="ui icon leaf" v-if="teaLogoFileId == 0"></i><img v-if="teaLogoFileId > 0" :src="'/ui/image/' + teaLogoFileId"/> &nbsp; {{teaTitle}}&nbsp;<sup v-if="teaShowVersion">v{{teaVersion}}</sup> &nbsp;
 		</a>
 
         <div class="right menu">
