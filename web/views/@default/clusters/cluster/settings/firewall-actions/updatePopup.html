@@ -92,6 +92,16 @@
                 </td>
             </tr>
         </tbody>
+
+        <!-- HTML -->
+        <tbody v-if="type == 'html'">
+            <tr>
+                <td>HTML内容 *</td>
+                <td>
+                        <textarea name="htmlContent" maxlength="128000" placeholder="完整的HTML内容" v-model="action.params.content"></textarea>
+                </td>
+            </tr>
+        </tbody>
     </table>
     <submit-btn></submit-btn>
 </form>
