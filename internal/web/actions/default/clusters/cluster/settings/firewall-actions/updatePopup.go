@@ -72,6 +72,9 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	// http api
 	HttpAPIURL string
 
+	// HTML内容
+	HtmlContent string
+
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
@@ -118,6 +121,13 @@ func (this *UpdatePopupAction) RunPost(params struct {
 			Match(`^(http|https):`, "API地址必须以http://或https://开头")
 		actionParams = &firewallconfigs.FirewallActionHTTPAPIConfig{
 			URL: params.HttpAPIURL,
+		}
+	case firewallconfigs.FirewallActionTypeHTML:
+		params.Must.
+			Field("htmlContent", params.HtmlContent).
+			Require("请输入HTML内容")
+		actionParams = &firewallconfigs.FirewallActionHTMLConfig{
+			Content: params.HtmlContent,
 		}
 	default:
 		this.Fail("选择的类型'" + params.Type + "'暂时不支持")
