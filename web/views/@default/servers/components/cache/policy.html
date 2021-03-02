@@ -19,49 +19,64 @@
 
     <!-- 文件缓存选项 -->
     <tbody v-if="cachePolicy.type == 'file'">
-    <tr>
-        <td class="color-border">缓存目录</td>
-        <td>
-            {{cachePolicy.options.dir}}
-            <p class="comment">存放文件缓存的目录，通常填写绝对路径。</p>
-        </td>
-    </tr>
+        <tr>
+            <td class="color-border">缓存目录</td>
+            <td>
+                {{cachePolicy.options.dir}}
+                <p class="comment">存放文件缓存的目录，通常填写绝对路径。</p>
+            </td>
+        </tr>
+        <tr>
+            <td class="color-border">文件目录最大容量</td>
+            <td>
+                <size-capacity-view :v-value="cachePolicy.capacity" :v-default-text="'不限'"></size-capacity-view>
+                <p class="comment">作为二级缓存的文件目录允许缓存的最大容量，如果为0表示没有限制。</p>
+            </td>
+        </tr>
+        <tr v-if="cachePolicy.options.memoryPolicy != null && cachePolicy.options.memoryPolicy.capacity != null && cachePolicy.options.memoryPolicy.capacity.count > 0">
+            <td class="color-border">内存最大容量</td>
+            <td>
+                <size-capacity-view :v-value="cachePolicy.options.memoryPolicy.capacity"></size-capacity-view>
+                <p class="comment">作为一级缓存的内存最大容量，如果为0表示不使用内存作为一级缓存。</p>
+            </td>
+        </tr>
     </tbody>
 
-
-    <tr>
-        <td>缓存最大容量</td>
-        <td>
-            <size-capacity-view :v-value="cachePolicy.capacity" :v-default-text="'不限'"></size-capacity-view>
-            <p class="comment">允许缓存的最大内容长度，如果为0表示没有限制。</p>
-        </td>
-    </tr>
+   <tbody v-if="cachePolicy.type != 'file'">
+       <tr>
+           <td>缓存最大容量</td>
+           <td>
+               <size-capacity-view :v-value="cachePolicy.capacity" :v-default-text="'不限'"></size-capacity-view>
+               <p class="comment">允许缓存的最大容量，如果为0表示没有限制。</p>
+           </td>
+       </tr>
+   </tbody>
     <tr>
         <td colspan="2"><more-options-indicator></more-options-indicator></td>
     </tr>
     <tbody v-show="moreOptionsVisible">
-    <tr>
-        <td>最大内容长度</td>
-        <td>
-            <size-capacity-view :v-value="cachePolicy.maxSize" :v-default-text="'不限'"></size-capacity-view>
-            <p class="comment">允许缓存的最大内容长度，如果为0表示没有限制。</p>
-        </td>
-    </tr>
-    <tr>
-        <td>容纳Key数量</td>
-        <td>
-            <span v-if="cachePolicy.maxKeys > 0">{{cachePolicy.maxKeys}}</span>
-            <span v-else>不限</span>
-            <p class="comment">可以容纳多少数量的Key，0表示不限制。</p>
-        </td>
-    </tr>
-    <tr>
-        <td>描述</td>
-        <td>
-            <span v-if="cachePolicy.description.length > 0">{{cachePolicy.description}}</span>
-            <span v-else class="disabled">暂时还没有描述。</span>
-        </td>
-    </tr>
+        <tr>
+            <td>最大内容长度</td>
+            <td>
+                <size-capacity-view :v-value="cachePolicy.maxSize" :v-default-text="'不限'"></size-capacity-view>
+                <p class="comment">允许缓存的最大内容长度，如果为0表示没有限制。</p>
+            </td>
+        </tr>
+        <tr>
+            <td>容纳Key数量</td>
+            <td>
+                <span v-if="cachePolicy.maxKeys > 0">{{cachePolicy.maxKeys}}</span>
+                <span v-else>不限</span>
+                <p class="comment">可以容纳多少数量的Key，0表示不限制。</p>
+            </td>
+        </tr>
+        <tr>
+            <td>描述</td>
+            <td>
+                <span v-if="cachePolicy.description.length > 0">{{cachePolicy.description}}</span>
+                <span v-else class="disabled">暂时还没有描述。</span>
+            </td>
+        </tr>
     </tbody>
 </table>
 

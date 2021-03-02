@@ -6,6 +6,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
 )
 
@@ -52,7 +53,8 @@ func (this *UpdateAction) RunPost(params struct {
 	Type string
 
 	// file
-	FileDir string
+	FileDir                string
+	FileMemoryCapacityJSON []byte
 
 	CapacityJSON []byte
 	MaxSizeJSON  []byte
@@ -74,8 +76,21 @@ func (this *UpdateAction) RunPost(params struct {
 		params.Must.
 			Field("fileDir", params.FileDir).
 			Require("请输入缓存目录")
+
+		memoryCapacity := &shared.SizeCapacity{}
+		if len(params.FileMemoryCapacityJSON) > 0 {
+			err := json.Unmarshal(params.FileMemoryCapacityJSON, memoryCapacity)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+		}
+
 		options = &serverconfigs.HTTPFileCacheStorage{
 			Dir: params.FileDir,
+			MemoryPolicy: &serverconfigs.HTTPCachePolicy{
+				Capacity: memoryCapacity,
+			},
 		}
 	case serverconfigs.CachePolicyStorageMemory:
 		options = &serverconfigs.HTTPMemoryCacheStorage{
@@ -91,14 +106,14 @@ func (this *UpdateAction) RunPost(params struct {
 	}
 	_, err = this.RPC().HTTPCachePolicyRPC().UpdateHTTPCachePolicy(this.AdminContext(), &pb.UpdateHTTPCachePolicyRequest{
 		HttpCachePolicyId: params.CachePolicyId,
-		IsOn:          params.IsOn,
-		Name:          params.Name,
-		Description:   params.Description,
-		CapacityJSON:  params.CapacityJSON,
-		MaxKeys:       params.MaxKeys,
-		MaxSizeJSON:   params.MaxSizeJSON,
-		Type:          params.Type,
-		OptionsJSON:   optionsJSON,
+		IsOn:              params.IsOn,
+		Name:              params.Name,
+		Description:       params.Description,
+		CapacityJSON:      params.CapacityJSON,
+		MaxKeys:           params.MaxKeys,
+		MaxSizeJSON:       params.MaxSizeJSON,
+		Type:              params.Type,
+		OptionsJSON:       optionsJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)
