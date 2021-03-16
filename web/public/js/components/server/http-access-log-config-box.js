@@ -11,7 +11,7 @@ Vue.component("http-access-log-config-box", {
 
 		let accessLog = {
 			isPrior: false,
-			isOn: true,
+			isOn: false,
 			fields: [],
 			status1: true,
 			status2: true,
