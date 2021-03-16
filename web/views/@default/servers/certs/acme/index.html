@@ -4,6 +4,26 @@
 <div class="right-box without-tabbar">
 	{$template "menu"}
 
+    <second-menu v-if="countAll > 0">
+        <menu-item :href="'/servers/certs/acme?keyword=' + keyword" :active="type == ''">所有任务({{countAll}})</menu-item>
+        <menu-item :href="'/servers/certs/acme?type=available&keyword=' + keyword" :active="type == 'available'">有效证书({{countAvailable}})</menu-item>
+        <menu-item :href="'/servers/certs/acme?type=expired&keyword=' + keyword" :active="type == 'expired'">过期证书<span :class="{red: countExpired > 0}">({{countExpired}})</span></menu-item>
+        <menu-item :href="'/servers/certs/acme?type=7days&keyword=' + keyword" :active="type == '7days'">7天内过期<span :class="{red: count7Days > 0}">({{count7Days}})</span></menu-item>
+        <menu-item :href="'/servers/certs/acme?type=30days&keyword=' + keyword" :active="type == '30days'">30天过期({{count30Days}})</menu-item>
+        <div class="item right">
+            <form class="ui form">
+                <div class="ui fields inline">
+                    <div class="ui field">
+                        <input type="text" name="keyword" placeholder="关键词" style="width:10em" v-model="keyword"/>
+                    </div>
+                    <div class="ui field">
+                        <button type="submit" class="ui button">搜索</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </second-menu>
+
 	<p class="comment" v-if="tasks.length == 0">暂时还没有证书申请任务。</p>
 
 	<div class="ui message blue" v-if="isRunning">有任务在执行中，可能需要的时间较长，请耐心等待。</div>
