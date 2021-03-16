@@ -138,6 +138,8 @@ func (this *IndexAction) RunGet(params struct {
 		page = this.NewPage(countAll)
 		listResp, err = this.RPC().SSLCertRPC().ListSSLCerts(this.AdminContext(), &pb.ListSSLCertsRequest{
 			Keyword: params.Keyword,
+			Offset:  page.Offset,
+			Size:    page.Size,
 		})
 	}
 	if err != nil {
