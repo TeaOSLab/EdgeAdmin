@@ -6,8 +6,10 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/iwind/TeaGo/types"
 	"regexp"
 	"strings"
 )
@@ -39,6 +41,10 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		return
 	}
 	this.Data["serverType"] = serverTypeResp.Type
+	serverType := serverTypeResp.Type
+
+	// 是否为HTTP
+	this.Data["isHTTP"] = serverType == "httpProxy" || serverType == "httpWeb"
 
 	// 源站信息
 	originResp, err := this.RPC().OriginRPC().FindEnabledOriginConfig(this.AdminContext(), &pb.FindEnabledOriginConfigRequest{OriginId: params.OriginId})
@@ -54,14 +60,34 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		return
 	}
 
+	connTimeout := 0
+	readTimeout := 0
+	idleTimeout := 0
+	if config.ConnTimeout != nil {
+		connTimeout = types.Int(config.ConnTimeout.Count)
+	}
+
+	if config.ReadTimeout != nil {
+		readTimeout = types.Int(config.ReadTimeout.Count)
+	}
+
+	if config.IdleTimeout != nil {
+		idleTimeout = types.Int(config.IdleTimeout.Count)
+	}
+
 	this.Data["origin"] = maps.Map{
-		"id":          config.Id,
-		"protocol":    config.Addr.Protocol,
-		"addr":        config.Addr.Host + ":" + config.Addr.PortRange,
-		"weight":      config.Weight,
-		"name":        config.Name,
-		"description": config.Description,
-		"isOn":        config.IsOn,
+		"id":           config.Id,
+		"protocol":     config.Addr.Protocol,
+		"addr":         config.Addr.Host + ":" + config.Addr.PortRange,
+		"weight":       config.Weight,
+		"name":         config.Name,
+		"description":  config.Description,
+		"isOn":         config.IsOn,
+		"connTimeout":  connTimeout,
+		"readTimeout":  readTimeout,
+		"idleTimeout":  idleTimeout,
+		"maxConns":     config.MaxConns,
+		"maxIdleConns": config.MaxIdleConns,
 	}
 
 	this.Show()
@@ -76,8 +102,15 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	Addr           string
 	Weight         int32
 	Name           string
-	Description    string
-	IsOn           bool
+
+	ConnTimeout  int
+	ReadTimeout  int
+	MaxConns     int32
+	MaxIdleConns int32
+	IdleTimeout  int
+
+	Description string
+	IsOn        bool
 
 	Must *actions.Must
 }) {
@@ -93,7 +126,34 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	host := addr[:portIndex]
 	port := addr[portIndex+1:]
 
-	_, err := this.RPC().OriginRPC().UpdateOrigin(this.AdminContext(), &pb.UpdateOriginRequest{
+	connTimeoutJSON, err := (&shared.TimeDuration{
+		Count: int64(params.ConnTimeout),
+		Unit:  shared.TimeDurationUnitSecond,
+	}).AsJSON()
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	readTimeoutJSON, err := (&shared.TimeDuration{
+		Count: int64(params.ReadTimeout),
+		Unit:  shared.TimeDurationUnitSecond,
+	}).AsJSON()
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	idleTimeoutJSON, err := (&shared.TimeDuration{
+		Count: int64(params.IdleTimeout),
+		Unit:  shared.TimeDurationUnitSecond,
+	}).AsJSON()
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	_, err = this.RPC().OriginRPC().UpdateOrigin(this.AdminContext(), &pb.UpdateOriginRequest{
 		OriginId: params.OriginId,
 		Name:     params.Name,
 		Addr: &pb.NetworkAddress{
@@ -101,9 +161,14 @@ func (this *UpdatePopupAction) RunPost(params struct {
 			Host:      host,
 			PortRange: port,
 		},
-		Description: params.Description,
-		Weight:      params.Weight,
-		IsOn:        params.IsOn,
+		Description:     params.Description,
+		Weight:          params.Weight,
+		IsOn:            params.IsOn,
+		ConnTimeoutJSON: connTimeoutJSON,
+		ReadTimeoutJSON: readTimeoutJSON,
+		IdleTimeoutJSON: idleTimeoutJSON,
+		MaxConns:        params.MaxConns,
+		MaxIdleConns:    params.MaxIdleConns,
 	})
 	if err != nil {
 		this.ErrorPage(err)
