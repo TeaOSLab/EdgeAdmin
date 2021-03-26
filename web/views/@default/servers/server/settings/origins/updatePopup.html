@@ -77,7 +77,7 @@
                     <p class="comment">读取内容时的最大超时时间，0表示不限制。</p>
                 </td>
             </tr>
-            <tr>
+            <tr v-if="isHTTP">
                 <td>最大并发连接数</td>
                 <td>
                     <div class="ui fields inline">
