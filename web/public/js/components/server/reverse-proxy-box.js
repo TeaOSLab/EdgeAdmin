@@ -18,10 +18,25 @@ Vue.component("reverse-proxy-box", {
                 requestURI: "",
                 requestHost: "",
                 requestHostType: 0,
-                addHeaders: []
+                addHeaders: [],
+                connTimeout: {count: 0, unit: "second"},
+                readTimeout: {count: 0, unit: "second"},
+                idleTimeout: {count: 0, unit: "second"},
+                maxConns: 0,
+                maxIdleConns: 0
             }
-        } else if (reverseProxyConfig.addHeaders == null) {
+        }
+        if (reverseProxyConfig.addHeaders == null) {
             reverseProxyConfig.addHeaders = []
+        }
+        if (reverseProxyConfig.connTimeout == null) {
+            reverseProxyConfig.connTimeout = {count: 0, unit: "second"}
+        }
+        if (reverseProxyConfig.readTimeout == null) {
+            reverseProxyConfig.readTimeout = {count: 0, unit: "second"}
+        }
+        if (reverseProxyConfig.idleTimeout == null) {
+            reverseProxyConfig.idleTimeout = {count: 0, unit: "second"}
         }
 
         let forwardHeaders = [
@@ -65,7 +80,42 @@ Vue.component("reverse-proxy-box", {
                 requestHostType = 0
             }
             this.reverseProxyConfig.requestHostType = requestHostType
-        }
+        },
+        "reverseProxyConfig.connTimeout.count": function (v) {
+            let count = parseInt(v)
+            if (isNaN(count) || count < 0) {
+                count = 0
+            }
+            this.reverseProxyConfig.connTimeout.count = count
+        },
+        "reverseProxyConfig.readTimeout.count": function (v) {
+            let count = parseInt(v)
+            if (isNaN(count) || count < 0) {
+                count = 0
+            }
+            this.reverseProxyConfig.readTimeout.count = count
+        },
+        "reverseProxyConfig.idleTimeout.count": function (v) {
+            let count = parseInt(v)
+            if (isNaN(count) || count < 0) {
+                count = 0
+            }
+            this.reverseProxyConfig.idleTimeout.count = count
+        },
+        "reverseProxyConfig.maxConns": function (v) {
+            let maxConns = parseInt(v)
+            if (isNaN(maxConns) || maxConns < 0) {
+                maxConns = 0
+            }
+            this.reverseProxyConfig.maxConns = maxConns
+        },
+        "reverseProxyConfig.maxIdleConns": function (v) {
+            let maxIdleConns = parseInt(v)
+            if (isNaN(maxIdleConns) || maxIdleConns < 0) {
+                maxIdleConns = 0
+            }
+            this.reverseProxyConfig.maxIdleConns = maxIdleConns
+        },
     },
     methods: {
         isOn: function () {
@@ -151,6 +201,70 @@ Vue.component("reverse-proxy-box", {
 					<p class="comment">开启后将自动刷新缓冲区数据到客户端，在类似于SSE（server-sent events）等场景下很有用。</p>
 				</td>
 			</tr>
+			<tr v-if="family == null || family == 'http'">
+                <td class="color-border">源站默认连接失败超时时间</td>
+                <td>
+                    <div class="ui fields inline">
+                        <div class="ui field">
+                            <input type="text" name="connTimeout" value="10" size="6" v-model="reverseProxyConfig.connTimeout.count"/>
+                        </div>
+                        <div class="ui field">
+                            秒
+                        </div>
+                    </div>
+                    <p class="comment">连接源站失败的最大超时时间，0表示不限制。</p>
+                </td>
+            </tr>
+            <tr v-if="family == null || family == 'http'">
+                <td class="color-border">源站默认读取超时时间</td>
+                <td>
+                    <div class="ui fields inline">
+                        <div class="ui field">
+                            <input type="text" name="readTimeout" value="0" size="6" v-model="reverseProxyConfig.readTimeout.count"/>
+                        </div>
+                        <div class="ui field">
+                            秒
+                        </div>
+                    </div>
+                    <p class="comment">读取内容时的最大超时时间，0表示不限制。</p>
+                </td>
+            </tr>
+            <tr v-if="family == null || family == 'http'">
+                <td class="color-border">源站默认最大并发连接数</td>
+                <td>
+                    <div class="ui fields inline">
+                        <div class="ui field">
+                            <input type="text" name="maxConns" value="0" size="6" maxlength="10" v-model="reverseProxyConfig.maxConns"/>
+                        </div>
+                    </div>
+                    <p class="comment">源站可以接受到的最大并发连接数，0表示使用系统默认。</p>
+                </td>
+            </tr>
+            <tr v-if="family == null || family == 'http'">
+                <td class="color-border">源站默认最大空闲连接数</td>
+                <td>
+                    <div class="ui fields inline">
+                        <div class="ui field">
+                            <input type="text" name="maxIdleConns" value="0" size="6" maxlength="10" v-model="reverseProxyConfig.maxIdleConns"/>
+                        </div>
+                    </div>
+                    <p class="comment">当没有请求时，源站保持等待的最大空闲连接数量，0表示使用系统默认。</p>
+                </td>
+            </tr>
+            <tr v-if="family == null || family == 'http'">
+                <td class="color-border">源站默认最大空闲超时时间</td>
+                <td>
+                    <div class="ui fields inline">
+                        <div class="ui field">
+                            <input type="text" name="idleTimeout" value="0" size="6" v-model="reverseProxyConfig.idleTimeout.count"/>
+                        </div>
+                        <div class="ui field">
+                            秒
+                        </div>
+                    </div>
+                    <p class="comment">源站保持等待的空闲超时时间，0表示使用默认时间。</p>
+                </td>
+            </tr>
 		</tbody>
 	</table>
 	<div class="margin"></div>

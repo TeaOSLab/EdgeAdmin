@@ -5,6 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/types"
 )
@@ -68,6 +69,33 @@ func (this *SettingAction) RunPost(params struct {
 		this.Fail("配置校验失败：" + err.Error())
 	}
 
+	if reverseProxyConfig.ConnTimeout == nil {
+		reverseProxyConfig.ConnTimeout = &shared.TimeDuration{Count: 0, Unit: "second"}
+	}
+	connTimeoutJSON, err := json.Marshal(reverseProxyConfig.ConnTimeout)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	if reverseProxyConfig.ReadTimeout == nil {
+		reverseProxyConfig.ReadTimeout = &shared.TimeDuration{Count: 0, Unit: "second"}
+	}
+	readTimeoutJSON, err := json.Marshal(reverseProxyConfig.ReadTimeout)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	if reverseProxyConfig.IdleTimeout == nil {
+		reverseProxyConfig.IdleTimeout = &shared.TimeDuration{Count: 0, Unit: "second"}
+	}
+	idleTimeoutJSON, err := json.Marshal(reverseProxyConfig.IdleTimeout)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
 	// 设置是否启用
 	_, err = this.RPC().ServerRPC().UpdateServerReverseProxy(this.AdminContext(), &pb.UpdateServerReverseProxyRequest{
 		ServerId:         params.ServerId,
@@ -87,6 +115,11 @@ func (this *SettingAction) RunPost(params struct {
 		StripPrefix:     reverseProxyConfig.StripPrefix,
 		AutoFlush:       reverseProxyConfig.AutoFlush,
 		AddHeaders:      reverseProxyConfig.AddHeaders,
+		ConnTimeoutJSON: connTimeoutJSON,
+		ReadTimeoutJSON: readTimeoutJSON,
+		IdleTimeoutJSON: idleTimeoutJSON,
+		MaxConns:        types.Int32(reverseProxyConfig.MaxConns),
+		MaxIdleConns:    types.Int32(reverseProxyConfig.MaxIdleConns),
 	})
 
 	this.Success()
