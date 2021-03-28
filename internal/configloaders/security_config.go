@@ -52,6 +52,10 @@ func UpdateSecurityConfig(securityConfig *systemconfigs.SecurityConfig) error {
 	if err != nil {
 		return err
 	}
+	err = securityConfig.Init()
+	if err != nil {
+		return err
+	}
 	sharedSecurityConfig = securityConfig
 
 	// 通知更新
@@ -85,6 +89,10 @@ func loadSecurityConfig() (*systemconfigs.SecurityConfig, error) {
 		logs.Println("[SECURITY_MANAGER]" + err.Error())
 		sharedSecurityConfig = defaultSecurityConfig()
 		return sharedSecurityConfig, nil
+	}
+	err = config.Init()
+	if err != nil {
+		return nil, err
 	}
 	sharedSecurityConfig = config
 	return sharedSecurityConfig, nil

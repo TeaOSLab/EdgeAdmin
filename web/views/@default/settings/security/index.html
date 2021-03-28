@@ -29,6 +29,13 @@
 				<p class="comment">设置后，只有这些省份才能访问管理界面，如果不设置表示没有限制。</p>
 			</td>
 		</tr>
+        <tr>
+            <td>允许访问的IP</td>
+            <td>
+                <values-box name="allowIPs" placeholder="IP或者CIDR IP段" :values="config.allowIPs"></values-box>
+                <p class="comment">如果不为空，则<strong>仅仅允许</strong>这些IP访问，其他的IP访问时会被拒绝。</p>
+            </td>
+        </tr>
 		<tr>
 			<td>允许局域网访问</td>
 			<td>

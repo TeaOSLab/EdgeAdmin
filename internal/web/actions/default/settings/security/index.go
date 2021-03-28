@@ -5,6 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 )
@@ -22,6 +23,9 @@ func (this *IndexAction) RunGet(params struct{}) {
 	if err != nil {
 		this.ErrorPage(err)
 		return
+	}
+	if config.AllowIPs == nil {
+		config.AllowIPs = []string{}
 	}
 
 	// 国家和地区
@@ -69,6 +73,7 @@ func (this *IndexAction) RunPost(params struct {
 	CountryIdsJSON  []byte
 	ProvinceIdsJSON []byte
 	AllowLocal      bool
+	AllowIPs        []string
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -105,6 +110,19 @@ func (this *IndexAction) RunPost(params struct {
 		}
 	}
 	config.AllowProvinceIds = provinceIds
+
+	// 允许的IP
+	if len(params.AllowIPs) > 0 {
+		for _, ip := range params.AllowIPs {
+			_, err := shared.ParseIPRange(ip)
+			if err != nil {
+				this.Fail("允许访问的IP '" + ip + "' 格式错误：" + err.Error())
+			}
+		}
+		config.AllowIPs = params.AllowIPs
+	} else {
+		config.AllowIPs = []string{}
+	}
 
 	// 允许本地
 	config.AllowLocal = params.AllowLocal
