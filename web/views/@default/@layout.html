@@ -74,12 +74,13 @@
 
             <!-- 模块 -->
 			<div v-for="module in teaModules">
-				<a class="item" :href="Tea.url(module.code)" :class="{active:teaMenu == module.code && teaSubMenu.length == 0, separator:module.code.length == 0}">
+				<a class="item" :href="Tea.url(module.code)" :class="{active:teaMenu == module.code && teaSubMenu.length == 0, separator:module.code.length == 0, expend: teaMenu == module.code}">
 					<span v-if="module.code.length > 0">
 						<i class="window restore outline icon" v-if="module.icon == null"></i>
 						<i class="ui icon" v-if="module.icon != null" :class="module.icon"></i>
 						<span>{{module.name}}</span>
 					</span>
+                    <div class="subtitle" v-if="module.subtitle != null && module.subtitle.length > 0">{{module.subtitle}}</div>
 				</a>
 				<div v-if="teaMenu == module.code" class="sub-items">
 					<a class="item" v-for="subItem in module.subItems" :href="subItem.url" :class="{active:subItem.code == teaSubMenu}">{{subItem.name}}</a>
