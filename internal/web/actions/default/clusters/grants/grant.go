@@ -5,6 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
+	"strings"
 )
 
 type GrantAction struct {
@@ -37,7 +38,7 @@ func (this *GrantAction) RunGet(params struct {
 		"method":      grant.Method,
 		"methodName":  grantutils.FindGrantMethodName(grant.Method),
 		"username":    grant.Username,
-		"password":    grant.Password,
+		"password":    strings.Repeat("*", len(grant.Password)),
 		"privateKey":  grant.PrivateKey,
 		"description": grant.Description,
 		"su":          grant.Su,
