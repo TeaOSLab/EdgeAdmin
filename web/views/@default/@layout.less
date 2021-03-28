@@ -146,12 +146,22 @@ div.margin, p.margin {
 .main-menu {
 	.ui.menu {
 		.item {
+			.subtitle {
+				display: none;
+			}
+		}
 
+		.item.expend .subtitle {
+			display: block;
+			font-size: 10px;
+			padding-left: 2.0em;
+			margin-top: 0.5em;
+			color: grey;
 		}
 
 		.sub-items {
 			.item {
-				padding-left: 2.82em !important;
+				padding-left: 2.8em !important;
 			}
 
 			.item.active {

@@ -140,10 +140,11 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 			"icon":   "dashboard",
 		},
 		{
-			"code":   "servers",
-			"module": configloaders.AdminModuleCodeServer,
-			"name":   "网站服务",
-			"icon":   "clone outsize",
+			"code":     "servers",
+			"module":   configloaders.AdminModuleCodeServer,
+			"name":     "网站服务",
+			"subtitle": "服务列表",
+			"icon":     "clone outsize",
 			"subItems": []maps.Map{
 				{
 					"name": "通用设置",
@@ -173,10 +174,11 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 			},
 		},
 		{
-			"code":   "clusters",
-			"module": configloaders.AdminModuleCodeNode,
-			"name":   "边缘节点",
-			"icon":   "cloud",
+			"code":     "clusters",
+			"module":   configloaders.AdminModuleCodeNode,
+			"name":     "边缘节点",
+			"subtitle": "集群列表",
+			"icon":     "cloud",
 			"subItems": []maps.Map{
 				{
 					"name": "SSH认证",
@@ -191,10 +193,11 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 			},
 		},
 		{
-			"code":   "dns",
-			"module": configloaders.AdminModuleCodeDNS,
-			"name":   "域名解析",
-			"icon":   "globe",
+			"code":     "dns",
+			"module":   configloaders.AdminModuleCodeDNS,
+			"name":     "域名解析",
+			"subtitle": "集群列表",
+			"icon":     "globe",
 			"subItems": []maps.Map{
 				{
 					"name": "问题修复",
@@ -233,10 +236,11 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 			"icon":   "history",
 		},
 		{
-			"code":   "settings",
-			"module": configloaders.AdminModuleCodeSetting,
-			"name":   "系统设置",
-			"icon":   "setting",
+			"code":     "settings",
+			"module":   configloaders.AdminModuleCodeSetting,
+			"name":     "系统设置",
+			"subtitle": "基本设置",
+			"icon":     "setting",
 			"subItems": []maps.Map{
 				{
 					"name": "高级设置",
