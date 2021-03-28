@@ -89,6 +89,16 @@ func checkIPWithoutCache(config *systemconfigs.SecurityConfig, ipAddr string) bo
 		}
 	}
 
+	// 检查单独允许的IP
+	if len(config.AllowIPRanges()) > 0 {
+		for _, r := range config.AllowIPRanges() {
+			if r.Contains(ipAddr) {
+				return true
+			}
+		}
+		return false
+	}
+
 	return true
 }
 
