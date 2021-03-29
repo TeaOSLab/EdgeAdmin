@@ -55,11 +55,13 @@
 			<a href="/settings/profile" class="item">
 				<i class="icon user" v-if="teaUserAvatar.length == 0"></i>
 				<img class="avatar" alt="" :src="teaUserAvatar" v-if="teaUserAvatar.length > 0"/>
-                {{teaUsername}}
+                <span class="hover-span"><span class="disabled">{{teaUsername}}</span></span>
 			</a>
 
             <!-- 退出登录 -->
-            <a :href="Tea.url('logout')" class="item" title="安全退出登录"><i class="icon sign out"></i></a>
+            <a :href="Tea.url('logout')" class="item" title="安全退出登录"><i class="icon sign out"></i>
+                <span class="hover-span"><span class="disabled">退出登录</span></span>
+            </a>
         </div>
     </div>
 
