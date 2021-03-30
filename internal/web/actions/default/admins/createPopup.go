@@ -31,6 +31,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	Pass2       string
 	ModuleCodes []string
 	IsSuper     bool
+	CanLogin    bool
 
 	// OTP
 	OtpOn bool
@@ -88,6 +89,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Fullname:    params.Fullname,
 		ModulesJSON: modulesJSON,
 		IsSuper:     params.IsSuper,
+		CanLogin:    params.CanLogin,
 	})
 	if err != nil {
 		this.ErrorPage(err)

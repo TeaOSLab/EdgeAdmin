@@ -36,6 +36,7 @@ func (this *AdminAction) RunGet(params struct {
 		"username": admin.Username,
 		"isOn":     admin.IsOn,
 		"isSuper":  admin.IsSuper,
+		"canLogin": admin.CanLogin,
 	}
 
 	// 权限
