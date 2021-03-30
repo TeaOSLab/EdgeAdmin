@@ -42,6 +42,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 			"fullname":     admin.Fullname,
 			"createdTime":  timeutil.FormatTime("Y-m-d H:i:s", admin.CreatedAt),
 			"otpLoginIsOn": admin.OtpLogin != nil && admin.OtpLogin.IsOn,
+			"canLogin":     admin.CanLogin,
 		})
 	}
 	this.Data["admins"] = adminMaps

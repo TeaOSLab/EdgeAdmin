@@ -6,6 +6,7 @@
 		<tr>
 			<th>用户名</th>
 			<th>全名</th>
+            <th>允许登录</th>
             <th>OTP认证</th>
 			<th class="center width10">状态</th>
 			<th class="two op">操作</th>
@@ -18,6 +19,10 @@
 			</div>
 		</td>
 		<td :class="{disabled:!admin.isOn}">{{admin.fullname}}</td>
+        <td>
+            <span v-if="admin.canLogin" class="green">Y</span>
+            <span v-else class="disabled">N</span>
+        </td>
         <td>
             <span v-if="admin.otpLoginIsOn" class="green">Y</span>
             <span v-else class="disabled">N</span>

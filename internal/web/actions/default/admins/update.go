@@ -45,6 +45,7 @@ func (this *UpdateAction) RunGet(params struct {
 		"username":     admin.Username,
 		"isOn":         admin.IsOn,
 		"isSuper":      admin.IsSuper,
+		"canLogin":     admin.CanLogin,
 		"otpLoginIsOn": otpLoginIsOn,
 	}
 
@@ -76,6 +77,7 @@ func (this *UpdateAction) RunPost(params struct {
 	ModuleCodes []string
 	IsOn        bool
 	IsSuper     bool
+	CanLogin    bool
 
 	// OTP
 	OtpOn bool
@@ -139,6 +141,7 @@ func (this *UpdateAction) RunPost(params struct {
 		ModulesJSON: modulesJSON,
 		IsSuper:     params.IsSuper,
 		IsOn:        params.IsOn,
+		CanLogin:    params.CanLogin,
 	})
 	if err != nil {
 		this.ErrorPage(err)
