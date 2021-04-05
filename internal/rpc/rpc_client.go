@@ -224,6 +224,30 @@ func (this *RPCClient) MessageRPC() pb.MessageServiceClient {
 	return pb.NewMessageServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) MessageRecipientGroupRPC() pb.MessageRecipientGroupServiceClient {
+	return pb.NewMessageRecipientGroupServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) MessageRecipientRPC() pb.MessageRecipientServiceClient {
+	return pb.NewMessageRecipientServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) MessageMediaRPC() pb.MessageMediaServiceClient {
+	return pb.NewMessageMediaServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) MessageMediaInstanceRPC() pb.MessageMediaInstanceServiceClient {
+	return pb.NewMessageMediaInstanceServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) MessageTaskRPC() pb.MessageTaskServiceClient {
+	return pb.NewMessageTaskServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) MessageTaskLogRPC() pb.MessageTaskLogServiceClient {
+	return pb.NewMessageTaskLogServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) IPLibraryRPC() pb.IPLibraryServiceClient {
 	return pb.NewIPLibraryServiceClient(this.pickConn())
 }

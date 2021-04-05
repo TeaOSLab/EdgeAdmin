@@ -1,0 +1,7 @@
+<first-menu>
+    <menu-item href="/admins/recipients/instances">所有媒介</menu-item>
+    <span class="item">|</span>
+    <menu-item :href="'/admins/recipients/instances/instance?instanceId=' + instance.id" code="instance">"{{instance.media.name}}"详情</menu-item>
+    <menu-item :href="'/admins/recipients/instances/update?instanceId=' + instance.id" code="update">修改</menu-item>
+    <menu-item :href="'/admins/recipients/instances/test?instanceId=' + instance.id" code="test">测试</menu-item>
+</first-menu>
