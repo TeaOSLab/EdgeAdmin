@@ -5,6 +5,7 @@ import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/logs"
+	"net/http"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -25,7 +26,21 @@ func FailPage(action actions.ActionWrapper, err error) {
 	if err != nil {
 		logs.Println("[" + reflect.TypeOf(action).String() + "]" + findStack(err.Error()))
 	}
-	action.Object().WriteString(teaconst.ErrServer)
+	action.Object().ResponseWriter.WriteHeader(http.StatusInternalServerError)
+	if len(action.Object().Request.Header.Get("X-Requested-With")) > 0 {
+		action.Object().WriteString(teaconst.ErrServer)
+	} else {
+		action.Object().WriteString(`<!DOCTYPE html>
+<html>
+	<head></head>
+	<body>
+	<div style="background: #eee; border: 1px #ccc solid; padding: 10px; font-size: 12px; line-height: 1.8">
+	` + teaconst.ErrServer + `
+	<div>可以通过查看 <strong><em>$安装目录/logs/run.log</em></strong> 日志文件查看具体的错误提示。</div>
+	</div>
+	</body>
+</html>`)
+	}
 }
 
 // 判断动作的文件路径是否相当
