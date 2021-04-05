@@ -18,6 +18,7 @@ func init() {
 			Post("/delete", new(DeleteAction)).
 			Get("/admin", new(AdminAction)).
 			Get("/otpQrcode", new(OtpQrcodeAction)).
+			Post("/options", new(OptionsAction)).
 			EndAll()
 	})
 }

@@ -1,0 +1,12 @@
+.CodeMirror {
+  border: 1px solid #eee;
+  height: auto!important;
+}
+.CodeMirror-vscrollbar {
+  width: 6px;
+  border-radius: 3px!important;
+}
+.CodeMirror-vscrollbar::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+}
+/*# sourceMappingURL=instance.css.map */

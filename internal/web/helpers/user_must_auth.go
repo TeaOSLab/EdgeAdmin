@@ -224,10 +224,18 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 			"icon":   "yen sign",
 		},
 		{
-			"code":   "admins",
-			"module": configloaders.AdminModuleCodeAdmin,
-			"name":   "系统用户",
-			"icon":   "user secret",
+			"code":     "admins",
+			"module":   configloaders.AdminModuleCodeAdmin,
+			"name":     "系统用户",
+			"subtitle": "用户列表",
+			"icon":     "user secret",
+			"subItems": []maps.Map{
+				{
+					"name": "通知媒介",
+					"url":  "/admins/recipients",
+					"code": "recipients",
+				},
+			},
 		},
 		{
 			"code":   "log",

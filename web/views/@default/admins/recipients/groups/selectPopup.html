@@ -1,0 +1,15 @@
+{$layout "layout_popup"}
+
+
+<h3>选择分组</h3>
+<table class="ui table definition selectable">
+    <tr>
+        <td class="title">选择分组</td>
+        <td>
+            <p class="comment" v-if="groups.length == 0">暂时没有可以选择的分组。</p>
+            <div v-if="groups.length > 0">
+                <a class="ui label small basic" v-for="group in groups" @click.prevent="selectGroup(group)">{{group.name}}</a>
+            </div>
+        </td>
+    </tr>
+</table>

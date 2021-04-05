@@ -1,0 +1,46 @@
+{$layout}
+{$template "recipient_menu"}
+{$template "/code_editor"}
+
+
+<form class="ui form" data-tea-action="$" data-tea-timeout="30" data-tea-before="submitBefore" data-tea-success="submitSuccess" data-tea-error="submitError" data-tea-fail="submitFail" style="margin-top:1em">
+    <csrf-token></csrf-token>
+    <input type="hidden" name="instanceId" :value="instance.id"/>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">媒介名称</td>
+            <td>{{instance.media.name}}</td>
+        </tr>
+        <tr>
+            <td>通知标题</td>
+            <td>
+                <input type="text" name="subject" value="这是通知标题" maxlength="100"/>
+            </td>
+        </tr>
+        <tr>
+            <td>通知内容</td>
+            <td>
+                <textarea name="body" rows="2" maxlength="100">这是通知内容</textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>接收人标识</td>
+            <td>
+                <input type="text" name="user" maxlength="500" v-model="recipient.user"/>
+                <p class="comment" v-html="instance.media.userDescription"></p>
+            </td>
+        </tr>
+    </table>
+    <div class="ui segment response-box" :class="{green:error.length == 0, red:error.length > 0}" v-if="isFinished">
+        <div v-if="response.length > 0"><span v-if="error.length == 0">成功</span>返回结果：
+            <div v-for="line in responseLines">{{line}}</div>
+        </div>
+        <div v-if="error.length > 0">错误信息：
+            <div v-for="line in errorLines">{{line}}</div>
+        </div>
+        <span class="disabled" v-if="response.length == 0 && error.length == 0">成功执行，没有返回结果</span>
+    </div>
+
+    <button class="ui button primary" type="submit" v-if="!isRunning">提交测试</button>
+    <span v-if="isRunning">提交测试中，请耐心等待...</span>
+</form>

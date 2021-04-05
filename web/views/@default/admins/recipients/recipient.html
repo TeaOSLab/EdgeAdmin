@@ -1,0 +1,50 @@
+{$layout}
+{$template "recipient_menu"}
+{$template "/code_editor"}
+
+<table class="ui table definition selectable">
+    <tr>
+        <td class="title">状态</td>
+        <td>
+            <label-on :v-is-on="recipient.isOn"></label-on>
+        </td>
+    </tr>
+    <tr>
+        <td class="title">系统用户</td>
+        <td>
+            {{recipient.admin.fullname}} <span class="small grey">（{{recipient.admin.username}}）</span> <link-icon :href="'/admins/admin?adminId=' + recipient.admin.id"></link-icon>
+        </td>
+    </tr>
+    <tr>
+        <td>媒介</td>
+        <td>
+            {{recipient.instance.name}}
+            <p class="comment">{{recipient.instance.description}}</p>
+        </td>
+    </tr>
+    <tr>
+        <td>接收人标识</td>
+        <td>
+            <span v-if="recipient.user.length > 0">{{recipient.user}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+    </tr>
+    <tr>
+        <td>所属分组</td>
+        <td>
+            <div v-if="recipient.groups != null && recipient.groups.length > 0">
+                <div v-for="group in recipient.groups" class="ui label small basic">{{group.name}}</div>
+            </div>
+            <div v-else>
+                <span class="disabled">-</span>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>备注</td>
+        <td>
+            <span v-if="recipient.description.length > 0">{{recipient.description}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+    </tr>
+</table>
