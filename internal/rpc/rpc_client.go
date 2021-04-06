@@ -139,6 +139,10 @@ func (this *RPCClient) DBNodeRPC() pb.DBNodeServiceClient {
 	return pb.NewDBNodeServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) MonitorNodeRPC() pb.MonitorNodeServiceClient {
+	return pb.NewMonitorNodeServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) DBRPC() pb.DBServiceClient {
 	return pb.NewDBServiceClient(this.pickConn())
 }
