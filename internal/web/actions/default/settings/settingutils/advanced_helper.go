@@ -34,6 +34,8 @@ func (this *AdvancedHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNex
 		tabbar.Add("API节点", "", "/api", "", this.tab == "apiNodes")
 		tabbar.Add("用户节点", "", "/settings/userNodes", "", this.tab == "userNodes")
 		tabbar.Add("日志数据库", "", "/db", "", this.tab == "dbNodes")
+		tabbar.Add("监控节点", "", "/settings/monitorNodes", "", this.tab == "monitorNodes")
+
 		//tabbar.Add("备份", "", "/settings/backup", "", this.tab == "backup")
 	}
 	actionutils.SetTabbar(actionPtr, tabbar)
