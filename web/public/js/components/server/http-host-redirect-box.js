@@ -50,7 +50,7 @@ Vue.component("http-host-redirect-box", {
 	<!-- TODO 将来支持排序，并支持isOn切换 -->
 	<div v-if="redirects.length > 0">
 		<div v-for="(redirect, index) in redirects" class="ui label basic small" style="margin-bottom: 0.5em;margin-top: 0.5em">
-			<span v-if="redirect.status > 0">[{{redirect.status}}]</span> {{redirect.beforeURL}} -&gt; {{redirect.afterURL}} <a href="" @click.prevent="update(index, redirect)" title="修改"><i class="icon pencil small"></i></a> &nbsp; <a href="" @click.prevent="remove(index)" title="删除"><i class="icon remove"></i></a>
+			<span v-if="redirect.status > 0">[{{redirect.status}}]</span><span v-if="redirect.matchPrefix">[prefix]</span> {{redirect.beforeURL}} -&gt; {{redirect.afterURL}} <a href="" @click.prevent="update(index, redirect)" title="修改"><i class="icon pencil small"></i></a> &nbsp; <a href="" @click.prevent="remove(index)" title="删除"><i class="icon remove"></i></a>
 		</div>
 		<div class="ui divider"></div>	
 	</div>

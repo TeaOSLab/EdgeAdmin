@@ -8,10 +8,28 @@
 
     <table class="ui table definition selectable">
         <tr>
-            <td>跳转前URL *</td>
+            <td class="title">跳转前URL *</td>
             <td>
                 <input type="text" name="beforeURL" placeholder="比如 http://www.url1.com" v-model="redirect.beforeURL" ref="focus"/>
                 <p class="comment">需要填写完整的URL，包括<code-label>http://</code-label>或者<code-label>https://</code-label>，如果有非默认端口，也需要带上端口号。</p>
+            </td>
+        </tr>
+        <tr>
+            <td>匹配模式</td>
+            <td>
+                <select class="ui dropdown auto-width" name="matchPrefix" v-model="matchPrefix">
+                    <option value="0">精准匹配</option>
+                    <option value="1">匹配前缀</option>
+                </select>
+                <p class="comment" v-if="matchPrefix == 0">精准匹配跳转前的URL。</p>
+                <p class="comment" v-if="matchPrefix == 1">只要URL头部部分包含跳转前URL，即可跳转。</p>
+            </td>
+        </tr>
+        <tr v-if="matchPrefix == 1">
+            <td>是否保留URL路径参数</td>
+            <td>
+                <checkbox name="keepRequestURI" value="1" v-model="redirect.keepRequestURI"></checkbox>
+                <p class="comment">选中后，则跳转之后，保留跳转之前的URL路径和参数。</p>
             </td>
         </tr>
         <tr>
@@ -22,7 +40,7 @@
             </td>
         </tr>
         <tr>
-            <td class="title">跳转状态码</td>
+            <td>跳转状态码</td>
             <td>
                 <select class="ui dropdown auto-width" name="status" v-model="redirect.status">
                     <option value="0">[默认]</option>
