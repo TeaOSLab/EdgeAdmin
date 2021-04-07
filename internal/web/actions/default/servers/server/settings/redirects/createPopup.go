@@ -24,9 +24,12 @@ func (this *CreatePopupAction) RunGet(params struct {
 }
 
 func (this *CreatePopupAction) RunPost(params struct {
-	BeforeURL string
-	AfterURL  string
-	Status    int
+	BeforeURL      string
+	AfterURL       string
+	MatchPrefix    bool
+	KeepRequestURI bool
+
+	Status int
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -69,10 +72,12 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Gte(0, "请选择正确的跳转状态码")
 
 	this.Data["redirect"] = maps.Map{
-		"status":    params.Status,
-		"beforeURL": params.BeforeURL,
-		"afterURL":  params.AfterURL,
-		"isOn":      true,
+		"status":         params.Status,
+		"beforeURL":      params.BeforeURL,
+		"afterURL":       params.AfterURL,
+		"matchPrefix":    params.MatchPrefix,
+		"keepRequestURI": params.KeepRequestURI,
+		"isOn":           true,
 	}
 
 	this.Success()
