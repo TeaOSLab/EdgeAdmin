@@ -252,6 +252,10 @@ func (this *RPCClient) MessageTaskLogRPC() pb.MessageTaskLogServiceClient {
 	return pb.NewMessageTaskLogServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) MessageReceiverRPC() pb.MessageReceiverServiceClient {
+	return pb.NewMessageReceiverServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) IPLibraryRPC() pb.IPLibraryServiceClient {
 	return pb.NewIPLibraryServiceClient(this.pickConn())
 }

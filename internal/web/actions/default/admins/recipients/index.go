@@ -18,10 +18,10 @@ func (this *IndexAction) RunGet(params struct {
 }) {
 	// TODO 增加系统用户、媒介类型等条件搜索
 	countResp, err := this.RPC().MessageRecipientRPC().CountAllEnabledMessageRecipients(this.AdminContext(), &pb.CountAllEnabledMessageRecipientsRequest{
-		AdminId:   0,
-		MediaType: "",
-		GroupId:   0,
-		Keyword:   "",
+		AdminId:                 0,
+		MediaType:               "",
+		MessageRecipientGroupId: 0,
+		Keyword:                 "",
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -32,12 +32,12 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["page"] = page.AsHTML()
 
 	recipientsResp, err := this.RPC().MessageRecipientRPC().ListEnabledMessageRecipients(this.AdminContext(), &pb.ListEnabledMessageRecipientsRequest{
-		AdminId:   0,
-		MediaType: "",
-		GroupId:   0,
-		Keyword:   "",
-		Offset:    page.Offset,
-		Size:      page.Size,
+		AdminId:                 0,
+		MediaType:               "",
+		MessageRecipientGroupId: 0,
+		Keyword:                 "",
+		Offset:                  page.Offset,
+		Size:                    page.Size,
 	})
 
 	recipientMaps := []maps.Map{}

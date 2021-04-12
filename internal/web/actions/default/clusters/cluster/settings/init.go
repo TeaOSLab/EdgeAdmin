@@ -6,6 +6,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/dns"
 	firewallActions "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/firewall-actions"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/health"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/message"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/services"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/toa"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/waf"
@@ -35,6 +36,12 @@ func init() {
 			// DNS
 			Prefix("/clusters/cluster/settings/dns").
 			GetPost("", new(dns.IndexAction)).
+
+			// 消息
+			Prefix("/clusters/cluster/settings/message").
+			GetPost("", new(message.IndexAction)).
+			Get("/selectReceiverPopup", new(message.SelectReceiverPopupAction)).
+			Post("/selectedReceivers", new(message.SelectedReceiversAction)).
 
 			// TOA
 			Prefix("/clusters/cluster/settings/toa").

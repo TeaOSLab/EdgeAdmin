@@ -1,0 +1,36 @@
+{$layout "layout_popup"}
+
+<h3>选择接收人</h3>
+
+
+<form class="ui form">
+    <table class="ui table definition">
+        <tr>
+            <td class="title">选择接收人</td>
+            <td>
+                <div v-if="recipients.length == 0">
+                    <span class="disabled">暂时没有接收人。</span>
+                </div>
+                <div v-else>
+                    <a class="ui label small basic" :class="{blue: selectedRecipient != null && recipient.id == selectedRecipient.id}" v-for="recipient in recipients" @click.prevent="selectRecipient(recipient)">
+                        {{recipient.name}} &nbsp; <span class="small grey">({{recipient.instanceName}})</span>
+                    </a>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>选择接收人分组</td>
+            <td>
+                <div v-if="groups.length == 0">
+                    <span class="disabled">暂时没有接收人分组。</span>
+                </div>
+                <div v-else>
+                   <a class="ui label small basic" :class="{blue: selectedGroup != null && group.id == selectedGroup.id}" v-for="group in groups" @click.prevent="selectGroup(group)">
+                        分组：{{group.name}}
+                   </a>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <button type="button" class="ui button primary" @click.prevent="confirm">确定</button>
+</form>

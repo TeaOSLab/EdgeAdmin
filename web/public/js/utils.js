@@ -181,6 +181,11 @@ window.teaweb = {
         var hash = window.location.hash;
         return hash != null && hash.startsWith("#popup");
     },
+    closePopup: function () {
+        if (this.isPopup()) {
+            window.parent.Swal.close();
+        }
+    },
     Swal: function () {
         return this.isPopup() ? window.parent.Swal : window.Swal;
     },
