@@ -1,0 +1,20 @@
+{$layout}
+{$template "/left_menu"}
+
+<div class="right-box">
+    <form class="ui form" data-tea-action="$" data-tea-success="success">
+        <csrf-token></csrf-token>
+        <input type="hidden" name="clusterId" :value="clusterId"/>
+
+        <table class="ui table selectable definition">
+            <tr>
+                <td class="title">消息接收人</td>
+                <td>
+                    <message-receivers-box :v-node-cluster-id="clusterId"></message-receivers-box>
+                </td>
+            </tr>
+        </table>
+
+        <submit-btn></submit-btn>
+    </form>
+</div>

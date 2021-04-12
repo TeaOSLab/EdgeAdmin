@@ -43,6 +43,7 @@ func (this *IndexAction) RunGet(params struct {
 		}
 		instanceMaps = append(instanceMaps, maps.Map{
 			"id":   instance.Id,
+			"name": instance.Name,
 			"isOn": instance.IsOn,
 			"media": maps.Map{
 				"name": instance.MessageMedia.Name,

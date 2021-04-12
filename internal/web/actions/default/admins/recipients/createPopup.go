@@ -41,11 +41,11 @@ func (this *CreatePopupAction) RunPost(params struct {
 	groupIds := utils.SplitNumbers(params.GroupIds)
 
 	resp, err := this.RPC().MessageRecipientRPC().CreateMessageRecipient(this.AdminContext(), &pb.CreateMessageRecipientRequest{
-		AdminId:     params.AdminId,
-		InstanceId:  params.InstanceId,
-		User:        params.User,
-		GroupIds:    groupIds,
-		Description: params.Description,
+		AdminId:                  params.AdminId,
+		MessageMediaInstanceId:   params.InstanceId,
+		User:                     params.User,
+		MessageRecipientGroupIds: groupIds,
+		Description:              params.Description,
 	})
 	if err != nil {
 		this.ErrorPage(err)

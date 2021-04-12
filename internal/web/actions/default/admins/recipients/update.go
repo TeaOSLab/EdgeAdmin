@@ -75,13 +75,13 @@ func (this *UpdateAction) RunPost(params struct {
 	groupIds := utils.SplitNumbers(params.GroupIds)
 
 	_, err := this.RPC().MessageRecipientRPC().UpdateMessageRecipient(this.AdminContext(), &pb.UpdateMessageRecipientRequest{
-		MessageRecipientId: params.RecipientId,
-		AdminId:            params.AdminId,
-		InstanceId:         params.InstanceId,
-		User:               params.User,
-		GroupIds:           groupIds,
-		Description:        params.Description,
-		IsOn:               params.IsOn,
+		MessageRecipientId:       params.RecipientId,
+		AdminId:                  params.AdminId,
+		MessageMediaInstanceId:   params.InstanceId,
+		User:                     params.User,
+		MessageRecipientGroupIds: groupIds,
+		Description:              params.Description,
+		IsOn:                     params.IsOn,
 	})
 	if err != nil {
 		this.ErrorPage(err)

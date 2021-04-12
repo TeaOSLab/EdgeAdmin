@@ -10,6 +10,7 @@
 <table class="ui table selectable celled" v-if="instances.length > 0">
     <thead>
         <tr>
+            <th>媒介名称</th>
             <th class="three wide">媒介类型</th>
             <th>备注</th>
             <th class="two wide">状态</th>
@@ -17,6 +18,7 @@
         </tr>
     </thead>
     <tr v-for="instance in instances">
+        <td>{{instance.name}}</td>
         <td>{{instance.media.name}}</td>
         <td>
             <span v-if="instance.description.length > 0">{{instance.description}}</span>
