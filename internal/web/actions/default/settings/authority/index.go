@@ -15,7 +15,7 @@ type IndexAction struct {
 }
 
 func (this *IndexAction) Init() {
-	this.Nav("", "", "")
+	this.Nav("", "", "index")
 }
 
 func (this *IndexAction) RunGet(params struct{}) {
@@ -46,6 +46,24 @@ func (this *IndexAction) RunGet(params struct{}) {
 		}
 	}
 	this.Data["key"] = keyMap
+
+	// 检查是否有认证节点，如果没有认证节点，则自动生成一个
+	countResp, err := this.RPC().AuthorityNodeRPC().CountAllEnabledAuthorityNodes(this.AdminContext(), &pb.CountAllEnabledAuthorityNodesRequest{})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	if countResp.Count == 0 {
+		_, err = this.RPC().AuthorityNodeRPC().CreateAuthorityNode(this.AdminContext(), &pb.CreateAuthorityNodeRequest{
+			Name:        "默认节点",
+			Description: "系统自动生成的默认节点",
+			IsOn:        true,
+		})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
 
 	this.Show()
 }

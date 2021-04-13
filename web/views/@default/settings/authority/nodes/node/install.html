@@ -1,0 +1,23 @@
+{$layout}
+{$template "menu"}
+
+<h3>安装步骤</h3>
+<ol class="ui list">
+	<li>按照下面的配置信息替换<code-label>configs/api.yaml</code-label>内容</li>
+	<li>使用<code-label>bin/edge-authority start</code-label>启动节点</li>
+	<li>可以在<code-label>logs/run.log</code-label>中查看启动是否有异常</li>
+</ol>
+
+<div class="ui divider"></div>
+<h3>配置信息</h3>
+<table class="ui table definition selectable">
+	<tr>
+		<td class="title">configs/api.yaml<em><br/><download-link :v-element="'api-code'" :v-file="'api.yaml'">[下载]</download-link></em></td>
+		<td>
+			<pre id="api-code">rpc:
+  endpoints: [ {{apiEndpoints}} ]
+nodeId: "{{node.uniqueId}}"
+secret: "{{node.secret}}"</pre>
+		</td>
+	</tr>
+</table>
