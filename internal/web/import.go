@@ -84,6 +84,7 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/websocket"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/stat"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/authority"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/backup"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/database"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/ip-library"

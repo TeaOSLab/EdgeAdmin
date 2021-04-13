@@ -1,0 +1,41 @@
+{$layout}
+
+<div class="ui message warning" v-if="key == null">认证之后，可以使用企业版功能，当前你还没有认证，<a href="http://edge.teaos.cn/docs/Plus/Authority/Index.md" target="_blank">[在这里看认证方法]</a>。</div>
+
+<div v-if="key != null">
+    <div class="margin"></div>
+    <table class="ui table definition selectable">
+        <tr>
+            <td>状态</td>
+            <td>
+                <span class="green">已认证</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="title">开始日期</td>
+            <td>{{key.dayFrom}}</td>
+        </tr>
+        <tr>
+            <td class="title">结束日期</td>
+            <td>{{key.dayTo}}
+                <div v-if="key.isExpired" style="margin-top: 0.5em">
+                    <span class="red">已过期，请尽快更新认证信息。</span>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>主机名</td>
+            <td>{{key.hostname}}
+                <p class="comment">认证服务所在服务器主机名。</p>
+            </td>
+        </tr>
+        <tr>
+            <td>主机MAC地址</td>
+            <td>
+                <span v-for="address in key.macAddresses" class="ui label basic small">{{address}}</span>
+                <p class="comment">认证服务所在服务器的MAC地址。</p>
+            </td>
+        </tr>
+    </table>
+    <p class="comment">数据更新于{{key.updatedTime}}。</p>
+</div>
