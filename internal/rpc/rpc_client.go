@@ -332,6 +332,10 @@ func (this *RPCClient) AuthorityKeyRPC() pb.AuthorityKeyServiceClient {
 	return pb.NewAuthorityKeyServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) AuthorityNodeRPC() pb.AuthorityNodeServiceClient {
+	return pb.NewAuthorityNodeServiceClient(this.pickConn())
+}
+
 // Context 构造Admin上下文
 func (this *RPCClient) Context(adminId int64) context.Context {
 	ctx := context.Background()
