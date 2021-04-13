@@ -207,7 +207,7 @@ func (this *RPCClient) HTTPRewriteRuleRPC() pb.HTTPRewriteRuleServiceClient {
 	return pb.NewHTTPRewriteRuleServiceClient(this.pickConn())
 }
 
-// 访问日志
+// HTTPAccessLogRPC 访问日志
 func (this *RPCClient) HTTPAccessLogRPC() pb.HTTPAccessLogServiceClient {
 	return pb.NewHTTPAccessLogServiceClient(this.pickConn())
 }
@@ -328,7 +328,11 @@ func (this *RPCClient) NodeTaskRPC() pb.NodeTaskServiceClient {
 	return pb.NewNodeTaskServiceClient(this.pickConn())
 }
 
-// 构造Admin上下文
+func (this *RPCClient) AuthorityKeyRPC() pb.AuthorityKeyServiceClient {
+	return pb.NewAuthorityKeyServiceClient(this.pickConn())
+}
+
+// Context 构造Admin上下文
 func (this *RPCClient) Context(adminId int64) context.Context {
 	ctx := context.Background()
 	m := maps.Map{
@@ -351,7 +355,7 @@ func (this *RPCClient) Context(adminId int64) context.Context {
 	return ctx
 }
 
-// 构造API上下文
+// APIContext 构造API上下文
 func (this *RPCClient) APIContext(apiNodeId int64) context.Context {
 	ctx := context.Background()
 	m := maps.Map{
@@ -374,7 +378,7 @@ func (this *RPCClient) APIContext(apiNodeId int64) context.Context {
 	return ctx
 }
 
-// 修改配置
+// UpdateConfig 修改配置
 func (this *RPCClient) UpdateConfig(config *configs.APIConfig) error {
 	this.apiConfig = config
 	return this.init()

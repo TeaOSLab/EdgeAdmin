@@ -234,6 +234,7 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 					"name": "通知媒介",
 					"url":  "/admins/recipients",
 					"code": "recipients",
+					"isOn": teaconst.IsPlus,
 				},
 			},
 		},

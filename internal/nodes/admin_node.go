@@ -87,7 +87,7 @@ func (this *AdminNode) Run() {
 		Start()
 }
 
-// 实现守护进程
+// Daemon 实现守护进程
 func (this *AdminNode) Daemon() {
 	path := os.TempDir() + "/edge-admin.sock"
 	isDebug := lists.ContainsString(os.Args, "debug")
@@ -132,7 +132,7 @@ func (this *AdminNode) Daemon() {
 	}
 }
 
-// 安装系统服务
+// InstallSystemService 安装系统服务
 func (this *AdminNode) InstallSystemService() error {
 	shortName := teaconst.SystemdServiceName
 
@@ -149,7 +149,7 @@ func (this *AdminNode) InstallSystemService() error {
 	return nil
 }
 
-// 添加子PID
+// AddSubPID 添加子PID
 func (this *AdminNode) AddSubPID(pid int) {
 	this.subPIDs = append(this.subPIDs, pid)
 }
