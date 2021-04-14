@@ -41,6 +41,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 			"dayTo":        keyResp.AuthorityKey.DayTo,
 			"macAddresses": keyResp.AuthorityKey.MacAddresses,
 			"hostname":     keyResp.AuthorityKey.Hostname,
+			"company":      keyResp.AuthorityKey.Company,
 			"isExpired":    !isActive,
 			"updatedTime":  timeutil.FormatTime("Y-m-d H:i:s", keyResp.AuthorityKey.UpdatedAt),
 		}
