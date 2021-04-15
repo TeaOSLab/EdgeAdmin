@@ -43,6 +43,20 @@
 		</tr>
 	</tbody>
 
+    <!-- CloudFlare -->
+    <tbody v-if="provider.type == 'cloudFlare'">
+        <tr>
+            <td>API密钥</td>
+            <td>
+                {{provider.apiParams.apiKey}}
+            </td>
+        </tr>
+        <tr>
+            <td>账号邮箱</td>
+            <td>{{provider.apiParams.email}}</td>
+        </tr>
+    </tbody>
+
     <!-- CustomHTTP -->
     <tbody v-if="provider.type == 'customHTTP'">
         <tr>

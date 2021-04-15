@@ -55,6 +55,10 @@ func (this *CreatePopupAction) RunPost(params struct {
 	ParamApiKey    string
 	ParamApiSecret string
 
+	// CloudFlare
+	CloudFlareAPIKey string
+	CloudFlareEmail  string
+
 	// CustomHTTP
 	ParamCustomHTTPURL    string
 	ParamCustomHTTPSecret string
@@ -97,6 +101,14 @@ func (this *CreatePopupAction) RunPost(params struct {
 
 		apiParams["apiKey"] = params.ParamApiKey
 		apiParams["apiSecret"] = params.ParamApiSecret
+	case "cloudFlare":
+		params.Must.
+			Field("cloudFlareAPIKey", params.CloudFlareAPIKey).
+			Require("请输入API密钥").
+			Field("cloudFlareEmail", params.CloudFlareEmail).
+			Email("请输入正确格式的邮箱地址")
+		apiParams["apiKey"] = params.CloudFlareAPIKey
+		apiParams["email"] = params.CloudFlareEmail
 	case "customHTTP":
 		params.Must.
 			Field("paramCustomHTTPURL", params.ParamCustomHTTPURL).
