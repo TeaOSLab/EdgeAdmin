@@ -60,6 +60,24 @@
 			</tr>
 		</tbody>
 
+        <!-- CloudFlare -->
+        <tbody v-if="type == 'cloudFlare'">
+            <tr>
+                <td>API密钥 *</td>
+                <td>
+                    <input type="text" name="cloudFlareAPIKey" maxlength="100"/>
+                    <p class="comment">在个人资料中的"API令牌"--"API密钥"--"Global API Key"中获取。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>账号邮箱 *</td>
+                <td>
+                    <input type="text" name="cloudFlareEmail" maxlength="100"/>
+                    <p class="comment">登录账号使用的邮箱。</p>
+                </td>
+            </tr>
+        </tbody>
+
 		<!-- DNS.COM -->
 		<tbody v-if="type == 'dnscom'">
 			<tr>
