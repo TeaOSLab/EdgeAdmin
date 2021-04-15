@@ -1,6 +1,6 @@
 {$layout "layout_popup"}
 
-<h3>修改集群DNS设置</h3>
+<h3>选择集群DNS设置</h3>
 
 <form method="post" class="ui form" data-tea-success="success" data-tea-action="$">
 	<csrf-token></csrf-token>
@@ -21,6 +21,7 @@
 				<select name="providerId" class="ui dropdown auto-width" v-model="providerId" v-show="providers.length > 0">
 					<option v-for="provider in providers" :value="provider.id">{{provider.name}}</option>
 				</select>
+                <p class="comment"><a href="/dns/providers" target="_blank">去管理DNS服务商账号&raquo;</a></p>
 			</td>
 		</tr>
 		<tr v-show="providerId > 0">
