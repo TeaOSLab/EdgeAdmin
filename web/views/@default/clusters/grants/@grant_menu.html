@@ -2,5 +2,6 @@
 	<menu-item href="/clusters/grants">认证列表</menu-item>
 	<span class="item">|</span>
 	<menu-item :href="'/clusters/grants/grant?grantId=' + grant.id" code="index">{{grant.name}}详情</menu-item>
+    <menu-item :href="'/clusters/grants/test?grantId=' + grant.id" code="test">测试</menu-item>
 	<menu-item :href="'/clusters/grants/update?grantId=' + grant.id" code="update">修改</menu-item>
 </first-menu>

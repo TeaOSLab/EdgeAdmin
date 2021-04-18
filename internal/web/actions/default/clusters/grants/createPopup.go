@@ -65,14 +65,14 @@ func (this *CreatePopupAction) RunPost(params struct {
 	}
 
 	this.Data["grant"] = maps.Map{
-		"id":         createResp.GrantId,
+		"id":         createResp.NodeGrantId,
 		"name":       params.Name,
 		"method":     params.Method,
 		"methodName": grantutils.FindGrantMethodName(params.Method),
 	}
 
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "创建SSH认证 %d", createResp.GrantId)
+	defer this.CreateLog(oplogs.LevelInfo, "创建SSH认证 %d", createResp.NodeGrantId)
 
 	this.Success()
 }

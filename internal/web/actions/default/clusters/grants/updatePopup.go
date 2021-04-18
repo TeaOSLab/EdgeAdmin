@@ -22,18 +22,18 @@ func (this *UpdatePopupAction) RunGet(params struct {
 }) {
 	this.Data["methods"] = grantutils.AllGrantMethods()
 
-	grantResp, err := this.RPC().NodeGrantRPC().FindEnabledGrant(this.AdminContext(), &pb.FindEnabledGrantRequest{GrantId: params.GrantId})
+	grantResp, err := this.RPC().NodeGrantRPC().FindEnabledNodeGrant(this.AdminContext(), &pb.FindEnabledNodeGrantRequest{NodeGrantId: params.GrantId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 
-	if grantResp.Grant == nil {
+	if grantResp.NodeGrant == nil {
 		this.WriteString("找不到要操作的对象")
 		return
 	}
 
-	grant := grantResp.Grant
+	grant := grantResp.NodeGrant
 	this.Data["grant"] = maps.Map{
 		"id":          grant.Id,
 		"nodeId":      grant.NodeId,
@@ -82,7 +82,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 
 	// 执行修改
 	_, err := this.RPC().NodeGrantRPC().UpdateNodeGrant(this.AdminContext(), &pb.UpdateNodeGrantRequest{
-		GrantId:     params.GrantId,
+		NodeGrantId: params.GrantId,
 		Name:        params.Name,
 		Method:      params.Method,
 		Username:    params.Username,

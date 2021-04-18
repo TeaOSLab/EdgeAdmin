@@ -36,12 +36,12 @@ func (this *IndexAction) RunGet(params struct {
 	var grantMap interface{} = nil
 
 	if cluster.GrantId > 0 {
-		grantResp, err := this.RPC().NodeGrantRPC().FindEnabledGrant(this.AdminContext(), &pb.FindEnabledGrantRequest{GrantId: cluster.GrantId})
+		grantResp, err := this.RPC().NodeGrantRPC().FindEnabledNodeGrant(this.AdminContext(), &pb.FindEnabledNodeGrantRequest{NodeGrantId: cluster.GrantId})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-		grant := grantResp.Grant
+		grant := grantResp.NodeGrant
 		if grant != nil {
 			grantMap = maps.Map{
 				"id":         grant.Id,
@@ -62,7 +62,7 @@ func (this *IndexAction) RunGet(params struct {
 	this.Show()
 }
 
-// 保存设置
+// RunPost 保存设置
 func (this *IndexAction) RunPost(params struct {
 	ClusterId  int64
 	Name       string

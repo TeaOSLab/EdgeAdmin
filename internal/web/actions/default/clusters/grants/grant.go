@@ -19,19 +19,19 @@ func (this *GrantAction) Init() {
 func (this *GrantAction) RunGet(params struct {
 	GrantId int64
 }) {
-	grantResp, err := this.RPC().NodeGrantRPC().FindEnabledGrant(this.AdminContext(), &pb.FindEnabledGrantRequest{GrantId: params.GrantId})
+	grantResp, err := this.RPC().NodeGrantRPC().FindEnabledNodeGrant(this.AdminContext(), &pb.FindEnabledNodeGrantRequest{NodeGrantId: params.GrantId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	if grantResp.Grant == nil {
+	if grantResp.NodeGrant == nil {
 		this.WriteString("can not find the grant")
 		return
 	}
 
 	// TODO 处理节点专用的认证
 
-	grant := grantResp.Grant
+	grant := grantResp.NodeGrant
 	this.Data["grant"] = maps.Map{
 		"id":          grant.Id,
 		"name":        grant.Name,

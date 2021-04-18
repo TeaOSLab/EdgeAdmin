@@ -9,6 +9,7 @@
 			<td>名称 *</td>
 			<td>
 				<input type="text" name="name" maxlength="100" ref="focus" v-model="grant.name"/>
+                <p class="comment">起一个容易识别的名称。</p>
 			</td>
 		</tr>
 
@@ -49,7 +50,7 @@
 		</tbody>
 
 		<tr>
-			<td>描述</td>
+			<td>备注</td>
 			<td>
 				<textarea name="description" rows="3" v-model="grant.description"></textarea>
 			</td>

@@ -18,13 +18,13 @@
 
 	<!-- 用户名/密码 -->
 	<tbody v-if="grant.method == 'user'">
-	<tr>
-		<td>SSH用户名</td>
-		<td>
-			{{grant.username}}
-			<p class="comment">SSH登录用户名。</p>
-		</td>
-	</tr>
+        <tr>
+            <td>SSH用户名</td>
+            <td>
+                {{grant.username}}
+                <p class="comment">SSH登录用户名。</p>
+            </td>
+        </tr>
 	<tr>
 		<td>SSH密码</td>
 		<td>{{grant.password}}
@@ -34,17 +34,17 @@
 
 	<!-- 私钥 -->
 	<tbody v-if="grant.method == 'privateKey'">
-	<tr>
-		<td>RSA私钥</td>
-		<td>
-			{{grant.privateKey}}
-			<p class="comment">用来生成登录SSH公钥的私钥</p>
-		</td>
-	</tr>
+        <tr>
+            <td>RSA私钥</td>
+            <td>
+                {{grant.privateKey}}
+                <p class="comment">用来生成登录SSH公钥的私钥</p>
+            </td>
+        </tr>
 	</tbody>
 
 	<tr>
-		<td>描述</td>
+		<td>备注</td>
 		<td>
 			<span v-if="grant.description.length > 0">{{grant.description}}</span>
 			<span v-if="grant.description.length == 0">-</span>
@@ -56,12 +56,12 @@
 <h3>使用此认证的集群</h3>
 <div>
 	<p v-if="clusters.length == 0" class="comment">暂时还没有集群使用此认证。</p>
-	<a :href="'/clusters/cluster?clusterId=' + cluster.id" class="ui label small" v-for="cluster in clusters">{{cluster.name}}</a>
+	<a :href="'/clusters/cluster?clusterId=' + cluster.id" class="ui label small basic" v-for="cluster in clusters">{{cluster.name}}</a>
 </div>
 
 <div class="ui divider"></div>
 <h3>使用此认证的节点</h3>
 <div>
 	<p v-if="nodes.length == 0" class="comment">暂时还没有节点使用此认证。</p>
-	<a :href="'/clusters/cluster/node?clusterId=' + node.cluster.id + '&nodeId=' + node.id" class="ui label small" :class="{red:!node.isOn}" v-for="node in nodes">{{node.name}}<span class="small">（{{node.cluster.name}}）</span></a>
+	<a :href="'/clusters/cluster/node?clusterId=' + node.cluster.id + '&nodeId=' + node.id" class="ui label small basic" :class="{red:!node.isOn}" v-for="node in nodes">{{node.name}}<span class="small">（{{node.cluster.name}}）</span></a>
 </div>

@@ -1,0 +1,59 @@
+{$layout}
+{$template "grant_menu"}
+
+<div class="ui message">可以在这里测试SSH主机连接是否正常。</div>
+
+<form class="ui form" data-tea-action="$" data-tea-success="success" data-tea-before="requestBefore" data-tea-done="requestDone">
+    <csrf-token></csrf-token>
+    <input type="hidden" name="grantId" :value="grant.id"/>
+    <table class="ui table selectable definition">
+        <tr>
+            <td class="title">节点主机地址 *</td>
+            <td>
+                <input type="text" name="host" placeholder="x.x.x.x" style="width: 10em" ref="focus"/>
+            </td>
+        </tr>
+        <tr>
+            <td>节点主机端口 *</td>
+            <td>
+                <input type="text" name="port" style="width: 5em" size="5" maxlength="5"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="title">认证方式</td>
+            <td>
+                {{grant.methodName}}
+            </td>
+        </tr>
+
+        <!-- 用户名/密码 -->
+        <tbody v-if="grant.method == 'user'">
+        <tr>
+            <td>SSH用户名</td>
+            <td>
+                {{grant.username}}
+            </td>
+        </tr>
+            <tr>
+                <td>SSH密码</td>
+                <td>{{grant.password}}
+            </tr>
+        </tbody>
+
+        <!-- 私钥 -->
+        <tbody v-if="grant.method == 'privateKey'">
+            <tr>
+                <td>RSA私钥</td>
+                <td>
+                    {{grant.privateKey}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="ui message green" v-if="resp != null && resp.isOk">连接成功！</div>
+    <div class="ui message red" v-if="resp != null && !resp.isOk">连接失败：{{resp.error}}</div>
+
+    <submit-btn v-if="!isRequesting">提交测试</submit-btn>
+    <button class="ui button disabled" v-if="isRequesting">连接中...</button>
+</form>

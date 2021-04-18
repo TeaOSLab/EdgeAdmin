@@ -23,7 +23,7 @@ func (this *SelectPopupAction) RunGet(params struct{}) {
 		this.ErrorPage(err)
 		return
 	}
-	grants := grantsResp.Grants
+	grants := grantsResp.NodeGrants
 	grantMaps := []maps.Map{}
 	for _, grant := range grants {
 		grantMaps = append(grantMaps, maps.Map{
@@ -52,12 +52,12 @@ func (this *SelectPopupAction) RunPost(params struct {
 		this.Success()
 	}
 
-	grantResp, err := this.RPC().NodeGrantRPC().FindEnabledGrant(this.AdminContext(), &pb.FindEnabledGrantRequest{GrantId: params.GrantId})
+	grantResp, err := this.RPC().NodeGrantRPC().FindEnabledNodeGrant(this.AdminContext(), &pb.FindEnabledNodeGrantRequest{NodeGrantId: params.GrantId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	grant := grantResp.Grant
+	grant := grantResp.NodeGrant
 	if grant == nil {
 		this.Fail("找不到要使用的认证")
 	}

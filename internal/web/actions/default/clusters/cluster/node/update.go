@@ -114,17 +114,17 @@ func (this *UpdateAction) RunGet(params struct {
 		grantMap := maps.Map{}
 		grantId := loginParams.GetInt64("grantId")
 		if grantId > 0 {
-			grantResp, err := this.RPC().NodeGrantRPC().FindEnabledGrant(this.AdminContext(), &pb.FindEnabledGrantRequest{GrantId: grantId})
+			grantResp, err := this.RPC().NodeGrantRPC().FindEnabledNodeGrant(this.AdminContext(), &pb.FindEnabledNodeGrantRequest{NodeGrantId: grantId})
 			if err != nil {
 				this.ErrorPage(err)
 				return
 			}
-			if grantResp.Grant != nil {
+			if grantResp.NodeGrant != nil {
 				grantMap = maps.Map{
-					"id":         grantResp.Grant.Id,
-					"name":       grantResp.Grant.Name,
-					"method":     grantResp.Grant.Method,
-					"methodName": grantutils.FindGrantMethodName(grantResp.Grant.Method),
+					"id":         grantResp.NodeGrant.Id,
+					"name":       grantResp.NodeGrant.Name,
+					"method":     grantResp.NodeGrant.Method,
+					"methodName": grantutils.FindGrantMethodName(grantResp.NodeGrant.Method),
 				}
 			}
 		}

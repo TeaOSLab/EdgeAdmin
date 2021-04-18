@@ -38,7 +38,7 @@ func (this *DeleteAction) RunPost(params struct {
 	}
 
 	// 删除
-	_, err = this.RPC().NodeGrantRPC().DisableNodeGrant(this.AdminContext(), &pb.DisableNodeGrantRequest{GrantId: params.GrantId})
+	_, err = this.RPC().NodeGrantRPC().DisableNodeGrant(this.AdminContext(), &pb.DisableNodeGrantRequest{NodeGrantId: params.GrantId})
 	if err != nil {
 		this.ErrorPage(err)
 		return

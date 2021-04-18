@@ -24,6 +24,7 @@ func init() {
 			GetPost("/selectPopup", new(SelectPopupAction)).
 			GetPost("/createPopup", new(CreatePopupAction)).
 			GetPost("/updatePopup", new(UpdatePopupAction)).
+			GetPost("/test", new(TestAction)).
 			EndAll()
 	})
 }

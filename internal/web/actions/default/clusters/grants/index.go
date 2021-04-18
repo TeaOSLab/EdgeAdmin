@@ -33,7 +33,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 		return
 	}
 	grantMaps := []maps.Map{}
-	for _, grant := range grantsResp.Grants {
+	for _, grant := range grantsResp.NodeGrants {
 		// 集群数
 		countClustersResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClustersWithGrantId(this.AdminContext(), &pb.CountAllEnabledNodeClustersWithGrantIdRequest{GrantId: grant.Id})
 		if err != nil {
