@@ -30,7 +30,7 @@ func (this *Piece) IncreaseInt64(key uint64, delta int64, expiredAt int64) (resu
 	this.locker.Lock()
 	item, ok := this.m[key]
 	if ok {
-		result := types.Int64(item.Value) + delta
+		result = types.Int64(item.Value) + delta
 		item.Value = result
 		item.expiredAt = expiredAt
 	} else {
