@@ -2,6 +2,7 @@ package clusterutils
 
 import (
 	"encoding/json"
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
@@ -115,11 +116,13 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, selectedIt
 		"isActive": selectedItem == "dns",
 		"isOn":     cluster.DnsDomainId > 0 || len(cluster.DnsName) > 0,
 	})
-	items = append(items, maps.Map{
-		"name":     "消息通知",
-		"url":      "/clusters/cluster/settings/message?clusterId=" + clusterId,
-		"isActive": selectedItem == "message",
-	})
+	if teaconst.IsPlus {
+		items = append(items, maps.Map{
+			"name":     "消息通知",
+			"url":      "/clusters/cluster/settings/message?clusterId=" + clusterId,
+			"isActive": selectedItem == "message",
+		})
+	}
 
 	items = append(items, maps.Map{
 		"name":     "-",
