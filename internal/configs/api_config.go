@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 )
 
-// API配置
+// APIConfig API配置
 type APIConfig struct {
 	RPC struct {
 		Endpoints []string `yaml:"endpoints"`
@@ -18,7 +18,7 @@ type APIConfig struct {
 	Secret string `yaml:"secret"`
 }
 
-// 加载API配置
+// LoadAPIConfig 加载API配置
 func LoadAPIConfig() (*APIConfig, error) {
 	// 候选文件
 	localFile := Tea.ConfigFile("api.yaml")
@@ -59,7 +59,7 @@ func LoadAPIConfig() (*APIConfig, error) {
 	return config, nil
 }
 
-// 写入API配置
+// WriteFile 写入API配置
 func (this *APIConfig) WriteFile(path string) error {
 	data, err := yaml.Marshal(this)
 	if err != nil {

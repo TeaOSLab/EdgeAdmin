@@ -6,7 +6,7 @@ import (
 
 var isConfigured bool
 
-// 判断系统是否已经配置过
+// IsConfigured 判断系统是否已经配置过
 func IsConfigured() bool {
 	if isConfigured {
 		return true
