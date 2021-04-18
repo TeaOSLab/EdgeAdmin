@@ -17,14 +17,16 @@
 				<select class="ui dropdown auto-width" name="clusterId">
 					<option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
 				</select>
+                <p class="comment">当前服务将会部署到所选集群的节点上。</p>
 			</td>
 		</tr>
 		<tr>
 			<td>服务类型 *</td>
 			<td>
 				<select class="ui dropdown auto-width" name="serverType" v-model="serverType" @change="changeServerType()">
-					<option v-for="serverType in serverTypes" :value="serverType.code">{{serverType.name}}</option>
+					<option v-for="s in serverTypes" :value="s.code">{{s.name}}</option>
 				</select>
+                <p class="comment" v-for="s in serverTypes" v-if="s.code == serverType">{{s.description}}</p>
 			</td>
 		</tr>
 		<tr>
@@ -33,8 +35,6 @@
 				<network-addresses-box :v-server-type="serverType"></network-addresses-box>
 			</td>
 		</tr>
-
-
 
 		<!-- 域名 -->
 		<tr v-if="serverType == 'httpProxy' || serverType == 'httpWeb'">
