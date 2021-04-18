@@ -36,6 +36,15 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["activeState"] = params.ActiveState
 	this.Data["keyword"] = params.Keyword
 
+	countAllResp, err := this.RPC().NodeRPC().CountAllEnabledNodesMatch(this.AdminContext(), &pb.CountAllEnabledNodesMatchRequest{
+		NodeClusterId: params.ClusterId,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["countAll"] = countAllResp.Count
+
 	countResp, err := this.RPC().NodeRPC().CountAllEnabledNodesMatch(this.AdminContext(), &pb.CountAllEnabledNodesMatchRequest{
 		NodeClusterId: params.ClusterId,
 		GroupId:       params.GroupId,
