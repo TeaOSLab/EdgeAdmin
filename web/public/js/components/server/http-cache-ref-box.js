@@ -13,7 +13,8 @@ Vue.component("http-cache-ref-box", {
 				skipCacheControlValues: ["private", "no-cache", "no-store"],
 				skipSetCookie: true,
 				enableRequestCachePragma: false,
-				conds: null
+				conds: null,
+				allowChunkedEncoding: true
 			}
 		}
 		if (ref.life == null) {
@@ -70,6 +71,13 @@ Vue.component("http-cache-ref-box", {
 		<td>可缓存的最大文件</td>
 		<td>
 			<size-capacity-box :v-value="ref.maxSize" @change="changeMaxSize"></size-capacity-box>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible">
+		<td>支持分片内容</td>
+		<td>
+			<checkbox name="allowChunkedEncoding" value="1" v-model="ref.allowChunkedEncoding"></checkbox>
+			<p class="comment">选中后，Gzip和Chunked内容可以直接缓存，无需检查内容长度。</p>
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible">
