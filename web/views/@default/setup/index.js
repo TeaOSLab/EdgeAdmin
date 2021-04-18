@@ -110,6 +110,8 @@ Tea.context(function () {
 	}
 
 	this.finishSuccess = function () {
-		teaweb.success("html:恭喜你！安装完成！<br/>请记住你创建的管理员账号，现在跳转到登录界面。", "/")
+		teaweb.success("html:恭喜你！安装完成！<br/>请记住你创建的管理员账号，现在跳转到登录界面。", function () {
+			window.location = "/"
+		})
 	}
 })
