@@ -22,19 +22,19 @@ func (this *UpdateAction) RunGet(params struct {
 }) {
 	this.Data["methods"] = grantutils.AllGrantMethods()
 
-	grantResp, err := this.RPC().NodeGrantRPC().FindEnabledGrant(this.AdminContext(), &pb.FindEnabledGrantRequest{GrantId: params.GrantId})
+	grantResp, err := this.RPC().NodeGrantRPC().FindEnabledNodeGrant(this.AdminContext(), &pb.FindEnabledNodeGrantRequest{NodeGrantId: params.GrantId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	if grantResp.Grant == nil {
+	if grantResp.NodeGrant == nil {
 		this.WriteString("can not find the grant")
 		return
 	}
 
 	// TODO 处理节点专用的认证
 
-	grant := grantResp.Grant
+	grant := grantResp.NodeGrant
 	this.Data["grant"] = maps.Map{
 		"id":          grant.Id,
 		"name":        grant.Name,
@@ -84,7 +84,7 @@ func (this *UpdateAction) RunPost(params struct {
 	// TODO 检查grantId是否存在
 
 	_, err := this.RPC().NodeGrantRPC().UpdateNodeGrant(this.AdminContext(), &pb.UpdateNodeGrantRequest{
-		GrantId:     params.GrantId,
+		NodeGrantId: params.GrantId,
 		Name:        params.Name,
 		Method:      params.Method,
 		Username:    params.Username,
