@@ -222,6 +222,7 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 			"module": configloaders.AdminModuleCodeFinance,
 			"name":   "财务管理",
 			"icon":   "yen sign",
+			"isOn":   teaconst.IsPlus,
 		},
 		{
 			"code":     "admins",
