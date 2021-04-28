@@ -78,7 +78,7 @@ Vue.component("ssl-certs-box", {
 	<input type="hidden" name="certIdsJSON" :value="JSON.stringify(certIds())"/>
 	<div v-if="certs != null && certs.length > 0">
 		<div class="ui label small" v-for="(cert, index) in certs">
-			{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp; <a href="" title="删除" @click.prevent="removeCert()"><i class="icon remove"></i></a>
+			{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp; <a href="" title="删除" @click.prevent="removeCert(index)"><i class="icon remove"></i></a>
 		</div>
 		<div class="ui divider" v-if="buttonsVisible()"></div>
 	</div>

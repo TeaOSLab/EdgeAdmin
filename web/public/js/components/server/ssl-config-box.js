@@ -354,7 +354,7 @@ Vue.component("ssl-config-box", {
 				<td>
 					<div v-if="policy.certs != null && policy.certs.length > 0">
 						<div class="ui label small" v-for="(cert, index) in policy.certs">
-							{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp; <a href="" title="删除" @click.prevent="removeCert()"><i class="icon remove"></i></a>
+							{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp; <a href="" title="删除" @click.prevent="removeCert(index)"><i class="icon remove"></i></a>
 						</div>
 						<div class="ui divider"></div>
 					</div>
