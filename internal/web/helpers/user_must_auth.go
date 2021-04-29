@@ -107,6 +107,7 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	}
 	action.Data["teaShowOpenSourceInfo"] = config.ShowOpenSourceInfo
 	action.Data["teaIsSuper"] = false
+	action.Data["teaIsPlus"] = teaconst.IsPlus
 	action.Data["teaDemoEnabled"] = teaconst.IsDemo
 	action.Data["teaShowFinance"] = configloaders.ShowFinance()
 	if !action.Data.Has("teaSubMenu") {

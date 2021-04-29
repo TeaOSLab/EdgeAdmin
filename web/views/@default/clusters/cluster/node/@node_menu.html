@@ -2,7 +2,8 @@
 	<menu-item :href="'/clusters/cluster?clusterId=' + clusterId">节点列表</menu-item>
 	<span class="item">|</span>
 	<menu-item :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + nodeId" code="node">节点详情</menu-item>
-	<menu-item :href="'/clusters/cluster/node/logs?clusterId=' + clusterId + '&nodeId=' + nodeId" code="log">运行日志</menu-item>
+    <menu-item :href="'/clusters/cluster/node/monitor?clusterId=' + clusterId + '&nodeId=' + nodeId" code="monitor" v-if="teaIsPlus">监控图表</menu-item>
+    <menu-item :href="'/clusters/cluster/node/logs?clusterId=' + clusterId + '&nodeId=' + nodeId" code="log">运行日志</menu-item>
 	<menu-item :href="'/clusters/cluster/node/update?clusterId=' + clusterId + '&nodeId=' + nodeId" code="update">修改设置</menu-item>
 	<menu-item :href="'/clusters/cluster/node/install?clusterId=' + clusterId + '&nodeId=' + nodeId" code="install">安装节点</menu-item>
 </second-menu>
