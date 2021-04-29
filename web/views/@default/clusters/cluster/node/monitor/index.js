@@ -2,6 +2,7 @@ Tea.context(function () {
 	this.$delay(function () {
 		this.loadTrafficInChart()
 		this.loadTrafficOutChart()
+		this.loadConnectionsChart()
 		this.loadCPUChart()
 		this.loadMemoryChart()
 		this.loadLoadChart()
@@ -10,6 +11,7 @@ Tea.context(function () {
 		window.addEventListener("resize", function () {
 			that.resizeChart("traffic-in-chart")
 			that.resizeChart("traffic-out-chart")
+			that.resizeChart("connections-chart")
 			that.resizeChart("cpu-chart")
 			that.resizeChart("memory-chart")
 			that.resizeChart("load-chart")
@@ -80,6 +82,40 @@ Tea.context(function () {
 			.done(function () {
 				this.$delay(function () {
 					this.loadTrafficOutChart()
+				}, 30000)
+			})
+	}
+
+	this.loadConnectionsChart = function () {
+		this.$post(".connections")
+			.params({
+				nodeId: this.nodeId
+			})
+			.success(function (resp) {
+				let values = resp.data.values
+				let maxFunc = function () {
+					let max = values.map(function (v) {
+						return v.value
+					}).$max()
+					if (max < 10) {
+						return 10
+					}
+					if (max < 100) {
+						return 100
+					}
+					if (max < 1000) {
+						return 1000
+					}
+					return null
+				}
+				let valueFunc = function (v) {
+					return v.value
+				}
+				this.reloadChart("connections-chart", "", values, "", maxFunc, valueFunc)
+			})
+			.done(function () {
+				this.$delay(function () {
+					this.loadConnectionsChart()
 				}, 30000)
 			})
 	}
