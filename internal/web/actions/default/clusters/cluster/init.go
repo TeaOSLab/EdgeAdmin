@@ -4,6 +4,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/groups"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/monitor"
 	clusters "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/clusterutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/iwind/TeaGo"
@@ -37,6 +38,12 @@ func init() {
 			Post("/node/start", new(node.StartAction)).
 			Post("/node/stop", new(node.StopAction)).
 			Post("/node/up", new(node.UpAction)).
+			Get("/node/monitor", new(monitor.IndexAction)).
+			Post("/node/monitor/cpu", new(monitor.CpuAction)).
+			Post("/node/monitor/memory", new(monitor.MemoryAction)).
+			Post("/node/monitor/load", new(monitor.LoadAction)).
+			Post("/node/monitor/trafficIn", new(monitor.TrafficInAction)).
+			Post("/node/monitor/trafficOut", new(monitor.TrafficOutAction)).
 
 			// 分组相关
 			Get("/groups", new(groups.IndexAction)).
