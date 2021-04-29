@@ -22,8 +22,12 @@ func FormatBytes(bytes int64) string {
 		return fmt.Sprintf("%.2fMB", float64(bytes)/1024/1024)
 	} else if bytes < 1024*1024*1024*1024 {
 		return fmt.Sprintf("%.2fGB", float64(bytes)/1024/1024/1024)
+	} else if bytes < 1024*1024*1024*1024*1024 {
+		return fmt.Sprintf("%.2fTB", float64(bytes)/1024/1024/1024/1024)
+	} else if bytes < 1024*1024*1024*1024*1024*1024 {
+		return fmt.Sprintf("%.2fPB", float64(bytes)/1024/1024/1024/1024/1024)
 	} else {
-		return fmt.Sprintf("%.2fPB", float64(bytes)/1024/1024/1024/1024)
+		return fmt.Sprintf("%.2fEB", float64(bytes)/1024/1024/1024/1024/1024/1024)
 	}
 }
 
@@ -36,7 +40,11 @@ func FormatBits(bits int64) string {
 		return fmt.Sprintf("%.2fMB", float64(bits)/1000/1000)
 	} else if bits < 1000*1000*1000*1000 {
 		return fmt.Sprintf("%.2fGB", float64(bits)/1000/1000/1000)
+	} else if bits < 1000*1000*1000*1000*1000 {
+		return fmt.Sprintf("%.2fTB", float64(bits)/1000/1000/1000/1000)
+	} else if bits < 1000*1000*1000*1000*1000*1000 {
+		return fmt.Sprintf("%.2fPB", float64(bits)/1000/1000/1000/1000/1000)
 	} else {
-		return fmt.Sprintf("%.2fPB", float64(bits)/1000/1000/1000/1000)
+		return fmt.Sprintf("%.2fEB", float64(bits)/1000/1000/1000/1000/1000/1000)
 	}
 }

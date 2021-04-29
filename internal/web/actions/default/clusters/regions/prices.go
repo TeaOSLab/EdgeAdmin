@@ -77,8 +77,10 @@ func (this *PricesAction) formatBits(bits int64) string {
 		sizeHuman = fmt.Sprintf("%.2fGBPS", float64(bits)/1000/1000/1000)
 	} else if bits < 1_000_000_000_000_000 {
 		sizeHuman = fmt.Sprintf("%.2fTBPS", float64(bits)/1000/1000/1000/1000)
-	} else {
+	} else if bits < 1_000_000_000_000_000_000 {
 		sizeHuman = fmt.Sprintf("%.2fPBPS", float64(bits)/1000/1000/1000/1000/1000)
+	} else {
+		sizeHuman = fmt.Sprintf("%.2fEBPS", float64(bits)/1000/1000/1000/1000/1000/1000)
 	}
 	return sizeHuman
 }

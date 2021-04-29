@@ -37,6 +37,10 @@ Tea.context(function () {
 			return (bits / 1000 / 1000 / 1000) + "PB"
 		}
 
+		if (bits < 1000 * 1000 * 1000 * 1000 * 1000) {
+			return (bits / 1000 / 1000 / 1000 / 1000) + "EB"
+		}
+
 		return ""
 	}
 })
