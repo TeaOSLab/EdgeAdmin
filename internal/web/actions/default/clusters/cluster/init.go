@@ -44,6 +44,7 @@ func init() {
 			Post("/node/monitor/load", new(monitor.LoadAction)).
 			Post("/node/monitor/trafficIn", new(monitor.TrafficInAction)).
 			Post("/node/monitor/trafficOut", new(monitor.TrafficOutAction)).
+			Post("/node/monitor/connections", new(monitor.ConnectionsAction)).
 
 			// 分组相关
 			Get("/groups", new(groups.IndexAction)).
