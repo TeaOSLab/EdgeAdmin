@@ -27,7 +27,7 @@ func NewClusterHelper() *ClusterHelper {
 func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext bool) {
 	action := actionPtr.Object()
 	if action.Request.Method != http.MethodGet {
-		return
+		return true
 	}
 
 	action.Data["teaMenu"] = "clusters"
