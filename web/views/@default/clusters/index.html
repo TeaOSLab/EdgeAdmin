@@ -11,8 +11,14 @@
         <div class="ui field">
             <button class="ui button" type="submit">搜索</button>
         </div>
+        <div class="ui field" v-if="latestClusters.length > 0">
+            <a href="" @click.prevent="showLatest()">常用<i class="icon angle" :class="{down: !latestVisible, up: latestVisible}"></i> </a>
+        </div>
     </div>
 </form>
+<div class="ui segment" v-if="latestVisible">
+    常用集群：<span v-for="cluster in latestClusters"><a :href="'/clusters/cluster?clusterId=' + cluster.id">{{cluster.name}}</a> &nbsp; </span>
+</div>
 
 <div class="ui tabular menu" v-if="isSearching">
     <a :href="'/clusters?searchType=cluster&keyword=' + keyword" class="item" :class="{active: searchType == '' || searchType == 'cluster'}">集群({{countClusters}})</a>
