@@ -25,6 +25,9 @@
                 <div class="ui field">
                     <button type="submit" class="ui button">搜索</button>
                 </div>
+                <div class="ui field" v-if="latestServers.length > 0">
+                    <a href="" @click.prevent="showLatest()">常用<i class="icon angle" :class="{down: !latestVisible, up: latestVisible}"></i> </a>
+                </div>
             </div>
         </div>
         <div class="item right">
@@ -32,6 +35,11 @@
         </div>
     </div>
 </form>
+
+<!-- 常用服务 -->
+<div class="ui segment" v-if="latestVisible">
+    常用服务：<span v-for="server in latestServers"><a :href="'/servers/server?serverId=' + server.id">{{server.name}}</a> &nbsp; </span>
+</div>
 
 <p class="ui message" v-if="servers.length == 0">暂时还没有服务。</p>
 

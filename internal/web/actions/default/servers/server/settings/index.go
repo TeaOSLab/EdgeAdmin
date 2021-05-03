@@ -10,7 +10,7 @@ import (
 	"github.com/iwind/TeaGo/maps"
 )
 
-// 服务基本信息设置
+// IndexAction 服务基本信息设置
 type IndexAction struct {
 	actionutils.ParentAction
 }
@@ -102,10 +102,20 @@ func (this *IndexAction) RunGet(params struct {
 	typeName := serverType.GetString("name")
 	this.Data["typeName"] = typeName
 
+	// 记录最近使用
+	_, err = this.RPC().LatestItemRPC().IncreaseLatestItem(this.AdminContext(), &pb.IncreaseLatestItemRequest{
+		ItemType: "server",
+		ItemId:   params.ServerId,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
 	this.Show()
 }
 
-// 保存
+// RunPost 保存
 func (this *IndexAction) RunPost(params struct {
 	ServerId    int64
 	Name        string

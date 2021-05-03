@@ -38,7 +38,7 @@ func (this *IndexAction) RunGet(params struct {
 	// 常用的节点
 	latestClusterMaps := []maps.Map{}
 	if !isSearching {
-		clustersResp, err := this.RPC().NodeClusterRPC().FindLatestNodeClusters(this.AdminContext(), &pb.FindLatestNodeClustersRequest{Size: 4})
+		clustersResp, err := this.RPC().NodeClusterRPC().FindLatestNodeClusters(this.AdminContext(), &pb.FindLatestNodeClustersRequest{Size: 6})
 		if err != nil {
 			this.ErrorPage(err)
 			return
