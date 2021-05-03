@@ -37,4 +37,13 @@ Tea.context(function () {
 				})
 			})
 	}
-});
+
+	/**
+	 * 最近使用
+	 */
+	this.latestVisible = false
+
+	this.showLatest = function () {
+		this.latestVisible = !this.latestVisible
+	}
+})

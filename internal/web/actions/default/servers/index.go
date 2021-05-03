@@ -30,9 +30,28 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["auditingFlag"] = params.AuditingFlag
 	this.Data["checkDNS"] = params.CheckDNS
 
+	isSearching := params.AuditingFlag == 1 || params.ClusterId > 0 || params.GroupId > 0 || len(params.Keyword) > 0
+
 	if params.AuditingFlag > 0 {
 		this.Data["firstMenuItem"] = "auditing"
 	}
+
+	// 常用的服务
+	latestServerMaps := []maps.Map{}
+	if !isSearching {
+		serversResp, err := this.RPC().ServerRPC().FindLatestServers(this.AdminContext(), &pb.FindLatestServersRequest{Size: 6})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		for _, server := range serversResp.Servers {
+			latestServerMaps = append(latestServerMaps, maps.Map{
+				"id":   server.Id,
+				"name": server.Name,
+			})
+		}
+	}
+	this.Data["latestServers"] = latestServerMaps
 
 	// 审核中的数量
 	countAuditingResp, err := this.RPC().ServerRPC().CountAllEnabledServersMatch(this.AdminContext(), &pb.CountAllEnabledServersMatchRequest{

@@ -24,6 +24,16 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["serverId"] = params.ServerId
 	this.Data["requestId"] = params.RequestId
 
+	// 记录最近使用
+	_, err := this.RPC().LatestItemRPC().IncreaseLatestItem(this.AdminContext(), &pb.IncreaseLatestItemRequest{
+		ItemType: "server",
+		ItemId:   params.ServerId,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
 	this.Show()
 }
 
