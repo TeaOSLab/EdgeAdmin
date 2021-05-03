@@ -203,5 +203,15 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	this.Data["regions"] = regionMaps
 
+	// 记录最近访问
+	_, err = this.RPC().LatestItemRPC().IncreaseLatestItem(this.AdminContext(), &pb.IncreaseLatestItemRequest{
+		ItemType: "cluster",
+		ItemId:   params.ClusterId,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
 	this.Show()
 }

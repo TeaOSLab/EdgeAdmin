@@ -24,7 +24,7 @@ func NewClusterHelper() *ClusterHelper {
 	return &ClusterHelper{}
 }
 
-func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) {
+func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext bool) {
 	action := actionPtr.Object()
 	if action.Request.Method != http.MethodGet {
 		return
@@ -67,6 +67,8 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) {
 			action.Data["leftMenuItems"] = this.createSettingMenu(cluster, secondMenuItem)
 		}
 	}
+
+	return true
 }
 
 // 设置菜单
