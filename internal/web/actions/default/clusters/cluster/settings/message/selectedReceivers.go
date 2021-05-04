@@ -21,7 +21,7 @@ func (this *SelectedReceiversAction) RunPost(params struct {
 	NodeId    int64
 	ServerId  int64
 }) {
-	receiversResp, err := this.RPC().MessageReceiverRPC().FindAllMessageReceivers(this.AdminContext(), &pb.FindAllMessageReceiversRequest{
+	receiversResp, err := this.RPC().MessageReceiverRPC().FindAllEnabledMessageReceivers(this.AdminContext(), &pb.FindAllEnabledMessageReceiversRequest{
 		NodeClusterId: params.ClusterId,
 		NodeId:        params.NodeId,
 		ServerId:      params.ServerId,

@@ -119,10 +119,21 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, selectedIt
 		"isOn":     cluster.DnsDomainId > 0 || len(cluster.DnsName) > 0,
 	})
 	if teaconst.IsPlus {
+		hasThresholds, _ := this.checkThresholds(cluster.Id)
+		items = append(items, maps.Map{
+			"name":     "阈值设置",
+			"url":      "/clusters/cluster/settings/thresholds?clusterId=" + clusterId,
+			"isActive": selectedItem == "threshold",
+			"isOn":     hasThresholds,
+		})
+	}
+	if teaconst.IsPlus {
+		hasMessageReceivers, _ := this.checkMessages(cluster.Id)
 		items = append(items, maps.Map{
 			"name":     "消息通知",
 			"url":      "/clusters/cluster/settings/message?clusterId=" + clusterId,
 			"isActive": selectedItem == "message",
+			"isOn":     hasMessageReceivers,
 		})
 	}
 
@@ -173,6 +184,36 @@ func (this *ClusterHelper) checkFirewallActions(clusterId int64) (bool, error) {
 		return false, err
 	}
 	resp, err := rpcClient.NodeClusterFirewallActionRPC().CountAllEnabledNodeClusterFirewallActions(rpcClient.Context(0), &pb.CountAllEnabledNodeClusterFirewallActionsRequest{NodeClusterId: clusterId})
+	if err != nil {
+		return false, err
+	}
+	return resp.Count > 0, nil
+}
+
+// 检查阈值是否已经设置
+func (this *ClusterHelper) checkThresholds(clusterId int64) (bool, error) {
+	rpcClient, err := rpc.SharedRPC()
+	if err != nil {
+		return false, err
+	}
+	resp, err := rpcClient.NodeThresholdRPC().CountAllEnabledNodeThresholds(rpcClient.Context(0), &pb.CountAllEnabledNodeThresholdsRequest{
+		NodeClusterId: clusterId,
+	})
+	if err != nil {
+		return false, err
+	}
+	return resp.Count > 0, nil
+}
+
+// 检查消息通知是否已经设置
+func (this *ClusterHelper) checkMessages(clusterId int64) (bool, error) {
+	rpcClient, err := rpc.SharedRPC()
+	if err != nil {
+		return false, err
+	}
+	resp, err := rpcClient.MessageReceiverRPC().CountAllEnabledMessageReceivers(rpcClient.Context(0), &pb.CountAllEnabledMessageReceiversRequest{
+		NodeClusterId: clusterId,
+	})
 	if err != nil {
 		return false, err
 	}
