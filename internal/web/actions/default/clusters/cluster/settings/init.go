@@ -8,6 +8,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/health"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/message"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/services"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/thresholds"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/toa"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/waf"
 	clusters "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/clusterutils"
@@ -58,6 +59,13 @@ func init() {
 			GetPost("/createPopup", new(firewallActions.CreatePopupAction)).
 			GetPost("/updatePopup", new(firewallActions.UpdatePopupAction)).
 			Post("/delete", new(firewallActions.DeleteAction)).
+
+			// 阈值
+			Prefix("/clusters/cluster/settings/thresholds").
+			Get("", new(thresholds.IndexAction)).
+			GetPost("/createPopup", new(thresholds.CreatePopupAction)).
+			GetPost("/updatePopup", new(thresholds.UpdatePopupAction)).
+			Post("/delete", new(thresholds.DeleteAction)).
 
 			EndAll()
 	})

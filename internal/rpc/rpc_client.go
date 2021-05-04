@@ -95,6 +95,10 @@ func (this *RPCClient) NodeValueRPC() pb.NodeValueServiceClient {
 	return pb.NewNodeValueServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) NodeThresholdRPC() pb.NodeThresholdServiceClient {
+	return pb.NewNodeThresholdServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) ServerRPC() pb.ServerServiceClient {
 	return pb.NewServerServiceClient(this.pickConn())
 }
