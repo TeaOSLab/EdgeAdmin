@@ -4,6 +4,7 @@
 <form class="ui form" data-tea-action="$" data-tea-success="success">
     <csrf-token></csrf-token>
     <input type="hidden" name="clusterId" :value="clusterId" />
+    <input type="hidden" name="nodeId" :value="nodeId"/>
     <input type="hidden" name="sumMethod" value="avg"/>
 
     <table class="ui table definition selectable">
@@ -55,12 +56,31 @@
             </td>
         </tr>
         <tr>
-            <td>消息</td>
-            <td>
-                <textarea rows="2" maxlength="100" name="message"></textarea>
-                <p class="comment">触发阈值时的消息提示。</p>
-            </td>
+            <td colspan="2"><more-options-indicator></more-options-indicator></td>
         </tr>
+        <tbody v-show="moreOptionsVisible">
+            <tr>
+                <td>消息</td>
+                <td>
+                    <textarea rows="2" maxlength="100" name="message"></textarea>
+                    <p class="comment">触发阈值时的消息提示。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>消息通知间隔</td>
+                <td>
+                    <div class="ui fields inline">
+                        <div class="ui field">
+                            <input type="text" name="notifyDuration" value="10" style="width: 5em"/>
+                        </div>
+                        <div class="ui field">
+                            分钟
+                        </div>
+                    </div>
+                    <p class="comment">在此间隔内将不会重复发送跟此阈值相关的消息。</p>
+                </td>
+            </tr>
+        </tbody>
     </table>
 
     <submit-btn></submit-btn>

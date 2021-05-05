@@ -197,6 +197,7 @@ func (this *ClusterHelper) checkThresholds(clusterId int64) (bool, error) {
 		return false, err
 	}
 	resp, err := rpcClient.NodeThresholdRPC().CountAllEnabledNodeThresholds(rpcClient.Context(0), &pb.CountAllEnabledNodeThresholdsRequest{
+		Role:          "node",
 		NodeClusterId: clusterId,
 	})
 	if err != nil {

@@ -14,18 +14,20 @@ type IndexAction struct {
 }
 
 func (this *IndexAction) Init() {
-	this.Nav("", "setting", "setting")
-	this.SecondMenu("threshold")
+	this.Nav("", "node", "threshold")
 }
 
 func (this *IndexAction) RunGet(params struct {
 	ClusterId int64
+	NodeId    int64
 }) {
+	this.Data["nodeId"] = params.NodeId
+
 	// 列出所有阈值
 	thresholdsResp, err := this.RPC().NodeThresholdRPC().FindAllEnabledNodeThresholds(this.AdminContext(), &pb.FindAllEnabledNodeThresholdsRequest{
 		Role:          "node",
 		NodeClusterId: params.ClusterId,
-		NodeId:        0,
+		NodeId:        params.NodeId,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -34,14 +36,6 @@ func (this *IndexAction) RunGet(params struct {
 
 	thresholdMaps := []maps.Map{}
 	for _, threshold := range thresholdsResp.NodeThresholds {
-		var nodeMap maps.Map = nil
-		if threshold.Node != nil {
-			nodeMap = maps.Map{
-				"id":   threshold.Node.Id,
-				"name": threshold.Node.Name,
-			}
-		}
-
 		thresholdMaps = append(thresholdMaps, maps.Map{
 			"id":               threshold.Id,
 			"itemName":         nodeconfigs.FindNodeValueItemName(threshold.Item),
@@ -52,7 +46,6 @@ func (this *IndexAction) RunGet(params struct {
 			"duration":         threshold.Duration,
 			"durationUnitName": nodeconfigs.FindNodeValueDurationUnitName(threshold.DurationUnit),
 			"isOn":             threshold.IsOn,
-			"node":             nodeMap,
 		})
 	}
 	this.Data["thresholds"] = thresholdMaps
