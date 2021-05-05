@@ -46,31 +46,33 @@ func (this *UpdatePopupAction) RunGet(params struct {
 	}
 
 	this.Data["threshold"] = maps.Map{
-		"id":           threshold.Id,
-		"item":         threshold.Item,
-		"param":        threshold.Param,
-		"message":      threshold.Message,
-		"value":        nodeconfigs.UnmarshalNodeValue(threshold.ValueJSON),
-		"operator":     threshold.Operator,
-		"duration":     threshold.Duration,
-		"durationUnit": threshold.DurationUnit,
-		"isOn":         threshold.IsOn,
+		"id":             threshold.Id,
+		"item":           threshold.Item,
+		"param":          threshold.Param,
+		"message":        threshold.Message,
+		"notifyDuration": threshold.NotifyDuration,
+		"value":          nodeconfigs.UnmarshalNodeValue(threshold.ValueJSON),
+		"operator":       threshold.Operator,
+		"duration":       threshold.Duration,
+		"durationUnit":   threshold.DurationUnit,
+		"isOn":           threshold.IsOn,
 	}
 
 	this.Show()
 }
 
 func (this *UpdatePopupAction) RunPost(params struct {
-	ThresholdId  int64
-	Item         string
-	Param        string
-	SumMethod    string
-	Operator     string
-	Value        string
-	Duration     int32
-	DurationUnit string
-	Message      string
-	IsOn         bool
+	ThresholdId    int64
+	Item           string
+	Param          string
+	SumMethod      string
+	Operator       string
+	Value          string
+	Duration       int32
+	DurationUnit   string
+	Message        string
+	NotifyDuration int32
+	IsOn           bool
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -89,6 +91,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		Operator:        params.Operator,
 		ValueJSON:       valueJSON,
 		Message:         params.Message,
+		NotifyDuration:  params.NotifyDuration,
 		Duration:        params.Duration,
 		DurationUnit:    params.DurationUnit,
 		SumMethod:       params.SumMethod,

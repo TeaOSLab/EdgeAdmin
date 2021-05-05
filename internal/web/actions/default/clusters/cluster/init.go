@@ -5,6 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/groups"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/monitor"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/thresholds"
 	clusters "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/clusterutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/iwind/TeaGo"
@@ -45,6 +46,7 @@ func init() {
 			Post("/node/monitor/trafficIn", new(monitor.TrafficInAction)).
 			Post("/node/monitor/trafficOut", new(monitor.TrafficOutAction)).
 			Post("/node/monitor/connections", new(monitor.ConnectionsAction)).
+			Get("/node/thresholds", new(thresholds.IndexAction)).
 
 			// 分组相关
 			Get("/groups", new(groups.IndexAction)).

@@ -20,8 +20,10 @@ func (this *CreatePopupAction) Init() {
 
 func (this *CreatePopupAction) RunGet(params struct {
 	ClusterId int64
+	NodeId    int64
 }) {
 	this.Data["clusterId"] = params.ClusterId
+	this.Data["nodeId"] = params.NodeId
 	this.Data["items"] = nodeconfigs.FindAllNodeValueItemDefinitions()
 	this.Data["operators"] = nodeconfigs.FindAllNodeValueOperatorDefinitions()
 
@@ -29,16 +31,17 @@ func (this *CreatePopupAction) RunGet(params struct {
 }
 
 func (this *CreatePopupAction) RunPost(params struct {
-	ClusterId    int64
-	NodeId       int64
-	Item         string
-	Param        string
-	SumMethod    string
-	Operator     string
-	Value        string
-	Duration     int32
-	DurationUnit string
-	Message      string
+	ClusterId      int64
+	NodeId         int64
+	Item           string
+	Param          string
+	SumMethod      string
+	Operator       string
+	Value          string
+	Duration       int32
+	DurationUnit   string
+	Message        string
+	NotifyDuration int32
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -53,16 +56,18 @@ func (this *CreatePopupAction) RunPost(params struct {
 		return
 	}
 	resp, err := this.RPC().NodeThresholdRPC().CreateNodeThreshold(this.AdminContext(), &pb.CreateNodeThresholdRequest{
-		NodeClusterId: params.ClusterId,
-		NodeId:        params.NodeId,
-		Item:          params.Item,
-		Param:         params.Param,
-		Operator:      params.Operator,
-		ValueJSON:     valueJSON,
-		Message:       params.Message,
-		Duration:      params.Duration,
-		DurationUnit:  params.DurationUnit,
-		SumMethod:     params.SumMethod,
+		Role:           "node",
+		NodeClusterId:  params.ClusterId,
+		NodeId:         params.NodeId,
+		Item:           params.Item,
+		Param:          params.Param,
+		Operator:       params.Operator,
+		ValueJSON:      valueJSON,
+		Message:        params.Message,
+		Duration:       params.Duration,
+		DurationUnit:   params.DurationUnit,
+		SumMethod:      params.SumMethod,
+		NotifyDuration: params.NotifyDuration,
 	})
 	if err != nil {
 		this.ErrorPage(err)
