@@ -5,7 +5,7 @@ Vue.component("http-websocket-box", {
 		if (websocketRef == null) {
 			websocketRef = {
 				isPrior: false,
-				isOn: true,
+				isOn: false,
 				websocketId: 0
 			}
 		}
