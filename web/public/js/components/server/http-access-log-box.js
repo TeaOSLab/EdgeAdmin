@@ -1,8 +1,16 @@
 Vue.component("http-access-log-box", {
 	props: ["v-access-log"],
 	data: function () {
+		let accessLog = this.vAccessLog
+		if (accessLog.header != null && accessLog.header.Upgrade != null && accessLog.header.Upgrade.values != null && accessLog.header.Upgrade.values.$contains("websocket")) {
+			if (accessLog.scheme == "http") {
+				accessLog.scheme = "ws"
+			} else if (accessLog.scheme == "https") {
+				accessLog.scheme = "wss"
+			}
+		}
 		return {
-			accessLog: this.vAccessLog
+			accessLog: accessLog
 		}
 	},
 	methods: {
