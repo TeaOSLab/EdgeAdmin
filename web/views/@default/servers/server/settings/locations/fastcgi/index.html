@@ -1,0 +1,15 @@
+{$layout}
+{$template "/left_menu"}
+
+<div class="right-box">
+    {$template "../location_menu"}
+    {$template "../left_menu"}
+
+    <div class="right-box tiny">
+        <form method="post" class="ui form" data-tea-action="$"  data-tea-success="success">
+            <input type="hidden" name="webId" :value="webId"/>
+            <http-fastcgi-box :v-fastcgi-ref="fastcgiRef" :v-fastcgi-configs="fastcgiConfigs" :v-is-location="true"></http-fastcgi-box>
+            <submit-btn></submit-btn>
+        </form>
+    </div>
+</div>

@@ -61,7 +61,7 @@
 		<tr v-if="accessLog.errors != null && accessLog.errors.length > 0">
 			<td colspan="2">
 				<div v-for="error in accessLog.errors">
-					<span class="red">{{error}}</span>
+                    <pre><span class="red">{{error}}</span></pre>
 				</div>
 			</td>
 		</tr>
