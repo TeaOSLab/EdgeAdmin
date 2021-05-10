@@ -15,6 +15,7 @@
 			<tr>
 				<th style="width:1em"></th>
 				<th>匹配规则</th>
+                <th class="two wide">匹配类型</th>
 				<th class="two wide">状态</th>
 				<th class="two op">操作</th>
 			</tr>
@@ -23,9 +24,10 @@
 			<tr>
 				<td><i class="icon bars grey handle"></i></td>
 				<td>
-					{{location.pattern}}
+                    {{location.pattern}}
 					<http-location-labels :v-location-config="location" :v-server-id="serverId"></http-location-labels>
 				</td>
+                <td>{{location.patternTypeName}}</td>
 				<td>
 					<label-on :v-is-on="location.isOn"></label-on>
 				</td>

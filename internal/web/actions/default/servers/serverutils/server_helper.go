@@ -311,6 +311,12 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isActive": secondMenuItem == "websocket",
 			"isOn":     serverConfig.Web != nil && serverConfig.Web.WebsocketRef != nil && serverConfig.Web.WebsocketRef.IsOn,
 		})
+		menuItems = append(menuItems, maps.Map{
+			"name":     "Fastcgi",
+			"url":      "/servers/server/settings/fastcgi?serverId=" + serverIdString,
+			"isActive": secondMenuItem == "fastcgi",
+			"isOn":     serverConfig.Web != nil && serverConfig.Web.FastcgiRef != nil && serverConfig.Web.FastcgiRef.IsOn,
+		})
 	} else if serverConfig.IsTCPFamily() {
 		menuItems = append(menuItems, maps.Map{
 			"name":     "TCP",

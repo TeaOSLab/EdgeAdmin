@@ -138,7 +138,7 @@ Vue.component("http-header-policy-box", {
 	<div v-if="(!vIsLocation || requestHeaderRef.isPrior) && type == 'request'">
 		<h3>设置请求Header <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)">[添加新Header]</a></h3>
 		<p class="comment" v-if="requestSettingHeaders.length == 0">暂时还没有Header。</p>
-		<table class="ui table selectable" v-if="requestSettingHeaders.length > 0">
+		<table class="ui table selectable celled" v-if="requestSettingHeaders.length > 0">
 			<thead>
 				<tr>
 					<th>名称</th>
@@ -179,8 +179,9 @@ Vue.component("http-header-policy-box", {
 	
 	<div v-if="type == 'response'">
 		<h3>设置响应Header <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)">[添加新Header]</a></h3>
+		<p class="comment" style="margin-top: 0; padding-top: 0">将会覆盖已有的同名Header。</p>
 		<p class="comment" v-if="responseSettingHeaders.length == 0">暂时还没有Header。</p>
-		<table class="ui table selectable" v-if="responseSettingHeaders.length > 0">
+		<table class="ui table selectable celled" v-if="responseSettingHeaders.length > 0">
 			<thead>
 				<tr>
 					<th>名称</th>

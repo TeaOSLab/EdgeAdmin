@@ -39,12 +39,12 @@ func (this *IndexAction) RunGet(params struct {
 		IsOn: true,
 	}
 	if gzipId > 0 {
-		resp, err := this.RPC().HTTPGzipRPC().FindEnabledHTTPGzipConfig(this.AdminContext(), &pb.FindEnabledGzipConfigRequest{GzipId: gzipId})
+		resp, err := this.RPC().HTTPGzipRPC().FindEnabledHTTPGzipConfig(this.AdminContext(), &pb.FindEnabledGzipConfigRequest{HttpGzipId: gzipId})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-		err = json.Unmarshal(resp.GzipJSON, gzipConfig)
+		err = json.Unmarshal(resp.HttpGzipJSON, gzipConfig)
 		if err != nil {
 			this.ErrorPage(err)
 			return
@@ -109,10 +109,10 @@ func (this *IndexAction) RunPost(params struct {
 
 	if params.GzipId > 0 {
 		_, err := this.RPC().HTTPGzipRPC().UpdateHTTPGzip(this.AdminContext(), &pb.UpdateHTTPGzipRequest{
-			GzipId:    params.GzipId,
-			Level:     types.Int32(params.Level),
-			MinLength: minLength,
-			MaxLength: maxLength,
+			HttpGzipId: params.GzipId,
+			Level:      types.Int32(params.Level),
+			MinLength:  minLength,
+			MaxLength:  maxLength,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -128,7 +128,7 @@ func (this *IndexAction) RunPost(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		gzipId := resp.GzipId
+		gzipId := resp.HttpGzipId
 		gzipRef.GzipId = gzipId
 	}
 

@@ -220,6 +220,10 @@ func (this *RPCClient) HTTPAccessLogRPC() pb.HTTPAccessLogServiceClient {
 	return pb.NewHTTPAccessLogServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) HTTPFastcgiRPC() pb.HTTPFastcgiServiceClient {
+	return pb.NewHTTPFastcgiServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) SSLCertRPC() pb.SSLCertServiceClient {
 	return pb.NewSSLCertServiceClient(this.pickConn())
 }

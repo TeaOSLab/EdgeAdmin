@@ -1,8 +1,12 @@
 package locations
 
 import (
+	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
+	"github.com/iwind/TeaGo/maps"
+	"strings"
 )
 
 type IndexAction struct {
@@ -24,11 +28,36 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	this.Data["webId"] = webConfig.Id
 
+	locationMaps := []maps.Map{}
 	if webConfig.Locations != nil {
-		this.Data["locations"] = webConfig.Locations
-	} else {
-		this.Data["locations"] = []interface{}{}
+		for _, location := range webConfig.Locations {
+			err := location.ExtractPattern()
+			if err != nil {
+				continue
+			}
+			jsonData, err := json.Marshal(location)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			m := maps.Map{}
+			err = json.Unmarshal(jsonData, &m)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			pieces := strings.Split(location.Pattern, " ")
+			if len(pieces) == 2 {
+				m["pattern"] = pieces[1]
+				m["patternTypeName"] = serverconfigs.FindLocationPatternTypeName(location.PatternType())
+			} else {
+				m["pattern"] = location.Pattern
+				m["patternTypeName"] = serverconfigs.FindLocationPatternTypeName(serverconfigs.HTTPLocationPatternTypePrefix)
+			}
+			locationMaps = append(locationMaps, m)
+		}
 	}
+	this.Data["locations"] = locationMaps
 
 	this.Show()
 }
