@@ -92,5 +92,27 @@ func (this *IndexAction) RunGet(params struct{}) {
 		this.Data["dailyTrafficStats"] = statMaps
 	}
 
+	// 版本升级
+	this.Data["nodeUpgradeInfo"] = maps.Map{
+		"count":   resp.NodeUpgradeInfo.CountNodes,
+		"version": resp.NodeUpgradeInfo.NewVersion,
+	}
+	this.Data["monitorNodeUpgradeInfo"] = maps.Map{
+		"count":   resp.MonitorNodeUpgradeInfo.CountNodes,
+		"version": resp.MonitorNodeUpgradeInfo.NewVersion,
+	}
+	this.Data["apiNodeUpgradeInfo"] = maps.Map{
+		"count":   resp.ApiNodeUpgradeInfo.CountNodes,
+		"version": resp.ApiNodeUpgradeInfo.NewVersion,
+	}
+	this.Data["userNodeUpgradeInfo"] = maps.Map{
+		"count":   resp.UserNodeUpgradeInfo.CountNodes,
+		"version": resp.UserNodeUpgradeInfo.NewVersion,
+	}
+	this.Data["authorityNodeUpgradeInfo"] = maps.Map{
+		"count":   resp.AuthorityNodeUpgradeInfo.CountNodes,
+		"version": resp.AuthorityNodeUpgradeInfo.NewVersion,
+	}
+
 	this.Show()
 }

@@ -5,6 +5,14 @@
 <script type="text/javascript" src="/js/echarts/echarts.min.js"></script>
 {$end}
 
+<!-- 升级提醒 -->
+<div class="ui message error" v-if="nodeUpgradeInfo.count > 0"><a href="/clusters">升级提醒：有 {{nodeUpgradeInfo.count}} 个边缘节点需要升级到 v{{nodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a></div>
+<div class="ui message error" v-if="monitorNodeUpgradeInfo.count > 0"><a href="/settings/monitorNodes">升级提醒：有 {{monitorNodeUpgradeInfo.count}} 个监控节点需要升级到 v{{monitorNodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a></div>
+<div class="ui message error" v-if="userNodeUpgradeInfo.count > 0"><a href="/settings/userNodes">升级提醒：有 {{userNodeUpgradeInfo.count}} 个用户节点需要升级到 v{{userNodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a></div>
+<div class="ui message error" v-if="apiNodeUpgradeInfo.count > 0"><a href="/api">升级提醒：有 {{apiNodeUpgradeInfo.count}} 个API节点需要升级到 v{{apiNodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a></div>
+<div class="ui message error" v-if="authorityNodeUpgradeInfo.count > 0 && teaIsPlus"><a href="/settings/authority/nodes">升级提醒：有 {{authorityNodeUpgradeInfo.count}} 个企业版认证节点需要升级到 v{{authorityNodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a></div>
+
+<!-- 统计图表 -->
 <div class="ui three columns grid">
     <div class="ui column">
         <h4>集群<link-icon href="/clusters" v-if="dashboard.canGoNodes"></link-icon></h4>
