@@ -28,6 +28,13 @@
     "isRequest": true
   },
   {
+    "type": "url-not-regexp",
+    "name": "排除URL正则匹配",
+    "description": "使用正则表达式检查URL中的文件路径是否一致，如果一致，则不匹配",
+    "component": "http-cond-url-not-regexp",
+    "isRequest": true
+  },
+  {
     "type": "mime-type",
     "name": "内容MimeType",
     "description": "根据服务器返回的内容的MimeType进行过滤。注意：当用于缓存条件时，此条件需要结合别的请求条件使用。",

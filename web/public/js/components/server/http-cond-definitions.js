@@ -148,6 +148,28 @@ Vue.component("http-cond-url-regexp", {
 </div>`
 })
 
+// 排除URL正则匹配
+Vue.component("http-cond-url-not-regexp", {
+	props: ["v-cond"],
+	data: function () {
+		let cond = this.vCond
+		if (cond == null) {
+			cond = {
+				isRequest: true,
+				param: "${requestPath}",
+				operator: "not regexp",
+				value: ""
+			}
+		}
+		return {
+			cond: cond
+		}
+	},
+	template: `<div>
+		<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value"/>
+</div>`
+})
 
 // 根据MimeType
 Vue.component("http-cond-mime-type", {
