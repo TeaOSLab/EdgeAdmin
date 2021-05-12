@@ -185,6 +185,33 @@ func (this *NodeAction) RunGet(params struct {
 		}
 	}
 
+	// 缓存硬盘 & 内存容量
+	var maxCacheDiskCapacity maps.Map = nil
+	if node.MaxCacheDiskCapacity != nil {
+		maxCacheDiskCapacity = maps.Map{
+			"count": node.MaxCacheDiskCapacity.Count,
+			"unit":  node.MaxCacheDiskCapacity.Unit,
+		}
+	} else {
+		maxCacheDiskCapacity = maps.Map{
+			"count": 0,
+			"unit":  "gb",
+		}
+	}
+
+	var maxCacheMemoryCapacity maps.Map = nil
+	if node.MaxCacheMemoryCapacity != nil {
+		maxCacheMemoryCapacity = maps.Map{
+			"count": node.MaxCacheMemoryCapacity.Count,
+			"unit":  node.MaxCacheMemoryCapacity.Unit,
+		}
+	} else {
+		maxCacheMemoryCapacity = maps.Map{
+			"count": 0,
+			"unit":  "gb",
+		}
+	}
+
 	this.Data["node"] = maps.Map{
 		"id":          node.Id,
 		"name":        node.Name,
@@ -217,6 +244,9 @@ func (this *NodeAction) RunGet(params struct {
 
 		"group":  groupMap,
 		"region": regionMap,
+
+		"maxCacheDiskCapacity":   maxCacheDiskCapacity,
+		"maxCacheMemoryCapacity": maxCacheMemoryCapacity,
 	}
 
 	this.Show()

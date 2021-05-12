@@ -122,6 +122,24 @@
 					<span v-else class="disabled">没有限制。</span>
 				</td>
 			</tr>
+            <tr>
+                <td>缓存磁盘容量</td>
+                <td>
+                    <span v-if="node.maxCacheDiskCapacity == null || node.maxCacheDiskCapacity.count <= 0" class="disabled">没有限制</span>
+                   <div v-else>
+                       <size-capacity-view :v-value="node.maxCacheDiskCapacity"></size-capacity-view>
+                   </div>
+                </td>
+            </tr>
+            <tr>
+                <td>缓存内存容量</td>
+                <td>
+                    <span v-if="node.maxCacheMemoryCapacity == null || node.maxCacheMemoryCapacity.count <= 0" class="disabled">没有限制</span>
+                    <div v-else>
+                        <size-capacity-view :v-value="node.maxCacheMemoryCapacity"></size-capacity-view>
+                    </div>
+                </td>
+            </tr>
 		</tbody>
 	</table>
 	<div class="ui divider"></div>
