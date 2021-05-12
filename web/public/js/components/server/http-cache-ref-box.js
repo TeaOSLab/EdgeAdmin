@@ -44,7 +44,7 @@ Vue.component("http-cache-ref-box", {
 	},
 	template: `<tbody>
 	<tr>
-		<td class="title">匹配条件 *</td>
+		<td class="title">匹配条件分组 *</td>
 		<td>
 			<http-request-conds-box :v-conds="ref.conds" @change="changeConds"></http-request-conds-box>
 			

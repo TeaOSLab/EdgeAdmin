@@ -10,9 +10,15 @@ Vue.component("http-request-conds-view", {
 			}
 		}
 		return {
-			conds: conds,
+			initConds: conds,
 			components: window.REQUEST_COND_COMPONENTS
 		}
+	},
+	computed: {
+		// 之所以使用computed，是因为需要动态更新
+		conds: function () {
+			return this.initConds
+		},
 	},
 	methods: {
 		typeName: function (cond) {

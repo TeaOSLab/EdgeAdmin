@@ -102,6 +102,53 @@ Vue.component("http-cond-url-prefix", {
 </div>`
 })
 
+// URL精准匹配
+Vue.component("http-cond-url-eq", {
+	props: ["v-cond"],
+	data: function () {
+		let cond = this.vCond
+		if (cond == null) {
+			cond = {
+				isRequest: true,
+				param: "${requestPath}",
+				operator: "eq",
+				value: ""
+			}
+		}
+		return {
+			cond: cond
+		}
+	},
+	template: `<div>
+		<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value"/>
+</div>`
+})
+
+// URL正则匹配
+Vue.component("http-cond-url-regexp", {
+	props: ["v-cond"],
+	data: function () {
+		let cond = this.vCond
+		if (cond == null) {
+			cond = {
+				isRequest: true,
+				param: "${requestPath}",
+				operator: "regexp",
+				value: ""
+			}
+		}
+		return {
+			cond: cond
+		}
+	},
+	template: `<div>
+		<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value"/>
+</div>`
+})
+
+
 // 根据MimeType
 Vue.component("http-cond-mime-type", {
 	props: ["v-cond"],
