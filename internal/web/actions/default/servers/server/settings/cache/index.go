@@ -60,12 +60,16 @@ func (this *IndexAction) RunPost(params struct {
 	// 日志
 	defer this.CreateLog(oplogs.LevelInfo, "修改Web %d 的缓存设置", params.WebId)
 
-	// TODO 校验配置
+	// 校验配置
 	cacheConfig := &serverconfigs.HTTPCacheConfig{}
 	err := json.Unmarshal(params.CacheJSON, cacheConfig)
 	if err != nil {
 		this.ErrorPage(err)
 		return
+	}
+	err = cacheConfig.Init()
+	if err != nil {
+		this.Fail("检查配置失败：" + err.Error())
 	}
 
 	// 去除不必要的部分
