@@ -6,6 +6,7 @@ Vue.component("http-cache-config-box", {
 			cacheConfig = {
 				isPrior: false,
 				isOn: false,
+				addStatusHeader: true,
 				cacheRefs: []
 			}
 		}
@@ -105,13 +106,22 @@ Vue.component("http-cache-config-box", {
 				</td>
 			</tr>
 		</tbody>
+		<tbody v-show="isOn()">
+			<tr>
+				<td>自动添加X-Cache Header</td>
+				<td>
+					<checkbox v-model="cacheConfig.addStatusHeader"></checkbox>
+					<p class="comment">选中后自动在响应Header中增加<code-label>X-Cache: BYPASS|MISS|HIT</code-label>。</p>
+				</td>
+			</tr>
+		</tbody>
 	</table>
 	
 	<div v-show="isOn()">
 		<table class="ui table selectable celled" v-show="cacheConfig.cacheRefs.length > 0">
 			<thead>
 				<tr>
-					<th>条件</th>
+					<th>缓存条件</th>
 					<th class="width10">缓存时间</th>
 					<th class="two op">操作</th>
 				</tr>
