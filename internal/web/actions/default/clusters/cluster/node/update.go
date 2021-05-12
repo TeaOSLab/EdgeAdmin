@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/ipAddresses/ipaddressutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 )
@@ -156,16 +157,45 @@ func (this *UpdateAction) RunGet(params struct {
 		}
 	}
 
+	// 缓存硬盘 & 内存容量
+	var maxCacheDiskCapacity maps.Map = nil
+	if node.MaxCacheDiskCapacity != nil {
+		maxCacheDiskCapacity = maps.Map{
+			"count": node.MaxCacheDiskCapacity.Count,
+			"unit":  node.MaxCacheDiskCapacity.Unit,
+		}
+	} else {
+		maxCacheDiskCapacity = maps.Map{
+			"count": 0,
+			"unit":  "gb",
+		}
+	}
+
+	var maxCacheMemoryCapacity maps.Map = nil
+	if node.MaxCacheMemoryCapacity != nil {
+		maxCacheMemoryCapacity = maps.Map{
+			"count": node.MaxCacheMemoryCapacity.Count,
+			"unit":  node.MaxCacheMemoryCapacity.Unit,
+		}
+	} else {
+		maxCacheMemoryCapacity = maps.Map{
+			"count": 0,
+			"unit":  "gb",
+		}
+	}
+
 	this.Data["node"] = maps.Map{
-		"id":          node.Id,
-		"name":        node.Name,
-		"ipAddresses": ipAddressMaps,
-		"cluster":     clusterMap,
-		"login":       loginMap,
-		"maxCPU":      node.MaxCPU,
-		"isOn":        node.IsOn,
-		"group":       groupMap,
-		"region":      regionMap,
+		"id":                     node.Id,
+		"name":                   node.Name,
+		"ipAddresses":            ipAddressMaps,
+		"cluster":                clusterMap,
+		"login":                  loginMap,
+		"maxCPU":                 node.MaxCPU,
+		"isOn":                   node.IsOn,
+		"group":                  groupMap,
+		"region":                 regionMap,
+		"maxCacheDiskCapacity":   maxCacheDiskCapacity,
+		"maxCacheMemoryCapacity": maxCacheMemoryCapacity,
 	}
 
 	// 所有集群
@@ -190,18 +220,20 @@ func (this *UpdateAction) RunGet(params struct {
 }
 
 func (this *UpdateAction) RunPost(params struct {
-	LoginId         int64
-	NodeId          int64
-	GroupId         int64
-	RegionId        int64
-	Name            string
-	IPAddressesJSON []byte `alias:"ipAddressesJSON"`
-	ClusterId       int64
-	GrantId         int64
-	SshHost         string
-	SshPort         int
-	MaxCPU          int32
-	IsOn            bool
+	LoginId                    int64
+	NodeId                     int64
+	GroupId                    int64
+	RegionId                   int64
+	Name                       string
+	IPAddressesJSON            []byte `alias:"ipAddressesJSON"`
+	ClusterId                  int64
+	GrantId                    int64
+	SshHost                    string
+	SshPort                    int
+	MaxCPU                     int32
+	IsOn                       bool
+	MaxCacheDiskCapacityJSON   []byte
+	MaxCacheMemoryCapacityJSON []byte
 
 	DnsDomainId   int64
 	DnsRoutesJSON []byte
@@ -258,18 +290,49 @@ func (this *UpdateAction) RunPost(params struct {
 		}.AsJSON(),
 	}
 
+	// 缓存硬盘 & 内存容量
+	var pbMaxCacheDiskCapacity *pb.SizeCapacity
+	if len(params.MaxCacheDiskCapacityJSON) > 0 {
+		var sizeCapacity = &shared.SizeCapacity{}
+		err := json.Unmarshal(params.MaxCacheDiskCapacityJSON, sizeCapacity)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		pbMaxCacheDiskCapacity = &pb.SizeCapacity{
+			Count: sizeCapacity.Count,
+			Unit:  sizeCapacity.Unit,
+		}
+	}
+
+	var pbMaxCacheMemoryCapacity *pb.SizeCapacity
+	if len(params.MaxCacheMemoryCapacityJSON) > 0 {
+		var sizeCapacity = &shared.SizeCapacity{}
+		err := json.Unmarshal(params.MaxCacheMemoryCapacityJSON, sizeCapacity)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		pbMaxCacheMemoryCapacity = &pb.SizeCapacity{
+			Count: sizeCapacity.Count,
+			Unit:  sizeCapacity.Unit,
+		}
+	}
+
 	// 保存
 	_, err := this.RPC().NodeRPC().UpdateNode(this.AdminContext(), &pb.UpdateNodeRequest{
-		NodeId:        params.NodeId,
-		GroupId:       params.GroupId,
-		RegionId:      params.RegionId,
-		Name:          params.Name,
-		NodeClusterId: params.ClusterId,
-		Login:         loginInfo,
-		MaxCPU:        params.MaxCPU,
-		IsOn:          params.IsOn,
-		DnsDomainId:   params.DnsDomainId,
-		DnsRoutes:     dnsRouteCodes,
+		NodeId:                 params.NodeId,
+		GroupId:                params.GroupId,
+		RegionId:               params.RegionId,
+		Name:                   params.Name,
+		NodeClusterId:          params.ClusterId,
+		Login:                  loginInfo,
+		MaxCPU:                 params.MaxCPU,
+		IsOn:                   params.IsOn,
+		DnsDomainId:            params.DnsDomainId,
+		DnsRoutes:              dnsRouteCodes,
+		MaxCacheDiskCapacity:   pbMaxCacheDiskCapacity,
+		MaxCacheMemoryCapacity: pbMaxCacheMemoryCapacity,
 	})
 	if err != nil {
 		this.ErrorPage(err)
