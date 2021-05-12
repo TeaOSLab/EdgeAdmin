@@ -2,7 +2,7 @@ Tea.context(function () {
 	this.success = NotifyPopup
 
 	this.group = {
-		connector: "or",
+		connector: "and", // 默认为and，更符合用户的直觉
 		description: "",
 		isReverse: false,
 		conds: [],
