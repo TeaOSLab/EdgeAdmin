@@ -59,6 +59,49 @@ func LoadAPIConfig() (*APIConfig, error) {
 	return config, nil
 }
 
+// ResetAPIConfig 重置配置
+func ResetAPIConfig() error {
+	filename := "api.yaml"
+
+	{
+		configFile := Tea.ConfigFile(filename)
+		stat, err := os.Stat(configFile)
+		if err == nil && !stat.IsDir() {
+			err = os.Remove(configFile)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	// 重置 ~/.edge-admin/api.yaml
+	homeDir, homeErr := os.UserHomeDir()
+	if homeErr == nil {
+		configFile := homeDir + "/." + teaconst.ProcessName + "/" + filename
+		stat, err := os.Stat(configFile)
+		if err == nil && !stat.IsDir() {
+			err = os.Remove(configFile)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	// 重置 /etc/edge-admin/api.yaml
+	{
+		configFile := "/etc/" + teaconst.ProcessName + "/" + filename
+		stat, err := os.Stat(configFile)
+		if err == nil && !stat.IsDir() {
+			err = os.Remove(configFile)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
 // WriteFile 写入API配置
 func (this *APIConfig) WriteFile(path string) error {
 	data, err := yaml.Marshal(this)
@@ -84,7 +127,7 @@ func (this *APIConfig) WriteFile(path string) error {
 		}
 	}
 
-	// 写入 /etc/.edge-admin
+	// 写入 /etc/edge-admin
 	{
 		dir := "/etc/" + teaconst.ProcessName
 		stat, err := os.Stat(dir)
