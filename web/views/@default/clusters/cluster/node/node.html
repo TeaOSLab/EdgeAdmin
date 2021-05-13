@@ -165,7 +165,7 @@
 		<tbody v-show="node.status.isActive">
 			<tr>
 				<td>CPU用量</td>
-				<td>{{node.status.cpuUsageText}}</td>
+				<td>{{node.status.cpuUsageText}} &nbsp; <span v-if="node.status.cpuPhysicalCount > 0" class="small grey">（{{node.status.cpuPhysicalCount}}核心/{{node.status.cpuLogicalCount}}线程）</span></td>
 			</tr>
 			<tr>
 				<td>内存用量</td>
@@ -176,21 +176,20 @@
 				<td>{{node.status.connectionCount}}</td>
 			</tr>
             <tr>
+                <td>负载</td>
+                <td>{{node.status.load1m}} &nbsp; {{node.status.load5m}} &nbsp; {{node.status.load15m}} &nbsp; <tip-icon content="三个数字分别代表1分钟、5分钟、15分钟平均负载"></tip-icon></td>
+            </tr>
+            <tr>
+                <td>缓存用量</td>
+                <td>
+                    磁盘：{{node.status.cacheTotalDiskSize}}  &nbsp; 内存：{{node.status.cacheTotalMemorySize}}
+                </td>
+            </tr>
+            <tr>
                 <td>版本</td>
                 <td>v{{node.status.buildVersion}}
                     &nbsp; <a :href="'/clusters/cluster/upgradeRemote?clusterId=' + clusterId" v-if="shouldUpgrade"><span class="red">发现新版本v{{newVersion}} &raquo;</span></a>
                 </td>
-            </tr>
-            <tr>
-                <td>CPU</td>
-                <td>
-                    <span v-if="node.status.cpuPhysicalCount > 0">{{node.status.cpuPhysicalCount}}核心/{{node.status.cpuLogicalCount}}线程</span>
-                    <span v-else class="disabled">-/-</span>
-                </td>
-            </tr>
-            <tr>
-                <td>负载</td>
-                <td>{{node.status.load1m}} &nbsp; {{node.status.load5m}} &nbsp; {{node.status.load15m}} &nbsp; <tip-icon content="三个数字分别代表1分钟、5分钟、15分钟平均负载"></tip-icon></td>
             </tr>
 		</tbody>
 	</table>
