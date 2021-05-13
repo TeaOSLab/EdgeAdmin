@@ -3,6 +3,7 @@ package node
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
@@ -226,20 +227,22 @@ func (this *NodeAction) RunGet(params struct {
 		"isOn":        node.IsOn,
 
 		"status": maps.Map{
-			"isActive":         status.IsActive,
-			"updatedAt":        status.UpdatedAt,
-			"hostname":         status.Hostname,
-			"cpuUsage":         status.CPUUsage,
-			"cpuUsageText":     fmt.Sprintf("%.2f%%", status.CPUUsage*100),
-			"memUsage":         status.MemoryUsage,
-			"memUsageText":     fmt.Sprintf("%.2f%%", status.MemoryUsage*100),
-			"connectionCount":  status.ConnectionCount,
-			"buildVersion":     status.BuildVersion,
-			"cpuPhysicalCount": status.CPUPhysicalCount,
-			"cpuLogicalCount":  status.CPULogicalCount,
-			"load1m":           fmt.Sprintf("%.2f", status.Load1m),
-			"load5m":           fmt.Sprintf("%.2f", status.Load5m),
-			"load15m":          fmt.Sprintf("%.2f", status.Load15m),
+			"isActive":             status.IsActive,
+			"updatedAt":            status.UpdatedAt,
+			"hostname":             status.Hostname,
+			"cpuUsage":             status.CPUUsage,
+			"cpuUsageText":         fmt.Sprintf("%.2f%%", status.CPUUsage*100),
+			"memUsage":             status.MemoryUsage,
+			"memUsageText":         fmt.Sprintf("%.2f%%", status.MemoryUsage*100),
+			"connectionCount":      status.ConnectionCount,
+			"buildVersion":         status.BuildVersion,
+			"cpuPhysicalCount":     status.CPUPhysicalCount,
+			"cpuLogicalCount":      status.CPULogicalCount,
+			"load1m":               fmt.Sprintf("%.2f", status.Load1m),
+			"load5m":               fmt.Sprintf("%.2f", status.Load5m),
+			"load15m":              fmt.Sprintf("%.2f", status.Load15m),
+			"cacheTotalDiskSize":   numberutils.FormatBytes(status.CacheTotalDiskSize),
+			"cacheTotalMemorySize": numberutils.FormatBytes(status.CacheTotalMemorySize),
 		},
 
 		"group":  groupMap,
