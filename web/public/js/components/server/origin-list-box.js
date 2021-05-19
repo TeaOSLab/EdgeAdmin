@@ -11,7 +11,9 @@ Vue.component("origin-list-box", {
 			teaweb.popup("/servers/server/settings/origins/addPopup?originType=primary&" + this.vParams, {
 				height: "24em",
 				callback: function (resp) {
-					window.location.reload()
+					teaweb.success("保存成功", function () {
+						window.location.reload()
+					})
 				}
 			})
 		},
@@ -19,7 +21,9 @@ Vue.component("origin-list-box", {
 			teaweb.popup("/servers/server/settings/origins/addPopup?originType=backup&" + this.vParams, {
 				height: "24em",
 				callback: function (resp) {
-					window.location.reload()
+					teaweb.success("保存成功", function () {
+						window.location.reload()
+					})
 				}
 			})
 		},
@@ -27,7 +31,9 @@ Vue.component("origin-list-box", {
 			teaweb.popup("/servers/server/settings/origins/updatePopup?originType=" + originType + "&" + this.vParams + "&originId=" + originId, {
 				height: "24em",
 				callback: function (resp) {
-					window.location.reload()
+					teaweb.success("保存成功", function () {
+						window.location.reload()
+					})
 				}
 			})
 		},
@@ -37,7 +43,9 @@ Vue.component("origin-list-box", {
 				Tea.action("/servers/server/settings/origins/delete?" + that.vParams + "&originId=" + originId + "&originType=" + originType)
 					.post()
 					.success(function () {
-						window.location.reload()
+						teaweb.success("保存成功", function () {
+							window.location.reload()
+						})
 					})
 			})
 		}

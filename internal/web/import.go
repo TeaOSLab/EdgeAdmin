@@ -15,6 +15,7 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/logs"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/regions"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/regions/items"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/tasks"

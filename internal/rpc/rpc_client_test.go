@@ -37,7 +37,7 @@ func TestRPC_Dial_HTTP(t *testing.T) {
 		RPC: struct {
 			Endpoints []string `yaml:"endpoints"`
 		}{
-			Endpoints: []string{"127.0.0.1:8003"},
+			Endpoints: []string{"http://127.0.0.1:8004"},
 		},
 		NodeId: "a7e55782dab39bce0901058a1e14a0e6",
 		Secret: "lvyPobI3BszkJopz5nPTocOs0OLkEJ7y",
@@ -58,7 +58,7 @@ func TestRPC_Dial_HTTP_2(t *testing.T) {
 		RPC: struct {
 			Endpoints []string `yaml:"endpoints"`
 		}{
-			Endpoints: []string{"http://127.0.0.1:8003"},
+			Endpoints: []string{"https://127.0.0.1:8003"},
 		},
 		NodeId: "a7e55782dab39bce0901058a1e14a0e6",
 		Secret: "lvyPobI3BszkJopz5nPTocOs0OLkEJ7y",

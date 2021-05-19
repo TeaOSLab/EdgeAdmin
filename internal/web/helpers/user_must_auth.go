@@ -182,6 +182,11 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 			"icon":     "cloud",
 			"subItems": []maps.Map{
 				{
+					"name": "节点日志",
+					"url":  "/clusters/logs",
+					"code": "log",
+				},
+				{
 					"name": "SSH认证",
 					"url":  "/clusters/grants",
 					"code": "grant",

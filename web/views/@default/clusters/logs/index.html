@@ -1,0 +1,62 @@
+{$layout}
+
+{$var "header"}
+<!-- datepicker -->
+<script type="text/javascript" src="/js/moment.min.js"></script>
+<script type="text/javascript" src="/js/pikaday.js"></script>
+<link rel="stylesheet" href="/js/pikaday.css"/>
+<link rel="stylesheet" href="/js/pikaday.theme.css"/>
+<link rel="stylesheet" href="/js/pikaday.triangle.css"/>
+{$end}
+
+
+<div class="margin"></div>
+
+<form method="get" action="/clusters/logs" class="ui form" autocomplete="off">
+    <div class="ui fields inline">
+        <div class="ui field">
+            <input type="text" name="dayFrom" placeholder="开始日期" v-model="dayFrom" value="" style="width:8em" id="day-from-picker"/>
+        </div>
+        <div class="ui field">
+            <input type="text" name="dayTo" placeholder="结束日期" v-model="dayTo" value="" style="width:8em" id="day-to-picker"/>
+        </div>
+        <div class="ui field">
+            <select class="ui dropdown" name="level" v-model="level">
+                <option value="">[级别]</option>
+                <option value="error">错误</option>
+                <option value="warn">警告</option>
+                <option value="info">信息</option>
+            </select>
+        </div>
+        <div class="ui field">
+            <input type="text" name="keyword" style="width:10em" v-model="keyword" placeholder="关键词"/>
+        </div>
+        <div class="ui field">
+            <button type="submit" class="ui button">查询</button>
+        </div>
+        <div class="ui field" v-if="dayFrom.length > 0 || dayTo.length > 0 || keyword.length > 0 || level.length > 0">
+            <a href="/clusters/logs">[清除条件]</a>
+        </div>
+    </div>
+</form>
+
+<p class="comment" v-if="logs.length == 0">暂时还没有日志。</p>
+
+<table class="ui table selectable celled" v-if="logs.length > 0">
+    <thead>
+        <tr>
+            <th>集群</th>
+            <th>节点</th>
+            <th>信息</th>
+        </tr>
+    </thead>
+    <tr v-for="log in logs">
+        <td nowrap=""><link-icon :href="'/clusters/cluster?clusterId=' + log.node.cluster.id">{{log.node.cluster.name}}</link-icon></td>
+        <td nowrap=""><link-icon :href="'/clusters/cluster/node?clusterId=' + log.node.cluster.id + '&nodeId=' + log.node.id">{{log.node.name}}</link-icon></td>
+        <td>
+            <pre class="log-box"><span :class="{red:log.level == 'error', yellow:log.level == 'warning'}"><span v-if="!log.isToday">[{{log.createdTime}}]</span><strong v-if="log.isToday">[{{log.createdTime}}]</strong>[{{log.tag}}]{{log.description}}</span></pre>
+        </td>
+    </tr>
+</table>
+
+<div class="page" v-html="page"></div>
