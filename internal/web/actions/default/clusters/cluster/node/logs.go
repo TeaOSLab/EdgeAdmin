@@ -17,13 +17,25 @@ func (this *LogsAction) Init() {
 }
 
 func (this *LogsAction) RunGet(params struct {
-	NodeId int64
+	NodeId  int64
+	DayFrom string
+	DayTo   string
+	Keyword string
+	Level   string
 }) {
 	this.Data["nodeId"] = params.NodeId
+	this.Data["dayFrom"] = params.DayFrom
+	this.Data["dayTo"] = params.DayTo
+	this.Data["keyword"] = params.Keyword
+	this.Data["level"] = params.Level
 
 	countResp, err := this.RPC().NodeLogRPC().CountNodeLogs(this.AdminContext(), &pb.CountNodeLogsRequest{
-		Role:   "node",
-		NodeId: params.NodeId,
+		Role:    "node",
+		NodeId:  params.NodeId,
+		DayFrom: params.DayFrom,
+		DayTo:   params.DayTo,
+		Keyword: params.Keyword,
+		Level:   params.Level,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -33,10 +45,14 @@ func (this *LogsAction) RunGet(params struct {
 	page := this.NewPage(count, 20)
 
 	logsResp, err := this.RPC().NodeLogRPC().ListNodeLogs(this.AdminContext(), &pb.ListNodeLogsRequest{
-		NodeId: params.NodeId,
-		Role:   "node",
-		Offset: page.Offset,
-		Size:   page.Size,
+		NodeId:  params.NodeId,
+		Role:    "node",
+		DayFrom: params.DayFrom,
+		DayTo:   params.DayTo,
+		Keyword: params.Keyword,
+		Level:   params.Level,
+		Offset:  page.Offset,
+		Size:    page.Size,
 	})
 
 	logs := []maps.Map{}
@@ -47,6 +63,7 @@ func (this *LogsAction) RunGet(params struct {
 			"createdTime": timeutil.FormatTime("Y-m-d H:i:s", log.CreatedAt),
 			"level":       log.Level,
 			"isToday":     timeutil.FormatTime("Y-m-d", log.CreatedAt) == timeutil.Format("Y-m-d"),
+			"count":       log.Count,
 		})
 	}
 	this.Data["logs"] = logs

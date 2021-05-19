@@ -70,6 +70,7 @@ func (this *IndexAction) RunGet(params struct {
 			"createdTime": timeutil.FormatTime("Y-m-d H:i:s", log.CreatedAt),
 			"level":       log.Level,
 			"isToday":     timeutil.FormatTime("Y-m-d", log.CreatedAt) == timeutil.Format("Y-m-d"),
+			"count":       log.Count,
 			"node": maps.Map{
 				"id": node.Id,
 				"cluster": maps.Map{
