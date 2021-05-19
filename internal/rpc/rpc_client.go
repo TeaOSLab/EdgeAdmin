@@ -22,7 +22,7 @@ import (
 	"time"
 )
 
-// RPC客户端
+// RPCClient RPC客户端
 type RPCClient struct {
 	apiConfig *configs.APIConfig
 	conns     []*grpc.ClientConn
@@ -30,7 +30,7 @@ type RPCClient struct {
 	locker sync.Mutex
 }
 
-// 构造新的RPC客户端
+// NewRPCClient 构造新的RPC客户端
 func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 	if apiConfig == nil {
 		return nil, errors.New("api config should not be nil")

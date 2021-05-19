@@ -1,20 +1,19 @@
 {$layout}
+{$template "node_menu"}
 
-	{$template "node_menu"}
+<p class="comment" v-if="logs.length == 0">暂时还没有日志。</p>
 
-	<p class="comment" v-if="logs.length == 0">暂时还没有日志。</p>
+<table class="ui table selectable" v-if="logs.length > 0">
+    <thead>
+        <tr>
 
-	<table class="ui table selectable" v-if="logs.length > 0">
-		<thead>
-			<tr>
+        </tr>
+    </thead>
+    <tr v-for="log in logs">
+        <td>
+            <pre class="log-box"><span :class="{red:log.level == 'error', yellow:log.level == 'warning'}"><span v-if="!log.isToday">[{{log.createdTime}}]</span><strong v-if="log.isToday">[{{log.createdTime}}]</strong>[{{log.tag}}]{{log.description}}</span></pre>
+        </td>
+    </tr>
+</table>
 
-			</tr>
-		</thead>
-		<tr v-for="log in logs">
-			<td>
-				<pre class="log-box"><span :class="{red:log.level == 'error', yellow:log.level == 'warning'}"><span v-if="!log.isToday">[{{log.createdTime}}]</span><strong v-if="log.isToday">[{{log.createdTime}}]</strong>[{{log.tag}}]{{log.description}}</span></pre>
-			</td>
-		</tr>
-	</table>
-
-	<div class="page" v-html="page"></div>
+<div class="page" v-html="page"></div>
