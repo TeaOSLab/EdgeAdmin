@@ -55,8 +55,8 @@ func (this *TrafficOutAction) RunPost(params struct {
 		if ok {
 			result = append(result, maps.Map{
 				"label": timeutil.FormatTime("H:i", timestamp),
-				"value": total,
-				"text":  numberutils.FormatBytes(total),
+				"value": total / 60,
+				"text":  numberutils.FormatBytes(total / 60),
 			})
 		} else {
 			result = append(result, maps.Map{
