@@ -2,11 +2,19 @@
 
 <h3>选择认证</h3>
 
-<table class="ui table definition">
+<form class="ui form">
+    <div class="ui fields inline">
+        <div class="ui field">
+            <input type="text" placeholder="搜索名称、用户名等" v-model="keyword"/>
+        </div>
+    </div>
+</form>
+
+<table class="ui table">
     <tr>
         <td>
             <span v-if="grants.length == 0">暂时还没有可用的认证。</span>
-            <a class="ui label small basic" v-for="grant in grants" :class="{blue:grantId == grant.id}" @click.prevent="selectGrant(grant)" style="margin-bottom:0.5em">{{grant.name}} <span class="small">（{{grant.methodName}}）</span></a>
+            <a class="ui label small basic" v-for="grant in grants" :class="{blue:grantId == grant.id}" @click.prevent="selectGrant(grant)" style="margin-bottom:0.5em">{{grant.name}} <span class="small">（{{grant.methodName}}）</span><span v-if="grant.username.length > 0" class="small">（{{grant.username}}）</span></a>
             <p class="comment">请点击选中某个认证。</p>
         </td>
     </tr>

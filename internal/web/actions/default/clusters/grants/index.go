@@ -15,8 +15,14 @@ func (this *IndexAction) Init() {
 	this.Nav("", "grant", "index")
 }
 
-func (this *IndexAction) RunGet(params struct{}) {
-	countResp, err := this.RPC().NodeGrantRPC().CountAllEnabledNodeGrants(this.AdminContext(), &pb.CountAllEnabledNodeGrantsRequest{})
+func (this *IndexAction) RunGet(params struct {
+	Keyword string
+}) {
+	this.Data["keyword"] = params.Keyword
+
+	countResp, err := this.RPC().NodeGrantRPC().CountAllEnabledNodeGrants(this.AdminContext(), &pb.CountAllEnabledNodeGrantsRequest{
+		Keyword: params.Keyword,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -25,8 +31,9 @@ func (this *IndexAction) RunGet(params struct{}) {
 	this.Data["page"] = page.AsHTML()
 
 	grantsResp, err := this.RPC().NodeGrantRPC().ListEnabledNodeGrants(this.AdminContext(), &pb.ListEnabledNodeGrantsRequest{
-		Offset: page.Offset,
-		Size:   page.Size,
+		Keyword: params.Keyword,
+		Offset:  page.Offset,
+		Size:    page.Size,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -57,6 +64,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 				"type": grant.Method,
 				"name": grantutils.FindGrantMethodName(grant.Method),
 			},
+			"username":      grant.Username,
 			"countClusters": countClusters,
 			"countNodes":    countNodes,
 		})

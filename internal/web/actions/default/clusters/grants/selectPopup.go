@@ -27,10 +27,12 @@ func (this *SelectPopupAction) RunGet(params struct{}) {
 	grantMaps := []maps.Map{}
 	for _, grant := range grants {
 		grantMaps = append(grantMaps, maps.Map{
-			"id":         grant.Id,
-			"name":       grant.Name,
-			"method":     grant.Method,
-			"methodName": grantutils.FindGrantMethodName(grant.Method),
+			"id":          grant.Id,
+			"name":        grant.Name,
+			"method":      grant.Method,
+			"methodName":  grantutils.FindGrantMethodName(grant.Method),
+			"username":    grant.Username,
+			"description": grant.Description,
 		})
 	}
 	this.Data["grants"] = grantMaps
