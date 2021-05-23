@@ -6,6 +6,7 @@ import (
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 	"net/url"
+	"regexp"
 )
 
 type CreatePopupAction struct {
@@ -27,6 +28,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	BeforeURL      string
 	AfterURL       string
 	MatchPrefix    bool
+	MatchRegexp    bool
 	KeepRequestURI bool
 
 	Status int
@@ -39,7 +41,12 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Require("请填写跳转前的URL")
 
 	// 校验格式
-	{
+	if params.MatchRegexp {
+		_, err := regexp.Compile(params.BeforeURL)
+		if err != nil {
+			this.Fail("跳转前URL正则表达式错误：" + err.Error())
+		}
+	} else {
 		u, err := url.Parse(params.BeforeURL)
 		if err != nil {
 			this.FailField("beforeURL", "请输入正确的跳转前URL")
@@ -56,7 +63,9 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Require("请填写跳转后URL")
 
 	// 校验格式
-	{
+	if params.MatchRegexp {
+		// 正则表达式情况下不做校验
+	} else {
 		u, err := url.Parse(params.AfterURL)
 		if err != nil {
 			this.FailField("afterURL", "请输入正确的跳转后URL")
@@ -76,6 +85,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		"beforeURL":      params.BeforeURL,
 		"afterURL":       params.AfterURL,
 		"matchPrefix":    params.MatchPrefix,
+		"matchRegexp":    params.MatchRegexp,
 		"keepRequestURI": params.KeepRequestURI,
 		"isOn":           true,
 	}

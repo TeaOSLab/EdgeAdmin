@@ -1,17 +1,41 @@
 Tea.context(function () {
-    this.isCreating = true
-    if (window.parent.UPDATING_REDIRECT != null) {
-        this.isCreating = false
-        this.redirect = window.parent.UPDATING_REDIRECT
-    } else {
-        this.redirect = {
-            status: 0,
-            beforeURL: "",
-            afterURL: "",
-            matchPrefix: false,
-            keepRequestURI: false
-        }
-    }
+	this.isCreating = true
+	if (window.parent.UPDATING_REDIRECT != null) {
+		this.isCreating = false
+		this.redirect = window.parent.UPDATING_REDIRECT
+	} else {
+		this.redirect = {
+			status: 0,
+			beforeURL: "",
+			afterURL: "",
+			matchPrefix: false,
+			matchRegexp: false,
+			keepRequestURI: false
+		}
+	}
 
-    this.matchPrefix = (this.redirect.matchPrefix ? 1 : 0)
+	this.mode = ""
+	if (this.redirect.matchPrefix) {
+		this.mode = "matchPrefix"
+	} else if (this.redirect.matchRegexp) {
+		this.mode = "matchRegexp"
+	} else {
+		this.mode = "equal"
+	}
+
+	this.$delay(function () {
+		let that = this
+		this.$watch("mode", function (v) {
+			if (v == "matchPrefix") {
+				that.redirect.matchPrefix = true
+				that.redirect.matchRegexp = false
+			} else if (v == "matchRegexp") {
+				that.redirect.matchPrefix = false
+				that.redirect.matchRegexp = true
+			} else {
+				that.redirect.matchPrefix = false
+				that.redirect.matchRegexp = false
+			}
+		})
+	})
 })
