@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-// 选择证书
+// SelectPopupAction 选择证书
 type SelectPopupAction struct {
 	actionutils.ParentAction
 }
@@ -25,9 +25,11 @@ func (this *SelectPopupAction) Init() {
 func (this *SelectPopupAction) RunGet(params struct {
 	ViewSize        string
 	SelectedCertIds string
+	Keyword         string
 }) {
-	// TODO 支持关键词搜索
 	// TODO 列出常用和最新的证书供用户选择
+
+	this.Data["keyword"] = params.Keyword
 
 	// 已经选择的证书
 	selectedCertIds := []string{}
@@ -40,7 +42,9 @@ func (this *SelectPopupAction) RunGet(params struct {
 	}
 	this.Data["viewSize"] = params.ViewSize
 
-	countResp, err := this.RPC().SSLCertRPC().CountSSLCerts(this.AdminContext(), &pb.CountSSLCertRequest{})
+	countResp, err := this.RPC().SSLCertRPC().CountSSLCerts(this.AdminContext(), &pb.CountSSLCertRequest{
+		Keyword: params.Keyword,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -50,8 +54,9 @@ func (this *SelectPopupAction) RunGet(params struct {
 	this.Data["page"] = page.AsHTML()
 
 	listResp, err := this.RPC().SSLCertRPC().ListSSLCerts(this.AdminContext(), &pb.ListSSLCertsRequest{
-		Offset: page.Offset,
-		Size:   page.Size,
+		Keyword: params.Keyword,
+		Offset:  page.Offset,
+		Size:    page.Size,
 	})
 
 	certConfigs := []*sslconfigs.SSLCertConfig{}
