@@ -1,6 +1,23 @@
 {$layout}
 {$template "menu"}
 
+<!-- 错误日志 -->
+<div v-if="errorLogs.length > 0">
+    <div class="margin"></div>
+    <div class="ui menu tabular attached">
+        <span class="ui item active"><span class="red">需要修复的错误</span></span>
+    </div>
+    <div class="ui segment attached">
+        <div class="ui message error" v-for="log in errorLogs">
+            [{{log.createdTime}}]
+            <a :href="'/servers/server/settings?serverId=' + log.serverId"><span v-if="log.serverName.length > 0">[{{log.serverName}}]</span><span v-else>[服务]</span></a>
+            {{log.description}}
+            <a href="" title="关闭" @click.prevent="fixLog(log.id)"><i class="ui icon remove small"></i></a>
+        </div>
+    </div>
+</div>
+
+<!-- 搜索表单 -->
 <form method="get" class="ui form" action="/servers">
     <input type="hidden" name="auditingFlag" :value="auditingFlag"/>
 	<div class="ui margin"></div>

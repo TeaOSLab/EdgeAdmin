@@ -15,6 +15,7 @@ func init() {
 			Get("", new(IndexAction)).
 			GetPost("/create", new(CreateAction)).
 			GetPost("/update", new(UpdateAction)).
+			Post("/fixLog", new(FixLogAction)).
 
 			GetPost("/addPortPopup", new(AddPortPopupAction)).
 			GetPost("/addServerNamePopup", new(AddServerNamePopupAction)).
