@@ -5,6 +5,8 @@
 
 <form class="ui form" data-tea-success="success" data-tea-action="$">
     <csrf-token></csrf-token>
+    <input type="hidden" name="matchPrefix" :value="redirect.matchPrefix ? 1 : 0"/>
+    <input type="hidden" name="matchRegexp" :value="redirect.matchRegexp ? 1 : 0"/>
 
     <table class="ui table definition selectable">
         <tr>
@@ -17,15 +19,17 @@
         <tr>
             <td>匹配模式</td>
             <td>
-                <select class="ui dropdown auto-width" name="matchPrefix" v-model="matchPrefix">
-                    <option value="0">精准匹配</option>
-                    <option value="1">匹配前缀</option>
+                <select class="ui dropdown auto-width" name="mode" v-model="mode">
+                    <option value="equal">精准匹配</option>
+                    <option value="matchPrefix">匹配前缀</option>
+                    <option value="matchRegexp">正则匹配</option>
                 </select>
-                <p class="comment" v-if="matchPrefix == 0">精准匹配跳转前的URL。</p>
-                <p class="comment" v-if="matchPrefix == 1">只要URL头部部分包含跳转前URL，即可跳转。</p>
+                <p class="comment" v-if="mode == 'equal'">精准匹配跳转前的URL，即只有访问完全一样的URL才会跳转。</p>
+                <p class="comment" v-if="mode == 'matchPrefix'">只要访问的URL头部部分包含跳转前URL，即可跳转。</p>
+                <p class="comment" v-if="mode == 'matchRegexp'">可以在跳转前URL中使用正则表达式，然后可以在跳转后URL中使用正则表达式中括号的变量，比如<code-label>${1}</code-label>、<code-label>${2}</code-label>等。</p>
             </td>
         </tr>
-        <tr v-if="matchPrefix == 1">
+        <tr v-if="mode == 'matchPrefix'">
             <td>是否保留URL路径参数</td>
             <td>
                 <checkbox name="keepRequestURI" value="1" v-model="redirect.keepRequestURI"></checkbox>
