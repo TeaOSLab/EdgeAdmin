@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/maps"
+	timeutil "github.com/iwind/TeaGo/utils/time"
 )
 
 type IndexAction struct {
@@ -249,6 +251,49 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 是否有用户管理权限
 	this.Data["canVisitUser"] = configloaders.AllowModule(this.AdminId(), configloaders.AdminModuleCodeUser)
+
+	// 显示服务相关的日志
+	errorLogsResp, err := this.RPC().NodeLogRPC().ListNodeLogs(this.AdminContext(), &pb.ListNodeLogsRequest{
+		NodeId:     0,
+		Role:       "node",
+		Offset:     0,
+		Size:       10,
+		Level:      "error",
+		FixedState: int32(configutils.BoolStateNo),
+		AllServers: true,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	errorLogMaps := []maps.Map{}
+	for _, errorLog := range errorLogsResp.NodeLogs {
+		serverResp, err := this.RPC().ServerRPC().FindEnabledUserServerBasic(this.AdminContext(), &pb.FindEnabledUserServerBasicRequest{ServerId: errorLog.ServerId})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		server := serverResp.Server
+		if server == nil {
+			// 设置为已修复
+			_, err = this.RPC().NodeLogRPC().FixNodeLog(this.AdminContext(), &pb.FixNodeLogRequest{NodeLogId: errorLog.Id})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+
+			continue
+		}
+
+		errorLogMaps = append(errorLogMaps, maps.Map{
+			"id":          errorLog.Id,
+			"description": errorLog.Description,
+			"createdTime": timeutil.FormatTime("Y-m-d H:i:s", errorLog.CreatedAt),
+			"serverId":    errorLog.ServerId,
+			"serverName":  server.Name,
+		})
+	}
+	this.Data["errorLogs"] = errorLogMaps
 
 	this.Show()
 }

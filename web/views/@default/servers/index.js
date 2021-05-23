@@ -46,4 +46,20 @@ Tea.context(function () {
 	this.showLatest = function () {
 		this.latestVisible = !this.latestVisible
 	}
+
+	/**
+	 * 错误日志相关
+	 */
+	this.fixLog = function (logId) {
+		let that = this
+		teaweb.confirm("确定要关闭此错误提示吗？", function () {
+			that.$post(".fixLog")
+				.params({
+					logId: logId
+				})
+				.success(function () {
+					teaweb.reload()
+				})
+		})
+	}
 })
