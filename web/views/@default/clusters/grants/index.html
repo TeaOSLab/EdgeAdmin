@@ -1,6 +1,21 @@
 {$layout}
 {$template "menu"}
 
+
+<!-- 搜索表单 -->
+<form class="ui form" method="get" action="/clusters/grants">
+    <div class="margin"></div>
+    <div class="ui fields inline">
+        <div class="ui field">
+            <input type="text" name="keyword" placeholder="名称、用户名等..." v-model="keyword"/>
+        </div>
+        <div class="ui field">
+            <button class="ui button" type="submit">搜索</button>
+        </div>
+    </div>
+</form>
+
+<!-- SSH认证列表 -->
 <div class="ui message" v-if="grants.length == 0">暂时还没有认证信息。</div>
 
 <table class="ui table selectable celled" v-if="grants.length > 0">
@@ -8,6 +23,7 @@
 		<tr>
 			<th>名称</th>
 			<th>类型</th>
+            <th>用户名</th>
 			<th class="center width5">集群数</th>
 			<th class="center width5">节点数</th>
 			<th class="two op">操作</th>
@@ -18,6 +34,10 @@
 		<td>
 			<span class="ui label tiny basic">{{grant.method.name}}</span>
 		</td>
+        <td>
+            <span v-if="grant.username.length > 0">{{grant.username}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
 		<td class="center">
 			<span v-if="grant.countClusters > 0">{{grant.countClusters}}</span>
 			<span v-else class="disabled">0</span>
