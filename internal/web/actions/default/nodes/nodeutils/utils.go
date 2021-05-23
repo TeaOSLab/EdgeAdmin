@@ -6,10 +6,12 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"sort"
 	"strconv"
 	"sync"
 )
 
+// MessageResult 和节点消息通讯结果定义
 type MessageResult struct {
 	NodeId   int64  `json:"nodeId"`
 	NodeName string `json:"nodeName"`
@@ -17,7 +19,7 @@ type MessageResult struct {
 	Message  string `json:"message"`
 }
 
-// 向集群发送命令消息
+// SendMessageToCluster 向集群发送命令消息
 func SendMessageToCluster(ctx context.Context, clusterId int64, code string, msg interface{}, timeoutSeconds int32) (results []*MessageResult, err error) {
 	results = []*MessageResult{}
 
@@ -153,10 +155,17 @@ func SendMessageToCluster(ctx context.Context, clusterId int64, code string, msg
 	}
 	wg.Wait()
 
+	// 对结果进行排序
+	if len(results) > 0 {
+		sort.Slice(results, func(i, j int) bool {
+			return results[i].NodeId < results[j].NodeId
+		})
+	}
+
 	return
 }
 
-// 向一组节点发送命令消息
+// SendMessageToNodeIds 向一组节点发送命令消息
 func SendMessageToNodeIds(ctx context.Context, nodeIds []int64, code string, msg interface{}, timeoutSeconds int32) (results []*MessageResult, err error) {
 	results = []*MessageResult{}
 	if len(nodeIds) == 0 {
@@ -320,6 +329,13 @@ func SendMessageToNodeIds(ctx context.Context, nodeIds []int64, code string, msg
 		}(node)
 	}
 	wg.Wait()
+
+	// 对结果进行排序
+	if len(results) > 0 {
+		sort.Slice(results, func(i, j int) bool {
+			return results[i].NodeId < results[j].NodeId
+		})
+	}
 
 	return
 }
