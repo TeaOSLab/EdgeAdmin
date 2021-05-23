@@ -10,6 +10,8 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/iwind/TeaGo/types"
+	"regexp"
 )
 
 type IndexAction struct {
@@ -74,6 +76,24 @@ func (this *IndexAction) RunPost(params struct {
 	err := json.Unmarshal([]byte(params.Addresses), &addresses)
 	if err != nil {
 		this.Fail("端口地址解析失败：" + err.Error())
+	}
+
+	// 检查端口地址是否正确
+	for _, addr := range addresses {
+		err = addr.Init()
+		if err != nil {
+			this.Fail("绑定端口校验失败：" + err.Error())
+		}
+
+		if regexp.MustCompile(`^\d+$`).MatchString(addr.PortRange) {
+			port := types.Int(addr.PortRange)
+			if port > 65535 {
+				this.Fail("绑定的端口地址不能大于65535")
+			}
+			if port == 443 {
+				this.Fail("端口443通常是HTTPS的端口，不能用在HTTP上")
+			}
+		}
 	}
 
 	server, _, isOk := serverutils.FindServer(this.Parent(), params.ServerId)
