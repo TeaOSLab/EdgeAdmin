@@ -31,4 +31,9 @@ Tea.context(function () {
 	this.done = function () {
 		this.isRequesting = false
 	}
-});
+
+	/**
+	 * 操作类型
+	 */
+	this.type = "key" // key | prefix
+})
