@@ -12,7 +12,7 @@ import (
 	"github.com/iwind/TeaGo/types"
 	"net/http"
 	"strconv"
-	strings "strings"
+	"strings"
 )
 
 type PurgeAction struct {
@@ -53,6 +53,7 @@ func (this *PurgeAction) RunGet(params struct {
 func (this *PurgeAction) RunPost(params struct {
 	CachePolicyId int64
 	ClusterId     int64
+	Type          string
 	Keys          string
 	Must          *actions.Must
 }) {
@@ -95,6 +96,11 @@ func (this *PurgeAction) RunPost(params struct {
 	msg := &messageconfigs.PurgeCacheMessage{
 		CachePolicyJSON: cachePolicyJSON,
 		Keys:            realKeys,
+	}
+	if params.Type == "prefix" {
+		msg.Type = messageconfigs.PurgeCacheMessageTypeDir
+	} else {
+		msg.Type = messageconfigs.PurgeCacheMessageTypeFile
 	}
 	results, err := nodeutils.SendMessageToCluster(this.AdminContext(), params.ClusterId, messageconfigs.MessageCodePurgeCache, msg, 10)
 	if err != nil {
