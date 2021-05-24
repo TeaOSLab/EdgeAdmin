@@ -63,8 +63,13 @@ func (this *UpdateAction) RunPost(params struct {
 	Description string
 	IsOn        bool
 
+	RefsJSON []byte
+
 	Must *actions.Must
 }) {
+	// 创建日志
+	defer this.CreateLog(oplogs.LevelInfo, "修改缓存策略：%d", params.CachePolicyId)
+
 	params.Must.
 		Field("name", params.Name).
 		Require("请输入策略名称")
@@ -104,6 +109,22 @@ func (this *UpdateAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
+
+	// 校验缓存条件
+	refs := []*serverconfigs.HTTPCacheRef{}
+	if len(params.RefsJSON) > 0 {
+		err = json.Unmarshal(params.RefsJSON, &refs)
+		if err != nil {
+			this.Fail("缓存条件解析失败：" + err.Error())
+		}
+		for _, ref := range refs {
+			err = ref.Init()
+			if err != nil {
+				this.Fail("缓存条件校验失败：" + err.Error())
+			}
+		}
+	}
+
 	_, err = this.RPC().HTTPCachePolicyRPC().UpdateHTTPCachePolicy(this.AdminContext(), &pb.UpdateHTTPCachePolicyRequest{
 		HttpCachePolicyId: params.CachePolicyId,
 		IsOn:              params.IsOn,
@@ -120,8 +141,15 @@ func (this *UpdateAction) RunPost(params struct {
 		return
 	}
 
-	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改缓存策略：%d", params.CachePolicyId)
+	// 修改缓存条件
+	_, err = this.RPC().HTTPCachePolicyRPC().UpdateHTTPCachePolicyRefs(this.AdminContext(), &pb.UpdateHTTPCachePolicyRefsRequest{
+		HttpCachePolicyId: params.CachePolicyId,
+		RefsJSON:          params.RefsJSON,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 
 	this.Success()
 }
