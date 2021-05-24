@@ -643,4 +643,15 @@ td .label.small {
 td {
   word-break: break-all;
 }
+.source-code-box .CodeMirror {
+  border: 1px solid #eee;
+  height: auto !important;
+}
+.source-code-box .CodeMirror-vscrollbar {
+  width: 6px;
+  border-radius: 3px !important;
+}
+.source-code-box .CodeMirror-vscrollbar::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+}
 /*# sourceMappingURL=@layout.css.map */

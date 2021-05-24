@@ -1,5 +1,5 @@
 Vue.component("download-link", {
-	props: ["v-element", "v-file"],
+	props: ["v-element", "v-file", "v-value"],
 	created: function () {
 		let that = this
 		setTimeout(function () {
@@ -18,14 +18,19 @@ Vue.component("download-link", {
 	},
 	methods: {
 		composeURL: function () {
-			let e = document.getElementById(this.vElement)
-			if (e == null) {
-				teaweb.warn("找不到要下载的内容")
-				return
-			}
-			let text = e.innerText
-			if (text == null) {
-				text = e.textContent
+			let text = ""
+			if (this.vValue != null) {
+				text = this.vValue
+			} else {
+				let e = document.getElementById(this.vElement)
+				if (e == null) {
+					teaweb.warn("找不到要下载的内容")
+					return
+				}
+				text = e.innerText
+				if (text == null) {
+					text = e.textContent
+				}
 			}
 			return Tea.url("/ui/download", {
 				file: this.file,
