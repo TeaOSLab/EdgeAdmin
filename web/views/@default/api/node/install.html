@@ -1,5 +1,6 @@
 {$layout}
 {$template "menu"}
+{$template "/code_editor"}
 
 <h3>安装步骤</h3>
 <ol class="ui list">
@@ -15,8 +16,8 @@
 	<tr>
 		<td class="title">configs/api.yaml<em><br/><download-link :v-element="'api-code'" :v-file="'api.yaml'">[下载]</download-link></em></td>
 		<td>
-			<pre id="api-code">nodeId: "{{node.uniqueId}}"
-secret: "{{node.secret}}"</pre>
+			<source-code-box id="api-code" type="text/yaml">nodeId: "{{node.uniqueId}}"
+secret: "{{node.secret}}"</source-code-box>
 		</td>
 	</tr>
 	<tr>
@@ -27,7 +28,7 @@ secret: "{{node.secret}}"</pre>
 				<span v-else class="red">无法生成配置内容，错误原因：</span>
 				{{dbConfig.error}}
 			</span>
-			<pre v-show="dbConfig.config.length > 0" id="db-code">{{dbConfig.config}}</pre>
+            <source-code-box id="db-code" type="text/yaml">{{dbConfig.config}}</source-code-box>
 		</td>
 	</tr>
 </table>

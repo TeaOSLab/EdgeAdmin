@@ -1,5 +1,6 @@
 {$layout}
 {$template "menu"}
+{$template "/code_editor"}
 
 <h3>安装步骤</h3>
 <ol class="ui list">
@@ -14,10 +15,10 @@
 	<tr>
 		<td class="title">configs/api.yaml<em><br/><download-link :v-element="'api-code'" :v-file="'api.yaml'">[下载]</download-link></em></td>
 		<td>
-			<pre id="api-code">rpc:
+			<source-code-box id="api-code" type="text/yaml">rpc:
   endpoints: [ {{apiEndpoints}} ]
 nodeId: "{{node.uniqueId}}"
-secret: "{{node.secret}}"</pre>
+secret: "{{node.secret}}"</source-code-box>
 		</td>
 	</tr>
 </table>

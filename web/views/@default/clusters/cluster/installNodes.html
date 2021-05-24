@@ -1,6 +1,7 @@
 {$layout}
 {$template "menu"}
 {$template "/left_menu"}
+{$template "/code_editor"}
 
 <div class="right-box">
 	<p>在官网下载节点安装包，然后通过修改节点安装包中的<code-label>configs/cluster.yaml</code-label>，启动后会自动注册节点。</p>
@@ -10,10 +11,10 @@
 				<em><download-link :v-element="'cluster-config-box'" :v-file="'cluster.yaml'">[下载]</download-link></em>
 			</td>
 			<td>
-				<pre id="cluster-config-box">rpc:
+				<source-code-box id="cluster-config-box" type="text/yaml">rpc:
 	endpoints: [ {{cluster.endpoints}} ]
-	clusterId: "{{cluster.uniqueId}}"
-	secret: "{{cluster.secret}}"</pre>
+clusterId: "{{cluster.uniqueId}}"
+secret: "{{cluster.secret}}"</source-code-box>
 			</td>
 		</tr>
 	</table>
