@@ -141,19 +141,19 @@ func (this *UpdateAction) RunGet(params struct {
 
 	// 分组
 	var groupMap maps.Map = nil
-	if node.Group != nil {
+	if node.NodeGroup != nil {
 		groupMap = maps.Map{
-			"id":   node.Group.Id,
-			"name": node.Group.Name,
+			"id":   node.NodeGroup.Id,
+			"name": node.NodeGroup.Name,
 		}
 	}
 
 	// 区域
 	var regionMap maps.Map = nil
-	if node.Region != nil {
+	if node.NodeRegion != nil {
 		regionMap = maps.Map{
-			"id":   node.Region.Id,
-			"name": node.Region.Name,
+			"id":   node.NodeRegion.Id,
+			"name": node.NodeRegion.Name,
 		}
 	}
 
@@ -322,11 +322,11 @@ func (this *UpdateAction) RunPost(params struct {
 	// 保存
 	_, err := this.RPC().NodeRPC().UpdateNode(this.AdminContext(), &pb.UpdateNodeRequest{
 		NodeId:                 params.NodeId,
-		GroupId:                params.GroupId,
-		RegionId:               params.RegionId,
+		NodeGroupId:            params.GroupId,
+		NodeRegionId:           params.RegionId,
 		Name:                   params.Name,
 		NodeClusterId:          params.ClusterId,
-		Login:                  loginInfo,
+		NodeLogin:              loginInfo,
 		MaxCPU:                 params.MaxCPU,
 		IsOn:                   params.IsOn,
 		DnsDomainId:            params.DnsDomainId,

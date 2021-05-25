@@ -41,7 +41,7 @@ func (this *ServersPopupAction) RunGet(params struct {
 		return
 	}
 	for _, cluster := range clustersResp.NodeClusters {
-		serversResp, err := this.RPC().ServerRPC().FindAllEnabledServersDNSWithClusterId(this.AdminContext(), &pb.FindAllEnabledServersDNSWithClusterIdRequest{NodeClusterId: cluster.Id})
+		serversResp, err := this.RPC().ServerRPC().FindAllEnabledServersDNSWithNodeClusterId(this.AdminContext(), &pb.FindAllEnabledServersDNSWithNodeClusterIdRequest{NodeClusterId: cluster.Id})
 		if err != nil {
 			this.ErrorPage(err)
 			return

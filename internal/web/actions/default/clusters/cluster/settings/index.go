@@ -35,8 +35,8 @@ func (this *IndexAction) RunGet(params struct {
 	// 认证
 	var grantMap interface{} = nil
 
-	if cluster.GrantId > 0 {
-		grantResp, err := this.RPC().NodeGrantRPC().FindEnabledNodeGrant(this.AdminContext(), &pb.FindEnabledNodeGrantRequest{NodeGrantId: cluster.GrantId})
+	if cluster.NodeGrantId > 0 {
+		grantResp, err := this.RPC().NodeGrantRPC().FindEnabledNodeGrant(this.AdminContext(), &pb.FindEnabledNodeGrantRequest{NodeGrantId: cluster.NodeGrantId})
 		if err != nil {
 			this.ErrorPage(err)
 			return
@@ -81,7 +81,7 @@ func (this *IndexAction) RunPost(params struct {
 	_, err := this.RPC().NodeClusterRPC().UpdateNodeCluster(this.AdminContext(), &pb.UpdateNodeClusterRequest{
 		NodeClusterId: params.ClusterId,
 		Name:          params.Name,
-		GrantId:       params.GrantId,
+		NodeGrantId:   params.GrantId,
 		InstallDir:    params.InstallDir,
 	})
 	if err != nil {

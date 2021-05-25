@@ -24,7 +24,7 @@ func (this *DeleteAction) RunPost(params struct {
 		this.Fail("此分组正在被使用不能删除，请修改节点后再删除")
 	}
 
-	_, err = this.RPC().NodeGroupRPC().DeleteNodeGroup(this.AdminContext(), &pb.DeleteNodeGroupRequest{GroupId: params.GroupId})
+	_, err = this.RPC().NodeGroupRPC().DeleteNodeGroup(this.AdminContext(), &pb.DeleteNodeGroupRequest{NodeGroupId: params.GroupId})
 	if err != nil {
 		this.ErrorPage(err)
 		return

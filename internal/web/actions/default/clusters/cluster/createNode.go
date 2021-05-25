@@ -133,9 +133,9 @@ func (this *CreateNodeAction) RunPost(params struct {
 	createResp, err := this.RPC().NodeRPC().CreateNode(this.AdminContext(), &pb.CreateNodeRequest{
 		Name:          params.Name,
 		NodeClusterId: params.ClusterId,
-		GroupId:       params.GroupId,
-		RegionId:      params.RegionId,
-		Login:         loginInfo,
+		NodeGroupId:   params.GroupId,
+		NodeRegionId:  params.RegionId,
+		NodeLogin:     loginInfo,
 		DnsDomainId:   params.DnsDomainId,
 		DnsRoutes:     dnsRouteCodes,
 	})

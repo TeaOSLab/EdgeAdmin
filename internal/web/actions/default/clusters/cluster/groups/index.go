@@ -18,7 +18,7 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ClusterId int64
 }) {
-	groupsResp, err := this.RPC().NodeGroupRPC().FindAllEnabledNodeGroupsWithClusterId(this.AdminContext(), &pb.FindAllEnabledNodeGroupsWithClusterIdRequest{
+	groupsResp, err := this.RPC().NodeGroupRPC().FindAllEnabledNodeGroupsWithNodeClusterId(this.AdminContext(), &pb.FindAllEnabledNodeGroupsWithNodeClusterIdRequest{
 		NodeClusterId: params.ClusterId,
 	})
 	if err != nil {
@@ -27,7 +27,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	groupMaps := []maps.Map{}
-	for _, group := range groupsResp.Groups {
+	for _, group := range groupsResp.NodeGroups {
 		countResp, err := this.RPC().NodeRPC().CountAllEnabledNodesWithNodeGroupId(this.AdminContext(), &pb.CountAllEnabledNodesWithNodeGroupIdRequest{NodeGroupId: group.Id})
 		if err != nil {
 			this.ErrorPage(err)

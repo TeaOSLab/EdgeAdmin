@@ -23,8 +23,8 @@ func (this *IndexAction) RunGet(params struct{}) {
 	}
 
 	groupMaps := []maps.Map{}
-	for _, group := range groupsResp.Groups {
-		countResp, err := this.RPC().ServerRPC().CountAllEnabledServersWithGroupId(this.AdminContext(), &pb.CountAllEnabledServersWithGroupIdRequest{GroupId: group.Id})
+	for _, group := range groupsResp.ServerGroups {
+		countResp, err := this.RPC().ServerRPC().CountAllEnabledServersWithServerGroupId(this.AdminContext(), &pb.CountAllEnabledServersWithServerGroupIdRequest{ServerGroupId: group.Id})
 		if err != nil {
 			this.ErrorPage(err)
 			return

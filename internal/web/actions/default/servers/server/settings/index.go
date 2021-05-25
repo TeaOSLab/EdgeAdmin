@@ -74,8 +74,8 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 分组
 	groupMaps := []maps.Map{}
-	if len(server.Groups) > 0 {
-		for _, group := range server.Groups {
+	if len(server.ServerGroups) > 0 {
+		for _, group := range server.ServerGroups {
 			groupMaps = append(groupMaps, maps.Map{
 				"id":   group.Id,
 				"name": group.Name,
@@ -138,12 +138,12 @@ func (this *IndexAction) RunPost(params struct {
 	}
 
 	_, err := this.RPC().ServerRPC().UpdateServerBasic(this.AdminContext(), &pb.UpdateServerBasicRequest{
-		ServerId:      params.ServerId,
-		Name:          params.Name,
-		Description:   params.Description,
-		NodeClusterId: params.ClusterId,
-		IsOn:          params.IsOn,
-		GroupIds:      params.GroupIds,
+		ServerId:       params.ServerId,
+		Name:           params.Name,
+		Description:    params.Description,
+		NodeClusterId:  params.ClusterId,
+		IsOn:           params.IsOn,
+		ServerGroupIds: params.GroupIds,
 	})
 	if err != nil {
 		this.ErrorPage(err)

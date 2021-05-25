@@ -17,8 +17,8 @@ func (this *DeleteAction) RunPost(params struct {
 	defer this.CreateLog(oplogs.LevelInfo, "删除SSH认证 %d", params.GrantId)
 
 	// 检查是否有别的集群或节点正在使用
-	countResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClustersWithGrantId(this.AdminContext(), &pb.CountAllEnabledNodeClustersWithGrantIdRequest{
-		GrantId: params.GrantId,
+	countResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClustersWithNodeGrantId(this.AdminContext(), &pb.CountAllEnabledNodeClustersWithNodeGrantIdRequest{
+		NodeGrantId: params.GrantId,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -28,7 +28,7 @@ func (this *DeleteAction) RunPost(params struct {
 		this.Fail("有集群正在使用此服务，请修改后再删除")
 	}
 
-	countResp2, err := this.RPC().NodeRPC().CountAllEnabledNodesWithGrantId(this.AdminContext(), &pb.CountAllEnabledNodesWithGrantIdRequest{GrantId: params.GrantId})
+	countResp2, err := this.RPC().NodeRPC().CountAllEnabledNodesWithNodeGrantId(this.AdminContext(), &pb.CountAllEnabledNodesWithNodeGrantIdRequest{NodeGrantId: params.GrantId})
 	if err != nil {
 		this.ErrorPage(err)
 		return

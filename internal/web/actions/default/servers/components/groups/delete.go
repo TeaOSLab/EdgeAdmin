@@ -17,7 +17,7 @@ func (this *DeleteAction) RunPost(params struct {
 	defer this.CreateLog(oplogs.LevelInfo, "删除代理服务分组 %d", params.GroupId)
 
 	// 检查是否正在使用
-	countResp, err := this.RPC().ServerRPC().CountAllEnabledServersWithGroupId(this.AdminContext(), &pb.CountAllEnabledServersWithGroupIdRequest{GroupId: params.GroupId})
+	countResp, err := this.RPC().ServerRPC().CountAllEnabledServersWithServerGroupId(this.AdminContext(), &pb.CountAllEnabledServersWithServerGroupIdRequest{ServerGroupId: params.GroupId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -27,7 +27,7 @@ func (this *DeleteAction) RunPost(params struct {
 		this.Fail("此分组正在被使用不能删除，请修改相关服务后再删除")
 	}
 
-	_, err = this.RPC().ServerGroupRPC().DeleteServerGroup(this.AdminContext(), &pb.DeleteServerGroupRequest{GroupId: params.GroupId})
+	_, err = this.RPC().ServerGroupRPC().DeleteServerGroup(this.AdminContext(), &pb.DeleteServerGroupRequest{ServerGroupId: params.GroupId})
 	if err != nil {
 		this.ErrorPage(err)
 		return

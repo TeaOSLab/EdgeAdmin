@@ -34,7 +34,7 @@ func (this *SelectPopupAction) RunGet(params struct {
 	}
 
 	groupMaps := []maps.Map{}
-	for _, group := range groupsResp.Groups {
+	for _, group := range groupsResp.ServerGroups {
 		// 已经选过的就跳过
 		if lists.ContainsInt64(selectedGroupIds, group.Id) {
 			continue
@@ -58,12 +58,12 @@ func (this *SelectPopupAction) RunPost(params struct {
 		this.Fail("请选择要使用的分组")
 	}
 
-	groupResp, err := this.RPC().ServerGroupRPC().FindEnabledServerGroup(this.AdminContext(), &pb.FindEnabledServerGroupRequest{GroupId: params.GroupId})
+	groupResp, err := this.RPC().ServerGroupRPC().FindEnabledServerGroup(this.AdminContext(), &pb.FindEnabledServerGroupRequest{ServerGroupId: params.GroupId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	group := groupResp.Group
+	group := groupResp.ServerGroup
 	if group == nil {
 		this.NotFound("serverGroup", params.GroupId)
 		return
