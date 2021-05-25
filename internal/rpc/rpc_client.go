@@ -352,6 +352,10 @@ func (this *RPCClient) LatestItemRPC() pb.LatestItemServiceClient {
 	return pb.NewLatestItemServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) NSClusterRPC() pb.NSClusterServiceClient {
+	return pb.NewNSClusterServiceClient(this.pickConn())
+}
+
 // Context 构造Admin上下文
 func (this *RPCClient) Context(adminId int64) context.Context {
 	ctx := context.Background()

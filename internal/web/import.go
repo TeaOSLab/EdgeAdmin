@@ -31,6 +31,13 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/logout"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/messages"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes"
+
+	// 域名服务
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters/cluster"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters/cluster/settings"
+
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/certs"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components"

@@ -1,6 +1,7 @@
 package configloaders
 
 import (
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
@@ -14,6 +15,7 @@ const (
 	AdminModuleCodeServer    AdminModuleCode = "server"    // 网站
 	AdminModuleCodeNode      AdminModuleCode = "node"      // 节点
 	AdminModuleCodeDNS       AdminModuleCode = "dns"       // DNS
+	AdminModuleCodeNS        AdminModuleCode = "ns"        // 域名服务
 	AdminModuleCodeAdmin     AdminModuleCode = "admin"     // 系统用户
 	AdminModuleCodeUser      AdminModuleCode = "user"      // 平台用户
 	AdminModuleCodeFinance   AdminModuleCode = "finance"   // 财务
@@ -68,7 +70,7 @@ func NotifyAdminModuleMappingChange() error {
 	return err
 }
 
-// 检查用户是否存在
+// CheckAdmin 检查用户是否存在
 func CheckAdmin(adminId int64) bool {
 	locker.Lock()
 	defer locker.Unlock()
@@ -82,7 +84,7 @@ func CheckAdmin(adminId int64) bool {
 	return ok
 }
 
-// 检查模块是否允许访问
+// AllowModule 检查模块是否允许访问
 func AllowModule(adminId int64, module string) bool {
 	locker.Lock()
 	defer locker.Unlock()
@@ -103,7 +105,7 @@ func AllowModule(adminId int64, module string) bool {
 	return false
 }
 
-// 获取管理员第一个可访问模块
+// FindFirstAdminModule 获取管理员第一个可访问模块
 func FindFirstAdminModule(adminId int64) (module AdminModuleCode, ok bool) {
 	locker.Lock()
 	defer locker.Unlock()
@@ -118,7 +120,7 @@ func FindFirstAdminModule(adminId int64) (module AdminModuleCode, ok bool) {
 	return
 }
 
-// 查找某个管理员名称
+// FindAdminFullname 查找某个管理员名称
 func FindAdminFullname(adminId int64) string {
 	locker.Lock()
 	defer locker.Unlock()
@@ -130,9 +132,9 @@ func FindAdminFullname(adminId int64) string {
 	return ""
 }
 
-// 所有权限列表
+// AllModuleMaps 所有权限列表
 func AllModuleMaps() []maps.Map {
-	return []maps.Map{
+	m := []maps.Map{
 		{
 			"name": "看板",
 			"code": AdminModuleCodeDashboard,
@@ -153,6 +155,15 @@ func AllModuleMaps() []maps.Map {
 			"code": AdminModuleCodeDNS,
 			"url":  "/dns",
 		},
+	}
+	if teaconst.IsPlus {
+		m = append(m, maps.Map{
+			"name": "域名服务器",
+			"code": AdminModuleCodeNS,
+			"url":  "/ns",
+		})
+	}
+	m = append(m, []maps.Map{
 		{
 			"name": "平台用户",
 			"code": AdminModuleCodeUser,
@@ -178,5 +189,6 @@ func AllModuleMaps() []maps.Map {
 			"code": AdminModuleCodeSetting,
 			"url":  "/settings",
 		},
-	}
+	}...)
+	return m
 }
