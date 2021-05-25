@@ -116,6 +116,9 @@ pre.red {
 span.blue {
   color: #4183c4;
 }
+span.orange {
+  color: #ff851b;
+}
 pre:not(.CodeMirror-line) {
   font-family: Lato, 'Helvetica Neue', Arial, Helvetica, sans-serif !important;
 }
