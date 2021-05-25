@@ -332,7 +332,7 @@ func (this *CreateAction) RunPost(params struct {
 		ExcludeNodesJSON: excludeNodesJSON,
 		WebId:            webId,
 		ReverseProxyJSON: reverseProxyRefJSON,
-		GroupIds:         params.GroupIds,
+		ServerGroupIds:   params.GroupIds,
 	}
 	if httpConfig != nil {
 		data, err := json.Marshal(httpConfig)

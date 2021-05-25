@@ -62,7 +62,7 @@ func (this *ClusterAction) RunGet(params struct {
 	this.Data["dnsInfo"] = dnsMap
 
 	// 节点DNS解析记录
-	nodesResp, err := this.RPC().NodeRPC().FindAllEnabledNodesDNSWithClusterId(this.AdminContext(), &pb.FindAllEnabledNodesDNSWithClusterIdRequest{NodeClusterId: params.ClusterId})
+	nodesResp, err := this.RPC().NodeRPC().FindAllEnabledNodesDNSWithNodeClusterId(this.AdminContext(), &pb.FindAllEnabledNodesDNSWithNodeClusterIdRequest{NodeClusterId: params.ClusterId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -117,7 +117,7 @@ func (this *ClusterAction) RunGet(params struct {
 	this.Data["nodes"] = nodeMaps
 
 	// 代理服务解析记录
-	serversResp, err := this.RPC().ServerRPC().FindAllEnabledServersDNSWithClusterId(this.AdminContext(), &pb.FindAllEnabledServersDNSWithClusterIdRequest{NodeClusterId: params.ClusterId})
+	serversResp, err := this.RPC().ServerRPC().FindAllEnabledServersDNSWithNodeClusterId(this.AdminContext(), &pb.FindAllEnabledServersDNSWithNodeClusterIdRequest{NodeClusterId: params.ClusterId})
 	if err != nil {
 		this.ErrorPage(err)
 		return

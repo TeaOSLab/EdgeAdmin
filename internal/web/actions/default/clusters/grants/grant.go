@@ -46,7 +46,7 @@ func (this *GrantAction) RunGet(params struct {
 
 	// 使用此认证的集群
 	clusterMaps := []maps.Map{}
-	clustersResp, err := this.RPC().NodeClusterRPC().FindAllEnabledNodeClustersWithGrantId(this.AdminContext(), &pb.FindAllEnabledNodeClustersWithGrantIdRequest{GrantId: params.GrantId})
+	clustersResp, err := this.RPC().NodeClusterRPC().FindAllEnabledNodeClustersWithNodeGrantId(this.AdminContext(), &pb.FindAllEnabledNodeClustersWithNodeGrantIdRequest{NodeGrantId: params.GrantId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -61,7 +61,7 @@ func (this *GrantAction) RunGet(params struct {
 
 	// 使用此认证的节点
 	nodeMaps := []maps.Map{}
-	nodesResp, err := this.RPC().NodeRPC().FindAllEnabledNodesWithGrantId(this.AdminContext(), &pb.FindAllEnabledNodesWithGrantIdRequest{GrantId: params.GrantId})
+	nodesResp, err := this.RPC().NodeRPC().FindAllEnabledNodesWithNodeGrantId(this.AdminContext(), &pb.FindAllEnabledNodesWithNodeGrantIdRequest{NodeGrantId: params.GrantId})
 	if err != nil {
 		this.ErrorPage(err)
 		return

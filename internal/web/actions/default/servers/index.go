@@ -67,10 +67,10 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 全部数量
 	countResp, err := this.RPC().ServerRPC().CountAllEnabledServersMatch(this.AdminContext(), &pb.CountAllEnabledServersMatchRequest{
-		ClusterId:    params.ClusterId,
-		GroupId:      params.GroupId,
-		Keyword:      params.Keyword,
-		AuditingFlag: params.AuditingFlag,
+		NodeClusterId: params.ClusterId,
+		ServerGroupId: params.GroupId,
+		Keyword:       params.Keyword,
+		AuditingFlag:  params.AuditingFlag,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -82,12 +82,12 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 服务列表
 	serversResp, err := this.RPC().ServerRPC().ListEnabledServersMatch(this.AdminContext(), &pb.ListEnabledServersMatchRequest{
-		Offset:       page.Offset,
-		Size:         page.Size,
-		ClusterId:    params.ClusterId,
-		GroupId:      params.GroupId,
-		Keyword:      params.Keyword,
-		AuditingFlag: params.AuditingFlag,
+		Offset:        page.Offset,
+		Size:          page.Size,
+		NodeClusterId: params.ClusterId,
+		ServerGroupId: params.GroupId,
+		Keyword:       params.Keyword,
+		AuditingFlag:  params.AuditingFlag,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -155,8 +155,8 @@ func (this *IndexAction) RunGet(params struct {
 
 		// 分组
 		groupMaps := []maps.Map{}
-		if len(server.Groups) > 0 {
-			for _, group := range server.Groups {
+		if len(server.ServerGroups) > 0 {
+			for _, group := range server.ServerGroups {
 				groupMaps = append(groupMaps, maps.Map{
 					"id":   group.Id,
 					"name": group.Name,
@@ -240,7 +240,7 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 	groupMaps := []maps.Map{}
-	for _, group := range groupsResp.Groups {
+	for _, group := range groupsResp.ServerGroups {
 		groupName := group.Name
 		groupMaps = append(groupMaps, maps.Map{
 			"id":   group.Id,

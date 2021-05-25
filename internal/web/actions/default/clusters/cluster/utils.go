@@ -9,20 +9,20 @@ import (
 	"strconv"
 )
 
-// 安装升级相关的左侧菜单
+// LeftMenuItemsForInstall 安装升级相关的左侧菜单
 func LeftMenuItemsForInstall(ctx context.Context, clusterId int64, selectedItem string) []maps.Map {
 	rpcClient, _ := rpc.SharedRPC()
 	countNotInstalled := int64(0)
 	countUpgrade := int64(0)
 	if rpcClient != nil {
 		{
-			resp, err := rpcClient.NodeRPC().CountAllNotInstalledNodesWithClusterId(ctx, &pb.CountAllNotInstalledNodesWithClusterIdRequest{NodeClusterId: clusterId})
+			resp, err := rpcClient.NodeRPC().CountAllNotInstalledNodesWithNodeClusterId(ctx, &pb.CountAllNotInstalledNodesWithNodeClusterIdRequest{NodeClusterId: clusterId})
 			if err == nil {
 				countNotInstalled = resp.Count
 			}
 		}
 		{
-			resp, err := rpcClient.NodeRPC().CountAllUpgradeNodesWithClusterId(ctx, &pb.CountAllUpgradeNodesWithClusterIdRequest{NodeClusterId: clusterId})
+			resp, err := rpcClient.NodeRPC().CountAllUpgradeNodesWithNodeClusterId(ctx, &pb.CountAllUpgradeNodesWithNodeClusterIdRequest{NodeClusterId: clusterId})
 			if err == nil {
 				countUpgrade = resp.Count
 			}

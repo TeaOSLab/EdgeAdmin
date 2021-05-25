@@ -96,7 +96,7 @@ func (this *IndexAction) RunGet(params struct {
 			}
 
 			// 需要升级的节点
-			countUpgradeNodesResp, err := this.RPC().NodeRPC().CountAllUpgradeNodesWithClusterId(this.AdminContext(), &pb.CountAllUpgradeNodesWithClusterIdRequest{NodeClusterId: cluster.Id})
+			countUpgradeNodesResp, err := this.RPC().NodeRPC().CountAllUpgradeNodesWithNodeClusterId(this.AdminContext(), &pb.CountAllUpgradeNodesWithNodeClusterIdRequest{NodeClusterId: cluster.Id})
 			if err != nil {
 				this.ErrorPage(err)
 				return
@@ -203,19 +203,19 @@ func (this *IndexAction) searchNodes(keyword string) {
 
 		// 分组
 		var groupMap maps.Map = nil
-		if node.Group != nil {
+		if node.NodeGroup != nil {
 			groupMap = maps.Map{
-				"id":   node.Group.Id,
-				"name": node.Group.Name,
+				"id":   node.NodeGroup.Id,
+				"name": node.NodeGroup.Name,
 			}
 		}
 
 		// 区域
 		var regionMap maps.Map = nil
-		if node.Region != nil {
+		if node.NodeRegion != nil {
 			regionMap = maps.Map{
-				"id":   node.Region.Id,
-				"name": node.Region.Name,
+				"id":   node.NodeRegion.Id,
+				"name": node.NodeRegion.Name,
 			}
 		}
 

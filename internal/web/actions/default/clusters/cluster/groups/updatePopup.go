@@ -19,12 +19,12 @@ func (this *UpdatePopupAction) Init() {
 func (this *UpdatePopupAction) RunGet(params struct {
 	GroupId int64
 }) {
-	groupResp, err := this.RPC().NodeGroupRPC().FindEnabledNodeGroup(this.AdminContext(), &pb.FindEnabledNodeGroupRequest{GroupId: params.GroupId})
+	groupResp, err := this.RPC().NodeGroupRPC().FindEnabledNodeGroup(this.AdminContext(), &pb.FindEnabledNodeGroupRequest{NodeGroupId: params.GroupId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	group := groupResp.Group
+	group := groupResp.NodeGroup
 	if group == nil {
 		this.NotFound("nodeGroup", params.GroupId)
 		return
@@ -48,8 +48,8 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		Field("name", params.Name).
 		Require("请输入分组名称")
 	_, err := this.RPC().NodeGroupRPC().UpdateNodeGroup(this.AdminContext(), &pb.UpdateNodeGroupRequest{
-		GroupId: params.GroupId,
-		Name:    params.Name,
+		NodeGroupId: params.GroupId,
+		Name:        params.Name,
 	})
 	if err != nil {
 		this.ErrorPage(err)

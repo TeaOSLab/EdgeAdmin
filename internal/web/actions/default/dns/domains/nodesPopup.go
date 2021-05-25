@@ -43,7 +43,7 @@ func (this *NodesPopupAction) RunGet(params struct {
 
 	for _, cluster := range clustersResp.NodeClusters {
 		// 节点DNS解析记录
-		nodesResp, err := this.RPC().NodeRPC().FindAllEnabledNodesDNSWithClusterId(this.AdminContext(), &pb.FindAllEnabledNodesDNSWithClusterIdRequest{NodeClusterId: cluster.Id})
+		nodesResp, err := this.RPC().NodeRPC().FindAllEnabledNodesDNSWithNodeClusterId(this.AdminContext(), &pb.FindAllEnabledNodesDNSWithNodeClusterIdRequest{NodeClusterId: cluster.Id})
 		if err != nil {
 			this.ErrorPage(err)
 			return

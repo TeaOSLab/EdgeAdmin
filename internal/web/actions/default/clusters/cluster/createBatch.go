@@ -79,9 +79,9 @@ func (this *CreateBatchAction) RunPost(params struct {
 		resp, err := this.RPC().NodeRPC().CreateNode(this.AdminContext(), &pb.CreateNodeRequest{
 			Name:          ip,
 			NodeClusterId: params.ClusterId,
-			GroupId:       params.GroupId,
-			RegionId:      params.RegionId,
-			Login:         nil,
+			NodeGroupId:   params.GroupId,
+			NodeRegionId:  params.RegionId,
+			NodeLogin:     nil,
 		})
 		if err != nil {
 			this.ErrorPage(err)

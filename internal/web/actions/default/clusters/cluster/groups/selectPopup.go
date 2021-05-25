@@ -18,13 +18,13 @@ func (this *SelectPopupAction) Init() {
 func (this *SelectPopupAction) RunGet(params struct {
 	ClusterId int64
 }) {
-	groupsResp, err := this.RPC().NodeGroupRPC().FindAllEnabledNodeGroupsWithClusterId(this.AdminContext(), &pb.FindAllEnabledNodeGroupsWithClusterIdRequest{NodeClusterId: params.ClusterId})
+	groupsResp, err := this.RPC().NodeGroupRPC().FindAllEnabledNodeGroupsWithNodeClusterId(this.AdminContext(), &pb.FindAllEnabledNodeGroupsWithNodeClusterIdRequest{NodeClusterId: params.ClusterId})
 	if err != nil {
 		this.ErrorPage(err)
 	}
 
 	groupMaps := []maps.Map{}
-	for _, group := range groupsResp.Groups {
+	for _, group := range groupsResp.NodeGroups {
 		groupMaps = append(groupMaps, maps.Map{
 			"id":   group.Id,
 			"name": group.Name,
@@ -44,12 +44,12 @@ func (this *SelectPopupAction) RunPost(params struct {
 		this.Fail("请选择要使用的分组")
 	}
 
-	groupResp, err := this.RPC().NodeGroupRPC().FindEnabledNodeGroup(this.AdminContext(), &pb.FindEnabledNodeGroupRequest{GroupId: params.GroupId})
+	groupResp, err := this.RPC().NodeGroupRPC().FindEnabledNodeGroup(this.AdminContext(), &pb.FindEnabledNodeGroupRequest{NodeGroupId: params.GroupId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	group := groupResp.Group
+	group := groupResp.NodeGroup
 	if group == nil {
 		this.NotFound("nodeGroup", params.GroupId)
 		return

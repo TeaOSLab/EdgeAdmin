@@ -13,7 +13,7 @@ type SortAction struct {
 func (this *SortAction) RunPost(params struct {
 	GroupIds []int64
 }) {
-	_, err := this.RPC().NodeGroupRPC().UpdateNodeGroupOrders(this.AdminContext(), &pb.UpdateNodeGroupOrdersRequest{GroupIds: params.GroupIds})
+	_, err := this.RPC().NodeGroupRPC().UpdateNodeGroupOrders(this.AdminContext(), &pb.UpdateNodeGroupOrdersRequest{NodeGroupIds: params.GroupIds})
 	if err != nil {
 		this.ErrorPage(err)
 		return

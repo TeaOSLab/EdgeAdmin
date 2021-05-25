@@ -47,8 +47,8 @@ func (this *IndexAction) RunGet(params struct {
 
 	countResp, err := this.RPC().NodeRPC().CountAllEnabledNodesMatch(this.AdminContext(), &pb.CountAllEnabledNodesMatchRequest{
 		NodeClusterId: params.ClusterId,
-		GroupId:       params.GroupId,
-		RegionId:      params.RegionId,
+		NodeGroupId:   params.GroupId,
+		NodeRegionId:  params.RegionId,
 		InstallState:  types.Int32(params.InstalledState),
 		ActiveState:   types.Int32(params.ActiveState),
 		Keyword:       params.Keyword,
@@ -65,8 +65,8 @@ func (this *IndexAction) RunGet(params struct {
 		Offset:        page.Offset,
 		Size:          page.Size,
 		NodeClusterId: params.ClusterId,
-		GroupId:       params.GroupId,
-		RegionId:      params.RegionId,
+		NodeGroupId:   params.GroupId,
+		NodeRegionId:  params.RegionId,
 		InstallState:  types.Int32(params.InstalledState),
 		ActiveState:   types.Int32(params.ActiveState),
 		Keyword:       params.Keyword,
@@ -104,19 +104,19 @@ func (this *IndexAction) RunGet(params struct {
 
 		// 分组
 		var groupMap maps.Map = nil
-		if node.Group != nil {
+		if node.NodeGroup != nil {
 			groupMap = maps.Map{
-				"id":   node.Group.Id,
-				"name": node.Group.Name,
+				"id":   node.NodeGroup.Id,
+				"name": node.NodeGroup.Name,
 			}
 		}
 
 		// 区域
 		var regionMap maps.Map = nil
-		if node.Region != nil {
+		if node.NodeRegion != nil {
 			regionMap = maps.Map{
-				"id":   node.Region.Id,
-				"name": node.Region.Name,
+				"id":   node.NodeRegion.Id,
+				"name": node.NodeRegion.Name,
 			}
 		}
 
@@ -162,14 +162,14 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 所有分组
 	groupMaps := []maps.Map{}
-	groupsResp, err := this.RPC().NodeGroupRPC().FindAllEnabledNodeGroupsWithClusterId(this.AdminContext(), &pb.FindAllEnabledNodeGroupsWithClusterIdRequest{
+	groupsResp, err := this.RPC().NodeGroupRPC().FindAllEnabledNodeGroupsWithNodeClusterId(this.AdminContext(), &pb.FindAllEnabledNodeGroupsWithNodeClusterIdRequest{
 		NodeClusterId: params.ClusterId,
 	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	for _, group := range groupsResp.Groups {
+	for _, group := range groupsResp.NodeGroups {
 		countResp, err := this.RPC().NodeRPC().CountAllEnabledNodesWithNodeGroupId(this.AdminContext(), &pb.CountAllEnabledNodesWithNodeGroupIdRequest{NodeGroupId: group.Id})
 		if err != nil {
 			this.ErrorPage(err)

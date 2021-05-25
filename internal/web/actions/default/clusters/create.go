@@ -97,7 +97,7 @@ func (this *CreateAction) RunPost(params struct {
 
 	createResp, err := this.RPC().NodeClusterRPC().CreateNodeCluster(this.AdminContext(), &pb.CreateNodeClusterRequest{
 		Name:                 params.Name,
-		GrantId:              params.GrantId,
+		NodeGrantId:          params.GrantId,
 		InstallDir:           params.InstallDir,
 		DnsDomainId:          params.DnsDomainId,
 		DnsName:              params.DnsName,

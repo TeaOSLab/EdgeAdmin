@@ -42,7 +42,7 @@ func (this *IndexAction) RunGet(params struct {
 	grantMaps := []maps.Map{}
 	for _, grant := range grantsResp.NodeGrants {
 		// 集群数
-		countClustersResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClustersWithGrantId(this.AdminContext(), &pb.CountAllEnabledNodeClustersWithGrantIdRequest{GrantId: grant.Id})
+		countClustersResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClustersWithNodeGrantId(this.AdminContext(), &pb.CountAllEnabledNodeClustersWithNodeGrantIdRequest{NodeGrantId: grant.Id})
 		if err != nil {
 			this.ErrorPage(err)
 			return
@@ -50,7 +50,7 @@ func (this *IndexAction) RunGet(params struct {
 		countClusters := countClustersResp.Count
 
 		// 节点数
-		countNodesResp, err := this.RPC().NodeRPC().CountAllEnabledNodesWithGrantId(this.AdminContext(), &pb.CountAllEnabledNodesWithGrantIdRequest{GrantId: grant.Id})
+		countNodesResp, err := this.RPC().NodeRPC().CountAllEnabledNodesWithNodeGrantId(this.AdminContext(), &pb.CountAllEnabledNodesWithNodeGrantIdRequest{NodeGrantId: grant.Id})
 		if err != nil {
 			this.ErrorPage(err)
 			return

@@ -37,12 +37,12 @@ func (this *CreatePopupAction) RunPost(params struct {
 	}
 
 	this.Data["group"] = maps.Map{
-		"id":   createResp.GroupId,
+		"id":   createResp.ServerGroupId,
 		"name": params.Name,
 	}
 
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "创建代理服务分组 %d", createResp.GroupId)
+	defer this.CreateLog(oplogs.LevelInfo, "创建代理服务分组 %d", createResp.ServerGroupId)
 
 	this.Success()
 }

@@ -19,12 +19,12 @@ func (this *UpdatePopupAction) Init() {
 func (this *UpdatePopupAction) RunGet(params struct {
 	GroupId int64
 }) {
-	groupResp, err := this.RPC().ServerGroupRPC().FindEnabledServerGroup(this.AdminContext(), &pb.FindEnabledServerGroupRequest{GroupId: params.GroupId})
+	groupResp, err := this.RPC().ServerGroupRPC().FindEnabledServerGroup(this.AdminContext(), &pb.FindEnabledServerGroupRequest{ServerGroupId: params.GroupId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	group := groupResp.Group
+	group := groupResp.ServerGroup
 	if group == nil {
 		this.NotFound("serverGroup", params.GroupId)
 		return
@@ -51,8 +51,8 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		Field("name", params.Name).
 		Require("请输入分组名称")
 	_, err := this.RPC().ServerGroupRPC().UpdateServerGroup(this.AdminContext(), &pb.UpdateServerGroupRequest{
-		GroupId: params.GroupId,
-		Name:    params.Name,
+		ServerGroupId: params.GroupId,
+		Name:          params.Name,
 	})
 	if err != nil {
 		this.ErrorPage(err)

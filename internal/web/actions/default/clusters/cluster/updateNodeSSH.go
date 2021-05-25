@@ -108,8 +108,8 @@ func (this *UpdateNodeSSHAction) RunPost(params struct {
 	}
 
 	_, err := this.RPC().NodeRPC().UpdateNodeLogin(this.AdminContext(), &pb.UpdateNodeLoginRequest{
-		NodeId: params.NodeId,
-		Login:  login,
+		NodeId:    params.NodeId,
+		NodeLogin: login,
 	})
 	if err != nil {
 		this.ErrorPage(err)
