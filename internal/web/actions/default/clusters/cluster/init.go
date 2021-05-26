@@ -30,7 +30,7 @@ func init() {
 			GetPost("/installManual", new(InstallManualAction)).
 
 			// 节点相关
-			Get("/node", new(node.NodeAction)).
+			Get("/node", new(node.IndexAction)).
 			GetPost("/node/update", new(node.UpdateAction)).
 			GetPost("/node/install", new(node.InstallAction)).
 			Post("/node/updateInstallStatus", new(node.UpdateInstallStatusAction)).

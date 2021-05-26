@@ -20,7 +20,7 @@ type ParentAction struct {
 	rpcClient *rpc.RPCClient
 }
 
-// 可以调用自身的一个简便方法
+// Parent 可以调用自身的一个简便方法
 func (this *ParentAction) Parent() *ParentAction {
 	return this
 }
@@ -97,7 +97,7 @@ func (this *ParentAction) CreateLogInfo(description string, args ...interface{})
 	this.CreateLog(oplogs.LevelInfo, description, args...)
 }
 
-// 获取RPC
+// RPC 获取RPC
 func (this *ParentAction) RPC() *rpc.RPCClient {
 	if this.rpcClient != nil {
 		return this.rpcClient
@@ -114,7 +114,7 @@ func (this *ParentAction) RPC() *rpc.RPCClient {
 	return rpcClient
 }
 
-// 获取Context
+// AdminContext 获取Context
 func (this *ParentAction) AdminContext() context.Context {
 	if this.rpcClient == nil {
 		rpcClient, err := rpc.SharedRPC()

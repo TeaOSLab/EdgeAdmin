@@ -2,6 +2,7 @@ package cluster
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters/cluster/node"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters/clusterutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/iwind/TeaGo"
@@ -17,6 +18,18 @@ func init() {
 			Prefix("/ns/clusters/cluster").
 			Get("", new(IndexAction)).
 			GetPost("/delete", new(DeleteAction)).
+			GetPost("/createNode", new(CreateNodeAction)).
+			Post("/deleteNode", new(DeleteNodeAction)).
+
+			// 节点相关
+			Prefix("/ns/clusters/cluster/node").
+			Get("", new(node.IndexAction)).
+			Get("/logs", new(node.LogsAction)).
+			GetPost("/update", new(node.UpdateAction)).
+			GetPost("/install", new(node.InstallAction)).
+			Post("/status", new(node.StatusAction)).
+			Post("/updateInstallStatus", new(node.UpdateInstallStatusAction)).
+
 			EndAll()
 	})
 }

@@ -3,6 +3,7 @@ package cluster
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/lists"
@@ -90,6 +91,7 @@ func (this *CreateBatchAction) RunPost(params struct {
 		nodeId := resp.NodeId
 		_, err = this.RPC().NodeIPAddressRPC().CreateNodeIPAddress(this.AdminContext(), &pb.CreateNodeIPAddressRequest{
 			NodeId:    nodeId,
+			Role:      nodeconfigs.NodeRoleNode,
 			Name:      "IP地址",
 			Ip:        ip,
 			CanAccess: true,

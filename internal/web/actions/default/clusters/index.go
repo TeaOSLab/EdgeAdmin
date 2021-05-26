@@ -186,7 +186,10 @@ func (this *IndexAction) searchNodes(keyword string) {
 		}
 
 		// IP
-		ipAddressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledIPAddressesWithNodeIdRequest{NodeId: node.Id})
+		ipAddressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledIPAddressesWithNodeIdRequest{
+			NodeId: node.Id,
+			Role:   nodeconfigs.NodeRoleNode,
+		})
 		if err != nil {
 			this.ErrorPage(err)
 			return
