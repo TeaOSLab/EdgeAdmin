@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -156,6 +157,7 @@ func (this *CreateNodeAction) RunPost(params struct {
 		} else {
 			_, err = this.RPC().NodeIPAddressRPC().CreateNodeIPAddress(this.AdminContext(), &pb.CreateNodeIPAddressRequest{
 				NodeId:    nodeId,
+				Role:      nodeconfigs.NodeRoleNode,
 				Name:      address.GetString("name"),
 				Ip:        address.GetString("ip"),
 				CanAccess: address.GetBool("canAccess"),

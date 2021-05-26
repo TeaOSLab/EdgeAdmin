@@ -71,6 +71,10 @@ func (this *IndexAction) RunGet(params struct {
 		ActiveState:   types.Int32(params.ActiveState),
 		Keyword:       params.Keyword,
 	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 	nodeMaps := []maps.Map{}
 	for _, node := range nodesResp.Nodes {
 		// 状态
@@ -87,7 +91,10 @@ func (this *IndexAction) RunGet(params struct {
 		}
 
 		// IP
-		ipAddressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledIPAddressesWithNodeIdRequest{NodeId: node.Id})
+		ipAddressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledIPAddressesWithNodeIdRequest{
+			NodeId: node.Id,
+			Role:   nodeconfigs.NodeRoleNode,
+		})
 		if err != nil {
 			this.ErrorPage(err)
 			return

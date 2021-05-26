@@ -12,16 +12,16 @@ import (
 	"time"
 )
 
-type NodeAction struct {
+type IndexAction struct {
 	actionutils.ParentAction
 }
 
-func (this *NodeAction) Init() {
+func (this *IndexAction) Init() {
 	this.Nav("", "node", "node")
 	this.SecondMenu("nodes")
 }
 
-func (this *NodeAction) RunGet(params struct {
+func (this *IndexAction) RunGet(params struct {
 	NodeId int64
 }) {
 	this.Data["nodeId"] = params.NodeId
@@ -56,7 +56,10 @@ func (this *NodeAction) RunGet(params struct {
 	}
 
 	// IP地址
-	ipAddressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledIPAddressesWithNodeIdRequest{NodeId: params.NodeId})
+	ipAddressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledIPAddressesWithNodeIdRequest{
+		NodeId: params.NodeId,
+		Role:   nodeconfigs.NodeRoleNode,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return

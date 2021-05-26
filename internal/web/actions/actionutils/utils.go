@@ -13,15 +13,15 @@ import (
 	"strings"
 )
 
-// 提示服务器错误信息
+// Fail 提示服务器错误信息
 func Fail(action actions.ActionWrapper, err error) {
 	if err != nil {
 		logs.Println("[" + reflect.TypeOf(action).String() + "]" + findStack(err.Error()))
 	}
-	action.Object().Fail(teaconst.ErrServer)
+	action.Object().Fail(teaconst.ErrServer + "（" + err.Error() + "）")
 }
 
-// 提示页面错误信息
+// FailPage 提示页面错误信息
 func FailPage(action actions.ActionWrapper, err error) {
 	if err != nil {
 		logs.Println("[" + reflect.TypeOf(action).String() + "]" + findStack(err.Error()))
@@ -43,12 +43,12 @@ func FailPage(action actions.ActionWrapper, err error) {
 	}
 }
 
-// 判断动作的文件路径是否相当
+// MatchPath 判断动作的文件路径是否相当
 func MatchPath(action *actions.ActionObject, path string) bool {
 	return action.Request.URL.Path == path
 }
 
-// 查找父级Action
+// FindParentAction 查找父级Action
 func FindParentAction(actionPtr actions.ActionWrapper) *ParentAction {
 	parentActionValue := reflect.ValueOf(actionPtr).Elem().FieldByName("ParentAction")
 	if parentActionValue.IsValid() {

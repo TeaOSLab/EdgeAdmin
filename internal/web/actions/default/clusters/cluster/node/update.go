@@ -6,6 +6,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/ipAddresses/ipaddressutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
@@ -46,7 +47,10 @@ func (this *UpdateAction) RunGet(params struct {
 	}
 
 	// IP地址
-	ipAddressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledIPAddressesWithNodeIdRequest{NodeId: params.NodeId})
+	ipAddressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledIPAddressesWithNodeIdRequest{
+		NodeId: params.NodeId,
+		Role:   nodeconfigs.NodeRoleNode,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -340,14 +344,17 @@ func (this *UpdateAction) RunPost(params struct {
 	}
 
 	// 禁用老的IP地址
-	_, err = this.RPC().NodeIPAddressRPC().DisableAllIPAddressesWithNodeId(this.AdminContext(), &pb.DisableAllIPAddressesWithNodeIdRequest{NodeId: params.NodeId})
+	_, err = this.RPC().NodeIPAddressRPC().DisableAllIPAddressesWithNodeId(this.AdminContext(), &pb.DisableAllIPAddressesWithNodeIdRequest{
+		NodeId: params.NodeId,
+		Role:   nodeconfigs.NodeRoleNode,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 
 	// 添加新的IP地址
-	err = ipaddressutils.UpdateNodeIPAddresses(this.Parent(), params.NodeId, params.IPAddressesJSON)
+	err = ipaddressutils.UpdateNodeIPAddresses(this.Parent(), params.NodeId, nodeconfigs.NodeRoleNode, params.IPAddressesJSON)
 	if err != nil {
 		this.ErrorPage(err)
 		return
