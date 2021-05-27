@@ -1,0 +1,30 @@
+{$layout}
+{$template "domain_menu"}
+
+<table class="ui table definition selectable">
+    <tr>
+        <td class="title">域名</td>
+        <td>{{domain.name}}</td>
+    </tr>
+    <tr>
+        <td>状态</td>
+        <td>
+            <label-on :v-is-on="domain.isOn"></label-on>
+        </td>
+    </tr>
+    <tr>
+        <td>所属集群</td>
+        <td>
+            {{domain.cluster.name}}<link-icon :href="'/ns/clusters/cluster?clusterId=' + domain.cluster.id"></link-icon>
+        </td>
+    </tr>
+    <tr>
+        <td>所属用户</td>
+        <td>
+            <span v-if="domain.user != null">
+                {{domain.user.fullname}} ({{domain.user.username}})
+            </span>
+            <span v-else class="disabled">-</span>
+        </td>
+    </tr>
+</table>

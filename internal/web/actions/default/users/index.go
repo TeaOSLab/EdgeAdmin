@@ -27,7 +27,11 @@ func (this *IndexAction) RunGet(params struct {
 	page := this.NewPage(count)
 	this.Data["page"] = page.AsHTML()
 
-	usersResp, err := this.RPC().UserRPC().ListEnabledUsers(this.AdminContext(), &pb.ListEnabledUsersRequest{Keyword: params.Keyword})
+	usersResp, err := this.RPC().UserRPC().ListEnabledUsers(this.AdminContext(), &pb.ListEnabledUsersRequest{
+		Keyword: params.Keyword,
+		Offset:  page.Offset,
+		Size:    page.Size,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return

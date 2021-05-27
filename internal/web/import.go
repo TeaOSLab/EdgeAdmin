@@ -37,6 +37,8 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters/cluster"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters/cluster/settings"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters/logs"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/users"
 
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/certs"

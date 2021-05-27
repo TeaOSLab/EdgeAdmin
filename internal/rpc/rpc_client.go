@@ -360,6 +360,14 @@ func (this *RPCClient) NSNodeRPC() pb.NSNodeServiceClient {
 	return pb.NewNSNodeServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) NSDomainRPC() pb.NSDomainServiceClient {
+	return pb.NewNSDomainServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) NSRecordRPC() pb.NSRecordServiceClient {
+	return pb.NewNSRecordServiceClient(this.pickConn())
+}
+
 // Context 构造Admin上下文
 func (this *RPCClient) Context(adminId int64) context.Context {
 	ctx := context.Background()

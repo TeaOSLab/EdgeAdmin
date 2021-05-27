@@ -1,4 +1,4 @@
-package clusters
+package users
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
@@ -11,10 +11,8 @@ func init() {
 		server.
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeNS)).
 			Data("teaMenu", "ns").
-			Data("teaSubMenu", "cluster").
-			Prefix("/ns/clusters").
-			Get("", new(IndexAction)).
-			GetPost("/create", new(CreateAction)).
+			Data("teaSubMenu", "domain").
+			Prefix("/ns/users").
 			Post("/options", new(OptionsAction)).
 			EndAll()
 	})
