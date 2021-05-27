@@ -37,6 +37,8 @@ func FailPage(action actions.ActionWrapper, err error) {
 	<div style="background: #eee; border: 1px #ccc solid; padding: 10px; font-size: 12px; line-height: 1.8">
 	` + teaconst.ErrServer + `
 	<div>可以通过查看 <strong><em>$安装目录/logs/run.log</em></strong> 日志文件查看具体的错误提示。</div>
+	<hr style="border-top: 1px #ccc solid"/>
+	<div style="color: red">Error: ` + err.Error() + `</pre>
 	</div>
 	</body>
 </html>`)

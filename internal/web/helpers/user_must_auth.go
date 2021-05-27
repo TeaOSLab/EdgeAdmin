@@ -220,7 +220,7 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 		{
 			"code":     "ns",
 			"module":   configloaders.AdminModuleCodeNS,
-			"name":     "域名服务器",
+			"name":     "域名服务",
 			"subtitle": "域名列表",
 			"icon":     "cubes",
 			"isOn":     teaconst.IsPlus,
@@ -232,7 +232,7 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 				},
 				{
 					"name": "节点日志",
-					"url":  "/ns/logs",
+					"url":  "/ns/clusters/logs",
 					"code": "log",
 				},
 			},

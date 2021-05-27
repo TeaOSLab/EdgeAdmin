@@ -1,4 +1,4 @@
-package clusters
+package logs
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
@@ -11,11 +11,9 @@ func init() {
 		server.
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeNS)).
 			Data("teaMenu", "ns").
-			Data("teaSubMenu", "cluster").
-			Prefix("/ns/clusters").
+			Data("teaSubMenu", "log").
+			Prefix("/ns/clusters/logs").
 			Get("", new(IndexAction)).
-			GetPost("/create", new(CreateAction)).
-			Post("/options", new(OptionsAction)).
 			EndAll()
 	})
 }

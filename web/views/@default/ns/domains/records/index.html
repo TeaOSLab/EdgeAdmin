@@ -1,0 +1,37 @@
+{$layout}
+{$template "../domain_menu"}
+
+<second-menu>
+    <menu-item @click.prevent="createRecord">[创建记录]</menu-item>
+</second-menu>
+
+<p class="comment" v-if="records.length == 0">暂时还没有记录。</p>
+<table class="ui table selectable celled" v-if="records.length > 0">
+    <thead>
+        <tr>
+            <th>记录名</th>
+            <th>记录类型</th>
+            <th>记录值</th>
+            <th>TTL</th>
+            <th>线路</th>
+            <th>备注</th>
+            <th class="two op">操作</th>
+        </tr>
+    </thead>
+    <tr v-for="record in records">
+        <td>{{record.name}}</td>
+        <td>{{record.type}}</td>
+        <td>{{record.value}}</td>
+        <td>{{formatTTL(record.ttl)}}</td>
+        <td>
+            <span class="ui label basic text tiny" v-for="route in record.routes">{{route.name}}</span>
+        </td>
+        <td>{{record.description}}</td>
+        <td>
+            <a href="" @click.prevent="updateRecord(record.id)">修改</a> &nbsp;
+            <a href="" @click.prevent="deleteRecord(record.id)">删除</a>
+        </td>
+    </tr>
+</table>
+
+<div class="page" v-html="page"></div>

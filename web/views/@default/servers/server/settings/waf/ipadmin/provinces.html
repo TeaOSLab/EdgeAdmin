@@ -28,7 +28,7 @@
 
 					<first-menu>
 						<menu-item><more-options-indicator>选择省份/自治区</more-options-indicator></menu-item>
-						<div class="item right" v-if="moreOptionsVisible">
+						<div class="item right" v-show="moreOptionsVisible">
 							<div class="ui checkbox" @click.prevent="checkAll">
 								<input type="checkbox" v-model="isCheckingAll"/>
 								<label>全选</label>
