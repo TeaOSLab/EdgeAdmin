@@ -20,7 +20,7 @@ func init() {
 	})
 }
 
-// 自动同步集群任务
+// SyncClusterTask 自动同步集群任务
 type SyncClusterTask struct {
 }
 

@@ -6,6 +6,7 @@ import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
+	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/logs"
@@ -34,7 +35,7 @@ func (this *AuthorityTask) Start() {
 	}
 
 	// 初始化的时候先获取一次
-	timeout := time.NewTimer(5 * time.Second)
+	timeout := time.NewTimer(3 * time.Second)
 	<-timeout.C
 	err := this.Loop()
 	if err != nil {
@@ -51,6 +52,11 @@ func (this *AuthorityTask) Start() {
 }
 
 func (this *AuthorityTask) Loop() error {
+	// 如果还没有安装直接返回
+	if !setup.IsConfigured() {
+		return nil
+	}
+
 	rpcClient, err := rpc.SharedRPC()
 	if err != nil {
 		return err

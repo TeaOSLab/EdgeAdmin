@@ -41,9 +41,17 @@ func (this *CreateNodeAction) RunPost(params struct {
 		this.Fail("请至少添加一个IP地址")
 	}
 
-	// TODO 检查cluster
+	// 检查cluster
 	if params.ClusterId <= 0 {
 		this.Fail("请选择所在集群")
+	}
+	clusterResp, err := this.RPC().NSClusterRPC().FindEnabledNSCluster(this.AdminContext(), &pb.FindEnabledNSClusterRequest{NsClusterId: params.ClusterId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	if clusterResp.NsCluster == nil {
+		this.Fail("选择的集群不存在")
 	}
 
 	// IP地址

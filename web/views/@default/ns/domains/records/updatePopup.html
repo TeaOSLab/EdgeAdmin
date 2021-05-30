@@ -1,6 +1,6 @@
 {$layout "layout_popup"}
 
-<h3>创建记录</h3>
+<h3>修改记录</h3>
 <form class="ui form" data-tea-action="$" data-tea-success="success">
     <csrf-token></csrf-token>
     <input type="hidden" name="recordId" :value="record.id"/>
@@ -35,6 +35,12 @@
                 <select class="ui dropdown auto-width" name="ttl" v-model="record.ttl">
                     <option v-for="v in ttlValues" :value="v.value">{{v.name}}</option>
                 </select>
+            </td>
+        </tr>
+        <tr>
+            <td>线路</td>
+            <td>
+                <ns-routes-selector :v-route-ids="record.routeIds"></ns-routes-selector>
             </td>
         </tr>
         <tr>

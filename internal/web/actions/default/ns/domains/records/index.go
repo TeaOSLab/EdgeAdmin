@@ -4,6 +4,7 @@ package records
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/dnsconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 )
@@ -20,7 +21,7 @@ func (this *IndexAction) RunGet(params struct {
 	DomainId int64
 	Type     string
 	Keyword  string
-	RouteId  int64 // TODO
+	RouteId  int64
 }) {
 	this.Data["type"] = params.Type
 	this.Data["keyword"] = params.Keyword
@@ -91,6 +92,9 @@ func (this *IndexAction) RunGet(params struct {
 		})
 	}
 	this.Data["records"] = recordMaps
+
+	// 所有记录类型
+	this.Data["types"] = dnsconfigs.FindAllRecordTypeDefinitions()
 
 	this.Show()
 }

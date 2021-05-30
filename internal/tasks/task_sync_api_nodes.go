@@ -4,6 +4,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
+	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/logs"
@@ -42,6 +43,11 @@ func (this *SyncAPINodesTask) Start() {
 }
 
 func (this *SyncAPINodesTask) Loop() error {
+	// 如果还没有安装直接返回
+	if !setup.IsConfigured() {
+		return nil
+	}
+
 	// 获取所有可用的节点
 	rpcClient, err := rpc.SharedRPC()
 	if err != nil {

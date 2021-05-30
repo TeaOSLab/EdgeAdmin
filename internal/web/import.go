@@ -38,8 +38,10 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters/cluster"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters/cluster/settings"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters/logs"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/routes"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/users"
 
+	// 服务相关
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/certs"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components"
@@ -95,6 +97,8 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/web"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/websocket"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/stat"
+
+	// 设置相关
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/authority"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/authority/nodes"
