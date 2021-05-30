@@ -5,6 +5,27 @@
     <menu-item @click.prevent="createRecord">[创建记录]</menu-item>
 </second-menu>
 
+<form class="ui form" method="get" action="/ns/domains/records">
+    <input type="hidden" name="domainId" :value="domain.id"/>
+    <div class="ui fields inline">
+        <div class="ui field">
+            <select class="ui dropdown" name="type" v-model="type">
+                <option value="">[记录类型]</option>
+                <option v-for="t in types" :value="t.type">{{t.type}}</option>
+            </select>
+        </div>
+        <div class="ui field">
+            <ns-route-selector :v-route-id="routeId"></ns-route-selector>
+        </div>
+        <div class="ui field">
+            <input type="text" placeholder="记录名、备注..." name="keyword" v-model="keyword"/>
+        </div>
+        <div class="ui field">
+            <button type="submit" class="ui button">搜索</button>
+        </div>
+    </div>
+</form>
+
 <p class="comment" v-if="records.length == 0">暂时还没有记录。</p>
 <table class="ui table selectable celled" v-if="records.length > 0">
     <thead>
@@ -24,7 +45,9 @@
         <td>{{record.value}}</td>
         <td>{{formatTTL(record.ttl)}}</td>
         <td>
-            <span class="ui label basic text tiny" v-for="route in record.routes">{{route.name}}</span>
+            <div v-for="route in record.routes" style="margin-top: 0.3em; margin-bottom: 0.3em">
+                <span class="ui label basic text tiny">{{route.name}}</span>
+            </div>
         </td>
         <td>{{record.description}}</td>
         <td>

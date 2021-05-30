@@ -32,6 +32,11 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		return
 	}
 
+	routeIds := []int64{}
+	for _, route := range record.NsRoutes {
+		routeIds = append(routeIds, route.Id)
+	}
+
 	this.Data["record"] = maps.Map{
 		"id":          record.Id,
 		"name":        record.Name,
@@ -40,6 +45,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		"ttl":         record.Ttl,
 		"weight":      record.Weight,
 		"description": record.Description,
+		"routeIds":    routeIds,
 	}
 
 	// 域名信息
@@ -74,6 +80,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	Value       string
 	Ttl         int32
 	Description string
+	RouteIds    []int64
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -87,7 +94,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		Type:        params.Type,
 		Value:       params.Value,
 		Ttl:         params.Ttl,
-		NsRouteIds:  nil, // TODO 等待实现
+		NsRouteIds:  params.RouteIds,
 	})
 	if err != nil {
 		this.ErrorPage(err)

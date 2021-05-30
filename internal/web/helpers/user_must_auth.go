@@ -231,6 +231,11 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 					"code": "cluster",
 				},
 				{
+					"name": "线路管理",
+					"url":  "/ns/routes",
+					"code": "route",
+				},
+				{
 					"name": "节点日志",
 					"url":  "/ns/clusters/logs",
 					"code": "log",

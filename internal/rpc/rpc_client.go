@@ -368,6 +368,10 @@ func (this *RPCClient) NSRecordRPC() pb.NSRecordServiceClient {
 	return pb.NewNSRecordServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) NSRouteRPC() pb.NSRouteServiceClient {
+	return pb.NewNSRouteServiceClient(this.pickConn())
+}
+
 // Context 构造Admin上下文
 func (this *RPCClient) Context(adminId int64) context.Context {
 	ctx := context.Background()

@@ -113,9 +113,17 @@ func (this *UpdateAction) RunPost(params struct {
 		Field("name", params.Name).
 		Require("请输入节点名称")
 
-	// TODO 检查cluster
+	// 检查cluster
 	if params.ClusterId <= 0 {
 		this.Fail("请选择所在集群")
+	}
+	clusterResp, err := this.RPC().NSClusterRPC().FindEnabledNSCluster(this.AdminContext(), &pb.FindEnabledNSClusterRequest{NsClusterId: params.ClusterId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	if clusterResp.NsCluster == nil {
+		this.Fail("选择的集群不存在")
 	}
 
 	// IP地址
@@ -132,7 +140,7 @@ func (this *UpdateAction) RunPost(params struct {
 	}
 
 	// 保存
-	_, err := this.RPC().NSNodeRPC().UpdateNSNode(this.AdminContext(), &pb.UpdateNSNodeRequest{
+	_, err = this.RPC().NSNodeRPC().UpdateNSNode(this.AdminContext(), &pb.UpdateNSNodeRequest{
 		NsNodeId:    params.NodeId,
 		Name:        params.Name,
 		NsClusterId: params.ClusterId,

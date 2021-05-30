@@ -53,6 +53,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	Value       string
 	Ttl         int32
 	Description string
+	RouteIds    []int64
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -69,7 +70,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Type:        params.Type,
 		Value:       params.Value,
 		Ttl:         params.Ttl,
-		NsRouteIds:  nil, // TODO 等待实现
+		NsRouteIds:  params.RouteIds,
 	})
 	if err != nil {
 		this.ErrorPage(err)
