@@ -4,7 +4,6 @@ package domains
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains/domainutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -57,7 +56,6 @@ func (this *UpdateAction) RunGet(params struct {
 
 func (this *UpdateAction) RunPost(params struct {
 	DomainId  int64
-	Name      string
 	ClusterId int64
 	UserId    int64
 	IsOn      bool
@@ -68,15 +66,6 @@ func (this *UpdateAction) RunPost(params struct {
 	this.CreateLogInfo("修改域名 %d", params.DomainId)
 
 	params.Must.
-		Field("name", params.Name).
-		Require("请输入域名").
-		Expect(func() (message string, success bool) {
-			success = domainutils.ValidateDomainFormat(params.Name)
-			if !success {
-				message = "请输入正确的域名"
-			}
-			return
-		}).
 		Field("clusterId", params.ClusterId).
 		Gt(0, "请选择所属集群")
 
@@ -84,7 +73,6 @@ func (this *UpdateAction) RunPost(params struct {
 		NsDomainId:  params.DomainId,
 		NsClusterId: params.ClusterId,
 		UserId:      params.UserId,
-		Name:        params.Name,
 		IsOn:        params.IsOn,
 	})
 	if err != nil {

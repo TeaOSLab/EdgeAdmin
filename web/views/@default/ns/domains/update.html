@@ -8,19 +8,21 @@
         <tr>
             <td>域名 *</td>
             <td>
-                <input type="text" name="name" maxlength="255" ref="focus" v-model="domain.name"/>
+                {{domain.name}}
             </td>
         </tr>
         <tr>
             <td class="title">所属集群 *</td>
             <td>
                 <ns-cluster-selector :v-cluster-id="domain.clusterId"></ns-cluster-selector>
+                <p class="comment">需要部署域名服务的集群。</p>
             </td>
         </tr>
         <tr>
             <td>所属用户</td>
             <td>
                 <ns-user-selector :v-user-id="domain.userId"></ns-user-selector>
+                <p class="comment">当前域名所属的平台用户。</p>
             </td>
         </tr>
         <tr>
