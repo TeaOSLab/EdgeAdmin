@@ -4,6 +4,7 @@ package records
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains/domainutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/dnsconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -86,6 +87,17 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	CSRF *actionutils.CSRF
 }) {
 	this.CreateLogInfo("修改域名记录 %d", params.RecordId)
+
+	// 校验记录名
+	if !domainutils.ValidateRecordName(params.Name) {
+		this.FailField("name", "请输入正确的记录名")
+	}
+
+	// 校验记录值
+	message, ok := domainutils.ValidateRecordValue(params.Type, params.Value)
+	if !ok {
+		this.FailField("value", "记录值错误："+message)
+	}
 
 	_, err := this.RPC().NSRecordRPC().UpdateNSRecord(this.AdminContext(), &pb.UpdateNSRecordRequest{
 		NsRecordId:  params.RecordId,

@@ -4,6 +4,7 @@ package records
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains/domainutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/dnsconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -62,6 +63,17 @@ func (this *CreatePopupAction) RunPost(params struct {
 	defer func() {
 		this.CreateLogInfo("创建域名记录 %d", recordId)
 	}()
+
+	// 校验记录名
+	if !domainutils.ValidateRecordName(params.Name) {
+		this.FailField("name", "请输入正确的记录名")
+	}
+
+	// 校验记录值
+	message, ok := domainutils.ValidateRecordValue(params.Type, params.Value)
+	if !ok {
+		this.FailField("value", "记录值错误："+message)
+	}
 
 	createResp, err := this.RPC().NSRecordRPC().CreateNSRecord(this.AdminContext(), &pb.CreateNSRecordRequest{
 		NsDomainId:  params.DomainId,

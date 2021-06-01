@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains/domainutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
+	"strings"
 )
 
 type CreateAction struct {
@@ -33,6 +34,8 @@ func (this *CreateAction) RunPost(params struct {
 	defer func() {
 		this.CreateLogInfo("创建域名 %d", domainId)
 	}()
+
+	params.Name = strings.ToLower(params.Name)
 
 	params.Must.
 		Field("name", params.Name).

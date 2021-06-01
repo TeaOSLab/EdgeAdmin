@@ -51,8 +51,10 @@ Vue.component("ns-route-ranges-box", {
 
 			this.ranges.push({
 				type: "ipRange",
-				ipFrom: this.ipRangeFrom,
-				ipTo: this.ipRangeTo
+				params: {
+					ipFrom: this.ipRangeFrom,
+					ipTo: this.ipRangeTo
+				}
 			})
 			this.cancelIPRange()
 		},
@@ -76,7 +78,7 @@ Vue.component("ns-route-ranges-box", {
 	<div v-if="ranges.length > 0">
 		<div class="ui label tiny basic" v-for="(range, index) in ranges">
 			<span v-if="range.type == 'ipRange'">IP范围：</span>
-			{{range.ipFrom}} - {{range.ipTo}} &nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+			{{range.params.ipFrom}} - {{range.params.ipTo}} &nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
 		</div>
 		<div class="ui divider"></div>
 	</div>
