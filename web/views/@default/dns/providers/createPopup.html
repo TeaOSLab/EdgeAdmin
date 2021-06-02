@@ -14,10 +14,11 @@
 		<tr>
 			<td>服务商厂家 *</td>
 			<td>
-				<select class="ui dropdown auto-width" name="type" v-model="type">
+				<select class="ui dropdown auto-width" name="type" v-model="type" @change="changeType">
 					<option value="">[请选择]</option>
 					<option v-for="type in types" :value="type.code">{{type.name}}</option>
 				</select>
+                <p class="comment">{{typeDescription}}</p>
 			</td>
 		</tr>
 		<tr>
@@ -95,6 +96,19 @@
 				</td>
 			</tr>
 		</tbody>
+
+        <!-- Edge DNS -->
+        <tbody v-if="type == 'localEdgeDNS'">
+            <tr>
+                <td>选择域名服务集群 *</td>
+                <td>
+                    <select class="ui dropdown auto-width" name="paramLocalEdgeDNSClusterId">
+                        <option value="0">[选择域名服务集群]</option>
+                        <option v-for="cluster in nsClusters" :value="cluster.id">{{cluster.name}}</option>
+                    </select>
+                </td>
+            </tr>
+        </tbody>
 
         <!-- 自定义HTTP-->
         <tbody v-if="type == 'customHTTP'">
