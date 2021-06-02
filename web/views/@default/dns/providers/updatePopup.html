@@ -17,7 +17,7 @@
 			<td>服务商厂家 *</td>
 			<td>
 				{{provider.typeName}}
-				<p class="comment">创建后无法修改此选项。</p>
+				<p class="comment">{{typeDescription}}创建后无法修改此选项。</p>
 			</td>
 		</tr>
 		<tr>
@@ -75,6 +75,19 @@
                 <td>
                     <input type="text" name="cloudFlareEmail" maxlength="100" v-model="provider.params.email"/>
                     <p class="comment">登录账号使用的邮箱。</p>
+                </td>
+            </tr>
+        </tbody>
+
+        <!-- Edge DNS -->
+        <tbody v-if="provider.type == 'localEdgeDNS'">
+            <tr>
+                <td>选择域名服务集群 *</td>
+                <td>
+                    <select class="ui dropdown auto-width" name="paramLocalEdgeDNSClusterId" v-model="provider.params.clusterId">
+                        <option value="0">[选择域名服务集群]</option>
+                        <option v-for="cluster in nsClusters" :value="cluster.id">{{cluster.name}}</option>
+                    </select>
                 </td>
             </tr>
         </tbody>

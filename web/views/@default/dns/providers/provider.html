@@ -22,11 +22,11 @@
 	<!-- DNSPod -->
 	<tbody v-if="provider.type == 'dnspod'">
 		<tr>
-			<td>密钥ID</td>
+			<td class="color-border">密钥ID</td>
 			<td>{{provider.apiParams.id}}</td>
 		</tr>
 		<tr>
-			<td>密钥Token</td>
+			<td class="color-border">密钥Token</td>
 			<td>{{provider.apiParams.token}}</td>
 		</tr>
 	</tbody>
@@ -46,25 +46,35 @@
     <!-- CloudFlare -->
     <tbody v-if="provider.type == 'cloudFlare'">
         <tr>
-            <td>API密钥</td>
+            <td class="color-border">API密钥</td>
             <td>
                 {{provider.apiParams.apiKey}}
             </td>
         </tr>
         <tr>
-            <td>账号邮箱</td>
+            <td class="color-border">账号邮箱</td>
             <td>{{provider.apiParams.email}}</td>
+        </tr>
+    </tbody>
+
+    <!-- Local EdgeDNS -->
+    <tbody v-if="provider.type == 'localEdgeDNS'">
+        <tr>
+            <td class="color-border">域名服务集群</td>
+            <td>
+                {{provider.localEdgeDNS.name}}
+            </td>
         </tr>
     </tbody>
 
     <!-- CustomHTTP -->
     <tbody v-if="provider.type == 'customHTTP'">
         <tr>
-            <td>HTTP URL</td>
+            <td class="color-border">HTTP URL</td>
             <td>{{provider.apiParams.url}}</td>
         </tr>
         <tr>
-            <td>私钥</td>
+            <td class="color-border">私钥</td>
             <td>{{provider.apiParams.secret}}</td>
         </tr>
     </tbody>

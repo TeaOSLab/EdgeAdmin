@@ -27,14 +27,30 @@ func (this *CreatePopupAction) RunGet(params struct{}) {
 	typeMaps := []maps.Map{}
 	for _, t := range typesResp.ProviderTypes {
 		typeMaps = append(typeMaps, maps.Map{
-			"name": t.Name,
-			"code": t.Code,
+			"name":        t.Name,
+			"code":        t.Code,
+			"description": t.Description,
 		})
 	}
 	this.Data["types"] = typeMaps
 
 	// 自动生成CustomHTTP私钥
 	this.Data["paramCustomHTTPSecret"] = rands.HexString(32)
+
+	// EdgeDNS集群列表
+	nsClustersResp, err := this.RPC().NSClusterRPC().FindAllEnabledNSClusters(this.AdminContext(), &pb.FindAllEnabledNSClustersRequest{})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	nsClusterMaps := []maps.Map{}
+	for _, nsCluster := range nsClustersResp.NsClusters {
+		nsClusterMaps = append(nsClusterMaps, maps.Map{
+			"id":   nsCluster.Id,
+			"name": nsCluster.Name,
+		})
+	}
+	this.Data["nsClusters"] = nsClusterMaps
 
 	this.Show()
 }
@@ -58,6 +74,9 @@ func (this *CreatePopupAction) RunPost(params struct {
 	// CloudFlare
 	CloudFlareAPIKey string
 	CloudFlareEmail  string
+
+	// Local EdgeDNS
+	ParamLocalEdgeDNSClusterId int64
 
 	// CustomHTTP
 	ParamCustomHTTPURL    string
@@ -109,6 +128,11 @@ func (this *CreatePopupAction) RunPost(params struct {
 			Email("请输入正确格式的邮箱地址")
 		apiParams["apiKey"] = params.CloudFlareAPIKey
 		apiParams["email"] = params.CloudFlareEmail
+	case "localEdgeDNS":
+		params.Must.
+			Field("ParamLocalEdgeDNSClusterId", params.ParamLocalEdgeDNSClusterId).
+			Gt(0, "请选择域名服务集群")
+		apiParams["clusterId"] = params.ParamLocalEdgeDNSClusterId
 	case "customHTTP":
 		params.Must.
 			Field("paramCustomHTTPURL", params.ParamCustomHTTPURL).
