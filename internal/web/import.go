@@ -3,14 +3,20 @@ package web
 import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/tasks"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/about"
+
+	// 系统用户
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/admins"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/admins/recipients"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/admins/recipients/groups"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/admins/recipients/instances"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/admins/recipients/logs"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/admins/recipients/tasks"
+
+	// API节点
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/api"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/api/node"
+
+	// 节点集群
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings"
@@ -19,6 +25,8 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/regions"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/regions/items"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/tasks"
+
+	// 通用
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/csrf"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dashboard"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/db"
@@ -31,12 +39,15 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/logout"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/messages"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ui"
 
 	// 域名服务
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters/accessLogs"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters/cluster"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters/cluster/settings"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters/cluster/settings/accessLog"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters/logs"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/routes"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/users"
@@ -116,7 +127,10 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/upgrade"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/user-nodes"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/user-ui"
+
+	// 安装
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/setup"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ui"
+
+	// 平台用户
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/users"
 )

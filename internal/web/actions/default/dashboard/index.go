@@ -93,25 +93,71 @@ func (this *IndexAction) RunGet(params struct{}) {
 	}
 
 	// 版本升级
-	this.Data["nodeUpgradeInfo"] = maps.Map{
-		"count":   resp.NodeUpgradeInfo.CountNodes,
-		"version": resp.NodeUpgradeInfo.NewVersion,
+	if resp.NodeUpgradeInfo != nil {
+		this.Data["nodeUpgradeInfo"] = maps.Map{
+			"count":   resp.NodeUpgradeInfo.CountNodes,
+			"version": resp.NodeUpgradeInfo.NewVersion,
+		}
+	} else {
+		this.Data["nodeUpgradeInfo"] = maps.Map{
+			"count":   0,
+			"version": "",
+		}
 	}
-	this.Data["monitorNodeUpgradeInfo"] = maps.Map{
-		"count":   resp.MonitorNodeUpgradeInfo.CountNodes,
-		"version": resp.MonitorNodeUpgradeInfo.NewVersion,
+	if resp.MonitorNodeUpgradeInfo != nil {
+		this.Data["monitorNodeUpgradeInfo"] = maps.Map{
+			"count":   resp.MonitorNodeUpgradeInfo.CountNodes,
+			"version": resp.MonitorNodeUpgradeInfo.NewVersion,
+		}
+	} else {
+		this.Data["monitorNodeUpgradeInfo"] = maps.Map{
+			"count":   0,
+			"version": "",
+		}
 	}
-	this.Data["apiNodeUpgradeInfo"] = maps.Map{
-		"count":   resp.ApiNodeUpgradeInfo.CountNodes,
-		"version": resp.ApiNodeUpgradeInfo.NewVersion,
+	if resp.ApiNodeUpgradeInfo != nil {
+		this.Data["apiNodeUpgradeInfo"] = maps.Map{
+			"count":   resp.ApiNodeUpgradeInfo.CountNodes,
+			"version": resp.ApiNodeUpgradeInfo.NewVersion,
+		}
+	} else {
+		this.Data["apiNodeUpgradeInfo"] = maps.Map{
+			"count":   0,
+			"version": "",
+		}
 	}
-	this.Data["userNodeUpgradeInfo"] = maps.Map{
-		"count":   resp.UserNodeUpgradeInfo.CountNodes,
-		"version": resp.UserNodeUpgradeInfo.NewVersion,
+	if resp.UserNodeUpgradeInfo != nil {
+		this.Data["userNodeUpgradeInfo"] = maps.Map{
+			"count":   resp.UserNodeUpgradeInfo.CountNodes,
+			"version": resp.UserNodeUpgradeInfo.NewVersion,
+		}
+	} else {
+		this.Data["userNodeUpgradeInfo"] = maps.Map{
+			"count":   0,
+			"version": 0,
+		}
 	}
-	this.Data["authorityNodeUpgradeInfo"] = maps.Map{
-		"count":   resp.AuthorityNodeUpgradeInfo.CountNodes,
-		"version": resp.AuthorityNodeUpgradeInfo.NewVersion,
+	if resp.AuthorityNodeUpgradeInfo != nil {
+		this.Data["authorityNodeUpgradeInfo"] = maps.Map{
+			"count":   resp.AuthorityNodeUpgradeInfo.CountNodes,
+			"version": resp.AuthorityNodeUpgradeInfo.NewVersion,
+		}
+	} else {
+		this.Data["authorityNodeUpgradeInfo"] = maps.Map{
+			"count":   0,
+			"version": "",
+		}
+	}
+	if resp.NsNodeUpgradeInfo != nil {
+		this.Data["nsNodeUpgradeInfo"] = maps.Map{
+			"count":   resp.NsNodeUpgradeInfo.CountNodes,
+			"version": resp.NsNodeUpgradeInfo.NewVersion,
+		}
+	} else {
+		this.Data["nsNodeUpgradeInfo"] = maps.Map{
+			"count":   0,
+			"version": "",
+		}
 	}
 
 	this.Show()

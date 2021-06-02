@@ -83,5 +83,10 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NSCluster, selectedItem
 		"url":      "/ns/clusters/cluster/settings?clusterId=" + clusterId,
 		"isActive": selectedItem == "basic",
 	})
+	items = append(items, maps.Map{
+		"name":     "访问日志",
+		"url":      "/ns/clusters/cluster/settings/accessLog?clusterId=" + clusterId,
+		"isActive": selectedItem == "accessLog",
+	})
 	return
 }

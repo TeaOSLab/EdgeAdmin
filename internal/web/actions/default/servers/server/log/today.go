@@ -39,11 +39,11 @@ func (this *TodayAction) RunGet(params struct {
 	}
 
 	ipList := []string{}
-	if len(resp.AccessLogs) == 0 {
+	if len(resp.HttpAccessLogs) == 0 {
 		this.Data["accessLogs"] = []interface{}{}
 	} else {
-		this.Data["accessLogs"] = resp.AccessLogs
-		for _, accessLog := range resp.AccessLogs {
+		this.Data["accessLogs"] = resp.HttpAccessLogs
+		for _, accessLog := range resp.HttpAccessLogs {
 			if len(accessLog.RemoteAddr) > 0 {
 				if !lists.ContainsString(ipList, accessLog.RemoteAddr) {
 					ipList = append(ipList, accessLog.RemoteAddr)
@@ -71,7 +71,7 @@ func (this *TodayAction) RunGet(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		if int64(len(prevResp.AccessLogs)) == size {
+		if int64(len(prevResp.HttpAccessLogs)) == size {
 			this.Data["lastRequestId"] = prevResp.RequestId
 		}
 	}

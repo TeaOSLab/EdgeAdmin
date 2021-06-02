@@ -57,7 +57,7 @@ func (this *IndexAction) RunPost(params struct {
 	}
 
 	ipList := []string{}
-	accessLogs := accessLogsResp.AccessLogs
+	accessLogs := accessLogsResp.HttpAccessLogs
 	if len(accessLogs) == 0 {
 		accessLogs = []*pb.HTTPAccessLog{}
 	} else {
