@@ -182,7 +182,7 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 			"icon":     "cloud",
 			"subItems": []maps.Map{
 				{
-					"name": "节点日志",
+					"name": "运行日志",
 					"url":  "/clusters/logs",
 					"code": "log",
 				},
@@ -236,7 +236,12 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 					"code": "route",
 				},
 				{
-					"name": "节点日志",
+					"name": "访问日志",
+					"url":  "/ns/clusters/accessLogs",
+					"code": "accessLog",
+				},
+				{
+					"name": "运行日志",
 					"url":  "/ns/clusters/logs",
 					"code": "log",
 				},

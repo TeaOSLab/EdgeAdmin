@@ -1,4 +1,5 @@
 Vue.component("ns-cluster-selector", {
+	props: ["v-cluster-id"],
 	mounted: function () {
 		let that = this
 
@@ -8,7 +9,6 @@ Vue.component("ns-cluster-selector", {
 				that.clusters = resp.data.clusters
 			})
 	},
-	props: ["v-cluster-id"],
 	data: function () {
 		let clusterId = this.vClusterId
 		if (clusterId == null) {

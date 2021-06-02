@@ -23,7 +23,7 @@ func (this *ViewPopupAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	accessLog := accessLogResp.AccessLog
+	accessLog := accessLogResp.HttpAccessLog
 	if accessLog == nil {
 		this.WriteString("not found: " + params.RequestId)
 		return
