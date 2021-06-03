@@ -86,7 +86,7 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 检查是否有新版本
 	if len(status.OS) > 0 {
-		checkVersionResp, err := this.RPC().NodeRPC().CheckNodeLatestVersion(this.AdminContext(), &pb.CheckNodeLatestVersionRequest{
+		checkVersionResp, err := this.RPC().NSNodeRPC().CheckNSNodeLatestVersion(this.AdminContext(), &pb.CheckNSNodeLatestVersionRequest{
 			Os:             status.OS,
 			Arch:           status.Arch,
 			CurrentVersion: status.BuildVersion,
