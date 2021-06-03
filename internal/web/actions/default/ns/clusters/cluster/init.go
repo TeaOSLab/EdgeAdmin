@@ -20,6 +20,7 @@ func init() {
 			GetPost("/delete", new(DeleteAction)).
 			GetPost("/createNode", new(CreateNodeAction)).
 			Post("/deleteNode", new(DeleteNodeAction)).
+			Get("/upgradeRemote", new(UpgradeRemoteAction)).
 
 			// 节点相关
 			Prefix("/ns/clusters/cluster/node").
