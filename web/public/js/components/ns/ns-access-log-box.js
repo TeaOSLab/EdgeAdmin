@@ -1,5 +1,5 @@
 Vue.component("ns-access-log-box", {
-	props: ["v-access-log"],
+	props: ["v-access-log", "v-keyword"],
 	data: function () {
 		let accessLog = this.vAccessLog
 		return {
@@ -33,6 +33,6 @@ Vue.component("ns-access-log-box", {
 		}
 	},
 	template: `<div class="access-log-row" :style="{'color': (accessLog.nsRecordId == null || accessLog.nsRecordId == 0) ? '#dc143c' : ''}" ref="box">
-	<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey">[{{accessLog.region}}]</span> {{accessLog.remoteAddr}} [{{accessLog.timeLocal}}] [{{accessLog.networking}}] <em>{{accessLog.questionType}} {{accessLog.questionName}}</em> -&gt; <em>{{accessLog.recordType}} {{accessLog.recordValue}}</em><!-- &nbsp; <a href="" @click.prevent="showLog" title="查看详情"><i class="icon expand"></i></a>-->
+	<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey">[{{accessLog.region}}]</span> <keyword :v-word="vKeyword">{{accessLog.remoteAddr}}</keyword> [{{accessLog.timeLocal}}] [{{accessLog.networking}}] <em>{{accessLog.questionType}} <keyword :v-word="vKeyword">{{accessLog.questionName}}</keyword></em> -&gt; <em>{{accessLog.recordType}} <keyword :v-word="vKeyword">{{accessLog.recordValue}}</keyword></em><!-- &nbsp; <a href="" @click.prevent="showLog" title="查看详情"><i class="icon expand"></i></a>-->
 </div>`
 })
