@@ -21,6 +21,7 @@ func (this *HistoryAction) Init() {
 func (this *HistoryAction) RunGet(params struct {
 	ServerId int64
 	Day      string
+	Keyword  string
 
 	RequestId string
 	HasError  int
@@ -31,6 +32,7 @@ func (this *HistoryAction) RunGet(params struct {
 
 	this.Data["path"] = this.Request.URL.Path
 	this.Data["day"] = params.Day
+	this.Data["keyword"] = params.Keyword
 	this.Data["accessLogs"] = []interface{}{}
 	this.Data["hasError"] = params.HasError
 
@@ -48,6 +50,7 @@ func (this *HistoryAction) RunGet(params struct {
 			ServerId:  params.ServerId,
 			HasError:  params.HasError > 0,
 			Day:       day,
+			Keyword:   params.Keyword,
 			Size:      size,
 		})
 		if err != nil {
@@ -80,6 +83,7 @@ func (this *HistoryAction) RunGet(params struct {
 				ServerId:  params.ServerId,
 				HasError:  params.HasError > 0,
 				Day:       day,
+				Keyword:   params.Keyword,
 				Size:      size,
 				Reverse:   true,
 			})
