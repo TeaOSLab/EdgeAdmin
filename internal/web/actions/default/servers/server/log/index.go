@@ -20,9 +20,12 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ServerId  int64
 	RequestId string
+	Keyword   string
 }) {
 	this.Data["serverId"] = params.ServerId
 	this.Data["requestId"] = params.RequestId
+	this.Data["keyword"] = params.Keyword
+	this.Data["path"] = this.Request.URL.Path
 
 	// 记录最近使用
 	_, err := this.RPC().LatestItemRPC().IncreaseLatestItem(this.AdminContext(), &pb.IncreaseLatestItemRequest{
@@ -40,6 +43,7 @@ func (this *IndexAction) RunGet(params struct {
 func (this *IndexAction) RunPost(params struct {
 	ServerId  int64
 	RequestId string
+	Keyword   string
 
 	Must *actions.Must
 }) {
@@ -49,6 +53,7 @@ func (this *IndexAction) RunPost(params struct {
 		RequestId: params.RequestId,
 		Size:      20,
 		Day:       timeutil.Format("Ymd"),
+		Keyword:   params.Keyword,
 		Reverse:   isReverse,
 	})
 	if err != nil {
