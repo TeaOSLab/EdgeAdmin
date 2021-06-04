@@ -23,6 +23,7 @@ func (this *IndexAction) Init() {
 
 func (this *IndexAction) RunGet(params struct {
 	RequestId string
+	Keyword   string
 	Day       string
 }) {
 	day := strings.ReplaceAll(params.Day, "-", "")
@@ -30,6 +31,7 @@ func (this *IndexAction) RunGet(params struct {
 		day = timeutil.Format("Ymd")
 	}
 
+	this.Data["keyword"] = params.Keyword
 	this.Data["day"] = day[:4] + "-" + day[4:6] + "-" + day[6:]
 	this.Data["path"] = this.Request.URL.Path
 
@@ -42,6 +44,7 @@ func (this *IndexAction) RunGet(params struct {
 		NsRecordId: 0,
 		Size:       size,
 		Day:        day,
+		Keyword:    params.Keyword,
 		Reverse:    false,
 	})
 	if err != nil {
@@ -94,6 +97,7 @@ func (this *IndexAction) RunGet(params struct {
 			NsDomainId: 0,
 			NsRecordId: 0,
 			Day:        day,
+			Keyword:    params.Keyword,
 			Size:       size,
 			Reverse:    true,
 		})
