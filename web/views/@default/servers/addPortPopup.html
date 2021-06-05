@@ -7,7 +7,7 @@
 		<tr>
 			<td>网络协议</td>
 			<td>
-				<select class="ui dropdown auto-width" name="protocol" v-model="protocol">
+				<select class="ui dropdown auto-width" name="protocol" v-model="protocol" @change="changeProtocol">
 					<option v-for="p in protocols" :value="p.code">{{p.name}}</option>
 				</select>
 			</td>
@@ -17,8 +17,8 @@
 			<td>
 				<input type="text" name="address" ref="focus" v-model="address"/>
 				<p class="comment">可以是一个数字端口（通常不超过65535），也可以是"地址:端口"的方式。
-                    <span v-if="protocol == 'http'">HTTP常用端口为80。</span>
-                    <span v-if="protocol == 'https'">HTTPS常用端口为443。</span>
+                    <span v-if="protocol == 'http'">HTTP常用端口为<a href="" title="点击添加" @click.prevent="addPort('80')">80</a>。</span>
+                    <span v-if="protocol == 'https'">HTTPS常用端口为<a href="" title="点击添加" @click.prevent="addPort('443')">443</a>。</span>
                 </p>
 			</td>
 		</tr>

@@ -27,7 +27,7 @@
 		<tr>
 			<td class="title">源站地址</td>
 			<td>
-				<input type="text" name="addr" ref="focus" v-model="origin.addr"/>
+				<input type="text" name="addr" ref="focus" v-model="origin.addr" @input="changeAddr"/>
 				<p class="comment">源站服务器地址，通常是一个IP（或域名）加端口<span v-if="serverType == 'httpProxy'">，不需要加 http:// 或 https://</span>。</p>
 			</td>
 		</tr>
