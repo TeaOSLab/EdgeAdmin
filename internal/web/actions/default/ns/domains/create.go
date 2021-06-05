@@ -19,6 +19,14 @@ func (this *CreateAction) Init() {
 }
 
 func (this *CreateAction) RunGet(params struct{}) {
+	// 集群数量
+	countClustersResp, err := this.RPC().NSClusterRPC().CountAllEnabledNSClusters(this.AdminContext(), &pb.CountAllEnabledNSClustersRequest{})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["countClusters"] = countClustersResp.Count
+
 	this.Show()
 }
 
