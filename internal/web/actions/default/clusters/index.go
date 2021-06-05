@@ -29,13 +29,7 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["searchType"] = params.SearchType
 	this.Data["isSearching"] = isSearching
 
-	// 搜索节点
-	if params.SearchType == "node" && len(params.Keyword) > 0 {
-		this.searchNodes(params.Keyword)
-		return
-	}
-
-	// 常用的节点
+	// 常用的集群
 	latestClusterMaps := []maps.Map{}
 	if !isSearching {
 		clustersResp, err := this.RPC().NodeClusterRPC().FindLatestNodeClusters(this.AdminContext(), &pb.FindLatestNodeClustersRequest{Size: 6})
@@ -51,6 +45,12 @@ func (this *IndexAction) RunGet(params struct {
 		}
 	}
 	this.Data["latestClusters"] = latestClusterMaps
+
+	// 搜索节点
+	if params.SearchType == "node" && len(params.Keyword) > 0 {
+		this.searchNodes(params.Keyword)
+		return
+	}
 
 	// 搜索集群
 	countResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClusters(this.AdminContext(), &pb.CountAllEnabledNodeClustersRequest{

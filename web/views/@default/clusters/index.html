@@ -40,7 +40,7 @@
             </tr>
         </thead>
         <tr v-for="cluster in clusters">
-            <td>{{cluster.name}}</td>
+            <td><keyword :v-word="keyword">{{cluster.name}}</keyword></td>
             <td class="center">
                 <a :href="'/clusters/cluster?clusterId=' + cluster.id" v-if="cluster.countAllNodes > 0"><span :class="{red:cluster.countAllNodes > cluster.countActiveNodes}">{{cluster.countAllNodes}}</span></a>
                 <span class="disabled" v-else="">-</span>
@@ -55,7 +55,7 @@
             </td>
             <td>
                 <span v-if="cluster.dnsName.length > 0">
-                    <var>{{cluster.dnsName}}</var>.<span v-if="cluster.dnsDomainName.length > 0">{{cluster.dnsDomainName}}</span><span v-else class="disabled">主域名</span>
+                    <var><keyword :v-word="keyword">{{cluster.dnsName}}</keyword></var>.<span v-if="cluster.dnsDomainName.length > 0">{{cluster.dnsDomainName}}</span><span v-else class="disabled">主域名</span>
                     <span v-if="cluster.dnsDomainId > 0"><link-icon :href="'/dns/clusters/cluster?clusterId=' + cluster.id"></link-icon></span>
                 </span>
                 <span v-else class="disabled">-</span>
@@ -86,7 +86,7 @@
         </tr>
         </thead>
         <tr v-for="node in nodes">
-            <td>{{node.name}}
+            <td><keyword :v-word="keyword">{{node.name}}</keyword>
                 <div style="margin-top: 0.5em">
                     <span class="ui label tiny">集群：{{node.cluster.name}}</span>
                 </div>
@@ -103,7 +103,7 @@
                 <span v-if="node.ipAddresses.length == 0" class="disabled">-</span>
                 <div v-else class="address-box">
                     <div v-for="addr in node.ipAddresses" style="margin-bottom:0.3em">
-                        <div class="ui label tiny basic">{{addr.ip}}
+                        <div class="ui label tiny basic"><keyword :v-word="keyword">{{addr.ip}}</keyword>
                             <span class="small" v-if="addr.name.length > 0">（{{addr.name}}<span v-if="!addr.canAccess">，不可访问</span>）</span>
                             <span class="small" v-if="addr.name.length == 0 && !addr.canAccess">（不可访问）</span>
                         </div>

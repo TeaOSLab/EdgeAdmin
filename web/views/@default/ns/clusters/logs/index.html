@@ -1,13 +1,5 @@
 {$layout}
-
-{$var "header"}
-<!-- datepicker -->
-<script type="text/javascript" src="/js/moment.min.js"></script>
-<script type="text/javascript" src="/js/pikaday.js"></script>
-<link rel="stylesheet" href="/js/pikaday.css"/>
-<link rel="stylesheet" href="/js/pikaday.theme.css"/>
-<link rel="stylesheet" href="/js/pikaday.triangle.css"/>
-{$end}
+{$template "/datepicker"}
 
 
 <div class="margin"></div>
@@ -54,7 +46,7 @@
         <td nowrap=""><link-icon :href="'/ns/clusters/cluster?clusterId=' + log.node.cluster.id">{{log.node.cluster.name}}</link-icon></td>
         <td nowrap=""><link-icon :href="'/ns/clusters/cluster/node?clusterId=' + log.node.cluster.id + '&nodeId=' + log.node.id">{{log.node.name}}</link-icon></td>
         <td>
-            <pre class="log-box"><span :class="{red:log.level == 'error', orange:log.level == 'warning'}"><span v-if="!log.isToday">[{{log.createdTime}}]</span><strong v-if="log.isToday">[{{log.createdTime}}]</strong>[{{log.tag}}]{{log.description}}</span> &nbsp; <span v-if="log.count > 0" class="ui label tiny" :class="{red:log.level == 'error', orange:log.level == 'warning'}">共{{log.count}}条</span></pre>
+            <node-log-row :v-log="log" :v-keyword="keyword"></node-log-row>
         </td>
     </tr>
 </table>
