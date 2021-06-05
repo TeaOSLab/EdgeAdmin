@@ -1,9 +1,10 @@
 {$layout}
+{$template "menu"}
 {$template "/datepicker"}
 
 <div class="margin"></div>
-
-<form method="get" action="/clusters/logs" class="ui form" autocomplete="off">
+<form method="get" action="/settings/userNodes/node/logs" class="ui form" autocomplete="off">
+    <input type="hidden" name="nodeId" :value="nodeId"/>
     <div class="ui fields inline">
         <div class="ui field">
             <input type="text" name="dayFrom" placeholder="开始日期" v-model="dayFrom" value="" style="width:8em" id="day-from-picker"/>
@@ -26,24 +27,20 @@
             <button type="submit" class="ui button">查询</button>
         </div>
         <div class="ui field" v-if="dayFrom.length > 0 || dayTo.length > 0 || keyword.length > 0 || level.length > 0">
-            <a href="/clusters/logs">[清除条件]</a>
+            <a :href="'/settings/userNodes/node/logs?nodeId=' + nodeId">[清除条件]</a>
         </div>
     </div>
 </form>
 
 <p class="comment" v-if="logs.length == 0">暂时还没有日志。</p>
 
-<table class="ui table selectable celled" v-if="logs.length > 0">
+<table class="ui table selectable" v-if="logs.length > 0">
     <thead>
         <tr>
-            <th>集群</th>
-            <th>节点</th>
-            <th>信息</th>
+
         </tr>
     </thead>
     <tr v-for="log in logs">
-        <td nowrap=""><link-icon :href="'/clusters/cluster?clusterId=' + log.node.cluster.id">{{log.node.cluster.name}}</link-icon></td>
-        <td nowrap=""><link-icon :href="'/clusters/cluster/node?clusterId=' + log.node.cluster.id + '&nodeId=' + log.node.id">{{log.node.name}}</link-icon></td>
         <td>
             <node-log-row :v-log="log" :v-keyword="keyword"></node-log-row>
         </td>

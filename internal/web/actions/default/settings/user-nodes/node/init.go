@@ -21,6 +21,7 @@ func init() {
 			// 节点相关
 			Helper(NewHelper()).
 			Get("", new(IndexAction)).
+			Get("/logs", new(LogsAction)).
 			GetPost("/update", new(UpdateAction)).
 			Get("/install", new(InstallAction)).
 

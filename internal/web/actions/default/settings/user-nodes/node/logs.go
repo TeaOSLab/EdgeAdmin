@@ -48,7 +48,7 @@ func (this *LogsAction) RunGet(params struct {
 	}
 
 	countResp, err := this.RPC().NodeLogRPC().CountNodeLogs(this.AdminContext(), &pb.CountNodeLogsRequest{
-		Role:    nodeconfigs.NodeRoleAPI,
+		Role:    nodeconfigs.NodeRoleUser,
 		NodeId:  params.NodeId,
 		DayFrom: params.DayFrom,
 		DayTo:   params.DayTo,
@@ -64,7 +64,7 @@ func (this *LogsAction) RunGet(params struct {
 
 	logsResp, err := this.RPC().NodeLogRPC().ListNodeLogs(this.AdminContext(), &pb.ListNodeLogsRequest{
 		NodeId:  params.NodeId,
-		Role:    nodeconfigs.NodeRoleAPI,
+		Role:    nodeconfigs.NodeRoleUser,
 		DayFrom: params.DayFrom,
 		DayTo:   params.DayTo,
 		Keyword: params.Keyword,

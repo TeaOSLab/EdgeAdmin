@@ -17,7 +17,7 @@
                 <ns-user-selector :v-user-id="userId"></ns-user-selector>
             </div>
             <div class="ui field">
-                <input type="text" name="keyword" v-model="keyword" placeholder="域名、备注..."/>
+                <input type="text" name="keyword" v-model="keyword" placeholder="域名..."/>
             </div>
             <div class="ui field">
                 <button class="ui button" type="submit">搜索</button>
@@ -42,7 +42,7 @@
             </tr>
         </thead>
         <tr v-for="domain in domains">
-            <td>{{domain.name}}</td>
+            <td><keyword :v-word="keyword">{{domain.name}}</keyword></td>
             <td>
                 {{domain.cluster.name}}<link-icon :href="'/ns/clusters/cluster?clusterId=' + domain.cluster.id"></link-icon>
             </td>
