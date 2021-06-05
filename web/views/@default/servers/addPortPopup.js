@@ -6,6 +6,11 @@ Tea.context(function () {
 	this.address = ""
 	this.protocol = this.protocols[0].code
 
+	// 初始化
+	if (this.protocol == "http") {
+		this.address = "80"
+	}
+
 	if (window.parent.UPDATING_ADDR != null) {
 		this.isUpdating = true
 		let addr = window.parent.UPDATING_ADDR
@@ -15,5 +20,19 @@ Tea.context(function () {
 		} else {
 			this.address = addr.host + ":" + addr.portRange
 		}
+	}
+
+	this.changeProtocol = function () {
+		switch (this.protocol) {
+			case "http":
+				this.address = "80"
+				break
+			case "https":
+				this.address = "443"
+		}
+	}
+
+	this.addPort = function (port) {
+		this.address = port
 	}
 });

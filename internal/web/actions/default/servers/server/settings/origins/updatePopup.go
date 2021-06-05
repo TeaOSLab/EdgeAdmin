@@ -10,11 +10,12 @@ import (
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
+	"net/url"
 	"regexp"
 	"strings"
 )
 
-// 修改源站
+// UpdatePopupAction 修改源站
 type UpdatePopupAction struct {
 	actionutils.ParentAction
 }
@@ -118,10 +119,27 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		Field("addr", params.Addr).
 		Require("请输入源站地址")
 
-	addr := regexp.MustCompile(`\s+`).ReplaceAllString(params.Addr, "")
-	portIndex := strings.LastIndex(params.Addr, ":")
+	addr := params.Addr
+
+	// 是否是完整的地址
+	if params.Protocol == "http" || params.Protocol == "https" {
+		u, err := url.Parse(addr)
+		if err == nil {
+			addr = u.Host
+		}
+	}
+
+	addr = regexp.MustCompile(`\s+`).ReplaceAllString(addr, "")
+	portIndex := strings.LastIndex(addr, ":")
 	if portIndex < 0 {
-		this.Fail("地址中需要带有端口")
+		if params.Protocol == "http" {
+			addr += ":80"
+		} else if params.Protocol == "https" {
+			addr += ":443"
+		} else {
+			this.Fail("地址中需要带有端口")
+		}
+		portIndex = strings.LastIndex(addr, ":")
 	}
 	host := addr[:portIndex]
 	port := addr[portIndex+1:]
