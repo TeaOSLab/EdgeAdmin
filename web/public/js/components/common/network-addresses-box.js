@@ -24,6 +24,11 @@ Vue.component("network-addresses-box", {
 	watch: {
 		"vServerType": function () {
 			this.addresses = []
+		},
+		"vAddresses": function () {
+			if (this.vAddresses != null) {
+				this.addresses = this.vAddresses
+			}
 		}
 	},
 	methods: {
