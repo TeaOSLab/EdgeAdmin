@@ -5,6 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/maps"
@@ -255,10 +256,10 @@ func (this *IndexAction) RunGet(params struct {
 	// 显示服务相关的日志
 	errorLogsResp, err := this.RPC().NodeLogRPC().ListNodeLogs(this.AdminContext(), &pb.ListNodeLogsRequest{
 		NodeId:     0,
-		Role:       "node",
+		Role:       nodeconfigs.NodeRoleNode,
 		Offset:     0,
 		Size:       10,
-		Level:      "error",
+		Level:      "",
 		FixedState: int32(configutils.BoolStateNo),
 		AllServers: true,
 	})
@@ -290,6 +291,7 @@ func (this *IndexAction) RunGet(params struct {
 			"description": errorLog.Description,
 			"createdTime": timeutil.FormatTime("Y-m-d H:i:s", errorLog.CreatedAt),
 			"serverId":    errorLog.ServerId,
+			"level":       errorLog.Level,
 			"serverName":  server.Name,
 		})
 	}
