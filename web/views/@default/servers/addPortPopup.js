@@ -9,6 +9,8 @@ Tea.context(function () {
 	// 初始化
 	if (this.protocol == "http") {
 		this.address = "80"
+	} else if (this.protocol == "https") {
+		this.address = "443"
 	}
 
 	if (window.parent.UPDATING_ADDR != null) {
@@ -29,6 +31,7 @@ Tea.context(function () {
 				break
 			case "https":
 				this.address = "443"
+				break
 		}
 	}
 

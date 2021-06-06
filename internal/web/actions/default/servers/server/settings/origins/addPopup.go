@@ -68,7 +68,7 @@ func (this *AddPopupAction) RunPost(params struct {
 	addr := params.Addr
 
 	// 是否是完整的地址
-	if params.Protocol == "http" || params.Protocol == "https" {
+	if (params.Protocol == "http" || params.Protocol == "https") && regexp.MustCompile(`^(http|https)://`).MatchString(addr) {
 		u, err := url.Parse(addr)
 		if err == nil {
 			addr = u.Host
