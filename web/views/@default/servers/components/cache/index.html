@@ -1,36 +1,49 @@
 {$layout}
 
-	<second-menu>
-		<menu-item href="/servers/components/cache" code="index">列表</menu-item>
-		<span class="item">|</span>
-		<a href="" class="item" @click.prevent="createPolicy()">[创建]</a>
-	</second-menu>
+<first-menu>
+    <menu-item href="/servers/components/cache" code="index">列表</menu-item>
+    <span class="item">|</span>
+    <a href="" class="item" @click.prevent="createPolicy()">[创建]</a>
+</first-menu>
 
-	<p class="comment" v-if="cachePolicies == null || cachePolicies.length == 0">暂时还没有缓存策略。</p>
-	<table class="ui table selectable celled" v-if="cachePolicies != null && cachePolicies.length > 0">
-		<thead>
-			<tr>
-				<th>策略名称</th>
-				<th>策略类型</th>
-				<th>容量</th>
-				<th class="center">集群数</th>
-				<th class="center">状态</th>
-				<th class="two op">操作</th>
-			</tr>
-		</thead>
-		<tr v-for="(policy, index) in cachePolicies">
-			<td>{{policy.name}}</td>
-			<td>{{infos[index].typeName}} <span class="small">（{{policy.type}}）</span></td>
-			<td>
-				<span v-if="policy.capacity != null && policy.capacity.count > 0">{{policy.capacity.count}}{{policy.capacity.unit.toUpperCase()}}</span>
-				<span v-else class="disabled">不限</span>
-			</td>
-			<td class="center">{{infos[index].countClusters}}</td>
-			<td class="center"><label-on :v-is-on="policy.isOn"></label-on></td>
-			<td>
-				<a :href="'/servers/components/cache/policy?cachePolicyId=' + policy.id">详情</a> &nbsp; <a href="" @click.prevent="deletePolicy(policy.id)">删除</a>
-			</td>
-		</tr>
-	</table>
+<div class="margin"></div>
+<form class="ui form" method="get" action="/servers/components/cache">
+    <div class="ui fields inline">
+        <div class="ui field">
+            <input type="text" name="keyword" v-model="keyword" placeholder="策略名称..."/>
+        </div>
+        <div class="ui field">
+            <button type="submit" class="ui button">搜索</button>
+        </div>
+    </div>
+</form>
 
-	<div class="page" v-html="page"></div>
+
+<p class="comment" v-if="cachePolicies == null || cachePolicies.length == 0">暂时还没有缓存策略。</p>
+<table class="ui table selectable celled" v-if="cachePolicies != null && cachePolicies.length > 0">
+    <thead>
+        <tr>
+            <th>策略名称</th>
+            <th>策略类型</th>
+            <th>容量</th>
+            <th class="center">集群数</th>
+            <th class="center">状态</th>
+            <th class="two op">操作</th>
+        </tr>
+    </thead>
+    <tr v-for="(policy, index) in cachePolicies">
+        <td><keyword :v-word="keyword">{{policy.name}}</keyword></td>
+        <td>{{infos[index].typeName}} <span class="small">（{{policy.type}}）</span></td>
+        <td>
+            <span v-if="policy.capacity != null && policy.capacity.count > 0">{{policy.capacity.count}}{{policy.capacity.unit.toUpperCase()}}</span>
+            <span v-else class="disabled">不限</span>
+        </td>
+        <td class="center">{{infos[index].countClusters}}</td>
+        <td class="center"><label-on :v-is-on="policy.isOn"></label-on></td>
+        <td>
+            <a :href="'/servers/components/cache/policy?cachePolicyId=' + policy.id">详情</a> &nbsp; <a href="" @click.prevent="deletePolicy(policy.id)">删除</a>
+        </td>
+    </tr>
+</table>
+
+<div class="page" v-html="page"></div>
