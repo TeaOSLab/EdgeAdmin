@@ -6,6 +6,7 @@
 	<menu-item :href="'/dns/clusters/cluster?clusterId=' + cluster.id" active="true">{{cluster.name}}</menu-item>
 </first-menu>
 
+<!-- 基本信息 -->
 <table class="ui table definition selectable">
 	<tr>
 		<td class="title">集群</td>
@@ -42,8 +43,45 @@
 	</tr>
 </table>
 
+<!-- 问题合集 -->
+<div v-if="issues.length > 0">
+    <h3>需要修复的问题</h3>
+    <table class="ui table selectable celled" v-if="issues.length > 0">
+        <thead>
+        <tr>
+            <th style="width: 50%">问题对象</th>
+            <th>问题描述</th>
+            <th class="two op">操作</th>
+        </tr>
+        </thead>
+        <tr v-for="issue in issues">
+            <td>
+                <div v-if="issue.type == 'cluster'">
+                    集群 "{{issue.target}}" <link-icon :href="'/clusters/cluster?clusterId=' + issue.targetId"></link-icon>
+                </div>
+                <div v-if="issue.type == 'node'">
+                    集群 "{{issue.params.clusterName}}" 节点 "{{issue.target}}" <link-icon :href="'/clusters/cluster/node?clusterId=' + issue.params.clusterId + '&nodeId=' + issue.targetId"></link-icon>
+                </div>
+            </td>
+            <td>
+                <span>{{issue.description}}</span>
+            </td>
+            <td>
+                <div v-if="issue.type == 'cluster'">
+                    <link-red @click.prevent="updateCluster(issue.targetId)">修复</link-red>
+                </div>
+                <div v-if="issue.type == 'node'">
+                    <link-red @click.prevent="updateNode(issue.targetId)">修复</link-red>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <div class="margin"></div>
+</div>
+
 <p class="comment">下面的DNS解析记录也可以手工在DNS服务商提供的管理平台添加。</p>
 
+<!-- 节点DNS解析记录 -->
 <h3>节点DNS解析记录 <span>&nbsp; ({{nodes.length}}个)</span></h3>
 <p class="comment" v-if="nodes.length == 0">暂时没有需要设置的DNS记录。</p>
 <table class="ui table selectable celled" v-if="nodes.length > 0">
@@ -64,7 +102,10 @@
 			<span v-if="dnsInfo.dnsName.length > 0">{{dnsInfo.dnsName}}</span>
 			<link-red v-else @click.prevent="updateCluster(cluster.id)">没有设置</link-red>
 		</td>
-		<td>A</td>
+		<td>
+            <span v-if="node.ipAddr.indexOf(':') > -1">AAAA</span>
+            <span v-else>A</span>
+        </td>
 		<td>
 			<span v-if="node.ipAddr.length > 0">{{node.ipAddr}}</span>
 			<link-red title="点击设置" v-else @click.prevent="updateNode(node.id)">没有设置</link-red>
@@ -83,7 +124,8 @@
 	</tr>
 </table>
 
-<h3>代理服务解析记录 <span>&nbsp; ({{servers.length}}个)</span></h3>
+<!-- 网站服务解析记录 -->
+<h3>网站服务解析记录 <span>&nbsp; ({{servers.length}}个)</span></h3>
 <p class="comment" v-if="servers.length == 0">暂时没有需要设置的DNS记录。</p>
 <table class="ui table selectable celled" v-if="servers.length > 0">
 	<thead>

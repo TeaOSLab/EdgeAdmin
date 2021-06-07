@@ -18,9 +18,9 @@
 				<div v-if="node.ipAddresses.length > 0">
 					<div>
 						<div v-for="(address, index) in node.ipAddresses" class="ui label tiny basic">
-                            {{address.ip}}
-							<span class="small" v-if="address.name.length > 0">（{{address.name}}<span v-if="!address.canAccess">，不可访问</span>）</span>
-							<span class="small" v-if="address.name.length == 0 && !address.canAccess">（不可访问）</span>
+                            <span v-if="address.ip.indexOf(':') > -1" class="grey">[IPv6]</span> {{address.ip}}
+							<span class="small grey" v-if="address.name.length > 0">（{{address.name}}<span v-if="!address.canAccess">，不可访问</span>）</span>
+							<span class="small grey" v-if="address.name.length == 0 && !address.canAccess">（不可访问）</span>
 						</div>
 					</div>
 				</div>
@@ -50,7 +50,10 @@
                     <tbody v-for="address in node.ipAddresses" v-if="address.canAccess">
                         <tr v-for="route in dnsRoutes">
                             <td>{{dnsRecordName}}</td>
-                            <td>A</td>
+                            <td>
+                                <span v-if="address.ip.indexOf(':') > -1">AAAA</span>
+                                <span v-else>A</span>
+                            </td>
                             <td>
                                 <span v-if="route.name.length > 0">{{route.name}}</span>
                                 <span v-else class="disabled">默认</span>
