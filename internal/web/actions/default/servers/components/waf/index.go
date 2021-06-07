@@ -16,8 +16,14 @@ func (this *IndexAction) Init() {
 	this.FirstMenu("index")
 }
 
-func (this *IndexAction) RunGet(params struct{}) {
-	countResp, err := this.RPC().HTTPFirewallPolicyRPC().CountAllEnabledHTTPFirewallPolicies(this.AdminContext(), &pb.CountAllEnabledHTTPFirewallPoliciesRequest{})
+func (this *IndexAction) RunGet(params struct {
+	Keyword string
+}) {
+	this.Data["keyword"] = params.Keyword
+
+	countResp, err := this.RPC().HTTPFirewallPolicyRPC().CountAllEnabledHTTPFirewallPolicies(this.AdminContext(), &pb.CountAllEnabledHTTPFirewallPoliciesRequest{
+		Keyword: params.Keyword,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -26,8 +32,9 @@ func (this *IndexAction) RunGet(params struct{}) {
 	page := this.NewPage(count)
 
 	listResp, err := this.RPC().HTTPFirewallPolicyRPC().ListEnabledHTTPFirewallPolicies(this.AdminContext(), &pb.ListEnabledHTTPFirewallPoliciesRequest{
-		Offset: page.Offset,
-		Size:   page.Size,
+		Keyword: params.Keyword,
+		Offset:  page.Offset,
+		Size:    page.Size,
 	})
 	if err != nil {
 		this.ErrorPage(err)
