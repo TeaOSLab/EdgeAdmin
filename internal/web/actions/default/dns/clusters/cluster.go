@@ -1,6 +1,7 @@
 package clusters
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
@@ -74,10 +75,14 @@ func (this *ClusterAction) RunGet(params struct {
 				// 检查是否已解析
 				isResolved := false
 				if cluster.DnsDomainId > 0 && len(cluster.DnsName) > 0 && len(node.IpAddr) > 0 {
+					recordType := "A"
+					if utils.IsIPv6(node.IpAddr) {
+						recordType = "AAAA"
+					}
 					checkResp, err := this.RPC().DNSDomainRPC().ExistDNSDomainRecord(this.AdminContext(), &pb.ExistDNSDomainRecordRequest{
 						DnsDomainId: cluster.DnsDomainId,
 						Name:        cluster.DnsName,
-						Type:        "A",
+						Type:        recordType,
 						Route:       route.Code,
 						Value:       node.IpAddr,
 					})
@@ -156,6 +161,26 @@ func (this *ClusterAction) RunGet(params struct {
 		return
 	}
 	this.Data["dnsHasChanges"] = checkChangesResp.IsChanged
+
+	// 需要解决的问题
+	issuesResp, err := this.RPC().DNSRPC().FindAllDNSIssues(this.AdminContext(), &pb.FindAllDNSIssuesRequest{
+		NodeClusterId: params.ClusterId,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	issueMaps := []maps.Map{}
+	for _, issue := range issuesResp.Issues {
+		issueMaps = append(issueMaps, maps.Map{
+			"target":      issue.Target,
+			"targetId":    issue.TargetId,
+			"type":        issue.Type,
+			"description": issue.Description,
+			"params":      issue.Params,
+		})
+	}
+	this.Data["issues"] = issueMaps
 
 	this.Show()
 }
