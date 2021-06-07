@@ -93,7 +93,9 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 	tabbar := actionutils.NewTabbar()
 	tabbar.Add("服务列表", "", "/servers", "", false)
 	//tabbar.Add("看板", "", "/servers/server/board?serverId="+serverIdString, "dashboard", selectedTabbar == "board")
-	tabbar.Add("日志", "", "/servers/server/log?serverId="+serverIdString, "history", selectedTabbar == "log")
+	if family == "http" {
+		tabbar.Add("日志", "", "/servers/server/log?serverId="+serverIdString, "history", selectedTabbar == "log")
+	}
 	if family == "http" {
 		tabbar.Add("统计", "", "/servers/server/stat?serverId="+serverIdString, "chart area", selectedTabbar == "stat")
 	}
@@ -349,6 +351,12 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"url":      "/servers/server/settings/udp?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "udp",
 			"isOn":     serverConfig.UDP != nil && serverConfig.UDP.IsOn && len(serverConfig.UDP.Listen) > 0,
+		})
+		menuItems = append(menuItems, maps.Map{
+			"name":     "反向代理",
+			"url":      "/servers/server/settings/reverseProxy?serverId=" + serverIdString,
+			"isActive": secondMenuItem == "reverseProxy",
+			"isOn":     serverConfig.ReverseProxyRef != nil && serverConfig.ReverseProxyRef.IsOn,
 		})
 	}
 

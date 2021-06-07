@@ -20,6 +20,11 @@
 					<option value="tcp">TCP</option>
 					<option value="tls">TLS</option>
 				</select>
+
+                <!-- UDP -->
+                <select class="ui dropdown auto-width" name="protocol" v-if="serverType == 'udpProxy'">
+                    <option value="udp">UDP</option>
+                </select>
 			</td>
 		</tr>
 		<tr>

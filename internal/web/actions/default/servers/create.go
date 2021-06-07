@@ -161,6 +161,34 @@ func (this *CreateAction) RunPost(params struct {
 				tlsConfig.AddListen(addr)
 			}
 		}
+	case serverconfigs.ServerTypeUDPProxy:
+		// 在DEMO模式下不能创建
+		if teaconst.IsDemo {
+			this.Fail("DEMO模式下不能创建UDP反向代理")
+		}
+
+		listen := []*serverconfigs.NetworkAddressConfig{}
+		err := json.Unmarshal([]byte(params.Addresses), &listen)
+		if err != nil {
+			this.Fail("端口地址解析失败：" + err.Error())
+		}
+		if len(listen) == 0 {
+			this.Fail("至少需要绑定一个端口")
+		}
+
+		for _, addr := range listen {
+			switch addr.Protocol.Primary() {
+			case serverconfigs.ProtocolUDP:
+				if udpConfig == nil {
+					udpConfig = &serverconfigs.UDPProtocolConfig{
+						BaseProtocol: serverconfigs.BaseProtocol{
+							IsOn: true,
+						},
+					}
+				}
+				udpConfig.AddListen(addr)
+			}
+		}
 	default:
 		this.Fail("请选择正确的服务类型")
 	}
@@ -237,7 +265,7 @@ func (this *CreateAction) RunPost(params struct {
 	// 源站地址
 	reverseProxyRefJSON := []byte{}
 	switch params.ServerType {
-	case serverconfigs.ServerTypeHTTPProxy, serverconfigs.ServerTypeTCPProxy:
+	case serverconfigs.ServerTypeHTTPProxy, serverconfigs.ServerTypeTCPProxy, serverconfigs.ServerTypeUDPProxy:
 		originConfigs := []*serverconfigs.OriginConfig{}
 		err := json.Unmarshal([]byte(params.Origins), &originConfigs)
 		if err != nil {
