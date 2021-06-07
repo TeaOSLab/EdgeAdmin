@@ -57,7 +57,7 @@
 
 <!-- 常用服务 -->
 <div class="ui segment" v-if="latestVisible">
-    常用服务：<span v-for="server in latestServers"><a :href="'/servers/server?serverId=' + server.id">{{server.name}}</a> &nbsp; </span>
+    常用服务：<span v-for="(server, index) in latestServers"><a :href="'/servers/server?serverId=' + server.id">{{server.name}}</a> &nbsp; <span class="disabled" v-if="index != latestServers.length - 1">|</span> &nbsp;</span>
 </div>
 
 <p class="ui message" v-if="servers.length == 0">暂时还没有服务。</p>

@@ -17,7 +17,7 @@
     </div>
 </form>
 <div class="ui segment" v-if="latestVisible">
-    常用集群：<span v-for="cluster in latestClusters"><a :href="'/clusters/cluster?clusterId=' + cluster.id">{{cluster.name}}</a> &nbsp; </span>
+    常用集群：<span v-for="(cluster, index) in latestClusters"><a :href="'/clusters/cluster?clusterId=' + cluster.id">{{cluster.name}}</a> &nbsp; <span class="disabled" v-if="index != latestClusters.length - 1">|</span> &nbsp;</span>
 </div>
 
 <div class="ui tabular menu" v-if="isSearching">
