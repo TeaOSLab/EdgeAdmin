@@ -8,7 +8,7 @@
 			<td>源站协议</td>
 			<td>
 				<!-- HTTP -->
-				<select class="ui dropdown auto-width" name="protocol" v-if="serverType == 'httpProxy' || serverType == 'httpWeb'">
+				<select class="ui dropdown auto-width" name="protocol" v-if="serverType == 'httpProxy' || serverType == 'httpWeb'" @change="changeProtocol" v-model="protocol">
 					<option value="http">HTTP</option>
 					<option value="https">HTTPS</option>
 				</select>
@@ -28,8 +28,8 @@
 		<tr>
 			<td class="title">源站地址</td>
 			<td>
-				<input type="text" name="addr" ref="focus"/>
-				<p class="comment">源站服务器地址，通常是一个IP（或域名）加端口<span v-if="serverType == 'httpProxy'">，不需要加 http:// 或 https://</span>。</p>
+				<input type="text" name="addr" ref="focus" v-model="addr" @input="changeAddr"/>
+				<p class="comment"><span class="red" v-if="addrError.length > 0">{{addrError}}</span>源站服务器地址，通常是一个IP（或域名）加端口<span v-if="serverType == 'httpProxy'">，不需要加 http:// 或 https://</span>。</p>
 			</td>
 		</tr>
 	</table>
