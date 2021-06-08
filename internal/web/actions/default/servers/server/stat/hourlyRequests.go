@@ -9,23 +9,23 @@ import (
 	"sort"
 )
 
-type IndexAction struct {
+type HourlyRequestsAction struct {
 	actionutils.ParentAction
 }
 
-func (this *IndexAction) Init() {
-	this.Nav("", "stat", "minutely")
+func (this *HourlyRequestsAction) Init() {
+	this.Nav("", "stat", "hourly")
 	this.SecondMenu("index")
 }
 
-func (this *IndexAction) RunGet(params struct {
+func (this *HourlyRequestsAction) RunGet(params struct {
 	ServerId int64
 }) {
 	this.Data["serverId"] = params.ServerId
 
-	resp, err := this.RPC().ServerDailyStatRPC().FindLatestServerMinutelyStats(this.AdminContext(), &pb.FindLatestServerMinutelyStatsRequest{
+	resp, err := this.RPC().ServerDailyStatRPC().FindLatestServerHourlyStats(this.AdminContext(), &pb.FindLatestServerHourlyStatsRequest{
 		ServerId: params.ServerId,
-		Minutes:  120,
+		Hours:    24,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -35,20 +35,20 @@ func (this *IndexAction) RunGet(params struct {
 	sort.Slice(resp.Stats, func(i, j int) bool {
 		stat1 := resp.Stats[i]
 		stat2 := resp.Stats[j]
-		return stat1.Minute < stat2.Minute
+		return stat1.Hour < stat2.Hour
 	})
 	statMaps := []maps.Map{}
 	for _, stat := range resp.Stats {
 		statMaps = append(statMaps, maps.Map{
-			"day":                 stat.Minute[:4] + "-" + stat.Minute[4:6] + "-" + stat.Minute[6:8],
-			"minute":              stat.Minute[8:10] + ":" + stat.Minute[10:12],
+			"day":                 stat.Hour[:4] + "-" + stat.Hour[4:6] + "-" + stat.Hour[6:8],
+			"hour":                stat.Hour[8:],
 			"bytes":               stat.Bytes,
 			"cachedBytes":         stat.CachedBytes,
 			"countRequests":       stat.CountRequests,
 			"countCachedRequests": stat.CountCachedRequests,
 		})
 	}
-	this.Data["minutelyStats"] = statMaps
+	this.Data["hourlyStats"] = statMaps
 
 	this.Show()
 }

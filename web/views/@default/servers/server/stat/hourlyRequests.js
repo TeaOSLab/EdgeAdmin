@@ -2,35 +2,35 @@ Tea.context(function () {
 	this.$delay(function () {
 		let that = this
 
-		this.reloadRequestsChart("minutely-requests-chart", "请求数统计", this.minutelyStats, function (args) {
+		this.reloadRequestsChart("hourly-requests-chart", "请求数统计", this.hourlyStats, function (args) {
 			if (args.seriesIndex == 0) {
-				return that.minutelyStats[args.dataIndex].day + " " + that.minutelyStats[args.dataIndex].minute + " 请求数: " + teaweb.formatNumber(that.minutelyStats[args.dataIndex].countRequests)
+				return that.hourlyStats[args.dataIndex].day + " " + that.hourlyStats[args.dataIndex].hour + " 请求数: " + teaweb.formatNumber(that.hourlyStats[args.dataIndex].countRequests)
 			}
 			if (args.seriesIndex == 1) {
 				let ratio = 0
-				if (that.minutelyStats[args.dataIndex].countRequests > 0) {
-					ratio = Math.round(that.minutelyStats[args.dataIndex].countCachedRequests * 10000 / that.minutelyStats[args.dataIndex].countRequests) / 100
+				if (that.hourlyStats[args.dataIndex].countRequests > 0) {
+					ratio = Math.round(that.hourlyStats[args.dataIndex].countCachedRequests * 10000 / that.hourlyStats[args.dataIndex].countRequests) / 100
 				}
-				return that.minutelyStats[args.dataIndex].day + " " + that.minutelyStats[args.dataIndex].minute + " 缓存请求数: " + teaweb.formatNumber(that.minutelyStats[args.dataIndex].countCachedRequests) + ", 命中率：" + ratio + "%"
+				return that.hourlyStats[args.dataIndex].day + " " + that.hourlyStats[args.dataIndex].hour + " 缓存请求数: " + teaweb.formatNumber(that.hourlyStats[args.dataIndex].countCachedRequests) + ", 命中率：" + ratio + "%"
 			}
 			return ""
 		})
-		this.reloadTrafficChart("minutely-traffic-chart", "流量统计", this.minutelyStats, function (args) {
+		this.reloadTrafficChart("hourly-traffic-chart", "流量统计", this.hourlyStats, function (args) {
 			if (args.seriesIndex == 0) {
-				return that.minutelyStats[args.dataIndex].day + " " + that.minutelyStats[args.dataIndex].minute + " 流量: " + teaweb.formatBytes(that.minutelyStats[args.dataIndex].bytes)
+				return that.hourlyStats[args.dataIndex].day + " " + that.hourlyStats[args.dataIndex].hour + " 流量: " + teaweb.formatBytes(that.hourlyStats[args.dataIndex].bytes)
 			}
 			if (args.seriesIndex == 1) {
 				let ratio = 0
-				if (that.minutelyStats[args.dataIndex].bytes > 0) {
-					ratio = Math.round(that.minutelyStats[args.dataIndex].cachedBytes * 10000 / that.minutelyStats[args.dataIndex].bytes) / 100
+				if (that.hourlyStats[args.dataIndex].bytes > 0) {
+					ratio = Math.round(that.hourlyStats[args.dataIndex].cachedBytes * 10000 / that.hourlyStats[args.dataIndex].bytes) / 100
 				}
-				return that.minutelyStats[args.dataIndex].day + " " + that.minutelyStats[args.dataIndex].minute + " 缓存流量: " + teaweb.formatBytes(that.minutelyStats[args.dataIndex].cachedBytes) + ", 命中率：" + ratio + "%"
+				return that.hourlyStats[args.dataIndex].day + " " + that.hourlyStats[args.dataIndex].hour + " 缓存流量: " + teaweb.formatBytes(that.hourlyStats[args.dataIndex].cachedBytes) + ", 命中率：" + ratio + "%"
 			}
 			return ""
 		})
 		window.addEventListener("resize", function () {
-			that.resizeChart("minutely-requests-chart")
-			that.resizeChart("minutely-traffic-chart")
+			that.resizeChart("hourly-requests-chart")
+			that.resizeChart("hourly-traffic-chart")
 		})
 	})
 
@@ -48,7 +48,7 @@ Tea.context(function () {
 		let option = {
 			xAxis: {
 				data: stats.map(function (v) {
-					return v.minute
+					return v.hour
 				})
 			},
 			yAxis: {
@@ -120,7 +120,7 @@ Tea.context(function () {
 		let option = {
 			xAxis: {
 				data: stats.map(function (v) {
-					return v.minute
+					return v.hour
 				})
 			},
 			yAxis: {
