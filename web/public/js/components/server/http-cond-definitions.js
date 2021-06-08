@@ -109,7 +109,7 @@ Vue.component("http-cond-url-prefix", {
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<input type="text" v-model="cond.value"/>
-	<p class="comment">URL前缀，通常以<code-label>/</code-label>开头，比如<code-label>/static</code-label>。</p>
+	<p class="comment">URL前缀，有此前缀的URL都将会被匹配，通常以<code-label>/</code-label>开头，比如<code-label>/static</code-label>。</p>
 </div>`
 })
 
@@ -133,7 +133,7 @@ Vue.component("http-cond-url-not-prefix", {
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<input type="text" v-model="cond.value"/>
-	<p class="comment">要排除的URL前缀，通常以<code-label>/</code-label>开头，比如<code-label>/static</code-label>。</p>
+	<p class="comment">要排除的URL前缀，有此前缀的URL都将会被匹配，通常以<code-label>/</code-label>开头，比如<code-label>/static</code-label>。</p>
 </div>`
 })
 

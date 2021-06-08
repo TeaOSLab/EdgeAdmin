@@ -1,5 +1,5 @@
 Vue.component("http-cache-refs-config-box", {
-	props: ["v-cache-refs"],
+	props: ["v-cache-refs", "v-cache-config"],
 	mounted: function () {
 		let that = this
 		sortTable(function (ids) {
@@ -12,6 +12,10 @@ Vue.component("http-cache-refs-config-box", {
 				})
 			})
 			that.refs = newRefs
+
+			if (that.vCacheConfig != null) {
+				that.vCacheConfig.cacheRefs = newRefs
+			}
 		})
 	},
 	data: function () {
@@ -105,6 +109,7 @@ Vue.component("http-cache-refs-config-box", {
 	<input type="hidden" name="refsJSON" :value="JSON.stringify(refs)"/>
 	
 	<div>
+		<p class="comment" v-if="refs.length == 0">暂时还没有缓存条件。</p>
 		<table class="ui table selectable celled" v-show="refs.length > 0" id="sortable-table">
 			<thead>
 				<tr>
