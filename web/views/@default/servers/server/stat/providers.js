@@ -5,20 +5,17 @@ Tea.context(function () {
 		let axis = teaweb.countAxis(this.providerStats, function (v) {
 			return v.count
 		})
-		this.providerStats.forEach(function (v) {
-			v.count /= axis.divider
-		})
 		this.reloadChart("provider-chart", "运营商", this.providerStats, function (v) {
 			return v.provider.name
 		}, function (args) {
-			return that.providerStats[args.dataIndex].provider.name + ": " + teaweb.formatNumber(that.providerStats[args.dataIndex].rawCount)
-		}, axis.unit)
+			return that.providerStats[args.dataIndex].provider.name + ": " + teaweb.formatNumber(that.providerStats[args.dataIndex].count)
+		}, axis)
 		window.addEventListener("resize", function () {
 			that.resizeChart("provider-chart")
 		})
 	})
 
-	this.reloadChart = function (chartId, name, stats, xFunc, tooltipFunc, unit) {
+	this.reloadChart = function (chartId, name, stats, xFunc, tooltipFunc, axis) {
 		let chartBox = document.getElementById(chartId)
 		if (chartBox == null) {
 			return
@@ -34,7 +31,7 @@ Tea.context(function () {
 			yAxis: {
 				axisLabel: {
 					formatter: function (value) {
-						return value + unit
+						return value + axis.unit
 					}
 				}
 			},
@@ -54,7 +51,7 @@ Tea.context(function () {
 					name: name,
 					type: "bar",
 					data: stats.map(function (v) {
-						return v.count;
+						return v.count / axis.divider;
 					}),
 					itemStyle: {
 						color: "#9DD3E8"
