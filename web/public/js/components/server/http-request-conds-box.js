@@ -63,7 +63,7 @@ Vue.component("http-request-conds-box", {
 		<div v-if="conds.groups.length > 0">
 			<table class="ui table">
 				<tr v-for="(group, groupIndex) in conds.groups">
-					<td class="title" :style="{'border-bottom':(groupIndex < conds.groups.length-1) ? '1px solid rgba(34,36,38,.15)':''}">分组{{groupIndex+1}}</td>
+					<td class="title" :class="{'color-border':conds.connector == 'and'}" :style="{'border-bottom':(groupIndex < conds.groups.length-1) ? '1px solid rgba(34,36,38,.15)':''}">分组{{groupIndex+1}}</td>
 					<td style="background: white;" :style="{'border-bottom':(groupIndex < conds.groups.length-1) ? '1px solid rgba(34,36,38,.15)':''}">
 						<var v-for="(cond, index) in group.conds" style="font-style: normal;display: inline-block; margin-bottom:0.5em">
 							<span class="ui label tiny">
@@ -76,20 +76,33 @@ Vue.component("http-request-conds-box", {
 						</var>
 					</td>
 					<td style="width: 5em; background: white" :style="{'border-bottom':(groupIndex < conds.groups.length-1) ? '1px solid rgba(34,36,38,.15)':''}">
-						<a href="" title="修改" @click.prevent="updateGroup(groupIndex, group)"><i class="icon pencil small"></i></a> <a href="" title="删除" @click.prevent="removeGroup(groupIndex)"><i class="icon remove"></i></a>
+						<a href="" title="修改分组" @click.prevent="updateGroup(groupIndex, group)"><i class="icon pencil small"></i></a> <a href="" title="删除分组" @click.prevent="removeGroup(groupIndex)"><i class="icon remove"></i></a>
 					</td>
 				</tr>
 			</table>
 			<div class="ui divider"></div>
 		</div>
 		
+		<!-- 分组之间关系 -->
+		<table class="ui table" v-if="conds.groups.length > 1">
+			<tr>
+				<td class="title">分组之间关系</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="conds.connector">
+						<option value="and">和</option>
+						<option value="or">或</option>
+					</select>
+					<p class="comment">
+						<span v-if="conds.connector == 'or'">只要满足其中一个条件分组即可。</span>
+						<span v-if="conds.connector == 'and'">需要满足所有条件分组。</span>
+					</p>	
+				</td>
+			</tr>
+		</table>
+		
 		<div>
-			<button class="ui button tiny" type="button" @click.prevent="addGroup()">+</button>
+			<button class="ui button tiny" type="button" @click.prevent="addGroup()">+添加分组</button>
 		</div>
-		<p class="comment">
-			<span v-if="conds.connector == 'or'">只要满足其中一个条件分组即可。</span>
-			<span v-if="conds.connector == 'and'">需要满足所有条件分组。</span>
-		</p>
 	</div>	
 </div>`
 })

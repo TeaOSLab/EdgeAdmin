@@ -7,7 +7,7 @@
 		<tr>
 			<td class="title">选择条件类型</td>
 			<td>
-				<select class="ui dropdown auto-width" name="condType" v-model="condType">
+				<select class="ui dropdown auto-width" name="condType" v-model="condType" @change="changeCondType">
 					<option v-for="c in components" :value="c.type">{{c.name}}</option>
 				</select>
 				{$ range .components}
@@ -16,7 +16,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td>设置条件参数</td>
+			<td>{{paramsTitle}}</td>
 			<td>
 				{$ range .components}
 					<{$ .Component} v-if="condType == '{$ .Type}'" :v-cond="cond"></{$ .Component}>

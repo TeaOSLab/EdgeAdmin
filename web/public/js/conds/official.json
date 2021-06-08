@@ -4,6 +4,7 @@
     "name": "URL扩展名",
     "description": "根据URL中的文件路径扩展名进行过滤",
     "component": "http-cond-url-extension",
+    "paramsTitle": "扩展名列表",
     "isRequest": true
   },
   {
@@ -11,6 +12,7 @@
     "name": "URL前缀",
     "description": "根据URL中的文件路径前缀进行过滤",
     "component": "http-cond-url-prefix",
+    "paramsTitle": "URL前缀",
     "isRequest": true
   },
   {
@@ -18,6 +20,7 @@
     "name": "URL精准匹配",
     "description": "检查URL中的文件路径是否一致",
     "component": "http-cond-url-eq",
+    "paramsTitle": "URL完整路径",
     "isRequest": true
   },
   {
@@ -25,13 +28,31 @@
     "name": "URL正则匹配",
     "description": "使用正则表达式检查URL中的文件路径是否一致",
     "component": "http-cond-url-regexp",
+    "paramsTitle": "正则表达式",
+    "isRequest": true
+  },
+  {
+    "type": "url-not-prefix",
+    "name": "排除：URL前缀",
+    "description": "根据URL中的文件路径前缀进行过滤",
+    "component": "http-cond-url-not-prefix",
+    "paramsTitle": "URL前缀",
+    "isRequest": true
+  },
+  {
+    "type": "url-not-eq",
+    "name": "排除：URL精准匹配",
+    "description": "检查URL中的文件路径是否一致",
+    "component": "http-cond-url-not-eq",
+    "paramsTitle": "URL完整路径",
     "isRequest": true
   },
   {
     "type": "url-not-regexp",
-    "name": "排除URL正则匹配",
+    "name": "排除：URL正则匹配",
     "description": "使用正则表达式检查URL中的文件路径是否一致，如果一致，则不匹配",
     "component": "http-cond-url-not-regexp",
+    "paramsTitle": "正则表达式",
     "isRequest": true
   },
   {
@@ -39,6 +60,7 @@
     "name": "内容MimeType",
     "description": "根据服务器返回的内容的MimeType进行过滤。注意：当用于缓存条件时，此条件需要结合别的请求条件使用。",
     "component": "http-cond-mime-type",
+    "paramsTitle": "MimeType列表",
     "isRequest": false
   }
 ]

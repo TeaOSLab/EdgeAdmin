@@ -32,6 +32,11 @@ func (this *AddGroupPopupAction) RunPost(params struct {
 		this.Fail("解析条件时发生错误：" + err.Error())
 	}
 
+	err = groupConfig.Init()
+	if err != nil {
+		this.Fail("校验条件设置时失败：" + err.Error())
+	}
+
 	this.Data["group"] = groupConfig
 	this.Success()
 }
