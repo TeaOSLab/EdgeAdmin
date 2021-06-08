@@ -15,7 +15,11 @@ func (this *CreatePopupAction) Init() {
 	this.Nav("", "", "")
 }
 
-func (this *CreatePopupAction) RunGet(params struct{}) {
+func (this *CreatePopupAction) RunGet(params struct {
+	IsReverse bool
+}) {
+	this.Data["isReverse"] = params.IsReverse
+
 	this.Show()
 }
 

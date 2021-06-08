@@ -1,16 +1,37 @@
 Vue.component("http-cache-refs-config-box", {
 	props: ["v-cache-refs"],
+	mounted: function () {
+		let that = this
+		sortTable(function (ids) {
+			let newRefs = []
+			ids.forEach(function (id) {
+				that.refs.forEach(function (ref) {
+					if (ref.id == id) {
+						newRefs.push(ref)
+					}
+				})
+			})
+			that.refs = newRefs
+		})
+	},
 	data: function () {
 		let refs = this.vCacheRefs
 		if (refs == null) {
 			refs = []
 		}
+
+		let id = 0
+		refs.forEach(function (ref) {
+			id++
+			ref.id = id
+		})
 		return {
-			refs: refs
+			refs: refs,
+			id: id // 用来对条件进行排序
 		}
 	},
 	methods: {
-		addRef: function () {
+		addRef: function (isReverse) {
 			window.UPDATING_CACHE_REF = null
 
 			let width = window.innerWidth
@@ -22,10 +43,12 @@ Vue.component("http-cache-refs-config-box", {
 				height = 500
 			}
 			let that = this
-			teaweb.popup("/servers/server/settings/cache/createPopup", {
+			teaweb.popup("/servers/server/settings/cache/createPopup?isReverse=" + (isReverse ? 1 : 0), {
 				width: width + "px",
 				height: height + "px",
 				callback: function (resp) {
+					that.id++
+					resp.data.cacheRef.id = that.id
 					that.refs.push(resp.data.cacheRef)
 				}
 			})
@@ -46,7 +69,11 @@ Vue.component("http-cache-refs-config-box", {
 				width: width + "px",
 				height: height + "px",
 				callback: function (resp) {
+					resp.data.cacheRef.id = that.refs[index].id
 					Vue.set(that.refs, index, resp.data.cacheRef)
+
+					// 通知子组件更新
+					that.$refs.cacheRef[index].notifyChange()
 				}
 			})
 		},
@@ -78,27 +105,40 @@ Vue.component("http-cache-refs-config-box", {
 	<input type="hidden" name="refsJSON" :value="JSON.stringify(refs)"/>
 	
 	<div>
-		<table class="ui table selectable celled" v-show="refs.length > 0">
+		<table class="ui table selectable celled" v-show="refs.length > 0" id="sortable-table">
 			<thead>
 				<tr>
-					<th>缓存条件</th>
+					<th style="width:1em"></th>
+					<th>条件</th>
+					<th class="two wide">分组关系</th>
 					<th class="width10">缓存时间</th>
 					<th class="two op">操作</th>
 				</tr>
-				<tr v-for="(cacheRef, index) in refs">
-					<td>
-						<http-request-conds-view :v-conds="cacheRef.conds"></http-request-conds-view>
+			</thead>	
+			<tbody v-for="(cacheRef, index) in refs" :key="cacheRef.id" :v-id="cacheRef.id">
+				<tr>
+					<td style="text-align: center;"><i class="icon bars handle grey"></i> </td>
+					<td :class="{'color-border': cacheRef.conds.connector == 'and'}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
+						<http-request-conds-view :v-conds="cacheRef.conds" ref="cacheRef"></http-request-conds-view>
 					</td>
-					<td>{{cacheRef.life.count}} {{timeUnitName(cacheRef.life.unit)}}</td>
+					<td>
+						<span v-if="cacheRef.conds.connector == 'and'">和</span>
+						<span v-if="cacheRef.conds.connector == 'or'">或</span>
+					</td>
+					<td>
+						<span v-if="!cacheRef.isReverse">{{cacheRef.life.count}} {{timeUnitName(cacheRef.life.unit)}}</span>
+						<span v-else class="red">不缓存</span>
+					</td>
 					<td>
 						<a href="" @click.prevent="updateRef(index, cacheRef)">修改</a> &nbsp;
 						<a href="" @click.prevent="removeRef(index)">删除</a>
 					</td>
 				</tr>
-			</thead>
+			</tbody>
 		</table>
+		<p class="comment" v-if="refs.length > 1">所有条件匹配顺序为从上到下，可以拖动左侧的<i class="icon bars"></i>排序。</p>
 		
-		<button class="ui button tiny" @click.prevent="addRef">+添加缓存设置</button>
+		<button class="ui button tiny" @click.prevent="addRef(false)">+添加缓存设置</button> &nbsp; &nbsp; <a href="" @click.prevent="addRef(true)">+添加不缓存设置</a>
 	</div>
 	<div class="margin"></div>
 </div>`

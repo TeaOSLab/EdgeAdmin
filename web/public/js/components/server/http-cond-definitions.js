@@ -2,18 +2,26 @@
 Vue.component("http-cond-url-extension", {
 	props: ["v-cond"],
 	data: function () {
-		let cond = this.vCond
-		if (cond == null) {
-			cond = {
-				isRequest: true,
-				param: "${requestPathExtension}",
-				operator: "in",
-				value: "[]"
-			}
+		let cond = {
+			isRequest: true,
+			param: "${requestPathExtension}",
+			operator: "in",
+			value: "[]"
 		}
+		if (this.vCond != null && this.vCond.param == cond.param) {
+			cond.value = this.vCond.value
+		}
+
+		let extensions = []
+		try {
+			extensions = JSON.parse(cond.value)
+		} catch (e) {
+
+		}
+
 		return {
 			cond: cond,
-			extensions: JSON.parse(cond.value), // TODO 可以拖动排序
+			extensions: extensions, // TODO 可以拖动排序
 
 			isAdding: false,
 			addingExt: ""
@@ -49,7 +57,7 @@ Vue.component("http-cond-url-extension", {
 			if (this.addingExt[0] != ".") {
 				this.addingExt = "." + this.addingExt
 			}
-			this.addingExt = this.addingExt.replace(/\s+/g, "")
+			this.addingExt = this.addingExt.replace(/\s+/g, "").toLowerCase()
 			this.extensions.push(this.addingExt)
 
 			// 清除状态
@@ -74,7 +82,9 @@ Vue.component("http-cond-url-extension", {
 			<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove"></i></a>
 		</div> 
 	</div>
-	<button class="ui button tiny" type="button" @click.prevent="addExt()">+添加扩展名</button>
+	<div style="margin-top: 1em">
+		<button class="ui button tiny" type="button" @click.prevent="addExt()">+添加扩展名</button>
+	</div>
 	<p class="comment">扩展名需要包含点（.）符号，例如<span class="ui label tiny">.jpg</span>、<span class="ui label tiny">.png</span>之类。</p>
 </div>`
 })
@@ -83,14 +93,14 @@ Vue.component("http-cond-url-extension", {
 Vue.component("http-cond-url-prefix", {
 	props: ["v-cond"],
 	data: function () {
-		let cond = this.vCond
-		if (cond == null) {
-			cond = {
-				isRequest: true,
-				param: "${requestPath}",
-				operator: "prefix",
-				value: ""
-			}
+		let cond = {
+			isRequest: true,
+			param: "${requestPath}",
+			operator: "prefix",
+			value: ""
+		}
+		if (this.vCond != null && typeof (this.vCond.value) == "string") {
+			cond.value = this.vCond.value
 		}
 		return {
 			cond: cond
@@ -99,6 +109,31 @@ Vue.component("http-cond-url-prefix", {
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<input type="text" v-model="cond.value"/>
+	<p class="comment">URL前缀，通常以<code-label>/</code-label>开头，比如<code-label>/static</code-label>。</p>
+</div>`
+})
+
+Vue.component("http-cond-url-not-prefix", {
+	props: ["v-cond"],
+	data: function () {
+		let cond = {
+			isRequest: true,
+			param: "${requestPath}",
+			operator: "prefix",
+			value: "",
+			isReverse: true
+		}
+		if (this.vCond != null && typeof this.vCond.value == "string") {
+			cond.value = this.vCond.value
+		}
+		return {
+			cond: cond
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value"/>
+	<p class="comment">要排除的URL前缀，通常以<code-label>/</code-label>开头，比如<code-label>/static</code-label>。</p>
 </div>`
 })
 
@@ -106,22 +141,47 @@ Vue.component("http-cond-url-prefix", {
 Vue.component("http-cond-url-eq", {
 	props: ["v-cond"],
 	data: function () {
-		let cond = this.vCond
-		if (cond == null) {
-			cond = {
-				isRequest: true,
-				param: "${requestPath}",
-				operator: "eq",
-				value: ""
-			}
+		let cond = {
+			isRequest: true,
+			param: "${requestPath}",
+			operator: "eq",
+			value: ""
+		}
+		if (this.vCond != null && typeof this.vCond.value == "string") {
+			cond.value = this.vCond.value
 		}
 		return {
 			cond: cond
 		}
 	},
 	template: `<div>
-		<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<input type="text" v-model="cond.value"/>
+	<p class="comment">完整的URL路径，通常以<code-label>/</code-label>开头，比如<code-label>/static/ui.js</code-label>。</p>
+</div>`
+})
+
+Vue.component("http-cond-url-not-eq", {
+	props: ["v-cond"],
+	data: function () {
+		let cond = {
+			isRequest: true,
+			param: "${requestPath}",
+			operator: "eq",
+			value: "",
+			isReverse: true
+		}
+		if (this.vCond != null && typeof this.vCond.value == "string") {
+			cond.value = this.vCond.value
+		}
+		return {
+			cond: cond
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value"/>
+	<p class="comment">要排除的完整的URL路径，通常以<code-label>/</code-label>开头，比如<code-label>/static/ui.js</code-label>。</p>
 </div>`
 })
 
@@ -129,22 +189,23 @@ Vue.component("http-cond-url-eq", {
 Vue.component("http-cond-url-regexp", {
 	props: ["v-cond"],
 	data: function () {
-		let cond = this.vCond
-		if (cond == null) {
-			cond = {
-				isRequest: true,
-				param: "${requestPath}",
-				operator: "regexp",
-				value: ""
-			}
+		let cond = {
+			isRequest: true,
+			param: "${requestPath}",
+			operator: "regexp",
+			value: ""
+		}
+		if (this.vCond != null && typeof this.vCond.value == "string") {
+			cond.value = this.vCond.value
 		}
 		return {
 			cond: cond
 		}
 	},
 	template: `<div>
-		<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<input type="text" v-model="cond.value"/>
+	<p class="comment">匹配URL的正则表达式，比如<code-label>^/static/(.*).js$</code-label>。</p>
 </div>`
 })
 
@@ -152,22 +213,23 @@ Vue.component("http-cond-url-regexp", {
 Vue.component("http-cond-url-not-regexp", {
 	props: ["v-cond"],
 	data: function () {
-		let cond = this.vCond
-		if (cond == null) {
-			cond = {
-				isRequest: true,
-				param: "${requestPath}",
-				operator: "not regexp",
-				value: ""
-			}
+		let cond = {
+			isRequest: true,
+			param: "${requestPath}",
+			operator: "not regexp",
+			value: ""
+		}
+		if (this.vCond != null && typeof this.vCond.value == "string") {
+			cond.value = this.vCond.value
 		}
 		return {
 			cond: cond
 		}
 	},
 	template: `<div>
-		<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<input type="text" v-model="cond.value"/>
+	<p class="comment"><strong>不要</strong>匹配URL的正则表达式，意即只要匹配成功则排除此条件，比如<code-label>^/static/(.*).js$</code-label>。</p>
 </div>`
 })
 
@@ -175,14 +237,14 @@ Vue.component("http-cond-url-not-regexp", {
 Vue.component("http-cond-mime-type", {
 	props: ["v-cond"],
 	data: function () {
-		let cond = this.vCond
-		if (cond == null) {
-			cond = {
-				isRequest: false,
-				param: "${response.contentType}",
-				operator: "mime type",
-				value: "[]"
-			}
+		let cond = {
+			isRequest: false,
+			param: "${response.contentType}",
+			operator: "mime type",
+			value: "[]"
+		}
+		if (this.vCond != null && this.vCond.param == cond.param) {
+			cond.value = this.vCond.value
 		}
 		return {
 			cond: cond,
@@ -244,7 +306,9 @@ Vue.component("http-cond-mime-type", {
 			<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove"></i></a>
 		</div> 
 	</div>
-	<button class="ui button tiny" type="button" @click.prevent="addMimeType()">+添加MimeType</button>
+	<div style="margin-top: 1em">
+		<button class="ui button tiny" type="button" @click.prevent="addMimeType()">+添加MimeType</button>
+	</div>
 	<p class="comment">服务器返回的内容的MimeType，比如<span class="ui label tiny">text/html</span>、<span class="ui label tiny">image/*</span>等。</p>
 </div>`
 })

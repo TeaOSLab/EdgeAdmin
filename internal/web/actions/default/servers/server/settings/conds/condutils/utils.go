@@ -14,6 +14,7 @@ type CondJSComponent struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 	Component   string `json:"component"`
+	ParamsTitle string `json:"paramsTitle"`
 	IsRequest   bool   `json:"isRequest"`
 }
 

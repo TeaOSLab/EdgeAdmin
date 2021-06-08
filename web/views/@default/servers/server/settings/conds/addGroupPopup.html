@@ -1,7 +1,7 @@
 {$layout "layout_popup"}
 
-<h3>添加条件</h3>
-
+<h3 v-if="!isUpdating">添加条件分组</h3>
+<h3 v-if="isUpdating">修改条件分组</h3>
 <form method="post" class="ui form" data-tea-success="success" data-tea-action="$">
 	<input type="hidden" name="condGroupJSON" :value="JSON.stringify(group)"/>
 	<table class="ui table definition selectable">
@@ -22,21 +22,21 @@
 				<button class="ui button tiny" type="button" @click.prevent="addCond()">+</button>
 			</td>
 		</tr>
+        <tr>
+            <td>子条件之间关系</td>
+            <td>
+                <select class="ui dropdown auto-width" v-model="group.connector">
+                    <option value="and">和</option>
+                    <option value="or">或</option>
+                </select>
+                <p class="comment" v-if="group.connector == 'and'">必须满足所有条件才能成立。</p>
+                <p class="comment" v-if="group.connector == 'or'">只要满足其中一个条件即可成立。</p>
+            </td>
+        </tr>
 		<tr>
 			<td colspan="2"><more-options-indicator></more-options-indicator></td>
 		</tr>
 		<tbody v-show="moreOptionsVisible">
-			<tr>
-				<td>子条件之间关系</td>
-				<td>
-					<select class="ui dropdown auto-width" v-model="group.connector">
-						<option value="and">和</option>
-						<option value="or">或</option>
-					</select>
-					<p class="comment" v-if="group.connector == 'and'">必须满足所有条件才能成立。</p>
-					<p class="comment" v-if="group.connector == 'or'">只要满足其中一个条件即可成立。</p>
-				</td>
-			</tr>
 			<tr>
 				<td>补充说明</td>
 				<td>

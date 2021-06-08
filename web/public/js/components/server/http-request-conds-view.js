@@ -9,35 +9,53 @@ Vue.component("http-request-conds-view", {
 				groups: []
 			}
 		}
+
+		let that = this
+		conds.groups.forEach(function (group) {
+			group.conds.forEach(function (cond) {
+				cond.typeName = that.typeName(cond)
+			})
+		})
+
 		return {
 			initConds: conds,
-			components: window.REQUEST_COND_COMPONENTS
+			version: 0 // 为了让组件能及时更新加入此变量
 		}
 	},
 	computed: {
 		// 之所以使用computed，是因为需要动态更新
 		conds: function () {
 			return this.initConds
-		},
+		}
 	},
 	methods: {
 		typeName: function (cond) {
-			let c = this.components.$find(function (k, v) {
+			let c = window.REQUEST_COND_COMPONENTS.$find(function (k, v) {
 				return v.type == cond.type
 			})
 			if (c != null) {
 				return c.name;
 			}
 			return cond.param + " " + cond.operator
+		},
+		notifyChange: function () {
+			this.version++
+			let that = this
+			this.initConds.groups.forEach(function (group) {
+				group.conds.forEach(function (cond) {
+					cond.typeName = that.typeName(cond)
+				})
+			})
 		}
 	},
 	template: `<div>
+		<span v-if="version < 0">{{version}}</span>
 		<div v-if="conds.groups.length > 0">
 			<div v-for="(group, groupIndex) in conds.groups">
 				<var v-for="(cond, index) in group.conds" style="font-style: normal;display: inline-block; margin-bottom:0.5em">
 					<span class="ui label tiny">
 						<var v-if="cond.type.length == 0" style="font-style: normal">{{cond.param}} <var>{{cond.operator}}</var></var>
-						<var v-if="cond.type.length > 0" style="font-style: normal">{{typeName(cond)}}: </var>
+						<var v-if="cond.type.length > 0" style="font-style: normal">{{cond.typeName}}: </var>
 						{{cond.value}}
 					</span>
 					
