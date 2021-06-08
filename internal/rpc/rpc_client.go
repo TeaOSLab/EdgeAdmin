@@ -131,6 +131,10 @@ func (this *RPCClient) ServerHTTPFirewallDailyStatRPC() pb.ServerHTTPFirewallDai
 	return pb.NewServerHTTPFirewallDailyStatServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) ServerDailyStatRPC() pb.ServerDailyStatServiceClient {
+	return pb.NewServerDailyStatServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) ServerGroupRPC() pb.ServerGroupServiceClient {
 	return pb.NewServerGroupServiceClient(this.pickConn())
 }

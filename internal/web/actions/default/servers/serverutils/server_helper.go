@@ -159,9 +159,14 @@ func (this *ServerHelper) createLogMenu(secondMenuItem string, serverIdString st
 func (this *ServerHelper) createStatMenu(secondMenuItem string, serverIdString string, serverConfig *serverconfigs.ServerConfig) []maps.Map {
 	menuItems := []maps.Map{}
 	menuItems = append(menuItems, maps.Map{
-		"name":     "地域分布",
+		"name":     "流量统计",
 		"url":      "/servers/server/stat?serverId=" + serverIdString,
 		"isActive": secondMenuItem == "index",
+	})
+	menuItems = append(menuItems, maps.Map{
+		"name":     "地域分布",
+		"url":      "/servers/server/stat/regions?serverId=" + serverIdString,
+		"isActive": secondMenuItem == "region",
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "运营商",
