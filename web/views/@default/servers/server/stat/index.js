@@ -1,116 +1,195 @@
 Tea.context(function () {
-    this.$delay(function () {
-        let that = this
+	this.$delay(function () {
+		let that = this
 
-        let countryUnit = this.processMaxUnit(this.countryStats)
-        this.reloadChart("country-chart", "地区", this.countryStats, function (v) {
-            return v.country.name
-        }, function (args) {
-            return that.countryStats[args.dataIndex].country.name + ": " + teaweb.formatNumber(that.countryStats[args.dataIndex].rawCount)
-        }, countryUnit)
+		this.reloadRequestsChart("hourly-requests-chart", "请求数统计", this.hourlyStats, function (args) {
+			if (args.seriesIndex == 0) {
+				return that.hourlyStats[args.dataIndex].day + " " + that.hourlyStats[args.dataIndex].hour + " 请求数: " + teaweb.formatNumber(that.hourlyStats[args.dataIndex].countRequests)
+			}
+			if (args.seriesIndex == 1) {
+				let ratio = 0
+				if (that.hourlyStats[args.dataIndex].countRequests > 0) {
+					ratio = Math.round(that.hourlyStats[args.dataIndex].countCachedRequests * 10000 / that.hourlyStats[args.dataIndex].countRequests) / 100
+				}
+				return that.hourlyStats[args.dataIndex].day + " " + that.hourlyStats[args.dataIndex].hour + " 缓存请求数: " + teaweb.formatNumber(that.hourlyStats[args.dataIndex].countCachedRequests) + ", 命中率：" + ratio + "%"
+			}
+			return ""
+		})
+		this.reloadTrafficChart("hourly-traffic-chart", "流量统计", this.hourlyStats, function (args) {
+			if (args.seriesIndex == 0) {
+				return that.hourlyStats[args.dataIndex].day + " " + that.hourlyStats[args.dataIndex].hour + " 流量: " + teaweb.formatBytes(that.hourlyStats[args.dataIndex].bytes)
+			}
+			if (args.seriesIndex == 1) {
+				let ratio = 0
+				if (that.hourlyStats[args.dataIndex].bytes > 0) {
+					ratio = Math.round(that.hourlyStats[args.dataIndex].cachedBytes * 10000 / that.hourlyStats[args.dataIndex].bytes) / 100
+				}
+				return that.hourlyStats[args.dataIndex].day + " " + that.hourlyStats[args.dataIndex].hour + " 缓存流量: " + teaweb.formatBytes(that.hourlyStats[args.dataIndex].cachedBytes) + ", 命中率：" + ratio + "%"
+			}
+			return ""
+		})
+		window.addEventListener("resize", function () {
+			that.resizeChart("hourly-requests-chart")
+			that.resizeChart("hourly-traffic-chart")
+		})
+	})
 
-        let provinceUnit = this.processMaxUnit(this.provinceStats)
-        this.reloadChart("province-chart", "省市", this.provinceStats, function (v) {
-            return v.province.name
-        }, function (args) {
-            return that.provinceStats[args.dataIndex].country.name + ": " + that.provinceStats[args.dataIndex].province.name + " " + teaweb.formatNumber(that.provinceStats[args.dataIndex].rawCount)
-        }, provinceUnit)
+	this.reloadRequestsChart = function (chartId, name, stats, tooltipFunc) {
+		let chartBox = document.getElementById(chartId)
+		if (chartBox == null) {
+			return
+		}
 
-        let cityUnit = this.processMaxUnit(this.cityStats)
-        this.reloadChart("city-chart", "城市", this.cityStats, function (v) {
-            return v.city.name
-        }, function (args) {
-            return that.cityStats[args.dataIndex].country.name + ": " + that.cityStats[args.dataIndex].province.name + " " + that.cityStats[args.dataIndex].city.name + " " + teaweb.formatNumber(that.cityStats[args.dataIndex].rawCount)
-        }, cityUnit)
+		let axis = teaweb.countAxis(stats, function (v) {
+			return Math.max(v.countRequests, v.countCachedRequests)
+		})
 
-        window.addEventListener("resize", function () {
-            that.resizeChart("country-chart")
-            that.resizeChart("province-chart")
-            that.resizeChart("city-chart")
-        })
-    })
+		let chart = echarts.init(chartBox)
+		let option = {
+			xAxis: {
+				data: stats.map(function (v) {
+					return v.hour
+				}),
+				axisLabel: {
+					interval: 0
+				}
+			},
+			yAxis: {
+				axisLabel: {
+					formatter: function (value) {
+						return value + axis.unit
+					}
+				}
+			},
+			tooltip: {
+				show: true,
+				trigger: "item",
+				formatter: tooltipFunc
+			},
+			grid: {
+				left: 50,
+				top: 40,
+				right: 20,
+				bottom: 20
+			},
+			series: [
+				{
+					name: "请求数",
+					type: "line",
+					data: stats.map(function (v) {
+						return v.countRequests / axis.divider
+					}),
+					itemStyle: {
+						color: "#9DD3E8"
+					},
+					areaStyle: {
+						color: "#9DD3E8"
+					}
+				},
+				{
+					name: "缓存请求数",
+					type: "line",
+					data: stats.map(function (v) {
+						return v.countCachedRequests / axis.divider
+					}),
+					itemStyle: {
+						color: "#61A0A8"
+					},
+					areaStyle: {
+						color: "#61A0A8"
+					}
+				}
+			],
+			legend: {
+				data: ['请求数', '缓存请求数']
+			},
+			animation: true
+		}
+		chart.setOption(option)
+		chart.resize()
+	}
 
-    this.reloadChart = function (chartId, name, stats, xFunc, tooltipFunc, unit) {
-        let chartBox = document.getElementById(chartId)
-        if (chartBox == null) {
-            return
-        }
-        let chart = echarts.init(chartBox)
-        let option = {
-            xAxis: {
-                data: stats.map(xFunc),
-                axisLabel: {
-                    interval: 0
-                }
-            },
-            yAxis: {
-                axisLabel: {
-                    formatter: function (value) {
-                        return value + unit
-                    }
-                }
-            },
-            tooltip: {
-                show: true,
-                trigger: "item",
-                formatter: tooltipFunc
-            },
-            grid: {
-                left: 40,
-                top: 10,
-                right: 20,
-                bottom: 20
-            },
-            series: [
-                {
-                    name: name,
-                    type: "bar",
-                    data: stats.map(function (v) {
-                        return v.count;
-                    }),
-                    itemStyle: {
-                        color: "#9DD3E8"
-                    },
-                    barWidth: "20em"
-                }
-            ],
-            animation: true
-        }
-        chart.setOption(option)
-        chart.resize()
-    }
+	this.reloadTrafficChart = function (chartId, name, stats, tooltipFunc) {
+		let chartBox = document.getElementById(chartId)
+		if (chartBox == null) {
+			return
+		}
 
-    this.resizeChart = function (chartId) {
-        let chartBox = document.getElementById(chartId)
-        if (chartBox == null) {
-            return
-        }
-        let chart = echarts.init(chartBox)
-        chart.resize()
-    }
+		let axis = teaweb.bytesAxis(stats, function (v) {
+			return Math.max(v.bytes, v.cachedBytes)
+		})
 
-    this.processMaxUnit = function (stats) {
-        let max = stats.$map(function (k, v) {
-            return v.count
-        }).$max()
-        let divider = 0
-        let unit = ""
-        if (max >= 1000 * 1000 * 1000) {
-            unit = "B"
-            divider = 1000 * 1000 * 1000
-        } else if (max >= 1000 * 1000) {
-            unit = "M"
-            divider = 1000 * 1000
-        } else if (max >= 1000) {
-            unit = "K"
-            divider = 1000
-        }
-        stats.forEach(function (v) {
-            v.rawCount = v.count
-            if (divider > 0) {
-                v.count /= divider
-            }
-        })
-        return unit
-    }
+		let chart = echarts.init(chartBox)
+		let option = {
+			xAxis: {
+				data: stats.map(function (v) {
+					return v.hour
+				}),
+				axisLabel: {
+					interval: 0
+				}
+			},
+			yAxis: {
+				axisLabel: {
+					formatter: function (value) {
+						return value + axis.unit
+					}
+				}
+			},
+			tooltip: {
+				show: true,
+				trigger: "item",
+				formatter: tooltipFunc
+			},
+			grid: {
+				left: 50,
+				top: 40,
+				right: 20,
+				bottom: 20
+			},
+			series: [
+				{
+					name: "流量",
+					type: "line",
+					data: stats.map(function (v) {
+						return v.bytes / axis.divider
+					}),
+					itemStyle: {
+						color: "#9DD3E8"
+					},
+					areaStyle: {
+						color: "#9DD3E8"
+					}
+				},
+				{
+					name: "缓存流量",
+					type: "line",
+					data: stats.map(function (v) {
+						return v.cachedBytes / axis.divider
+					}),
+					itemStyle: {
+						color: "#61A0A8"
+					},
+					areaStyle: {
+						color: "#61A0A8"
+					}
+				}
+			],
+			legend: {
+				data: ['流量', '缓存流量']
+			},
+			animation: true
+		}
+		chart.setOption(option)
+		chart.resize()
+	}
+
+	this.resizeChart = function (chartId) {
+		let chartBox = document.getElementById(chartId)
+		if (chartBox == null) {
+			return
+		}
+		let chart = echarts.init(chartBox)
+		chart.resize()
+	}
 })
