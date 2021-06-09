@@ -10,7 +10,9 @@ Tea.context(function () {
 			afterURL: "",
 			matchPrefix: false,
 			matchRegexp: false,
-			keepRequestURI: false
+			keepRequestURI: false,
+			conds: null,
+			isOn: true
 		}
 	}
 
@@ -38,4 +40,8 @@ Tea.context(function () {
 			}
 		})
 	})
+
+	this.changeConds = function (conds) {
+		this.redirect.conds = conds
+	}
 })

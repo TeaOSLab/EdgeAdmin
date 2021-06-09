@@ -1,8 +1,10 @@
 package redirects
 
 import (
+	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 	"net/url"
@@ -30,8 +32,9 @@ func (this *CreatePopupAction) RunPost(params struct {
 	MatchPrefix    bool
 	MatchRegexp    bool
 	KeepRequestURI bool
-
-	Status int
+	Status         int
+	CondsJSON      []byte
+	IsOn           bool
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -80,6 +83,21 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Field("status", params.Status).
 		Gte(0, "请选择正确的跳转状态码")
 
+	// 校验匹配条件
+	var conds *shared.HTTPRequestCondsConfig
+	if len(params.CondsJSON) > 0 {
+		conds = &shared.HTTPRequestCondsConfig{}
+		err := json.Unmarshal(params.CondsJSON, conds)
+		if err != nil {
+			this.Fail("匹配条件校验失败：" + err.Error())
+		}
+
+		err = conds.Init()
+		if err != nil {
+			this.Fail("匹配条件校验失败：" + err.Error())
+		}
+	}
+
 	this.Data["redirect"] = maps.Map{
 		"status":         params.Status,
 		"beforeURL":      params.BeforeURL,
@@ -87,7 +105,8 @@ func (this *CreatePopupAction) RunPost(params struct {
 		"matchPrefix":    params.MatchPrefix,
 		"matchRegexp":    params.MatchRegexp,
 		"keepRequestURI": params.KeepRequestURI,
-		"isOn":           true,
+		"conds":          conds,
+		"isOn":           params.IsOn,
 	}
 
 	this.Success()

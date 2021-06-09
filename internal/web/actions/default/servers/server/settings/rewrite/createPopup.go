@@ -6,6 +6,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/types"
 	"regexp"
@@ -37,6 +38,8 @@ func (this *CreatePopupAction) RunPost(params struct {
 	IsBreak        bool
 	IsOn           bool
 
+	CondsJSON []byte
+
 	Must *actions.Must
 }) {
 	params.Must.
@@ -53,6 +56,20 @@ func (this *CreatePopupAction) RunPost(params struct {
 	params.Must.
 		Field("replace", params.Replace).
 		Require("请输入目标URL")
+
+	// 校验匹配条件
+	if len(params.CondsJSON) > 0 {
+		conds := &shared.HTTPRequestCondsConfig{}
+		err := json.Unmarshal(params.CondsJSON, conds)
+		if err != nil {
+			this.Fail("匹配条件校验失败：" + err.Error())
+		}
+
+		err = conds.Init()
+		if err != nil {
+			this.Fail("匹配条件校验失败：" + err.Error())
+		}
+	}
 
 	// web配置
 	webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithId(this.AdminContext(), params.WebId)
@@ -71,6 +88,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		WithQuery:      params.WithQuery,
 		IsBreak:        params.IsBreak,
 		IsOn:           params.IsOn,
+		CondsJSON:      params.CondsJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)

@@ -4,7 +4,9 @@ Tea.context(function () {
 		teaweb.popup("/servers/server/settings/rewrite/createPopup?webId=" + this.webId, {
 			height: "26em",
 			callback: function () {
-				window.location.reload()
+				teaweb.success("保存成功", function () {
+					teaweb.reload()
+				})
 			}
 		})
 	}

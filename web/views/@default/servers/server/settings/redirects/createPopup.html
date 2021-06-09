@@ -52,6 +52,14 @@
                 </select>
             </td>
         </tr>
+        <tr>
+            <td>匹配条件</td>
+            <td><http-request-conds-box :v-conds="redirect.conds" @change="changeConds"></http-request-conds-box></td>
+        </tr>
+        <tr>
+            <td>是否启用</td>
+            <td><checkbox name="isOn" value="1" v-model="redirect.isOn"></checkbox></td>
+        </tr>
     </table>
 
     <submit-btn></submit-btn>

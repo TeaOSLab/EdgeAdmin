@@ -1,9 +1,11 @@
 package rewrite
 
 import (
+	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/types"
 	"regexp"
@@ -56,6 +58,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	WithQuery      bool
 	IsBreak        bool
 	IsOn           bool
+	CondsJSON      []byte
 
 	Must *actions.Must
 }) {
@@ -76,6 +79,20 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		Field("replace", params.Replace).
 		Require("请输入目标URL")
 
+	// 校验匹配条件
+	if len(params.CondsJSON) > 0 {
+		conds := &shared.HTTPRequestCondsConfig{}
+		err := json.Unmarshal(params.CondsJSON, conds)
+		if err != nil {
+			this.Fail("匹配条件校验失败：" + err.Error())
+		}
+
+		err = conds.Init()
+		if err != nil {
+			this.Fail("匹配条件校验失败：" + err.Error())
+		}
+	}
+
 	// 修改
 	_, err := this.RPC().HTTPRewriteRuleRPC().UpdateHTTPRewriteRule(this.AdminContext(), &pb.UpdateHTTPRewriteRuleRequest{
 		RewriteRuleId:  params.RewriteRuleId,
@@ -87,6 +104,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		WithQuery:      params.WithQuery,
 		IsBreak:        params.IsBreak,
 		IsOn:           params.IsOn,
+		CondsJSON:      params.CondsJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)
