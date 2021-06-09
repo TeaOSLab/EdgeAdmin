@@ -11,11 +11,7 @@ Vue.component("http-cache-refs-config-box", {
 					}
 				})
 			})
-			that.refs = newRefs
-
-			if (that.vCacheConfig != null) {
-				that.vCacheConfig.cacheRefs = newRefs
-			}
+			that.updateRefs(newRefs)
 		})
 	},
 	data: function () {
@@ -51,9 +47,32 @@ Vue.component("http-cache-refs-config-box", {
 				width: width + "px",
 				height: height + "px",
 				callback: function (resp) {
+					let newRef = resp.data.cacheRef
+					if (newRef.conds == null) {
+						return
+					}
+
 					that.id++
-					resp.data.cacheRef.id = that.id
-					that.refs.push(resp.data.cacheRef)
+					newRef.id = that.id
+
+					if (newRef.isReverse) {
+						let newRefs = []
+						let isAdded = false
+						that.refs.forEach(function (v) {
+							if (!v.isReverse && !isAdded) {
+								newRefs.push(newRef)
+								isAdded = true
+							}
+							newRefs.push(v)
+						})
+						if (!isAdded) {
+							newRefs.push(newRef)
+						}
+
+						that.updateRefs(newRefs)
+					} else {
+						that.refs.push(newRef)
+					}
 				}
 			})
 		},
@@ -86,6 +105,12 @@ Vue.component("http-cache-refs-config-box", {
 			teaweb.confirm("确定要删除此缓存设置吗？", function () {
 				that.refs.$remove(index)
 			})
+		},
+		updateRefs: function (newRefs) {
+			this.refs = newRefs
+			if (this.vCacheConfig != null) {
+				this.vCacheConfig.cacheRefs = newRefs
+			}
 		},
 		timeUnitName: function (unit) {
 			switch (unit) {
