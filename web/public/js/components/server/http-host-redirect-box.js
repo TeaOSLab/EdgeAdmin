@@ -91,7 +91,6 @@ Vue.component("http-host-redirect-box", {
 	</first-menu>
 	<div class="margin"></div>
 
-	<!-- TODO 将来支持排序，并支持isOn切换 -->
 	<p class="comment" v-if="redirects.length == 0">暂时还没有URL跳转规则。</p>
 	<div v-show="redirects.length > 0">
 		<table class="ui table celled selectable" id="sortable-table">
