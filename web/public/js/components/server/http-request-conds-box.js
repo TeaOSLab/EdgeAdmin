@@ -67,8 +67,8 @@ Vue.component("http-request-conds-box", {
 					<td style="background: white;" :style="{'border-bottom':(groupIndex < conds.groups.length-1) ? '1px solid rgba(34,36,38,.15)':''}">
 						<var v-for="(cond, index) in group.conds" style="font-style: normal;display: inline-block; margin-bottom:0.5em">
 							<span class="ui label tiny">
-								<var v-if="cond.type.length == 0" style="font-style: normal">{{cond.param}} <var>{{cond.operator}}</var></var>
-								<var v-if="cond.type.length > 0" style="font-style: normal">{{typeName(cond)}}: </var>
+								<var v-if="cond.type.length == 0 || cond.type == 'params'" style="font-style: normal">{{cond.param}} <var>{{cond.operator}}</var></var>
+								<var v-if="cond.type.length > 0 && cond.type != 'params'" style="font-style: normal">{{typeName(cond)}}: </var>
 								{{cond.value}}
 							</span>
 							

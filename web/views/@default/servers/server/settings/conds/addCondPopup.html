@@ -15,14 +15,19 @@
 				{$ end}
 			</td>
 		</tr>
-		<tr>
+		<tr v-if="condType != 'params'">
 			<td>{{paramsTitle}}</td>
 			<td>
 				{$ range .components}
-					<{$ .Component} v-if="condType == '{$ .Type}'" :v-cond="cond"></{$ .Component}>
+                    {$if not (eq .Type "params") }
+					    <{$ .Component} v-if="condType == '{$ .Type}'" :v-cond="cond"></{$ .Component}>
+                    {$end}
 				{$ end}
 			</td>
 		</tr>
+
+        <!-- 变量相关 -->
+        <tbody is="http-cond-params" :v-cond="cond" v-if="condType == 'params'"></tbody>
 	</table>
 	<submit-btn>确定</submit-btn>
 </form>

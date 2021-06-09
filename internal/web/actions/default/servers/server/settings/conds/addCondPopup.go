@@ -30,7 +30,7 @@ func (this *AddCondPopupAction) RunPost(params struct {
 	condConfig := &shared.HTTPRequestCond{}
 	err := json.Unmarshal(params.CondJSON, condConfig)
 	if err != nil {
-		this.Fail("解析条件设置时发生了错误：" + err.Error())
+		this.Fail("解析条件设置时发生了错误：" + err.Error() + ", JSON: " + string(params.CondJSON))
 	}
 	err = condConfig.Init()
 	if err != nil {

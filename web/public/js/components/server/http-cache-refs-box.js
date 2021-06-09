@@ -40,7 +40,6 @@ Vue.component("http-cache-refs-box", {
 					<th>条件</th>
 					<th class="two">分组关系</th>
 					<th class="width10">缓存时间</th>
-					<th class="two op">操作</th>
 				</tr>
 				<tr v-for="(cacheRef, index) in refs">
 					<td :class="{'color-border': cacheRef.conds.connector == 'and'}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
@@ -53,10 +52,6 @@ Vue.component("http-cache-refs-box", {
 					<td>
 						<span v-if="!cacheRef.isReverse">{{cacheRef.life.count}} {{timeUnitName(cacheRef.life.unit)}}</span>
 						<span v-else class="red">不缓存</span>
-					</td>
-					<td>
-						<a href="" @click.prevent="updateRef(index, cacheRef)">修改</a> &nbsp;
-						<a href="" @click.prevent="removeRef(index)">删除</a>
 					</td>
 				</tr>
 			</thead>

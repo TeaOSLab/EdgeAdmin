@@ -32,6 +32,14 @@
     "isRequest": true
   },
   {
+    "type": "params",
+    "name": "参数匹配",
+    "description": "根据参数值进行匹配",
+    "component": "http-cond-params",
+    "paramsTitle": "参数配置",
+    "isRequest": true
+  },
+  {
     "type": "url-not-prefix",
     "name": "排除：URL前缀",
     "description": "根据URL中的文件路径前缀进行过滤",

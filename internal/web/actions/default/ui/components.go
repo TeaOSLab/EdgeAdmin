@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/conds/condutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/files"
@@ -52,10 +53,30 @@ func (this *ComponentsAction) RunGet(params struct{}) {
 	// 条件组件
 	typesJSON, err := json.Marshal(condutils.ReadAllAvailableCondTypes())
 	if err != nil {
-		logs.Println("ComponentsAction: " + err.Error())
+		logs.Println("ComponentsAction marshal request cond types failed: " + err.Error())
 	} else {
 		buffer.WriteString("window.REQUEST_COND_COMPONENTS = ")
 		buffer.Write(typesJSON)
+		buffer.Write([]byte{'\n', '\n'})
+	}
+
+	// 条件操作符
+	requestOperatorsJSON, err := json.Marshal(shared.AllRequestOperators())
+	if err != nil {
+		logs.Println("ComponentsAction marshal request operators failed: " + err.Error())
+	} else {
+		buffer.WriteString("window.REQUEST_COND_OPERATORS = ")
+		buffer.Write(requestOperatorsJSON)
+		buffer.Write([]byte{'\n', '\n'})
+	}
+
+	// 请求变量
+	requestVariablesJSON, err := json.Marshal(shared.DefaultRequestVariables())
+	if err != nil {
+		logs.Println("ComponentsAction marshal request variables failed: " + err.Error())
+	} else {
+		buffer.WriteString("window.REQUEST_VARIABLES = ")
+		buffer.Write(requestVariablesJSON)
 		buffer.Write([]byte{'\n', '\n'})
 	}
 
