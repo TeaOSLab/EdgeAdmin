@@ -1,9 +1,11 @@
 package location
 
 import (
+	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
 	"regexp"
 	"strings"
@@ -28,6 +30,7 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["type"] = locationConfig.PatternType()
 	this.Data["isReverse"] = locationConfig.IsReverse()
 	this.Data["isCaseInsensitive"] = locationConfig.IsCaseInsensitive()
+	this.Data["conds"] = locationConfig.Conds
 
 	this.Show()
 }
@@ -44,6 +47,8 @@ func (this *IndexAction) RunPost(params struct {
 	IsCaseInsensitive bool
 	IsReverse         bool
 	IsOn              bool
+
+	CondsJSON []byte
 
 	Must *actions.Must
 }) {
@@ -67,6 +72,20 @@ func (this *IndexAction) RunPost(params struct {
 		params.Pattern = "/" + strings.TrimLeft(params.Pattern, "/")
 	}
 
+	// 校验匹配条件
+	if len(params.CondsJSON) > 0 {
+		conds := &shared.HTTPRequestCondsConfig{}
+		err := json.Unmarshal(params.CondsJSON, conds)
+		if err != nil {
+			this.Fail("匹配条件校验失败：" + err.Error())
+		}
+
+		err = conds.Init()
+		if err != nil {
+			this.Fail("匹配条件校验失败：" + err.Error())
+		}
+	}
+
 	location := &serverconfigs.HTTPLocationConfig{}
 	location.SetPattern(params.Pattern, params.PatternType, params.IsCaseInsensitive, params.IsReverse)
 	resultPattern := location.Pattern
@@ -78,6 +97,7 @@ func (this *IndexAction) RunPost(params struct {
 		Pattern:     resultPattern,
 		IsBreak:     params.IsBreak,
 		IsOn:        params.IsOn,
+		CondsJSON:   params.CondsJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)

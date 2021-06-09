@@ -29,6 +29,10 @@
 				<p class="comment">隐式表示不在客户端显示重写后的URL；显式表示在客户端跳转URL，将会显示重写后的URL。</p>
 			</td>
 		</tr>
+        <tr>
+            <td>匹配条件</td>
+            <td><http-request-conds-box :v-conds="rewriteRule.conds"></http-request-conds-box></td>
+        </tr>
 		<tr>
 			<td colspan="2"><more-options-indicator></more-options-indicator></td>
 		</tr>

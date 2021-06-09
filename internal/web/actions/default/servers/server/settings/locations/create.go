@@ -6,6 +6,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
 	"regexp"
 	"strings"
@@ -48,6 +49,7 @@ func (this *CreateAction) RunPost(params struct {
 	IsBreak           bool
 	IsCaseInsensitive bool
 	IsReverse         bool
+	CondsJSON         []byte
 
 	Must *actions.Must
 }) {
@@ -60,6 +62,20 @@ func (this *CreateAction) RunPost(params struct {
 		_, err := regexp.Compile(params.Pattern)
 		if err != nil {
 			this.Fail("正则表达式校验失败：" + err.Error())
+		}
+	}
+
+	// 校验匹配条件
+	if len(params.CondsJSON) > 0 {
+		conds := &shared.HTTPRequestCondsConfig{}
+		err := json.Unmarshal(params.CondsJSON, conds)
+		if err != nil {
+			this.Fail("匹配条件校验失败：" + err.Error())
+		}
+
+		err = conds.Init()
+		if err != nil {
+			this.Fail("匹配条件校验失败：" + err.Error())
 		}
 	}
 
@@ -79,6 +95,7 @@ func (this *CreateAction) RunPost(params struct {
 		Description: params.Description,
 		Pattern:     resultPattern,
 		IsBreak:     params.IsBreak,
+		CondsJSON:   params.CondsJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)
