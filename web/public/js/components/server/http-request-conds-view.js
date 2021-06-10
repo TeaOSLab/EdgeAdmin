@@ -63,6 +63,9 @@ Vue.component("http-request-conds-view", {
 					<var v-if="index < group.conds.length - 1"> {{group.connector}} &nbsp;</var>
 				</var>
 				<div class="ui divider" v-if="groupIndex != conds.groups.length - 1" style="margin-top:0.3em;margin-bottom:0.5em"></div>
+				<div>
+					<span class="ui label tiny olive" v-if="group.description != null && group.description.length > 0">{{group.description}}</span>
+				</div>
 			</div>	
 		</div>
 	</div>	
