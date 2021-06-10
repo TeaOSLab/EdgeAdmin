@@ -28,24 +28,24 @@
             <tr>
                 <td class="color-border">文件目录最大容量</td>
                 <td>
-                    <size-capacity-box :v-name="'capacityJSON'" :v-count="128" :v-unit="'gb'"></size-capacity-box>
+                    <size-capacity-box :v-name="'capacityJSON'" :v-count="128" :v-unit="'gb'" :key="'capacityJSON1'"></size-capacity-box>
                     <p class="comment">作为二级缓存的文件目录允许缓存的最大容量，如果为0表示没有限制。</p>
                 </td>
             </tr>
             <tr>
                 <td class="color-border">内存最大容量</td>
                 <td>
-                    <size-capacity-box :v-name="'fileMemoryCapacityJSON'" :v-count="0" :v-unit="'gb'"></size-capacity-box>
+                   <size-capacity-box :v-name="'fileMemoryCapacityJSON'" :v-count="0" :v-unit="'gb'" :key="'fileMemoryCapacityJSON'"></size-capacity-box>
                     <p class="comment">作为一级缓存的内存最大容量，如果为0表示不使用内存作为一级缓存。</p>
                 </td>
             </tr>
 		</tbody>
 
-        <tbody v-if="policyType != 'file'">
+        <tbody v-if="policyType == 'memory'">
             <tr>
                 <td>内存最大容量</td>
                 <td>
-                    <size-capacity-box :v-name="'capacityJSON'" :v-count="0" :v-unit="'gb'"></size-capacity-box>
+                    <size-capacity-box :key="'a'" :v-name="'capacityJSON'" :v-count="2" :v-unit="'gb'" :key="'capacityJSON2'"></size-capacity-box>
                     <p class="comment">允许缓存的最大容量，如果为0表示没有限制。</p>
                 </td>
             </tr>
@@ -58,7 +58,7 @@
 			<tr>
 				<td>最大内容长度</td>
 				<td>
-					<size-capacity-box :v-name="'maxSizeJSON'" :v-count="256" :v-unit="'mb'"></size-capacity-box>
+					<size-capacity-box :v-name="'maxSizeJSON'" :v-count="256" :v-unit="'mb'" :key="'maxSizeJSON'"></size-capacity-box>
 					<p class="comment">允许缓存的最大内容长度，如果为0表示没有限制。</p>
 				</td>
 			</tr>
