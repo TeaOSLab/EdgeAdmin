@@ -47,6 +47,10 @@ func (this *ValidateDbAction) RunPost(params struct {
 		this.Fail("数据库信息错误：" + err.Error())
 	}
 
+	defer func() {
+		_ = db.Close()
+	}()
+
 	err = db.Raw().Ping()
 	if err != nil {
 		// 是否是数据库不存在
@@ -62,8 +66,22 @@ func (this *ValidateDbAction) RunPost(params struct {
 				this.Fail("尝试创建数据库失败：" + err.Error())
 			}
 		} else {
+			if strings.Contains(err.Error(), "Error 1044:") {
+				this.Fail("无法连接到数据库，权限检查失败：" + err.Error())
+			}
 			this.Fail("无法连接到数据库，请检查配置：" + err.Error())
 		}
+	}
+
+	// 检查权限
+	_, err = db.Exec("CREATE TABLE IF NOT EXISTS `edgeTest` ( `id` int )")
+	if err != nil {
+		this.Fail("当前连接的用户无法创建新表，请检查CREATE权限设置：" + err.Error())
+	}
+
+	_, err = db.Exec("ALTER TABLE `edgeTest` CHANGE `id` `id` int")
+	if err != nil {
+		this.Fail("当前连接的用户无法修改表结构，请检查ALTER权限设置：" + err.Error())
 	}
 
 	// 检查数据库版本

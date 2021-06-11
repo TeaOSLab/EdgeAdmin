@@ -59,11 +59,19 @@ func (this *ValidateApiAction) RunPost(params struct {
 			this.FailField("newPort", "端口号不能大于65534")
 		}
 
-		conn, err := net.Dial("tcp", "127.0.0.1:"+params.NewPort)
-		if err == nil {
-			_ = conn.Close()
-			this.FailField("newPort", "此端口已经被别的服务占用，请换一个")
+		if net.ParseIP(params.NewHost) == nil {
+			this.FailField("newHost", "请输入正确的节点主机地址")
 		}
+
+		listener, err := net.Listen("tcp", params.NewHost+":"+params.NewPort)
+		if err != nil {
+			if strings.Contains(err.Error(), "in use") {
+				this.FailField("newPort", "端口 \""+params.NewPort+"\" 已经被别的服务占用，请关闭正在使用此端口的其他应用程序，或者使用另外一个端口")
+			} else {
+				this.FailField("newHost", "无法正确绑定端口地址，请检查主机地址："+err.Error())
+			}
+		}
+		_ = listener.Close()
 
 		params.Must.
 			Field("newHost", params.NewHost).
