@@ -23,7 +23,7 @@ func (this *CreateRulePopupAction) RunGet(params struct {
 	// check points
 	checkpointList := []maps.Map{}
 	for _, checkpoint := range firewallconfigs.AllCheckpoints {
-		if (params.Type == "inbound" && checkpoint.IsRequest) || (params.Type == "outbound" && !checkpoint.IsRequest) {
+		if (params.Type == "inbound" && checkpoint.IsRequest) || params.Type == "outbound" {
 			checkpointList = append(checkpointList, maps.Map{
 				"name":        checkpoint.Name,
 				"prefix":      checkpoint.Prefix,
