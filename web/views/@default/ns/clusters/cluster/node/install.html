@@ -6,11 +6,34 @@
 <div v-if="node.isInstalled">
     <div class="ui message green">当前节点为已安装状态。</div>
     <a href="" @click.prevent="updateNodeIsInstalled(false)">[修改为未安装状态]</a>
+
+    <h4>配置文件</h4>
+    <table class="ui table definition selectable">
+        <tr>
+            <td>配置文件<em>（configs/api.yaml）</em><br/>
+                <em><download-link :v-element="'rpc-code'" :v-file="'api.yaml'">[下载]</download-link ></em></td>
+            <td>
+                <source-code-box id="rpc-code" type="text/yaml">rpc:
+    endpoints: [ {{apiEndpoints}} ]
+nodeId: "{{node.uniqueId}}"
+secret: "{{node.secret}}"</source-code-box>
+            </td>
+        </tr>
+        <tr>
+            <td class="title">安装目录</td>
+            <td>
+                <div v-if="node.installDir.length == 0">使用集群设置<span
+                        v-if="node.cluster != null && node.cluster.installDir.length > 0">（{{node.cluster.installDir}}）</span>
+                </div>
+                <span v-else>{{node.installDir}}</span>
+            </td>
+        </tr>
+    </table>
 </div>
 
 <!-- 未安装 -->
 <div v-if="!node.isInstalled">
-    <h3>方法1：通过SSH自动安装</h3>
+    <h4>方法1：通过SSH自动安装</h4>
 
     <div v-if="installStatus != null && (installStatus.isRunning || installStatus.isFinished)"
          class="ui segment installing-box">
@@ -27,14 +50,14 @@
         <button class="ui button small" type="button" @click.prevent="install()">开始安装</button>
     </div>
 
-    <h3>方法2：手动安装</h3>
+    <h4>方法2：手动安装</h4>
     <table class="ui table definition selectable">
         <tr>
             <td>配置文件<em>（configs/api.yaml）</em><br/>
             <em><download-link :v-element="'rpc-code'" :v-file="'api.yaml'">[下载]</download-link ></em></td>
             <td>
 					<source-code-box id="rpc-code" type="text/yaml">rpc:
-  endpoints: [ {{apiEndpoints}} ]
+    endpoints: [ {{apiEndpoints}} ]
 nodeId: "{{node.uniqueId}}"
 secret: "{{node.secret}}"</source-code-box>
             </td>

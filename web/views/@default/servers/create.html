@@ -47,7 +47,7 @@
         <!-- 证书 -->
         <tbody v-if="tlsProtocolName.length > 0">
             <tr>
-                <td>{{tlsProtocolName}}证书</td>
+                <td>{{tlsProtocolName.toUpperCase()}}证书</td>
                 <td>
                     <ssl-certs-box></ssl-certs-box>
                 </td>
