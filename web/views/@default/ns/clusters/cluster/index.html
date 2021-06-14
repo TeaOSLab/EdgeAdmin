@@ -28,7 +28,11 @@
 </form>
 
 <div v-if="countAll == 0">
-   <not-found-box message="当前集群下还没有节点，至少添加一个节点后才能提供服务。"></not-found-box>
+   <not-found-box message="当前集群下还没有节点，至少添加一个节点后才能提供服务。">
+       <div style="margin-top: 0.5em">
+           <a :href="'/ns/clusters/cluster/createNode?clusterId=' + clusterId">[创建节点]</a>
+       </div>
+   </not-found-box>
 </div>
 <div v-if="countAll > 0">
     <p class="comment" v-if="nodes.length == 0">暂时还没有节点。</p>
@@ -48,7 +52,7 @@
 	</tr>
 	</thead>
 	<tr v-for="node in nodes">
-		<td>{{node.name}}</td>
+        <td><keyword :v-word="keyword">{{node.name}}</keyword></td>
 		<td>
 			<span v-if="node.ipAddresses.length == 0" class="disabled">-</span>
 			<div v-else class="address-box">
@@ -80,8 +84,7 @@
 			</div>
 			<div v-else-if="node.isInstalled">
 				<div v-if="node.status.isActive">
-					<span v-if="!node.isSynced" class="red">同步中</span>
-					<span v-else class="green">运行中</span>
+					<span class="green">运行中</span>
 				</div>
 				<span v-else-if="node.status.updatedAt > 0" class="red">已断开</span>
 				<span v-else-if="node.status.updatedAt == 0" class="red">未连接</span>
