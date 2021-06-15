@@ -310,7 +310,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"name":     "HTTP Header",
 			"url":      "/servers/server/settings/headers?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "header",
-			"isOn":     serverConfig.Web != nil && ((serverConfig.Web.RequestHeaderPolicyRef != nil && serverConfig.Web.RequestHeaderPolicyRef.IsOn) || (serverConfig.Web.ResponseHeaderPolicyRef != nil && serverConfig.Web.ResponseHeaderPolicyRef.IsOn)),
+			"isOn":     this.hasHTTPHeaders(serverConfig.Web),
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "Websocket",
@@ -377,4 +377,22 @@ func (this *ServerHelper) createDeleteMenu(secondMenuItem string, serverIdString
 		"isActive": secondMenuItem == "index",
 	})
 	return menuItems
+}
+
+// 检查是否已设置Header
+func (this *ServerHelper) hasHTTPHeaders(web *serverconfigs.HTTPWebConfig) bool {
+	if web == nil {
+		return false
+	}
+	if web.RequestHeaderPolicyRef != nil {
+		if web.RequestHeaderPolicyRef.IsOn && web.RequestHeaderPolicy != nil && !web.RequestHeaderPolicy.IsEmpty() {
+			return true
+		}
+	}
+	if web.ResponseHeaderPolicyRef != nil {
+		if web.ResponseHeaderPolicyRef.IsOn && web.ResponseHeaderPolicy != nil && !web.ResponseHeaderPolicy.IsEmpty() {
+			return true
+		}
+	}
+	return false
 }
