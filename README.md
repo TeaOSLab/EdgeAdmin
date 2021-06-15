@@ -9,7 +9,8 @@
 * `高扩展性` - 可以自由扩展新的节点，支持亿级数据
 
 ## 文档
-[点这里查看文档](http://edge.teaos.cn/docs)
+* [新手指南](https://edge.teaos.cn/docs/QuickStart/Index.md)
+* [文档](http://edge.teaos.cn/docs)
 
 ## 架构
 ![架构](doc/architect-zh.jpg)
