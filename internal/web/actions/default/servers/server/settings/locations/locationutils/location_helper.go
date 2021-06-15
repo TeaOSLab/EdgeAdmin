@@ -141,7 +141,7 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"name":     "HTTP Header",
 		"url":      "/servers/server/settings/locations/headers?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "header",
-		"isOn":     locationConfig != nil && locationConfig.Web != nil && ((locationConfig.Web.RequestHeaderPolicyRef != nil && locationConfig.Web.RequestHeaderPolicyRef.IsPrior) || (locationConfig.Web.ResponseHeaderPolicyRef != nil && locationConfig.Web.ResponseHeaderPolicyRef.IsPrior)),
+		"isOn":     locationConfig != nil && this.hasHTTPHeaders(locationConfig.Web),
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "Websocket",
@@ -157,4 +157,22 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 	})
 
 	return menuItems
+}
+
+// 检查是否已设置Header
+func (this *LocationHelper) hasHTTPHeaders(web *serverconfigs.HTTPWebConfig) bool {
+	if web == nil {
+		return false
+	}
+	if web.RequestHeaderPolicyRef != nil {
+		if web.RequestHeaderPolicyRef.IsOn && web.RequestHeaderPolicy != nil && !web.RequestHeaderPolicy.IsEmpty() {
+			return true
+		}
+	}
+	if web.ResponseHeaderPolicyRef != nil {
+		if web.ResponseHeaderPolicyRef.IsOn && web.ResponseHeaderPolicy != nil && !web.ResponseHeaderPolicy.IsEmpty() {
+			return true
+		}
+	}
+	return false
 }
