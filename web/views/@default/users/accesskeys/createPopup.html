@@ -1,0 +1,20 @@
+{$layout "layout_popup"}
+
+<h3>创建新AccessKey</h3>
+
+<form class="ui form" method="post" data-tea-action="$" data-tea-success="success">
+    <csrf-token></csrf-token>
+    <input type="hidden" name="userId" :value="userId"/>
+
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">备注 *</td>
+            <td>
+                <textarea rows="2" name="description" maxlength="100" ref="focus"></textarea>
+                <p class="comment">描述AccessKey的用途等。</p>
+            </td>
+        </tr>
+    </table>
+
+    <submit-btn></submit-btn>
+</form>

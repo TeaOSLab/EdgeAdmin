@@ -336,6 +336,10 @@ func (this *RPCClient) UserBillRPC() pb.UserBillServiceClient {
 	return pb.NewUserBillServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) UserAccessKeyRPC() pb.UserAccessKeyServiceClient {
+	return pb.NewUserAccessKeyServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) LoginRPC() pb.LoginServiceClient {
 	return pb.NewLoginServiceClient(this.pickConn())
 }
