@@ -2,6 +2,7 @@ package access
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 )
 
 type IndexAction struct {
@@ -16,7 +17,14 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ServerId int64
 }) {
-	// TODO
+	webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithServerId(this.AdminContext(), params.ServerId)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	this.Data["webId"] = webConfig.Id
+	this.Data["authConfig"] = webConfig.Auth
 
 	this.Show()
 }

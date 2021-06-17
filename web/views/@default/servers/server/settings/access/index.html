@@ -3,5 +3,8 @@
 {$template "/left_menu"}
 
 <div class="right-box">
-	<p class="ui message">此功能暂未开放，敬请期待。</p>
+    <form class="ui form" data-tea-action="$" data-tea-success="success">
+        <http-auth-config-box :v-auth-config="authConfig"></http-auth-config-box>
+        <submit-btn></submit-btn>
+    </form>
 </div>
