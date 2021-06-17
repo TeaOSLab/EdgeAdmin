@@ -191,7 +191,7 @@ func (this *InstallAction) RunPost(params struct {
 				Username: adminMap.GetString("username"),
 				Password: adminMap.GetString("password"),
 			})
-			// 这里我们尝试多次是为了当代API节点启动完毕
+			// 这里我们尝试多次是为了等待API节点启动完毕
 			if err != nil {
 				time.Sleep(1 * time.Second)
 			}

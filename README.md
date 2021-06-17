@@ -10,7 +10,8 @@
 
 ## 文档
 * [新手指南](https://edge.teaos.cn/docs/QuickStart/Index.md)
-* [文档](http://edge.teaos.cn/docs)
+* [完整文档](https://edge.teaos.cn/docs)
+* [开发者指南](https://edge.teaos.cn/docs/Developer/Build.md)
 
 ## 架构
 ![架构](doc/architect-zh.jpg)
