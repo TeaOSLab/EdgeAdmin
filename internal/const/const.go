@@ -1,7 +1,7 @@
 package teaconst
 
 const (
-	Version = "0.2.1"
+	Version = "0.2.2"
 
 	ProductName   = "Edge Admin"
 	ProcessName   = "edge-admin"
