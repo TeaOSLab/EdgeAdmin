@@ -1,8 +1,12 @@
 Tea.context(function () {
 	this.success = NotifyPopup
 
-	this.type = ""
+	this.type = this.policy.type
 	this.authDescription = ""
+
+	this.$delay(function () {
+		this.changeType()
+	})
 
 	this.changeType = function () {
 		let that = this
@@ -10,6 +14,7 @@ Tea.context(function () {
 			return v.code == that.type
 		})
 		if (authType != null) {
+			this.policy.typeName = authType.name
 			this.authDescription = authType.description
 		} else {
 			this.authDescription = ""
@@ -28,5 +33,5 @@ Tea.context(function () {
 	/**
 	 * 子请求
 	 */
-	this.subRequestFollowRequest = 1
+	this.subRequestFollowRequest = (this.policy.params.method != null && this.policy.params.method.length > 0) ? 0 : 1
 })
