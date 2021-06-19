@@ -100,12 +100,13 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"name":     "缓存",
 		"url":      "/servers/server/settings/locations/cache?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "cache",
-		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.Cache != nil && locationConfig.Web.Cache.IsOn && len(locationConfig.Web.Cache.CacheRefs) > 0,
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.Cache != nil && locationConfig.Web.Cache.IsPrior && locationConfig.Web.Cache.IsOn && len(locationConfig.Web.Cache.CacheRefs) > 0,
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "访问控制",
 		"url":      "/servers/server/settings/locations/access?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "access",
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.Auth != nil && locationConfig.Web.Auth.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "字符编码",
