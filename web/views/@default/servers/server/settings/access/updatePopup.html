@@ -1,23 +1,21 @@
 {$layout "layout_popup"}
 
-<h3>创建认证方式</h3>
+<h3>修改认证方式</h3>
 <form class="ui form" data-tea-action="$" data-tea-success="success">
     <csrf-token></csrf-token>
+    <input type="hidden" name="policyId" :value="policy.id"/>
 
     <table class="ui table definition selectable">
         <tr>
             <td class="title">名称 *</td>
             <td>
-                <input type="text" name="name" maxlength="50" ref="focus"/>
+                <input type="text" name="name" maxlength="50" ref="focus" v-model="policy.name"/>
             </td>
         </tr>
         <tr>
             <td>认证类型 *</td>
             <td>
-                <select class="ui dropdown auto-width" name="type" v-model="type" @change="changeType">
-                    <option value="">[认证类型]</option>
-                    <option v-for="authType in authTypes" :value="authType.code">{{authType.name}}</option>
-                </select>
+                {{policy.typeName}}
                 <p class="comment" v-html="authDescription"></p>
             </td>
         </tr>
@@ -27,7 +25,7 @@
             <tr>
                 <td>用户 *</td>
                 <td>
-                    <http-auth-basic-auth-user-box></http-auth-basic-auth-user-box>
+                    <http-auth-basic-auth-user-box :v-users="policy.params.users"></http-auth-basic-auth-user-box>
                 </td>
             </tr>
             <tr>
@@ -38,14 +36,14 @@
             <tr v-show="moreBasicAuthOptionsVisible">
                 <td>认证领域名<em>（Realm）</em></td>
                 <td>
-                    <input type="text" name="basicAuthRealm" value="" maxlength="100"/>
+                    <input type="text" name="basicAuthRealm" value="" maxlength="100" v-model="policy.params.realm"/>
                 </td>
             </tr>
             <tr v-show="moreBasicAuthOptionsVisible">
                 <td>字符集</td>
                 <td>
-                    <input type="text" name="basicAuthCharset" style="width: 6em" maxlength="50"/>
-                    <p class="comment">类似于<code-label>UTF-8</code-label>。</p>
+                    <input type="text" name="basicAuthCharset" style="width: 6em" v-model="policy.params.charset" maxlength="50"/>
+                    <p class="comment">类似于<code-label>utf-8</code-label>。</p>
                 </td>
             </tr>
         </tbody>
@@ -55,7 +53,7 @@
             <tr>
                 <td>子请求URL *</td>
                 <td>
-                    <input type="text" name="subRequestURL" maxlength="1024"/>
+                    <input type="text" name="subRequestURL" maxlength="1024" v-model="policy.params.url"/>
                     <p class="comment">可以是一个完整的URL，也可以是一个路径。</p>
                 </td>
             </tr>
@@ -66,7 +64,8 @@
                     <radio name="subRequestFollowRequest" :v-value="0" v-model="subRequestFollowRequest">自定义</radio>
                     <div style="margin-top: 0.8em" v-show="subRequestFollowRequest == 0">
                         <div class="ui divider"></div>
-                        <select class="ui dropdown auto-width" name="subRequestMethod">
+                        <select class="ui dropdown auto-width" name="subRequestMethod" v-model="policy.params.method">
+                            <option value="">[请选择]</option>
                             <option value="POST">POST</option>
                             <option value="GET">GET</option>
                             <option value="PUT">PUT</option>
@@ -76,6 +75,10 @@
                 </td>
             </tr>
         </tbody>
+        <tr>
+            <td>是否启用</td>
+            <td><checkbox name="isOn" value="1" v-model="policy.isOn"></checkbox></td>
+        </tr>
     </table>
 
     <submit-btn></submit-btn>

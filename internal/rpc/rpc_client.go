@@ -228,6 +228,10 @@ func (this *RPCClient) HTTPFastcgiRPC() pb.HTTPFastcgiServiceClient {
 	return pb.NewHTTPFastcgiServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) HTTPAuthPolicyRPC() pb.HTTPAuthPolicyServiceClient {
+	return pb.NewHTTPAuthPolicyServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) SSLCertRPC() pb.SSLCertServiceClient {
 	return pb.NewSSLCertServiceClient(this.pickConn())
 }

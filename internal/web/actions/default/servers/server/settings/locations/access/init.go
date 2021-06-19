@@ -16,7 +16,7 @@ func init() {
 			Helper(serverutils.NewServerHelper()).
 			Data("tinyMenuItem", "access").
 			Prefix("/servers/server/settings/locations/access").
-			Get("", new(IndexAction)).
+			GetPost("", new(IndexAction)).
 			EndAll()
 	})
 }

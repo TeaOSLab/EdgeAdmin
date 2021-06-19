@@ -1,13 +1,16 @@
 {$layout}
-
 {$template "/left_menu"}
 
 <div class="right-box">
-	{$template "../location_menu"}
-	{$template "../left_menu"}
+    {$template "../location_menu"}
+    {$template "../left_menu"}
 
-	<div class="right-box tiny">
-		<div class="margin"></div>
-		<p class="ui message">此功能暂未开放，敬请期待。</p>
-	</div>
+    <div class="right-box tiny">
+        <form class="ui form" data-tea-action="$" data-tea-success="success">
+            <csrf-token></csrf-token>
+            <input type="hidden" name="webId" :value="webId">
+            <http-auth-config-box :v-auth-config="authConfig" :v-is-location="true"></http-auth-config-box>
+            <submit-btn></submit-btn>
+        </form>
+    </div>
 </div>
