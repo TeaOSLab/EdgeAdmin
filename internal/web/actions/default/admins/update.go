@@ -39,14 +39,23 @@ func (this *UpdateAction) RunGet(params struct {
 		otpLoginIsOn = admin.OtpLogin.IsOn
 	}
 
+	// AccessKey数量
+	countAccessKeyResp, err := this.RPC().UserAccessKeyRPC().CountAllEnabledUserAccessKeys(this.AdminContext(), &pb.CountAllEnabledUserAccessKeysRequest{AdminId: params.AdminId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	countAccessKeys := countAccessKeyResp.Count
+
 	this.Data["admin"] = maps.Map{
-		"id":           admin.Id,
-		"fullname":     admin.Fullname,
-		"username":     admin.Username,
-		"isOn":         admin.IsOn,
-		"isSuper":      admin.IsSuper,
-		"canLogin":     admin.CanLogin,
-		"otpLoginIsOn": otpLoginIsOn,
+		"id":              admin.Id,
+		"fullname":        admin.Fullname,
+		"username":        admin.Username,
+		"isOn":            admin.IsOn,
+		"isSuper":         admin.IsSuper,
+		"canLogin":        admin.CanLogin,
+		"otpLoginIsOn":    otpLoginIsOn,
+		"countAccessKeys": countAccessKeys,
 	}
 
 	// 权限

@@ -1,10 +1,13 @@
 {$layout}
+{$template "../waf_menu"}
+{$template "menu"}
 
-	{$template "../waf_menu"}
-	{$template "menu"}
+<second-menu style="margin-top: -1em">
+    <span class="item">ID: {{listId}} &nbsp; <tip-icon content="ID可以用于使用API操作此IP名单"></tip-icon></span>
+</second-menu>
 
-	<p class="comment" v-if="items.length == 0">暂时还没有IP。</p>
+<p class="comment" v-if="items.length == 0">暂时还没有IP。</p>
 
-    <ip-list-table v-if="items.length > 0" :v-items="items" @update-item="updateItem" @delete-item="deleteItem"></ip-list-table>
+<ip-list-table v-if="items.length > 0" :v-items="items" @update-item="updateItem" @delete-item="deleteItem"></ip-list-table>
 
-	<div class="page" v-html="page"></div>
+<div class="page" v-html="page"></div>

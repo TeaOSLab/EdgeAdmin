@@ -1,0 +1,39 @@
+{$layout}
+{$template "../admin_menu"}
+
+<second-menu>
+    <menu-item @click.prevent="createAccessKey()">[创建AccessKey]</menu-item>
+</second-menu>
+
+<p class="comment" v-if="accessKeys.length == 0">暂时还没有AccessKey。</p>
+
+<table class="ui table selectable" v-if="accessKeys.length > 0">
+    <thead>
+        <tr>
+            <th>AccessKey ID</th>
+            <th>AccessKey密钥</th>
+            <th>备注</th>
+            <th>最后访问</th>
+            <th>状态</th>
+            <th class="two op">操作</th>
+        </tr>
+    </thead>
+    <tr v-for="accessKey in accessKeys">
+        <td :class="{disabled: !accessKey.isOn}">{{accessKey.uniqueId}}</td>
+        <td :class="{disabled: !accessKey.isOn}">{{accessKey.secret}}</td>
+        <td :class="{disabled: !accessKey.isOn}">{{accessKey.description}}</td>
+        <td :class="{disabled: !accessKey.isOn}">
+            <span v-if="accessKey.accessedTime.length > 0">{{accessKey.accessedTime}}</span>
+            <span v-else class="disabled">尚无访问</span>
+        </td>
+        <td>
+            <span v-if="accessKey.isOn" class="green">已启用</span>
+            <span v-else class="disabled">已禁用</span>
+        </td>
+        <td>
+            <a href="" v-if="accessKey.isOn" @click.prevent="updateAccessKeyIsOn(accessKey.id, false)">禁用</a>
+            <a href="" v-if="!accessKey.isOn" @click.prevent="updateAccessKeyIsOn(accessKey.id, true)">启用</a>
+            &nbsp; <a href="" @click.prevent="deleteAccessKey(accessKey.id)">删除</a>
+        </td>
+    </tr>
+</table>
