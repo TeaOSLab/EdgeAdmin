@@ -3,4 +3,5 @@
     <span class="item">|</span>
     <menu-item :href="'/admins/admin?adminId=' + admin.id" code="index">"{{admin.fullname}}" 详情</menu-item>
     <menu-item :href="'/admins/update?adminId=' + admin.id" code="update">修改</menu-item>
+    <menu-item :href="'/admins/accessKeys?adminId=' + admin.id" code="accessKey">API AccessKey({{admin.countAccessKeys}})</menu-item>
 </first-menu>
