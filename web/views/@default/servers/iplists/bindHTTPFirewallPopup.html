@@ -1,0 +1,38 @@
+{$layout "layout_popup"}
+
+<h3>绑定公用IP名单</h3>
+
+
+<p class="comment" v-if="lists.length == 0">暂时还没有可用的公用IP名单。</p>
+
+<table class="ui table selectable celled" v-if="lists.length > 0">
+    <thead>
+    <tr>
+        <th class="two wide">ID</th>
+        <th>名称</th>
+        <th class="two wide">类型</th>
+        <th>备注</th>
+        <th class="two wide">IP数量</th>
+        <th class="two op">操作</th>
+    </tr>
+    </thead>
+    <tr v-for="list in lists">
+        <td>{{list.id}}</td>
+        <td>{{list.name}}</td>
+        <td>
+            <span v-if="list.type == 'black'">黑名单</span>
+            <span v-if="list.type == 'white'">白名单</span>
+        </td>
+        <td>{{list.description}}</td>
+        <td>
+            <span v-if="list.countItems > 0">{{list.countItems}}</span>
+            <span v-else class="disabled">0</span>
+        </td>
+        <td>
+            <a href="" @click.prevent="bind(list)" v-if="!list.isSelected">绑定</a>
+            <a href="" style="color: grey" @click.prevent="unbind(list)" v-if="list.isSelected">已绑定</a>
+        </td>
+    </tr>
+</table>
+
+<div class="page" v-html="page"></div>

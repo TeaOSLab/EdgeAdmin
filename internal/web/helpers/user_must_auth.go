@@ -168,6 +168,11 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 					"code": "waf",
 				},
 				{
+					"name": "IP名单",
+					"url":  "/servers/iplists",
+					"code": "iplist",
+				},
+				{
 					"name": "证书管理",
 					"url":  "/servers/certs",
 					"code": "cert",

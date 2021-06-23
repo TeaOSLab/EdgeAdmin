@@ -22,6 +22,7 @@ func (this *ListsAction) RunGet(params struct {
 	Type             string
 }) {
 	this.Data["subMenuItem"] = params.Type
+	this.Data["type"] = params.Type
 
 	listId, err := dao.SharedHTTPFirewallPolicyDAO.FindEnabledPolicyIPListIdWithType(this.AdminContext(), params.FirewallPolicyId, params.Type)
 	if err != nil {

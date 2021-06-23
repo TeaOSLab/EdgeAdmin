@@ -139,7 +139,7 @@ div.margin, p.margin {
 	}
 
 	.main-menu .ui.menu .item span {
-		display: none;
+
 	}
 }
 
@@ -163,9 +163,21 @@ div.margin, p.margin {
 			color: grey;
 		}
 
+		@media screen and (max-width: 512px) {
+			.item.expend .subtitle {
+				display: none;
+			}
+		}
+
 		.sub-items {
 			.item {
 				padding-left: 2.8em !important;
+			}
+
+			@media screen and (max-width: 512px) {
+				.item {
+					padding-left: 1em!important;
+				}
 			}
 
 			.item.active {

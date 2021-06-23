@@ -197,9 +197,6 @@ p.margin {
     padding-top: 2em;
     padding-bottom: 2.4em;
   }
-  .main-menu .ui.menu .item span {
-    display: none;
-  }
 }
 .main-menu .ui.labeled.icon.menu .item {
   font-size: 0.9em;
@@ -214,8 +211,18 @@ p.margin {
   margin-top: 0.5em;
   color: grey;
 }
+@media screen and (max-width: 512px) {
+  .main-menu .ui.menu .item.expend .subtitle {
+    display: none;
+  }
+}
 .main-menu .ui.menu .sub-items .item {
   padding-left: 2.8em !important;
+}
+@media screen and (max-width: 512px) {
+  .main-menu .ui.menu .sub-items .item {
+    padding-left: 1em!important;
+  }
 }
 .main-menu .ui.menu .sub-items .item.active {
   background-color: #2185d0 !important;

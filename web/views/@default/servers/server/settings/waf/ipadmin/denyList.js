@@ -29,7 +29,9 @@ Tea.context(function () {
 		teaweb.popup("/servers/server/settings/waf/ipadmin/createIPPopup?listId=" + this.listId + '&type=' + type, {
 			height: "26em",
 			callback: function () {
-				window.location.reload()
+				teaweb.success("保存成功", function () {
+					teaweb.reload()
+				})
 			}
 		})
 	}

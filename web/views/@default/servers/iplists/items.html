@@ -1,0 +1,12 @@
+{$layout}
+{$template "list_menu"}
+
+<second-menu>
+    <menu-item @click.prevent="createIP">[创建IP]</menu-item>
+</second-menu>
+
+<p class="comment" v-if="items.length == 0">暂时还没有IP。</p>
+
+<ip-list-table v-if="items.length > 0" :v-items="items" @update-item="updateItem" @delete-item="deleteItem"></ip-list-table>
+
+<div class="page" v-html="page"></div>

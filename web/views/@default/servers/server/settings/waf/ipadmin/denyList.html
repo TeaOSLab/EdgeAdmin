@@ -11,6 +11,8 @@
         <menu-item @click.prevent="createIP('black')">添加IP</menu-item>
         <span class="item">|</span>
         <span class="item">ID: {{listId}} &nbsp; <tip-icon content="ID可以用于使用API操作此IP名单"></tip-icon></span>
+        <span class="item">|</span>
+        <div class="item"><ip-list-bind-box :v-http-firewall-policy-id="firewallPolicyId" :v-type="'black'"></ip-list-bind-box></div>
     </second-menu>
 
     <p class="ui message warning" v-if="!wafIsOn">当前WAF未启用，设置将在<a :href="'/servers/server/settings/waf?serverId=' + serverId">[启用]</a>后生效。</p>

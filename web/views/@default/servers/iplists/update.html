@@ -1,0 +1,28 @@
+{$layout}
+{$template "list_menu"}
+
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+    <input type="hidden" name="listId" :value="list.id"/>
+    <csrf-token></csrf-token>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">名称 *</td>
+            <td>
+                <input type="text" name="name" maxlength="100" ref="focus" v-model="list.name"/>
+            </td>
+        </tr>
+        <tr>
+            <td>类型</td>
+            <td>
+                {{list.typeName}}
+            </td>
+        </tr>
+        <tr>
+            <td>备注</td>
+            <td>
+                <textarea name="description" rows="2" maxlength="200" v-model="list.description"></textarea>
+            </td>
+        </tr>
+    </table>
+    <submit-btn></submit-btn>
+</form>

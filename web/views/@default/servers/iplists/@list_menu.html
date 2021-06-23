@@ -1,0 +1,10 @@
+<first-menu>
+    <menu-item :href="'/servers/iplists?type=' + list.type">{{list.typeName}}</menu-item>
+    <span class="disabled item">|</span>
+    <menu-item :href="'/servers/iplists/list?listId=' + list.id" code="list">"{{list.name}}"详情</menu-item>
+    <menu-item :href="'/servers/iplists/items?listId=' + list.id" code="item">IP({{list.countItems}})</menu-item>
+    <menu-item :href="'/servers/iplists/update?listId=' + list.id" code="update">修改</menu-item>
+    <menu-item :href="'/servers/iplists/test?listId=' + list.id" code="test">IP检查</menu-item>
+    <menu-item :href="'/servers/iplists/export?listId=' + list.id" code="export">导出</menu-item>
+    <menu-item :href="'/servers/iplists/import?listId=' + list.id" code="import">导入</menu-item>
+</first-menu>
