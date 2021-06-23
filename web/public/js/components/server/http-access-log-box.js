@@ -34,7 +34,7 @@ Vue.component("http-access-log-box", {
 			this.select()
 			teaweb.popup("/servers/server/log/viewPopup?requestId=" + requestId, {
 				width: "50em",
-				height: "24em",
+				height: "28em",
 				onClose: function () {
 					that.deselect()
 				}

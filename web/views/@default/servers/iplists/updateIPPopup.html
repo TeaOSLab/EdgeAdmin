@@ -1,0 +1,76 @@
+{$layout "layout_popup"}
+
+<h3>修改IP</h3>
+
+<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+	<input type="hidden" name="itemId" :value="item.id"/>
+    <input type="hidden" name="type" :value="item.type"/>
+	<csrf-token></csrf-token>
+	<table class="ui table definition selectable">
+        <tr>
+            <td class="title">类型 *</td>
+            <td>
+                <!-- 类型不允许修改 -->
+                <span v-if="item.type == 'ipv4'">IPv4</span>
+                <span v-if="item.type == 'ipv6'">IPv6</span>
+                <span v-if="item.type == 'all'">所有IP</span>
+
+                <p class="comment" v-if="type == 'ipv4'">单个IPv4或一个IPv4范围。</p>
+                <p class="comment" v-if="type == 'ipv6'">单个IPv6。</p>
+                <p class="comment" v-if="type == 'all'">允许或禁用所有的IP。</p>
+            </td>
+        </tr>
+
+        <!-- IPv4 -->
+        <tbody v-if="type == 'ipv4'">
+        <tr>
+            <td>开始IP *</td>
+            <td>
+                <input type="text" name="ipFrom" maxlength="64" placeholder="x.x.x.x" ref="focus" v-model="item.ipFrom"/>
+            </td>
+        </tr>
+        <tr>
+            <td>结束IP</td>
+            <td>
+                <input type="text" name="ipTo" maxlength="64" placeholder="x.x.x.x" v-model="item.ipTo"/>
+                <p class="comment">表示IP段的时候需要填写此项。</p>
+            </td>
+        </tr>
+        </tbody>
+
+        <tr>
+            <td>级别</td>
+            <td>
+                <firewall-event-level-options :v-value="item.eventLevel"></firewall-event-level-options>
+            </td>
+        </tr>
+
+        <!-- IPv6 -->
+        <tbody v-if="type == 'ipv6'">
+        <tr>
+            <td>IP *</td>
+            <td>
+                <input type="text" name="ipFrom" maxlength="64" placeholder="x:x:x:x:x:x:x:x" ref="focus" v-model="item.ipFrom"/>
+                <p class="comment">IPv6地址，比如 1406:3c00:0:2409:13:58:103:15</p>
+            </td>
+        </tr>
+        </tbody>
+		<tr>
+			<td colspan="2"><more-options-indicator></more-options-indicator></td>
+		</tr>
+		<tbody v-show="moreOptionsVisible">
+			<tr>
+				<td>过期时间</td>
+				<td>
+					<datetime-input :v-name="'expiredAt'" :v-timestamp="item.expiredAt"></datetime-input>
+					<p class="comment">在加入名单某一段时间后会失效，留空表示永久有效。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>备注</td>
+				<td><input type="text" name="reason" maxlength="100" v-model="item.reason"/></td>
+			</tr>
+		</tbody>
+	</table>
+	<submit-btn></submit-btn>
+</form>

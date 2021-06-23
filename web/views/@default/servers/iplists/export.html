@@ -1,0 +1,13 @@
+{$layout}
+{$template "list_menu"}
+
+<div class="margin"></div>
+<form class="ui form">
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">说明</td>
+            <td>导出所有的IP</td>
+        </tr>
+    </table>
+    <a :href="'/servers/iplists/exportData?listId=' + list.id" class="ui button primary">导出</a>
+</form>

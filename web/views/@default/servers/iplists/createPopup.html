@@ -1,0 +1,31 @@
+{$layout "layout_popup"}
+
+<h3>创建<var v-if="type == 'black'">黑名单</var><var v-if="type == 'white'">白名单</var></h3>
+
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+    <csrf-token></csrf-token>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">名称 *</td>
+            <td>
+                <input type="text" name="name" maxlength="100" ref="focus"/>
+            </td>
+        </tr>
+        <tr>
+            <td>类型</td>
+            <td>
+                <select class="ui dropdown auto-width" name="type" v-model="type">
+                    <option value="black">黑名单</option>
+                    <option value="white">白名单</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>备注</td>
+            <td>
+                <textarea name="description" rows="2" maxlength="200"></textarea>
+            </td>
+        </tr>
+    </table>
+    <submit-btn></submit-btn>
+</form>

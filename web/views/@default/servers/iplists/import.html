@@ -1,0 +1,19 @@
+{$layout}
+{$template "list_menu"}
+
+<div class="margin"></div>
+
+<form class="ui form" data-tea-action="$"  data-tea-success="success">
+    <input type="hidden" name="listId" :value="list.id"/>
+    <csrf-token></csrf-token>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">选择IP文件 *</td>
+            <td>
+                <input type="file" name="file" accept=".data"/>
+                <p class="comment">文件名类似于<code-label>ip-list-123.data</code-label>。</p>
+            </td>
+        </tr>
+    </table>
+    <submit-btn></submit-btn>
+</form>

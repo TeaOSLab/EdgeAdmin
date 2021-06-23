@@ -27,6 +27,8 @@ func init() {
 			GetPost("/selectProvincesPopup", new(SelectProvincesPopupAction)).
 			GetPost("/selectCountriesPopup", new(SelectCountriesPopupAction)).
 			Post("/eventLevelOptions", new(EventLevelOptionsAction)).
+			Post("/showTip", new(ShowTipAction)).
+			Post("/hideTip", new(HideTipAction)).
 
 			EndAll()
 	})

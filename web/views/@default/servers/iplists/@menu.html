@@ -1,0 +1,8 @@
+<first-menu>
+    <menu-item href="/servers/iplists" :active="type == 'black'">黑名单</menu-item>
+    <menu-item href="/servers/iplists?type=white" :active="type == 'white'">白名单</menu-item>
+    <span class="item disabled">|</span>
+    <menu-item @click.prevent="createList">[创建]</menu-item>
+    <span class="item disabled">|</span>
+    <span class="item"><tip-icon content="可以在WAF策略里直接引用这些公用名单。"></tip-icon></span>
+</first-menu>

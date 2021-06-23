@@ -1,0 +1,38 @@
+{$layout}
+{$template "menu"}
+
+<tip-message-box code="iplist-public-tip">这里是公用的IP名单，可以在WAF策略里直接引用。</tip-message-box>
+
+<p class="comment" v-if="lists.length == 0">暂时还没有公用IP名单。</p>
+
+<table class="ui table selectable celled" v-if="lists.length > 0">
+    <thead>
+        <tr>
+            <th class="one wide">ID</th>
+            <th>名称</th>
+            <th class="one wide">类型</th>
+            <th>备注</th>
+            <th class="one wide">IP数量</th>
+            <th class="two op">操作</th>
+        </tr>
+    </thead>
+    <tr v-for="list in lists">
+        <td>{{list.id}}</td>
+        <td>{{list.name}}</td>
+        <td>
+            <span v-if="list.type == 'black'">黑名单</span>
+            <span v-if="list.type == 'white'">白名单</span>
+        </td>
+        <td>{{list.description}}</td>
+        <td>
+            <span v-if="list.countItems > 0">{{list.countItems}}</span>
+            <span v-else class="disabled">0</span>
+        </td>
+        <td>
+            <a :href="'/servers/iplists/list?listId=' + list.id">详情</a> &nbsp;
+            <a href="" @click.prevent="deleteList(list.id)">删除</a>
+        </td>
+    </tr>
+</table>
+
+<div class="page" v-html="page"></div>

@@ -80,7 +80,7 @@
 					<span v-if="module.code.length > 0">
 						<i class="window restore outline icon" v-if="module.icon == null"></i>
 						<i class="ui icon" v-if="module.icon != null" :class="module.icon"></i>
-						<span>{{module.name}}</span>
+						<span class="module-name">{{module.name}}</span>
 					</span>
                     <div class="subtitle" v-if="module.subtitle != null && module.subtitle.length > 0">{{module.subtitle}}</div>
 				</a>
