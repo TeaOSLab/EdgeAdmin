@@ -6,6 +6,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -148,11 +149,15 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, selectedIt
 		"url":      "/clusters/cluster/settings/services?clusterId=" + clusterId,
 		"isActive": selectedItem == "service",
 	})
-	items = append(items, maps.Map{
-		"name":     "TOA设置",
-		"url":      "/clusters/cluster/settings/toa?clusterId=" + clusterId,
-		"isActive": selectedItem == "toa",
-	})
+	{
+		isChecked, _ := this.checkTOA(cluster.Id)
+		items = append(items, maps.Map{
+			"name":     "TOA设置",
+			"url":      "/clusters/cluster/settings/toa?clusterId=" + clusterId,
+			"isActive": selectedItem == "toa",
+			"isOn":     isChecked,
+		})
+	}
 	return
 }
 
@@ -219,4 +224,25 @@ func (this *ClusterHelper) checkMessages(clusterId int64) (bool, error) {
 		return false, err
 	}
 	return resp.Count > 0, nil
+}
+
+// 检查TOA是否设置
+func (this *ClusterHelper) checkTOA(clusterId int64) (bool, error) {
+	rpcClient, err := rpc.SharedRPC()
+	if err != nil {
+		return false, err
+	}
+	resp, err := rpcClient.NodeClusterRPC().FindEnabledNodeClusterTOA(rpcClient.Context(0), &pb.FindEnabledNodeClusterTOARequest{NodeClusterId: clusterId})
+	if err != nil {
+		return false, err
+	}
+	if len(resp.ToaJSON) == 0 {
+		return false, nil
+	}
+	var toaConfig = &nodeconfigs.TOAConfig{}
+	err = json.Unmarshal(resp.ToaJSON, toaConfig)
+	if err != nil {
+		return false, err
+	}
+	return toaConfig.IsOn, nil
 }
