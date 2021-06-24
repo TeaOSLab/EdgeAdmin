@@ -10,6 +10,12 @@ Tea.context(function () {
 		this.step = "user"
 	}
 
+	this.prepareMoreOptionsVisible = false
+	this.authURL = ""
+	this.showPrepareMoreOptionsVisible = function () {
+		this.prepareMoreOptionsVisible = !this.prepareMoreOptionsVisible
+	}
+
 	/**
 	 * 选择用户
 	 */
@@ -78,7 +84,8 @@ Tea.context(function () {
 				dnsDomain: this.dnsDomain,
 				domains: this.domains,
 				autoRenew: this.autoRenew ? 1 : 0,
-				taskId: this.taskId
+				taskId: this.taskId,
+				authURL: this.authURL
 			})
 			.success(function (resp) {
 				this.taskId = resp.data.taskId
