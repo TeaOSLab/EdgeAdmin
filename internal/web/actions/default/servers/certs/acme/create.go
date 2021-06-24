@@ -72,6 +72,7 @@ func (this *CreateAction) RunPost(params struct {
 	DnsDomain     string
 	Domains       []string
 	AutoRenew     bool
+	AuthURL       string
 
 	Must *actions.Must
 }) {
@@ -123,6 +124,7 @@ func (this *CreateAction) RunPost(params struct {
 			DnsDomain:     dnsDomain,
 			Domains:       realDomains,
 			AutoRenew:     params.AutoRenew,
+			AuthURL:       params.AuthURL,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -138,6 +140,7 @@ func (this *CreateAction) RunPost(params struct {
 			DnsDomain:     dnsDomain,
 			Domains:       realDomains,
 			AutoRenew:     params.AutoRenew,
+			AuthURL:       params.AuthURL,
 		})
 		if err != nil {
 			this.ErrorPage(err)
