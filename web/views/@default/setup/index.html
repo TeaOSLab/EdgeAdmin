@@ -188,6 +188,13 @@
 							<p class="comment">连接数据库所需密码，没有密码的话就不需要填写。</p>
 						</td>
 					</tr>
+                    <tr>
+                        <td>访问日志保留天数</td>
+                        <td>
+                            <input type="number" name="accessLogKeepDays" style="width: 5em" maxlength="4" value="30"/>
+                            <p class="comment">网站等服务记录的访问日志保留天数，防止无限制地占用数据库空间。</p>
+                        </td>
+                    </tr>
 				</table>
 
 				<button class="ui button" type="button" @click.prevent="goBackAPI"><i class="icon long arrow left"></i>上一步</button> &nbsp;
@@ -325,6 +332,12 @@
 							<span v-else class="disabled">未填入密码</span>
 						</td>
 					</tr>
+                    <tr>
+                        <td>访问日志保留天数</td>
+                        <td>
+                            {{dbInfo.accessLogKeepDays}}天
+                        </td>
+                    </tr>
 				</table>
 
 				<h3>管理员信息</h3>

@@ -15,11 +15,12 @@ type ValidateDbAction struct {
 }
 
 func (this *ValidateDbAction) RunPost(params struct {
-	Host     string
-	Port     string
-	Database string
-	Username string
-	Password string
+	Host              string
+	Port              string
+	Database          string
+	Username          string
+	Password          string
+	AccessLogKeepDays int
 
 	Must *actions.Must
 }) {
@@ -98,12 +99,13 @@ func (this *ValidateDbAction) RunPost(params struct {
 	}
 
 	this.Data["db"] = maps.Map{
-		"host":         params.Host,
-		"port":         params.Port,
-		"database":     params.Database,
-		"username":     params.Username,
-		"password":     params.Password,
-		"passwordMask": strings.Repeat("*", len(params.Password)),
+		"host":              params.Host,
+		"port":              params.Port,
+		"database":          params.Database,
+		"username":          params.Username,
+		"password":          params.Password,
+		"passwordMask":      strings.Repeat("*", len(params.Password)),
+		"accessLogKeepDays": params.AccessLogKeepDays,
 	}
 
 	this.Success()
