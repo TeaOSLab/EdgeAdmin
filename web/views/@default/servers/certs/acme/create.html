@@ -24,16 +24,37 @@
 
 		<!-- 准备工作 -->
 		<div v-show="step == 'prepare'">
-			<div style="margin-bottom: 1em">
-				<radio name="authType" :v-value="'http'" v-model="authType">使用HTTP认证</radio> &nbsp;
-				<radio name="authType" :v-value="'dns'" v-model="authType">使用DNS认证</radio>
-			</div>
-			<div v-if="authType == 'http'">
-				使用HTTP的方式请求网址<code-label>/.well-known/acme-challenge/令牌</code-label>校验，该方式要求需要实现将域名解析到集群上，之后系统会自动生成网址信息。
-			</div>
-			<div v-if="authType == 'dns'">
-				我们在申请免费证书的过程中需要自动增加或修改相关域名的TXT记录，请先确保你已经在"域名解析" -- <a href="/dns/providers" target="_blank">"DNS服务商"</a> 中已经添加了对应的DNS服务商账号。
-			</div>
+            <table class="ui table definition selectable">
+                <tr>
+                    <td class="title">认证方式</td>
+                    <td>
+                        <div style="margin-bottom: 1em">
+                            <radio name="authType" :v-value="'http'" v-model="authType">使用HTTP认证</radio> &nbsp;
+                            <radio name="authType" :v-value="'dns'" v-model="authType">使用DNS认证</radio>
+                        </div>
+                        <div v-if="authType == 'http'">
+                            <p class="comment">使用HTTP的方式请求网址<code-label>/.well-known/acme-challenge/令牌</code-label>校验，该方式要求需要实现将域名解析到集群上，之后系统会自动生成网址信息。</p>
+                        </div>
+                        <div v-if="authType == 'dns'">
+                            <p class="comment">我们在申请免费证书的过程中需要自动增加或修改相关域名的TXT记录，请先确保你已经在"域名解析" -- <a href="/dns/providers" target="_blank">"DNS服务商"</a> 中已经添加了对应的DNS服务商账号。</p>
+                        </div>
+                    </td>
+                </tr>
+			    <tr>
+                    <td colspan="2">
+                        <a href="" @click.prevent="showPrepareMoreOptionsVisible">更多选项<i class="icon angle" :class="{up: prepareMoreOptionsVisible, down: !prepareMoreOptionsVisible}"></i></a>
+                    </td>
+                </tr>
+                <tbody v-show="prepareMoreOptionsVisible">
+                    <tr>
+                        <td>回调URL</td>
+                        <td>
+                            <input type="text" name="authURL" v-model="authURL" maxlength="200"/>
+                            <p class="comment">将认证数据以JSON的方式POST到此URL上，可以依此生成认证文件或者设置DNS域名解析。</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
 			<div class="button-group">
 				<button type="button" class="ui button primary"  @click.prevent="doPrepare">下一步</button>

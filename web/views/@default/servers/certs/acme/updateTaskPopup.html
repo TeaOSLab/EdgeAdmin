@@ -41,6 +41,18 @@
 				<p class="comment">在免费证书临近到期之前，是否尝试自动续期。</p>
 			</td>
 		</tr>
+        <tr>
+            <td colspan="2"><more-options-indicator></more-options-indicator></td>
+        </tr>
+        <tbody v-show="moreOptionsVisible">
+            <tr>
+                <td>回调URL</td>
+                <td>
+                    <input type="text" name="authURL" v-model="task.authURL" maxlength="200"/>
+                    <p class="comment">将认证数据以JSON的方式POST到此URL上，可以依此生成认证文件或者设置DNS域名解析。</p>
+                </td>
+            </tr>
+        </tbody>
 	</table>
 
 	<submit-btn></submit-btn>
