@@ -61,6 +61,7 @@ func (this *UpdateTaskPopupAction) RunGet(params struct {
 		"domains":     task.Domains,
 		"autoRenew":   task.AutoRenew,
 		"isOn":        task.IsOn,
+		"authURL":     task.AuthURL,
 		"dnsProvider": dnsProviderMap,
 	}
 
@@ -94,6 +95,7 @@ func (this *UpdateTaskPopupAction) RunPost(params struct {
 	DnsDomain     string
 	Domains       []string
 	AutoRenew     bool
+	AuthURL       string
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -146,6 +148,7 @@ func (this *UpdateTaskPopupAction) RunPost(params struct {
 		DnsDomain:     dnsDomain,
 		Domains:       realDomains,
 		AutoRenew:     params.AutoRenew,
+		AuthURL:       params.AuthURL,
 	})
 	if err != nil {
 		this.ErrorPage(err)
