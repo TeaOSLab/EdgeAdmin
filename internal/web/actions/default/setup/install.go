@@ -8,6 +8,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/go-yaml/yaml"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/actions"
@@ -200,6 +201,26 @@ func (this *InstallAction) RunPost(params struct {
 			this.Fail("设置管理员账号出错：" + err.Error())
 		}
 
+		// 设置访问日志保留天数
+		var accessLogKeepDays = dbMap.GetInt("accessLogKeepDays")
+		if accessLogKeepDays > 0 {
+			var config = &systemconfigs.DatabaseConfig{}
+			config.ServerAccessLog.Clean.Days = accessLogKeepDays
+			configJSON, err := json.Marshal(config)
+			if err != nil {
+				this.Fail("配置设置访问日志保留天数出错：" + err.Error())
+				return
+			}
+			_, err = client.SysSettingRPC().UpdateSysSetting(ctx, &pb.UpdateSysSettingRequest{
+				Code:      systemconfigs.SettingCodeDatabaseConfigSetting,
+				ValueJSON: configJSON,
+			})
+			if err != nil {
+				this.Fail("配置设置访问日志保留天数出错：" + err.Error())
+				return
+			}
+		}
+
 		err = apiConfig.WriteFile(Tea.ConfigFile("api.yaml"))
 		if err != nil {
 			this.Fail("保存配置失败，原因：" + err.Error())
@@ -230,6 +251,26 @@ func (this *InstallAction) RunPost(params struct {
 		})
 		if err != nil {
 			this.Fail("设置管理员账号出错：" + err.Error())
+		}
+
+		// 设置访问日志保留天数
+		var accessLogKeepDays = dbMap.GetInt("accessLogKeepDays")
+		if accessLogKeepDays > 0 {
+			var config = &systemconfigs.DatabaseConfig{}
+			config.ServerAccessLog.Clean.Days = accessLogKeepDays
+			configJSON, err := json.Marshal(config)
+			if err != nil {
+				this.Fail("配置设置访问日志保留天数出错：" + err.Error())
+				return
+			}
+			_, err = client.SysSettingRPC().UpdateSysSetting(ctx, &pb.UpdateSysSettingRequest{
+				Code:      systemconfigs.SettingCodeDatabaseConfigSetting,
+				ValueJSON: configJSON,
+			})
+			if err != nil {
+				this.Fail("配置设置访问日志保留天数出错：" + err.Error())
+				return
+			}
 		}
 
 		// 写入API节点配置，完成安装
