@@ -106,7 +106,7 @@
 		<td>
 			<span v-if="server.ports.length == 0">-</span>
 			<div v-for="port in server.ports">
-				<tiny-basic-label>{{port.portRange}}<span class="small">（{{port.protocol}}）</span></tiny-basic-label>
+                <tiny-basic-label><keyword :v-word="keyword">{{port.portRange}}</keyword><span class="small">（{{port.protocol}}）</span></tiny-basic-label>
 			</div>
 		</td>
 		<td class="center">
