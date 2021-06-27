@@ -177,6 +177,11 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 					"url":  "/servers/certs",
 					"code": "cert",
 				},
+				/**{
+					"name": "统计指标",
+					"url":  "/servers/metrics",
+					"code": "metric",
+				},**/
 			},
 		},
 		{

@@ -1,0 +1,54 @@
+{$layout "layout_popup"}
+
+<h3>创建{{category.toUpperCase()}}统计指标</h3>
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+    <csrf-token></csrf-token>
+    <input type="hidden" name="category" :value="category"/>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">指标名称 *</td>
+            <td>
+                <input type="text" name="name" maxlength="100" ref="focus"/>
+            </td>
+        </tr>
+        <tr>
+            <td>统计对象 *</td>
+            <td>
+                <metric-keys-config-box :v-category="category"></metric-keys-config-box>
+            </td>
+        </tr>
+        <tr>
+            <td>统计周期 *</td>
+            <td>
+                <metric-period-config-box></metric-period-config-box>
+            </td>
+        </tr>
+        <tr>
+            <td>统计数值 *</td>
+            <td>
+                <!-- HTTP -->
+                <select class="ui dropdown auto-width" name="value" v-if="category == 'http'">
+                    <option value="${countRequest}">请求数</option>
+                    <option value="${countConnection}">连接数</option>
+                    <option value="${countTrafficIn}">下行流量</option>
+                    <option value="${countTrafficOut}">上行流量</option>
+                </select>
+
+                <!-- TCP -->
+                <select class="ui dropdown auto-width" name="value" v-if="category == 'tcp'">
+                    <option value="${countConnection}">连接数</option>
+                    <option value="${countTrafficIn}">下行流量</option>
+                    <option value="${countTrafficOut}">上行流量</option>
+                </select>
+
+                <!-- UDP -->
+                <select class="ui dropdown auto-width" name="value" v-if="category == 'udp'">
+                    <option value="${countConnection}">连接数</option>
+                    <option value="${countTrafficIn}">下行流量</option>
+                    <option value="${countTrafficOut}">上行流量</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <submit-btn></submit-btn>
+</form>

@@ -7,6 +7,7 @@ import (
 	firewallActions "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/firewall-actions"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/health"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/message"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/metrics"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/services"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/thresholds"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/toa"
@@ -66,6 +67,12 @@ func init() {
 			GetPost("/createPopup", new(thresholds.CreatePopupAction)).
 			GetPost("/updatePopup", new(thresholds.UpdatePopupAction)).
 			Post("/delete", new(thresholds.DeleteAction)).
+
+			// 指标
+			Prefix("/clusters/cluster/settings/metrics").
+			Get("", new(metrics.IndexAction)).
+			GetPost("/createPopup", new(metrics.CreatePopupAction)).
+			Post("/delete", new(metrics.DeleteAction)).
 
 			EndAll()
 	})

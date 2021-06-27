@@ -99,6 +99,8 @@ func (this *BindHTTPFirewallPopupAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	defer this.CreateLogInfo("绑定IP名单 %d 到WAF策略 %d", params.ListId, params.HttpFirewallPolicyId)
+
 	// List类型
 	listResp, err := this.RPC().IPListRPC().FindEnabledIPList(this.AdminContext(), &pb.FindEnabledIPListRequest{IpListId: params.ListId})
 	if err != nil {

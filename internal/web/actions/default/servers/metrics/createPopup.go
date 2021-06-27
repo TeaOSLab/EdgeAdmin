@@ -10,33 +10,28 @@ import (
 	"github.com/iwind/TeaGo/maps"
 )
 
-type UpdateAction struct {
+type CreatePopupAction struct {
 	actionutils.ParentAction
 }
 
-func (this *UpdateAction) Init() {
-	this.Nav("", "", "update")
+func (this *CreatePopupAction) Init() {
+	this.Nav("", "", "")
 }
 
-func (this *UpdateAction) RunGet(params struct {
-	ItemId int64
+func (this *CreatePopupAction) RunGet(params struct {
+	Category string
 }) {
-	err := InitItem(this.Parent(), params.ItemId)
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
+	this.Data["category"] = params.Category
 
 	this.Show()
 }
 
-func (this *UpdateAction) RunPost(params struct {
-	ItemId     int64
+func (this *CreatePopupAction) RunPost(params struct {
 	Name       string
+	Category   string
 	KeysJSON   []byte
 	PeriodJSON []byte
 	Value      string
-	IsOn       bool
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -44,6 +39,10 @@ func (this *UpdateAction) RunPost(params struct {
 	params.Must.
 		Field("name", params.Name).
 		Require("请输入指标名称")
+
+	if len(params.Category) == 0 {
+		this.Fail("请选择指标类型")
+	}
 
 	// 统计对象
 	if len(params.KeysJSON) == 0 {
@@ -66,19 +65,19 @@ func (this *UpdateAction) RunPost(params struct {
 	var period = periodMap.GetInt32("period")
 	var periodUnit = periodMap.GetString("unit")
 
-	_, err = this.RPC().MetricItemRPC().UpdateMetricItem(this.AdminContext(), &pb.UpdateMetricItemRequest{
-		MetricItemId: params.ItemId,
-		Name:         params.Name,
-		Keys:         keys,
-		Period:       period,
-		PeriodUnit:   periodUnit,
-		Value:        params.Value,
-		IsOn:         params.IsOn,
+	createResp, err := this.RPC().MetricItemRPC().CreateMetricItem(this.AdminContext(), &pb.CreateMetricItemRequest{
+		Code:       "", // TODO 未来实现
+		Category:   params.Category,
+		Name:       params.Name,
+		Keys:       keys,
+		Period:     period,
+		PeriodUnit: periodUnit,
+		Value:      params.Value,
 	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	defer this.CreateLogInfo("修改统计指标 %d", params.ItemId)
+	defer this.CreateLogInfo("创建统计指标 %d", createResp.MetricItemId)
 	this.Success()
 }

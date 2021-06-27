@@ -1,0 +1,27 @@
+{$layout}
+{$template "item_menu"}
+
+<table class="ui table definition selectable">
+    <tr>
+        <td class="title">指标名称</td>
+        <td>
+            {{item.name}}
+        </td>
+    </tr>
+    <tr>
+        <td>状态</td>
+        <td><label-on :v-is-on="item.isOn"></label-on></td>
+    </tr>
+    <tr>
+        <td>统计周期</td>
+        <td>
+            {{item.period}} {{item.periodUnit}}
+        </td>
+    </tr>
+    <tr>
+        <td>统计数值</td>
+        <td>
+            {{item.value}}
+        </td>
+    </tr>
+</table>

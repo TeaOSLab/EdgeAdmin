@@ -85,7 +85,7 @@
                     <div class="subtitle" v-if="module.subtitle != null && module.subtitle.length > 0">{{module.subtitle}}</div>
 				</a>
 				<div v-if="teaMenu == module.code" class="sub-items">
-					<a class="item" v-for="subItem in module.subItems" v-if="subItem.isOn !== false" :href="subItem.url" :class="{active:subItem.code == teaSubMenu}">{{subItem.name}}</a>
+					<a class="item" v-for="subItem in module.subItems" v-if="subItem.isOn !== false" :href="subItem.url"><i class="icon angle right" v-if="subItem.code == teaSubMenu"></i> {{subItem.name}}</a>
 				</div>
 			</div>
         </div>

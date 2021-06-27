@@ -12,7 +12,7 @@
 				<td class="title">是否启用TOA</td>
 				<td>
 					<checkbox name="isOn" v-model="toa.isOn"></checkbox>
-					<p class="comment">在启用之前，请确保当前集群下所有节点服务器已经安装TOA模块和libnetfilter_queue，并启用了IPTables。</p>
+					<p class="comment">在启用之前，请确保当前集群下所有节点服务器已经安装libnetfilter_queue，并启用了IPTables。</p>
 				</td>
 			</tr>
 			<tbody v-show="toa.isOn">

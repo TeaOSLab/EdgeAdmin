@@ -18,6 +18,8 @@ func (this *UnbindHTTPFirewallAction) RunPost(params struct {
 	HttpFirewallPolicyId int64
 	ListId               int64
 }) {
+	defer this.CreateLogInfo("接触绑定IP名单 %d WAF策略 %d", params.ListId, params.HttpFirewallPolicyId)
+
 	// List类型
 	listResp, err := this.RPC().IPListRPC().FindEnabledIPList(this.AdminContext(), &pb.FindEnabledIPListRequest{IpListId: params.ListId})
 	if err != nil {

@@ -110,6 +110,7 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/stat"
 
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/iplists"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/metrics"
 
 	// 设置相关
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings"
