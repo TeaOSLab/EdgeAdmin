@@ -32,6 +32,9 @@ func (this *RunPopupAction) RunPost(params struct {
 		this.Fail(err.Error())
 	}
 
+	if resp.Results == nil {
+		resp.Results = []*pb.ExecuteNodeClusterHealthCheckResponse_Result{}
+	}
 	this.Data["results"] = resp.Results
 	this.Success()
 }

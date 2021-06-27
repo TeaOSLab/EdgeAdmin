@@ -1,0 +1,38 @@
+{$layout "layout_popup"}
+
+<h3>添加指标</h3>
+
+<p class="comment" v-if="items.length == 0">暂时还没有指标。</p>
+<table class="ui table celled selectable" v-if="items.length > 0">
+    <thead>
+    <tr>
+        <th>指标名称</th>
+        <th>统计对象</th>
+        <th>统计周期</th>
+        <th class="three wide">统计数值</th>
+        <th class="two wide">状态</th>
+        <th class="two op">操作</th>
+    </tr>
+    </thead>
+    <tr v-for="item in items">
+        <td>{{item.name}}</td>
+        <td>
+            <span v-if="item.keys != null" v-for="key in item.keys" class="ui label basic small">{{key}}</span>
+        </td>
+        <td>
+            {{item.period}} {{item.periodUnit}}
+        </td>
+        <td>
+            <span class="ui label small basic">{{item.value}}</span>
+        </td>
+        <td>
+            <label-on :v-is-on="item.isOn"></label-on>
+        </td>
+        <td>
+            <a href="" v-if="!item.isChecked">添加</a>
+            <a href="" v-if="item.isChecked"><span class="grey">已添加</span></a>
+        </td>
+    </tr>
+</table>
+
+<div class="page" v-html="page"></div>

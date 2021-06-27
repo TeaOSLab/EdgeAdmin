@@ -6,7 +6,7 @@
 
 <form method="post" class="ui form" v-if="!isRequesting">
 	<p>成功节点：<span class="green">{{countSuccess}}</span> &nbsp; 失败节点：<span class="red">{{countFail}}</span></p>
-	<table class="ui table selectable celled">
+	<table class="ui table selectable celled" v-if="results.length > 0">
 		<thead>
 			<tr>
 				<th>节点</th>

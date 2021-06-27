@@ -176,6 +176,7 @@ Vue.component("health-check-config-box", {
                         <td>域名</td>
                         <td>
                             <input type="text" v-model="urlHost"/>
+							<p class="comment">在此集群上可以访问到的一个域名。</p>
                         </td>
                     </tr>
                     <tr>

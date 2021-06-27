@@ -1,0 +1,7 @@
+<first-menu>
+    <menu-item :href="'/servers/metrics'">指标列表</menu-item>
+    <span class="item disabled">|</span>
+    <menu-item :href="'/servers/metrics/item?itemId=' + item.id" code="item">"{{item.name}}"详情</menu-item>
+    <menu-item :href="'/servers/metrics/update?itemId=' + item.id" code="update">修改</menu-item>
+    <menu-item :href="'/servers/metrics/charts?itemId=' + item.id" code="chart">图表</menu-item>
+</first-menu>

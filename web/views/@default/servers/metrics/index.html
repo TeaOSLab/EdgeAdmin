@@ -1,0 +1,46 @@
+{$layout}
+
+<first-menu>
+    <menu-item :href="'/servers/metrics?category=http'" :active="category == 'http'">HTTP</menu-item>
+    <menu-item :href="'/servers/metrics?category=tcp'" :active="category == 'tcp'">TCP</menu-item>
+    <menu-item :href="'/servers/metrics?category=udp'" :active="category == 'udp'">UDP</menu-item>
+    <span class="item disabled">|</span>
+    <menu-item @click.prevent="createItem">[创建指标]</menu-item>
+    <span class="item disabled">|</span>
+    <span class="item"><tip-icon content="在这里创建一些指标后，可以在集群中使用这些指标，从而实现阈值、图表等功能"></tip-icon></span>
+</first-menu>
+
+<p class="comment" v-if="items.length == 0">暂时还没有指标。</p>
+<table class="ui table celled selectable" v-if="items.length > 0">
+    <thead>
+        <tr>
+            <th>指标名称</th>
+            <th>统计对象</th>
+            <th>统计周期</th>
+            <th class="three wide">统计数值</th>
+            <th class="two wide">状态</th>
+            <th class="two op">操作</th>
+        </tr>
+    </thead>
+    <tr v-for="item in items">
+        <td>{{item.name}}</td>
+        <td>
+            <span v-if="item.keys != null" v-for="key in item.keys" class="ui label basic small">{{key}}</span>
+        </td>
+        <td>
+            {{item.period}} {{item.periodUnit}}
+        </td>
+        <td>
+            <span class="ui label small basic">{{item.value}}</span>
+        </td>
+        <td>
+            <label-on :v-is-on="item.isOn"></label-on>
+        </td>
+        <td>
+            <a :href="'/servers/metrics/item?itemId=' + item.id">详情</a> &nbsp;
+            <a href="" @click.prevent="deleteItem(item.id)">删除</a>
+        </td>
+    </tr>
+</table>
+
+<div class="page" v-html="page"></div>

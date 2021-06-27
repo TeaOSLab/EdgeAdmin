@@ -1,15 +1,12 @@
 package clusterutils
 
 import (
-	"encoding/json"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
-	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
@@ -39,13 +36,24 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 	action.Data["clusterId"] = clusterId
 
 	if clusterId > 0 {
-		cluster, err := dao.SharedNodeClusterDAO.FindEnabledNodeCluster(actionPtr.(rpc.ContextInterface).AdminContext(), clusterId)
+		var ctx = actionPtr.(rpc.ContextInterface).AdminContext()
+		cluster, err := dao.SharedNodeClusterDAO.FindEnabledNodeCluster(ctx, clusterId)
 		if err != nil {
 			logs.Error(err)
 			return
 		}
 		if cluster == nil {
 			action.WriteString("can not find cluster")
+			return
+		}
+
+		clusterInfo, err := dao.SharedNodeClusterDAO.FindEnabledNodeClusterConfigInfo(ctx, clusterId)
+		if err != nil {
+			logs.Error(err)
+			return
+		}
+		if clusterInfo == nil {
+			action.WriteString("can not find cluster info")
 			return
 		}
 
@@ -65,7 +73,7 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 		secondMenuItem := action.Data.GetString("secondMenuItem")
 		switch selectedTabbar {
 		case "setting":
-			action.Data["leftMenuItems"] = this.createSettingMenu(cluster, secondMenuItem)
+			action.Data["leftMenuItems"] = this.createSettingMenu(cluster, clusterInfo, secondMenuItem)
 		}
 	}
 
@@ -73,7 +81,7 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 }
 
 // 设置菜单
-func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, selectedItem string) (items []maps.Map) {
+func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.FindEnabledNodeClusterConfigInfoResponse, selectedItem string) (items []maps.Map) {
 	clusterId := numberutils.FormatInt64(cluster.Id)
 	items = append(items, maps.Map{
 		"name":     "基础设置",
@@ -93,25 +101,19 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, selectedIt
 		"isOn":     cluster.HttpFirewallPolicyId > 0,
 	})
 
-	{
-		hasActions, _ := this.checkFirewallActions(cluster.Id)
-		items = append(items, maps.Map{
-			"name":     "WAF动作",
-			"url":      "/clusters/cluster/settings/firewall-actions?clusterId=" + clusterId,
-			"isActive": selectedItem == "firewallAction",
-			"isOn":     hasActions,
-		})
-	}
+	items = append(items, maps.Map{
+		"name":     "WAF动作",
+		"url":      "/clusters/cluster/settings/firewall-actions?clusterId=" + clusterId,
+		"isActive": selectedItem == "firewallAction",
+		"isOn":     info != nil && info.HasFirewallActions,
+	})
 
-	{
-		healthCheckIsOn, _ := this.checkHealthCheckIsOn(cluster.Id)
-		items = append(items, maps.Map{
-			"name":     "健康检查",
-			"url":      "/clusters/cluster/settings/health?clusterId=" + clusterId,
-			"isActive": selectedItem == "health",
-			"isOn":     healthCheckIsOn,
-		})
-	}
+	items = append(items, maps.Map{
+		"name":     "健康检查",
+		"url":      "/clusters/cluster/settings/health?clusterId=" + clusterId,
+		"isActive": selectedItem == "health",
+		"isOn":     info != nil && info.HealthCheckIsOn,
+	})
 
 	items = append(items, maps.Map{
 		"name":     "DNS设置",
@@ -119,22 +121,26 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, selectedIt
 		"isActive": selectedItem == "dns",
 		"isOn":     cluster.DnsDomainId > 0 || len(cluster.DnsName) > 0,
 	})
+	/**items = append(items, maps.Map{
+		"name":     "统计指标",
+		"url":      "/clusters/cluster/settings/metrics?clusterId=" + clusterId,
+		"isActive": selectedItem == "metric",
+		"isOn":     info != nil && info.HasMetricItems,
+	})**/
+
 	if teaconst.IsPlus {
-		hasThresholds, _ := this.checkThresholds(cluster.Id)
 		items = append(items, maps.Map{
 			"name":     "阈值设置",
 			"url":      "/clusters/cluster/settings/thresholds?clusterId=" + clusterId,
 			"isActive": selectedItem == "threshold",
-			"isOn":     hasThresholds,
+			"isOn":     info != nil && info.HasThresholds,
 		})
-	}
-	if teaconst.IsPlus {
-		hasMessageReceivers, _ := this.checkMessages(cluster.Id)
+
 		items = append(items, maps.Map{
 			"name":     "消息通知",
 			"url":      "/clusters/cluster/settings/message?clusterId=" + clusterId,
 			"isActive": selectedItem == "message",
-			"isOn":     hasMessageReceivers,
+			"isOn":     info != nil && info.HasMessageReceivers,
 		})
 	}
 
@@ -150,99 +156,12 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, selectedIt
 		"isActive": selectedItem == "service",
 	})
 	{
-		isChecked, _ := this.checkTOA(cluster.Id)
 		items = append(items, maps.Map{
 			"name":     "TOA设置",
 			"url":      "/clusters/cluster/settings/toa?clusterId=" + clusterId,
 			"isActive": selectedItem == "toa",
-			"isOn":     isChecked,
+			"isOn":     info != nil && info.IsTOAEnabled,
 		})
 	}
 	return
-}
-
-// 检查健康检查是否开启
-func (this *ClusterHelper) checkHealthCheckIsOn(clusterId int64) (bool, error) {
-	rpcClient, err := rpc.SharedRPC()
-	if err != nil {
-		return false, err
-	}
-	resp, err := rpcClient.NodeClusterRPC().FindNodeClusterHealthCheckConfig(rpcClient.Context(0), &pb.FindNodeClusterHealthCheckConfigRequest{NodeClusterId: clusterId})
-	if err != nil {
-		return false, err
-	}
-	if len(resp.HealthCheckJSON) > 0 {
-		healthCheckConfig := &serverconfigs.HealthCheckConfig{}
-		err = json.Unmarshal(resp.HealthCheckJSON, healthCheckConfig)
-		if err != nil {
-			return false, err
-		}
-		return healthCheckConfig.IsOn, nil
-	}
-	return false, nil
-}
-
-// 检查是否有WAF动作
-func (this *ClusterHelper) checkFirewallActions(clusterId int64) (bool, error) {
-	rpcClient, err := rpc.SharedRPC()
-	if err != nil {
-		return false, err
-	}
-	resp, err := rpcClient.NodeClusterFirewallActionRPC().CountAllEnabledNodeClusterFirewallActions(rpcClient.Context(0), &pb.CountAllEnabledNodeClusterFirewallActionsRequest{NodeClusterId: clusterId})
-	if err != nil {
-		return false, err
-	}
-	return resp.Count > 0, nil
-}
-
-// 检查阈值是否已经设置
-func (this *ClusterHelper) checkThresholds(clusterId int64) (bool, error) {
-	rpcClient, err := rpc.SharedRPC()
-	if err != nil {
-		return false, err
-	}
-	resp, err := rpcClient.NodeThresholdRPC().CountAllEnabledNodeThresholds(rpcClient.Context(0), &pb.CountAllEnabledNodeThresholdsRequest{
-		Role:          "node",
-		NodeClusterId: clusterId,
-	})
-	if err != nil {
-		return false, err
-	}
-	return resp.Count > 0, nil
-}
-
-// 检查消息通知是否已经设置
-func (this *ClusterHelper) checkMessages(clusterId int64) (bool, error) {
-	rpcClient, err := rpc.SharedRPC()
-	if err != nil {
-		return false, err
-	}
-	resp, err := rpcClient.MessageReceiverRPC().CountAllEnabledMessageReceivers(rpcClient.Context(0), &pb.CountAllEnabledMessageReceiversRequest{
-		NodeClusterId: clusterId,
-	})
-	if err != nil {
-		return false, err
-	}
-	return resp.Count > 0, nil
-}
-
-// 检查TOA是否设置
-func (this *ClusterHelper) checkTOA(clusterId int64) (bool, error) {
-	rpcClient, err := rpc.SharedRPC()
-	if err != nil {
-		return false, err
-	}
-	resp, err := rpcClient.NodeClusterRPC().FindEnabledNodeClusterTOA(rpcClient.Context(0), &pb.FindEnabledNodeClusterTOARequest{NodeClusterId: clusterId})
-	if err != nil {
-		return false, err
-	}
-	if len(resp.ToaJSON) == 0 {
-		return false, nil
-	}
-	var toaConfig = &nodeconfigs.TOAConfig{}
-	err = json.Unmarshal(resp.ToaJSON, toaConfig)
-	if err != nil {
-		return false, err
-	}
-	return toaConfig.IsOn, nil
 }

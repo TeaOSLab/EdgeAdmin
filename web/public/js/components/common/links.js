@@ -62,7 +62,7 @@ Vue.component("tip-icon", {
 			teaweb.popupTip(this.content)
 		}
 	},
-	template: `<a href="" title="查看帮助" @click.prevent="showTip"><i class="icon question circle"></i></a>`
+	template: `<a href="" title="查看帮助" @click.prevent="showTip"><i class="icon question circle grey"></i></a>`
 })
 
 // 提交点击事件

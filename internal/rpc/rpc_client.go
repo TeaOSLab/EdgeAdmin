@@ -388,6 +388,14 @@ func (this *RPCClient) NSAccessLogRPC() pb.NSAccessLogServiceClient {
 	return pb.NewNSAccessLogServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) MetricItemRPC() pb.MetricItemServiceClient {
+	return pb.NewMetricItemServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) NodeClusterMetricItemRPC() pb.NodeClusterMetricItemServiceClient {
+	return pb.NewNodeClusterMetricItemServiceClient(this.pickConn())
+}
+
 // Context 构造Admin上下文
 func (this *RPCClient) Context(adminId int64) context.Context {
 	ctx := context.Background()
