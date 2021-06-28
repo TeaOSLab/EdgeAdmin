@@ -7,10 +7,13 @@ Tea.context(function () {
 	this.protocol = this.protocols[0].code
 
 	// 初始化
-	if (this.protocol == "http") {
-		this.address = "80"
-	} else if (this.protocol == "https") {
-		this.address = "443"
+	// from 用来标记是否为特殊的节点
+	if (this.from.length == 0) {
+		if (this.protocol == "http") {
+			this.address = "80"
+		} else if (this.protocol == "https") {
+			this.address = "443"
+		}
 	}
 
 	if (window.parent.UPDATING_ADDR != null) {
@@ -25,6 +28,9 @@ Tea.context(function () {
 	}
 
 	this.changeProtocol = function () {
+		if (this.from.length > 0) {
+			return
+		}
 		switch (this.protocol) {
 			case "http":
 				this.address = "80"
