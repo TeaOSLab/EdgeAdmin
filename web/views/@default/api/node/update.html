@@ -2,6 +2,8 @@
 
 {$template "menu"}
 
+<div class="ui warning message"><i class="icon warning circle"></i>如果你修改了GRPC访问地址（包含端口），可能需要手工修改其他节点的配置信息。</div>
+
 <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 	<input type="hidden" name="nodeId" :value="node.id"/>
 	<input type="hidden" name="sslPolicyId" :value="node.sslPolicyId"/>
@@ -29,7 +31,7 @@
 			<td>GRPC访问地址 *</td>
 			<td>
 				<api-node-addresses-box :v-name="'accessAddrsJSON'" :v-addrs="node.accessAddrs"></api-node-addresses-box>
-				<p class="comment">边缘节点和管理平台等外部节点访问API节点的网络地址，需要保证其他节点能够通过此地址访问到API节点服务。</p>
+				<p class="comment">边缘节点和管理平台等外部节点访问API节点的网络地址，需要保证其他节点能够通过此地址访问到API节点服务。<strong>访问地址里的端口号和监听端口通常一致，除非你做了端口转发。</strong></p>
 			</td>
 		</tr>
 		<tr>
