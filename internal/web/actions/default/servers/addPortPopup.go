@@ -20,7 +20,10 @@ func (this *AddPortPopupAction) Init() {
 func (this *AddPortPopupAction) RunGet(params struct {
 	ServerType string
 	Protocol   string
+	From       string
 }) {
+	this.Data["from"] = params.From
+
 	protocols := serverconfigs.AllServerProtocolsForType(params.ServerType)
 	if len(params.Protocol) > 0 {
 		result := []maps.Map{}

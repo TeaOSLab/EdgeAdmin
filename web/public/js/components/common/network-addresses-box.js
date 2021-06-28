@@ -1,5 +1,5 @@
 Vue.component("network-addresses-box", {
-	props: ["v-server-type", "v-addresses", "v-protocol", "v-name"],
+	props: ["v-server-type", "v-addresses", "v-protocol", "v-name", "v-from"],
 	data: function () {
 		let addresses = this.vAddresses
 		if (addresses == null) {
@@ -15,10 +15,16 @@ Vue.component("network-addresses-box", {
 			name = "addresses"
 		}
 
+		let from = this.vFrom
+		if (from == null) {
+			from = ""
+		}
+
 		return {
 			addresses: addresses,
 			protocol: protocol,
-			name: name
+			name: name,
+			from: from
 		}
 	},
 	watch: {
@@ -35,7 +41,7 @@ Vue.component("network-addresses-box", {
 		addAddr: function () {
 			let that = this
 			window.UPDATING_ADDR = null
-			teaweb.popup("/servers/addPortPopup?serverType=" + this.vServerType + "&protocol=" + this.protocol, {
+			teaweb.popup("/servers/addPortPopup?serverType=" + this.vServerType + "&protocol=" + this.protocol + "&from=" + this.from, {
 				height: "16em",
 				callback: function (resp) {
 					var addr = resp.data.address
