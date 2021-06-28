@@ -26,7 +26,7 @@
 			<td>GRPC 外部访问地址 *</td>
 			<td>
 				<api-node-addresses-box :v-name="'accessAddrsJSON'"></api-node-addresses-box>
-				<p class="comment">边缘节点和管理平台等外部节点访问API节点的网络地址，需要保证其他节点能够通过此地址访问到API节点服务。</p>
+				<p class="comment">边缘节点和管理平台等外部节点访问API节点的网络地址，需要保证其他节点能够通过此地址访问到API节点服务。<strong>访问地址里的端口号和监听端口通常一致，除非你做了端口转发。</strong></p>
 			</td>
 		</tr>
 		<tr>
