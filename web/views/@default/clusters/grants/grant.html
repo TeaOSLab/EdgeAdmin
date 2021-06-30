@@ -1,5 +1,6 @@
 {$layout}
 {$template "grant_menu"}
+{$template "/code_editor"}
 
 <table class="ui table selectable definition">
 	<tr>
@@ -35,9 +36,15 @@
 	<!-- 私钥 -->
 	<tbody v-if="grant.method == 'privateKey'">
         <tr>
+            <td>SSH用户名</td>
+            <td>{{grant.username}}
+                <p class="comment">SSH登录用户名。</p>
+            </td>
+        </tr>
+        <tr>
             <td>RSA私钥</td>
             <td>
-                {{grant.privateKey}}
+                <source-code-box type="text/plain">{{grant.privateKey}}</source-code-box>
                 <p class="comment">用来生成登录SSH公钥的私钥</p>
             </td>
         </tr>
