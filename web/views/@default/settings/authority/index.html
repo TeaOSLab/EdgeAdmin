@@ -1,7 +1,7 @@
 {$layout}
 {$template "menu"}
 
-<div class="ui message warning" v-if="key == null">认证之后，可以使用企业版功能，当前你还没有认证，<a href="http://edge.teaos.cn/docs/Plus/Authority/Index.md" target="_blank">[在这里看认证方法]</a>。</div>
+<warning-message v-if="key == null">认证之后，可以使用企业版功能，当前你还没有认证，<a href="http://edge.teaos.cn/docs/Plus/Authority/Index.md" target="_blank">[在这里看认证方法]</a>。</warning-message>
 
 <div v-if="key != null">
     <div class="margin"></div>

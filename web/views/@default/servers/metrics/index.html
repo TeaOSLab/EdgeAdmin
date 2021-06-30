@@ -2,8 +2,8 @@
 
 <first-menu>
     <menu-item :href="'/servers/metrics?category=http'" :active="category == 'http'">HTTP</menu-item>
-    <menu-item :href="'/servers/metrics?category=tcp'" :active="category == 'tcp'">TCP</menu-item>
-    <menu-item :href="'/servers/metrics?category=udp'" :active="category == 'udp'">UDP</menu-item>
+    <!--<menu-item :href="'/servers/metrics?category=tcp'" :active="category == 'tcp'">TCP</menu-item>
+    <menu-item :href="'/servers/metrics?category=udp'" :active="category == 'udp'">UDP</menu-item>-->
     <span class="item disabled">|</span>
     <menu-item @click.prevent="createItem">[创建指标]</menu-item>
     <span class="item disabled">|</span>

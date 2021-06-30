@@ -5,6 +5,7 @@ package metrics
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 )
 
@@ -17,12 +18,14 @@ func (this *CreatePopupAction) Init() {
 }
 
 func (this *CreatePopupAction) RunGet(params struct {
-	Category string
+	ClusterId int64
+	Category  string
 }) {
 	if len(params.Category) == 0 {
 		params.Category = "http"
 	}
 	this.Data["category"] = params.Category
+	this.Data["clusterId"] = params.ClusterId
 
 	countResp, err := this.RPC().MetricItemRPC().CountAllEnabledMetricItems(this.AdminContext(), &pb.CountAllEnabledMetricItemsRequest{Category: params.Category})
 	if err != nil {
@@ -44,6 +47,17 @@ func (this *CreatePopupAction) RunGet(params struct {
 	}
 	var itemMaps = []maps.Map{}
 	for _, item := range itemsResp.MetricItems {
+		// 是否已添加
+		existsResp, err := this.RPC().NodeClusterMetricItemRPC().ExistsNodeClusterMetricItem(this.AdminContext(), &pb.ExistsNodeClusterMetricItemRequest{
+			NodeClusterId: params.ClusterId,
+			MetricItemId:  item.Id,
+		})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		var exists = existsResp.Exists
+
 		itemMaps = append(itemMaps, maps.Map{
 			"id":         item.Id,
 			"name":       item.Name,
@@ -53,9 +67,29 @@ func (this *CreatePopupAction) RunGet(params struct {
 			"keys":       item.Keys,
 			"value":      item.Value,
 			"category":   item.Category,
+			"isChecked":  exists,
 		})
 	}
 	this.Data["items"] = itemMaps
 
 	this.Show()
+}
+
+func (this *CreatePopupAction) RunPost(params struct {
+	ClusterId int64
+	ItemId    int64
+
+	Must *actions.Must
+}) {
+	defer this.CreateLogInfo("添加指标 %d 到集群 %d", params.ItemId, params.ClusterId)
+
+	_, err := this.RPC().NodeClusterMetricItemRPC().EnableNodeClusterMetricItem(this.AdminContext(), &pb.EnableNodeClusterMetricItemRequest{
+		NodeClusterId: params.ClusterId,
+		MetricItemId:  params.ItemId,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Success()
 }

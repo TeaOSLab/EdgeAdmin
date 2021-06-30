@@ -1,6 +1,8 @@
 {$layout "layout"}
 {$template "item_menu"}
 
+<warning-message>修改统计对象、统计周期、统计数值等参数后，将重新记录数据。</warning-message>
+
 <form class="ui form" data-tea-action="$" data-tea-success="success">
     <csrf-token></csrf-token>
     <input type="hidden" name="itemId" :value="item.id"/>
@@ -28,24 +30,17 @@
             <td>
                 <!-- HTTP -->
                 <select class="ui dropdown auto-width" name="value" v-if="item.category == 'http'" v-model="item.value">
-                    <option value="${countRequest}">请求数</option>
-                    <option value="${countConnection}">连接数</option>
-                    <option value="${countTrafficIn}">下行流量</option>
-                    <option value="${countTrafficOut}">上行流量</option>
+                    <option v-for="def in valueDefinitions" :value="def.code">{{def.name}}</option>
                 </select>
 
                 <!-- TCP -->
                 <select class="ui dropdown auto-width" name="value" v-if="item.category == 'tcp'">
-                    <option value="${countConnection}">连接数</option>
-                    <option value="${countTrafficIn}">下行流量</option>
-                    <option value="${countTrafficOut}">上行流量</option>
+                    <option v-for="def in valueDefinitions" :value="def.code">{{def.name}}</option>
                 </select>
 
                 <!-- UDP -->
                 <select class="ui dropdown auto-width" name="value" v-if="item.category == 'udp'">
-                    <option value="${countConnection}">连接数</option>
-                    <option value="${countTrafficIn}">下行流量</option>
-                    <option value="${countTrafficOut}">上行流量</option>
+                    <option v-for="def in valueDefinitions" :value="def.code">{{def.name}}</option>
                 </select>
             </td>
         </tr>

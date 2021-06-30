@@ -15,7 +15,7 @@ func (this *ItemAction) Init() {
 func (this *ItemAction) RunGet(params struct {
 	ItemId int64
 }) {
-	err := InitItem(this.Parent(), params.ItemId)
+	_, err := InitItem(this.Parent(), params.ItemId)
 	if err != nil {
 		this.ErrorPage(err)
 		return

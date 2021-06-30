@@ -1,0 +1,27 @@
+{$layout}
+{$template "item_menu"}
+
+<p class="comment" v-if="stats.length == 0">暂时还没有统计数据。</p>
+
+<table class="ui table selectable celled" v-if="stats.length > 0">
+    <thead>
+        <tr>
+            <th>指标对象</th>
+            <th>指标值</th>
+            <th>时间</th>
+            <th>集群</th>
+            <th>节点</th>
+            <th>服务</th>
+        </tr>
+    </thead>
+    <tr v-for="stat in stats">
+        <td>{{stat.keys}}</td>
+        <td>{{stat.value}}</td>
+        <td>{{stat.time}}</td>
+        <td>{{stat.cluster.name}}</td>
+        <td>{{stat.node.name}}</td>
+        <td>{{stat.server.name}}<link-icon :href="'/servers/server/stat?serverId=' + stat.server.id"></link-icon></td>
+    </tr>
+</table>
+
+<div class="page" v-html="page"></div>

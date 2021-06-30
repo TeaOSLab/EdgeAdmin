@@ -4,7 +4,7 @@
 <div class="right-box">
     {$template "../menu"}
 
-    <div class="ui message warning" v-if="!featureIsOn">尚未为当前用户开通此功能。</div>
+    <warning-message v-if="!featureIsOn">尚未为当前用户开通此功能。</warning-message>
 
     {$ if .featureIsOn}
     <second-menu>
@@ -15,7 +15,7 @@
         <div class="item"><ip-list-bind-box :v-http-firewall-policy-id="firewallPolicyId" :v-type="'black'"></ip-list-bind-box></div>
     </second-menu>
 
-    <p class="ui message warning" v-if="!wafIsOn">当前WAF未启用，设置将在<a :href="'/servers/server/settings/waf?serverId=' + serverId">[启用]</a>后生效。</p>
+    <warning-message v-if="!wafIsOn">当前WAF未启用，设置将在<a :href="'/servers/server/settings/waf?serverId=' + serverId">[启用]</a>后生效。</warning-message>
 
     <p class="comment" v-if="items.length == 0">暂时还没有IP。</p>
     <ip-list-table v-if="items.length > 0" :v-items="items" @update-item="updateItem" @delete-item="deleteItem"></ip-list-table>

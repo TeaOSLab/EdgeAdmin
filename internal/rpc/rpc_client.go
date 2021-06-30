@@ -392,6 +392,10 @@ func (this *RPCClient) MetricItemRPC() pb.MetricItemServiceClient {
 	return pb.NewMetricItemServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) MetricStatRPC() pb.MetricStatServiceClient {
+	return pb.NewMetricStatServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) NodeClusterMetricItemRPC() pb.NodeClusterMetricItemServiceClient {
 	return pb.NewNodeClusterMetricItemServiceClient(this.pickConn())
 }

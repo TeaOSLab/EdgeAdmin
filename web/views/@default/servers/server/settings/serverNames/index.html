@@ -4,7 +4,7 @@
 <div class="right-box">
     <!-- 审核中 -->
     <div v-show="isAuditing">
-        <p class="ui message warning">当前域名正在审核中，请审核域名的所有人、备案情况等。</p>
+        <warning-message>当前域名正在审核中，请审核域名的所有人、备案情况等。</warning-message>
         <form method="post" class="ui form" data-tea-action=".audit" data-tea-success="auditSuccess">
             <csrf-token></csrf-token>
             <input type="hidden" name="serverId" :value="serverId"/>

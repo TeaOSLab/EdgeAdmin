@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 )
@@ -21,11 +22,13 @@ func (this *UpdateAction) Init() {
 func (this *UpdateAction) RunGet(params struct {
 	ItemId int64
 }) {
-	err := InitItem(this.Parent(), params.ItemId)
+	item, err := InitItem(this.Parent(), params.ItemId)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
+
+	this.Data["valueDefinitions"] = serverconfigs.FindAllMetricValueDefinitions(item.Category)
 
 	this.Show()
 }

@@ -6,7 +6,7 @@
 
 	<div v-if="!reverseProxyRef.isOn">
 		<div class="margin"></div>
-		<p class="ui message warning">当前代理服务没有开启，可以通过点击 <a :href="'/servers/server/settings/reverseProxy/setting?serverId=' + serverId">[更多设置]</a> 开启 。</p>
+        <warning-message>当前代理服务没有开启，可以通过点击 <a :href="'/servers/server/settings/reverseProxy/setting?serverId=' + serverId">[更多设置]</a> 开启 。</warning-message>
 	</div>
 
 	<origin-list-box :v-primary-origins="primaryOrigins" :v-backup-origins="backupOrigins"

@@ -26,7 +26,10 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	this.Data["category"] = params.Category
 
-	itemsResp, err := this.RPC().NodeClusterMetricItemRPC().FindAllNodeClusterMetricItems(this.AdminContext(), &pb.FindAllNodeClusterMetricItemsRequest{NodeClusterId: params.ClusterId})
+	itemsResp, err := this.RPC().NodeClusterMetricItemRPC().FindAllNodeClusterMetricItems(this.AdminContext(), &pb.FindAllNodeClusterMetricItemsRequest{
+		NodeClusterId: params.ClusterId,
+		Category:      params.Category,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return

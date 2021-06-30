@@ -13,6 +13,12 @@
         <td><label-on :v-is-on="item.isOn"></label-on></td>
     </tr>
     <tr>
+        <td>统计对象</td>
+        <td>
+            <span v-for="key in item.keys" class="ui label small basic">{{key}}</span>
+        </td>
+    </tr>
+    <tr>
         <td>统计周期</td>
         <td>
             {{item.period}} {{item.periodUnit}}

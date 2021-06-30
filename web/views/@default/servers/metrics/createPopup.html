@@ -28,24 +28,17 @@
             <td>
                 <!-- HTTP -->
                 <select class="ui dropdown auto-width" name="value" v-if="category == 'http'">
-                    <option value="${countRequest}">请求数</option>
-                    <option value="${countConnection}">连接数</option>
-                    <option value="${countTrafficIn}">下行流量</option>
-                    <option value="${countTrafficOut}">上行流量</option>
+                    <option v-for="def in valueDefinitions" :value="def.code">{{def.name}}</option>
                 </select>
 
                 <!-- TCP -->
                 <select class="ui dropdown auto-width" name="value" v-if="category == 'tcp'">
-                    <option value="${countConnection}">连接数</option>
-                    <option value="${countTrafficIn}">下行流量</option>
-                    <option value="${countTrafficOut}">上行流量</option>
+                    <option v-for="def in valueDefinitions" :value="def.code">{{def.name}}</option>
                 </select>
 
                 <!-- UDP -->
                 <select class="ui dropdown auto-width" name="value" v-if="category == 'udp'">
-                    <option value="${countConnection}">连接数</option>
-                    <option value="${countTrafficIn}">下行流量</option>
-                    <option value="${countTrafficOut}">上行流量</option>
+                    <option v-for="def in valueDefinitions" :value="def.code">{{def.name}}</option>
                 </select>
             </td>
         </tr>
