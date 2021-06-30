@@ -74,6 +74,9 @@ func (this *UpdateAction) RunPost(params struct {
 			this.FailField("username", "请输入SSH登录用户名")
 		}
 	case "privateKey":
+		if len(params.Username) == 0 {
+			this.FailField("username", "请输入SSH登录用户名")
+		}
 		if len(params.PrivateKey) == 0 {
 			this.FailField("privateKey", "请输入RSA私钥")
 		}

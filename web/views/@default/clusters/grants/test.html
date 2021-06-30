@@ -43,9 +43,13 @@
         <!-- 私钥 -->
         <tbody v-if="grant.method == 'privateKey'">
             <tr>
+                <td>SSH用户名</td>
+                <td>{{grant.username}}</td>
+            </tr>
+            <tr>
                 <td>RSA私钥</td>
                 <td>
-                    {{grant.privateKey}}
+                    <pre class="pre-box" style="max-height: 10em; overflow-y: auto">{{grant.privateKey}}</pre>
                 </td>
             </tr>
         </tbody>
