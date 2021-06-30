@@ -4,10 +4,10 @@
 <div class="right-box">
     {$template "../menu"}
 
-    <div class="ui message warning" v-if="!featureIsOn">尚未为当前用户开通此功能。</div>
+    <warning-message v-if="!featureIsOn">尚未为当前用户开通此功能。</warning-message>
 
     {$ if .featureIsOn}
-    <p class="ui message warning" v-if="!wafIsOn">当前WAF未启用，设置将在<a :href="'/servers/server/settings/waf?serverId=' + serverId">[启用]</a>后生效。</p>
+    <warning-message v-if="!wafIsOn">当前WAF未启用，设置将在<a :href="'/servers/server/settings/waf?serverId=' + serverId">[启用]</a>后生效。</warning-message>
 
 	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 		<input type="hidden" name="firewallPolicyId" :value="firewallPolicyId"/>

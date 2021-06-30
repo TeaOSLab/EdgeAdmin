@@ -4,15 +4,15 @@
 <div class="right-box">
     <first-menu>
         <menu-item :href="'/clusters/cluster/settings/metrics?category=http&clusterId=' + clusterId" :active="category == 'http'">HTTP</menu-item>
-        <menu-item :href="'/clusters/cluster/settings/metrics?category=tcp&clusterId=' + clusterId" :active="category == 'tcp'">TCP</menu-item>
-        <menu-item :href="'/clusters/cluster/settings/metrics?category=udp&clusterId=' + clusterId" :active="category == 'udp'">UDP</menu-item>
+        <!--<menu-item :href="'/clusters/cluster/settings/metrics?category=tcp&clusterId=' + clusterId" :active="category == 'tcp'">TCP</menu-item>
+        <menu-item :href="'/clusters/cluster/settings/metrics?category=udp&clusterId=' + clusterId" :active="category == 'udp'">UDP</menu-item>-->
         <span class="item disabled">|</span>
         <menu-item @click.prevent="createItem">[添加指标]</menu-item>
         <span class="item disabled">|</span>
         <span class="item"><tip-icon content="在这里设置的指标，会自动应用到部署在当前集群上的所有服务上。"></tip-icon></span>
     </first-menu>
 
-    <p class="comment" v-if="items.length == 0">暂时还没有设置指标。</p>
+    <p class="comment" v-if="items.length == 0">暂时还没有添加指标。</p>
 
     <table class="ui table celled selectable" v-if="items.length > 0">
         <thead>

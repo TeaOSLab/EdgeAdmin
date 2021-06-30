@@ -121,12 +121,12 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 		"isActive": selectedItem == "dns",
 		"isOn":     cluster.DnsDomainId > 0 || len(cluster.DnsName) > 0,
 	})
-	/**items = append(items, maps.Map{
+	items = append(items, maps.Map{
 		"name":     "统计指标",
 		"url":      "/clusters/cluster/settings/metrics?clusterId=" + clusterId,
 		"isActive": selectedItem == "metric",
 		"isOn":     info != nil && info.HasMetricItems,
-	})**/
+	})
 
 	if teaconst.IsPlus {
 		items = append(items, maps.Map{

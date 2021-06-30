@@ -8,7 +8,7 @@
 		<a href="" class="item" @click.prevent="createGroup(type)">[添加分组]</a>
 	</second-menu>
 
-    <p class="ui message warning" v-if="!wafIsOn">当前WAF未启用，设置将在<a :href="'/servers/server/settings/waf?serverId=' + serverId">[启用]</a>后生效。</p>
+    <warning-message v-if="!wafIsOn">当前WAF未启用，设置将在<a :href="'/servers/server/settings/waf?serverId=' + serverId">[启用]</a>后生效。</warning-message>
 
 	<p class="comment" v-if="groups.length == 0">暂时还没有规则分组。</p>
 

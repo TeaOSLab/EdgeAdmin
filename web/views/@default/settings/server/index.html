@@ -1,6 +1,6 @@
 {$layout}
 
-<div class="ui message warning" v-if="serverIsChanged">服务配置已修改，请在命令行下重启后生效。</div>
+<warning-message v-if="serverIsChanged">服务配置已修改，请在命令行下重启后生效。</warning-message>
 
 <h3>HTTP <a href="/settings/server/http" v-if="!teaDemoEnabled" @click.prevent="updateHTTP()">修改</a><a v-if="teaDemoEnabled">[演示版无法修改]</a></h3>
 

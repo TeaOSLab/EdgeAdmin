@@ -10,18 +10,19 @@ import (
 	"github.com/iwind/TeaGo/maps"
 )
 
-func InitItem(parent *actionutils.ParentAction, itemId int64) error {
+// InitItem 初始化指标信息
+func InitItem(parent *actionutils.ParentAction, itemId int64) (*pb.MetricItem, error) {
 	client, err := rpc.SharedRPC()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	resp, err := client.MetricItemRPC().FindEnabledMetricItem(parent.AdminContext(), &pb.FindEnabledMetricItemRequest{MetricItemId: itemId})
 	if err != nil {
-		return err
+		return nil, err
 	}
 	var item = resp.MetricItem
 	if item == nil {
-		return errors.New("not found")
+		return nil, errors.New("not found")
 	}
 	parent.Data["item"] = maps.Map{
 		"id":         item.Id,
@@ -33,5 +34,5 @@ func InitItem(parent *actionutils.ParentAction, itemId int64) error {
 		"periodUnit": item.PeriodUnit,
 		"category":   item.Category,
 	}
-	return nil
+	return item, nil
 }
