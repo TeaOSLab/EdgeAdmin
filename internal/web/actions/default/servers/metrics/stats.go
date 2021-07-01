@@ -3,6 +3,7 @@
 package metrics
 
 import (
+	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -49,6 +50,12 @@ func (this *StatsAction) RunGet(params struct {
 	}
 	var statMaps = []maps.Map{}
 	for _, stat := range statsResp.MetricStats {
+		// 占比
+		var ratio float32
+		if stat.SumTotal > 0 {
+			ratio = stat.Value * 100 / stat.SumTotal
+		}
+
 		statMaps = append(statMaps, maps.Map{
 			"id":      stat.Id,
 			"time":    serverconfigs.HumanMetricTime(item.PeriodUnit, stat.Time),
@@ -57,6 +64,7 @@ func (this *StatsAction) RunGet(params struct {
 			"cluster": maps.Map{"id": stat.NodeCluster.Id, "name": stat.NodeCluster.Name},
 			"node":    maps.Map{"id": stat.Node.Id, "name": stat.Node.Name},
 			"server":  maps.Map{"id": stat.Server.Id, "name": stat.Server.Name},
+			"ratio":   fmt.Sprintf("%.2f", ratio),
 		})
 	}
 	this.Data["stats"] = statMaps

@@ -8,6 +8,7 @@
         <tr>
             <th>指标对象</th>
             <th>指标值</th>
+            <th>占比</th>
             <th>时间</th>
             <th>集群</th>
             <th>节点</th>
@@ -17,6 +18,7 @@
     <tr v-for="stat in stats">
         <td>{{stat.keys}}</td>
         <td>{{stat.value}}</td>
+        <td>{{stat.ratio}}%</td>
         <td>{{stat.time}}</td>
         <td>{{stat.cluster.name}}</td>
         <td>{{stat.node.name}}</td>
