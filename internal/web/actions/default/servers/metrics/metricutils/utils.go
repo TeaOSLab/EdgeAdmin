@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/maps"
 )
 
@@ -25,14 +26,16 @@ func InitItem(parent *actionutils.ParentAction, itemId int64) (*pb.MetricItem, e
 		return nil, errors.New("metric item not found")
 	}
 	parent.Data["item"] = maps.Map{
-		"id":         item.Id,
-		"name":       item.Name,
-		"isOn":       item.IsOn,
-		"keys":       item.Keys,
-		"value":      item.Value,
-		"period":     item.Period,
-		"periodUnit": item.PeriodUnit,
-		"category":   item.Category,
+		"id":             item.Id,
+		"name":           item.Name,
+		"isOn":           item.IsOn,
+		"keys":           item.Keys,
+		"value":          item.Value,
+		"valueName":      serverconfigs.FindMetricValueName(item.Category, item.Value),
+		"period":         item.Period,
+		"periodUnit":     item.PeriodUnit,
+		"periodUnitName": serverconfigs.FindMetricPeriodUnitName(item.PeriodUnit),
+		"category":       item.Category,
 	}
 	return item, nil
 }

@@ -25,13 +25,13 @@
     <tr v-for="item in items">
         <td>{{item.name}}</td>
         <td>
-            <span v-if="item.keys != null" v-for="key in item.keys" class="ui label basic small">{{key}}</span>
+            <div v-if="item.keys != null" v-for="key in item.keys" style="margin-bottom: 0.3em; margin-top: 0.3em"><metric-key-label :v-key="key"></metric-key-label></div>
         </td>
         <td>
-            {{item.period}} {{item.periodUnit}}
+            {{item.period}} {{item.periodUnitName}}
         </td>
         <td>
-            <span class="ui label small basic">{{item.value}}</span>
+            <span class="ui label small basic">{{item.valueName}}</span>
         </td>
         <td>
             <label-on :v-is-on="item.isOn"></label-on>

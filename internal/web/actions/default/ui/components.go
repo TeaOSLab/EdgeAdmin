@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/conds/condutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/actions"
@@ -88,6 +89,16 @@ func (this *ComponentsAction) RunGet(params struct{}) {
 	} else {
 		buffer.WriteString("window.REQUEST_VARIABLES = ")
 		buffer.Write(requestVariablesJSON)
+		buffer.Write([]byte{'\n', '\n'})
+	}
+
+	// 指标
+	metricHTTPKeysJSON, err := json.Marshal(serverconfigs.FindAllMetricKeyDefinitions(serverconfigs.MetricItemCategoryHTTP))
+	if err != nil {
+		logs.Println("ComponentsAction marshal metric http keys failed: " + err.Error())
+	} else {
+		buffer.WriteString("window.METRIC_HTTP_KEYS = ")
+		buffer.Write(metricHTTPKeysJSON)
 		buffer.Write([]byte{'\n', '\n'})
 	}
 
