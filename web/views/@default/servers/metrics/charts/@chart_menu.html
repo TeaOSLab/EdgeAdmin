@@ -1,0 +1,6 @@
+<second-menu>
+    <menu-item :href="Tea.url('.', { itemId: item.id })">图表列表</menu-item>
+    <span class="item disabled">|</span>
+    <menu-item :href="Tea.url('.chart', {chartId: chart.id})" code="chartIndex">详情"{{chart.name}}"</menu-item>
+    <menu-item :href="Tea.url('.update', {chartId: chart.id})" code="chartUpdate">修改</menu-item>
+</second-menu>

@@ -1,6 +1,6 @@
 // Copyright 2021 Liuxiangchao iwind.liu@gmail.com. All rights reserved.
 
-package metrics
+package metricutils
 
 import (
 	"errors"
@@ -22,7 +22,7 @@ func InitItem(parent *actionutils.ParentAction, itemId int64) (*pb.MetricItem, e
 	}
 	var item = resp.MetricItem
 	if item == nil {
-		return nil, errors.New("not found")
+		return nil, errors.New("metric item not found")
 	}
 	parent.Data["item"] = maps.Map{
 		"id":         item.Id,

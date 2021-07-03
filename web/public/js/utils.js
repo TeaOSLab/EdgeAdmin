@@ -290,6 +290,11 @@ window.teaweb = {
 			showConfirmButton: false
 		});
 	},
+	successRefresh: function (message) {
+		teaweb.success(message, function () {
+			teaweb.reload()
+		})
+	},
 	warn: function (message, callback) {
 		var width = "20em";
 		if (message.length > 30) {

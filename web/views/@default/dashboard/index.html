@@ -1,9 +1,5 @@
 {$layout}
-
-{$var "header"}
-<!-- echart -->
-<script type="text/javascript" src="/js/echarts/echarts.min.js"></script>
-{$end}
+{$template "/echarts"}
 
 <!-- 升级提醒 -->
 <div class="ui message error" v-if="nodeUpgradeInfo.count > 0"><a href="/clusters">升级提醒：有 {{nodeUpgradeInfo.count}} 个边缘节点需要升级到 v{{nodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a></div>

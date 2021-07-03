@@ -1,0 +1,35 @@
+{$layout}
+{$template "../item_menu"}
+
+<second-menu>
+    <menu-item @click.prevent="createChart">[创建图表]</menu-item>
+</second-menu>
+
+
+<p class="comment" v-if="charts.length == 0">暂时还没有图表。</p>
+<table class="ui table celled selectable" v-if="charts.length > 0">
+    <thead>
+        <tr>
+            <th>图表名称</th>
+            <th>类型</th>
+            <th>宽度</th>
+            <th class="two wide">状态</th>
+            <th class="two op">操作</th>
+        </tr>
+    </thead>
+    <tr v-for="chart in charts">
+        <td>{{chart.name}}</td>
+        <td>{{chart.typeName}}</td>
+        <td>
+            <span v-if="chart.widthDiv > 0">1/{{chart.widthDiv}}</span>
+            <span v-else>1</span>
+        </td>
+        <td><label-on :v-is-on="chart.isOn"></label-on></td>
+        <td>
+            <a :href="Tea.url('.chart', {chartId: chart.id})">详情</a> &nbsp;
+            <a href="" @click.prevent="deleteChart(chart.id)">删除</a>
+        </td>
+    </tr>
+</table>
+
+<div class="page" v-html="page"></div>
