@@ -1,4 +1,4 @@
-package metrics
+package charts
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
@@ -12,13 +12,12 @@ func init() {
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeServer)).
 			Data("teaMenu", "servers").
 			Data("teaSubMenu", "metric").
-			Prefix("/servers/metrics").
+			Prefix("/servers/metrics/charts").
 			Get("", new(IndexAction)).
 			GetPost("/createPopup", new(CreatePopupAction)).
 			GetPost("/update", new(UpdateAction)).
 			Post("/delete", new(DeleteAction)).
-			Get("/item", new(ItemAction)).
-			Get("/stats", new(StatsAction)).
+			Get("/chart", new(ChartAction)).
 			EndAll()
 	})
 }

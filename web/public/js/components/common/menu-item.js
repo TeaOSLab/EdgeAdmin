@@ -10,7 +10,13 @@ Vue.component("menu-item", {
 			if (typeof (window.TEA.ACTION.data.firstMenuItem) != "undefined") {
 				itemCode = window.TEA.ACTION.data.firstMenuItem
 			}
-			active = (itemCode == this.code)
+			if (itemCode != null && itemCode.length > 0 && this.code != null && this.code.length > 0) {
+				if (itemCode.indexOf(",") > 0) {
+					active = itemCode.split(",").$contains(this.code)
+				} else {
+					active = (itemCode == this.code)
+				}
+			}
 		}
 		return {
 			vHref: (this.href == null) ? "" : this.href,

@@ -669,4 +669,7 @@ td {
 .source-code-box .CodeMirror-vscrollbar::-webkit-scrollbar-thumb {
   border-radius: 2px;
 }
+.scroll-box::-webkit-scrollbar {
+  width: 4px;
+}
 /*# sourceMappingURL=@layout.css.map */

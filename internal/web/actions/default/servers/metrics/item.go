@@ -2,7 +2,10 @@
 
 package metrics
 
-import "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/metrics/metricutils"
+)
 
 type ItemAction struct {
 	actionutils.ParentAction
@@ -15,7 +18,7 @@ func (this *ItemAction) Init() {
 func (this *ItemAction) RunGet(params struct {
 	ItemId int64
 }) {
-	_, err := InitItem(this.Parent(), params.ItemId)
+	_, err := metricutils.InitItem(this.Parent(), params.ItemId)
 	if err != nil {
 		this.ErrorPage(err)
 		return

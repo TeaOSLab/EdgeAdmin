@@ -5,6 +5,7 @@ package metrics
 import (
 	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/metrics/metricutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/maps"
@@ -21,7 +22,7 @@ func (this *StatsAction) Init() {
 func (this *StatsAction) RunGet(params struct {
 	ItemId int64
 }) {
-	item, err := InitItem(this.Parent(), params.ItemId)
+	item, err := metricutils.InitItem(this.Parent(), params.ItemId)
 	if err != nil {
 		this.ErrorPage(err)
 		return
