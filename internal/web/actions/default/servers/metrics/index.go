@@ -5,6 +5,7 @@ package metrics
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/maps"
 )
 
@@ -45,14 +46,16 @@ func (this *IndexAction) RunGet(params struct {
 	var itemMaps = []maps.Map{}
 	for _, item := range itemsResp.MetricItems {
 		itemMaps = append(itemMaps, maps.Map{
-			"id":         item.Id,
-			"name":       item.Name,
-			"isOn":       item.IsOn,
-			"period":     item.Period,
-			"periodUnit": item.PeriodUnit,
-			"keys":       item.Keys,
-			"value":      item.Value,
-			"category":   item.Category,
+			"id":             item.Id,
+			"name":           item.Name,
+			"isOn":           item.IsOn,
+			"period":         item.Period,
+			"periodUnit":     item.PeriodUnit,
+			"periodUnitName": serverconfigs.FindMetricPeriodUnitName(item.PeriodUnit),
+			"keys":           item.Keys,
+			"value":          item.Value,
+			"valueName":      serverconfigs.FindMetricValueName(item.Category, item.Value),
+			"category":       item.Category,
 		})
 	}
 	this.Data["items"] = itemMaps

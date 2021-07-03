@@ -52,7 +52,7 @@ func (this *IndexAction) RunGet(params struct {
 			"id":       chart.Id,
 			"name":     chart.Name,
 			"type":     chart.Type,
-			"typeName": serverconfigs.FindAllMetricChartTypeName(chart.Type),
+			"typeName": serverconfigs.FindMetricChartTypeName(chart.Type),
 			"isOn":     chart.IsOn,
 			"widthDiv": chart.WidthDiv,
 		})

@@ -32,7 +32,7 @@ func InitChart(parent *actionutils.ParentAction, chartId int64) (*pb.MetricChart
 		"widthDiv": chart.WidthDiv,
 		"maxItems": chart.MaxItems,
 		"type":     chart.Type,
-		"typeName": serverconfigs.FindAllMetricChartTypeName(chart.Type),
+		"typeName": serverconfigs.FindMetricChartTypeName(chart.Type),
 	}
 	return chart, nil
 }

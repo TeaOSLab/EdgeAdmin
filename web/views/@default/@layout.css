@@ -672,4 +672,7 @@ td {
 .scroll-box::-webkit-scrollbar {
   width: 4px;
 }
+input.error {
+  border: 1px #e0b4b4 solid !important;
+}
 /*# sourceMappingURL=@layout.css.map */

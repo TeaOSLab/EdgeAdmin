@@ -6,7 +6,8 @@ Tea.context(function () {
 					teaweb.reload()
 				})
 			},
-			height: "26em"
+			height: "26em",
+			width: "44em"
 		})
 	}
 

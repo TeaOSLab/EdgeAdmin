@@ -269,7 +269,6 @@ var.dash {
 .page a:hover {
   background: #eee;
 }
-/** popup **/
 .swal2-html-container {
   overflow-x: hidden;
 }
@@ -285,5 +284,8 @@ var.dash {
 }
 .swal2-cancel {
   margin-left: 2em !important;
+}
+input.error {
+  border: 1px #e0b4b4 solid !important;
 }
 /*# sourceMappingURL=@layout_popup.css.map */

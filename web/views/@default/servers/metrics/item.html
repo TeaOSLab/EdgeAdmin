@@ -15,19 +15,19 @@
     <tr>
         <td>统计对象</td>
         <td>
-            <span v-for="key in item.keys" class="ui label small basic">{{key}}</span>
+            <span v-for="key in item.keys" style="margin-right: 0.5em"><metric-key-label :v-key="key"></metric-key-label></span>
         </td>
     </tr>
     <tr>
         <td>统计周期</td>
         <td>
-            {{item.period}} {{item.periodUnit}}
+            {{item.period}} {{item.periodUnitName}}
         </td>
     </tr>
     <tr>
         <td>统计数值</td>
         <td>
-            {{item.value}}
+            <span class="ui label small basic">{{item.valueName}}</span>
         </td>
     </tr>
 </table>
