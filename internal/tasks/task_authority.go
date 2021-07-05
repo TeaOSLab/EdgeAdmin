@@ -3,6 +3,7 @@
 package tasks
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
@@ -28,6 +29,13 @@ func NewAuthorityTask() *AuthorityTask {
 }
 
 func (this *AuthorityTask) Start() {
+	// 从缓存中读取
+	config := configs.ReadPlusConfig()
+	if config != nil {
+		teaconst.IsPlus = config.IsPlus
+	}
+
+	// 开始计时器
 	ticker := time.NewTicker(10 * time.Minute)
 	if Tea.IsTesting() {
 		// 快速测试
@@ -65,10 +73,16 @@ func (this *AuthorityTask) Loop() error {
 	if err != nil {
 		return err
 	}
+	var oldState = teaconst.IsPlus
 	if resp.AuthorityKey != nil {
 		teaconst.IsPlus = true
 	} else {
 		teaconst.IsPlus = false
 	}
+
+	if oldState != teaconst.IsPlus {
+		_ = configs.WritePlusConfig(&configs.PlusConfig{IsPlus: teaconst.IsPlus})
+	}
+
 	return nil
 }

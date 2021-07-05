@@ -1,7 +1,6 @@
 Tea.context(function () {
 	this.trafficTab = "hourly"
 
-
 	this.$delay(function () {
 		this.reloadHourlyTrafficChart()
 

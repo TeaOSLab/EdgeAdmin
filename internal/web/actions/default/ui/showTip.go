@@ -13,7 +13,7 @@ import (
 
 var tipKeyMap = map[string]bool{}
 var tipKeyLocker = sync.Mutex{}
-var tipConfigFile = "tip.json"
+var tipConfigFile = "tip.cache.json"
 
 func init() {
 	TeaGo.BeforeStart(func(server *TeaGo.Server) {

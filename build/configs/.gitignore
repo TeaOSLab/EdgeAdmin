@@ -2,4 +2,4 @@ api.yaml
 server.yaml
 api_db.yaml
 *.pem
-tip.json
+*.cache.json

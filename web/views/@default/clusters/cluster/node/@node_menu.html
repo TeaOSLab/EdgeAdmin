@@ -1,5 +1,5 @@
 <second-menu>
-	<menu-item :href="'/clusters/cluster?clusterId=' + clusterId">节点列表</menu-item>
+	<menu-item :href="'/clusters/cluster/nodes?clusterId=' + clusterId">节点列表</menu-item>
 	<span class="item">|</span>
 	<menu-item :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + nodeId" code="node">节点详情</menu-item>
     <menu-item :href="'/clusters/cluster/node/monitor?clusterId=' + clusterId + '&nodeId=' + nodeId" code="monitor" v-if="teaIsPlus">监控图表</menu-item>

@@ -2,6 +2,7 @@ package cluster
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/boards"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/groups"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/monitor"
@@ -18,6 +19,7 @@ func init() {
 			Helper(clusters.NewClusterHelper()).
 			Prefix("/clusters/cluster").
 			Get("", new(IndexAction)).
+			Get("/nodes", new(NodesAction)).
 			GetPost("/installNodes", new(InstallNodesAction)).
 			GetPost("/installRemote", new(InstallRemoteAction)).
 			Post("/installStatus", new(InstallStatusAction)).
@@ -55,6 +57,9 @@ func init() {
 			Post("/groups/delete", new(groups.DeleteAction)).
 			Post("/groups/sort", new(groups.SortAction)).
 			GetPost("/groups/selectPopup", new(groups.SelectPopupAction)).
+
+			// 看板相关
+			Get("/boards", new(boards.IndexAction)).
 
 			EndAll()
 	})
