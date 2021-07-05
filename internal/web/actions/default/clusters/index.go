@@ -115,6 +115,12 @@ func (this *IndexAction) RunGet(params struct {
 				}
 			}
 
+			// 服务数
+			countServersResp, err := this.RPC().ServerRPC().CountAllEnabledServersWithNodeClusterId(this.AdminContext(), &pb.CountAllEnabledServersWithNodeClusterIdRequest{NodeClusterId: cluster.Id})
+			if err != nil {
+				this.ErrorPage(err)
+			}
+
 			clusterMaps = append(clusterMaps, maps.Map{
 				"id":                cluster.Id,
 				"name":              cluster.Name,
@@ -125,6 +131,7 @@ func (this *IndexAction) RunGet(params struct {
 				"dnsDomainId":       cluster.DnsDomainId,
 				"dnsName":           cluster.DnsName,
 				"dnsDomainName":     dnsDomainName,
+				"countServers":      countServersResp.Count,
 			})
 		}
 	}

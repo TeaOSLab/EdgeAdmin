@@ -404,6 +404,14 @@ func (this *RPCClient) NodeClusterMetricItemRPC() pb.NodeClusterMetricItemServic
 	return pb.NewNodeClusterMetricItemServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) ServerStatBoardRPC() pb.ServerStatBoardServiceClient {
+	return pb.NewServerStatBoardServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) ServerStatBoardChartRPC() pb.ServerStatBoardChartServiceClient {
+	return pb.NewServerStatBoardChartServiceClient(this.pickConn())
+}
+
 // Context 构造Admin上下文
 func (this *RPCClient) Context(adminId int64) context.Context {
 	ctx := context.Background()

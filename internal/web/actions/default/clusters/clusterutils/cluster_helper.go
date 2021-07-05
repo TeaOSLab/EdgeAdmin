@@ -59,7 +59,10 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 
 		tabbar := actionutils.NewTabbar()
 		tabbar.Add("集群列表", "", "/clusters", "", false)
-		tabbar.Add("集群节点", "", "/clusters/cluster?clusterId="+clusterIdString, "server", selectedTabbar == "node")
+		if teaconst.IsPlus {
+			tabbar.Add("集群看板", "", "/clusters/cluster/boards?clusterId="+clusterIdString, "board", selectedTabbar == "board")
+		}
+		tabbar.Add("集群节点", "", "/clusters/cluster/nodes?clusterId="+clusterIdString, "server", selectedTabbar == "node")
 		tabbar.Add("集群设置", "", "/clusters/cluster/settings?clusterId="+clusterIdString, "setting", selectedTabbar == "setting")
 		tabbar.Add("删除集群", "", "/clusters/cluster/delete?clusterId="+clusterIdString, "trash", selectedTabbar == "delete")
 

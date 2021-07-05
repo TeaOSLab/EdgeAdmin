@@ -35,6 +35,7 @@
                 <th>集群名称</th>
                 <th class="center width10">节点数</th>
                 <th class="center width10">在线节点数</th>
+                <th class="center width10">服务数</th>
                 <th>DNS域名</th>
                 <th class="two op">操作</th>
             </tr>
@@ -42,7 +43,7 @@
         <tr v-for="cluster in clusters">
             <td><keyword :v-word="keyword">{{cluster.name}}</keyword></td>
             <td class="center">
-                <a :href="'/clusters/cluster?clusterId=' + cluster.id" v-if="cluster.countAllNodes > 0"><span :class="{red:cluster.countAllNodes > cluster.countActiveNodes}">{{cluster.countAllNodes}}</span></a>
+                <a :href="'/clusters/cluster/nodes?clusterId=' + cluster.id" v-if="cluster.countAllNodes > 0"><span :class="{red:cluster.countAllNodes > cluster.countActiveNodes}">{{cluster.countAllNodes}}</span></a>
                 <span class="disabled" v-else="">-</span>
 
                 <div v-if="cluster.countUpgradeNodes > 0" style="margin-top:0.5em">
@@ -50,7 +51,11 @@
                 </div>
             </td>
             <td class="center">
-                <a :href="'/clusters/cluster?clusterId=' + cluster.id + '&activeState=1'" v-if="cluster.countActiveNodes > 0"><span class="green">{{cluster.countActiveNodes}}</span></a>
+                <a :href="'/clusters/cluster/nodes?clusterId=' + cluster.id + '&activeState=1'" v-if="cluster.countActiveNodes > 0"><span class="green">{{cluster.countActiveNodes}}</span></a>
+                <span class="disabled" v-else>-</span>
+            </td>
+            <td class="center">
+                <span v-if="cluster.countServers > 0">{{cluster.countServers}}</span>
                 <span class="disabled" v-else>-</span>
             </td>
             <td>

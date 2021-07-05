@@ -25,6 +25,13 @@ func InitItem(parent *actionutils.ParentAction, itemId int64) (*pb.MetricItem, e
 	if item == nil {
 		return nil, errors.New("metric item not found")
 	}
+
+	countChartsResp, err := client.MetricChartRPC().CountEnabledMetricCharts(parent.AdminContext(), &pb.CountEnabledMetricChartsRequest{MetricItemId: item.Id})
+	if err != nil {
+		return nil, err
+	}
+	var countCharts = countChartsResp.Count
+
 	parent.Data["item"] = maps.Map{
 		"id":             item.Id,
 		"name":           item.Name,
@@ -36,6 +43,7 @@ func InitItem(parent *actionutils.ParentAction, itemId int64) (*pb.MetricItem, e
 		"periodUnit":     item.PeriodUnit,
 		"periodUnitName": serverconfigs.FindMetricPeriodUnitName(item.PeriodUnit),
 		"category":       item.Category,
+		"countCharts":    countCharts,
 	}
 	return item, nil
 }

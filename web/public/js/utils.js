@@ -353,5 +353,122 @@ window.teaweb = {
 	},
 	reload: function () {
 		window.location.reload()
+	},
+	renderBarChart: function (options) {
+		let chartId = options.id
+		let name = options.name
+		let values = options.values
+		let xFunc = options.x
+		let tooltipFunc = options.tooltip
+		let axis = options.axis
+		let valueFunc = options.value
+
+		let chartBox = document.getElementById(chartId)
+		if (chartBox == null) {
+			return
+		}
+		let chart = echarts.init(chartBox)
+		let option = {
+			xAxis: {
+				data: values.map(xFunc),
+				axisLabel: {
+					interval: 0
+				}
+			},
+			yAxis: {
+				axisLabel: {
+					formatter: function (value) {
+						return value + axis.unit
+					}
+				}
+			},
+			tooltip: {
+				show: true,
+				trigger: "item",
+				formatter: function (args) {
+					return tooltipFunc.apply(this, [args, values])
+				}
+			},
+			grid: {
+				left: 40,
+				top: 10,
+				right: 20,
+				bottom: 20
+			},
+			series: [
+				{
+					name: name,
+					type: "bar",
+					data: values.map(valueFunc),
+					itemStyle: {
+						color: "#9DD3E8"
+					},
+					barWidth: "20em"
+				}
+			],
+			animation: true
+		}
+		chart.setOption(option)
+		chart.resize()
+	},
+	renderLineChart: function (options) {
+		let chartId = options.id
+		let name = options.name
+		let values = options.values
+		let xFunc = options.x
+		let tooltipFunc = options.tooltip
+		let axis = options.axis
+		let valueFunc = options.value
+		let max = options.max
+		let interval = options.interval
+
+		let chartBox = document.getElementById(chartId)
+		if (chartBox == null) {
+			return
+		}
+		let chart = echarts.init(chartBox)
+		let option = {
+			xAxis: {
+				data: values.map(xFunc),
+				axisLabel: {
+					interval: interval
+				}
+			},
+			yAxis: {
+				axisLabel: {
+					formatter: function (value) {
+						return value + axis.unit
+					}
+				},
+				max: max
+			},
+			tooltip: {
+				show: true,
+				trigger: "item",
+				formatter: function (args) {
+					return tooltipFunc.apply(this, [args, values])
+				}
+			},
+			grid: {
+				left: 40,
+				top: 10,
+				right: 20,
+				bottom: 20
+			},
+			series: [
+				{
+					name: name,
+					type: "line",
+					data: values.map(valueFunc),
+					itemStyle: {
+						color: "#9DD3E8"
+					},
+					areaStyle: {}
+				}
+			],
+			animation: true
+		}
+		chart.setOption(option)
+		chart.resize()
 	}
-};
+}

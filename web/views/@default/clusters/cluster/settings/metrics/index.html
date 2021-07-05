@@ -9,7 +9,7 @@
         <span class="item disabled">|</span>
         <menu-item @click.prevent="createItem">[添加指标]</menu-item>
         <span class="item disabled">|</span>
-        <span class="item"><tip-icon content="在这里设置的指标，会自动应用到部署在当前集群上的所有服务上。"></tip-icon></span>
+        <span class="item"><tip-icon content="在这里设置的指标，会自动应用到部署在当前集群上的所有服务上。<br/><br/>指标收集和运算通常需要消耗一定量的边缘节点系统资源，所以请谨慎选择。"></tip-icon></span>
     </first-menu>
 
     <p class="comment" v-if="items.length == 0">暂时还没有添加指标。</p>
@@ -28,13 +28,13 @@
         <tr v-for="item in items">
             <td>{{item.name}}</td>
             <td>
-                <span v-if="item.keys != null" v-for="key in item.keys" class="ui label basic small">{{key}}</span>
+                <div v-if="item.keys != null" v-for="key in item.keys" style="margin-top: 0.2em; margin-bottom: 0.2em"><metric-key-label :v-key="key"></metric-key-label></div>
             </td>
             <td>
-                {{item.period}} {{item.periodUnit}}
+                {{item.period}} {{item.periodUnitName}}
             </td>
             <td>
-                <span class="ui label small basic">{{item.value}}</span>
+                <span class="ui label small basic">{{item.valueName}}</span>
             </td>
             <td>
                 <label-on :v-is-on="item.isOn"></label-on>
