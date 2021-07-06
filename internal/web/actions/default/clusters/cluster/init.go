@@ -6,7 +6,6 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/groups"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node"
 	nodeboards "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/boards"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/monitor"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/thresholds"
 	clusters "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/clusterutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
@@ -43,13 +42,6 @@ func init() {
 			Post("/start", new(node.StartAction)).
 			Post("/stop", new(node.StopAction)).
 			Post("/up", new(node.UpAction)).
-			Get("/monitor", new(monitor.IndexAction)).
-			Post("/monitor/cpu", new(monitor.CpuAction)).
-			Post("/monitor/memory", new(monitor.MemoryAction)).
-			Post("/monitor/load", new(monitor.LoadAction)).
-			Post("/monitor/trafficIn", new(monitor.TrafficInAction)).
-			Post("/monitor/trafficOut", new(monitor.TrafficOutAction)).
-			Post("/monitor/connections", new(monitor.ConnectionsAction)).
 			Get("/thresholds", new(thresholds.IndexAction)).
 			Get("/detail", new(node.DetailAction)).
 			Get("/boards", new(nodeboards.IndexAction)).
