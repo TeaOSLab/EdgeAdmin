@@ -10,6 +10,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/logs"
+	"github.com/iwind/TeaGo/maps"
 	"net/http"
 	"strconv"
 )
@@ -125,4 +126,9 @@ func (this *ParentAction) AdminContext() context.Context {
 		this.rpcClient = rpcClient
 	}
 	return this.rpcClient.Context(this.AdminId())
+}
+
+// ViewData 视图里可以使用的数据
+func (this *ParentAction) ViewData() maps.Map {
+	return this.Data
 }

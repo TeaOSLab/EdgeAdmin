@@ -1,24 +1,63 @@
 {$layout}
+{$template "../node_menu"}
 {$template "/echarts"}
 
+<!-- 概况 -->
 <div class="ui four columns grid">
     <div class="ui column">
-        <h4>在线节点<link-icon :href="'/clusters/cluster/nodes?clusterId=' + clusterId"></link-icon></h4>
-        <div class="value"><span>{{board.countActiveNodes}}</span>个</div>
+        <h4>在线状态</h4>
+        <div class="value">
+            <span class="green" v-if="board.isActive">在线</span>
+            <span class="red" v-else>离线</span>
+        </div>
     </div>
     <div class="ui column">
-        <h4>离线节点<link-icon :href="'/clusters/cluster/nodes?clusterId=' + clusterId"></link-icon></h4>
-        <div class="value"><span :class="{red: board.countInactiveNodes > 0}">{{board.countInactiveNodes}}</span>个</div>
+        <h4>下行流量</h4>
+        <div class="value"><span>{{board.trafficOutBytes}}</span>/分钟</div>
     </div>
     <div class="ui column">
-        <h4>服务</h4>
-        <div class="value"><span>{{board.countServers}}</span>个</div>
+        <h4>上行流量</h4>
+        <div class="value"><span>{{board.trafficInBytes}}</span>/分钟</div>
     </div>
-    <div class="ui column no-border">
-        <h4>用户</h4>
-        <div class="value"><span>{{board.countUsers}}</span>个</div>
+    <div class="ui column">
+        <h4>连接数</h4>
+        <div class="value"><span>{{board.countConnections}}</span>/分钟</div>
+    </div>
+    <div class="ui column">
+        <h4>当前访问量</h4>
+        <div class="value"><span>{{board.countRequests}}</span>/分钟</div>
+    </div>
+    <div class="ui column">
+        <h4>当前攻击访问量</h4>
+        <div class="value"><span :class="{red: board.countAttackRequests != '0'}">{{board.countAttackRequests}}</span>/分钟</div>
+    </div>
+    <div class="ui column">
+        <h4>磁盘缓存用量</h4>
+        <div class="value"><span>{{board.cacheDiskSize}}</span></div>
+    </div>
+    <div class="ui column">
+        <h4>内存缓存用量</h4>
+        <div class="value"><span>{{board.cacheMemorySize}}</span></div>
+    </div>
+    <div class="ui column">
+        <h4>CPU</h4>
+        <div class="value"><span :class="{red: board.cpuUsage > 80}">{{board.cpuUsage}}</span>%</div>
+    </div>
+    <div class="ui column">
+        <h4>内存</h4>
+        <div class="value"><span :class="{red: board.memoryUsage > 80}">{{board.memoryUsage}}</span>%</div>
+    </div>
+    <div class="ui column">
+        <h4>总内存</h4>
+        <div class="value"><span>{{board.memoryTotalSize}}</span>G</div>
+    </div>
+    <div class="ui column">
+        <h4>负载</h4>
+        <div class="value"><span :class="{red: board.load > 20}">{{board.load}}</span>/分钟</div>
     </div>
 </div>
+
+<div class="ui divider"></div>
 
 <div class="ui menu tabular">
     <a href="" class="item" :class="{active: trafficTab == 'hourly'}" @click.prevent="selectTrafficTab('hourly')">24小时流量趋势</a>
@@ -52,12 +91,7 @@
 
 <div class="ui divider"></div>
 
-<!-- 节点排行 -->
-<h4>节点访问排行 <span>（24小时）</span></h4>
-<div class="chart-box" id="top-nodes-chart"></div>
-
-<div class="ui divider"></div>
-
+<!-- CPU、内存、负载 -->
 <div class="ui menu tabular">
     <a href="" class="item" :class="{active: nodeStatusTab == 'cpu'}" @click.prevent="selectNodeStatusTab('cpu')">节点CPU</a>
     <a href="" class="item" :class="{active: nodeStatusTab == 'memory'}" @click.prevent="selectNodeStatusTab('memory')">节点内存</a>

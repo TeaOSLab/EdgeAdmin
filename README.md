@@ -1,7 +1,7 @@
 # GoEdge目标
 做一款人人用得起的CDN & WAF系统。
 
-![架构](doc/screenshot.png)
+![截图](doc/screenshot.png)
 
 ## 特性
 * `免费` - 开源、免费、自由、开放

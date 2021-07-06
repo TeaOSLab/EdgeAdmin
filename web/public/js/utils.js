@@ -362,6 +362,7 @@ window.teaweb = {
 		let tooltipFunc = options.tooltip
 		let axis = options.axis
 		let valueFunc = options.value
+		let click = options.click
 
 		let chartBox = document.getElementById(chartId)
 		if (chartBox == null) {
@@ -406,9 +407,14 @@ window.teaweb = {
 					barWidth: "20em"
 				}
 			],
-			animation: true
+			animation: true,
 		}
 		chart.setOption(option)
+		if (click != null) {
+			chart.on("click", function (args) {
+				click.call(this, args, values)
+			})
+		}
 		chart.resize()
 	},
 	renderLineChart: function (options) {

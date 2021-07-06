@@ -39,7 +39,7 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 			logs.Error(err)
 			return
 		}
-		clusterResp, err := rpcClient.NSClusterRPC().FindEnabledNSCluster(actionPtr.(rpc.ContextInterface).AdminContext(), &pb.FindEnabledNSClusterRequest{
+		clusterResp, err := rpcClient.NSClusterRPC().FindEnabledNSCluster(actionPtr.(actionutils.ActionInterface).AdminContext(), &pb.FindEnabledNSClusterRequest{
 			NsClusterId: clusterId,
 		})
 		if err != nil {

@@ -5,6 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/boards"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/groups"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node"
+	nodeboards "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/boards"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/monitor"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/thresholds"
 	clusters "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/clusterutils"
@@ -32,34 +33,39 @@ func init() {
 			GetPost("/installManual", new(InstallManualAction)).
 
 			// 节点相关
-			Get("/node", new(node.IndexAction)).
-			GetPost("/node/update", new(node.UpdateAction)).
-			GetPost("/node/install", new(node.InstallAction)).
-			Post("/node/updateInstallStatus", new(node.UpdateInstallStatusAction)).
-			Post("/node/status", new(node.StatusAction)).
-			Get("/node/logs", new(node.LogsAction)).
-			Post("/node/start", new(node.StartAction)).
-			Post("/node/stop", new(node.StopAction)).
-			Post("/node/up", new(node.UpAction)).
-			Get("/node/monitor", new(monitor.IndexAction)).
-			Post("/node/monitor/cpu", new(monitor.CpuAction)).
-			Post("/node/monitor/memory", new(monitor.MemoryAction)).
-			Post("/node/monitor/load", new(monitor.LoadAction)).
-			Post("/node/monitor/trafficIn", new(monitor.TrafficInAction)).
-			Post("/node/monitor/trafficOut", new(monitor.TrafficOutAction)).
-			Post("/node/monitor/connections", new(monitor.ConnectionsAction)).
-			Get("/node/thresholds", new(thresholds.IndexAction)).
+			Prefix("/clusters/cluster/node").
+			Get("", new(node.IndexAction)).
+			GetPost("/update", new(node.UpdateAction)).
+			GetPost("/install", new(node.InstallAction)).
+			Post("/updateInstallStatus", new(node.UpdateInstallStatusAction)).
+			Post("/status", new(node.StatusAction)).
+			Get("/logs", new(node.LogsAction)).
+			Post("/start", new(node.StartAction)).
+			Post("/stop", new(node.StopAction)).
+			Post("/up", new(node.UpAction)).
+			Get("/monitor", new(monitor.IndexAction)).
+			Post("/monitor/cpu", new(monitor.CpuAction)).
+			Post("/monitor/memory", new(monitor.MemoryAction)).
+			Post("/monitor/load", new(monitor.LoadAction)).
+			Post("/monitor/trafficIn", new(monitor.TrafficInAction)).
+			Post("/monitor/trafficOut", new(monitor.TrafficOutAction)).
+			Post("/monitor/connections", new(monitor.ConnectionsAction)).
+			Get("/thresholds", new(thresholds.IndexAction)).
+			Get("/detail", new(node.DetailAction)).
+			Get("/boards", new(nodeboards.IndexAction)).
 
 			// 分组相关
-			Get("/groups", new(groups.IndexAction)).
-			GetPost("/groups/createPopup", new(groups.CreatePopupAction)).
-			GetPost("/groups/updatePopup", new(groups.UpdatePopupAction)).
-			Post("/groups/delete", new(groups.DeleteAction)).
-			Post("/groups/sort", new(groups.SortAction)).
-			GetPost("/groups/selectPopup", new(groups.SelectPopupAction)).
+			Prefix("/clusters/cluster/groups").
+			Get("", new(groups.IndexAction)).
+			GetPost("/createPopup", new(groups.CreatePopupAction)).
+			GetPost("/updatePopup", new(groups.UpdatePopupAction)).
+			Post("/delete", new(groups.DeleteAction)).
+			Post("/sort", new(groups.SortAction)).
+			GetPost("/selectPopup", new(groups.SelectPopupAction)).
 
 			// 看板相关
-			Get("/boards", new(boards.IndexAction)).
+			Prefix("/clusters/cluster/boards").
+			Get("", new(boards.IndexAction)).
 
 			EndAll()
 	})

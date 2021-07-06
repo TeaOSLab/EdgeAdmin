@@ -1,6 +1,6 @@
 // 指标图表
 Vue.component("metric-chart", {
-	props: ["v-chart", "v-stats", "v-period-unit"],
+	props: ["v-chart", "v-stats", "v-period-unit", "v-value-type"],
 	mounted: function () {
 		this.load()
 	},
@@ -88,7 +88,7 @@ Vue.component("metric-chart", {
 						if (stat.total > 0) {
 							percent = Math.round((stat.value * 100 / stat.total) * 100) / 100
 						}
-						return stat.keys[0] + ": " + stat.value + "，占比：" + percent + "%"
+						return stat.keys[0] + ":" + stat.value + "，占比：" + percent + "%"
 					}
 				},
 				series: [
@@ -108,6 +108,21 @@ Vue.component("metric-chart", {
 			let values = this.stats.map(function (v) {
 				return v.value
 			})
+
+			let axis = {unit: "", divider: 1}
+			switch (this.vValueType) {
+				case "count":
+					axis = teaweb.countAxis(values, function (v) {
+						return v
+					})
+					break
+				case "bytes":
+					axis = teaweb.bytesAxis(values, function (v) {
+						return v
+					})
+					break
+			}
+
 			let that = this
 			chart.setOption({
 				xAxis: {
@@ -115,7 +130,13 @@ Vue.component("metric-chart", {
 						return that.formatTime(v.time)
 					})
 				},
-				yAxis: {},
+				yAxis: {
+					axisLabel: {
+						formatter: function (value) {
+							return value + axis.unit
+						}
+					}
+				},
 				tooltip: {
 					show: true,
 					trigger: "item",
@@ -134,7 +155,9 @@ Vue.component("metric-chart", {
 					{
 						name: name,
 						type: "bar",
-						data: values,
+						data: values.map(function (v){
+							return v/axis.divider
+						}),
 						itemStyle: {
 							color: "#9DD3E8"
 						},
@@ -151,6 +174,21 @@ Vue.component("metric-chart", {
 			let values = this.stats.map(function (v) {
 				return v.value
 			})
+
+			let axis = {unit: "", divider: 1}
+			switch (this.vValueType) {
+				case "count":
+					axis = teaweb.countAxis(values, function (v) {
+						return v
+					})
+					break
+				case "bytes":
+					axis = teaweb.bytesAxis(values, function (v) {
+						return v
+					})
+					break
+			}
+
 			let that = this
 			chart.setOption({
 				xAxis: {
@@ -158,7 +196,13 @@ Vue.component("metric-chart", {
 						return that.formatTime(v.time)
 					})
 				},
-				yAxis: {},
+				yAxis: {
+					axisLabel: {
+						formatter: function (value) {
+							return value + axis.unit
+						}
+					}
+				},
 				tooltip: {
 					show: true,
 					trigger: "item",
@@ -177,7 +221,9 @@ Vue.component("metric-chart", {
 					{
 						name: name,
 						type: "line",
-						data: values,
+						data: values.map(function (v) {
+							return v / axis.divider
+						}),
 						itemStyle: {
 							color: "#9DD3E8"
 						},
@@ -190,6 +236,20 @@ Vue.component("metric-chart", {
 			let values = this.stats.map(function (v) {
 				return v.value
 			})
+			let axis = {unit: "", divider: 1}
+			switch (this.vValueType) {
+				case "count":
+					axis = teaweb.countAxis(values, function (v) {
+						return v
+					})
+					break
+				case "bytes":
+					axis = teaweb.bytesAxis(values, function (v) {
+						return v
+					})
+					break
+			}
+
 			let that = this
 			chart.setOption({
 				xAxis: {
@@ -212,7 +272,13 @@ Vue.component("metric-chart", {
 						return stat.keys[0] + ": " + stat.value + "，占比：" + percent + "%"
 					}
 				},
-				yAxis: {},
+				yAxis: {
+					axisLabel: {
+						formatter: function (value) {
+							return value + axis.unit
+						}
+					}
+				},
 				grid: {
 					left: 40,
 					top: 10,
@@ -223,7 +289,9 @@ Vue.component("metric-chart", {
 					{
 						name: name,
 						type: "bar",
-						data: values,
+						data: values.map(function (v) {
+							return v / axis.divider
+						}),
 						itemStyle: {
 							color: "#9DD3E8"
 						},
@@ -272,9 +340,9 @@ Vue.component("metric-chart", {
 		}
 	},
 	template: `<div style="float: left" :style="{'width': width}">
-	<div>{{chart.name}}</div>
+	<h4>{{chart.name}} <span>（指标）</span></h4>
 	<div class="ui divider"></div>
-	<div style="height: 20em; overflow-y: auto" :id="chartId" class="scroll-box"></div>
+	<div style="height: 20em; padding-bottom: 1em; " :id="chartId" :class="{'scroll-box': chart.type == 'table'}"></div>
 </div>`
 })
 

@@ -2,6 +2,7 @@ package node
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/nodeutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
@@ -23,6 +24,13 @@ func (this *LogsAction) RunGet(params struct {
 	Keyword string
 	Level   string
 }) {
+	// 初始化节点信息（用于菜单）
+	err := nodeutils.InitNodeInfo(this, params.NodeId)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
 	this.Data["nodeId"] = params.NodeId
 	this.Data["dayFrom"] = params.DayFrom
 	this.Data["dayTo"] = params.DayTo
