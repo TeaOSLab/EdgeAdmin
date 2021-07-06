@@ -24,7 +24,10 @@
 	<tr v-if="node.hasHTTPS">
 		<td>HTTPS证书</td>
 		<td>
-			<ssl-certs-view :v-certs="node.certs"></ssl-certs-view>
+            <div v-if="node.certs != null && node.certs.length > 0">
+                <ssl-certs-view :v-certs="node.certs"></ssl-certs-view>
+            </div>
+            <span v-else class="red">还没有设置证书，可能会导致HTTPS相关服务不可用。</span>
 		</td>
 	</tr>
 	<tr>
