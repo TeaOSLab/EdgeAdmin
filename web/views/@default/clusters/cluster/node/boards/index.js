@@ -1,4 +1,26 @@
 Tea.context(function () {
+	this.formatCount = function (count) {
+		if (count < 1000) {
+			return count.toString()
+		}
+		if (count < 1000 * 1000) {
+			return (Math.round(count / 1000 * 100) / 100) + "K"
+		}
+		return (Math.round(count / 1000 / 1000 * 100) / 100) + "M"
+	}
+
+	this.board.trafficInBytes = teaweb.formatBytes(this.board.trafficInBytes)
+	this.board.trafficOutBytes = teaweb.formatBytes(this.board.trafficOutBytes)
+	this.board.countConnections = this.formatCount(this.board.countConnections)
+	this.board.countRequests = this.formatCount(this.board.countRequests)
+	this.board.countAttackRequests = this.formatCount(this.board.countAttackRequests)
+	this.board.cpuUsage = Math.round(this.board.cpuUsage * 100 * 100) / 100
+	this.board.memoryUsage = Math.round(this.board.memoryUsage * 100 * 100) / 100
+	this.board.memoryTotalSize = Math.round(this.board.memoryTotalSize / 1024 / 1024 / 1024)
+	this.board.load = Math.round(this.board.load * 100) / 100
+	this.board.cacheDiskSize = teaweb.formatBytes(this.board.cacheDiskSize)
+	this.board.cacheMemorySize = teaweb.formatBytes(this.board.cacheMemorySize)
+
 	/**
 	 * 流量统计
 	 */
@@ -7,7 +29,6 @@ Tea.context(function () {
 	this.$delay(function () {
 		this.reloadHourlyTrafficChart()
 		this.reloadHourlyRequestsChart()
-		this.reloadTopNodesChart()
 		this.reloadTopDomainsChart()
 		this.reloadCPUChart()
 	})
@@ -262,32 +283,6 @@ Tea.context(function () {
 		}
 		chart.setOption(option)
 		chart.resize()
-	}
-
-	// 节点排行
-	this.reloadTopNodesChart = function () {
-		let that = this
-		let axis = teaweb.countAxis(this.topNodeStats, function (v) {
-			return v.countRequests
-		})
-		teaweb.renderBarChart({
-			id: "top-nodes-chart",
-			name: "节点",
-			values: this.topNodeStats,
-			x: function (v) {
-				return v.nodeName
-			},
-			tooltip: function (args, stats) {
-				return stats[args.dataIndex].nodeName + "<br/>请求数：" + " " + teaweb.formatNumber(stats[args.dataIndex].countRequests) + "<br/>流量：" + teaweb.formatBytes(stats[args.dataIndex].bytes)
-			},
-			value: function (v) {
-				return v.countRequests / axis.divider;
-			},
-			axis: axis,
-			click: function (args, stats) {
-				window.location = "/clusters/cluster/node?nodeId=" + stats[args.dataIndex].nodeId + "&clusterId=" + that.clusterId
-			}
-		})
 	}
 
 	// 域名排行

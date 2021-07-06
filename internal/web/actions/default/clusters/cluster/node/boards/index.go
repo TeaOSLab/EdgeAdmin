@@ -5,6 +5,7 @@ package boards
 import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/nodeutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/maps"
@@ -18,27 +19,44 @@ type IndexAction struct {
 }
 
 func (this *IndexAction) Init() {
-	this.Nav("", "board", "")
+	this.Nav("", "node", "board")
+	this.SecondMenu("nodes")
 }
 
 func (this *IndexAction) RunGet(params struct {
 	ClusterId int64
+	NodeId    int64
 }) {
-	if !teaconst.IsPlus {
-		this.RedirectURL("/clusters/cluster?clusterId=" + strconv.FormatInt(params.ClusterId, 10))
-		return
-	}
-
-	resp, err := this.RPC().ServerStatBoardRPC().ComposeServerStatNodeClusterBoard(this.AdminContext(), &pb.ComposeServerStatNodeClusterBoardRequest{NodeClusterId: params.ClusterId})
+	err := nodeutils.InitNodeInfo(this, params.NodeId)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
+
+	if !teaconst.IsPlus {
+		this.RedirectURL("/clusters/cluster/node?clusterId=" + strconv.FormatInt(params.ClusterId, 10) + "&nodeId=" + strconv.FormatInt(params.NodeId, 10))
+		return
+	}
+
+	resp, err := this.RPC().ServerStatBoardRPC().ComposeServerStatNodeBoard(this.AdminContext(), &pb.ComposeServerStatNodeBoardRequest{NodeId: params.NodeId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
 	this.Data["board"] = maps.Map{
-		"countUsers":         resp.CountUsers,
-		"countActiveNodes":   resp.CountActiveNodes,
-		"countInactiveNodes": resp.CountInactiveNodes,
-		"countServers":       resp.CountServers,
+		"isActive":            resp.IsActive,
+		"trafficInBytes":      resp.TrafficInBytes,
+		"trafficOutBytes":     resp.TrafficOutBytes,
+		"countConnections":    resp.CountConnections,
+		"countRequests":       resp.CountRequests,
+		"countAttackRequests": resp.CountAttackRequests,
+		"cpuUsage":            resp.CpuUsage,
+		"memoryUsage":         resp.MemoryUsage,
+		"memoryTotalSize":     resp.MemoryTotalSize,
+		"load":                resp.Load,
+		"cacheDiskSize":       resp.CacheDiskSize,
+		"cacheMemorySize":     resp.CacheMemorySize,
 	}
 
 	// 24小时流量趋势
@@ -70,20 +88,6 @@ func (this *IndexAction) RunGet(params struct {
 			})
 		}
 		this.Data["dailyStats"] = statMaps
-	}
-
-	// 节点排行
-	{
-		var statMaps = []maps.Map{}
-		for _, stat := range resp.TopNodeStats {
-			statMaps = append(statMaps, maps.Map{
-				"nodeId":        stat.NodeId,
-				"nodeName":      stat.NodeName,
-				"countRequests": stat.CountRequests,
-				"bytes":         stat.Bytes,
-			})
-		}
-		this.Data["topNodeStats"] = statMaps
 	}
 
 	// 域名排行

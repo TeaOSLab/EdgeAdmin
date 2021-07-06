@@ -4,6 +4,7 @@ package thresholds
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/nodeutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
@@ -22,6 +23,13 @@ func (this *IndexAction) RunGet(params struct {
 	NodeId    int64
 }) {
 	this.Data["nodeId"] = params.NodeId
+
+	// 初始化节点信息（用于菜单）
+	err := nodeutils.InitNodeInfo(this, params.NodeId)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 
 	// 列出所有阈值
 	thresholdsResp, err := this.RPC().NodeThresholdRPC().FindAllEnabledNodeThresholds(this.AdminContext(), &pb.FindAllEnabledNodeThresholdsRequest{

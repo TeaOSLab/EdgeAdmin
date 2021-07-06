@@ -2,7 +2,6 @@ package clusterutils
 
 import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
-	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
@@ -36,7 +35,7 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 	action.Data["clusterId"] = clusterId
 
 	if clusterId > 0 {
-		var ctx = actionPtr.(rpc.ContextInterface).AdminContext()
+		var ctx = actionPtr.(actionutils.ActionInterface).AdminContext()
 		cluster, err := dao.SharedNodeClusterDAO.FindEnabledNodeCluster(ctx, clusterId)
 		if err != nil {
 			logs.Error(err)
