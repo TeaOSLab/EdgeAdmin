@@ -127,7 +127,7 @@ func (this *UpdateAction) RunGet(params struct {
 	this.Show()
 }
 
-// 保存基础设置
+// RunPost 保存基础设置
 func (this *UpdateAction) RunPost(params struct {
 	NodeId          int64
 	Name            string

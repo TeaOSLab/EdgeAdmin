@@ -32,6 +32,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	// 监听地址
+	var hasHTTPS = false
 	httpConfig := &serverconfigs.HTTPProtocolConfig{}
 	if len(node.HttpJSON) > 0 {
 		err = json.Unmarshal(node.HttpJSON, httpConfig)
@@ -47,6 +48,7 @@ func (this *IndexAction) RunGet(params struct {
 			this.ErrorPage(err)
 			return
 		}
+		hasHTTPS = len(httpsConfig.Listen) > 0
 	}
 
 	// 监听地址
@@ -56,7 +58,6 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 证书信息
 	certs := []*sslconfigs.SSLCertConfig{}
-	sslPolicyId := int64(0)
 	if httpsConfig.SSLPolicyRef != nil && httpsConfig.SSLPolicyRef.SSLPolicyId > 0 {
 		sslPolicyConfigResp, err := this.RPC().SSLPolicyRPC().FindEnabledSSLPolicyConfig(this.AdminContext(), &pb.FindEnabledSSLPolicyConfigRequest{SslPolicyId: httpsConfig.SSLPolicyRef.SSLPolicyId})
 		if err != nil {
@@ -65,8 +66,6 @@ func (this *IndexAction) RunGet(params struct {
 		}
 		sslPolicyConfigJSON := sslPolicyConfigResp.SslPolicyJSON
 		if len(sslPolicyConfigJSON) > 0 {
-			sslPolicyId = httpsConfig.SSLPolicyRef.SSLPolicyId
-
 			sslPolicy := &sslconfigs.SSLPolicy{}
 			err = json.Unmarshal(sslPolicyConfigJSON, sslPolicy)
 			if err != nil {
@@ -112,6 +111,10 @@ func (this *IndexAction) RunGet(params struct {
 			if httpsConfig.IsOn && len(httpsConfig.Listen) > 0 {
 				restAccessAddrs = append(restAccessAddrs, httpsConfig.Listen...)
 			}
+
+			if !hasHTTPS {
+				hasHTTPS = len(httpsConfig.Listen) > 0
+			}
 		}
 	}
 
@@ -124,7 +127,7 @@ func (this *IndexAction) RunGet(params struct {
 		"accessAddrs":     accessAddrs,
 		"restIsOn":        node.RestIsOn,
 		"restAccessAddrs": restAccessAddrs,
-		"hasHTTPS":        sslPolicyId > 0,
+		"hasHTTPS":        hasHTTPS,
 		"certs":           certs,
 	}
 
