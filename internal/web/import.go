@@ -60,8 +60,11 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/groups"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/log"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/waf"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/iplists"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/metrics"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/metrics/charts"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/board"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/boards"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/delete"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/log"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings"
@@ -108,11 +111,6 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/web"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/websocket"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/stat"
-
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/iplists"
-
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/metrics"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/metrics/charts"
 
 	// 设置相关
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings"

@@ -1,0 +1,39 @@
+{$layout}
+{$template "/echarts"}
+
+<div class="ui menu tabular">
+    <a href="" class="item" :class="{active: trafficTab == 'hourly'}" @click.prevent="selectTrafficTab('hourly')">24小时流量趋势</a>
+    <a href="" class="item" :class="{active: trafficTab == 'daily'}" @click.prevent="selectTrafficTab('daily')">15天流量趋势</a>
+</div>
+
+<!-- 按小时统计流量 -->
+<div class="chart-box" id="hourly-traffic-chart" v-show="trafficTab == 'hourly'"></div>
+
+<!-- 按日统计流量 -->
+<div class="chart-box" id="daily-traffic-chart" v-show="trafficTab == 'daily'"></div>
+
+<div class="ui divider"></div>
+<div class="ui menu tabular">
+    <a href="" class="item" :class="{active: requestsTab == 'hourly'}" @click.prevent="selectRequestsTab('hourly')">24小时访问量趋势</a>
+    <a href="" class="item" :class="{active: requestsTab == 'daily'}" @click.prevent="selectRequestsTab('daily')">15天访问量趋势</a>
+</div>
+
+<!-- 按小时统计访问量 -->
+<div class="chart-box" id="hourly-requests-chart" v-show="requestsTab == 'hourly'"></div>
+
+<!-- 按日统计访问量 -->
+<div class="chart-box" id="daily-requests-chart" v-show="requestsTab == 'daily'"></div>
+
+<div class="ui divider"></div>
+
+<!-- 域名排行 -->
+<h4>域名访问排行 <span>（24小时）</span></h4>
+<div class="chart-box" id="top-domains-chart"></div>
+
+<div class="ui divider"></div>
+
+<!-- 指标 -->
+<div class="ui divider" v-if="metricCharts.length > 0"></div>
+<metric-board>
+    <metric-chart v-for="chart in metricCharts" :key="chart.id" :v-chart="chart.chart" :v-stats="chart.stats" :v-period="chart.item.period" :v-period-unit="chart.item.periodUnit" :v-value-type="chart.item.valueType"></metric-chart>
+</metric-board>

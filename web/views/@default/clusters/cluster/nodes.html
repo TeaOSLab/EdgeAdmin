@@ -68,10 +68,10 @@
 	<tr v-for="node in nodes">
 		<td>{{node.name}}
             <div style="margin-top: 0.5em" v-if="node.region != null">
-                <tiny-label class="basic">区域：{{node.region.name}}</tiny-label>
+                <tiny-basic-label>区域：{{node.region.name}}</tiny-basic-label>
             </div>
             <div style="margin-top: 0.5em" v-if="node.group != null">
-                <tiny-label class="basic">分组：{{node.group.name}}</tiny-label>
+                <tiny-basic-label>分组：{{node.group.name}}</tiny-basic-label>
             </div>
         </td>
 		<td>
