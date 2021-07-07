@@ -178,3 +178,31 @@ func (this *IndexAction) RunGet(params struct {
 
 	this.Show()
 }
+
+func (this *IndexAction) RunPost(params struct {
+	ClusterId int64
+	NodeId    int64
+}) {
+	resp, err := this.RPC().ServerStatBoardRPC().ComposeServerStatNodeBoard(this.AdminContext(), &pb.ComposeServerStatNodeBoardRequest{NodeId: params.NodeId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	this.Data["board"] = maps.Map{
+		"isActive":            resp.IsActive,
+		"trafficInBytes":      resp.TrafficInBytes,
+		"trafficOutBytes":     resp.TrafficOutBytes,
+		"countConnections":    resp.CountConnections,
+		"countRequests":       resp.CountRequests,
+		"countAttackRequests": resp.CountAttackRequests,
+		"cpuUsage":            resp.CpuUsage,
+		"memoryUsage":         resp.MemoryUsage,
+		"memoryTotalSize":     resp.MemoryTotalSize,
+		"load":                resp.Load,
+		"cacheDiskSize":       resp.CacheDiskSize,
+		"cacheMemorySize":     resp.CacheMemorySize,
+	}
+
+	this.Success()
+}

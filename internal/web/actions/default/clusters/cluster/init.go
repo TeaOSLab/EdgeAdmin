@@ -44,7 +44,7 @@ func init() {
 			Post("/up", new(node.UpAction)).
 			Get("/thresholds", new(thresholds.IndexAction)).
 			Get("/detail", new(node.DetailAction)).
-			Get("/boards", new(nodeboards.IndexAction)).
+			GetPost("/boards", new(nodeboards.IndexAction)).
 
 			// 分组相关
 			Prefix("/clusters/cluster/groups").
