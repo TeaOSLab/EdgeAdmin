@@ -1,4 +1,4 @@
-package board
+package boards
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
@@ -12,7 +12,7 @@ func init() {
 		server.
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeServer)).
 			Helper(serverutils.NewServerHelper()).
-			Prefix("/servers/server/board").
+			Prefix("/servers/server/boards").
 			Get("", new(IndexAction)).
 			EndAll()
 	})

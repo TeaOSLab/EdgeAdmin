@@ -1,6 +1,7 @@
 package server
 
 import (
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -34,5 +35,9 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	// HTTP跳转到访问日志
-	this.RedirectURL("/servers/server/log?serverId=" + strconv.FormatInt(params.ServerId, 10))
+	if teaconst.IsPlus {
+		this.RedirectURL("/servers/server/boards?serverId=" + strconv.FormatInt(params.ServerId, 10))
+	} else {
+		this.RedirectURL("/servers/server/stat?serverId=" + strconv.FormatInt(params.ServerId, 10))
+	}
 }
