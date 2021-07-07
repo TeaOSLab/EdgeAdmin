@@ -25,7 +25,7 @@ Vue.component("sort-arrow", {
 			})
 		}
 		if (order == "asc") {
-			newArgs.push(this.name + "=")
+			newArgs.push(this.name + "=desc")
 		} else if (order == "desc") {
 			newArgs.push(this.name + "=asc")
 		} else {

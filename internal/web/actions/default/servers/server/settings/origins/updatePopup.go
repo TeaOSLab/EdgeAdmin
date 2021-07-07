@@ -129,6 +129,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		}
 	}
 
+	addr = strings.ReplaceAll(addr, "：", ":")
 	addr = regexp.MustCompile(`\s+`).ReplaceAllString(addr, "")
 	portIndex := strings.LastIndex(addr, ":")
 	if portIndex < 0 {
@@ -143,6 +144,9 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	}
 	host := addr[:portIndex]
 	port := addr[portIndex+1:]
+	if port == "0" {
+		this.Fail("端口号不能为0")
+	}
 
 	connTimeoutJSON, err := (&shared.TimeDuration{
 		Count: int64(params.ConnTimeout),
