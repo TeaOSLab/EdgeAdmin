@@ -21,6 +21,8 @@ form .fields {
 table th.center,
 table td.center {
   text-align: center !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 table th.width10 {
   width: 10em;

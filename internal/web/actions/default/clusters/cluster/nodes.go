@@ -29,6 +29,11 @@ func (this *NodesAction) RunGet(params struct {
 	InstalledState int
 	ActiveState    int
 	Keyword        string
+
+	CpuOrder        string
+	MemoryOrder     string
+	TrafficInOrder  string
+	TrafficOutOrder string
 }) {
 	this.Data["groupId"] = params.GroupId
 	this.Data["regionId"] = params.RegionId
@@ -61,7 +66,7 @@ func (this *NodesAction) RunGet(params struct {
 	page := this.NewPage(countResp.Count)
 	this.Data["page"] = page.AsHTML()
 
-	nodesResp, err := this.RPC().NodeRPC().ListEnabledNodesMatch(this.AdminContext(), &pb.ListEnabledNodesMatchRequest{
+	var req = &pb.ListEnabledNodesMatchRequest{
 		Offset:        page.Offset,
 		Size:          page.Size,
 		NodeClusterId: params.ClusterId,
@@ -70,7 +75,25 @@ func (this *NodesAction) RunGet(params struct {
 		InstallState:  types.Int32(params.InstalledState),
 		ActiveState:   types.Int32(params.ActiveState),
 		Keyword:       params.Keyword,
-	})
+	}
+	if params.CpuOrder == "asc" {
+		req.CpuAsc = true
+	} else if params.CpuOrder == "desc" {
+		req.CpuDesc = true
+	} else if params.MemoryOrder == "asc" {
+		req.MemoryAsc = true
+	} else if params.MemoryOrder == "desc" {
+		req.MemoryDesc = true
+	} else if params.TrafficInOrder == "asc" {
+		req.TrafficInAsc = true
+	} else if params.TrafficInOrder == "desc" {
+		req.TrafficInDesc = true
+	} else if params.TrafficOutOrder == "asc" {
+		req.TrafficOutAsc = true
+	} else if params.TrafficOutOrder == "desc" {
+		req.TrafficOutDesc = true
+	}
+	nodesResp, err := this.RPC().NodeRPC().ListEnabledNodesMatch(this.AdminContext(), req)
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -146,13 +169,15 @@ func (this *NodesAction) RunGet(params struct {
 				"error":      node.InstallStatus.Error,
 			},
 			"status": maps.Map{
-				"isActive":     status.IsActive,
-				"updatedAt":    status.UpdatedAt,
-				"hostname":     status.Hostname,
-				"cpuUsage":     status.CPUUsage,
-				"cpuUsageText": fmt.Sprintf("%.2f%%", status.CPUUsage*100),
-				"memUsage":     status.MemoryUsage,
-				"memUsageText": fmt.Sprintf("%.2f%%", status.MemoryUsage*100),
+				"isActive":        status.IsActive,
+				"updatedAt":       status.UpdatedAt,
+				"hostname":        status.Hostname,
+				"cpuUsage":        status.CPUUsage,
+				"cpuUsageText":    fmt.Sprintf("%.2f%%", status.CPUUsage*100),
+				"memUsage":        status.MemoryUsage,
+				"memUsageText":    fmt.Sprintf("%.2f%%", status.MemoryUsage*100),
+				"trafficInBytes":  status.TrafficInBytes,
+				"trafficOutBytes": status.TrafficOutBytes,
 			},
 			"cluster": maps.Map{
 				"id":   node.NodeCluster.Id,

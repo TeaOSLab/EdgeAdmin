@@ -9,17 +9,21 @@ Tea.context(function () {
 		return (Math.round(count / 1000 / 1000 * 100) / 100) + "M"
 	}
 
-	this.board.trafficInBytes = teaweb.formatBytes(this.board.trafficInBytes)
-	this.board.trafficOutBytes = teaweb.formatBytes(this.board.trafficOutBytes)
-	this.board.countConnections = this.formatCount(this.board.countConnections)
-	this.board.countRequests = this.formatCount(this.board.countRequests)
-	this.board.countAttackRequests = this.formatCount(this.board.countAttackRequests)
-	this.board.cpuUsage = Math.round(this.board.cpuUsage * 100 * 100) / 100
-	this.board.memoryUsage = Math.round(this.board.memoryUsage * 100 * 100) / 100
-	this.board.memoryTotalSize = Math.round(this.board.memoryTotalSize / 1024 / 1024 / 1024)
-	this.board.load = Math.round(this.board.load * 100) / 100
-	this.board.cacheDiskSize = teaweb.formatBytes(this.board.cacheDiskSize)
-	this.board.cacheMemorySize = teaweb.formatBytes(this.board.cacheMemorySize)
+	this.loadBoard = function () {
+		this.board.trafficInBytes = teaweb.formatBytes(this.board.trafficInBytes)
+		this.board.trafficOutBytes = teaweb.formatBytes(this.board.trafficOutBytes)
+		this.board.countConnections = this.formatCount(this.board.countConnections)
+		this.board.countRequests = this.formatCount(this.board.countRequests)
+		this.board.countAttackRequests = this.formatCount(this.board.countAttackRequests)
+		this.board.cpuUsage = Math.round(this.board.cpuUsage * 100 * 100) / 100
+		this.board.memoryUsage = Math.round(this.board.memoryUsage * 100 * 100) / 100
+		this.board.memoryTotalSize = Math.round(this.board.memoryTotalSize / 1024 / 1024 / 1024)
+		this.board.load = Math.round(this.board.load * 100) / 100
+		this.board.cacheDiskSize = teaweb.formatBytes(this.board.cacheDiskSize)
+		this.board.cacheMemorySize = teaweb.formatBytes(this.board.cacheMemorySize)
+	}
+	this.loadBoard()
+
 
 	/**
 	 * 流量统计
@@ -32,6 +36,26 @@ Tea.context(function () {
 		this.reloadTopDomainsChart()
 		this.reloadCPUChart()
 	})
+	this.$delay(function() {
+		this.refreshBoard()
+	}, 30000)
+
+	this.refreshBoard = function() {
+		this.$post("$")
+			.params({
+				clusterId: this.clusterId,
+				nodeId: this.node.id
+			})
+			.success(function (resp) {
+				this.board = resp.data.board
+				this.loadBoard()
+			})
+			.done(function () {
+				this.$delay(function () {
+					this.refreshBoard()
+				}, 60000)
+			})
+	}
 
 	this.selectTrafficTab = function (tab) {
 		this.trafficTab = tab

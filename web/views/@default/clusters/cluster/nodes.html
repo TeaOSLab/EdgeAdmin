@@ -2,7 +2,7 @@
 
 {$template "menu"}
 
-<form class="ui form" action="/clusters/cluster" v-show="countAll > 0">
+<form class="ui form" action="/clusters/cluster/nodes" v-show="countAll > 0">
 	<input type="hidden" name="clusterId" :value="clusterId"/>
 	<div class="ui fields inline">
         <div class="ui field" v-if="regions.length > 0">
@@ -35,7 +35,8 @@
 			<input type="text" name="keyword" placeholder="关键词" v-model="keyword" style="width:10em"/>
 		</div>
 		<div class="ui field">
-			<button class="ui button" type="submit">搜索</button>
+			<button class="ui button" type="submit">搜索</button> &nbsp;
+            <a :href="'/clusters/cluster/nodes?clusterId=' + clusterId" v-if="regionId >0 || groupId > 0 || installState > 0 || activeState > 0 || keyword.length > 0">[清除条件]</a>
 		</div>
 	</div>
 </form>
@@ -55,28 +56,24 @@
 	<thead>
 	<tr>
 		<th>节点名称</th>
-        <th>所属区域</th>
-		<th>所属分组</th>
 		<th>IP</th>
 		<th class="width10">DNS线路</th>
-		<th class="width5 center">CPU</th>
-		<th class="width5 center">内存</th>
-		<!--<th>流量</th>
-		<th>连接数</th>-->
+		<th class="width5 center">CPU<sort-arrow name="cpuOrder"></sort-arrow></th>
+		<th class="width5 center">内存<sort-arrow name="memoryOrder"></sort-arrow></th>
+		<th class="center" style="width: 7em">下行流量<sort-arrow name="trafficOutOrder"></sort-arrow></th>
 		<th class="two wide center">状态</th>
 		<th class="two op">操作</th>
 	</tr>
 	</thead>
 	<tr v-for="node in nodes">
-		<td>{{node.name}}</td>
-        <td>
-            <span v-if="node.region != null">{{node.region.name}}</span>
-            <span v-else class="disabled">-</span>
+		<td>{{node.name}}
+            <div style="margin-top: 0.5em" v-if="node.region != null">
+                <tiny-label class="basic">区域：{{node.region.name}}</tiny-label>
+            </div>
+            <div style="margin-top: 0.5em" v-if="node.group != null">
+                <tiny-label class="basic">分组：{{node.group.name}}</tiny-label>
+            </div>
         </td>
-		<td>
-			<span v-if="node.group != null">{{node.group.name}}</span>
-			<span v-else class="disabled">-</span>
-		</td>
 		<td>
 			<span v-if="node.ipAddresses.length == 0" class="disabled">-</span>
 			<div v-else class="address-box">
@@ -104,6 +101,10 @@
 			<span v-if="node.status.isActive" :class="{red:node.status.memUsage > 0.80}">{{node.status.memUsageText}}</span>
 			<span v-else class="disabled">-</span>
 		</td>
+        <td class="center">
+            <span v-if="node.status.isActive && node.status.trafficOutBytes > 0">{{teaweb.formatBytes(node.status.trafficOutBytes)}}<br/><span class="grey small">/分钟</span></span>
+            <span v-else class="disabled">-</span>
+        </td>
 		<td class="center">
 			<div v-if="!node.isUp">
 				<span class="red">健康问题下线</span>
