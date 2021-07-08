@@ -428,10 +428,13 @@ Tea.context(function () {
 
 	this.cacheDirUsed = ""
 	this.cacheDirTotal = ""
+	this.cacheDirAvail = ""
+	this.cacheDirAvailWarning = false
 	if (this.cacheDirValues.length > 0) {
 		this.cacheDirUsed = teaweb.formatBytes(this.cacheDirValues.$last().value.dirs[0].used)
 		this.cacheDirTotal = teaweb.formatBytes(this.cacheDirValues.$last().value.dirs[0].total)
 		this.cacheDirAvail = teaweb.formatBytes(this.cacheDirValues.$last().value.dirs[0].avail)
+		this.cacheDirAvailWarning = (this.cacheDirValues.$last().value.dirs[0].avail < 1024 * 1024 * 1024 * 10)
 	}
 	this.reloadCacheDirsChart = function () {
 		let axis = {unit: "%", divider: 1}
@@ -443,12 +446,12 @@ Tea.context(function () {
 				return v.time
 			},
 			tooltip: function (args, stats) {
-				var v =  stats[args.dataIndex].value.dirs[0]
-				return stats[args.dataIndex].time + "<br/>使用：" + teaweb.formatBytes(v.used) + "<br/>总量：" + teaweb.formatBytes(v.total) + "<br/>比例：" + (Math.ceil(v.used * 100/v.total * 100) / 100) + "%"
+				var v = stats[args.dataIndex].value.dirs[0]
+				return stats[args.dataIndex].time + "<br/>使用：" + teaweb.formatBytes(v.used) + "<br/>总量：" + teaweb.formatBytes(v.total) + "<br/>比例：" + (Math.ceil(v.used * 100 / v.total * 100) / 100) + "%"
 			},
 			value: function (v) {
-				v =  v.value.dirs[0]
-				return (v.used * 100 / v.total) ;
+				v = v.value.dirs[0]
+				return (v.used * 100 / v.total);
 			},
 			axis: axis,
 			max: 100

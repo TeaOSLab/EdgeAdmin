@@ -33,7 +33,7 @@
     </div>
     <div class="ui column">
         <h4>磁盘缓存用量</h4>
-        <div class="value"><span>{{board.cacheDiskSize}}</span></div>
+        <div class="value"><span>{{board.cacheDiskSize}}</span><span class="small" :class="{grey: !cacheDirAvailWarning, red: cacheDirAvailWarning}" style="font-size: 0.9em" v-if="cacheDirAvail.length > 0">剩余{{cacheDirAvail}}</span></div>
     </div>
     <div class="ui column">
         <h4>内存缓存用量</h4>
