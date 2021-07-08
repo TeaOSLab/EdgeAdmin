@@ -35,12 +35,13 @@ Tea.context(function () {
 		this.reloadHourlyRequestsChart()
 		this.reloadTopDomainsChart()
 		this.reloadCPUChart()
+		this.reloadCacheDirsChart()
 	})
-	this.$delay(function() {
+	this.$delay(function () {
 		this.refreshBoard()
 	}, 30000)
 
-	this.refreshBoard = function() {
+	this.refreshBoard = function () {
 		this.$post("$")
 			.params({
 				clusterId: this.clusterId,
@@ -422,6 +423,35 @@ Tea.context(function () {
 			},
 			axis: axis,
 			max: max
+		})
+	}
+
+	this.cacheDirUsed = ""
+	this.cacheDirTotal = ""
+	if (this.cacheDirValues.length > 0) {
+		this.cacheDirUsed = teaweb.formatBytes(this.cacheDirValues.$last().value.dirs[0].used)
+		this.cacheDirTotal = teaweb.formatBytes(this.cacheDirValues.$last().value.dirs[0].total)
+		this.cacheDirAvail = teaweb.formatBytes(this.cacheDirValues.$last().value.dirs[0].avail)
+	}
+	this.reloadCacheDirsChart = function () {
+		let axis = {unit: "%", divider: 1}
+		teaweb.renderLineChart({
+			id: "cache-dirs-chart",
+			name: "缓存目录用量",
+			values: this.cacheDirValues,
+			x: function (v) {
+				return v.time
+			},
+			tooltip: function (args, stats) {
+				var v =  stats[args.dataIndex].value.dirs[0]
+				return stats[args.dataIndex].time + "<br/>使用：" + teaweb.formatBytes(v.used) + "<br/>总量：" + teaweb.formatBytes(v.total) + "<br/>比例：" + (Math.ceil(v.used * 100/v.total * 100) / 100) + "%"
+			},
+			value: function (v) {
+				v =  v.value.dirs[0]
+				return (v.used * 100 / v.total) ;
+			},
+			axis: axis,
+			max: 100
 		})
 	}
 })
