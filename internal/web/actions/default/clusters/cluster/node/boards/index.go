@@ -3,6 +3,7 @@
 package boards
 
 import (
+	"encoding/json"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/nodeutils"
@@ -138,6 +139,23 @@ func (this *IndexAction) RunGet(params struct {
 			})
 		}
 		this.Data["loadValues"] = statMaps
+	}
+
+	// CacheDirs
+	{
+		var statMaps = []maps.Map{}
+		for _, stat := range resp.CacheDirsValues {
+			var m = maps.Map{}
+			err = json.Unmarshal(stat.ValueJSON, &m)
+			if err != nil {
+				continue
+			}
+			statMaps = append(statMaps, maps.Map{
+				"time":  timeutil.FormatTime("H:i", stat.CreatedAt),
+				"value": m,
+			})
+		}
+		this.Data["cacheDirValues"] = statMaps
 	}
 
 	// 指标

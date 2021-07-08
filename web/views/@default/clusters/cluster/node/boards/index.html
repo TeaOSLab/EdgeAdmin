@@ -102,6 +102,11 @@
 <div class="chart-box" id="memory-chart" v-show="nodeStatusTab == 'memory'"></div>
 <div class="chart-box" id="load-chart" v-show="nodeStatusTab == 'load'"></div>
 
+<!-- 缓存 -->
+<div class="ui divider"></div>
+<h4>缓存目录用量<span v-if="cacheDirUsed.length > 0">（使用：{{cacheDirUsed}}/总量：{{cacheDirTotal}}/剩余：{{cacheDirAvail}}）</span></h4>
+<div class="chart-box" id="cache-dirs-chart"></div>
+
 <!-- 指标 -->
 <div class="ui divider" v-if="metricCharts.length > 0"></div>
 <metric-board>
