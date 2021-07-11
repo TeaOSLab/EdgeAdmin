@@ -172,7 +172,8 @@ window.teaweb = {
 		}
 		return {
 			unit: unit,
-			divider: divider
+			divider: divider,
+			max: max
 		}
 	},
 	popup: function (url, options) {

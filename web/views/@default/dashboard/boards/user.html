@@ -1,0 +1,46 @@
+{$layout}
+{$template "menu"}
+{$template "/echarts"}
+
+<div class="ui four columns grid">
+    <div class="ui column">
+        <h4>用户总数<link-icon href="/users"></link-icon></h4>
+        <div class="value"><span>{{board.totalUsers}}</span></div>
+    </div>
+    <div class="ui column">
+        <h4>今日新增</h4>
+        <div class="value"><span>{{board.countTodayUsers}}</span></div>
+    </div>
+    <div class="ui column">
+        <h4>本周新增</h4>
+        <div class="value"><span>{{board.countWeeklyUsers}}</span></div>
+    </div>
+    <div class="ui column no-border">
+        <h4>用户节点<link-icon href="/settings/userNodes"></link-icon></h4>
+        <div class="value"><span>{{board.countUserNodes}}</span>
+            <span v-if="board.countOfflineUserNodes > 0" class="red" style="font-size: 1em">{{board.countOfflineUserNodes}}离线</span>
+            <span v-else style="font-size: 1em">个</span>
+        </div>
+    </div>
+</div>
+
+<h4>用户增长趋势</h4>
+<div class="chart-box" id="daily-stat-chart"></div>
+
+<div class="ui divider"></div>
+
+<h4>流量排行 <span>（24小时）</span></h4>
+<div class="chart-box" id="top-traffic-chart"></div>
+
+<div class="ui divider"></div>
+
+<!-- 系统信息 -->
+<div class="ui menu tabular">
+    <a href="" class="item" :class="{active: nodeStatusTab == 'cpu'}" @click.prevent="selectNodeStatusTab('cpu')">用户节点CPU</a>
+    <a href="" class="item" :class="{active: nodeStatusTab == 'memory'}" @click.prevent="selectNodeStatusTab('memory')">用户节点内存</a>
+    <a href="" class="item" :class="{active: nodeStatusTab == 'load'}" @click.prevent="selectNodeStatusTab('load')">用户节点负载</a>
+</div>
+
+<div class="chart-box" id="cpu-chart" v-show="nodeStatusTab == 'cpu'"></div>
+<div class="chart-box" id="memory-chart" v-show="nodeStatusTab == 'memory'"></div>
+<div class="chart-box" id="load-chart" v-show="nodeStatusTab == 'load'"></div>
