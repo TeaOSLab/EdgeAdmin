@@ -395,7 +395,7 @@ window.teaweb = {
 				left: 40,
 				top: 10,
 				right: 20,
-				bottom: 20
+				bottom: 24
 			},
 			series: [
 				{

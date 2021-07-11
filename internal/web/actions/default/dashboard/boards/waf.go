@@ -2,7 +2,10 @@
 
 package boards
 
-import "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+)
 
 type WafAction struct {
 	actionutils.ParentAction
@@ -13,5 +16,10 @@ func (this *WafAction) Init() {
 }
 
 func (this *WafAction) RunGet(params struct{}) {
+	if !teaconst.IsPlus {
+		this.RedirectURL("/dashboard")
+		return
+	}
+
 	this.Show()
 }

@@ -3,6 +3,7 @@
 package boards
 
 import (
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
@@ -19,6 +20,11 @@ func (this *UserAction) Init() {
 }
 
 func (this *UserAction) RunGet(params struct{}) {
+	if !teaconst.IsPlus {
+		this.RedirectURL("/dashboard")
+		return
+	}
+
 	resp, err := this.RPC().UserRPC().ComposeUserGlobalBoard(this.AdminContext(), &pb.ComposeUserGlobalBoardRequest{})
 	if err != nil {
 		this.ErrorPage(err)
