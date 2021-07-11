@@ -388,6 +388,10 @@ func (this *RPCClient) NSAccessLogRPC() pb.NSAccessLogServiceClient {
 	return pb.NewNSAccessLogServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) NSRPC() pb.NSServiceClient {
+	return pb.NewNSServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) MetricItemRPC() pb.MetricItemServiceClient {
 	return pb.NewMetricItemServiceClient(this.pickConn())
 }
