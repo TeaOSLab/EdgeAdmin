@@ -1,6 +1,6 @@
 // Copyright 2021 Liuxiangchao iwind.liu@gmail.com. All rights reserved.
 
-package dashboard
+package boards
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
@@ -17,12 +17,12 @@ type IndexAction struct {
 }
 
 func (this *IndexAction) Init() {
-	this.Nav("", "", "")
+	this.Nav("", "", "index")
 }
 
 func (this *IndexAction) RunGet(params struct{}) {
-	if teaconst.IsPlus {
-		this.RedirectURL("/dashboard/boards")
+	if !teaconst.IsPlus {
+		this.RedirectURL("/dashboard")
 		return
 	}
 
