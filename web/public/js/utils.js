@@ -118,18 +118,18 @@ window.teaweb = {
 			return bytes + "B";
 		}
 		if (bytes < 1024 * 1024) {
-			return (Math.ceil(bytes * 100 / 1024) / 100) + "K";
+			return (Math.round(bytes * 100 / 1024) / 100) + "K";
 		}
 		if (bytes < 1024 * 1024 * 1024) {
-			return (Math.ceil(bytes * 100 / 1024 / 1024) / 100) + "M";
+			return (Math.round(bytes * 100 / 1024 / 1024) / 100) + "M";
 		}
 		if (bytes < 1024 * 1024 * 1024 * 1024) {
-			return (Math.ceil(bytes * 100 / 1024 / 1024 / 1024) / 100) + "G";
+			return (Math.round(bytes * 100 / 1024 / 1024 / 1024) / 100) + "G";
 		}
 		if (bytes < 1024 * 1024 * 1024 * 1024 * 1024) {
-			return (Math.ceil(bytes * 100 / 1024 / 1024 / 1024 / 1024) / 100) + "T";
+			return (Math.round(bytes * 100 / 1024 / 1024 / 1024 / 1024) / 100) + "T";
 		}
-		return (Math.ceil(bytes * 100 / 1024 / 1024 / 1024 / 1024 / 1024) / 100) + "P";
+		return (Math.round(bytes * 100 / 1024 / 1024 / 1024 / 1024 / 1024) / 100) + "P";
 	},
 	formatNumber: function (x) {
 		return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ", ");
