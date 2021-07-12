@@ -25,7 +25,7 @@
 
 <div>
     <!-- 顶部导航 -->
-    <div class="ui menu top-nav blue inverted small borderless" v-cloak="">
+    <div class="ui menu top-nav blue inverted small borderless" :class="(teaTheme == null || teaTheme.length == 0) ? 'theme1': teaTheme" v-cloak="">
         <a href="/" class="item">
 			<i class="ui icon leaf" v-if="teaLogoFileId == 0"></i><img v-if="teaLogoFileId > 0" :src="'/ui/image/' + teaLogoFileId" style="width: auto;height: 1.6em"/> &nbsp; {{teaTitle}}&nbsp;<sup v-if="teaShowVersion">v{{teaVersion}}</sup> &nbsp;
 		</a>
@@ -58,6 +58,9 @@
                 <span class="hover-span"><span class="disabled">{{teaUsername}}</span></span>
 			</a>
 
+            <!-- 背景颜色 -->
+            <a href="" class="item" title="点击切换背景颜色" @click.prevent="changeTheme()"><i class="icon adjust"></i></a>
+
             <!-- 退出登录 -->
             <a :href="Tea.url('logout')" class="item" title="安全退出登录"><i class="icon sign out"></i>
                 <span class="hover-span"><span class="disabled">退出登录</span></span>
@@ -66,7 +69,7 @@
     </div>
 
     <!-- 左侧主菜单 -->
-    <div class="main-menu" v-cloak="">
+    <div class="main-menu" :class="(teaTheme == null || teaTheme.length == 0) ? 'theme1': teaTheme" v-cloak="">
         <div class="ui labeled menu vertical blue inverted tiny borderless">
 			<div class="item"></div>
             <!--<a :href="Tea.url('dashboard')" class="item" :class="{active:teaMenu == 'dashboard'}">

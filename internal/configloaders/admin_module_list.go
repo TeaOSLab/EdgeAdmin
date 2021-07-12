@@ -6,6 +6,7 @@ type AdminModuleList struct {
 	IsSuper  bool
 	Modules  []*systemconfigs.AdminModule
 	Fullname string
+	Theme    string
 }
 
 func (this *AdminModuleList) Allow(module string) bool {
