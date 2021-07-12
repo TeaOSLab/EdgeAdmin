@@ -18,6 +18,7 @@ func init() {
 			Prefix("/dashboard/boards").
 			Get("", new(boards.IndexAction)).
 			Get("/waf", new(boards.WafAction)).
+			Post("/wafLogs", new(boards.WafLogsAction)).
 			Get("/dns", new(boards.DnsAction)).
 			Get("/user", new(boards.UserAction)).
 
