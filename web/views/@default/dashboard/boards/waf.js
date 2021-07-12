@@ -156,11 +156,28 @@ Tea.context(function () {
 		this.$post(".wafLogs")
 			.success(function (resp) {
 				if (resp.data.accessLogs != null) {
+					let that = this
+					resp.data.accessLogs.forEach(function (v) {
+						that.formatTime(v)
+					})
 					this.accessLogs = resp.data.accessLogs
 				}
 			})
 			.done(function () {
 				this.$delay(this.reloadAccessLogs, 10000)
 			})
+	}
+
+	this.formatTime = function (accessLog) {
+		let elapsedSeconds = Math.ceil(new Date().getTime() / 1000) - accessLog.timestamp
+		if (elapsedSeconds >= 0) {
+			if (elapsedSeconds < 60) {
+				accessLog.humanTime = elapsedSeconds + "秒前"
+			} else if (elapsedSeconds < 3600) {
+				accessLog.humanTime = Math.ceil(elapsedSeconds / 60) + "分钟前"
+			} else if (elapsedSeconds < 3600 * 24) {
+				accessLog.humanTime = Math.ceil(elapsedSeconds / 3600) + "小时前"
+			}
+		}
 	}
 })
