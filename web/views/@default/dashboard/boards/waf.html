@@ -1,3 +1,56 @@
 {$layout}
 {$template "menu"}
 {$template "/echarts"}
+
+<div class="ui four columns grid">
+    <div class="ui column">
+        <h4>今日拦截</h4>
+        <div class="value"><span>{{board.countDailyBlocks}}</span>次</div>
+    </div>
+
+    <div class="ui column">
+        <h4>今日验证码验证</h4>
+        <div class="value"><span>{{board.countDailyCaptcha}}</span>次</div>
+    </div>
+
+    <div class="ui column">
+        <h4>今日记录</h4>
+        <div class="value"><span>{{board.countDailyLogs}}</span>次</div>
+    </div>
+
+    <div class="ui column">
+        <h4>本周拦截</h4>
+        <div class="value"><span>{{board.countWeeklyBlocks}}</span>次</div>
+    </div>
+</div>
+
+<!-- 最近日志 -->
+<div v-if="accessLogs.length > 0">
+    <div class="ui divider"></div>
+    <h4>最新记录</h4>
+    <table class="ui table">
+        <tr v-for="accessLog in accessLogs" :key="accessLog.requestId">
+            <td><http-access-log-box :v-access-log="accessLog"></http-access-log-box></td>
+        </tr>
+    </table>
+    <div class="ui divider"></div>
+</div>
+
+<!-- 按小时/天统计 -->
+<div class="ui menu tabular">
+    <a href="" class="item" :class="{active: requestsTab == 'hourly'}" @click.prevent="selectRequestsTab('hourly')">24小时趋势</a>
+    <a href="" class="item" :class="{active: requestsTab == 'daily'}" @click.prevent="selectRequestsTab('daily')">15天趋势</a>
+    <div class="item right">
+        <span class="color-span" style="background: #F39494">拦截</span>
+        <span class="color-span" style="background: #FBD88A">验证码</span>
+        <span class="color-span" style="background: #879BD7">记录</span>
+    </div>
+</div>
+
+<div class="chart-box" id="hourly-chart" v-show="requestsTab == 'hourly'"></div>
+<div class="chart-box" id="daily-chart" v-show="requestsTab == 'daily'"></div>
+<div class="ui divider"></div>
+
+
+<h4>拦截类型分布</h4>
+<div class="chart-box" id="group-chart"></div>

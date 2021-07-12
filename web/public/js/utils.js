@@ -134,6 +134,24 @@ window.teaweb = {
 	formatNumber: function (x) {
 		return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ", ");
 	},
+	formatCount: function (x) {
+		let unit = ""
+		let divider = ""
+		if (x >= 1000 * 1000 * 1000) {
+			unit = "B"
+			divider = 1000 * 1000 * 1000
+		} else if (x >= 1000 * 1000) {
+			unit = "M"
+			divider = 1000 * 1000
+		} else if (x >= 1000) {
+			unit = "K"
+			divider = 1000
+		}
+		if (unit.length == 0) {
+			return x.toString()
+		}
+		return (Math.round(x * 100 / divider) / 100) + unit
+	},
 	bytesAxis: function (stats, countFunc) {
 		let max = Math.max.apply(this, stats.map(countFunc))
 		let divider = 1
@@ -362,12 +380,34 @@ window.teaweb = {
 	},
 	renderBarChart: function (options) {
 		let chartId = options.id
+		if (chartId == null || chartId.length == 0) {
+			throw new Error("'options.id' should not be empty")
+		}
+
 		let name = options.name
 		let values = options.values
+		if (values == null || !(values instanceof Array)) {
+			throw new Error("'options.values' should be array")
+		}
+
 		let xFunc = options.x
+		if (typeof (xFunc) != "function") {
+			throw new Error("'options.x' should be a function")
+		}
+
 		let tooltipFunc = options.tooltip
+		if (typeof(tooltipFunc) != "function") {
+			throw new Error("'options.tooltip' should be a function")
+		}
+
 		let axis = options.axis
+		if (axis == null) {
+			axis = {unit: "", count: 1}
+		}
 		let valueFunc = options.value
+		if (typeof (valueFunc) != "function") {
+			throw new Error("'options.value' should be a function")
+		}
 		let click = options.click
 
 		let chartBox = document.getElementById(chartId)
