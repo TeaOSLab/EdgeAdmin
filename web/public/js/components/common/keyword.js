@@ -13,7 +13,7 @@ Vue.component("keyword", {
 		}
 
 		let slot = this.$slots["default"][0]
-		let text = slot.text
+		let text = this.encodeHTML(slot.text)
 		if (word.length > 0) {
 			text = text.replace(new RegExp("(" + word + ")", "ig"), "<span style=\"border: 1px #ccc dashed; color: #ef4d58\">$1</span>")
 		}
@@ -21,6 +21,14 @@ Vue.component("keyword", {
 		return {
 			word: word,
 			text: text
+		}
+	},
+	methods: {
+		encodeHTML: function (s) {
+			s = s.replace("&", "&amp;")
+			s = s.replace("<", "&lt;")
+			s = s.replace(">", "&gt;")
+			return s
 		}
 	},
 	template: `<span><span style="display: none"><slot></slot></span><span v-html="text"></span></span>`
