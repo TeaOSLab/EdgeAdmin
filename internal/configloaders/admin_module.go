@@ -44,6 +44,7 @@ func loadAdminModuleMapping() (map[int64]*AdminModuleList, error) {
 		list := &AdminModuleList{
 			IsSuper:  m.IsSuper,
 			Fullname: m.Fullname,
+			Theme:    m.Theme,
 		}
 
 		for _, pbModule := range m.Modules {
@@ -130,6 +131,29 @@ func FindAdminFullname(adminId int64) string {
 		return list.Fullname
 	}
 	return ""
+}
+
+// FindAdminTheme 查找某个管理员选择的风格
+func FindAdminTheme(adminId int64) string {
+	locker.Lock()
+	defer locker.Unlock()
+
+	list, ok := sharedAdminModuleMapping[adminId]
+	if ok {
+		return list.Theme
+	}
+	return ""
+}
+
+// UpdateAdminTheme 设置某个管理员的风格
+func UpdateAdminTheme(adminId int64, theme string) {
+	locker.Lock()
+	defer locker.Unlock()
+
+	list, ok := sharedAdminModuleMapping[adminId]
+	if ok {
+		list.Theme = theme
+	}
 }
 
 // AllModuleMaps 所有权限列表

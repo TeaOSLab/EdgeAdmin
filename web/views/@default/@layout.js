@@ -21,6 +21,17 @@ Tea.context(function () {
         this.loadDNSTasks()
     })
 
+	/**
+	 * 切换模板
+	 */
+	this.changeTheme = function () {
+		this.$post("/ui/theme")
+			.success(function (resp) {
+				teaweb.successToast("界面风格已切换")
+				this.teaTheme = resp.data.theme
+			})
+	}
+
     /**
      * 左侧子菜单
      */

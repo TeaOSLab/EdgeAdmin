@@ -70,7 +70,7 @@ func (this *IndexAction) RunGet(params struct {
 	this.Show()
 }
 
-// 提交
+// RunPost 提交
 func (this *IndexAction) RunPost(params struct {
 	Token    string
 	Username string

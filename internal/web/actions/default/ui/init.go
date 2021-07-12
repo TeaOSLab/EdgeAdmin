@@ -29,6 +29,7 @@ func init() {
 			Post("/eventLevelOptions", new(EventLevelOptionsAction)).
 			Post("/showTip", new(ShowTipAction)).
 			Post("/hideTip", new(HideTipAction)).
+			Post("/theme", new(ThemeAction)).
 
 			EndAll()
 	})

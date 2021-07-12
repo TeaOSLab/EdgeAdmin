@@ -275,7 +275,7 @@ window.teaweb = {
 
 		Swal.fire(config);
 	},
-	successToast: function (message, timeout) {
+	successToast: function (message, timeout, callback) {
 		if (timeout == null) {
 			timeout = 2000
 		}
@@ -288,7 +288,12 @@ window.teaweb = {
 			icon: "success",
 			width: width,
 			timer: timeout,
-			showConfirmButton: false
+			showConfirmButton: false,
+			onAfterClose: function () {
+				if (typeof callback == "function") {
+					callback()
+				}
+			}
 		});
 	},
 	successRefresh: function (message) {
