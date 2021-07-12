@@ -9,6 +9,7 @@ Vue.component("http-access-log-box", {
 				accessLog.scheme = "wss"
 			}
 		}
+
 		return {
 			accessLog: accessLog
 		}
@@ -48,7 +49,7 @@ Vue.component("http-access-log-box", {
 		}
 	},
 	template: `<div :style="{'color': (accessLog.status >= 400) ? '#dc143c' : ''}" ref="box">
-	<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey">[{{accessLog.region}}]</span> <keyword :v-word="vKeyword">{{accessLog.remoteAddr}}</keyword> [{{accessLog.timeLocal}}] <em>&quot;<keyword :v-word="vKeyword">{{accessLog.requestMethod}}</keyword> {{accessLog.scheme}}://<keyword :v-word="vKeyword">{{accessLog.host}}</keyword><keyword :v-word="vKeyword">{{accessLog.requestURI}}</keyword> <a :href="accessLog.scheme + '://' + accessLog.host + accessLog.requestURI" target="_blank" title="新窗口打开" class="disabled"><i class="external icon tiny"></i> </a> {{accessLog.proto}}&quot; </em> <keyword :v-word="vKeyword">{{accessLog.status}}</keyword> <code-label v-if="accessLog.attrs != null && accessLog.attrs['cache.status'] == 'HIT'">cache hit</code-label> <code-label v-if="accessLog.attrs != null && accessLog.attrs['waf.action'] != null && accessLog.attrs['waf.action'].length > 0">waf {{accessLog.attrs['waf.action']}}</code-label> - 耗时:{{formatCost(accessLog.requestTime)}} ms
+	<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey">[{{accessLog.region}}]</span> <keyword :v-word="vKeyword">{{accessLog.remoteAddr}}</keyword> [{{accessLog.timeLocal}}] <em>&quot;<keyword :v-word="vKeyword">{{accessLog.requestMethod}}</keyword> {{accessLog.scheme}}://<keyword :v-word="vKeyword">{{accessLog.host}}</keyword><keyword :v-word="vKeyword">{{accessLog.requestURI}}</keyword> <a :href="accessLog.scheme + '://' + accessLog.host + accessLog.requestURI" target="_blank" title="新窗口打开" class="disabled"><i class="external icon tiny"></i> </a> {{accessLog.proto}}&quot; </em> <keyword :v-word="vKeyword">{{accessLog.status}}</keyword> <code-label v-if="accessLog.attrs != null && accessLog.attrs['cache.status'] == 'HIT'">cache hit</code-label> <code-label v-if="accessLog.attrs != null && accessLog.attrs['waf.action'] != null && accessLog.attrs['waf.action'].length > 0">waf {{accessLog.attrs['waf.action']}}</code-label> - 耗时:{{formatCost(accessLog.requestTime)}} ms <span v-if="accessLog.humanTime != null && accessLog.humanTime.length > 0" class="grey small">&nbsp; ({{accessLog.humanTime}})</span>
 	&nbsp; <a href="" @click.prevent="showLog" title="查看详情"><i class="icon expand"></i></a>
 </div>`
 })
