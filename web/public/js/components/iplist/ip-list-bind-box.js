@@ -55,7 +55,7 @@ Vue.component("ip-list-bind-box", {
 	template: `<div>
 	<a href="" @click.prevent="bind()">绑定+</a> &nbsp; <span v-if="lists.length > 0"><span class="disabled small">|&nbsp;</span> 已绑定：</span>
 	<div class="ui label basic small" v-for="(list, index) in lists">
-		{{list.name}}
+		<a :href="'/servers/iplists/list?listId=' + list.id" title="点击查看详情" style="opacity: 1">{{list.name}}</a>
 		<a href="" title="删除" @click.prevent="remove(index, list.id)"><i class="icon remove small"></i></a>
 	</div>
 </div>`

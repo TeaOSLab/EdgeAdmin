@@ -29,7 +29,7 @@ Vue.component("tip-message-box", {
 	},
 	template: `<div class="ui icon message" v-if="visible">
 	<i class="icon info circle"></i>
-	<i class="close icon" title="取消" @click.prevent="close"></i>
+	<i class="close icon" title="取消" @click.prevent="close" style="margin-top: 1em"></i>
 	<div class="content">
 		<slot></slot>
 	</div>

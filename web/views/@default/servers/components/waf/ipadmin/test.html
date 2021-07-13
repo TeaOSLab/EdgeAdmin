@@ -1,48 +1,47 @@
 {$layout}
-
 {$template "../waf_menu"}
 {$template "menu"}
 
 
-	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
-		<input type="hidden" name="firewallPolicyId" :value="firewallPolicyId"/>
-		<table class="ui table selectable definition">
-			<tr>
-                <td class="title">IP *</td>
-                <td>
-                    <input type="text" name="ip" class="text" maxlength="100" ref="focus" placeholder="x.x.x.x" v-model="ip"/>
-                    <p class="comment">要检查的IP</p>
-                </td>
-            </tr>
-            <tr>
-                <td>检查结果</td>
-                <td>
-                    <div v-if="result.isDone">
-                        <div v-if="!result.isOk">
-                            <span class="red">{{result.error}}</span>
-                        </div>
-                        <div v-if="result.isFound">
-                            <div v-if="result.item != null">
-                                <div v-if="result.isAllowed">
-                                    <span class="green">在白名单中 <ip-item-text :v-item="result.item"></ip-item-text>&nbsp;<a href="" @click.prevent="updateItem(result.list.id, result.item.id)" title="查看和修改"><i class="icon pencil small"></i></a></span>
-                                </div>
-                                <div v-else>
-                                    <span class="red">在黑名单中 <ip-item-text :v-item="result.item"></ip-item-text>&nbsp;<a href="" @click.prevent="updateItem(result.list.id, result.item.id)" title="查看和修改"><i class="icon pencil small"></i></a></span>
-                                </div>
+<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+    <input type="hidden" name="firewallPolicyId" :value="firewallPolicyId"/>
+    <table class="ui table selectable definition">
+        <tr>
+            <td class="title">IP *</td>
+            <td>
+                <input type="text" name="ip" class="text" maxlength="100" ref="focus" placeholder="x.x.x.x" v-model="ip"/>
+                <p class="comment">要检查的IP</p>
+            </td>
+        </tr>
+        <tr>
+            <td>检查结果</td>
+            <td>
+                <div v-if="result.isDone">
+                    <div v-if="!result.isOk">
+                        <span class="red">{{result.error}}</span>
+                    </div>
+                    <div v-if="result.isFound">
+                        <div v-if="result.item != null">
+                            <div v-if="result.isAllowed">
+                                <span class="green">在 {{result.list.name}} 中 <ip-item-text :v-item="result.item"></ip-item-text>&nbsp;<a href="" @click.prevent="updateItem(result.item.id)" title="查看和修改"><i class="icon pencil small"></i></a></span>
                             </div>
-                            <div v-if="result.province != null">
-                                <span class="red">在省份封禁中 "{{result.province.name}}"</span>
-                            </div>
-                            <div v-if="result.country != null && result.province == null">
-                                <span class="red">在国家/地区封禁中 "{{result.country.name}}"</span>
+                            <div v-else>
+                                <span class="red">在 {{result.list.name}} 中 <ip-item-text :v-item="result.item"></ip-item-text>&nbsp;<a href="" @click.prevent="updateItem( result.item.id)" title="查看和修改"><i class="icon pencil small"></i></a></span>
                             </div>
                         </div>
-                        <div v-if="!result.isFound">
-                            没有找到和{{ip}}匹配的配置。
+                        <div v-if="result.province != null">
+                            <span class="red">在省份封禁中 "{{result.province.name}}"</span>
+                        </div>
+                        <div v-if="result.country != null && result.province == null">
+                            <span class="red">在国家/地区封禁中 "{{result.country.name}}"</span>
                         </div>
                     </div>
-                </td>
-            </tr>
-		</table>
-		<submit-btn>检查IP状态</submit-btn>
-	</form>
+                    <div v-if="!result.isFound">
+                        没有找到和{{ip}}匹配的配置。
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <submit-btn>检查IP状态</submit-btn>
+</form>
