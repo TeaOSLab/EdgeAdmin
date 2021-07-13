@@ -8,23 +8,23 @@
 <table class="ui table selectable celled" v-if="lists.length > 0">
     <thead>
     <tr>
-        <th class="two wide">ID</th>
+        <th class="two wide center">ID</th>
         <th>名称</th>
-        <th class="two wide">类型</th>
+        <th class="two wide center">类型</th>
         <th>备注</th>
-        <th class="two wide">IP数量</th>
+        <th class="two wide center">IP数量</th>
         <th class="two op">操作</th>
     </tr>
     </thead>
     <tr v-for="list in lists">
-        <td>{{list.id}}</td>
+        <td class="center">{{list.id}}</td>
         <td>{{list.name}}</td>
-        <td>
+        <td class="center">
             <span v-if="list.type == 'black'">黑名单</span>
             <span v-if="list.type == 'white'">白名单</span>
         </td>
         <td>{{list.description}}</td>
-        <td>
+        <td class="center">
             <span v-if="list.countItems > 0">{{list.countItems}}</span>
             <span v-else class="disabled">0</span>
         </td>
