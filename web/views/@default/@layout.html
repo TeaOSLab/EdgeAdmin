@@ -25,7 +25,7 @@
 
 <div>
     <!-- 顶部导航 -->
-    <div class="ui menu top-nav blue inverted small borderless" :class="(teaTheme == null || teaTheme.length == 0) ? 'theme1': teaTheme" v-cloak="">
+    <div class="ui menu top-nav blue inverted small borderless" :class="(teaTheme == null || teaTheme.length == 0) ? 'theme2': teaTheme" v-cloak="">
         <a href="/" class="item">
 			<i class="ui icon leaf" v-if="teaLogoFileId == 0"></i><img v-if="teaLogoFileId > 0" :src="'/ui/image/' + teaLogoFileId" style="width: auto;height: 1.6em"/> &nbsp; {{teaTitle}}&nbsp;<sup v-if="teaShowVersion">v{{teaVersion}}</sup> &nbsp;
 		</a>
@@ -69,7 +69,7 @@
     </div>
 
     <!-- 左侧主菜单 -->
-    <div class="main-menu" :class="(teaTheme == null || teaTheme.length == 0) ? 'theme1': teaTheme" v-cloak="">
+    <div class="main-menu" :class="(teaTheme == null || teaTheme.length == 0) ? 'theme2': teaTheme" v-cloak="">
         <div class="ui labeled menu vertical blue inverted tiny borderless">
 			<div class="item"></div>
             <!--<a :href="Tea.url('dashboard')" class="item" :class="{active:teaMenu == 'dashboard'}">

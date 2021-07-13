@@ -251,7 +251,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":     serverConfig.Web != nil && len(serverConfig.Web.HostRedirects) > 0,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     "路径规则",
+			"name":     "路由规则",
 			"url":      "/servers/server/settings/locations?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "locations",
 			"isOn":     serverConfig.Web != nil && len(serverConfig.Web.Locations) > 0,

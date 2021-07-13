@@ -52,7 +52,7 @@ func (this *SettingAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
-	defer this.CreateLogInfo("修改路径规则 %d 的反向代理设置", params.LocationId)
+	defer this.CreateLogInfo("修改路由规则 %d 的反向代理设置", params.LocationId)
 
 	// TODO 校验配置
 

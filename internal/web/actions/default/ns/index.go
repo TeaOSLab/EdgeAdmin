@@ -1,6 +1,7 @@
 package ns
 
 import (
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
@@ -19,6 +20,11 @@ func (this *IndexAction) RunGet(params struct {
 	UserId    int64
 	Keyword   string
 }) {
+	if !teaconst.IsPlus {
+		this.RedirectURL("/")
+		return
+	}
+
 	this.Data["clusterId"] = params.ClusterId
 	this.Data["userId"] = params.UserId
 	this.Data["keyword"] = params.Keyword

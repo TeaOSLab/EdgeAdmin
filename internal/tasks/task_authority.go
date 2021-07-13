@@ -11,6 +11,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/logs"
+	timeutil "github.com/iwind/TeaGo/utils/time"
 	"time"
 )
 
@@ -74,7 +75,7 @@ func (this *AuthorityTask) Loop() error {
 		return err
 	}
 	var oldState = teaconst.IsPlus
-	if resp.AuthorityKey != nil {
+	if resp.AuthorityKey != nil && len(resp.AuthorityKey.Value) > 0 && resp.AuthorityKey.DayTo >= timeutil.Format("Y-m-d") {
 		teaconst.IsPlus = true
 	} else {
 		teaconst.IsPlus = false

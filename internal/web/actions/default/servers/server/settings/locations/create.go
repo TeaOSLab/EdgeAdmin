@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-// 创建路径规则
+// CreateAction 创建路由规则
 type CreateAction struct {
 	actionutils.ParentAction
 }
