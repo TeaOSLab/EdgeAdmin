@@ -8,7 +8,7 @@
 <div class="right-box">
 	{$template "menu"}
 
-	<p class="comment" v-if="locations.length == 0">暂时还没有路径规则。</p>
+	<p class="comment" v-if="locations.length == 0">暂时还没有路由规则。</p>
 
 	<table class="ui table selectable celled" v-if="locations.length > 0" id="sortable-table">
 		<thead>
@@ -39,5 +39,5 @@
 			</tr>
 		</tbody>
 	</table>
-	<p class="comment" v-if="locations.length > 0">拖动左侧的<i class="icon bars grey"></i>图标可以对路径规则进行排序。</p>
+	<p class="comment" v-if="locations.length > 0">拖动左侧的<i class="icon bars grey"></i>图标可以对路由规则进行排序。</p>
 </div>

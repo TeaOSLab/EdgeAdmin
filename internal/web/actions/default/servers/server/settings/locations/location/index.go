@@ -11,7 +11,7 @@ import (
 	"strings"
 )
 
-// 路径规则详情
+// IndexAction 路由规则详情
 type IndexAction struct {
 	actionutils.ParentAction
 }
@@ -52,11 +52,11 @@ func (this *IndexAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
-	defer this.CreateLogInfo("修改路径规则 %d 设置", params.LocationId)
+	defer this.CreateLogInfo("修改路由规则 %d 设置", params.LocationId)
 
 	params.Must.
 		Field("pattern", params.Pattern).
-		Require("请输入路径匹配规则")
+		Require("请输入路由匹配规则")
 
 	// 校验正则
 	if params.PatternType == serverconfigs.HTTPLocationPatternTypeRegexp {
