@@ -80,8 +80,14 @@ func (this *IndexAction) RunGet(params struct{}) {
 		statMaps := []maps.Map{}
 		for _, stat := range resp.HourlyTrafficStats {
 			statMaps = append(statMaps, maps.Map{
-				"bytes": stat.Bytes,
-				"hour":  stat.Hour[8:],
+				"bytes":               stat.Bytes,
+				"cachedBytes":         stat.CachedBytes,
+				"countRequests":       stat.CountRequests,
+				"countCachedRequests": stat.CountCachedRequests,
+				"countAttackRequests": stat.CountAttackRequests,
+				"attackBytes":         stat.AttackBytes,
+				"day":                 stat.Hour[4:6] + "月" + stat.Hour[6:8] + "日",
+				"hour":                stat.Hour[8:],
 			})
 		}
 		this.Data["hourlyTrafficStats"] = statMaps
@@ -92,11 +98,44 @@ func (this *IndexAction) RunGet(params struct{}) {
 		statMaps := []maps.Map{}
 		for _, stat := range resp.DailyTrafficStats {
 			statMaps = append(statMaps, maps.Map{
-				"bytes": stat.Bytes,
-				"day":   stat.Day[4:6] + "月" + stat.Day[6:] + "日",
+				"bytes":               stat.Bytes,
+				"cachedBytes":         stat.CachedBytes,
+				"countRequests":       stat.CountRequests,
+				"countCachedRequests": stat.CountCachedRequests,
+				"countAttackRequests": stat.CountAttackRequests,
+				"attackBytes":         stat.AttackBytes,
+				"day":                 stat.Day[4:6] + "月" + stat.Day[6:] + "日",
 			})
 		}
 		this.Data["dailyTrafficStats"] = statMaps
+	}
+
+	// 节点排行
+	{
+		var statMaps = []maps.Map{}
+		for _, stat := range resp.TopNodeStats {
+			statMaps = append(statMaps, maps.Map{
+				"nodeId":        stat.NodeId,
+				"nodeName":      stat.NodeName,
+				"countRequests": stat.CountRequests,
+				"bytes":         stat.Bytes,
+			})
+		}
+		this.Data["topNodeStats"] = statMaps
+	}
+
+	// 域名排行
+	{
+		var statMaps = []maps.Map{}
+		for _, stat := range resp.TopDomainStats {
+			statMaps = append(statMaps, maps.Map{
+				"serverId":      stat.ServerId,
+				"domain":        stat.Domain,
+				"countRequests": stat.CountRequests,
+				"bytes":         stat.Bytes,
+			})
+		}
+		this.Data["topDomainStats"] = statMaps
 	}
 
 	// 版本升级

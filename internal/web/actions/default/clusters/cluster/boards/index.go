@@ -50,6 +50,8 @@ func (this *IndexAction) RunGet(params struct {
 				"cachedBytes":         stat.CachedBytes,
 				"countRequests":       stat.CountRequests,
 				"countCachedRequests": stat.CountCachedRequests,
+				"countAttackRequests": stat.CountAttackRequests,
+				"attackBytes":         stat.AttackBytes,
 				"day":                 stat.Hour[4:6] + "月" + stat.Hour[6:8] + "日",
 				"hour":                stat.Hour[8:],
 			})
@@ -66,6 +68,8 @@ func (this *IndexAction) RunGet(params struct {
 				"cachedBytes":         stat.CachedBytes,
 				"countRequests":       stat.CountRequests,
 				"countCachedRequests": stat.CountCachedRequests,
+				"countAttackRequests": stat.CountAttackRequests,
+				"attackBytes":         stat.AttackBytes,
 				"day":                 stat.Day[4:6] + "月" + stat.Day[6:] + "日",
 			})
 		}

@@ -1,6 +1,12 @@
 {$layout}
 {$template "/echarts"}
 
+<first-menu>
+    <menu-item href="/servers">服务列表</menu-item>
+    <span class="item disabled">|</span>
+    <menu-item :href="'/servers/server?serverId=' + server.id" active="true">"{{server.name}}"看板</menu-item>
+</first-menu>
+
 <div class="ui menu tabular">
     <a href="" class="item" :class="{active: trafficTab == 'hourly'}" @click.prevent="selectTrafficTab('hourly')">24小时流量趋势</a>
     <a href="" class="item" :class="{active: trafficTab == 'daily'}" @click.prevent="selectTrafficTab('daily')">15天流量趋势</a>
