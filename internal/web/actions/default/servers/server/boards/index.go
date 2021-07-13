@@ -26,6 +26,21 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 
+	serverResp, err := this.RPC().ServerRPC().FindEnabledServer(this.AdminContext(), &pb.FindEnabledServerRequest{ServerId: params.ServerId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	var server = serverResp.Server
+	if server == nil {
+		this.NotFound("server", params.ServerId)
+		return
+	}
+	this.Data["server"] = maps.Map{
+		"id":   server.Id,
+		"name": server.Name,
+	}
+
 	resp, err := this.RPC().ServerStatBoardRPC().ComposeServerStatBoard(this.AdminContext(), &pb.ComposeServerStatBoardRequest{ServerId: params.ServerId})
 	if err != nil {
 		this.ErrorPage(err)
@@ -41,6 +56,8 @@ func (this *IndexAction) RunGet(params struct {
 				"cachedBytes":         stat.CachedBytes,
 				"countRequests":       stat.CountRequests,
 				"countCachedRequests": stat.CountCachedRequests,
+				"countAttackRequests": stat.CountAttackRequests,
+				"attackBytes":         stat.AttackBytes,
 				"day":                 stat.Hour[4:6] + "月" + stat.Hour[6:8] + "日",
 				"hour":                stat.Hour[8:],
 			})
@@ -57,6 +74,8 @@ func (this *IndexAction) RunGet(params struct {
 				"cachedBytes":         stat.CachedBytes,
 				"countRequests":       stat.CountRequests,
 				"countCachedRequests": stat.CountCachedRequests,
+				"countAttackRequests": stat.CountAttackRequests,
+				"attackBytes":         stat.AttackBytes,
 				"day":                 stat.Day[4:6] + "月" + stat.Day[6:] + "日",
 			})
 		}
@@ -68,10 +87,12 @@ func (this *IndexAction) RunGet(params struct {
 		var statMaps = []maps.Map{}
 		for _, stat := range resp.TopNodeStats {
 			statMaps = append(statMaps, maps.Map{
-				"nodeId":        stat.NodeId,
-				"nodeName":      stat.NodeName,
-				"countRequests": stat.CountRequests,
-				"bytes":         stat.Bytes,
+				"nodeId":              stat.NodeId,
+				"nodeName":            stat.NodeName,
+				"countRequests":       stat.CountRequests,
+				"bytes":               stat.Bytes,
+				"countAttackRequests": stat.CountAttackRequests,
+				"attackBytes":         stat.AttackBytes,
 			})
 		}
 		this.Data["topNodeStats"] = statMaps
@@ -82,10 +103,12 @@ func (this *IndexAction) RunGet(params struct {
 		var statMaps = []maps.Map{}
 		for _, stat := range resp.TopDomainStats {
 			statMaps = append(statMaps, maps.Map{
-				"serverId":      stat.ServerId,
-				"domain":        stat.Domain,
-				"countRequests": stat.CountRequests,
-				"bytes":         stat.Bytes,
+				"serverId":            stat.ServerId,
+				"domain":              stat.Domain,
+				"countRequests":       stat.CountRequests,
+				"bytes":               stat.Bytes,
+				"countAttackRequests": stat.CountAttackRequests,
+				"attackBytes":         stat.AttackBytes,
 			})
 		}
 		this.Data["topDomainStats"] = statMaps

@@ -1,6 +1,6 @@
 <second-menu>
 	<menu-item :href="'/clusters/cluster/nodes?clusterId=' + clusterId">节点列表</menu-item>
-	<span class="item">|</span>
+	<span class="item disabled">|</span>
 	<menu-item :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id" code="node"
                v-if="!teaIsPlus">"{{node.name}}"节点详情</menu-item>
     <menu-item :href="'/clusters/cluster/node/boards?clusterId=' + clusterId + '&nodeId=' + node.id" code="board" v-if="teaIsPlus">"{{node.name}}" 节点看板</menu-item>

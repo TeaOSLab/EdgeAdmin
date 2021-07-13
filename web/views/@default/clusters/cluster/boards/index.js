@@ -28,34 +28,30 @@ Tea.context(function () {
 	this.reloadHourlyTrafficChart = function () {
 		let stats = this.hourlyStats
 		this.reloadTrafficChart("hourly-traffic-chart", "流量统计", stats, function (args) {
-			if (args.seriesIndex == 0) {
-				return stats[args.dataIndex].day + " " + stats[args.dataIndex].hour + "时 流量: " + teaweb.formatBytes(stats[args.dataIndex].bytes)
+			let index = args.dataIndex
+			let cachedRatio = 0
+			let attackRatio = 0
+			if (stats[index].bytes > 0) {
+				cachedRatio = Math.round(stats[index].cachedBytes * 10000 / stats[index].bytes) / 100
+				attackRatio = Math.round(stats[index].attackBytes * 10000 / stats[index].bytes) / 100
 			}
-			if (args.seriesIndex == 1) {
-				let ratio = 0
-				if (stats[args.dataIndex].bytes > 0) {
-					ratio = Math.round(stats[args.dataIndex].cachedBytes * 10000 / stats[args.dataIndex].bytes) / 100
-				}
-				return stats[args.dataIndex].day + " " + stats[args.dataIndex].hour + "时 缓存流量: " + teaweb.formatBytes(stats[args.dataIndex].cachedBytes) + ", 命中率：" + ratio + "%"
-			}
-			return ""
+
+			return stats[index].day + " " + stats[index].hour  + "时<br/>总流量：" + teaweb.formatBytes(stats[index].bytes) + "<br/>缓存流量：" + teaweb.formatBytes(stats[index].cachedBytes) + "<br/>缓存命中率：" + cachedRatio + "%<br/>拦截攻击流量：" + teaweb.formatBytes(stats[index].attackBytes) + "<br/>拦截比例：" + attackRatio + "%"
 		})
 	}
 
 	this.reloadDailyTrafficChart = function () {
 		let stats = this.dailyStats
 		this.reloadTrafficChart("daily-traffic-chart", "流量统计", stats, function (args) {
-			if (args.seriesIndex == 0) {
-				return stats[args.dataIndex].day + " 流量: " + teaweb.formatBytes(stats[args.dataIndex].bytes)
+			let index = args.dataIndex
+			let cachedRatio = 0
+			let attackRatio = 0
+			if (stats[index].bytes > 0) {
+				cachedRatio = Math.round(stats[index].cachedBytes * 10000 / stats[index].bytes) / 100
+				attackRatio = Math.round(stats[index].attackBytes * 10000 / stats[index].bytes) / 100
 			}
-			if (args.seriesIndex == 1) {
-				let ratio = 0
-				if (stats[args.dataIndex].bytes > 0) {
-					ratio = Math.round(stats[args.dataIndex].cachedBytes * 10000 / stats[args.dataIndex].bytes) / 100
-				}
-				return stats[args.dataIndex].day + " 缓存流量: " + teaweb.formatBytes(stats[args.dataIndex].cachedBytes) + ", 命中率：" + ratio + "%"
-			}
-			return ""
+
+			return stats[index].day + "<br/>总流量：" + teaweb.formatBytes(stats[index].bytes) + "<br/>缓存流量：" + teaweb.formatBytes(stats[index].cachedBytes) + "<br/>缓存命中率：" + cachedRatio + "%<br/>拦截攻击流量：" + teaweb.formatBytes(stats[index].attackBytes) + "<br/>拦截比例：" + attackRatio + "%"
 		})
 	}
 
@@ -123,10 +119,20 @@ Tea.context(function () {
 					areaStyle: {
 						color: "#61A0A8"
 					}
+				},
+				{
+					name: "攻击流量",
+					type: "line",
+					data: stats.map(function (v) {
+						return v.attackBytes / axis.divider
+					}),
+					itemStyle: {
+						color: "#F39494"
+					}
 				}
 			],
 			legend: {
-				data: ['流量', '缓存流量']
+				data: ["流量", "缓存流量", "攻击流量"]
 			},
 			animation: true
 		}
@@ -155,34 +161,30 @@ Tea.context(function () {
 	this.reloadHourlyRequestsChart = function () {
 		let stats = this.hourlyStats
 		this.reloadRequestsChart("hourly-requests-chart", "请求数统计", stats, function (args) {
-			if (args.seriesIndex == 0) {
-				return stats[args.dataIndex].day + " " + stats[args.dataIndex].hour + "时 请求数: " + teaweb.formatNumber(stats[args.dataIndex].countRequests)
+			let index = args.dataIndex
+			let cachedRatio = 0
+			let attackRatio = 0
+			if (stats[index].countRequests > 0) {
+				cachedRatio = Math.round(stats[index].countCachedRequests * 10000 / stats[index].countRequests) / 100
+				attackRatio = Math.round(stats[index].countAttackRequests * 10000 / stats[index].countRequests) / 100
 			}
-			if (args.seriesIndex == 1) {
-				let ratio = 0
-				if (stats[args.dataIndex].countRequests > 0) {
-					ratio = Math.round(stats[args.dataIndex].countCachedRequests * 10000 / stats[args.dataIndex].countRequests) / 100
-				}
-				return stats[args.dataIndex].day + " " + stats[args.dataIndex].hour + "时 缓存请求数: " + teaweb.formatNumber(stats[args.dataIndex].countCachedRequests) + ", 命中率：" + ratio + "%"
-			}
-			return ""
+
+			return stats[index].day + " " + stats[index].hour + "时<br/>总请求数：" + stats[index].countRequests + "<br/>缓存请求数：" + stats[index].countCachedRequests + "<br/>缓存命中率：" + cachedRatio + "%<br/>拦截攻击数：" + stats[index].countAttackRequests + "<br/>拦截比例：" + attackRatio + "%"
 		})
 	}
 
 	this.reloadDailyRequestsChart = function () {
 		let stats = this.dailyStats
 		this.reloadRequestsChart("daily-requests-chart", "请求数统计", stats, function (args) {
-			if (args.seriesIndex == 0) {
-				return stats[args.dataIndex].day + " 请求数: " + teaweb.formatNumber(stats[args.dataIndex].countRequests)
+			let index = args.dataIndex
+			let cachedRatio = 0
+			let attackRatio = 0
+			if (stats[index].countRequests > 0) {
+				cachedRatio = Math.round(stats[index].countCachedRequests * 10000 / stats[index].countRequests) / 100
+				attackRatio = Math.round(stats[index].countAttackRequests * 10000 / stats[index].countRequests) / 100
 			}
-			if (args.seriesIndex == 1) {
-				let ratio = 0
-				if (stats[args.dataIndex].countRequests > 0) {
-					ratio = Math.round(stats[args.dataIndex].countCachedRequests * 10000 / stats[args.dataIndex].countRequests) / 100
-				}
-				return stats[args.dataIndex].day + " 缓存请求数: " + teaweb.formatNumber(stats[args.dataIndex].countCachedRequests) + ", 命中率：" + ratio + "%"
-			}
-			return ""
+
+			return stats[index].day + "<br/>总请求数：" + stats[index].countRequests + "<br/>缓存请求数：" + stats[index].countCachedRequests + "<br/>缓存命中率：" + cachedRatio + "%<br/>拦截攻击数：" + stats[index].countAttackRequests + "<br/>拦截比例：" + attackRatio + "%"
 		})
 	}
 
@@ -253,10 +255,23 @@ Tea.context(function () {
 					areaStyle: {
 						color: "#61A0A8"
 					}
+				},
+				{
+					name: "攻击请求数",
+					type: "line",
+					data: stats.map(function (v) {
+						return v.countAttackRequests / axis.divider;
+					}),
+					itemStyle: {
+						color: "#F39494"
+					},
+					lineStyle: {
+						color: "#F39494"
+					}
 				}
 			],
 			legend: {
-				data: ['请求数', '缓存请求数']
+				data: ["请求数", "缓存请求数", "攻击请求数"]
 			},
 			animation: true
 		}
