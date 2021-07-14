@@ -6,7 +6,6 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/maps"
-	"strconv"
 	"strings"
 )
 
@@ -55,32 +54,19 @@ func (this *GroupAction) RunGet(params struct {
 	this.Data["sets"] = lists.Map(groupConfig.Sets, func(k int, v interface{}) interface{} {
 		set := v.(*firewallconfigs.HTTPFirewallRuleSet)
 
-		// 动作说明
-		actionLinks := []maps.Map{}
-		if set.Action == firewallconfigs.HTTPFirewallActionGoGroup {
-			nextGroup := firewallPolicy.FindRuleGroup(set.ActionOptions.GetInt64("groupId"))
-			if nextGroup != nil {
-				actionLinks = append(actionLinks, maps.Map{
-					"name": nextGroup.Name,
-					"url":  "/servers/components/waf/group?firewallPolicyId=" + strconv.FormatInt(params.FirewallPolicyId, 10) + "&type=" + params.Type + "&groupId=" + strconv.FormatInt(nextGroup.Id, 10),
-				})
+		var actionMaps = []maps.Map{}
+		for _, action := range set.Actions {
+			def := firewallconfigs.FindActionDefinition(action.Code)
+			if def == nil {
+				continue
 			}
-		} else if set.Action == firewallconfigs.HTTPFirewallActionGoSet {
-			nextGroup := firewallPolicy.FindRuleGroup(set.ActionOptions.GetInt64("groupId"))
-			if nextGroup != nil {
-				actionLinks = append(actionLinks, maps.Map{
-					"name": nextGroup.Name,
-					"url":  "/servers/components/waf/group?firewallPolicyId=" + strconv.FormatInt(params.FirewallPolicyId, 10) + "&type=" + params.Type + "&groupId=" + strconv.FormatInt(nextGroup.Id, 10),
-				})
 
-				nextSet := nextGroup.FindRuleSet(set.ActionOptions.GetInt64("setId"))
-				if nextSet != nil {
-					actionLinks = append(actionLinks, maps.Map{
-						"name": nextSet.Name,
-						"url":  "/servers/components/waf/group?firewallPolicyId=" + strconv.FormatInt(params.FirewallPolicyId, 10) + "&type=" + params.Type + "&groupId=" + strconv.FormatInt(nextGroup.Id, 10),
-					})
-				}
-			}
+			actionMaps = append(actionMaps, maps.Map{
+				"code":     strings.ToUpper(action.Code),
+				"name":     def.Name,
+				"category": def.Category,
+				"options":  action.Options,
+			})
 		}
 
 		return maps.Map{
@@ -97,12 +83,9 @@ func (this *GroupAction) RunGet(params struct {
 					"isComposed":        firewallconfigs.CheckCheckpointIsComposed(rule.Prefix()),
 				}
 			}),
-			"isOn":          set.IsOn,
-			"action":        strings.ToUpper(set.Action),
-			"actionOptions": set.ActionOptions,
-			"actionName":    firewallconfigs.FindActionName(set.Action),
-			"actionLinks":   actionLinks,
-			"connector":     strings.ToUpper(set.Connector),
+			"isOn":      set.IsOn,
+			"actions":   actionMaps,
+			"connector": strings.ToUpper(set.Connector),
 		}
 	})
 

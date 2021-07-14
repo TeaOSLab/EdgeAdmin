@@ -52,6 +52,9 @@ Vue.component("values-box", {
 			this.isUpdating = false;
 			this.isAdding = false;
 			this.value = "";
+		},
+		updateAll: function (values) {
+			this.vValeus = values
 		}
 	},
 	template: `<div>
@@ -78,7 +81,7 @@ Vue.component("values-box", {
 			</div> 
 		</div> 
 		<div v-if="!isAdding && !isUpdating">
-			<button class="ui button small" type="button" @click.prevent="create()">+</button> 
+			<button class="ui button tiny" type="button" @click.prevent="create()">+</button> 
 		</div>
 </div>`
 });
