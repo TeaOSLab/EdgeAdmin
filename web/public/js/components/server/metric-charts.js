@@ -17,7 +17,8 @@ Vue.component("metric-chart", {
 				stats.push({
 					keys: ["其他"],
 					value: stats[0].total - sum,
-					total: stats[0].total
+					total: stats[0].total,
+					time: stats[0].time
 				})
 			}
 		}
@@ -324,6 +325,9 @@ Vue.component("metric-chart", {
 			document.getElementById(this.chartId).innerHTML = table
 		},
 		formatTime: function (time) {
+			if (time == null) {
+				return ""
+			}
 			switch (this.vPeriodUnit) {
 				case "month":
 					return time.substring(0, 4) + "-" + time.substring(4, 6)

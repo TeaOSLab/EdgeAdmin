@@ -11,7 +11,8 @@ Tea.context(function () {
 		this.$post("$")
 			.params({
 				serverId: this.serverId,
-				requestId: this.requestId
+				requestId: this.requestId,
+				keyword: this.keyword
 			})
 			.success(function (resp) {
 				this.accessLogs = resp.data.accessLogs.concat(this.accessLogs)
