@@ -1,19 +1,25 @@
 Vue.component("ip-list-table", {
-    props: ["v-items"],
-    data: function () {
-        return {
-            items: this.vItems
-        }
-    },
-    methods: {
-        updateItem: function (itemId) {
-            this.$emit("update-item", itemId)
-        },
-        deleteItem: function (itemId) {
-            this.$emit("delete-item", itemId)
-        }
-    },
-    template: `<div>
+	props: ["v-items"],
+	data: function () {
+		return {
+			items: this.vItems
+		}
+	},
+	methods: {
+		updateItem: function (itemId) {
+			this.$emit("update-item", itemId)
+		},
+		deleteItem: function (itemId) {
+			this.$emit("delete-item", itemId)
+		},
+		viewLogs: function (itemId) {
+			teaweb.popup("/servers/iplists/accessLogsPopup?itemId=" + itemId, {
+				width: "50em",
+				height: "30em"
+			})
+		}
+	},
+	template: `<div>
  <table class="ui table selectable celled" v-if="items.length > 0">
         <thead>
             <tr>
@@ -22,7 +28,7 @@ Vue.component("ip-list-table", {
                 <th>级别</th>
                 <th>过期时间</th>
                 <th>备注</th>
-                <th class="two op">操作</th>
+                <th class="three op">操作</th>
             </tr>
         </thead>
         <tr v-for="item in items">
@@ -54,6 +60,7 @@ Vue.component("ip-list-table", {
                 <span v-else class="disabled">-</span>
             </td>
             <td>
+            	<a href="" @click.prevent="viewLogs(item.id)">日志</a> &nbsp;
                 <a href="" @click.prevent="updateItem(item.id)">修改</a> &nbsp;
                 <a href="" @click.prevent="deleteItem(item.id)">删除</a>
             </td>
