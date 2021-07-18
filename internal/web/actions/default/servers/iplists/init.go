@@ -29,6 +29,7 @@ func init() {
 			GetPost("/createIPPopup", new(CreateIPPopupAction)).
 			GetPost("/updateIPPopup", new(UpdateIPPopupAction)).
 			Post("/deleteIP", new(DeleteIPAction)).
+			Get("/accessLogsPopup", new(AccessLogsPopupAction)).
 
 			// 防火墙
 			GetPost("/bindHTTPFirewallPopup", new(BindHTTPFirewallPopupAction)).

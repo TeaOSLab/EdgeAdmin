@@ -1,0 +1,10 @@
+{$layout "layout_popup"}
+
+<h3>访问日志<span v-if="ipTo.length > 0" class="grey">（{{ipFrom}} - {{ipTo}}）</span><span v-else class="grey">（{{ipFrom}}）</span></h3>
+
+<p class="comment" v-if="accessLogs.length == 0">暂时还没有访问日志。</p>
+<table class="ui table selectable" v-if="accessLogs.length > 0">
+    <tr v-for="accessLog in accessLogs" :key="accessLog.requestId">
+        <td><http-access-log-box :v-access-log="accessLog"></http-access-log-box></td>
+    </tr>
+</table>
