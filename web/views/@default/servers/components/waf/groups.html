@@ -1,44 +1,44 @@
 {$layout}
 
-	{$template "waf_menu"}
+{$template "waf_menu"}
 
-	<second-menu style="margin-top:-1em">
-		<a href="" class="item" @click.prevent="createGroup(type)">[添加分组]</a>
-	</second-menu>
+<second-menu style="margin-top:-1em">
+    <a href="" class="item" @click.prevent="createGroup(type)">[添加分组]</a>
+</second-menu>
 
-	<p class="comment" v-if="groups.length == 0">暂时还没有规则分组。</p>
+<p class="comment" v-if="groups.length == 0">暂时还没有规则分组。</p>
 
-	<table class="ui table selectable celled" v-if="groups.length > 0" id="sortable-table">
-		<thead>
-		<tr>
-			<th style="width:3em"></th>
-			<th>规则分组</th>
-			<th class="center">规则集</th>
-			<th class="three op">操作</th>
-		</tr>
-		</thead>
-		<tbody  v-for="group in groups" :data-group-id="group.id">
-			<tr>
-				<td style="text-align: center;"><i class="icon bars handle grey" title="拖动排序"></i> </td>
-				<td><span :class="{disabled:!group.isOn}">{{group.name}}</span>
-					<p class="comment" v-if="group.description.length > 0" style="padding-bottom:0">{{group.description}}</p>
-					<p>
-						<span v-if="group.isOn" class="ui label tiny basic green">启用</span>
-						<span v-if="!group.isOn" class="ui label tiny basic red">停用</span>
-						<span v-if="group.code.length > 0" class="ui label basic tiny">预置</span>
-						<span v-if="group.code.length == 0" class="ui label basic tiny">自定义</span>
-					</p>
-				</td>
-				<td class="center">
-					<a :href="'/servers/components/waf/group?firewallPolicyId=' + firewallPolicyId + '&type=' + type + '&groupId=' + group.id">{{group.countSets}}</a>
-				</td>
-				<td>
-					<a :href="'/servers/components/waf/group?firewallPolicyId=' + firewallPolicyId + '&type=' + type + '&groupId=' + group.id">详情</a> &nbsp;
-					<a href="" v-if="!group.isOn" @click.prevent="enableGroup(group.id)">启用</a><a href="" v-if="group.isOn" @click.prevent="disableGroup(group.id)">停用</a> &nbsp;
-					<a href="" @click.prevent="deleteGroup(group.id)" v-if="group.canDelete">删除</a>
-				</td>
-			</tr>
-		</tbody>
-	</table>
+<table class="ui table selectable celled" v-if="groups.length > 0" id="sortable-table">
+    <thead>
+    <tr>
+        <th style="width:3em"></th>
+        <th>规则分组</th>
+        <th class="center">规则集</th>
+        <th class="three op">操作</th>
+    </tr>
+    </thead>
+    <tbody  v-for="group in groups" :data-group-id="group.id">
+        <tr>
+            <td style="text-align: center;"><i class="icon bars handle grey" title="拖动排序"></i> </td>
+            <td><span :class="{disabled:!group.isOn}">{{group.name}}</span>
+                <p class="comment" v-if="group.description.length > 0" style="padding-bottom:0">{{group.description}}</p>
+                <p>
+                    <span v-if="group.isOn" class="ui label tiny basic green">启用</span>
+                    <span v-if="!group.isOn" class="ui label tiny basic red">停用</span>
+                    <span v-if="group.code.length > 0" class="ui label basic tiny">预置</span>
+                    <span v-if="group.code.length == 0" class="ui label basic tiny">自定义</span>
+                </p>
+            </td>
+            <td class="center">
+                <a :href="'/servers/components/waf/group?firewallPolicyId=' + firewallPolicyId + '&type=' + type + '&groupId=' + group.id">{{group.countSets}}</a>
+            </td>
+            <td>
+                <a :href="'/servers/components/waf/group?firewallPolicyId=' + firewallPolicyId + '&type=' + type + '&groupId=' + group.id">详情</a> &nbsp;
+                <a href="" v-if="!group.isOn" @click.prevent="enableGroup(group.id)">启用</a><a href="" v-if="group.isOn" @click.prevent="disableGroup(group.id)">停用</a> &nbsp;
+                <a href="" @click.prevent="deleteGroup(group.id)" v-if="group.canDelete">删除</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
 
-	<p class="comment" v-if="groups.length > 0">所有规则匹配顺序为从上到下，可以拖动左侧的<i class="icon bars"></i>排序。</p>
+<p class="comment" v-if="groups.length > 0">所有规则匹配顺序为从上到下，可以拖动左侧的<i class="icon bars"></i>排序。</p>

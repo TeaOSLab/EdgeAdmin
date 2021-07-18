@@ -62,7 +62,7 @@ Vue.component("http-firewall-actions-box", {
 			ipListLevels: [],
 
 			// 动作参数
-			blockLife: "",
+			blockTimeout: "",
 			captchaLife: "",
 			get302Life: "",
 			post307Life: "",
@@ -89,12 +89,12 @@ Vue.component("http-firewall-actions-box", {
 			})
 			this.actionOptions = {}
 		},
-		blockLife: function (v) {
+		blockTimeout: function (v) {
 			v = parseInt(v)
 			if (isNaN(v)) {
-				this.actionOptions["life"] = 0
+				this.actionOptions["timeout"] = 0
 			} else {
-				this.actionOptions["life"] = v
+				this.actionOptions["timeout"] = v
 			}
 		},
 		captchaLife: function (v) {
@@ -121,7 +121,7 @@ Vue.component("http-firewall-actions-box", {
 				this.actionOptions["life"] = v
 			}
 		},
-		recordIPType: function () {
+		recordIPType: function (v) {
 			this.recordIPListId = 0
 		},
 		recordIPTimeout: function (v) {
@@ -168,7 +168,7 @@ Vue.component("http-firewall-actions-box", {
 			this.actionOptions = {}
 
 			// 动作参数
-			this.blockLife = ""
+			this.blockTimeout = ""
 			this.captchaLife = ""
 			this.get302Life = ""
 			this.post307Life = ""
@@ -192,8 +192,13 @@ Vue.component("http-firewall-actions-box", {
 			this.action = this.vActions.$find(function (k, v) {
 				return v.code == that.actionCode
 			})
+
+			// 滚到界面底部
+			this.scroll()
 		},
 		remove: function (index) {
+			this.isAdding = false
+			this.editingIndex = -1
 			this.configs.$remove(index)
 		},
 		update: function (index, config) {
@@ -211,9 +216,9 @@ Vue.component("http-firewall-actions-box", {
 
 			switch (config.code) {
 				case "block":
-					this.blockLife = ""
-					if (config.options.life != null || config.options.life > 0) {
-						this.blockLife = config.options.life.toString()
+					this.blockTimeout = ""
+					if (config.options.timeout != null || config.options.timeout > 0) {
+						this.blockTimeout = config.options.timeout.toString()
 					}
 					break
 				case "allow":
@@ -247,8 +252,13 @@ Vue.component("http-firewall-actions-box", {
 						if (config.options.timeout > 0) {
 							this.recordIPTimeout = config.options.timeout.toString()
 						}
-						this.recordIPListId = config.options.ipListId
-						this.recordIPListName = config.options.ipListName
+						let that = this
+
+						// VUE需要在函数执行完之后才会调用watch函数，这样会导致设置的值被覆盖，所以这里使用setTimeout
+						setTimeout(function () {
+							that.recordIPListId = config.options.ipListId
+							that.recordIPListName = config.options.ipListName
+						})
 					}
 					break
 				case "tag":
@@ -274,18 +284,25 @@ Vue.component("http-firewall-actions-box", {
 							return v.id == config.options.groupId
 						})
 
-						this.goSetId = config.options.setId
-						if (this.goGroup != null) {
-							let set = this.goGroup.sets.$find(function (k, v) {
-								return v.id == config.options.setId
-							})
-							if (set != null) {
-								this.goSetName = set.name
+						// VUE需要在函数执行完之后才会调用watch函数，这样会导致设置的值被覆盖，所以这里使用setTimeout
+						let that = this
+						setTimeout(function () {
+							that.goSetId = config.options.setId
+							if (that.goGroup != null) {
+								let set = that.goGroup.sets.$find(function (k, v) {
+									return v.id == config.options.setId
+								})
+								if (set != null) {
+									that.goSetName = set.name
+								}
 							}
-						}
+						})
 					}
 					break
 			}
+
+			// 滚到界面底部
+			this.scroll()
 		},
 		cancel: function () {
 			this.isAdding = false
@@ -335,7 +352,7 @@ Vue.component("http-firewall-actions-box", {
 					return
 				}
 				this.actionOptions = {
-					groupId: groupId,
+					groupId: groupId.toString(),
 					groupName: this.goGroupName
 				}
 			} else if (this.actionCode == "go_set") { // go_set
@@ -358,9 +375,9 @@ Vue.component("http-firewall-actions-box", {
 					return
 				}
 				this.actionOptions = {
-					groupId: groupId,
+					groupId: groupId.toString(),
 					groupName: this.goGroupName,
-					setId: setId,
+					setId: setId.toString(),
 					setName: this.goSetName
 				}
 			}
@@ -419,6 +436,14 @@ Vue.component("http-firewall-actions-box", {
 				callback()
 			})
 			document.head.appendChild(jsFile)
+		},
+		scroll: function () {
+			setTimeout(function () {
+				let mainDiv = document.getElementsByClassName("main")
+				if (mainDiv.length > 0) {
+					mainDiv[0].scrollTo(0, 1000)
+				}
+			}, 10)
 		}
 	},
 	template: `<div>
@@ -426,6 +451,18 @@ Vue.component("http-firewall-actions-box", {
 	<div v-show="configs.length > 0" style="margin-bottom: 0.5em" id="actions-box"> 
 		<div v-for="(config, index) in configs" :data-index="index" :key="config.id" class="ui label small basic" :class="{blue: index == editingIndex}" style="margin-bottom: 0.4em">
 			{{config.name}} ({{config.code.toUpperCase()}}) 
+			
+			<!-- block -->
+			<span v-if="config.code == 'block' && config.options.timeout > 0">：有效期{{config.options.timeout}}秒</span>
+			
+			<!-- captcha -->
+			<span v-if="config.code == 'captcha' && config.options.life > 0">：有效期{{config.options.life}}秒</span>
+			
+			<!-- get 302 -->
+			<span v-if="config.code == 'get_302' && config.options.life > 0">：有效期{{config.options.life}}秒</span>
+			
+			<!-- post 307 -->
+			<span v-if="config.code == 'post_307' && config.options.life > 0">：有效期{{config.options.life}}秒</span>
 			
 			<!-- record_ip -->
 			<span v-if="config.code == 'record_ip'">：{{config.options.ipListName}}</span>
@@ -461,7 +498,7 @@ Vue.component("http-firewall-actions-box", {
 				<td>封锁时间</td>
 				<td>
 					<div class="ui input right labeled">
-						<input type="text" style="width: 5em" maxlength="10" v-model="blockLife" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<input type="text" style="width: 5em" maxlength="10" v-model="blockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">秒</span>
 					</div>
 				</td>
@@ -475,7 +512,7 @@ Vue.component("http-firewall-actions-box", {
 						<input type="text" style="width: 5em" maxlength="10" v-model="captchaLife" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">秒</span>
 					</div>
-					<p class="comment">验证通过后在这个时间内不再验证。</p>
+					<p class="comment">验证通过后在这个时间内不再验证，默认600秒。</p>
 				</td>
 			</tr>
 			
@@ -514,7 +551,7 @@ Vue.component("http-firewall-actions-box", {
 				</td>
 			</tr>
 			<tr v-if="actionCode == 'record_ip'">
-				<td>选择IP名单</td>
+				<td>选择IP名单 *</td>
 				<td>
 					<div v-if="recordIPListId > 0" class="ui label basic small">{{recordIPListName}} <a href="" @click.prevent="removeRecordIPList"><i class="icon remove small"></i></a></div>
 					<button type="button" class="ui button tiny" @click.prevent="selectRecordIPList">+</button>
@@ -533,7 +570,7 @@ Vue.component("http-firewall-actions-box", {
 				<td>超时时间</td>
 				<td>
 					<div class="ui input right labeled">
-						<input type="text" style="width: 5em" maxlength="10" v-model="recordIPTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<input type="text" style="width: 6em" maxlength="10" v-model="recordIPTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">秒</span>
 					</div>
 					<p class="comment">0表示不超时。</p>
@@ -585,5 +622,6 @@ Vue.component("http-firewall-actions-box", {
 	<div v-if="!isAdding">
 		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
 	</div>
+	<p class="comment">系统总是会先执行记录日志、标签等不会修改请求的动作，再执行阻止、验证码等可能改变请求的动作。</p>
 </div>`
 })
