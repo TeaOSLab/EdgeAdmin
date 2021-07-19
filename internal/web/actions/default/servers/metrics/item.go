@@ -5,6 +5,8 @@ package metrics
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/metrics/metricutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/iwind/TeaGo/maps"
 )
 
 type ItemAction struct {
@@ -23,6 +25,21 @@ func (this *ItemAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
+
+	// 使用此指标的集群
+	clustersResp, err := this.RPC().NodeClusterMetricItemRPC().FindAllNodeClustersWithMetricItemId(this.AdminContext(), &pb.FindAllNodeClustersWithMetricItemIdRequest{MetricItemId: params.ItemId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	var clusterMaps = []maps.Map{}
+	for _, cluster := range clustersResp.NodeClusters {
+		clusterMaps = append(clusterMaps, maps.Map{
+			"id":   cluster.Id,
+			"name": cluster.Name,
+		})
+	}
+	this.Data["clusters"] = clusterMaps
 
 	this.Show()
 }

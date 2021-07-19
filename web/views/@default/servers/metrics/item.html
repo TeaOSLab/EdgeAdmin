@@ -38,3 +38,12 @@
         </td>
     </tr>
 </table>
+
+<!-- 使用此指标的集群 -->
+<h4>绑定此指标的集群</h4>
+<p class="comment" v-if="clusters.length == 0">暂时还没有集群使用此策略。</p>
+<table class="ui table selectable" v-if="clusters.length > 0">
+    <tr v-for="cluster in clusters">
+        <td>{{cluster.name}}<link-icon :href="'/clusters/cluster?clusterId=' + cluster.id"></link-icon></td>
+    </tr>
+</table>
