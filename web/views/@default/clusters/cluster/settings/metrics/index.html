@@ -27,8 +27,9 @@
         </thead>
         <tr v-for="item in items">
             <td>{{item.name}}
-                <div style="margin-top: 0.3em" v-if="item.isPublic">
-                    <span class="ui label olive tiny basic">公用</span>
+                <div style="margin-top: 0.3em" v-if="item.isPublic || item.code.length > 0">
+                    <span class="ui label olive tiny basic" v-if="item.isPublic">公用</span>
+                    <span class="ui label olive tiny basic" v-if="item.code.length > 0">内置</span>
                 </div>
             </td>
             <td>

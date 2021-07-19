@@ -35,6 +35,7 @@ func InitItem(parent *actionutils.ParentAction, itemId int64) (*pb.MetricItem, e
 	parent.Data["item"] = maps.Map{
 		"id":             item.Id,
 		"name":           item.Name,
+		"code":           item.Code,
 		"isOn":           item.IsOn,
 		"keys":           item.Keys,
 		"value":          item.Value,
