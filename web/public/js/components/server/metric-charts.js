@@ -91,7 +91,13 @@ Vue.component("metric-chart", {
 						if (stat.total > 0) {
 							percent = Math.round((stat.value * 100 / stat.total) * 100) / 100
 						}
-						return stat.keys[0] + ":" + stat.value + "，占比：" + percent + "%"
+						let value = stat.value
+						switch (that.item.valueType) {
+							case "byte":
+								value = teaweb.formatBytes(value)
+								break
+						}
+						return stat.keys[0] + ": " + value + "，占比：" + percent + "%"
 					}
 				},
 				series: [
@@ -120,7 +126,7 @@ Vue.component("metric-chart", {
 						return v
 					})
 					break
-				case "bytes":
+				case "byte":
 					axis = teaweb.bytesAxis(values, function (v) {
 						return v
 					})
@@ -146,14 +152,20 @@ Vue.component("metric-chart", {
 					trigger: "item",
 					formatter: function (data) {
 						let stat = that.stats[data.dataIndex]
-						return that.formatTime(stat.time) + ": " + stat.value
+						let value = stat.value
+						switch (that.item.valueType) {
+							case "byte":
+								value = teaweb.formatBytes(value)
+								break
+						}
+						return that.formatTime(stat.time) + ": " + value
 					}
 				},
 				grid: {
 					left: 50,
 					top: 10,
 					right: 20,
-					bottom: 20
+					bottom: 25
 				},
 				series: [
 					{
@@ -186,7 +198,7 @@ Vue.component("metric-chart", {
 						return v
 					})
 					break
-				case "bytes":
+				case "byte":
 					axis = teaweb.bytesAxis(values, function (v) {
 						return v
 					})
@@ -212,14 +224,20 @@ Vue.component("metric-chart", {
 					trigger: "item",
 					formatter: function (data) {
 						let stat = that.stats[data.dataIndex]
-						return that.formatTime(stat.time) + ": " + stat.value
+						let value = stat.value
+						switch (that.item.valueType) {
+							case "byte":
+								value = teaweb.formatBytes(value)
+								break
+						}
+						return that.formatTime(stat.time) + ": " + value
 					}
 				},
 				grid: {
 					left: 50,
 					top: 10,
 					right: 20,
-					bottom: 20
+					bottom: 25
 				},
 				series: [
 					{
@@ -247,13 +265,12 @@ Vue.component("metric-chart", {
 						return v
 					})
 					break
-				case "bytes":
+				case "byte":
 					axis = teaweb.bytesAxis(values, function (v) {
 						return v
 					})
 					break
 			}
-
 			let that = this
 			chart.setOption({
 				xAxis: {
@@ -273,7 +290,13 @@ Vue.component("metric-chart", {
 						if (stat.total > 0) {
 							percent = Math.round((stat.value * 100 / stat.total) * 100) / 100
 						}
-						return stat.keys[0] + ": " + stat.value + "，占比：" + percent + "%"
+						let value = stat.value
+						switch (that.item.valueType) {
+							case "byte":
+								value = teaweb.formatBytes(value)
+								break
+						}
+						return stat.keys[0] + ": " + value + "，占比：" + percent + "%"
 					}
 				},
 				yAxis: {
@@ -287,7 +310,7 @@ Vue.component("metric-chart", {
 					left: 40,
 					top: 10,
 					right: 20,
-					bottom: 20
+					bottom: 25
 				},
 				series: [
 					{
@@ -315,7 +338,13 @@ Vue.component("metric-chart", {
 		</tr>
 	</thead>`
 			this.stats.forEach(function (v) {
-				table += "<tr><td>" + v.keys[0] + "</td><td>" + v.value + "</td>"
+				let value = v.value
+				switch (that.item.valueType) {
+					case "byte":
+						value = teaweb.formatBytes(value)
+						break
+				}
+				table += "<tr><td>" + v.keys[0] + "</td><td>" + value + "</td>"
 				let percent = 0
 				if (v.total > 0) {
 					percent = Math.round((v.value * 100 / v.total) * 100) / 100
