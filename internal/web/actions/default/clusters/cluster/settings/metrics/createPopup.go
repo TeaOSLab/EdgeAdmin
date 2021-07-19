@@ -62,6 +62,7 @@ func (this *CreatePopupAction) RunGet(params struct {
 		itemMaps = append(itemMaps, maps.Map{
 			"id":             item.Id,
 			"name":           item.Name,
+			"code":           item.Code,
 			"isOn":           item.IsOn,
 			"period":         item.Period,
 			"periodUnit":     item.PeriodUnit,

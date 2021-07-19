@@ -37,6 +37,13 @@
             <span class="disabled" v-else>非公用</span>
         </td>
     </tr>
+    <tr>
+        <td>是否内置</td>
+        <td>
+            <span class="green" v-if="item.code.length > 0">内置</span>
+            <span class="disabled" v-else>自建</span>
+        </td>
+    </tr>
 </table>
 
 <!-- 使用此指标的集群 -->
