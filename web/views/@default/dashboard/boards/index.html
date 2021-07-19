@@ -96,3 +96,14 @@
 <!-- 节点排行 -->
 <h4>节点访问排行 <span>（24小时）</span></h4>
 <div class="chart-box" id="top-nodes-chart"></div>
+
+<!-- 指标 -->
+<div class="ui divider" v-if="metricCharts.length > 0"></div>
+<metric-board>
+    <metric-chart v-for="chart in metricCharts"
+                  :key="chart.id"
+                  :v-chart="chart.chart"
+                  :v-stats="chart.stats"
+                  :v-item="chart.item">
+    </metric-chart>
+</metric-board>

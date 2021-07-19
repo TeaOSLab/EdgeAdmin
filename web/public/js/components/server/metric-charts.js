@@ -1,6 +1,6 @@
 // 指标图表
 Vue.component("metric-chart", {
-	props: ["v-chart", "v-stats", "v-period-unit", "v-value-type"],
+	props: ["v-chart", "v-stats", "v-item"],
 	mounted: function () {
 		this.load()
 	},
@@ -38,8 +38,10 @@ Vue.component("metric-chart", {
 		return {
 			chart: this.vChart,
 			stats: stats,
+			item: this.vItem,
 			width: widthPercent + "%",
-			chartId: "metric-chart-" + this.vChart.id
+			chartId: "metric-chart-" + this.vChart.id,
+			valueTypeName: (this.vItem != null && this.vItem.valueTypeName != null && this.vItem.valueTypeName.length > 0) ? this.vItem.valueTypeName : ""
 		}
 	},
 	methods: {
@@ -97,7 +99,8 @@ Vue.component("metric-chart", {
 						name: name,
 						type: "pie",
 						data: values,
-						areaStyle: {}
+						areaStyle: {},
+						color: ["#9DD3E8", "#B2DB9E", "#F39494", "#FBD88A", "#879BD7"]
 					}
 				]
 			})
@@ -111,7 +114,7 @@ Vue.component("metric-chart", {
 			})
 
 			let axis = {unit: "", divider: 1}
-			switch (this.vValueType) {
+			switch (this.item.valueType) {
 				case "count":
 					axis = teaweb.countAxis(values, function (v) {
 						return v
@@ -156,8 +159,8 @@ Vue.component("metric-chart", {
 					{
 						name: name,
 						type: "bar",
-						data: values.map(function (v){
-							return v/axis.divider
+						data: values.map(function (v) {
+							return v / axis.divider
 						}),
 						itemStyle: {
 							color: "#9DD3E8"
@@ -177,7 +180,7 @@ Vue.component("metric-chart", {
 			})
 
 			let axis = {unit: "", divider: 1}
-			switch (this.vValueType) {
+			switch (this.item.valueType) {
 				case "count":
 					axis = teaweb.countAxis(values, function (v) {
 						return v
@@ -238,7 +241,7 @@ Vue.component("metric-chart", {
 				return v.value
 			})
 			let axis = {unit: "", divider: 1}
-			switch (this.vValueType) {
+			switch (this.item.valueType) {
 				case "count":
 					axis = teaweb.countAxis(values, function (v) {
 						return v
@@ -328,7 +331,7 @@ Vue.component("metric-chart", {
 			if (time == null) {
 				return ""
 			}
-			switch (this.vPeriodUnit) {
+			switch (this.item.periodUnit) {
 				case "month":
 					return time.substring(0, 4) + "-" + time.substring(4, 6)
 				case "week":
@@ -344,7 +347,7 @@ Vue.component("metric-chart", {
 		}
 	},
 	template: `<div style="float: left" :style="{'width': width}">
-	<h4>{{chart.name}} <span>（指标）</span></h4>
+	<h4>{{chart.name}} <span>（{{valueTypeName}}）</span></h4>
 	<div class="ui divider"></div>
 	<div style="height: 20em; padding-bottom: 1em; " :id="chartId" :class="{'scroll-box': chart.type == 'table'}"></div>
 </div>`

@@ -6,6 +6,8 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/metrics/charts/chartutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/metrics/metricutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
+	"github.com/iwind/TeaGo/maps"
 )
 
 type ChartAction struct {
@@ -30,6 +32,9 @@ func (this *ChartAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
+
+	var itemMap = this.Data["item"].(maps.Map)
+	itemMap["valueTypeName"] = serverconfigs.FindMetricValueName(itemMap.GetString("category"), itemMap.GetString("value"))
 
 	this.Show()
 }

@@ -8,6 +8,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/maps"
 	"regexp"
 )
@@ -204,6 +205,43 @@ func (this *IndexAction) RunGet(params struct{}) {
 			"count":   0,
 			"version": "",
 		}
+	}
+
+	// 指标
+	{
+		var chartMaps = []maps.Map{}
+		for _, chart := range resp.MetricDataCharts {
+			var statMaps = []maps.Map{}
+			for _, stat := range chart.MetricStats {
+				statMaps = append(statMaps, maps.Map{
+					"keys":  stat.Keys,
+					"time":  stat.Time,
+					"value": stat.Value,
+					"count": stat.SumCount,
+					"total": stat.SumTotal,
+				})
+			}
+			chartMaps = append(chartMaps, maps.Map{
+				"chart": maps.Map{
+					"id":       chart.MetricChart.Id,
+					"name":     chart.MetricChart.Name,
+					"widthDiv": chart.MetricChart.WidthDiv,
+					"isOn":     chart.MetricChart.IsOn,
+					"maxItems": chart.MetricChart.MaxItems,
+					"type":     chart.MetricChart.Type,
+				},
+				"item": maps.Map{
+					"id":            chart.MetricChart.MetricItem.Id,
+					"name":          chart.MetricChart.MetricItem.Name,
+					"period":        chart.MetricChart.MetricItem.Period,
+					"periodUnit":    chart.MetricChart.MetricItem.PeriodUnit,
+					"valueType":     serverconfigs.FindMetricValueType(chart.MetricChart.MetricItem.Category, chart.MetricChart.MetricItem.Value),
+					"valueTypeName": serverconfigs.FindMetricValueName(chart.MetricChart.MetricItem.Category, chart.MetricChart.MetricItem.Value),
+				},
+				"stats": statMaps,
+			})
+		}
+		this.Data["metricCharts"] = chartMaps
 	}
 
 	this.Show()

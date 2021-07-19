@@ -56,3 +56,14 @@
 
 <!-- 按日统计 -->
 <div class="chart-box" id="daily-traffic-chart-box" v-show="trafficTab == 'daily'"></div>
+
+<!-- 指标 -->
+<div class="ui divider" v-if="metricCharts.length > 0"></div>
+<metric-board>
+    <metric-chart v-for="chart in metricCharts"
+                  :key="chart.id"
+                  :v-chart="chart.chart"
+                  :v-stats="chart.stats"
+                  :v-item="chart.item">
+    </metric-chart>
+</metric-board>

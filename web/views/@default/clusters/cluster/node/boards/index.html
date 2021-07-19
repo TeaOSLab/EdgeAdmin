@@ -110,5 +110,10 @@
 <!-- 指标 -->
 <div class="ui divider" v-if="metricCharts.length > 0"></div>
 <metric-board>
-    <metric-chart v-for="chart in metricCharts" :key="chart.id" :v-chart="chart.chart" :v-stats="chart.stats" :v-period="chart.item.period" :v-period-unit="chart.item.periodUnit" :v-value-type="chart.item.valueType"></metric-chart>
+    <metric-chart v-for="chart in metricCharts"
+                  :key="chart.id"
+                  :v-chart="chart.chart"
+                  :v-stats="chart.stats"
+                  :v-item="chart.item">
+    </metric-chart>
 </metric-board>
