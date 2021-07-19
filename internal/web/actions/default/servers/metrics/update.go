@@ -41,6 +41,7 @@ func (this *UpdateAction) RunPost(params struct {
 	PeriodJSON []byte
 	Value      string
 	IsOn       bool
+	IsPublic   bool
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -78,6 +79,7 @@ func (this *UpdateAction) RunPost(params struct {
 		PeriodUnit:   periodUnit,
 		Value:        params.Value,
 		IsOn:         params.IsOn,
+		IsPublic:     params.IsPublic,
 	})
 	if err != nil {
 		this.ErrorPage(err)

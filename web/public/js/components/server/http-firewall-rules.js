@@ -169,7 +169,7 @@ Vue.component("http-firewall-checkpoint-cc", {
 		}
 	},
 	template: `<div>
-	<input type="hidden" name="operator" value="gte"/>
+	<input type="hidden" name="operator" value="gt"/>
 	<input type="hidden" name="value" :value="value"/>
 	<table class="ui table">
 		<tr>

@@ -4,7 +4,7 @@ import (
 	"github.com/miekg/dns"
 )
 
-// 获取CNAME
+// LookupCNAME 获取CNAME
 func LookupCNAME(host string) (string, error) {
 	config, err := dns.ClientConfigFromFile("/etc/resolv.conf")
 	if err != nil {

@@ -34,6 +34,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	KeysJSON   []byte
 	PeriodJSON []byte
 	Value      string
+	IsPublic   bool
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -75,6 +76,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Period:     period,
 		PeriodUnit: periodUnit,
 		Value:      params.Value,
+		IsPublic:   params.IsPublic,
 	})
 	if err != nil {
 		this.ErrorPage(err)

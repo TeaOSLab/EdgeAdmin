@@ -49,6 +49,7 @@ func (this *IndexAction) RunGet(params struct {
 			"value":          item.Value,
 			"valueName":      serverconfigs.FindMetricValueName(item.Category, item.Value),
 			"category":       item.Category,
+			"isPublic":       item.IsPublic,
 		})
 	}
 	this.Data["items"] = itemMaps

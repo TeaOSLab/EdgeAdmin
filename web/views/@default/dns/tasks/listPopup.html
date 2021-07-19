@@ -26,7 +26,7 @@
                 <span v-if="task.type == 'serverChange'">服务</span>
                 <span v-if="task.type == 'domainChange'">域名</span>
             </td>
-            <td>
+            <td style="word-break: break-word; width: 26em">
                 <span v-if="task.isDone" class="red">{{task.error}}</span>
                 <span v-else>正在同步...</span>
             </td>

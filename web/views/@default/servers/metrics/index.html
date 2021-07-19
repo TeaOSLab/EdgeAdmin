@@ -23,7 +23,11 @@
         </tr>
     </thead>
     <tr v-for="item in items">
-        <td>{{item.name}}</td>
+        <td>{{item.name}}
+            <div style="margin-top: 0.3em" v-if="item.isPublic">
+                <span class="ui label olive tiny basic">公用</span>
+            </div>
+        </td>
         <td>
             <div v-if="item.keys != null" v-for="key in item.keys" style="margin-bottom: 0.3em; margin-top: 0.3em"><metric-key-label :v-key="key"></metric-key-label></div>
         </td>

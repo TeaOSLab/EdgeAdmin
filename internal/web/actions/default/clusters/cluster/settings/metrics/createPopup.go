@@ -70,6 +70,7 @@ func (this *CreatePopupAction) RunGet(params struct {
 			"value":          item.Value,
 			"valueName":      serverconfigs.FindMetricValueName(item.Category, item.Value),
 			"category":       item.Category,
+			"isPublic":       item.IsPublic,
 			"isChecked":      exists,
 		})
 	}
