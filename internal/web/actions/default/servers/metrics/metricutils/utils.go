@@ -43,6 +43,7 @@ func InitItem(parent *actionutils.ParentAction, itemId int64) (*pb.MetricItem, e
 		"periodUnit":     item.PeriodUnit,
 		"periodUnitName": serverconfigs.FindMetricPeriodUnitName(item.PeriodUnit),
 		"category":       item.Category,
+		"isPublic":       item.IsPublic,
 		"countCharts":    countCharts,
 	}
 	return item, nil
