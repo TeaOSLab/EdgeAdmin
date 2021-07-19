@@ -16,6 +16,11 @@ Vue.component("metric-keys-config-box", {
 			keyDefs: window.METRIC_HTTP_KEYS
 		}
 	},
+	watch: {
+		keys: function () {
+			this.$emit("change", this.keys)
+		}
+	},
 	methods: {
 		cancel: function () {
 			this.key = ""
