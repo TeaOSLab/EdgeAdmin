@@ -143,7 +143,7 @@ func (this *IndexAction) RunGet(params struct {
 	// 指标
 	{
 		var chartMaps = []maps.Map{}
-		for _, chart := range resp.MetricCharts {
+		for _, chart := range resp.MetricDataCharts {
 			var statMaps = []maps.Map{}
 			for _, stat := range chart.MetricStats {
 				statMaps = append(statMaps, maps.Map{
@@ -164,11 +164,12 @@ func (this *IndexAction) RunGet(params struct {
 					"type":     chart.MetricChart.Type,
 				},
 				"item": maps.Map{
-					"id":         chart.MetricChart.MetricItem.Id,
-					"name":       chart.MetricChart.MetricItem.Name,
-					"period":     chart.MetricChart.MetricItem.Period,
-					"periodUnit": chart.MetricChart.MetricItem.PeriodUnit,
-					"valueType":  serverconfigs.FindMetricValueType(chart.MetricChart.MetricItem.Category, chart.MetricChart.MetricItem.Value),
+					"id":            chart.MetricChart.MetricItem.Id,
+					"name":          chart.MetricChart.MetricItem.Name,
+					"period":        chart.MetricChart.MetricItem.Period,
+					"periodUnit":    chart.MetricChart.MetricItem.PeriodUnit,
+					"valueType":     serverconfigs.FindMetricValueType(chart.MetricChart.MetricItem.Category, chart.MetricChart.MetricItem.Value),
+					"valueTypeName": serverconfigs.FindMetricValueName(chart.MetricChart.MetricItem.Category, chart.MetricChart.MetricItem.Value),
 				},
 				"stats": statMaps,
 			})
