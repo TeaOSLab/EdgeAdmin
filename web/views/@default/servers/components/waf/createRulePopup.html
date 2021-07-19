@@ -34,10 +34,16 @@
 
 		<!-- 组合规则的选项 -->
 		<tbody v-if="checkpoint != null && checkpoint.isComposed">
+            <tr>
+                <td colspan="2">配置选项</td>
+            </tr>
 			<tr>
-				<td>配置选项</td>
-				<td>
+				<td colspan="2">
+                    <!-- 通用header -->
 					<http-cond-general-header-length v-if="checkpoint.prefix == 'requestGeneralHeaderLength' || checkpoint.prefix == 'responseGeneralHeaderLength'" :v-checkpoint="checkpoint"></http-cond-general-header-length>
+
+                    <!-- CC -->
+                    <http-firewall-checkpoint-cc v-if="checkpoint.prefix == 'cc2'" :v-checkpoint="checkpoint"></http-firewall-checkpoint-cc>
 				</td>
 			</tr>
 		</tbody>
