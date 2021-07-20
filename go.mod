@@ -11,7 +11,7 @@ require (
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-cmp v0.5.6 // indirect
-	github.com/iwind/TeaGo v0.0.0-20210628135026-38575a4ab060
+	github.com/iwind/TeaGo v0.0.0-20210720011303-fc255c995afa
 	github.com/miekg/dns v1.1.35
 	github.com/shirou/gopsutil v3.21.5+incompatible // indirect
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e

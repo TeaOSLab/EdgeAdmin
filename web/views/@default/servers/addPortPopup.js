@@ -23,7 +23,7 @@ Tea.context(function () {
 		if (addr.host.length == 0) {
 			this.address = addr.portRange
 		} else {
-			this.address = addr.host + ":" + addr.portRange
+			this.address = addr.host.quoteIP() + ":" + addr.portRange
 		}
 	}
 

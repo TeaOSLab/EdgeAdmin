@@ -54,13 +54,17 @@ func checkIPWithoutCache(config *systemconfigs.SecurityConfig, ipAddr string) bo
 	// 本地IP
 	ipObj := net.ParseIP(ipAddr)
 	if ipObj == nil {
-		logs.Println("[USER_MUST_AUTH]invalid client address: " + ipAddr)
+		logs.Println("[USER_MUST_AUTH]parse ip: invalid client address: " + ipAddr)
 		return false
 	}
 	ip := ipObj.To4()
 	if ip == nil {
-		logs.Println("[USER_MUST_AUTH]invalid client address: " + ipAddr)
-		return false
+		// IPv6
+		ip = ipObj.To16()
+		if ip == nil {
+			logs.Println("[USER_MUST_AUTH]invalid client address: " + ipAddr)
+			return false
+		}
 	}
 	if config.AllowLocal && isLocalIP(ip) {
 		return true
@@ -104,8 +108,15 @@ func checkIPWithoutCache(config *systemconfigs.SecurityConfig, ipAddr string) bo
 
 // 判断是否为本地IP
 func isLocalIP(ip net.IP) bool {
-	return ip[0] == 127 ||
+	if ip[0] == 127 ||
 		ip[0] == 10 ||
 		(ip[0] == 172 && ip[1]&0xf0 == 16) ||
-		(ip[0] == 192 && ip[1] == 168)
+		(ip[0] == 192 && ip[1] == 168) {
+		return true
+	}
+
+	if ip.String() == "::1" {
+		return true
+	}
+	return false
 }
