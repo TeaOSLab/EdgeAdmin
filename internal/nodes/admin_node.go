@@ -10,11 +10,12 @@ import (
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/logs"
+	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/rands"
 	"github.com/iwind/TeaGo/sessions"
+	"github.com/iwind/gosock/pkg/gosock"
 	"io/ioutil"
 	"log"
-	"net"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -25,6 +26,7 @@ import (
 var SharedAdminNode *AdminNode = nil
 
 type AdminNode struct {
+	sock    *gosock.Sock
 	subPIDs []int
 }
 
@@ -42,7 +44,7 @@ func (this *AdminNode) Run() {
 	// 本地Sock
 	err := this.listenSock()
 	if err != nil {
-		logs.Println("NODE" + err.Error())
+		logs.Println("[NODE]", err.Error())
 		return
 	}
 
@@ -89,11 +91,11 @@ func (this *AdminNode) Run() {
 
 // Daemon 实现守护进程
 func (this *AdminNode) Daemon() {
-	path := os.TempDir() + "/edge-admin.sock"
+	var sock = gosock.NewTmpSock(teaconst.ProcessName)
 	isDebug := lists.ContainsString(os.Args, "debug")
 	isDebug = true
 	for {
-		conn, err := net.DialTimeout("unix", path, 1*time.Second)
+		conn, err := sock.Dial()
 		if err != nil {
 			if isDebug {
 				log.Println("[DAEMON]starting ...")
@@ -281,37 +283,59 @@ func (this *AdminNode) genSecret() string {
 
 // 监听本地sock
 func (this *AdminNode) listenSock() error {
-	path := os.TempDir() + "/edge-admin.sock"
+	this.sock = gosock.NewTmpSock(teaconst.ProcessName)
 
-	// 检查是否已经存在
-	_, err := os.Stat(path)
-	if err == nil {
-		conn, err := net.Dial("unix", path)
-		if err != nil {
-			_ = os.Remove(path)
+	// 检查是否在运行
+	if this.sock.IsListening() {
+		reply, err := this.sock.Send(&gosock.Command{Code: "pid"})
+		if err == nil {
+			return errors.New("error: the process is already running, pid: " + maps.NewMap(reply.Params).GetString("pid"))
 		} else {
-			_ = conn.Close()
+			return errors.New("error: the process is already running")
 		}
 	}
 
-	// 新的监听任务
-	listener, err := net.Listen("unix", path)
-	if err != nil {
-		return err
-	}
-	events.On(events.EventQuit, func() {
-		logs.Println("NODE", "quit unix sock")
-		_ = listener.Close()
-	})
-
+	// 启动监听
 	go func() {
-		for {
-			_, err := listener.Accept()
-			if err != nil {
-				return
+		this.sock.OnCommand(func(cmd *gosock.Command) {
+			switch cmd.Code {
+			case "pid":
+				_ = cmd.Reply(&gosock.Command{
+					Code: "pid",
+					Params: map[string]interface{}{
+						"pid": os.Getpid(),
+					},
+				})
+			case "stop":
+				_ = cmd.ReplyOk()
+
+				// 关闭子进程
+				for _, pid := range this.subPIDs {
+					p, err := os.FindProcess(pid)
+					if err == nil && p != nil {
+						_ = p.Kill()
+					}
+				}
+
+				// 退出主进程
+				events.Notify(events.EventQuit)
+				os.Exit(0)
+			case "recover":
+				teaconst.IsRecoverMode = true
+				_ = cmd.ReplyOk()
 			}
+		})
+
+		err := this.sock.Listen()
+		if err != nil {
+			logs.Println("NODE", err.Error())
 		}
 	}()
+
+	events.On(events.EventQuit, func() {
+		logs.Println("NODE", "quit unix sock")
+		_ = this.sock.Close()
+	})
 
 	return nil
 }

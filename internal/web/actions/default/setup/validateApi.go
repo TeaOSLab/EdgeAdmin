@@ -4,6 +4,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -62,7 +63,7 @@ func (this *ValidateApiAction) RunPost(params struct {
 		if net.ParseIP(params.NewHost) == nil {
 			this.FailField("newHost", "请输入正确的节点主机地址")
 		}
-		
+
 		params.Must.
 			Field("newHost", params.NewHost).
 			Require("请输入节点主机地址")
@@ -86,7 +87,7 @@ func (this *ValidateApiAction) RunPost(params struct {
 		RPC: struct {
 			Endpoints []string `yaml:"endpoints"`
 		}{
-			Endpoints: []string{params.OldProtocol + "://" + params.OldHost + ":" + params.OldPort},
+			Endpoints: []string{params.OldProtocol + "://" + configutils.QuoteIP(params.OldHost) + ":" + params.OldPort},
 		},
 		NodeId: params.OldNodeId,
 		Secret: params.OldNodeSecret,

@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="shortcut icon" href="/images/favicon.png"/>
+	<title>GoEdge管理系统恢复模式</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+	{$TEA.VUE}
+	{$TEA.SEMANTIC}
+	<script type="text/javascript" src="/js/md5.min.js"></script>
+	<script type="text/javascript" src="/js/utils.js"></script>
+	<script type="text/javascript" src="/js/sweetalert2/dist/sweetalert2.all.min.js"></script>
+	<script type="text/javascript" src="/ui/components.js"></script>
+	<link rel="stylesheet" href="/_/@default/@layout.css"/>
+</head>
+<body>
+
+<div class="install-box">
+	<!-- 步骤列表 -->
+	<div class="ui steps fluid small">
+        <div class="ui step" :class="{active: step == STEP_INTRO}">
+            <div class="content">
+                <div :class="{title: step == STEP_INTRO}">1. 介绍</div>
+            </div>
+        </div>
+		<div class="ui step" :class="{active: step == STEP_NEW_API}">
+			<div class="content">
+				<div :class="{title: step == STEP_NEW_API}">2. 新API地址</div>
+			</div>
+		</div>
+		<div class="ui step" :class="{active: step == STEP_API_LIST}">
+			<div class="content">
+				<div :class="{title: step == STEP_API_LIST}">3. 修改API节点地址</div>
+			</div>
+		</div>
+        <div class="ui step" :class="{active: step == STEP_FINISH}">
+            <div class="content">
+                <div :class="{title: step == STEP_FINISH}">4. 完成</div>
+            </div>
+        </div>
+	</div>
+
+    <!-- 介绍 -->
+    <div v-if="step == STEP_INTRO">
+        可以通过恢复模式重新设置系统的API节点。
+
+        <button class="ui button primary" style="margin-top: 10em" type="button" @click.prevent="goIntroNext()">开始<i class="icon long arrow right"></i></button>
+    </div>
+
+    <!-- 新API地址 -->
+    <div v-show="step == STEP_NEW_API">
+        <p class="comment">输入一个可用的API节点信息：</p>
+        <form method="post" class="ui form" data-tea-action=".validateApi" data-tea-success="apiSuccess" data-tea-before="apiSubmit" data-tea-done="apiDone">
+            <table class="ui table definition selectable">
+                <tr>
+                    <td class="title">节点协议 *</td>
+                    <td>
+                        <select class="ui dropdown auto-width" name="protocol">
+                            <option value="http">HTTP</option>
+                            <option value="https">HTTPS</option>
+                        </select>
+                        <p class="comment">API节点使用的协议。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>主机地址 *</td>
+                    <td>
+                        <input type="text" name="host" maxlength="100" style="width:20em"/>
+                        <p class="comment">API节点所在主机地址。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>服务端口 *</td>
+                    <td>
+                        <input type="text" name="port" style="width:6em" maxlength="5"/>
+                        <p class="comment">API节点启动的端口。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>节点nodeId *</td>
+                    <td>
+                        <input type="text" name="nodeId" maxlength="100"/>
+                        <p class="comment">在节点的配置文件中<code-label>configs/api.yaml</code-label>中获取，不需要带双引号。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>节点secret *</td>
+                    <td>
+                        <input type="password" name="nodeSecret" maxlength="100"/>
+                        <p class="comment">在节点的配置文件中<code-label>configs/api.yaml</code-label>中获取，不需要带双引号。</p>
+                    </td>
+                </tr>
+            </table>
+
+            <button class="ui button" type="button" @click.prevent="goBackIntro"><i class="icon long arrow left"></i>上一步</button> &nbsp;
+            <button class="ui button primary" type="submit" v-if="!apiRequesting">下一步<i class="icon long arrow right"></i></button>
+            <button class="ui button primary" type="button" v-if="apiRequesting">提交中</button>
+        </form>
+    </div>
+
+    <!-- API节点列表 -->
+    <div v-show="step == STEP_API_LIST">
+        <form method="post" class="ui form" data-tea-action=".updateHosts" data-tea-success="updateHostsSuccess">
+            <input type="hidden" name="protocol" :value="apiNodeInfo.protocol"/>
+            <input type="hidden" name="host" :value="apiNodeInfo.host"/>
+            <input type="hidden" name="port" :value="apiNodeInfo.port"/>
+            <input type="hidden" name="nodeId" :value="apiNodeInfo.nodeId"/>
+            <input type="hidden" name="nodeSecret" :value="apiNodeInfo.nodeSecret"/>
+
+            <table class="ui table selectable celled">
+                <thead>
+                    <tr>
+                        <th style="width: 50%">原地址</th>
+                        <th>新地址（留空表示不修改）</th>
+                    </tr>
+                </thead>
+                <tr v-for="host in apiNodeInfo.hosts">
+                    <td>{{host}}</td>
+                    <td>
+                        <input type="text" maxlength="100" name="newHosts"/>
+                        <input type="hidden" name="oldHosts" :value="host"/>
+                    </td>
+                </tr>
+            </table>
+
+            <button class="ui button" type="button" @click.prevent="goBackAPI"><i class="icon long arrow left"></i>上一步</button> &nbsp;
+            <button class="ui button primary" type="submit">保存<i class="icon long arrow right"></i></button>
+        </form>
+    </div>
+
+    <!-- 修改成功 -->
+    <div v-show="step == STEP_FINISH">
+        修改成功，请<a href="/">刷新</a>此页面后，进入系统。
+    </div>
+</div>
+
+</body>
+</html>

@@ -108,7 +108,6 @@ func (this *APIConfig) WriteFile(path string) error {
 	if err != nil {
 		return err
 	}
-	err = ioutil.WriteFile(path, data, 0666)
 
 	// 写入 ~/ 和 /etc/ 目录，因为是备份需要，所以不需要提示错误信息
 	// 写入 ~/.edge-admin/
@@ -141,5 +140,10 @@ func (this *APIConfig) WriteFile(path string) error {
 		}
 	}
 
-	return err
+	err = ioutil.WriteFile(path, data, 0666)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

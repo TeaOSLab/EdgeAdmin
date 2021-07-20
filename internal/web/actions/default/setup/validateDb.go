@@ -2,11 +2,14 @@ package setup
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/dbs"
 	"github.com/iwind/TeaGo/maps"
 	stringutil "github.com/iwind/TeaGo/utils/string"
+	"net"
+	"regexp"
 	"strings"
 )
 
@@ -27,7 +30,20 @@ func (this *ValidateDbAction) RunPost(params struct {
 	params.Must.
 		Field("host", params.Host).
 		Require("请输入主机地址").
-		Match(`^[\w\.-]+$`, "主机地址中不能包含特殊字符").
+		Expect(func() (message string, success bool) {
+			// 是否为IP
+			if net.ParseIP(params.Host) != nil {
+				success = true
+				return
+			}
+			if !regexp.MustCompile(`^[\w.-]+$`).MatchString(params.Host) {
+				message = "主机地址中不能包含特殊字符"
+				success = false
+				return
+			}
+			success = true
+			return
+		}).
 		Field("port", params.Port).
 		Require("请输入端口").
 		Match(`^\d+$`, "端口中只能包含数字").
@@ -41,7 +57,7 @@ func (this *ValidateDbAction) RunPost(params struct {
 	// 测试连接
 	db, err := dbs.NewInstanceFromConfig(&dbs.DBConfig{
 		Driver: "mysql",
-		Dsn:    params.Username + ":" + params.Password + "@tcp(" + params.Host + ":" + params.Port + ")/" + params.Database,
+		Dsn:    params.Username + ":" + params.Password + "@tcp(" + configutils.QuoteIP(params.Host) + ":" + params.Port + ")/" + params.Database,
 		Prefix: "",
 	})
 	if err != nil {
@@ -58,7 +74,7 @@ func (this *ValidateDbAction) RunPost(params struct {
 		if strings.Contains(err.Error(), "Error 1049") {
 			db, err := dbs.NewInstanceFromConfig(&dbs.DBConfig{
 				Driver: "mysql",
-				Dsn:    params.Username + ":" + params.Password + "@tcp(" + params.Host + ":" + params.Port + ")/",
+				Dsn:    params.Username + ":" + params.Password + "@tcp(" + configutils.QuoteIP(params.Host) + ":" + params.Port + ")/",
 				Prefix: "",
 			})
 

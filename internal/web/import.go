@@ -131,6 +131,9 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/user-nodes"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/user-ui"
 
+	// 恢复
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/recover"
+
 	// 安装
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/setup"
 
