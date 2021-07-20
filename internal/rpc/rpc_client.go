@@ -51,6 +51,10 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 	return client, nil
 }
 
+func (this *RPCClient) APITokenRPC() pb.APITokenServiceClient {
+	return pb.NewAPITokenServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) AdminRPC() pb.AdminServiceClient {
 	return pb.NewAdminServiceClient(this.pickConn())
 }

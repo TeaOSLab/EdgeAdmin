@@ -1,6 +1,7 @@
 package tasks
 
 import (
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
@@ -40,7 +41,7 @@ func (this *SyncClusterTask) Start() {
 
 func (this *SyncClusterTask) loop() error {
 	// 如果还没有安装直接返回
-	if !setup.IsConfigured() {
+	if !setup.IsConfigured() || teaconst.IsRecoverMode {
 		return nil
 	}
 

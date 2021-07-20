@@ -21,6 +21,11 @@ func NewUserMustAuth(module string) *userMustAuth {
 }
 
 func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramName string) (goNext bool) {
+	if teaconst.IsRecoverMode {
+		actionPtr.Object().RedirectURL("/recover")
+		return false
+	}
+	
 	var action = actionPtr.Object()
 
 	// 安全相关

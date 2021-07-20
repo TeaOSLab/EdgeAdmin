@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/nodes"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/go-yaml/yaml"
@@ -68,14 +69,14 @@ func (this *InstallAction) RunPost(params struct {
 			_, err = os.Stat(apiNodeDir)
 			if err != nil {
 				if os.IsNotExist(err) {
-					this.Fail("在当前目录下找不到" + dir + "目录，请将" + dir + "目录上传或者重新下载解压")
+					this.Fail("在当前目录（" + Tea.Root + "）下找不到" + dir + "目录，请将" + dir + "目录上传或者重新下载解压")
 				}
 				this.Fail("无法检查" + dir + "目录，发生错误：" + err.Error())
 			}
 		}
 
 		// 保存数据库配置
-		dsn := dbMap.GetString("username") + ":" + dbMap.GetString("password") + "@tcp(" + dbMap.GetString("host") + ":" + dbMap.GetString("port") + ")/" + dbMap.GetString("database") + "?charset=utf8mb4&timeout=30s"
+		dsn := dbMap.GetString("username") + ":" + dbMap.GetString("password") + "@tcp(" + configutils.QuoteIP(dbMap.GetString("host")) + ":" + dbMap.GetString("port") + ")/" + dbMap.GetString("database") + "?charset=utf8mb4&timeout=30s"
 		dbConfig := &dbs.Config{
 			DBs: map[string]*dbs.DBConfig{
 				"prod": {
@@ -175,7 +176,7 @@ func (this *InstallAction) RunPost(params struct {
 			RPC: struct {
 				Endpoints []string `yaml:"endpoints"`
 			}{
-				Endpoints: []string{"http://" + apiNodeMap.GetString("newHost") + ":" + apiNodeMap.GetString("newPort")},
+				Endpoints: []string{"http://" + configutils.QuoteIP(apiNodeMap.GetString("newHost")) + ":" + apiNodeMap.GetString("newPort")},
 			},
 			NodeId: resultMap.GetString("adminNodeId"),
 			Secret: resultMap.GetString("adminNodeSecret"),
@@ -233,7 +234,7 @@ func (this *InstallAction) RunPost(params struct {
 			RPC: struct {
 				Endpoints []string `yaml:"endpoints"`
 			}{
-				Endpoints: []string{apiNodeMap.GetString("oldProtocol") + "://" + apiNodeMap.GetString("oldHost") + ":" + apiNodeMap.GetString("oldPort")},
+				Endpoints: []string{apiNodeMap.GetString("oldProtocol") + "://" + configutils.QuoteIP(apiNodeMap.GetString("oldHost")) + ":" + apiNodeMap.GetString("oldPort")},
 			},
 			NodeId: apiNodeMap.GetString("oldNodeId"),
 			Secret: apiNodeMap.GetString("oldNodeSecret"),

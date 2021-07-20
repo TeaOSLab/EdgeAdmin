@@ -50,6 +50,7 @@
 		<div>感谢你选择使用<strong>GoEdge</strong>集群服务系统，下面让我们一起开始配置系统。</div>
 		<div class="margin">在这之前如果你还没有可用的MySQL数据库，请先安装数据库再进行。</div>
         <div class="margin" style="color: grey">免责声明：GoEdge软件开发者并不对您的软件使用方法、服务对象、服务内容负道德或法律上的约束责任，在使用本软件时产生的一切法律风险自负。</div>
+        <div class="margin" style="color: grey">用户协议：请在遵守中华人民共和国政策、法律、法规的前提下使用本软件；自愿承担因不当使用本软件产生的一切法律后果；承认GoEdge开发者拥有本软件的著作权；点击"开始"安装表示你同意此用户协议。</div>
 		<button class="ui button primary" style="margin-top: 10em" type="button" @click.prevent="goIntroNext()">开始<i class="icon long arrow right"></i></button>
 	</div>
 
@@ -85,20 +86,10 @@
 						<td>
 							<div class="ui fields inline">
 								<div class="ui field">
-									<div v-if="serverIPs.length > 0 && !apiHostInput">
-										<select name="newHost" class="ui dropdown auto-width">
-											<option v-for="ip in serverIPs" :value="ip">{{ip}}</option>
-										</select>
-									</div>
-									<div v-else="">
-										<input type="text" name="newHost" value="" ref="newHostRef" placeholder="x.x.x.x"/>
-									</div>
-								</div>
-								<div class="ui field">
-									<a href="" v-if="!apiHostInput" @click.prevent="inputAPIHost()">[手工输入]</a>
+                                    <input type="text" name="newHost" value="" ref="newHostRef" placeholder="x.x.x.x" v-model="currentHost"/>
 								</div>
 							</div>
-							<p class="comment">其他节点访问此API节点的主机地址，可以是IP或者域名，第一次安装时通常是<strong>当前服务器</strong>的IP地址。后期可以修改这个地址。</p>
+							<p class="comment">其他节点访问此API节点的主机地址，可以是IP或者域名，第一次安装时通常是<strong>当前服务器</strong>的公网IP地址。后期可以修改这个地址。</p>
 						</td>
 					</tr>
 				</tbody>
@@ -191,7 +182,10 @@
                     <tr>
                         <td>访问日志保留天数</td>
                         <td>
-                            <input type="number" name="accessLogKeepDays" style="width: 5em" maxlength="4" value="30"/>
+                            <div class="ui input right labeled">
+                                <input type="number" name="accessLogKeepDays" style="width: 5em" maxlength="4" value="30"/>
+                                <span class="ui label">天</span>
+                            </div>
                             <p class="comment">网站等服务记录的访问日志保留天数，防止无限制地占用数据库空间。</p>
                         </td>
                     </tr>

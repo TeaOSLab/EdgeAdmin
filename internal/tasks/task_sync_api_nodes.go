@@ -2,6 +2,7 @@ package tasks
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
@@ -44,7 +45,7 @@ func (this *SyncAPINodesTask) Start() {
 
 func (this *SyncAPINodesTask) Loop() error {
 	// 如果还没有安装直接返回
-	if !setup.IsConfigured() {
+	if !setup.IsConfigured() || teaconst.IsRecoverMode {
 		return nil
 	}
 

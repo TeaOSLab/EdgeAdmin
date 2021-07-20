@@ -13,6 +13,11 @@ type UserShouldAuth struct {
 }
 
 func (this *UserShouldAuth) BeforeAction(actionPtr actions.ActionWrapper, paramName string) (goNext bool) {
+	if teaconst.IsRecoverMode {
+		actionPtr.Object().RedirectURL("/recover")
+		return false
+	}
+
 	this.action = actionPtr.Object()
 
 	// 安全相关
@@ -34,7 +39,7 @@ func (this *UserShouldAuth) BeforeAction(actionPtr actions.ActionWrapper, paramN
 	return true
 }
 
-// 存储用户名到SESSION
+// StoreAdmin 存储用户名到SESSION
 func (this *UserShouldAuth) StoreAdmin(adminId int64, remember bool) {
 	// 修改sid的时间
 	if remember {
