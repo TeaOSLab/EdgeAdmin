@@ -29,7 +29,7 @@
 	</tr>
 	</thead>
 	<tr v-for="(cert, index) in certs">
-		<td>{{cert.name}}
+        <td><keyword :v-word="keyword">{{cert.name}}</keyword>
 			<div v-if="cert.isCA" style="margin-top:0.5em">
 				<span class="ui label olive tiny">CA</span>
 			</div>
@@ -39,7 +39,7 @@
 		</td>
 		<td>
 			<div v-for="dnsName in cert.dnsNames" style="margin-bottom:0.4em">
-				<span class="ui label tiny">{{dnsName}}</span>
+                <span class="ui label tiny"><keyword :v-word="keyword">{{dnsName}}</keyword></span>
 			</div>
 		</td>
 		<td>{{certInfos[index].endDay}}</td>

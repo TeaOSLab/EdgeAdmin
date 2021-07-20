@@ -5,11 +5,14 @@ import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/iwind/TeaGo/types"
 	"strings"
 )
 
@@ -414,6 +417,41 @@ func (this *CreateAction) RunPost(params struct {
 	if err != nil {
 		this.ErrorPage(err)
 		return
+	}
+	var serverId = createResp.ServerId
+
+	// 开启访问日志和Websocket
+	if params.ServerType == serverconfigs.ServerTypeHTTPProxy {
+		webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithServerId(this.AdminContext(), serverId)
+		if err == nil {
+			// websocket
+			createWebSocketResp, err := this.RPC().HTTPWebsocketRPC().CreateHTTPWebsocket(this.AdminContext(), &pb.CreateHTTPWebsocketRequest{
+				HandshakeTimeoutJSON: []byte(`{
+					"count": 30,
+					"unit": "second"
+				}`),
+				AllowAllOrigins:   true,
+				AllowedOrigins:    nil,
+				RequestSameOrigin: true,
+				RequestOrigin:     "",
+			})
+			if err != nil {
+				logs.Error(err)
+			} else {
+				websocketId := createWebSocketResp.WebsocketId
+				_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebWebsocket(this.AdminContext(), &pb.UpdateHTTPWebWebsocketRequest{
+					WebId: webConfig.Id,
+					WebsocketJSON: []byte(` {
+				"isPrior": false,
+				"isOn": true,
+				"websocketId": ` + types.String(websocketId) + `
+			}`),
+				})
+				if err != nil {
+					logs.Error(err)
+				}
+			}
+		}
 	}
 
 	// 创建日志
