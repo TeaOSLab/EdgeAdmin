@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/go-sql-driver/mysql"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/actions"
@@ -10,6 +11,8 @@ import (
 	"github.com/iwind/TeaGo/maps"
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
+	"net"
+	"regexp"
 	"strings"
 )
 
@@ -101,7 +104,20 @@ func (this *UpdateAction) RunPost(params struct {
 	params.Must.
 		Field("host", params.Host).
 		Require("请输入主机地址").
-		Match(`^[\w\.-]+$`, "主机地址中不能包含特殊字符").
+		Expect(func() (message string, success bool) {
+			// 是否为IP
+			if net.ParseIP(params.Host) != nil {
+				success = true
+				return
+			}
+			if !regexp.MustCompile(`^[\w.-]+$`).MatchString(params.Host) {
+				message = "主机地址中不能包含特殊字符"
+				success = false
+				return
+			}
+			success = true
+			return
+		}).
 		Field("port", params.Port).
 		Gt(0, "端口需要大于0").
 		Lt(65535, "端口需要小于65535").
@@ -113,7 +129,7 @@ func (this *UpdateAction) RunPost(params struct {
 		Match(`^[\w\.-]+$`, "用户名中不能包含特殊字符")
 
 	// 保存
-	dsn := params.Username + ":" + params.Password + "@tcp(" + params.Host + ":" + fmt.Sprintf("%d", params.Port) + ")/" + params.Database
+	dsn := params.Username + ":" + params.Password + "@tcp(" + configutils.QuoteIP(params.Host) + ":" + fmt.Sprintf("%d", params.Port) + ")/" + params.Database
 
 	configFile := Tea.ConfigFile("api_db.yaml")
 	template := `default:

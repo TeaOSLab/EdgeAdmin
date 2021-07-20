@@ -116,7 +116,7 @@
 			<td>区域</td>
 			<td>{{region.full}}</td>
 		</tr>
-		<tr v-if="region.isp.length > 0">
+		<tr v-if="region != null && region.isp != null && region.isp.length > 0">
 			<td>ISP</td>
 			<td>{{region.isp}}</td>
 		</tr>

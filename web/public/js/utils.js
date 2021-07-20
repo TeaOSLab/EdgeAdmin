@@ -396,7 +396,7 @@ window.teaweb = {
 		}
 
 		let tooltipFunc = options.tooltip
-		if (typeof(tooltipFunc) != "function") {
+		if (typeof (tooltipFunc) != "function") {
 			throw new Error("'options.tooltip' should be a function")
 		}
 
@@ -523,4 +523,18 @@ window.teaweb = {
 		chart.setOption(option)
 		chart.resize()
 	}
+}
+
+String.prototype.quoteIP = function () {
+	let ip = this.toString()
+	if (ip.length == 0) {
+		return ""
+	}
+	if (ip.indexOf(":") < 0) {
+		return ip
+	}
+	if (ip.substring(0, 1) == "[") {
+		return ip
+	}
+	return "[" + ip + "]"
 }
