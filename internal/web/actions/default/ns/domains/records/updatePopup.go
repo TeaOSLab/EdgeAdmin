@@ -46,6 +46,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		"ttl":         record.Ttl,
 		"weight":      record.Weight,
 		"description": record.Description,
+		"isOn":        record.IsOn,
 		"routeIds":    routeIds,
 	}
 
@@ -81,6 +82,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	Value       string
 	Ttl         int32
 	Description string
+	IsOn        bool
 	RouteIds    []int64
 
 	Must *actions.Must
@@ -106,6 +108,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		Type:        params.Type,
 		Value:       params.Value,
 		Ttl:         params.Ttl,
+		IsOn:        params.IsOn,
 		NsRouteIds:  params.RouteIds,
 	})
 	if err != nil {

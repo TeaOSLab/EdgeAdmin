@@ -88,6 +88,7 @@ func (this *IndexAction) RunGet(params struct {
 			"ttl":         record.Ttl,
 			"weight":      record.Weight,
 			"description": record.Description,
+			"isOn":        record.IsOn,
 			"routes":      routeMaps,
 		})
 	}

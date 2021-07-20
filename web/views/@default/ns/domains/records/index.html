@@ -36,6 +36,7 @@
             <th>TTL</th>
             <th>线路</th>
             <th>备注</th>
+            <th class="two wide">状态</th>
             <th class="two op">操作</th>
         </tr>
     </thead>
@@ -50,6 +51,7 @@
             </div>
         </td>
         <td>{{record.description}}</td>
+        <td><label-on :v-is-on="record.isOn"></label-on></td>
         <td>
             <a href="" @click.prevent="updateRecord(record.id)">修改</a> &nbsp;
             <a href="" @click.prevent="deleteRecord(record.id)">删除</a>
