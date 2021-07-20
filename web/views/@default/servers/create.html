@@ -50,7 +50,7 @@
             <tr>
                 <td>{{tlsProtocolName.toUpperCase()}}证书</td>
                 <td>
-                    <ssl-certs-box></ssl-certs-box>
+                    <ssl-certs-box :v-protocol="tlsProtocolName.toLowerCase()"></ssl-certs-box>
                 </td>
             </tr>
         </tbody>
