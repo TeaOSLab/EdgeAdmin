@@ -71,6 +71,9 @@ func (this *CreateAction) RunPost(params struct {
 	CertIdsJSON []byte
 	Origins     string
 
+	AccessLogIsOn bool
+	WebsocketIsOn bool
+
 	WebRoot string
 
 	Must *actions.Must
@@ -423,32 +426,61 @@ func (this *CreateAction) RunPost(params struct {
 	// 开启访问日志和Websocket
 	if params.ServerType == serverconfigs.ServerTypeHTTPProxy {
 		webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithServerId(this.AdminContext(), serverId)
-		if err == nil {
+		if err != nil {
+			logs.Error(err)
+		} else {
+			// 访问日志
+			if params.AccessLogIsOn {
+				_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebAccessLog(this.AdminContext(), &pb.UpdateHTTPWebAccessLogRequest{
+					WebId: webConfig.Id,
+					AccessLogJSON: []byte(`{
+			"isPrior": false,
+			"isOn": true,
+			"fields": [],
+			"status1": true,
+			"status2": true,
+			"status3": true,
+			"status4": true,
+			"status5": true,
+
+			"storageOnly": false,
+			"storagePolicies": [],
+
+            "firewallOnly": false
+		}`),
+				})
+				if err != nil {
+					logs.Error(err)
+				}
+			}
+
 			// websocket
-			createWebSocketResp, err := this.RPC().HTTPWebsocketRPC().CreateHTTPWebsocket(this.AdminContext(), &pb.CreateHTTPWebsocketRequest{
-				HandshakeTimeoutJSON: []byte(`{
+			if params.WebsocketIsOn {
+				createWebSocketResp, err := this.RPC().HTTPWebsocketRPC().CreateHTTPWebsocket(this.AdminContext(), &pb.CreateHTTPWebsocketRequest{
+					HandshakeTimeoutJSON: []byte(`{
 					"count": 30,
 					"unit": "second"
 				}`),
-				AllowAllOrigins:   true,
-				AllowedOrigins:    nil,
-				RequestSameOrigin: true,
-				RequestOrigin:     "",
-			})
-			if err != nil {
-				logs.Error(err)
-			} else {
-				websocketId := createWebSocketResp.WebsocketId
-				_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebWebsocket(this.AdminContext(), &pb.UpdateHTTPWebWebsocketRequest{
-					WebId: webConfig.Id,
-					WebsocketJSON: []byte(` {
+					AllowAllOrigins:   true,
+					AllowedOrigins:    nil,
+					RequestSameOrigin: true,
+					RequestOrigin:     "",
+				})
+				if err != nil {
+					logs.Error(err)
+				} else {
+					websocketId := createWebSocketResp.WebsocketId
+					_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebWebsocket(this.AdminContext(), &pb.UpdateHTTPWebWebsocketRequest{
+						WebId: webConfig.Id,
+						WebsocketJSON: []byte(` {
 				"isPrior": false,
 				"isOn": true,
 				"websocketId": ` + types.String(websocketId) + `
 			}`),
-				})
-				if err != nil {
-					logs.Error(err)
+					})
+					if err != nil {
+						logs.Error(err)
+					}
 				}
 			}
 		}
