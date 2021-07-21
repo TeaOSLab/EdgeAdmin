@@ -57,6 +57,19 @@ func main() {
 		}
 		fmt.Println("enter recovery mode successfully")
 	})
+	app.On("demo", func() {
+		sock := gosock.NewTmpSock(teaconst.ProcessName)
+		if !sock.IsListening() {
+			fmt.Println("[ERROR]the service not started yet, you should start the service first")
+			return
+		}
+		_, err := sock.Send(&gosock.Command{Code: "demo"})
+		if err != nil {
+			fmt.Println("[ERROR]change demo mode failed: " + err.Error())
+			return
+		}
+		fmt.Println("change demo mode successfully")
+	})
 	app.Run(func() {
 		adminNode := nodes.NewAdminNode()
 		adminNode.Run()

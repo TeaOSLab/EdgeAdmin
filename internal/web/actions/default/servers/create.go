@@ -132,7 +132,7 @@ func (this *CreateAction) RunPost(params struct {
 		}
 	case serverconfigs.ServerTypeTCPProxy:
 		// 在DEMO模式下不能创建
-		if teaconst.IsDemo {
+		if teaconst.IsDemoMode {
 			this.Fail("DEMO模式下不能创建TCP反向代理")
 		}
 
@@ -169,7 +169,7 @@ func (this *CreateAction) RunPost(params struct {
 		}
 	case serverconfigs.ServerTypeUDPProxy:
 		// 在DEMO模式下不能创建
-		if teaconst.IsDemo {
+		if teaconst.IsDemoMode {
 			this.Fail("DEMO模式下不能创建UDP反向代理")
 		}
 

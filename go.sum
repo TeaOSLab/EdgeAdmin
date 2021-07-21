@@ -68,6 +68,8 @@ github.com/iwind/gosock v0.0.0-20210706152215-08fe64b7a8a3 h1:BVHIjJU5RUX0grmvDt
 github.com/iwind/gosock v0.0.0-20210706152215-08fe64b7a8a3/go.mod h1:H5Q7SXwbx3a97ecJkaS2sD77gspzE7HFUafBO0peEyA=
 github.com/iwind/gosock v0.0.0-20210720054405-4030f271aa3f h1:+mKLTd5tCCLXK+iY5Xjz58hau6qFv9chGqcZ4FWUiIs=
 github.com/iwind/gosock v0.0.0-20210720054405-4030f271aa3f/go.mod h1:H5Q7SXwbx3a97ecJkaS2sD77gspzE7HFUafBO0peEyA=
+github.com/iwind/gosock v0.0.0-20210721090148-db2e77703143 h1:RXINu3KVasw6MWv8MA6ne5ur84YhTAzG/j68YEM0KuI=
+github.com/iwind/gosock v0.0.0-20210721090148-db2e77703143/go.mod h1:H5Q7SXwbx3a97ecJkaS2sD77gspzE7HFUafBO0peEyA=
 github.com/json-iterator/go v1.1.10/go.mod h1:KdQUCv79m/52Kvf8AW2vK1V8akMuk1QjK/uOdHXbAo4=
 github.com/json-iterator/go v1.1.11 h1:uVUAXhF2To8cbw/3xN3pxj6kk7TYKs98NIrTqPlMWAQ=
 github.com/json-iterator/go v1.1.11/go.mod h1:KdQUCv79m/52Kvf8AW2vK1V8akMuk1QjK/uOdHXbAo4=

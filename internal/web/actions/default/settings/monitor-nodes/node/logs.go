@@ -31,20 +31,20 @@ func (this *LogsAction) RunGet(params struct {
 	this.Data["keyword"] = params.Keyword
 	this.Data["level"] = params.Level
 
-	apiNodeResp, err := this.RPC().APINodeRPC().FindEnabledAPINode(this.AdminContext(), &pb.FindEnabledAPINodeRequest{NodeId: params.NodeId})
+	monitorNodeResp, err := this.RPC().MonitorNodeRPC().FindEnabledMonitorNode(this.AdminContext(), &pb.FindEnabledMonitorNodeRequest{NodeId: params.NodeId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	apiNode := apiNodeResp.Node
-	if apiNode == nil {
-		this.NotFound("apiNode", params.NodeId)
+	monitorNode := monitorNodeResp.Node
+	if monitorNode == nil {
+		this.NotFound("monitorNode", params.NodeId)
 		return
 	}
 
 	this.Data["node"] = maps.Map{
-		"id":   apiNode.Id,
-		"name": apiNode.Name,
+		"id":   monitorNode.Id,
+		"name": monitorNode.Name,
 	}
 
 	countResp, err := this.RPC().NodeLogRPC().CountNodeLogs(this.AdminContext(), &pb.CountNodeLogsRequest{

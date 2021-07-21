@@ -34,6 +34,9 @@ func (this *IndexAction) RunGet(params struct {
 
 	Auth *helpers.UserShouldAuth
 }) {
+	// DEMO模式
+	this.Data["isDemo"] = teaconst.IsDemoMode
+
 	// 检查系统是否已经配置过
 	if !setup.IsConfigured() {
 		this.RedirectURL("/setup")
