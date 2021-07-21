@@ -9,7 +9,7 @@
 * `高扩展性` - 可以自由扩展新的节点，支持亿级数据
 
 ## 在线演示
-* [http://demo.goedge.cn:7788](http://demo.goedge.cn:7788)
+* [http://demo.goedge.cn](http://demo.goedge.cn)
 
 ## 文档
 * [新手指南](https://edge.teaos.cn/docs/QuickStart/Index.md)
