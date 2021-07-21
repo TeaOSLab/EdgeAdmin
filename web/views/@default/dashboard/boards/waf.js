@@ -63,7 +63,7 @@ Tea.context(function () {
 		if (chartBox == null) {
 			return
 		}
-		let chart = echarts.init(chartBox)
+		let chart = teaweb.initChart(chartBox)
 		let option = {
 			xAxis: {
 				data: stats.map(xFunc)

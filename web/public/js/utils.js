@@ -410,16 +410,24 @@ window.teaweb = {
 		}
 		let click = options.click
 
+		let bottom = 24
+		let rotate = 0
 		let chartBox = document.getElementById(chartId)
 		if (chartBox == null) {
 			return
 		}
-		let chart = echarts.init(chartBox)
+		let chart = this.initChart(chartBox)
+		let result = this.xRotation(chart, values.map(xFunc))
+		if (result != null) {
+			bottom = result[0]
+			rotate = result[1]
+		}
 		let option = {
 			xAxis: {
 				data: values.map(xFunc),
 				axisLabel: {
-					interval: 0
+					interval: 0,
+					rotate: rotate
 				}
 			},
 			yAxis: {
@@ -440,7 +448,7 @@ window.teaweb = {
 				left: 40,
 				top: 10,
 				right: 20,
-				bottom: 24
+				bottom: bottom
 			},
 			series: [
 				{
@@ -478,7 +486,7 @@ window.teaweb = {
 		if (chartBox == null) {
 			return
 		}
-		let chart = echarts.init(chartBox)
+		let chart = this.initChart(chartBox)
 		let option = {
 			xAxis: {
 				data: values.map(xFunc),
@@ -522,6 +530,25 @@ window.teaweb = {
 		}
 		chart.setOption(option)
 		chart.resize()
+	},
+	xRotation: function (chart, names) {
+		let chartWidth = chart.getWidth()
+		let width = 0
+		names.forEach(function (name) {
+			width += name.length * 10
+		})
+		if (width <= chartWidth) {
+			return null
+		}
+
+		return [40, -20]
+	},
+	initChart: function (dom) {
+		let instance = echarts.init(dom)
+		window.addEventListener("resize", function () {
+			instance.resize()
+		})
+		return instance
 	}
 }
 

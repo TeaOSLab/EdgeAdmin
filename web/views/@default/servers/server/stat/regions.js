@@ -31,12 +31,6 @@ Tea.context(function () {
 		}, function (args) {
 			return that.cityStats[args.dataIndex].country.name + ": " + that.cityStats[args.dataIndex].province.name + " " + that.cityStats[args.dataIndex].city.name + " " + teaweb.formatNumber(that.cityStats[args.dataIndex].count)
 		}, cityAxis)
-
-		window.addEventListener("resize", function () {
-			that.resizeChart("country-chart")
-			that.resizeChart("province-chart")
-			that.resizeChart("city-chart")
-		})
 	})
 
 	this.reloadChart = function (chartId, name, stats, xFunc, tooltipFunc, axis) {
@@ -44,7 +38,7 @@ Tea.context(function () {
 		if (chartBox == null) {
 			return
 		}
-		let chart = echarts.init(chartBox)
+		let chart = teaweb.initChart(chartBox)
 		let option = {
 			xAxis: {
 				data: stats.map(xFunc),
@@ -86,15 +80,6 @@ Tea.context(function () {
 			animation: true
 		}
 		chart.setOption(option)
-		chart.resize()
-	}
-
-	this.resizeChart = function (chartId) {
-		let chartBox = document.getElementById(chartId)
-		if (chartBox == null) {
-			return
-		}
-		let chart = echarts.init(chartBox)
 		chart.resize()
 	}
 })
