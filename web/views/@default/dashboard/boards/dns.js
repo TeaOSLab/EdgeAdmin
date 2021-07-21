@@ -27,34 +27,14 @@ Tea.context(function () {
 	this.reloadHourlyTrafficChart = function () {
 		let stats = this.hourlyStats
 		this.reloadTrafficChart("hourly-traffic-chart", "流量统计", stats, function (args) {
-			if (args.seriesIndex == 0) {
-				return stats[args.dataIndex].day + " " + stats[args.dataIndex].hour + "时 流量: " + teaweb.formatBytes(stats[args.dataIndex].bytes)
-			}
-			if (args.seriesIndex == 1) {
-				let ratio = 0
-				if (stats[args.dataIndex].bytes > 0) {
-					ratio = Math.round(stats[args.dataIndex].cachedBytes * 10000 / stats[args.dataIndex].bytes) / 100
-				}
-				return stats[args.dataIndex].day + " " + stats[args.dataIndex].hour + "时 缓存流量: " + teaweb.formatBytes(stats[args.dataIndex].cachedBytes) + ", 命中率：" + ratio + "%"
-			}
-			return ""
+			return stats[args.dataIndex].day + " " + stats[args.dataIndex].hour + "时 流量: " + teaweb.formatBytes(stats[args.dataIndex].bytes)
 		})
 	}
 
 	this.reloadDailyTrafficChart = function () {
 		let stats = this.dailyStats
 		this.reloadTrafficChart("daily-traffic-chart", "流量统计", stats, function (args) {
-			if (args.seriesIndex == 0) {
-				return stats[args.dataIndex].day + " 流量: " + teaweb.formatBytes(stats[args.dataIndex].bytes)
-			}
-			if (args.seriesIndex == 1) {
-				let ratio = 0
-				if (stats[args.dataIndex].bytes > 0) {
-					ratio = Math.round(stats[args.dataIndex].cachedBytes * 10000 / stats[args.dataIndex].bytes) / 100
-				}
-				return stats[args.dataIndex].day + " 缓存流量: " + teaweb.formatBytes(stats[args.dataIndex].cachedBytes) + ", 命中率：" + ratio + "%"
-			}
-			return ""
+			return stats[args.dataIndex].day + " 流量: " + teaweb.formatBytes(stats[args.dataIndex].bytes)
 		})
 	}
 
@@ -65,7 +45,7 @@ Tea.context(function () {
 		}
 
 		let axis = teaweb.bytesAxis(stats, function (v) {
-			return Math.max(v.bytes, v.cachedBytes)
+			return v.bytes
 		})
 
 		let chart = teaweb.initChart(chartBox)
