@@ -8,6 +8,7 @@ import (
 	"github.com/iwind/TeaGo/maps"
 	"net/http"
 	"reflect"
+	"strings"
 )
 
 // 认证拦截
@@ -21,12 +22,32 @@ func NewUserMustAuth(module string) *userMustAuth {
 }
 
 func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramName string) (goNext bool) {
+	var action = actionPtr.Object()
+
+	// 恢复模式
 	if teaconst.IsRecoverMode {
-		actionPtr.Object().RedirectURL("/recover")
+		action.RedirectURL("/recover")
 		return false
 	}
-	
-	var action = actionPtr.Object()
+
+	// DEMO模式
+	if teaconst.IsDemoMode {
+		if action.Request.Method == http.MethodPost {
+			var actionName = action.Spec.ClassName[strings.LastIndex(action.Spec.ClassName, ".")+1:]
+			var denyPrefixes = []string{"Update", "Create", "Delete", "Truncate", "Clean", "Clear", "Reset", "Add", "Remove"}
+			for _, prefix := range denyPrefixes {
+				if strings.HasPrefix(actionName, prefix) {
+					action.Fail(teaconst.ErrorDemoOperation)
+					return false
+				}
+			}
+
+			if strings.Index(action.Spec.PkgPath, "settings") > 0 || strings.Index(action.Spec.PkgPath, "delete") > 0 || strings.Index(action.Spec.PkgPath, "update") > 0 {
+				action.Fail(teaconst.ErrorDemoOperation)
+				return false
+			}
+		}
+	}
 
 	// 安全相关
 	securityConfig, _ := configloaders.LoadSecurityConfig()
@@ -114,7 +135,7 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	action.Data["teaShowOpenSourceInfo"] = config.ShowOpenSourceInfo
 	action.Data["teaIsSuper"] = false
 	action.Data["teaIsPlus"] = teaconst.IsPlus
-	action.Data["teaDemoEnabled"] = teaconst.IsDemo
+	action.Data["teaDemoEnabled"] = teaconst.IsDemoMode
 	action.Data["teaShowFinance"] = configloaders.ShowFinance()
 	if !action.Data.Has("teaSubMenu") {
 		action.Data["teaSubMenu"] = ""

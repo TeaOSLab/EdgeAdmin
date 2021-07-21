@@ -4,6 +4,11 @@ Tea.context(function () {
 	this.passwordMd5 = ""
 	this.encodedFrom = window.encodeURIComponent(this.from)
 
+	if (this.isDemo) {
+		this.username = "admin"
+		this.password = "123456"
+	}
+
 	this.showOTP = false
 
 	this.isSubmitting = false

@@ -323,6 +323,9 @@ func (this *AdminNode) listenSock() error {
 			case "recover":
 				teaconst.IsRecoverMode = true
 				_ = cmd.ReplyOk()
+			case "demo":
+				teaconst.IsDemoMode = !teaconst.IsDemoMode
+				_ = cmd.ReplyOk()
 			}
 		})
 
