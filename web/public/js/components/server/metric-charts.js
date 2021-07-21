@@ -14,16 +14,20 @@ Vue.component("metric-chart", {
 				return v.value
 			})
 			if (sum < stats[0].total) {
-				stats.push({
-					keys: ["其他"],
-					value: stats[0].total - sum,
-					total: stats[0].total,
-					time: stats[0].time
-				})
+				if (this.vChart.type == "pie") {
+					stats.push({
+						keys: ["其他"],
+						value: stats[0].total - sum,
+						total: stats[0].total,
+						time: stats[0].time
+					})
+				}
 			}
 		}
 		if (this.vChart.maxItems > 0) {
 			stats = stats.slice(0, this.vChart.maxItems)
+		} else {
+			stats = stats.slice(0, 10)
 		}
 
 		stats.$rsort(function (v1, v2) {
@@ -55,6 +59,9 @@ Vue.component("metric-chart", {
 		},
 		render: function (el) {
 			let chart = echarts.init(el)
+			window.addEventListener("resize", function () {
+				chart.resize()
+			})
 			switch (this.chart.type) {
 				case "pie":
 					this.renderPie(chart)
@@ -271,6 +278,15 @@ Vue.component("metric-chart", {
 					})
 					break
 			}
+			let bottom = 24
+			let rotate = 0
+			let result = teaweb.xRotation(chart, this.stats.map(function (v) {
+				return v.keys[0]
+			}))
+			if (result != null) {
+				bottom = result[0]
+				rotate = result[1]
+			}
 			let that = this
 			chart.setOption({
 				xAxis: {
@@ -278,7 +294,8 @@ Vue.component("metric-chart", {
 						return v.keys[0]
 					}),
 					axisLabel: {
-						interval: 0
+						interval: 0,
+						rotate: rotate
 					}
 				},
 				tooltip: {
@@ -310,7 +327,7 @@ Vue.component("metric-chart", {
 					left: 40,
 					top: 10,
 					right: 20,
-					bottom: 25
+					bottom: bottom
 				},
 				series: [
 					{
@@ -327,6 +344,19 @@ Vue.component("metric-chart", {
 					}
 				]
 			})
+
+			// IP相关操作
+			if (this.item.keys != null && this.item.keys.$contains("${remoteAddr}")) {
+				let that = this
+				chart.on("click", function (args) {
+					let index = that.item.keys.$indexesOf("${remoteAddr}")[0]
+					let value = that.stats[args.dataIndex].keys[index]
+					teaweb.popup("/servers/ipbox?ip=" + value, {
+						width: "50em",
+						height: "30em"
+					})
+				})
+			}
 		},
 		renderTable: function (chart) {
 			let table = `<table class="ui table celled">

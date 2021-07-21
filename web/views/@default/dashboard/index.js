@@ -3,16 +3,6 @@ Tea.context(function () {
 
 	this.$delay(function () {
 		this.reloadHourlyTrafficChart()
-
-		let that = this
-		window.addEventListener("resize", function () {
-			if (that.trafficTab == "hourly") {
-				that.resizeHourlyTrafficChart()
-			}
-			if (that.trafficTab == "daily") {
-				that.resizeDailyTrafficChart()
-			}
-		})
 	})
 
 	this.selectTrafficTab = function (tab) {
@@ -28,18 +18,12 @@ Tea.context(function () {
 		}
 	}
 
-	this.resizeHourlyTrafficChart = function () {
-		let chartBox = document.getElementById("hourly-traffic-chart-box")
-		let chart = echarts.init(chartBox)
-		chart.resize()
-	}
-
 	this.reloadHourlyTrafficChart = function () {
 		let axis = teaweb.bytesAxis(this.hourlyTrafficStats, function (v) {
 			return v.bytes
 		})
 		let chartBox = document.getElementById("hourly-traffic-chart-box")
-		let chart = echarts.init(chartBox)
+		let chart = teaweb.initChart(chartBox)
 		let that = this
 		let option = {
 			xAxis: {
@@ -91,18 +75,13 @@ Tea.context(function () {
 		chart.resize()
 	}
 
-	this.resizeDailyTrafficChart = function () {
-		let chartBox = document.getElementById("daily-traffic-chart-box")
-		let chart = echarts.init(chartBox)
-		chart.resize()
-	}
-
 	this.reloadDailyTrafficChart = function () {
 		let axis = teaweb.bytesAxis(this.dailyTrafficStats, function (v) {
 			return v.bytes
 		})
 		let chartBox = document.getElementById("daily-traffic-chart-box")
-		let chart = echarts.init(chartBox)
+		let chart = teaweb.initChart(chartBox)
+
 		let that = this
 		let option = {
 			xAxis: {

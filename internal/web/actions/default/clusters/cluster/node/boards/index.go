@@ -192,6 +192,7 @@ func (this *IndexAction) RunGet(params struct {
 					"periodUnit":    chart.MetricChart.MetricItem.PeriodUnit,
 					"valueType":     serverconfigs.FindMetricValueType(chart.MetricChart.MetricItem.Category, chart.MetricChart.MetricItem.Value),
 					"valueTypeName": serverconfigs.FindMetricValueName(chart.MetricChart.MetricItem.Category, chart.MetricChart.MetricItem.Value),
+					"keys":          chart.MetricChart.MetricItem.Keys,
 				},
 				"stats": statMaps,
 			})

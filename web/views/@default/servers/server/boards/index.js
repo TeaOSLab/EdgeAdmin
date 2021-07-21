@@ -73,7 +73,7 @@ Tea.context(function () {
 			return Math.max(v.bytes, v.cachedBytes)
 		})
 
-		let chart = echarts.init(chartBox)
+		let chart = teaweb.initChart(chartBox)
 		let option = {
 			xAxis: {
 				data: stats.map(function (v) {
@@ -209,7 +209,7 @@ Tea.context(function () {
 			return Math.max(v.countRequests, v.countCachedRequests)
 		})
 
-		let chart = echarts.init(chartBox)
+		let chart = teaweb.initChart(chartBox)
 		let option = {
 			xAxis: {
 				data: stats.map(function (v) {

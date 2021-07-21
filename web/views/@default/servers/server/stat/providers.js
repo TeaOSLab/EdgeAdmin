@@ -10,9 +10,6 @@ Tea.context(function () {
 		}, function (args) {
 			return that.providerStats[args.dataIndex].provider.name + ": " + teaweb.formatNumber(that.providerStats[args.dataIndex].count)
 		}, axis)
-		window.addEventListener("resize", function () {
-			that.resizeChart("provider-chart")
-		})
 	})
 
 	this.reloadChart = function (chartId, name, stats, xFunc, tooltipFunc, axis) {
@@ -20,7 +17,7 @@ Tea.context(function () {
 		if (chartBox == null) {
 			return
 		}
-		let chart = echarts.init(chartBox)
+		let chart = teaweb.initChart(chartBox)
 		let option = {
 			xAxis: {
 				data: stats.map(xFunc),
@@ -62,15 +59,6 @@ Tea.context(function () {
 			animation: true
 		}
 		chart.setOption(option)
-		chart.resize()
-	}
-
-	this.resizeChart = function (chartId) {
-		let chartBox = document.getElementById(chartId)
-		if (chartBox == null) {
-			return
-		}
-		let chart = echarts.init(chartBox)
 		chart.resize()
 	}
 })

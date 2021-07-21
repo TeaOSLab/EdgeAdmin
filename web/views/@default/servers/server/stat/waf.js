@@ -39,11 +39,6 @@ Tea.context(function () {
 			}
 			return that.groupStats[args.dataIndex].group.name + ": " + teaweb.formatNumber(that.groupStats[args.dataIndex].count) + percent
 		}, groupAxis)
-
-		window.addEventListener("resize", function () {
-			that.resizeChart("daily-chart")
-			that.resizeChart("group-chart")
-		})
 	})
 
 	this.reloadLineChart = function (chartId, name, stats, xFunc, tooltipFunc, axis) {
@@ -52,7 +47,7 @@ Tea.context(function () {
 			return
 		}
 		let that = this
-		let chart = echarts.init(chartBox)
+		let chart = teaweb.initChart(chartBox)
 		let option = {
 			xAxis: {
 				data: stats.map(xFunc)
@@ -129,7 +124,7 @@ Tea.context(function () {
 		if (chartBox == null) {
 			return
 		}
-		let chart = echarts.init(chartBox)
+		let chart = teaweb.initChart(chartBox)
 		let option = {
 			xAxis: {
 				data: stats.map(xFunc)
@@ -168,15 +163,6 @@ Tea.context(function () {
 			animation: true
 		}
 		chart.setOption(option)
-		chart.resize()
-	}
-
-	this.resizeChart = function (chartId) {
-		let chartBox = document.getElementById(chartId)
-		if (chartBox == null) {
-			return
-		}
-		let chart = echarts.init(chartBox)
 		chart.resize()
 	}
 })
