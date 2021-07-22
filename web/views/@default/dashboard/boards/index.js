@@ -58,7 +58,6 @@ Tea.context(function () {
 		})
 		let chartBox = document.getElementById(chartId)
 		let chart = teaweb.initChart(chartBox)
-		let that = this
 		let option = {
 			xAxis: {
 				data: stats.map(function (v) {
