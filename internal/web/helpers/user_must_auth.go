@@ -34,7 +34,7 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	if teaconst.IsDemoMode {
 		if action.Request.Method == http.MethodPost {
 			var actionName = action.Spec.ClassName[strings.LastIndex(action.Spec.ClassName, ".")+1:]
-			var denyPrefixes = []string{"Update", "Create", "Delete", "Truncate", "Clean", "Clear", "Reset", "Add", "Remove"}
+			var denyPrefixes = []string{"Update", "Create", "Delete", "Truncate", "Clean", "Clear", "Reset", "Add", "Remove", "Sync"}
 			for _, prefix := range denyPrefixes {
 				if strings.HasPrefix(actionName, prefix) {
 					action.Fail(teaconst.ErrorDemoOperation)
