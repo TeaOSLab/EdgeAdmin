@@ -132,7 +132,27 @@ window.teaweb = {
 		return (Math.round(bytes * 100 / 1024 / 1024 / 1024 / 1024 / 1024) / 100) + "P";
 	},
 	formatNumber: function (x) {
-		return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ", ");
+		if (x == null) {
+			return "null"
+		}
+		let s = x.toString()
+		let dotIndex = s.indexOf(".")
+		if (dotIndex >= 0) {
+			return this.formatNumber(s.substring(0, dotIndex)) + "." + s.substring(dotIndex + 1)
+		}
+
+		if (s.length <= 3) {
+			return s;
+		}
+		let result = []
+		for (let i = 0; i < Math.floor(s.length / 3); i++) {
+			let start = s.length - (i + 1) * 3
+			result.push(s.substring(start, start + 3))
+		}
+		if (s.length % 3 != 0) {
+			result.push(s.substring(0, s.length % 3))
+		}
+		return result.reverse().join(", ")
 	},
 	formatCount: function (x) {
 		let unit = ""
