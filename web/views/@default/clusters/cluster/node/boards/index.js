@@ -82,7 +82,7 @@ Tea.context(function () {
 				attackRatio = Math.round(stats[index].attackBytes * 10000 / stats[index].bytes) / 100
 			}
 
-			return stats[index].day + " " + stats[index].hour  + "时<br/>总流量：" + teaweb.formatBytes(stats[index].bytes) + "<br/>缓存流量：" + teaweb.formatBytes(stats[index].cachedBytes) + "<br/>缓存命中率：" + cachedRatio + "%<br/>拦截攻击流量：" + teaweb.formatBytes(stats[index].attackBytes) + "<br/>拦截比例：" + attackRatio + "%"
+			return stats[index].day + " " + stats[index].hour + "时<br/>总流量：" + teaweb.formatBytes(stats[index].bytes) + "<br/>缓存流量：" + teaweb.formatBytes(stats[index].cachedBytes) + "<br/>缓存命中率：" + cachedRatio + "%<br/>拦截攻击流量：" + teaweb.formatBytes(stats[index].attackBytes) + "<br/>拦截比例：" + attackRatio + "%"
 		})
 	}
 
@@ -452,10 +452,13 @@ Tea.context(function () {
 	this.cacheDirAvail = ""
 	this.cacheDirAvailWarning = false
 	if (this.cacheDirValues.length > 0) {
-		this.cacheDirUsed = teaweb.formatBytes(this.cacheDirValues.$last().value.dirs[0].used)
-		this.cacheDirTotal = teaweb.formatBytes(this.cacheDirValues.$last().value.dirs[0].total)
-		this.cacheDirAvail = teaweb.formatBytes(this.cacheDirValues.$last().value.dirs[0].avail)
-		this.cacheDirAvailWarning = (this.cacheDirValues.$last().value.dirs[0].avail < 1024 * 1024 * 1024 * 10)
+		let lastStat = this.cacheDirValues.$last()
+		if (lastStat.value != null && lastStat.value.dirs != null && lastStat.value.dirs.length > 0) {
+			this.cacheDirUsed = teaweb.formatBytes(this.cacheDirValues.$last().value.dirs[0].used)
+			this.cacheDirTotal = teaweb.formatBytes(this.cacheDirValues.$last().value.dirs[0].total)
+			this.cacheDirAvail = teaweb.formatBytes(this.cacheDirValues.$last().value.dirs[0].avail)
+			this.cacheDirAvailWarning = (this.cacheDirValues.$last().value.dirs[0].avail < 1024 * 1024 * 1024 * 10)
+		}
 	}
 	this.reloadCacheDirsChart = function () {
 		let axis = {unit: "%", divider: 1}
@@ -471,7 +474,7 @@ Tea.context(function () {
 				return stats[args.dataIndex].time + "<br/>使用：" + teaweb.formatBytes(v.used) + "<br/>总量：" + teaweb.formatBytes(v.total) + "<br/>比例：" + (Math.ceil(v.used * 100 / v.total * 100) / 100) + "%"
 			},
 			value: function (v) {
-				if (v.value.dirs.length ==0) {
+				if (v.value == null || v.value.dirs == null || v.value.dirs.length == 0) {
 					return 0
 				}
 				v = v.value.dirs[0]
