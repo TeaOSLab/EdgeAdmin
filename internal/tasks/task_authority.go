@@ -74,6 +74,10 @@ func (this *AuthorityTask) Loop() error {
 	if err != nil {
 		return err
 	}
+	if resp.AuthorityKey == nil {
+		teaconst.IsPlus = false
+		return nil
+	}
 	var oldState = teaconst.IsPlus
 	if resp.AuthorityKey != nil && len(resp.AuthorityKey.Value) > 0 && resp.AuthorityKey.DayTo >= timeutil.Format("Y-m-d") {
 		teaconst.IsPlus = true

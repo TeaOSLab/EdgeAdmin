@@ -64,10 +64,6 @@ github.com/hpcloud/tail v1.0.0/go.mod h1:ab1qPbhIpdTxEkNHXyeSf5vhxWSCs/tWer42PpO
 github.com/iwind/TeaGo v0.0.0-20210628135026-38575a4ab060/go.mod h1:KU4mS7QNiZ7QWEuDBk1zw0/Q2LrAPZv3tycEFBsuUwc=
 github.com/iwind/TeaGo v0.0.0-20210720011303-fc255c995afa h1:woN88uEmRRUNFD7pRZEtX9heDcjFn0ClMxjF5ButKow=
 github.com/iwind/TeaGo v0.0.0-20210720011303-fc255c995afa/go.mod h1:KU4mS7QNiZ7QWEuDBk1zw0/Q2LrAPZv3tycEFBsuUwc=
-github.com/iwind/gosock v0.0.0-20210706152215-08fe64b7a8a3 h1:BVHIjJU5RUX0grmvDtr3ZZ2z0hX+ideJRpg4NtBXZfs=
-github.com/iwind/gosock v0.0.0-20210706152215-08fe64b7a8a3/go.mod h1:H5Q7SXwbx3a97ecJkaS2sD77gspzE7HFUafBO0peEyA=
-github.com/iwind/gosock v0.0.0-20210720054405-4030f271aa3f h1:+mKLTd5tCCLXK+iY5Xjz58hau6qFv9chGqcZ4FWUiIs=
-github.com/iwind/gosock v0.0.0-20210720054405-4030f271aa3f/go.mod h1:H5Q7SXwbx3a97ecJkaS2sD77gspzE7HFUafBO0peEyA=
 github.com/iwind/gosock v0.0.0-20210721090148-db2e77703143 h1:RXINu3KVasw6MWv8MA6ne5ur84YhTAzG/j68YEM0KuI=
 github.com/iwind/gosock v0.0.0-20210721090148-db2e77703143/go.mod h1:H5Q7SXwbx3a97ecJkaS2sD77gspzE7HFUafBO0peEyA=
 github.com/json-iterator/go v1.1.10/go.mod h1:KdQUCv79m/52Kvf8AW2vK1V8akMuk1QjK/uOdHXbAo4=
