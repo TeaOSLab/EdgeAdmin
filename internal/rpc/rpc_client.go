@@ -388,6 +388,10 @@ func (this *RPCClient) NSRecordRPC() pb.NSRecordServiceClient {
 	return pb.NewNSRecordServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) NSKeyRPC() pb.NSKeyServiceClient {
+	return pb.NewNSKeyServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) NSRouteRPC() pb.NSRouteServiceClient {
 	return pb.NewNSRouteServiceClient(this.pickConn())
 }

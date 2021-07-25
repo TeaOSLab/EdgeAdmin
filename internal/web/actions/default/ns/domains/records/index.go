@@ -4,6 +4,7 @@ package records
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/domains/domainutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/dnsconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
@@ -23,25 +24,16 @@ func (this *IndexAction) RunGet(params struct {
 	Keyword  string
 	RouteId  int64
 }) {
-	this.Data["type"] = params.Type
-	this.Data["keyword"] = params.Keyword
-	this.Data["routeId"] = params.RouteId
-
-	// 域名信息
-	domainResp, err := this.RPC().NSDomainRPC().FindEnabledNSDomain(this.AdminContext(), &pb.FindEnabledNSDomainRequest{NsDomainId: params.DomainId})
+	// 初始化域名信息
+	err := domainutils.InitDomain(this.Parent(), params.DomainId)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	domain := domainResp.NsDomain
-	if domain == nil {
-		this.NotFound("nsDomain", params.DomainId)
-		return
-	}
-	this.Data["domain"] = maps.Map{
-		"id":   domain.Id,
-		"name": domain.Name,
-	}
+
+	this.Data["type"] = params.Type
+	this.Data["keyword"] = params.Keyword
+	this.Data["routeId"] = params.RouteId
 
 	// 记录
 	countResp, err := this.RPC().NSRecordRPC().CountAllEnabledNSRecords(this.AdminContext(), &pb.CountAllEnabledNSRecordsRequest{
