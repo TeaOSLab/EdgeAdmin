@@ -215,6 +215,10 @@ window.teaweb = {
 		}
 	},
 	popup: function (url, options) {
+		if (url != null && url.length > 0 && url.substring(0, 1) == '.') {
+			url = Tea.url(url)
+		}
+
 		if (options == null) {
 			options = {};
 		}

@@ -15,7 +15,7 @@ func main() {
 	app := apps.NewAppCmd().
 		Version(teaconst.Version).
 		Product(teaconst.ProductName).
-		Usage(teaconst.ProcessName+" [-v|start|stop|restart|service|daemon|reset|recover]").
+		Usage(teaconst.ProcessName+" [-v|start|stop|restart|service|daemon|reset|recover|demo]").
 		Option("-h", "show this help").
 		Option("-v", "show version").
 		Option("start", "start the service").

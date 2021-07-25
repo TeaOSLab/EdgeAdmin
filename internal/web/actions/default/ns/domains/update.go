@@ -4,6 +4,7 @@ package domains
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/domains/domainutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -20,6 +21,15 @@ func (this *UpdateAction) Init() {
 func (this *UpdateAction) RunGet(params struct {
 	DomainId int64
 }) {
+	// 初始化域名信息
+	err := domainutils.InitDomain(this.Parent(), params.DomainId)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	var countRecords = this.Data.GetMap("domain").GetInt64("countRecords")
+	var countKeys = this.Data.GetMap("domain").GetInt64("countKeys")
+
 	// 域名信息
 	domainResp, err := this.RPC().NSDomainRPC().FindEnabledNSDomain(this.AdminContext(), &pb.FindEnabledNSDomainRequest{NsDomainId: params.DomainId})
 	if err != nil {
@@ -44,11 +54,13 @@ func (this *UpdateAction) RunGet(params struct {
 	}
 
 	this.Data["domain"] = maps.Map{
-		"id":        domain.Id,
-		"name":      domain.Name,
-		"isOn":      domain.IsOn,
-		"clusterId": clusterId,
-		"userId":    userId,
+		"id":           domain.Id,
+		"name":         domain.Name,
+		"isOn":         domain.IsOn,
+		"clusterId":    clusterId,
+		"userId":       userId,
+		"countRecords": countRecords,
+		"countKeys":    countKeys,
 	}
 
 	this.Show()
