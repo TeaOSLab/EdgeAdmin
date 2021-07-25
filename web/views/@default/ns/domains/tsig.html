@@ -1,0 +1,16 @@
+{$layout}
+{$template "domain_menu"}
+
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+   <csrf-token></csrf-token>
+    <input type="hidden" name="domainId" :value="domain.id"/>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">是否启用TSIG *</td>
+            <td>
+                <checkbox name="isOn" v-model="tsig.isOn"></checkbox>
+            </td>
+        </tr>
+    </table>
+    <submit-btn></submit-btn>
+</form>

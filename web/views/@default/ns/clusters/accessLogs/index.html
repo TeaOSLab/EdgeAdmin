@@ -30,7 +30,6 @@
             <th>概要</th>
         </tr>
     </thead>
-    <!-- 这里之所以需要添加 :key，是因为要不然不会刷新显示 -->
     <tr v-for="accessLog in accessLogs" :key="accessLog.requestId">
         <td>
             <div v-if="accessLog.node.cluster != null">

@@ -23,6 +23,7 @@ func init() {
 			Post("/delete", new(domains.DeleteAction)).
 			Get("/domain", new(domains.DomainAction)).
 			GetPost("/update", new(domains.UpdateAction)).
+			GetPost("/tsig", new(domains.TsigAction)).
 
 			// 域名密钥
 			Prefix("/ns/domains/keys").
