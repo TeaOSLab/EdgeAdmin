@@ -6,6 +6,7 @@ function build() {
 	DIST=$ROOT/"../dist/${NAME}"
 	OS=${1}
 	ARCH=${2}
+	TAG=${3}
 
 	if [ -z $OS ]; then
 		echo "usage: build.sh OS ARCH"
@@ -15,9 +16,12 @@ function build() {
 		echo "usage: build.sh OS ARCH"
 		exit
 	fi
+	if [ -z $TAG ]; then
+		TAG="community"
+	fi
 
 	VERSION=$(lookup-version $ROOT/../internal/const/const.go)
-	ZIP="${NAME}-${OS}-${ARCH}-v${VERSION}.zip"
+	ZIP="${NAME}-${OS}-${ARCH}-${TAG}-v${VERSION}.zip"
 
 	# check edge-api
 	APINodeVersion=$(lookup-version $ROOT"/../../EdgeAPI/internal/const/const.go")
@@ -30,7 +34,7 @@ function build() {
 
 	cd $ROOT"/../../EdgeAPI/build"
 	echo "=============================="
-	./build.sh $OS $ARCH
+	./build.sh $OS $ARCH $TAG
 	echo "=============================="
 	cd -
 
@@ -47,7 +51,7 @@ function build() {
 	rm -f $DIST/web/tmp/*
 	cp $ROOT/configs/server.template.yaml $DIST/configs/
 
-	EDGE_API_ZIP_FILE=$ROOT"/../../EdgeAPI/dist/edge-api-${OS}-${ARCH}-v${APINodeVersion}.zip"
+	EDGE_API_ZIP_FILE=$ROOT"/../../EdgeAPI/dist/edge-api-${OS}-${ARCH}-${TAG}-v${APINodeVersion}.zip"
 	cp $EDGE_API_ZIP_FILE $DIST/
 	cd $DIST/
 	unzip -q $(basename $EDGE_API_ZIP_FILE)
@@ -56,7 +60,7 @@ function build() {
 
 	# build
 	echo "building "${NAME}" ..."
-	env GOOS=$OS GOARCH=$GOARCH go build -ldflags="-s -w" -o $DIST/bin/${NAME} $ROOT/../cmd/edge-admin/main.go
+	env GOOS=$OS GOARCH=$GOARCH go build -tags $TAG -ldflags="-s -w" -o $DIST/bin/${NAME} $ROOT/../cmd/edge-admin/main.go
 
 	# delete hidden files
 	find $DIST -name ".DS_Store" -delete
@@ -88,4 +92,4 @@ function lookup-version() {
 	fi
 }
 
-build $1 $2
+build $1 $2 $3
