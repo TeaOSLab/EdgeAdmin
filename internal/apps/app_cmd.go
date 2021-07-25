@@ -168,7 +168,7 @@ func (this *AppCmd) Run(main func()) {
 
 // 版本号
 func (this *AppCmd) runVersion() {
-	fmt.Println(this.product+" v"+this.version, "(build: "+runtime.Version(), runtime.GOOS, runtime.GOARCH+")")
+	fmt.Println(this.product+" v"+this.version, "(build: "+runtime.Version(), runtime.GOOS, runtime.GOARCH, teaconst.Tag+")")
 }
 
 // 帮助
