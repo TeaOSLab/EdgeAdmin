@@ -38,7 +38,9 @@ func (this *AdvancedHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNex
 		if teaconst.IsPlus {
 			tabbar.Add("监控节点", "", "/settings/monitorNodes", "", this.tab == "monitorNodes")
 		}
-		tabbar.Add("企业版认证", "", "/settings/authority", "", this.tab == "authority")
+		if teaconst.BuildPlus {
+			tabbar.Add("企业版认证", "", "/settings/authority", "", this.tab == "authority")
+		}
 
 		//tabbar.Add("备份", "", "/settings/backup", "", this.tab == "backup")
 	}
