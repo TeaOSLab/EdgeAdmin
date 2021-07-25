@@ -10,7 +10,7 @@ Tea.context(function () {
 
 	this.updateKey = function (keyId) {
 		teaweb.popup(Tea.url(".updatePopup?keyId=" + keyId), {
-			height: "26em",
+			height: "27em",
 			callback: function () {
 				teaweb.successRefresh("保存成功")
 			}
