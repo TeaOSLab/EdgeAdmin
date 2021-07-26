@@ -547,7 +547,8 @@ window.teaweb = {
 					itemStyle: {
 						color: "#9DD3E8"
 					},
-					areaStyle: {}
+					areaStyle: {},
+					smooth: true
 				}
 			],
 			animation: true
