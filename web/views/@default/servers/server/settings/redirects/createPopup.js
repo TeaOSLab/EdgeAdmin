@@ -22,7 +22,8 @@ Tea.context(function () {
 	} else if (this.redirect.matchRegexp) {
 		this.mode = "matchRegexp"
 	} else {
-		this.mode = "equal"
+		this.mode = "matchPrefix"
+		this.redirect.matchPrefix = true
 	}
 
 	this.$delay(function () {
