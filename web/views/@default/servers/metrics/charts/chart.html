@@ -36,6 +36,22 @@
             <span v-else>{{chart.maxItems}}</span>
         </td>
     </tr>
+    <tr>
+        <td>忽略空值对象</td>
+        <td>
+            <span v-if="chart.ignoreEmptyKeys" class="green">Y</span>
+            <span v-else class="disabled">N</span>
+        </td>
+    </tr>
+    <tr>
+        <td>忽略其他对象</td>
+        <td>
+           <div v-if="chart.ignoredKeys.length > 0">
+                <span v-for="key in chart.ignoredKeys" class="ui label basic small">{{key}}</span>
+           </div>
+            <span v-else class="disabled">没有要忽略的对象。</span>
+        </td>
+    </tr>
 </table>
 
 <h4>图表示例</h4>

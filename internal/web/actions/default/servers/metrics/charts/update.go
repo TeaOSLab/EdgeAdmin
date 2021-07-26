@@ -40,12 +40,14 @@ func (this *UpdateAction) RunGet(params struct {
 }
 
 func (this *UpdateAction) RunPost(params struct {
-	ChartId  int64
-	Name     string
-	Type     string
-	WidthDiv int32
-	MaxItems int32
-	IsOn     bool
+	ChartId         int64
+	Name            string
+	Type            string
+	WidthDiv        int32
+	MaxItems        int32
+	IsOn            bool
+	IgnoreEmptyKeys bool
+	IgnoredKeys     []string
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -59,13 +61,15 @@ func (this *UpdateAction) RunPost(params struct {
 		Require("请选择图表类型")
 
 	_, err := this.RPC().MetricChartRPC().UpdateMetricChart(this.AdminContext(), &pb.UpdateMetricChartRequest{
-		MetricChartId: params.ChartId,
-		Name:          params.Name,
-		Type:          params.Type,
-		WidthDiv:      params.WidthDiv,
-		MaxItems:      params.MaxItems,
-		ParamsJSON:    nil,
-		IsOn:          params.IsOn,
+		MetricChartId:   params.ChartId,
+		Name:            params.Name,
+		Type:            params.Type,
+		WidthDiv:        params.WidthDiv,
+		MaxItems:        params.MaxItems,
+		ParamsJSON:      nil,
+		IgnoreEmptyKeys: params.IgnoreEmptyKeys,
+		IgnoredKeys:     params.IgnoredKeys,
+		IsOn:            params.IsOn,
 	})
 	if err != nil {
 		this.ErrorPage(err)
