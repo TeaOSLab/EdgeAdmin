@@ -8,7 +8,16 @@ Vue.component("http-redirect-to-https-box", {
 				isOn: false,
 				host: "",
 				port: 0,
-				status: 0
+				status: 0,
+				onlyDomains: [],
+				exceptDomains: []
+			}
+		} else {
+			if (redirectToHttpsConfig.onlyDomains == null) {
+				redirectToHttpsConfig.onlyDomains = []
+			}
+			if (redirectToHttpsConfig.exceptDomains == null) {
+				redirectToHttpsConfig.exceptDomains = []
 			}
 		}
 		return {
@@ -40,6 +49,14 @@ Vue.component("http-redirect-to-https-box", {
 	methods: {
 		changeMoreOptions: function (isVisible) {
 			this.moreOptionsVisible = isVisible
+		},
+		changeOnlyDomains: function (values) {
+			this.redirectToHttpsConfig.onlyDomains = values
+			this.$forceUpdate()
+		},
+		changeExceptDomains: function (values) {
+			this.redirectToHttpsConfig.exceptDomains = values
+			this.$forceUpdate()
 		}
 	},
 	template: `<div>
@@ -109,10 +126,10 @@ Vue.component("http-redirect-to-https-box", {
 				</td>
 			</tr>
 			<tr>
-				<td>域名或IP地址</td>
+				<td>跳转后域名或IP地址</td>
 				<td>
 					<input type="text" name="host" v-model="redirectToHttpsConfig.host"/>
-					<p class="comment">默认和用户正在访问的域名或IP地址一致。</p>
+					<p class="comment">默认和用户正在访问的域名或IP地址一致，不填写就表示使用当前的域名。</p>
 				</td>
 			</tr>
 			<tr>
@@ -120,6 +137,20 @@ Vue.component("http-redirect-to-https-box", {
 				<td>
 					<input type="text" name="port" v-model="portString" maxlength="5" style="width:6em"/>
 					<p class="comment">默认端口为443。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>允许的域名</td>
+				<td>
+					<values-box :values="redirectToHttpsConfig.onlyDomains" @change="changeOnlyDomains"></values-box>
+					<p class="comment">如果填写了允许的域名，那么只有这些域名可以自动跳转。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>排除的域名</td>
+				<td>
+					<values-box :values="redirectToHttpsConfig.exceptDomains" @change="changeExceptDomains"></values-box>
+					<p class="comment">如果填写了排除的域名，那么这些域名将不跳转。</p>
 				</td>
 			</tr>
 		</table>
