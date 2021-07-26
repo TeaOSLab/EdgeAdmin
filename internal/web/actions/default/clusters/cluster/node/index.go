@@ -29,6 +29,6 @@ func (this *IndexAction) RunGet(params struct {
 	if teaconst.IsPlus {
 		this.RedirectURL("/clusters/cluster/node/boards?clusterId=" + fmt.Sprintf("%d", this.Data["clusterId"]) + "&nodeId=" + strconv.FormatInt(params.NodeId, 10))
 	} else {
-		this.RedirectURL("/clusters/cluster/node/detail?clusterId=" + fmt.Sprintf("%d", this.Data["clusterId"]) + strconv.FormatInt(params.NodeId, 10))
+		this.RedirectURL("/clusters/cluster/node/detail?clusterId=" + fmt.Sprintf("%d", this.Data["clusterId"]) + "&nodeId=" + strconv.FormatInt(params.NodeId, 10))
 	}
 }
