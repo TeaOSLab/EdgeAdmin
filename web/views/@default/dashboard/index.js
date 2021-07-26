@@ -66,7 +66,8 @@ Tea.context(function () {
 					},
 					areaStyle: {
 						color: "#9DD3E8"
-					}
+					},
+					smooth: true
 				}
 			],
 			animation: false
@@ -124,7 +125,8 @@ Tea.context(function () {
 					},
 					areaStyle: {
 						color: "#9DD3E8"
-					}
+					},
+					smooth: true
 				}
 			],
 			animation: false

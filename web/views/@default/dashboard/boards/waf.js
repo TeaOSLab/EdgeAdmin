@@ -97,7 +97,8 @@ Tea.context(function () {
 						color: "#879BD7"
 					},
 					areaStyle: {},
-					stack: "总量"
+					stack: "总量",
+					smooth: true
 				},
 				{
 					name: name,
@@ -109,7 +110,8 @@ Tea.context(function () {
 						color: "#FBD88A"
 					},
 					areaStyle: {},
-					stack: "总量"
+					stack: "总量",
+					smooth: true
 				},
 				{
 					name: name,
@@ -121,7 +123,8 @@ Tea.context(function () {
 						color: "#F39494"
 					},
 					areaStyle: {},
-					stack: "总量"
+					stack: "总量",
+					smooth: true
 				}
 			],
 			animation: true

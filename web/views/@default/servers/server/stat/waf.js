@@ -80,7 +80,8 @@ Tea.context(function () {
 					areaStyle: {},
 					itemStyle: {
 						color: "#9DD3E8"
-					}
+					},
+					smooth: true
 				},
 				{
 					name: name,
@@ -90,7 +91,8 @@ Tea.context(function () {
 					}),
 					itemStyle: {
 						color: "#879BD7"
-					}
+					},
+					smooth: true
 				},
 				{
 					name: name,
@@ -100,7 +102,8 @@ Tea.context(function () {
 					}),
 					itemStyle: {
 						color: "#F39494"
-					}
+					},
+					smooth: true
 				},
 				{
 					name: name,
@@ -110,7 +113,8 @@ Tea.context(function () {
 					}),
 					itemStyle: {
 						color: "#FBD88A"
-					}
+					},
+					smooth: true
 				}
 			],
 			animation: true

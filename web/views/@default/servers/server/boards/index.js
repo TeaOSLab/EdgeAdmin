@@ -113,7 +113,8 @@ Tea.context(function () {
 					},
 					areaStyle: {
 						color: "#9DD3E8"
-					}
+					},
+					smooth: true
 				},
 				{
 					name: "缓存流量",
@@ -126,7 +127,8 @@ Tea.context(function () {
 					},
 					areaStyle: {
 						color: "#61A0A8"
-					}
+					},
+					smooth: true
 				},
 				{
 					name: "攻击流量",
@@ -139,7 +141,8 @@ Tea.context(function () {
 					},
 					lineStyle: {
 						color: "#F39494"
-					}
+					},
+					smooth: true
 				}
 			],
 			legend: {
@@ -252,7 +255,8 @@ Tea.context(function () {
 					},
 					areaStyle: {
 						color: "#9DD3E8"
-					}
+					},
+					smooth: true
 				},
 				{
 					name: "缓存请求数",
@@ -265,7 +269,8 @@ Tea.context(function () {
 					},
 					areaStyle: {
 						color: "#61A0A8"
-					}
+					},
+					smooth: true
 				},
 				{
 					name: "攻击请求数",
@@ -278,7 +283,8 @@ Tea.context(function () {
 					},
 					lineStyle: {
 						color: "#F39494"
-					}
+					},
+					smooth: true
 				}
 			],
 			legend: {
