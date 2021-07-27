@@ -274,8 +274,28 @@ func (this *IndexAction) RunGet(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		server := serverResp.Server
+
+		// 服务
+		var server = serverResp.Server
 		if server == nil {
+			// 设置为已修复
+			_, err = this.RPC().NodeLogRPC().FixNodeLog(this.AdminContext(), &pb.FixNodeLogRequest{NodeLogId: errorLog.Id})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+
+			continue
+		}
+
+		// 节点
+		nodeResp, err := this.RPC().NodeRPC().FindEnabledNode(this.AdminContext(), &pb.FindEnabledNodeRequest{NodeId: errorLog.NodeId})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		var node = nodeResp.Node
+		if node == nil || node.NodeCluster == nil {
 			// 设置为已修复
 			_, err = this.RPC().NodeLogRPC().FixNodeLog(this.AdminContext(), &pb.FixNodeLogRequest{NodeLogId: errorLog.Id})
 			if err != nil {
@@ -293,6 +313,9 @@ func (this *IndexAction) RunGet(params struct {
 			"serverId":    errorLog.ServerId,
 			"level":       errorLog.Level,
 			"serverName":  server.Name,
+			"nodeId":      node.Id,
+			"nodeName":    node.Name,
+			"clusterId":   node.NodeCluster.Id,
 		})
 	}
 	this.Data["errorLogs"] = errorLogMaps
