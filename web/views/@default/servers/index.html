@@ -8,12 +8,16 @@
         <span class="ui item active"><span class="red">需要修复的错误</span></span>
     </div>
     <div class="ui segment attached">
-        <div class="ui message" v-for="log in errorLogs" :class="{error: log.level == 'error', success: log.level == 'success'}">
-            [{{log.createdTime}}]
-            <a :href="'/servers/server/settings?serverId=' + log.serverId"><span v-if="log.serverName.length > 0">[{{log.serverName}}]</span><span v-else>[服务]</span></a>
-            <span v-if="log.level == 'error'">[错误]</span>
-            <span v-if="log.level == 'success'">[成功]</span>
-            {{log.description}}
+        <div class="ui icon message" v-for="log in errorLogs" :class="{error: log.level == 'error', success: log.level == 'success'}">
+            <i class="icon warning circle"></i>
+            <div class="content">
+                [{{log.createdTime}}]
+                <a :href="'/clusters/cluster/node?clusterId=' + log.clusterId + '&nodeId=' + log.nodeId">[节点：{{log.nodeName}}]</a>
+                <a :href="'/servers/server/settings?serverId=' + log.serverId"><span v-if="log.serverName.length > 0">[服务：{{log.serverName}}]</span><span v-else>[服务]</span></a>
+                <span v-if="log.level == 'error'">[错误]</span>
+                <span v-if="log.level == 'success'">[成功]</span>
+                {{log.description}}
+            </div>
             <a href="" title="关闭" @click.prevent="fixLog(log.id)"><i class="ui icon remove small"></i></a>
         </div>
     </div>

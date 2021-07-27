@@ -39,4 +39,7 @@ textarea::-webkit-scrollbar {
 select.dropdown {
   height: auto !important;
 }
+.message .icon.warning {
+  font-size: 2em!important;
+}
 /*# sourceMappingURL=@layout_override.css.map */
