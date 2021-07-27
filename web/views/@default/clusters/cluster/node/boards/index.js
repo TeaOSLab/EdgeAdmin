@@ -177,7 +177,7 @@ Tea.context(function () {
 					itemStyle: {
 						color: "#F39494"
 					},
-					lineStyle: {
+					areaStyle: {
 						color: "#F39494"
 					},
 					smooth: true
@@ -319,7 +319,7 @@ Tea.context(function () {
 					itemStyle: {
 						color: "#F39494"
 					},
-					lineStyle: {
+					areaStyle: {
 						color: "#F39494"
 					},
 					smooth: true
