@@ -46,7 +46,7 @@ Vue.component("http-firewall-rules-box", {
 					{{rule.checkpointOptions.period}}秒/{{rule.checkpointOptions.threshold}}请求
 				</span>	
 				<span v-else>
-					<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> <var v-if="rule.value.length > 0">{{rule.operator}}</var> {{rule.value}}
+					<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> <var>{{rule.operator}}</var> {{rule.value}}
 				</span>
 				
 				<a href="" title="修改" @click.prevent="updateRule(index, rule)"><i class="icon pencil small"></i></a>
