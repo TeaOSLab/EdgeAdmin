@@ -35,7 +35,7 @@
                         <span class="ui label tiny">时：${hour}</span>
                         <span class="ui label tiny">分：${minute}</span>
                         <span class="ui label tiny">秒：${second}</span>
-                        <span class="ui label tiny">年月日：${date}</span>，比如<span class="ui label tiny">/var/log/web-access-${date}.log</span>。
+                        <span class="ui label tiny">年月日：${date}</span>，比如<span class="ui label tiny">/var/log/web-access-${date}.log</span>，此文件会在API节点上写入。
                     </p>
                 </td>
             </tr>
@@ -57,7 +57,7 @@
                 <td>Endpoint *</td>
                 <td>
                     <input type="text" name="esEndpoint" v-model="policy.options.endpoint"/>
-                    <p class="comment">ES HTTP接口地址，类似于192.168.1.100:9200</p>
+                    <p class="comment">ES HTTP接口地址，类似于192.168.1.100:9200，需要能够被API节点访问。</p>
                 </td>
             </tr>
             <tr>
@@ -121,7 +121,7 @@
                 <td>网络地址 *</td>
                 <td>
                     <input type="text" name="tcpAddr" v-model="policy.options.addr"/>
-                    <p class="comment">接收日志的网络地址</p>
+                    <p class="comment">接收日志的网络地址，需要能够被API节点访问。</p>
                 </td>
             </tr>
         </tbody>
@@ -144,7 +144,7 @@
                 <td>网络地址 *</td>
                 <td>
                     <input type="text" name="syslogServerAddr" v-model="policy.options.serverAddr"/>
-                    <p class="comment">IP地址或主机名，不包括端口。</p>
+                    <p class="comment">IP地址或主机名，不包括端口，需要能够被API节点访问。</p>
                 </td>
             </tr>
             <tr v-if="syslogProtocol == 'tcp' || syslogProtocol == 'udp'">
@@ -158,6 +158,7 @@
                 <td>Socket路径 *</td>
                 <td>
                     <input type="text" name="syslogSocket" v-model="policy.options.socket"/>
+                    <p class="comment">需要能够被API节点访问。</p>
                 </td>
             </tr>
 
@@ -182,10 +183,10 @@
         <!-- 命令行输入流 -->
         <tbody v-show="type == 'command'">
             <tr>
-                <td>可执行命令 *</td>
+                <td>可执行文件 *</td>
                 <td>
                     <input type="text" name="commandCommand" v-model="policy.options.command"/>
-                    <p class="comment">不带参数的可执行命令地址</p>
+                    <p class="comment">不带参数的可执行文件地址，此命令可执行文件需要部署在API节点上。</p>
                 </td>
             </tr>
             <tr>
