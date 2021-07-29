@@ -1,0 +1,44 @@
+{$layout}
+{$template "menu"}
+
+<p class="comment" v-if="policies.length == 0">暂时还没有访问日志策略。</p>
+
+<table class="ui table celled selectable" v-if="policies.length > 0">
+    <thead>
+        <tr>
+            <th>策略名称</th>
+            <th class="three op">类型</th>
+            <th>主要参数</th>
+            <th class="two wide">状态</th>
+            <th class="two op">操作</th>
+        </tr>
+    </thead>
+    <tr v-for="policy in policies">
+        <td>{{policy.name}}
+            <div style="margin-top: 0.3em" v-if="policy.isPublic">
+                <span class="ui label olive tiny basic">公用</span>
+            </div>
+        </td>
+        <td>{{policy.typeName}}</td>
+        <td>
+            <span v-if="policy.options == null" class="disabled">-</span>
+            <span v-else-if="policy.type == 'es'">Endpoint: {{policy.options.endpoint}}</span>
+            <span v-else-if="policy.type == 'file'">文件路径：{{policy.options.path}}</span>
+            <span v-else-if="policy.type == 'tcp'">网络地址：{{policy.options.addr}}</span>
+            <span v-else-if="policy.type == 'command'">可执行命令：{{policy.options.command}}</span>
+            <span v-else-if="policy.type == 'syslog'">
+                <span v-if="policy.options.protocol == 'tcp'">TCP {{policy.options.serverAddr}}</span>
+                <span v-if="policy.options.protocol == 'udp'">UDP {{policy.options.serverAddr}}</span>
+                <span v-if="policy.options.protocol == 'socket'">SOCK {{policy.options.socket}}</span>
+            </span>
+        </td>
+        <td>
+            <label-on :v-is-on="policy.isOn"></label-on>
+        </td>
+        <td>
+            <a :href="Tea.url('.policy', {policyId: policy.id})">详情</a> &nbsp; <a href="" @click.prevent="deletePolicy(policy.id)">删除</a>
+        </td>
+    </tr>
+</table>
+
+<div class="page" v-html="page"></div>

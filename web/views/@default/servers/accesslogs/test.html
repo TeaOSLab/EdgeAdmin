@@ -1,0 +1,18 @@
+{$layout "layout"}
+{$template "/code_editor"}
+{$template "policy_menu"}
+
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+    <input type="hidden" name="policyId" :value="policy.id"/>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">发送内容</td>
+            <td>
+                <source-code-box id="json-data-box" type="application/json" :read-only="false" name="bodyJSON">{
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36"
+}</source-code-box>
+            </td>
+        </tr>
+    </table>
+    <submit-btn></submit-btn>
+</form>

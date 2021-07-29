@@ -54,6 +54,7 @@ import (
 
 	// 服务相关
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/accesslogs"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/certs"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/cache"

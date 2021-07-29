@@ -1,0 +1,173 @@
+{$layout}
+{$template "policy_menu"}
+
+<table class="ui table definition selectable">
+    <tr>
+        <td class="title">策略名称</td>
+        <td>
+           {{policy.name}}
+        </td>
+    </tr>
+    <tr>
+        <td>状态</td>
+        <td>
+            <label-on :v-is-on="policy.isOn"></label-on>
+        </td>
+    </tr>
+    <tr>
+        <td>存储类型</td>
+        <td>
+            {{policy.typeName}}
+        </td>
+    </tr>
+
+    <!-- 文件 -->
+    <tbody v-if="policy.type == 'file'">
+        <tr>
+            <td>日志文件路径</td>
+            <td>
+               {{policy.options.path}}
+            </td>
+        </tr>
+        <tr>
+            <td>是否自动创建目录</td>
+            <td>
+                <span v-if="policy.options.autoCreate" class="green">Y</span>
+                <span v-else class="disabled">N</span>
+            </td>
+        </tr>
+    </tbody>
+
+    <!-- Elastic Search -->
+    <tbody v-if="policy.type == 'es'">
+        <tr>
+            <td>Endpoint</td>
+            <td>
+                {{policy.options.endpoint}}
+            </td>
+        </tr>
+        <tr>
+            <td>Index</td>
+            <td>
+                {{policy.options.index}}
+            </td>
+        </tr>
+        <tr>
+            <td>Mapping Type</td>
+            <td>
+               {{policy.options.mappingType}}
+            </td>
+        </tr>
+        <tr>
+            <td>认证用户名</td>
+            <td>
+                <span v-if="policy.options.username.length > 0">{{policy.options.username}}</span>
+                <span v-else class="disabled">没有填写。</span>
+            </td>
+        </tr>
+        <tr>
+            <td>认证密码</td>
+            <td>
+                <span v-if="policy.options.password.length > 0">{{policy.options.password}}</span>
+                <span v-else class="disabled">没有填写。</span>
+            </td>
+        </tr>
+    </tbody>
+
+    <!-- TCP Socket -->
+    <tbody v-if="policy.type == 'tcp'">
+        <tr>
+            <td>网络协议</td>
+            <td>
+                {{policy.options.network.toUpperCase()}}
+            </td>
+        </tr>
+        <tr>
+            <td>网络地址</td>
+            <td>
+                {{policy.options.addr}}
+            </td>
+        </tr>
+    </tbody>
+
+    <!-- Syslog -->
+    <tbody v-if="policy.type == 'syslog'">
+        <tr>
+            <td>网络协议</td>
+            <td>
+                <span v-if="policy.options.protocol == 'none'" class="disabled">[无]</span>
+                <span v-if="policy.options.protocol == 'tcp'">TCP</span>
+                <span v-if="policy.options.protocol == 'udp'">UDP</span>
+                <span v-if="policy.options.protocol == 'socket'">Unix Socket</span>
+            </td>
+        </tr>
+
+        <tr v-if="policy.options.protocol == 'tcp' || policy.options.protocol == 'udp'">
+            <td>网络地址</td>
+            <td>
+                {{policy.options.serverAddr}}
+            </td>
+        </tr>
+        <tr v-if="policy.options.protocol == 'tcp' || policy.options.protocol == 'udp'">
+            <td>端口</td>
+            <td>
+                {{policy.options.serverPort}}
+            </td>
+        </tr>
+
+        <tr v-if="policy.options.protocol == 'socket'">
+            <td>Socket路径</td>
+            <td>
+                {{policy.options.socket}}
+            </td>
+        </tr>
+
+        <tr>
+            <td>标签<em>(Tag)</em></td>
+            <td>
+                <span v-if="policy.options.tag.length > 0">{{policy.options.tag}}</span>
+                <span v-else class="disabled">没有设置</span>
+            </td>
+        </tr>
+        <tr>
+            <td>优先级<em>(Priority)</em></td>
+            <td>
+                {{syslogPriorityName}}
+            </td>
+        </tr>
+    </tbody>
+
+    <!-- 命令行输入流 -->
+    <tbody v-if="policy.type == 'command'">
+        <tr>
+            <td>可执行命令</td>
+            <td>
+               {{policy.options.command}}
+            </td>
+        </tr>
+        <tr>
+            <td>参数</td>
+            <td>
+                <div v-if="policy.options.args != null && policy.options.args.length > 0">
+                    <span v-for="arg in policy.options.args" class="ui label basic tiny">{{arg}}</span>
+                </div>
+                <span v-else class="disabled">没有设置参数。</span>
+            </td>
+        </tr>
+        <tr>
+            <td>工作目录</td>
+            <td>
+                <span v-if="policy.options.dir.length > 0">{{policy.options.dir}}</span>
+                <span v-else class="disabled">没有设置工作目录。</span>
+            </td>
+        </tr>
+    </tbody>
+
+    <tr>
+        <td>是否公用</td>
+        <td>
+            <span v-if="policy.isPublic" class="green">Y</span>
+            <span v-else class="disabled">N</span>
+        </td>
+    </tr>
+</table>
