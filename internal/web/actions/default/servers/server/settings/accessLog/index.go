@@ -7,7 +7,6 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
-	"github.com/iwind/TeaGo/maps"
 )
 
 type IndexAction struct {
@@ -30,22 +29,6 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	this.Data["webId"] = webConfig.Id
 	this.Data["accessLogConfig"] = webConfig.AccessLogRef
-
-	// 可选的缓存策略
-	policiesResp, err := this.RPC().HTTPAccessLogPolicyRPC().FindAllEnabledHTTPAccessLogPolicies(this.AdminContext(), &pb.FindAllEnabledHTTPAccessLogPoliciesRequest{})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	policyMaps := []maps.Map{}
-	for _, policy := range policiesResp.AccessLogPolicies {
-		policyMaps = append(policyMaps, maps.Map{
-			"id":   policy.Id,
-			"name": policy.Name,
-			"isOn": policy.IsOn, // TODO 这里界面上显示是否开启状态
-		})
-	}
-	this.Data["accessLogPolicies"] = policyMaps
 
 	// 通用变量
 	this.Data["fields"] = serverconfigs.HTTPAccessLogFields

@@ -1,0 +1,7 @@
+<first-menu>
+    <menu-item href="/servers/accesslogs">策略列表</menu-item>
+    <span class="item disabled">|</span>
+    <menu-item :href="'policy?policyId=' + policy.id" code="policy">"{{policy.name}}"详情</menu-item>
+    <menu-item :href="'test?policyId=' + policy.id" code="test">测试</menu-item>
+    <menu-item :href="'update?policyId=' + policy.id" code="update">修改</menu-item>
+</first-menu>

@@ -195,6 +195,12 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 					"code": "waf",
 				},
 				{
+					"name": "日志策略",
+					"url":  "/servers/accesslogs",
+					"code": "accesslog",
+					"isOn": teaconst.IsPlus,
+				},
+				{
 					"name": "IP名单",
 					"url":  "/servers/iplists",
 					"code": "iplist",

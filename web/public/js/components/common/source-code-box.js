@@ -1,8 +1,13 @@
 let sourceCodeBoxIndex = 0
 
 Vue.component("source-code-box", {
-	props: ["type", "id"],
+	props: ["name", "type", "id", "read-only"],
 	mounted: function () {
+		let readOnly = this.readOnly
+		if (typeof readOnly != "boolean") {
+			readOnly = true
+		}
+		console.log("readonly:", readOnly) // TODO
 		let box = document.getElementById("source-code-box-" + this.index)
 		let valueBox = document.getElementById(this.valueBoxId)
 		let value = ""
@@ -15,7 +20,7 @@ Vue.component("source-code-box", {
 			theme: "idea",
 			lineNumbers: true,
 			value: "",
-			readOnly: true,
+			readOnly: readOnly,
 			showCursorWhenSelecting: true,
 			height: "auto",
 			//scrollbarStyle: null,
@@ -49,6 +54,6 @@ Vue.component("source-code-box", {
 	},
 	template: `<div class="source-code-box">
 	<div style="display: none" :id="valueBoxId"><slot></slot></div>
-	<textarea :id="'source-code-box-' + index"></textarea>
+	<textarea :id="'source-code-box-' + index" :name="name"></textarea>
 </div>`
 })

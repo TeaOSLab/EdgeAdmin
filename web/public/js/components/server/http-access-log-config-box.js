@@ -1,12 +1,11 @@
 Vue.component("http-access-log-config-box", {
-	props: ["v-access-log-config", "v-fields", "v-default-field-codes", "v-access-log-policies", "v-is-location"],
+	props: ["v-access-log-config", "v-fields", "v-default-field-codes", "v-is-location"],
 	data: function () {
 		let that = this
 
 		// 初始化
 		setTimeout(function () {
 			that.changeFields()
-			that.changePolicy()
 		}, 100)
 
 		let accessLog = {
@@ -18,9 +17,6 @@ Vue.component("http-access-log-config-box", {
 			status3: true,
 			status4: true,
 			status5: true,
-
-			storageOnly: false,
-			storagePolicies: [],
 
             firewallOnly: false
 		}
@@ -35,9 +31,6 @@ Vue.component("http-access-log-config-box", {
 				v.isChecked = accessLog.fields.$contains(v.code)
 			}
 		})
-		this.vAccessLogPolicies.forEach(function (v) {
-			v.isChecked = accessLog.storagePolicies.$contains(v.id)
-		})
 
 		return {
 			accessLog: accessLog
@@ -49,13 +42,6 @@ Vue.component("http-access-log-config-box", {
 				return v.isChecked
 			}).map(function (v) {
 				return v.code
-			})
-		},
-		changePolicy: function () {
-			this.accessLog.storagePolicies = this.vAccessLogPolicies.filter(function (v) {
-				return v.isChecked
-			}).map(function (v) {
-				return v.id
 			})
 		}
 	},
@@ -108,28 +94,6 @@ Vue.component("http-access-log-config-box", {
 						<input type="checkbox" v-model="accessLog.status5"/>
 						<label>5xx</label>
 					</div>
-				</td>
-			</tr>
-			<tr v-show="vAccessLogPolicies.length > 0">
-				<td>选择输出的日志策略</td>
-				<td>
-					<span class="disabled" v-if="vAccessLogPolicies.length == 0">暂时还没有缓存策略。</span>
-					<div v-if="vAccessLogPolicies.length > 0">
-						<div class="ui checkbox" v-for="policy in vAccessLogPolicies" style="width:10em;margin-bottom:0.8em">
-							<input type="checkbox" v-model="policy.isChecked" @change="changePolicy" />
-							<label>{{policy.name}}</label>
-						</div>
-					</div>
-				</td>
-			</tr>
-			<tr v-show="vAccessLogPolicies.length > 0">
-				<td>是否只输出到日志策略</td>
-				<td>
-					<div class="ui checkbox">
-						<input type="checkbox" v-model="accessLog.storageOnly"/>
-						<label></label>
-					</div>
-					<p class="comment">选中表示只输出日志到日志策略，而停止默认的日志存储。</p>
 				</td>
 			</tr>
 		</tbody>
