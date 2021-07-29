@@ -2,7 +2,7 @@
 {$template "/code_editor"}
 {$template "policy_menu"}
 
-<form class="ui form" data-tea-action="$" data-tea-success="success">
+<form class="ui form" data-tea-action="$" data-tea-success="success" data-tea-timeou="30" data-tea-done="done" data-tea-before="before">
     <input type="hidden" name="policyId" :value="policy.id"/>
     <table class="ui table definition selectable">
         <tr>
@@ -14,5 +14,6 @@
             </td>
         </tr>
     </table>
-    <submit-btn></submit-btn>
+    <submit-btn v-if="!isRequesting"></submit-btn>
+    <button class="ui button disabled" type="button" v-if="isRequesting">发送中...</button>
 </form>
