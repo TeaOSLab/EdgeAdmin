@@ -21,7 +21,7 @@
 				<tr>
 					<td class="title">绑定端口 *</td>
 					<td>
-                        <span class="red" v-if="httpConfig.isOn && httpConfig.addresses == null || httpConfig.addresses.length == 0">还没有添加端口绑定，会导致HTTP服务无法访问。</span>
+                        <span class="red" v-if="httpConfig.isOn && (httpConfig.addresses == null || httpConfig.addresses.length == 0)">还没有添加端口绑定，会导致HTTP服务无法访问。</span>
 						<network-addresses-box :v-server-type="serverType" :v-addresses="httpConfig.addresses" :v-protocol="'http'"></network-addresses-box>
 					</td>
 				</tr>
