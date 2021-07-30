@@ -25,7 +25,7 @@
 				<tr>
 					<td class="title">绑定端口 *</td>
 					<td>
-                        <span class="red" v-if="httpsConfig.isOn && httpsConfig.addresses == null || httpsConfig.addresses.length == 0">还没有添加端口绑定，会导致HTTPS服务无法访问。</span>
+                        <span class="red" v-if="httpsConfig.isOn && (httpsConfig.addresses == null || httpsConfig.addresses.length == 0)">还没有添加端口绑定，会导致HTTPS服务无法访问。</span>
 						<network-addresses-box :v-server-type="serverType" :v-addresses="httpsConfig.addresses" :v-protocol="'https'"></network-addresses-box>
 					</td>
 				</tr>
