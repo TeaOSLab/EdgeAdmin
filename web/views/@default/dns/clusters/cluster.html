@@ -71,7 +71,7 @@
                     <link-red @click.prevent="updateCluster(issue.targetId)">修复</link-red>
                 </div>
                 <div v-if="issue.type == 'node'">
-                    <link-red @click.prevent="updateNode(issue.targetId)">修复</link-red>
+                    <link-red @click.prevent="updateNode(issue.params.clusterId, issue.targetId)">修复</link-red>
                 </div>
             </td>
         </tr>
@@ -108,18 +108,18 @@
         </td>
 		<td>
 			<span v-if="node.ipAddr.length > 0">{{node.ipAddr}}</span>
-			<link-red title="点击设置" v-else @click.prevent="updateNode(node.id)">没有设置</link-red>
+			<link-red title="点击设置" v-else @click.prevent="updateNode(node.clusterId, node.id)">没有设置</link-red>
 		</td>
 		<td>
 			<span v-if="node.route.code.length > 0">{{node.route.name}}</span>
-			<link-red v-else title="点击设置" @click.prevent="updateNode(node.id)">没有设置</link-red>
+			<link-red v-else title="点击设置" @click.prevent="updateNode(node.clusterId, node.id)">没有设置</link-red>
 		</td>
         <td>
             <span class="green" v-if="node.isResolved">已解析</span>
             <span v-else class="red">未解析</span>
         </td>
 		<td>
-			<link-popup @click.prevent="updateNode(node.id)">修改</link-popup>
+			<link-popup @click.prevent="updateNode(node.clusterId, node.id)">修改</link-popup>
 		</td>
 	</tr>
 </table>

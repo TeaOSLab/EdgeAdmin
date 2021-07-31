@@ -33,12 +33,17 @@ func ValidateDomainFormat(domain string) bool {
 }
 
 // ConvertRoutesToMaps 转换线路列表
-func ConvertRoutesToMaps(routes []*pb.DNSRoute) []maps.Map {
+func ConvertRoutesToMaps(info *pb.NodeDNSInfo) []maps.Map {
+	if info == nil {
+		return []maps.Map{}
+	}
 	result := []maps.Map{}
-	for _, route := range routes {
+	for _, route := range info.Routes {
 		result = append(result, maps.Map{
-			"name": route.Name,
-			"code": route.Code,
+			"name":       route.Name,
+			"code":       route.Code,
+			"domainId":   info.DnsDomainId,
+			"domainName": info.DnsDomainName,
 		})
 	}
 	return result

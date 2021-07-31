@@ -10,8 +10,8 @@ Tea.context(function () {
 		})
 	}
 
-	this.updateNode = function (nodeId) {
-		teaweb.popup("/dns/issues/updateNodePopup?nodeId=" + nodeId, {
+	this.updateNode = function (clusterId, nodeId) {
+		teaweb.popup("/dns/issues/updateNodePopup?clusterId=" + clusterId + "&nodeId=" + nodeId, {
 			height: "26em",
 			callback: function () {
 				teaweb.success("保存成功", function () {

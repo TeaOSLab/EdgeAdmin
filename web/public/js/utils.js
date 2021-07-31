@@ -317,6 +317,27 @@ window.teaweb = {
 
 		Swal.fire(config);
 	},
+	toast: function (message, timeout, callback) {
+		if (timeout == null) {
+			timeout = 2000
+		}
+		var width = "20em";
+		if (message.length > 30) {
+			width = "30em";
+		}
+		Swal.fire({
+			text: message,
+			icon: "info",
+			width: width,
+			timer: timeout,
+			showConfirmButton: false,
+			onAfterClose: function () {
+				if (typeof callback == "function") {
+					callback()
+				}
+			}
+		});
+	},
 	successToast: function (message, timeout, callback) {
 		if (timeout == null) {
 			timeout = 2000

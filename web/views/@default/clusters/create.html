@@ -13,17 +13,19 @@
             <td>默认缓存设置 *</td>
             <td>
                 <http-cache-policy-selector></http-cache-policy-selector>
+                <p class="comment">此全局设置不会强制应用到每个网站服务。</p>
             </td>
         </tr>
         <tr>
             <td>默认WAF设置 *</td>
             <td>
                 <http-firewall-policy-selector></http-firewall-policy-selector>
+                <p class="comment">此全局设置不会强制应用到每个网站服务。</p>
             </td>
         </tr>
 	</table>
 
-	<h4>节点安装选项</h4>
+	<h4>节点安装选项 &nbsp;<span class="grey small">（可选）</span></h4>
 	<table class="ui table selectable definition">
 		<tr>
 			<td class="title">默认SSH登录方式</td>
@@ -49,7 +51,7 @@
         </tr>
 	</table>
 
-	<h4>DNS设置选项</h4>
+	<h4>DNS设置选项 &nbsp;<span class="grey small">（可选）</span></h4>
 	<table class="ui table selectable definition">
 		<tr v-if="hasDomains">
 			<td>选择主域名</td>

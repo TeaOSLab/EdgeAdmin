@@ -66,43 +66,63 @@ func (this *UpdateAction) RunGet(params struct {
 	}
 
 	// DNS相关
-	dnsInfoResp, err := this.RPC().NodeRPC().FindEnabledNodeDNS(this.AdminContext(), &pb.FindEnabledNodeDNSRequest{NodeId: params.NodeId})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	nodeDNS := dnsInfoResp.Node
-	dnsRouteMaps := []maps.Map{}
-	if nodeDNS != nil {
-		for _, dnsInfo := range nodeDNS.Routes {
-			dnsRouteMaps = append(dnsRouteMaps, maps.Map{
-				"name": dnsInfo.Name,
-				"code": dnsInfo.Code,
-			})
+	var clusters = []*pb.NodeCluster{node.NodeCluster}
+	clusters = append(clusters, node.SecondaryNodeClusters...)
+	var allDNSRouteMaps = map[int64][]maps.Map{} // domain id => routes
+	var routeMaps = map[int64][]maps.Map{}       // domain id => routes
+	for _, cluster := range clusters {
+		dnsInfoResp, err := this.RPC().NodeRPC().FindEnabledNodeDNS(this.AdminContext(), &pb.FindEnabledNodeDNSRequest{
+			NodeId:        params.NodeId,
+			NodeClusterId: cluster.Id,
+		})
+		if err != nil {
+			this.ErrorPage(err)
+			return
 		}
-	}
-	this.Data["dnsRoutes"] = dnsRouteMaps
-	this.Data["allDNSRoutes"] = []maps.Map{}
-	if nodeDNS != nil {
-		this.Data["dnsDomainId"] = nodeDNS.DnsDomainId
-	} else {
-		this.Data["dnsDomainId"] = 0
-	}
-	if nodeDNS != nil && nodeDNS.DnsDomainId > 0 {
-		routesMaps := []maps.Map{}
+		var dnsInfo = dnsInfoResp.Node
+		if dnsInfo.DnsDomainId <= 0 || len(dnsInfo.DnsDomainName) == 0 {
+			continue
+		}
+		var domainId = dnsInfo.DnsDomainId
+		var domainName = dnsInfo.DnsDomainName
+		if len(dnsInfo.Routes) > 0 {
+			for _, route := range dnsInfo.Routes {
+				routeMaps[domainId] = append(routeMaps[domainId], maps.Map{
+					"domainId":   domainId,
+					"domainName": domainName,
+					"code":       route.Code,
+					"name":       route.Name,
+				})
+			}
+		}
+
+		// 所有线路选项
 		routesResp, err := this.RPC().DNSDomainRPC().FindAllDNSDomainRoutes(this.AdminContext(), &pb.FindAllDNSDomainRoutesRequest{DnsDomainId: dnsInfoResp.Node.DnsDomainId})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
 		for _, route := range routesResp.Routes {
-			routesMaps = append(routesMaps, maps.Map{
-				"name": route.Name,
-				"code": route.Code,
+			allDNSRouteMaps[domainId] = append(allDNSRouteMaps[domainId], maps.Map{
+				"domainId":   domainId,
+				"domainName": domainName,
+				"name":       route.Name,
+				"code":       route.Code,
 			})
 		}
-		this.Data["allDNSRoutes"] = routesMaps
 	}
+
+	var domainRoutes = []maps.Map{}
+	for _, m := range routeMaps {
+		domainRoutes = append(domainRoutes, m...)
+	}
+	this.Data["dnsRoutes"] = domainRoutes
+
+	var allDomainRoutes = []maps.Map{}
+	for _, m := range allDNSRouteMaps {
+		allDomainRoutes = append(allDomainRoutes, m...)
+	}
+	this.Data["allDNSRoutes"] = allDomainRoutes
 
 	// 登录信息
 	var loginMap maps.Map = nil
@@ -188,7 +208,7 @@ func (this *UpdateAction) RunGet(params struct {
 		}
 	}
 
-	this.Data["node"] = maps.Map{
+	var m = maps.Map{
 		"id":                     node.Id,
 		"name":                   node.Name,
 		"ipAddresses":            ipAddressMaps,
@@ -202,23 +222,29 @@ func (this *UpdateAction) RunGet(params struct {
 		"maxCacheMemoryCapacity": maxCacheMemoryCapacity,
 	}
 
-	// 所有集群
-	resp, err := this.RPC().NodeClusterRPC().FindAllEnabledNodeClusters(this.AdminContext(), &pb.FindAllEnabledNodeClustersRequest{})
-	if err != nil {
-		this.ErrorPage(err)
+	if node.NodeCluster != nil {
+		m["primaryCluster"] = maps.Map{
+			"id":   node.NodeCluster.Id,
+			"name": node.NodeCluster.Name,
+		}
+	} else {
+		m["primaryCluster"] = nil
 	}
-	if err != nil {
-		this.ErrorPage(err)
-		return
+
+	if len(node.SecondaryNodeClusters) > 0 {
+		var secondaryClusterMaps = []maps.Map{}
+		for _, cluster := range node.SecondaryNodeClusters {
+			secondaryClusterMaps = append(secondaryClusterMaps, maps.Map{
+				"id":   cluster.Id,
+				"name": cluster.Name,
+			})
+		}
+		m["secondaryClusters"] = secondaryClusterMaps
+	} else {
+		m["secondaryClusters"] = []interface{}{}
 	}
-	clusterMaps := []maps.Map{}
-	for _, cluster := range resp.NodeClusters {
-		clusterMaps = append(clusterMaps, maps.Map{
-			"id":   cluster.Id,
-			"name": cluster.Name,
-		})
-	}
-	this.Data["clusters"] = clusterMaps
+
+	this.Data["node"] = m
 
 	this.Show()
 }
@@ -230,7 +256,8 @@ func (this *UpdateAction) RunPost(params struct {
 	RegionId                   int64
 	Name                       string
 	IPAddressesJSON            []byte `alias:"ipAddressesJSON"`
-	ClusterId                  int64
+	PrimaryClusterId           int64
+	SecondaryClusterIds        []byte
 	GrantId                    int64
 	SshHost                    string
 	SshPort                    int
@@ -256,8 +283,17 @@ func (this *UpdateAction) RunPost(params struct {
 		Require("请输入节点名称")
 
 	// TODO 检查cluster
-	if params.ClusterId <= 0 {
-		this.Fail("请选择所在集群")
+	if params.PrimaryClusterId <= 0 {
+		this.Fail("请选择节点所在主集群")
+	}
+
+	var secondaryClusterIds = []int64{}
+	if len(params.SecondaryClusterIds) > 0 {
+		err := json.Unmarshal(params.SecondaryClusterIds, &secondaryClusterIds)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
 	}
 
 	// IP地址
@@ -325,18 +361,19 @@ func (this *UpdateAction) RunPost(params struct {
 
 	// 保存
 	_, err := this.RPC().NodeRPC().UpdateNode(this.AdminContext(), &pb.UpdateNodeRequest{
-		NodeId:                 params.NodeId,
-		NodeGroupId:            params.GroupId,
-		NodeRegionId:           params.RegionId,
-		Name:                   params.Name,
-		NodeClusterId:          params.ClusterId,
-		NodeLogin:              loginInfo,
-		MaxCPU:                 params.MaxCPU,
-		IsOn:                   params.IsOn,
-		DnsDomainId:            params.DnsDomainId,
-		DnsRoutes:              dnsRouteCodes,
-		MaxCacheDiskCapacity:   pbMaxCacheDiskCapacity,
-		MaxCacheMemoryCapacity: pbMaxCacheMemoryCapacity,
+		NodeId:                  params.NodeId,
+		NodeGroupId:             params.GroupId,
+		NodeRegionId:            params.RegionId,
+		Name:                    params.Name,
+		NodeClusterId:           params.PrimaryClusterId,
+		SecondaryNodeClusterIds: secondaryClusterIds,
+		NodeLogin:               loginInfo,
+		MaxCPU:                  params.MaxCPU,
+		IsOn:                    params.IsOn,
+		DnsDomainId:             params.DnsDomainId,
+		DnsRoutes:               dnsRouteCodes,
+		MaxCacheDiskCapacity:    pbMaxCacheDiskCapacity,
+		MaxCacheMemoryCapacity:  pbMaxCacheMemoryCapacity,
 	})
 	if err != nil {
 		this.ErrorPage(err)

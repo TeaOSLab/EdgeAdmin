@@ -156,6 +156,16 @@ func (this *NodesAction) RunGet(params struct {
 			dnsRouteNames = append(dnsRouteNames, route.Name)
 		}
 
+		// 从集群
+		var secondaryClusterMaps []maps.Map
+		for _, secondaryCluster := range node.SecondaryNodeClusters {
+			secondaryClusterMaps = append(secondaryClusterMaps, maps.Map{
+				"id":   secondaryCluster.Id,
+				"name": secondaryCluster.Name,
+				"isOn": secondaryCluster.IsOn,
+			})
+		}
+
 		nodeMaps = append(nodeMaps, maps.Map{
 			"id":          node.Id,
 			"name":        node.Name,
@@ -183,11 +193,12 @@ func (this *NodesAction) RunGet(params struct {
 				"id":   node.NodeCluster.Id,
 				"name": node.NodeCluster.Name,
 			},
-			"isSynced":      isSynced,
-			"ipAddresses":   ipAddresses,
-			"group":         groupMap,
-			"region":        regionMap,
-			"dnsRouteNames": dnsRouteNames,
+			"secondaryClusters": secondaryClusterMaps,
+			"isSynced":          isSynced,
+			"ipAddresses":       ipAddresses,
+			"group":             groupMap,
+			"region":            regionMap,
+			"dnsRouteNames":     dnsRouteNames,
 		})
 	}
 	this.Data["nodes"] = nodeMaps

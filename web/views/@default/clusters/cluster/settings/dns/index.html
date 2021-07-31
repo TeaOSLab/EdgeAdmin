@@ -9,14 +9,14 @@
 
 		<table class="ui table selectable definition">
 			<tr v-if="hasDomains">
-				<td>选择主域名</td>
+				<td>选择主域名 *</td>
 				<td>
 					<dns-domain-selector :v-domain-id="domainId" :v-domain-name="domainName"></dns-domain-selector>
 					<p class="comment">用于生成集群节点和网站服务的DNS解析记录。</p>
 				</td>
 			</tr>
 			<tr>
-				<td class="title">DNS子域名</td>
+				<td class="title">DNS子域名 *</td>
 				<td>
 					<div class="ui input right labeled">
 						<input type="text" name="dnsName" maxlength="64" style="width:10em" v-model="dnsName"/>

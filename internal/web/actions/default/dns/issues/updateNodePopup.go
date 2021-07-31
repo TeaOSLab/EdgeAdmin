@@ -20,11 +20,15 @@ func (this *UpdateNodePopupAction) Init() {
 }
 
 func (this *UpdateNodePopupAction) RunGet(params struct {
-	NodeId int64
+	ClusterId int64
+	NodeId    int64
 }) {
 	this.Data["nodeId"] = params.NodeId
 
-	dnsInfoResp, err := this.RPC().NodeRPC().FindEnabledNodeDNS(this.AdminContext(), &pb.FindEnabledNodeDNSRequest{NodeId: params.NodeId})
+	dnsInfoResp, err := this.RPC().NodeRPC().FindEnabledNodeDNS(this.AdminContext(), &pb.FindEnabledNodeDNSRequest{
+		NodeId:        params.NodeId,
+		NodeClusterId: params.ClusterId,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -35,7 +39,7 @@ func (this *UpdateNodePopupAction) RunGet(params struct {
 		return
 	}
 	this.Data["ipAddr"] = dnsInfo.IpAddr
-	this.Data["routes"] = domainutils.ConvertRoutesToMaps(dnsInfo.Routes)
+	this.Data["routes"] = domainutils.ConvertRoutesToMaps(dnsInfo)
 	this.Data["domainId"] = dnsInfo.DnsDomainId
 	this.Data["domainName"] = dnsInfo.DnsDomainName
 
@@ -50,13 +54,17 @@ func (this *UpdateNodePopupAction) RunGet(params struct {
 		if len(routesResp.Routes) > 0 {
 			for _, route := range routesResp.Routes {
 				allRouteMaps = append(allRouteMaps, maps.Map{
-					"name": route.Name,
-					"code": route.Code,
+					"name":       route.Name,
+					"code":       route.Code,
+					"domainName": dnsInfo.DnsDomainName,
+					"domainId":   dnsInfo.DnsDomainId,
 				})
 			}
 
 			// 筛选
-			this.Data["routes"] = domainutils.ConvertRoutesToMaps(domainutils.FilterRoutes(dnsInfo.Routes, routesResp.Routes))
+			var routes = domainutils.FilterRoutes(dnsInfo.Routes, routesResp.Routes)
+			dnsInfo.Routes = routes
+			this.Data["routes"] = domainutils.ConvertRoutesToMaps(dnsInfo)
 		}
 	}
 	this.Data["allRoutes"] = allRouteMaps

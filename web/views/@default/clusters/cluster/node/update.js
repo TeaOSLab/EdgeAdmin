@@ -1,27 +1,32 @@
 Tea.context(function () {
-	this.clusterId = 0;
+	this.clusterId = 0
 	if (this.node.cluster != null && this.node.cluster.id > 0) {
-		this.clusterId = this.node.cluster.id;
+		this.clusterId = this.node.cluster.id
 	}
 
-	this.success = NotifySuccess("保存成功", "/clusters/cluster/node?clusterId=" + this.clusterId + "&nodeId=" + this.node.id);
+	this.success = function () {
+		let that = this
+		teaweb.success("保存成功", function () {
+			window.location = "/clusters/cluster/node/detail?clusterId=" + that.clusterId + "&nodeId=" + that.node.id
+		})
+	}
 
 	// IP地址相关
-	this.ipAddresses = this.node.ipAddresses;
+	this.ipAddresses = this.node.ipAddresses
 
 	// 认证相关
-	this.grant = null;
+	this.grant = null
 
-	this.sshHost = "";
-	this.sshPort = "";
-	this.loginId = 0;
+	this.sshHost = ""
+	this.sshPort = ""
+	this.loginId = 0
 	if (this.node.login != null) {
-		this.loginId = this.node.login.id;
+		this.loginId = this.node.login.id
 
 		if (this.node.login.params != null) {
-			this.sshHost = this.node.login.params.host;
+			this.sshHost = this.node.login.params.host
 			if (this.node.login.params.port > 0) {
-				this.sshPort = this.node.login.params.port;
+				this.sshPort = this.node.login.params.port
 			}
 		}
 
@@ -31,7 +36,11 @@ Tea.context(function () {
 				name: this.node.login.grant.name,
 				method: this.node.login.grant.method,
 				methodName: this.node.login.grant.methodName
-			};
+			}
 		}
 	}
-});
+
+	this.changeClusters = function (info) {
+		this.clusterId = info.clusterId
+	}
+})

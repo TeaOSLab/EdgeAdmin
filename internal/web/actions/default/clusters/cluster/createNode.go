@@ -11,7 +11,7 @@ import (
 	"strconv"
 )
 
-// 创建节点
+// CreateNodeAction 创建节点
 type CreateNodeAction struct {
 	actionutils.ParentAction
 }
@@ -57,8 +57,10 @@ func (this *CreateNodeAction) RunGet(params struct {
 			}
 			for _, route := range routesResp.Routes {
 				dnsRouteMaps = append(dnsRouteMaps, maps.Map{
-					"name": route.Name,
-					"code": route.Code,
+					"domainId":   domainId,
+					"domainName": clusterDNSResp.Domain.Name,
+					"name":       route.Name,
+					"code":       route.Code,
 				})
 			}
 		}

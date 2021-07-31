@@ -43,7 +43,7 @@
 				<link-red @click.prevent="updateCluster(issue.targetId)">修复</link-red>
 			</div>
 			<div v-if="issue.type == 'node'">
-				<link-red @click.prevent="updateNode(issue.targetId)">修复</link-red>
+				<link-red @click.prevent="updateNode(issue.params.clusterId, issue.targetId)">修复</link-red>
 			</div>
 		</td>
 	</tr>

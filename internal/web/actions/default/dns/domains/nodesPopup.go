@@ -1,6 +1,7 @@
 package domains
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
@@ -55,10 +56,14 @@ func (this *NodesPopupAction) RunGet(params struct {
 					// 检查是否有域名解析记录
 					isOk := false
 					if len(route.Name) > 0 && len(node.IpAddr) > 0 && len(cluster.DnsName) > 0 {
+						var recordType = "A"
+						if utils.IsIPv6(node.IpAddr) {
+							recordType = "AAAA"
+						}
 						checkResp, err := this.RPC().DNSDomainRPC().ExistDNSDomainRecord(this.AdminContext(), &pb.ExistDNSDomainRecordRequest{
 							DnsDomainId: params.DomainId,
 							Name:        cluster.DnsName,
-							Type:        "A",
+							Type:        recordType,
 							Route:       route.Code,
 							Value:       node.IpAddr,
 						})
