@@ -3,6 +3,7 @@ package node
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
@@ -37,6 +38,7 @@ func (this *DetailAction) RunGet(params struct {
 		return
 	}
 
+	// 主集群
 	var clusterMap maps.Map = nil
 	if node.NodeCluster != nil {
 		clusterId := node.NodeCluster.Id
@@ -55,6 +57,16 @@ func (this *DetailAction) RunGet(params struct {
 		}
 	}
 
+	// 从集群
+	var secondaryClustersMaps = []maps.Map{}
+	for _, cluster := range node.SecondaryNodeClusters {
+		secondaryClustersMaps = append(secondaryClustersMaps, maps.Map{
+			"id":   cluster.Id,
+			"name": cluster.Name,
+			"isOn": cluster.IsOn,
+		})
+	}
+
 	// IP地址
 	ipAddressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledIPAddressesWithNodeIdRequest{
 		NodeId: params.NodeId,
@@ -64,6 +76,7 @@ func (this *DetailAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
+	var ipAddresses = ipAddressesResp.Addresses
 	ipAddressMaps := []maps.Map{}
 	for _, addr := range ipAddressesResp.Addresses {
 		ipAddressMaps = append(ipAddressMaps, maps.Map{
@@ -75,33 +88,56 @@ func (this *DetailAction) RunGet(params struct {
 	}
 
 	// DNS相关
-	dnsInfoResp, err := this.RPC().NodeRPC().FindEnabledNodeDNS(this.AdminContext(), &pb.FindEnabledNodeDNSRequest{NodeId: params.NodeId})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	dnsRouteMaps := []maps.Map{}
-	recordName := ""
-	recordValue := ""
-	if dnsInfoResp.Node != nil {
-		recordName = dnsInfoResp.Node.NodeClusterDNSName + "." + dnsInfoResp.Node.DnsDomainName
-		recordValue = dnsInfoResp.Node.IpAddr
-		for _, dnsInfo := range dnsInfoResp.Node.Routes {
-			dnsRouteMaps = append(dnsRouteMaps, maps.Map{
-				"name": dnsInfo.Name,
-				"code": dnsInfo.Code,
-			})
+	var clusters = []*pb.NodeCluster{node.NodeCluster}
+	clusters = append(clusters, node.SecondaryNodeClusters...)
+	var recordMaps = []maps.Map{}
+	var routeMaps = []maps.Map{}
+	for _, cluster := range clusters {
+		dnsInfoResp, err := this.RPC().NodeRPC().FindEnabledNodeDNS(this.AdminContext(), &pb.FindEnabledNodeDNSRequest{
+			NodeId:        params.NodeId,
+			NodeClusterId: cluster.Id,
+		})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		var dnsInfo = dnsInfoResp.Node
+		if len(dnsInfo.DnsDomainName) == 0 || len(dnsInfo.NodeClusterDNSName) == 0 {
+			continue
+		}
+		var domainName = dnsInfo.DnsDomainName
+
+		// 默认线路
+		if len(dnsInfo.Routes) == 0 {
+			dnsInfo.Routes = append(dnsInfo.Routes, &pb.DNSRoute{})
+		} else {
+			for _, route := range dnsInfo.Routes {
+				routeMaps = append(routeMaps, maps.Map{
+					"domainName": domainName,
+					"code":       route.Code,
+					"name":       route.Name,
+				})
+			}
+		}
+
+		for _, addr := range ipAddresses {
+			if !addr.CanAccess {
+				continue
+			}
+			for _, route := range dnsInfo.Routes {
+				var recordType = "A"
+				if utils.IsIPv6(addr.Ip) {
+					recordType = "AAAA"
+				}
+				recordMaps = append(recordMaps, maps.Map{
+					"name":  dnsInfo.NodeClusterDNSName + "." + domainName,
+					"type":  recordType,
+					"route": route.Name,
+					"value": addr.Ip,
+				})
+			}
 		}
 	}
-	if len(dnsRouteMaps) == 0 {
-		dnsRouteMaps = append(dnsRouteMaps, maps.Map{
-			"name": "",
-			"code": "",
-		})
-	}
-	this.Data["dnsRoutes"] = dnsRouteMaps
-	this.Data["dnsRecordName"] = recordName
-	this.Data["dnsRecordValue"] = recordValue
 
 	// 登录信息
 	var loginMap maps.Map = nil
@@ -217,17 +253,20 @@ func (this *DetailAction) RunGet(params struct {
 	}
 
 	this.Data["node"] = maps.Map{
-		"id":          node.Id,
-		"name":        node.Name,
-		"ipAddresses": ipAddressMaps,
-		"cluster":     clusterMap,
-		"login":       loginMap,
-		"installDir":  node.InstallDir,
-		"isInstalled": node.IsInstalled,
-		"uniqueId":    node.UniqueId,
-		"secret":      node.Secret,
-		"maxCPU":      node.MaxCPU,
-		"isOn":        node.IsOn,
+		"id":                node.Id,
+		"name":              node.Name,
+		"ipAddresses":       ipAddressMaps,
+		"cluster":           clusterMap,
+		"secondaryClusters": secondaryClustersMaps,
+		"login":             loginMap,
+		"installDir":        node.InstallDir,
+		"isInstalled":       node.IsInstalled,
+		"uniqueId":          node.UniqueId,
+		"secret":            node.Secret,
+		"maxCPU":            node.MaxCPU,
+		"isOn":              node.IsOn,
+		"records":           recordMaps,
+		"routes":            routeMaps,
 
 		"status": maps.Map{
 			"isActive":             status.IsActive,

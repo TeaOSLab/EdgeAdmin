@@ -93,7 +93,7 @@
         <tr v-for="node in nodes">
             <td><keyword :v-word="keyword">{{node.name}}</keyword>
                 <div style="margin-top: 0.5em">
-                    <span class="ui label tiny">集群：{{node.cluster.name}}</span>
+                    <node-clusters-labels :v-primary-cluster="node.cluster" :v-secondary-clusters="node.secondaryClusters" size="tiny"></node-clusters-labels>
                 </div>
             </td>
             <td>

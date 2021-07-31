@@ -14,26 +14,23 @@
             </td>
         </tr>
         <tr>
+            <td>所属集群</td>
+            <td>
+                <node-clusters-selector :v-primary-cluster="node.primaryCluster" :v-secondary-clusters="node.secondaryClusters" @change="changeClusters"></node-clusters-selector>
+            </td>
+        </tr>
+        <tr>
             <td>IP地址 *</td>
             <td>
                 <node-ip-addresses-box :v-ip-addresses="ipAddresses"></node-ip-addresses-box>
                 <p class="comment">用于访问节点和域名解析等。</p>
             </td>
         </tr>
-        <tr v-if="allDNSRoutes.length > 0">
+       <tr v-if="allDNSRoutes.length > 0">
             <td>DNS线路</td>
             <td>
-                <input type="hidden" name="dnsDomainId" :value="dnsDomainId"/>
                 <dns-route-selector :v-all-routes="allDNSRoutes" :v-routes="dnsRoutes"></dns-route-selector>
                 <p class="comment">当前节点对应的DNS线路，可用线路是根据集群设置的域名获取的，注意DNS服务商可能对这些线路有其他限制。</p>
-            </td>
-        </tr>
-        <tr>
-            <td>所属集群</td>
-            <td>
-                <select class="ui dropdown" name="clusterId" style="width:10em" v-model="clusterId">
-                    <option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
-                </select>
             </td>
         </tr>
         <tr>

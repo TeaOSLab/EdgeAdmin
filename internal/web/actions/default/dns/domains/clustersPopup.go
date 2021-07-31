@@ -43,16 +43,21 @@ func (this *ClustersPopupAction) RunGet(params struct {
 	for _, cluster := range clustersResp.NodeClusters {
 		isOk := false
 		if len(cluster.Name) > 0 {
-			checkResp, err := this.RPC().DNSDomainRPC().ExistDNSDomainRecord(this.AdminContext(), &pb.ExistDNSDomainRecordRequest{
-				DnsDomainId: params.DomainId,
-				Name:        cluster.DnsName,
-				Type:        "A",
-			})
-			if err != nil {
-				this.ErrorPage(err)
-				return
+			for _, recordType := range []string{"A", "AAAA"} {
+				checkResp, err := this.RPC().DNSDomainRPC().ExistDNSDomainRecord(this.AdminContext(), &pb.ExistDNSDomainRecordRequest{
+					DnsDomainId: params.DomainId,
+					Name:        cluster.DnsName,
+					Type:        recordType,
+				})
+				if err != nil {
+					this.ErrorPage(err)
+					return
+				}
+				if checkResp.IsOk {
+					isOk = true
+					break
+				}
 			}
-			isOk = checkResp.IsOk
 		}
 
 		clusterMaps = append(clusterMaps, maps.Map{

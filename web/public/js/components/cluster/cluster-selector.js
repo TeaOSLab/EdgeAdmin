@@ -1,3 +1,4 @@
+// 单个集群选择
 Vue.component("cluster-selector", {
 	mounted: function () {
 		let that = this

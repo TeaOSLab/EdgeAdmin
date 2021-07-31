@@ -20,6 +20,7 @@ func init() {
 			EndHelpers().
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeCommon)).
 			Post("/options", new(OptionsAction)).
+			GetPost("/selectPopup", new(SelectPopupAction)).
 
 			EndAll()
 	})

@@ -63,6 +63,14 @@ func (this *IndexAction) RunPost(params struct {
 	// 创建日志
 	defer this.CreateLog(oplogs.LevelInfo, "修改集群 %d DNS设置", params.ClusterId)
 
+	if params.DnsDomainId <= 0 {
+		this.Fail("请选择集群的主域名")
+	}
+
+	params.Must.
+		Field("dnsName", params.DnsName).
+		Require("请输入DNS子域名")
+
 	// 检查DNS名称
 	if len(params.DnsName) > 0 {
 		if !domainutils.ValidateDomainFormat(params.DnsName) {

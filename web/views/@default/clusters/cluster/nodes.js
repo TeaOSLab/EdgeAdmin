@@ -2,9 +2,10 @@ Tea.context(function () {
 	this.teaweb = teaweb
 
 	this.deleteNode = function (nodeId) {
-		teaweb.confirm("确定要删除这个节点吗？", function () {
+		teaweb.confirm("确定要从当前集群中删除这个节点吗？", function () {
 			this.$post("/nodes/delete")
 				.params({
+					clusterId: this.clusterId,
 					nodeId: nodeId
 				})
 				.refresh();

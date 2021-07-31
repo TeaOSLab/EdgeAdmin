@@ -1,0 +1,25 @@
+{$layout "layout_popup"}
+
+<h3>选择集群</h3>
+
+<table class="ui table celled selectable">
+    <thead>
+        <tr>
+            <th>集群名称</th>
+            <th>节点数</th>
+            <th class="two wide">状态</th>
+            <th class="two op">操作</th>
+        </tr>
+    </thead>
+    <tr v-for="cluster in clusters">
+        <td>{{cluster.name}}</td>
+        <td>{{cluster.countNodes}}</td>
+        <td><label-on :v-is-on="cluster.isOn"></label-on></td>
+        <td>
+            <span class="disabled" v-if="cluster.isSelected">已选择</span>
+            <a href="" @click.prevent="select(cluster)" v-if="!cluster.isSelected">选择</a>
+        </td>
+    </tr>
+</table>
+
+<div v-html="page"></div>

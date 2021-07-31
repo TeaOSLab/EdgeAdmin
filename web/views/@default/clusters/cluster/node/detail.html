@@ -12,6 +12,12 @@
 			<td>状态</td>
 			<td><label-on :v-is-on="node.isOn"></label-on></td>
 		</tr>
+        <tr>
+            <td>所属集群</td>
+            <td>
+                <node-clusters-labels :v-primary-cluster="node.cluster" :v-secondary-clusters="node.secondaryClusters"></node-clusters-labels>
+            </td>
+        </tr>
 		<tr>
 			<td>IP地址</td>
 			<td>
@@ -29,38 +35,34 @@
 				</div>
 			</td>
 		</tr>
-		<tr v-if="dnsRoutes.length > 0 && dnsRoutes[0].name.length > 0">
+		<tr v-if="node.routes.length > 0">
 			<td>DNS线路</td>
 			<td>
-				<span class="ui label tiny basic" v-for="route in dnsRoutes">{{route.name}}</span>
+                <span class="ui label tiny basic" v-for="route in node.routes">{{route.name}} <span class="grey small">（{{route.domainName}}）</span></span>
 			</td>
 		</tr>
-        <tr v-if="dnsRecordName.length > 0 && dnsRecordValue.length > 0">
+        <tr v-if="node.records.length > 0">
             <td>DNS记录</td>
             <td>
                 <table class="ui table celled">
                    <thead class="full-width">
-                   <tr>
-                       <th>记录名</th>
-                       <th>记录类型</th>
-                       <th>线路</th>
-                       <th>记录值</th>
-                   </tr>
+                       <tr>
+                           <th>记录名</th>
+                           <th>记录类型</th>
+                           <th>线路</th>
+                           <th>记录值</th>
+                       </tr>
                    </thead>
-                    <tbody v-for="address in node.ipAddresses" v-if="address.canAccess">
-                        <tr v-for="route in dnsRoutes">
-                            <td>{{dnsRecordName}}</td>
-                            <td>
-                                <span v-if="address.ip.indexOf(':') > -1">AAAA</span>
-                                <span v-else>A</span>
-                            </td>
-                            <td>
-                                <span v-if="route.name.length > 0">{{route.name}}</span>
-                                <span v-else class="disabled">默认</span>
-                            </td>
-                            <td>{{address.ip}}</td>
-                        </tr>
-                    </tbody>
+
+                    <tr v-for="record in node.records">
+                        <td>{{record.name}}</td>
+                        <td>{{record.type}}</td>
+                        <td>
+                            <span v-if="record.route.length > 0">{{record.route}}</span>
+                            <span v-else class="disabled">默认</span>
+                        </td>
+                        <td>{{record.value}}</td>
+                    </tr>
                 </table>
                 <p class="comment">通过设置A记录可以将集群上的服务请求转发到不同线路的节点上。</p>
             </td>
