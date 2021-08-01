@@ -332,7 +332,10 @@ Tea.context(function () {
 			value: function (v) {
 				return v.countRequests / axis.divider;
 			},
-			axis: axis
+			axis: axis,
+			click: function (args, stats) {
+				window.location = "/servers/server?serverId=" + stats[args.dataIndex].serverId
+			}
 		})
 	}
 
