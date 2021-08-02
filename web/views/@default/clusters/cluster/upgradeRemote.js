@@ -114,6 +114,7 @@ Tea.context(function () {
                                     case "EMPTY_GRANT":
                                         teaweb.warn("需要填写SSH登录信息", function () {
                                             teaweb.popup("/clusters/cluster/updateNodeSSH?nodeId=" + nodeId, {
+												height: "30em",
                                                 callback: function () {
                                                     teaweb.reload()
                                                 }

@@ -23,7 +23,7 @@ Vue.component("grant-selector", {
 		// 创建授权
 		create: function () {
 			teaweb.popup("/clusters/grants/createPopup", {
-				height: "31em",
+				height: "26em",
 				callback: (resp) => {
 					this.grantId = resp.data.grant.id;
 					if (this.grantId > 0) {
@@ -40,7 +40,7 @@ Vue.component("grant-selector", {
 				return;
 			}
 			teaweb.popup("/clusters/grants/updatePopup?grantId=" + this.grant.id, {
-				height: "31em",
+				height: "26em",
 				callback: (resp) => {
 					this.grant = resp.data.grant;
 				}
