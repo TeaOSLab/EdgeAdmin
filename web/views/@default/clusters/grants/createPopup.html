@@ -37,6 +37,13 @@
 
 		<!-- 私钥 -->
 		<tbody v-if="method == 'privateKey'">
+            <tr>
+                <td>SSH用户名 *</td>
+                <td>
+                    <input type="text" name="username" maxlength="100"/>
+                    <p class="comment">SSH登录用户名。</p>
+                </td>
+            </tr>
 			<tr>
 				<td>RSA私钥 *</td>
 				<td>
