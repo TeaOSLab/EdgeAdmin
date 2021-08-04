@@ -61,6 +61,24 @@
 			</tr>
 		</tbody>
 
+        <!-- 华为云 -->
+        <tbody v-if="type == 'huaweiDNS'">
+            <tr>
+                <td>AccessKeyId *</td>
+                <td>
+                    <input type="text" name="paramHuaweiAccessKeyId" maxlength="100"/>
+                    <p class="comment">登录华为云控制台 -- 在"我的凭证 -- 访问密钥"中创建和获取。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>AccessKeySecret *</td>
+                <td>
+                    <input type="text" name="paramHuaweiAccessKeySecret" maxlength="100"/>
+                    <p class="comment">登录华为云控制台 -- 在"我的凭证 -- 访问密钥"中创建和获取。</p>
+                </td>
+            </tr>
+        </tbody>
+
         <!-- CloudFlare -->
         <tbody v-if="type == 'cloudFlare'">
             <tr>

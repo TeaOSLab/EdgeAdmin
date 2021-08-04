@@ -96,6 +96,10 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	ParamAccessKeyId     string
 	ParamAccessKeySecret string
 
+	// HuaweiDNS
+	ParamHuaweiAccessKeyId     string
+	ParamHuaweiAccessKeySecret string
+
 	// DNS.COM
 	ParamApiKey    string
 	ParamApiSecret string
@@ -142,6 +146,15 @@ func (this *UpdatePopupAction) RunPost(params struct {
 
 		apiParams["accessKeyId"] = params.ParamAccessKeyId
 		apiParams["accessKeySecret"] = params.ParamAccessKeySecret
+	case "huaweiDNS":
+		params.Must.
+			Field("paramHuaweiAccessKeyId", params.ParamHuaweiAccessKeyId).
+			Require("请输入AccessKeyId").
+			Field("paramHuaweiAccessKeySecret", params.ParamHuaweiAccessKeySecret).
+			Require("请输入AccessKeySecret")
+
+		apiParams["accessKeyId"] = params.ParamHuaweiAccessKeyId
+		apiParams["accessKeySecret"] = params.ParamHuaweiAccessKeySecret
 	case "dnscom":
 		params.Must.
 			Field("paramApiKey", params.ParamApiKey).

@@ -43,6 +43,18 @@
 		</tr>
 	</tbody>
 
+    <!-- HuaweiDNS -->
+    <tbody v-if="provider.type == 'huaweiDNS'">
+        <tr>
+            <td>AccessKeyId</td>
+            <td>{{provider.apiParams.accessKeyId}}</td>
+        </tr>
+        <tr>
+            <td>AccessKeySecret</td>
+            <td>{{provider.apiParams.accessKeySecret}}</td>
+        </tr>
+    </tbody>
+
     <!-- CloudFlare -->
     <tbody v-if="provider.type == 'cloudFlare'">
         <tr>
