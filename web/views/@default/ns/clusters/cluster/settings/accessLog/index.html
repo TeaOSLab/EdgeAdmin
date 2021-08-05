@@ -5,7 +5,7 @@
     <form class="ui form" data-tea-action="$" data-tea-success="success">
         <csrf-token></csrf-token>
         <input type="hidden" name="clusterId" :value="clusterId"/>
-        <ns-access-log-ref-box :v-access-log-ref="accessLogRef"></ns-access-log-ref-box>
+        <ns-access-log-ref-box :v-access-log-ref="accessLogRef" :v-is-parent="false"></ns-access-log-ref-box>
         <submit-btn></submit-btn>
     </form>
 </div>

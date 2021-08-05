@@ -28,7 +28,7 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 
-	accessLogRef := &dnsconfigs.AccessLogRef{}
+	accessLogRef := &dnsconfigs.NSAccessLogRef{}
 	if len(accessLogResp.AccessLogJSON) > 0 {
 		err = json.Unmarshal(accessLogResp.AccessLogJSON, accessLogRef)
 		if err != nil {
@@ -50,7 +50,7 @@ func (this *IndexAction) RunPost(params struct {
 }) {
 	defer this.CreateLogInfo("修改域名服务集群 %d 访问日志配置", params.ClusterId)
 
-	ref := &dnsconfigs.AccessLogRef{}
+	ref := &dnsconfigs.NSAccessLogRef{}
 	err := json.Unmarshal(params.AccessLogJSON, ref)
 	if err != nil {
 		this.Fail("数据格式错误：" + err.Error())
