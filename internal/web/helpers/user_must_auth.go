@@ -288,6 +288,11 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 					"url":  "/ns/clusters/logs",
 					"code": "log",
 				},
+				{
+					"name": "全局配置",
+					"url":  "/ns/settings",
+					"code": "setting",
+				},
 			},
 		},
 		{

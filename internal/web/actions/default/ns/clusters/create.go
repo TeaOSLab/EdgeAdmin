@@ -20,7 +20,7 @@ func (this *CreateAction) Init() {
 
 func (this *CreateAction) RunGet(params struct{}) {
 	// 默认的访问日志设置
-	this.Data["accessLogRef"] = &dnsconfigs.AccessLogRef{
+	this.Data["accessLogRef"] = &dnsconfigs.NSAccessLogRef{
 		IsOn: true,
 	}
 
@@ -44,7 +44,7 @@ func (this *CreateAction) RunPost(params struct {
 		Require("请输入集群名称")
 
 	// 校验访问日志设置
-	ref := &dnsconfigs.AccessLogRef{}
+	ref := &dnsconfigs.NSAccessLogRef{}
 	err := json.Unmarshal(params.AccessLogJSON, ref)
 	if err != nil {
 		this.Fail("数据格式错误：" + err.Error())

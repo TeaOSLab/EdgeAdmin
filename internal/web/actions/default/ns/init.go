@@ -5,6 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/domains"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/domains/keys"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/domains/records"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/settings"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/iwind/TeaGo"
 )
@@ -40,6 +41,9 @@ func init() {
 			GetPost("/updatePopup", new(records.UpdatePopupAction)).
 			Post("/delete", new(records.DeleteAction)).
 
+			// 设置
+			Prefix("/ns/settings").
+			Get("", new(settings.IndexAction)).
 			EndAll()
 	})
 }
