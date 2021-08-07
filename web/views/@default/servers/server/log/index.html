@@ -2,21 +2,10 @@
 
 {$template "/left_menu"}
 <div class="right-box">
-    <first-menu>
-        <div class="item right">
-            <form method="get" class="ui form small" :action="path" autocomplete="off">
-                <input type="hidden" name="serverId" :value="serverId"/>
-                <div class="ui fields inline">
-                    <div class="ui field">
-                        <input type="text" name="keyword" v-model="keyword" placeholder="IP、域名、路径等..."/>
-                    </div>
-                    <div class="ui field">
-                        <button class="ui button small" type="submit">查找</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </first-menu>
+    <form method="get" class="ui form small" :action="path" autocomplete="off">
+        <input type="hidden" name="serverId" :value="serverId"/>
+        <http-access-log-search-box :v-ip="ip" :v-domain="domain" :v-keyword="keyword"></http-access-log-search-box>
+    </form>
 
 	<p class="comment" v-if="isLoaded && accessLogs.length == 0">今天暂时还没有访问日志。</p>
 
