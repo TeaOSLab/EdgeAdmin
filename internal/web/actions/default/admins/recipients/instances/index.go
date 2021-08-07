@@ -35,6 +35,10 @@ func (this *IndexAction) RunGet(params struct {
 		Offset:    page.Offset,
 		Size:      page.Size,
 	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 
 	instanceMaps := []maps.Map{}
 	for _, instance := range instancesResp.MessageMediaInstances {

@@ -39,6 +39,10 @@ func (this *IndexAction) RunGet(params struct {
 		Offset:                  page.Offset,
 		Size:                    page.Size,
 	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 
 	recipientMaps := []maps.Map{}
 	for _, recipient := range recipientsResp.MessageRecipients {

@@ -51,6 +51,10 @@ func (this *IndexAction) RunGet(params struct {
 		Offset:  page.Offset,
 		Size:    page.Size,
 	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 
 	logs := []maps.Map{}
 	for _, log := range logsResp.NodeLogs {

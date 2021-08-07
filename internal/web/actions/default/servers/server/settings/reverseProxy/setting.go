@@ -121,6 +121,10 @@ func (this *SettingAction) RunPost(params struct {
 		MaxConns:        types.Int32(reverseProxyConfig.MaxConns),
 		MaxIdleConns:    types.Int32(reverseProxyConfig.MaxIdleConns),
 	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 
 	this.Success()
 }
