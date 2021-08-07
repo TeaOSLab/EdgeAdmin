@@ -27,6 +27,7 @@ func (this *SortAction) RunPost(params struct {
 	}
 	if webConfig == nil {
 		this.Success()
+		return
 	}
 	refMap := map[int64]*serverconfigs.HTTPLocationRef{}
 	for _, ref := range webConfig.LocationRefs {

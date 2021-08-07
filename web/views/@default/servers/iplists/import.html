@@ -3,15 +3,15 @@
 
 <div class="margin"></div>
 
-<form class="ui form" data-tea-action="$"  data-tea-success="success">
+<form class="ui form" data-tea-action="$"  data-tea-success="success" data-tea-timeout="300">
     <input type="hidden" name="listId" :value="list.id"/>
     <csrf-token></csrf-token>
     <table class="ui table definition selectable">
         <tr>
             <td class="title">选择IP文件 *</td>
             <td>
-                <input type="file" name="file" accept=".data"/>
-                <p class="comment">文件名类似于<code-label>ip-list-123.data</code-label>。</p>
+                <input type="file" name="file" accept=".xlsx, .json, .txt, .csv"/>
+                <p class="comment">文件名类似于<code-label>ip-list-123.xxx</code-label>，支持Excel、CSV、JSON和纯文本TXT。</p>
             </td>
         </tr>
     </table>

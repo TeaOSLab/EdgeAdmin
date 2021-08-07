@@ -2,12 +2,24 @@
 {$template "list_menu"}
 
 <div class="margin"></div>
-<form class="ui form">
+<form class="ui form" method="get" action="/servers/iplists/exportData">
+    <input type="hidden" name="listId" :value="list.id"/>
     <table class="ui table definition selectable">
         <tr>
             <td class="title">说明</td>
             <td>导出所有的IP</td>
         </tr>
+        <tr>
+            <td>格式</td>
+            <td>
+                <select class="ui dropdown auto-width" name="format">
+                    <option value="xlsx">Excel</option>
+                    <option value="csv">CSV</option>
+                    <option value="txt">TXT</option>
+                    <option value="json">JSON</option>
+                </select>
+            </td>
+        </tr>
     </table>
-    <a :href="'/servers/iplists/exportData?listId=' + list.id" class="ui button primary">导出</a>
+    <submit-btn>导出</submit-btn>
 </form>
