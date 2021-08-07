@@ -37,7 +37,10 @@ Tea.context(function () {
 
     // 清理节点
     this.cleanNode = function (nodeId) {
-        teaweb.popup("/db/cleanPopup?nodeId=" + nodeId)
+        teaweb.popup("/db/cleanPopup?nodeId=" + nodeId, {
+        	width: "44em",
+        	height: "26em"
+		})
     }
 
 	// 显示错误信息

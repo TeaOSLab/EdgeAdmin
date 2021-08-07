@@ -5,25 +5,18 @@
 
 <div class="right-box">
 	<first-menu>
-		<menu-item :href="path + '?serverId=' + serverId + '&day=' + day + '&keyword=' + keyword" :active="hasError == 0">所有日志</menu-item>
-		<menu-item :href="path + '?serverId=' + serverId + '&day=' + day + '&hasError=1' + '&keyword=' + keyword" :active="hasError > 0">错误日志</menu-item>
-		<div class="item right">
-			<form method="get" class="ui form small" :action="path" autocomplete="off">
-				<input type="hidden" name="serverId" :value="serverId"/>
-				<div class="ui fields inline">
-                    <div class="ui field">
-                        <input type="text" name="keyword" v-model="keyword" placeholder="IP、域名、路径等..."/>
-                    </div>
-					<div class="ui field">
-						<input type="text" name="day" maxlength="10" placeholder="选择日期" style="width:7.8em" id="day-input" v-model="day"/>
-					</div>
-					<div class="ui field">
-						<button class="ui button small" type="submit">查找</button>
-					</div>
-				</div>
-			</form>
-		</div>
+		<menu-item :href="path + '?serverId=' + serverId + '&day=' + day + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain" :active="hasError == 0">所有日志</menu-item>
+		<menu-item :href="path + '?serverId=' + serverId + '&day=' + day + '&hasError=1' + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain" :active="hasError > 0">错误日志</menu-item>
 	</first-menu>
+
+    <form method="get" class="ui form small" :action="path" autocomplete="off">
+        <input type="hidden" name="serverId" :value="serverId"/>
+        <http-access-log-search-box :v-ip="ip" :v-domain="domain" :v-keyword="keyword">
+            <div class="ui field">
+                <input type="text" name="day" maxlength="10" placeholder="选择日期" style="width:7.8em" id="day-input" v-model="day"/>
+            </div>
+        </http-access-log-search-box>
+    </form>
 
 	<p class="comment" v-if="accessLogs.length == 0">暂时还没有访问日志。</p>
 
@@ -35,10 +28,10 @@
 	</table>
 
 	<div v-if="accessLogs.length > 0">
-		<a :href="path + '?serverId=' + serverId + '&requestId=' + lastRequestId + '&day=' + day + '&hasError=' + hasError + '&keyword=' + keyword" v-if="hasPrev">上一页</a>
+		<a :href="path + '?serverId=' + serverId + '&requestId=' + lastRequestId + '&day=' + day + '&hasError=' + hasError + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain" v-if="hasPrev">上一页</a>
 		<span v-else class="disabled">上一页</span>
 		<span class="disabled">&nbsp; | &nbsp;</span>
-		<a :href="path + '?serverId=' + serverId + '&requestId=' + nextRequestId + '&day=' + day + '&hasError=' + hasError + '&keyword=' + keyword" v-if="hasMore">下一页</a>
+		<a :href="path + '?serverId=' + serverId + '&requestId=' + nextRequestId + '&day=' + day + '&hasError=' + hasError + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain" v-if="hasMore">下一页</a>
 		<span v-else class="disabled">下一页</span>
 	</div>
 </div>

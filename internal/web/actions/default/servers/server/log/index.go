@@ -20,10 +20,14 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ServerId  int64
 	RequestId string
+	Ip        string
+	Domain    string
 	Keyword   string
 }) {
 	this.Data["serverId"] = params.ServerId
 	this.Data["requestId"] = params.RequestId
+	this.Data["ip"] = params.Ip
+	this.Data["domain"] = params.Domain
 	this.Data["keyword"] = params.Keyword
 	this.Data["path"] = this.Request.URL.Path
 
@@ -44,6 +48,8 @@ func (this *IndexAction) RunPost(params struct {
 	ServerId  int64
 	RequestId string
 	Keyword   string
+	Ip        string
+	Domain    string
 
 	Must *actions.Must
 }) {
@@ -54,6 +60,8 @@ func (this *IndexAction) RunPost(params struct {
 		Size:      20,
 		Day:       timeutil.Format("Ymd"),
 		Keyword:   params.Keyword,
+		Ip:        params.Ip,
+		Domain:    params.Domain,
 		Reverse:   isReverse,
 	})
 	if err != nil {

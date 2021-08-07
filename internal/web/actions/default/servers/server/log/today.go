@@ -21,12 +21,16 @@ func (this *TodayAction) RunGet(params struct {
 	ServerId  int64
 	HasError  int
 	Keyword   string
+	Ip        string
+	Domain    string
 }) {
 	size := int64(10)
 
 	this.Data["path"] = this.Request.URL.Path
 	this.Data["hasError"] = params.HasError
 	this.Data["keyword"] = params.Keyword
+	this.Data["ip"] = params.Ip
+	this.Data["domain"] = params.Domain
 
 	resp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
 		RequestId: params.RequestId,
@@ -34,6 +38,8 @@ func (this *TodayAction) RunGet(params struct {
 		HasError:  params.HasError > 0,
 		Day:       timeutil.Format("Ymd"),
 		Keyword:   params.Keyword,
+		Ip:        params.Ip,
+		Domain:    params.Domain,
 		Size:      size,
 	})
 	if err != nil {
@@ -67,6 +73,9 @@ func (this *TodayAction) RunGet(params struct {
 			ServerId:  params.ServerId,
 			HasError:  params.HasError > 0,
 			Day:       timeutil.Format("Ymd"),
+			Keyword:   params.Keyword,
+			Ip:        params.Ip,
+			Domain:    params.Domain,
 			Size:      size,
 			Reverse:   true,
 		})

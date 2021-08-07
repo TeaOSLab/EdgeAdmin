@@ -12,7 +12,9 @@ Tea.context(function () {
 			.params({
 				serverId: this.serverId,
 				requestId: this.requestId,
-				keyword: this.keyword
+				keyword: this.keyword,
+				ip: this.ip,
+				domain: this.domain
 			})
 			.success(function (resp) {
 				this.accessLogs = resp.data.accessLogs.concat(this.accessLogs)
