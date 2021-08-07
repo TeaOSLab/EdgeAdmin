@@ -44,9 +44,9 @@ Vue.component("dns-route-selector", {
 			this.isAdding = false
 		},
 		remove: function (route) {
-			this.routeCodes.$removeValue(route.code)
+			this.routeCodes.$removeValue(route.code + "@" + route.domainId)
 			this.routes.$removeIf(function (k, v) {
-				return v.code == route.code
+				return v.code + "@" + v.domainId == route.code + "@" + route.domainId
 			})
 		}
 	},
