@@ -112,7 +112,7 @@ func (this *IndexAction) RunGet(params struct {
 				"error":      node.InstallStatus.Error,
 			},
 			"status": maps.Map{
-				"isActive":     status.IsActive,
+				"isActive":     node.IsActive,
 				"updatedAt":    status.UpdatedAt,
 				"hostname":     status.Hostname,
 				"cpuUsage":     status.CPUUsage,

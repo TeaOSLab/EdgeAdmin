@@ -41,11 +41,13 @@ Vue.component("message-row", {
 			<strong>{{message.datetime}}</strong>
 			<span v-if="message.cluster != null && message.cluster.id != null">
 				<span> | </span>
-				<a :href="'/clusters/cluster?clusterId=' + message.cluster.id" target="_top">集群：{{message.cluster.name}}</a>
+				<a :href="'/clusters/cluster?clusterId=' + message.cluster.id" target="_top" v-if="message.role == 'node'">集群：{{message.cluster.name}}</a>
+				<a :href="'/ns/clusters/cluster?clusterId=' + message.cluster.id" target="_top" v-if="message.role == 'dns'">DNS集群：{{message.cluster.name}}</a>
 			</span>
 			<span v-if="message.node != null && message.node.id != null">
 				<span> | </span>
-				<a :href="'/clusters/cluster/node?clusterId=' + message.cluster.id + '&nodeId=' + message.node.id" target="_top">节点：{{message.node.name}}</a>
+				<a :href="'/clusters/cluster/node?clusterId=' + message.cluster.id + '&nodeId=' + message.node.id" target="_top" v-if="message.role == 'node'">节点：{{message.node.name}}</a>
+				<a :href="'/ns/clusters/cluster/node?clusterId=' + message.cluster.id + '&nodeId=' + message.node.id" target="_top" v-if="message.role == 'dns'">DNS节点：{{message.node.name}}</a>
 			</span>
 			<a href=""  style="position: absolute; right: 1em" @click.prevent="readMessage(message.id)" title="标为已读"><i class="icon check"></i></a>
 		</td>
@@ -73,6 +75,8 @@ Vue.component("message-row", {
 			<div v-if="message.type == 'SSLCertACMETaskSuccess'" style="margin-top: 0.8em">
 				<a href="" @click.prevent="viewCert(params.certId)" target="_top">查看证书</a> &nbsp;|&nbsp; <a :href="'/servers/certs/acme'" v-if="params != null && params.acmeTaskId > 0" target="_top">查看任务&raquo;</a>
 			</div>
+			
+			<!-- 证书续期失败 -->
 			<div v-if="message.type == 'SSLCertACMETaskFailed'" style="margin-top: 0.8em">
 				<a href="" @click.prevent="viewCert(params.certId)" target="_top">查看证书</a> &nbsp;|&nbsp; <a :href="'/servers/certs/acme'" v-if="params != null && params.acmeTaskId > 0" target="_top">查看任务&raquo;</a>
 			</div>

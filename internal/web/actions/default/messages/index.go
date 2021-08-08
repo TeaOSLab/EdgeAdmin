@@ -55,6 +55,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 
 		messages = append(messages, maps.Map{
 			"id":       message.Id,
+			"role":     message.Role,
 			"isRead":   message.IsRead,
 			"body":     message.Body,
 			"level":    message.Level,
