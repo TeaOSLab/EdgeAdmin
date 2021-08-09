@@ -22,7 +22,7 @@ func (this *IndexAction) RunGet(params struct {
 	DomainId int64
 	Type     string
 	Keyword  string
-	RouteId  int64
+	RouteCode  string
 }) {
 	// 初始化域名信息
 	err := domainutils.InitDomain(this.Parent(), params.DomainId)
@@ -33,14 +33,14 @@ func (this *IndexAction) RunGet(params struct {
 
 	this.Data["type"] = params.Type
 	this.Data["keyword"] = params.Keyword
-	this.Data["routeId"] = params.RouteId
+	this.Data["routeCode"] = params.RouteCode
 
 	// 记录
 	countResp, err := this.RPC().NSRecordRPC().CountAllEnabledNSRecords(this.AdminContext(), &pb.CountAllEnabledNSRecordsRequest{
-		NsDomainId: params.DomainId,
-		Type:       params.Type,
-		NsRouteId:  params.RouteId,
-		Keyword:    params.Keyword,
+		NsDomainId:  params.DomainId,
+		Type:        params.Type,
+		NsRouteCode: params.RouteCode,
+		Keyword:     params.Keyword,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -51,12 +51,12 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["page"] = page.AsHTML()
 
 	recordsResp, err := this.RPC().NSRecordRPC().ListEnabledNSRecords(this.AdminContext(), &pb.ListEnabledNSRecordsRequest{
-		NsDomainId: params.DomainId,
-		Type:       params.Type,
-		NsRouteId:  params.RouteId,
-		Keyword:    params.Keyword,
-		Offset:     page.Offset,
-		Size:       page.Size,
+		NsDomainId:  params.DomainId,
+		Type:        params.Type,
+		NsRouteCode: params.RouteCode,
+		Keyword:     params.Keyword,
+		Offset:      page.Offset,
+		Size:        page.Size,
 	})
 	if err != nil {
 		this.ErrorPage(err)

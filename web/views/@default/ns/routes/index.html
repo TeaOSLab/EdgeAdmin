@@ -11,6 +11,7 @@
             <tr>
                 <th style="width: 3em"></th>
                 <th>线路名称</th>
+                <th>代号</th>
                 <th class="two wide">状态</th>
                 <th class="two op">操作</th>
             </tr>
@@ -19,6 +20,7 @@
             <tr>
                 <td style="text-align: center;"><i class="icon bars handle grey"></i> </td>
                 <td>{{route.name}}</td>
+                <td>id:{{route.id}}</td>
                 <td>
                     <label-on :v-is-on="route.isOn"></label-on>
                 </td>

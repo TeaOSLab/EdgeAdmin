@@ -33,11 +33,6 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		return
 	}
 
-	routeIds := []int64{}
-	for _, route := range record.NsRoutes {
-		routeIds = append(routeIds, route.Id)
-	}
-
 	this.Data["record"] = maps.Map{
 		"id":          record.Id,
 		"name":        record.Name,
@@ -47,7 +42,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		"weight":      record.Weight,
 		"description": record.Description,
 		"isOn":        record.IsOn,
-		"routeIds":    routeIds,
+		"routes":      record.NsRoutes,
 	}
 
 	// 域名信息
@@ -83,7 +78,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	Ttl         int32
 	Description string
 	IsOn        bool
-	RouteIds    []int64
+	RouteCodes  []string
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -102,14 +97,14 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	}
 
 	_, err := this.RPC().NSRecordRPC().UpdateNSRecord(this.AdminContext(), &pb.UpdateNSRecordRequest{
-		NsRecordId:  params.RecordId,
-		Description: params.Description,
-		Name:        params.Name,
-		Type:        params.Type,
-		Value:       params.Value,
-		Ttl:         params.Ttl,
-		IsOn:        params.IsOn,
-		NsRouteIds:  params.RouteIds,
+		NsRecordId:   params.RecordId,
+		Description:  params.Description,
+		Name:         params.Name,
+		Type:         params.Type,
+		Value:        params.Value,
+		Ttl:          params.Ttl,
+		IsOn:         params.IsOn,
+		NsRouteCodes: params.RouteCodes,
 	})
 	if err != nil {
 		this.ErrorPage(err)

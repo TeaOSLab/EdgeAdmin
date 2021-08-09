@@ -1,7 +1,7 @@
 Tea.context(function () {
 	this.createRecord = function () {
 		teaweb.popup("/ns/domains/records/createPopup?domainId=" + this.domain.id, {
-			height: "32em",
+			height: "33em",
 			callback: function () {
 				teaweb.success("保存成功", function () {
 					teaweb.reload()
@@ -12,7 +12,7 @@ Tea.context(function () {
 
 	this.updateRecord = function (recordId) {
 		teaweb.popup("/ns/domains/records/updatePopup?recordId=" + recordId, {
-			height: "32em",
+			height: "33em",
 			callback: function () {
 				teaweb.success("保存成功", function () {
 					teaweb.reload()
