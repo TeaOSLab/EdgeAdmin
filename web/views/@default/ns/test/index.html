@@ -1,0 +1,76 @@
+{$layout}
+
+<form class="ui form" data-tea-action="$" data-tea-timeout="30" data-tea-before="before" data-tea-success="success" data-tea-done="done">
+    <table class="ui table definition selectable">
+        <tr>
+            <td>集群 *</td>
+            <td>
+                <select class="ui dropdown auto-width" name="clusterId" v-model="clusterId" @change="changeCluster">
+                    <option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
+                </select>
+                <p class="comment">这里只列出有节点的集群。</p>
+            </td>
+        </tr>
+        <tr v-if="clusterId > 0">
+            <td>节点 *</td>
+            <td>
+                <select class="ui dropdown auto-width" name="nodeId" v-model="nodeId" @change="changeNode">
+                    <option v-for="node in nodes" :value="node.id">{{node.name}}</option>
+                </select>
+            </td>
+        </tr>
+        <tr v-if="selectedNode != null">
+            <td>节点IP *</td>
+            <td>
+                <select class="ui dropdown auto-width" name="ip">
+                    <option v-for="ip in selectedNode.addrs" :value="ip">{{ip}}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="title">域名 *</td>
+            <td>
+                <input type="text" name="domain" maxlength="200" ref="focus" placeholder="xxx.com"/>
+                <p class="comment">要解析的域名。</p>
+            </td>
+        </tr>
+        <tr>
+            <td>记录类型 *</td>
+            <td>
+                <select class="ui dropdown auto-width" name="type">
+                    <option v-for="type in recordTypes" :value="type.type">{{type.type}}</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>模拟客户端IP</td>
+            <td>
+                <input type="text" name="clientIP" style="width: 12em" maxlength="128" placeholder="x.x.x.x"/>
+                <p class="comment">可选项，用来模拟客户端IP。</p>
+            </td>
+        </tr>
+        <tr>
+            <td>解析结果</td>
+            <td>
+                <div v-if="result != null">
+                    <span class="red" v-if="!result.isOk">{{result.err}}</span>
+                    <div class="reasons" v-if="result.isNetErr">
+                        可能的原因有：
+                        <ul>
+                            <li>1. DNS节点没有启动；</li>
+                            <li>2. DNS节点53/udp端口没有加入到节点防火墙规则或者其他安全策略中：</li>
+                            <li>3. DNS节点IP地址填写错误；</li>
+                            <li>4. 其他原因。</li>
+                        </ul>
+                    </div>
+
+                    <div v-if="result.isOk">
+                        <pre class="pre-box"><span class="green">{{result.result}}</span></pre>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <submit-btn v-if="!isDoing">开始解析</submit-btn>
+    <button class="ui button disabled" type="button" v-if="isDoing">解析中...</button>
+</form>
