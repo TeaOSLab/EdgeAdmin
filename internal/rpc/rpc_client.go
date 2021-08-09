@@ -404,6 +404,10 @@ func (this *RPCClient) NSRPC() pb.NSServiceClient {
 	return pb.NewNSServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) NSQuestionOptionRPC() pb.NSQuestionOptionServiceClient {
+	return pb.NewNSQuestionOptionServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) MetricItemRPC() pb.MetricItemServiceClient {
 	return pb.NewMetricItemServiceClient(this.pickConn())
 }

@@ -293,6 +293,11 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 					"url":  "/ns/settings",
 					"code": "setting",
 				},
+				{
+					"name": "解析测试",
+					"url":  "/ns/test",
+					"code": "test",
+				},
 			},
 		},
 		{
