@@ -1,6 +1,6 @@
 // 选择单一线路
 Vue.component("ns-route-selector", {
-	props: ["v-route-id"],
+	props: ["v-route-code"],
 	mounted: function () {
 		let that = this
 		Tea.action("/ns/routes/options")
@@ -10,20 +10,20 @@ Vue.component("ns-route-selector", {
 			})
 	},
 	data: function () {
-		let routeId = this.vRouteId
-		if (routeId == null) {
-			routeId = 0
+		let routeCode = this.vRouteCode
+		if (routeCode == null) {
+			routeCode = ""
 		}
 		return {
-			routeId: routeId,
+			routeCode: routeCode,
 			routes: []
 		}
 	},
 	template: `<div>
 	<div v-if="routes.length > 0">
-		<select class="ui dropdown" name="routeId" v-model="routeId">
-			<option value="0">[线路]</option>
-			<option v-for="route in routes" :value="route.id">{{route.name}}</option>
+		<select class="ui dropdown" name="routeCode" v-model="routeCode">
+			<option value="">[线路]</option>
+			<option v-for="route in routes" :value="route.code">{{route.name}}</option>
 		</select>
 	</div>
 </div>`

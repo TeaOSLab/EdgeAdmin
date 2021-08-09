@@ -54,7 +54,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	Value       string
 	Ttl         int32
 	Description string
-	RouteIds    []int64
+	RouteCodes  []string
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -76,13 +76,13 @@ func (this *CreatePopupAction) RunPost(params struct {
 	}
 
 	createResp, err := this.RPC().NSRecordRPC().CreateNSRecord(this.AdminContext(), &pb.CreateNSRecordRequest{
-		NsDomainId:  params.DomainId,
-		Description: params.Description,
-		Name:        params.Name,
-		Type:        params.Type,
-		Value:       params.Value,
-		Ttl:         params.Ttl,
-		NsRouteIds:  params.RouteIds,
+		NsDomainId:   params.DomainId,
+		Description:  params.Description,
+		Name:         params.Name,
+		Type:         params.Type,
+		Value:        params.Value,
+		Ttl:          params.Ttl,
+		NsRouteCodes: params.RouteCodes,
 	})
 	if err != nil {
 		this.ErrorPage(err)
