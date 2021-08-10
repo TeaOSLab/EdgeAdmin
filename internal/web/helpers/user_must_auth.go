@@ -261,13 +261,17 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 			},
 		},
 		{
-			"code":     "ns",
-			"module":   configloaders.AdminModuleCodeNS,
-			"name":     "自建DNS",
-			"subtitle": "域名列表",
-			"icon":     "cubes",
-			"isOn":     teaconst.IsPlus,
+			"code":   "ns",
+			"module": configloaders.AdminModuleCodeNS,
+			"name":   "自建DNS",
+			"icon":   "cubes",
+			"isOn":   teaconst.IsPlus,
 			"subItems": []maps.Map{
+				{
+					"name": "域名管理",
+					"url":  "/ns/domains",
+					"code": "domain",
+				},
 				{
 					"name": "集群管理",
 					"url":  "/ns/clusters",

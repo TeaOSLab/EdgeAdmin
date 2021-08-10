@@ -1,10 +1,13 @@
+// Copyright 2021 Liuxiangchao iwind.liu@gmail.com. All rights reserved.
+
 package ns
 
 import (
-	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/iwind/TeaGo/types"
+	timeutil "github.com/iwind/TeaGo/utils/time"
 )
 
 type IndexAction struct {
@@ -12,85 +15,113 @@ type IndexAction struct {
 }
 
 func (this *IndexAction) Init() {
-	this.FirstMenu("index")
+	this.Nav("", "", "dns")
 }
 
-func (this *IndexAction) RunGet(params struct {
-	ClusterId int64
-	UserId    int64
-	Keyword   string
-}) {
-	if !teaconst.IsPlus {
-		this.RedirectURL("/")
-		return
-	}
-
-	this.Data["clusterId"] = params.ClusterId
-	this.Data["userId"] = params.UserId
-	this.Data["keyword"] = params.Keyword
-
-	// 集群数量
-	countClustersResp, err := this.RPC().NSClusterRPC().CountAllEnabledNSClusters(this.AdminContext(), &pb.CountAllEnabledNSClustersRequest{})
+func (this *IndexAction) RunGet(params struct{}) {
+	resp, err := this.RPC().NSRPC().ComposeNSBoard(this.AdminContext(), &pb.ComposeNSBoardRequest{})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	this.Data["countClusters"] = countClustersResp.Count
-
-	// 分页
-	countResp, err := this.RPC().NSDomainRPC().CountAllEnabledNSDomains(this.AdminContext(), &pb.CountAllEnabledNSDomainsRequest{
-		UserId:      params.UserId,
-		NsClusterId: params.ClusterId,
-		Keyword:     params.Keyword,
-	})
-	if err != nil {
-		this.ErrorPage(err)
-		return
+	this.Data["board"] = maps.Map{
+		"countDomains":      resp.CountNSDomains,
+		"countRecords":      resp.CountNSRecords,
+		"countClusters":     resp.CountNSClusters,
+		"countNodes":        resp.CountNSNodes,
+		"countOfflineNodes": resp.CountOfflineNSNodes,
 	}
-	page := this.NewPage(countResp.Count)
 
-	// 列表
-	domainsResp, err := this.RPC().NSDomainRPC().ListEnabledNSDomains(this.AdminContext(), &pb.ListEnabledNSDomainsRequest{
-		UserId:      params.UserId,
-		NsClusterId: params.ClusterId,
-		Keyword:     params.Keyword,
-		Offset:      page.Offset,
-		Size:        page.Size,
-	})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	domainMaps := []maps.Map{}
-	for _, domain := range domainsResp.NsDomains {
-		// 集群信息
-		var clusterMap maps.Map
-		if domain.NsCluster != nil {
-			clusterMap = maps.Map{
-				"id":   domain.NsCluster.Id,
-				"name": domain.NsCluster.Name,
-			}
+	// 流量排行
+	{
+		var statMaps = []maps.Map{}
+		for _, stat := range resp.HourlyTrafficStats {
+			statMaps = append(statMaps, maps.Map{
+				"day":           stat.Hour[4:6] + "月" + stat.Hour[6:8] + "日",
+				"hour":          stat.Hour[8:],
+				"countRequests": stat.CountRequests,
+				"bytes":         stat.Bytes,
+			})
 		}
-
-		// 用户信息
-		var userMap maps.Map
-		if domain.User != nil {
-			userMap = maps.Map{
-				"id":       domain.User.Id,
-				"username": domain.User.Username,
-				"fullname": domain.User.Fullname,
-			}
-		}
-
-		domainMaps = append(domainMaps, maps.Map{
-			"id":      domain.Id,
-			"name":    domain.Name,
-			"isOn":    domain.IsOn,
-			"cluster": clusterMap,
-			"user":    userMap,
-		})
+		this.Data["hourlyStats"] = statMaps
 	}
-	this.Data["domains"] = domainMaps
+
+	{
+		var statMaps = []maps.Map{}
+		for _, stat := range resp.DailyTrafficStats {
+			statMaps = append(statMaps, maps.Map{
+				"day":           stat.Day[4:6] + "月" + stat.Day[6:] + "日",
+				"countRequests": stat.CountRequests,
+				"bytes":         stat.Bytes,
+			})
+		}
+		this.Data["dailyStats"] = statMaps
+	}
+
+	// 域名排行
+	{
+		var statMaps = []maps.Map{}
+		for _, stat := range resp.TopNSDomainStats {
+			statMaps = append(statMaps, maps.Map{
+				"domainId":      stat.NsDomainId,
+				"domainName":    stat.NsDomainName,
+				"countRequests": stat.CountRequests,
+				"bytes":         stat.Bytes,
+			})
+		}
+		this.Data["topDomainStats"] = statMaps
+	}
+
+	// 节点排行
+	{
+		var statMaps = []maps.Map{}
+		for _, stat := range resp.TopNSNodeStats {
+			statMaps = append(statMaps, maps.Map{
+				"clusterId":     stat.NsClusterId,
+				"nodeId":        stat.NsNodeId,
+				"nodeName":      stat.NsNodeName,
+				"countRequests": stat.CountRequests,
+				"bytes":         stat.Bytes,
+			})
+		}
+		this.Data["topNodeStats"] = statMaps
+	}
+
+	// CPU
+	{
+		var statMaps = []maps.Map{}
+		for _, stat := range resp.CpuNodeValues {
+			statMaps = append(statMaps, maps.Map{
+				"time":  timeutil.FormatTime("H:i", stat.CreatedAt),
+				"value": types.Float32(string(stat.ValueJSON)),
+			})
+		}
+		this.Data["cpuValues"] = statMaps
+	}
+
+	// Memory
+	{
+		var statMaps = []maps.Map{}
+		for _, stat := range resp.MemoryNodeValues {
+			statMaps = append(statMaps, maps.Map{
+				"time":  timeutil.FormatTime("H:i", stat.CreatedAt),
+				"value": types.Float32(string(stat.ValueJSON)),
+			})
+		}
+		this.Data["memoryValues"] = statMaps
+	}
+
+	// Load
+	{
+		var statMaps = []maps.Map{}
+		for _, stat := range resp.LoadNodeValues {
+			statMaps = append(statMaps, maps.Map{
+				"time":  timeutil.FormatTime("H:i", stat.CreatedAt),
+				"value": types.Float32(string(stat.ValueJSON)),
+			})
+		}
+		this.Data["loadValues"] = statMaps
+	}
 
 	this.Show()
 }

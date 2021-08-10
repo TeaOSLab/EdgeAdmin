@@ -20,6 +20,8 @@ func init() {
 
 			// 域名相关
 			Prefix("/ns/domains").
+			Data("teaSubMenu", "domain").
+			Get("", new(domains.IndexAction)).
 			GetPost("/create", new(domains.CreateAction)).
 			Post("/delete", new(domains.DeleteAction)).
 			Get("/domain", new(domains.DomainAction)).
@@ -28,6 +30,7 @@ func init() {
 
 			// 域名密钥
 			Prefix("/ns/domains/keys").
+			Data("teaSubMenu", "domain").
 			Get("", new(keys.IndexAction)).
 			GetPost("/createPopup", new(keys.CreatePopupAction)).
 			GetPost("/updatePopup", new(keys.UpdatePopupAction)).
