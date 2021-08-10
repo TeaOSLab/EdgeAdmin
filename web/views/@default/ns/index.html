@@ -1,61 +1,60 @@
 {$layout}
-{$template "menu"}
+{$template "/echarts"}
 
-<div v-if="countClusters == 0">
-    <not-found-box>
-        暂时还没有集群，请先 <a href="/ns/clusters/create">创建集群</a>。
-    </not-found-box>
-</div>
-
-<div v-if="countClusters > 0">
-    <form class="ui form" method="get" action="/ns">
-        <div class="ui fields inline">
-            <div class="ui field">
-                <ns-cluster-selector :v-cluster-id="clusterId"></ns-cluster-selector>
-            </div>
-            <div class="ui field">
-                <ns-user-selector :v-user-id="userId"></ns-user-selector>
-            </div>
-            <div class="ui field">
-                <input type="text" name="keyword" v-model="keyword" placeholder="域名..."/>
-            </div>
-            <div class="ui field">
-                <button class="ui button" type="submit">搜索</button>
-            </div>
-        </div>
-    </form>
-
-    <div v-if="domains.length == 0">
-        <div class="margin"></div>
-        <p class="comment">暂时还没有域名。</p>
+<div class="ui four columns grid">
+    <div class="ui column">
+        <h4>域名<link-icon href="/ns/domains"></link-icon></h4>
+        <div class="value"><span>{{board.countDomains}}</span>个</div>
     </div>
-
-    <!-- 域名列表 -->
-    <table class="ui table selectable celled" v-if="domains.length > 0">
-        <thead>
-            <tr>
-                <th>域名</th>
-                <th>集群</th>
-                <th>用户</th>
-                <th class="two wide">状态</th>
-                <th class="two op">操作</th>
-            </tr>
-        </thead>
-        <tr v-for="domain in domains">
-            <td><keyword :v-word="keyword">{{domain.name}}</keyword></td>
-            <td>
-                {{domain.cluster.name}}<link-icon :href="'/ns/clusters/cluster?clusterId=' + domain.cluster.id"></link-icon>
-            </td>
-            <td>
-                <span v-if="domain.user != null">
-                    {{domain.user.fullname}} ({{domain.user.username}})
-                </span>
-                <span v-else class="disabled">-</span>
-            </td>
-            <td><label-on :v-is-on="domain.isOn"></label-on></td>
-            <td>
-                <a :href="'/ns/domains/domain?domainId=' + domain.id">详情</a> &nbsp; <a href="" @click.prevent="deleteDomain(domain.id)">删除</a>
-            </td>
-        </tr>
-    </table>
+    <div class="ui column">
+        <h4>记录<link-icon href="/ns/domains"></link-icon></h4>
+        <div class="value"><span>{{board.countRecords}}</span>个</div>
+    </div>
+    <div class="ui column">
+        <h4>集群<link-icon href="/ns/clusters"></link-icon></h4>
+        <div class="value"><span>{{board.countClusters}}</span>个</div>
+    </div>
+    <div class="ui column no-border">
+        <h4>节点<link-icon href="/ns/clusters"></link-icon></h4>
+        <div class="value"><span>{{board.countNodes}}</span>
+            <span v-if="board.countOfflineNodes > 0" class="red" style="font-size: 1em">{{board.countOfflineNodes}}离线</span>
+            <span v-else style="font-size: 1em">个</span>
+        </div>
+    </div>
 </div>
+
+<!-- 流量统计 -->
+<div class="ui menu tabular">
+    <a href="" class="item" :class="{active: trafficTab == 'hourly'}" @click.prevent="selectTrafficTab('hourly')">24小时流量趋势</a>
+    <a href="" class="item" :class="{active: trafficTab == 'daily'}" @click.prevent="selectTrafficTab('daily')">15天流量趋势</a>
+</div>
+
+
+<!-- 按小时统计流量 -->
+<div class="chart-box" id="hourly-traffic-chart" v-show="trafficTab == 'hourly'"></div>
+
+<!-- 按日统计流量 -->
+<div class="chart-box" id="daily-traffic-chart" v-show="trafficTab == 'daily'"></div>
+<div class="ui divider"></div>
+
+<!-- 域名排行 -->
+<h4>域名访问排行 <span>（24小时）</span></h4>
+<div class="chart-box" id="top-domains-chart"></div>
+<div class="ui divider"></div>
+
+<!-- 节点排行 -->
+<h4>节点访问排行 <span>（24小时）</span></h4>
+<div class="chart-box" id="top-nodes-chart"></div>
+<div class="ui divider"></div>
+
+<!-- 系统信息 -->
+<div class="ui divider"></div>
+<div class="ui menu tabular">
+    <a href="" class="item" :class="{active: nodeStatusTab == 'cpu'}" @click.prevent="selectNodeStatusTab('cpu')">DNS节点CPU</a>
+    <a href="" class="item" :class="{active: nodeStatusTab == 'memory'}" @click.prevent="selectNodeStatusTab('memory')">DNS节点内存</a>
+    <a href="" class="item" :class="{active: nodeStatusTab == 'load'}" @click.prevent="selectNodeStatusTab('load')">DNS节点负载</a>
+</div>
+
+<div class="chart-box" id="cpu-chart" v-show="nodeStatusTab == 'cpu'"></div>
+<div class="chart-box" id="memory-chart" v-show="nodeStatusTab == 'memory'"></div>
+<div class="chart-box" id="load-chart" v-show="nodeStatusTab == 'load'"></div>

@@ -1,5 +1,5 @@
 <first-menu>
-    <menu-item href="/ns">所有域名</menu-item>
+    <menu-item href="/ns/domains">所有域名</menu-item>
     <span class="item disabled">|</span>
     <menu-item :href="'/ns/domains/domain?domainId=' + domain.id" code="index">详情<span class="grey small">（{{domain.name}}）</span></menu-item>
     <menu-item :href="'/ns/domains/records?domainId=' + domain.id" code="record">记录({{domain.countRecords}})</menu-item>
