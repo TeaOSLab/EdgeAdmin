@@ -6,6 +6,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"net"
 	"net/http"
 	"reflect"
 	"strings"
@@ -60,6 +61,11 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 
 	// 检查IP
 	if !checkIP(securityConfig, action.RequestRemoteIP()) {
+		action.ResponseWriter.WriteHeader(http.StatusForbidden)
+		return false
+	}
+	remoteAddr, _, _ := net.SplitHostPort(action.Request.RemoteAddr)
+	if len(remoteAddr) > 0 && remoteAddr != action.RequestRemoteIP() && !checkIP(securityConfig, remoteAddr) {
 		action.ResponseWriter.WriteHeader(http.StatusForbidden)
 		return false
 	}
