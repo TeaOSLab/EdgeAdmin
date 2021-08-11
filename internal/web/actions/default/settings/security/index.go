@@ -69,11 +69,12 @@ func (this *IndexAction) RunGet(params struct{}) {
 }
 
 func (this *IndexAction) RunPost(params struct {
-	Frame           string
-	CountryIdsJSON  []byte
-	ProvinceIdsJSON []byte
-	AllowLocal      bool
-	AllowIPs        []string
+	Frame              string
+	CountryIdsJSON     []byte
+	ProvinceIdsJSON    []byte
+	AllowLocal         bool
+	AllowIPs           []string
+	AllowRememberLogin bool
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -126,6 +127,9 @@ func (this *IndexAction) RunPost(params struct {
 
 	// 允许本地
 	config.AllowLocal = params.AllowLocal
+
+	// 允许记住登录
+	config.AllowRememberLogin = params.AllowRememberLogin
 
 	err = configloaders.UpdateSecurityConfig(config)
 	if err != nil {

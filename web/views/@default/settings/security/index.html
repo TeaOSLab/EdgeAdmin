@@ -43,6 +43,13 @@
 				<p class="comment">选中表示允许在本机和局域网访问。</p>
 			</td>
 		</tr>
+        <tr>
+            <td>允许记住登录</td>
+            <td>
+                <checkbox name="allowRememberLogin" v-model="config.allowRememberLogin"></checkbox>
+                <p class="comment">选中表示允许在登录界面可以选择记住登录。</p>
+            </td>
+        </tr>
 	</table>
 	<submit-btn></submit-btn>
 </form>
