@@ -21,17 +21,17 @@ func (this *UpdateNodeSSHAction) Init() {
 func (this *UpdateNodeSSHAction) RunGet(params struct {
 	NodeId int64
 }) {
-	nodeResp, err := this.RPC().NodeRPC().FindEnabledNode(this.AdminContext(), &pb.FindEnabledNodeRequest{NodeId: params.NodeId})
+	nodeResp, err := this.RPC().NSNodeRPC().FindEnabledNSNode(this.AdminContext(), &pb.FindEnabledNSNodeRequest{NsNodeId: params.NodeId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	if nodeResp.Node == nil {
+	if nodeResp.NsNode == nil {
 		this.NotFound("node", params.NodeId)
 		return
 	}
 
-	node := nodeResp.Node
+	node := nodeResp.NsNode
 	this.Data["node"] = maps.Map{
 		"id":   node.Id,
 		"name": node.Name,
@@ -107,8 +107,8 @@ func (this *UpdateNodeSSHAction) RunPost(params struct {
 		}.AsJSON(),
 	}
 
-	_, err := this.RPC().NodeRPC().UpdateNodeLogin(this.AdminContext(), &pb.UpdateNodeLoginRequest{
-		NodeId:    params.NodeId,
+	_, err := this.RPC().NSNodeRPC().UpdateNSNodeLogin(this.AdminContext(), &pb.UpdateNSNodeLoginRequest{
+		NsNodeId:  params.NodeId,
 		NodeLogin: login,
 	})
 	if err != nil {

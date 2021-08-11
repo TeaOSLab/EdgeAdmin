@@ -141,10 +141,10 @@ func (this *DetailAction) RunGet(params struct {
 
 	// 登录信息
 	var loginMap maps.Map = nil
-	if node.Login != nil {
+	if node.NodeLogin != nil {
 		loginParams := maps.Map{}
-		if len(node.Login.Params) > 0 {
-			err = json.Unmarshal(node.Login.Params, &loginParams)
+		if len(node.NodeLogin.Params) > 0 {
+			err = json.Unmarshal(node.NodeLogin.Params, &loginParams)
 			if err != nil {
 				this.ErrorPage(err)
 				return
@@ -170,9 +170,9 @@ func (this *DetailAction) RunGet(params struct {
 		}
 
 		loginMap = maps.Map{
-			"id":     node.Login.Id,
-			"name":   node.Login.Name,
-			"type":   node.Login.Type,
+			"id":     node.NodeLogin.Id,
+			"name":   node.NodeLogin.Name,
+			"type":   node.NodeLogin.Type,
 			"params": loginParams,
 			"grant":  grantMap,
 		}

@@ -31,8 +31,8 @@ func (this *UpgradeRemoteAction) RunGet(params struct {
 	}
 	for _, node := range resp.Nodes {
 		loginParams := maps.Map{}
-		if node.Node.Login != nil && len(node.Node.Login.Params) > 0 {
-			err := json.Unmarshal(node.Node.Login.Params, &loginParams)
+		if node.Node.NodeLogin != nil && len(node.Node.NodeLogin.Params) > 0 {
+			err := json.Unmarshal(node.Node.NodeLogin.Params, &loginParams)
 			if err != nil {
 				this.ErrorPage(err)
 				return
@@ -46,7 +46,7 @@ func (this *UpgradeRemoteAction) RunGet(params struct {
 			"arch":          node.Arch,
 			"oldVersion":    node.OldVersion,
 			"newVersion":    node.NewVersion,
-			"login":         node.Node.Login,
+			"login":         node.Node.NodeLogin,
 			"loginParams":   loginParams,
 			"addresses":     node.Node.IpAddresses,
 			"installStatus": node.Node.InstallStatus,
