@@ -181,6 +181,11 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 			"icon":     "clone outsize",
 			"subItems": []maps.Map{
 				{
+					"name": "访问日志",
+					"url":  "/servers/logs",
+					"code": "log",
+				},
+				{
 					"name": "通用设置",
 					"url":  "/servers/components",
 					"code": "global",
