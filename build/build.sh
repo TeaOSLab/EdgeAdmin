@@ -23,7 +23,7 @@ function build() {
 	VERSION=$(lookup-version $ROOT/../internal/const/const.go)
 	ZIP="${NAME}-${OS}-${ARCH}-${TAG}-v${VERSION}.zip"
 
-	# check edge-api
+	# build edge-api
 	APINodeVersion=$(lookup-version $ROOT"/../../EdgeAPI/internal/const/const.go")
 	echo "building edge-api v${APINodeVersion} ..."
 	EDGE_API_BUILD_SCRIPT=$ROOT"/../../EdgeAPI/build/build.sh"
