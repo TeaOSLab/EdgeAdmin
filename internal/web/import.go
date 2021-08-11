@@ -63,6 +63,7 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/groups"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/log"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/waf"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/logs"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/metrics"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/metrics/charts"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server"
