@@ -56,19 +56,26 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["token"] = stringutil.Md5(TokenSalt+timestamp) + timestamp
 	this.Data["from"] = params.From
 
-	config, err := configloaders.LoadAdminUIConfig()
+	uiConfig, err := configloaders.LoadAdminUIConfig()
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	this.Data["systemName"] = config.AdminSystemName
-	this.Data["showVersion"] = config.ShowVersion
-	if len(config.Version) > 0 {
-		this.Data["version"] = config.Version
+	this.Data["systemName"] = uiConfig.AdminSystemName
+	this.Data["showVersion"] = uiConfig.ShowVersion
+	if len(uiConfig.Version) > 0 {
+		this.Data["version"] = uiConfig.Version
 	} else {
 		this.Data["version"] = teaconst.Version
 	}
-	this.Data["faviconFileId"] = config.FaviconFileId
+	this.Data["faviconFileId"] = uiConfig.FaviconFileId
+
+	securityConfig, err := configloaders.LoadSecurityConfig()
+	if err != nil {
+		this.Data["rememberLogin"] = false
+	} else {
+		this.Data["rememberLogin"] = securityConfig.AllowRememberLogin
+	}
 
 	this.Show()
 }

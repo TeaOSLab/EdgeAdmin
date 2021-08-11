@@ -47,10 +47,10 @@
                         <input type="text" name="otpCode" placeholder="请输入OTP动态密码" maxlength="6"/>
                     </div>
                 </div>
-				<div class="ui field">
+				<div class="ui field" v-if="rememberLogin">
 					<a href="" @click.prevent="showMoreOptions()">更多选项 <i class="icon angle" :class="{down:!moreOptionsVisible, up:moreOptionsVisible}"></i> </a>
 				</div>
-				<div class="ui field" v-show="moreOptionsVisible">
+				<div class="ui field" v-if="rememberLogin" v-show="moreOptionsVisible">
 					<div class="ui checkbox">
 						<input type="checkbox" name="remember" value="1" checked="checked"/>
 						<label>在这个电脑上记住登录（14天）</label>
