@@ -21,6 +21,7 @@ func init() {
 			GetPost("/createNode", new(CreateNodeAction)).
 			Post("/deleteNode", new(DeleteNodeAction)).
 			Get("/upgradeRemote", new(UpgradeRemoteAction)).
+			GetPost("/updateNodeSSH", new(UpdateNodeSSHAction)).
 
 			// 节点相关
 			Prefix("/ns/clusters/cluster/node").
@@ -30,7 +31,6 @@ func init() {
 			GetPost("/install", new(node.InstallAction)).
 			Post("/status", new(node.StatusAction)).
 			Post("/updateInstallStatus", new(node.UpdateInstallStatusAction)).
-
 			EndAll()
 	})
 }

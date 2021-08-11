@@ -1,0 +1,31 @@
+{$layout "layout_popup"}
+
+<h3>修改节点"{{node.name}}"的SSH登录信息</h3>
+
+<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+	<input type="hidden" name="nodeId" :value="node.id"/>
+	<input type="hidden" name="loginId" :value="loginId"/>
+	<table class="ui table definition">
+		<tr>
+			<td class="title">SSH主机地址 *</td>
+			<td>
+				<input type="text" name="sshHost" maxlength="64" v-model="params.host" ref="focus"/>
+				<p class="comment">比如192.168.1.100</p>
+			</td>
+		</tr>
+		<tr>
+			<td>SSH主机端口 *</td>
+			<td>
+				<input type="text" name="sshPort" maxlength="5" v-model="params.port" style="width:6em"/>
+				<p class="comment">比如22。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>SSH登录认证 *</td>
+			<td>
+				<grant-selector :v-grant="grant"></grant-selector>
+			</td>
+		</tr>
+	</table>
+	<submit-btn></submit-btn>
+</form>

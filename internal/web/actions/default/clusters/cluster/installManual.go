@@ -30,8 +30,8 @@ func (this *InstallManualAction) RunGet(params struct {
 	nodeMaps := []maps.Map{}
 	for _, node := range nodesResp.Nodes {
 		loginParams := maps.Map{}
-		if node.Login != nil && len(node.Login.Params) > 0 {
-			err := json.Unmarshal(node.Login.Params, &loginParams)
+		if node.NodeLogin != nil && len(node.NodeLogin.Params) > 0 {
+			err := json.Unmarshal(node.NodeLogin.Params, &loginParams)
 			if err != nil {
 				this.ErrorPage(err)
 				return
@@ -56,7 +56,7 @@ func (this *InstallManualAction) RunGet(params struct {
 			"isOn":          node.IsOn,
 			"name":          node.Name,
 			"addresses":     node.IpAddresses,
-			"login":         node.Login,
+			"login":         node.NodeLogin,
 			"loginParams":   loginParams,
 			"installStatus": installStatus,
 		})
