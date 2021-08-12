@@ -1,6 +1,6 @@
 module github.com/TeaOSLab/EdgeAdmin
 
-go 1.15
+go 1.16
 
 replace github.com/TeaOSLab/EdgeCommon => ../EdgeCommon
 
