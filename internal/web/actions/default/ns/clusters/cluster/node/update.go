@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/ipAddresses/ipaddressutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -63,12 +64,52 @@ func (this *UpdateAction) RunGet(params struct {
 		})
 	}
 
+	// 登录信息
+	var loginMap maps.Map = nil
+	if node.NodeLogin != nil {
+		loginParams := maps.Map{}
+		if len(node.NodeLogin.Params) > 0 {
+			err = json.Unmarshal(node.NodeLogin.Params, &loginParams)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+		}
+
+		grantMap := maps.Map{}
+		grantId := loginParams.GetInt64("grantId")
+		if grantId > 0 {
+			grantResp, err := this.RPC().NodeGrantRPC().FindEnabledNodeGrant(this.AdminContext(), &pb.FindEnabledNodeGrantRequest{NodeGrantId: grantId})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			if grantResp.NodeGrant != nil {
+				grantMap = maps.Map{
+					"id":         grantResp.NodeGrant.Id,
+					"name":       grantResp.NodeGrant.Name,
+					"method":     grantResp.NodeGrant.Method,
+					"methodName": grantutils.FindGrantMethodName(grantResp.NodeGrant.Method),
+				}
+			}
+		}
+
+		loginMap = maps.Map{
+			"id":     node.NodeLogin.Id,
+			"name":   node.NodeLogin.Name,
+			"type":   node.NodeLogin.Type,
+			"params": loginParams,
+			"grant":  grantMap,
+		}
+	}
+
 	this.Data["node"] = maps.Map{
 		"id":          node.Id,
 		"name":        node.Name,
 		"ipAddresses": ipAddressMaps,
 		"cluster":     clusterMap,
 		"isOn":        node.IsOn,
+		"login":       loginMap,
 	}
 
 	// 所有集群
@@ -93,7 +134,11 @@ func (this *UpdateAction) RunGet(params struct {
 }
 
 func (this *UpdateAction) RunPost(params struct {
-	LoginId         int64
+	LoginId int64
+	GrantId int64
+	SshHost string
+	SshPort int
+
 	NodeId          int64
 	Name            string
 	IPAddressesJSON []byte `alias:"ipAddressesJSON"`
@@ -139,12 +184,25 @@ func (this *UpdateAction) RunPost(params struct {
 		this.Fail("请至少输入一个IP地址")
 	}
 
+	// TODO 检查登录授权
+	loginInfo := &pb.NodeLogin{
+		Id:   params.LoginId,
+		Name: "SSH",
+		Type: "ssh",
+		Params: maps.Map{
+			"grantId": params.GrantId,
+			"host":    params.SshHost,
+			"port":    params.SshPort,
+		}.AsJSON(),
+	}
+
 	// 保存
 	_, err = this.RPC().NSNodeRPC().UpdateNSNode(this.AdminContext(), &pb.UpdateNSNodeRequest{
 		NsNodeId:    params.NodeId,
 		Name:        params.Name,
 		NsClusterId: params.ClusterId,
 		IsOn:        params.IsOn,
+		NodeLogin:   loginInfo,
 	})
 	if err != nil {
 		this.ErrorPage(err)
