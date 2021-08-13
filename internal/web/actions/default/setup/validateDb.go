@@ -91,12 +91,12 @@ func (this *ValidateDbAction) RunPost(params struct {
 	}
 
 	// 检查权限
-	_, err = db.Exec("CREATE TABLE IF NOT EXISTS `edgeTest` ( `id` int )")
+	_, err = db.Exec("CREATE TABLE IF NOT EXISTS `edgeTest` (\n  `id` int(11) NOT NULL AUTO_INCREMENT,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;")
 	if err != nil {
 		this.Fail("当前连接的用户无法创建新表，请检查CREATE权限设置：" + err.Error())
 	}
 
-	_, err = db.Exec("ALTER TABLE `edgeTest` CHANGE `id` `id` int")
+	_, err = db.Exec("ALTER TABLE `edgeTest` CHANGE `id` `id` int(11) NOT NULL AUTO_INCREMENT")
 	if err != nil {
 		this.Fail("当前连接的用户无法修改表结构，请检查ALTER权限设置：" + err.Error())
 	}
