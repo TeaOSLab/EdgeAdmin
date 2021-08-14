@@ -165,6 +165,7 @@ func (this *DetailAction) RunGet(params struct {
 					"name":       grantResp.NodeGrant.Name,
 					"method":     grantResp.NodeGrant.Method,
 					"methodName": grantutils.FindGrantMethodName(grantResp.NodeGrant.Method),
+					"username":   grantResp.NodeGrant.Username,
 				}
 			}
 		}

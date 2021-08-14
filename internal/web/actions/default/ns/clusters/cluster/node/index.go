@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
@@ -102,6 +103,46 @@ func (this *IndexAction) RunGet(params struct {
 		this.Data["newVersion"] = ""
 	}
 
+	// 登录信息
+	var loginMap maps.Map = nil
+	if node.NodeLogin != nil {
+		loginParams := maps.Map{}
+		if len(node.NodeLogin.Params) > 0 {
+			err = json.Unmarshal(node.NodeLogin.Params, &loginParams)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+		}
+
+		grantMap := maps.Map{}
+		grantId := loginParams.GetInt64("grantId")
+		if grantId > 0 {
+			grantResp, err := this.RPC().NodeGrantRPC().FindEnabledNodeGrant(this.AdminContext(), &pb.FindEnabledNodeGrantRequest{NodeGrantId: grantId})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			if grantResp.NodeGrant != nil {
+				grantMap = maps.Map{
+					"id":         grantResp.NodeGrant.Id,
+					"name":       grantResp.NodeGrant.Name,
+					"method":     grantResp.NodeGrant.Method,
+					"methodName": grantutils.FindGrantMethodName(grantResp.NodeGrant.Method),
+					"username":   grantResp.NodeGrant.Username,
+				}
+			}
+		}
+
+		loginMap = maps.Map{
+			"id":     node.NodeLogin.Id,
+			"name":   node.NodeLogin.Name,
+			"type":   node.NodeLogin.Type,
+			"params": loginParams,
+			"grant":  grantMap,
+		}
+	}
+
 	this.Data["node"] = maps.Map{
 		"id":          node.Id,
 		"name":        node.Name,
@@ -131,6 +172,8 @@ func (this *IndexAction) RunGet(params struct {
 			"cacheTotalDiskSize":   numberutils.FormatBytes(status.CacheTotalDiskSize),
 			"cacheTotalMemorySize": numberutils.FormatBytes(status.CacheTotalMemorySize),
 		},
+
+		"login": loginMap,
 	}
 
 	this.Show()
