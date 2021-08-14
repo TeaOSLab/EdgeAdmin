@@ -1,23 +1,26 @@
 Vue.component("grant-selector", {
-	props: ["vGrant"],
+	props: ["v-grant", "v-node-cluster-id", "v-ns-cluster-id"],
 	data: function () {
 		return {
 			grantId: (this.vGrant == null) ? 0 : this.vGrant.id,
-			grant: this.vGrant
+			grant: this.vGrant,
+			nodeClusterId: (this.vNodeClusterId != null) ? this.vNodeClusterId : 0,
+			nsClusterId: (this.vNsClusterId != null) ? this.vNsClusterId : 0
 		}
 	},
 	methods: {
 		// 选择授权
 		select: function () {
 			let that = this;
-			teaweb.popup("/clusters/grants/selectPopup", {
+			teaweb.popup("/clusters/grants/selectPopup?nodeClusterId=" + this.nodeClusterId + "&nsClusterId=" + this.nsClusterId, {
 				callback: (resp) => {
 					that.grantId = resp.data.grant.id;
 					if (that.grantId > 0) {
 						that.grant = resp.data.grant;
 					}
 					that.notifyUpdate()
-				}
+				},
+				height: "26em"
 			})
 		},
 
@@ -64,7 +67,7 @@ Vue.component("grant-selector", {
 	},
 	template: `<div>
 	<input type="hidden" name="grantId" :value="grantId"/>
-	<div class="ui label small basic" v-if="grant != null">{{grant.name}}<span class="small">（{{grant.methodName}}）</span> <a href="" title="修改" @click.prevent="update()"><i class="icon pencil small"></i></a> <a href="" title="删除" @click.prevent="remove()"><i class="icon remove"></i></a> </div>
+	<div class="ui label small basic" v-if="grant != null">{{grant.name}}<span class="small grey">（{{grant.methodName}}）</span><span class="small grey" v-if="grant.username != null && grant.username.length > 0">（{{grant.username}}）</span> <a href="" title="修改" @click.prevent="update()"><i class="icon pencil small"></i></a> <a href="" title="删除" @click.prevent="remove()"><i class="icon remove"></i></a> </div>
 	<div v-if="grant == null">
 		<a href="" @click.prevent="select()">[选择已有认证]</a> &nbsp; &nbsp; <a href="" @click.prevent="create()">[添加新认证]</a>
 	</div>

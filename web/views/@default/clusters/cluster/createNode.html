@@ -78,7 +78,7 @@
 			<tr>
 				<td>SSH登录认证</td>
 				<td>
-					<grant-selector></grant-selector>
+					<grant-selector :v-node-cluster-id="clusterId"></grant-selector>
 				</td>
 			</tr>
 			</tbody>
@@ -117,7 +117,7 @@
                     <tr>
                         <td>SSH登录认证 *</td>
                         <td>
-                            <grant-selector :v-grant="node.grant" @change="changeGrant"></grant-selector>
+                            <grant-selector :v-grant="node.grant" :v-node-cluster-id="clusterId" @change="changeGrant"></grant-selector>
                         </td>
                     </tr>
                 </table>
@@ -147,6 +147,8 @@ nodeId: "{{node.uniqueId}}"
 secret: "{{node.secret}}"</source-code-box>
             <div class="row">然后再使用<code-label>bin/edge-node start</code-label>命令启动节点。</div>
             <div>
+                <div class="ui divider"></div>
+                <a href="" @click.prevent="finish">安装完成</a>
                 <a href="" @click.prevent="finish" style="float: right">跳过安装</a>
             </div>
         </div>

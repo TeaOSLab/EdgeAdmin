@@ -16,7 +16,10 @@ func (this *SelectPopupAction) Init() {
 	this.Nav("", "", "")
 }
 
-func (this *SelectPopupAction) RunGet(params struct{}) {
+func (this *SelectPopupAction) RunGet(params struct {
+	NodeClusterId int64
+	NsClusterId   int64
+}) {
 	// 所有的认证
 	grantsResp, err := this.RPC().NodeGrantRPC().FindAllEnabledNodeGrants(this.AdminContext(), &pb.FindAllEnabledNodeGrantsRequest{})
 	if err != nil {
@@ -36,6 +39,28 @@ func (this *SelectPopupAction) RunGet(params struct{}) {
 		})
 	}
 	this.Data["grants"] = grantMaps
+
+	// 推荐的认证
+	suggestGrantsResp, err := this.RPC().NodeGrantRPC().FindSuggestNodeGrants(this.AdminContext(), &pb.FindSuggestNodeGrantsRequest{
+		NodeClusterId: params.NodeClusterId,
+		NsClusterId:   params.NsClusterId,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	var suggestGrantMaps = []maps.Map{}
+	for _, grant := range suggestGrantsResp.NodeGrants {
+		suggestGrantMaps = append(suggestGrantMaps, maps.Map{
+			"id":          grant.Id,
+			"name":        grant.Name,
+			"method":      grant.Method,
+			"methodName":  grantutils.FindGrantMethodName(grant.Method),
+			"username":    grant.Username,
+			"description": grant.Description,
+		})
+	}
+	this.Data["suggestGrants"] = suggestGrantMaps
 
 	this.Show()
 }

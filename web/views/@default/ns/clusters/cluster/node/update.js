@@ -27,7 +27,8 @@ Tea.context(function () {
 				id: this.node.login.grant.id,
 				name: this.node.login.grant.name,
 				method: this.node.login.grant.method,
-				methodName: this.node.login.grant.methodName
+				methodName: this.node.login.grant.methodName,
+				username: this.node.login.grant.username
 			}
 		}
 	}

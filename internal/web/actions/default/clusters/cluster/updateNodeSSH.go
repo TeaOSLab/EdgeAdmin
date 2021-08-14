@@ -36,6 +36,11 @@ func (this *UpdateNodeSSHAction) RunGet(params struct {
 		"id":   node.Id,
 		"name": node.Name,
 	}
+	if nodeResp.Node.NodeCluster != nil {
+		this.Data["clusterId"] = nodeResp.Node.NodeCluster.Id
+	} else {
+		this.Data["clusterId"] = 0
+	}
 
 	// SSH
 	loginParams := maps.Map{
