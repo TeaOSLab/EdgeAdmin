@@ -27,9 +27,11 @@ func init() {
 			Post("/upgradeStatus", new(UpgradeStatusAction)).
 			GetPost("/delete", new(DeleteAction)).
 			GetPost("/createNode", new(CreateNodeAction)).
+			Post("/createNodeInstall", new(CreateNodeInstallAction)).
 			GetPost("/createBatch", new(CreateBatchAction)).
 			GetPost("/updateNodeSSH", new(UpdateNodeSSHAction)).
 			GetPost("/installManual", new(InstallManualAction)).
+			Post("/suggestLoginPorts", new(SuggestLoginPortsAction)).
 
 			// 节点相关
 			Prefix("/clusters/cluster/node").
@@ -58,7 +60,6 @@ func init() {
 			// 看板相关
 			Prefix("/clusters/cluster/boards").
 			Get("", new(boards.IndexAction)).
-
 			EndAll()
 	})
 }
