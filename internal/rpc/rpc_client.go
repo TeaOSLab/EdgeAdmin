@@ -71,6 +71,10 @@ func (this *RPCClient) NodeGrantRPC() pb.NodeGrantServiceClient {
 	return pb.NewNodeGrantServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) NodeLoginRPC() pb.NodeLoginServiceClient {
+	return pb.NewNodeLoginServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) NodeClusterRPC() pb.NodeClusterServiceClient {
 	return pb.NewNodeClusterServiceClient(this.pickConn())
 }

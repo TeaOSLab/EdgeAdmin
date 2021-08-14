@@ -1,9 +1,23 @@
 {$layout}
 {$template "/clusters/cluster/menu"}
 {$template "/left_menu"}
+{$template "/code_editor"}
 
 <div class="right-box">
-	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+    <div class="ui steps small fluid">
+        <div class="ui step" :class="{active: step == 'info'}">
+            <div class="content">1. 填写节点信息</div>
+        </div>
+        <div class="ui step" :class="{active: step == 'install'}">
+            <div class="content">2. 安装节点</div>
+        </div>
+        <div class="ui step" :class="{active: step == 'finish'}">
+            <div class="content">3. 完成</div>
+        </div>
+    </div>
+
+    <!-- 填写信息 -->
+	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success" v-show="step == 'info'">
 		<input type="hidden" name="clusterId" :value="clusterId"/>
 		<table class="ui table definition selectable">
 			<tr>
@@ -51,7 +65,7 @@
 				<td>SSH主机地址</td>
 				<td>
 					<input type="text" name="sshHost" maxlength="64"/>
-					<p class="comment">比如192.168.1.100</p>
+					<p class="comment">比如192.168.1.100，用于远程安装节点应用程序。</p>
 				</td>
 			</tr>
 			<tr>
@@ -69,6 +83,86 @@
 			</tr>
 			</tbody>
 		</table>
-		<submit-btn></submit-btn>
+		<submit-btn>下一步</submit-btn>
 	</form>
+
+    <!-- 安装节点 -->
+    <div v-if="step == 'install'">
+        <div class="ui tabular menu">
+            <a href="" class="item" :class="{active: installMethod == 'remote'}" @click.prevent="switchInstallMethod('remote')">远程安装</a>
+            <a href="" class="item" :class="{active: installMethod == 'manual'}" @click.prevent="switchInstallMethod('manual')">手动安装</a>
+        </div>
+
+        <!-- 远程安装 -->
+        <div v-if="installMethod == 'remote'">
+            <form class="ui form">
+                <table class="ui table definition selectable">
+                    <tr>
+                        <td class="title">SSH主机地址 *</td>
+                        <td>
+                            <input type="text" name="sshHost2" maxlength="64" v-model="sshHost" ref="installSSHHostRef" style="width: 16em" @change="changeSSHHost"/>
+                            <div v-if="node.addresses != null && node.addresses.length > 1" style="margin-top: 1em">
+                                <a href="" class="ui label small basic" v-for="addr in node.addresses" title="点击使用" @click.prevent="selectSSHHost(addr)">{{addr}}</a>
+                            </div>
+                            <p class="comment">比如192.168.1.100，用于远程安装节点应用程序。</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>SSH主机端口 *</td>
+                        <td>
+                            <input type="text" name="sshPort2" maxlength="5" v-model="sshPort" style="width:5em"/>
+                            <p class="comment"><node-login-suggest-ports ref="nodeLoginSuggestPortsRef" @select="selectLoginPort" @auto-select="autoSelectLoginPort"></node-login-suggest-ports></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>SSH登录认证 *</td>
+                        <td>
+                            <grant-selector :v-grant="node.grant" @change="changeGrant"></grant-selector>
+                        </td>
+                    </tr>
+                </table>
+
+
+                <div v-if="installStatus != null && (installStatus.isRunning || installStatus.isFinished)"
+                     class="ui segment installing-box">
+                    <div v-if="installStatus.isRunning" class="blue">安装中...</div>
+                    <div v-if="installStatus.isFinished">
+                        <span v-if="installStatus.isOk" class="green">已安装成功</span>
+                        <span v-if="!installStatus.isOk" class="red">安装过程中发生错误：{{installStatus.error}}</span>
+                    </div>
+                </div>
+
+                <button class="ui primary button" type="button" @click.prevent="install" v-if="!isInstalling">远程安装</button>
+                <button class="ui button disabled" v-if="isInstalling">正在安装</button>
+                <a href="" @click.prevent="finish" v-if="!isInstalling" style="margin-left: 1em; float: right">跳过安装</a>
+            </form>
+        </div>
+
+        <!-- 手动安装 -->
+        <div v-if="installMethod == 'manual'">
+            <div class="row">在边缘节点安装目录下，复制<code-label>configs/api.template.yaml</code-label>为<code-label>configs/api.yaml</code-label>，然后修改文件里面的内容为以下内容：</div>
+            <source-code-box id="rpc-code" type="text/yaml">rpc:
+    endpoints: [ {{apiEndpoints}} ]
+nodeId: "{{node.uniqueId}}"
+secret: "{{node.secret}}"</source-code-box>
+            <div class="row">然后再使用<code-label>bin/edge-node start</code-label>命令启动节点。</div>
+            <div>
+                <a href="" @click.prevent="finish" style="float: right">跳过安装</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 完成 -->
+    <div v-show="step == 'finish'">
+        <div>
+            <div style="text-align: center; font-size: 1.4em; margin-top: 2.4em" v-if="isInstalled"><span class="green">"{{node.name}}"节点已被创建并安装成功。</span></div>
+            <div style="text-align: center; font-size: 1.4em; margin-top: 2.4em" v-if="!isInstalled"><span class="green">"{{node.name}}"节点已创建成功。</span></div>
+            <div style="text-align: center; margin-top: 3em">
+                <a :href="'/clusters/cluster/node?nodeId=' + nodeId + '&clusterId=' + clusterId" class="ui button primary" type="button">现在进入节点详情<i class="ui icon long arrow alternate right"></i></a>
+            </div>
+            <div style="text-align: center; margin-top: 1em">
+                <a href="" @click.prevent="createNext">继续创建下一个节点</a>
+            </div>
+        </div>
+    </div>
 </div>

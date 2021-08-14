@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-// 安装节点
+// InstallAction 安装节点
 type InstallAction struct {
 	actionutils.ParentAction
 }
@@ -97,7 +97,7 @@ func (this *InstallAction) RunGet(params struct {
 	this.Show()
 }
 
-// 开始安装
+// RunPost 开始安装
 func (this *InstallAction) RunPost(params struct {
 	NodeId int64
 

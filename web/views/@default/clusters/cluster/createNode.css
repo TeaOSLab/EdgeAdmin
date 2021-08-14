@@ -4,4 +4,10 @@
 .right-box {
   top: 10em;
 }
+.row {
+  line-height: 4;
+}
+.step.active {
+  font-weight: bold;
+}
 /*# sourceMappingURL=createNode.css.map */

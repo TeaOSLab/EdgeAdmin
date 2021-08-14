@@ -16,21 +16,24 @@ Vue.component("grant-selector", {
 					if (that.grantId > 0) {
 						that.grant = resp.data.grant;
 					}
+					that.notifyUpdate()
 				}
-			});
+			})
 		},
 
 		// 创建授权
 		create: function () {
+			let that = this
 			teaweb.popup("/clusters/grants/createPopup", {
 				height: "26em",
 				callback: (resp) => {
-					this.grantId = resp.data.grant.id;
-					if (this.grantId > 0) {
-						this.grant = resp.data.grant;
+					that.grantId = resp.data.grant.id;
+					if (that.grantId > 0) {
+						that.grant = resp.data.grant;
 					}
+					that.notifyUpdate()
 				}
-			});
+			})
 		},
 
 		// 修改授权
@@ -39,18 +42,24 @@ Vue.component("grant-selector", {
 				window.location.reload();
 				return;
 			}
+			let that = this
 			teaweb.popup("/clusters/grants/updatePopup?grantId=" + this.grant.id, {
 				height: "26em",
 				callback: (resp) => {
-					this.grant = resp.data.grant;
+					that.grant = resp.data.grant
+					that.notifyUpdate()
 				}
 			})
 		},
 
 		// 删除已选择授权
 		remove: function () {
-			this.grant = null;
-			this.grantId = 0;
+			this.grant = null
+			this.grantId = 0
+			this.notifyUpdate()
+		},
+		notifyUpdate: function () {
+			this.$emit("change", this.grant)
 		}
 	},
 	template: `<div>
