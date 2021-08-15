@@ -17,14 +17,17 @@ Tea.context(function () {
 	}
 
 	this.addBlackIP = function (list) {
-		this.$post(".addIP")
-			.params({
-				listId: list.id,
-				ip: this.ip
-			})
-			.success(function () {
-				this.ipLists.push(list)
-				this.blackListsVisible = false
-			})
+		let that = this
+		teaweb.confirm("确定要将此IP添加到此黑名单吗？", function () {
+			that.$post(".addIP")
+				.params({
+					listId: list.id,
+					ip: that.ip
+				})
+				.success(function () {
+					that.ipLists.push(list)
+					that.blackListsVisible = false
+				})
+		})
 	}
 })
