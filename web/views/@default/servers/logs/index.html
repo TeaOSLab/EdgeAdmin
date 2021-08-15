@@ -8,6 +8,7 @@
 
 <form method="get" class="ui form small" :action="path" autocomplete="off">
     <input type="hidden" name="serverId" :value="serverId"/>
+    <input type="hidden" name="hasError" :value="hasError"/>
     <http-access-log-search-box :v-ip="ip" :v-domain="domain" :v-keyword="keyword">
         <div class="ui field">
             <input type="text" name="day" maxlength="10" placeholder="选择日期" style="width:7.8em" id="day-input" v-model="day"/>
