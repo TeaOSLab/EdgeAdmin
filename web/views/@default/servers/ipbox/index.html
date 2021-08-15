@@ -1,6 +1,44 @@
 {$layout "layout_popup"}
 
-<h3>最近访问日志<span class="grey">（{{ip}}）</span></h3>
+<h3>IP最近访问日志<span class="grey">（<span>{{ip}}</span>）</span></h3>
+
+<table class="ui table definition celled selectable">
+    <tr>
+        <td class="cell-title">IP</td>
+        <td class="cell-content">
+            <span id="ip-text">{{ip}}</span>
+            <copy-to-clipboard :v-target="'ip-text'"></copy-to-clipboard>
+        </td>
+        <td class="cell-title">区域</td>
+        <td class="cell-content">
+            <span v-if="regions.length > 0">{{regions}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+        <td class="cell-title">ISP</td>
+        <td>
+            <span v-if="isp.length > 0">{{isp}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+    </tr>
+    <tr v-if="publicBlackIPLists.length > 0">
+        <td>所在IP名单</td>
+        <td colspan="5">
+            <div class="ui label basic small" v-for="ipList in ipLists">
+                {{ipList.name}}
+            </div>
+            &nbsp; &nbsp;
+            <a href="" @click.prevent="showBlackLists"><i class="icon angle" :class="{up: blackListsVisible, down: !blackListsVisible}"></i>添加黑名单</a>
+        </td>
+    </tr>
+    <tr v-if="publicBlackIPLists.length > 0 && blackListsVisible">
+        <td>加入黑名单</td>
+        <td colspan="5">
+            <a class="ui label basic small" v-for="ipList in publicBlackIPLists" @click.prevent="addBlackIP(ipList)">
+                {{ipList.name}}
+            </a>
+        </td>
+    </tr>
+</table>
 
 <p class="comment" v-if="accessLogs.length == 0">暂时还没有访问日志。</p>
 <table class="ui table selectable" v-if="accessLogs.length > 0">

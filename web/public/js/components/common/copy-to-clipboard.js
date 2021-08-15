@@ -10,7 +10,7 @@ Vue.component("copy-to-clipboard", {
 	methods: {
 		copy: function () {
 			new ClipboardJS('[data-clipboard-target]');
-			teaweb.success("已复制到剪切板")
+			teaweb.successToast("已复制到剪切板")
 		}
 	},
 	template: `<a href="" title="拷贝到剪切板" :data-clipboard-target="'#' + vTarget" @click.prevent="copy"><i class="ui icon copy small"></i></em></a>`

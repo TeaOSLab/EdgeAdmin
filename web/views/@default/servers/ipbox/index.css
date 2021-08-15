@@ -1,0 +1,9 @@
+.cell-title {
+  background: rgba(0, 0, 0, 0.03);
+  font-weight: bold;
+  width: 7em;
+}
+.cell-content {
+  width: 22%;
+}
+/*# sourceMappingURL=index.css.map */
