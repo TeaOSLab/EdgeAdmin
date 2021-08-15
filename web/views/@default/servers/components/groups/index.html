@@ -23,7 +23,7 @@
 					<td style="text-align: center;"><i class="icon bars handle grey"></i> </td>
 					<td>{{group.name}}</td>
 					<td class="center">
-						<span v-if="group.countServers > 0">{{group.countServers}}</span>
+						<a :href="'/servers?groupId=' + group.id" v-if="group.countServers > 0">{{group.countServers}}</a>
 						<span v-else class="disabled">0</span>
 					</td>
 					<td>

@@ -14,6 +14,7 @@ func init() {
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeServer)).
 			Prefix("/servers/ipbox").
 			Get("", new(IndexAction)).
+			Post("/addIP", new(AddIPAction)).
 			EndAll()
 	})
 }
