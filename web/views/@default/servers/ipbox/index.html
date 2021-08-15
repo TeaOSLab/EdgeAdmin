@@ -27,7 +27,7 @@
                 {{ipList.name}}
             </div>
             &nbsp; &nbsp;
-            <a href="" @click.prevent="showBlackLists"><i class="icon angle" :class="{up: blackListsVisible, down: !blackListsVisible}"></i>添加黑名单</a>
+            <a href="" @click.prevent="showBlackLists"><i class="icon angle" :class="{up: blackListsVisible, down: !blackListsVisible}"></i>加入到黑名单</a>
         </td>
     </tr>
     <tr v-if="publicBlackIPLists.length > 0 && blackListsVisible">
