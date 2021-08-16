@@ -29,12 +29,13 @@ Vue.component("http-firewall-config-box", {
 				</td>
 			</tr>
 			<tr>
-				<td class="title">是否启用Web防火墙</td>
+				<td class="title">是否启用WAF</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="firewall.isOn"/>
 						<label></label>
 					</div>
+					<p class="comment">启用WAF之后，各项WAF设置才会生效。</p>
 				</td>
 			</tr>
 		</tbody>
