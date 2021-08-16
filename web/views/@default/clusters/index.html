@@ -41,7 +41,7 @@
             </tr>
         </thead>
         <tr v-for="cluster in clusters">
-            <td><keyword :v-word="keyword">{{cluster.name}}</keyword></td>
+            <td><a :href="'/clusters/cluster?clusterId=' + cluster.id"><keyword :v-word="keyword">{{cluster.name}}</keyword></a></td>
             <td class="center">
                 <a :href="'/clusters/cluster/nodes?clusterId=' + cluster.id" v-if="cluster.countAllNodes > 0"><span :class="{red:cluster.countAllNodes > cluster.countActiveNodes}">{{cluster.countAllNodes}}</span></a>
                 <span class="disabled" v-else="">-</span>
@@ -91,7 +91,7 @@
         </tr>
         </thead>
         <tr v-for="node in nodes">
-            <td><keyword :v-word="keyword">{{node.name}}</keyword>
+            <td><a :href="'/clusters/cluster/node?clusterId=' + node.cluster.id + '&nodeId=' + node.id"><keyword :v-word="keyword">{{node.name}}</keyword></a>
                 <div style="margin-top: 0.5em">
                     <node-clusters-labels :v-primary-cluster="node.cluster" :v-secondary-clusters="node.secondaryClusters" size="tiny"></node-clusters-labels>
                 </div>

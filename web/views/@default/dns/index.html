@@ -15,7 +15,7 @@
 	</thead>
 	<tr v-for="cluster in clusters">
 		<td>
-			{{cluster.name}}<link-icon :href="'/clusters/cluster?clusterId=' + cluster.id"></link-icon>
+            <a :href="'/dns/clusters/cluster?clusterId=' + cluster.id">{{cluster.name}}</a><link-icon :href="'/clusters/cluster?clusterId=' + cluster.id"></link-icon>
 		</td>
 		<td>
 			<span v-if="cluster.dnsName.length > 0 && cluster.domainName.length > 0"><em class="italic">{{cluster.dnsName}}</em>.{{cluster.domainName}}</span>

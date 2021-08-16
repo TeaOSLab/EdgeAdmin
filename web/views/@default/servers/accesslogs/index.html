@@ -14,7 +14,7 @@
         </tr>
     </thead>
     <tr v-for="policy in policies">
-        <td>{{policy.name}}
+        <td><a :href="Tea.url('.policy', {policyId: policy.id})">{{policy.name}}</a>
             <div style="margin-top: 0.3em" v-if="policy.isPublic">
                 <span class="ui label olive tiny basic">公用</span>
             </div>

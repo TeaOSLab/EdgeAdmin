@@ -13,7 +13,7 @@
 		</tr>
 	</thead>
 	<tr v-for="admin in admins">
-		<td :class="{disabled:!admin.isOn}">{{admin.username}}
+        <td :class="{disabled:!admin.isOn}"><a :href="'/admins/admin?adminId=' + admin.id">{{admin.username}}</a>
 			<div v-if="admin.isSuper" style="margin-top: 0.5em">
 				<tiny-basic-label class="olive">超级管理员</tiny-basic-label>
 			</div>

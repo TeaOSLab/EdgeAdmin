@@ -66,7 +66,7 @@
 	</tr>
 	</thead>
 	<tr v-for="node in nodes">
-		<td>{{node.name}}
+        <td><a :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id">{{node.name}}</a>
             <div style="margin-top: 0.5em" v-if="node.region != null">
                 <tiny-basic-label class="olive">区域：{{node.region.name}}</tiny-basic-label>
             </div>

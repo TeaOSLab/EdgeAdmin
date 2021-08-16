@@ -30,7 +30,7 @@
 		</tr>
 	</thead>
 	<tr v-for="grant in grants">
-		<td>{{grant.name}}</td>
+        <td><a :href="'/clusters/grants/grant?grantId=' + grant.id">{{grant.name}}</a></td>
 		<td>
 			<span class="ui label tiny basic">{{grant.method.name}}</span>
 		</td>

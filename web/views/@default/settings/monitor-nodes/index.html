@@ -18,7 +18,7 @@
 		</tr>
 	</thead>
 	<tr v-for="node in nodes">
-		<td>{{node.name}}</td>
+        <td><a :href="'/settings/monitorNodes/node?nodeId=' + node.id">{{node.name}}</a></td>
         <td class="center">
             <span v-if="node.status.buildVersion.length > 0">v{{node.status.buildVersion}}</span>
             <span v-else class="disabled">-</span>

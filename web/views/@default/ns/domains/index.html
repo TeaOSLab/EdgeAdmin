@@ -42,7 +42,9 @@
             </tr>
         </thead>
         <tr v-for="domain in domains">
-            <td><keyword :v-word="keyword">{{domain.name}}</keyword></td>
+            <td>
+                <a :href="'/ns/domains/domain?domainId=' + domain.id"><keyword :v-word="keyword">{{domain.name}}</keyword></a>
+            </td>
             <td>
                 {{domain.cluster.name}}<link-icon :href="'/ns/clusters/cluster?clusterId=' + domain.cluster.id"></link-icon>
             </td>

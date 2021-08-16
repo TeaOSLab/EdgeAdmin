@@ -18,7 +18,7 @@
     </thead>
     <tr v-for="list in lists">
         <td class="center">{{list.id}}</td>
-        <td>{{list.name}}</td>
+        <td><a :href="'/servers/iplists/list?listId=' + list.id">{{list.name}}</a></td>
         <td class="center">
             <span v-if="list.type == 'black'">黑名单</span>
             <span v-if="list.type == 'white'">白名单</span>
