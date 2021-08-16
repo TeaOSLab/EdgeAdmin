@@ -16,7 +16,7 @@
 		</tr>
 	</thead>
 	<tr v-for="(provider, index) in providers">
-		<td>{{provider.name}}</td>
+        <td><a :href="'/dns/providers/provider?providerId=' + provider.id">{{provider.name}}</a></td>
 		<td>{{provider.typeName}}</td>
 		<td class="center">
 			<span v-if="provider.countDomains == 0" class="disabled">0</span>

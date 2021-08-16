@@ -52,7 +52,7 @@
 	</tr>
 	</thead>
 	<tr v-for="node in nodes">
-        <td><keyword :v-word="keyword">{{node.name}}</keyword></td>
+        <td><a :href="'/ns/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id"><keyword :v-word="keyword">{{node.name}}</keyword></a></td>
 		<td>
 			<span v-if="node.ipAddresses.length == 0" class="disabled">-</span>
 			<div v-else class="address-box">

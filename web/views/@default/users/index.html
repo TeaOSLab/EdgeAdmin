@@ -18,7 +18,7 @@
 		</tr>
 	</thead>
 	<tr v-for="user in users">
-        <td :class="{disabled:!user.isOn}">{{user.username}}</td>
+        <td :class="{disabled:!user.isOn}"><a :href="'/users/user?userId=' + user.id">{{user.username}}</a></td>
         <td :class="{disabled:!user.isOn}">{{user.fullname}}</td>
         <td>
             <span v-if="user.cluster != null">{{user.cluster.name}} <link-icon :href="'/clusters/cluster?clusterId=' + user.cluster.id"></link-icon></span>

@@ -33,7 +33,7 @@
         </tr>
     </thead>
     <tr v-for="(policy, index) in cachePolicies">
-        <td><keyword :v-word="keyword">{{policy.name}}</keyword></td>
+        <td><a :href="'/servers/components/cache/policy?cachePolicyId=' + policy.id"><keyword :v-word="keyword">{{policy.name}}</keyword></a></td>
         <td>{{infos[index].typeName}} <span class="small">（{{policy.type}}）</span></td>
         <td>
             <span v-if="policy.capacity != null && policy.capacity.count > 0">{{policy.capacity.count}}{{policy.capacity.unit.toUpperCase()}}</span>

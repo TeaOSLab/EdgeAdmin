@@ -20,7 +20,7 @@
         </tr>
     </thead>
     <tr v-for="recipient in recipients">
-        <td>{{recipient.admin.fullname}} <span class="small grey">（{{recipient.admin.username}}）</span> <link-icon :href="'/admins/admin?adminId=' + recipient.admin.id"></link-icon></td>
+        <td><a :href="'/admins/recipients/recipient?recipientId=' + recipient.id">{{recipient.admin.fullname}}</a> <span class="small grey">（{{recipient.admin.username}}）</span> <link-icon :href="'/admins/admin?adminId=' + recipient.admin.id"></link-icon></td>
         <td>{{recipient.instance.name}}</td>
         <td>
             <span v-if="recipient.user.length > 0">{{recipient.user}}</span>

@@ -34,7 +34,7 @@
         </tr>
     </thead>
     <tr v-for="policy in policies">
-        <td><keyword :v-word="keyword">{{policy.name}}</keyword></td>
+        <td><a :href="'/servers/components/waf/policy?firewallPolicyId=' + policy.id"><keyword :v-word="keyword">{{policy.name}}</keyword></a></td>
         <td class="center">{{policy.countInbound}}</td>
         <td class="center">{{policy.countOutbound}}</td>
         <td class="center">{{policy.countClusters}}</td>
