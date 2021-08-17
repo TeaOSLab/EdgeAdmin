@@ -115,6 +115,7 @@ Tea.context(function () {
 					lineStyle: {
 						color: "#61A0A8"
 					},
+					areaStyle: {},
 					smooth: true
 				},
 				{

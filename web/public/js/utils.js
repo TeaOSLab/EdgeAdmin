@@ -572,7 +572,8 @@ window.teaweb = {
 					smooth: true
 				}
 			],
-			animation: true
+			animation: true,
+			smooth: true
 		}
 		chart.setOption(option)
 		chart.resize()
