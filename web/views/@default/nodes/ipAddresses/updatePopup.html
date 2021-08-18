@@ -6,7 +6,7 @@
 	<input type="hidden" name="addressId" :value="address.id"/>
 	<table class="ui table definition selectable">
 		<tr>
-			<td>IP地址 *</td>
+			<td class="title">IP地址 *</td>
 			<td>
 				<input type="text" name="ip" maxlength="128" ref="focus" v-model="address.ip"/>
 			</td>
@@ -21,12 +21,27 @@
 				<p class="comment">是否为可以公开访问的IP，如果选中，也会作为DNS解析记录的值使用。</p>
 			</td>
 		</tr>
-		<tr>
-			<td class="title">备注</td>
-			<td>
-				<input type="text" name="name" maxlength="50" v-model="address.name"/>
-			</td>
-		</tr>
+        <tr>
+            <td colspan="2"><more-options-indicator></more-options-indicator></td>
+        </tr>
+        <tbody v-show="moreOptionsVisible">
+            <tr>
+                <td>是否启用</td>
+                <td>
+                    <div class="ui checkbox">
+                        <input type="checkbox" name="isOn" value="1" v-model="address.isOn"/>
+                        <label></label>
+                    </div>
+                    <p class="comment">选中表示当前IP有效。</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="title">备注</td>
+                <td>
+                    <input type="text" name="name" maxlength="50" v-model="address.name"/>
+                </td>
+            </tr>
+        </tbody>
 	</table>
 	<submit-btn></submit-btn>
 </form>

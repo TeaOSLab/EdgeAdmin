@@ -41,16 +41,16 @@
         </tr>
     </thead>
     <tr v-for="record in records">
-        <td>{{record.name}}</td>
+        <td><keyword :v-word="keyword">{{record.name}}</keyword></td>
         <td>{{record.type}}</td>
-        <td>{{record.value}}</td>
+        <td><keyword :v-word="keyword">{{record.value}}</keyword></td>
         <td>{{formatTTL(record.ttl)}}</td>
         <td>
             <div v-for="route in record.routes" style="margin-top: 0.3em; margin-bottom: 0.3em">
                 <span class="ui label basic text tiny">{{route.name}}</span>
             </div>
         </td>
-        <td>{{record.description}}</td>
+        <td><keyword :v-word="keyword">{{record.description}}</keyword></td>
         <td><label-on :v-is-on="record.isOn"></label-on></td>
         <td>
             <a href="" @click.prevent="updateRecord(record.id)">修改</a> &nbsp;

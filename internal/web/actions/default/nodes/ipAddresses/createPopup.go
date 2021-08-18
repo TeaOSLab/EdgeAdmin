@@ -42,6 +42,8 @@ func (this *CreatePopupAction) RunPost(params struct {
 		"canAccess": params.CanAccess,
 		"ip":        params.IP,
 		"id":        0,
+		"isOn":      true,
+		"isUp":      true,
 	}
 	this.Success()
 }

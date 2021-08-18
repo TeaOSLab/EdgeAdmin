@@ -2,6 +2,7 @@ package ipAddresses
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 	"net"
@@ -26,14 +27,24 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	IP        string `alias:"ip"`
 	Name      string
 	CanAccess bool
+	IsOn      bool
 
 	Must *actions.Must
 }) {
-	// TODO 严格校验IP地址
-
 	params.Must.
 		Field("ip", params.IP).
 		Require("请输入IP地址")
+
+	// 获取IP地址信息
+	addressResp, err := this.RPC().NodeIPAddressRPC().FindEnabledNodeIPAddress(this.AdminContext(), &pb.FindEnabledNodeIPAddressRequest{AddressId: params.AddressId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	var address = addressResp.IpAddress
+	if address == nil {
+		this.Fail("找不到要修改的地址")
+	}
 
 	ip := net.ParseIP(params.IP)
 	if len(ip) == 0 {
@@ -45,6 +56,8 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		"ip":        params.IP,
 		"id":        params.AddressId,
 		"canAccess": params.CanAccess,
+		"isOn":      params.IsOn,
+		"isUp":      address.IsUp,
 	}
 
 	this.Success()
