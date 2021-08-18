@@ -1,7 +1,10 @@
 package ipAddresses
 
 import (
+	"encoding/json"
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -23,11 +26,12 @@ func (this *UpdatePopupAction) RunGet(params struct {
 }
 
 func (this *UpdatePopupAction) RunPost(params struct {
-	AddressId int64
-	IP        string `alias:"ip"`
-	Name      string
-	CanAccess bool
-	IsOn      bool
+	AddressId      int64
+	IP             string `alias:"ip"`
+	Name           string
+	CanAccess      bool
+	IsOn           bool
+	ThresholdsJSON []byte
 
 	Must *actions.Must
 }) {
@@ -36,14 +40,18 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		Require("请输入IP地址")
 
 	// 获取IP地址信息
-	addressResp, err := this.RPC().NodeIPAddressRPC().FindEnabledNodeIPAddress(this.AdminContext(), &pb.FindEnabledNodeIPAddressRequest{AddressId: params.AddressId})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	var address = addressResp.IpAddress
-	if address == nil {
-		this.Fail("找不到要修改的地址")
+	var isUp = true
+	if params.AddressId > 0 {
+		addressResp, err := this.RPC().NodeIPAddressRPC().FindEnabledNodeIPAddress(this.AdminContext(), &pb.FindEnabledNodeIPAddressRequest{AddressId: params.AddressId})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		var address = addressResp.IpAddress
+		if address == nil {
+			this.Fail("找不到要修改的地址")
+		}
+		isUp = address.IsUp
 	}
 
 	ip := net.ParseIP(params.IP)
@@ -51,13 +59,19 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		this.Fail("请输入正确的IP")
 	}
 
+	var thresholds = []*nodeconfigs.NodeValueThresholdConfig{}
+	if teaconst.IsPlus && len(params.ThresholdsJSON) > 0 {
+		_ = json.Unmarshal(params.ThresholdsJSON, &thresholds)
+	}
+
 	this.Data["ipAddress"] = maps.Map{
-		"name":      params.Name,
-		"ip":        params.IP,
-		"id":        params.AddressId,
-		"canAccess": params.CanAccess,
-		"isOn":      params.IsOn,
-		"isUp":      address.IsUp,
+		"name":       params.Name,
+		"ip":         params.IP,
+		"id":         params.AddressId,
+		"canAccess":  params.CanAccess,
+		"isOn":       params.IsOn,
+		"isUp":       isUp,
+		"thresholds": thresholds,
 	}
 
 	this.Success()

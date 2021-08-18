@@ -15,7 +15,9 @@ Vue.component("node-ip-addresses-box", {
 			teaweb.popup("/nodes/ipAddresses/createPopup", {
 				callback: function (resp) {
 					that.ipAddresses.push(resp.data.ipAddress);
-				}
+				},
+				height: "24em",
+				width: "44em"
 			})
 		},
 
@@ -27,7 +29,9 @@ Vue.component("node-ip-addresses-box", {
 			teaweb.popup("/nodes/ipAddresses/updatePopup", {
 				callback: function (resp) {
 					Vue.set(that.ipAddresses, index, resp.data.ipAddress);
-				}
+				},
+				height: "24em",
+				width: "44em"
 			})
 		},
 
@@ -51,6 +55,7 @@ Vue.component("node-ip-addresses-box", {
 				<span class="small grey" v-if="address.name.length == 0 && !address.canAccess">（不可访问）</span>
 				<span class="small red" v-if="!address.isOn">[off]</span>
 				<span class="small red" v-if="!address.isUp">[down]</span>
+				<span class="small" v-if="address.thresholds != null && address.thresholds.length > 0">[阈值]</span>
 				&nbsp;
 				<a href="" title="修改" @click.prevent="updateIPAddress(index, address)"><i class="icon pencil small"></i></a>
 				<a href="" title="删除" @click.prevent="removeIPAddress(index)"><i class="icon remove"></i></a>

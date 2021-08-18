@@ -175,12 +175,19 @@ func (this *CreateNodeAction) RunPost(params struct {
 				NodeId:    nodeId,
 			})
 		} else {
+			var thresholdsJSON = []byte{}
+			var thresholds = address.GetSlice("thresholds")
+			if len(thresholds) > 0 {
+				thresholdsJSON, _ = json.Marshal(thresholds)
+			}
+
 			_, err = this.RPC().NodeIPAddressRPC().CreateNodeIPAddress(this.AdminContext(), &pb.CreateNodeIPAddressRequest{
-				NodeId:    nodeId,
-				Role:      nodeconfigs.NodeRoleNode,
-				Name:      address.GetString("name"),
-				Ip:        address.GetString("ip"),
-				CanAccess: address.GetBool("canAccess"),
+				NodeId:         nodeId,
+				Role:           nodeconfigs.NodeRoleNode,
+				Name:           address.GetString("name"),
+				Ip:             address.GetString("ip"),
+				CanAccess:      address.GetBool("canAccess"),
+				ThresholdsJSON: thresholdsJSON,
 			})
 		}
 		if err != nil {

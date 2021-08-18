@@ -29,6 +29,7 @@
 							<span class="small grey" v-if="address.name.length == 0 && !address.canAccess">（不可访问）</span>
                             <span class="small red" v-if="!address.isOn">[off]</span>
                             <span class="small red" v-if="!address.isUp">[down]</span>
+                            <span class="small" v-if="address.thresholds != null && address.thresholds.length > 0">[阈值]</span>
 						</div>
 					</div>
 				</div>

@@ -79,13 +79,22 @@ func (this *DetailAction) RunGet(params struct {
 	var ipAddresses = ipAddressesResp.Addresses
 	ipAddressMaps := []maps.Map{}
 	for _, addr := range ipAddressesResp.Addresses {
+		var thresholds = []*nodeconfigs.NodeValueThresholdConfig{}
+		if len(addr.ThresholdsJSON) > 0 {
+			err = json.Unmarshal(addr.ThresholdsJSON, &thresholds)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+		}
 		ipAddressMaps = append(ipAddressMaps, maps.Map{
-			"id":        addr.Id,
-			"name":      addr.Name,
-			"ip":        addr.Ip,
-			"canAccess": addr.CanAccess,
-			"isOn":      addr.IsOn,
-			"isUp":      addr.IsUp,
+			"id":         addr.Id,
+			"name":       addr.Name,
+			"ip":         addr.Ip,
+			"canAccess":  addr.CanAccess,
+			"isOn":       addr.IsOn,
+			"isUp":       addr.IsUp,
+			"thresholds": thresholds,
 		})
 	}
 
