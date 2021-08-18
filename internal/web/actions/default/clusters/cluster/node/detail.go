@@ -84,6 +84,8 @@ func (this *DetailAction) RunGet(params struct {
 			"name":      addr.Name,
 			"ip":        addr.Ip,
 			"canAccess": addr.CanAccess,
+			"isOn":      addr.IsOn,
+			"isUp":      addr.IsUp,
 		})
 	}
 
@@ -121,7 +123,7 @@ func (this *DetailAction) RunGet(params struct {
 		}
 
 		for _, addr := range ipAddresses {
-			if !addr.CanAccess {
+			if !addr.CanAccess || !addr.IsUp || !addr.IsOn {
 				continue
 			}
 			for _, route := range dnsInfo.Routes {

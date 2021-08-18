@@ -18,11 +18,18 @@ func UpdateNodeIPAddresses(parentAction *actionutils.ParentAction, nodeId int64,
 	for _, addr := range addresses {
 		addrId := addr.GetInt64("id")
 		if addrId > 0 {
+			var isOn = false
+			if !addr.Has("isOn") { // 兼容老版本
+				isOn = true
+			} else {
+				isOn = addr.GetBool("isOn")
+			}
 			_, err = parentAction.RPC().NodeIPAddressRPC().UpdateNodeIPAddress(parentAction.AdminContext(), &pb.UpdateNodeIPAddressRequest{
 				AddressId: addrId,
 				Ip:        addr.GetString("ip"),
 				Name:      addr.GetString("name"),
 				CanAccess: addr.GetBool("canAccess"),
+				IsOn:      isOn,
 			})
 			if err != nil {
 				return err

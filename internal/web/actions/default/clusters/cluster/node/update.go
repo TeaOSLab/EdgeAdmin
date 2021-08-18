@@ -62,6 +62,8 @@ func (this *UpdateAction) RunGet(params struct {
 			"name":      addr.Name,
 			"ip":        addr.Ip,
 			"canAccess": addr.CanAccess,
+			"isOn":      addr.IsOn,
+			"isUp":      addr.IsUp,
 		})
 	}
 

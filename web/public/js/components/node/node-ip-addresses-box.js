@@ -1,3 +1,4 @@
+// 节点IP地址管理（标签形式）
 Vue.component("node-ip-addresses-box", {
 	props: ["vIpAddresses"],
 	data: function () {
@@ -48,6 +49,9 @@ Vue.component("node-ip-addresses-box", {
 				<span v-if="isIPv6(address.ip)" class="grey">[IPv6]</span> {{address.ip}}
 				<span class="small grey" v-if="address.name.length > 0">（{{address.name}}<span v-if="!address.canAccess">，不可访问</span>）</span>
 				<span class="small grey" v-if="address.name.length == 0 && !address.canAccess">（不可访问）</span>
+				<span class="small red" v-if="!address.isOn">[off]</span>
+				<span class="small red" v-if="!address.isUp">[down]</span>
+				&nbsp;
 				<a href="" title="修改" @click.prevent="updateIPAddress(index, address)"><i class="icon pencil small"></i></a>
 				<a href="" title="删除" @click.prevent="removeIPAddress(index)"><i class="icon remove"></i></a>
 			</div>

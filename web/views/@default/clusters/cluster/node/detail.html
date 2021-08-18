@@ -27,6 +27,8 @@
                             <span v-if="address.ip.indexOf(':') > -1" class="grey">[IPv6]</span> {{address.ip}}
 							<span class="small grey" v-if="address.name.length > 0">（{{address.name}}<span v-if="!address.canAccess">，不可访问</span>）</span>
 							<span class="small grey" v-if="address.name.length == 0 && !address.canAccess">（不可访问）</span>
+                            <span class="small red" v-if="!address.isOn">[off]</span>
+                            <span class="small red" v-if="!address.isUp">[down]</span>
 						</div>
 					</div>
 				</div>
