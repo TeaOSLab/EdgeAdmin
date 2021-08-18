@@ -53,8 +53,8 @@ Vue.component("node-ip-addresses-box", {
 				<span v-if="isIPv6(address.ip)" class="grey">[IPv6]</span> {{address.ip}}
 				<span class="small grey" v-if="address.name.length > 0">（{{address.name}}<span v-if="!address.canAccess">，不可访问</span>）</span>
 				<span class="small grey" v-if="address.name.length == 0 && !address.canAccess">（不可访问）</span>
-				<span class="small red" v-if="!address.isOn">[off]</span>
-				<span class="small red" v-if="!address.isUp">[down]</span>
+				<span class="small red" v-if="!address.isOn" title="未启用">[off]</span>
+				<span class="small red" v-if="!address.isUp" title="已下线">[down]</span>
 				<span class="small" v-if="address.thresholds != null && address.thresholds.length > 0">[阈值]</span>
 				&nbsp;
 				<a href="" title="修改" @click.prevent="updateIPAddress(index, address)"><i class="icon pencil small"></i></a>
