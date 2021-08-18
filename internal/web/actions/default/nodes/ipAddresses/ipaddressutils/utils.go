@@ -16,6 +16,12 @@ func UpdateNodeIPAddresses(parentAction *actionutils.ParentAction, nodeId int64,
 		return err
 	}
 	for _, addr := range addresses {
+		var thresholdsJSON = []byte{}
+		var thresholds = addr.GetSlice("thresholds")
+		if len(thresholds) > 0 {
+			thresholdsJSON, _ = json.Marshal(thresholds)
+		}
+
 		addrId := addr.GetInt64("id")
 		if addrId > 0 {
 			var isOn = false
@@ -24,23 +30,26 @@ func UpdateNodeIPAddresses(parentAction *actionutils.ParentAction, nodeId int64,
 			} else {
 				isOn = addr.GetBool("isOn")
 			}
+
 			_, err = parentAction.RPC().NodeIPAddressRPC().UpdateNodeIPAddress(parentAction.AdminContext(), &pb.UpdateNodeIPAddressRequest{
-				AddressId: addrId,
-				Ip:        addr.GetString("ip"),
-				Name:      addr.GetString("name"),
-				CanAccess: addr.GetBool("canAccess"),
-				IsOn:      isOn,
+				AddressId:      addrId,
+				Ip:             addr.GetString("ip"),
+				Name:           addr.GetString("name"),
+				CanAccess:      addr.GetBool("canAccess"),
+				IsOn:           isOn,
+				ThresholdsJSON: thresholdsJSON,
 			})
 			if err != nil {
 				return err
 			}
 		} else {
 			_, err = parentAction.RPC().NodeIPAddressRPC().CreateNodeIPAddress(parentAction.AdminContext(), &pb.CreateNodeIPAddressRequest{
-				NodeId:    nodeId,
-				Role:      role,
-				Name:      addr.GetString("name"),
-				Ip:        addr.GetString("ip"),
-				CanAccess: addr.GetBool("canAccess"),
+				NodeId:         nodeId,
+				Role:           role,
+				Name:           addr.GetString("name"),
+				Ip:             addr.GetString("ip"),
+				CanAccess:      addr.GetBool("canAccess"),
+				ThresholdsJSON: thresholdsJSON,
 			})
 			if err != nil {
 				return err

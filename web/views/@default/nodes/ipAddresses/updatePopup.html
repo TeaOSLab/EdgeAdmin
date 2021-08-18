@@ -41,6 +41,12 @@
                     <input type="text" name="name" maxlength="50" v-model="address.name"/>
                 </td>
             </tr>
+            <tr v-if="teaIsPlus">
+                <td>上线阈值</td>
+                <td>
+                    <node-ip-address-thresholds-box :v-thresholds="address.thresholds"></node-ip-address-thresholds-box>
+                </td>
+            </tr>
         </tbody>
 	</table>
 	<submit-btn></submit-btn>

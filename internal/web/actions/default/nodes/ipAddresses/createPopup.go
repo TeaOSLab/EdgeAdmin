@@ -1,7 +1,10 @@
 package ipAddresses
 
 import (
+	"encoding/json"
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 	"net"
@@ -16,18 +19,18 @@ func (this *CreatePopupAction) Init() {
 }
 
 func (this *CreatePopupAction) RunGet(params struct{}) {
+
 	this.Show()
 }
 
 func (this *CreatePopupAction) RunPost(params struct {
-	IP        string `alias:"ip"`
-	CanAccess bool
-	Name      string
+	IP             string `alias:"ip"`
+	CanAccess      bool
+	Name           string
+	ThresholdsJSON []byte
 
 	Must *actions.Must
 }) {
-	// TODO 严格校验IP地址
-
 	ip := net.ParseIP(params.IP)
 	if len(ip) == 0 {
 		this.Fail("请输入正确的IP")
@@ -37,13 +40,19 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Field("ip", params.IP).
 		Require("请输入IP地址")
 
+	var thresholds = []*nodeconfigs.NodeValueThresholdConfig{}
+	if teaconst.IsPlus && len(params.ThresholdsJSON) > 0 {
+		_ = json.Unmarshal(params.ThresholdsJSON, &thresholds)
+	}
+
 	this.Data["ipAddress"] = maps.Map{
-		"name":      params.Name,
-		"canAccess": params.CanAccess,
-		"ip":        params.IP,
-		"id":        0,
-		"isOn":      true,
-		"isUp":      true,
+		"name":       params.Name,
+		"canAccess":  params.CanAccess,
+		"ip":         params.IP,
+		"id":         0,
+		"isOn":       true,
+		"isUp":       true,
+		"thresholds": thresholds,
 	}
 	this.Success()
 }
