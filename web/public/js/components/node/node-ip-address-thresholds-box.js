@@ -9,19 +9,19 @@ Vue.component("node-ip-address-thresholds-box", {
 
 		let avgRequests = {
 			duration: "",
-			operator: "lt",
+			operator: "lte",
 			value: ""
 		}
 
 		let avgTrafficOut = {
 			duration: "",
-			operator: "lt",
+			operator: "lte",
 			value: ""
 		}
 
 		let avgTrafficIn = {
 			duration: "",
-			operator: "lt",
+			operator: "lte",
 			value: ""
 		}
 
@@ -154,7 +154,7 @@ Vue.component("node-ip-address-thresholds-box", {
 			</td>
 			<td>
 				<select class="ui dropdown auto-width" v-model="avgRequests.operator">
-					<option value="lt">小于</option>
+					<option value="lte">小于等于</option>
 					<option value="gt">大于</option>
 				</select>
 			</td>
@@ -175,7 +175,7 @@ Vue.component("node-ip-address-thresholds-box", {
 			</td>
 			<td>
 				<select class="ui dropdown auto-width" v-model="avgTrafficOut.operator">
-					<option value="lt">小于</option>
+					<option value="lte">小于等于</option>
 					<option value="gt">大于</option>
 				</select>
 			</td>
@@ -196,7 +196,7 @@ Vue.component("node-ip-address-thresholds-box", {
 			</td>
 			<td>
 				<select class="ui dropdown auto-width" v-model="avgTrafficIn.operator">
-					<option value="lt">小于</option>
+					<option value="lte">小于等于</option>
 					<option value="gt">大于</option>
 				</select>
 			</td>
