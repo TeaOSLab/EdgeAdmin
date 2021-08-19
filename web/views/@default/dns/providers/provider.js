@@ -1,4 +1,28 @@
 Tea.context(function () {
+	this.isUpdatingDomains = false
+
+	this.$delay(function () {
+		this.syncDomains()
+	})
+
+	this.syncDomains = function () {
+		this.isUpdatingDomains = true
+		this.$post(".syncDomains")
+			.params({
+				providerId: this.provider.id
+			})
+			.success(function (resp) {
+				if (resp.data.hasChanges) {
+					teaweb.reload()
+				}
+			})
+			.done(function () {
+				this.$delay(function () {
+					this.isUpdatingDomains = false
+				}, 1000)
+			})
+	}
+
 	this.updateProvider = function (providerId) {
 		teaweb.popup(Tea.url(".updatePopup?providerId=" + providerId), {
 			height: "28em",
@@ -87,5 +111,9 @@ Tea.context(function () {
 
 	this.viewServers = function (domainId) {
 		teaweb.popup("/dns/domains/serversPopup?domainId=" + domainId)
+	}
+
+	this.alertDown = function () {
+		teaweb.popupTip("当前域名已从服务商下线")
 	}
 })
