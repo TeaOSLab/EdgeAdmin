@@ -82,6 +82,7 @@ func (this *ProviderAction) RunGet(params struct {
 			"id":                 domain.Id,
 			"name":               domain.Name,
 			"isOn":               domain.IsOn,
+			"isUp":               domain.IsUp,
 			"dataUpdatedTime":    dataUpdatedTime,
 			"countRoutes":        len(domain.Routes),
 			"countServerRecords": domain.CountServerRecords,

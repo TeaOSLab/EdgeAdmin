@@ -93,7 +93,10 @@
 </table>
 
 
-<h3>管理的域名 <a href="" @click.prevent="createDomain()">[添加域名]</a> </h3>
+<h3>管理的域名 <a href="" @click.prevent="createDomain()">[添加域名]</a></h3>
+
+<p class="ui message blue" v-if="isUpdatingDomains">正在检查域名状态...</p>
+
 <p class="comment" v-if="domains.length == 0">暂时还没有可以管理的域名。</p>
 
 <table class="ui table selectable celled" v-if="domains.length > 0">
@@ -136,6 +139,9 @@
 				<a href=""  style="border-bottom: 1px #db2828 dashed" title="点击和DNS服务商系统同步" @click.prevent="syncDomain(index,domain)" v-if="!domain.isSyncing"><span class="red">需要同步</span></a>
 				<span v-else>正在同步...</span>
 			</div>
+            <div v-else-if="!domain.isUp">
+                <a  href="" style="border-bottom: 1px #db2828 dashed" @click.prevent="alertDown"><span class="red">已下线</span></a>
+            </div>
 			<div v-else>
 				<label-on :v-is-on="domain.isOn"></label-on>
 			</div>

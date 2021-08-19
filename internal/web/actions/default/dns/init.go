@@ -34,6 +34,7 @@ func init() {
 			GetPost("/updatePopup", new(providers.UpdatePopupAction)).
 			Post("/delete", new(providers.DeleteAction)).
 			Get("/provider", new(providers.ProviderAction)).
+			Post("/syncDomains", new(providers.SyncDomainsAction)).
 			EndData().
 
 			// 域名
@@ -56,7 +57,6 @@ func init() {
 			GetPost("", new(issues.IndexAction)).
 			GetPost("/updateNodePopup", new(issues.UpdateNodePopupAction)).
 			EndData().
-
 			EndAll()
 	})
 }
