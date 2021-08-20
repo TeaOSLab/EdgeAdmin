@@ -10,7 +10,6 @@ import (
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
 	timeutil "github.com/iwind/TeaGo/utils/time"
-	"strconv"
 )
 
 type IndexAction struct {
@@ -24,9 +23,16 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ClusterId int64
 }) {
+	this.Data["clusterId"] = params.ClusterId
+
+	this.Show()
+}
+
+func (this *IndexAction) RunPost(params struct {
+	ClusterId int64
+}) {
 	if !teaconst.IsPlus {
-		this.RedirectURL("/clusters/cluster?clusterId=" + strconv.FormatInt(params.ClusterId, 10))
-		return
+		this.Fail("only for commercial users")
 	}
 
 	resp, err := this.RPC().ServerStatBoardRPC().ComposeServerStatNodeClusterBoard(this.AdminContext(), &pb.ComposeServerStatNodeClusterBoardRequest{NodeClusterId: params.ClusterId})
@@ -178,5 +184,5 @@ func (this *IndexAction) RunGet(params struct {
 		this.Data["metricCharts"] = chartMaps
 	}
 
-	this.Show()
+	this.Success()
 }
