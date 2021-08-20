@@ -12,7 +12,7 @@ type IndexAction struct {
 }
 
 func (this *IndexAction) Init() {
-	this.FirstMenu("domain")
+	this.Nav("", "", "index")
 }
 
 func (this *IndexAction) RunGet(params struct {

@@ -1,6 +1,13 @@
 {$layout}
 {$template "/echarts"}
 
+<!-- 加载中 -->
+<div>
+    <div class="ui message loading" v-if="isLoading">
+        <div class="ui active inline loader small"></div>  &nbsp; 数据加载中...
+    </div>
+</div>
+
 <div class="ui four columns grid">
     <div class="ui column">
         <h4>在线节点<link-icon :href="'/clusters/cluster/nodes?clusterId=' + clusterId"></link-icon></h4>

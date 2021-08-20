@@ -1,15 +1,33 @@
 Tea.context(function () {
+	this.isLoading = true
+	this.board = {}
+	this.metricCharts = []
+
+
 	/**
 	 * 流量统计
 	 */
 	this.trafficTab = "hourly"
 
 	this.$delay(function () {
-		this.reloadHourlyTrafficChart()
-		this.reloadHourlyRequestsChart()
-		this.reloadTopNodesChart()
-		this.reloadTopDomainsChart()
-		this.reloadCPUChart()
+		this.$post("$")
+			.params({
+				clusterId: this.clusterId
+			})
+			.timeout(30)
+			.success(function (resp) {
+				for (let k in resp.data) {
+					this[k] = resp.data[k]
+				}
+
+				this.reloadHourlyTrafficChart()
+				this.reloadHourlyRequestsChart()
+				this.reloadTopNodesChart()
+				this.reloadTopDomainsChart()
+				this.reloadCPUChart()
+
+				this.isLoading = false
+			})
 	})
 
 	this.selectTrafficTab = function (tab) {

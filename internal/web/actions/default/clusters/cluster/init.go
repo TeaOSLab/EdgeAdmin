@@ -59,7 +59,7 @@ func init() {
 
 			// 看板相关
 			Prefix("/clusters/cluster/boards").
-			Get("", new(boards.IndexAction)).
+			GetPost("", new(boards.IndexAction)).
 			EndAll()
 	})
 }
