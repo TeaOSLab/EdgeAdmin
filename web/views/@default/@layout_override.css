@@ -9,6 +9,9 @@
 .ui.label.basic {
   background-color: white !important;
 }
+.ui.label.basic.grey {
+  border: 1px #ccc solid !important;
+}
 form .fields {
   margin-bottom: 0 !important;
 }
@@ -40,6 +43,6 @@ select.dropdown {
   height: auto !important;
 }
 .message .icon.warning {
-  font-size: 2em!important;
+  font-size: 2em !important;
 }
 /*# sourceMappingURL=@layout_override.css.map */
