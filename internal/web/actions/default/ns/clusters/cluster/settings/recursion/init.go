@@ -1,4 +1,4 @@
-package accessLog
+package recursion
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
@@ -14,7 +14,7 @@ func init() {
 			Helper(new(clusterutils.ClusterHelper)).
 			Data("teaMenu", "ns").
 			Data("teaSubMenu", "cluster").
-			Prefix("/ns/clusters/cluster/settings/accessLog").
+			Prefix("/ns/clusters/cluster/settings/recursion").
 			GetPost("", new(IndexAction)).
 			EndAll()
 	})

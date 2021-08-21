@@ -129,6 +129,8 @@ func (this *NodesAction) RunGet(params struct {
 				"name":      addr.Name,
 				"ip":        addr.Ip,
 				"canAccess": addr.CanAccess,
+				"isUp":      addr.IsUp,
+				"isOn":      addr.IsOn,
 			})
 		}
 
