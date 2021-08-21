@@ -41,7 +41,9 @@ func (this *IndexAction) RunGet(params struct{}) {
 	}
 
 	// 读取看板数据
-	resp, err := this.RPC().AdminRPC().ComposeAdminDashboard(this.AdminContext(), &pb.ComposeAdminDashboardRequest{})
+	resp, err := this.RPC().AdminRPC().ComposeAdminDashboard(this.AdminContext(), &pb.ComposeAdminDashboardRequest{
+		ApiVersion: teaconst.APINodeVersion,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
