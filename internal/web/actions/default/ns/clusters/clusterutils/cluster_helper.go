@@ -78,15 +78,21 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 // 设置菜单
 func (this *ClusterHelper) createSettingMenu(cluster *pb.NSCluster, selectedItem string) (items []maps.Map) {
 	clusterId := numberutils.FormatInt64(cluster.Id)
-	items = append(items, maps.Map{
-		"name":     "基础设置",
-		"url":      "/ns/clusters/cluster/settings?clusterId=" + clusterId,
-		"isActive": selectedItem == "basic",
-	})
-	items = append(items, maps.Map{
-		"name":     "访问日志",
-		"url":      "/ns/clusters/cluster/settings/accessLog?clusterId=" + clusterId,
-		"isActive": selectedItem == "accessLog",
-	})
-	return
+	return []maps.Map{
+		{
+			"name":     "基础设置",
+			"url":      "/ns/clusters/cluster/settings?clusterId=" + clusterId,
+			"isActive": selectedItem == "basic",
+		},
+		{
+			"name":     "访问日志",
+			"url":      "/ns/clusters/cluster/settings/accessLog?clusterId=" + clusterId,
+			"isActive": selectedItem == "accessLog",
+		},
+		{
+			"name":     "递归DNS",
+			"url":      "/ns/clusters/cluster/settings/recursion?clusterId=" + clusterId,
+			"isActive": selectedItem == "recursion",
+		},
+	}
 }
