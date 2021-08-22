@@ -24,6 +24,7 @@ func (this *HistoryAction) RunGet(params struct {
 	Keyword  string
 	Ip       string
 	Domain   string
+	HasWAF   int
 
 	RequestId string
 	HasError  int
@@ -39,6 +40,7 @@ func (this *HistoryAction) RunGet(params struct {
 	this.Data["domain"] = params.Domain
 	this.Data["accessLogs"] = []interface{}{}
 	this.Data["hasError"] = params.HasError
+	this.Data["hasWAF"] = params.HasWAF
 
 	day := params.Day
 	ipList := []string{}
@@ -50,14 +52,15 @@ func (this *HistoryAction) RunGet(params struct {
 		this.Data["hasError"] = params.HasError
 
 		resp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
-			RequestId: params.RequestId,
-			ServerId:  params.ServerId,
-			HasError:  params.HasError > 0,
-			Day:       day,
-			Keyword:   params.Keyword,
-			Ip:        params.Ip,
-			Domain:    params.Domain,
-			Size:      size,
+			RequestId:         params.RequestId,
+			ServerId:          params.ServerId,
+			HasError:          params.HasError > 0,
+			HasFirewallPolicy: params.HasWAF > 0,
+			Day:               day,
+			Keyword:           params.Keyword,
+			Ip:                params.Ip,
+			Domain:            params.Domain,
+			Size:              size,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -85,15 +88,16 @@ func (this *HistoryAction) RunGet(params struct {
 		if len(params.RequestId) > 0 {
 			this.Data["hasPrev"] = true
 			prevResp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
-				RequestId: params.RequestId,
-				ServerId:  params.ServerId,
-				HasError:  params.HasError > 0,
-				Day:       day,
-				Keyword:   params.Keyword,
-				Ip:        params.Ip,
-				Domain:    params.Domain,
-				Size:      size,
-				Reverse:   true,
+				RequestId:         params.RequestId,
+				ServerId:          params.ServerId,
+				HasError:          params.HasError > 0,
+				HasFirewallPolicy: params.HasWAF > 0,
+				Day:               day,
+				Keyword:           params.Keyword,
+				Ip:                params.Ip,
+				Domain:            params.Domain,
+				Size:              size,
+				Reverse:           true,
 			})
 			if err != nil {
 				this.ErrorPage(err)

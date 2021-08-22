@@ -20,6 +20,7 @@ func (this *TodayAction) RunGet(params struct {
 	RequestId string
 	ServerId  int64
 	HasError  int
+	HasWAF    int
 	Keyword   string
 	Ip        string
 	Domain    string
@@ -31,16 +32,18 @@ func (this *TodayAction) RunGet(params struct {
 	this.Data["keyword"] = params.Keyword
 	this.Data["ip"] = params.Ip
 	this.Data["domain"] = params.Domain
+	this.Data["hasWAF"] = params.HasWAF
 
 	resp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
-		RequestId: params.RequestId,
-		ServerId:  params.ServerId,
-		HasError:  params.HasError > 0,
-		Day:       timeutil.Format("Ymd"),
-		Keyword:   params.Keyword,
-		Ip:        params.Ip,
-		Domain:    params.Domain,
-		Size:      size,
+		RequestId:         params.RequestId,
+		ServerId:          params.ServerId,
+		HasError:          params.HasError > 0,
+		HasFirewallPolicy: params.HasWAF > 0,
+		Day:               timeutil.Format("Ymd"),
+		Keyword:           params.Keyword,
+		Ip:                params.Ip,
+		Domain:            params.Domain,
+		Size:              size,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -69,15 +72,16 @@ func (this *TodayAction) RunGet(params struct {
 	if len(params.RequestId) > 0 {
 		this.Data["hasPrev"] = true
 		prevResp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
-			RequestId: params.RequestId,
-			ServerId:  params.ServerId,
-			HasError:  params.HasError > 0,
-			Day:       timeutil.Format("Ymd"),
-			Keyword:   params.Keyword,
-			Ip:        params.Ip,
-			Domain:    params.Domain,
-			Size:      size,
-			Reverse:   true,
+			RequestId:         params.RequestId,
+			ServerId:          params.ServerId,
+			HasError:          params.HasError > 0,
+			HasFirewallPolicy: params.HasWAF > 0,
+			Day:               timeutil.Format("Ymd"),
+			Keyword:           params.Keyword,
+			Ip:                params.Ip,
+			Domain:            params.Domain,
+			Size:              size,
+			Reverse:           true,
 		})
 		if err != nil {
 			this.ErrorPage(err)

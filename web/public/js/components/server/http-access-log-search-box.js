@@ -65,14 +65,14 @@ Vue.component("http-access-log-search-box", {
 			</div>
 		</div>
 		<div class="ui field">
-			<div class="ui input left labeled small" :class="{'right labeled': domain.length > 0}">
+			<div class="ui input left right labeled small" >
 				<span class="ui label basic" style="font-weight: normal">域名</span>
 				<input type="text" name="domain" placeholder="xxx.com" size="15" v-model="domain"/>
 				<a class="ui label basic" :class="{disabled: domain.length == 0}" @click.prevent="cleanDomain"><i class="icon remove small"></i></a>
 			</div>
 		</div>
 		<div class="ui field">
-			<div class="ui input left labeled small" :class="{'right labeled': keyword.length > 0}">
+			<div class="ui input left right labeled small">
 				<span class="ui label basic" style="font-weight: normal">关键词</span>
 				<input type="text" name="keyword" v-model="keyword" placeholder="路径、UserAgent等..." size="18"/>
 				<a class="ui label basic" :class="{disabled: keyword.length == 0}" @click.prevent="cleanKeyword"><i class="icon remove small"></i></a>
