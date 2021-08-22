@@ -27,7 +27,7 @@
 <!-- 最近日志 -->
 <div v-if="accessLogs.length > 0">
     <div class="ui divider"></div>
-    <h4>最新拦截记录</h4>
+    <h4 class="header">最新拦截记录 <a href="/servers/logs?hasWAF=1">更多 &raquo;</a></h4>
     <table class="ui table selectable">
         <tr v-for="accessLog in accessLogs" :key="accessLog.requestId">
             <td><http-access-log-box :v-access-log="accessLog"></http-access-log-box></td>
