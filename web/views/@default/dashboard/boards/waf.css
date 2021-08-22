@@ -34,4 +34,8 @@
   font-size: 0.8em;
   padding: 4px;
 }
+h4.header a {
+  font-size: 0.85em;
+  float: right;
+}
 /*# sourceMappingURL=waf.css.map */
