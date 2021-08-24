@@ -3,6 +3,7 @@ package instances
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/monitorconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -39,6 +40,15 @@ func (this *UpdateAction) RunGet(params struct {
 		}
 	}
 
+	var rateConfig = &monitorconfigs.RateConfig{}
+	if len(instance.RateJSON) > 0 {
+		err = json.Unmarshal(instance.RateJSON, rateConfig)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+
 	this.Data["instance"] = maps.Map{
 		"id":   instance.Id,
 		"name": instance.Name,
@@ -49,6 +59,7 @@ func (this *UpdateAction) RunGet(params struct {
 		},
 		"description": instance.Description,
 		"params":      mediaParams,
+		"rate":        rateConfig,
 	}
 
 	this.Show()
@@ -103,6 +114,9 @@ func (this *UpdateAction) RunPost(params struct {
 	GroupIds    string
 	Description string
 	IsOn        bool
+
+	RateMinutes int32
+	RateCount   int32
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -270,12 +284,23 @@ func (this *UpdateAction) RunPost(params struct {
 		return
 	}
 
+	var rateConfig = &monitorconfigs.RateConfig{
+		Minutes: params.RateMinutes,
+		Count:   params.RateCount,
+	}
+	rateJSON, err := json.Marshal(rateConfig)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
 	_, err = this.RPC().MessageMediaInstanceRPC().UpdateMessageMediaInstance(this.AdminContext(), &pb.UpdateMessageMediaInstanceRequest{
 		MessageMediaInstanceId: params.InstanceId,
 		Name:                   params.Name,
 		MediaType:              params.MediaType,
 		ParamsJSON:             optionsJSON,
 		Description:            params.Description,
+		RateJSON:               rateJSON,
 		IsOn:                   params.IsOn,
 	})
 	if err != nil {
