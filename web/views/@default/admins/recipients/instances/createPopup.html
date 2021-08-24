@@ -360,16 +360,31 @@
                         </div>
                     </div>
                 </div>
-                <p class="comment">用来限制此媒介的发送频率。</p>
+                <p class="comment">用来限制此媒介的发送频率，防止短时间内消息数量过载。</p>
+            </td>
+        </tr>
+        <tr>
+            <td>忽略相似消息周期</td>
+            <td>
+                <div class="ui input right labeled">
+                    <input type="text" name="hashLife" style="width: 5em" maxlength="4"/>
+                    <span class="ui label">秒</span>
+                </div>
+                <p class="comment">可以在这个时间内忽略相似消息，防止短时间内消息数量过载。默认60秒。</p>
             </td>
         </tr>
 
         <tr>
-            <td>备注</td>
-            <td>
-                <textarea rows="3" name="description" maxlength="100"></textarea>
-            </td>
+            <td colspan="2"><more-options-indicator></more-options-indicator></td>
         </tr>
+        <tbody v-show="moreOptionsVisible">
+            <tr>
+                <td>备注</td>
+                <td>
+                    <textarea rows="3" name="description" maxlength="100"></textarea>
+                </td>
+            </tr>
+        </tbody>
     </table>
 
     <submit-btn></submit-btn>

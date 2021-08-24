@@ -18,7 +18,7 @@
     <tr>
         <td>媒介</td>
         <td>
-            {{recipient.instance.name}}
+            {{recipient.instance.name}} <link-icon v-if="recipient.instance.id > 0" :href="'/admins/recipients/instances/instance?instanceId=' + recipient.instance.id"></link-icon>
             <p class="comment">{{recipient.instance.description}}</p>
         </td>
     </tr>

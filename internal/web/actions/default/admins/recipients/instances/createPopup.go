@@ -69,6 +69,8 @@ func (this *CreatePopupAction) RunPost(params struct {
 	RateMinutes int32
 	RateCount   int32
 
+	HashLife int32
+
 	Description string
 
 	Must *actions.Must
@@ -251,6 +253,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		ParamsJSON:  optionsJSON,
 		Description: params.Description,
 		RateJSON:    rateJSON,
+		HashLife:    params.HashLife,
 	})
 	if err != nil {
 		this.ErrorPage(err)

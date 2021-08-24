@@ -60,6 +60,7 @@ func (this *UpdateAction) RunGet(params struct {
 		"description": instance.Description,
 		"params":      mediaParams,
 		"rate":        rateConfig,
+		"hashLife":    instance.HashLife,
 	}
 
 	this.Show()
@@ -117,6 +118,8 @@ func (this *UpdateAction) RunPost(params struct {
 
 	RateMinutes int32
 	RateCount   int32
+
+	HashLife int32
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -301,6 +304,7 @@ func (this *UpdateAction) RunPost(params struct {
 		ParamsJSON:             optionsJSON,
 		Description:            params.Description,
 		RateJSON:               rateJSON,
+		HashLife:               params.HashLife,
 		IsOn:                   params.IsOn,
 	})
 	if err != nil {
