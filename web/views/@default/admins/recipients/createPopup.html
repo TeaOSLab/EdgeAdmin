@@ -34,11 +34,69 @@
             </td>
         </tr>
         <tr>
-            <td>备注</td>
-            <td>
-                <textarea rows="3" name="description" maxlength="100"></textarea>
-            </td>
+            <td colspan="2"><more-options-indicator></more-options-indicator></td>
         </tr>
+        <tbody v-show="moreOptionsVisible">
+            <tr>
+                <td>发送时间</td>
+                <td>
+                    <div class="ui fields inline">
+                        <div class="ui field">
+                            开始时间：
+                        </div>
+                        <div class="ui field">
+                            <div class="ui input right labeled">
+                                <input type="text" name="timeFromHour" size="2" maxlength="2" placeholder="" v-model="timeFromHour"/>
+                                <span class="ui label">时</span>
+                            </div>
+                        </div>
+                        <div class="ui field">
+                            <div class="ui input right labeled">
+                                <input type="text" name="timeFromMinute" size="2" maxlength="2" placeholder="" v-model="timeFromMinute"/>
+                                <span class="ui label">分</span>
+                            </div>
+                        </div>
+                        <div class="ui field">
+                            <div class="ui input right labeled">
+                                <input type="text" name="timeFromSecond" size="2" maxlength="2" placeholder="" v-model="timeFromSecond"/>
+                                <span class="ui label">秒</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ui divider"></div>
+                    <div class="ui fields inline">
+                        <div class="ui field">
+                            结束时间：
+                        </div>
+                        <div class="ui field">
+                            <div class="ui input right labeled">
+                                <input type="text" name="timeToHour" size="2" maxlength="2" placeholder="" v-model="timeToHour"/>
+                                <span class="ui label">时</span>
+                            </div>
+                        </div>
+                        <div class="ui field">
+                            <div class="ui input right labeled">
+                                <input type="text" name="timeToMinute" size="2" maxlength="2" placeholder="" v-model="timeToMinute"/>
+                                <span class="ui label">分</span>
+                            </div>
+                        </div>
+                        <div class="ui field">
+                            <div class="ui input right labeled">
+                                <input type="text" name="timeToSecond" size="2" maxlength="2" placeholder="" v-model="timeToSecond"/>
+                                <span class="ui label">秒</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="comment">24小时制，即小时从0到23。如果填写了发送时间，系统只会在这个时间段内给当前接收人发送消息。 <a href="" v-if="timeFromHour.length > 0 || timeFromMinute.length > 0 || timeFromSecond.length > 0 || timeToHour.length > 0 || timeToMinute.length > 0 || timeToSecond.length > 0" @click.prevent="clearTime">[清除]</a></p>
+                </td>
+            </tr>
+            <tr>
+                <td>备注</td>
+                <td>
+                    <textarea rows="3" name="description" maxlength="100"></textarea>
+                </td>
+            </tr>
+        </tbody>
     </table>
 
     <submit-btn></submit-btn>

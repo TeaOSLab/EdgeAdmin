@@ -17,4 +17,13 @@ Tea.context(function () {
             })
         })
     }
+
+    this.clearTime = function () {
+    	this.recipient.timeFromHour = ""
+		this.recipient.timeFromMinute = ""
+		this.recipient.timeFromSecond = ""
+		this.recipient.timeToHour = ""
+		this.recipient.timeToMinute = ""
+		this.recipient.timeToSecond = ""
+	}
 })

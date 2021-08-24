@@ -44,6 +44,8 @@ func (this *RecipientAction) RunGet(params struct {
 		},
 		"user":        recipient.User,
 		"description": recipient.Description,
+		"timeFrom":    recipient.TimeFrom,
+		"timeTo":      recipient.TimeTo,
 	}
 
 	this.Show()
