@@ -17,6 +17,8 @@
             <td>
                 {{task.user}} <span class="disabled">&nbsp; | &nbsp;</span> <span v-if="task.instance != null">媒介：{{task.instance.name}}<link-icon :href="'/admins/recipients/instances/instance?instanceId=' + task.instance.id"></link-icon></span>
                 <span class="disabled">&nbsp; | &nbsp;</span> 时间：{{task.createdTime}}
+
+                <a href="" title="删除" class="op" @click.prevent="deleteTask(task.id)"><i class="icon remove small"></i></a>
             </td>
         </tr>
         <tr v-if="task.subject.length > 0">
