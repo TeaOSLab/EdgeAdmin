@@ -369,6 +369,7 @@ Vue.component("metric-chart", {
 			<th>占比</th>
 		</tr>
 	</thead>`
+			let that = this
 			this.stats.forEach(function (v) {
 				let value = v.value
 				switch (that.item.valueType) {
