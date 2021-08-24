@@ -41,6 +41,13 @@
         </td>
     </tr>
     <tr>
+        <td>发送时间</td>
+        <td>
+            <span v-if="recipient.timeFrom.length > 0 && recipient.timeTo.length > 0">{{recipient.timeFrom}} - {{recipient.timeTo}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+    </tr>
+    <tr>
         <td>备注</td>
         <td>
             <span v-if="recipient.description.length > 0">{{recipient.description}}</span>

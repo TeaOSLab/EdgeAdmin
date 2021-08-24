@@ -18,7 +18,7 @@
         </tr>
     </thead>
     <tr v-for="instance in instances">
-        <td>{{instance.name}}</td>
+        <td><a :href="'/admins/recipients/instances/instance?instanceId=' + instance.id">{{instance.name}}</a></td>
         <td>{{instance.media.name}}</td>
         <td>
             <span v-if="instance.description.length > 0">{{instance.description}}</span>
