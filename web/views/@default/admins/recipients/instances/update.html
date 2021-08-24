@@ -343,6 +343,27 @@
             </tr>
         </tbody>
         <tr>
+            <td>发送频率<em>（次/分钟）</em></td>
+            <td>
+                <div class="ui fields inline">
+                    <div class="ui field">
+                        <div class="ui right labeled input">
+                            <input type="text" name="rateCount" size="4" v-model="instance.rate.count"/>
+                            <span class="ui label">次</span>
+                        </div>
+                    </div>
+                    <div class="ui field">/</div>
+                    <div class="ui field">
+                        <div class="ui right labeled input">
+                            <input type="text" name="rateMinutes" size="4" v-model="instance.rate.minutes"/>
+                            <span class="ui label">分钟</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="comment">用来限制此媒介的发送频率。</p>
+            </td>
+        </tr>
+        <tr>
             <td>备注</td>
             <td>
                 <textarea rows="3" name="description" maxlength="100" v-model="instance.description"></textarea>

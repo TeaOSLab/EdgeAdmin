@@ -3,6 +3,7 @@ package instances
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/monitorconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -64,6 +65,9 @@ func (this *CreatePopupAction) RunPost(params struct {
 	AliyunSmsAccessKeySecret   string
 
 	TelegramToken string
+
+	RateMinutes int32
+	RateCount   int32
 
 	Description string
 
@@ -231,11 +235,22 @@ func (this *CreatePopupAction) RunPost(params struct {
 		return
 	}
 
+	var rateConfig = &monitorconfigs.RateConfig{
+		Minutes: params.RateMinutes,
+		Count:   params.RateCount,
+	}
+	rateJSON, err := json.Marshal(rateConfig)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
 	resp, err := this.RPC().MessageMediaInstanceRPC().CreateMessageMediaInstance(this.AdminContext(), &pb.CreateMessageMediaInstanceRequest{
 		Name:        params.Name,
 		MediaType:   params.MediaType,
 		ParamsJSON:  optionsJSON,
 		Description: params.Description,
+		RateJSON:    rateJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)

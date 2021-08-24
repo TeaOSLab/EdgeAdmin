@@ -3,6 +3,7 @@ package instances
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/monitorconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 )
@@ -38,6 +39,16 @@ func (this *InstanceAction) RunGet(params struct {
 		}
 	}
 
+	// 频率
+	var rateConfig = &monitorconfigs.RateConfig{}
+	if len(instance.RateJSON) > 0 {
+		err = json.Unmarshal(instance.RateJSON, rateConfig)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+
 	this.Data["instance"] = maps.Map{
 		"id":   instance.Id,
 		"name": instance.Name,
@@ -48,6 +59,7 @@ func (this *InstanceAction) RunGet(params struct {
 		},
 		"description": instance.Description,
 		"params":      mediaParams,
+		"rate":        rateConfig,
 	}
 
 	this.Show()

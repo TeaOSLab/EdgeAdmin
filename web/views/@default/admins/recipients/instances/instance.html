@@ -228,6 +228,13 @@
         </tr>
     </tbody>
     <tr>
+        <td>发送频率<em>（次/分钟）</em></td>
+        <td>
+            <span v-if="instance.rate.minutes <= 0 || instance.rate.count <= 0" class="disabled">没有限制</span>
+            <span v-else>{{instance.rate.count}}次/{{instance.rate.minutes}}分钟</span>
+        </td>
+    </tr>
+    <tr>
         <td>备注</td>
         <td>
             <span v-if="instance.description.length > 0">{{instance.description}}</span>
