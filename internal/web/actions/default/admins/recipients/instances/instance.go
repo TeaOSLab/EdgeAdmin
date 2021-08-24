@@ -60,6 +60,7 @@ func (this *InstanceAction) RunGet(params struct {
 		"description": instance.Description,
 		"params":      mediaParams,
 		"rate":        rateConfig,
+		"hashLife":    instance.HashLife,
 	}
 
 	this.Show()

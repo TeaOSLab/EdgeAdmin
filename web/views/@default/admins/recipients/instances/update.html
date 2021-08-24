@@ -364,6 +364,16 @@
             </td>
         </tr>
         <tr>
+            <td>忽略相似消息周期</td>
+            <td>
+                <div class="ui input right labeled">
+                    <input type="text" name="hashLife" style="width: 5em" maxlength="4" v-model="instance.hashLife"/>
+                    <span class="ui label">秒</span>
+                </div>
+                <p class="comment">可以在这个时间内忽略相似消息，防止短时间内消息数量过载。不填或者为0，表示默认为60秒。</p>
+            </td>
+        </tr>
+        <tr>
             <td>备注</td>
             <td>
                 <textarea rows="3" name="description" maxlength="100" v-model="instance.description"></textarea>
