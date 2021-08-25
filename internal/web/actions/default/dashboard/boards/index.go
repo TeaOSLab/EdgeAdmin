@@ -49,6 +49,8 @@ func (this *IndexAction) RunGet(params struct{}) {
 		return
 	}
 	this.Data["dashboard"] = maps.Map{
+		"defaultClusterId": resp.DefaultNodeClusterId,
+
 		"countServers":      resp.CountServers,
 		"countNodeClusters": resp.CountNodeClusters,
 		"countNodes":        resp.CountNodes,

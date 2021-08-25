@@ -1,6 +1,12 @@
 {$layout}
 {$template "/echarts"}
 
+<!-- 没有节点提醒 -->
+<div class="ui icon message warning" v-if="dashboard.defaultClusterId > 0 && dashboard.countNodes == 0">
+    <i class="icon warning circle"></i>
+    <a :href="'/clusters/cluster/createNode?clusterId=' + dashboard.defaultClusterId">还没有在集群中添加节点，现在去添加？添加节点后才可部署网站服务。</a>
+</div>
+
 <!-- 升级提醒 -->
 <div class="ui icon message error" v-if="nodeUpgradeInfo.count > 0">
     <i class="icon warning circle"></i>
