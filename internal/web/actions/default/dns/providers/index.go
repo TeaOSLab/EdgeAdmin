@@ -15,9 +15,14 @@ func (this *IndexAction) Init() {
 	this.Nav("", "", "")
 }
 
-func (this *IndexAction) RunGet(params struct{}) {
+func (this *IndexAction) RunGet(params struct {
+	Keyword string
+}) {
+	this.Data["keyword"] = params.Keyword
+
 	countResp, err := this.RPC().DNSProviderRPC().CountAllEnabledDNSProviders(this.AdminContext(), &pb.CountAllEnabledDNSProvidersRequest{
 		AdminId: this.AdminId(),
+		Keyword: params.Keyword,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -29,6 +34,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 
 	providersResp, err := this.RPC().DNSProviderRPC().ListEnabledDNSProviders(this.AdminContext(), &pb.ListEnabledDNSProvidersRequest{
 		AdminId: this.AdminId(),
+		Keyword: params.Keyword,
 		Offset:  page.Offset,
 		Size:    page.Size,
 	})
