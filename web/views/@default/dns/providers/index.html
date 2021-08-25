@@ -4,6 +4,19 @@
 	<a href="" class="item" @click.prevent="createProvider()">[添加DNS账号信息]</a>
 </first-menu>
 
+<div class="margin"></div>
+
+<form class="ui form" method="get" action="/dns/providers">
+    <div class="ui fields inline">
+        <div class="ui field">
+            <input type="text" name="keyword" placeholder="账号说明..." v-model="keyword"/>
+        </div>
+        <div class="ui field">
+            <button class="ui button" type="submit">搜索</button>
+        </div>
+    </div>
+</form>
+
 <p class="comment" v-if="providers.length == 0">暂时还没有第三方DNS服务商。</p>
 
 <table class="ui table selectable celled" v-if="providers.length > 0">
