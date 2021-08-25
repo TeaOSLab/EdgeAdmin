@@ -2,7 +2,18 @@
 
 <div class="margin"></div>
 
-<p class="comment" v-if="clusters.length == 0">暂时还没有集群。</p>
+<form class="ui form" method="get" action="/dns">
+    <div class="ui fields inline">
+        <div class="ui field">
+            <input type="text" name="keyword" placeholder="集群、域名..." v-model="keyword"/>
+        </div>
+        <div class="ui field">
+            <button class="ui button" type="submit">搜索</button>
+        </div>
+    </div>
+</form>
+
+<p class="comment" v-if="clusters.length == 0" style="margin-top: 1em">暂时还没有集群。</p>
 <table class="ui table selectable celled" v-if="clusters.length > 0">
 	<thead>
 		<tr>
@@ -15,10 +26,10 @@
 	</thead>
 	<tr v-for="cluster in clusters">
 		<td>
-            <a :href="'/dns/clusters/cluster?clusterId=' + cluster.id">{{cluster.name}}</a><link-icon :href="'/clusters/cluster?clusterId=' + cluster.id"></link-icon>
+            <a :href="'/dns/clusters/cluster?clusterId=' + cluster.id"><keyword :v-word="keyword">{{cluster.name}}</keyword></a><link-icon :href="'/clusters/cluster?clusterId=' + cluster.id"></link-icon>
 		</td>
 		<td>
-			<span v-if="cluster.dnsName.length > 0 && cluster.domainName.length > 0"><em class="italic">{{cluster.dnsName}}</em>.{{cluster.domainName}}</span>
+            <span v-if="cluster.dnsName.length > 0 && cluster.domainName.length > 0"><em class="italic"><keyword :v-word="keyword">{{cluster.dnsName}}</keyword></em>.<keyword :v-word="keyword">{{cluster.domainName}}</keyword></span>
 			<span v-else="" class="disabled">-</span>
 		</td>
 		<td>
@@ -34,6 +45,6 @@
 		</td>
 	</tr>
 </table>
-<p class="comment">这里列出了所有集群对应的域名设置。</p>
+<p class="comment" v-if="clusters.length > 0">这里列出了所有集群对应的域名设置。</p>
 
 <div class="page" v-html="page"></div>
