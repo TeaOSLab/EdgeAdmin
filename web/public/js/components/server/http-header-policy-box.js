@@ -117,10 +117,10 @@ Vue.component("http-header-policy-box", {
 		}
 	},
 	template: `<div>
-	<first-menu>
-		<a class="item" :class="{active:type == 'request'}" @click.prevent="selectType('request')">请求Header</a>
-		<a class="item" :class="{active:type == 'response'}" @click.prevent="selectType('response')">响应Header</a>
-	</first-menu>
+	<div class="ui menu tabular small">
+		<a class="item" :class="{active:type == 'request'}" @click.prevent="selectType('request')">请求Header<span v-if="requestSettingHeaders.length > 0">({{requestSettingHeaders.length}})</span></a>
+		<a class="item" :class="{active:type == 'response'}" @click.prevent="selectType('response')">响应Header<span v-if="responseSettingHeaders.length > 0">({{responseSettingHeaders.length}})</span></a>
+	</div>
 	
 	<div class="margin"></div>
 	
