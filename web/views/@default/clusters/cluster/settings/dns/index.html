@@ -11,7 +11,7 @@
 			<tr v-if="hasDomains">
 				<td>选择主域名 *</td>
 				<td>
-					<dns-domain-selector :v-domain-id="domainId" :v-domain-name="domainName"></dns-domain-selector>
+					<dns-domain-selector :v-domain-id="domainId" :v-domain-name="domainName" @change="changeDomain"></dns-domain-selector>
 					<p class="comment">用于生成集群节点和网站服务的DNS解析记录。</p>
 				</td>
 			</tr>
@@ -20,7 +20,8 @@
 				<td>
 					<div class="ui input right labeled">
 						<input type="text" name="dnsName" maxlength="64" style="width:10em" v-model="dnsName"/>
-						<span class="ui label">.主域名</span>
+                        <span class="ui label" v-if="domain != null && domain.name != null && domain.name.length > 0">.{{domain.name}}</span>
+                        <span class="ui label" v-else>.主域名</span>
 					</div>
 					<p class="comment">当前集群的子域名，和主域名一起组成集群节点的子域名。</p>
 				</td>
