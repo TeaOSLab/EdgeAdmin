@@ -14,8 +14,14 @@ func (this *IndexAction) Init() {
 	this.Nav("dns", "dns", "")
 }
 
-func (this *IndexAction) RunGet(params struct{}) {
-	countResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClusters(this.AdminContext(), &pb.CountAllEnabledNodeClustersRequest{})
+func (this *IndexAction) RunGet(params struct {
+	Keyword string
+}) {
+	this.Data["keyword"] = params.Keyword
+
+	countResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClusters(this.AdminContext(), &pb.CountAllEnabledNodeClustersRequest{
+		Keyword: params.Keyword,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -24,8 +30,9 @@ func (this *IndexAction) RunGet(params struct{}) {
 	this.Data["page"] = page.AsHTML()
 
 	clustersResp, err := this.RPC().NodeClusterRPC().ListEnabledNodeClusters(this.AdminContext(), &pb.ListEnabledNodeClustersRequest{
-		Offset: page.Offset,
-		Size:   page.Size,
+		Keyword: params.Keyword,
+		Offset:  page.Offset,
+		Size:    page.Size,
 	})
 	if err != nil {
 		this.ErrorPage(err)
