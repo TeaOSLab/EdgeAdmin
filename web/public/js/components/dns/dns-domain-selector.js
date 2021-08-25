@@ -21,12 +21,14 @@ Vue.component("dns-domain-selector", {
 				callback: function (resp) {
 					that.domainId = resp.data.domainId
 					that.domainName = resp.data.domainName
+					that.change()
 				}
 			})
 		},
 		remove: function() {
 			this.domainId = 0
 			this.domainName = ""
+			this.change()
 		},
 		update: function () {
 			let that = this
@@ -34,7 +36,14 @@ Vue.component("dns-domain-selector", {
 				callback: function (resp) {
 					that.domainId = resp.data.domainId
 					that.domainName = resp.data.domainName
+					that.change()
 				}
+			})
+		},
+		change: function () {
+			this.$emit("change", {
+				id: this.domainId,
+				name: this.domainName
 			})
 		}
 	},
