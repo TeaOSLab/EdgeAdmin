@@ -11,12 +11,21 @@ Vue.component("dns-route-selector", {
 				return v.code + "@" + v.domainId
 			}),
 			isAdding: false,
-			routeCode: ""
+			routeCode: "",
+			keyword: "",
+			searchingRoutes: this.vAllRoutes.$copy()
 		}
 	},
 	methods: {
 		add: function () {
 			this.isAdding = true
+			this.keyword = ""
+			this.routeCode = ""
+
+			let that = this
+			setTimeout(function () {
+				that.$refs.keywordRef.focus()
+			}, 200)
 		},
 		cancel: function () {
 			this.isAdding = false
@@ -50,6 +59,23 @@ Vue.component("dns-route-selector", {
 			})
 		}
 	},
+	watch: {
+		keyword: function (keyword) {
+			if (keyword.length == 0) {
+				this.searchingRoutes = this.vAllRoutes.$copy()
+				this.routeCode = ""
+				return
+			}
+			this.searchingRoutes = this.vAllRoutes.filter(function (route) {
+				return teaweb.match(route.name, keyword)
+			})
+			if (this.searchingRoutes.length > 0) {
+				this.routeCode = this.searchingRoutes[0].code + "@" + this.searchingRoutes[0].domainId
+			} else {
+				this.routeCode = ""
+			}
+		}
+	},
 	template: `<div>
 	<input type="hidden" name="dnsRoutesJSON" :value="JSON.stringify(routeCodes)"/>
 	<div v-if="routes.length > 0">
@@ -62,16 +88,20 @@ Vue.component("dns-route-selector", {
 	<div v-if="isAdding">
 		<div class="ui fields inline">
 			<div class="ui field">
-				<select class="ui dropdown auto-width" v-model="routeCode">
-					<option value="">[请选择]</option>
-					<option v-for="route in vAllRoutes" :value="route.code + '@' + route.domainId">{{route.name}}（{{route.domainName}}）</option>
+				<select class="ui dropdown" style="width: 18em" v-model="routeCode">
+					<option value="" v-if="keyword.length == 0">[请选择]</option>
+					<option v-for="route in searchingRoutes" :value="route.code + '@' + route.domainId">{{route.name}}（{{route.domainName}}）</option>
 				</select>
 			</div>
+			<div class="ui field">
+				<input type="text" placeholder="搜索..." size="10" v-model="keyword" ref="keywordRef"/>
+			</div>
+			
 			<div class="ui field">
 				<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button>
 			</div>
 			<div class="ui field">
-				<a href="" @click.prevent="cancel()"><i class="icon remove"></i></a>
+				<a href="" @click.prevent="cancel()"><i class="icon remove small"></i></a>
 			</div>
 		</div>
 	</div>

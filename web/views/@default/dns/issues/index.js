@@ -20,6 +20,8 @@ Tea.context(function () {
 	this.updateNode = function (clusterId, nodeId) {
 		let that = this
 		teaweb.popup("/dns/issues/updateNodePopup?clusterId=" + clusterId + "&nodeId=" + nodeId, {
+			width: "46em",
+			height: "26em",
 			callback: function () {
 				teaweb.success("保存成功", function () {
 					that.reload()
