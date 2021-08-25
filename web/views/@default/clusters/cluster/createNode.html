@@ -140,11 +140,13 @@
 
         <!-- 手动安装 -->
         <div v-if="installMethod == 'manual'">
-            <div class="row">在边缘节点安装目录下，复制<code-label>configs/api.template.yaml</code-label>为<code-label>configs/api.yaml</code-label>，然后修改文件里面的内容为以下内容：</div>
+            <div class="row">上传边缘节点程序到服务器并解压，然后在边缘节点安装目录下，复制<code-label>configs/api.template.yaml</code-label>为<code-label>configs/api.yaml</code-label>，然后修改文件里面的内容为以下内容：</div>
+            <div class="margin"></div>
             <source-code-box id="rpc-code" type="text/yaml">rpc:
     endpoints: [ {{apiEndpoints}} ]
 nodeId: "{{node.uniqueId}}"
 secret: "{{node.secret}}"</source-code-box>
+            <div class="margin"></div>
             <div class="row">然后再使用<code-label>bin/edge-node start</code-label>命令启动节点。</div>
             <div>
                 <div class="ui divider"></div>

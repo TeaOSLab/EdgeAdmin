@@ -40,6 +40,7 @@ func (this *ClusterAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
+	var defaultRoute = dnsResp.DefaultRoute
 	domainName := ""
 	dnsMap := maps.Map{
 		"dnsName":          dnsResp.Name,
@@ -106,6 +107,26 @@ func (this *ClusterAction) RunGet(params struct {
 				})
 			}
 		} else {
+			// 默认线路
+			var isResolved = false
+			if len(defaultRoute) > 0 {
+				recordType := "A"
+				if utils.IsIPv6(node.IpAddr) {
+					recordType = "AAAA"
+				}
+				checkResp, err := this.RPC().DNSDomainRPC().ExistDNSDomainRecord(this.AdminContext(), &pb.ExistDNSDomainRecordRequest{
+					DnsDomainId: cluster.DnsDomainId,
+					Name:        cluster.DnsName,
+					Type:        recordType,
+					Route:       defaultRoute,
+					Value:       node.IpAddr,
+				})
+				if err != nil {
+					this.ErrorPage(err)
+					return
+				}
+				isResolved = checkResp.IsOk
+			}
 			nodeMaps = append(nodeMaps, maps.Map{
 				"id":     node.Id,
 				"name":   node.Name,
@@ -115,7 +136,7 @@ func (this *ClusterAction) RunGet(params struct {
 					"code": "",
 				},
 				"clusterId":  node.NodeClusterId,
-				"isResolved": false,
+				"isResolved": isResolved,
 			})
 		}
 	}
