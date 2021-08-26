@@ -3,9 +3,11 @@
 {$template "menu"}
 
 <second-menu style="margin-top: -1em">
-    <span class="item">ID: {{listId}} &nbsp; <tip-icon content="ID可以用于使用API操作此IP名单"></tip-icon></span>
+    <a href="" class="item" @click.prevent="createIP">添加IP</a>
     <span class="item disabled">|</span>
     <div class="item"><ip-list-bind-box :v-http-firewall-policy-id="firewallPolicyId" :v-type="type"></ip-list-bind-box></div>
+    <span class="item disabled">|</span>
+    <span class="item">ID: {{listId}} &nbsp; <tip-icon content="ID可以用于使用API操作此IP名单"></tip-icon></span>
 </second-menu>
 
 <p class="comment" v-if="items.length == 0">暂时还没有IP。</p>

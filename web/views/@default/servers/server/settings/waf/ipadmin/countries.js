@@ -51,19 +51,4 @@ Tea.context(function () {
 			return country.isChecked
 		})
 	}
-
-	/**
-	 * 添加IP名单菜单
-	 */
-	this.createIP = function (type) {
-		let that = this
-		teaweb.popup("/servers/components/waf/ipadmin/createIPPopup?firewallPolicyId=" + this.firewallPolicyId + '&type=' + type, {
-			height: "30em",
-			callback: function () {
-				teaweb.success("保存成功", function () {
-					window.location = "/servers/components/waf/ipadmin/lists?firewallPolicyId=" + that.firewallPolicyId + "&type=" + type
-				})
-			}
-		})
-	}
 })

@@ -3,10 +3,6 @@
 	<menu-item :href="'/servers/components/waf/ipadmin/provinces?firewallPolicyId=' + firewallPolicyId" :active="subMenuItem == 'province'">省份封禁</menu-item>
 	<span class="item disabled">|</span>
 	<menu-item :href="'/servers/components/waf/ipadmin/lists?firewallPolicyId=' + firewallPolicyId + '&type=white'" :active="subMenuItem == 'white'">白名单</menu-item>
-	<a href="" class="item" @click.prevent="createIP('white')"><span style="font-size: 0.9em">[添加IP]</span></a>
-	<span class="item disabled">|</span>
 	<menu-item :href="'/servers/components/waf/ipadmin/lists?firewallPolicyId=' + firewallPolicyId + '&type=black'" :active="subMenuItem == 'black'">黑名单</menu-item>
-	<a href="" class="item" @click.prevent="createIP('black')"><span style="font-size: 0.9em">[添加IP]</span></a>
-    <span class="item disabled">|</span>
     <menu-item :href="'/servers/components/waf/ipadmin/test?firewallPolicyId=' + firewallPolicyId" :active="subMenuItem == 'test'">IP检查</menu-item>
 </second-menu>

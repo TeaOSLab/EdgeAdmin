@@ -26,7 +26,7 @@ Tea.context(function () {
 	 * 添加IP名单菜单
 	 */
 	this.createIP = function (type) {
-		teaweb.popup("/servers/server/settings/waf/ipadmin/createIPPopup?listId=" + this.listId + '&type=' + type, {
+		teaweb.popup("/servers/iplists/createIPPopup?listId=" + this.listId + '&type=' + type, {
 			height: "26em",
 			callback: function () {
 				teaweb.success("保存成功", function () {
