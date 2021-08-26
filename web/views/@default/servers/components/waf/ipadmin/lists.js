@@ -27,11 +27,11 @@ Tea.context(function () {
 	 */
 	this.createIP = function (type) {
 		let that = this
-		teaweb.popup("/servers/components/waf/ipadmin/createIPPopup?firewallPolicyId=" + this.firewallPolicyId + '&type=' + type, {
+		teaweb.popup("/servers/iplists/createIPPopup?listId=" + this.listId + '&type=' + type, {
 			height: "26em",
 			callback: function () {
 				teaweb.success("保存成功", function () {
-					window.location = "/servers/components/waf/ipadmin/lists?firewallPolicyId=" + that.firewallPolicyId + "&type=" + type
+					teaweb.reload()
 				})
 			}
 		})
