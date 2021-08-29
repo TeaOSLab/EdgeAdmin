@@ -88,12 +88,18 @@
 				</div>
 			</div>
 		</td>
-		<td>
+		<td class="routes-box" :class="{'show-link': node.dnsRouteNames.length == 0 &&  hasClusterDNS}">
 			<div v-if="node.dnsRouteNames.length > 0">
 				<div v-for="routeName in node.dnsRouteNames">
 					<tiny-basic-label>{{routeName}}</tiny-basic-label>
 				</div>
+                <div>
+                    <a href="" @click.prevent="updateNodeDNS(node.id)" class="small">[修改]</a>
+                </div>
 			</div>
+            <span v-else-if="hasClusterDNS">
+                <a href="" @click.prevent="updateNodeDNS(node.id)" class="small">[设置]</a>
+            </span>
 			<span v-else class="disabled">-</span>
 		</td>
 		<td class="center">

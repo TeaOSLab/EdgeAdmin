@@ -4,4 +4,19 @@
 a .red {
   border-bottom: 1px #db2828 dashed;
 }
+.routes-box a {
+  margin-left: 0.4em;
+  display: none;
+}
+.routes-box.show-link a {
+  display: inline;
+  font-size: 1em;
+}
+.routes-box:hover a {
+  display: inline;
+}
+a.small {
+  font-size: 0.8em;
+  text-align: center;
+}
 /*# sourceMappingURL=nodes.css.map */

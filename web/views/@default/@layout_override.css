@@ -45,4 +45,7 @@ select.dropdown {
 .message .icon.warning {
   font-size: 2em !important;
 }
+body.swal2-shown {
+  overflow: auto !important;
+}
 /*# sourceMappingURL=@layout_override.css.map */
