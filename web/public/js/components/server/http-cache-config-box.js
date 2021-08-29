@@ -56,7 +56,7 @@ Vue.component("http-cache-config-box", {
 	
 	<div v-show="isOn()">
 		<h4>缓存条件</h4>
-		<http-cache-refs-config-box :v-cache-config="cacheConfig" :v-cache-refs="cacheConfig.cacheRefs"></http-cache-refs-config-box>
+		<http-cache-refs-config-box :v-cache-config="cacheConfig" :v-cache-refs="cacheConfig.cacheRefs" ></http-cache-refs-config-box>
 	</div>
 	<div class="margin"></div>
 </div>`
