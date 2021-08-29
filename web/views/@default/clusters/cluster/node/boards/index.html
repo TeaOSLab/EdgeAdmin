@@ -8,7 +8,9 @@
         <h4>在线状态</h4>
         <div class="value">
             <span class="green" v-if="board.isActive">在线</span>
-            <span class="red" v-else>离线</span>
+            <span class="red" v-else-if="node.isUp">离线</span>
+            <span class="red" v-else style="font-size: 1.5em" title="因健康检查失败而离线">健康离线</span>
+            <a href="" v-if="node.isOn && !node.isUp" @click.prevent="upNode(node.id)">[上线]</a>
         </div>
     </div>
     <div class="ui column">

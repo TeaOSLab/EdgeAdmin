@@ -24,6 +24,8 @@ func InitNodeInfo(action actionutils.ActionInterface, nodeId int64) error {
 	action.ViewData()["node"] = maps.Map{
 		"id":   node.Id,
 		"name": node.Name,
+		"isOn": node.IsOn,
+		"isUp": node.IsUp,
 	}
 	if node.NodeCluster != nil {
 		action.ViewData()["clusterId"] = node.NodeCluster.Id
