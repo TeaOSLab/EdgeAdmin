@@ -24,7 +24,7 @@ Vue.component("node-clusters-selector", {
 			let that = this
 			let selectedClusterIds = [this.primaryClusterId].concat(this.secondaryClusterIds)
 			teaweb.popup("/clusters/selectPopup?selectedClusterIds=" + selectedClusterIds.join(",") + "&mode=single", {
-				height: "38em",
+				height: "30em",
 				width: "50em",
 				callback: function (resp) {
 					if (resp.data.cluster != null) {
@@ -44,7 +44,7 @@ Vue.component("node-clusters-selector", {
 			let that = this
 			let selectedClusterIds = [this.primaryClusterId].concat(this.secondaryClusterIds)
 			teaweb.popup("/clusters/selectPopup?selectedClusterIds=" + selectedClusterIds.join(",") + "&mode=multiple", {
-				height: "38em",
+				height: "30em",
 				width: "50em",
 				callback: function (resp) {
 					if (resp.data.cluster != null) {
