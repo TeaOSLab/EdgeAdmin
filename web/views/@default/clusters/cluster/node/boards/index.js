@@ -1,4 +1,14 @@
 Tea.context(function () {
+	this.upNode = function (nodeId) {
+		teaweb.confirm("确定要手动上线此节点吗？", function () {
+			this.$post("/clusters/cluster/node/up")
+				.params({
+					nodeId: nodeId
+				})
+				.refresh()
+		})
+	}
+
 	this.formatCount = function (count) {
 		if (count < 1000) {
 			return count.toString()
