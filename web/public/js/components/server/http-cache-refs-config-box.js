@@ -1,5 +1,5 @@
 Vue.component("http-cache-refs-config-box", {
-	props: ["v-cache-refs", "v-cache-config"],
+	props: ["v-cache-refs", "v-cache-config", "v-cache-policy-id"],
 	mounted: function () {
 		let that = this
 		sortTable(function (ids) {
@@ -12,6 +12,7 @@ Vue.component("http-cache-refs-config-box", {
 				})
 			})
 			that.updateRefs(newRefs)
+			that.change()
 		})
 	},
 	data: function () {
@@ -73,6 +74,8 @@ Vue.component("http-cache-refs-config-box", {
 					} else {
 						that.refs.push(newRef)
 					}
+
+					that.change()
 				}
 			})
 		},
@@ -97,6 +100,8 @@ Vue.component("http-cache-refs-config-box", {
 
 					// 通知子组件更新
 					that.$refs.cacheRef[index].notifyChange()
+
+					that.change()
 				}
 			})
 		},
@@ -104,6 +109,7 @@ Vue.component("http-cache-refs-config-box", {
 			let that = this
 			teaweb.confirm("确定要删除此缓存设置吗？", function () {
 				that.refs.$remove(index)
+				that.change()
 			})
 		},
 		updateRefs: function (newRefs) {
@@ -128,6 +134,17 @@ Vue.component("http-cache-refs-config-box", {
 					return "周 "
 			}
 			return unit
+		},
+		change: function () {
+			// 自动保存
+			if (this.vCachePolicyId != null && this.vCachePolicyId > 0) {
+				Tea.action("/servers/components/cache/updateRefs")
+					.params({
+						cachePolicyId: this.vCachePolicyId,
+						refsJSON: JSON.stringify(this.refs)
+					})
+					.post()
+			}
 		}
 	},
 	template: `<div>

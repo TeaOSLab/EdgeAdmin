@@ -28,7 +28,7 @@ func init() {
 			Post("/testWrite", new(TestWriteAction)).
 			Get("/selectPopup", new(SelectPopupAction)).
 			Post("/count", new(CountAction)).
-
+			Post("/updateRefs", new(UpdateRefsAction)).
 			EndAll()
 	})
 }
