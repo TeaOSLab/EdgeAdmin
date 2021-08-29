@@ -42,6 +42,17 @@ Vue.component("http-cache-ref-box", {
 		},
 		changeConds: function (v) {
 			this.ref.conds = v
+		},
+		changeStatusList: function (list) {
+			let result = []
+			list.forEach(function (status) {
+				let statusNumber = parseInt(status)
+				if (isNaN(statusNumber) || statusNumber < 100 || statusNumber > 999) {
+					return
+				}
+				result.push(statusNumber)
+			})
+			this.ref.status = result
 		}
 	},
 	template: `<tbody>
@@ -85,7 +96,7 @@ Vue.component("http-cache-ref-box", {
 	<tr v-show="moreOptionsVisible && !vIsReverse">
 		<td>状态码列表</td>
 		<td>
-			<values-box name="statusList" size="3" maxlength="3" :values="ref.status"></values-box>
+			<values-box name="statusList" size="3" maxlength="3" :values="ref.status" @change="changeStatusList"></values-box>
 			<p class="comment">允许缓存的HTTP状态码列表。</p>
 		</td>
 	</tr>

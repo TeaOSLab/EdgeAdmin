@@ -38,6 +38,10 @@ func (this *CreatePopupAction) RunPost(params struct {
 		this.Fail("请输入缓存Key")
 	}
 
+	if cacheRef.Conds == nil || len(cacheRef.Conds.Groups) == 0 {
+		this.Fail("请填写匹配条件分组")
+	}
+
 	err = cacheRef.Init()
 	if err != nil {
 		this.ErrorPage(err)
