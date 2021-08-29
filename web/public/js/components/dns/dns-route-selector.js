@@ -94,7 +94,7 @@ Vue.component("dns-route-selector", {
 				</select>
 			</div>
 			<div class="ui field">
-				<input type="text" placeholder="搜索..." size="10" v-model="keyword" ref="keywordRef"/>
+				<input type="text" placeholder="搜索..." size="10" v-model="keyword" ref="keywordRef" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
 			</div>
 			
 			<div class="ui field">

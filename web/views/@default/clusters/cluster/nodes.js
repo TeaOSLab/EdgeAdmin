@@ -21,4 +21,17 @@ Tea.context(function () {
 				.refresh()
 		})
 	}
+
+	this.updateNodeDNS = function (nodeId) {
+		let that = this
+		teaweb.popup("/clusters/cluster/node/updateDNSPopup?clusterId=" + this.clusterId + "&nodeId=" + nodeId, {
+			width: "46em",
+			height: "26em",
+			callback: function () {
+				teaweb.success("保存成功", function () {
+					teaweb.reload()
+				})
+			}
+		})
+	}
 })

@@ -41,6 +41,15 @@ func (this *NodesAction) RunGet(params struct {
 	this.Data["activeState"] = params.ActiveState
 	this.Data["keyword"] = params.Keyword
 
+	// 集群是否已经设置了线路
+	clusterDNSResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeClusterDNS(this.AdminContext(), &pb.FindEnabledNodeClusterDNSRequest{NodeClusterId: params.ClusterId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["hasClusterDNS"] = clusterDNSResp.Domain != nil
+
+	// 数量
 	countAllResp, err := this.RPC().NodeRPC().CountAllEnabledNodesMatch(this.AdminContext(), &pb.CountAllEnabledNodesMatchRequest{
 		NodeClusterId: params.ClusterId,
 	})
