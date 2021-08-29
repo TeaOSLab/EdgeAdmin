@@ -1,8 +1,9 @@
 {$layout}
-
 {$template "/left_menu"}
 
 <div class="right-box">
+    {$template "menu"}
+
 	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 		<input type="hidden" name="webId" :value="webId"/>
 		<http-cache-config-box :v-cache-config="cacheConfig" :v-cache-policy="cachePolicy"></http-cache-config-box>

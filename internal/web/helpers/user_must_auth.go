@@ -181,19 +181,14 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 			"icon":     "clone outsize",
 			"subItems": []maps.Map{
 				{
+					"name": "证书管理",
+					"url":  "/servers/certs",
+					"code": "cert",
+				},
+				{
 					"name": "访问日志",
 					"url":  "/servers/logs",
 					"code": "log",
-				},
-				{
-					"name": "通用设置",
-					"url":  "/servers/components",
-					"code": "global",
-				},
-				{
-					"name": "服务分组",
-					"url":  "/servers/components/groups",
-					"code": "group",
 				},
 				{
 					"name": "缓存策略",
@@ -217,14 +212,19 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 					"code": "iplist",
 				},
 				{
-					"name": "证书管理",
-					"url":  "/servers/certs",
-					"code": "cert",
-				},
-				{
 					"name": "统计指标",
 					"url":  "/servers/metrics",
 					"code": "metric",
+				},
+				{
+					"name": "服务分组",
+					"url":  "/servers/components/groups",
+					"code": "group",
+				},
+				{
+					"name": "通用设置",
+					"url":  "/servers/components",
+					"code": "global",
 				},
 			},
 		},
