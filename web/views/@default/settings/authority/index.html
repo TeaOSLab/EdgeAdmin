@@ -7,10 +7,14 @@
     <div class="margin"></div>
     <table class="ui table definition selectable">
         <tr>
-            <td>状态</td>
+            <td class="title">状态</td>
             <td>
                 <span class="green">已认证</span>
             </td>
+        </tr>
+        <tr v-if="key.nodes > 0">
+            <td>节点数限制</td>
+            <td>{{key.nodes}}个节点</td>
         </tr>
         <tr>
             <td>公司/组织名</td>
