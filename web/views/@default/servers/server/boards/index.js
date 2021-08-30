@@ -1,4 +1,7 @@
 Tea.context(function () {
+	this.isLoading = true
+	this.metricCharts = []
+
 	this.formatCount = function (count) {
 		if (count < 1000) {
 			return count.toString()
@@ -15,10 +18,26 @@ Tea.context(function () {
 	this.trafficTab = "hourly"
 
 	this.$delay(function () {
-		this.reloadHourlyTrafficChart()
-		this.reloadHourlyRequestsChart()
-		this.reloadTopDomainsChart()
+		this.load()
 	})
+
+	this.load = function () {
+		this.$post("$")
+			.params({
+				serverId: this.server.id
+			})
+			.success(function (resp) {
+				for (let k in resp.data) {
+					this[k] = resp.data[k]
+				}
+
+				this.reloadHourlyTrafficChart()
+				this.reloadHourlyRequestsChart()
+				this.reloadTopDomainsChart()
+
+				this.isLoading = false
+			})
+	}
 
 	this.selectTrafficTab = function (tab) {
 		this.trafficTab = tab

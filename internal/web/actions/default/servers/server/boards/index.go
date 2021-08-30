@@ -41,6 +41,12 @@ func (this *IndexAction) RunGet(params struct {
 		"name": server.Name,
 	}
 
+	this.Show()
+}
+
+func (this *IndexAction) RunPost(params struct {
+	ServerId int64
+}) {
 	resp, err := this.RPC().ServerStatBoardRPC().ComposeServerStatBoard(this.AdminContext(), &pb.ComposeServerStatBoardRequest{ServerId: params.ServerId})
 	if err != nil {
 		this.ErrorPage(err)
@@ -151,6 +157,5 @@ func (this *IndexAction) RunGet(params struct {
 		}
 		this.Data["metricCharts"] = chartMaps
 	}
-
-	this.Show()
+	this.Success()
 }
