@@ -7,6 +7,13 @@
     <menu-item :href="'/servers/server?serverId=' + server.id" active="true">"{{server.name}}"看板</menu-item>
 </first-menu>
 
+<!-- 加载中 -->
+<div style="margin-top: 0.8em">
+    <div class="ui message loading" v-if="isLoading">
+        <div class="ui active inline loader small"></div>  &nbsp; 数据加载中...
+    </div>
+</div>
+
 <div class="ui menu tabular">
     <a href="" class="item" :class="{active: trafficTab == 'hourly'}" @click.prevent="selectTrafficTab('hourly')">24小时流量趋势</a>
     <a href="" class="item" :class="{active: trafficTab == 'daily'}" @click.prevent="selectTrafficTab('daily')">15天流量趋势</a>
