@@ -16,12 +16,11 @@ func init() {
 
 			// 看板
 			Prefix("/dashboard/boards").
-			Get("", new(boards.IndexAction)).
+			GetPost("", new(boards.IndexAction)).
 			Get("/waf", new(boards.WafAction)).
 			Post("/wafLogs", new(boards.WafLogsAction)).
 			Get("/dns", new(boards.DnsAction)).
 			Get("/user", new(boards.UserAction)).
-
 			EndAll()
 	})
 }

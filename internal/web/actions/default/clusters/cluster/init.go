@@ -47,6 +47,7 @@ func init() {
 			Get("/thresholds", new(thresholds.IndexAction)).
 			Get("/detail", new(node.DetailAction)).
 			GetPost("/boards", new(nodeboards.IndexAction)).
+			Post("/boards/data", new(nodeboards.DataAction)).
 			GetPost("/updateDNSPopup", new(node.UpdateDNSPopupAction)).
 
 			// 分组相关

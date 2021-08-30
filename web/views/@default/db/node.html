@@ -13,7 +13,7 @@
         <td>
             <label-on :v-is-on="node.isOn"></label-on>
 
-            <div v-if="status != null" style="margin-top: 0.8em">
+            <div v-if="node.isOn && status != null" style="margin-top: 0.8em">
                 <div v-if="status.isOk">
                     <p class="comment">
                         <span v-if="status.version.length > 0">版本： v{{status.version}} /</span>
