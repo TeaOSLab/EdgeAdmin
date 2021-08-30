@@ -16,12 +16,14 @@ func init() {
 			Prefix("/db").
 			Get("", new(IndexAction)).
 			GetPost("/createPopup", new(CreatePopupAction)).
-			GetPost("/updatePopup", new(UpdatePopupAction)).
+			GetPost("/update", new(UpdateAction)).
 			Post("/delete", new(DeleteAction)).
-			GetPost("/cleanPopup", new(CleanPopupAction)).
+			GetPost("/clean", new(CleanAction)).
 			Post("/deleteTable", new(DeleteTableAction)).
 			Post("/truncateTable", new(TruncateTableAction)).
-
+			Get("/node", new(NodeAction)).
+			Get("/logs", new(LogsAction)).
+			Post("/status", new(StatusAction)).
 			EndAll()
 	})
 }

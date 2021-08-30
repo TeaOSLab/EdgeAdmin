@@ -8,15 +8,15 @@ import (
 	"github.com/iwind/TeaGo/maps"
 )
 
-type UpdatePopupAction struct {
+type UpdateAction struct {
 	actionutils.ParentAction
 }
 
-func (this *UpdatePopupAction) Init() {
-	this.Nav("", "", "")
+func (this *UpdateAction) Init() {
+	this.Nav("", "", "update")
 }
 
-func (this *UpdatePopupAction) RunGet(params struct {
+func (this *UpdateAction) RunGet(params struct {
 	NodeId int64
 }) {
 	nodeResp, err := this.RPC().DBNodeRPC().FindEnabledDBNode(this.AdminContext(), &pb.FindEnabledDBNodeRequest{DbNodeId: params.NodeId})
@@ -46,7 +46,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 	this.Show()
 }
 
-func (this *UpdatePopupAction) RunPost(params struct {
+func (this *UpdateAction) RunPost(params struct {
 	NodeId int64
 
 	Name     string
