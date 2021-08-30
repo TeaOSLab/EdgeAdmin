@@ -24,7 +24,7 @@
 			<tr>
 				<td><i class="icon bars grey handle"></i></td>
 				<td>
-                    {{location.pattern}}
+                    <a :href="'/servers/server/settings/locations/location?serverId=' + serverId + '&locationId=' + location.id">{{location.pattern}}</a>
 					<http-location-labels :v-location-config="location" :v-server-id="serverId"></http-location-labels>
 				</td>
                 <td>{{location.patternTypeName}}</td>
