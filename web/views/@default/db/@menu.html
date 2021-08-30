@@ -1,0 +1,8 @@
+<first-menu>
+    <menu-item href="/db">所有节点</menu-item>
+    <span class="item disabled">|</span>
+    <menu-item :href="'/db/node?nodeId=' + node.id" code="node">"{{node.name}}"详情</menu-item>
+    <menu-item :href="'/db/clean?nodeId=' + node.id" code="clean">清理</menu-item>
+    <menu-item :href="'/db/logs?nodeId=' + node.id" code="log">运行日志</menu-item>
+    <menu-item :href="'/db/update?nodeId=' + node.id" code="update">修改</menu-item>
+</first-menu>

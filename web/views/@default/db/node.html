@@ -1,0 +1,68 @@
+{$layout}
+{$template "menu"}
+
+<table class="ui table definition selectable">
+    <tr>
+        <td class="title">节点名称</td>
+        <td>
+            {{node.name}}
+        </td>
+    </tr>
+    <tr>
+        <td>状态</td>
+        <td>
+            <label-on :v-is-on="node.isOn"></label-on>
+
+            <div v-if="status != null" style="margin-top: 0.8em">
+                <div v-if="status.isOk">
+                    <p class="comment">
+                        <span v-if="status.version.length > 0">版本： v{{status.version}} /</span>
+                        <span v-if="status.isOk">用量：{{status.size}}</span>
+                        <span v-else class="disabled">-</span>
+                    </p>
+                </div>
+                <div v-else>
+                    <span class="red">连接错误：{{status.error}}</span>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>主机地址<em>（Host）</em></td>
+        <td>
+            {{node.host}}
+        </td>
+    </tr>
+    <tr>
+        <td>数据库端口<em>（Port）</em></td>
+        <td>
+            {{node.port}}
+        </td>
+    </tr>
+    <tr>
+        <td>数据库名称<em>（Database）</em></td>
+        <td>
+            {{node.database}}
+        </td>
+    </tr>
+    <tr>
+        <td>用户名<em>（Username）</em></td>
+        <td>
+            {{node.username}}
+        </td>
+    </tr>
+    <tr>
+        <td>密码<em>（Password）</em></td>
+        <td>
+            <span v-if="node.password.length > 0">{{node.password}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+    </tr>
+    <tr>
+        <td>详细描述</td>
+        <td>
+            <span v-if="node.description.length > 0">{{node.description}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+    </tr>
+</table>

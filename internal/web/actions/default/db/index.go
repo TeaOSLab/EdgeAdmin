@@ -42,9 +42,10 @@ func (this *IndexAction) RunGet(params struct{}) {
 			"port":     node.Port,
 			"database": node.Database,
 			"status": maps.Map{
-				"isOk":  node.Status.IsOk,
-				"error": node.Status.Error,
-				"size":  numberutils.FormatBytes(node.Status.Size),
+				"isOk":    node.Status.IsOk,
+				"error":   node.Status.Error,
+				"size":    numberutils.FormatBytes(node.Status.Size),
+				"version": node.Status.Version,
 			},
 		})
 	}

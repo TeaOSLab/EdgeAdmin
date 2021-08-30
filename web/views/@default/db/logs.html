@@ -1,0 +1,51 @@
+{$layout}
+{$template "menu"}
+{$template "/datepicker"}
+
+<div class="margin"></div>
+<form method="get" action="/db/logs" class="ui form" autocomplete="off">
+    <input type="hidden" name="nodeId" :value="nodeId"/>
+    <div class="ui fields inline">
+        <div class="ui field">
+            <input type="text" name="dayFrom" placeholder="开始日期" v-model="dayFrom" value="" style="width:8em" id="day-from-picker"/>
+        </div>
+        <div class="ui field">
+            <input type="text" name="dayTo" placeholder="结束日期" v-model="dayTo" value="" style="width:8em" id="day-to-picker"/>
+        </div>
+        <div class="ui field">
+            <select class="ui dropdown" name="level" v-model="level">
+                <option value="">[级别]</option>
+                <option value="error">错误</option>
+                <option value="warning">警告</option>
+                <option value="info">信息</option>
+                <option value="success">成功</option>
+            </select>
+        </div>
+        <div class="ui field">
+            <input type="text" name="keyword" style="width:10em" v-model="keyword" placeholder="关键词"/>
+        </div>
+        <div class="ui field">
+            <button type="submit" class="ui button">查询</button>
+        </div>
+        <div class="ui field" v-if="dayFrom.length > 0 || dayTo.length > 0 || keyword.length > 0 || level.length > 0">
+            <a :href="'/db/logs?nodeId=' + nodeId">[清除条件]</a>
+        </div>
+    </div>
+</form>
+
+<p class="comment" v-if="logs.length == 0">暂时还没有日志。</p>
+
+<table class="ui table selectable" v-if="logs.length > 0">
+    <thead>
+        <tr>
+
+        </tr>
+    </thead>
+    <tr v-for="log in logs">
+        <td>
+            <node-log-row :v-log="log" :v-keyword="keyword"></node-log-row>
+        </td>
+    </tr>
+</table>
+
+<div class="page" v-html="page"></div>

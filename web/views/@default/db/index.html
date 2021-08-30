@@ -12,15 +12,20 @@
 			<th>节点名称</th>
 			<th>连接地址</th>
 			<th>数据库名</th>
+            <th>数据库版本</th>
             <th>用量</th>
 			<th class="center width10">状态</th>
-			<th class="three op">操作</th>
+			<th class="two op">操作</th>
 		</tr>
 	</thead>
 	<tr v-for="node in nodes">
-		<td>{{node.name}}</td>
+        <td><a :href="'/db/node?nodeId=' + node.id">{{node.name}}</a></td>
 		<td>{{node.host}}:{{node.port}}</td>
 		<td>{{node.database}}</td>
+        <td>
+            <span v-if="node.status.version.length > 0">v{{node.status.version}}</span>
+            <span class="disabled" v-else>-</span>
+        </td>
         <td>
             <span v-if="node.status.isOk">{{node.status.size}}</span>
             <span v-else class="disabled">-</span>
@@ -35,8 +40,7 @@
             </span>
         </td>
 		<td>
-            <a href="" @click.prevent="cleanNode(node.id)" v-if="node.isOn && node.status.isOk">清理</a><span v-else class="disabled">清理 </span> &nbsp;
-			<a href="" @click.prevent="updateNode(node.id)">修改</a> &nbsp;
+            <a :href="'/db/node?nodeId=' + node.id">详情</a>
 			<a href="" @click.prevent="deleteNode(node.id)">删除</a>
 		</td>
 	</tr>
