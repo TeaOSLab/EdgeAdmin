@@ -40,6 +40,11 @@ func (this *IndexAction) RunGet(params struct{}) {
 		}
 	}
 
+	this.Show()
+}
+
+func (this *IndexAction) RunPost(params struct {
+}) {
 	// 读取看板数据
 	resp, err := this.RPC().AdminRPC().ComposeAdminDashboard(this.AdminContext(), &pb.ComposeAdminDashboardRequest{
 		ApiVersion: teaconst.APINodeVersion,
@@ -249,5 +254,5 @@ func (this *IndexAction) RunGet(params struct{}) {
 		this.Data["metricCharts"] = chartMaps
 	}
 
-	this.Show()
+	this.Success()
 }

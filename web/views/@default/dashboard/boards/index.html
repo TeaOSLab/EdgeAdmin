@@ -1,40 +1,47 @@
 {$layout}
 {$template "/echarts"}
 
+{$template "menu"}
+
+<!-- 加载中 -->
+<div style="margin-top: 0.8em">
+    <div class="ui message loading" v-if="isLoading">
+        <div class="ui active inline loader small"></div>  &nbsp; 数据加载中...
+    </div>
+</div>
+
 <!-- 没有节点提醒 -->
-<div class="ui icon message warning" v-if="dashboard.defaultClusterId > 0 && dashboard.countNodes == 0">
+<div class="ui icon message warning" v-if="!isLoading && dashboard.defaultClusterId > 0 && dashboard.countNodes == 0">
     <i class="icon warning circle"></i>
     <a :href="'/clusters/cluster/createNode?clusterId=' + dashboard.defaultClusterId">还没有在集群中添加节点，现在去添加？添加节点后才可部署网站服务。</a>
 </div>
 
 <!-- 升级提醒 -->
-<div class="ui icon message error" v-if="nodeUpgradeInfo.count > 0">
+<div class="ui icon message error" v-if="!isLoading && nodeUpgradeInfo.count > 0">
     <i class="icon warning circle"></i>
     <a href="/clusters">
     升级提醒：有 {{nodeUpgradeInfo.count}} 个边缘节点需要升级到 v{{nodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
 </div>
-<div class="ui icon message error" v-if="monitorNodeUpgradeInfo.count > 0 && teaIsPlus">
+<div class="ui icon message error" v-if="!isLoading && monitorNodeUpgradeInfo.count > 0 && teaIsPlus">
     <i class="icon warning circle"></i>
     <a href="/settings/monitorNodes">升级提醒：有 {{monitorNodeUpgradeInfo.count}} 个监控节点需要升级到 v{{monitorNodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a></div>
-<div class="ui icon message error" v-if="userNodeUpgradeInfo.count > 0 && teaIsPlus">
+<div class="ui icon message error" v-if="!isLoading && userNodeUpgradeInfo.count > 0 && teaIsPlus">
     <i class="icon warning circle"></i>
     <a href="/settings/userNodes">升级提醒：有 {{userNodeUpgradeInfo.count}} 个用户节点需要升级到 v{{userNodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a></div>
-<div class="ui icon message error" v-if="apiNodeUpgradeInfo.count > 0">
+<div class="ui icon message error" v-if="!isLoading && apiNodeUpgradeInfo.count > 0">
     <i class="icon warning circle"></i>
     <a href="/api">升级提醒：有 {{apiNodeUpgradeInfo.count}} 个API节点需要升级到 v{{apiNodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a></div>
-<div class="ui icon message error" v-if="nsNodeUpgradeInfo.count > 0 && teaIsPlus">
+<div class="ui icon message error" v-if="!isLoading && nsNodeUpgradeInfo.count > 0 && teaIsPlus">
     <i class="icon warning circle"></i>
     <a href="/ns/clusters">升级提醒：有 {{nsNodeUpgradeInfo.count}} 个DNS节点需要升级到 v{{nsNodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
 </div>
-<div class="ui icon message error" v-if="authorityNodeUpgradeInfo.count > 0 && teaIsPlus">
+<div class="ui icon message error" v-if="!isLoading && authorityNodeUpgradeInfo.count > 0 && teaIsPlus">
     <i class="icon warning circle"></i>
     <a href="/settings/authority/nodes">升级提醒：有 {{authorityNodeUpgradeInfo.count}} 个企业版认证节点需要升级到 v{{authorityNodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
 </div>
 
-{$template "menu"}
-
 <!-- 统计图表 -->
-<div class="ui four columns grid">
+<div class="ui four columns grid" v-if="!isLoading">
     <div class="ui column">
         <h4>集群<link-icon href="/clusters" v-if="dashboard.canGoNodes"></link-icon></h4>
         <div class="value"><span>{{dashboard.countNodeClusters}}</span>个</div>
@@ -69,7 +76,7 @@
 <div class="ui divider"></div>
 
 <!-- 流量 -->
-<div class="ui menu tabular">
+<div class="ui menu tabular" v-show="!isLoading">
     <a href="" class="item" :class="{active: trafficTab == 'hourly'}" @click.prevent="selectTrafficTab('hourly')">24小时流量趋势</a>
     <a href="" class="item" :class="{active: trafficTab == 'daily'}" @click.prevent="selectTrafficTab('daily')">15天流量趋势</a>
 </div>
@@ -82,7 +89,7 @@
 
 <div class="ui divider"></div>
 
-<div class="ui menu tabular">
+<div class="ui menu tabular" v-show="!isLoading">
     <a href="" class="item" :class="{active: requestsTab == 'hourly'}" @click.prevent="selectRequestsTab('hourly')">24小时访问量趋势</a>
     <a href="" class="item" :class="{active: requestsTab == 'daily'}" @click.prevent="selectRequestsTab('daily')">15天访问量趋势</a>
 </div>
@@ -94,13 +101,13 @@
 <div class="chart-box" id="daily-requests-chart" v-show="requestsTab == 'daily'"></div>
 
 <!-- 域名排行 -->
-<h4>域名访问排行 <span>（24小时）</span></h4>
+<h4 v-show="!isLoading">域名访问排行 <span>（24小时）</span></h4>
 <div class="chart-box" id="top-domains-chart"></div>
 
 <div class="ui divider"></div>
 
 <!-- 节点排行 -->
-<h4>节点访问排行 <span>（24小时）</span></h4>
+<h4 v-show="!isLoading">节点访问排行 <span>（24小时）</span></h4>
 <div class="chart-box" id="top-nodes-chart"></div>
 
 <!-- 指标 -->

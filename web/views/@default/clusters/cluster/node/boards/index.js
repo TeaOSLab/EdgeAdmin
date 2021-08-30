@@ -1,4 +1,8 @@
 Tea.context(function () {
+	this.isLoading = true
+	this.board = {}
+	this.metricCharts = []
+
 	this.upNode = function (nodeId) {
 		teaweb.confirm("确定要手动上线此节点吗？", function () {
 			this.$post("/clusters/cluster/node/up")
@@ -32,8 +36,6 @@ Tea.context(function () {
 		this.board.cacheDiskSize = teaweb.formatBytes(this.board.cacheDiskSize)
 		this.board.cacheMemorySize = teaweb.formatBytes(this.board.cacheMemorySize)
 	}
-	this.loadBoard()
-
 
 	/**
 	 * 流量统计
@@ -41,18 +43,37 @@ Tea.context(function () {
 	this.trafficTab = "hourly"
 
 	this.$delay(function () {
-		this.reloadHourlyTrafficChart()
-		this.reloadHourlyRequestsChart()
-		this.reloadTopDomainsChart()
-		this.reloadCPUChart()
-		this.reloadCacheDirsChart()
+		this.$post("$")
+			.params({
+				clusterId: this.clusterId,
+				nodeId: this.node.id
+			})
+			.timeout(60)
+			.success(function (resp) {
+				for (let k in resp.data) {
+					this[k] = resp.data[k]
+				}
+
+				this.loadBoard()
+
+				this.isLoading = false
+
+				this.$delay(function () {
+					this.reloadHourlyTrafficChart()
+					this.reloadHourlyRequestsChart()
+					this.reloadTopDomainsChart()
+					this.reloadCPUChart()
+					this.reloadCacheDirsChart()
+
+					this.renderCacheDirData()
+
+					this.refreshBoard()
+				})
+			})
 	})
-	this.$delay(function () {
-		this.refreshBoard()
-	}, 30000)
 
 	this.refreshBoard = function () {
-		this.$post("$")
+		this.$post(".data")
 			.params({
 				clusterId: this.clusterId,
 				nodeId: this.node.id
@@ -64,7 +85,7 @@ Tea.context(function () {
 			.done(function () {
 				this.$delay(function () {
 					this.refreshBoard()
-				}, 60000)
+				}, 30000)
 			})
 	}
 
@@ -467,15 +488,18 @@ Tea.context(function () {
 	this.cacheDirTotal = ""
 	this.cacheDirAvail = ""
 	this.cacheDirAvailWarning = false
-	if (this.cacheDirValues.length > 0) {
-		let lastStat = this.cacheDirValues.$last()
-		if (lastStat.value != null && lastStat.value.dirs != null && lastStat.value.dirs.length > 0) {
-			this.cacheDirUsed = teaweb.formatBytes(this.cacheDirValues.$last().value.dirs[0].used)
-			this.cacheDirTotal = teaweb.formatBytes(this.cacheDirValues.$last().value.dirs[0].total)
-			this.cacheDirAvail = teaweb.formatBytes(this.cacheDirValues.$last().value.dirs[0].avail)
-			this.cacheDirAvailWarning = (this.cacheDirValues.$last().value.dirs[0].avail < 1024 * 1024 * 1024 * 10)
+	this.renderCacheDirData = function () {
+		if (this.cacheDirValues.length > 0) {
+			let lastStat = this.cacheDirValues.$last()
+			if (lastStat.value != null && lastStat.value.dirs != null && lastStat.value.dirs.length > 0) {
+				this.cacheDirUsed = teaweb.formatBytes(this.cacheDirValues.$last().value.dirs[0].used)
+				this.cacheDirTotal = teaweb.formatBytes(this.cacheDirValues.$last().value.dirs[0].total)
+				this.cacheDirAvail = teaweb.formatBytes(this.cacheDirValues.$last().value.dirs[0].avail)
+				this.cacheDirAvailWarning = (this.cacheDirValues.$last().value.dirs[0].avail < 1024 * 1024 * 1024 * 10)
+			}
 		}
 	}
+
 	this.reloadCacheDirsChart = function () {
 		let axis = {unit: "%", divider: 1}
 		teaweb.renderLineChart({
