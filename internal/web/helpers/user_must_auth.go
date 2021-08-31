@@ -240,13 +240,13 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 					"url":  "/clusters/logs",
 					"code": "log",
 				},
-				/**{
-					"name": "IP资源",
+				{
+					"name": "IP地址",
 					"url":  "/clusters/ip-addrs",
 					"code": "ipAddr",
 					"isOn": teaconst.IsPlus,
 				},
-				{
+				/**{
 					"name": "监控",
 					"url":  "/clusters/monitors",
 					"code": "monitor",

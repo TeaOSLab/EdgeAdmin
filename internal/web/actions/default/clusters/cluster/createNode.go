@@ -171,8 +171,8 @@ func (this *CreateNodeAction) RunPost(params struct {
 		addressId := address.GetInt64("id")
 		if addressId > 0 {
 			_, err = this.RPC().NodeIPAddressRPC().UpdateNodeIPAddressNodeId(this.AdminContext(), &pb.UpdateNodeIPAddressNodeIdRequest{
-				AddressId: addressId,
-				NodeId:    nodeId,
+				NodeIPAddressId: addressId,
+				NodeId:          nodeId,
 			})
 		} else {
 			var thresholdsJSON = []byte{}

@@ -1,21 +1,21 @@
-{$layout "layout_popup"}
-
-<h3>修改IP地址</h3>
+{$layout}
+{$template "menu"}
 
 <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
-	<input type="hidden" name="addressId" :value="address.id"/>
+    <csrf-token></csrf-token>
+	<input type="hidden" name="addrId" :value="addr.id"/>
 	<table class="ui table definition selectable">
 		<tr>
 			<td class="title">IP地址 *</td>
 			<td>
-				<input type="text" name="ip" maxlength="128" ref="focus" v-model="address.ip"/>
+				<input type="text" name="ip" maxlength="128" ref="focus" v-model="addr.ip"/>
 			</td>
 		</tr>
 		<tr>
 			<td>是否可以访问</td>
 			<td>
 				<div class="ui checkbox">
-					<input type="checkbox" name="canAccess" value="1" v-model="address.canAccess"/>
+					<input type="checkbox" name="canAccess" value="1" v-model="addr.canAccess"/>
 					<label></label>
 				</div>
 				<p class="comment">是否为可以公开访问的IP，如果选中，也会作为DNS解析记录的值使用。</p>
@@ -29,7 +29,7 @@
                 <td>是否启用</td>
                 <td>
                     <div class="ui checkbox">
-                        <input type="checkbox" name="isOn" value="1" v-model="address.isOn"/>
+                        <input type="checkbox" name="isOn" value="1" v-model="addr.isOn"/>
                         <label></label>
                     </div>
                     <p class="comment">选中表示当前IP有效。</p>
@@ -38,13 +38,13 @@
             <tr>
                 <td class="title">名称</td>
                 <td>
-                    <input type="text" name="name" maxlength="50" v-model="address.name"/>
+                    <input type="text" name="name" maxlength="50" v-model="addr.name"/>
                 </td>
             </tr>
             <tr v-if="teaIsPlus && supportThresholds">
                 <td>上线阈值</td>
                 <td>
-                    <node-ip-address-thresholds-box :v-thresholds="address.thresholds"></node-ip-address-thresholds-box>
+                    <node-ip-address-thresholds-box :v-thresholds="addr.thresholds"></node-ip-address-thresholds-box>
                 </td>
             </tr>
         </tbody>

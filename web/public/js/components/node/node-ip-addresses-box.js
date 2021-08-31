@@ -1,9 +1,10 @@
 // 节点IP地址管理（标签形式）
 Vue.component("node-ip-addresses-box", {
-	props: ["vIpAddresses"],
+	props: ["v-ip-addresses", "role"],
 	data: function () {
 		return {
-			ipAddresses: (this.vIpAddresses == null) ? [] : this.vIpAddresses
+			ipAddresses: (this.vIpAddresses == null) ? [] : this.vIpAddresses,
+			supportThresholds: this.role != "ns"
 		}
 	},
 	methods: {
@@ -12,7 +13,7 @@ Vue.component("node-ip-addresses-box", {
 			window.UPDATING_NODE_IP_ADDRESS = null
 
 			let that = this;
-			teaweb.popup("/nodes/ipAddresses/createPopup", {
+			teaweb.popup("/nodes/ipAddresses/createPopup?supportThresholds=" + (this.supportThresholds ? 1 : 0), {
 				callback: function (resp) {
 					that.ipAddresses.push(resp.data.ipAddress);
 				},
@@ -26,7 +27,7 @@ Vue.component("node-ip-addresses-box", {
 			window.UPDATING_NODE_IP_ADDRESS = address
 
 			let that = this;
-			teaweb.popup("/nodes/ipAddresses/updatePopup", {
+			teaweb.popup("/nodes/ipAddresses/updatePopup?supportThresholds=" + (this.supportThresholds ? 1 : 0), {
 				callback: function (resp) {
 					Vue.set(that.ipAddresses, index, resp.data.ipAddress);
 				},

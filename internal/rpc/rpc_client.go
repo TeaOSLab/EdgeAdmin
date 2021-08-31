@@ -99,6 +99,10 @@ func (this *RPCClient) NodeIPAddressRPC() pb.NodeIPAddressServiceClient {
 	return pb.NewNodeIPAddressServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) NodeIPAddressLogRPC() pb.NodeIPAddressLogServiceClient {
+	return pb.NewNodeIPAddressLogServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) NodeValueRPC() pb.NodeValueServiceClient {
 	return pb.NewNodeValueServiceClient(this.pickConn())
 }

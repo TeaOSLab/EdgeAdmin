@@ -20,8 +20,11 @@ func (this *UpdatePopupAction) Init() {
 }
 
 func (this *UpdatePopupAction) RunGet(params struct {
-	AddressId int64
+	AddressId         int64
+	SupportThresholds bool
 }) {
+	this.Data["supportThresholds"] = params.SupportThresholds
+
 	this.Show()
 }
 
@@ -42,12 +45,12 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	// 获取IP地址信息
 	var isUp = true
 	if params.AddressId > 0 {
-		addressResp, err := this.RPC().NodeIPAddressRPC().FindEnabledNodeIPAddress(this.AdminContext(), &pb.FindEnabledNodeIPAddressRequest{AddressId: params.AddressId})
+		addressResp, err := this.RPC().NodeIPAddressRPC().FindEnabledNodeIPAddress(this.AdminContext(), &pb.FindEnabledNodeIPAddressRequest{NodeIPAddressId: params.AddressId})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-		var address = addressResp.IpAddress
+		var address = addressResp.NodeIPAddress
 		if address == nil {
 			this.Fail("找不到要修改的地址")
 		}
