@@ -18,7 +18,10 @@ func (this *CreatePopupAction) Init() {
 	this.Nav("", "", "")
 }
 
-func (this *CreatePopupAction) RunGet(params struct{}) {
+func (this *CreatePopupAction) RunGet(params struct {
+	SupportThresholds bool
+}) {
+	this.Data["supportThresholds"] = params.SupportThresholds
 
 	this.Show()
 }

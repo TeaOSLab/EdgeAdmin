@@ -6,11 +6,6 @@ import (
 
 	// 系统用户
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/admins"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/admins/recipients"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/admins/recipients/groups"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/admins/recipients/instances"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/admins/recipients/logs"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/admins/recipients/tasks"
 
 	// API节点
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/api"
@@ -41,23 +36,8 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ui"
 
-	// 域名服务
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters/accessLogs"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters/cluster"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters/cluster/settings"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters/cluster/settings/accessLog"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters/cluster/settings/recursion"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/clusters/logs"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/routes"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/settings/accesslogs"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/test"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/ns/users"
-
 	// 服务相关
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/accesslogs"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/certs"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/cache"
@@ -68,7 +48,6 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/metrics"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/metrics/charts"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/boards"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/delete"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/log"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings"

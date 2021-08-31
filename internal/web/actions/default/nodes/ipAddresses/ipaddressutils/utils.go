@@ -32,12 +32,12 @@ func UpdateNodeIPAddresses(parentAction *actionutils.ParentAction, nodeId int64,
 			}
 
 			_, err = parentAction.RPC().NodeIPAddressRPC().UpdateNodeIPAddress(parentAction.AdminContext(), &pb.UpdateNodeIPAddressRequest{
-				AddressId:      addrId,
-				Ip:             addr.GetString("ip"),
-				Name:           addr.GetString("name"),
-				CanAccess:      addr.GetBool("canAccess"),
-				IsOn:           isOn,
-				ThresholdsJSON: thresholdsJSON,
+				NodeIPAddressId: addrId,
+				Ip:              addr.GetString("ip"),
+				Name:            addr.GetString("name"),
+				CanAccess:       addr.GetBool("canAccess"),
+				IsOn:            isOn,
+				ThresholdsJSON:  thresholdsJSON,
 			})
 			if err != nil {
 				return err
