@@ -69,8 +69,11 @@ Vue.component("http-host-redirect-box", {
 			})
 		},
 		remove: function (index) {
-			this.redirects.$remove(index)
-			this.change()
+			let that = this
+			teaweb.confirm("确定要删除这条跳转规则吗？", function () {
+				that.redirects.$remove(index)
+				that.change()
+			})
 		},
 		change: function () {
 			let that = this
