@@ -1,6 +1,4 @@
 Tea.context(function () {
-	this.success = NotifyReloadSuccess("保存成功")
-
 	this.change = function (values) {
 		this.$post("$")
 			.params({
@@ -8,7 +6,9 @@ Tea.context(function () {
 				hostRedirectsJSON: JSON.stringify(values)
 			})
 			.success(function () {
-				NotifyReloadSuccess("保存成功")()
+				teaweb.successToast("保存成功", null, function () {
+					teaweb.reload()
+				})
 			})
 	}
 })
