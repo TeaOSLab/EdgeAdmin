@@ -247,7 +247,7 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 					"isOn": teaconst.IsPlus,
 				},
 				/**{
-					"name": "监控",
+					"name": "区域监控",
 					"url":  "/clusters/monitors",
 					"code": "monitor",
 					"isOn": teaconst.IsPlus,
