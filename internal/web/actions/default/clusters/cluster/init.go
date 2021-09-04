@@ -2,10 +2,8 @@ package cluster
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/boards"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/groups"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node"
-	nodeboards "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/boards"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/thresholds"
 	clusters "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/clusterutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
@@ -46,8 +44,6 @@ func init() {
 			Post("/up", new(node.UpAction)).
 			Get("/thresholds", new(thresholds.IndexAction)).
 			Get("/detail", new(node.DetailAction)).
-			GetPost("/boards", new(nodeboards.IndexAction)).
-			Post("/boards/data", new(nodeboards.DataAction)).
 			GetPost("/updateDNSPopup", new(node.UpdateDNSPopupAction)).
 
 			// 分组相关
@@ -58,10 +54,6 @@ func init() {
 			Post("/delete", new(groups.DeleteAction)).
 			Post("/sort", new(groups.SortAction)).
 			GetPost("/selectPopup", new(groups.SelectPopupAction)).
-
-			// 看板相关
-			Prefix("/clusters/cluster/boards").
-			GetPost("", new(boards.IndexAction)).
 			EndAll()
 	})
 }
