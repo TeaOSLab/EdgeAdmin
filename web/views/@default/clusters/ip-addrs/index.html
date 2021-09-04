@@ -42,7 +42,6 @@
                 <th>所属集群</th>
                 <th>所属节点</th>
                 <th>名称</th>
-                <th>可访问</th>
                 <th>阈值</th>
                 <th>状态</th>
                 <th class="two op">操作</th>
@@ -63,15 +62,12 @@
                 <span v-else class="disabled">-</span>
             </td>
             <td>
-                <span v-if="addr.canAccess" class="green">Y</span>
-                <span v-else class="disabled">N</span>
-            </td>
-            <td>
                 <span v-if="addr.hasThresholds" class="green">Y</span>
                 <span v-else class="disabled">N</span>
             </td>
             <td>
-                <label-on :v-is-on="addr.isOn" v-if="!addr.isOn"></label-on>
+                <span v-if="!addr.isOn" class="red">禁用</span>
+                <span v-else-if="!addr.canAccess" class="red">不可访问</span>
                 <span v-else-if="addr.isUp" class="green">在线</span>
                 <span v-else class="red">离线</span>
             </td>
