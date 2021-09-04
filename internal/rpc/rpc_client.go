@@ -300,6 +300,10 @@ func (this *RPCClient) IPListRPC() pb.IPListServiceClient {
 	return pb.NewIPListServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) ReporterRPC() pb.ReporterServiceClient {
+	return pb.NewReporterServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) IPItemRPC() pb.IPItemServiceClient {
 	return pb.NewIPItemServiceClient(this.pickConn())
 }

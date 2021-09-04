@@ -67,6 +67,9 @@
   padding-bottom: 2em;
   overflow-y: auto;
 }
+body.expanded .right-box {
+  left: 10em;
+}
 .right-box.tiny {
   top: 10.4em;
   left: 26.5em;
