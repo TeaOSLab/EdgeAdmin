@@ -62,6 +62,9 @@
             <!-- 背景颜色 -->
             <a href="" class="item" title="点击切换界面风格" @click.prevent="changeTheme()"><i class="icon adjust"></i></a>
 
+            <!-- -->
+            <a :href="'/settings/authority'" class="item" title="企业版" :v-if="teaIsPlus"><i class="icon gem outline yellow"></i></a>
+
             <!-- 退出登录 -->
             <a :href="Tea.url('logout')" class="item" title="安全退出登录"><i class="icon sign out"></i>
                 <span class="hover-span"><span class="disabled">退出登录</span></span>

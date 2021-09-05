@@ -7,7 +7,6 @@ Vue.component("source-code-box", {
 		if (typeof readOnly != "boolean") {
 			readOnly = true
 		}
-		console.log("readonly:", readOnly) // TODO
 		let box = document.getElementById("source-code-box-" + this.index)
 		let valueBox = document.getElementById(this.valueBoxId)
 		let value = ""
