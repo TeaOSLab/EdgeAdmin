@@ -1,0 +1,73 @@
+{$layout}
+{$template "/code_editor"}
+{$template "reporter_menu"}
+
+<table class="ui table definition selectable">
+    <tr>
+        <td class="title">名称</td>
+        <td>
+            {{reporter.name}}
+        </td>
+    </tr>
+    <tr>
+        <td>状态</td>
+        <td>
+            <span v-if="!reporter.isOn" class="red">禁用</span>
+            <span v-else-if="!reporter.isActive" class="red">离线</span>
+            <span v-else class="green">在线</span>
+        </td>
+    </tr>
+    <tr>
+        <td>区域</td>
+        <td>
+            <span v-if="reporter.location.length > 0">{{reporter.location}}</span>
+            <span v-else-if="reporter.status.location.length > 0" class="grey">{{reporter.status.location}}</span>
+            <span v-else class="disabled">没有设置</span>
+        </td>
+    </tr>
+    <tr>
+        <td>网络提供商</td>
+        <td>
+            <span v-if="reporter.isp.length > 0">{{reporter.isp}}</span>
+            <span v-else-if="reporter.status.isp.length > 0" class="grey">{{reporter.status.isp}}</span>
+            <span v-else class="disabled">没有设置</span>
+        </td>
+    </tr>
+    <tr>
+        <td>允许的终端IP</td>
+        <td>
+            <div v-if="reporter.allowIPs != null && reporter.allowIPs.length > 0">
+                <span v-for="ip in reporter.allowIPs" class="ui label tiny basic">{{ip}}</span>
+            </div>
+            <span v-else class="disabled">没有设置</span>
+        </td>
+    </tr>
+</table>
+
+<h4>安装信息</h4>
+<table class="ui table definition selectable">
+    <tr>
+        <td class="title">节点ID</td>
+        <td>{{reporter.uniqueId}}</td>
+    </tr>
+    <tr>
+        <td>节点Secret</td>
+        <td>{{reporter.secret}}</td>
+    </tr>
+    <tr>
+        <td>命令行</td>
+        <td>
+            <more-options-indicator>查看命令行</more-options-indicator>
+            <div :style="{visibility: moreOptionsVisible ? 'visible' : 'hidden', height: moreOptionsVisible ? 'auto': '0em'}">
+                <div class="ui divider"></div>
+                <h4>Linux、Mac OS X：</h4>
+                <source-code-box type="application/x-sh">edge-reporter run -api=[API HOST] -node-id={{reporter.uniqueId}} -secret={{reporter.secret}}</source-code-box>
+
+                <h4>Windows：</h4>
+                <source-code-box type="application/x-sh">edge-reporter.exe run -api=[API HOST] -node-id={{reporter.uniqueId}} -secret={{reporter.secret}}</source-code-box>
+
+                <p class="comment">把上面命令行中的<code-label>[API_HOST]</code-label>换成你的API节点地址，包括协议、主机名端口。</p>
+            </div>
+        </td>
+    </tr>
+</table>
