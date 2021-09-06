@@ -56,6 +56,7 @@ func init() {
 			Data("teaSubMenu", "issue").
 			GetPost("", new(issues.IndexAction)).
 			GetPost("/updateNodePopup", new(issues.UpdateNodePopupAction)).
+			Post("/syncDomain", new(issues.SyncDomainAction)).
 			EndData().
 			EndAll()
 	})
