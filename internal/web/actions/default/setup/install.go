@@ -168,7 +168,7 @@ func (this *InstallAction) RunPost(params struct {
 			nodes.SharedAdminNode.AddSubPID(cmd.Process.Pid)
 
 			// 等待API节点初始化完成
-			time.Sleep(2 * time.Second)
+			time.Sleep(5 * time.Second)
 		}
 
 		// 写入API节点配置，完成安装
