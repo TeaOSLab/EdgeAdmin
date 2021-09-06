@@ -204,6 +204,9 @@ p.margin {
 .main-menu .ui.labeled.icon.menu .item {
   font-size: 0.9em;
 }
+.main-menu .ui.menu {
+  padding-bottom: 3em;
+}
 .main-menu .ui.menu .item .subtitle {
   display: none;
 }
