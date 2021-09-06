@@ -24,10 +24,10 @@
 		<tr v-if="domainId > 0">
 			<td>线路</td>
 			<td>
-				<p class="comment" v-if="allRoutes.length == 0">没有可选的线路。</p>
+				<p class="comment" v-if="allRoutes.length == 0">没有可选的线路。<a href="" @click.prevent="syncDomain(domainId)">[获取线路]</a></p>
 				<div v-if="allRoutes.length > 0">
 					<dns-route-selector :v-all-routes="allRoutes" :v-routes="routes"></dns-route-selector>
-					<p class="comment">当前节点IP对应的线路。</p>
+					<p class="comment">当前节点IP对应的线路。<a href="" @click.prevent="syncDomain(domainId)">[重新获取线路]</a></p>
 				</div>
 			</td>
 		</tr>

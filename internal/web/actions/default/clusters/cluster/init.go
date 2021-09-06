@@ -45,6 +45,7 @@ func init() {
 			Get("/thresholds", new(thresholds.IndexAction)).
 			Get("/detail", new(node.DetailAction)).
 			GetPost("/updateDNSPopup", new(node.UpdateDNSPopupAction)).
+			Post("/syncDomain", new(node.SyncDomainAction)).
 
 			// 分组相关
 			Prefix("/clusters/cluster/groups").
