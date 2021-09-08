@@ -304,6 +304,10 @@ func (this *RPCClient) ReportNodeRPC() pb.ReportNodeServiceClient {
 	return pb.NewReportNodeServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) ReportNodeGroupRPC() pb.ReportNodeGroupServiceClient {
+	return pb.NewReportNodeGroupServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) ReportResultRPC() pb.ReportResultServiceClient {
 	return pb.NewReportResultServiceClient(this.pickConn())
 }

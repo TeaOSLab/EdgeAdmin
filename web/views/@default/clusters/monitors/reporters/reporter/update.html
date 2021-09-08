@@ -6,9 +6,15 @@
     <input type="hidden" name="reporterId" :value="reporter.id"/>
     <table class="ui table definition selectable">
         <tr>
-            <td class="title">名称 *</td>
+            <td class="title">终端名称 *</td>
             <td>
                 <input type="text" name="name" maxlength="50" ref="focus" v-model="reporter.name"/>
+            </td>
+        </tr>
+        <tr>
+            <td>所属分组</td>
+            <td>
+                <report-node-groups-selector :v-group-ids="reporter.groupIds"></report-node-groups-selector>
             </td>
         </tr>
         <tr>

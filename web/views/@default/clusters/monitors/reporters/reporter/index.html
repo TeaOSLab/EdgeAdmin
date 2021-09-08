@@ -4,7 +4,7 @@
 
 <table class="ui table definition selectable">
     <tr>
-        <td class="title">名称</td>
+        <td class="title">终端名称</td>
         <td>
             {{reporter.name}}
         </td>
@@ -15,6 +15,15 @@
             <span v-if="!reporter.isOn" class="red">禁用</span>
             <span v-else-if="!reporter.isActive" class="red">离线</span>
             <span v-else class="green">在线</span>
+        </td>
+    </tr>
+    <tr>
+        <td>所属分组</td>
+        <td>
+            <div v-if="reporter.groups.length > 0">
+                <span v-for="group in reporter.groups" class="ui label basic tiny">{{group.name}}</span>
+            </div>
+            <span v-else class="disabled">全部分组</span>
         </td>
     </tr>
     <tr>
@@ -41,6 +50,10 @@
             </div>
             <span v-else class="disabled">没有设置</span>
         </td>
+    </tr>
+    <tr v-if="reporter.status.buildVersion.length > 0">
+        <td>版本号</td>
+        <td>v{{reporter.status.buildVersion}}</td>
     </tr>
 </table>
 

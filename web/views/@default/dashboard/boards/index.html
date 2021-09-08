@@ -35,6 +35,10 @@
     <i class="icon warning circle"></i>
     <a href="/ns/clusters">升级提醒：有 {{nsNodeUpgradeInfo.count}} 个DNS节点需要升级到 v{{nsNodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
 </div>
+<div class="ui icon message error" v-if="!isLoading && reportNodeUpgradeInfo.count > 0 && teaIsPlus">
+    <i class="icon warning circle"></i>
+    <a href="/clusters/monitors/reporters">升级提醒：有 {{reportNodeUpgradeInfo.count}} 个区域监控终端需要升级到 v{{reportNodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
+</div>
 <div class="ui icon message error" v-if="!isLoading && authorityNodeUpgradeInfo.count > 0 && teaIsPlus">
     <i class="icon warning circle"></i>
     <a href="/settings/authority/nodes">升级提醒：有 {{authorityNodeUpgradeInfo.count}} 个企业版认证节点需要升级到 v{{authorityNodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>

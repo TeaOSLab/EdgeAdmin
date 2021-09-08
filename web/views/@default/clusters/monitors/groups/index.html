@@ -1,0 +1,23 @@
+{$layout}
+{$template "../menu"}
+
+<second-menu>
+    <menu-item @click.prevent="createGroup">[添加分组]</menu-item>
+</second-menu>
+
+<p class="comment" v-if="groups.length == 0">暂时还没有分组。</p>
+<table class="ui table selectable celled" v-if="groups.length > 0">
+    <thead>
+        <tr>
+            <th>分组名称</th>
+            <th class="two wide">操作</th>
+        </tr>
+    </thead>
+    <tr v-for="group in groups">
+        <td>{{group.name}}</td>
+        <td>
+            <a href="" @click.prevent="updateGroup(group.id)">修改</a> &nbsp;
+            <a href="" @click.prevent="deleteGroup(group.id)">删除</a>
+        </td>
+    </tr>
+</table>
