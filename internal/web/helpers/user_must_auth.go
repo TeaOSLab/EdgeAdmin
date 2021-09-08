@@ -246,12 +246,12 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 					"code": "ipAddr",
 					"isOn": teaconst.IsPlus,
 				},
-				/**{
+				{
 					"name": "区域监控",
 					"url":  "/clusters/monitors",
 					"code": "monitor",
 					"isOn": teaconst.IsPlus,
-				},**/
+				},
 				{
 					"name": "SSH认证",
 					"url":  "/clusters/grants",

@@ -24,7 +24,7 @@
         <tr>
             <th class="two wide">类型</th>
             <th class="four wide">对象</th>
-            <th class="one wide">结果</th>
+            <th class="one wide">级别</th>
             <th class="two wide">耗时</th>
             <th>错误信息</th>
         </tr>
@@ -33,10 +33,12 @@
         <td>{{result.typeName}}</td>
         <td>{{result.targetDesc}}</td>
         <td>
-            <span v-if="result.isOk" class="green">成功</span>
-            <span v-else class="red">失败</span>
+            <span :class="result.color">{{result.levelName}}</span>
         </td>
-        <td>{{result.costMs}}ms</td>
+        <td>
+            <span v-if="result.isOk" :class="result.color">{{result.costMs}}ms</span>
+            <span v-else class="disabled">-</span>
+        </td>
         <td>
             <span v-if="!result.isOk" class="red">{{result.error}}</span>
             <span v-else class="disabled">-</span>
