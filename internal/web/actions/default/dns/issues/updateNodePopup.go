@@ -85,10 +85,12 @@ func (this *UpdateNodePopupAction) RunPost(params struct {
 	defer this.CreateLog(oplogs.LevelInfo, "修改节点 %d 的DNS设置", params.NodeId)
 
 	routes := []string{}
-	err := json.Unmarshal(params.DnsRoutesJSON, &routes)
-	if err != nil {
-		this.ErrorPage(err)
-		return
+	if len(params.DnsRoutesJSON) > 0 {
+		err := json.Unmarshal(params.DnsRoutesJSON, &routes)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
 	}
 
 	params.Must.
@@ -100,7 +102,7 @@ func (this *UpdateNodePopupAction) RunPost(params struct {
 	}
 
 	// 执行修改
-	_, err = this.RPC().NodeRPC().UpdateNodeDNS(this.AdminContext(), &pb.UpdateNodeDNSRequest{
+	_, err := this.RPC().NodeRPC().UpdateNodeDNS(this.AdminContext(), &pb.UpdateNodeDNSRequest{
 		NodeId:      params.NodeId,
 		IpAddr:      params.IpAddr,
 		DnsDomainId: params.DomainId,
