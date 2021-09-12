@@ -56,7 +56,7 @@ Vue.component("node-ip-addresses-box", {
 				<span class="small grey" v-if="address.name.length == 0 && !address.canAccess">（不可访问）</span>
 				<span class="small red" v-if="!address.isOn" title="未启用">[off]</span>
 				<span class="small red" v-if="!address.isUp" title="已下线">[down]</span>
-				<span class="small" v-if="address.thresholds != null && address.thresholds.length > 0">[阈值]</span>
+				<span class="small" v-if="address.thresholds != null && address.thresholds.length > 0">[{{address.thresholds.length}}个阈值]</span>
 				&nbsp;
 				<a href="" title="修改" @click.prevent="updateIPAddress(index, address)"><i class="icon pencil small"></i></a>
 				<a href="" title="删除" @click.prevent="removeIPAddress(index)"><i class="icon remove"></i></a>

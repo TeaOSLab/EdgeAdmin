@@ -14,12 +14,15 @@
 	</second-menu>
 
     <form class="ui form">
+        <input type="hidden" name="type" :value="type"/>
         <div class="ui fields inline">
             <div class="ui field">
                 <input type="text" name="keyword" placeholder="关键词" style="width:10em" v-model="keyword"/>
             </div>
             <div class="ui field">
                 <button type="submit" class="ui button">搜索</button>
+                &nbsp;
+                <a :href="Tea.url('.', { 'type':type })" v-if="keyword.length > 0">[清除条件]</a>
             </div>
         </div>
     </form>
@@ -39,7 +42,7 @@
 			</tr>
 		</thead>
 		<tr v-for="(cert, index) in certs">
-			<td>{{cert.name}}
+            <td><keyword :v-word="keyword">{{cert.name}}</keyword>
 				<div v-if="cert.isCA" style="margin-top:0.5em">
 					<micro-basic-label :class="olive">CA</micro-basic-label>
 				</div>
@@ -52,7 +55,7 @@
 			</td>
 			<td>
 				<div v-for="dnsName in cert.dnsNames" style="margin-bottom:0.4em">
-					<span class="ui label tiny basic">{{dnsName}}</span>
+                    <span class="ui label tiny basic"><keyword :v-word="keyword">{{dnsName}}</keyword></span>
 				</div>
 			</td>
 			<td>{{certInfos[index].beginDay}}</td>

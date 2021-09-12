@@ -57,13 +57,10 @@ func (this *UpdateAction) RunGet(params struct {
 	}
 	ipAddressMaps := []maps.Map{}
 	for _, addr := range ipAddressesResp.Addresses {
-		var thresholds = []*nodeconfigs.NodeValueThresholdConfig{}
-		if len(addr.ThresholdsJSON) > 0 {
-			err = json.Unmarshal(addr.ThresholdsJSON, &thresholds)
-			if err != nil {
-				this.ErrorPage(err)
-				return
-			}
+		thresholds, err := ipaddressutils.InitNodeIPAddressThresholds(this.Parent(), addr.Id)
+		if err != nil {
+			this.ErrorPage(err)
+			return
 		}
 
 		ipAddressMaps = append(ipAddressMaps, maps.Map{

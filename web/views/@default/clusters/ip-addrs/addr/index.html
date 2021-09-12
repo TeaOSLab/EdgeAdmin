@@ -11,7 +11,8 @@
     <tr>
         <td>状态</td>
         <td>
-            <label-on :v-is-on="addr.isOn" v-if="!addr.isOn"></label-on>
+            <span v-if="!addr.canAccess" class="red">不可访问</span>
+            <span v-else-if="!addr.isOn" class="red">禁用</span>
             <span v-else-if="addr.isUp" class="green">在线</span>
             <span v-else class="red">离线</span>
         </td>
@@ -34,19 +35,10 @@
         </td>
     </tr>
     <tr>
-        <td>是否可以访问</td>
-        <td>
-            <span v-if="addr.canAccess" class="green">Y</span>
-            <span v-else class="disabled">N</span>
-        </td>
-    </tr>
-    <tr>
         <td>阈值</td>
         <td>
             <div v-if="addr.thresholds.length > 0">
-                <span v-for="threshold in addr.thresholds" class="ui basic tiny label">
-                    {{threshold.item}} {{threshold.operator}} {{threshold.value}}
-                </span>
+                <node-ip-address-thresholds-view :v-thresholds="addr.thresholds"></node-ip-address-thresholds-view>
             </div>
             <span v-else class="disabled">没有设置阈值。</span>
         </td>

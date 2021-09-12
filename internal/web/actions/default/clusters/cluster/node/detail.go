@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/ipAddresses/ipaddressutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
@@ -79,14 +80,12 @@ func (this *DetailAction) RunGet(params struct {
 	var ipAddresses = ipAddressesResp.Addresses
 	ipAddressMaps := []maps.Map{}
 	for _, addr := range ipAddressesResp.Addresses {
-		var thresholds = []*nodeconfigs.NodeValueThresholdConfig{}
-		if len(addr.ThresholdsJSON) > 0 {
-			err = json.Unmarshal(addr.ThresholdsJSON, &thresholds)
-			if err != nil {
-				this.ErrorPage(err)
-				return
-			}
+		thresholds, err := ipaddressutils.InitNodeIPAddressThresholds(this.Parent(), addr.Id)
+		if err != nil {
+			this.ErrorPage(err)
+			return
 		}
+
 		ipAddressMaps = append(ipAddressMaps, maps.Map{
 			"id":         addr.Id,
 			"name":       addr.Name,

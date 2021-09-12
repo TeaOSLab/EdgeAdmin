@@ -34,6 +34,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	Name           string
 	CanAccess      bool
 	IsOn           bool
+	IsUp           bool
 	ThresholdsJSON []byte
 
 	Must *actions.Must
@@ -43,7 +44,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		Require("请输入IP地址")
 
 	// 获取IP地址信息
-	var isUp = true
+	var isUp = params.IsUp
 	if params.AddressId > 0 {
 		addressResp, err := this.RPC().NodeIPAddressRPC().FindEnabledNodeIPAddress(this.AdminContext(), &pb.FindEnabledNodeIPAddressRequest{NodeIPAddressId: params.AddressId})
 		if err != nil {

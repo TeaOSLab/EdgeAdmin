@@ -30,19 +30,21 @@ func (this *CreatePopupAction) RunPost(params struct {
 	IP             string `alias:"ip"`
 	CanAccess      bool
 	Name           string
+	IsUp           bool
 	ThresholdsJSON []byte
 
 	Must *actions.Must
 }) {
-	ip := net.ParseIP(params.IP)
-	if len(ip) == 0 {
-		this.Fail("请输入正确的IP")
-	}
-
 	params.Must.
 		Field("ip", params.IP).
 		Require("请输入IP地址")
 
+	ip := net.ParseIP(params.IP)
+	if len(ip) == 0 {
+		this.FailField("ip", "请输入正确的IP")
+	}
+
+	// 阈值设置
 	var thresholds = []*nodeconfigs.NodeValueThresholdConfig{}
 	if teaconst.IsPlus && len(params.ThresholdsJSON) > 0 {
 		_ = json.Unmarshal(params.ThresholdsJSON, &thresholds)
@@ -54,7 +56,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		"ip":         params.IP,
 		"id":         0,
 		"isOn":       true,
-		"isUp":       true,
+		"isUp":       params.IsUp,
 		"thresholds": thresholds,
 	}
 	this.Success()

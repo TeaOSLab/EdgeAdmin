@@ -11,6 +11,8 @@
         </div>
         <div class="ui field">
             <button class="ui button" type="submit">搜索</button>
+            &nbsp;
+            <a :href="Tea.url('.')" v-if="keyword.length > 0">[清除条件]</a>
         </div>
     </div>
 </form>

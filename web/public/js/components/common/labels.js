@@ -26,5 +26,5 @@ Vue.component("micro-basic-label", {
 
 // 灰色的Label
 Vue.component("grey-label", {
-	template: `<span class="grey small"><slot></slot></span>`
+	template: `<span class="ui label basic grey tiny" style="font-size: 0.7em; border: 1px solid #ddd"><slot></slot></span>`
 })

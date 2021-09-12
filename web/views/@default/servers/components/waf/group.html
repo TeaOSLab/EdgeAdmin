@@ -39,7 +39,7 @@
 		<tbody v-for="set in sets" :data-set-id="set.id">
 		<tr>
 			<td style="text-align: center;"><i class="icon bars handle grey"></i> </td>
-			<td nowrap=""><span :class="{disabled:!set.isOn}">{{set.name}}</span>
+			<td nowrap=""><a href="" @click.prevent="updateSet(set.id)"><span :class="{disabled:!set.isOn}">{{set.name}}</span></a>
 				<p style="margin-top:0.5em">
 					<label-on :v-is-on="set.isOn"></label-on>
 				</p>
