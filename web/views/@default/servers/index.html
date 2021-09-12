@@ -47,8 +47,10 @@
                 </div>
                 <div class="ui field">
                     <button type="submit" class="ui button">搜索</button>
+                    &nbsp;
+                    <a href="/servers" v-if="clusterId > 0 || groupId > 0 || keyword.length > 0">[清除条件]</a>
                 </div>
-                <div class="ui field" v-if="latestServers.length > 0">
+                <div class="ui field" v-if="clusterId == 0 && groupId == 0 && keyword.length == 0 && latestServers.length > 0">
                     <a href="" @click.prevent="showLatest()">常用<i class="icon angle" :class="{down: !latestVisible, up: latestVisible}"></i> </a>
                 </div>
             </div>

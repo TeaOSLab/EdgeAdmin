@@ -31,6 +31,10 @@
 				</div>
 			</td>
 		</tr>
+        <tr v-if="domainId == 0">
+            <td>线路</td>
+            <td><span class="disabled">当前集群没有选择域名。</span></td>
+        </tr>
 	</table>
 
 	<submit-btn></submit-btn>

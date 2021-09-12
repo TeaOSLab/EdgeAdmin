@@ -42,7 +42,7 @@
         <td>
             <a :href="Tea.url('.reporter', {reporterId: reporter.id})"><keyword :v-word="keyword">{{reporter.name}}</keyword></a>
             <div v-if="reporter.groups.length > 0" style="margin-top: 0.5em">
-                <div class="ui label basic tiny" v-for="group in reporter.groups"><span class="small">{{group.name}}</span></div>
+                <grey-label v-for="group in reporter.groups">{{group.name}}</grey-label>
             </div>
             <div v-if="reporter.shouldUpgrade">
                 <span class="red small" title="需要升级">v{{reporter.status.buildVersion}} -&gt; v{{reporter.newVersion}}</span>

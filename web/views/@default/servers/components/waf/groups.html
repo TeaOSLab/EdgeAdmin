@@ -20,9 +20,9 @@
     <tbody  v-for="group in groups" :data-group-id="group.id">
         <tr>
             <td style="text-align: center;"><i class="icon bars handle grey" title="拖动排序"></i> </td>
-            <td><span :class="{disabled:!group.isOn}">{{group.name}}</span>
+            <td><a :href="'/servers/components/waf/group?firewallPolicyId=' + firewallPolicyId + '&type=' + type + '&groupId=' + group.id"><span :class="{disabled:!group.isOn}">{{group.name}}</span></a>
                 <p class="comment" v-if="group.description.length > 0" style="padding-bottom:0">{{group.description}}</p>
-                <p>
+                <p style="margin-top: 0.5em">
                     <span v-if="group.isOn" class="ui label tiny basic green">启用</span>
                     <span v-if="!group.isOn" class="ui label tiny basic red">停用</span>
                     <span v-if="group.code.length > 0" class="ui label basic tiny">预置</span>

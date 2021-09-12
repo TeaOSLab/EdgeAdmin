@@ -167,32 +167,48 @@ func (this *CreateNodeAction) RunPost(params struct {
 	nodeId := createResp.NodeId
 
 	// IP地址
-	for _, address := range ipAddresses {
-		addressId := address.GetInt64("id")
-		if addressId > 0 {
+	for _, addr := range ipAddresses {
+		addrId := addr.GetInt64("id")
+		if addrId > 0 {
 			_, err = this.RPC().NodeIPAddressRPC().UpdateNodeIPAddressNodeId(this.AdminContext(), &pb.UpdateNodeIPAddressNodeIdRequest{
-				NodeIPAddressId: addressId,
+				NodeIPAddressId: addrId,
 				NodeId:          nodeId,
 			})
-		} else {
-			var thresholdsJSON = []byte{}
-			var thresholds = address.GetSlice("thresholds")
-			if len(thresholds) > 0 {
-				thresholdsJSON, _ = json.Marshal(thresholds)
+			if err != nil {
+				this.ErrorPage(err)
+				return
 			}
-
-			_, err = this.RPC().NodeIPAddressRPC().CreateNodeIPAddress(this.AdminContext(), &pb.CreateNodeIPAddressRequest{
-				NodeId:         nodeId,
-				Role:           nodeconfigs.NodeRoleNode,
-				Name:           address.GetString("name"),
-				Ip:             address.GetString("ip"),
-				CanAccess:      address.GetBool("canAccess"),
-				ThresholdsJSON: thresholdsJSON,
+		} else {
+			createResp, err := this.RPC().NodeIPAddressRPC().CreateNodeIPAddress(this.AdminContext(), &pb.CreateNodeIPAddressRequest{
+				NodeId:    nodeId,
+				Role:      nodeconfigs.NodeRoleNode,
+				Name:      addr.GetString("name"),
+				Ip:        addr.GetString("ip"),
+				CanAccess: addr.GetBool("canAccess"),
 			})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			addrId = createResp.NodeIPAddressId
 		}
-		if err != nil {
-			this.ErrorPage(err)
-			return
+
+		// 阈值
+		var thresholds = addr.GetSlice("thresholds")
+		if len(thresholds) > 0 {
+			thresholdsJSON, err := json.Marshal(thresholds)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			_, err = this.RPC().NodeIPAddressThresholdRPC().UpdateAllNodeIPAddressThresholds(this.AdminContext(), &pb.UpdateAllNodeIPAddressThresholdsRequest{
+				NodeIPAddressId:             addrId,
+				NodeIPAddressThresholdsJSON: thresholdsJSON,
+			})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
 		}
 	}
 

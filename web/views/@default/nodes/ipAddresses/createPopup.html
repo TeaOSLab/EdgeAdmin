@@ -30,8 +30,17 @@
                     <input type="text" name="name" maxlength="50"/>
                 </td>
             </tr>
+            <tr>
+                <td>在线状态</td>
+                <td>
+                    <select class="ui dropdown auto-width" name="isUp">
+                        <option value="1">在线</option>
+                        <option value="0">离线</option>
+                    </select>
+                </td>
+            </tr>
             <tr v-if="teaIsPlus && supportThresholds">
-                <td>上线阈值</td>
+                <td>阈值设置</td>
                 <td>
                     <node-ip-address-thresholds-box></node-ip-address-thresholds-box>
                 </td>

@@ -36,6 +36,24 @@ Vue.component("report-node-groups-selector", {
 					that.groupIds.push(v.id)
 				}
 			})
+			this.change()
+		},
+		change: function () {
+			let that = this
+			let groups = []
+			this.groupIds.forEach(function (groupId) {
+				let group = that.groups.$find(function (k, v) {
+					return v.id == groupId
+				})
+				if (group == null) {
+					return
+				}
+				groups.push({
+					id: group.id,
+					name: group.name
+				})
+			})
+			this.$emit("change", groups)
 		}
 	},
 	watch: {
@@ -46,6 +64,8 @@ Vue.component("report-node-groups-selector", {
 					v.isChecked = false
 				})
 			}
+
+			this.change()
 		}
 	},
 	template: `<div>
