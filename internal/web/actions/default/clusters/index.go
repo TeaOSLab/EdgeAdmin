@@ -193,7 +193,7 @@ func (this *IndexAction) searchNodes(keyword string) {
 		}
 
 		// IP
-		ipAddressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledIPAddressesWithNodeIdRequest{
+		ipAddressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledNodeIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledNodeIPAddressesWithNodeIdRequest{
 			NodeId: node.Id,
 			Role:   nodeconfigs.NodeRoleNode,
 		})
@@ -202,7 +202,7 @@ func (this *IndexAction) searchNodes(keyword string) {
 			return
 		}
 		ipAddresses := []maps.Map{}
-		for _, addr := range ipAddressesResp.Addresses {
+		for _, addr := range ipAddressesResp.NodeIPAddresses {
 			ipAddresses = append(ipAddresses, maps.Map{
 				"id":        addr.Id,
 				"name":      addr.Name,

@@ -28,7 +28,7 @@ func (this *NodeOptionsAction) RunPost(params struct {
 			continue
 		}
 
-		addressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledIPAddressesWithNodeIdRequest{
+		addressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledNodeIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledNodeIPAddressesWithNodeIdRequest{
 			NodeId: node.Id,
 			Role:   nodeconfigs.NodeRoleDNS,
 		})
@@ -36,7 +36,7 @@ func (this *NodeOptionsAction) RunPost(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		var addresses = addressesResp.Addresses
+		var addresses = addressesResp.NodeIPAddresses
 		if len(addresses) == 0 {
 			continue
 		}
