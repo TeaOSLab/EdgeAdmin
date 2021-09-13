@@ -47,7 +47,7 @@ func (this *UpdateAction) RunGet(params struct {
 	}
 
 	// IP地址
-	ipAddressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledIPAddressesWithNodeIdRequest{
+	ipAddressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledNodeIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledNodeIPAddressesWithNodeIdRequest{
 		NodeId: params.NodeId,
 		Role:   nodeconfigs.NodeRoleNode,
 	})
@@ -56,7 +56,7 @@ func (this *UpdateAction) RunGet(params struct {
 		return
 	}
 	ipAddressMaps := []maps.Map{}
-	for _, addr := range ipAddressesResp.Addresses {
+	for _, addr := range ipAddressesResp.NodeIPAddresses {
 		thresholds, err := ipaddressutils.InitNodeIPAddressThresholds(this.Parent(), addr.Id)
 		if err != nil {
 			this.ErrorPage(err)
@@ -391,7 +391,7 @@ func (this *UpdateAction) RunPost(params struct {
 	}
 
 	// 禁用老的IP地址
-	_, err = this.RPC().NodeIPAddressRPC().DisableAllIPAddressesWithNodeId(this.AdminContext(), &pb.DisableAllIPAddressesWithNodeIdRequest{
+	_, err = this.RPC().NodeIPAddressRPC().DisableAllNodeIPAddressesWithNodeId(this.AdminContext(), &pb.DisableAllNodeIPAddressesWithNodeIdRequest{
 		NodeId: params.NodeId,
 		Role:   nodeconfigs.NodeRoleNode,
 	})
