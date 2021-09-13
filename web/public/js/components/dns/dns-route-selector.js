@@ -5,6 +5,12 @@ Vue.component("dns-route-selector", {
 		if (routes == null) {
 			routes = []
 		}
+		routes.$sort(function (v1, v2) {
+			if (v1.domainId == v2.domainId) {
+				return v1.code < v2.code
+			}
+			return (v1.domainId < v2.domainId) ? 1 : -1
+		})
 		return {
 			routes: routes,
 			routeCodes: routes.$map(function (k, v) {
@@ -48,6 +54,13 @@ Vue.component("dns-route-selector", {
 
 			this.routeCodes.push(this.routeCode)
 			this.routes.push(route)
+
+			this.routes.$sort(function (v1, v2) {
+				if (v1.domainId == v2.domainId) {
+					return v1.code < v2.code
+				}
+				return (v1.domainId < v2.domainId) ? 1 : -1
+			})
 
 			this.routeCode = ""
 			this.isAdding = false

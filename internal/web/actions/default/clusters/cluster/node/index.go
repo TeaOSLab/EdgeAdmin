@@ -20,7 +20,7 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	NodeId int64
 }) {
-	err := nodeutils.InitNodeInfo(this, params.NodeId)
+	_, err := nodeutils.InitNodeInfo(this.Parent(), params.NodeId)
 	if err != nil {
 		this.ErrorPage(err)
 		return

@@ -1,0 +1,23 @@
+{$layout}
+{$template "/clusters/cluster/node/node_menu"}
+{$template "/left_menu_with_menu"}
+
+<div class="right-box with-menu">
+    <form class="ui form" data-tea-action="$" data-tea-success="success">
+        <csrf-token></csrf-token>
+        <input type="hidden" name="nodeId" :value="node.id"/>
+
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title">DNS线路</td>
+                <td>
+                    <div v-if="allDNSRoutes.length > 0">
+                        <dns-route-selector :v-all-routes="allDNSRoutes" :v-routes="dnsRoutes"></dns-route-selector>
+                        <p class="comment">当前节点对应的DNS线路，可用线路是根据集群设置的域名获取的，注意DNS服务商可能对这些线路有其他限制。</p>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <submit-btn></submit-btn>
+    </form>
+</div>
