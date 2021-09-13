@@ -22,7 +22,7 @@
         <tr v-for="threshold in thresholds">
             <td>{{threshold.itemName}}
                 <div v-if="threshold.node != null" style="margin-top: 0.3em">
-                    <a :href="'/clusters/cluster/node/thresholds?clusterId=' + clusterId + '&nodeId=' + threshold.node.id" class="ui label basic tiny" title="节点专属阈值设置"><span class="small">节点：{{threshold.node.name}}</span></a>
+                    <a :href="'/clusters/cluster/node/settings/thresholds?clusterId=' + clusterId + '&nodeId=' + threshold.node.id" class="ui label basic tiny" title="节点专属阈值设置"><span class="small">节点：{{threshold.node.name}}</span></a>
                 </div>
             </td>
             <td>{{threshold.paramName}}</td>

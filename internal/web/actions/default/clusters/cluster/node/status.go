@@ -6,7 +6,7 @@ import (
 	"github.com/iwind/TeaGo/maps"
 )
 
-// 节点状态
+// StatusAction 节点状态
 type StatusAction struct {
 	actionutils.ParentAction
 }

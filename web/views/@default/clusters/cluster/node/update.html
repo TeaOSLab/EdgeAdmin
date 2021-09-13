@@ -1,108 +1,65 @@
 {$layout}
-
 {$template "node_menu"}
 
-<h3>修改节点</h3>
-<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
-    <input type="hidden" name="nodeId" :value="node.id"/>
-    <input type="hidden" name="loginId" :value="loginId"/>
-    <table class="ui table definition selectable">
-        <tr>
-            <td class="title">节点名称 *</td>
-            <td>
-                <input type="text" name="name" maxlength="50" ref="focus" v-model="node.name"/>
-            </td>
-        </tr>
-        <tr>
-            <td>所属集群</td>
-            <td>
-                <node-clusters-selector :v-primary-cluster="node.primaryCluster" :v-secondary-clusters="node.secondaryClusters" @change="changeClusters"></node-clusters-selector>
-            </td>
-        </tr>
-        <tr>
-            <td>IP地址 *</td>
-            <td>
-                <node-ip-addresses-box :v-ip-addresses="ipAddresses"></node-ip-addresses-box>
-                <p class="comment">用于访问节点和域名解析等。</p>
-            </td>
-        </tr>
-       <tr v-if="allDNSRoutes.length > 0">
-            <td>DNS线路</td>
-            <td>
-                <dns-route-selector :v-all-routes="allDNSRoutes" :v-routes="dnsRoutes"></dns-route-selector>
-                <p class="comment">当前节点对应的DNS线路，可用线路是根据集群设置的域名获取的，注意DNS服务商可能对这些线路有其他限制。</p>
-            </td>
-        </tr>
-        <tr>
-            <td>所属区域</td>
-            <td>
-                <node-region-selector :v-region="node.region"></node-region-selector>
-                <p class="comment">设置区域后才能根据区域进行流量统计和计费。</p>
-            </td>
-        </tr>
-        <tr>
-            <td>所属分组</td>
-            <td>
-                <node-group-selector :v-cluster-id="clusterId" :v-group="node.group"></node-group-selector>
-                <p class="comment">仅用来筛选服务。</p>
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2"><more-options-indicator></more-options-indicator></td>
-        </tr>
-        <tbody v-show="moreOptionsVisible">
+{$template "/left_menu_with_menu"}
+
+<div class="right-box with-menu">
+    <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+        <input type="hidden" name="nodeId" :value="node.id"/>
+        <table class="ui table definition selectable">
             <tr>
-                <td>SSH主机地址</td>
+                <td class="title">节点名称 *</td>
                 <td>
-                    <input type="text" name="sshHost" maxlength="64" v-model="sshHost"/>
-                    <p class="comment">比如192.168.1.100</p>
+                    <input type="text" name="name" maxlength="50" ref="focus" v-model="node.name"/>
                 </td>
             </tr>
             <tr>
-                <td>SSH主机端口</td>
+                <td>所属集群</td>
                 <td>
-                    <input type="text" name="sshPort" maxlength="5" v-model="sshPort"/>
-                    <p class="comment">比如22。</p>
-                </td>
-            </tr>
-            <tr>
-                <td>SSH登录认证</td>
-                <td>
-                    <grant-selector :v-grant="grant" :v-node-cluster-id="clusterId"></grant-selector>
-                </td>
-            </tr>
-            <tr>
-                <td>CPU线程数</td>
-                <td>
-                    <input type="text" name="maxCPU" v-model="node.maxCPU" style="width:5em" maxlength="5em"/>
-                    <p class="comment">当前节点可以使用的最多的CPU线程数，如果为0表示可以使用全部CPU。</p>
-                </td>
-            </tr>
-            <tr>
-                <td>缓存磁盘容量</td>
-                <td>
-                    <size-capacity-box :v-value="node.maxCacheDiskCapacity" :v-name="'maxCacheDiskCapacityJSON'"></size-capacity-box>
-                    <p class="comment">缓存能使用的磁盘的最大容量，0表示不限制。</p>
-                </td>
-            </tr>
-            <tr>
-                <td>缓存内存容量</td>
-                <td>
-                    <size-capacity-box :v-value="node.maxCacheMemoryCapacity" :v-name="'maxCacheMemoryCapacityJSON'"></size-capacity-box>
-                    <p class="comment">缓存能使用的内存的最大容量，0表示不限制。</p>
-                </td>
-            </tr>
-            <tr>
-                <td>是否启用</td>
-                <td>
-                    <div class="ui checkbox">
-                        <input type="checkbox" name="isOn" value="1" v-model="node.isOn"/>
-                        <label></label>
+                    <span v-if="node.primaryCluster != null" class="ui label basic small">{{node.primaryCluster.name}}</span>
+                    <span v-if="node.secondaryClusters.length > 0"  v-for="cluster in node.secondaryClusters" class="ui label basic small grey">{{cluster.name}}</span> &nbsp; <a href="" @click.prevent="updateClusters">[修改]</a>
+                    <div v-show="showClustersBox">
+                        <node-clusters-selector :v-primary-cluster="node.primaryCluster" :v-secondary-clusters="node.secondaryClusters" @change="changeClusters"></node-clusters-selector>
                     </div>
-                    <p class="comment">如果不启用此节点，此节点上的所有服务将不能访问。</p>
                 </td>
             </tr>
-        </tbody>
-    </table>
-    <submit-btn></submit-btn>
-</form>
+            <tr>
+                <td>IP地址 *</td>
+                <td>
+                    <node-ip-addresses-box :v-ip-addresses="ipAddresses"></node-ip-addresses-box>
+                    <p class="comment">用于访问节点和域名解析等。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>所属区域</td>
+                <td>
+                    <node-region-selector :v-region="node.region"></node-region-selector>
+                    <p class="comment">设置区域后才能根据区域进行流量统计和计费。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>所属分组</td>
+                <td>
+                    <node-group-selector :v-cluster-id="clusterId" :v-group="node.group"></node-group-selector>
+                    <p class="comment">仅用来筛选服务。</p>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><more-options-indicator></more-options-indicator></td>
+            </tr>
+            <tbody v-show="moreOptionsVisible">
+                <tr>
+                    <td>是否启用</td>
+                    <td>
+                        <div class="ui checkbox">
+                            <input type="checkbox" name="isOn" value="1" v-model="node.isOn"/>
+                            <label></label>
+                        </div>
+                        <p class="comment">如果不启用此节点，此节点上的所有服务将不能访问。</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <submit-btn></submit-btn>
+    </form>
+</div>

@@ -1,0 +1,41 @@
+{$layout}
+{$template "/clusters/cluster/node/node_menu"}
+{$template "/left_menu_with_menu"}
+
+<div class="right-box with-menu">
+
+    <div>
+        <second-menu>
+            <menu-item @click.prevent="createThreshold">添加阈值</menu-item>
+        </second-menu>
+    </div>
+
+    <p class="comment" v-if="thresholds.length == 0">暂时还没有设置阈值。</p>
+    <table class="ui table selectable celled" v-if="thresholds.length > 0">
+        <thead>
+        <tr>
+            <th>监控项</th>
+            <th>参数</th>
+            <th>操作符</th>
+            <th>对比值</th>
+            <th>统计时间段</th>
+            <th class="two wide">状态</th>
+            <th class="two op">操作</th>
+        </tr>
+        </thead>
+        <tr v-for="threshold in thresholds">
+            <td>{{threshold.itemName}}</td>
+            <td>{{threshold.paramName}}</td>
+            <td>{{threshold.operatorName}}</td>
+            <td>{{threshold.value}}</td>
+            <td>{{threshold.duration}}{{threshold.durationUnitName}}</td>
+            <td>
+                <label-on :v-is-on="threshold.isOn"></label-on>
+            </td>
+            <td>
+                <a href="" @click.prevent="updateThreshold(threshold.id)">修改</a> &nbsp;
+                <a href="" @click.prevent="deleteThreshold(threshold.id)">删除</a>
+            </td>
+        </tr>
+    </table>
+</div>

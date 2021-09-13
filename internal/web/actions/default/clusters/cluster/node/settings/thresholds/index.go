@@ -15,21 +15,21 @@ type IndexAction struct {
 }
 
 func (this *IndexAction) Init() {
-	this.Nav("", "node", "threshold")
+	this.Nav("", "", "update")
+	this.SecondMenu("threshold")
 }
 
 func (this *IndexAction) RunGet(params struct {
 	ClusterId int64
 	NodeId    int64
 }) {
-	this.Data["nodeId"] = params.NodeId
-
-	// 初始化节点信息（用于菜单）
-	err := nodeutils.InitNodeInfo(this, params.NodeId)
+	_, err := nodeutils.InitNodeInfo(this.Parent(), params.NodeId)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
+
+	this.Data["nodeId"] = params.NodeId
 
 	// 列出所有阈值
 	thresholdsResp, err := this.RPC().NodeThresholdRPC().FindAllEnabledNodeThresholds(this.AdminContext(), &pb.FindAllEnabledNodeThresholdsRequest{

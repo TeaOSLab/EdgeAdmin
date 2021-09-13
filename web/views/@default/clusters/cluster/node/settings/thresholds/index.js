@@ -27,7 +27,7 @@ Tea.context(function () {
 	this.deleteThreshold = function (thresholdId) {
 		let that = this
 		teaweb.confirm("确定要删除这个阈值吗？", function () {
-			that.$post(".delete")
+			that.$post("/clusters/cluster/settings/thresholds/delete")
 				.params({
 					thresholdId: thresholdId
 				})
