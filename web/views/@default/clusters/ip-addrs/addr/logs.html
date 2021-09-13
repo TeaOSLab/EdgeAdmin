@@ -22,6 +22,9 @@
             <td>
                 <span v-if="!log.isOn" class="red">停用</span>
                 <span v-else-if="!log.canAccess" class="red">不可访问</span>
+                <span v-else-if="log.isUp && log.backupIP.length > 0" class="orange">备用
+                    <br/><span class="grey small">{{log.backupIP}}</span>
+                </span>
                 <span v-else-if="log.isUp" class="green">上线</span>
                 <span v-else class="red">离线</span>
             </td>
