@@ -68,6 +68,9 @@
             <td>
                 <span v-if="!addr.isOn" class="red">禁用</span>
                 <span v-else-if="!addr.canAccess" class="red">不可访问</span>
+                <span v-else-if="addr.isUp && addr.backupIP.length > 0" class="orange">备用
+                    <br/><span class="grey small">{{addr.backupIP}}</span>
+                </span>
                 <span v-else-if="addr.isUp" class="green">在线</span>
                 <span v-else class="red">离线</span>
             </td>

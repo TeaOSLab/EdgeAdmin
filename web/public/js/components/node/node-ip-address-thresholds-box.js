@@ -95,10 +95,16 @@ Vue.component("node-ip-address-thresholds-box", {
 					"name": "通知",
 					"code": "notify",
 					"description": "发送已达到阈值通知。"
-				}
+				},
+				{
+					"name": "切换",
+					"code": "switch",
+					"description": "在DNS中记录中将IP切换到指定的备用IP。"
+				},
 			],
 
-			actionCode: "up"
+			actionCode: "up",
+			actionBackupIPs: ""
 		}
 	},
 	methods: {
@@ -280,8 +286,12 @@ Vue.component("node-ip-address-thresholds-box", {
 		cancelAction: function () {
 			this.isAddingAction = false
 			this.actionCode = "up"
+			this.actionBackupIPs = ""
 		},
 		confirmAction: function () {
+			this.doConfirmAction(false)
+		},
+		doConfirmAction: function (validated, options) {
 			// 是否已存在
 			let exists = false
 			let that = this
@@ -295,9 +305,41 @@ Vue.component("node-ip-address-thresholds-box", {
 				return
 			}
 
+			if (options == null) {
+				options = {}
+			}
+
+			switch (this.actionCode) {
+				case "switch":
+					if (!validated) {
+						Tea.action("/ui/validateIPs")
+							.params({
+								"ips": this.actionBackupIPs
+							})
+							.success(function (resp) {
+								if (resp.data.ips.length == 0) {
+									teaweb.warn("请输入备用IP", function () {
+										that.$refs.actionBackupIPs.focus()
+									})
+									return
+								}
+								options["ips"] = resp.data.ips
+								that.doConfirmAction(true, options)
+							})
+							.fail(function (resp) {
+								teaweb.warn("输入的IP '" + resp.data.failIP + "' 格式不正确，请改正后提交", function () {
+									that.$refs.actionBackupIPs.focus()
+								})
+							})
+							.post()
+						return
+					}
+					break
+			}
+
 			this.addingThreshold.actions.push({
 				action: this.actionCode,
-				options: {}
+				options: options
 			})
 
 			// 还原
@@ -322,14 +364,16 @@ Vue.component("node-ip-address-thresholds-box", {
 		
 	<!-- 已有条件 -->
 	<div v-if="thresholds.length > 0">
-		<div class="ui label basic small" v-for="(threshold, index) in thresholds" style="margin-bottom: 0.5em; font-weight: normal">
+		<div class="ui label basic small" v-for="(threshold, index) in thresholds">
 			<span v-for="(item, itemIndex) in threshold.items">[{{item.duration}}{{itemDurationUnitName(item.durationUnit)}}] {{itemName(item.item)}}
 			 <!-- 连通性 -->
 			<span v-if="item.item == 'connectivity' && item.options != null && item.options.groups != null && item.options.groups.length > 0">[<span v-for="(group, groupIndex) in item.options.groups">{{group.name}} <span v-if="groupIndex != item.options.groups.length - 1">&nbsp; </span></span>]</span>
 			
 			 <span  class="grey">[{{itemOperatorName(item.operator)}}]</span> &nbsp;{{item.value}}{{itemUnitName(item.item)}} &nbsp;<span v-if="itemIndex != threshold.items.length - 1" style="font-style: italic">AND &nbsp;</span></span>
 			-&gt;
-			<span v-for="(action, actionIndex) in threshold.actions">{{actionName(action.action)}} &nbsp;<span v-if="actionIndex != threshold.actions.length - 1" style="font-style: italic">AND &nbsp;</span></span>
+			<span v-for="(action, actionIndex) in threshold.actions">{{actionName(action.action)}}
+			<span v-if="action.action == 'switch'">到{{action.options.ips.join(", ")}}</span>
+			 &nbsp;<span v-if="actionIndex != threshold.actions.length - 1" style="font-style: italic">AND &nbsp;</span></span>
 			&nbsp;
 			<a href="" title="修改" @click.prevent="update(index)"><i class="icon pencil small"></i></a> 
 			<a href="" title="删除" @click.prevent="remove(index)"><i class="icon small remove"></i></a>
@@ -419,6 +463,7 @@ Vue.component("node-ip-address-thresholds-box", {
 					<div>
 						<div v-for="(action, index) in addingThreshold.actions" class="ui label basic small" style="margin-bottom: 0.5em">
 							{{actionName(action.action)}} &nbsp;
+							<span v-if="action.action == 'switch'">到{{action.options.ips.join(", ")}}</span>
 							<a href="" title="删除" @click.prevent="removeAction(index)"><i class="icon remove small"></i></a>
 						</div>
 					</div>
@@ -433,6 +478,13 @@ Vue.component("node-ip-address-thresholds-box", {
 										<option v-for="action in allActions" :value="action.code">{{action.name}}</option>
 									</select>
 									<p class="comment" v-for="action in allActions" v-if="action.code == actionCode">{{action.description}}</p>
+								</td>
+							</tr>
+							<tr v-if="actionCode == 'switch'">
+								<td>备用IP *</td>
+								<td>
+									<textarea rows="2" v-model="actionBackupIPs" ref="actionBackupIPs"></textarea>
+									<p class="comment">每行一个备用IP。</p>
 								</td>
 							</tr>
 						</table>

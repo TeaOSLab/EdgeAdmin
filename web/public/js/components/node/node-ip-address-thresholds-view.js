@@ -139,14 +139,16 @@ Vue.component("node-ip-address-thresholds-view", {
 	template: `<div>
 	<!-- 已有条件 -->
 	<div v-if="thresholds.length > 0">
-		<div class="ui label basic small" v-for="(threshold, index) in thresholds" style="margin-bottom: 0.5em; font-weight: normal">
+		<div class="ui label basic small" v-for="(threshold, index) in thresholds" style="margin-bottom: 0.5em">
 			<span v-for="(item, itemIndex) in threshold.items">[{{item.duration}}{{itemDurationUnitName(item.durationUnit)}}] {{itemName(item.item)}}
 			  <!-- 连通性 -->
 			<span v-if="item.item == 'connectivity' && item.options != null && item.options.groups != null && item.options.groups.length > 0">[<span v-for="(group, groupIndex) in item.options.groups">{{group.name}} <span v-if="groupIndex != item.options.groups.length - 1">&nbsp; </span></span>]</span>
 			
 			 <span class="grey">[{{itemOperatorName(item.operator)}}]</span> {{item.value}}{{itemUnitName(item.item)}} &nbsp;<span v-if="itemIndex != threshold.items.length - 1" style="font-style: italic">AND &nbsp;</span></span>
 			-&gt;
-			<span v-for="(action, actionIndex) in threshold.actions">{{actionName(action.action)}} &nbsp;<span v-if="actionIndex != threshold.actions.length - 1" style="font-style: italic">AND &nbsp;</span></span>
+			<span v-for="(action, actionIndex) in threshold.actions">{{actionName(action.action)}}
+			<span v-if="action.action == 'switch'">到{{action.options.ips.join(", ")}}</span>
+			 &nbsp;<span v-if="actionIndex != threshold.actions.length - 1" style="font-style: italic">AND &nbsp;</span></span>
 		</div>
 	</div>
 </div>`
