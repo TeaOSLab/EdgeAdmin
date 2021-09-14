@@ -45,7 +45,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	}
 
 	// 阈值设置
-	var thresholds = []*nodeconfigs.NodeValueThresholdConfig{}
+	var thresholds = []*nodeconfigs.IPAddressThresholdConfig{}
 	if teaconst.IsPlus && len(params.ThresholdsJSON) > 0 {
 		_ = json.Unmarshal(params.ThresholdsJSON, &thresholds)
 	}

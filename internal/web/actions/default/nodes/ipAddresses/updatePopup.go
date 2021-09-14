@@ -63,7 +63,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		this.Fail("请输入正确的IP")
 	}
 
-	var thresholds = []*nodeconfigs.NodeValueThresholdConfig{}
+	var thresholds = []*nodeconfigs.IPAddressThresholdConfig{}
 	if teaconst.IsPlus && len(params.ThresholdsJSON) > 0 {
 		_ = json.Unmarshal(params.ThresholdsJSON, &thresholds)
 	}
