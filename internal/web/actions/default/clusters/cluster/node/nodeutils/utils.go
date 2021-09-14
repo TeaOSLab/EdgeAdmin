@@ -22,11 +22,21 @@ func InitNodeInfo(parentAction *actionutils.ParentAction, nodeId int64) (*pb.Nod
 		return nil, errors.New("node '" + strconv.FormatInt(nodeId, 10) + "' not found")
 	}
 	var node = nodeResp.Node
+
+	var groupMap maps.Map
+	if node.NodeGroup != nil {
+		groupMap = maps.Map{
+			"id":   node.NodeGroup.Id,
+			"name": node.NodeGroup.Name,
+		}
+	}
+
 	parentAction.Data["node"] = maps.Map{
-		"id":   node.Id,
-		"name": node.Name,
-		"isOn": node.IsOn,
-		"isUp": node.IsUp,
+		"id":    node.Id,
+		"name":  node.Name,
+		"isOn":  node.IsOn,
+		"isUp":  node.IsUp,
+		"group": groupMap,
 	}
 	var clusterId int64 = 0
 	if node.NodeCluster != nil {

@@ -45,6 +45,7 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 			action.WriteString("can not find cluster")
 			return
 		}
+		action.Data["currentClusterName"] = cluster.Name
 
 		clusterInfo, err := dao.SharedNodeClusterDAO.FindEnabledNodeClusterConfigInfo(ctx, clusterId)
 		if err != nil {

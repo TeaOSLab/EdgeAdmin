@@ -1,10 +1,10 @@
 <second-menu>
-    <menu-item :href="'/clusters/cluster/nodes?clusterId=' + clusterId">节点列表</menu-item>
-	<span class="item disabled">|</span>
+    <a :href="'/clusters/cluster/nodes?clusterId=' + clusterId" class="item" style="padding-right: 0">{{currentClusterName}} &raquo;</a>
+    <a :href="'/clusters/cluster/nodes?clusterId=' + clusterId + '&groupId=' + node.group.id" v-if="node.group != null" class="item" style="padding-left: 0"> &nbsp; {{node.group.name}} &raquo;</a>
 	<menu-item :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id" code="node"
-               v-if="!teaIsPlus">"{{node.name}}"节点详情</menu-item>
-    <menu-item :href="'/clusters/cluster/node/boards?clusterId=' + clusterId + '&nodeId=' + node.id" code="board" v-if="teaIsPlus">"{{node.name}}" 节点看板</menu-item>
-    <menu-item :href="'/clusters/cluster/node/detail?clusterId=' + clusterId + '&nodeId=' + node.id" code="node" v-if="teaIsPlus">节点详情</menu-item>
+               v-if="!teaIsPlus" style="padding-left: 0">"{{node.name}}"节点详情</menu-item>
+    <menu-item :href="'/clusters/cluster/node/boards?clusterId=' + clusterId + '&nodeId=' + node.id" code="board" v-if="teaIsPlus" style="padding-left: 0">"{{node.name}}" 节点看板</menu-item>
+    <menu-item :href="'/clusters/cluster/node/detail?clusterId=' + clusterId + '&nodeId=' + node.id" code="node" v-if="teaIsPlus" style="padding-left: 0">节点详情</menu-item>
     <menu-item :href="'/clusters/cluster/node/logs?clusterId=' + clusterId + '&nodeId=' + node.id" code="log">运行日志</menu-item>
     <menu-item :href="'/clusters/cluster/node/install?clusterId=' + clusterId + '&nodeId=' + node.id" code="install">安装节点</menu-item>
 	<menu-item :href="'/clusters/cluster/node/update?clusterId=' + clusterId + '&nodeId=' + node.id" code="update">修改设置</menu-item>

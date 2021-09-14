@@ -18,32 +18,7 @@ Vue.component("node-ip-address-thresholds-view", {
 
 		return {
 			thresholds: thresholds,
-			allItems: [
-				{
-					"name": "平均请求数",
-					"code": "avgRequests",
-					"description": "在单位时间内接收到的平均请求数。",
-					"unit": "个"
-				},
-				{
-					"name": "平均下行流量",
-					"code": "avgTrafficOut",
-					"description": "在单位时间内发送的下行流量。",
-					"unit": "M"
-				},
-				{
-					"name": "平均上行流量",
-					"code": "avgTrafficIn",
-					"description": "在单位时间内接收的上行流量。",
-					"unit": "M"
-				},
-				{
-					"name": "连通性",
-					"code": "connectivity",
-					"description": "通过区域监控得到的连通性数值，取值在0和100之间。",
-					"unit": "%"
-				},
-			],
+			allItems: window.IP_ADDR_THRESHOLD_ITEMS,
 			allOperators: [
 				{
 					"name": "小于等于",

@@ -22,7 +22,7 @@
 				<td style="text-align: center;"><i class="icon bars handle grey"></i> </td>
 				<td>{{group.name}}</td>
 				<td class="center">
-					<span v-if="group.countNodes > 0">{{group.countNodes}}</span>
+					<a :href="'/clusters/cluster/nodes?clusterId=' + clusterId + '&groupId=' + group.id" v-if="group.countNodes > 0">{{group.countNodes}}</a>
 					<span v-else class="disabled">0</span>
 				</td>
 				<td>

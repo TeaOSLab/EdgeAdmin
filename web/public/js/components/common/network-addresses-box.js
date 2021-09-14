@@ -66,7 +66,7 @@ Vue.component("network-addresses-box", {
 		updateAddr: function (index, addr) {
 			let that = this
 			window.UPDATING_ADDR = addr
-			teaweb.popup("/servers/addPortPopup?serverType=" + this.vServerType + "&protocol=" + this.protocol, {
+			teaweb.popup("/servers/addPortPopup?serverType=" + this.vServerType + "&protocol=" + this.protocol + "&from=" + this.from, {
 				height: "16em",
 				callback: function (resp) {
 					var addr = resp.data.address
