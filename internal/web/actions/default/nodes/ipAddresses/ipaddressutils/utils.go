@@ -69,18 +69,18 @@ func UpdateNodeIPAddresses(parentAction *actionutils.ParentAction, nodeId int64,
 }
 
 // InitNodeIPAddressThresholds 初始化IP阈值
-func InitNodeIPAddressThresholds(parentAction *actionutils.ParentAction, addrId int64) ([]*nodeconfigs.NodeValueThresholdConfig, error) {
+func InitNodeIPAddressThresholds(parentAction *actionutils.ParentAction, addrId int64) ([]*nodeconfigs.IPAddressThresholdConfig, error) {
 	thresholdsResp, err := parentAction.RPC().NodeIPAddressThresholdRPC().FindAllEnabledNodeIPAddressThresholds(parentAction.AdminContext(), &pb.FindAllEnabledNodeIPAddressThresholdsRequest{NodeIPAddressId: addrId})
 	if err != nil {
 		return nil, err
 	}
-	var thresholds = []*nodeconfigs.NodeValueThresholdConfig{}
+	var thresholds = []*nodeconfigs.IPAddressThresholdConfig{}
 	if len(thresholdsResp.NodeIPAddressThresholds) > 0 {
 		for _, pbThreshold := range thresholdsResp.NodeIPAddressThresholds {
-			var threshold = &nodeconfigs.NodeValueThresholdConfig{
+			var threshold = &nodeconfigs.IPAddressThresholdConfig{
 				Id:      pbThreshold.Id,
-				Items:   []*nodeconfigs.NodeValueThresholdItemConfig{},
-				Actions: []*nodeconfigs.NodeValueThresholdActionConfig{},
+				Items:   []*nodeconfigs.IPAddressThresholdItemConfig{},
+				Actions: []*nodeconfigs.IPAddressThresholdActionConfig{},
 			}
 			if len(pbThreshold.ItemsJSON) > 0 {
 				err = json.Unmarshal(pbThreshold.ItemsJSON, &threshold.Items)
