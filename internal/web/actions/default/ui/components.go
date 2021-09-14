@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/conds/condutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/Tea"
@@ -99,6 +100,16 @@ func (this *ComponentsAction) RunGet(params struct{}) {
 	} else {
 		buffer.WriteString("window.METRIC_HTTP_KEYS = ")
 		buffer.Write(metricHTTPKeysJSON)
+		buffer.Write([]byte{'\n', '\n'})
+	}
+
+	// IP地址阈值
+	ipAddrThresholdItemsJSON, err := json.Marshal(nodeconfigs.FindAllIPAddressThresholdItems())
+	if err != nil {
+		logs.Println("ComponentsAction marshal ip addr threshold items failed: " + err.Error())
+	} else {
+		buffer.WriteString("window.IP_ADDR_THRESHOLD_ITEMS = ")
+		buffer.Write(ipAddrThresholdItemsJSON)
 		buffer.Write([]byte{'\n', '\n'})
 	}
 

@@ -27,37 +27,12 @@ Vue.component("node-ip-address-thresholds-box", {
 			isAddingItem: false,
 			isAddingAction: false,
 
-			itemCode: "avgRequests",
+			itemCode: "nodeAvgRequests",
 			itemReportGroups: [],
 			itemOperator: "lte",
 			itemValue: "",
-			itemDuration: 5,
-			allItems: [
-				{
-					"name": "平均请求数",
-					"code": "avgRequests",
-					"description": "在单位时间内接收到的平均请求数。",
-					"unit": "个"
-				},
-				{
-					"name": "平均下行流量",
-					"code": "avgTrafficOut",
-					"description": "在单位时间内发送的下行流量。",
-					"unit": "M"
-				},
-				{
-					"name": "平均上行流量",
-					"code": "avgTrafficIn",
-					"description": "在单位时间内接收的上行流量。",
-					"unit": "M"
-				},
-				{
-					"name": "连通性",
-					"code": "connectivity",
-					"description": "通过区域监控得到的连通性数值，取值在0和100之间。",
-					"unit": "%"
-				},
-			],
+			itemDuration: "5",
+			allItems: window.IP_ADDR_THRESHOLD_ITEMS,
 			allOperators: [
 				{
 					"name": "小于等于",
@@ -165,10 +140,10 @@ Vue.component("node-ip-address-thresholds-box", {
 		cancelItem: function () {
 			this.isAddingItem = false
 
-			this.itemCode = "avgRequests"
+			this.itemCode = "nodeAvgRequests"
 			this.itmeOperator = "lte"
 			this.itemValue = ""
-			this.itemDuration = "1"
+			this.itemDuration = "5"
 			this.itemReportGroups = []
 		},
 		confirmItem: function () {
@@ -393,7 +368,7 @@ Vue.component("node-ip-address-thresholds-box", {
 				<td style="background: white">
 					<!-- 已经添加的项目 -->
 					<div>
-						<div v-for="(item, index) in addingThreshold.items" class="ui label basic small" style="margin-bottom: 0.5em; font-weight: normal">
+						<div v-for="(item, index) in addingThreshold.items" class="ui label basic small" style="margin-bottom: 0.5em;">
 							[{{item.duration}}{{itemDurationUnitName(item.durationUnit)}}] {{itemName(item.item)}}
 							<!-- 连通性 -->
 							<span v-if="item.item == 'connectivity' && item.options != null && item.options.groups != null && item.options.groups.length > 0">[<span v-for="(group, groupIndex) in item.options.groups">{{group.name}} <span v-if="groupIndex != item.options.groups.length - 1">&nbsp; </span></span>]</span>
