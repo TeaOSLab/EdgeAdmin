@@ -103,13 +103,23 @@ func (this *ComponentsAction) RunGet(params struct{}) {
 		buffer.Write([]byte{'\n', '\n'})
 	}
 
-	// IP地址阈值
+	// IP地址阈值项目
 	ipAddrThresholdItemsJSON, err := json.Marshal(nodeconfigs.FindAllIPAddressThresholdItems())
 	if err != nil {
 		logs.Println("ComponentsAction marshal ip addr threshold items failed: " + err.Error())
 	} else {
 		buffer.WriteString("window.IP_ADDR_THRESHOLD_ITEMS = ")
 		buffer.Write(ipAddrThresholdItemsJSON)
+		buffer.Write([]byte{'\n', '\n'})
+	}
+
+	// IP地址阈值动作
+	ipAddrThresholdActionsJSON, err := json.Marshal(nodeconfigs.FindAllIPAddressThresholdActions())
+	if err != nil {
+		logs.Println("ComponentsAction marshal ip addr threshold actions failed: " + err.Error())
+	} else {
+		buffer.WriteString("window.IP_ADDR_THRESHOLD_ACTIONS = ")
+		buffer.Write(ipAddrThresholdActionsJSON)
 		buffer.Write([]byte{'\n', '\n'})
 	}
 
