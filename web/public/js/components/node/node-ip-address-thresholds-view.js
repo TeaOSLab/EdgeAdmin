@@ -41,23 +41,7 @@ Vue.component("node-ip-address-thresholds-view", {
 					"code": "gte"
 				}
 			],
-			allActions: [
-				{
-					"name": "上线",
-					"code": "up",
-					"description": "上线当前IP。"
-				},
-				{
-					"name": "下线",
-					"code": "down",
-					"description": "下线当前IP。"
-				},
-				{
-					"name": "通知",
-					"code": "notify",
-					"description": "发送已达到阈值通知。"
-				}
-			]
+			allActions: window.IP_ADDR_THRESHOLD_ACTIONS
 		}
 	},
 	methods: {
@@ -123,6 +107,7 @@ Vue.component("node-ip-address-thresholds-view", {
 			-&gt;
 			<span v-for="(action, actionIndex) in threshold.actions">{{actionName(action.action)}}
 			<span v-if="action.action == 'switch'">到{{action.options.ips.join(", ")}}</span>
+			<span v-if="action.action == 'webHook'" class="small grey">({{action.options.url}})</span>
 			 &nbsp;<span v-if="actionIndex != threshold.actions.length - 1" style="font-style: italic">AND &nbsp;</span></span>
 		</div>
 	</div>

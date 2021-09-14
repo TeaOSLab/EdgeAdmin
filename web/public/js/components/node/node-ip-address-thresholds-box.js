@@ -55,31 +55,11 @@ Vue.component("node-ip-address-thresholds-box", {
 					"code": "gte"
 				}
 			],
-			allActions: [
-				{
-					"name": "上线",
-					"code": "up",
-					"description": "上线当前IP。"
-				},
-				{
-					"name": "下线",
-					"code": "down",
-					"description": "下线当前IP。"
-				},
-				{
-					"name": "通知",
-					"code": "notify",
-					"description": "发送已达到阈值通知。"
-				},
-				{
-					"name": "切换",
-					"code": "switch",
-					"description": "在DNS中记录中将IP切换到指定的备用IP。"
-				},
-			],
+			allActions: window.IP_ADDR_THRESHOLD_ACTIONS,
 
 			actionCode: "up",
-			actionBackupIPs: ""
+			actionBackupIPs: "",
+			actionWebHookURL: ""
 		}
 	},
 	methods: {
@@ -262,6 +242,7 @@ Vue.component("node-ip-address-thresholds-box", {
 			this.isAddingAction = false
 			this.actionCode = "up"
 			this.actionBackupIPs = ""
+			this.actionWebHookURL = ""
 		},
 		confirmAction: function () {
 			this.doConfirmAction(false)
@@ -310,6 +291,20 @@ Vue.component("node-ip-address-thresholds-box", {
 						return
 					}
 					break
+				case "webHook":
+					if (this.actionWebHookURL.length ==0) {
+						teaweb.warn("请输入WebHook URL", function () {
+							that.$refs.webHookURL.focus()
+						})
+						return
+					}
+					if (!this.actionWebHookURL.match(/^(http|https):\/\//i)) {
+						teaweb.warn("URL开头必须是http://或者https://", function () {
+							that.$refs.webHookURL.focus()
+						})
+						return
+					}
+					options["url"] = this.actionWebHookURL
 			}
 
 			this.addingThreshold.actions.push({
@@ -348,6 +343,7 @@ Vue.component("node-ip-address-thresholds-box", {
 			-&gt;
 			<span v-for="(action, actionIndex) in threshold.actions">{{actionName(action.action)}}
 			<span v-if="action.action == 'switch'">到{{action.options.ips.join(", ")}}</span>
+			<span v-if="action.action == 'webHook'" class="small grey">({{action.options.url}})</span>
 			 &nbsp;<span v-if="actionIndex != threshold.actions.length - 1" style="font-style: italic">AND &nbsp;</span></span>
 			&nbsp;
 			<a href="" title="修改" @click.prevent="update(index)"><i class="icon pencil small"></i></a> 
@@ -439,6 +435,7 @@ Vue.component("node-ip-address-thresholds-box", {
 						<div v-for="(action, index) in addingThreshold.actions" class="ui label basic small" style="margin-bottom: 0.5em">
 							{{actionName(action.action)}} &nbsp;
 							<span v-if="action.action == 'switch'">到{{action.options.ips.join(", ")}}</span>
+							<span v-if="action.action == 'webHook'" class="small grey">({{action.options.url}})</span>
 							<a href="" title="删除" @click.prevent="removeAction(index)"><i class="icon remove small"></i></a>
 						</div>
 					</div>
@@ -455,11 +452,22 @@ Vue.component("node-ip-address-thresholds-box", {
 									<p class="comment" v-for="action in allActions" v-if="action.code == actionCode">{{action.description}}</p>
 								</td>
 							</tr>
+							
+							<!-- 切换 -->
 							<tr v-if="actionCode == 'switch'">
 								<td>备用IP *</td>
 								<td>
 									<textarea rows="2" v-model="actionBackupIPs" ref="actionBackupIPs"></textarea>
 									<p class="comment">每行一个备用IP。</p>
+								</td>
+							</tr>
+							
+							<!-- WebHook -->
+							<tr v-if="actionCode == 'webHook'">
+								<td>URL *</td>
+								<td>
+									<input type="text" maxlength="1000" placeholder="https://..." v-model="actionWebHookURL" ref="webHookURL" @keyup.enter="confirmAction()" @keypress.enter.prevent="1"/>
+									<p class="comment">完整的URL，比如<code-label>https://example.com/webhook/api</code-label>，系统会在触发阈值的时候通过GET调用此URL。</p>
 								</td>
 							</tr>
 						</table>
