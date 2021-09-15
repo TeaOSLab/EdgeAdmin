@@ -73,9 +73,10 @@ window.teaweb = {
 		// 加载
 		if (typeof Pikaday == "undefined") {
 			let that = this
-			this.loadJS("/js/moment.min.js")
-			this.loadJS("/js/pikaday.js", function () {
-				that.datepicker(element, callback)
+			this.loadJS("/js/moment.min.js", function () {
+				that.loadJS("/js/pikaday.js", function () {
+					that.datepicker(element, callback)
+				})
 			})
 			this.loadCSS("/js/pikaday.css")
 			this.loadCSS("/js/pikaday.theme.css")
