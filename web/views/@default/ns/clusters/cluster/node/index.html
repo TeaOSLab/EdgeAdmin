@@ -19,7 +19,9 @@
                 <div>
                     <div v-for="(address, index) in node.ipAddresses" class="ui label tiny basic">
                         {{address.ip}}
-                        <span class="small" v-if="address.name.length > 0">（{{address.name}}<span v-if="!address.canAccess">，不可访问</span>）</span>
+                        <span class="small" v-if="address.name.length > 0">（{{address.name}}<span v-if="!address.canAccess">，不可访问</span>）</span> &nbsp;
+                        <span class="small red" v-if="!address.isOn">[off]</span>
+                        <span class="small red" v-if="!address.isUp">[down]</span>
                         <span class="small" v-if="address.name.length == 0 && !address.canAccess">（不可访问）</span>
                     </div>
                 </div>

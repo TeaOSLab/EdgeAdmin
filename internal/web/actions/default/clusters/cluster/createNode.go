@@ -185,6 +185,7 @@ func (this *CreateNodeAction) RunPost(params struct {
 				Name:      addr.GetString("name"),
 				Ip:        addr.GetString("ip"),
 				CanAccess: addr.GetBool("canAccess"),
+				IsUp:      addr.GetBool("isUp"),
 			})
 			if err != nil {
 				this.ErrorPage(err)
