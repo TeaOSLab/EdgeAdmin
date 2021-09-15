@@ -31,6 +31,7 @@ func UpdateNodeIPAddresses(parentAction *actionutils.ParentAction, nodeId int64,
 				Name:            addr.GetString("name"),
 				CanAccess:       addr.GetBool("canAccess"),
 				IsOn:            isOn,
+				IsUp:            addr.GetBool("isUp"),
 			})
 			if err != nil {
 				return err
@@ -42,6 +43,7 @@ func UpdateNodeIPAddresses(parentAction *actionutils.ParentAction, nodeId int64,
 				Name:      addr.GetString("name"),
 				Ip:        addr.GetString("ip"),
 				CanAccess: addr.GetBool("canAccess"),
+				IsUp:      addr.GetBool("isUp"),
 			})
 			if err != nil {
 				return err

@@ -55,7 +55,6 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		if address == nil {
 			this.Fail("找不到要修改的地址")
 		}
-		isUp = address.IsUp
 	}
 
 	ip := net.ParseIP(params.IP)

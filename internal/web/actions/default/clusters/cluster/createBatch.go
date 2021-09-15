@@ -95,6 +95,7 @@ func (this *CreateBatchAction) RunPost(params struct {
 			Name:      "IP地址",
 			Ip:        ip,
 			CanAccess: true,
+			IsUp:      true,
 		})
 		if err != nil {
 			this.ErrorPage(err)
