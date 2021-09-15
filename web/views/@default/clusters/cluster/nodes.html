@@ -67,13 +67,13 @@
 	</thead>
 	<tr v-for="node in nodes">
         <td><a :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id">{{node.name}}</a>
-            <div style="margin-top: 0.5em" v-if="node.region != null">
-                <span class="ui label tiny grey basic">区域：{{node.region.name}}</span>
+            <div v-if="node.region != null">
+                <grey-label>区域：{{node.region.name}}</grey-label>
             </div>
-            <div style="margin-top: 0.5em" v-if="node.group != null">
-               <span class="ui label tiny grey basic">分组：{{node.group.name}}</span>
+            <div v-if="node.group != null">
+               <grey-label>分组：{{node.group.name}}</grey-label>
             </div>
-            <div style="margin-top: 0.5em" v-if="node.secondaryClusters != null && node.secondaryClusters.length > 0">
+            <div v-if="node.secondaryClusters != null && node.secondaryClusters.length > 0">
                 <node-clusters-labels :v-primary-cluster="node.cluster" :v-secondary-clusters="node.secondaryClusters" size="tiny"></node-clusters-labels>
             </div>
         </td>
