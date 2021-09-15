@@ -41,7 +41,7 @@
     <tr v-for="reporter in reporters">
         <td>
             <a :href="Tea.url('.reporter', {reporterId: reporter.id})"><keyword :v-word="keyword">{{reporter.name}}</keyword></a>
-            <div v-if="reporter.groups.length > 0" style="margin-top: 0.5em">
+            <div v-if="reporter.groups.length > 0">
                 <grey-label v-for="group in reporter.groups">{{group.name}}</grey-label>
             </div>
             <div v-if="reporter.shouldUpgrade">

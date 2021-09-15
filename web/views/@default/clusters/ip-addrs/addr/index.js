@@ -63,16 +63,18 @@ Tea.context(function () {
 		}
 		let chart = teaweb.initChart(chartBox)
 		chart.setOption({
-			radar: {
-				splitNumber: 4,
-				indicator: this.results.map(function (result) {
-					return {
-						name: result.node.name,
-						color: result.color,
-						max: 5000
-					}
-				})
-			},
+			radar: [
+				{
+					splitNumber: 4,
+					indicator: this.results.map(function (result) {
+						return {
+							name: result.node.name,
+							color: result.color,
+							max: 5000
+						}
+					})
+				}
+			],
 			series: [{
 				name: '',
 				type: 'radar',
