@@ -16,6 +16,12 @@
     <a :href="'/clusters/cluster/createNode?clusterId=' + dashboard.defaultClusterId">还没有在集群中添加节点，现在去添加？添加节点后才可部署网站服务。</a>
 </div>
 
+<!-- 过期提醒 -->
+<div class="ui icon message error" v-if="plusExpireDay.length > 0">
+    <i class="icon warning circle"></i>
+    <strong>续费提醒：商业版服务即将在 {{plusExpireDay}} 过期，请及时续费。</strong>
+</div>
+
 <!-- 升级提醒 -->
 <div class="ui icon message error" v-if="!isLoading && nodeUpgradeInfo.count > 0">
     <i class="icon warning circle"></i>
@@ -41,7 +47,7 @@
 </div>
 <div class="ui icon message error" v-if="!isLoading && authorityNodeUpgradeInfo.count > 0 && teaIsPlus">
     <i class="icon warning circle"></i>
-    <a href="/settings/authority/nodes">升级提醒：有 {{authorityNodeUpgradeInfo.count}} 个企业版认证节点需要升级到 v{{authorityNodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
+    <a href="/settings/authority/nodes">升级提醒：有 {{authorityNodeUpgradeInfo.count}} 个商业版认证节点需要升级到 v{{authorityNodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
 </div>
 
 <!-- 统计图表 -->
