@@ -6,7 +6,7 @@
 <div v-if="key != null">
     <div class="margin"></div>
 
-    <div class="ui message green icon">
+    <div class="ui message green icon" v-if="!key.isExpired">
         <i class="icon gem outline small yellow"></i>
         <div class="content">
             恭喜您已经成为尊贵的商业版用户。
@@ -18,7 +18,9 @@
         <tr>
             <td class="title">状态</td>
             <td>
-                <span class="green">已认证</span>
+                <span class="red" v-if="key.isExpiring">即将过期</span>
+                <span class="red" v-else-if="key.isExpired">已过期</span>
+                <span class="green" v-else>已认证</span>
             </td>
         </tr>
         <tr v-if="key.nodes > 0">
@@ -36,7 +38,10 @@
         <tr>
             <td class="title">结束日期</td>
             <td>{{key.dayTo}}
-                <div v-if="key.isExpired" style="margin-top: 0.5em">
+                <div v-if="key.isExpiring" style="margin-top: 0.5em">
+                    <span class="red">即将过期</span>
+                </div>
+                <div v-else-if="key.isExpired" style="margin-top: 0.5em">
                     <span class="red">已过期，请尽快更新认证信息。</span>
                 </div>
             </td>

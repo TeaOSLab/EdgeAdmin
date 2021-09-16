@@ -14,6 +14,7 @@ func init() {
 			Helper(settingutils.NewAdvancedHelper("authority")).
 			Prefix("/settings/authority").
 			Get("", new(IndexAction)).
+			GetPost("/activate", new(ActivateAction)).
 			EndAll()
 	})
 }
