@@ -8,6 +8,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
+	"time"
 )
 
 type IndexAction struct {
@@ -26,24 +27,28 @@ func (this *IndexAction) RunGet(params struct{}) {
 	}
 	var keyMap maps.Map = nil
 	teaconst.IsPlus = false
-	if keyResp.AuthorityKey != nil {
-		if len(keyResp.AuthorityKey.MacAddresses) == 0 {
-			keyResp.AuthorityKey.MacAddresses = []string{}
+	var key = keyResp.AuthorityKey
+	if key != nil {
+		if len(key.MacAddresses) == 0 {
+			key.MacAddresses = []string{}
 		}
 
-		isActive := len(keyResp.AuthorityKey.DayTo) > 0 && keyResp.AuthorityKey.DayTo >= timeutil.Format("Y-m-d")
+		isActive := len(key.DayTo) > 0 && key.DayTo >= timeutil.Format("Y-m-d")
 		if isActive {
 			teaconst.IsPlus = true
 		}
 
+		isExpiring := isActive && key.DayTo < timeutil.Format("Y-m-d", time.Now().AddDate(0, 0, 7))
+
 		keyMap = maps.Map{
-			"dayFrom":      keyResp.AuthorityKey.DayFrom,
-			"dayTo":        keyResp.AuthorityKey.DayTo,
-			"macAddresses": keyResp.AuthorityKey.MacAddresses,
-			"hostname":     keyResp.AuthorityKey.Hostname,
-			"company":      keyResp.AuthorityKey.Company,
-			"nodes":        keyResp.AuthorityKey.Nodes,
+			"dayFrom":      key.DayFrom,
+			"dayTo":        key.DayTo,
+			"macAddresses": key.MacAddresses,
+			"hostname":     key.Hostname,
+			"company":      key.Company,
+			"nodes":        key.Nodes,
 			"isExpired":    !isActive,
+			"isExpiring":   isExpiring,
 			"updatedTime":  timeutil.FormatTime("Y-m-d H:i:s", keyResp.AuthorityKey.UpdatedAt),
 		}
 	}
