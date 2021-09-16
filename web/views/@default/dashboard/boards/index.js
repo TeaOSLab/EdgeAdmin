@@ -2,6 +2,7 @@ Tea.context(function () {
 	this.isLoading = true
 	this.trafficTab = "hourly"
 	this.metricCharts = []
+	this.plusExpireDay = ""
 
 	this.$delay(function () {
 		this.$post("$")
