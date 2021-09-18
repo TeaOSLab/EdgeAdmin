@@ -31,7 +31,9 @@
     </thead>
     <tr v-for="result in results">
         <td>{{result.typeName}}</td>
-        <td>{{result.targetDesc}}</td>
+        <td>{{result.targetDesc}}
+            <span v-if="result.type == 'ipAddr'"><link-icon :href="'/clusters/ip-addrs/addr?addrId=' + result.targetId"></link-icon></span>
+        </td>
         <td>
             <span :class="result.color">{{result.levelName}}</span>
         </td>
