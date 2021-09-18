@@ -8,6 +8,6 @@
 
 <p class="comment" v-if="messages.length == 0">暂时还没有消息。</p>
 
-<message-row v-for="message in messages" :v-message="message" :key="message.id"></message-row>
+<message-row v-for="message in messages" :v-message="message" :key="message.id" :v-can-close="messages.length == 1"></message-row>
 
 <div class="page" v-html="page"></div>
