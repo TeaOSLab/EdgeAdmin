@@ -1,24 +1,31 @@
 {$layout}
 {$template "/echarts"}
 
+<!-- 加载中 -->
+<div style="margin-top: 0.8em">
+    <div class="ui message loading" v-if="isLoading">
+        <div class="ui active inline loader small"></div>  &nbsp; 数据加载中...
+    </div>
+</div>
+
 <!-- 没有节点提醒 -->
-<div class="ui icon message warning" v-if="dashboard.defaultClusterId > 0 && dashboard.countNodes == 0">
+<div class="ui icon message warning" v-if="!isLoading && dashboard.defaultClusterId > 0 && dashboard.countNodes == 0">
     <i class="icon warning circle"></i>
     <a :href="'/clusters/cluster/createNode?clusterId=' + dashboard.defaultClusterId">还没有在集群中添加节点，现在去添加？添加节点后才可部署网站服务。</a>
 </div>
 
 <!-- 升级提醒 -->
-<div class="ui icon message error" v-if="nodeUpgradeInfo.count > 0">
+<div class="ui icon message error" v-if="!isLoading && nodeUpgradeInfo.count > 0">
     <i class="icon warning circle"></i>
     <a href="/clusters">升级提醒：有 {{nodeUpgradeInfo.count}} 个边缘节点需要升级到 v{{nodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
 </div>
-<div class="ui icon message error" v-if="apiNodeUpgradeInfo.count > 0">
+<div class="ui icon message error" v-if="!isLoading && apiNodeUpgradeInfo.count > 0">
     <i class="icon warning circle"></i>
     <a href="/api">升级提醒：有 {{apiNodeUpgradeInfo.count}} 个API节点需要升级到 v{{apiNodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
 </div>
 
 <!-- 统计图表 -->
-<div class="ui three columns grid">
+<div class="ui three columns grid" v-if="!isLoading">
     <div class="ui column">
         <h4>集群<link-icon href="/clusters" v-if="dashboard.canGoNodes"></link-icon></h4>
         <div class="value"><span>{{dashboard.countNodeClusters}}</span>个</div>
@@ -50,9 +57,9 @@
     </div>
 </div>
 
-<div class="ui divider"></div>
+<div class="ui divider" v-show="!isLoading"></div>
 
-<div class="ui menu tabular">
+<div class="ui menu tabular" v-show="!isLoading">
     <a href="" class="item" :class="{active: trafficTab == 'hourly'}" @click.prevent="selectTrafficTab('hourly')">24小时流量趋势</a>
     <a href="" class="item" :class="{active: trafficTab == 'daily'}" @click.prevent="selectTrafficTab('daily')">15天流量趋势</a>
 </div>
@@ -62,6 +69,10 @@
 
 <!-- 按日统计 -->
 <div class="chart-box" id="daily-traffic-chart-box" v-show="trafficTab == 'daily'"></div>
+
+<!-- 域名排行 -->
+<h4 v-show="!isLoading">域名访问排行 <span>（24小时）</span></h4>
+<div class="chart-box" id="top-domains-chart"></div>
 
 <!-- 指标 -->
 <div class="ui divider" v-if="metricCharts.length > 0"></div>
