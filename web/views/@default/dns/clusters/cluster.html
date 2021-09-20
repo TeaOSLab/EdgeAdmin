@@ -31,6 +31,15 @@
 			<span v-else class="disabled">没有设置</span>
 		</td>
 	</tr>
+    <tr>
+        <td>自动设置CNAME记录</td>
+        <td>
+            <span v-if="dnsInfo.cnameRecords.length == 0" class="disabled">暂时还没有设置。</span>
+            <div v-else>
+                <span v-for="record in dnsInfo.cnameRecords" class="ui label basic small">{{record}}</span>
+            </div>
+        </td>
+    </tr>
 	<tr v-if="dnsInfo.domainName.length > 0">
 		<td>操作</td>
 		<td>

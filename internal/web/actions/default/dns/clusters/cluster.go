@@ -61,6 +61,12 @@ func (this *ClusterAction) RunGet(params struct {
 		dnsMap["providerTypeName"] = dnsResp.Provider.TypeName
 	}
 
+	if len(dnsResp.CnameRecords) > 0 {
+		dnsMap["cnameRecords"] = dnsResp.CnameRecords
+	} else {
+		dnsMap["cnameRecords"] = []string{}
+	}
+
 	this.Data["dnsInfo"] = dnsMap
 
 	// 节点DNS解析记录

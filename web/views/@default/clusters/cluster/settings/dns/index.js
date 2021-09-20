@@ -6,4 +6,8 @@ Tea.context(function () {
 		this.domain.id = domain.id
 		this.domain.name = domain.name
 	}
+
+	this.addCnameRecord = function (name) {
+		this.$refs.cnameRecords.addValue(name)
+	}
 })

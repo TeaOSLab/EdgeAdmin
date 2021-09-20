@@ -55,6 +55,9 @@ Vue.component("values-box", {
 		},
 		updateAll: function (values) {
 			this.vValeus = values
+		},
+		addValue: function (v) {
+			this.vValues.push(v)
 		}
 	},
 	template: `<div>
