@@ -77,4 +77,11 @@ Tea.context(function () {
 			this.domain = domainInfo.name
 		}
 	}
+
+	/**
+	 * 自动设置CNAME
+	 */
+	this.addCnameRecord = function (name) {
+		this.$refs.cnameRecords.addValue(name)
+	}
 })

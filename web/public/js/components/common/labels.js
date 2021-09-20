@@ -6,7 +6,12 @@ Vue.component("label-on", {
 
 // 文字代码标签
 Vue.component("code-label", {
-	template: `<span class="ui label basic tiny" style="padding: 3px;margin-left:2px;margin-right:2px"><slot></slot></span>`
+	methods: {
+		click: function (args) {
+			this.$emit("click", args)
+		}
+	},
+	template: `<span class="ui label basic tiny" style="padding: 3px;margin-left:2px;margin-right:2px" @click.prevent="click"><slot></slot></span>`
 })
 
 // tiny标签

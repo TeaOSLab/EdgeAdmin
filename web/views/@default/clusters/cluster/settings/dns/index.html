@@ -26,6 +26,13 @@
 					<p class="comment">当前集群的子域名，和主域名一起组成集群节点的子域名。</p>
 				</td>
 			</tr>
+            <tr>
+                <td>自动设置CNAME记录</td>
+                <td>
+                    <values-box :values="cnameRecords" name="cnameRecords" placeholder="记录名" ref="cnameRecords"></values-box>
+                    <p class="comment">除了集群节点记录之外，自动加入的CNAME记录，比如<code-label @click.prevent="addCnameRecord('@')">@</code-label>、<code-label @click.prevent="addCnameRecord('www')">www</code-label>。</p>
+                </td>
+            </tr>
 			<tr>
 				<td colspan="2"><more-options-indicator></more-options-indicator></td>
 			</tr>

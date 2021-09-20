@@ -46,6 +46,12 @@ func (this *UpdateClusterPopupAction) RunGet(params struct {
 		this.Data["providerId"] = 0
 	}
 
+	if len(dnsResp.CnameRecords) == 0 {
+		this.Data["cnameRecords"] = []string{}
+	} else {
+		this.Data["cnameRecords"] = dnsResp.CnameRecords
+	}
+
 	// 所有服务商
 	providerTypesResp, err := this.RPC().DNSProviderRPC().FindAllDNSProviderTypes(this.AdminContext(), &pb.FindAllDNSProviderTypesRequest{})
 	if err != nil {
@@ -70,6 +76,7 @@ func (this *UpdateClusterPopupAction) RunPost(params struct {
 	DomainId        int64
 	NodesAutoSync   bool
 	ServersAutoSync bool
+	CnameRecords    []string
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -103,6 +110,7 @@ func (this *UpdateClusterPopupAction) RunPost(params struct {
 		DnsDomainId:     params.DomainId,
 		NodesAutoSync:   params.NodesAutoSync,
 		ServersAutoSync: params.ServersAutoSync,
+		CnameRecords:    params.CnameRecords,
 	})
 	if err != nil {
 		this.ErrorPage(err)
