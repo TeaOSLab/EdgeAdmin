@@ -76,6 +76,10 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		idleTimeout = types.Int(config.IdleTimeout.Count)
 	}
 
+	if len(config.Domains) == 0 {
+		config.Domains = []string{}
+	}
+
 	this.Data["origin"] = maps.Map{
 		"id":           config.Id,
 		"protocol":     config.Addr.Protocol,
@@ -89,6 +93,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		"idleTimeout":  idleTimeout,
 		"maxConns":     config.MaxConns,
 		"maxIdleConns": config.MaxIdleConns,
+		"domains":      config.Domains,
 	}
 
 	this.Show()
@@ -109,6 +114,8 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	MaxConns     int32
 	MaxIdleConns int32
 	IdleTimeout  int
+
+	DomainsJSON []byte
 
 	Description string
 	IsOn        bool
@@ -175,6 +182,15 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		return
 	}
 
+	var domains = []string{}
+	if len(params.DomainsJSON) > 0 {
+		err = json.Unmarshal(params.DomainsJSON, &domains)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+
 	_, err = this.RPC().OriginRPC().UpdateOrigin(this.AdminContext(), &pb.UpdateOriginRequest{
 		OriginId: params.OriginId,
 		Name:     params.Name,
@@ -191,6 +207,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		IdleTimeoutJSON: idleTimeoutJSON,
 		MaxConns:        params.MaxConns,
 		MaxIdleConns:    params.MaxIdleConns,
+		Domains:         domains,
 	})
 	if err != nil {
 		this.ErrorPage(err)

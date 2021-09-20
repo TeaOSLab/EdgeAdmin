@@ -54,22 +54,30 @@ func (this *IndexAction) RunGet(params struct {
 	primaryOriginMaps := []maps.Map{}
 	backupOriginMaps := []maps.Map{}
 	for _, originConfig := range reverseProxy.PrimaryOrigins {
+		if len(originConfig.Domains) == 0 {
+			originConfig.Domains = []string{}
+		}
 		m := maps.Map{
-			"id":     originConfig.Id,
-			"weight": originConfig.Weight,
-			"addr":   originConfig.Addr.Protocol.String() + "://" + originConfig.Addr.Host + ":" + originConfig.Addr.PortRange,
-			"name":   originConfig.Name,
-			"isOn":   originConfig.IsOn,
+			"id":      originConfig.Id,
+			"weight":  originConfig.Weight,
+			"addr":    originConfig.Addr.Protocol.String() + "://" + originConfig.Addr.Host + ":" + originConfig.Addr.PortRange,
+			"name":    originConfig.Name,
+			"isOn":    originConfig.IsOn,
+			"domains": originConfig.Domains,
 		}
 		primaryOriginMaps = append(primaryOriginMaps, m)
 	}
 	for _, originConfig := range reverseProxy.BackupOrigins {
+		if len(originConfig.Domains) == 0 {
+			originConfig.Domains = []string{}
+		}
 		m := maps.Map{
-			"id":     originConfig.Id,
-			"weight": originConfig.Weight,
-			"addr":   originConfig.Addr.Protocol.String() + "://" + originConfig.Addr.Host + ":" + originConfig.Addr.PortRange,
-			"name":   originConfig.Name,
-			"isOn":   originConfig.IsOn,
+			"id":      originConfig.Id,
+			"weight":  originConfig.Weight,
+			"addr":    originConfig.Addr.Protocol.String() + "://" + originConfig.Addr.Host + ":" + originConfig.Addr.PortRange,
+			"name":    originConfig.Name,
+			"isOn":    originConfig.IsOn,
+			"domains": originConfig.Domains,
 		}
 		backupOriginMaps = append(backupOriginMaps, m)
 	}
