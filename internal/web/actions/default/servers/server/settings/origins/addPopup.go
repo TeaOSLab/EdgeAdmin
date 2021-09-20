@@ -56,6 +56,8 @@ func (this *AddPopupAction) RunPost(params struct {
 	MaxIdleConns int32
 	IdleTimeout  int
 
+	DomainsJSON []byte
+
 	Description string
 	IsOn        bool
 
@@ -121,6 +123,15 @@ func (this *AddPopupAction) RunPost(params struct {
 		return
 	}
 
+	var domains = []string{}
+	if len(params.DomainsJSON) > 0 {
+		err = json.Unmarshal(params.DomainsJSON, &domains)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+
 	createResp, err := this.RPC().OriginRPC().CreateOrigin(this.AdminContext(), &pb.CreateOriginRequest{
 		Name: params.Name,
 		Addr: &pb.NetworkAddress{
@@ -136,6 +147,7 @@ func (this *AddPopupAction) RunPost(params struct {
 		IdleTimeoutJSON: idleTimeoutJSON,
 		MaxConns:        params.MaxConns,
 		MaxIdleConns:    params.MaxIdleConns,
+		Domains:         domains,
 	})
 	if err != nil {
 		this.ErrorPage(err)
