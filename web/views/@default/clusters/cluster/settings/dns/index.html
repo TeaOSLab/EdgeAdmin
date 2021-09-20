@@ -30,13 +30,23 @@
                 <td>自动设置CNAME记录</td>
                 <td>
                     <values-box :values="cnameRecords" name="cnameRecords" placeholder="记录名" ref="cnameRecords"></values-box>
-                    <p class="comment">除了集群节点记录之外，自动加入的CNAME记录，比如<code-label @click.prevent="addCnameRecord('@')">@</code-label>、<code-label @click.prevent="addCnameRecord('www')">www</code-label>。</p>
+                    <p class="comment">除集群已创建的网站服务之外，自动解析到集群的CNAME记录，比如<code-label @click.prevent="addCnameRecord('@')">@</code-label>、<code-label @click.prevent="addCnameRecord('www')">www</code-label>。</p>
                 </td>
             </tr>
 			<tr>
 				<td colspan="2"><more-options-indicator></more-options-indicator></td>
 			</tr>
 			<tbody v-show="moreOptionsVisible">
+                <tr>
+                    <td>记录TTL</td>
+                    <td>
+                        <div class="ui input right labeled">
+                            <input type="text" name="ttl" maxlength="6" style="width: 6em" v-model="ttl"/>
+                            <span class="ui label">秒</span>
+                        </div>
+                        <p class="comment">每个DNS服务商或者账号的TTL限制各有不同，请注意取值范围。0表示使用默认。</p>
+                    </td>
+                </tr>
 				<tr>
 					<td>是否同步节点DNS状态</td>
 					<td>

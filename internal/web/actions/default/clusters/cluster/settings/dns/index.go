@@ -51,6 +51,7 @@ func (this *IndexAction) RunGet(params struct {
 	} else {
 		this.Data["cnameRecords"] = dnsInfoResp.CnameRecords
 	}
+	this.Data["ttl"] = dnsInfoResp.Ttl
 
 	this.Show()
 }
@@ -63,6 +64,7 @@ func (this *IndexAction) RunPost(params struct {
 	NodesAutoSync   bool
 	ServersAutoSync bool
 	CnameRecords    []string
+	Ttl             int32
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -105,6 +107,7 @@ func (this *IndexAction) RunPost(params struct {
 		NodesAutoSync:   params.NodesAutoSync,
 		ServersAutoSync: params.ServersAutoSync,
 		CnameRecords:    params.CnameRecords,
+		Ttl:             params.Ttl,
 	})
 	if err != nil {
 		this.ErrorPage(err)

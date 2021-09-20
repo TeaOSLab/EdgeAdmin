@@ -9,7 +9,7 @@ import (
 	"github.com/iwind/TeaGo/maps"
 )
 
-// 修改集群的DNS设置
+// UpdateClusterPopupAction 修改集群的DNS设置
 type UpdateClusterPopupAction struct {
 	actionutils.ParentAction
 }
@@ -52,6 +52,8 @@ func (this *UpdateClusterPopupAction) RunGet(params struct {
 		this.Data["cnameRecords"] = dnsResp.CnameRecords
 	}
 
+	this.Data["ttl"] = dnsResp.Ttl
+
 	// 所有服务商
 	providerTypesResp, err := this.RPC().DNSProviderRPC().FindAllDNSProviderTypes(this.AdminContext(), &pb.FindAllDNSProviderTypesRequest{})
 	if err != nil {
@@ -77,6 +79,7 @@ func (this *UpdateClusterPopupAction) RunPost(params struct {
 	NodesAutoSync   bool
 	ServersAutoSync bool
 	CnameRecords    []string
+	Ttl             int32
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -111,6 +114,7 @@ func (this *UpdateClusterPopupAction) RunPost(params struct {
 		NodesAutoSync:   params.NodesAutoSync,
 		ServersAutoSync: params.ServersAutoSync,
 		CnameRecords:    params.CnameRecords,
+		Ttl:             params.Ttl,
 	})
 	if err != nil {
 		this.ErrorPage(err)
