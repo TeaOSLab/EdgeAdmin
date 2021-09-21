@@ -15,7 +15,9 @@
         </thead>
         <tr v-for="task in tasks">
             <td>
-                <span v-if="task.type == 'clusterChange'">{{task.cluster.name}}</span>
+                <span v-if="task.type == 'clusterChange'">{{task.cluster.name}}
+                    <link-icon :href="'/dns/clusters/cluster?clusterId=' + task.cluster.id" target="_top"></link-icon>
+                </span>
                 <span v-if="task.type == 'nodeChange'">{{task.node.name}}</span>
                 <span v-if="task.type == 'serverChange'">{{task.server.name}}</span>
                 <span v-if="task.type == 'domainChange'">{{task.domain.name}}</span>

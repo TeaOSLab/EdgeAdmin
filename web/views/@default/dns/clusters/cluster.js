@@ -40,4 +40,17 @@ Tea.context(function () {
 				})
 		})
 	}
+
+	this.deleteTask = function (taskId) {
+		let that = this
+		teaweb.confirm("确定要删除这个任务吗？", function () {
+			that.$post("/dns/tasks/delete")
+				.params({
+					taskId: taskId
+				})
+				.success(function () {
+					teaweb.reload()
+				})
+		})
+	}
 })
