@@ -15,7 +15,7 @@ Vue.component("server-group-selector", {
 			let groupIds = this.groups.map(function (v) {
 				return v.id.toString()
 			}).join(",")
-			teaweb.popup("/servers/components/groups/selectPopup?selectedGroupIds=" + groupIds, {
+			teaweb.popup("/servers/groups/selectPopup?selectedGroupIds=" + groupIds, {
 				callback: function (resp) {
 					that.groups.push(resp.data.group)
 				}
@@ -23,7 +23,7 @@ Vue.component("server-group-selector", {
 		},
 		addGroup: function () {
 			let that = this
-			teaweb.popup("/servers/components/groups/createPopup", {
+			teaweb.popup("/servers/groups/createPopup", {
 				callback: function (resp) {
 					that.groups.push(resp.data.group)
 				}

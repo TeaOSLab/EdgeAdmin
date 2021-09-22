@@ -1,0 +1,84 @@
+{$layout}
+{$template "menu"}
+
+<table class="ui table definition selectable">
+    <tr>
+        <td class="title">分组名称</td>
+        <td>
+            {{group.name}}
+        </td>
+    </tr>
+</table>
+
+<h3>服务</h3>
+
+<p class="comment" v-if="servers.length == 0">暂时还没有服务。</p>
+
+<table class="ui table selectable celled" v-if="servers.length > 0">
+    <thead>
+    <tr>
+        <th>服务名称</th>
+        <th>所属用户</th>
+        <th>部署集群</th>
+        <th>域名</th>
+        <th>端口</th>
+        <th class="two wide center">状态</th>
+        <th class="two op">操作</th>
+    </tr>
+    </thead>
+    <tr v-for="server in servers">
+        <td><a :href="'/servers/server?serverId=' + server.id"><keyword :v-word="keyword">{{server.name}}</keyword></a>
+            <div style="margin-top:0.4em">
+                <grey-label>{{server.serverTypeName}}</grey-label>
+            </div>
+        </td>
+        <td>
+            <span v-if="server.user != null">{{server.user.fullname}}<link-icon v-if="canVisitUser" :href="'/users/user?userId=' + server.user.id"></link-icon></span>
+            <span v-else>-</span>
+        </td>
+        <td>{{server.cluster.name}}</td>
+        <td>
+			<span v-if="server.serverNames.length > 0">
+                <span v-if="server.serverNames[0].subNames == null || server.serverNames[0].subNames.length == 0"><keyword :v-word="keyword">{{server.serverNames[0].name}}</keyword></span>
+                <span v-else><keyword :v-word="keyword">{{server.serverNames[0].subNames[0]}}</keyword></span>
+				<span v-if="server.countServerNames > 1">等{{server.countServerNames}}个域名 <popup-icon :href="'/servers/serverNamesPopup?serverId=' + server.id" height="20em"></popup-icon></span>
+			</span>
+            <span v-else class="disabled">-</span>
+
+            <!-- 审核中 -->
+            <div v-if="server.isAuditing" style="margin-top: 0.5em">
+                <a class="ui label basic tiny red" title="点击跳到审核页面" :href="'/servers/server/settings/serverNames?serverId=' + server.id">审核中 &nbsp;<i class="icon long arrow right alternate"></i></a>
+            </div>
+
+            <!-- 审核失败 -->
+            <div v-if="!server.auditingIsOk" style="margin-top: 0.5em">
+                <a class="ui label basic tiny red" title="点击跳到审核页面" :href="'/servers/server/settings/serverNames?serverId=' + server.id">审核不通过 &nbsp;<i class="icon long arrow right alternate"></i></a>
+            </div>
+        </td>
+        <td>
+            <span v-if="server.ports.length == 0">-</span>
+            <div v-for="port in server.ports">
+                <tiny-basic-label><keyword :v-word="keyword">{{port.portRange}}</keyword><span class="small">（{{port.protocol}}）</span></tiny-basic-label>
+            </div>
+        </td>
+        <td class="center">
+            <div v-if="!checkDNS">
+                <label-on :v-is-on="server.isOn"></label-on>
+            </div>
+            <div v-else>
+                <span v-if="!server.isOn" class="grey">停用中</span>
+                <span v-else-if="server.status.isOk" class="green">正常</span>
+                <span v-else-if="server.status.message.length == 0">检查中</span>
+                <span v-else class="red">{{server.status.message}}
+                    <tip-icon :content="server.status.todo"></tip-icon>
+                </span>
+            </div>
+        </td>
+        <td>
+            <a :href="'/servers/server?serverId=' + server.id">详情</a> &nbsp;
+            <a :href="'/servers/server/settings?serverId=' + server.id">设置</a>
+        </td>
+    </tr>
+</table>
+
+<div class="page" v-html="page"></div>

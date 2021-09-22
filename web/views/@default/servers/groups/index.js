@@ -6,7 +6,7 @@ Tea.context(function () {
 			document.querySelectorAll("*[data-group-id]").forEach(function (element) {
 				groupIds.push(element.getAttribute("data-group-id"))
 			})
-			that.$post("/servers/components/groups/sort")
+			that.$post("/servers/groups/sort")
 				.params({
 					groupIds: groupIds
 				})
@@ -17,17 +17,7 @@ Tea.context(function () {
 	})
 
 	this.createGroup = function () {
-		teaweb.popup("/servers/components/groups/createPopup", {
-			callback: function () {
-				teaweb.success("保存成功", function () {
-					teaweb.reload()
-				})
-			}
-		})
-	}
-
-	this.updateGroup = function (groupId) {
-		teaweb.popup("/servers/components/groups/updatePopup?groupId=" + groupId, {
+		teaweb.popup("/servers/groups/createPopup", {
 			callback: function () {
 				teaweb.success("保存成功", function () {
 					teaweb.reload()
@@ -39,7 +29,7 @@ Tea.context(function () {
 	this.deleteGroup = function (groupId) {
 		let that = this
 		teaweb.confirm("确定要删除这个分组吗？", function () {
-			that.$post("/servers/components/groups/delete")
+			that.$post("/servers/groups/group/delete")
 				.params({
 					groupId: groupId
 				})

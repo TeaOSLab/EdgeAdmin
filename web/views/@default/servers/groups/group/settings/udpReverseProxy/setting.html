@@ -1,0 +1,15 @@
+{$layout}
+{$template "/servers/groups/group/menu"}
+{$template "/left_menu_without_menu"}
+
+<div class="right-box without-menu">
+	{$template "menu"}
+
+	<div class="margin"></div>
+	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+		<input type="hidden" name="groupId" :value="group.id"/>
+		<input type="hidden" name="reverseProxyRefJSON" :value="JSON.stringify(reverseProxyRef)"/>
+		<reverse-proxy-box :v-reverse-proxy-ref="reverseProxyRef" :v-reverse-proxy-config="reverseProxyConfig" :v-family="family" :v-is-group="true"></reverse-proxy-box>
+		<submit-btn></submit-btn>
+	</form>
+</div>

@@ -1,0 +1,19 @@
+{$layout}
+{$template "/servers/groups/group/menu"}
+{$template "/left_menu_without_menu"}
+
+<div class="right-box without-menu">
+	{$template "menu"}
+
+	<div v-if="!reverseProxyRef.isPrior || !reverseProxyRef.isOn">
+		<div class="margin"></div>
+        <warning-message>当前代理服务没有开启，可以通过点击 <a :href="Tea.url('.setting', { groupId: group.id })">[更多设置]</a> 开启 。</warning-message>
+	</div>
+
+    <div :class="{'opacity-mask': !reverseProxyRef.isPrior || !reverseProxyRef.isOn}">
+        <origin-list-box :v-primary-origins="primaryOrigins" :v-backup-origins="backupOrigins"
+                         :v-server-type="serverType"
+                         :v-params="'type=group&groupId=' + group.id + '&reverseProxyId=' + reverseProxyConfig.id + '&serverType=' + serverType"
+        :v-is-group="true"></origin-list-box>
+    </div>
+</div>

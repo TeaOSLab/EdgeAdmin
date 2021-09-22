@@ -1,4 +1,4 @@
-package groups
+package group
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"

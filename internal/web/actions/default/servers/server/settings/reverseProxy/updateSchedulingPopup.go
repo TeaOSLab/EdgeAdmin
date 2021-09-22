@@ -13,7 +13,7 @@ import (
 	"github.com/iwind/TeaGo/types"
 )
 
-// 修改调度算法
+// UpdateSchedulingPopupAction 修改调度算法
 type UpdateSchedulingPopupAction struct {
 	actionutils.ParentAction
 }
@@ -24,16 +24,14 @@ func (this *UpdateSchedulingPopupAction) Init() {
 func (this *UpdateSchedulingPopupAction) RunGet(params struct {
 	Type           string
 	ServerId       int64
+	GroupId        int64
 	ReverseProxyId int64
+	Family         string
 }) {
 	this.Data["dataType"] = params.Type
 	this.Data["serverId"] = params.ServerId
+	this.Data["groupId"] = params.GroupId
 	this.Data["reverseProxyId"] = params.ReverseProxyId
-
-	_, serverConfig, isOk := serverutils.FindServer(this.Parent(), params.ServerId)
-	if !isOk {
-		return
-	}
 
 	reverseProxyResp, err := this.RPC().ReverseProxyRPC().FindEnabledReverseProxyConfig(this.AdminContext(), &pb.FindEnabledReverseProxyConfigRequest{
 		ReverseProxyId: params.ReverseProxyId,
@@ -62,6 +60,33 @@ func (this *UpdateSchedulingPopupAction) RunGet(params struct {
 
 	// 调度类型
 	schedulingTypes := []maps.Map{}
+
+	var isHTTPFamily = false
+	var isTCPFamily = false
+	var isUDPFamily = false
+	var isUnixFamily = false
+	if params.ServerId > 0 {
+		_, serverConfig, isOk := serverutils.FindServer(this.Parent(), params.ServerId)
+		if !isOk {
+			return
+		}
+		isHTTPFamily = serverConfig.IsHTTPFamily()
+		isTCPFamily = serverConfig.IsTCPFamily()
+		isUDPFamily = serverConfig.IsUDPFamily()
+		isUnixFamily = serverConfig.IsUnixFamily()
+	} else {
+		switch params.Family {
+		case "http":
+			isHTTPFamily = true
+		case "tcp":
+			isTCPFamily = true
+		case "udp":
+			isUDPFamily = true
+		case "unix":
+			isUnixFamily = true
+		}
+	}
+
 	for _, m := range schedulingconfigs.AllSchedulingTypes() {
 		networks, ok := m["networks"]
 		if !ok {
@@ -70,10 +95,10 @@ func (this *UpdateSchedulingPopupAction) RunGet(params struct {
 		if !types.IsSlice(networks) {
 			continue
 		}
-		if (serverConfig.IsHTTPFamily() && lists.Contains(networks, "http")) ||
-			(serverConfig.IsTCPFamily() && lists.Contains(networks, "tcp")) ||
-			(serverConfig.IsUDPFamily() && lists.Contains(networks, "udp")) ||
-			(serverConfig.IsUnixFamily() && lists.Contains(networks, "unix")) {
+		if (isHTTPFamily && lists.Contains(networks, "http")) ||
+			(isTCPFamily && lists.Contains(networks, "tcp")) ||
+			(isUDPFamily && lists.Contains(networks, "udp")) ||
+			(isUnixFamily && lists.Contains(networks, "unix")) {
 			schedulingTypes = append(schedulingTypes, m)
 		}
 	}
