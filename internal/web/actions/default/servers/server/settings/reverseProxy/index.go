@@ -6,6 +6,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/iwind/TeaGo/types"
 )
 
 // IndexAction 源站列表
@@ -34,13 +35,23 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 	this.Data["hasGroupConfig"] = false
+	this.Data["groupSettingURL"] = ""
 	switch serverType {
 	case serverconfigs.ServerTypeHTTPWeb, serverconfigs.ServerTypeHTTPProxy:
 		this.Data["hasGroupConfig"] = groupResp.HasHTTPReverseProxy
+		if groupResp.ServerGroupId > 0 {
+			this.Data["groupSettingURL"] = "/servers/groups/group/settings/httpReverseProxy?groupId=" + types.String(groupResp.ServerGroupId)
+		}
 	case serverconfigs.ServerTypeTCPProxy:
 		this.Data["hasGroupConfig"] = groupResp.HasTCPReverseProxy
+		if groupResp.ServerGroupId > 0 {
+			this.Data["groupSettingURL"] = "/servers/groups/group/settings/tcpReverseProxy?groupId=" + types.String(groupResp.ServerGroupId)
+		}
 	case serverconfigs.ServerTypeUDPProxy:
 		this.Data["hasGroupConfig"] = groupResp.HasUDPReverseProxy
+		if groupResp.ServerGroupId > 0 {
+			this.Data["groupSettingURL"] = "/servers/groups/group/settings/udpReverseProxy?groupId=" + types.String(groupResp.ServerGroupId)
+		}
 	}
 
 	// 当前服务的配置
