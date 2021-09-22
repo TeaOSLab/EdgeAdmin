@@ -1,0 +1,9 @@
+{$layout}
+{$template "/servers/groups/group/menu"}
+{$template "/left_menu_without_menu"}
+
+<div class="right-box without-menu">
+	{$template "menu"}
+
+	<origin-scheduling-view-box :v-scheduling="scheduling" :v-params="'type=group&groupId=' + group.id + '&reverseProxyId=' + reverseProxyId + '&family=' + family"></origin-scheduling-view-box>
+</div>

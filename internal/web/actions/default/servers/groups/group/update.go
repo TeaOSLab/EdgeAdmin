@@ -1,32 +1,28 @@
-package groups
+package group
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/groups/group/servergrouputils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 )
 
-type UpdatePopupAction struct {
+type UpdateAction struct {
 	actionutils.ParentAction
 }
 
-func (this *UpdatePopupAction) Init() {
-	this.Nav("", "", "")
+func (this *UpdateAction) Init() {
+	this.Nav("", "", "group.update")
 }
 
-func (this *UpdatePopupAction) RunGet(params struct {
+func (this *UpdateAction) RunGet(params struct {
 	GroupId int64
 }) {
-	groupResp, err := this.RPC().ServerGroupRPC().FindEnabledServerGroup(this.AdminContext(), &pb.FindEnabledServerGroupRequest{ServerGroupId: params.GroupId})
+	group, err := servergrouputils.InitGroup(this.Parent(), params.GroupId, "")
 	if err != nil {
 		this.ErrorPage(err)
-		return
-	}
-	group := groupResp.ServerGroup
-	if group == nil {
-		this.NotFound("serverGroup", params.GroupId)
 		return
 	}
 
@@ -38,7 +34,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 	this.Show()
 }
 
-func (this *UpdatePopupAction) RunPost(params struct {
+func (this *UpdateAction) RunPost(params struct {
 	GroupId int64
 	Name    string
 

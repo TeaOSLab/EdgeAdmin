@@ -1,143 +1,146 @@
 Vue.component("reverse-proxy-box", {
-    props: ["v-reverse-proxy-ref", "v-reverse-proxy-config", "v-is-location", "v-family"],
-    data: function () {
-        let reverseProxyRef = this.vReverseProxyRef
-        if (reverseProxyRef == null) {
-            reverseProxyRef = {
-                isPrior: false,
-                isOn: false,
-                reverseProxyId: 0
-            }
-        }
+	props: ["v-reverse-proxy-ref", "v-reverse-proxy-config", "v-is-location", "v-is-group", "v-family"],
+	data: function () {
+		let reverseProxyRef = this.vReverseProxyRef
+		if (reverseProxyRef == null) {
+			reverseProxyRef = {
+				isPrior: false,
+				isOn: false,
+				reverseProxyId: 0
+			}
+		}
 
-        let reverseProxyConfig = this.vReverseProxyConfig
-        if (reverseProxyConfig == null) {
-            reverseProxyConfig = {
-                requestPath: "",
-                stripPrefix: "",
-                requestURI: "",
-                requestHost: "",
-                requestHostType: 0,
-                addHeaders: [],
-                connTimeout: {count: 0, unit: "second"},
-                readTimeout: {count: 0, unit: "second"},
-                idleTimeout: {count: 0, unit: "second"},
-                maxConns: 0,
-                maxIdleConns: 0
-            }
-        }
-        if (reverseProxyConfig.addHeaders == null) {
-            reverseProxyConfig.addHeaders = []
-        }
-        if (reverseProxyConfig.connTimeout == null) {
-            reverseProxyConfig.connTimeout = {count: 0, unit: "second"}
-        }
-        if (reverseProxyConfig.readTimeout == null) {
-            reverseProxyConfig.readTimeout = {count: 0, unit: "second"}
-        }
-        if (reverseProxyConfig.idleTimeout == null) {
-            reverseProxyConfig.idleTimeout = {count: 0, unit: "second"}
-        }
+		let reverseProxyConfig = this.vReverseProxyConfig
+		if (reverseProxyConfig == null) {
+			reverseProxyConfig = {
+				requestPath: "",
+				stripPrefix: "",
+				requestURI: "",
+				requestHost: "",
+				requestHostType: 0,
+				addHeaders: [],
+				connTimeout: {count: 0, unit: "second"},
+				readTimeout: {count: 0, unit: "second"},
+				idleTimeout: {count: 0, unit: "second"},
+				maxConns: 0,
+				maxIdleConns: 0
+			}
+		}
+		if (reverseProxyConfig.addHeaders == null) {
+			reverseProxyConfig.addHeaders = []
+		}
+		if (reverseProxyConfig.connTimeout == null) {
+			reverseProxyConfig.connTimeout = {count: 0, unit: "second"}
+		}
+		if (reverseProxyConfig.readTimeout == null) {
+			reverseProxyConfig.readTimeout = {count: 0, unit: "second"}
+		}
+		if (reverseProxyConfig.idleTimeout == null) {
+			reverseProxyConfig.idleTimeout = {count: 0, unit: "second"}
+		}
 
-        let forwardHeaders = [
-            {
-                name: "X-Real-IP",
-                isChecked: false
-            },
-            {
-                name: "X-Forwarded-For",
-                isChecked: false
-            },
-            {
-                name: "X-Forwarded-By",
-                isChecked: false
-            },
-            {
-                name: "X-Forwarded-Host",
-                isChecked: false
-            },
-            {
-                name: "X-Forwarded-Proto",
-                isChecked: false
-            }
-        ]
-        forwardHeaders.forEach(function (v) {
-            v.isChecked = reverseProxyConfig.addHeaders.$contains(v.name)
-        })
+		let forwardHeaders = [
+			{
+				name: "X-Real-IP",
+				isChecked: false
+			},
+			{
+				name: "X-Forwarded-For",
+				isChecked: false
+			},
+			{
+				name: "X-Forwarded-By",
+				isChecked: false
+			},
+			{
+				name: "X-Forwarded-Host",
+				isChecked: false
+			},
+			{
+				name: "X-Forwarded-Proto",
+				isChecked: false
+			}
+		]
+		forwardHeaders.forEach(function (v) {
+			v.isChecked = reverseProxyConfig.addHeaders.$contains(v.name)
+		})
 
-        return {
-            reverseProxyRef: reverseProxyRef,
-            reverseProxyConfig: reverseProxyConfig,
-            advancedVisible: false,
-            family: this.vFamily,
-            forwardHeaders: forwardHeaders
-        }
-    },
-    watch: {
-        "reverseProxyConfig.requestHostType": function (v) {
-            let requestHostType = parseInt(v)
-            if (isNaN(requestHostType)) {
-                requestHostType = 0
-            }
-            this.reverseProxyConfig.requestHostType = requestHostType
-        },
-        "reverseProxyConfig.connTimeout.count": function (v) {
-            let count = parseInt(v)
-            if (isNaN(count) || count < 0) {
-                count = 0
-            }
-            this.reverseProxyConfig.connTimeout.count = count
-        },
-        "reverseProxyConfig.readTimeout.count": function (v) {
-            let count = parseInt(v)
-            if (isNaN(count) || count < 0) {
-                count = 0
-            }
-            this.reverseProxyConfig.readTimeout.count = count
-        },
-        "reverseProxyConfig.idleTimeout.count": function (v) {
-            let count = parseInt(v)
-            if (isNaN(count) || count < 0) {
-                count = 0
-            }
-            this.reverseProxyConfig.idleTimeout.count = count
-        },
-        "reverseProxyConfig.maxConns": function (v) {
-            let maxConns = parseInt(v)
-            if (isNaN(maxConns) || maxConns < 0) {
-                maxConns = 0
-            }
-            this.reverseProxyConfig.maxConns = maxConns
-        },
-        "reverseProxyConfig.maxIdleConns": function (v) {
-            let maxIdleConns = parseInt(v)
-            if (isNaN(maxIdleConns) || maxIdleConns < 0) {
-                maxIdleConns = 0
-            }
-            this.reverseProxyConfig.maxIdleConns = maxIdleConns
-        },
-    },
-    methods: {
-        isOn: function () {
-            return (!this.vIsLocation || this.reverseProxyRef.isPrior) && this.reverseProxyRef.isOn
-        },
-        changeAdvancedVisible: function (v) {
-            this.advancedVisible = v
-        },
-        changeAddHeader: function () {
-            this.reverseProxyConfig.addHeaders = this.forwardHeaders.filter(function (v) {
-                return v.isChecked
-            }).map(function (v) {
-                return v.name
-            })
-        }
-    },
-    template: `<div>
+		return {
+			reverseProxyRef: reverseProxyRef,
+			reverseProxyConfig: reverseProxyConfig,
+			advancedVisible: false,
+			family: this.vFamily,
+			forwardHeaders: forwardHeaders
+		}
+	},
+	watch: {
+		"reverseProxyConfig.requestHostType": function (v) {
+			let requestHostType = parseInt(v)
+			if (isNaN(requestHostType)) {
+				requestHostType = 0
+			}
+			this.reverseProxyConfig.requestHostType = requestHostType
+		},
+		"reverseProxyConfig.connTimeout.count": function (v) {
+			let count = parseInt(v)
+			if (isNaN(count) || count < 0) {
+				count = 0
+			}
+			this.reverseProxyConfig.connTimeout.count = count
+		},
+		"reverseProxyConfig.readTimeout.count": function (v) {
+			let count = parseInt(v)
+			if (isNaN(count) || count < 0) {
+				count = 0
+			}
+			this.reverseProxyConfig.readTimeout.count = count
+		},
+		"reverseProxyConfig.idleTimeout.count": function (v) {
+			let count = parseInt(v)
+			if (isNaN(count) || count < 0) {
+				count = 0
+			}
+			this.reverseProxyConfig.idleTimeout.count = count
+		},
+		"reverseProxyConfig.maxConns": function (v) {
+			let maxConns = parseInt(v)
+			if (isNaN(maxConns) || maxConns < 0) {
+				maxConns = 0
+			}
+			this.reverseProxyConfig.maxConns = maxConns
+		},
+		"reverseProxyConfig.maxIdleConns": function (v) {
+			let maxIdleConns = parseInt(v)
+			if (isNaN(maxIdleConns) || maxIdleConns < 0) {
+				maxIdleConns = 0
+			}
+			this.reverseProxyConfig.maxIdleConns = maxIdleConns
+		},
+	},
+	methods: {
+		isOn: function () {
+			if (this.vIsLocation || this.vIsGroup) {
+				return this.reverseProxyRef.isPrior && this.reverseProxyRef.isOn
+			}
+			return this.reverseProxyRef.isOn
+		},
+		changeAdvancedVisible: function (v) {
+			this.advancedVisible = v
+		},
+		changeAddHeader: function () {
+			this.reverseProxyConfig.addHeaders = this.forwardHeaders.filter(function (v) {
+				return v.isChecked
+			}).map(function (v) {
+				return v.name
+			})
+		}
+	},
+	template: `<div>
 	<input type="hidden" name="reverseProxyRefJSON" :value="JSON.stringify(reverseProxyRef)"/>
 	<input type="hidden" name="reverseProxyJSON" :value="JSON.stringify(reverseProxyConfig)"/>
 	<table class="ui table selectable definition">
-		<prior-checkbox :v-config="reverseProxyRef" v-if="vIsLocation"></prior-checkbox>
-		<tbody v-show="!vIsLocation || reverseProxyRef.isPrior">
+		<prior-checkbox :v-config="reverseProxyRef" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || reverseProxyRef.isPrior">
 			<tr>
 				<td class="title">是否启用反向代理</td>
 				<td>

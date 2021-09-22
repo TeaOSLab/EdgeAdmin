@@ -1,4 +1,4 @@
-package groups
+package httpReverseProxy
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
@@ -10,15 +10,12 @@ func init() {
 	TeaGo.BeforeStart(func(server *TeaGo.Server) {
 		server.
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeServer)).
-			Helper(NewHelper()).
+			Data("teaMenu", "servers").
 			Data("teaSubMenu", "group").
-			Prefix("/servers/components/groups").
+			Prefix("/servers/groups/group/settings/httpReverseProxy").
 			Get("", new(IndexAction)).
-			GetPost("/createPopup", new(CreatePopupAction)).
-			GetPost("/updatePopup", new(UpdatePopupAction)).
-			GetPost("/selectPopup", new(SelectPopupAction)).
-			Post("/delete", new(DeleteAction)).
-			Post("/sort", new(SortAction)).
+			GetPost("/scheduling", new(SchedulingAction)).
+			GetPost("/setting", new(SettingAction)).
 			EndAll()
 	})
 }

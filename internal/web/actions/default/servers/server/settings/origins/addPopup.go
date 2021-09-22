@@ -21,18 +21,24 @@ type AddPopupAction struct {
 
 func (this *AddPopupAction) RunGet(params struct {
 	ServerId       int64
+	ServerType     string
 	ReverseProxyId int64
 	OriginType     string
 }) {
 	this.Data["reverseProxyId"] = params.ReverseProxyId
 	this.Data["originType"] = params.OriginType
 
-	serverTypeResp, err := this.RPC().ServerRPC().FindEnabledServerType(this.AdminContext(), &pb.FindEnabledServerTypeRequest{ServerId: params.ServerId})
-	if err != nil {
-		this.ErrorPage(err)
-		return
+	var serverType = ""
+	if params.ServerId > 0 {
+		serverTypeResp, err := this.RPC().ServerRPC().FindEnabledServerType(this.AdminContext(), &pb.FindEnabledServerTypeRequest{ServerId: params.ServerId})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		serverType = serverTypeResp.Type
+	} else {
+		serverType = params.ServerType
 	}
-	serverType := serverTypeResp.Type
 	this.Data["serverType"] = serverType
 
 	// 是否为HTTP

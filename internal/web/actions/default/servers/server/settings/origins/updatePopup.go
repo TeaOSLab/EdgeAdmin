@@ -26,6 +26,7 @@ func (this *UpdatePopupAction) Init() {
 
 func (this *UpdatePopupAction) RunGet(params struct {
 	ServerId       int64
+	ServerType     string
 	ReverseProxyId int64
 	OriginType     string
 	OriginId       int64
@@ -34,15 +35,20 @@ func (this *UpdatePopupAction) RunGet(params struct {
 	this.Data["reverseProxyId"] = params.ReverseProxyId
 	this.Data["originId"] = params.OriginId
 
-	serverTypeResp, err := this.RPC().ServerRPC().FindEnabledServerType(this.AdminContext(), &pb.FindEnabledServerTypeRequest{
-		ServerId: params.ServerId,
-	})
-	if err != nil {
-		this.ErrorPage(err)
-		return
+	var serverType = ""
+	if params.ServerId > 0 {
+		serverTypeResp, err := this.RPC().ServerRPC().FindEnabledServerType(this.AdminContext(), &pb.FindEnabledServerTypeRequest{
+			ServerId: params.ServerId,
+		})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		serverType = serverTypeResp.Type
+	} else {
+		serverType = params.ServerType
 	}
-	this.Data["serverType"] = serverTypeResp.Type
-	serverType := serverTypeResp.Type
+	this.Data["serverType"] = serverType
 
 	// 是否为HTTP
 	this.Data["isHTTP"] = serverType == "httpProxy" || serverType == "httpWeb"

@@ -181,6 +181,11 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 			"icon":     "clone outsize",
 			"subItems": []maps.Map{
 				{
+					"name": "服务分组",
+					"url":  "/servers/groups",
+					"code": "group",
+				},
+				{
 					"name": "证书管理",
 					"url":  "/servers/certs",
 					"code": "cert",
@@ -215,11 +220,6 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 					"name": "统计指标",
 					"url":  "/servers/metrics",
 					"code": "metric",
-				},
-				{
-					"name": "服务分组",
-					"url":  "/servers/components/groups",
-					"code": "group",
 				},
 				{
 					"name": "通用设置",

@@ -1,8 +1,9 @@
-package reverseProxy
+package tcpReverseProxy
 
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/groups/group/servergrouputils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/maps"
@@ -18,33 +19,17 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct {
-	ServerId int64
+	GroupId int64
 }) {
-	serverTypeResp, err := this.RPC().ServerRPC().FindEnabledServerType(this.AdminContext(), &pb.FindEnabledServerTypeRequest{ServerId: params.ServerId})
+	_, err := servergrouputils.InitGroup(this.Parent(), params.GroupId, "tcpReverseProxy")
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	serverType := serverTypeResp.Type
 
-	// 当前是否有分组设置
-	groupResp, err := this.RPC().ServerGroupRPC().FindEnabledServerGroupConfigInfo(this.AdminContext(), &pb.FindEnabledServerGroupConfigInfoRequest{ServerId: params.ServerId})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	this.Data["hasGroupConfig"] = false
-	switch serverType {
-	case serverconfigs.ServerTypeHTTPWeb, serverconfigs.ServerTypeHTTPProxy:
-		this.Data["hasGroupConfig"] = groupResp.HasHTTPReverseProxy
-	case serverconfigs.ServerTypeTCPProxy:
-		this.Data["hasGroupConfig"] = groupResp.HasTCPReverseProxy
-	case serverconfigs.ServerTypeUDPProxy:
-		this.Data["hasGroupConfig"] = groupResp.HasUDPReverseProxy
-	}
+	this.Data["serverType"] = "tcpProxy"
 
-	// 当前服务的配置
-	reverseProxyResp, err := this.RPC().ServerRPC().FindAndInitServerReverseProxyConfig(this.AdminContext(), &pb.FindAndInitServerReverseProxyConfigRequest{ServerId: params.ServerId})
+	reverseProxyResp, err := this.RPC().ServerGroupRPC().FindAndInitServerGroupTCPReverseProxyConfig(this.AdminContext(), &pb.FindAndInitServerGroupTCPReverseProxyConfigRequest{ServerGroupId: params.GroupId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -64,8 +49,6 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 	this.Data["reverseProxyConfig"] = reverseProxy
-
-	this.Data["serverType"] = serverType
 
 	primaryOriginMaps := []maps.Map{}
 	backupOriginMaps := []maps.Map{}

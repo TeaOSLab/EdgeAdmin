@@ -1,0 +1,7 @@
+<first-menu>
+    <menu-item href="/servers/groups">分组列表</menu-item>
+    <span class="item disabled">|</span>
+    <menu-item :href="'/servers/groups/group?groupId=' + group.id" code="group.index">"{{group.name}}"详情</menu-item>
+    <menu-item :href="'/servers/groups/group/settings?groupId=' + group.id" :active="!firstMenuItem.startsWith('group.')">全局设置 &nbsp;<tip-icon content="这里添加的设置将会自动应用到当前分组下的所有服务。"></tip-icon></menu-item>
+    <menu-item :href="'/servers/groups/group/update?groupId=' + group.id" code="group.update">修改</menu-item>
+</first-menu>

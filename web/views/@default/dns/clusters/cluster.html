@@ -54,7 +54,7 @@
 
 <!-- 当前任务 -->
 <div v-if="tasks.length > 0">
-    <h4>正在执行的任务</h4>
+    <h3>正在执行的任务</h3>
     <table class="ui table selectable celled">
         <thead>
         <tr>
@@ -94,7 +94,7 @@
 
 <!-- 问题合集 -->
 <div v-if="issues.length > 0">
-    <h4>需要修复的问题</h4>
+    <h3>需要修复的问题</h3>
     <table class="ui table selectable celled" v-if="issues.length > 0">
         <thead>
         <tr>
@@ -131,7 +131,7 @@
 <p class="comment">下面的DNS解析记录也可以手工在DNS服务商提供的管理平台添加。</p>
 
 <!-- 节点DNS解析记录 -->
-<h4>节点DNS解析记录 <span>&nbsp; ({{nodes.length}}个)</span></h4>
+<h3>节点DNS解析记录 <span>&nbsp; ({{nodes.length}}个)</span></h3>
 <p class="comment" v-if="nodes.length == 0">暂时没有需要设置的DNS记录。</p>
 <table class="ui table selectable celled" v-if="nodes.length > 0">
 	<thead>
@@ -174,7 +174,7 @@
 </table>
 
 <!-- 网站服务解析记录 -->
-<h4>网站服务解析记录 <span>&nbsp; ({{servers.length}}个)</span></h4>
+<h3>网站服务解析记录 <span>&nbsp; ({{servers.length}}个)</span></h3>
 <p class="comment" v-if="servers.length == 0">暂时没有需要设置的DNS记录。</p>
 <table class="ui table selectable celled" v-if="servers.length > 0">
 	<thead>
