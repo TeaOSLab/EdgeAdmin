@@ -68,19 +68,13 @@
         <td>{{reporter.secret}}</td>
     </tr>
     <tr>
-        <td>命令行</td>
+        <td>配置文件<em>（configs/api.yaml）</em><br/>
+            <em><download-link :v-element="'rpc-code'" :v-file="'api.yaml'">[下载]</download-link ></em></td>
         <td>
-            <more-options-indicator>查看命令行</more-options-indicator>
-            <div :style="{visibility: moreOptionsVisible ? 'visible' : 'hidden', height: moreOptionsVisible ? 'auto': '0em'}">
-                <div class="ui divider"></div>
-                <h4>Linux、Mac OS X：</h4>
-                <source-code-box type="application/x-sh">edge-reporter run -api=[API HOST] -node-id={{reporter.uniqueId}} -secret={{reporter.secret}}</source-code-box>
-
-                <h4>Windows：</h4>
-                <source-code-box type="application/x-sh">edge-reporter.exe run -api=[API HOST] -node-id={{reporter.uniqueId}} -secret={{reporter.secret}}</source-code-box>
-
-                <p class="comment">把上面命令行中的<code-label>[API_HOST]</code-label>换成你的API节点地址，包括协议、主机名端口。</p>
-            </div>
+            <source-code-box id="rpc-code" type="text/yaml">rpc:
+  endpoints: [ {{apiEndpoints}} ]
+nodeId: "{{reporter.uniqueId}}"
+secret: "{{reporter.secret}}"</source-code-box>
         </td>
     </tr>
 </table>
