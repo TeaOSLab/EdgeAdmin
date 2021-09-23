@@ -6,14 +6,14 @@
     <input type="hidden" name="reporterId" :value="reporter.id"/>
     <div class="ui fields inline">
         <div class="ui field">
-            <select class="ui dropdown" name="okState" v-model="okState">
-                <option value="0">[结果]</option>
-                <option value="1">成功</option>
-                <option value="2">失败</option>
+            <select class="ui dropdown" name="level" v-model="level">
+                <option value="">[级别]</option>
+                <option v-for="level in levels" :value="level.code">{{level.name}}</option>
             </select>
         </div>
         <div class="ui field">
-            <button class="ui button" type="submit">搜索</button>
+            <button class="ui button" type="submit">搜索</button> &nbsp;
+            <a :href="Tea.url('$', {reporterId: reporter.id})" v-if="level.length > 0">[清除条件]</a>
         </div>
     </div>
 </form>
@@ -23,6 +23,7 @@
     <thead>
         <tr>
             <th class="two wide">类型</th>
+            <th class="two wide">检测时间</th>
             <th class="four wide">对象</th>
             <th class="one wide">级别</th>
             <th class="two wide">耗时</th>
@@ -31,6 +32,7 @@
     </thead>
     <tr v-for="result in results">
         <td>{{result.typeName}}</td>
+        <td>{{result.updatedTime}}</td>
         <td>{{result.targetDesc}}
             <span v-if="result.type == 'ipAddr'"><link-icon :href="'/clusters/ip-addrs/addr?addrId=' + result.targetId"></link-icon></span>
         </td>

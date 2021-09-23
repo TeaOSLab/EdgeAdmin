@@ -6,6 +6,7 @@
     <thead>
     <tr>
         <th class="three wide">监控节点</th>
+        <th class="two wide">检测时间</th>
         <th class="four wide">对象</th>
         <th class="one wide">级别</th>
         <th class="two wide">耗时</th>
@@ -19,6 +20,7 @@
                 <span class="grey small">{{result.node.location}}<span v-if="result.node.location.length > 0"> </span> {{result.node.isp}}</span>
             </div>
         </td>
+        <td>{{result.updatedTime}}</td>
         <td>{{result.targetDesc}}</td>
         <td>
             <span :class="result.color">{{result.levelName}}</span>
