@@ -4,6 +4,7 @@ package nodeutils
 
 import (
 	"errors"
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
@@ -49,7 +50,7 @@ func InitNodeInfo(parentAction *actionutils.ParentAction, nodeId int64) (*pb.Nod
 	var query = "clusterId=" + types.String(clusterId) + "&nodeId=" + types.String(nodeId)
 	var menuItem = parentAction.Data.GetString("secondMenuItem")
 
-	parentAction.Data["leftMenuItems"] = []maps.Map{
+	var menuItems = []maps.Map{
 		{
 			"name":     "基础设置",
 			"url":      prefix + "/update?" + query,
@@ -65,11 +66,17 @@ func InitNodeInfo(parentAction *actionutils.ParentAction, nodeId int64) (*pb.Nod
 			"url":      prefix + "/settings/cache?" + query,
 			"isActive": menuItem == "cache",
 		},
-		{
-			"name":     "阈值设置",
-			"url":      prefix + "/settings/thresholds?" + query,
-			"isActive": menuItem == "threshold",
-		},
+	}
+	if teaconst.IsPlus {
+		menuItems = append(menuItems, []maps.Map{
+			{
+				"name":     "阈值设置",
+				"url":      prefix + "/settings/thresholds?" + query,
+				"isActive": menuItem == "threshold",
+			},
+		}...)
+	}
+	menuItems = append(menuItems, []maps.Map{
 		{
 			"name":     "SSH设置",
 			"url":      prefix + "/settings/ssh?" + query,
@@ -80,7 +87,8 @@ func InitNodeInfo(parentAction *actionutils.ParentAction, nodeId int64) (*pb.Nod
 			"url":      prefix + "/settings/system?" + query,
 			"isActive": menuItem == "system",
 		},
-	}
+	}...)
+	parentAction.Data["leftMenuItems"] = menuItems
 
 	return nodeResp.Node, nil
 }
