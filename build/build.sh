@@ -65,6 +65,8 @@ function build() {
 	# delete hidden files
 	find $DIST -name ".DS_Store" -delete
 	find $DIST -name ".gitignore" -delete
+	find $DIST -name "*.less" -delete
+	find $DIST -name "*.css.map" -delete
 
 	# zip
 	echo "zip files ..."
