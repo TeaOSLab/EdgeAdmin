@@ -37,13 +37,19 @@ Vue.component("http-cache-refs-box", {
 		<table class="ui table selectable celled">
 			<thead>
 				<tr>
-					<th>条件</th>
-					<th class="two">分组关系</th>
+					<th>缓存条件</th>
+					<th class="two wide">分组关系</th>
 					<th class="width10">缓存时间</th>
 				</tr>
 				<tr v-for="(cacheRef, index) in refs">
 					<td :class="{'color-border': cacheRef.conds.connector == 'and'}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
 						<http-request-conds-view :v-conds="cacheRef.conds"></http-request-conds-view>
+						<grey-label v-if="cacheRef.minSize != null && cacheRef.minSize.count > 0">
+							{{cacheRef.minSize.count}}{{cacheRef.minSize.unit}}
+							<span v-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">- {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</span>
+						</grey-label>
+						<grey-label v-else-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">0 - {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</grey-label>
+						<grey-label v-if="cacheRef.status != null && cacheRef.status.length > 0 && (cacheRef.status.length > 1 || cacheRef.status[0] != 200)">状态码：{{cacheRef.status.map(function(v) {return v.toString()}).join(", ")}}</grey-label>
 					</td>
 					<td>
 						<span v-if="cacheRef.conds.connector == 'and'">和</span>
