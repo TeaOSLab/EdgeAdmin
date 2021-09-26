@@ -54,7 +54,7 @@ Vue.component("http-request-conds-view", {
 		<div v-if="conds.groups.length > 0">
 			<div v-for="(group, groupIndex) in conds.groups">
 				<var v-for="(cond, index) in group.conds" style="font-style: normal;display: inline-block; margin-bottom:0.5em">
-					<span class="ui label tiny">
+					<span class="ui label small basic" style="line-height: 1.5">
 						<var v-if="cond.type.length == 0 || cond.type == 'params'" style="font-style: normal">{{cond.param}} <var>{{cond.operator}}</var></var>
 						<var v-if="cond.type.length > 0 && cond.type != 'params'" style="font-style: normal">{{cond.typeName}}: </var>
 						{{cond.value}}
