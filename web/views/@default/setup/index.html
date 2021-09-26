@@ -211,14 +211,14 @@
 				<tr>
 					<td class="title">登录用户名 *</td>
 					<td>
-						<input type="text" name="adminUsername" style="width:16em" maxlength="100" value="admin"/>
+						<input type="text" name="adminUsername" style="width:16em" maxlength="100" value="admin" tabindex="1"/>
 						<p class="comment">只能是英文、数字和下划线的组合。</p>
 					</td>
 				</tr>
 				<tr>
 					<td>登录密码 *</td>
 					<td>
-						<input type="password" name="adminPassword" maxlength="100" style="width:16em" v-model="adminPassword" v-show="!adminPasswordVisible"/>
+						<input type="password" name="adminPassword" maxlength="100" style="width:16em" v-model="adminPassword" v-show="!adminPasswordVisible" tabindex="2"/>
 						<input type="text" value="" v-model="adminPassword" style="width:16em" v-show="adminPasswordVisible"/>
 						<p class="comment">只能是英文、数字和下划线的组合 <a href="" title="显示明文密码" @click.prevent="showAdminPassword"><i class="icon eye grey"></i></a>。</p>
 					</td>
@@ -226,7 +226,7 @@
 				<tr>
 					<td>确认密码 *</td>
 					<td>
-						<input type="password" name="adminPassword2" maxlength="100" style="width:16em" v-model="adminPassword2" v-show="!adminPasswordVisible"/>
+						<input type="password" name="adminPassword2" maxlength="100" style="width:16em" v-model="adminPassword2" v-show="!adminPasswordVisible" tabindex="3"/>
 						<input type="text" value="" v-model="adminPassword2" style="width:16em" v-show="adminPasswordVisible"/>
 						<p class="comment">再次输入密码以便于确认  <a href="" title="显示明文密码" @click.prevent="showAdminPassword"><i class="icon eye grey"></i></a>。</p>
 					</td>
