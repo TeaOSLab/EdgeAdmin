@@ -18,7 +18,9 @@
     <div class="ui column no-border">
         <h4>节点<link-icon href="/ns/clusters"></link-icon></h4>
         <div class="value"><span>{{board.countNodes}}</span>
-            <span v-if="board.countOfflineNodes > 0" class="red" style="font-size: 1em">{{board.countOfflineNodes}}离线</span>
+            <span v-if="board.countOfflineNodes > 0" style="font-size: 1em">
+                / <a href="/ns/clusters"><span class="red" style="font-size: 1em">{{board.countOfflineNodes}}离线</span></a>
+            </span>
             <span v-else style="font-size: 1em">个</span>
         </div>
     </div>

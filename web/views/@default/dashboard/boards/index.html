@@ -59,17 +59,25 @@
 
     <div class="ui column">
         <h4>边缘节点<link-icon href="/clusters" v-if="dashboard.canGoNodes"></link-icon></h4>
-        <div class="value"><span>{{dashboard.countNodes}}</span>个</div>
+        <div class="value">
+            <span>{{dashboard.countNodes}}</span>个
+            <span style="font-size: 1em" v-if="dashboard.countOfflineNodes > 0">/ <a href="/clusters" v-if="dashboard.canGoNodes"><span class="red" style="font-size: 1em">{{dashboard.countOfflineNodes}}离线</span></a><span class="red" style="font-size: 1em" v-else>{{dashboard.countOfflineNodes}}离线</span></span>
+        </div>
     </div>
 
     <div class="ui column">
         <h4>API节点<link-icon href="/api" v-if="dashboard.canGoSettings"></link-icon></h4>
-        <div class="value"><span>{{dashboard.countAPINodes}}</span>个</div>
+        <div class="value">
+            <span>{{dashboard.countAPINodes}}</span>个
+            <span style="font-size: 1em" v-if="dashboard.countOfflineAPINodes > 0">/ <a href="/api" v-if="dashboard.canGoSettings"><span class="red" style="font-size: 1em">{{dashboard.countOfflineAPINodes}}离线</span></a><span class="red" style="font-size: 1em" v-else>{{dashboard.countOfflineAPINodes}}离线</span></span>
+        </div>
     </div>
 
     <div class="ui column">
         <h4>用户<link-icon href="/users" v-if="dashboard.canGoUsers"></link-icon></h4>
-        <div class="value"><span>{{dashboard.countUsers}}</span>个</div>
+        <div class="value"><span>{{dashboard.countUsers}}</span>个
+            <span style="font-size: 1em" v-if="dashboard.countOfflineUserNodes > 0">/ <a href="/settings/userNodes" v-if="dashboard.canGoSettings"><span class="red" style="font-size: 1em">{{dashboard.countOfflineUserNodes}}节点离线</span></a><span class="red" style="font-size: 1em" v-else>{{dashboard.countOfflineUserNodes}}节点离线</span></span>
+        </div>
     </div>
 
     <div class="ui column">

@@ -33,7 +33,9 @@ func (this *AdvancedHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNex
 	if configloaders.AllowModule(adminId, configloaders.AdminModuleCodeSetting) {
 		tabbar.Add("数据库", "", "/settings/database", "", this.tab == "database")
 		tabbar.Add("API节点", "", "/api", "", this.tab == "apiNodes")
-		tabbar.Add("用户节点", "", "/settings/userNodes", "", this.tab == "userNodes")
+		if teaconst.IsPlus {
+			tabbar.Add("用户节点", "", "/settings/userNodes", "", this.tab == "userNodes")
+		}
 		tabbar.Add("日志数据库", "", "/db", "", this.tab == "dbNodes")
 		if teaconst.IsPlus {
 			tabbar.Add("监控节点", "", "/settings/monitorNodes", "", this.tab == "monitorNodes")

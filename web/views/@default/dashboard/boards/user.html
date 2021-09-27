@@ -18,7 +18,9 @@
     <div class="ui column no-border">
         <h4>用户节点<link-icon href="/settings/userNodes"></link-icon></h4>
         <div class="value"><span>{{board.countUserNodes}}</span>
-            <span v-if="board.countOfflineUserNodes > 0" class="red" style="font-size: 1em">{{board.countOfflineUserNodes}}离线</span>
+            <span v-if="board.countOfflineUserNodes > 0" style="font-size: 1em">
+                / <a href="/settings/userNodes"><span class="red" style="font-size: 1em">{{board.countOfflineUserNodes}}离线</span></a>
+            </span>
             <span v-else style="font-size: 1em">个</span>
         </div>
     </div>
