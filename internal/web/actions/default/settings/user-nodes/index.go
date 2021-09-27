@@ -3,6 +3,7 @@ package usernodes
 import (
 	"encoding/json"
 	"fmt"
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -20,6 +21,11 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct{}) {
+	if !teaconst.IsPlus {
+		this.RedirectURL("/")
+		return
+	}
+
 	countResp, err := this.RPC().UserNodeRPC().CountAllEnabledUserNodes(this.AdminContext(), &pb.CountAllEnabledUserNodesRequest{})
 	if err != nil {
 		this.ErrorPage(err)

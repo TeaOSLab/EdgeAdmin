@@ -55,13 +55,16 @@ func (this *IndexAction) RunPost(params struct{}) {
 	this.Data["dashboard"] = maps.Map{
 		"defaultClusterId": resp.DefaultNodeClusterId,
 
-		"countServers":      resp.CountServers,
-		"countNodeClusters": resp.CountNodeClusters,
-		"countNodes":        resp.CountNodes,
-		"countUsers":        resp.CountUsers,
-		"countAPINodes":     resp.CountAPINodes,
-		"countDBNodes":      resp.CountDBNodes,
-		"countUserNodes":    resp.CountUserNodes,
+		"countServers":          resp.CountServers,
+		"countNodeClusters":     resp.CountNodeClusters,
+		"countNodes":            resp.CountNodes,
+		"countOfflineNodes":     resp.CountOfflineNodes,
+		"countUsers":            resp.CountUsers,
+		"countAPINodes":         resp.CountAPINodes,
+		"countOfflineAPINodes":  resp.CountOfflineAPINodes,
+		"countDBNodes":          resp.CountDBNodes,
+		"countUserNodes":        resp.CountUserNodes,
+		"countOfflineUserNodes": resp.CountOfflineUserNodes,
 
 		"canGoServers":  configloaders.AllowModule(this.AdminId(), configloaders.AdminModuleCodeServer),
 		"canGoNodes":    configloaders.AllowModule(this.AdminId(), configloaders.AdminModuleCodeNode),
