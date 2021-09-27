@@ -74,6 +74,11 @@ func (this *GroupAction) RunGet(params struct {
 			"name": set.Name,
 			"rules": lists.Map(set.Rules, func(k int, v interface{}) interface{} {
 				rule := v.(*firewallconfigs.HTTPFirewallRule)
+				var errString = ""
+				var err = rule.Init()
+				if err != nil {
+					errString = err.Error()
+				}
 				return maps.Map{
 					"param":             rule.Param,
 					"paramFilters":      rule.ParamFilters,
@@ -82,6 +87,7 @@ func (this *GroupAction) RunGet(params struct {
 					"isCaseInsensitive": rule.IsCaseInsensitive,
 					"isComposed":        firewallconfigs.CheckCheckpointIsComposed(rule.Prefix()),
 					"checkpointOptions": rule.CheckpointOptions,
+					"err":               errString,
 				}
 			}),
 			"isOn":      set.IsOn,

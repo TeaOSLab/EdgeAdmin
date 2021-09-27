@@ -597,6 +597,12 @@ window.teaweb = {
 			instance.resize()
 		})
 		return instance
+	},
+	encodeHTML: function (s) {
+		s = s.replace("&", "&amp;")
+		s = s.replace("<", "&lt;")
+		s = s.replace(">", "&gt;")
+		return s
 	}
 }
 
