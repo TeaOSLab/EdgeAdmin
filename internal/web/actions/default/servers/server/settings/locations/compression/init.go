@@ -1,4 +1,4 @@
-package gzip
+package compression
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
@@ -14,8 +14,8 @@ func init() {
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeServer)).
 			Helper(locationutils.NewLocationHelper()).
 			Helper(serverutils.NewServerHelper()).
-			Data("tinyMenuItem", "gzip").
-			Prefix("/servers/server/settings/locations/gzip").
+			Data("tinyMenuItem", "compression").
+			Prefix("/servers/server/settings/locations/compression").
 			GetPost("", new(IndexAction)).
 			EndAll()
 	})

@@ -299,10 +299,10 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":     serverConfig.Web != nil && serverConfig.Web.StatRef != nil && serverConfig.Web.StatRef.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     "Gzip压缩",
-			"url":      "/servers/server/settings/gzip?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "gzip",
-			"isOn":     serverConfig.Web != nil && serverConfig.Web.GzipRef != nil && serverConfig.Web.GzipRef.IsOn,
+			"name":     "内容压缩",
+			"url":      "/servers/server/settings/compression?serverId=" + serverIdString,
+			"isActive": secondMenuItem == "compression",
+			"isOn":     serverConfig.Web != nil && serverConfig.Web.Compression != nil && serverConfig.Web.Compression.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "特殊页面",

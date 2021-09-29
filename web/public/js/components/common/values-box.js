@@ -10,7 +10,8 @@ Vue.component("values-box", {
 			"isUpdating": false,
 			"isAdding": false,
 			"index": 0,
-			"value": ""
+			"value": "",
+			isEditing: false
 		}
 	},
 	methods: {
@@ -58,9 +59,18 @@ Vue.component("values-box", {
 		},
 		addValue: function (v) {
 			this.vValues.push(v)
+		},
+
+		startEditing: function () {
+			this.isEditing = !this.isEditing
 		}
 	},
 	template: `<div>
+	<div v-show="!isEditing">
+		<div class="ui label tiny basic" v-for="(value, index) in vValues" style="margin-top:0.4em;margin-bottom:0.4em">{{value}}</div>
+		<a href="" @click.prevent="startEditing" style="font-size: 0.8em; margin-left: 0.2em">[修改]</a>
+	</div>
+	<div v-show="isEditing">
 		<div style="margin-bottom: 1em" v-if="vValues.length > 0">
 			<div class="ui label tiny basic" v-for="(value, index) in vValues" style="margin-top:0.4em;margin-bottom:0.4em">{{value}}
 				<input type="hidden" :name="name" :value="value"/>
@@ -86,5 +96,6 @@ Vue.component("values-box", {
 		<div v-if="!isAdding && !isUpdating">
 			<button class="ui button tiny" type="button" @click.prevent="create()">+</button> 
 		</div>
+	</div>	
 </div>`
 });
