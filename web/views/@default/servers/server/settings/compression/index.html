@@ -1,0 +1,12 @@
+{$layout}
+{$template "/left_menu"}
+
+<div class="right-box">
+    <form class="ui form" data-tea-action="$" data-tea-success="success">
+        <csrf-token></csrf-token>
+        <input type="hidden" name="webId" :value="webId"/>
+
+        <http-compression-config-box :v-compression-config="compressionConfig"></http-compression-config-box>
+        <submit-btn></submit-btn>
+    </form>
+</div>

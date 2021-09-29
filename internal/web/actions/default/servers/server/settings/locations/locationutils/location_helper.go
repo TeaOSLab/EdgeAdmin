@@ -127,10 +127,10 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.StatRef != nil && locationConfig.Web.StatRef.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
-		"name":     "Gzip压缩",
-		"url":      "/servers/server/settings/locations/gzip?serverId=" + serverIdString + "&locationId=" + locationIdString,
-		"isActive": secondMenuItem == "gzip",
-		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.GzipRef != nil && locationConfig.Web.GzipRef.IsPrior,
+		"name":     "内容压缩",
+		"url":      "/servers/server/settings/locations/compression?serverId=" + serverIdString + "&locationId=" + locationIdString,
+		"isActive": secondMenuItem == "compression",
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.Compression != nil && locationConfig.Web.Compression.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "特殊页面",

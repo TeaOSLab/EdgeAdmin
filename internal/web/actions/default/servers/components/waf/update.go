@@ -1,6 +1,7 @@
 package waf
 
 import (
+	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
@@ -37,6 +38,7 @@ func (this *UpdateAction) RunGet(params struct {
 			StatusCode: http.StatusForbidden,
 			Body:       "Blocked By WAF",
 			URL:        "",
+			Timeout:    60,
 		}
 	}
 
@@ -87,7 +89,14 @@ func (this *UpdateAction) RunPost(params struct {
 		Field("name", params.Name).
 		Require("请输入策略名称")
 
-	_, err := this.RPC().HTTPFirewallPolicyRPC().UpdateHTTPFirewallPolicy(this.AdminContext(), &pb.UpdateHTTPFirewallPolicyRequest{
+	// 校验JSON
+	var blockOptions = &firewallconfigs.HTTPFirewallBlockAction{}
+	err := json.Unmarshal(params.BlockOptionsJSON, blockOptions)
+	if err != nil {
+		this.Fail("拦截动作参数校验失败：" + err.Error())
+	}
+
+	_, err = this.RPC().HTTPFirewallPolicyRPC().UpdateHTTPFirewallPolicy(this.AdminContext(), &pb.UpdateHTTPFirewallPolicyRequest{
 		HttpFirewallPolicyId: params.FirewallPolicyId,
 		IsOn:                 params.IsOn,
 		Name:                 params.Name,
