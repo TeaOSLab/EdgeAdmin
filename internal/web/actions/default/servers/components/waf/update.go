@@ -42,11 +42,18 @@ func (this *UpdateAction) RunGet(params struct {
 		}
 	}
 
+	// mode
+	if len(firewallPolicy.Mode) == 0 {
+		firewallPolicy.Mode = firewallconfigs.FirewallModeDefend
+	}
+	this.Data["modes"] = firewallconfigs.FindAllFirewallModes()
+
 	this.Data["firewallPolicy"] = maps.Map{
 		"id":           firewallPolicy.Id,
 		"name":         firewallPolicy.Name,
 		"description":  firewallPolicy.Description,
 		"isOn":         firewallPolicy.IsOn,
+		"mode":         firewallPolicy.Mode,
 		"blockOptions": firewallPolicy.BlockOptions,
 	}
 
@@ -79,6 +86,7 @@ func (this *UpdateAction) RunPost(params struct {
 	BlockOptionsJSON []byte
 	Description      string
 	IsOn             bool
+	Mode             string
 
 	Must *actions.Must
 }) {
@@ -103,6 +111,7 @@ func (this *UpdateAction) RunPost(params struct {
 		Description:          params.Description,
 		FirewallGroupCodes:   params.GroupCodes,
 		BlockOptionsJSON:     params.BlockOptionsJSON,
+		Mode:                 params.Mode,
 	})
 	if err != nil {
 		this.ErrorPage(err)

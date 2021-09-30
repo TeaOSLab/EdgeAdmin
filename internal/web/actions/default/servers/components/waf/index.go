@@ -70,10 +70,17 @@ func (this *IndexAction) RunGet(params struct {
 		}
 		countClusters := countClustersResp.Count
 
+		// mode
+		if len(policy.Mode) == 0 {
+			policy.Mode = firewallconfigs.FirewallModeDefend
+		}
+
 		policyMaps = append(policyMaps, maps.Map{
 			"id":            policy.Id,
 			"isOn":          policy.IsOn,
 			"name":          policy.Name,
+			"mode":          policy.Mode,
+			"modeInfo":      firewallconfigs.FindFirewallMode(policy.Mode),
 			"countInbound":  countInbound,
 			"countOutbound": countOutbound,
 			"countClusters": countClusters,

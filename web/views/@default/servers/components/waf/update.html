@@ -12,6 +12,15 @@
 					<p class="comment">给策略起一个容易识别的名字。</p>
 				</td>
 			</tr>
+            <tr>
+                <td>当前模式</td>
+                <td>
+                    <select class="ui dropdown auto-width" name="mode" v-model="firewallPolicy.mode">
+                        <option v-for="mode in modes" :value="mode.code">{{mode.name}}</option>
+                    </select>
+                    <p class="comment" v-for="mode in modes" v-if="mode.code == firewallPolicy.mode">{{mode.description}}</p>
+                </td>
+            </tr>
 			<tr>
 				<td>启用预置的规则</td>
 				<td>

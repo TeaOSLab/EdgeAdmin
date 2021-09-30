@@ -4,6 +4,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/iwind/TeaGo/maps"
 )
 
@@ -46,11 +47,17 @@ func (this *PolicyAction) RunGet(params struct {
 		}
 	}
 
+	// 模式
+	if len(firewallPolicy.Mode) == 0 {
+		firewallPolicy.Mode = firewallconfigs.FirewallModeDefend
+	}
 	this.Data["firewallPolicy"] = maps.Map{
 		"id":           firewallPolicy.Id,
 		"name":         firewallPolicy.Name,
 		"isOn":         firewallPolicy.IsOn,
 		"description":  firewallPolicy.Description,
+		"mode":         firewallPolicy.Mode,
+		"modeInfo":     firewallconfigs.FindFirewallMode(firewallPolicy.Mode),
 		"groups":       internalGroups,
 		"blockOptions": firewallPolicy.BlockOptions,
 	}
