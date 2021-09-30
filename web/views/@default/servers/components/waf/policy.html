@@ -7,9 +7,13 @@
         <td>{{firewallPolicy.name}}</td>
     </tr>
     <tr>
-        <td>是否启用</td>
+        <td>状态</td>
         <td>
-            <label-on :v-is-on="firewallPolicy.isOn"></label-on>
+            <span v-if="!firewallPolicy.isOn" class="red">已停用</span>
+            <div v-else-if="firewallPolicy.modeInfo != null">
+                <span :class="{green: firewallPolicy.modeInfo.code == 'defend', blue: firewallPolicy.modeInfo.code == 'observe', grey: firewallPolicy.modeInfo.code == 'pass'}">{{firewallPolicy.modeInfo.name}}</span>
+                <p class="comment">{{firewallPolicy.modeInfo.description}}</p>
+            </div>
         </td>
     </tr>
     <tr>
