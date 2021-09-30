@@ -286,7 +286,7 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 		{
 			"code":   "ns",
 			"module": configloaders.AdminModuleCodeNS,
-			"name":   "自建DNS",
+			"name":   "智能DNS",
 			"icon":   "cubes",
 			"isOn":   teaconst.IsPlus,
 			"subItems": []maps.Map{

@@ -182,7 +182,7 @@ func AllModuleMaps() []maps.Map {
 	}
 	if teaconst.IsPlus {
 		m = append(m, maps.Map{
-			"name": "自建DNS",
+			"name": "智能DNS",
 			"code": AdminModuleCodeNS,
 			"url":  "/ns",
 		})
