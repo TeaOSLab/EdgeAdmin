@@ -151,6 +151,12 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.WebsocketRef != nil && locationConfig.Web.WebsocketRef.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
+		"name":     "WebP",
+		"url":      "/servers/server/settings/locations/webp?serverId=" + serverIdString + "&locationId=" + locationIdString,
+		"isActive": secondMenuItem == "webp",
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.WebP != nil && locationConfig.Web.WebP.IsPrior,
+	})
+	menuItems = append(menuItems, maps.Map{
 		"name":     "Fastcgi",
 		"url":      "/servers/server/settings/locations/fastcgi?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "fastcgi",

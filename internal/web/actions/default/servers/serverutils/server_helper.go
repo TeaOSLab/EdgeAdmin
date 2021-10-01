@@ -323,6 +323,12 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":     serverConfig.Web != nil && serverConfig.Web.WebsocketRef != nil && serverConfig.Web.WebsocketRef.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
+			"name":     "WebP",
+			"url":      "/servers/server/settings/webp?serverId=" + serverIdString,
+			"isActive": secondMenuItem == "webp",
+			"isOn":     serverConfig.Web != nil && serverConfig.Web.WebP != nil && serverConfig.Web.WebP.IsOn,
+		})
+		menuItems = append(menuItems, maps.Map{
 			"name":     "Fastcgi",
 			"url":      "/servers/server/settings/fastcgi?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "fastcgi",
