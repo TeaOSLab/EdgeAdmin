@@ -66,11 +66,11 @@ Vue.component("values-box", {
 		}
 	},
 	template: `<div>
-	<div v-show="!isEditing">
+	<div v-show="!isEditing && vValues.length > 0">
 		<div class="ui label tiny basic" v-for="(value, index) in vValues" style="margin-top:0.4em;margin-bottom:0.4em">{{value}}</div>
 		<a href="" @click.prevent="startEditing" style="font-size: 0.8em; margin-left: 0.2em">[修改]</a>
 	</div>
-	<div v-show="isEditing">
+	<div v-show="isEditing || vValues.length == 0">
 		<div style="margin-bottom: 1em" v-if="vValues.length > 0">
 			<div class="ui label tiny basic" v-for="(value, index) in vValues" style="margin-top:0.4em;margin-bottom:0.4em">{{value}}
 				<input type="hidden" :name="name" :value="value"/>
@@ -79,7 +79,7 @@ Vue.component("values-box", {
 			</div> 
 			<div class="ui divider"></div>
 		</div> 
-		<!-- 添加|修改 -->\
+		<!-- 添加|修改 -->
 		<div v-if="isAdding || isUpdating">
 			<div class="ui fields inline">
 				<div class="ui field">
