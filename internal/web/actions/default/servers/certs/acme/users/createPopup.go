@@ -61,8 +61,23 @@ func (this *CreatePopupAction) RunPost(params struct {
 	if providerResp.AcmeProvider == nil {
 		this.Fail("找不到要选择的证书")
 	}
-	if providerResp.AcmeProvider.RequireEAB && params.AccountId <= 0 {
-		this.Fail("此服务商要求必须选择或创建服务商账号")
+	if providerResp.AcmeProvider.RequireEAB {
+		if params.AccountId <= 0 {
+			this.Fail("此服务商要求必须选择或创建服务商账号")
+		}
+
+		// 同一个账号只能有一个用户
+		countResp, err := this.RPC().ACMEUserRPC().
+			CountACMEUsers(this.AdminContext(), &pb.CountAcmeUsersRequest{
+				AcmeProviderAccountId: params.AccountId,
+			})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		if countResp.Count > 0 {
+			this.Fail("此服务商账号已被别的用户使用，请换成别的账号")
+		}
 	}
 
 	createResp, err := this.RPC().ACMEUserRPC().CreateACMEUser(this.AdminContext(), &pb.CreateACMEUserRequest{
