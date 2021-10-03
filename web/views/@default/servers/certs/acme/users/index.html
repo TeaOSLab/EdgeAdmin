@@ -14,13 +14,19 @@
 	<table class="ui table selectable" v-if="users.length > 0">
 		<thead>
 			<tr>
-				<th>Email</th>
+				<th>用户Email</th>
 				<th>备注</th>
 				<th class="two op">操作</th>
 			</tr>
 		</thead>
 		<tr v-for="user in users">
-			<td>{{user.email}}</td>
+			<td>
+                <a href="" @click.prevent="updateUser(user.id)">{{user.email}} <i class="icon clone outline small"></i></a>
+                <div>
+                    <grey-label v-if="user.provider != null">{{user.provider.name}}</grey-label>
+                    <grey-label v-if="user.account != null">{{user.account.name}}</grey-label>
+                </div>
+            </td>
 			<td>
 				<span v-if="user.description.length > 0">{{user.description}}</span>
 				<span v-else class="disabled">-</span>

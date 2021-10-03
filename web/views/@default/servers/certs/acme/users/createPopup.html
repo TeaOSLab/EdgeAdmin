@@ -11,6 +11,31 @@
 				<p class="comment">用于自动注册用户的邮箱。</p>
 			</td>
 		</tr>
+        <tr>
+            <td>所属服务商 *</td>
+            <td>
+                <select class="ui dropdown auto-width" name="providerCode" v-model="providerCode" @change="changeProvider">
+                    <option value="">[选择服务商]</option>
+                    <option v-for="provider in providers" :value="provider.code">{{provider.name}}</option>
+                </select>
+            </td>
+        </tr>
+        <tr v-if="selectedProvider != null">
+            <td>所属服务商账号 <span v-if="selectedProvider.requireEAB">*</span><em v-else>（可选）</em></td>
+            <td>
+                <div class="ui fields inline">
+                    <div class="ui field" v-if="accounts.length > 0">
+                        <select class="ui dropdown auto-width" name="accountId" v-model="accountId">
+                            <option value="0">[选择账号]</option>
+                            <option v-for="account in accounts" :value="account.id">{{account.name}}</option>
+                        </select>
+                    </div>
+                    <div class="ui field">
+                        <a href="" @click.prevent="addAccount">[添加]</a>
+                    </div>
+                </div>
+            </td>
+        </tr>
 		<tr>
 			<td>备注</td>
 			<td>

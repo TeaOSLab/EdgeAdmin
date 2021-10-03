@@ -16,12 +16,30 @@ func (this *CreatePopupAction) Init() {
 }
 
 func (this *CreatePopupAction) RunGet(params struct{}) {
+	// 服务商
+	providersResp, err := this.RPC().ACMEProviderRPC().FindAllACMEProviders(this.AdminContext(), &pb.FindAllACMEProvidersRequest{})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	var providerMaps = []maps.Map{}
+	for _, provider := range providersResp.AcmeProviders {
+		providerMaps = append(providerMaps, maps.Map{
+			"code":       provider.Code,
+			"name":       provider.Name,
+			"requireEAB": provider.RequireEAB,
+		})
+	}
+	this.Data["providers"] = providerMaps
+
 	this.Show()
 }
 
 func (this *CreatePopupAction) RunPost(params struct {
-	Email       string
-	Description string
+	Email        string
+	ProviderCode string
+	AccountId    int64
+	Description  string
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -29,11 +47,29 @@ func (this *CreatePopupAction) RunPost(params struct {
 	params.Must.
 		Field("email", params.Email).
 		Require("请输入邮箱").
-		Email("请输入正确的邮箱格式")
+		Email("请输入正确的邮箱格式").
+		Field("providerCode", params.ProviderCode).
+		Require("请选择所属服务商")
+
+	providerResp, err := this.RPC().ACMEProviderRPC().FindACMEProviderWithCode(this.AdminContext(), &pb.FindACMEProviderWithCodeRequest{
+		AcmeProviderCode: params.ProviderCode,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	if providerResp.AcmeProvider == nil {
+		this.Fail("找不到要选择的证书")
+	}
+	if providerResp.AcmeProvider.RequireEAB && params.AccountId <= 0 {
+		this.Fail("此服务商要求必须选择或创建服务商账号")
+	}
 
 	createResp, err := this.RPC().ACMEUserRPC().CreateACMEUser(this.AdminContext(), &pb.CreateACMEUserRequest{
-		Email:       params.Email,
-		Description: params.Description,
+		Email:                 params.Email,
+		Description:           params.Description,
+		AcmeProviderCode:      params.ProviderCode,
+		AcmeProviderAccountId: params.AccountId,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -42,9 +78,10 @@ func (this *CreatePopupAction) RunPost(params struct {
 
 	// 返回数据
 	this.Data["acmeUser"] = maps.Map{
-		"id":          createResp.AcmeUserId,
-		"description": params.Description,
-		"email":       params.Email,
+		"id":           createResp.AcmeUserId,
+		"description":  params.Description,
+		"email":        params.Email,
+		"providerCode": params.ProviderCode,
 	}
 
 	// 日志

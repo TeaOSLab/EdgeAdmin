@@ -1,0 +1,41 @@
+{$layout "layout_popup"}
+
+<h3>添加账号</h3>
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+    <csrf-token></csrf-token>
+
+    <table class="ui table definition selectable">
+        <tr>
+            <td>账号名称 *</td>
+            <td>
+                <input type="text" name="name" maxlength="50" ref="focus" tabindex="1"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="title">服务商 *</td>
+            <td>
+                <select class="ui dropdown auto-width" name="providerCode" v-model="providerCode" @change="changeProvider" tabindex="2">
+                    <option value="">[选择服务商]</option>
+                    <option v-for="provider in providers" :value="provider.code">{{provider.name}}</option>
+                </select>
+                <p class="comment" v-if="selectedProvider != null" v-html="selectedProvider.description"></p>
+            </td>
+        </tr>
+        <tbody v-show="selectedProvider != null && selectedProvider.requireEAB">
+            <tr>
+                <td>EAB Kid *</td>
+                <td>
+                    <input type="text" name="eabKid" maxlength="100" tabindex="3"/>
+                    <p class="comment" v-if="selectedProvider != null" v-html="selectedProvider.eabDescription"></p>
+                </td>
+            </tr>
+            <tr>
+                <td>EAB HMAC Key *</td>
+                <td>
+                    <input type="text" name="eabKey" maxlength="300" tabindex="4"/>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <submit-btn></submit-btn>
+</form>

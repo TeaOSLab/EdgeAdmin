@@ -3,6 +3,7 @@ package certs
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/certs/acme"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/certs/acme/accounts"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/certs/acme/users"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/iwind/TeaGo"
@@ -13,9 +14,7 @@ func init() {
 		server.
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeServer)).
 			Helper(NewHelper()).
-
 			Data("teaSubMenu", "cert").
-
 			Prefix("/servers/certs").
 			Data("leftMenuItem", "cert").
 			Get("", new(IndexAction)).
@@ -31,7 +30,7 @@ func init() {
 			Get("/selectPopup", new(SelectPopupAction)).
 			Get("/datajs", new(DatajsAction)).
 
-			// ACME
+			// ACME任务
 			Prefix("/servers/certs/acme").
 			Data("leftMenuItem", "acme").
 			Get("", new(acme.IndexAction)).
@@ -40,13 +39,23 @@ func init() {
 			GetPost("/updateTaskPopup", new(acme.UpdateTaskPopupAction)).
 			Post("/deleteTask", new(acme.DeleteTaskAction)).
 
+			// ACME用户
 			Prefix("/servers/certs/acme/users").
 			Get("", new(users.IndexAction)).
 			GetPost("/createPopup", new(users.CreatePopupAction)).
 			GetPost("/updatePopup", new(users.UpdatePopupAction)).
 			Post("/delete", new(users.DeleteAction)).
 			GetPost("/selectPopup", new(users.SelectPopupAction)).
+			Post("/accountsWithCode", new(users.AccountsWithCodeAction)).
 
+			// ACME账号
+			Prefix("/servers/certs/acme/accounts").
+			Get("", new(accounts.IndexAction)).
+			GetPost("/createPopup", new(accounts.CreatePopupAction)).
+			GetPost("/updatePopup", new(accounts.UpdatePopupAction)).
+			Post("/delete", new(accounts.DeleteAction)).
+
+			//
 			EndAll()
 	})
 }

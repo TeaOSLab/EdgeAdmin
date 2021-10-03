@@ -136,6 +136,26 @@ func (this *IndexAction) RunGet(params struct {
 		if task.AcmeUser == nil {
 			continue
 		}
+
+		// 服务商
+		var providerMap maps.Map
+		if task.AcmeUser.AcmeProvider != nil {
+			providerMap = maps.Map{
+				"name": task.AcmeUser.AcmeProvider.Name,
+				"code": task.AcmeUser.AcmeProvider.Code,
+			}
+		}
+
+		// 账号
+		var accountMap maps.Map
+		if task.AcmeUser.AcmeProviderAccount != nil {
+			accountMap = maps.Map{
+				"id":   task.AcmeUser.AcmeProviderAccount.Id,
+				"name": task.AcmeUser.AcmeProviderAccount.Name,
+			}
+		}
+
+		// DNS服务商
 		dnsProviderMap := maps.Map{}
 		if task.AuthType == "dns" && task.DnsProvider != nil {
 			dnsProviderMap = maps.Map{
@@ -170,8 +190,10 @@ func (this *IndexAction) RunGet(params struct {
 			"id":       task.Id,
 			"authType": task.AuthType,
 			"acmeUser": maps.Map{
-				"id":    task.AcmeUser.Id,
-				"email": task.AcmeUser.Email,
+				"id":       task.AcmeUser.Id,
+				"email":    task.AcmeUser.Email,
+				"provider": providerMap,
+				"account":  accountMap,
 			},
 			"dnsProvider": dnsProviderMap,
 			"dnsDomain":   task.DnsDomain,
