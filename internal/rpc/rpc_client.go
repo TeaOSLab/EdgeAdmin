@@ -364,6 +364,14 @@ func (this *RPCClient) ACMETaskRPC() pb.ACMETaskServiceClient {
 	return pb.NewACMETaskServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) ACMEProviderRPC() pb.ACMEProviderServiceClient {
+	return pb.NewACMEProviderServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) ACMEProviderAccountRPC() pb.ACMEProviderAccountServiceClient {
+	return pb.NewACMEProviderAccountServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) UserRPC() pb.UserServiceClient {
 	return pb.NewUserServiceClient(this.pickConn())
 }

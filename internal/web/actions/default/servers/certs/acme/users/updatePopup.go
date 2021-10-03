@@ -29,10 +29,30 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		return
 	}
 
+	// 服务商
+	var providerMap maps.Map
+	if user.AcmeProvider != nil {
+		providerMap = maps.Map{
+			"name": user.AcmeProvider.Name,
+			"code": user.AcmeProvider.Code,
+		}
+	}
+
+	// 账号
+	var accountMap maps.Map
+	if user.AcmeProviderAccount != nil {
+		accountMap = maps.Map{
+			"id":   user.AcmeProviderAccount.Id,
+			"name": user.AcmeProviderAccount.Name,
+		}
+	}
+
 	this.Data["user"] = maps.Map{
 		"id":          user.Id,
 		"email":       user.Email,
 		"description": user.Description,
+		"provider":    providerMap,
+		"account":     accountMap,
 	}
 
 	this.Show()

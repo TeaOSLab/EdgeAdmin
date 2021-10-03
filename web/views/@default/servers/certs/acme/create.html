@@ -64,15 +64,24 @@
 		<!-- 选择用户 -->
 		<div v-show="step == 'user'">
 			<table class="ui table definition selectable">
-				<tr>
-					<td class="title">选择用户</td>
+                <tr>
+                    <td class="title">选择服务商 *</td>
+                    <td>
+                        <select class="ui dropdown auto-width" v-model="providerCode" @change="changeProvider">
+                            <option value="">[选择服务商]</option>
+                            <option v-for="provider in providers" :value="provider.code">{{provider.name}}</option>
+                        </select>
+                    </td>
+                </tr>
+				<tr v-if="providerCode.length > 0">
+					<td class="title">选择用户 *</td>
 					<td>
 						<div v-if="users.length > 0">
 							<div class="ui fields inline">
 								<div class="ui field">
 									<select class="ui dropdown" v-model="userId">
 										<option value="0">[请选择]</option>
-										<option v-for="user in users" :value="user.id">{{user.email}}{{user.description}}</option>
+										<option v-for="user in users" :value="user.id" v-if="user.providerCode == providerCode">{{user.email}}{{user.description}}</option>
 									</select>
 								</div>
 								<div class="ui field">
@@ -98,10 +107,10 @@
 				<tr v-show="authType == 'dns'">
 					<td class="title">选择DNS服务商 *</td>
 					<td>
-						<div v-if="providers.length > 0">
+						<div v-if="dnsProviders.length > 0">
 							<select class="ui dropdown auto-width" v-model="dnsProviderId">
 								<option value="0">[请选择]</option>
-								<option v-for="provider in providers" :value="provider.id">{{provider.name}}（{{provider.typeName}}）</option>
+								<option v-for="provider in dnsProviders" :value="provider.id">{{provider.name}}（{{provider.typeName}}）</option>
 							</select>
 						</div>
 						<p class="comment">用于自动创建域名解析记录。</p>

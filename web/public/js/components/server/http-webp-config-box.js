@@ -75,6 +75,7 @@ Vue.component("http-webp-config-box", {
 						<input type="checkbox" value="1" v-model="config.isOn"/>
 						<label></label>
 					</div>
+					<p class="comment">选中后表示开启自动WebP压缩。</p>
 				</td>
 			</tr>
 		</tbody>

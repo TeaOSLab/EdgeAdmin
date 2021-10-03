@@ -1,0 +1,46 @@
+{$layout}
+{$template "/left_menu_top"}
+
+<div class="right-box without-tabbar">
+    {$template "../menu"}
+
+    <second-menu>
+        <menu-item @click.prevent="createAccount">[创建账号]</menu-item>
+    </second-menu>
+
+    <p class="comment" v-if="accounts.length == 0">暂时还没有服务商账号。</p>
+
+    <table class="ui table selectable celled" v-if="accounts.length > 0">
+        <thead>
+            <tr>
+                <th>名称</th>
+                <th>服务商</th>
+                <th class="four wide">EAB Kid</th>
+                <th class="four wide">EBA HMAC Key</th>
+                <th class="two wide">操作</th>
+            </tr>
+        </thead>
+        <tr v-for="account in accounts">
+            <td>
+                <a href="" @click.prevent="updateAccount(account.id)">{{account.name}} <i class="icon clone outline small"></i></a>
+            </td>
+            <td>
+                <span v-if="account.provider != null">{{account.provider.name}}</span>
+            </td>
+            <td>
+                <span v-if="account.eabKid.length > 0">{{account.eabKid}}</span>
+                <span v-else class="disabled">-</span>
+            </td>
+            <td>
+                <span v-if="account.eabKey.length > 0">{{account.eabKey}}</span>
+                <span v-else class="disabled">-</span>
+            </td>
+            <td>
+                <a href="" @click.prevent="updateAccount(account.id)">修改</a> &nbsp;
+                <a href="" @click.prevent="deleteAccount(account.id)">删除</a>
+            </td>
+        </tr>
+    </table>
+
+    <div class="page" v-html="page"></div>
+</div>

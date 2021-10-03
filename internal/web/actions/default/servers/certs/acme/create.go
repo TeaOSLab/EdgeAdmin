@@ -35,15 +35,31 @@ func (this *CreateAction) RunGet(params struct{}) {
 		}
 
 		userMaps = append(userMaps, maps.Map{
-			"id":          user.Id,
-			"description": description,
-			"email":       user.Email,
+			"id":           user.Id,
+			"description":  description,
+			"email":        user.Email,
+			"providerCode": user.AcmeProviderCode,
 		})
 	}
 	this.Data["users"] = userMaps
 
+	// 证书服务商
+	providersResp, err := this.RPC().ACMEProviderRPC().FindAllACMEProviders(this.AdminContext(), &pb.FindAllACMEProvidersRequest{})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	var providerMaps = []maps.Map{}
+	for _, provider := range providersResp.AcmeProviders {
+		providerMaps = append(providerMaps, maps.Map{
+			"name": provider.Name,
+			"code": provider.Code,
+		})
+	}
+	this.Data["providers"] = providerMaps
+
 	// 域名解析服务商
-	providersResp, err := this.RPC().DNSProviderRPC().FindAllEnabledDNSProviders(this.AdminContext(), &pb.FindAllEnabledDNSProvidersRequest{
+	dnsProvidersResp, err := this.RPC().DNSProviderRPC().FindAllEnabledDNSProviders(this.AdminContext(), &pb.FindAllEnabledDNSProvidersRequest{
 		AdminId: this.AdminId(),
 		UserId:  0,
 	})
@@ -51,15 +67,15 @@ func (this *CreateAction) RunGet(params struct{}) {
 		this.ErrorPage(err)
 		return
 	}
-	providerMaps := []maps.Map{}
-	for _, provider := range providersResp.DnsProviders {
-		providerMaps = append(providerMaps, maps.Map{
+	dnsProviderMaps := []maps.Map{}
+	for _, provider := range dnsProvidersResp.DnsProviders {
+		dnsProviderMaps = append(dnsProviderMaps, maps.Map{
 			"id":       provider.Id,
 			"name":     provider.Name,
 			"typeName": provider.TypeName,
 		})
 	}
-	this.Data["providers"] = providerMaps
+	this.Data["dnsProviders"] = dnsProviderMaps
 
 	this.Show()
 }

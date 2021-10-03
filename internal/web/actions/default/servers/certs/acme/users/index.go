@@ -40,11 +40,31 @@ func (this *IndexAction) RunGet(params struct{}) {
 	}
 	userMaps := []maps.Map{}
 	for _, user := range usersResp.AcmeUsers {
+		// 服务商
+		var providerMap maps.Map
+		if user.AcmeProvider != nil {
+			providerMap = maps.Map{
+				"name": user.AcmeProvider.Name,
+				"code": user.AcmeProvider.Code,
+			}
+		}
+
+		// 账号
+		var accountMap maps.Map
+		if user.AcmeProviderAccount != nil {
+			accountMap = maps.Map{
+				"id":   user.AcmeProviderAccount.Id,
+				"name": user.AcmeProviderAccount.Name,
+			}
+		}
+
 		userMaps = append(userMaps, maps.Map{
 			"id":          user.Id,
 			"email":       user.Email,
 			"description": user.Description,
 			"createdTime": timeutil.FormatTime("Y-m-d H:i:s", user.CreatedAt),
+			"provider":    providerMap,
+			"account":     accountMap,
 		})
 	}
 	this.Data["users"] = userMaps

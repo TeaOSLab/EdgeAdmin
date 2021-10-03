@@ -28,6 +28,8 @@ Tea.context(function () {
 	this.createUser = function () {
 		let that = this
 		teaweb.popup("/servers/certs/acme/users/createPopup", {
+			height: "27em",
+			width: "44em",
 			callback: function (resp) {
 				teaweb.successToast("创建成功")
 
@@ -40,13 +42,23 @@ Tea.context(function () {
 				that.users.unshift({
 					id: acmeUser.id,
 					description: description,
-					email: acmeUser.email
+					email: acmeUser.email,
+					providerCode: acmeUser.providerCode
 				})
 			}
 		})
 	}
 
+	this.providerCode = ""
+	this.changeProvider = function () {
+		this.userId = 0
+	}
+
 	this.doUser = function () {
+		if (this.providerCode.length == 0) {
+			teaweb.warn("请选择一个证书服务商")
+			return
+		}
 		if (this.userId == 0) {
 			teaweb.warn("请选择一个申请证书的用户")
 			return

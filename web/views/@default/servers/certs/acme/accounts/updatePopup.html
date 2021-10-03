@@ -1,0 +1,41 @@
+{$layout "layout_popup"}
+
+<h3>修改账号</h3>
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+    <csrf-token></csrf-token>
+
+    <input type="hidden" name="accountId" :value="account.id"/>
+    <input type="hidden" name="providerCode" :value="account.providerCode"/>
+    <table class="ui table definition selectable">
+        <tr>
+            <td>账号名称 *</td>
+            <td>
+                <input type="text" name="name" maxlength="50" ref="focus" v-model="account.name" tabindex="1"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="title">服务商 *</td>
+            <td>
+                <span v-if="account.provider != null">{{account.provider.name}}</span>
+                <span v-else class="disabled">服务商已失效</span>
+                <p class="comment" v-if="account.provider != null" v-html="account.provider.description"></p>
+            </td>
+        </tr>
+        <tbody v-show="account.provider != null && account.provider.requireEAB">
+            <tr>
+                <td>EAB Kid *</td>
+                <td>
+                    <input type="text" name="eabKid" maxlength="100" v-model="account.eabKid" tabindex="3"/>
+                    <p class="comment" v-if="account.provider != null" v-html="account.provider.eabDescription"></p>
+                </td>
+            </tr>
+            <tr>
+                <td>EAB HMAC Key *</td>
+                <td>
+                    <input type="text" name="eabKey" maxlength="300" v-model="account.eabKey" tabindex="4"/>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <submit-btn></submit-btn>
+</form>
