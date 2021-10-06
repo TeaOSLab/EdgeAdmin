@@ -328,11 +328,25 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isActive": secondMenuItem == "webp",
 			"isOn":     serverConfig.Web != nil && serverConfig.Web.WebP != nil && serverConfig.Web.WebP.IsOn,
 		})
+
 		menuItems = append(menuItems, maps.Map{
 			"name":     "Fastcgi",
 			"url":      "/servers/server/settings/fastcgi?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "fastcgi",
 			"isOn":     serverConfig.Web != nil && serverConfig.Web.FastcgiRef != nil && serverConfig.Web.FastcgiRef.IsOn,
+		})
+
+		menuItems = append(menuItems, maps.Map{
+			"name":     "-",
+			"url":      "",
+			"isActive": false,
+		})
+
+		menuItems = append(menuItems, maps.Map{
+			"name":     "访客IP地址",
+			"url":      "/servers/server/settings/remoteAddr?serverId=" + serverIdString,
+			"isActive": secondMenuItem == "remoteAddr",
+			"isOn":     serverConfig.Web != nil && serverConfig.Web.RemoteAddr != nil && serverConfig.Web.RemoteAddr.IsOn,
 		})
 	} else if serverConfig.IsTCPFamily() {
 		menuItems = append(menuItems, maps.Map{

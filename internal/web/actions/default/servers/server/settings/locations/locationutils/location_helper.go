@@ -52,9 +52,7 @@ func (this *LocationHelper) BeforeAction(actionPtr actions.ActionWrapper) {
 }
 
 func (this *LocationHelper) createMenus(serverIdString string, locationIdString string, secondMenuItem string, locationConfig *serverconfigs.HTTPLocationConfig) []maps.Map {
-	menuItems := []maps.Map{
-
-	}
+	menuItems := []maps.Map{}
 	menuItems = append(menuItems, maps.Map{
 		"name":     "基本信息",
 		"url":      "/servers/server/settings/locations/location?serverId=" + serverIdString + "&locationId=" + locationIdString,
@@ -161,6 +159,19 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"url":      "/servers/server/settings/locations/fastcgi?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "fastcgi",
 		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.FastcgiRef != nil && locationConfig.Web.FastcgiRef.IsPrior,
+	})
+
+	menuItems = append(menuItems, maps.Map{
+		"name":     "-",
+		"url":      "",
+		"isActive": false,
+	})
+
+	menuItems = append(menuItems, maps.Map{
+		"name":     "访客IP地址",
+		"url":      "/servers/server/settings/locations/remoteAddr?serverId=" + serverIdString + "&locationId=" + locationIdString,
+		"isActive": secondMenuItem == "remoteAddr",
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.RemoteAddr != nil && locationConfig.Web.RemoteAddr.IsOn,
 	})
 
 	return menuItems
