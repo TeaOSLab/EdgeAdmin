@@ -1,0 +1,18 @@
+{$layout}
+{$template "/left_menu"}
+
+<div class="right-box">
+    {$template "../location_menu"}
+    {$template "../left_menu"}
+
+    <div class="right-box tiny">
+        <form class="ui form" data-tea-action="$" data-tea-success="success">
+            <csrf-token></csrf-token>
+            <input type="hidden" name="webId" :value="webId"/>
+
+            <http-remote-addr-config-box :v-remote-addr-config="remoteAddrConfig" :v-is-location="true"></http-remote-addr-config-box>
+
+            <submit-btn></submit-btn>
+        </form>
+    </div>
+</div>
