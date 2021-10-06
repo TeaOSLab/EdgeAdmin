@@ -195,6 +195,11 @@ func (this *UpdatePopupAction) RunPost(params struct {
 			this.ErrorPage(err)
 			return
 		}
+
+		// 去除可能误加的斜杠
+		for index, domain := range domains {
+			domains[index] = strings.TrimSuffix(domain, "/")
+		}
 	}
 
 	_, err = this.RPC().OriginRPC().UpdateOrigin(this.AdminContext(), &pb.UpdateOriginRequest{
