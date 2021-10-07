@@ -47,7 +47,7 @@
         <td class="center">
             <span v-if="!policy.isOn" class="red">已停用</span>
             <div v-else-if="policy.modeInfo != null">
-                <span :class="{green: policy.modeInfo.code == 'defend', blue: policy.modeInfo.code == 'observe', grey: policy.modeInfo.code == 'pass'}">{{policy.modeInfo.name}}</span>
+                <span :class="{green: policy.modeInfo.code == 'defend', blue: policy.modeInfo.code == 'observe', grey: policy.modeInfo.code == 'bypass'}">{{policy.modeInfo.name}}</span>
             </div>
         </td>
         <td>
