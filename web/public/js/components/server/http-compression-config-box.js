@@ -1,6 +1,6 @@
 // 压缩配置
 Vue.component("http-compression-config-box", {
-	props: ["v-compression-config", "v-is-location"],
+	props: ["v-compression-config", "v-is-location", "v-is-group"],
 	mounted: function () {
 		let that = this
 		sortLoad(function () {
@@ -92,7 +92,7 @@ Vue.component("http-compression-config-box", {
 	},
 	methods: {
 		isOn: function () {
-			return (!this.vIsLocation || this.config.isPrior) && this.config.isOn
+			return ((!this.vIsLocation && !this.vIsGroup) || this.config.isPrior) && this.config.isOn
 		},
 		changeExtensions: function (values) {
 			values.forEach(function (v, k) {
@@ -144,8 +144,8 @@ Vue.component("http-compression-config-box", {
 	template: `<div>
 	<input type="hidden" name="compressionJSON" :value="JSON.stringify(config)"/>
 	<table class="ui table definition selectable">
-		<prior-checkbox :v-config="config" v-if="vIsLocation"></prior-checkbox>
-		<tbody v-show="!vIsLocation || config.isPrior">
+		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
 			<tr>
 				<td class="title">是否启用</td>
 				<td>

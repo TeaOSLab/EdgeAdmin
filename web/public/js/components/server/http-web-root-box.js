@@ -1,5 +1,5 @@
 Vue.component("http-web-root-box", {
-	props: ["v-root-config", "v-is-location"],
+	props: ["v-root-config", "v-is-location", "v-is-group"],
 	data: function () {
 		let rootConfig = this.vRootConfig
 		if (rootConfig == null) {
@@ -38,14 +38,14 @@ Vue.component("http-web-root-box", {
 			this.rootConfig.indexes.$remove(i)
 		},
 		isOn: function () {
-			return (!this.vIsLocation || this.rootConfig.isPrior) && this.rootConfig.isOn
+			return ((!this.vIsLocation && !this.vIsGroup) || this.rootConfig.isPrior) && this.rootConfig.isOn
 		}
 	},
 	template: `<div>
 	<input type="hidden" name="rootJSON" :value="JSON.stringify(rootConfig)"/>
 	<table class="ui table selectable definition">
-		<prior-checkbox :v-config="rootConfig" v-if="vIsLocation"></prior-checkbox>
-		<tbody v-show="!vIsLocation || rootConfig.isPrior">
+		<prior-checkbox :v-config="rootConfig" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || rootConfig.isPrior">
 			<tr>
 				<td class="title">是否开启静态资源分发</td>
 				<td>

@@ -1,0 +1,14 @@
+{$layout}
+{$template "/servers/groups/group/menu"}
+{$template "/left_menu_without_menu"}
+
+<div class="right-box without-menu">
+    <form class="ui form" data-tea-action="$" data-tea-success="success">
+        <csrf-token></csrf-token>
+        <input type="hidden" name="webId" :value="webId"/>
+
+        <http-webp-config-box :v-webp-config="webpConfig" :v-is-group="true"></http-webp-config-box>
+
+        <submit-btn></submit-btn>
+    </form>
+</div>

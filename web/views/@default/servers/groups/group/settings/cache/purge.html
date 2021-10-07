@@ -1,0 +1,51 @@
+{$layout}
+{$template "/left_menu"}
+
+<div class="right-box">
+    {$template "menu"}
+
+    <div class="margin"></div>
+    <div v-show="webConfig.cache == null || !webConfig.cache.isOn">
+        <p class="comment">没有开启缓存，不需要清理。</p>
+    </div>
+    <div v-show="webConfig.cache != null && webConfig.cache.isOn">
+        <p class="comment">可以在这里批量删除一组Key。</p>
+
+        <form method="post" class="ui form" data-tea-action="$" data-tea-before="before" data-tea-success="success" data-tea-fail="fail" data-tea-done="done" data-tea-timeout="300">
+            <input type="hidden" name="serverId" :value="serverId"/>
+            <input type="hidden" name="webId" :value="webId"/>
+            <table class="ui table definition selectable">
+                <tr>
+                    <td class="title">操作类型</td>
+                    <td>
+                        <radio name="type" :v-value="'key'" v-model="type">根据Key</radio> &nbsp;
+                        <radio name="type" :v-value="'prefix'" v-model="type">根据前缀</radio>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span v-if="type == 'key'">Key列表</span>
+                        <span v-if="type == 'prefix'">Key前缀列表</span>
+                    </td>
+                    <td>
+                        <textarea name="keys" rows="10" ref="focus"></textarea>
+                        <p class="comment" v-if="type == 'key'">每行一个Key，比如是一个完整的URL<code-label>https://example.com/hello/world.html</code-label>。</p>
+                        <p class="comment" v-if="type == 'prefix'">每行一个Key前缀，比如是一个URL前缀<code-label>https://example.com/hello/</code-label>。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>操作结果</td>
+                    <td>
+                        <div v-if="isRequesting">数据发送中...</div>
+                        <span class="red" v-if="!isRequesting && !isOk && message.length > 0">失败：{{message}}</span>
+                        <div v-if="!isRequesting && isOk">
+                            <span v-if="results.length == 0" class="red">此集群下没有任何可用的节点。</span>
+                            <div class="ui label tiny" v-for="one in results" :class="{green:one.isOk, red:!one.isOk}" style="margin-bottom: 0.5em">{{one.nodeName}}：{{one.message}}</div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <submit-btn v-if="!isRequesting">提交</submit-btn>
+        </form>
+    </div>
+</div>

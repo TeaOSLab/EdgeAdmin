@@ -2,10 +2,18 @@
 {$template "/left_menu"}
 
 <div class="right-box">
-    {$template "menu"}
-    <form method="post" class="ui form" data-tea-action="$"  data-tea-success="success">
-        <input type="hidden" name="webId" :value="webId"/>
-        <http-firewall-config-box :v-firewall-config="firewallConfig" :v-firewall-policy="firewallPolicy"></http-firewall-config-box>
-        <submit-btn></submit-btn>
-    </form>
+    <div v-if="hasGroupConfig">
+        <div class="margin"></div>
+        <warning-message>由于已经在当前<a :href="groupSettingURL">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
+    </div>
+
+    <div :class="{'opacity-mask': hasGroupConfig}">
+        {$template "menu"}
+
+        <form method="post" class="ui form" data-tea-action="$"  data-tea-success="success">
+            <input type="hidden" name="webId" :value="webId"/>
+            <http-firewall-config-box :v-firewall-config="firewallConfig" :v-firewall-policy="firewallPolicy"></http-firewall-config-box>
+            <submit-btn></submit-btn>
+        </form>
+    </div>
 </div>

@@ -1,5 +1,5 @@
 Vue.component("http-remote-addr-config-box", {
-	props: ["v-remote-addr-config", "v-is-location"],
+	props: ["v-remote-addr-config", "v-is-location", "v-is-group"],
 	data: function () {
 		let config = this.vRemoteAddrConfig
 		if (config == null) {
@@ -15,14 +15,14 @@ Vue.component("http-remote-addr-config-box", {
 	},
 	methods: {
 		isOn: function () {
-			return (!this.vIsLocation || this.config.isPrior) && this.config.isOn
+			return ((!this.vIsLocation && !this.vIsGroup) || this.config.isPrior) && this.config.isOn
 		}
 	},
 	template: `<div>
 	<input type="hidden" name="remoteAddrJSON" :value="JSON.stringify(config)"/>
 	<table class="ui table definition selectable">
-		<prior-checkbox :v-config="config" v-if="vIsLocation"></prior-checkbox>
-		<tbody v-show="!vIsLocation || config.isPrior">
+		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
 			<tr>
 				<td class="title">是否启用</td>
 				<td>

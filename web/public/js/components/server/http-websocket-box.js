@@ -1,5 +1,5 @@
 Vue.component("http-websocket-box", {
-	props: ["v-websocket-ref", "v-websocket-config", "v-is-location"],
+	props: ["v-websocket-ref", "v-websocket-config", "v-is-location", "v-is-group"],
 	data: function () {
 		let websocketRef = this.vWebsocketRef
 		if (websocketRef == null) {
@@ -55,7 +55,7 @@ Vue.component("http-websocket-box", {
 	},
 	methods: {
 		isOn: function () {
-			return (!this.vIsLocation || this.websocketRef.isPrior) && this.websocketRef.isOn
+			return ((!this.vIsLocation && !this.vIsGroup) || this.websocketRef.isPrior) && this.websocketRef.isOn
 		},
 		changeAdvancedVisible: function (v) {
 			this.advancedVisible = v
@@ -77,8 +77,8 @@ Vue.component("http-websocket-box", {
 	<input type="hidden" name="websocketRefJSON" :value="JSON.stringify(websocketRef)"/>
 	<input type="hidden" name="websocketJSON" :value="JSON.stringify(websocketConfig)"/>
 	<table class="ui table definition selectable">
-		<prior-checkbox :v-config="websocketRef" v-if="vIsLocation"></prior-checkbox>
-		<tbody v-show="(!this.vIsLocation || this.websocketRef.isPrior)">
+		<prior-checkbox :v-config="websocketRef" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="((!vIsLocation && !vIsGroup) || websocketRef.isPrior)">
 			<tr>
 				<td class="title">是否启用配置</td>
 				<td>
