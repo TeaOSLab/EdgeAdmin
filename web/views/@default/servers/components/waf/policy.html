@@ -11,7 +11,7 @@
         <td>
             <span v-if="!firewallPolicy.isOn" class="red">已停用</span>
             <div v-else-if="firewallPolicy.modeInfo != null">
-                <span :class="{green: firewallPolicy.modeInfo.code == 'defend', blue: firewallPolicy.modeInfo.code == 'observe', grey: firewallPolicy.modeInfo.code == 'pass'}">{{firewallPolicy.modeInfo.name}}</span>
+                <span :class="{green: firewallPolicy.modeInfo.code == 'defend', blue: firewallPolicy.modeInfo.code == 'observe', grey: firewallPolicy.modeInfo.code == 'bypass'}">{{firewallPolicy.modeInfo.name}}</span>
                 <p class="comment">{{firewallPolicy.modeInfo.description}}</p>
             </div>
         </td>
