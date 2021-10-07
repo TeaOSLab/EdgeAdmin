@@ -1,0 +1,11 @@
+{$layout}
+{$template "/servers/groups/group/menu"}
+{$template "/left_menu_without_menu"}
+
+<div class="right-box without-menu">
+	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+		<input type="hidden" name="webId" :value="webId"/>
+		<http-stat-config-box :v-stat-config="statConfig" :v-is-group="true"></http-stat-config-box>
+		<submit-btn></submit-btn>
+	</form>
+</div>

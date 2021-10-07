@@ -3,5 +3,11 @@
 {$template "/left_menu"}
 
 <div class="right-box">
-	<http-header-policy-box :v-request-header-policy="requestHeaderPolicy" :v-response-header-policy="responseHeaderPolicy" :v-params="'serverId=' + serverId"></http-header-policy-box>
+	<http-header-policy-box
+            :v-request-header-policy="requestHeaderPolicy"
+            :v-response-header-policy="responseHeaderPolicy"
+            :v-params="'serverId=' + serverId"
+            :v-has-group-request-config="hasGroupRequestConfig"
+            :v-has-group-response-config="hasGroupResponseConfig"
+            :v-group-setting-url="groupSettingURL"></http-header-policy-box>
 </div>

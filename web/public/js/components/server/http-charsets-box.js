@@ -1,5 +1,5 @@
 Vue.component("http-charsets-box", {
-	props: ["v-usual-charsets", "v-all-charsets", "v-charset-config", "v-is-location"],
+	props: ["v-usual-charsets", "v-all-charsets", "v-charset-config", "v-is-location", "v-is-group"],
 	data: function () {
 		let charsetConfig = this.vCharsetConfig
 		if (charsetConfig == null) {
@@ -23,8 +23,8 @@ Vue.component("http-charsets-box", {
 	template: `<div>
 	<input type="hidden" name="charsetJSON" :value="JSON.stringify(charsetConfig)"/>
 	<table class="ui table definition selectable">
-		<prior-checkbox :v-config="charsetConfig" v-if="vIsLocation"></prior-checkbox>
-		<tbody v-show="!vIsLocation || charsetConfig.isPrior">
+		<prior-checkbox :v-config="charsetConfig" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || charsetConfig.isPrior">
 			<tr>
 				<td class="title">是否启用</td>
 				<td>
@@ -35,7 +35,7 @@ Vue.component("http-charsets-box", {
 				</td>
 			</tr>
 		</tbody>
-		<tbody v-show="(!vIsLocation || charsetConfig.isPrior) && charsetConfig.isOn">	
+		<tbody v-show="((!vIsLocation && !vIsGroup) || charsetConfig.isPrior) && charsetConfig.isOn">	
 			<tr>
 				<td class="title">选择字符编码</td>
 				<td><select class="ui dropdown" style="width:20em" name="charset" v-model="charsetConfig.charset">
@@ -48,8 +48,8 @@ Vue.component("http-charsets-box", {
 				</td>
 			</tr>
 		</tbody>
-		<more-options-tbody @change="changeAdvancedVisible" v-if="(!vIsLocation || charsetConfig.isPrior) && charsetConfig.isOn"></more-options-tbody>
-		<tbody v-show="(!vIsLocation || charsetConfig.isPrior) && charsetConfig.isOn && advancedVisible">
+		<more-options-tbody @change="changeAdvancedVisible" v-if="((!vIsLocation && !vIsGroup) || charsetConfig.isPrior) && charsetConfig.isOn"></more-options-tbody>
+		<tbody v-show="((!vIsLocation && !vIsGroup) || charsetConfig.isPrior) && charsetConfig.isOn && advancedVisible">
 			<tr>
 				<td>字符编码是否大写</td>
 				<td>

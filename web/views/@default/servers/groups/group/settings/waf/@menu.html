@@ -1,0 +1,11 @@
+<first-menu>
+    <menu-item :href="'/servers/server/settings/waf?serverId=' + serverId" code="index">设置</menu-item>
+    <menu-item :href="'/servers/server/settings/waf/groups?serverId=' + serverId + '&type=inbound&firewallPolicyId='+firewallPolicyId" code="inbound">入站规则</menu-item>
+    <menu-item :href="'/servers/server/settings/waf/groups?serverId=' + serverId + '&type=outbound&firewallPolicyId='+firewallPolicyId" code="outbound">出站规则</menu-item>
+    <span class="item disabled">|</span>
+    <menu-item :href="'/servers/server/settings/waf/ipadmin/countries?serverId=' + serverId + '&firewallPolicyId='+firewallPolicyId" code="country">国家/地区封禁</menu-item>
+    <menu-item :href="'/servers/server/settings/waf/ipadmin/provinces?serverId=' + serverId + '&firewallPolicyId='+firewallPolicyId" code="province">省份封禁</menu-item>
+    <menu-item :href="'/servers/server/settings/waf/ipadmin/allowList?serverId=' + serverId + '&firewallPolicyId='+firewallPolicyId" code="allowList">白名单</menu-item>
+    <menu-item :href="'/servers/server/settings/waf/ipadmin/denyList?serverId=' + serverId + '&firewallPolicyId='+firewallPolicyId" code="denyList">黑名单</menu-item>
+    <menu-item :href="'/servers/server/settings/waf/ipadmin/test?serverId=' + serverId + '&firewallPolicyId='+firewallPolicyId" code="test">IP检查</menu-item>
+</first-menu>

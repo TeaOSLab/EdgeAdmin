@@ -3,6 +3,7 @@
 package reverseProxy
 
 import (
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/iwind/TeaGo/types"
 )
@@ -18,6 +19,10 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	GroupId int64
 }) {
-	this.RedirectURL("/servers/groups/group/settings/httpReverseProxy?groupId=" + types.String(params.GroupId))
+	if teaconst.IsPlus {
+		this.RedirectURL("/servers/groups/group/settings/web?groupId=" + types.String(params.GroupId))
+	} else {
+		this.RedirectURL("/servers/groups/group/settings/httpReverseProxy?groupId=" + types.String(params.GroupId))
+	}
 	return
 }

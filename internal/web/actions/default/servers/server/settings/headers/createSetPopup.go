@@ -18,7 +18,6 @@ func (this *CreateSetPopupAction) Init() {
 }
 
 func (this *CreateSetPopupAction) RunGet(params struct {
-	ServerId       int64
 	HeaderPolicyId int64
 }) {
 	this.Data["headerPolicyId"] = params.HeaderPolicyId

@@ -1,5 +1,5 @@
 Vue.component("http-access-log-config-box", {
-	props: ["v-access-log-config", "v-fields", "v-default-field-codes", "v-is-location"],
+	props: ["v-access-log-config", "v-fields", "v-default-field-codes", "v-is-location", "v-is-group"],
 	data: function () {
 		let that = this
 
@@ -47,9 +47,9 @@ Vue.component("http-access-log-config-box", {
 	},
 	template: `<div>
 	<input type="hidden" name="accessLogJSON" :value="JSON.stringify(accessLog)"/>
-	<table class="ui table definition selectable">
-		<prior-checkbox :v-config="accessLog" v-if="vIsLocation"></prior-checkbox>
-		<tbody v-show="!vIsLocation || accessLog.isPrior">
+	<table class="ui table definition selectable" :class="{'opacity-mask': this.accessLog.firewallOnly}">
+		<prior-checkbox :v-config="accessLog" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || accessLog.isPrior">
 			<tr>
 				<td class="title">是否开启访问日志存储</td>
 				<td>
@@ -61,7 +61,7 @@ Vue.component("http-access-log-config-box", {
 				</td>
 			</tr>
 		</tbody>
-		<tbody  v-show="(!vIsLocation || accessLog.isPrior) && accessLog.isOn">
+		<tbody  v-show="((!vIsLocation && !vIsGroup) || accessLog.isPrior) && accessLog.isOn">
 			<tr>
 				<td>要存储的访问日志字段</td>
 				<td>
@@ -99,7 +99,7 @@ Vue.component("http-access-log-config-box", {
 		</tbody>
 	</table>
 	
-	<div v-show="(!vIsLocation || accessLog.isPrior) && accessLog.isOn">
+	<div v-show="((!vIsLocation && !vIsGroup) || accessLog.isPrior) && accessLog.isOn">
         <h4>WAF相关</h4>
         <table class="ui table definition selectable">
             <tr>

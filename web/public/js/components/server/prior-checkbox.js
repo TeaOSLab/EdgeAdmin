@@ -18,7 +18,7 @@ Vue.component("prior-checkbox", {
 				<input type="checkbox" v-model="isPrior"/>
 				<label class="red"></label>
 			</div>
-			<p class="comment"><strong v-if="isPrior">[已打开]</strong> 打开后可以覆盖父级配置。</p>
+			<p class="comment"><strong v-if="isPrior">[已打开]</strong> 打开后可以覆盖父级或子级配置。</p>
 		</td>
 	</tr>
 </tbody>`

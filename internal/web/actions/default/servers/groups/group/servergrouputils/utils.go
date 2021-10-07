@@ -4,6 +4,7 @@ package servergrouputils
 
 import (
 	"errors"
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
@@ -35,75 +36,109 @@ func InitGroup(parent *actionutils.ParentAction, groupId int64, menuItem string)
 		}
 
 		var urlPrefix = "/servers/groups/group/settings"
-		parent.Data["leftMenuItems"] = []maps.Map{
-			/**{
-				"name":     "Web设置",
-				"url":      urlPrefix + "/web?groupId=" + types.String(groupId),
-				"isActive": menuItem == "web",
-			},**/
+		var leftMenuItems = []maps.Map{
 			{
-				"name":     "HTTP反向代理",
+				"name":     "HTTP代理",
 				"url":      urlPrefix + "/httpReverseProxy?groupId=" + types.String(groupId),
 				"isActive": menuItem == "httpReverseProxy",
 				"isOn":     configInfoResp.HasHTTPReverseProxy,
 			},
 			{
-				"name":     "TCP反向代理",
+				"name":     "TCP代理",
 				"url":      urlPrefix + "/tcpReverseProxy?groupId=" + types.String(groupId),
 				"isActive": menuItem == "tcpReverseProxy",
 				"isOn":     configInfoResp.HasTCPReverseProxy,
 			},
 			{
-				"name":     "UDP反向代理",
+				"name":     "UDP代理",
 				"url":      urlPrefix + "/udpReverseProxy?groupId=" + types.String(groupId),
 				"isActive": menuItem == "udpReverseProxy",
 				"isOn":     configInfoResp.HasUDPReverseProxy,
 			},
-			/**{
-				"name": "-",
-				"url":  "",
-			},
-			{
-				"name":     "WAF",
-				"url":      urlPrefix + "/waf?groupId=" + types.String(groupId),
-				"isActive": menuItem == "waf",
-			},
-			{
-				"name":     "缓存",
-				"url":      urlPrefix + "/cache?groupId=" + types.String(groupId),
-				"isActive": menuItem == "cache",
-			},
-			{
-				"name":     "访问日志",
-				"url":      urlPrefix + "/accessLog?groupId=" + types.String(groupId),
-				"isActive": menuItem == "accessLog",
-			},
-			{
-				"name":     "统计",
-				"url":      urlPrefix + "/stat?groupId=" + types.String(groupId),
-				"isActive": menuItem == "stat",
-			},
-			{
-				"name":     "Gzip压缩",
-				"url":      urlPrefix + "/gzip?groupId=" + types.String(groupId),
-				"isActive": menuItem == "gzip",
-			},
-			{
-				"name":     "特殊页面",
-				"url":      urlPrefix + "/pages?groupId=" + types.String(groupId),
-				"isActive": menuItem == "page",
-			},
-			{
-				"name":     "HTTP Header",
-				"url":      urlPrefix + "/headers?groupId=" + types.String(groupId),
-				"isActive": menuItem == "header",
-			},
-			{
-				"name":     "Websocket",
-				"url":      urlPrefix + "/websocket?groupId=" + types.String(groupId),
-				"isActive": menuItem == "websocket",
-			},**/
 		}
+
+		if teaconst.IsPlus {
+			leftMenuItems = append([]maps.Map{
+				{
+					"name":     "Web设置",
+					"url":      urlPrefix + "/web?groupId=" + types.String(groupId),
+					"isActive": menuItem == "web",
+					"isOn":     configInfoResp.HasRootConfig,
+				},
+			}, leftMenuItems...)
+			leftMenuItems = append(leftMenuItems, []maps.Map{
+				{
+					"name": "-",
+					"url":  "",
+				},
+				{
+					"name":     "WAF",
+					"url":      urlPrefix + "/waf?groupId=" + types.String(groupId),
+					"isActive": menuItem == "waf",
+					"isOn":     configInfoResp.HasWAFConfig,
+				},
+				{
+					"name":     "缓存",
+					"url":      urlPrefix + "//cache?groupId=" + types.String(groupId),
+					"isActive": menuItem == "cache",
+					"isOn":     configInfoResp.HasCacheConfig,
+				},
+				{
+					"name":     "字符编码",
+					"url":      urlPrefix + "/charset?groupId=" + types.String(groupId),
+					"isActive": menuItem == "charset",
+					"isOn":     configInfoResp.HasCharsetConfig,
+				},
+				{
+					"name":     "访问日志",
+					"url":      urlPrefix + "/accessLog?groupId=" + types.String(groupId),
+					"isActive": menuItem == "accessLog",
+					"isOn":     configInfoResp.HasAccessLogConfig,
+				},
+				{
+					"name":     "统计",
+					"url":      urlPrefix + "/stat?groupId=" + types.String(groupId),
+					"isActive": menuItem == "stat",
+					"isOn":     configInfoResp.HasStatConfig,
+				},
+				{
+					"name":     "内容压缩",
+					"url":      urlPrefix + "/compression?groupId=" + types.String(groupId),
+					"isActive": menuItem == "compression",
+					"isOn":     configInfoResp.HasCompressionConfig,
+				},
+				{
+					"name":     "HTTP Header",
+					"url":      urlPrefix + "/headers?groupId=" + types.String(groupId),
+					"isActive": menuItem == "headers",
+					"isOn":     configInfoResp.HasRequestHeadersConfig || configInfoResp.HasResponseHeadersConfig,
+				},
+				{
+					"name":     "Websocket",
+					"url":      urlPrefix + "/websocket?groupId=" + types.String(groupId),
+					"isActive": menuItem == "websocket",
+					"isOn":     configInfoResp.HasWebsocketConfig,
+				},
+				{
+					"name":     "WebP",
+					"url":      urlPrefix + "/webp?groupId=" + types.String(groupId),
+					"isActive": menuItem == "webp",
+					"isOn":     configInfoResp.HasWebPConfig,
+				},
+			}...)
+		}
+
+		leftMenuItems = append(leftMenuItems, maps.Map{
+			"name": "-",
+			"url":  "",
+		})
+		leftMenuItems = append(leftMenuItems, maps.Map{
+			"name":     "访客IP地址",
+			"url":      urlPrefix + "/remoteAddr?groupId=" + types.String(groupId),
+			"isActive": menuItem == "remoteAddr",
+			"isOn":     configInfoResp.HasRemoteAddrConfig,
+		})
+		parent.Data["leftMenuItems"] = leftMenuItems
 	}
 
 	return group, nil

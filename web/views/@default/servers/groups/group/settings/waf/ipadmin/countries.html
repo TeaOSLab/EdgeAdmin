@@ -1,0 +1,59 @@
+{$layout}
+{$template "/left_menu"}
+
+<div class="right-box">
+    {$template "../menu"}
+
+    <warning-message v-if="!featureIsOn">尚未为当前用户开通此功能。</warning-message>
+
+    {$ if .featureIsOn}
+    <warning-message v-if="!wafIsOn">当前WAF未启用，设置将在<a :href="'/servers/server/settings/waf?serverId=' + serverId">[启用]</a>后生效。</warning-message>
+
+	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+		<input type="hidden" name="firewallPolicyId" :value="firewallPolicyId"/>
+		<table class="ui table selectable definition">
+			<tr>
+				<td class="title">已封禁</td>
+				<td>
+					<span v-if="countSelectedCountries == 0" class="disabled">暂时没有选择封禁区域。</span>
+					<div class="ui label tiny basic" v-for="country in countries" v-if="country.isChecked" style="margin-bottom: 0.5em">
+						<input type="hidden" name="countryIds" :value="country.id"/>
+						({{country.letter}}){{country.name}} <a href="" @click.prevent="deselectCountry(country)" title="取消封禁"><i class="icon remove"></i></a>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>选择封禁区域</td>
+				<td>
+					<more-options-indicator>选择区域</more-options-indicator>
+
+					<div class="ui menu tabular tiny region-letter-group" v-show="moreOptionsVisible">
+						<a href="" v-for="group in letterGroups" class="item" :class="{active: group == selectedGroup}" @click.prevent="selectGroup(group)">{{group}}</a>
+						<div class="item right">
+							<div class="ui checkbox" @click.prevent="checkAll">
+								<input type="checkbox" v-model="isCheckingAll"/>
+								<label>全选</label>
+							</div>
+						</div>
+					</div>
+					<div v-for="group in letterGroups"  v-show="moreOptionsVisible">
+						<div v-for="letter in group" v-if="letterCountries[letter] != null && group == selectedGroup" class="country-group">
+							<h4>{{letter}}</h4>
+							<div class="country-list">
+								<div class="item" v-for="country in letterCountries[letter]">
+									<div class="ui checkbox" @click.prevent="selectCountry(country)">
+										<input type="checkbox" v-model="country.isChecked"/>
+										<label>{{country.name}}</label>
+									</div>
+								</div>
+							</div>
+							<div class="clear"></div>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<submit-btn></submit-btn>
+	</form>
+    {$end}
+</div>

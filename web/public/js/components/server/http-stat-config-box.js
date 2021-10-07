@@ -1,5 +1,5 @@
 Vue.component("http-stat-config-box", {
-	props: ["v-stat-config", "v-is-location"],
+	props: ["v-stat-config", "v-is-location", "v-is-group"],
 	data: function () {
 		let stat = this.vStatConfig
 		if (stat == null) {
@@ -15,8 +15,8 @@ Vue.component("http-stat-config-box", {
 	template: `<div>
 	<input type="hidden" name="statJSON" :value="JSON.stringify(stat)"/>
 	<table class="ui table definition selectable">
-		<prior-checkbox :v-config="stat" v-if="vIsLocation" ></prior-checkbox>
-		<tbody v-show="!vIsLocation || stat.isPrior">
+		<prior-checkbox :v-config="stat" v-if="vIsLocation || vIsGroup" ></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || stat.isPrior">
 			<tr>
 				<td class="title">是否开启统计</td>
 				<td>

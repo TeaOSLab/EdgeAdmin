@@ -1,0 +1,16 @@
+{$layout}
+{$template "/servers/groups/group/menu"}
+{$template "/left_menu_without_menu"}
+
+<div class="right-box without-menu">
+    <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+        <input type="hidden" name="webId" :value="webId"/>
+	    <http-header-policy-box
+                :v-request-header-policy="requestHeaderPolicy"
+                :v-request-header-ref="requestHeaderRef"
+                :v-response-header-policy="responseHeaderPolicy"
+                :v-response-header-ref="responseHeaderRef"
+                :v-params="'groupId=' + group.id"
+    :v-is-group="true"></http-header-policy-box>
+    </form>
+</div>

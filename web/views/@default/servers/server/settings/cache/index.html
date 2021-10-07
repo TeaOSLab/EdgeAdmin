@@ -4,10 +4,17 @@
 <div class="right-box">
     {$template "menu"}
 
-	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
-		<input type="hidden" name="webId" :value="webId"/>
-		<http-cache-config-box :v-cache-config="cacheConfig" :v-cache-policy="cachePolicy"></http-cache-config-box>
-		<submit-btn></submit-btn>
-        <p class="comment">修改条件设置后请记得保存。</p>
-	</form>
+    <div v-if="hasGroupConfig">
+        <div class="margin"></div>
+        <warning-message>由于已经在当前<a :href="groupSettingURL">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
+    </div>
+
+    <div :class="{'opacity-mask': hasGroupConfig}">
+        <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+            <input type="hidden" name="webId" :value="webId"/>
+            <http-cache-config-box :v-cache-config="cacheConfig" :v-cache-policy="cachePolicy"></http-cache-config-box>
+            <submit-btn></submit-btn>
+            <p class="comment">修改条件设置后请记得保存。</p>
+        </form>
+    </div>
 </div>

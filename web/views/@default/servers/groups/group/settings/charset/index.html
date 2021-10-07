@@ -1,0 +1,11 @@
+{$layout}
+{$template "/servers/groups/group/menu"}
+{$template "/left_menu_without_menu"}
+
+<div class="right-box without-menu">
+	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+		<input type="hidden" name="webId" :value="webId"/>
+		<http-charsets-box :v-usual-charsets="usualCharsets" :v-all-charsets="allCharsets" :v-charset-config="charsetConfig" :v-is-group="true"></http-charsets-box>
+		<submit-btn></submit-btn>
+	</form>
+</div>

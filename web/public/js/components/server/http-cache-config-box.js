@@ -1,5 +1,5 @@
 Vue.component("http-cache-config-box", {
-	props: ["v-cache-config", "v-is-location", "v-cache-policy"],
+	props: ["v-cache-config", "v-is-location", "v-is-group", "v-cache-policy"],
 	data: function () {
 		let cacheConfig = this.vCacheConfig
 		if (cacheConfig == null) {
@@ -16,15 +16,15 @@ Vue.component("http-cache-config-box", {
 	},
 	methods: {
 		isOn: function () {
-			return (!this.vIsLocation || this.cacheConfig.isPrior) && this.cacheConfig.isOn
+			return ((!this.vIsLocation && !this.vIsGroup) || this.cacheConfig.isPrior) && this.cacheConfig.isOn
 		}
 	},
 	template: `<div>
 	<input type="hidden" name="cacheJSON" :value="JSON.stringify(cacheConfig)"/>
 	<table class="ui table definition selectable">
-		<prior-checkbox :v-config="cacheConfig" v-if="vIsLocation"></prior-checkbox>
-		<tbody v-show="!vIsLocation || cacheConfig.isPrior">
-			<tr>
+		<prior-checkbox :v-config="cacheConfig" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || cacheConfig.isPrior">
+			<tr v-show="!vIsGroup">
 				<td>缓存策略</td>
 				<td>
 					<div v-if="vCachePolicy != null">{{vCachePolicy.name}} <link-icon :href="'/servers/components/cache/policy?cachePolicyId=' + vCachePolicy.id"></link-icon>
