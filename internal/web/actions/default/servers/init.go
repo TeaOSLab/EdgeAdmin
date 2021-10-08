@@ -16,7 +16,9 @@ func init() {
 			GetPost("/create", new(CreateAction)).
 			GetPost("/update", new(UpdateAction)).
 			Post("/fixLog", new(FixLogAction)).
+			Post("/nearby", new(NearbyAction)).
 
+			//
 			GetPost("/addPortPopup", new(AddPortPopupAction)).
 			GetPost("/addServerNamePopup", new(AddServerNamePopupAction)).
 			GetPost("/addOriginPopup", new(AddOriginPopupAction)).
