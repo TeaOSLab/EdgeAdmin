@@ -368,6 +368,9 @@ body.expanded .main {
   .main {
     left: 4em;
   }
+  .main .main-box {
+    display: block;
+  }
 }
 .main.without-menu {
   left: 9em;

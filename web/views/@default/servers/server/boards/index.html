@@ -5,6 +5,10 @@
     <menu-item href="/servers">服务列表</menu-item>
     <span class="item disabled">|</span>
     <menu-item :href="'/servers/server?serverId=' + server.id" active="true">"{{server.name}}"看板</menu-item>
+    <span class="disabled item">|</span>
+    <more-items-angle
+            :v-data-url="'/servers/nearby?serverId=' + server.id"
+            :v-url="'/servers/server/boards?serverId=${serverId}'"></more-items-angle>
 </first-menu>
 
 <!-- 加载中 -->
