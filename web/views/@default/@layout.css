@@ -326,6 +326,12 @@ body.expanded .main {
 .top-nav.theme3 {
   background: #007D9C !important;
 }
+.top-nav.theme4 {
+  background: #A12568 !important;
+}
+.top-nav.theme5 {
+  background: #1C7947 !important;
+}
 .top-nav::-webkit-scrollbar {
   height: 2px;
 }
@@ -468,6 +474,18 @@ body.expanded .main {
 }
 .main-menu.theme3 .menu {
   background: #007D9C !important;
+}
+.main-menu.theme4 {
+  background: #A12568 !important;
+}
+.main-menu.theme4 .menu {
+  background: #A12568 !important;
+}
+.main-menu.theme5 {
+  background: #1C7947 !important;
+}
+.main-menu.theme5 .menu {
+  background: #1C7947 !important;
 }
 .main-menu::-webkit-scrollbar {
   width: 2px;

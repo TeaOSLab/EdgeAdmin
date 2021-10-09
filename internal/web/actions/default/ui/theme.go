@@ -15,7 +15,7 @@ type ThemeAction struct {
 func (this *ThemeAction) RunPost(params struct{}) {
 	theme := configloaders.FindAdminTheme(this.AdminId())
 
-	var themes = []string{"theme1", "theme2", "theme3"}
+	var themes = []string{"theme1", "theme2", "theme3", "theme4", "theme5"}
 	var nextTheme = "theme1"
 	if len(theme) == 0 {
 		nextTheme = "theme2"
