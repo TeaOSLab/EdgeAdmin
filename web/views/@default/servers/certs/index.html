@@ -44,7 +44,7 @@
 		<tr v-for="(cert, index) in certs">
             <td><keyword :v-word="keyword">{{cert.name}}</keyword>
 				<div v-if="cert.isCA" style="margin-top:0.5em">
-					<micro-basic-label :class="olive">CA</micro-basic-label>
+					<micro-basic-label class="olive">CA</micro-basic-label>
 				</div>
 				<div v-if="cert.isACME" style="margin-top: 0.5em">
 					<micro-basic-label class="olive" title="通过ACME协议免费申请">ACME</micro-basic-label>
