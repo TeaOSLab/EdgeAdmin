@@ -54,3 +54,13 @@
 
 <h4>拦截类型分布</h4>
 <div class="chart-box" id="group-chart"></div>
+
+<!-- 域名排行 -->
+<h4 v-show="!isLoading">域名拦截排行 <span>（24小时）</span></h4>
+<div class="chart-box" id="top-domains-chart"></div>
+
+<div class="ui divider"></div>
+
+<!-- 节点排行 -->
+<h4 v-show="!isLoading">节点拦截排行 <span>（24小时）</span></h4>
+<div class="chart-box" id="top-nodes-chart"></div>
