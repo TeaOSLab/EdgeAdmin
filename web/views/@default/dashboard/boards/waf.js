@@ -1,4 +1,6 @@
 Tea.context(function () {
+	this.isLoading = false
+
 	this.$delay(function () {
 		let that = this
 
@@ -10,6 +12,8 @@ Tea.context(function () {
 		this.reloadHourlyChart()
 		this.reloadGroupChart()
 		this.reloadAccessLogs()
+		this.reloadTopNodesChart()
+		this.reloadTopDomainsChart()
 	})
 
 	this.requestsTab = "hourly"
@@ -182,5 +186,57 @@ Tea.context(function () {
 				accessLog.humanTime = Math.ceil(elapsedSeconds / 3600) + "小时前"
 			}
 		}
+	}
+
+	// 节点排行
+	this.reloadTopNodesChart = function () {
+		let that = this
+		let axis = teaweb.countAxis(this.topNodeStats, function (v) {
+			return v.countRequests
+		})
+		teaweb.renderBarChart({
+			id: "top-nodes-chart",
+			name: "节点",
+			values: this.topNodeStats,
+			x: function (v) {
+				return v.nodeName
+			},
+			tooltip: function (args, stats) {
+				return stats[args.dataIndex].nodeName + "<br/>请求数：" + " " + teaweb.formatNumber(stats[args.dataIndex].countRequests) + "<br/>流量：" + teaweb.formatBytes(stats[args.dataIndex].bytes)
+			},
+			value: function (v) {
+				return v.countRequests / axis.divider;
+			},
+			axis: axis,
+			click: function (args, stats) {
+				window.location = "/clusters/cluster/node?nodeId=" + stats[args.dataIndex].nodeId + "&clusterId=" + that.clusterId
+			}
+		})
+	}
+
+	// 域名排行
+	this.reloadTopDomainsChart = function () {
+		let axis = teaweb.countAxis(this.topDomainStats, function (v) {
+			return v.countRequests
+		})
+		teaweb.renderBarChart({
+			id: "top-domains-chart",
+			name: "域名",
+			values: this.topDomainStats,
+			x: function (v) {
+				return v.domain
+			},
+			tooltip: function (args, stats) {
+				return stats[args.dataIndex].domain + "<br/>请求数：" + " " + teaweb.formatNumber(stats[args.dataIndex].countRequests) + "<br/>流量：" + teaweb.formatBytes(stats[args.dataIndex].bytes)
+			},
+			value: function (v) {
+				return v.countRequests / axis.divider;
+			},
+			axis: axis,
+			click: function (args, stats) {
+				let index = args.dataIndex
+				window.location = "/servers/server?serverId=" + stats[index].serverId
+			}
+		})
 	}
 })
