@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
 	"github.com/iwind/TeaGo/actions"
+	timeutil "github.com/iwind/TeaGo/utils/time"
 )
 
 type UploadPopupAction struct {
@@ -22,6 +23,7 @@ func (this *UploadPopupAction) RunGet(params struct{}) {
 }
 
 func (this *UploadPopupAction) RunPost(params struct {
+	TextMode    bool
 	Name        string
 	IsCA        bool
 	Description string
@@ -29,6 +31,9 @@ func (this *UploadPopupAction) RunPost(params struct {
 
 	CertFile *actions.File
 	KeyFile  *actions.File
+
+	CertText string
+	KeyText  string
 
 	Must *actions.Must
 }) {
@@ -39,22 +44,37 @@ func (this *UploadPopupAction) RunPost(params struct {
 	certData := []byte{}
 	keyData := []byte{}
 
-	if params.CertFile == nil {
-		this.Fail("请选择要上传的证书文件")
-	}
-	var err error
-	certData, err = params.CertFile.Read()
-	if err != nil {
-		this.Fail("读取证书文件内容错误，请重新上传")
-	}
+	if params.TextMode {
+		if len(params.CertText) == 0 {
+			this.FailField("certText", "请输入证书内容")
+		}
 
-	if !params.IsCA {
-		if params.KeyFile == nil {
-			this.Fail("请选择要上传的私钥文件")
-		} else {
-			keyData, err = params.KeyFile.Read()
-			if err != nil {
-				this.Fail("读取密钥文件内容错误，请重新上传")
+		if !params.IsCA {
+			if len(params.KeyText) == 0 {
+				this.FailField("keyText", "请输入私钥内容")
+			}
+		}
+
+		certData = []byte(params.CertText)
+		keyData = []byte(params.KeyText)
+	} else {
+		if params.CertFile == nil {
+			this.FailField("certFile", "请选择要上传的证书文件")
+		}
+		var err error
+		certData, err = params.CertFile.Read()
+		if err != nil {
+			this.FailField("certFile", "读取证书文件内容错误，请重新上传")
+		}
+
+		if !params.IsCA {
+			if params.KeyFile == nil {
+				this.FailField("keyFile", "请选择要上传的私钥文件")
+			} else {
+				keyData, err = params.KeyFile.Read()
+				if err != nil {
+					this.FailField("keyFile", "读取密钥文件内容错误，请重新上传")
+				}
 			}
 		}
 	}
@@ -65,13 +85,16 @@ func (this *UploadPopupAction) RunPost(params struct {
 		CertData: certData,
 		KeyData:  keyData,
 	}
-	err = sslConfig.Init()
+	err := sslConfig.Init()
 	if err != nil {
 		if params.IsCA {
 			this.Fail("证书校验错误：" + err.Error())
 		} else {
 			this.Fail("证书或密钥校验错误：" + err.Error())
 		}
+	}
+	if len(timeutil.Format("Y", sslConfig.TimeEnd())) != 4 {
+		this.Fail("证书格式错误：无法读取到证书有效期")
 	}
 
 	// 保存

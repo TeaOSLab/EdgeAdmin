@@ -2,7 +2,7 @@ Tea.context(function () {
 	// 上传证书
 	this.uploadCert = function () {
 		teaweb.popup("/servers/certs/uploadPopup", {
-			height: "28em",
+			height: "30em",
 			callback: function () {
 				teaweb.success("上传成功", function () {
 					window.location.reload()
@@ -34,7 +34,7 @@ Tea.context(function () {
 	// 修改证书
 	this.updateCert = function (certId) {
 		teaweb.popup("/servers/certs/updatePopup?certId=" + certId, {
-			height: "28em",
+			height: "30em",
 			callback: function () {
 				teaweb.success("上传成功", function () {
 					window.location.reload()

@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
 	"github.com/iwind/TeaGo/actions"
+	timeutil "github.com/iwind/TeaGo/utils/time"
 )
 
 type UpdatePopupAction struct {
@@ -45,6 +46,8 @@ func (this *UpdatePopupAction) RunGet(params struct {
 func (this *UpdatePopupAction) RunPost(params struct {
 	CertId int64
 
+	TextMode bool
+
 	Name        string
 	IsCA        bool
 	Description string
@@ -52,6 +55,9 @@ func (this *UpdatePopupAction) RunPost(params struct {
 
 	CertFile *actions.File
 	KeyFile  *actions.File
+
+	CertText string
+	KeyText  string
 
 	Must *actions.Must
 }) {
@@ -82,18 +88,31 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		Field("name", params.Name).
 		Require("请输入证书说明")
 
-	if params.CertFile != nil {
-		certConfig.CertData, err = params.CertFile.Read()
-		if err != nil {
-			this.Fail("读取证书文件内容错误，请重新上传")
+	if params.TextMode {
+		if len(params.CertText) > 0 {
+			certConfig.CertData = []byte(params.CertText)
 		}
-	}
 
-	if !params.IsCA {
-		if params.KeyFile != nil {
-			certConfig.KeyData, err = params.KeyFile.Read()
+		if !params.IsCA {
+			if len(params.KeyText) > 0 {
+				certConfig.KeyData = []byte(params.KeyText)
+			}
+		}
+	} else {
+
+		if params.CertFile != nil {
+			certConfig.CertData, err = params.CertFile.Read()
 			if err != nil {
-				this.Fail("读取密钥文件内容错误，请重新上传")
+				this.FailField("certFile", "读取证书文件内容错误，请重新上传")
+			}
+		}
+
+		if !params.IsCA {
+			if params.KeyFile != nil {
+				certConfig.KeyData, err = params.KeyFile.Read()
+				if err != nil {
+					this.FailField("keyFile", "读取私钥文件内容错误，请重新上传")
+				}
 			}
 		}
 	}
@@ -107,6 +126,10 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		} else {
 			this.Fail("证书或密钥校验错误：" + err.Error())
 		}
+	}
+
+	if len(timeutil.Format("Y", certConfig.TimeEnd())) != 4 {
+		this.Fail("证书格式错误：无法读取到证书有效期")
 	}
 
 	// 保存
