@@ -117,12 +117,15 @@
 	<!-- 底部 -->
 	<div id="footer" class="ui menu inverted light-blue borderless small" v-if="teaShowOpenSourceInfo">
 		<a  href="/settings/upgrade" class="item" title="点击进入检查版本更新页面">{{teaName}} <span v-if="teaIsPlus">&nbsp;Plus&nbsp;</span> v{{teaVersion}}</a>
+        <a href="https://goedge.cn" target="_blank" class="item">官网</a>
+        <a href="https://goedge.cn/docs" target="_blank" class="item">文档</a>
 		<a href="https://github.com/TeaOSLab/EdgeAdmin" target="_blank" class="item">GitHub</a>
 		<!--<a href="http://teaos.cn" target="_blank" class="item">官网</a>
 		<a href="http://teaos.cn/doc" target="_blank" class="item">文档</a>-->
 		<a href="https://github.com/TeaOSLab/EdgeAdmin/issues" target="_blank" class="item">提Bug</a>
 		<a class="item" @click.prevent="showQQGroupQrcode()">QQ讨论群：659832182 &nbsp;<i class="icon qrcode"></i> </a>
-		<a class="item right" href="http://teaos.cn/doc/donate/Index.md" target="_blank">捐赠作者</a>
+		<a class="item right" href="https://goedge.cn/commercial" target="_blank" v-if="!teaIsPlus">企业版</a>
+        <a class="item right" href="https://goedge.cn/docs/Appendix/Donation.md" target="_blank" v-if="teaIsPlus">捐助作者</a>
 	</div>
 </div>
 
