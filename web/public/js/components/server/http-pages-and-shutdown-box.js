@@ -8,10 +8,18 @@ Vue.component("http-pages-and-shutdown-box", {
 		let shutdownConfig = {
 			isPrior: false,
 			isOn: false,
+			bodyType: "url",
 			url: "",
+			body: "",
 			status: 0
 		}
 		if (this.vShutdownConfig != null) {
+			if (this.vShutdownConfig.body == null) {
+				this.vShutdownConfig.body = ""
+			}
+			if (this.vShutdownConfig.bodyType == null) {
+				this.vShutdownConfig.bodyType = "url"
+			}
 			shutdownConfig = this.vShutdownConfig
 		}
 
@@ -40,7 +48,7 @@ Vue.component("http-pages-and-shutdown-box", {
 		addPage: function () {
 			let that = this
 			teaweb.popup("/servers/server/settings/pages/createPopup", {
-				height: "22em",
+				height: "26em",
 				callback: function (resp) {
 					that.pages.push(resp.data.page)
 				}
@@ -49,7 +57,7 @@ Vue.component("http-pages-and-shutdown-box", {
 		updatePage: function (pageIndex, pageId) {
 			let that = this
 			teaweb.popup("/servers/server/settings/pages/updatePopup?pageId=" + pageId, {
-				height: "22em",
+				height: "26em",
 				callback: function (resp) {
 					Vue.set(that.pages, pageIndex, resp.data.page)
 				}
@@ -60,6 +68,23 @@ Vue.component("http-pages-and-shutdown-box", {
 			teaweb.confirm("确定要移除此页面吗？", function () {
 				that.pages.$remove(pageIndex)
 			})
+		},
+		addShutdownHTMLTemplate: function () {
+			this.shutdownConfig.body  = `<!DOCTYPE html>
+<html>
+<head>
+\t<title>升级中</title>
+\t<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+</head>
+<body>
+
+<h3>网站升级中</h3>
+<p>为了给您提供更好的服务，我们正在升级网站，请稍后重新访问。</p>
+
+<footer>Powered by GoEdge.</footer>
+
+</body>
+</html>`
 		}
 	},
 	template: `<div>
@@ -71,7 +96,7 @@ Vue.component("http-pages-and-shutdown-box", {
 		<td>
 			<div v-if="pages.length > 0">
 				<div class="ui label small basic" v-for="(page,index) in pages">
-					{{page.status}} -&gt; {{page.url}} <a href="" title="修改" @click.prevent="updatePage(index, page.id)"><i class="icon pencil small"></i></a> <a href="" title="删除" @click.prevent="removePage(index)"><i class="icon remove"></i></a>
+					{{page.status}} -&gt; <span v-if="page.bodyType == 'url'">{{page.url}}</span><span v-if="page.bodyType == 'html'">[HTML内容]</span> <a href="" title="修改" @click.prevent="updatePage(index, page.id)"><i class="icon pencil small"></i></a> <a href="" title="删除" @click.prevent="removePage(index)"><i class="icon remove"></i></a>
 				</div>
 				<div class="ui divider"></div>
 			</div>
@@ -100,10 +125,26 @@ Vue.component("http-pages-and-shutdown-box", {
 					</tbody>
 					<tbody v-show="(!vIsLocation || shutdownConfig.isPrior) && shutdownConfig.isOn">
 						<tr>
-							<td class="title">页面URL</td>
+							<td>内容类型 *</td>
+							<td>
+								<select class="ui dropdown auto-width" v-model="shutdownConfig.bodyType">
+									<option value="url">读取URL</option>
+									<option value="html">HTML</option>
+								</select>
+							</td>
+						</tr>
+						<tr v-show="shutdownConfig.bodyType == 'url'">
+							<td class="title">页面URL *</td>
 							<td>
 								<input type="text" v-model="shutdownConfig.url" placeholder="页面文件路径或一个完整URL"/>
 								<p class="comment">页面文件是相对于节点安装目录的页面文件比如pages/40x.html，或者一个完整的URL。</p>
+							</td>
+						</tr>
+						<tr v-show="shutdownConfig.bodyType == 'html'">
+							<td>HTML *</td>
+							<td>
+								<textarea name="body" ref="shutdownHTMLBody" v-model="shutdownConfig.body"></textarea>
+								<p class="comment"><a href="" @click.prevent="addShutdownHTMLTemplate">[使用模板]</a>。填写页面的HTML内容，支持请求变量。</p>
 							</td>
 						</tr>
 						<tr>

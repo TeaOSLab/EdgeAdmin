@@ -1,12 +1,5 @@
 Tea.context(function () {
-	this.success = NotifyPopup
-
-	this.bodyType = this.pageConfig.bodyType
-
-	this.newStatus = ""
-	if (this.pageConfig.newStatus > 0) {
-		this.newStatus = this.pageConfig.newStatus
-	}
+	this.bodyType = this.bodyTypes[0].code
 
 	this.addHTMLTemplate = function () {
 		this.$refs.htmlBody.value = `<!DOCTYPE html>

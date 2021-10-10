@@ -6,6 +6,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/types"
 )
@@ -21,6 +22,8 @@ func (this *UpdatePopupAction) Init() {
 func (this *UpdatePopupAction) RunGet(params struct {
 	PageId int64
 }) {
+	this.Data["bodyTypes"] = shared.FindAllBodyTypes()
+
 	configResp, err := this.RPC().HTTPPageRPC().FindEnabledHTTPPageConfig(this.AdminContext(), &pb.FindEnabledHTTPPageConfigRequest{PageId: params.PageId})
 	if err != nil {
 		this.ErrorPage(err)
@@ -41,8 +44,12 @@ func (this *UpdatePopupAction) RunGet(params struct {
 func (this *UpdatePopupAction) RunPost(params struct {
 	PageId int64
 
-	Status    string
-	URL       string `alias:"url"`
+	Status string
+
+	BodyType string
+	URL      string `alias:"url"`
+	Body     string
+
 	NewStatus int
 
 	Must *actions.Must
@@ -52,14 +59,25 @@ func (this *UpdatePopupAction) RunPost(params struct {
 
 	params.Must.
 		Field("status", params.Status).
-		Require("请输入响应状态码").
-		Field("url", params.URL).
-		Require("请输入要显示的URL")
+		Require("请输入响应状态码")
+
+	switch params.BodyType {
+	case shared.BodyTypeURL:
+		params.Must.
+			Field("url", params.URL).
+			Require("请输入要显示的URL")
+	case shared.BodyTypeHTML:
+		params.Must.
+			Field("body", params.Body).
+			Require("请输入要显示的HTML内容")
+	}
 
 	_, err := this.RPC().HTTPPageRPC().UpdateHTTPPage(this.AdminContext(), &pb.UpdateHTTPPageRequest{
 		PageId:     params.PageId,
 		StatusList: []string{params.Status},
+		BodyType:   params.BodyType,
 		Url:        params.URL,
+		Body:       params.Body,
 		NewStatus:  types.Int32(params.NewStatus),
 	})
 	if err != nil {
