@@ -24,8 +24,7 @@ Vue.component("network-addresses-box", {
 			addresses: addresses,
 			protocol: protocol,
 			name: name,
-			from: from,
-			supportRange: this.vSupportRange
+			from: from
 		}
 	},
 	watch: {
@@ -42,7 +41,7 @@ Vue.component("network-addresses-box", {
 		addAddr: function () {
 			let that = this
 			window.UPDATING_ADDR = null
-			teaweb.popup("/servers/addPortPopup?serverType=" + this.vServerType + "&protocol=" + this.protocol + "&from=" + this.from + "&supportRange=" + (this.supportRange ? 1 : 0), {
+			teaweb.popup("/servers/addPortPopup?serverType=" + this.vServerType + "&protocol=" + this.protocol + "&from=" + this.from + "&supportRange=" + (this.supportRange() ? 1 : 0), {
 				height: "18em",
 				callback: function (resp) {
 					var addr = resp.data.address
@@ -73,7 +72,7 @@ Vue.component("network-addresses-box", {
 		updateAddr: function (index, addr) {
 			let that = this
 			window.UPDATING_ADDR = addr
-			teaweb.popup("/servers/addPortPopup?serverType=" + this.vServerType + "&protocol=" + this.protocol + "&from=" + this.from + "&supportRange=" + (this.supportRange ? 1 : 0), {
+			teaweb.popup("/servers/addPortPopup?serverType=" + this.vServerType + "&protocol=" + this.protocol + "&from=" + this.from + "&supportRange=" + (this.supportRange() ? 1 : 0), {
 				height: "18em",
 				callback: function (resp) {
 					var addr = resp.data.address
@@ -92,6 +91,9 @@ Vue.component("network-addresses-box", {
 
 			// 发送事件
 			this.$emit("change", this.addresses)
+		},
+		supportRange: function () {
+			return this.vSupportRange || (this.vServerType == "tcpProxy" || this.vServerType == "udpProxy")
 		}
 	},
 	template: `<div>
