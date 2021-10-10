@@ -3,6 +3,7 @@
 <h3 v-if="!isUpdating">添加端口绑定</h3>
 <h3 v-if="isUpdating">修改端口绑定</h3>
 <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+    <input type="hidden" name="supportRange" :value="supportRange ? 1 : 0"/>
 	<table class="ui table definition selectable">
 		<tr>
 			<td>网络协议</td>
@@ -16,7 +17,7 @@
 			<td class="title">端口 *</td>
 			<td>
 				<input type="text" name="address" ref="focus" v-model="address"/>
-				<p class="comment">可以是一个数字端口（通常不超过65535），也可以是"地址:端口"的方式。
+                <p class="comment">可以是一个数字端口（通常不超过65535），也可以是"地址:端口"的方式。<span v-if="supportRange">支持端口范围，形式为<code-label>port1-port2</code-label>。</span>
                     <span v-if="from.length == 0 && protocol == 'http'">HTTP常用端口为<a href="" title="点击添加" @click.prevent="addPort('80')">80</a>。</span>
                     <span v-if="from.length == 0 && protocol == 'https'">HTTPS常用端口为<a href="" title="点击添加" @click.prevent="addPort('443')">443</a>。</span>
                 </p>

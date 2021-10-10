@@ -5,6 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/iwind/TeaGo/types"
 	"regexp"
 	"strings"
 )
@@ -18,9 +19,10 @@ func (this *AddPortPopupAction) Init() {
 }
 
 func (this *AddPortPopupAction) RunGet(params struct {
-	ServerType string
-	Protocol   string
-	From       string
+	ServerType   string
+	Protocol     string
+	From         string
+	SupportRange bool
 }) {
 	this.Data["from"] = params.From
 
@@ -36,10 +38,14 @@ func (this *AddPortPopupAction) RunGet(params struct {
 	}
 	this.Data["protocols"] = protocols
 
+	this.Data["supportRange"] = params.SupportRange
+
 	this.Show()
 }
 
 func (this *AddPortPopupAction) RunPost(params struct {
+	SupportRange bool
+
 	Protocol string
 	Address  string
 
@@ -50,26 +56,69 @@ func (this *AddPortPopupAction) RunPost(params struct {
 		"protocol":  params.Protocol,
 		"host":      "",
 		"portRange": "",
+		"minPort":   0,
+		"maxPort":   0,
 	}
 
-	// TODO 判断端口不能小于1
-	// TODO 判断端口号不能大于65535
-
-	digitRegexp := regexp.MustCompile(`^\d+$`)
-	if digitRegexp.MatchString(params.Address) {
-		addr["portRange"] = params.Address
-	} else if strings.Contains(params.Address, ":") {
+	var portRegexp = regexp.MustCompile(`^\d+$`)
+	if portRegexp.MatchString(params.Address) { // 单个端口
+		addr["portRange"] = this.checkPort(params.Address)
+	} else if params.SupportRange && regexp.MustCompile(`^\d+\s*-\s*\d+$`).MatchString(params.Address) { // Port1-Port2
+		addr["portRange"], addr["minPort"], addr["maxPort"] = this.checkPortRange(params.Address)
+	} else if strings.Contains(params.Address, ":") { // IP:Port
 		index := strings.LastIndex(params.Address, ":")
 		addr["host"] = strings.TrimSpace(params.Address[:index])
 		port := strings.TrimSpace(params.Address[index+1:])
-		if !digitRegexp.MatchString(port) {
-			this.Fail("端口只能是一个数字")
+		if portRegexp.MatchString(port) {
+			addr["portRange"] = this.checkPort(port)
+		} else if params.SupportRange && regexp.MustCompile(`^\d+\s*-\s*\d+$`).MatchString(port) { // Port1-Port2
+			addr["portRange"], addr["minPort"], addr["maxPort"] = this.checkPortRange(port)
+		} else {
+			this.FailField("address", "请输入正确的端口或者网络地址")
 		}
-		addr["portRange"] = port
 	} else {
-		this.Fail("请输入正确的端口或者网络地址")
+		this.FailField("address", "请输入正确的端口或者网络地址")
 	}
 
 	this.Data["address"] = addr
 	this.Success()
+}
+
+func (this *AddPortPopupAction) checkPort(port string) (portRange string) {
+	var intPort = types.Int(port)
+	if intPort < 1 {
+		this.FailField("address", "端口号不能小于1")
+	}
+	if intPort > 65535 {
+		this.FailField("address", "端口号不能大于65535")
+	}
+	return port
+}
+
+func (this *AddPortPopupAction) checkPortRange(port string) (portRange string, minPort int, maxPort int) {
+	var pieces = strings.Split(port, "-")
+	var piece1 = strings.TrimSpace(pieces[0])
+	var piece2 = strings.TrimSpace(pieces[1])
+	var port1 = types.Int(piece1)
+	var port2 = types.Int(piece2)
+
+	if port1 < 1 {
+		this.FailField("address", "端口号不能小于1")
+	}
+	if port1 > 65535 {
+		this.FailField("address", "端口号不能大于65535")
+	}
+
+	if port2 < 1 {
+		this.FailField("address", "端口号不能小于1")
+	}
+	if port2 > 65535 {
+		this.FailField("address", "端口号不能大于65535")
+	}
+
+	if port1 > port2 {
+		port1, port2 = port2, port1
+	}
+
+	return types.String(port1) + "-" + types.String(port2), port1, port2
 }
