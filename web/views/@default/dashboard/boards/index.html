@@ -26,7 +26,7 @@
 <div class="ui icon message error" v-if="!isLoading && nodeUpgradeInfo.count > 0">
     <i class="icon warning circle"></i>
     <a href="/clusters">
-    升级提醒：有 {{nodeUpgradeInfo.count}} 个边缘节点需要升级到 v{{nodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
+    升级提醒：有 {{nodeUpgradeInfo.count}} 个边缘节点需要升级到 v{{nodeUpgradeInfo.version}} 版本，系统正在尝试自动升级...</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
 </div>
 <div class="ui icon message error" v-if="!isLoading && monitorNodeUpgradeInfo.count > 0 && teaIsPlus">
     <i class="icon warning circle"></i>
@@ -39,7 +39,7 @@
     <a href="/api">升级提醒：有 {{apiNodeUpgradeInfo.count}} 个API节点需要升级到 v{{apiNodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a></div>
 <div class="ui icon message error" v-if="!isLoading && nsNodeUpgradeInfo.count > 0 && teaIsPlus">
     <i class="icon warning circle"></i>
-    <a href="/ns/clusters">升级提醒：有 {{nsNodeUpgradeInfo.count}} 个DNS节点需要升级到 v{{nsNodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
+    <a href="/ns/clusters">升级提醒：有 {{nsNodeUpgradeInfo.count}} 个DNS节点需要升级到 v{{nsNodeUpgradeInfo.version}} 版本，系统正在尝试自动升级...</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
 </div>
 <div class="ui icon message error" v-if="!isLoading && reportNodeUpgradeInfo.count > 0 && teaIsPlus">
     <i class="icon warning circle"></i>
