@@ -6,6 +6,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/types"
 )
@@ -19,12 +20,18 @@ func (this *CreatePopupAction) Init() {
 }
 
 func (this *CreatePopupAction) RunGet(params struct{}) {
+	this.Data["bodyTypes"] = shared.FindAllBodyTypes()
+
 	this.Show()
 }
 
 func (this *CreatePopupAction) RunPost(params struct {
-	Status    string
-	URL       string `alias:"url"`
+	Status   string
+	BodyType string
+
+	URL  string `alias:"url"`
+	Body string
+
 	NewStatus int
 	Must      *actions.Must
 }) {
@@ -32,13 +39,24 @@ func (this *CreatePopupAction) RunPost(params struct {
 
 	params.Must.
 		Field("status", params.Status).
-		Require("请输入响应状态码").
-		Field("url", params.URL).
-		Require("请输入要显示的URL")
+		Require("请输入响应状态码")
+
+	switch params.BodyType {
+	case shared.BodyTypeURL:
+		params.Must.
+			Field("url", params.URL).
+			Require("请输入要显示的URL")
+	case shared.BodyTypeHTML:
+		params.Must.
+			Field("body", params.Body).
+			Require("请输入要显示的HTML内容")
+	}
 
 	createResp, err := this.RPC().HTTPPageRPC().CreateHTTPPage(this.AdminContext(), &pb.CreateHTTPPageRequest{
 		StatusList: []string{params.Status},
+		BodyType:   params.BodyType,
 		Url:        params.URL,
+		Body:       params.Body,
 		NewStatus:  types.Int32(params.NewStatus),
 	})
 	if err != nil {

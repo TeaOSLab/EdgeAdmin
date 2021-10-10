@@ -10,13 +10,28 @@
 				<p class="comment">比如404，或者50x。</p>
 			</td>
 		</tr>
-		<tr>
+        <tr>
+            <td>内容类型 *</td>
+            <td>
+                <select class="ui dropdown auto-width" name="bodyType" v-model="bodyType">
+                    <option v-for="bodyType in bodyTypes" :value="bodyType.code">{{bodyType.name}}</option>
+                </select>
+            </td>
+        </tr>
+		<tr v-show="bodyType == 'url'">
 			<td>URL *</td>
 			<td>
 				<input type="text" name="url" maxlength="500" placeholder="页面文件路径或者完整的URL" v-model="pageConfig.url"/>
 				<p class="comment">页面文件是相对于节点安装目录的页面文件比如web/pages/40x.html，或者一个完整的URL。</p>
 			</td>
 		</tr>
+        <tr v-show="bodyType == 'html'">
+            <td>HTML *</td>
+            <td>
+                <textarea name="body" ref="htmlBody" v-model="pageConfig.body"></textarea>
+                <p class="comment"><a href="" @click.prevent="addHTMLTemplate">[使用模板]</a>。填写页面的HTML内容，支持请求变量。</p>
+            </td>
+        </tr>
 		<tr>
 			<td>新状态码</td>
 			<td>
