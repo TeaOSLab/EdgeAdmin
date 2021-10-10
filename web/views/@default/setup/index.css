@@ -13,6 +13,9 @@
 .install-box .button.primary {
   float: right;
 }
+.install-box .button.disabled {
+  float: right;
+}
 .install-box table td.title {
   width: 10em;
 }
