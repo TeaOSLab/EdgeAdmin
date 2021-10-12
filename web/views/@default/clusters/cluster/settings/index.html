@@ -2,7 +2,6 @@
 {$template "/left_menu"}
 
 <div class="right-box">
-	<h3>基础设置</h3>
 	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 		<input type="hidden" name="clusterId" :value="cluster.id"/>
 		<table class="ui table selectable definition">
@@ -24,6 +23,23 @@
 					<p class="comment">当节点没有单独设置安装目录时，默认使用此设置。如果集群和节点都没有设置安装目录，则使用<span class="ui label tiny">/$登录用户/edge-node</span> 目录。</p>
 				</td>
 			</tr>
+            <tr>
+                <td>时区</td>
+                <td>
+                    <div class="ui fields inline">
+                        <div class="ui field">
+                            <select class="ui dropdown" v-model="timeZoneGroupCode">
+                                <option v-for="timeZoneGroup in timeZoneGroups" :value="timeZoneGroup.code">{{timeZoneGroup.name}}</option>
+                            </select>
+                        </div>
+                        <div class="ui field">
+                            <select class="ui dropdown" name="timeZone" v-model="cluster.timeZone">
+                                <option v-for="timeZoneLocation in timeZoneLocations" :value="timeZoneLocation.name" v-if="timeZoneLocation.group == timeZoneGroupCode">{{timeZoneLocation.name}} ({{timeZoneLocation.offset}})</option>
+                            </select>
+                        </div>
+                    </div>
+                </td>
+            </tr>
 		</table>
 		<submit-btn></submit-btn>
 	</form>
