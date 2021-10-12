@@ -6,8 +6,18 @@ Tea.context(function () {
 		this.timeZoneGroupCode = this.timeZoneLocation.group
 	}
 
+	let oldTimeZoneGroupCode = this.timeZoneGroupCode
+	let oldTimeZoneName = ""
+	if (this.timeZoneLocation != null) {
+		oldTimeZoneName = this.timeZoneLocation.name
+	}
+	
 	this.$delay(function () {
 		this.$watch("timeZoneGroupCode", function (groupCode) {
+			if (groupCode == oldTimeZoneGroupCode && oldTimeZoneName.length > 0) {
+				this.cluster.timeZone = oldTimeZoneName
+				return
+			}
 			let firstLocation = null
 			this.timeZoneLocations.forEach(function (v) {
 				if (firstLocation != null) {
