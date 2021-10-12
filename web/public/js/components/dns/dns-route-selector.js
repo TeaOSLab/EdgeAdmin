@@ -80,7 +80,7 @@ Vue.component("dns-route-selector", {
 				return
 			}
 			this.searchingRoutes = this.vAllRoutes.filter(function (route) {
-				return teaweb.match(route.name, keyword)
+				return teaweb.match(route.name, keyword) || teaweb.match(route.domainName, keyword)
 			})
 			if (this.searchingRoutes.length > 0) {
 				this.routeCode = this.searchingRoutes[0].code + "@" + this.searchingRoutes[0].domainId
