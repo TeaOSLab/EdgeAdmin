@@ -39,6 +39,14 @@ Vue.component("reverse-proxy-box", {
 			reverseProxyConfig.idleTimeout = {count: 0, unit: "second"}
 		}
 
+		if (reverseProxyConfig.proxyProtocol == null) {
+			// 如果直接赋值Vue将不会触发变更通知
+			Vue.set(reverseProxyConfig, "proxyProtocol", {
+				isOn: false,
+				version: 1
+			})
+		}
+
 		let forwardHeaders = [
 			{
 				name: "X-Real-IP",
@@ -116,6 +124,13 @@ Vue.component("reverse-proxy-box", {
 			}
 			this.reverseProxyConfig.maxIdleConns = maxIdleConns
 		},
+		"reverseProxyConfig.proxyProtocol.version": function (v) {
+			let version = parseInt(v)
+			if (isNaN(version)) {
+				version = 1
+			}
+			this.reverseProxyConfig.proxyProtocol.version = version
+		}
 	},
 	methods: {
 		isOn: function () {
@@ -194,7 +209,7 @@ Vue.component("reverse-proxy-box", {
 					<p class="comment">可以把请求的路径部分前缀去除后再查找文件，比如把 <span class="ui label tiny">/web/app/index.html</span> 去除前缀 <span class="ui label tiny">/web</span> 后就变成 <span class="ui label tiny">/app/index.html</span>。 </p>
 				</td>
 			</tr>
-			<tr>
+			<tr v-if="family == null || family == 'http'">
 				<td>是否自动刷新缓存区<em>（AutoFlush）</em></td>
 				<td>
 					<div class="ui checkbox">
@@ -268,6 +283,24 @@ Vue.component("reverse-proxy-box", {
                     <p class="comment">源站保持等待的空闲超时时间，0表示使用默认时间。</p>
                 </td>
             </tr>
+            <tr v-show="family != 'unix'">
+            	<td>PROXY Protocol</td>
+            	<td>
+            		<checkbox name="proxyProtocolIsOn" v-model="reverseProxyConfig.proxyProtocol.isOn"></checkbox>
+            		<p class="comment">选中后表示启用PROXY Protocol，每次连接源站时都会在头部写入客户端地址信息。</p>
+				</td>
+			</tr>
+			<tr v-show="family != 'unix' && reverseProxyConfig.proxyProtocol.isOn">
+				<td>PROXY Protocol版本</td>
+				<td>
+					<select class="ui dropdown auto-width" name="proxyProtocolVersion" v-model="reverseProxyConfig.proxyProtocol.version">
+						<option value="1">1</option>
+						<option value="2">2</option>
+					</select>
+					<p class="comment" v-if="reverseProxyConfig.proxyProtocol.version == 1">发送类似于<code-label>PROXY TCP4 192.168.1.1 192.168.1.10 32567 443</code-label>的头部信息。</p>
+					<p class="comment" v-if="reverseProxyConfig.proxyProtocol.version == 2">发送二进制格式的头部信息。</p>
+				</td>
+			</tr>
 		</tbody>
 	</table>
 	<div class="margin"></div>

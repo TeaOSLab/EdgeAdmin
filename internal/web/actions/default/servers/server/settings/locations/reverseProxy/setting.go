@@ -78,15 +78,26 @@ func (this *SettingAction) RunPost(params struct {
 		return
 	}
 
+	// PROXY Protocol
+	var proxyProtocolJSON = []byte{}
+	if reverseProxyConfig.ProxyProtocol != nil {
+		proxyProtocolJSON, err = json.Marshal(reverseProxyConfig.ProxyProtocol)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+
 	// 设置反向代理相关信息
 	_, err = this.RPC().ReverseProxyRPC().UpdateReverseProxy(this.AdminContext(), &pb.UpdateReverseProxyRequest{
-		ReverseProxyId:  reverseProxyConfig.Id,
-		RequestHostType: types.Int32(reverseProxyConfig.RequestHostType),
-		RequestHost:     reverseProxyConfig.RequestHost,
-		RequestURI:      reverseProxyConfig.RequestURI,
-		StripPrefix:     reverseProxyConfig.StripPrefix,
-		AutoFlush:       reverseProxyConfig.AutoFlush,
-		AddHeaders:      reverseProxyConfig.AddHeaders,
+		ReverseProxyId:    reverseProxyConfig.Id,
+		RequestHostType:   types.Int32(reverseProxyConfig.RequestHostType),
+		RequestHost:       reverseProxyConfig.RequestHost,
+		RequestURI:        reverseProxyConfig.RequestURI,
+		StripPrefix:       reverseProxyConfig.StripPrefix,
+		AutoFlush:         reverseProxyConfig.AutoFlush,
+		AddHeaders:        reverseProxyConfig.AddHeaders,
+		ProxyProtocolJSON: proxyProtocolJSON,
 	})
 
 	this.Success()
