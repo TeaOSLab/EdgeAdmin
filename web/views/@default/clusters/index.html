@@ -41,7 +41,12 @@
             </tr>
         </thead>
         <tr v-for="cluster in clusters">
-            <td><a :href="'/clusters/cluster?clusterId=' + cluster.id"><keyword :v-word="keyword">{{cluster.name}}</keyword></a></td>
+            <td>
+                <a :href="'/clusters/cluster?clusterId=' + cluster.id"><keyword :v-word="keyword">{{cluster.name}}</keyword></a>
+                <div v-if="cluster.timeZone != null && cluster.timeZone.length > 0">
+                    <grey-label>时区：{{cluster.timeZone}}</grey-label>
+                </div>
+            </td>
             <td class="center">
                 <a :href="'/clusters/cluster/nodes?clusterId=' + cluster.id" v-if="cluster.countAllNodes > 0"><span :class="{red:cluster.countAllNodes > cluster.countActiveNodes}">{{cluster.countAllNodes}}</span></a>
                 <span class="disabled" v-else="">-</span>
@@ -66,7 +71,8 @@
                 <span v-else class="disabled">-</span>
             </td>
             <td>
-                <a :href="'/clusters/cluster?clusterId=' + cluster.id">详情</a>
+                <a :href="'/clusters/cluster?clusterId=' + cluster.id">详情</a> &nbsp;
+                <a :href="'/clusters/cluster/settings?clusterId=' + cluster.id">设置</a>
             </td>
         </tr>
     </table>

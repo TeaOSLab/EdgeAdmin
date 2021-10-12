@@ -121,6 +121,10 @@ func (this *IndexAction) RunGet(params struct {
 				this.ErrorPage(err)
 			}
 
+			if cluster.TimeZone == nodeconfigs.DefaultTimeZoneLocation {
+				cluster.TimeZone = ""
+			}
+
 			clusterMaps = append(clusterMaps, maps.Map{
 				"id":                cluster.Id,
 				"name":              cluster.Name,
@@ -132,6 +136,7 @@ func (this *IndexAction) RunGet(params struct {
 				"dnsName":           cluster.DnsName,
 				"dnsDomainName":     dnsDomainName,
 				"countServers":      countServersResp.Count,
+				"timeZone":          cluster.TimeZone,
 			})
 		}
 	}
