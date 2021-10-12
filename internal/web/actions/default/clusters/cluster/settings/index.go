@@ -4,6 +4,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -21,6 +22,7 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ClusterId int64
 }) {
+	// 基本信息
 	clusterResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeCluster(this.AdminContext(), &pb.FindEnabledNodeClusterRequest{NodeClusterId: params.ClusterId})
 	if err != nil {
 		this.ErrorPage(err)
@@ -53,10 +55,20 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	this.Data["grant"] = grantMap
 
+	// 时区
+	this.Data["timeZoneGroups"] = nodeconfigs.FindAllTimeZoneGroups()
+	this.Data["timeZoneLocations"] = nodeconfigs.FindAllTimeZoneLocations()
+
+	if len(cluster.TimeZone) == 0 {
+		cluster.TimeZone = nodeconfigs.DefaultTimeZoneLocation
+	}
+	this.Data["timeZoneLocation"] = nodeconfigs.FindTimeZoneLocation(cluster.TimeZone)
+
 	this.Data["cluster"] = maps.Map{
 		"id":         cluster.Id,
 		"name":       cluster.Name,
 		"installDir": cluster.InstallDir,
+		"timeZone":   cluster.TimeZone,
 	}
 
 	this.Show()
@@ -68,6 +80,7 @@ func (this *IndexAction) RunPost(params struct {
 	Name       string
 	GrantId    int64
 	InstallDir string
+	TimeZone   string
 
 	Must *actions.Must
 }) {
@@ -83,6 +96,7 @@ func (this *IndexAction) RunPost(params struct {
 		Name:          params.Name,
 		NodeGrantId:   params.GrantId,
 		InstallDir:    params.InstallDir,
+		TimeZone:      params.TimeZone,
 	})
 	if err != nil {
 		this.ErrorPage(err)
