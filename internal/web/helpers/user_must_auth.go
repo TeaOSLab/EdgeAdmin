@@ -4,7 +4,11 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
 	"net"
 	"net/http"
@@ -130,7 +134,7 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	if !action.Data.Has("teaMenu") {
 		action.Data["teaMenu"] = ""
 	}
-	action.Data["teaModules"] = this.modules(adminId)
+	action.Data["teaModules"] = this.modules(actionPtr, adminId)
 	action.Data["teaSubMenus"] = []map[string]interface{}{}
 	action.Data["teaTabbar"] = []map[string]interface{}{}
 	if len(config.Version) == 0 {
@@ -165,7 +169,34 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 }
 
 // 菜单配置
-func (this *userMustAuth) modules(adminId int64) []maps.Map {
+func (this *userMustAuth) modules(actionPtr actions.ActionWrapper, adminId int64) []maps.Map {
+	var countUnreadNodeLogs int64 = 0
+
+	// 父级动作
+	parentAction, ok := actionPtr.(actionutils.ActionInterface)
+	if ok {
+		var action = actionPtr.Object()
+
+		// 未读日志数
+		if action.Data.GetString("teaMenu") == "clusters" {
+			countNodeLogsResp, err := parentAction.RPC().NodeLogRPC().CountNodeLogs(parentAction.AdminContext(), &pb.CountNodeLogsRequest{
+				Role:     nodeconfigs.NodeRoleNode,
+				IsUnread: true,
+			})
+			if err != nil {
+				logs.Error(err)
+			} else {
+				var countNodeLogs = countNodeLogsResp.Count
+				if countNodeLogs > 0 {
+					countUnreadNodeLogs = countNodeLogs
+					if countUnreadNodeLogs >= 1000 {
+						countUnreadNodeLogs = 999
+					}
+				}
+			}
+		}
+	}
+
 	allMaps := []maps.Map{
 		{
 			"code":   "dashboard",
@@ -236,9 +267,10 @@ func (this *userMustAuth) modules(adminId int64) []maps.Map {
 			"icon":     "cloud",
 			"subItems": []maps.Map{
 				{
-					"name": "运行日志",
-					"url":  "/clusters/logs",
-					"code": "log",
+					"name":  "运行日志",
+					"url":   "/clusters/logs",
+					"code":  "log",
+					"badge": countUnreadNodeLogs,
 				},
 				{
 					"name": "IP地址",

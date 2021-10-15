@@ -14,6 +14,7 @@ func init() {
 			Data("teaSubMenu", "log").
 			Prefix("/clusters/logs").
 			Get("", new(IndexAction)).
+			Post("/readLogs", new(ReadLogsAction)).
 			EndAll()
 	})
 }

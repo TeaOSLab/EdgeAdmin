@@ -2,6 +2,7 @@ package logs
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
@@ -12,6 +13,11 @@ type IndexAction struct {
 }
 
 func (this *IndexAction) Init() {
+	if this.ParamString("type") == "unread" {
+		this.FirstMenu("unread")
+	} else {
+		this.FirstMenu("index")
+	}
 }
 
 func (this *IndexAction) RunGet(params struct {
@@ -19,19 +25,34 @@ func (this *IndexAction) RunGet(params struct {
 	DayTo   string
 	Keyword string
 	Level   string
+	Type    string
 }) {
 	this.Data["dayFrom"] = params.DayFrom
 	this.Data["dayTo"] = params.DayTo
 	this.Data["keyword"] = params.Keyword
 	this.Data["level"] = params.Level
+	this.Data["type"] = params.Type
 
+	// 未读数量
+	countUnreadResp, err := this.RPC().NodeLogRPC().CountNodeLogs(this.AdminContext(), &pb.CountNodeLogsRequest{
+		Role:     nodeconfigs.NodeRoleNode,
+		IsUnread: true,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["countUnreadLogs"] = countUnreadResp.Count
+
+	// 日志数量
 	countResp, err := this.RPC().NodeLogRPC().CountNodeLogs(this.AdminContext(), &pb.CountNodeLogsRequest{
-		NodeId:  0,
-		Role:    "node",
-		DayFrom: params.DayFrom,
-		DayTo:   params.DayTo,
-		Keyword: params.Keyword,
-		Level:   params.Level,
+		NodeId:   0,
+		Role:     nodeconfigs.NodeRoleNode,
+		DayFrom:  params.DayFrom,
+		DayTo:    params.DayTo,
+		Keyword:  params.Keyword,
+		Level:    params.Level,
+		IsUnread: params.Type == "unread",
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -42,14 +63,15 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["page"] = page.AsHTML()
 
 	logsResp, err := this.RPC().NodeLogRPC().ListNodeLogs(this.AdminContext(), &pb.ListNodeLogsRequest{
-		NodeId:  0,
-		Role:    "node",
-		DayFrom: params.DayFrom,
-		DayTo:   params.DayTo,
-		Keyword: params.Keyword,
-		Level:   params.Level,
-		Offset:  page.Offset,
-		Size:    page.Size,
+		NodeId:   0,
+		Role:     nodeconfigs.NodeRoleNode,
+		DayFrom:  params.DayFrom,
+		DayTo:    params.DayTo,
+		Keyword:  params.Keyword,
+		Level:    params.Level,
+		IsUnread: params.Type == "unread",
+		Offset:   page.Offset,
+		Size:     page.Size,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -69,12 +91,14 @@ func (this *IndexAction) RunGet(params struct {
 		}
 
 		logs = append(logs, maps.Map{
+			"id":          log.Id,
 			"tag":         log.Tag,
 			"description": log.Description,
 			"createdTime": timeutil.FormatTime("Y-m-d H:i:s", log.CreatedAt),
 			"level":       log.Level,
 			"isToday":     timeutil.FormatTime("Y-m-d", log.CreatedAt) == timeutil.Format("Y-m-d"),
 			"count":       log.Count,
+			"isRead":      log.IsRead,
 			"node": maps.Map{
 				"id": node.Id,
 				"cluster": maps.Map{
