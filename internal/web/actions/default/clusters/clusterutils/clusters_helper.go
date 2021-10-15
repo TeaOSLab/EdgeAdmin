@@ -12,7 +12,8 @@ func NewClustersHelper() *ClustersHelper {
 	return &ClustersHelper{}
 }
 
-func (this *ClustersHelper) BeforeAction(action *actions.ActionObject) {
+func (this *ClustersHelper) BeforeAction(actionPtr actions.ActionWrapper) {
+	var action = actionPtr.Object()
 	if action.Request.Method != http.MethodGet {
 		return
 	}
