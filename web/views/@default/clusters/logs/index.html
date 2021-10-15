@@ -34,6 +34,13 @@
     </div>
 </form>
 
+<div v-if="type == 'unread'">
+    <div class="ui divider" style="margin-bottom: 0"></div>
+    <second-menu v-if="logs.length > 0">
+        <a href="" class="item" @click.prevent="updatePageRead()">[本页已读]</a>
+    </second-menu>
+</div>
+
 <p class="comment" v-if="logs.length == 0">暂时还没有日志。</p>
 
 <table class="ui table selectable celled" v-if="logs.length > 0">
