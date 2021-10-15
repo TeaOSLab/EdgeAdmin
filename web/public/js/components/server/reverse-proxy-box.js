@@ -220,7 +220,7 @@ Vue.component("reverse-proxy-box", {
 				</td>
 			</tr>
 			<tr v-if="family == null || family == 'http'">
-                <td class="color-border">源站默认连接失败超时时间</td>
+                <td class="color-border">源站连接失败超时时间</td>
                 <td>
                     <div class="ui fields inline">
                         <div class="ui field">
@@ -234,7 +234,7 @@ Vue.component("reverse-proxy-box", {
                 </td>
             </tr>
             <tr v-if="family == null || family == 'http'">
-                <td class="color-border">源站默认读取超时时间</td>
+                <td class="color-border">源站读取超时时间</td>
                 <td>
                     <div class="ui fields inline">
                         <div class="ui field">
@@ -248,7 +248,7 @@ Vue.component("reverse-proxy-box", {
                 </td>
             </tr>
             <tr v-if="family == null || family == 'http'">
-                <td class="color-border">源站默认最大并发连接数</td>
+                <td class="color-border">源站最大并发连接数</td>
                 <td>
                     <div class="ui fields inline">
                         <div class="ui field">
@@ -259,7 +259,7 @@ Vue.component("reverse-proxy-box", {
                 </td>
             </tr>
             <tr v-if="family == null || family == 'http'">
-                <td class="color-border">源站默认最大空闲连接数</td>
+                <td class="color-border">源站最大空闲连接数</td>
                 <td>
                     <div class="ui fields inline">
                         <div class="ui field">
@@ -270,7 +270,7 @@ Vue.component("reverse-proxy-box", {
                 </td>
             </tr>
             <tr v-if="family == null || family == 'http'">
-                <td class="color-border">源站默认最大空闲超时时间</td>
+                <td class="color-border">源站最大空闲超时时间</td>
                 <td>
                     <div class="ui fields inline">
                         <div class="ui field">
