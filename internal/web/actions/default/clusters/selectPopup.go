@@ -21,6 +21,7 @@ func (this *SelectPopupAction) Init() {
 func (this *SelectPopupAction) RunGet(params struct {
 	SelectedClusterIds string
 	Keyword            string
+	PageSize           int64
 }) {
 	this.Data["keyword"] = params.Keyword
 
@@ -36,6 +37,9 @@ func (this *SelectPopupAction) RunGet(params struct {
 	var count = countResp.Count
 	var page = this.NewPage(count)
 	page.Size = 6
+	if params.PageSize > 0 {
+		page.Size = params.PageSize
+	}
 	this.Data["page"] = page.AsHTML()
 
 	clustersResp, err := this.RPC().NodeClusterRPC().ListEnabledNodeClusters(this.AdminContext(), &pb.ListEnabledNodeClustersRequest{
