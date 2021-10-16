@@ -3,6 +3,7 @@ package dns
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/iwind/TeaGo/actions"
 )
 
 type IndexAction struct {
@@ -28,6 +29,28 @@ func (this *IndexAction) RunGet(params struct {
 	} else {
 		this.Data["dnsDomain"] = ""
 	}
+	this.Data["supportCNAME"] = dnsInfoResp.SupportCNAME
 
 	this.Show()
+}
+
+func (this *IndexAction) RunPost(params struct {
+	ServerId     int64
+	SupportCNAME bool
+
+	Must *actions.Must
+	CSRF *actionutils.CSRF
+}) {
+	defer this.CreateLogInfo("修改服务 %d 的DNS设置", params.ServerId)
+
+	_, err := this.RPC().ServerRPC().UpdateServerDNS(this.AdminContext(), &pb.UpdateServerDNSRequest{
+		ServerId:     params.ServerId,
+		SupportCNAME: params.SupportCNAME,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	this.Success()
 }

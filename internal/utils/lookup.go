@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/miekg/dns"
 )
 
@@ -16,13 +17,19 @@ func LookupCNAME(host string) (string, error) {
 
 	m.SetQuestion(host+".", dns.TypeCNAME)
 	m.RecursionDesired = true
-	r, _, err := c.Exchange(m, config.Servers[0]+":"+config.Port)
-	if err != nil {
-		return "", err
-	}
-	if len(r.Answer) == 0 {
-		return "", nil
-	}
 
-	return r.Answer[0].(*dns.CNAME).Target, nil
+	var lastErr error
+	for _, serverAddr := range config.Servers {
+		r, _, err := c.Exchange(m, configutils.QuoteIP(serverAddr)+":"+config.Port)
+		if err != nil {
+			lastErr = err
+			continue
+		}
+		if len(r.Answer) == 0 {
+			continue
+		}
+
+		return r.Answer[0].(*dns.CNAME).Target, nil
+	}
+	return "", lastErr
 }
