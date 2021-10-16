@@ -14,6 +14,7 @@ func init() {
 			Helper(serverutils.NewServerHelper()).
 			Prefix("/servers/server/settings/dns").
 			GetPost("", new(IndexAction)).
+			Post("/regenerateCNAME", new(RegenerateCNAMEAction)).
 			EndAll()
 	})
 }
