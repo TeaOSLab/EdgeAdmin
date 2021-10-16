@@ -10,15 +10,15 @@
             <tr>
                 <td class="title">当前服务CNAME</td>
                 <td>
-                    <span id="cname-text">{{dnsName}}.<span v-if="dnsDomain.length > 0">{{dnsDomain}}.</span><span v-else>根域名</span></span> &nbsp; <copy-to-clipboard :v-target="'cname-text'"></copy-to-clipboard> &nbsp;<a href="" @click.prevent="regenerateCNAME()">[重新生成]</a>
+                    <span id="cname-text">{{dnsName}}.<span v-if="dnsDomain.length > 0">{{dnsDomain}}.</span><span v-else>根域名</span></span> &nbsp; <copy-to-clipboard :v-target="'cname-text'"></copy-to-clipboard> &nbsp;<a href="" @click.prevent="regenerateCNAME()" style="font-size: 0.8em">[重新生成]</a>
                     <p class="comment">可以在DNS设置一个CNAME记录，名字为你自己的域名，值为上面这个值。</p>
                 </td>
             </tr>
             <tr>
-                <td>支持CNAME</td>
+                <td>支持任意域名CNAME</td>
                 <td>
                     <checkbox name="supportCNAME" v-model="supportCNAME"></checkbox>
-                    <p class="comment">选中后表示允许任意域名使用此服务的CNAME直接访问此服务。需要节点服务器可以正确解析DNS记录。在严格匹配域名时才会生效。</p>
+                    <p class="comment">选中后表示允许任意域名使用此服务的CNAME直接访问此服务。需要节点服务器可以正确解析DNS记录。在严格匹配域名时才会生效。此选项可能导致安全问题，请谨慎开启。</p>
                 </td>
             </tr>
         </table>
