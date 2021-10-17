@@ -7,7 +7,9 @@ Vue.component("http-cache-config-box", {
 				isPrior: false,
 				isOn: false,
 				addStatusHeader: true,
-				cacheRefs: []
+				cacheRefs: [],
+				purgeIsOn: false,
+				purgeKey: ""
 			}
 		}
 		return {
@@ -17,6 +19,16 @@ Vue.component("http-cache-config-box", {
 	methods: {
 		isOn: function () {
 			return ((!this.vIsLocation && !this.vIsGroup) || this.cacheConfig.isPrior) && this.cacheConfig.isOn
+		},
+		generatePurgeKey: function () {
+			let r = Math.random().toString() + Math.random().toString()
+			let s = r.replace(/0\./g, "")
+				.replace(/\./g, "")
+			let result = ""
+			for (let i = 0; i < s.length; i++) {
+				result += String.fromCharCode(parseInt(s.substring(i, i + 1)) + ((Math.random() < 0.5) ? "a" : "A").charCodeAt(0))
+			}
+			this.cacheConfig.purgeKey = result
 		}
 	},
 	template: `<div>
@@ -49,6 +61,20 @@ Vue.component("http-cache-config-box", {
 				<td>
 					<checkbox v-model="cacheConfig.addStatusHeader"></checkbox>
 					<p class="comment">选中后自动在响应Header中增加<code-label>X-Cache: BYPASS|MISS|HIT</code-label>。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>允许PURGE</td>
+				<td>
+					<checkbox v-model="cacheConfig.purgeIsOn"></checkbox>
+					<p class="comment">允许使用PURGE方法清除某个URL缓存。</p>
+				</td>
+			</tr>
+			<tr v-show="cacheConfig.purgeIsOn">
+				<td>PURGE Key *</td>
+				<td>
+					<input type="text" maxlength="200" v-model="cacheConfig.purgeKey"/>
+					<p class="comment"><a href="" @click.prevent="generatePurgeKey">[随机生成]</a>。需要在PURGE方法调用时加入<code-label>Edge-Purge-Key: {{cacheConfig.purgeKey}}</code-label> Header。只能包含字符、数字、下划线。</p>
 				</td>
 			</tr>
 		</tbody>
