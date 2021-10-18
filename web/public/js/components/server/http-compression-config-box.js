@@ -16,6 +16,7 @@ Vue.component("http-compression-config-box", {
 				useDefaultTypes: true,
 				types: ["brotli", "gzip", "deflate"],
 				level: 5,
+				decompressData: false,
 				gzipRef: null,
 				deflateRef: null,
 				brotliRef: null,
@@ -205,25 +206,32 @@ Vue.component("http-compression-config-box", {
 				</td>
 			</tr>
 			<tr>
+				<td>支持已压缩内容</td>
+				<td>
+					<checkbox v-model="config.decompressData"></checkbox>
+					<p class="comment">支持对已压缩内容尝试重新使用新的算法压缩。</p>
+				</td>
+			</tr>
+			<tr>
 				<td>内容最小长度</td>
-			<td>
-				<size-capacity-box :v-name="'minLength'" :v-value="config.minLength" :v-unit="'kb'"></size-capacity-box>
-				<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
-			</td>
-		</tr>
-		<tr>
-			<td>内容最大长度</td>
-			<td>
-				<size-capacity-box :v-name="'maxLength'" :v-value="config.maxLength" :v-unit="'mb'"></size-capacity-box>
-				<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
-			</td>
-		</tr>
-		<tr>
-			<td>匹配条件</td>
-			<td>
-				<http-request-conds-box :v-conds="config.conds" @change="changeConds"></http-request-conds-box>
-</td>
-		</tr>
+				<td>
+					<size-capacity-box :v-name="'minLength'" :v-value="config.minLength" :v-unit="'kb'"></size-capacity-box>
+					<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>内容最大长度</td>
+				<td>
+					<size-capacity-box :v-name="'maxLength'" :v-value="config.maxLength" :v-unit="'mb'"></size-capacity-box>
+					<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>匹配条件</td>
+				<td>
+					<http-request-conds-box :v-conds="config.conds" @change="changeConds"></http-request-conds-box>
+	</td>
+			</tr>
 		</tbody>
 	</table>
 	<div class="margin"></div>
