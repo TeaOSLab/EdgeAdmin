@@ -14,7 +14,7 @@ Vue.component("http-compression-config-box", {
 				isPrior: false,
 				isOn: false,
 				useDefaultTypes: true,
-				types: ["gzip", "deflate", "brotli"],
+				types: ["brotli", "gzip", "deflate"],
 				level: 5,
 				gzipRef: null,
 				deflateRef: null,
@@ -188,7 +188,7 @@ Vue.component("http-compression-config-box", {
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="config.useDefaultTypes" id="compression-use-default"/>
-						<label v-if="config.useDefaultTypes" for="compression-use-default">使用默认顺序<span class="grey small">（gzip、deflate、brotli）</span></label>
+						<label v-if="config.useDefaultTypes" for="compression-use-default">使用默认顺序<span class="grey small">（brotli、gzip、deflate）</span></label>
 						<label v-if="!config.useDefaultTypes" for="compression-use-default">使用默认顺序</label>
 					</div>
 					<div v-show="!config.useDefaultTypes">
