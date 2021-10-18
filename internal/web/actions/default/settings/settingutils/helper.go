@@ -2,6 +2,7 @@ package settingutils
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/iwind/TeaGo/actions"
 )
@@ -31,7 +32,9 @@ func (this *Helper) BeforeAction(actionPtr actions.ActionWrapper) (goNext bool) 
 	if configloaders.AllowModule(adminId, configloaders.AdminModuleCodeSetting) {
 		tabbar.Add("Web服务", "", "/settings/server", "", this.tab == "server")
 		tabbar.Add("管理界面设置", "", "/settings/ui", "", this.tab == "ui")
-		tabbar.Add("用户界面设置", "", "/settings/user-ui", "", this.tab == "userUI")
+		if teaconst.IsPlus {
+			tabbar.Add("用户界面设置", "", "/settings/user-ui", "", this.tab == "userUI")
+		}
 		tabbar.Add("安全设置", "", "/settings/security", "", this.tab == "security")
 		tabbar.Add("IP库", "", "/settings/ip-library", "", this.tab == "ipLibrary")
 	}
