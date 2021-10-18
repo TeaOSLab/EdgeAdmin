@@ -63,6 +63,8 @@ Vue.component("http-firewall-actions-box", {
 
 			// 动作参数
 			blockTimeout: "",
+			blockScope: "global",
+
 			captchaLife: "",
 			get302Life: "",
 			post307Life: "",
@@ -96,6 +98,9 @@ Vue.component("http-firewall-actions-box", {
 			} else {
 				this.actionOptions["timeout"] = v
 			}
+		},
+		blockScope: function (v) {
+			this.actionOptions["scope"] = v
 		},
 		captchaLife: function (v) {
 			v = parseInt(v)
@@ -169,6 +174,7 @@ Vue.component("http-firewall-actions-box", {
 
 			// 动作参数
 			this.blockTimeout = ""
+			this.blockScope = "global"
 			this.captchaLife = ""
 			this.get302Life = ""
 			this.post307Life = ""
@@ -219,6 +225,11 @@ Vue.component("http-firewall-actions-box", {
 					this.blockTimeout = ""
 					if (config.options.timeout != null || config.options.timeout > 0) {
 						this.blockTimeout = config.options.timeout.toString()
+					}
+					if (config.options.scope != null && config.options.scope.length > 0) {
+						this.blockScope = config.options.scope
+					} else {
+						this.blockScope = "service" // 兼容先前版本遗留的默认值
 					}
 					break
 				case "allow":
@@ -450,7 +461,7 @@ Vue.component("http-firewall-actions-box", {
 	<input type="hidden" name="actionsJSON" :value="JSON.stringify(configs)"/>
 	<div v-show="configs.length > 0" style="margin-bottom: 0.5em" id="actions-box"> 
 		<div v-for="(config, index) in configs" :data-index="index" :key="config.id" class="ui label small basic" :class="{blue: index == editingIndex}" style="margin-bottom: 0.4em">
-			{{config.name}} ({{config.code.toUpperCase()}}) 
+			{{config.name}} <span class="small">({{config.code.toUpperCase()}})</span> 
 			
 			<!-- block -->
 			<span v-if="config.code == 'block' && config.options.timeout > 0">：有效期{{config.options.timeout}}秒</span>
@@ -475,6 +486,13 @@ Vue.component("http-firewall-actions-box", {
 			
 			<!-- go_set -->
 			<span v-if="config.code == 'go_set'">：{{config.options.groupName}} / {{config.options.setName}}</span>
+			
+			<!-- 范围 -->
+			<span v-if="config.options.scope != null && config.options.scope.length > 0" class="small grey">
+				&nbsp; 
+				<span v-if="config.options.scope == 'global'">[所有服务]</span>
+				<span v-if="config.options.scope == 'service'">[当前服务]</span>
+			</span>
 			
 			<!-- 操作按钮 -->
 			 &nbsp; <a href="" title="修改" @click.prevent="update(index, config)"><i class="icon pencil small"></i></a> &nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a> &nbsp; <a href="" title="拖动改变顺序"><i class="icon bars handle"></i></a>
@@ -501,6 +519,15 @@ Vue.component("http-firewall-actions-box", {
 						<input type="text" style="width: 5em" maxlength="10" v-model="blockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">秒</span>
 					</div>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'block'">
+				<td>封锁范围</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="blockScope">
+						<option value="service">当前服务</option>
+						<option value="global">所有服务</option>
+					</select>
 				</td>
 			</tr>
 			
