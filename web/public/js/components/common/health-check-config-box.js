@@ -18,7 +18,9 @@ Vue.component("health-check-config-box", {
 				tryDelay: {count: 100, unit: "ms"},
 				autoDown: true,
 				countUp: 1,
-				countDown: 3
+				countDown: 3,
+				userAgent: "",
+				onlyBasicRequest: false
 			}
 			let that = this
 			setTimeout(function () {
@@ -72,7 +74,8 @@ Vue.component("health-check-config-box", {
 			urlProtocol: urlProtocol,
 			urlHost: urlHost,
 			urlPort: urlPort,
-			urlRequestURI: urlRequestURI
+			urlRequestURI: urlRequestURI,
+			urlIsEditing: healthCheckConfig.url.length == 0
 		}
 	},
 	watch: {
@@ -142,6 +145,9 @@ Vue.component("health-check-config-box", {
 					return status
 				}
 			})
+		},
+		editURL: function () {
+			this.urlIsEditing = !this.urlIsEditing
 		}
 	},
 	template: `<div>
@@ -162,41 +168,41 @@ Vue.component("health-check-config-box", {
 		<tr>
 			<td>URL *</td>
 			<td>
-			    <table class="ui table">
-			         <tr>
-			            <td class="title">协议</td> 
-			            <td>
-			            	<select class="ui dropdown auto-width" v-model="urlProtocol">
-							<option value="http">http://</option>
-							<option value="https">https://</option>
-						    </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>域名</td>
-                        <td>
-                            <input type="text" v-model="urlHost"/>
-							<p class="comment">在此集群上可以访问到的一个域名。</p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>端口</td>
-                        <td>
-                            <input type="text" maxlength="5" style="width:5.4em" placeholder="端口" v-model="urlPort"/>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>RequestURI</td>
-                        <td><input type="text" v-model="urlRequestURI" placeholder="/" style="width:20em"/></td>
-                    </tr>
-                </table>
-				<div class="ui divider"></div>
-				<p class="comment" v-if="healthCheck.url.length > 0">拼接后的URL：<code-label>{{healthCheck.url}}</code-label>，其中\${host}指的是域名。</p>
+				<div v-if="healthCheck.url.length > 0" style="margin-bottom: 1em"><code-label>{{healthCheck.url}}</code-label> &nbsp; <a href="" @click.prevent="editURL"><span class="small">修改 <i class="icon angle" :class="{down: !urlIsEditing, up: urlIsEditing}"></i></span></a> </div>
+				<div v-show="urlIsEditing">
+					<table class="ui table">
+						 <tr>
+							<td class="title">协议</td> 
+							<td>
+								<select class="ui dropdown auto-width" v-model="urlProtocol">
+								<option value="http">http://</option>
+								<option value="https">https://</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>域名</td>
+							<td>
+								<input type="text" v-model="urlHost"/>
+								<p class="comment">在此集群上可以访问到的一个域名。</p>
+							</td>
+						</tr>
+						<tr>
+							<td>端口</td>
+							<td>
+								<input type="text" maxlength="5" style="width:5.4em" placeholder="端口" v-model="urlPort"/>
+							</td>
+						</tr>
+						<tr>
+							<td>RequestURI</td>
+							<td><input type="text" v-model="urlRequestURI" placeholder="/" style="width:20em"/></td>
+						</tr>
+					</table>
+					<div class="ui divider"></div>
+					<p class="comment" v-if="healthCheck.url.length > 0">拼接后的URL：<code-label>{{healthCheck.url}}</code-label>，其中\${host}指的是域名。</p>
+				</div>
 			</td>
 		</tr>
-		<tr>
-		    <td></td>
-        </tr>
 		<tr>
 			<td>检测时间间隔</td>
 			<td>
@@ -256,6 +262,20 @@ Vue.component("health-check-config-box", {
 			<td>每次尝试间隔</td>
 			<td>
 				<time-duration-box :v-value="healthCheck.tryDelay"></time-duration-box>
+			</td>
+		</tr>
+		<tr>
+			<td>终端信息<em>（User-Agent）</em></td>
+			<td>
+				<input type="text" v-model="healthCheck.userAgent" maxlength="200"/>
+				<p class="comment">发送到服务器的User-Agent值，不填写表示使用默认值。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>只基础请求</td>
+			<td>
+				<checkbox v-model="healthCheck.onlyBasicRequest"></checkbox>
+				<p class="comment">只做基础的请求，不处理反向代理（不检查源站）、WAF等。</p>
 			</td>
 		</tr>
 	</tbody>
