@@ -21,6 +21,12 @@ Vue.component("http-firewall-rule-label", {
 		<span v-if="rule.param == '\${cc2}'">
 			{{rule.checkpointOptions.period}}秒/{{rule.checkpointOptions.threshold}}请求
 		</span>
+
+		<!-- refererBlock -->
+		<span v-if="rule.param == '\${refererBlock}'">
+			{{rule.checkpointOptions.allowDomains}}
+		</span>
+
 		<span v-else>
 			<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> 
 		<var :class="{dash:rule.isCaseInsensitive}" :title="rule.isCaseInsensitive ? '大小写不敏感':''" v-if="!rule.isComposed">{{rule.operator}}</var> 
