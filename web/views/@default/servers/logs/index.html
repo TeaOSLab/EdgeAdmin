@@ -23,7 +23,7 @@
 <table class="ui table selectable" v-if="accessLogs.length > 0">
     <!-- 这里之所以需要添加 :key，是因为要不然不会刷新显示 -->
     <tr v-for="accessLog in accessLogs" :key="accessLog.requestId">
-        <td><http-access-log-box :v-access-log="accessLog" :v-keyword="keyword"></http-access-log-box></td>
+        <td><http-access-log-box :v-access-log="accessLog" :v-keyword="keyword" :v-show-server-link="true"></http-access-log-box></td>
     </tr>
 </table>
 
