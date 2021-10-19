@@ -196,3 +196,101 @@ Vue.component("http-firewall-checkpoint-cc", {
 	</table>
 </div>`
 })
+
+// 防盗链
+Vue.component("http-firewall-checkpoint-referer-block", {
+	props: ["v-checkpoint"],
+	data: function () {
+		let allowEmpty = true
+		let allowSameDomain = true
+		let allowDomains = []
+
+		let options = {}
+		if (window.parent.UPDATING_RULE != null) {
+			options = window.parent.UPDATING_RULE.checkpointOptions
+		}
+
+		if (options == null) {
+			options = {}
+		}
+		if (typeof (options.allowEmpty) == "boolean") {
+			allowEmpty = options.allowEmpty
+		}
+		if (typeof (options.allowSameDomain) == "boolean") {
+			allowSameDomain = options.allowSameDomain
+		}
+		if (options.allowDomains != null && typeof (options.allowDomains) == "object") {
+			allowDomains = options.allowDomains
+		}
+
+		let that = this
+		setTimeout(function () {
+			that.change()
+		}, 100)
+
+		return {
+			allowEmpty: allowEmpty,
+			allowSameDomain: allowSameDomain,
+			allowDomains: allowDomains,
+			options: {},
+			value: 0
+		}
+	},
+	watch: {
+		allowEmpty: function () {
+			this.change()
+		},
+		allowSameDomain: function () {
+			this.change()
+		}
+	},
+	methods: {
+		changeAllowDomains: function (values) {
+			this.allowDomains = values
+			this.change()
+		},
+		change: function () {
+			this.vCheckpoint.options = [
+				{
+					code: "allowEmpty",
+					value: this.allowEmpty
+				},
+				{
+					code: "allowSameDomain",
+					value: this.allowSameDomain,
+				},
+				{
+					code: "allowDomains",
+					value: this.allowDomains
+				}
+			]
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="operator" value="eq"/>
+	<input type="hidden" name="value" :value="value"/>
+	<table class="ui table">
+		<tr>
+			<td class="title">来源域名允许为空</td>
+			<td>
+				<checkbox v-model="allowEmpty"></checkbox>
+				<p class="comment">允许不带来源的访问。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>来源域名允许一致</td>
+			<td>
+				<checkbox v-model="allowSameDomain"></checkbox>
+				<p class="comment">允许来源域名和当前访问的域名一致，相当于在站内访问。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>允许的来源域名</td>
+			<td>
+				<values-box :values="allowDomains" @change="changeAllowDomains"></values-box>
+				<p class="comment">允许的来源域名列表，比如<code-label>example.com</code-label>、<code-label>*.example.com</code-label>。</p>
+			</td>
+		</tr>
+	</table>
+</div>`
+})

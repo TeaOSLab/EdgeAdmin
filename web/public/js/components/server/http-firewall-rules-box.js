@@ -45,6 +45,12 @@ Vue.component("http-firewall-rules-box", {
 				<span v-if="rule.param == '\${cc2}'">
 					{{rule.checkpointOptions.period}}秒/{{rule.checkpointOptions.threshold}}请求
 				</span>	
+				
+				<!-- refererBlock -->
+				<span v-if="rule.param == '\${refererBlock}'">
+					{{rule.checkpointOptions.allowDomains}}
+				</span>
+				
 				<span v-else>
 					<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> <var>{{rule.operator}}</var> {{rule.value}}
 				</span>

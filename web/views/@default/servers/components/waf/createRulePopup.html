@@ -43,6 +43,9 @@
 					<http-cond-general-header-length v-if="checkpoint.prefix == 'requestGeneralHeaderLength' || checkpoint.prefix == 'responseGeneralHeaderLength'" :v-checkpoint="checkpoint"></http-cond-general-header-length>
 
                     <!-- CC -->
+                    <http-firewall-checkpoint-referer-block v-if="checkpoint.prefix == 'refererBlock'" :v-checkpoint="checkpoint"></http-firewall-checkpoint-referer-block>
+
+                    <!-- 防盗链 -->
                     <http-firewall-checkpoint-cc v-if="checkpoint.prefix == 'cc2'" :v-checkpoint="checkpoint"></http-firewall-checkpoint-cc>
 				</td>
 			</tr>

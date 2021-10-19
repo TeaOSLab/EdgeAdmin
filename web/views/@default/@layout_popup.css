@@ -54,6 +54,7 @@ p.comment,
 div.comment {
   color: rgba(0, 0, 0, 0.4);
   padding-top: 0.4em;
+  font-weight: normal;
 }
 p.comment em,
 div.comment em {
