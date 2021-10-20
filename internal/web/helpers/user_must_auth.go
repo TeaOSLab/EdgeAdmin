@@ -171,6 +171,7 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 // 菜单配置
 func (this *userMustAuth) modules(actionPtr actions.ActionWrapper, adminId int64) []maps.Map {
 	var countUnreadNodeLogs int64 = 0
+	var nodeLogsType = ""
 
 	// 父级动作
 	parentAction, ok := actionPtr.(actionutils.ActionInterface)
@@ -192,6 +193,7 @@ func (this *userMustAuth) modules(actionPtr actions.ActionWrapper, adminId int64
 					if countUnreadNodeLogs >= 1000 {
 						countUnreadNodeLogs = 999
 					}
+					nodeLogsType = "unread"
 				}
 			}
 		}
@@ -268,7 +270,7 @@ func (this *userMustAuth) modules(actionPtr actions.ActionWrapper, adminId int64
 			"subItems": []maps.Map{
 				{
 					"name":  "运行日志",
-					"url":   "/clusters/logs",
+					"url":   "/clusters/logs?type=" + nodeLogsType,
 					"code":  "log",
 					"badge": countUnreadNodeLogs,
 				},
