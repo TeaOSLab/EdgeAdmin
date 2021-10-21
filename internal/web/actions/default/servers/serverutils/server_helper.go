@@ -348,6 +348,15 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isActive": secondMenuItem == "remoteAddr",
 			"isOn":     serverConfig.Web != nil && serverConfig.Web.RemoteAddr != nil && serverConfig.Web.RemoteAddr.IsOn,
 		})
+
+		if teaconst.IsPlus {
+			menuItems = append(menuItems, maps.Map{
+				"name":     "带宽限制",
+				"url":      "/servers/server/settings/bandwidth?serverId=" + serverIdString,
+				"isActive": secondMenuItem == "bandwidth",
+				"isOn":     serverConfig.BandwidthLimit != nil && serverConfig.BandwidthLimit.IsOn,
+			})
+		}
 	} else if serverConfig.IsTCPFamily() {
 		menuItems = append(menuItems, maps.Map{
 			"name":     "TCP",
