@@ -60,6 +60,8 @@ Vue.component("size-capacity-box", {
 			<option value="kb">KB</option>
 			<option value="mb">MB</option>
 			<option value="gb">GB</option>
+			<option value="tb">TB</option>
+			<option value="pb">PB</option>
 		</select>
 	</div>
 </div>`
