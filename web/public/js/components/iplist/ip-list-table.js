@@ -1,8 +1,9 @@
 Vue.component("ip-list-table", {
-	props: ["v-items"],
+	props: ["v-items", "v-keyword"],
 	data: function () {
 		return {
-			items: this.vItems
+			items: this.vItems,
+			keyword: (this.vKeyword != null) ? this.vKeyword : ""
 		}
 	},
 	methods: {
@@ -33,7 +34,7 @@ Vue.component("ip-list-table", {
         </thead>
         <tr v-for="item in items">
             <td>
-                <span v-if="item.type != 'all'">{{item.ipFrom}}<span v-if="item.ipTo.length > 0"> - {{item.ipTo}}</span></span>
+                <span v-if="item.type != 'all'"><keyword :v-word="keyword">{{item.ipFrom}}</keyword><span v-if="item.ipTo.length > 0"> - <keyword :v-word="keyword">{{item.ipTo}}</keyword></span></span>
                 <span v-else class="disabled">*</span>
             </td>
             <td>

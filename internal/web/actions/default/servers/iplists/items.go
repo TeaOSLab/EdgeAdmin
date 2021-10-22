@@ -19,8 +19,11 @@ func (this *ItemsAction) Init() {
 }
 
 func (this *ItemsAction) RunGet(params struct {
-	ListId int64
+	ListId  int64
+	Keyword string
 }) {
+	this.Data["keyword"] = params.Keyword
+
 	err := InitIPList(this.Parent(), params.ListId)
 	if err != nil {
 		this.ErrorPage(err)
@@ -29,7 +32,10 @@ func (this *ItemsAction) RunGet(params struct {
 
 	// 数量
 	var listId = params.ListId
-	countResp, err := this.RPC().IPItemRPC().CountIPItemsWithListId(this.AdminContext(), &pb.CountIPItemsWithListIdRequest{IpListId: listId})
+	countResp, err := this.RPC().IPItemRPC().CountIPItemsWithListId(this.AdminContext(), &pb.CountIPItemsWithListIdRequest{
+		IpListId: listId,
+		Keyword:  params.Keyword,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -41,6 +47,7 @@ func (this *ItemsAction) RunGet(params struct {
 	// 列表
 	itemsResp, err := this.RPC().IPItemRPC().ListIPItemsWithListId(this.AdminContext(), &pb.ListIPItemsWithListIdRequest{
 		IpListId: listId,
+		Keyword:  params.Keyword,
 		Offset:   page.Offset,
 		Size:     page.Size,
 	})
