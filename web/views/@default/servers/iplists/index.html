@@ -3,6 +3,21 @@
 
 <tip-message-box code="iplist-public-tip">这里是公用的IP名单，可以在WAF策略里直接引用。</tip-message-box>
 
+<div class="margin"></div>
+<form class="ui form" action="/servers/iplists">
+    <input type="hidden" name="type" :value="type"/>
+    <div class="ui fields inline">
+        <div class="ui field">
+            <input type="text" placeholder="名称..." name="keyword" v-model="keyword"/>
+        </div>
+        <div class="ui field">
+            <button type="submit" class="ui button">搜索</button>
+            &nbsp;
+            <a :href="'/servers/iplists?type=' + type" v-if="keyword.length > 0">[清除条件]</a>
+        </div>
+    </div>
+</form>
+
 <p class="comment" v-if="lists.length == 0">暂时还没有公用IP名单。</p>
 
 <table class="ui table selectable celled" v-if="lists.length > 0">
@@ -18,7 +33,7 @@
     </thead>
     <tr v-for="list in lists">
         <td class="center">{{list.id}}</td>
-        <td><a :href="'/servers/iplists/list?listId=' + list.id">{{list.name}}</a></td>
+        <td><a :href="'/servers/iplists/list?listId=' + list.id"><keyword :v-word="keyword">{{list.name}}</keyword></a></td>
         <td class="center">
             <span v-if="list.type == 'black'">黑名单</span>
             <span v-if="list.type == 'white'">白名单</span>
