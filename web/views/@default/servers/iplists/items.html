@@ -5,8 +5,23 @@
     <menu-item @click.prevent="createIP">[创建IP]</menu-item>
 </second-menu>
 
+<form class="ui form" action="/servers/iplists/items">
+    <input type="hidden" name="listId" :value="list.id"/>
+    <div class="ui fields inline">
+        <div class="ui field">
+            <input type="text" size="20" placeholder="x.x.x.x" name="keyword" v-model="keyword"/>
+        </div>
+        <div class="ui field">
+            <button class="ui button" type="submit">搜索</button>
+            &nbsp;
+            <a :href="'/servers/iplists/items?listId=' + list.id" v-if="keyword.length > 0">[清除条件]</a>
+        </div>
+    </div>
+    <div class="margin"></div>
+</form>
+
 <p class="comment" v-if="items.length == 0">暂时还没有IP。</p>
 
-<ip-list-table v-if="items.length > 0" :v-items="items" @update-item="updateItem" @delete-item="deleteItem"></ip-list-table>
+<ip-list-table v-if="items.length > 0" :v-items="items" @update-item="updateItem" @delete-item="deleteItem" :v-keyword="keyword"></ip-list-table>
 
 <div class="page" v-html="page"></div>
