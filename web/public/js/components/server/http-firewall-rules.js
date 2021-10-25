@@ -288,7 +288,7 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 			<td>允许的来源域名</td>
 			<td>
 				<values-box :values="allowDomains" @change="changeAllowDomains"></values-box>
-				<p class="comment">允许的来源域名列表，比如<code-label>example.com</code-label>、<code-label>*.example.com</code-label>。</p>
+				<p class="comment">允许的来源域名列表，比如<code-label>example.com</code-label>、<code-label>*.example.com</code-label>。单个星号<code-label>*</code-label>表示允许所有域名。</p>
 			</td>
 		</tr>
 	</table>

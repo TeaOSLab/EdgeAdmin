@@ -41,6 +41,7 @@ func (this *UpgradeTemplateAction) RunPost(params struct {
 				createGroupResp, err := this.RPC().HTTPFirewallRuleGroupRPC().CreateHTTPFirewallRuleGroup(this.AdminContext(), &pb.CreateHTTPFirewallRuleGroupRequest{
 					IsOn:        true,
 					Name:        group.Name,
+					Code:        group.Code,
 					Description: group.Description,
 				})
 				if err != nil {
@@ -60,8 +61,8 @@ func (this *UpgradeTemplateAction) RunPost(params struct {
 						return
 					}
 					_, err = this.RPC().HTTPFirewallRuleGroupRPC().AddHTTPFirewallRuleGroupSet(this.AdminContext(), &pb.AddHTTPFirewallRuleGroupSetRequest{
-						FirewallRuleGroupId:        groupId,
-						FirewallRuleSetsConfigJSON: setJSON,
+						FirewallRuleGroupId:       groupId,
+						FirewallRuleSetConfigJSON: setJSON,
 					})
 					if err != nil {
 						this.ErrorPage(err)
@@ -83,8 +84,8 @@ func (this *UpgradeTemplateAction) RunPost(params struct {
 						return
 					}
 					_, err = this.RPC().HTTPFirewallRuleGroupRPC().AddHTTPFirewallRuleGroupSet(this.AdminContext(), &pb.AddHTTPFirewallRuleGroupSetRequest{
-						FirewallRuleGroupId:        oldGroup.Id,
-						FirewallRuleSetsConfigJSON: setJSON,
+						FirewallRuleGroupId:       oldGroup.Id,
+						FirewallRuleSetConfigJSON: setJSON,
 					})
 					if err != nil {
 						this.ErrorPage(err)
