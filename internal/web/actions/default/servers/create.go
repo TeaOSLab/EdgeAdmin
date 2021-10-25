@@ -8,6 +8,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/logs"
@@ -71,8 +72,11 @@ func (this *CreateAction) RunPost(params struct {
 	CertIdsJSON []byte
 	Origins     string
 
-	AccessLogIsOn bool
-	WebsocketIsOn bool
+	AccessLogIsOn  bool
+	WebsocketIsOn  bool
+	CacheIsOn      bool
+	WafIsOn        bool
+	RemoteAddrIsOn bool
 
 	WebRoot string
 
@@ -482,6 +486,75 @@ func (this *CreateAction) RunPost(params struct {
 						logs.Error(err)
 					}
 				}
+			}
+
+			// cache
+			if params.CacheIsOn {
+				var cacheConfig = &serverconfigs.HTTPCacheConfig{
+					IsPrior:         false,
+					IsOn:            true,
+					AddStatusHeader: true,
+					PurgeIsOn:       false,
+					PurgeKey:        "",
+					CacheRefs:       nil,
+				}
+				cacheConfigJSON, err := json.Marshal(cacheConfig)
+				if err != nil {
+					this.ErrorPage(err)
+					return
+				}
+				_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebCache(this.AdminContext(), &pb.UpdateHTTPWebCacheRequest{
+					WebId:     webConfig.Id,
+					CacheJSON: cacheConfigJSON,
+				})
+				if err != nil {
+					this.ErrorPage(err)
+					return
+				}
+			}
+
+			// waf
+			if params.WafIsOn {
+				var firewallRef = &firewallconfigs.HTTPFirewallRef{
+					IsPrior:          false,
+					IsOn:             true,
+					FirewallPolicyId: 0,
+				}
+				firewallRefJSON, err := json.Marshal(firewallRef)
+				if err != nil {
+					this.ErrorPage(err)
+					return
+				}
+				_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebFirewall(this.AdminContext(), &pb.UpdateHTTPWebFirewallRequest{
+					WebId:        webConfig.Id,
+					FirewallJSON: firewallRefJSON,
+				})
+				if err != nil {
+					this.ErrorPage(err)
+					return
+				}
+			}
+
+			// remoteAddr
+			var remoteAddrConfig = &serverconfigs.HTTPRemoteAddrConfig{
+				IsOn:  true,
+				Value: "${rawRemoteAddr}",
+			}
+			if params.RemoteAddrIsOn {
+				remoteAddrConfig.Value = "${remoteAddr}"
+			}
+			remoteAddrConfigJSON, err := json.Marshal(remoteAddrConfig)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebRemoteAddr(this.AdminContext(), &pb.UpdateHTTPWebRemoteAddrRequest{
+				WebId:          webConfig.Id,
+				RemoteAddrJSON: remoteAddrConfigJSON,
+			})
+			if err != nil {
+				this.ErrorPage(err)
+				return
 			}
 		}
 	}
