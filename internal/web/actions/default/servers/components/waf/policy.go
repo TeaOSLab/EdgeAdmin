@@ -47,6 +47,33 @@ func (this *PolicyAction) RunGet(params struct {
 		}
 	}
 
+	// 检查是否有升级
+	var templatePolicy = firewallconfigs.HTTPFirewallTemplate()
+	var upgradeItems = []string{}
+	if templatePolicy.Inbound != nil {
+		for _, group := range templatePolicy.Inbound.Groups {
+			if len(group.Code) == 0 {
+				continue
+			}
+			var oldGroup = firewallPolicy.FindRuleGroupWithCode(group.Code)
+			if oldGroup == nil {
+				upgradeItems = append(upgradeItems, group.Name)
+				continue
+			}
+			for _, set := range group.Sets {
+				if len(set.Code) == 0 {
+					continue
+				}
+				var oldSet = oldGroup.FindRuleSetWithCode(set.Code)
+				if oldSet == nil {
+					upgradeItems = append(upgradeItems, group.Name+" -- "+set.Name)
+					continue
+				}
+			}
+		}
+	}
+	this.Data["upgradeItems"] = upgradeItems
+
 	// 模式
 	if len(firewallPolicy.Mode) == 0 {
 		firewallPolicy.Mode = firewallconfigs.FirewallModeDefend
