@@ -19,6 +19,7 @@ func init() {
 			GetPost("/createPopup", new(CreatePopupAction)).
 			Post("/delete", new(DeleteAction)).
 			Get("/policy", new(PolicyAction)).
+			Post("/upgradeTemplate", new(UpgradeTemplateAction)).
 			Get("/groups", new(GroupsAction)).
 			Get("/group", new(GroupAction)).
 			Get("/log", new(LogAction)).
