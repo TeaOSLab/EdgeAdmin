@@ -6,7 +6,7 @@ Vue.component("http-remote-addr-config-box", {
 			config = {
 				isPrior: false,
 				isOn: false,
-				value: "${remoteAddr}",
+				value: "${rawRemoteAddr}",
 				isCustomized: false
 			}
 		}
@@ -20,18 +20,18 @@ Vue.component("http-remote-addr-config-box", {
 			config: config,
 			options: [
 				{
-					name: "直接访问",
-					description: "用户可以直接访问边缘节点，即 \"用户 --> 边缘节点\" 模式。",
+					name: "直接获取",
+					description: "用户直接访问边缘节点，即 \"用户 --> 边缘节点\" 模式，这时候可以直接从连接中读取到真实的IP地址。",
 					value: "${rawRemoteAddr}"
 				},
 				{
-					name: "代理转发",
-					description: "用户和边缘节点之间有别的代理服务转发，即 \"用户 --> [第三方代理服务] --> 边缘节点\"。",
+					name: "从上级代理中获取",
+					description: "用户和边缘节点之间有别的代理服务转发，即 \"用户 --> [第三方代理服务] --> 边缘节点\"，这时候只能从上级代理中获取传递的IP地址。",
 					value: "${remoteAddr}"
 				},
 				{
 					name: "[自定义]",
-					description: "",
+					description: "通过自定义变量来获取客户端真实的IP地址。",
 					value: ""
 				}
 			],
@@ -69,7 +69,7 @@ Vue.component("http-remote-addr-config-box", {
 		</tbody>
 		<tbody v-show="isOn()">
 			<tr>
-				<td>用户访问节点方式 *</td>
+				<td>获取IP方式 *</td>
 				<td>
 					<select class="ui dropdown auto-width" v-model="optionValue" @change="changeOptionValue">
 						<option v-for="option in options" :value="option.value">{{option.name}}</option>
