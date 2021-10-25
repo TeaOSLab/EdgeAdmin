@@ -46,6 +46,14 @@ Vue.component("http-firewall-actions-box", {
 			})
 		}
 
+		var defaultPageBody = `<!DOCTYPE html>
+<html>
+<body>
+403 Forbidden
+</body>
+</html>`
+
+
 		return {
 			id: id,
 
@@ -75,6 +83,10 @@ Vue.component("http-firewall-actions-box", {
 			recordIPListName: "",
 
 			tagTags: [],
+
+			pageStatus: 403,
+			pageBody: defaultPageBody,
+			defaultPageBody: defaultPageBody,
 
 			goGroupName: "",
 			goGroupId: 0,
@@ -187,6 +199,9 @@ Vue.component("http-firewall-actions-box", {
 
 			this.tagTags = []
 
+			this.pageStatus = 403
+			this.pageBody = this.defaultPageBody
+
 			this.goGroupName = ""
 			this.goGroupId = 0
 			this.goGroup = null
@@ -278,6 +293,17 @@ Vue.component("http-firewall-actions-box", {
 						this.tagTags = config.options.tags
 					}
 					break
+				case "page":
+					this.pageStatus = 403
+					this.pageBody = this.defaultPageBody
+					if (config.options.status != null) {
+						this.pageStatus = config.options.status
+					}
+					if (config.options.body != null) {
+						this.pageBody = config.options.body
+					}
+
+					break
 				case "go_group":
 					if (config.options != null) {
 						this.goGroupName = config.options.groupName
@@ -350,6 +376,18 @@ Vue.component("http-firewall-actions-box", {
 				}
 				this.actionOptions = {
 					tags: this.tagTags
+				}
+			} else if (this.actionCode == "page") {
+				let pageStatus = this.pageStatus.toString()
+				if (!pageStatus.match(/^\d{3}$/)) {
+					pageStatus = 403
+				} else {
+					pageStatus = parseInt(pageStatus)
+				}
+
+				this.actionOptions = {
+					status: pageStatus,
+					body: this.pageBody
 				}
 			} else if (this.actionCode == "go_group") { // go_group
 				let groupId = this.goGroupId
@@ -481,6 +519,9 @@ Vue.component("http-firewall-actions-box", {
 			<!-- tag -->
 			<span v-if="config.code == 'tag'">：{{config.options.tags.join(", ")}}</span>
 			
+			<!-- page -->
+			<span v-if="config.code == 'page'">：[{{config.options.status}}]</span>
+			
 			<!-- go_group -->
 			<span v-if="config.code == 'go_group'">：{{config.options.groupName}}</span>
 			
@@ -609,6 +650,18 @@ Vue.component("http-firewall-actions-box", {
 				<td>标签 *</td>
 				<td>
 					<values-box @change="changeTags" :values="tagTags"></values-box>
+				</td>
+			</tr>
+			
+			<!-- page -->
+			<tr v-if="actionCode == 'page'">
+				<td>状态码 *</td>
+				<td><input type="text" style="width: 4em" maxlength="3" v-model="pageStatus"/></td>
+			</tr>
+			<tr v-if="actionCode == 'page'">
+				<td>网页内容</td>
+				<td>
+					<textarea v-model="pageBody"></textarea>
 				</td>
 			</tr>
 			
