@@ -464,6 +464,14 @@ func (this *RPCClient) ServerStatBoardChartRPC() pb.ServerStatBoardChartServiceC
 	return pb.NewServerStatBoardChartServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) PlanRPC() pb.PlanServiceClient {
+	return pb.NewPlanServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) UserPlanRPC() pb.UserPlanServiceClient {
+	return pb.NewUserPlanServiceClient(this.pickConn())
+}
+
 // Context 构造Admin上下文
 func (this *RPCClient) Context(adminId int64) context.Context {
 	ctx := context.Background()

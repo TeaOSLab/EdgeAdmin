@@ -19,6 +19,7 @@ const (
 	AdminModuleCodeAdmin     AdminModuleCode = "admin"     // 系统用户
 	AdminModuleCodeUser      AdminModuleCode = "user"      // 平台用户
 	AdminModuleCodeFinance   AdminModuleCode = "finance"   // 财务
+	AdminModuleCodePlan      AdminModuleCode = "plan"      // 套餐
 	AdminModuleCodeLog       AdminModuleCode = "log"       // 日志
 	AdminModuleCodeSetting   AdminModuleCode = "setting"   // 设置
 	AdminModuleCodeCommon    AdminModuleCode = "common"    // 只要登录就可以访问的模块
@@ -202,6 +203,11 @@ func AllModuleMaps() []maps.Map {
 			"name": "财务管理",
 			"code": AdminModuleCodeFinance,
 			"url":  "/finance",
+		},
+		{
+			"name": "套餐管理",
+			"code": AdminModuleCodePlan,
+			"url":  "/plans",
 		},
 		{
 			"name": "日志审计",
