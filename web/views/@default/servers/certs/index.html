@@ -8,8 +8,8 @@
 		<menu-item :href="'/servers/certs?type=available&keyword=' + keyword" :active="type == 'available'">有效证书({{countAvailable}})</menu-item>
 		<menu-item :href="'/servers/certs?type=expired&keyword=' + keyword" :active="type == 'expired'">过期证书<span :class="{red: countExpired > 0}">({{countExpired}})</span></menu-item>
 		<menu-item :href="'/servers/certs?type=7days&keyword=' + keyword" :active="type == '7days'">7天内过期<span :class="{red: count7Days > 0}">({{count7Days}})</span></menu-item>
-		<menu-item :href="'/servers/certs?type=30days&keyword=' + keyword" :active="type == '30days'">30天过期({{count30Days}})</menu-item>
-		<span class="item">|</span>
+		<menu-item :href="'/servers/certs?type=30days&keyword=' + keyword" :active="type == '30days'">30天内过期({{count30Days}})</menu-item>
+		<span class="item disabled">|</span>
 		<a href="" class="item" @click.prevent="uploadCert">[上传证书]</a>
 	</second-menu>
 

@@ -374,6 +374,21 @@ func (this *userMustAuth) modules(actionPtr actions.ActionWrapper, adminId int64
 			"icon":   "yen sign",
 			"isOn":   teaconst.IsPlus,
 		},
+		/**{
+			"code":   "plans",
+			"module": configloaders.AdminModuleCodePlan,
+			"name":   "套餐管理",
+			"icon":   "puzzle piece",
+			"isOn":   teaconst.IsPlus,
+			"subItems": []maps.Map{
+				{
+					"name": "已购套餐",
+					"url":  "/plans/userPlans",
+					"code": "userPlans",
+					"isOn": teaconst.IsPlus,
+				},
+			},
+		},**/
 		{
 			"code":     "admins",
 			"module":   configloaders.AdminModuleCodeAdmin,

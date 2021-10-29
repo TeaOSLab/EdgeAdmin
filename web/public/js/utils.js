@@ -69,13 +69,13 @@ window.teaweb = {
 		}
 		document.head.append(element)
 	},
-	datepicker: function (element, callback) {
+	datepicker: function (element, callback, bottomLeft) {
 		// 加载
 		if (typeof Pikaday == "undefined") {
 			let that = this
 			this.loadJS("/js/moment.min.js", function () {
 				that.loadJS("/js/pikaday.js", function () {
-					that.datepicker(element, callback)
+					that.datepicker(element, callback, bottomLeft)
 				})
 			})
 			this.loadCSS("/js/pikaday.css")
@@ -89,8 +89,8 @@ window.teaweb = {
 		if (typeof (element) == "string") {
 			element = document.getElementById(element);
 		}
-		var year = new Date().getFullYear();
-		var picker = new Pikaday({
+		let year = new Date().getFullYear();
+		let picker = new Pikaday({
 			field: element,
 			firstDay: 1,
 			minDate: new Date(year - 1, 0, 1),
@@ -109,8 +109,9 @@ window.teaweb = {
 				if (typeof (callback) == "function") {
 					callback.call(Tea.Vue, picker.toString());
 				}
-			}
-		});
+			},
+			reposition: !bottomLeft
+		})
 	},
 
 	formatBytes: function (bytes) {
@@ -255,6 +256,21 @@ window.teaweb = {
 				}
 			}
 		});
+	},
+	popupSuccess: function (url, width, height) {
+		let options = {}
+		if (width != null) {
+			options["width"] = width
+		}
+		if (height != null) {
+			options["height"] = height
+		}
+		options["callback"] = function () {
+			teaweb.success("保存成功", function () {
+				teaweb.reload()
+			})
+		}
+		this.popup(url, options)
 	},
 	popupFinish: function () {
 		if (window.POPUP_CALLBACK != null) {
