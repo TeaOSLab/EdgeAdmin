@@ -20,6 +20,24 @@ Vue.component("bandwidth-limit-config-box", {
 				noticePageBody: ""
 			}
 		}
+		if (config.dailySize == null) {
+			config.dailySize = {
+				count: -1,
+				unit: "gb"
+			}
+		}
+		if (config.monthlySize == null) {
+			config.monthlySize = {
+				count: -1,
+				unit: "gb"
+			}
+		}
+		if (config.totalSize == null) {
+			config.totalSize = {
+				count: -1,
+				unit: "gb"
+			}
+		}
 		return {
 			config: config
 		}
