@@ -19,10 +19,10 @@ func (this *ValidateAdminAction) RunPost(params struct {
 }) {
 	params.Must.
 		Field("adminUsername", params.AdminUsername).
-		Require("请输入登录用户名").
+		Require("请输入管理员登录用户名").
 		Match(`^[a-zA-Z0-9_]+$`, "用户名中只能包含英文、数字或下划线").
 		Field("adminPassword", params.AdminPassword).
-		Require("请输入登录密码").
+		Require("请输入管理员登录密码").
 		Match(`^[a-zA-Z0-9_]+$`, "密码中只能包含英文、数字或下划线").
 		Field("adminPassword2", params.AdminPassword2).
 		Require("请输入确认密码").
