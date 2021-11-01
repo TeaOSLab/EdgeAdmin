@@ -14,6 +14,7 @@ import (
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/dbs"
+	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
 	"io/ioutil"
 	"os"
@@ -32,7 +33,13 @@ func (this *InstallAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
+	currentStatusText = ""
+	defer func() {
+		currentStatusText = ""
+	}()
+
 	// API节点配置
+	currentStatusText = "正在检查API节点配置"
 	apiNodeMap := maps.Map{}
 	err := json.Unmarshal(params.ApiNodeJSON, &apiNodeMap)
 	if err != nil {
@@ -40,6 +47,7 @@ func (this *InstallAction) RunPost(params struct {
 	}
 
 	// 数据库
+	currentStatusText = "正在检查数据库配置"
 	dbMap := maps.Map{}
 	err = json.Unmarshal(params.DbJSON, &dbMap)
 	if err != nil {
@@ -47,6 +55,7 @@ func (this *InstallAction) RunPost(params struct {
 	}
 
 	// 管理员
+	currentStatusText = "正在检查管理员配置"
 	adminMap := maps.Map{}
 	err = json.Unmarshal(params.AdminJSON, &adminMap)
 	if err != nil {
@@ -56,6 +65,8 @@ func (this *InstallAction) RunPost(params struct {
 	// 安装API节点
 	mode := apiNodeMap.GetString("mode")
 	if mode == "new" {
+		currentStatusText = "准备启动新API节点"
+
 		// 整个系统目录结构为：
 		//  edge-admin/
 		//    edge-api/
@@ -136,7 +147,9 @@ func (this *InstallAction) RunPost(params struct {
 		}
 
 		// 开始安装
+		currentStatusText = "正在安装数据库表结构并写入数据"
 		var resultMap = maps.Map{}
+		logs.Println("[INSTALL]setup edge-api")
 		{
 			cmd := exec.Command(apiNodeDir+"/bin/edge-api", "setup", "-api-node-protocol=http", "-api-node-host=\""+apiNodeMap.GetString("newHost")+"\"", "-api-node-port=\""+apiNodeMap.GetString("newPort")+"\"")
 			output := bytes.NewBuffer([]byte{})
@@ -156,7 +169,16 @@ func (this *InstallAction) RunPost(params struct {
 			}
 		}
 
+		// 关闭正在运行的API节点，防止冲突
+		logs.Println("[INSTALL]stop edge-api")
+		{
+			cmd := exec.Command(apiNodeDir+"/bin/edge-api", "stop")
+			_ = cmd.Run()
+		}
+
 		// 启动API节点
+		currentStatusText = "正在启动API节点"
+		logs.Println("[INSTALL]start edge-api")
 		{
 			cmd := exec.Command(apiNodeDir + "/bin/edge-api")
 			err = cmd.Start()
@@ -183,6 +205,7 @@ func (this *InstallAction) RunPost(params struct {
 		}
 
 		// 设置管理员
+		currentStatusText = "正在设置管理员"
 		client, err := rpc.NewRPCClient(apiConfig)
 		if err != nil {
 			this.FailField("oldHost", "测试API节点时出错，请检查配置，错误信息："+err.Error())
@@ -203,6 +226,7 @@ func (this *InstallAction) RunPost(params struct {
 		}
 
 		// 设置访问日志保留天数
+		currentStatusText = "正在配置访问日志保留天数"
 		var accessLogKeepDays = dbMap.GetInt("accessLogKeepDays")
 		if accessLogKeepDays > 0 {
 			var config = &systemconfigs.DatabaseConfig{}

@@ -51,6 +51,18 @@
   width: 50em;
   bottom: 1em;
 }
+.install-box .button-group button {
+  z-index: 10;
+}
+.install-box .button-group .status-box {
+  position: absolute;
+  top: 3em;
+  left: 15em;
+  right: 15em;
+  bottom: 0;
+  text-align: center;
+  z-index: 0;
+}
 .install-box::-webkit-scrollbar {
   width: 4px;
 }

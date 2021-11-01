@@ -12,6 +12,7 @@ func init() {
 			Post("/validateDb", new(ValidateDbAction)).
 			Post("/validateAdmin", new(ValidateAdminAction)).
 			Post("/install", new(InstallAction)).
+			Post("/status", new(StatusAction)).
 			EndAll()
 	})
 }

@@ -7,6 +7,10 @@ Tea.context(function () {
 
 	this.step = this.STEP_INTRO
 
+	this.$delay(function () {
+		this.loadStatusText()
+	})
+
 	// 介绍
 	this.goIntroNext = function () {
 		this.step = this.STEP_API
@@ -113,5 +117,25 @@ Tea.context(function () {
 		teaweb.success("html:恭喜你！安装完成！<br/>请记住你创建的管理员账号，现在跳转到登录界面。", function () {
 			window.location = "/"
 		})
+	}
+
+	this.statusText = ""
+	this.loadStatusText = function () {
+		if (!this.isInstalling) {
+			this.statusText = ""
+			this.$delay(function () {
+				this.loadStatusText()
+			}, 1000)
+			return
+		}
+		this.$post(".status")
+			.success(function (resp) {
+				this.statusText = resp.data.statusText
+			})
+			.done(function () {
+				this.$delay(function () {
+					this.loadStatusText()
+				}, 1000)
+			})
 	}
 })
