@@ -79,6 +79,7 @@ func (this *IndexAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
+
 	err = cacheConfig.Init()
 	if err != nil {
 		this.Fail("检查配置失败：" + err.Error())
