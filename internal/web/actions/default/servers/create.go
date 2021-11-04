@@ -496,7 +496,7 @@ func (this *CreateAction) RunPost(params struct {
 					AddStatusHeader: true,
 					PurgeIsOn:       false,
 					PurgeKey:        "",
-					CacheRefs:       nil,
+					CacheRefs:       []*serverconfigs.HTTPCacheRef{},
 				}
 				cacheConfigJSON, err := json.Marshal(cacheConfig)
 				if err != nil {
