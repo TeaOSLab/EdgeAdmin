@@ -12,6 +12,9 @@ Vue.component("http-cache-config-box", {
 				purgeKey: ""
 			}
 		}
+		if (cacheConfig.cacheRefs == null) {
+			cacheConfig.cacheRefs = []
+		}
 		return {
 			cacheConfig: cacheConfig
 		}
