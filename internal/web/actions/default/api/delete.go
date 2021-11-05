@@ -13,16 +13,35 @@ type DeleteAction struct {
 func (this *DeleteAction) RunPost(params struct {
 	NodeId int64
 }) {
-	// TODO 检查权限
+	// 创建日志
+	defer this.CreateLog(oplogs.LevelInfo, "删除API节点 %d", params.NodeId)
 
-	_, err := this.RPC().APINodeRPC().DeleteAPINode(this.AdminContext(), &pb.DeleteAPINodeRequest{NodeId: params.NodeId})
+	// 检查是否是唯一的节点
+	nodeResp, err := this.RPC().APINodeRPC().FindEnabledAPINode(this.AdminContext(), &pb.FindEnabledAPINodeRequest{NodeId: params.NodeId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
+	var apiNode = nodeResp.Node
+	if apiNode == nil {
+		this.Success()
+	}
+	if apiNode.IsOn {
+		countResp, err := this.RPC().APINodeRPC().CountAllEnabledAndOnAPINodes(this.AdminContext(), &pb.CountAllEnabledAndOnAPINodesRequest{})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		if countResp.Count == 1 {
+			this.Fail("无法删除此节点：必须至少保留一个可用的API节点")
+		}
+	}
 
-	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "删除API节点 %d", params.NodeId)
+	_, err = this.RPC().APINodeRPC().DeleteAPINode(this.AdminContext(), &pb.DeleteAPINodeRequest{NodeId: params.NodeId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 
 	this.Success()
 }
