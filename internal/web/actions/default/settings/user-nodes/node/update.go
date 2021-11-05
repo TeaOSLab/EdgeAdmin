@@ -23,13 +23,13 @@ func (this *UpdateAction) RunGet(params struct {
 	NodeId int64
 }) {
 	nodeResp, err := this.RPC().UserNodeRPC().FindEnabledUserNode(this.AdminContext(), &pb.FindEnabledUserNodeRequest{
-		NodeId: params.NodeId,
+		UserNodeId: params.NodeId,
 	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	node := nodeResp.Node
+	node := nodeResp.UserNode
 	if node == nil {
 		this.WriteString("要操作的节点不存在")
 		return
@@ -184,8 +184,8 @@ func (this *UpdateAction) RunPost(params struct {
 		}
 	} else {
 		_, err = this.RPC().SSLPolicyRPC().UpdateSSLPolicy(this.AdminContext(), &pb.UpdateSSLPolicyRequest{
-			SslPolicyId: sslPolicyId,
-			SslCertsJSON:   certRefsJSON,
+			SslPolicyId:  sslPolicyId,
+			SslCertsJSON: certRefsJSON,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -220,7 +220,7 @@ func (this *UpdateAction) RunPost(params struct {
 	}
 
 	_, err = this.RPC().UserNodeRPC().UpdateUserNode(this.AdminContext(), &pb.UpdateUserNodeRequest{
-		NodeId:          params.NodeId,
+		UserNodeId:      params.NodeId,
 		Name:            params.Name,
 		Description:     params.Description,
 		HttpJSON:        httpJSON,

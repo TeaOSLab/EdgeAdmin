@@ -46,7 +46,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 			return
 		}
 
-		for _, node := range nodesResp.Nodes {
+		for _, node := range nodesResp.UserNodes {
 			// 状态
 			status := &nodeconfigs.NodeStatus{}
 			if len(node.StatusJSON) > 0 {

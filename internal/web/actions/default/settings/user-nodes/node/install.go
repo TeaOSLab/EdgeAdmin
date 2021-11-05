@@ -19,12 +19,12 @@ func (this *InstallAction) RunGet(params struct {
 	NodeId int64
 }) {
 	// 用户节点信息
-	nodeResp, err := this.RPC().UserNodeRPC().FindEnabledUserNode(this.AdminContext(), &pb.FindEnabledUserNodeRequest{NodeId: params.NodeId})
+	nodeResp, err := this.RPC().UserNodeRPC().FindEnabledUserNode(this.AdminContext(), &pb.FindEnabledUserNodeRequest{UserNodeId: params.NodeId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	node := nodeResp.Node
+	node := nodeResp.UserNode
 	if node == nil {
 		this.NotFound("userNode", params.NodeId)
 		return

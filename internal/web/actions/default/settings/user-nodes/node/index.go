@@ -20,12 +20,12 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	NodeId int64
 }) {
-	nodeResp, err := this.RPC().UserNodeRPC().FindEnabledUserNode(this.AdminContext(), &pb.FindEnabledUserNodeRequest{NodeId: params.NodeId})
+	nodeResp, err := this.RPC().UserNodeRPC().FindEnabledUserNode(this.AdminContext(), &pb.FindEnabledUserNodeRequest{UserNodeId: params.NodeId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	node := nodeResp.Node
+	node := nodeResp.UserNode
 	if node == nil {
 		this.NotFound("userNode", params.NodeId)
 		return
