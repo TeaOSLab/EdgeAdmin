@@ -75,7 +75,7 @@ func (this *CreateNodeAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	apiNodes := apiNodesResp.Nodes
+	apiNodes := apiNodesResp.ApiNodes
 	apiEndpoints := []string{}
 	for _, apiNode := range apiNodes {
 		if !apiNode.IsOn {

@@ -68,7 +68,7 @@ func SendMessageToCluster(ctx context.Context, clusterId int64, code string, msg
 		apiNodeId := node.ConnectedAPINodeIds[0]
 		rpcClient, ok := rpcMap[apiNodeId]
 		if !ok {
-			apiNodeResp, err := defaultRPCClient.APINodeRPC().FindEnabledAPINode(ctx, &pb.FindEnabledAPINodeRequest{NodeId: apiNodeId})
+			apiNodeResp, err := defaultRPCClient.APINodeRPC().FindEnabledAPINode(ctx, &pb.FindEnabledAPINodeRequest{ApiNodeId: apiNodeId})
 			if err != nil {
 				locker.Lock()
 				results = append(results, &MessageResult{
@@ -82,7 +82,7 @@ func SendMessageToCluster(ctx context.Context, clusterId int64, code string, msg
 				continue
 			}
 
-			if apiNodeResp.Node == nil {
+			if apiNodeResp.ApiNode == nil {
 				locker.Lock()
 				results = append(results, &MessageResult{
 					NodeId:   node.Id,
@@ -94,7 +94,7 @@ func SendMessageToCluster(ctx context.Context, clusterId int64, code string, msg
 				wg.Done()
 				continue
 			}
-			apiNode := apiNodeResp.Node
+			apiNode := apiNodeResp.ApiNode
 
 			apiRPCClient, err := rpc.NewRPCClient(&configs.APIConfig{
 				RPC: struct {
@@ -243,7 +243,7 @@ func SendMessageToNodeIds(ctx context.Context, nodeIds []int64, code string, msg
 		apiNodeId := node.ConnectedAPINodeIds[0]
 		rpcClient, ok := rpcMap[apiNodeId]
 		if !ok {
-			apiNodeResp, err := defaultRPCClient.APINodeRPC().FindEnabledAPINode(ctx, &pb.FindEnabledAPINodeRequest{NodeId: apiNodeId})
+			apiNodeResp, err := defaultRPCClient.APINodeRPC().FindEnabledAPINode(ctx, &pb.FindEnabledAPINodeRequest{ApiNodeId: apiNodeId})
 			if err != nil {
 				locker.Lock()
 				results = append(results, &MessageResult{
@@ -257,7 +257,7 @@ func SendMessageToNodeIds(ctx context.Context, nodeIds []int64, code string, msg
 				continue
 			}
 
-			if apiNodeResp.Node == nil {
+			if apiNodeResp.ApiNode == nil {
 				locker.Lock()
 				results = append(results, &MessageResult{
 					NodeId:   node.Id,
@@ -269,7 +269,7 @@ func SendMessageToNodeIds(ctx context.Context, nodeIds []int64, code string, msg
 				wg.Done()
 				continue
 			}
-			apiNode := apiNodeResp.Node
+			apiNode := apiNodeResp.ApiNode
 
 			apiRPCClient, err := rpc.NewRPCClient(&configs.APIConfig{
 				RPC: struct {

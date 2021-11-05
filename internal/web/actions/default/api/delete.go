@@ -17,12 +17,12 @@ func (this *DeleteAction) RunPost(params struct {
 	defer this.CreateLog(oplogs.LevelInfo, "删除API节点 %d", params.NodeId)
 
 	// 检查是否是唯一的节点
-	nodeResp, err := this.RPC().APINodeRPC().FindEnabledAPINode(this.AdminContext(), &pb.FindEnabledAPINodeRequest{NodeId: params.NodeId})
+	nodeResp, err := this.RPC().APINodeRPC().FindEnabledAPINode(this.AdminContext(), &pb.FindEnabledAPINodeRequest{ApiNodeId: params.NodeId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	var apiNode = nodeResp.Node
+	var apiNode = nodeResp.ApiNode
 	if apiNode == nil {
 		this.Success()
 	}
@@ -37,7 +37,7 @@ func (this *DeleteAction) RunPost(params struct {
 		}
 	}
 
-	_, err = this.RPC().APINodeRPC().DeleteAPINode(this.AdminContext(), &pb.DeleteAPINodeRequest{NodeId: params.NodeId})
+	_, err = this.RPC().APINodeRPC().DeleteAPINode(this.AdminContext(), &pb.DeleteAPINodeRequest{ApiNodeId: params.NodeId})
 	if err != nil {
 		this.ErrorPage(err)
 		return

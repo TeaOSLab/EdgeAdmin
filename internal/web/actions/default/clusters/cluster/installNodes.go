@@ -49,7 +49,7 @@ func (this *InstallNodesAction) RunGet(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		for _, apiNode := range apiNodesResp.Nodes {
+		for _, apiNode := range apiNodesResp.ApiNodes {
 			if !apiNode.IsOn {
 				continue
 			}

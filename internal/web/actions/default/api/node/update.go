@@ -23,13 +23,13 @@ func (this *UpdateAction) RunGet(params struct {
 	NodeId int64
 }) {
 	nodeResp, err := this.RPC().APINodeRPC().FindEnabledAPINode(this.AdminContext(), &pb.FindEnabledAPINodeRequest{
-		NodeId: params.NodeId,
+		ApiNodeId: params.NodeId,
 	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	node := nodeResp.Node
+	node := nodeResp.ApiNode
 	if node == nil {
 		this.WriteString("要操作的节点不存在")
 		return
@@ -281,7 +281,7 @@ func (this *UpdateAction) RunPost(params struct {
 	}
 
 	_, err = this.RPC().APINodeRPC().UpdateAPINode(this.AdminContext(), &pb.UpdateAPINodeRequest{
-		NodeId:          params.NodeId,
+		ApiNodeId:       params.NodeId,
 		Name:            params.Name,
 		Description:     params.Description,
 		HttpJSON:        httpJSON,
