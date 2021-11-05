@@ -69,7 +69,7 @@ func (this *UpdateHostsAction) RunPost(params struct {
 		this.Fail("获取API节点列表失败，错误信息：" + err.Error())
 	}
 	var endpoints = []string{}
-	for _, node := range nodesResp.Nodes {
+	for _, node := range nodesResp.ApiNodes {
 		if !node.IsOn {
 			continue
 		}
@@ -144,7 +144,7 @@ func (this *UpdateHostsAction) RunPost(params struct {
 
 		// 保存
 		_, err = client.APINodeRPC().UpdateAPINode(client.Context(0), &pb.UpdateAPINodeRequest{
-			NodeId:          node.Id,
+			ApiNodeId:       node.Id,
 			Name:            node.Name,
 			Description:     node.Description,
 			HttpJSON:        node.HttpJSON,

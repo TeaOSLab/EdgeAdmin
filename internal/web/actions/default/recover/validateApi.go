@@ -64,7 +64,7 @@ func (this *ValidateApiAction) RunPost(params struct {
 		this.Fail("获取API节点列表失败，错误信息：" + err.Error())
 	}
 	var hosts = []string{}
-	for _, node := range nodesResp.Nodes {
+	for _, node := range nodesResp.ApiNodes {
 		if !node.IsOn {
 			continue
 		}

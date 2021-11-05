@@ -21,12 +21,12 @@ func (this *InstallAction) RunGet(params struct {
 	NodeId int64
 }) {
 	// API节点信息
-	nodeResp, err := this.RPC().APINodeRPC().FindEnabledAPINode(this.AdminContext(), &pb.FindEnabledAPINodeRequest{NodeId: params.NodeId})
+	nodeResp, err := this.RPC().APINodeRPC().FindEnabledAPINode(this.AdminContext(), &pb.FindEnabledAPINodeRequest{ApiNodeId: params.NodeId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	node := nodeResp.Node
+	node := nodeResp.ApiNode
 	if node == nil {
 		this.NotFound("apiNode", params.NodeId)
 		return
