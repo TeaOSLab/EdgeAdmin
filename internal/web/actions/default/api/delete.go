@@ -33,7 +33,7 @@ func (this *DeleteAction) RunPost(params struct {
 			return
 		}
 		if countResp.Count == 1 {
-			this.Fail("无法删除此节点：必须至少保留一个可用的API节点")
+			this.Fail("无法删除此节点：必须保留至少一个可用的API节点")
 		}
 	}
 
