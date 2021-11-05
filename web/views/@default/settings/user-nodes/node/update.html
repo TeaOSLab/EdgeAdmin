@@ -15,7 +15,7 @@
 		<tr>
 			<td>进程监听端口 *</td>
 			<td>
-				<network-addresses-box :v-name="'listensJSON'" :v-server-type="'httpWeb'" :v-addresses="node.listens" @change="changeListens"></network-addresses-box>
+				<network-addresses-box :v-name="'listensJSON'" :v-server-type="'httpWeb'" :v-addresses="node.listens" :v-from="'userNode'" @change="changeListens"></network-addresses-box>
 				<p class="comment">API节点进程监听的网络端口。</p>
 			</td>
 		</tr>

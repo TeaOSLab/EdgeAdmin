@@ -137,7 +137,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "创建用户节点 %d", createResp.NodeId)
+	defer this.CreateLog(oplogs.LevelInfo, "创建用户节点 %d", createResp.UserNodeId)
 
 	this.Success()
 }
