@@ -1,5 +1,6 @@
 Tea.context(function () {
 	this.isUpdatingDomains = false
+	this.hasDeletedDomains = this.domains.$find(function (k, v) {return v.isDeleted}) != null
 
 	this.$delay(function () {
 		this.syncDomains()
@@ -58,6 +59,18 @@ Tea.context(function () {
 		let that = this
 		teaweb.confirm("确定要删除域名\"" + domain.name + "\"吗？", function () {
 			that.$post("/dns/domains/delete")
+				.params({
+					domainId: domain.id
+				})
+				.post()
+				.refresh()
+		})
+	}
+
+	this.recoverDomain = function (domain) {
+		let that = this
+		teaweb.confirm("确定要恢复域名\"" + domain.name + "\"吗？", function () {
+			that.$post("/dns/domains/recover")
 				.params({
 					domainId: domain.id
 				})

@@ -6,7 +6,7 @@ import (
 	"github.com/iwind/TeaGo/maps"
 )
 
-// 域名列表选项
+// DomainOptionsAction 域名列表选项
 type DomainOptionsAction struct {
 	actionutils.ParentAction
 }
@@ -23,8 +23,8 @@ func (this *DomainOptionsAction) RunPost(params struct {
 	}
 	domainMaps := []maps.Map{}
 	for _, domain := range domainsResp.DnsDomains {
-		// 未开启的先跳过
-		if !domain.IsOn {
+		// 未开启或者已删除的先跳过
+		if !domain.IsOn || domain.IsDeleted {
 			continue
 		}
 

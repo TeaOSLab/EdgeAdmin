@@ -43,6 +43,7 @@ func init() {
 			GetPost("/createPopup", new(domains.CreatePopupAction)).
 			GetPost("/updatePopup", new(domains.UpdatePopupAction)).
 			Post("/delete", new(domains.DeleteAction)).
+			Post("/recover", new(domains.RecoverAction)).
 			Post("/sync", new(domains.SyncAction)).
 			Get("/routesPopup", new(domains.RoutesPopupAction)).
 			GetPost("/selectPopup", new(domains.SelectPopupAction)).
