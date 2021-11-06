@@ -43,6 +43,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		"password":    grant.Password,
 		"description": grant.Description,
 		"privateKey":  grant.PrivateKey,
+		"passphrase":  grant.Passphrase,
 	}
 
 	this.Show()
@@ -56,6 +57,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	Username    string
 	Password    string
 	PrivateKey  string
+	Passphrase  string
 	Description string
 
 	Must *actions.Must
@@ -91,6 +93,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		Username:    params.Username,
 		Password:    params.Password,
 		PrivateKey:  params.PrivateKey,
+		Passphrase:  params.Passphrase,
 		Description: params.Description,
 		NodeId:      params.NodeId,
 	})

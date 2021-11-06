@@ -28,6 +28,7 @@ func (this *CreateAction) RunPost(params struct {
 	Username    string
 	Password    string
 	PrivateKey  string
+	Passphrase  string
 	Description string
 
 	Must *actions.Must
@@ -58,6 +59,7 @@ func (this *CreateAction) RunPost(params struct {
 		Username:    params.Username,
 		Password:    params.Password,
 		PrivateKey:  params.PrivateKey,
+		Passphrase:  params.Passphrase,
 		Description: params.Description,
 		NodeId:      0,
 	})
