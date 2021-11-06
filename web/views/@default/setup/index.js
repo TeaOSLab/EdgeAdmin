@@ -34,6 +34,7 @@ Tea.context(function () {
 
 	this.apiSuccess = function (resp) {
 		this.step = this.STEP_DB
+		this.detectDB()
 		this.apiNodeInfo = resp.data.apiNode
 
 		if (this.apiNodeMode == "new") {
@@ -56,7 +57,18 @@ Tea.context(function () {
 
 	// 数据库
 	this.dbInfo = {}
+	this.localDB = {"host": "", "port": "", "username": "", "port": ""}
+	this.localDBHost = ""
 	this.dbRequesting = false
+
+	this.detectDB = function () {
+		this.$post(".detectDB")
+			.success(function (resp) {
+				this.localDB = resp.data.localDB
+				this.localDBHost = this.localDB.host
+			})
+	}
+
 	this.dbSubmit = function () {
 		this.dbRequesting = true
 	}

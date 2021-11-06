@@ -149,13 +149,14 @@
 					<tr>
 						<td class="title">MySQL主机地址 *</td>
 						<td>
-							<input type="text" name="host" maxlength="100" placeholder="比如 192.168.1.100" style="width:16em" ref="dbHost"/>
+							<input type="text" name="host" maxlength="100" placeholder="比如 192.168.1.100" style="width:16em" ref="dbHost" v-model="localDB.host"/>
+                            <p class="comment" v-if="localDBHost.length > 0 && localDBHost == localDB.host"><span class="blue">已经自动填入从当前服务器发现的MySQL数据库信息。</span></p>
 						</td>
 					</tr>
 					<tr>
 						<td>数据库连接端口 *</td>
 						<td>
-							<input type="text" name="port" maxlength="5" placeholder="比如 3306" style="width:7em"/>
+							<input type="text" name="port" maxlength="5" placeholder="比如 3306" style="width:7em" v-model="localDB.port"/>
 						</td>
 					</tr>
 					<tr>
@@ -168,14 +169,14 @@
 					<tr>
 						<td>连接用户名 *</td>
 						<td>
-							<input type="text" name="username" style="width:16em" maxlength="100"/>
+							<input type="text" name="username" style="width:16em" maxlength="100" v-model="localDB.username"/>
 							<p class="comment">此用户需要可以在数据库中有操作数据和创建数据表的权限。</p>
 						</td>
 					</tr>
 					<tr>
 						<td>连接密码</td>
 						<td>
-							<input type="password" name="password" style="width:16em" maxlength="100"/>
+							<input type="password" name="password" style="width:16em" maxlength="100" v-model="localDB.password"/>
 							<p class="comment">连接数据库所需密码，没有密码的话就不需要填写。</p>
 						</td>
 					</tr>
