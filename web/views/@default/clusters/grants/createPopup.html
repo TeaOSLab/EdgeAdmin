@@ -24,7 +24,7 @@
 			<tr>
 				<td>SSH用户名 *</td>
 				<td>
-					<input type="text" name="username" maxlength="100"/>
+					<input type="text" name="username" maxlength="100" value="root"/>
 					<p class="comment">SSH登录用户名。</p>
 				</td>
 			</tr>
@@ -40,17 +40,24 @@
             <tr>
                 <td>SSH用户名 *</td>
                 <td>
-                    <input type="text" name="username" maxlength="100"/>
+                    <input type="text" name="username" maxlength="100" value="root"/>
                     <p class="comment">SSH登录用户名。</p>
                 </td>
             </tr>
 			<tr>
 				<td>RSA私钥 *</td>
 				<td>
-					<textarea name="privateKey"></textarea>
+					<textarea name="privateKey" spellcheck="false"></textarea>
 					<p class="comment">用来生成登录SSH公钥的私钥</p>
 				</td>
 			</tr>
+            <tr>
+                <td>私钥密码<br/><em>（Passphrase）</em></td>
+                <td>
+                    <input type="password" name="passphrase" maxlength="200"/>
+                    <p class="comment">为私钥设置了密码（Passphrase）后需要填写。</p>
+                </td>
+            </tr>
 		</tbody>
 
 		<tr>

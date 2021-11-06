@@ -40,6 +40,7 @@ func (this *GrantAction) RunGet(params struct {
 		"username":    grant.Username,
 		"password":    strings.Repeat("*", len(grant.Password)),
 		"privateKey":  grant.PrivateKey,
+		"passphrase":  strings.Repeat("*", len(grant.Passphrase)),
 		"description": grant.Description,
 		"su":          grant.Su,
 	}

@@ -43,6 +43,7 @@ func (this *UpdateAction) RunGet(params struct {
 		"username":    grant.Username,
 		"password":    grant.Password,
 		"privateKey":  grant.PrivateKey,
+		"passphrase":  grant.Passphrase,
 		"description": grant.Description,
 		"su":          grant.Su,
 	}
@@ -57,6 +58,7 @@ func (this *UpdateAction) RunPost(params struct {
 	Username    string
 	Password    string
 	PrivateKey  string
+	Passphrase  string
 	Description string
 
 	Must *actions.Must
@@ -93,6 +95,7 @@ func (this *UpdateAction) RunPost(params struct {
 		Username:    params.Username,
 		Password:    params.Password,
 		PrivateKey:  params.PrivateKey,
+		Passphrase:  params.Passphrase,
 		Description: params.Description,
 		NodeId:      0,
 	})
