@@ -99,58 +99,62 @@
 
 <p class="comment" v-if="domains.length == 0">暂时还没有可以管理的域名。</p>
 
-<table class="ui table selectable celled" v-if="domains.length > 0">
-	<thead>
-		<tr>
-			<th>域名</th>
-			<th class="center" style="width: 7em">线路</th>
-            <th class="center" style="width: 6em">集群</th>
-			<th class="center" style="width: 7em">节点域名</th>
-			<th class="center" style="width: 7em">服务域名</th>
-			<th>数据更新时间</th>
-			<th class="center width10">状态</th>
-			<th class="three op">操作</th>
-		</tr>
-	</thead>
-	<tr v-for="(domain, index) in domains">
-		<td>{{domain.name}}</td>
-		<td class="center">
-			<a href="" v-if="domain.countRoutes > 0" @click.prevent="showRoutes(domain.id)">{{domain.countRoutes}}个<popup-icon></popup-icon></a>
-			<span v-else class="disabled">0个</span>
-		</td>
-        <td class="center">
-            <a href="" v-if="domain.countClusters > 0" @click.prevent="viewClusters(domain.id)">{{domain.countClusters}}<popup-icon></popup-icon></a>
-            <span v-else class="disabled">0个</span>
-        </td>
-		<td class="center">
-			<a href="" v-if="domain.countAllNodes > 0" @click.prevent="viewNodes(domain.id)">{{domain.countNodeRecords}}/{{domain.countAllNodes}}个<popup-icon></popup-icon></a>
-			<span v-else class="disabled">0个</span>
-		</td>
-		<td class="center">
-			<a href="" v-if="domain.countAllServers > 0" @click.prevent="viewServers(domain.id)">{{domain.countServerRecords}}/{{domain.countAllServers}}个<popup-icon></popup-icon></a>
-			<span v-else class="disabled">0个</span>
-		</td>
-		<td>
-			<span v-if="domain.dataUpdatedTime.length > 0">{{domain.dataUpdatedTime}}</span>
-			<span v-else class="disabled">尚未更新</span>
-		</td>
-		<td class="center">
-			<div v-if="domain.countRoutes == 0 || domain.nodesChanged || domain.serversChanged">
-				<a href=""  style="border-bottom: 1px #db2828 dashed" title="点击和DNS服务商系统同步" @click.prevent="syncDomain(index,domain)" v-if="!domain.isSyncing"><span class="red">需要同步</span></a>
-				<span v-else>正在同步...</span>
-			</div>
-            <div v-else-if="!domain.isUp">
-                <a  href="" style="border-bottom: 1px #db2828 dashed" @click.prevent="alertDown"><span class="red">已下线</span></a>
-            </div>
-			<div v-else>
-				<label-on :v-is-on="domain.isOn"></label-on>
-			</div>
-		</td>
-		<td>
-			<a href="" @click.prevent="syncDomain(index, domain)" v-if="!domain.isSyncing">同步</a>
-			<span v-else>正在同步...</span>&nbsp;
-			<a href="" @click.prevent="updateDomain(domain.id)" v-if="!domain.isSyncing">修改</a> &nbsp;
-			<a href="" @click.prevent="deleteDomain(domain)" v-if="!domain.isSyncing">删除</a>
-		</td>
-	</tr>
-</table>
+<div v-for="state in [1, 0]">
+    <div v-if="state == 0 && hasDeletedDomains">
+        <h4 style="margin-top: 2em">已删除的域名</h4>
+    </div>
+    <table class="ui table selectable celled" v-if="domains.length > 0 && (state == 1 || hasDeletedDomains)">
+        <thead>
+            <tr>
+                <th>域名</th>
+                <th class="center" style="width: 7em">线路</th>
+                <th class="center" style="width: 6em">集群</th>
+                <th class="center" style="width: 7em">节点域名</th>
+                <th class="center" style="width: 7em">服务域名</th>
+                <th>数据更新时间</th>
+                <th class="center width10">状态</th>
+                <th class="three op">操作</th>
+            </tr>
+        </thead>
+        <tr v-for="(domain, index) in domains" v-if="(state == 1 && !domain.isDeleted) || (state == 0 && domain.isDeleted)">
+            <td>{{domain.name}}</td>
+            <td class="center">
+                <a href="" v-if="domain.countRoutes > 0" @click.prevent="showRoutes(domain.id)">{{domain.countRoutes}}个<popup-icon></popup-icon></a>
+                <span v-else class="disabled">0个</span>
+            </td>
+            <td class="center">
+                <a href="" v-if="domain.countClusters > 0" @click.prevent="viewClusters(domain.id)">{{domain.countClusters}}<popup-icon></popup-icon></a>
+                <span v-else class="disabled">0个</span>
+            </td>
+            <td class="center">
+                <a href="" v-if="domain.countAllNodes > 0" @click.prevent="viewNodes(domain.id)">{{domain.countNodeRecords}}/{{domain.countAllNodes}}个<popup-icon></popup-icon></a>
+                <span v-else class="disabled">0个</span>
+            </td>
+            <td class="center">
+                <a href="" v-if="domain.countAllServers > 0" @click.prevent="viewServers(domain.id)">{{domain.countServerRecords}}/{{domain.countAllServers}}个<popup-icon></popup-icon></a>
+                <span v-else class="disabled">0个</span>
+            </td>
+            <td>
+                <span v-if="domain.dataUpdatedTime.length > 0">{{domain.dataUpdatedTime}}</span>
+                <span v-else class="disabled">尚未更新</span>
+            </td>
+            <td class="center">
+                <span v-if="!domain.isOn"><label-on :v-is-on="domain.isOn"></label-on></span>
+                <div v-else-if="domain.countRoutes == 0 || domain.nodesChanged || domain.serversChanged">
+                    <a href=""  style="border-bottom: 1px #db2828 dashed" title="点击和DNS服务商系统同步" @click.prevent="syncDomain(index,domain)" v-if="!domain.isSyncing"><span class="red">需要同步</span></a>
+                    <span v-else>正在同步...</span>
+                </div>
+                <div v-else-if="!domain.isUp">
+                    <a  href="" style="border-bottom: 1px #db2828 dashed" @click.prevent="alertDown"><span class="red">已下线</span></a>
+                </div>
+            </td>
+            <td>
+                <a href="" @click.prevent="syncDomain(index, domain)" v-if="!domain.isSyncing">同步</a>
+                <span v-else>正在同步...</span>&nbsp;
+                <a href="" @click.prevent="updateDomain(domain.id)" v-if="!domain.isSyncing">修改</a> &nbsp;
+                <a href="" @click.prevent="deleteDomain(domain)" v-if="!domain.isSyncing && !domain.isDeleted">删除</a>
+                <a href="" @click.prevent="recoverDomain(domain)" v-if="!domain.isSyncing && domain.isDeleted">恢复</a>
+            </td>
+        </tr>
+    </table>
+</div>
