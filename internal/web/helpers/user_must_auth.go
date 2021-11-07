@@ -368,13 +368,14 @@ func (this *userMustAuth) modules(actionPtr actions.ActionWrapper, adminId int64
 			"icon":   "users",
 		},
 		{
-			"code":   "finance",
-			"module": configloaders.AdminModuleCodeFinance,
-			"name":   "财务管理",
-			"icon":   "yen sign",
-			"isOn":   teaconst.IsPlus,
+			"code":     "finance",
+			"module":   configloaders.AdminModuleCodeFinance,
+			"name":     "财务管理",
+			"icon":     "yen sign",
+			"isOn":     teaconst.IsPlus,
+			"subItems": []maps.Map{},
 		},
-		/**{
+		{
 			"code":   "plans",
 			"module": configloaders.AdminModuleCodePlan,
 			"name":   "套餐管理",
@@ -388,7 +389,7 @@ func (this *userMustAuth) modules(actionPtr actions.ActionWrapper, adminId int64
 					"isOn": teaconst.IsPlus,
 				},
 			},
-		},**/
+		},
 		{
 			"code":     "admins",
 			"module":   configloaders.AdminModuleCodeAdmin,
