@@ -380,6 +380,18 @@ func (this *RPCClient) UserBillRPC() pb.UserBillServiceClient {
 	return pb.NewUserBillServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) UserAccountRPC() pb.UserAccountServiceClient {
+	return pb.NewUserAccountServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) UserAccountLogRPC() pb.UserAccountLogServiceClient {
+	return pb.NewUserAccountLogServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) UserAccountDailyStatRPC() pb.UserAccountDailyStatServiceClient {
+	return pb.NewUserAccountDailyStatServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) UserAccessKeyRPC() pb.UserAccessKeyServiceClient {
 	return pb.NewUserAccessKeyServiceClient(this.pickConn())
 }
