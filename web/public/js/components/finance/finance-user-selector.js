@@ -1,8 +1,8 @@
-Vue.component("plan-user-selector", {
+Vue.component("finance-user-selector", {
 	mounted: function () {
 		let that = this
 
-		Tea.action("/plans/users/options")
+		Tea.action("/finance/users/options")
 			.post()
 			.success(function (resp) {
 				that.users = resp.data.users

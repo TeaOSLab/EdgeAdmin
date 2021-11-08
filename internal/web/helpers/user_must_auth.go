@@ -12,6 +12,7 @@ import (
 	"github.com/iwind/TeaGo/maps"
 	"net"
 	"net/http"
+	"net/url"
 	"reflect"
 	"strings"
 )
@@ -368,12 +369,31 @@ func (this *userMustAuth) modules(actionPtr actions.ActionWrapper, adminId int64
 			"icon":   "users",
 		},
 		{
-			"code":     "finance",
-			"module":   configloaders.AdminModuleCodeFinance,
-			"name":     "财务管理",
-			"icon":     "yen sign",
-			"isOn":     teaconst.IsPlus,
-			"subItems": []maps.Map{},
+			"code":   "finance",
+			"module": configloaders.AdminModuleCodeFinance,
+			"name":   "财务管理",
+			"icon":   "yen sign",
+			"isOn":   teaconst.IsPlus,
+			"subItems": []maps.Map{
+				{
+					"name": "用户账户",
+					"url":  "/finance/accounts",
+					"code": "accounts",
+					"isOn": teaconst.IsPlus,
+				},
+				{
+					"name": "操作记录",
+					"url":  "/finance/logs",
+					"code": "logs",
+					"isOn": teaconst.IsPlus,
+				},
+				{
+					"name": "收支报表",
+					"url":  "/finance/income",
+					"code": "income",
+					"isOn": teaconst.IsPlus,
+				},
+			},
 		},
 		{
 			"code":   "plans",
@@ -443,5 +463,5 @@ func (this *userMustAuth) modules(actionPtr actions.ActionWrapper, adminId int64
 
 // 跳转到登录页
 func (this *userMustAuth) login(action *actions.ActionObject) {
-	action.RedirectURL("/")
+	action.RedirectURL("/?from=" + url.QueryEscape(action.Request.RequestURI))
 }
