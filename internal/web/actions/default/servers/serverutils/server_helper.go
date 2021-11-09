@@ -272,7 +272,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"name":     "缓存",
 			"url":      "/servers/server/settings/cache?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "cache",
-			"isOn":     serverConfig.Web != nil && serverConfig.Web.Cache != nil && serverConfig.Web.Cache.IsOn && len(serverConfig.Web.Cache.CacheRefs) > 0,
+			"isOn":     serverConfig.Web != nil && serverConfig.Web.Cache != nil && serverConfig.Web.Cache.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "访问控制",

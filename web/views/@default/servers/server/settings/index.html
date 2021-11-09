@@ -19,6 +19,15 @@
 					<input type="text" name="name" maxlength="60" ref="focus" v-model="server.name"/>
 				</td>
 			</tr>
+            <tr v-if="plans.length > 0">
+                <td>选择套餐</td>
+                <td>
+                    <select class="ui dropdown auto-width" name="userPlanId" v-model="userPlanId">
+                        <option value="0">[选择套餐]</option>
+                        <option v-for="plan in plans" :value="plan.id">{{plan.name}}（{{plan.dayTo}}）</option>
+                    </select>
+                </td>
+            </tr>
 			<tr>
 				<td>部署的集群 *</td>
 				<td>

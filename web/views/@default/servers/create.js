@@ -46,4 +46,27 @@ Tea.context(function () {
 			this.tlsProtocolName = "https"
 		}
 	}
+
+	/**
+	 * 用户相关
+	 */
+	this.userId = 0
+	this.plans = []
+
+	this.changeUserId = function (v) {
+		this.userId = v
+
+		if (this.userId == 0) {
+			this.plans = []
+			return
+		}
+
+		this.$post("/servers/users/plans")
+			.params({
+				userId: this.userId
+			})
+			.success(function (resp) {
+				this.plans = resp.data.plans
+			})
+	}
 })
