@@ -98,7 +98,7 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"name":     "缓存",
 		"url":      "/servers/server/settings/locations/cache?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "cache",
-		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.Cache != nil && locationConfig.Web.Cache.IsPrior && locationConfig.Web.Cache.IsOn && len(locationConfig.Web.Cache.CacheRefs) > 0,
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.Cache != nil && locationConfig.Web.Cache.IsPrior && locationConfig.Web.Cache.IsOn,
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "访问控制",

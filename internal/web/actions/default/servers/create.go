@@ -63,8 +63,12 @@ func (this *CreateAction) RunGet(params struct{}) {
 func (this *CreateAction) RunPost(params struct {
 	Name        string
 	Description string
-	ClusterId   int64
-	GroupIds    []int64
+
+	UserId     int64
+	UserPlanId int64
+	ClusterId  int64
+
+	GroupIds []int64
 
 	ServerType  string
 	Addresses   string
@@ -86,11 +90,22 @@ func (this *CreateAction) RunPost(params struct {
 		Field("name", params.Name).
 		Require("请输入服务名称")
 
-	if params.ClusterId <= 0 {
+	var clusterId = params.ClusterId
+
+	// 用户
+	var userId = params.UserId
+	clusterIdResp, err := this.RPC().UserRPC().FindUserNodeClusterId(this.AdminContext(), &pb.FindUserNodeClusterIdRequest{UserId: userId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	clusterId = clusterIdResp.NodeClusterId
+	if clusterId <= 0 {
 		this.Fail("请选择部署的集群")
 	}
 
-	// TODO 验证集群ID
+	// 套餐
+	var userPlanId = params.UserPlanId
 
 	// 端口地址
 	var httpConfig *serverconfigs.HTTPProtocolConfig = nil
@@ -260,7 +275,7 @@ func (this *CreateAction) RunPost(params struct {
 		if len(allServerNames) > 0 {
 			dupResp, err := this.RPC().ServerRPC().CheckServerNameDuplicationInNodeCluster(this.AdminContext(), &pb.CheckServerNameDuplicationInNodeClusterRequest{
 				ServerNames:   allServerNames,
-				NodeClusterId: params.ClusterId,
+				NodeClusterId: clusterId,
 			})
 			if err != nil {
 				this.ErrorPage(err)
@@ -359,13 +374,14 @@ func (this *CreateAction) RunPost(params struct {
 	}
 
 	req := &pb.CreateServerRequest{
-		UserId:           0,
+		UserId:           userId,
+		UserPlanId:       userPlanId,
 		AdminId:          this.AdminId(),
 		Type:             params.ServerType,
 		Name:             params.Name,
 		ServerNamesJON:   []byte(params.ServerNames),
 		Description:      params.Description,
-		NodeClusterId:    params.ClusterId,
+		NodeClusterId:    clusterId,
 		IncludeNodesJSON: includeNodesJSON,
 		ExcludeNodesJSON: excludeNodesJSON,
 		WebId:            webId,

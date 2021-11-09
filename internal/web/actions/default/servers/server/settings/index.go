@@ -64,6 +64,36 @@ func (this *IndexAction) RunGet(params struct {
 		this.Data["user"] = nil
 	}
 
+	// 套餐
+	var userPlanMap = maps.Map{"id": server.UserPlanId, "dayTo": "", "plan": maps.Map{}}
+	if server.UserPlanId > 0 {
+		userPlanResp, err := this.RPC().UserPlanRPC().FindEnabledUserPlan(this.AdminContext(), &pb.FindEnabledUserPlanRequest{UserPlanId: server.UserPlanId})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		var userPlan = userPlanResp.UserPlan
+		if userPlan != nil {
+			planResp, err := this.RPC().PlanRPC().FindEnabledPlan(this.AdminContext(), &pb.FindEnabledPlanRequest{PlanId: userPlan.PlanId})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			var plan = planResp.Plan
+			if plan != nil {
+				userPlanMap = maps.Map{
+					"id":    userPlan.Id,
+					"dayTo": userPlan.DayTo,
+					"plan": maps.Map{
+						"id":   plan.Id,
+						"name": plan.Name,
+					},
+				}
+			}
+		}
+	}
+	this.Data["userPlan"] = userPlanMap
+
 	// 集群
 	clusterId := int64(0)
 	this.Data["clusterName"] = ""
@@ -123,6 +153,7 @@ func (this *IndexAction) RunPost(params struct {
 	ClusterId   int64
 	GroupIds    []int64
 	IsOn        bool
+	UserPlanId  int64
 
 	Must *actions.Must
 }) {
@@ -137,6 +168,7 @@ func (this *IndexAction) RunPost(params struct {
 		this.Fail("请选择部署的集群")
 	}
 
+	// 修改基本信息
 	_, err := this.RPC().ServerRPC().UpdateServerBasic(this.AdminContext(), &pb.UpdateServerBasicRequest{
 		ServerId:       params.ServerId,
 		Name:           params.Name,
@@ -148,6 +180,18 @@ func (this *IndexAction) RunPost(params struct {
 	if err != nil {
 		this.ErrorPage(err)
 		return
+	}
+
+	// 修改套餐
+	if params.UserPlanId > 0 {
+		_, err = this.RPC().ServerRPC().UpdateServerUserPlan(this.AdminContext(), &pb.UpdateServerUserPlanRequest{
+			ServerId:   params.ServerId,
+			UserPlanId: params.UserPlanId,
+		})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
 	}
 
 	this.Success()
