@@ -11,8 +11,8 @@ Vue.component("plan-price-view", {
 		<span v-if="plan.seasonallyPrice > 0">季度：￥{{plan.seasonallyPrice}}元<br/></span>
 		<span v-if="plan.yearlyPrice > 0">年度：￥{{plan.yearlyPrice}}元</span>
 	</span>
-	<span v-if="plan.priceType == 'bandwidth'">
-		基础价格：￥{{plan.bandwidthPrice.base}}元/GB
+	<span v-if="plan.priceType == 'traffic'">
+		基础价格：￥{{plan.trafficPrice.base}}元/GB
 	</span>
 </div>`
 })
