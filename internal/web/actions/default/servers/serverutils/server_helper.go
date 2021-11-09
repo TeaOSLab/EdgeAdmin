@@ -351,10 +351,10 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 
 		if teaconst.IsPlus {
 			menuItems = append(menuItems, maps.Map{
-				"name":     "带宽限制",
-				"url":      "/servers/server/settings/bandwidth?serverId=" + serverIdString,
-				"isActive": secondMenuItem == "bandwidth",
-				"isOn":     serverConfig.BandwidthLimit != nil && serverConfig.BandwidthLimit.IsOn,
+				"name":     "流量限制",
+				"url":      "/servers/server/settings/traffic?serverId=" + serverIdString,
+				"isActive": secondMenuItem == "traffic",
+				"isOn":     serverConfig.TrafficLimit != nil && serverConfig.TrafficLimit.IsOn,
 			})
 		}
 	} else if serverConfig.IsTCPFamily() {

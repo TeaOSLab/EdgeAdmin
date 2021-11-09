@@ -1,6 +1,6 @@
 // 套餐价格配置
 Vue.component("plan-price-config-box", {
-	props: ["v-price-type", "v-monthly-price", "v-seasonally-price", "v-yearly-price", "v-bandwidth-price"],
+	props: ["v-price-type", "v-monthly-price", "v-seasonally-price", "v-yearly-price", "v-traffic-price"],
 	data: function () {
 		let priceType = this.vPriceType
 		if (priceType == null) {
@@ -43,18 +43,18 @@ Vue.component("plan-price-config-box", {
 			}
 		}
 
-		let bandwidthPrice = this.vBandwidthPrice
-		let bandwidthPriceBaseNumber = 0
-		if (bandwidthPrice != null) {
-			bandwidthPriceBaseNumber = bandwidthPrice.base
+		let trafficPrice = this.vTrafficPrice
+		let trafficPriceBaseNumber = 0
+		if (trafficPrice != null) {
+			trafficPriceBaseNumber = trafficPrice.base
 		} else {
-			bandwidthPrice = {
+			trafficPrice = {
 				base: 0
 			}
 		}
-		let bandwidthPriceBase = ""
-		if (bandwidthPriceBaseNumber > 0) {
-			bandwidthPriceBase = bandwidthPriceBaseNumber.toString()
+		let trafficPriceBase = ""
+		if (trafficPriceBaseNumber > 0) {
+			trafficPriceBase = trafficPriceBaseNumber.toString()
 		}
 
 		return {
@@ -67,8 +67,8 @@ Vue.component("plan-price-config-box", {
 			seasonallyPriceNumber: seasonallyPriceNumber,
 			yearlyPriceNumber: yearlyPriceNumber,
 
-			bandwidthPriceBase: bandwidthPriceBase,
-			bandwidthPrice: bandwidthPrice
+			trafficPriceBase: trafficPriceBase,
+			trafficPrice: trafficPrice
 		}
 	},
 	watch: {
@@ -93,12 +93,12 @@ Vue.component("plan-price-config-box", {
 			}
 			this.yearlyPriceNumber = price
 		},
-		bandwidthPriceBase: function (v) {
+		trafficPriceBase: function (v) {
 			let price = parseFloat(v)
 			if (isNaN(price)) {
 				price = 0
 			}
-			this.bandwidthPrice.base = price
+			this.trafficPrice.base = price
 		}
 	},
 	template: `<div>
@@ -106,11 +106,11 @@ Vue.component("plan-price-config-box", {
 	<input type="hidden" name="monthlyPrice" :value="monthlyPriceNumber"/>
 	<input type="hidden" name="seasonallyPrice" :value="seasonallyPriceNumber"/>
 	<input type="hidden" name="yearlyPrice" :value="yearlyPriceNumber"/>
-	<input type="hidden" name="bandwidthPriceJSON" :value="JSON.stringify(bandwidthPrice)"/>
+	<input type="hidden" name="trafficPriceJSON" :value="JSON.stringify(trafficPrice)"/>
 	
 	<div>
 		<radio :v-value="'period'" :value="priceType" v-model="priceType">&nbsp;按时间周期</radio> &nbsp; &nbsp;
-		<radio :v-value="'bandwidth'" :value="priceType" v-model="priceType">&nbsp;按带宽用量</radio>
+		<radio :v-value="'traffic'" :value="priceType" v-model="priceType">&nbsp;按流量</radio>
 	</div>
 	
 	<!-- 按时间周期 -->
@@ -147,15 +147,15 @@ Vue.component("plan-price-config-box", {
 		</table>
 	</div>
 	
-	<!-- 按带宽 -->
-	<div v-show="priceType =='bandwidth'">
+	<!-- 按流量 -->
+	<div v-show="priceType =='traffic'">
 		<div class="ui divider"></div>
 		<table class="ui table">
 			<tr>
-				<td class="title">基础带宽费用</td>
+				<td class="title">基础流量费用</td>
 				<td>
 					<div class="ui input right labeled">
-						<input type="text" v-model="bandwidthPriceBase" maxlength="10" style="width: 7em"/>
+						<input type="text" v-model="trafficPriceBase" maxlength="10" style="width: 7em"/>
 						<span class="ui label">元/GB</span>
 					</div>
 				</td>

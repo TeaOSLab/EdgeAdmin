@@ -1,7 +1,7 @@
-Vue.component("bandwidth-limit-config-box", {
-	props: ["v-bandwidth-limit"],
+Vue.component("traffic-limit-config-box", {
+	props: ["v-traffic-limit"],
 	data: function () {
-		let config = this.vBandwidthLimit
+		let config = this.vTrafficLimit
 		if (config == null) {
 			config = {
 				isOn: false,
@@ -47,36 +47,36 @@ Vue.component("bandwidth-limit-config-box", {
 			this.config.noticePageBody = `<!DOCTYPE html>
 <html>
 <head>
-<title>Bandwidth Limit Exceeded Warning</title>
+<title>Traffic Limit Exceeded Warning</title>
 <body>
 
-The site bandwidth has exceeded the limit. Please contact with the site administrator.
+The site traffic has exceeded the limit. Please contact with the site administrator.
 
 </body>
 </html>`
 		}
 	},
 	template: `<div>
-	<input type="hidden" name="bandwidthLimitJSON" :value="JSON.stringify(config)"/>
+	<input type="hidden" name="trafficLimitJSON" :value="JSON.stringify(config)"/>
 	<table class="ui table selectable definition">
 		<tbody>
 			<tr>
 				<td class="title">是否启用</td>
 				<td>
 					<checkbox v-model="config.isOn"></checkbox>
-					<p class="comment">注意：由于带宽统计是每5分钟统计一次，所以超出带宽限制后，对用户的提醒也会有所延迟。</p>
+					<p class="comment">注意：由于流量统计是每5分钟统计一次，所以超出流量限制后，对用户的提醒也会有所延迟。</p>
 				</td>
 			</tr>
 		</tbody>
 		<tbody v-show="config.isOn">
 			<tr>
-				<td>日带宽限制</td>
+				<td>日流量限制</td>
 				<td>
 					<size-capacity-box :v-value="config.dailySize"></size-capacity-box>
 				</td>
 			</tr>
 			<tr>
-				<td>月带宽限制</td>
+				<td>月流量限制</td>
 				<td>
 					<size-capacity-box :v-value="config.monthlySize"></size-capacity-box>
 				</td>
@@ -92,7 +92,7 @@ The site bandwidth has exceeded the limit. Please contact with the site administ
 				<td>网页提示内容</td>
 				<td>
 					<textarea v-model="config.noticePageBody"></textarea>
-					<p class="comment"><a href="" @click.prevent="showBodyTemplate">[使用模板]</a>。当达到带宽限制时网页显示的HTML内容，不填写则显示默认的提示内容。</p>
+					<p class="comment"><a href="" @click.prevent="showBodyTemplate">[使用模板]</a>。当达到流量限制时网页显示的HTML内容，不填写则显示默认的提示内容。</p>
 				</td>
 			</tr>
 		</tbody>
