@@ -206,7 +206,7 @@ func (this *InstallAction) RunPost(params struct {
 
 		// 设置管理员
 		currentStatusText = "正在设置管理员"
-		client, err := rpc.NewRPCClient(apiConfig)
+		client, err := rpc.NewRPCClient(apiConfig, false)
 		if err != nil {
 			this.FailField("oldHost", "测试API节点时出错，请检查配置，错误信息："+err.Error())
 		}
@@ -263,10 +263,14 @@ func (this *InstallAction) RunPost(params struct {
 			NodeId: apiNodeMap.GetString("oldNodeId"),
 			Secret: apiNodeMap.GetString("oldNodeSecret"),
 		}
-		client, err := rpc.NewRPCClient(apiConfig)
+		client, err := rpc.NewRPCClient(apiConfig, false)
 		if err != nil {
 			this.FailField("oldHost", "测试API节点时出错，请检查配置，错误信息："+err.Error())
 		}
+
+		defer func() {
+			_ = client.Close()
+		}()
 
 		// 设置管理员
 		ctx := client.APIContext(0)

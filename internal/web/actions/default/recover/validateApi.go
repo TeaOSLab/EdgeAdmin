@@ -49,10 +49,15 @@ func (this *ValidateApiAction) RunPost(params struct {
 		},
 		NodeId: params.NodeId,
 		Secret: params.NodeSecret,
-	})
+	}, false)
 	if err != nil {
 		this.FailField("host", "测试API节点时出错，请检查配置，错误信息："+err.Error())
 	}
+
+	defer func() {
+		_ = client.Close()
+	}()
+
 	_, err = client.APINodeRPC().FindCurrentAPINodeVersion(client.APIContext(0), &pb.FindCurrentAPINodeVersionRequest{})
 	if err != nil {
 		this.FailField("host", "无法连接此API节点，错误信息："+err.Error())

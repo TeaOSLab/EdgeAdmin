@@ -20,7 +20,7 @@ func SharedRPC() (*RPCClient, error) {
 	if err != nil {
 		return nil, err
 	}
-	client, err := NewRPCClient(config)
+	client, err := NewRPCClient(config, true)
 	if err != nil {
 		return nil, err
 	}

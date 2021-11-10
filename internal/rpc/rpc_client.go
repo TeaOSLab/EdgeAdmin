@@ -31,7 +31,7 @@ type RPCClient struct {
 }
 
 // NewRPCClient 构造新的RPC客户端
-func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
+func NewRPCClient(apiConfig *configs.APIConfig, isPrimary bool) (*RPCClient, error) {
 	if apiConfig == nil {
 		return nil, errors.New("api config should not be nil")
 	}
@@ -46,7 +46,9 @@ func NewRPCClient(apiConfig *configs.APIConfig) (*RPCClient, error) {
 	}
 
 	// 设置RPC
-	dao.SetRPC(client)
+	if isPrimary {
+		dao.SetRPC(client)
+	}
 
 	return client, nil
 }
@@ -610,4 +612,21 @@ func (this *RPCClient) pickConn() *grpc.ClientConn {
 	}
 
 	return this.conns[rands.Int(0, len(this.conns)-1)]
+}
+
+// Close 关闭
+func (this *RPCClient) Close() error {
+	this.locker.Lock()
+	defer this.locker.Unlock()
+
+	var lastErr error
+	for _, conn := range this.conns {
+		var err = conn.Close()
+		if err != nil {
+			lastErr = err
+			continue
+		}
+	}
+
+	return lastErr
 }

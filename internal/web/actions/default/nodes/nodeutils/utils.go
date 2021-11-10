@@ -48,6 +48,7 @@ func SendMessageToCluster(ctx context.Context, clusterId int64, code string, msg
 
 	wg := &sync.WaitGroup{}
 	wg.Add(len(nodes))
+
 	for _, node := range nodes {
 		// TODO 检查是否在线
 
@@ -104,7 +105,7 @@ func SendMessageToCluster(ctx context.Context, clusterId int64, code string, msg
 				},
 				NodeId: apiNode.UniqueId,
 				Secret: apiNode.Secret,
-			})
+			}, false)
 			if err != nil {
 				locker.Lock()
 				results = append(results, &MessageResult{
@@ -160,6 +161,11 @@ func SendMessageToCluster(ctx context.Context, clusterId int64, code string, msg
 		sort.Slice(results, func(i, j int) bool {
 			return results[i].NodeId < results[j].NodeId
 		})
+	}
+
+	// 关闭RPC
+	for _, rpcClient := range rpcMap {
+		_ = rpcClient.Close()
 	}
 
 	return
@@ -279,7 +285,7 @@ func SendMessageToNodeIds(ctx context.Context, nodeIds []int64, code string, msg
 				},
 				NodeId: apiNode.UniqueId,
 				Secret: apiNode.Secret,
-			})
+			}, false)
 			if err != nil {
 				locker.Lock()
 				results = append(results, &MessageResult{
@@ -335,6 +341,11 @@ func SendMessageToNodeIds(ctx context.Context, nodeIds []int64, code string, msg
 		sort.Slice(results, func(i, j int) bool {
 			return results[i].NodeId < results[j].NodeId
 		})
+	}
+
+	// 关闭RPC
+	for _, rpcClient := range rpcMap {
+		_ = rpcClient.Close()
 	}
 
 	return
