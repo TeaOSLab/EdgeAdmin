@@ -42,7 +42,7 @@ func (this *UpdateHostsAction) RunPost(params struct {
 		},
 		NodeId: params.NodeId,
 		Secret: params.NodeSecret,
-	})
+	}, false)
 	if err != nil {
 		this.FailField("host", "测试API节点时出错，请检查配置，错误信息："+err.Error())
 	}
@@ -50,6 +50,10 @@ func (this *UpdateHostsAction) RunPost(params struct {
 	if err != nil {
 		this.FailField("host", "无法连接此API节点，错误信息："+err.Error())
 	}
+
+	defer func() {
+		_ = client.Close()
+	}()
 
 	// 获取管理员节点信息
 	apiTokensResp, err := client.APITokenRPC().FindAllEnabledAPITokens(client.APIContext(0), &pb.FindAllEnabledAPITokensRequest{Role: "admin"})
