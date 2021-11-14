@@ -16,7 +16,8 @@ Vue.component("http-cache-config-box", {
 			cacheConfig.cacheRefs = []
 		}
 		return {
-			cacheConfig: cacheConfig
+			cacheConfig: cacheConfig,
+			moreOptionsVisible: false
 		}
 	},
 	methods: {
@@ -32,6 +33,9 @@ Vue.component("http-cache-config-box", {
 				result += String.fromCharCode(parseInt(s.substring(i, i + 1)) + ((Math.random() < 0.5) ? "a" : "A").charCodeAt(0))
 			}
 			this.cacheConfig.purgeKey = result
+		},
+		showMoreOptions: function () {
+			this.moreOptionsVisible = !this.moreOptionsVisible
 		}
 	},
 	template: `<div>
@@ -59,6 +63,13 @@ Vue.component("http-cache-config-box", {
 			</tr>
 		</tbody>
 		<tbody v-show="isOn()">
+			<tr>
+				<td colspan="2">
+					<a href="" @click.prevent="showMoreOptions"><span v-if="moreOptionsVisible">收起选项</span><span v-else>更多选项</span><i class="icon angle" :class="{up: moreOptionsVisible, down:!moreOptionsVisible}"></i></a>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="isOn() && moreOptionsVisible">
 			<tr>
 				<td>自动添加X-Cache Header</td>
 				<td>
