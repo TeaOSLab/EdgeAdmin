@@ -5,6 +5,7 @@
 
 <second-menu v-if="logs.length > 0">
     <a href="" class="item" @click.prevent="updatePageRead()">[本页已读]</a>
+    <a href="" class="item" @click.prevent="updateAllRead()">[全部已读]</a>
 </second-menu>
 
 <table class="ui table selectable celled" v-if="logs.length > 0">

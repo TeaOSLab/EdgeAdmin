@@ -60,6 +60,7 @@ func (this *TestAction) RunPost(params struct {
 			"ipFrom":         resp.IpItem.IpFrom,
 			"ipTo":           resp.IpItem.IpTo,
 			"reason":         resp.IpItem.Reason,
+			"createdTime":    timeutil.FormatTime("Y-m-d", resp.IpItem.CreatedAt),
 			"expiredAt":      resp.IpItem.ExpiredAt,
 			"expiredTime":    timeutil.FormatTime("Y-m-d H:i:s", resp.IpItem.ExpiredAt),
 			"type":           resp.IpItem.Type,

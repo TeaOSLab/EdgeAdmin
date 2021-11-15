@@ -36,6 +36,9 @@ Vue.component("ip-list-table", {
             <td>
                 <span v-if="item.type != 'all'"><keyword :v-word="keyword">{{item.ipFrom}}</keyword><span v-if="item.ipTo.length > 0"> - <keyword :v-word="keyword">{{item.ipTo}}</keyword></span></span>
                 <span v-else class="disabled">*</span>
+				<div v-if="item.createdTime != null">
+					<span class="small disabled">添加于 {{item.createdTime}}</span>
+				</div>
             </td>
             <td>
                 <span v-if="item.type.length == 0">IPv4</span>
