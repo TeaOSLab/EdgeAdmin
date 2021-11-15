@@ -69,6 +69,20 @@ func (this *LogsAction) RunGet(params struct {
 
 	logs := []maps.Map{}
 	for _, log := range logsResp.NodeLogs {
+		// 服务信息
+		var serverMap = maps.Map{"id": 0}
+		if log.ServerId > 0 {
+			serverResp, err := this.RPC().ServerRPC().FindEnabledUserServerBasic(this.AdminContext(), &pb.FindEnabledUserServerBasicRequest{ServerId: log.ServerId})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			var server = serverResp.Server
+			if server != nil {
+				serverMap = maps.Map{"id": server.Id, "name": server.Name}
+			}
+		}
+
 		logs = append(logs, maps.Map{
 			"tag":         log.Tag,
 			"description": log.Description,
@@ -76,6 +90,7 @@ func (this *LogsAction) RunGet(params struct {
 			"level":       log.Level,
 			"isToday":     timeutil.FormatTime("Y-m-d", log.CreatedAt) == timeutil.Format("Y-m-d"),
 			"count":       log.Count,
+			"server":      serverMap,
 		})
 	}
 	this.Data["logs"] = logs
