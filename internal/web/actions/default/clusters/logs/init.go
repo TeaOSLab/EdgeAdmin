@@ -15,6 +15,7 @@ func init() {
 			Prefix("/clusters/logs").
 			Get("", new(IndexAction)).
 			Post("/readLogs", new(ReadLogsAction)).
+			Post("/readAllLogs", new(ReadAllLogsAction)).
 			EndAll()
 	})
 }

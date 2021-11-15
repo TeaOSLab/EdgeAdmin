@@ -66,6 +66,7 @@ func (this *ItemsAction) RunGet(params struct {
 			"id":             item.Id,
 			"ipFrom":         item.IpFrom,
 			"ipTo":           item.IpTo,
+			"createdTime":    timeutil.FormatTime("Y-m-d", item.CreatedAt),
 			"expiredTime":    expiredTime,
 			"reason":         item.Reason,
 			"type":           item.Type,

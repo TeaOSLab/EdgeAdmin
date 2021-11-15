@@ -40,7 +40,7 @@
         </td>
         <td>{{list.description}}</td>
         <td class="center">
-            <span v-if="list.countItems > 0">{{list.countItems}}</span>
+            <a :href="'/servers/iplists/items?listId=' + list.id" v-if="list.countItems > 0">{{list.countItems}}</a>
             <span v-else class="disabled">0</span>
         </td>
         <td>
