@@ -90,6 +90,20 @@ func (this *IndexAction) RunGet(params struct {
 			continue
 		}
 
+		// 服务信息
+		var serverMap = maps.Map{"id": 0}
+		if log.ServerId > 0 {
+			serverResp, err := this.RPC().ServerRPC().FindEnabledUserServerBasic(this.AdminContext(), &pb.FindEnabledUserServerBasicRequest{ServerId: log.ServerId})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			var server = serverResp.Server
+			if server != nil {
+				serverMap = maps.Map{"id": server.Id, "name": server.Name}
+			}
+		}
+
 		logs = append(logs, maps.Map{
 			"id":          log.Id,
 			"tag":         log.Tag,
@@ -107,6 +121,7 @@ func (this *IndexAction) RunGet(params struct {
 				},
 				"name": node.Name,
 			},
+			"server": serverMap,
 		})
 	}
 	this.Data["logs"] = logs
