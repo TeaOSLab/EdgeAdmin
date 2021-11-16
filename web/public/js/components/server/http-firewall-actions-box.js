@@ -244,7 +244,7 @@ Vue.component("http-firewall-actions-box", {
 					if (config.options.scope != null && config.options.scope.length > 0) {
 						this.blockScope = config.options.scope
 					} else {
-						this.blockScope = "service" // 兼容先前版本遗留的默认值
+						this.blockScope = "global" // 兼容先前版本遗留的默认值
 					}
 					break
 				case "allow":
