@@ -70,6 +70,43 @@ func (this *AllowListAction) RunGet(params struct {
 			expiredTime = timeutil.FormatTime("Y-m-d H:i:s", item.ExpiredAt)
 		}
 
+		// policy
+		var sourcePolicyMap = maps.Map{"id": 0}
+		if item.SourceHTTPFirewallPolicy != nil {
+			sourcePolicyMap = maps.Map{
+				"id":       item.SourceHTTPFirewallPolicy.Id,
+				"name":     item.SourceHTTPFirewallPolicy.Name,
+				"serverId": item.SourceHTTPFirewallPolicy.ServerId,
+			}
+		}
+
+		// group
+		var sourceGroupMap = maps.Map{"id": 0}
+		if item.SourceHTTPFirewallRuleGroup != nil {
+			sourceGroupMap = maps.Map{
+				"id":   item.SourceHTTPFirewallRuleGroup.Id,
+				"name": item.SourceHTTPFirewallRuleGroup.Name,
+			}
+		}
+
+		// set
+		var sourceSetMap = maps.Map{"id": 0}
+		if item.SourceHTTPFirewallRuleSet != nil {
+			sourceSetMap = maps.Map{
+				"id":   item.SourceHTTPFirewallRuleSet.Id,
+				"name": item.SourceHTTPFirewallRuleSet.Name,
+			}
+		}
+
+		// server
+		var sourceServerMap = maps.Map{"id": 0}
+		if item.SourceServer != nil {
+			sourceServerMap = maps.Map{
+				"id":   item.SourceServer.Id,
+				"name": item.SourceServer.Name,
+			}
+		}
+
 		itemMaps = append(itemMaps, maps.Map{
 			"id":             item.Id,
 			"ipFrom":         item.IpFrom,
@@ -80,6 +117,10 @@ func (this *AllowListAction) RunGet(params struct {
 			"type":           item.Type,
 			"isExpired":      item.ExpiredAt > 0 && item.ExpiredAt < time.Now().Unix(),
 			"eventLevelName": firewallconfigs.FindFirewallEventLevelName(item.EventLevel),
+			"sourcePolicy":   sourcePolicyMap,
+			"sourceGroup":    sourceGroupMap,
+			"sourceSet":      sourceSetMap,
+			"sourceServer":   sourceServerMap,
 		})
 	}
 	this.Data["items"] = itemMaps
