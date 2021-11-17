@@ -68,6 +68,7 @@ func (this *IndexAction) RunGet(params struct {
 			"description": list.Description,
 			"countItems":  countItems,
 			"type":        list.Type,
+			"isGlobal":    list.IsGlobal,
 		})
 	}
 	this.Data["lists"] = listMaps
