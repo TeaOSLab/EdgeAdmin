@@ -8,9 +8,15 @@
             <input type="text" name="ip" placeholder="x.x.x.x" v-model="ip"/>
         </div>
         <div class="ui field">
+            <div class="ui checkbox">
+                <input type="checkbox" name="globalOnly" value="1" v-model="globalOnly"/>
+                <label>自动拦截名单</label>
+            </div>
+        </div>
+        <div class="ui field">
             <button class="ui button" type="submit">搜索</button>
             &nbsp;
-            <a href="/servers/iplists" v-if="ip.length > 0">[清除条件]</a>
+            <a href="/servers/iplists" v-if="ip.length > 0 || globalOnly">[清除条件]</a>
         </div>
     </div>
 </form>
