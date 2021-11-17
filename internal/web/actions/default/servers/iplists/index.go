@@ -8,6 +8,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
+	"time"
 )
 
 type IndexAction struct {
@@ -122,6 +123,7 @@ func (this *IndexAction) RunGet(params struct {
 			"ipFrom":         item.IpFrom,
 			"ipTo":           item.IpTo,
 			"createdTime":    timeutil.FormatTime("Y-m-d", item.CreatedAt),
+			"isExpired":      item.ExpiredAt < time.Now().Unix(),
 			"expiredTime":    expiredTime,
 			"reason":         item.Reason,
 			"type":           item.Type,
