@@ -1,6 +1,7 @@
 Tea.context(function () {
 	this.createList = function () {
 		teaweb.popup(Tea.url(".createPopup", {type: this.type}), {
+			height: "24em",
 			callback: function (resp) {
 				teaweb.success("保存成功", function () {
 					window.location = "/servers/iplists?type=" + resp.data.list.type

@@ -47,6 +47,7 @@ func InitIPList(action *actionutils.ParentAction, listId int64) error {
 		"description": list.Description,
 		"isOn":        list.IsOn,
 		"countItems":  countItems,
+		"isGlobal":    list.IsGlobal,
 	}
 	return nil
 }

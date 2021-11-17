@@ -33,7 +33,10 @@
     </thead>
     <tr v-for="list in lists">
         <td class="center">{{list.id}}</td>
-        <td><a :href="'/servers/iplists/list?listId=' + list.id"><keyword :v-word="keyword">{{list.name}}</keyword></a></td>
+        <td>
+            <a :href="'/servers/iplists/list?listId=' + list.id"><keyword :v-word="keyword">{{list.name}}</keyword></a>
+            <div v-if="list.isGlobal" style="margin-top: 0.3em"><grey-label>全局</grey-label></div>
+        </td>
         <td class="center">
             <span v-if="list.type == 'black'">黑名单</span>
             <span v-if="list.type == 'white'">白名单</span>

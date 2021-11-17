@@ -15,6 +15,13 @@
         </td>
     </tr>
     <tr>
+        <td>是否全局</td>
+        <td>
+            <span v-if="list.isGlobal" class="green">Y</span>
+            <span v-else class="disabled">N</span>
+        </td>
+    </tr>
+    <tr>
         <td>备注</td>
         <td>
             <span v-if="list.description.length > 0">{{list.description}}</span>

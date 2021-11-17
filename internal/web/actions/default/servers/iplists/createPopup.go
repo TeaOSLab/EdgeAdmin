@@ -29,6 +29,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	Name        string
 	Type        string
 	Description string
+	IsGlobal    bool
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -49,6 +50,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		TimeoutJSON: nil,
 		IsPublic:    true,
 		Description: params.Description,
+		IsGlobal:    params.IsGlobal,
 	})
 	if err != nil {
 		this.ErrorPage(err)
