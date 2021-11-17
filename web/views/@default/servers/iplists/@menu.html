@@ -1,8 +1,9 @@
 <first-menu>
-    <menu-item href="/servers/iplists" :active="type == 'black'">黑名单</menu-item>
-    <menu-item href="/servers/iplists?type=white" :active="type == 'white'">白名单</menu-item>
-    <span class="item disabled">|</span>
-    <menu-item @click.prevent="createList">[创建]</menu-item>
-    <span class="item disabled">|</span>
-    <span class="item"><tip-icon content="可以在WAF策略里直接引用这些公用名单。"></tip-icon></span>
+    <menu-item href="/servers/iplists" code="index">所有IP</menu-item>
+    <menu-item href="/servers/iplists/lists?type=black" :active="type == 'black'">公共黑名单</menu-item>
+    <menu-item href="/servers/iplists/lists?type=white" :active="type == 'white'">公共白名单</menu-item>
+    <span class="item disabled" v-if="type.length > 0">|</span>
+    <menu-item @click.prevent="createList" v-if="type.length > 0">[创建]</menu-item>
+    <span class="item disabled" v-if="type.length > 0">|</span>
+    <span class="item" v-if="type.length > 0"><tip-icon content="可以在WAF策略里直接引用这些公用名单。"></tip-icon></span>
 </first-menu>
