@@ -1,5 +1,5 @@
 Vue.component("ip-list-table", {
-	props: ["v-items", "v-keyword"],
+	props: ["v-items", "v-keyword", "v-show-search-button"],
 	data: function () {
 		return {
 			items: this.vItems,
@@ -35,7 +35,9 @@ Vue.component("ip-list-table", {
 		<tbody v-for="item in items">
 			<tr>
 				<td>
-					<span v-if="item.type != 'all'"><keyword :v-word="keyword">{{item.ipFrom}}</keyword><span v-if="item.ipTo.length > 0"> - <keyword :v-word="keyword">{{item.ipTo}}</keyword></span></span>
+					<span v-if="item.type != 'all'">
+					<keyword :v-word="keyword">{{item.ipFrom}}</keyword> <span>&nbsp;<a :href="'/servers/iplists?ip=' + item.ipFrom" v-if="vShowSearchButton" title="搜索此IP"><span><i class="icon search small" style="color: #ccc"></i></span></a></span>
+					<span v-if="item.ipTo.length > 0"> - <keyword :v-word="keyword">{{item.ipTo}}</keyword></span></span>
 					<span v-else class="disabled">*</span>
 					<div v-if="item.createdTime != null">
 						<span class="small grey">添加于 {{item.createdTime}}

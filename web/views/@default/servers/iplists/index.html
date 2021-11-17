@@ -9,6 +9,8 @@
         </div>
         <div class="ui field">
             <button class="ui button" type="submit">搜索</button>
+            &nbsp;
+            <a href="/servers/iplists" v-if="ip.length > 0">[清除条件]</a>
         </div>
     </div>
 </form>
@@ -17,6 +19,6 @@
 
 <p class="comment" v-if="items.length == 0">暂时还没有IP。</p>
 
-<ip-list-table v-if="items.length > 0" :v-items="items" @update-item="updateItem" @delete-item="deleteItem" :v-keyword="ip"></ip-list-table>
+<ip-list-table v-if="items.length > 0" :v-items="items" @update-item="updateItem" @delete-item="deleteItem" :v-keyword="ip" :v-show-search-button="true"></ip-list-table>
 
 <div class="page" v-html="page"></div>
