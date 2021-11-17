@@ -14,6 +14,7 @@ func init() {
 			Data("teaSubMenu", "iplist").
 			Prefix("/servers/iplists").
 			Get("", new(IndexAction)).
+			Get("/lists", new(ListsAction)).
 			GetPost("/createPopup", new(CreatePopupAction)).
 			Get("/list", new(ListAction)).
 			GetPost("/import", new(ImportAction)).
@@ -38,7 +39,6 @@ func init() {
 
 			// 选项数据
 			Post("/levelOptions", new(LevelOptionsAction)).
-
 			EndAll()
 	})
 }

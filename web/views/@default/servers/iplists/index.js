@@ -1,27 +1,23 @@
 Tea.context(function () {
-	this.createList = function () {
-		teaweb.popup(Tea.url(".createPopup", {type: this.type}), {
-			height: "24em",
-			callback: function (resp) {
+	this.updateItem = function (itemId) {
+		teaweb.popup(Tea.url(".updateIPPopup", {itemId: itemId}), {
+			height: "26em",
+			callback: function () {
 				teaweb.success("保存成功", function () {
-					window.location = "/servers/iplists?type=" + resp.data.list.type
+					teaweb.reload()
 				})
 			}
 		})
 	}
 
-	this.deleteList = function (listId) {
+	this.deleteItem = function (itemId) {
 		let that = this
-		teaweb.confirm("确定要删除此IP名单吗？", function () {
-			that.$post(".delete")
+		teaweb.confirm("确定要删除这个IP吗？", function () {
+			that.$post(".deleteIP")
 				.params({
-					listId: listId
+					"itemId": itemId
 				})
-				.success(function () {
-					teaweb.success("删除成功", function () {
-						teaweb.reload()
-					})
-				})
+				.refresh()
 		})
 	}
 })
