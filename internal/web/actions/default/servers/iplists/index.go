@@ -19,12 +19,17 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct {
-	Ip string
+	Ip         string
+	GlobalOnly bool
 }) {
 	this.Data["type"] = ""
 	this.Data["ip"] = params.Ip
+	this.Data["globalOnly"] = params.GlobalOnly
 
-	countResp, err := this.RPC().IPItemRPC().CountAllEnabledIPItems(this.AdminContext(), &pb.CountAllEnabledIPItemsRequest{Ip: params.Ip})
+	countResp, err := this.RPC().IPItemRPC().CountAllEnabledIPItems(this.AdminContext(), &pb.CountAllEnabledIPItemsRequest{
+		Ip:         params.Ip,
+		GlobalOnly: params.GlobalOnly,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -34,9 +39,10 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["page"] = page.AsHTML()
 
 	itemsResp, err := this.RPC().IPItemRPC().ListAllEnabledIPItems(this.AdminContext(), &pb.ListAllEnabledIPItemsRequest{
-		Ip:     params.Ip,
-		Offset: page.Offset,
-		Size:   page.Size,
+		Ip:         params.Ip,
+		GlobalOnly: params.GlobalOnly,
+		Offset:     page.Offset,
+		Size:       page.Size,
 	})
 	if err != nil {
 		this.ErrorPage(err)
