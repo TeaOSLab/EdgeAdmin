@@ -127,6 +127,21 @@ Vue.component("node-ip-address-thresholds-box", {
 			this.itemReportGroups = []
 		},
 		confirmItem: function () {
+			// 特殊阈值快速添加
+			if (["nodeHealthCheckFailed"].$contains(this.itemCode)) {
+				// 添加
+				this.addingThreshold.items.push({
+					item: this.itemCode,
+					operator: this.itemOperator,
+					value: 0,
+					duration: 0,
+					durationUnit: "minute",
+					options: {}
+				})
+				this.cancelItem()
+				return
+			}
+
 			if (this.itemDuration.length == 0) {
 				let that = this
 				teaweb.warn("请输入统计周期", function () {
@@ -335,11 +350,20 @@ Vue.component("node-ip-address-thresholds-box", {
 	<!-- 已有条件 -->
 	<div v-if="thresholds.length > 0">
 		<div class="ui label basic small" v-for="(threshold, index) in thresholds">
-			<span v-for="(item, itemIndex) in threshold.items">[{{item.duration}}{{itemDurationUnitName(item.durationUnit)}}] {{itemName(item.item)}}
-			 <!-- 连通性 -->
-			<span v-if="item.item == 'connectivity' && item.options != null && item.options.groups != null && item.options.groups.length > 0">[<span v-for="(group, groupIndex) in item.options.groups">{{group.name}} <span v-if="groupIndex != item.options.groups.length - 1">&nbsp; </span></span>]</span>
-			
-			 <span  class="grey">[{{itemOperatorName(item.operator)}}]</span> &nbsp;{{item.value}}{{itemUnitName(item.item)}} &nbsp;<span v-if="itemIndex != threshold.items.length - 1" style="font-style: italic">AND &nbsp;</span></span>
+			<span v-for="(item, itemIndex) in threshold.items">
+				<span v-if="item.item != 'nodeHealthCheckFailed'">
+					[{{item.duration}}{{itemDurationUnitName(item.durationUnit)}}]
+				</span> 
+				{{itemName(item.item)}}
+				
+				<span v-if="item.item != 'nodeHealthCheckFailed'">
+					<!-- 连通性 -->
+					<span v-if="item.item == 'connectivity' && item.options != null && item.options.groups != null && item.options.groups.length > 0">[<span v-for="(group, groupIndex) in item.options.groups">{{group.name}} <span v-if="groupIndex != item.options.groups.length - 1">&nbsp; </span></span>]</span>
+				
+					<span  class="grey">[{{itemOperatorName(item.operator)}}]</span> &nbsp;{{item.value}}{{itemUnitName(item.item)}} 
+			 	</span>
+			 	&nbsp;<span v-if="itemIndex != threshold.items.length - 1" style="font-style: italic">AND &nbsp;</span>
+			</span>
 			-&gt;
 			<span v-for="(action, actionIndex) in threshold.actions">{{actionName(action.action)}}
 			<span v-if="action.action == 'switch'">到{{action.options.ips.join(", ")}}</span>
@@ -365,10 +389,17 @@ Vue.component("node-ip-address-thresholds-box", {
 					<!-- 已经添加的项目 -->
 					<div>
 						<div v-for="(item, index) in addingThreshold.items" class="ui label basic small" style="margin-bottom: 0.5em;">
-							[{{item.duration}}{{itemDurationUnitName(item.durationUnit)}}] {{itemName(item.item)}}
-							<!-- 连通性 -->
-							<span v-if="item.item == 'connectivity' && item.options != null && item.options.groups != null && item.options.groups.length > 0">[<span v-for="(group, groupIndex) in item.options.groups">{{group.name}} <span v-if="groupIndex != item.options.groups.length - 1">&nbsp; </span></span>]</span>
-							 <span class="grey">[{{itemOperatorName(item.operator)}}]</span> {{item.value}}{{itemUnitName(item.item)}} &nbsp;
+							<span v-if="item.item != 'nodeHealthCheckFailed'">
+								[{{item.duration}}{{itemDurationUnitName(item.durationUnit)}}]
+							</span> 
+							{{itemName(item.item)}}
+							
+							<span v-if="item.item != 'nodeHealthCheckFailed'">
+								<!-- 连通性 -->
+								<span v-if="item.item == 'connectivity' && item.options != null && item.options.groups != null && item.options.groups.length > 0">[<span v-for="(group, groupIndex) in item.options.groups">{{group.name}} <span v-if="groupIndex != item.options.groups.length - 1">&nbsp; </span></span>]</span>
+								 <span class="grey">[{{itemOperatorName(item.operator)}}]</span> {{item.value}}{{itemUnitName(item.item)}}
+							 </span> 
+							 &nbsp;
 							<a href="" title="删除" @click.prevent="removeItem(index)"><i class="icon remove small"></i></a>
 						</div>
 					</div>
@@ -385,7 +416,7 @@ Vue.component("node-ip-address-thresholds-box", {
 									<p class="comment" v-for="item in allItems" v-if="item.code == itemCode">{{item.description}}</p>
 								</td>
 							</tr>
-							<tr>
+							<tr v-show="itemCode != 'nodeHealthCheckFailed'">
 								<td>统计周期</td>
 								<td>
 									<div class="ui input right labeled">
@@ -394,7 +425,7 @@ Vue.component("node-ip-address-thresholds-box", {
 									</div>
 								</td>
 							</tr>
-							<tr>
+							<tr v-show="itemCode != 'nodeHealthCheckFailed'">
 								<td>操作符</td>
 								<td>
 									<select class="ui dropdown auto-width" v-model="itemOperator">
@@ -402,7 +433,7 @@ Vue.component("node-ip-address-thresholds-box", {
 									</select>
 								</td>
 							</tr>
-							<tr>
+							<tr v-show="itemCode != 'nodeHealthCheckFailed'">
 								<td>对比值</td>
 								<td>
 									<div class="ui input right labeled">
