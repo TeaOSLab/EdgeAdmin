@@ -5,7 +5,7 @@ Tea.context(function () {
 
 	this.updateUp = function (addrId, isUp) {
 		let status = isUp ? "在线" : "离线"
-		teaweb.confirm("确定要手动将节点设置为" + status + "吗？", function () {
+		teaweb.confirm("确定要手动将此IP设置为" + status + "吗？", function () {
 			this.$post(".up")
 				.params({
 					addrId: addrId,
