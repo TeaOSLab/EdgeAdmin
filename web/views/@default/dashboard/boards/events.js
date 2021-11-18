@@ -1,6 +1,6 @@
 Tea.context(function () {
 	this.updateRead = function (logId) {
-		this.$post(".readEvents")
+		this.$post(".readLogs")
 			.params({
 				logIds: [logId]
 			})
