@@ -101,12 +101,17 @@ Vue.component("node-ip-address-thresholds-view", {
 		<div class="ui label basic small" v-for="(threshold, index) in thresholds" style="margin-bottom: 0.8em">
 			<span v-for="(item, itemIndex) in threshold.items">
 				<span>
-					<span v-if="item.item != 'nodeHealthCheckFailed'">
+					<span v-if="item.item != 'nodeHealthCheck'">
 						[{{item.duration}}{{itemDurationUnitName(item.durationUnit)}}]
 					</span>	 
 					{{itemName(item.item)}}
 					
-					<span v-if="item.item != 'nodeHealthCheckFailed'">
+					<span v-if="item.item == 'nodeHealthCheck'">
+						<!-- 健康检查 -->
+						<span v-if="item.value == 1">成功</span>
+						<span v-if="item.value == 0">失败</span>
+					</span>
+					<span v-else>
 						<!-- 连通性 -->
 						<span v-if="item.item == 'connectivity' && item.options != null && item.options.groups != null && item.options.groups.length > 0">[<span v-for="(group, groupIndex) in item.options.groups">{{group.name}} <span v-if="groupIndex != item.options.groups.length - 1">&nbsp; </span></span>]</span>
 						
