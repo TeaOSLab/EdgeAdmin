@@ -27,7 +27,7 @@ type RPCClient struct {
 	apiConfig *configs.APIConfig
 	conns     []*grpc.ClientConn
 
-	locker sync.Mutex
+	locker sync.RWMutex
 }
 
 // NewRPCClient 构造新的RPC客户端
@@ -535,7 +535,11 @@ func (this *RPCClient) APIContext(apiNodeId int64) context.Context {
 // UpdateConfig 修改配置
 func (this *RPCClient) UpdateConfig(config *configs.APIConfig) error {
 	this.apiConfig = config
-	return this.init()
+
+	this.locker.Lock()
+	err := this.init()
+	this.locker.Unlock()
+	return err
 }
 
 // 初始化
