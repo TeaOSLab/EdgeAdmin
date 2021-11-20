@@ -1,0 +1,304 @@
+{$layout}
+
+<div class="margin"></div>
+
+<div class="ui steps fluid small">
+    <div class="ui step" :class="{active: step == STEP_PREPARE}">
+        <div class="content">开始</div>
+    </div>
+    <div class="ui step" :class="{active: step == STEP_DATABASE}">
+        <div class="content">迁移数据库</div>
+    </div>
+    <div class="ui step" :class="{active: step == STEP_API}">
+        <div class="content">迁移API节点</div>
+    </div>
+    <div class="ui step" :class="{active: step == STEP_ADDRESS}">
+        <div class="content">变更地址</div>
+    </div>
+    <div class="ui step" :class="{active: step == STEP_ADMIN}">
+        <div class="content">迁移管理平台</div>
+    </div>
+    <div class="ui step" :class="{active: step == STEP_UPGRADE}">
+        <div class="content">升级节点配置</div>
+    </div>
+    <div class="ui step" :class="{active: step == STEP_FINISH}">
+        <div class="content">完成</div>
+    </div>
+</div>
+
+<!-- 准备工作 -->
+<div class="step-box" v-if="step == STEP_PREPARE">
+    <div class="content">
+        <p>通过此引导程序可以帮助你将当前平台配置迁移到新的平台中。</p>
+        <p>每个步骤请小心操作，一旦配置错误可能需要手工还原。</p>
+    </div>
+
+    <div class="ui button-group">
+        <button class="ui button primary next" @click.prevent="doPrepare()">下一步</button>
+    </div>
+</div>
+
+<!-- 数据库 -->
+<div class="step-box" v-if="step == STEP_DATABASE">
+    <form class="ui form">
+        <table class="ui table selectable definition">
+            <tr>
+                <td class="title">数据库地址是否改变？</td>
+                <td>
+                   <div class="ui fields inline">
+                       <div class="ui field">
+                           <div class="ui radio checkbox">
+                               <input type="radio" value="0" v-model="databaseChanged" id="database-changed-0" class="hidden"/>
+                               <label for="database-changed-0">没有变</label>
+                           </div>
+                       </div>
+                       <div class="ui field">
+                           <div class="ui radio checkbox">
+                               <input type="radio" value="1" v-model="databaseChanged" id="database-changed-1" class="hidden"/>
+                               <label for="database-changed-1">变了</label>
+                           </div>
+                       </div>
+                   </div>
+                </td>
+            </tr>
+            <tr v-if="databaseChanged == 1">
+                <td>数据是否已经导入到新的数据库？</td>
+                <td>
+                    <div class="ui fields inline">
+                        <div class="ui field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" value="0" v-model="databaseTransferred" id="database-transferred-0" class="hidden"/>
+                                <label for="database-transferred-0">没有导入</label>
+                            </div>
+                        </div>
+                        <div class="ui field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" value="1" v-model="databaseTransferred" id="database-transferred-1" class="hidden"/>
+                                <label for="database-transferred-1">已经导入</label>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="comment" v-if="databaseTransferred == 0"><span class="red">请自行将老的数据库中数据导入到新的数据库中。</span></p>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div class="ui button-group">
+        <button class="ui button prev" @click.prevent="doBack(STEP_PREPARE)">上一步</button>
+        <button class="ui button primary next" @click.prevent="doDatabase()">下一步</button>
+    </div>
+</div>
+
+<!-- 检查API节点 -->
+<div class="step-box" v-if="step == STEP_API">
+    <form class="ui form">
+        <table class="ui table selectable definition">
+            <tr>
+                <td class="title">API节点地址是否变更？</td>
+                <td>
+                    <div class="ui fields inline">
+                        <div class="ui field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" value="1" v-model="apiNodeChanged" id="api-node-changed-1" class="hidden"/>
+                                <label for="api-node-changed-1">已经变更</label>
+                            </div>
+                        </div>
+                        <div class="ui field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" value="0" v-model="apiNodeChanged" id="api-node-changed-0" class="hidden"/>
+                                <label for="api-node-changed-0">没有变更</label>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tbody v-show="apiNodeChanged == 1">
+                <tr>
+                    <td>是否已安装新的API节点</td>
+                    <td>
+                        <div class="ui fields inline">
+                            <div class="ui field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" value="1" v-model="apiNodeInstalled" id="api-node-installed-1" class="hidden"/>
+                                    <label for="api-node-installed-1">已经安装</label>
+                                </div>
+                            </div>
+                            <div class="ui field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" value="0" v-model="apiNodeInstalled" id="api-node-installed-0" class="hidden"/>
+                                    <label for="api-node-installed-0">没有安装</label>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="comment" v-if="apiNodeInstalled == 0"><span class="red">请先安装新的API节点，请拷贝当前的API节点配置<code-label>configs/api.yaml</code-label>和<code-label>configs/db.yaml</code-label>到新API节点对应的位置，并记得修改其中的<code-label>configs/db.yaml</code-label>中的数据库地址、用户名、密码。</span></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>新的API节点IP或域名 *</td>
+                    <td>
+                        <input type="text" name="newAPINodeHost" placeholder="IP或域名" v-model="apiNodeHost" style="width: 14em" maxlength="100"/>
+                        <p class="comment">如果有多个IP或者域名，填写任意其中一个即可。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>新的API节点端口 *</td>
+                    <td>
+                        <input type="text" name="newAPINodePort" v-model="apiNodePort" style="width: 5em" maxlength="5" placeholder="端口"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>新的API节点协议</td>
+                    <td>
+                        <select class="ui dropdown auto-width" v-model="apiNodeProtocol">
+                            <option value="http">HTTP</option>
+                            <option value="https">HTTPS</option>
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+
+    <div class="button-group">
+        <button class="ui button prev" @click.prevent="doBack(STEP_DATABASE)">上一步</button>
+        <button class="ui button primary next" @click.prevent="doAPI()">下一步</button>
+    </div>
+</div>
+
+<!-- 地址 -->
+<div class="step-box" v-show="step == STEP_ADDRESS">
+    <form method="post" class="ui form" data-tea-action=".updateHosts" data-tea-success="doAddress">
+        <input type="hidden" name="host" :value="apiNodeHost"/>
+        <input type="hidden" name="port" :value="apiNodePort"/>
+        <input type="hidden" name="protocol" :value="apiNodeProtocol"/>
+        <table class="ui table selectable celled">
+            <thead>
+            <tr>
+                <th style="width: 50%">API节点原地址</th>
+                <th>API节点新地址（留空表示不修改）</th>
+            </tr>
+            </thead>
+            <tr v-for="host in apiAddressHosts">
+                <td>{{host}}</td>
+                <td>
+                    <input type="text" maxlength="100" name="newHosts"/>
+                    <input type="hidden" name="oldHosts" :value="host"/>
+                </td>
+            </tr>
+        </table>
+
+
+        <div class="button-group">
+            <button class="ui button prev" @click.prevent="doBack(STEP_API)">上一步</button>
+            <button type="submit" class="ui button primary next">下一步</button>
+        </div>
+    </form>
+</div>
+
+<!-- admin -->
+<div class="step-box" v-if="step == STEP_ADMIN">
+    <form class="ui form">
+        <table class="ui table selectable definition">
+            <tr>
+                <td class="title">管理平台地址是否变更？</td>
+                <td>
+                    <div class="ui fields inline">
+                        <div class="ui field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" value="1" v-model="adminNodeChanged" id="admin-node-changed-1" class="hidden"/>
+                                <label for="admin-node-changed-1">已经变更</label>
+                            </div>
+                        </div>
+                        <div class="ui field">
+                            <div class="ui radio checkbox">
+                                <input type="radio" value="0" v-model="adminNodeChanged" id="admin-node-changed-0" class="hidden"/>
+                                <label for="admin-node-changed-0">没有变更</label>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tbody v-show="adminNodeChanged == 1">
+                <tr>
+                    <td>是否已安装新的管理平台</td>
+                    <td>
+                        <div class="ui fields inline">
+                            <div class="ui field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" value="1" v-model="adminNodeInstalled" id="admin-node-installed-1" class="hidden"/>
+                                    <label for="admin-node-installed-1">已经安装</label>
+                                </div>
+                            </div>
+                            <div class="ui field">
+                                <div class="ui radio checkbox">
+                                    <input type="radio" value="0" v-model="adminNodeInstalled" id="admin-node-installed-0" class="hidden"/>
+                                    <label for="admin-node-installed-0">没有安装</label>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="comment" v-if="adminNodeInstalled == 0"><span class="red">请先安装新的管理平台，请拷贝当前的管理平台下的<code-label>configs/</code-label>目录下的配置到新管理平台对应的位置。</span></p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+
+    <div class="ui button-group">
+        <button class="ui button prev" @click.prevent="doBack(STEP_API)" v-if="apiNodeChanged == 0">上一步</button>
+        <button class="ui button prev" @click.prevent="doBack(STEP_ADDRESS)" v-if="apiNodeChanged == 1">上一步</button>
+        <button class="ui button primary next" @click.prevent="doAdmin()">下一步</button>
+    </div>
+</div>
+
+<!-- 升级节点配置 -->
+<div class="step-box" v-if="step == STEP_UPGRADE">
+    <form class="ui form">
+        <table class="ui table selectable definition">
+            <tr>
+                <td class="title">升级节点API地址配置</td>
+                <td>
+                    <span>{{apiNodeProtocol}}://<span v-if="apiNodeHost.indexOf(':')>0">[{{apiNodeHost}}]</span><span v-else>{{apiNodeHost}}</span>:{{apiNodePort}}</span>
+                </td>
+            </tr>
+            <tr>
+                <td>当前平台节点数</td>
+                <td>
+                    <span v-if="isUpgrading">{{countNodes}}</span>
+                    <span v-else>-</span>
+                </td>
+            </tr>
+            <tr>
+                <td>新平台节点数</td>
+                <td>
+                    <span v-if="isUpgrading">{{countFinishedNodes}}</span>
+                    <span v-else>-</span>
+                </td>
+            </tr>
+            <tr>
+                <td>完成比例</td>
+                <td>
+                    <span v-if="isUpgrading">{{percentNodes}}%</span>
+                    <span v-else>-</span>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <div class="ui button-group">
+        <button class="ui button prev" @click.prevent="doBack(STEP_ADMIN)">上一步</button>
+        <button class="ui button primary next" @click.prevent="doStartUpgrade()" v-if="!isUpgrading">开始升级</button>
+        <button class="ui button next" :class="{disabled: percentNodes<100}" v-if="isUpgrading && percentNodes < 100">等待完成</button>
+        <button class="ui button primary next" @click.prevent="doUpgrade()" v-if="isUpgrading && percentNodes == 100">下一步</button>
+    </div>
+</div>
+
+<!-- 完成 -->
+<div class="step-box" v-if="step == STEP_FINISH">
+    <div class="content">
+        <p v-if="adminNodeChanged == 1">所有迁移任务已完成，请登录新的管理平台进行管理。</p>
+        <p v-if="adminNodeChanged == 0">所有迁移任务已完成。</p>
+    </div>
+    <div class="ui button-group">
+        <button class="ui button prev" @click.prevent="doBack(STEP_UPGRADE)">上一步</button>
+        <button class="ui button primary next" @click.prevent="doFinish()">完成</button>
+    </div>
+</div>
