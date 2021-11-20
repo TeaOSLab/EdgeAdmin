@@ -1,0 +1,13 @@
+.steps .step.active .content {
+  font-weight: bold;
+}
+.step-box .button-group {
+  margin-top: 1em;
+}
+.step-box .button-group .next {
+  float: right;
+}
+.step-box .content {
+  min-height: 6em;
+}
+/*# sourceMappingURL=index.css.map */

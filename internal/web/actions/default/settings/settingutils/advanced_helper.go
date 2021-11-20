@@ -40,6 +40,7 @@ func (this *AdvancedHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNex
 		if teaconst.IsPlus {
 			tabbar.Add("监控节点", "", "/settings/monitorNodes", "", this.tab == "monitorNodes")
 		}
+		tabbar.Add("迁移", "", "/settings/transfer", "", this.tab == "transfer")
 		if teaconst.BuildPlus {
 			tabbar.Add("商业版认证", "", "/settings/authority", "", this.tab == "authority")
 		}

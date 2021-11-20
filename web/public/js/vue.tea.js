@@ -2306,7 +2306,7 @@ window.Tea.Action = function (action, params) {
 				console.log(error);
 
 				if (typeof (_errorFn) === "function") {
-					_errorFn.call(Tea.Vue, {});
+					_errorFn.call(Tea.Vue, { message: error.message });
 				}
 			})
 			.then(function () {
