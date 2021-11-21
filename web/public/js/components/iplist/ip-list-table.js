@@ -68,7 +68,7 @@ Vue.component("ip-list-table", {
 					itemIds: itemIds
 				})
 				.success(function () {
-					teaweb.successToast("批量删除成功", 2000, teaweb.reload)
+					teaweb.successToast("批量删除成功", 1200, teaweb.reload)
 				})
 		}
 	},
