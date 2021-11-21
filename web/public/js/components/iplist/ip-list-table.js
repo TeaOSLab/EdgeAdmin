@@ -3,7 +3,9 @@ Vue.component("ip-list-table", {
 	data: function () {
 		return {
 			items: this.vItems,
-			keyword: (this.vKeyword != null) ? this.vKeyword : ""
+			keyword: (this.vKeyword != null) ? this.vKeyword : "",
+			selectedAll: false,
+			hasSelectedItems: false
 		}
 	},
 	methods: {
@@ -18,12 +20,71 @@ Vue.component("ip-list-table", {
 				width: "50em",
 				height: "30em"
 			})
+		},
+		changeSelectedAll: function () {
+			let boxes = this.$refs.itemCheckBox
+			if (boxes == null) {
+				return
+			}
+
+			let that = this
+			boxes.forEach(function (box) {
+				box.checked = that.selectedAll
+			})
+
+			this.hasSelectedItems = this.selectedAll
+		},
+		changeSelected: function (e) {
+			let that = this
+			that.hasSelectedItems = false
+			let boxes = that.$refs.itemCheckBox
+			if (boxes == null) {
+				return
+			}
+			boxes.forEach(function (box) {
+				if (box.checked) {
+					that.hasSelectedItems = true
+				}
+			})
+		},
+		deleteAll: function () {
+			let boxes = this.$refs.itemCheckBox
+			if (boxes == null) {
+				return
+			}
+			let itemIds = []
+			boxes.forEach(function (box) {
+				if (box.checked) {
+					itemIds.push(box.value)
+				}
+			})
+			if (itemIds.length == 0) {
+				return
+			}
+
+			Tea.action("/servers/iplists/deleteItems")
+				.post()
+				.params({
+					itemIds: itemIds
+				})
+				.success(function () {
+					teaweb.successToast("批量删除成功", 2000, teaweb.reload)
+				})
 		}
 	},
 	template: `<div>
+ <div v-show="hasSelectedItems">
+ 	<a href="" @click.prevent="deleteAll">[批量删除]</a>
+</div>
  <table class="ui table selectable celled" v-if="items.length > 0">
         <thead>
             <tr>
+            	<th style="width: 1em">
+            		<div class="ui checkbox">
+						<input type="checkbox" v-model="selectedAll" @change="changeSelectedAll"/>
+						<label></label>
+					</div>
+				</th>
                 <th style="width:18em">IP</th>
                 <th>类型</th>
                 <th>级别</th>
@@ -34,6 +95,12 @@ Vue.component("ip-list-table", {
         </thead>
 		<tbody v-for="item in items">
 			<tr>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" :value="item.id" @change="changeSelected" ref="itemCheckBox"/>
+						<label></label>
+					</div>
+				</td>
 				<td>
 					<span v-if="item.type != 'all'">
 					<keyword :v-word="keyword">{{item.ipFrom}}</keyword> <span>&nbsp;<a :href="'/servers/iplists?ip=' + item.ipFrom" v-if="vShowSearchButton" title="搜索此IP"><span><i class="icon search small" style="color: #ccc"></i></span></a></span>

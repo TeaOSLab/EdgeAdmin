@@ -21,6 +21,7 @@ func init() {
 			GetPost("/export", new(ExportAction)).
 			Get("/exportData", new(ExportDataAction)).
 			Post("/delete", new(DeleteAction)).
+			Post("/deleteItems", new(DeleteItemsAction)).
 			GetPost("/test", new(TestAction)).
 			GetPost("/update", new(UpdateAction)).
 			Get("/items", new(ItemsAction)).
