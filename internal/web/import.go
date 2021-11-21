@@ -127,6 +127,7 @@ import (
 
 	// 安装
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/setup"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/setup/confirm"
 
 	// 平台用户
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/users"

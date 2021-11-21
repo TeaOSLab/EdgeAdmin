@@ -1,0 +1,85 @@
+.install-box {
+	@width: 50em;
+
+	width: @width;
+	position: fixed;
+	left: 50%;
+	margin-left: -@width/2;
+	top: 1em;
+	bottom: 1em;
+	overflow-y: auto;
+
+	.button.margin {
+		margin-top: 1em;
+	}
+
+	.button.primary {
+		float: right;
+	}
+
+	.button.disabled {
+		float: right;
+	}
+
+	table {
+		td.title {
+			width: 10em;
+		}
+	}
+
+	.radio {
+		margin-right: 1em;
+
+		label {
+			cursor: pointer !important;
+			font-size: 0.9em !important;
+		}
+	}
+
+	h4 {
+		font-weight: normal;
+	}
+
+	.content-box {
+		overflow-y: auto;
+		position: fixed;
+		top: 5em;
+		bottom: 5em;
+		left: 50%;
+		width: @width;
+		padding-right: 1em;
+		margin-left: -@width/2;
+		z-index: 1;
+	}
+
+	.content-box::-webkit-scrollbar {
+		width: 4px;
+	}
+
+	.button-group {
+		position: fixed;
+		left: 50%;
+		margin-left: -@width/2;
+		z-index: 1;
+		width: @width;
+		bottom: 1em;
+
+		button {
+			z-index: 10;
+		}
+
+		.status-box {
+			position: absolute;
+			top: 3em;
+			left: 15em;
+			right: 15em;
+			bottom: 0;
+			text-align: center;
+			z-index: 0;
+		}
+	}
+}
+
+.install-box::-webkit-scrollbar {
+	width: 4px;
+}
