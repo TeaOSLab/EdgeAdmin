@@ -43,6 +43,12 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 
+	//// 是否新安装
+	if setup.IsNewInstalled() {
+		this.RedirectURL("/setup/confirm")
+		return
+	}
+
 	// 已登录跳转到dashboard
 	if params.Auth.IsUser() {
 		this.RedirectURL("/dashboard")

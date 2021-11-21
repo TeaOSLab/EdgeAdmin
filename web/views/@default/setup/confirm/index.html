@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="shortcut icon" href="/images/favicon.png"/>
+    <title>确认GoEdge管理系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    {$TEA.VUE}
+    {$TEA.SEMANTIC}
+    <script type="text/javascript" src="/js/md5.min.js"></script>
+    <script type="text/javascript" src="/js/utils.js"></script>
+    <script type="text/javascript" src="/js/sweetalert2/dist/sweetalert2.all.min.js"></script>
+    <script type="text/javascript" src="/ui/components.js"></script>
+    <link rel="stylesheet" href="/_/@default/@layout.css"/>
+</head>
+<body>
+
+<div class="install-box">
+    <h4>系统发现你可能将管理系统迁移到了新的服务器，为了让系统能正常运行，请做以下确认：</h4>
+
+    <form class="ui form" data-tea-action="$" data-tea-before="before" data-tea-done="done" data-tea-success="success">
+        <table class="ui table definition selectable">
+            <tbody v-for="(endpoint, index) in endpoints">
+                <tr>
+                    <td class="title">API节点地址<span v-if="endpoints.length > 1">{{index+1}}</span> *</td>
+                    <td>
+                        <input type="text" name="endpoints" v-model="endpoints[index]"/>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody>
+                <tr>
+                    <td>NodeId *</td>
+                    <td>
+                        <input type="text" name="nodeId" v-model="nodeId" maxlength="100"/>
+                        <p class="comment">可以在安装时的系统目录下<code-label>configs/api.yaml</code-label>文件中找到。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Secret *</td>
+                    <td>
+                        <input type="text" name="secret" v-model="secret" maxlength="100"/>
+                        <p class="comment">可以在安装时的系统目录下<code-label>configs/api.yaml</code-label>文件中找到。</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="margin" style="margin-top: 2em"></div>
+        <button class="ui button primary" type="submit" v-if="!isRequesting">确认</button>
+        <button class="ui button disabled" type="button" v-if="isRequesting">检查中...</button>
+    </form>
+</div>
+
+</body>
+</html>
