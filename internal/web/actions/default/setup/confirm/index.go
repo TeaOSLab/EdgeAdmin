@@ -26,10 +26,14 @@ func (this *IndexAction) RunGet(params struct{}) {
 	config, err := configs.LoadAPIConfig()
 	if err == nil {
 		endpoints = config.RPC.Endpoints
+		this.Data["nodeId"] = config.NodeId
+		this.Data["secret"] = config.Secret
+		this.Data["canInstall"] = false
+	} else {
+		this.Data["nodeId"] = ""
+		this.Data["secret"] = ""
+		this.Data["canInstall"] = true
 	}
-
-	this.Data["nodeId"] = config.NodeId
-	this.Data["secret"] = config.Secret
 
 	if len(endpoints) == 0 {
 		endpoints = []string{""} // 初始化一个空的
