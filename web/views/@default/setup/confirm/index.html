@@ -47,6 +47,7 @@
         </table>
 
         <div class="margin" style="margin-top: 2em"></div>
+        <a href="/setup" class="ui button" type="button" v-if="canInstall">重新安装</a>
         <button class="ui button primary" type="submit" v-if="!isRequesting">确认</button>
         <button class="ui button disabled" type="button" v-if="isRequesting">检查中...</button>
     </form>

@@ -11,7 +11,7 @@ require (
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/google/go-cmp v0.5.6 // indirect
 	github.com/iwind/TeaGo v0.0.0-20211026123858-7de7a21cad24
-	github.com/iwind/gosock v0.0.0-20210722083328-12b2d66abec3
+	github.com/iwind/gosock v0.0.0-20211103081026-ee4652210ca4
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/miekg/dns v1.1.35
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect

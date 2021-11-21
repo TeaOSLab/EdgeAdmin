@@ -16,6 +16,7 @@ import (
 	"github.com/iwind/TeaGo/dbs"
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/iwind/gosock/pkg/gosock"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -167,6 +168,9 @@ func (this *InstallAction) RunPost(params struct {
 			if !resultMap.GetBool("isOk") {
 				this.Fail("节点安装错误：" + resultMap.GetString("error"))
 			}
+
+			// 等数据完全写入
+			time.Sleep(1 * time.Second)
 		}
 
 		// 关闭正在运行的API节点，防止冲突
@@ -190,7 +194,30 @@ func (this *InstallAction) RunPost(params struct {
 			nodes.SharedAdminNode.AddSubPID(cmd.Process.Pid)
 
 			// 等待API节点初始化完成
-			time.Sleep(5 * time.Second)
+			currentStatusText = "正在等待API节点启动完毕"
+			var apiNodeSock = gosock.NewTmpSock("edge-api")
+			var maxRetries = 5
+			for {
+				reply, err := apiNodeSock.SendTimeout(&gosock.Command{
+					Code: "starting",
+				}, 3*time.Second)
+				if err != nil {
+					if maxRetries < 0 {
+						this.Fail("API节点启动失败，请查看运行日志检查是否正常")
+					} else {
+						time.Sleep(3 * time.Second)
+						maxRetries--
+					}
+				} else {
+					if !maps.NewMap(reply.Params).GetBool("isStarting") {
+						currentStatusText = "API节点启动完毕"
+						break
+					}
+
+					// 继续等待完成
+					time.Sleep(3 * time.Second)
+				}
+			}
 		}
 
 		// 写入API节点配置，完成安装
