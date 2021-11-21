@@ -132,7 +132,7 @@ Vue.component("datetime-input", {
 			this.hasSecondError = false
 			date.setSeconds(second)
 
-			this.timestamp = Math.ceil(date.getTime() / 1000)
+			this.timestamp = Math.floor(date.getTime() / 1000)
 		},
 		leadingZero: function (s, l) {
 			if (l <= s.length) {
