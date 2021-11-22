@@ -35,17 +35,17 @@
                     源站服务器地址，通常是一个IP（或域名）加端口<span v-if="serverType == 'httpProxy'">，不需要加 http:// 或 https://</span>。</p>
 			</td>
 		</tr>
-        <tr v-if="isHTTP">
-            <td>专属域名</td>
-            <td>
-                <domains-box></domains-box>
-                <p class="comment">不为空时，指定的这些域名访问时当前源站才生效。</p>
-            </td>
-        </tr>
 		<tr>
 			<td colspan="2"><more-options-indicator></more-options-indicator></td>
 		</tr>
 		<tbody v-show="moreOptionsVisible">
+            <tr v-if="isHTTP">
+                <td>专属域名</td>
+                <td>
+                    <domains-box></domains-box>
+                    <p class="comment">默认不需要填写，表示支持所有域名。如果填写了专属域名，表示这些源站只会在这些域名被访问时才生效。</p>
+                </td>
+            </tr>
             <tr>
                 <td>权重</td>
                 <td>
