@@ -5,6 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/apps"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
+	"github.com/TeaOSLab/EdgeAdmin/internal/gen"
 	"github.com/TeaOSLab/EdgeAdmin/internal/nodes"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web"
 	_ "github.com/iwind/TeaGo/bootstrap"
@@ -69,6 +70,13 @@ func main() {
 			return
 		}
 		fmt.Println("change demo mode successfully")
+	})
+	app.On("generate", func() {
+		err := gen.Generate()
+		if err != nil {
+			fmt.Println("generate failed: " + err.Error())
+			return
+		}
 	})
 	app.Run(func() {
 		adminNode := nodes.NewAdminNode()

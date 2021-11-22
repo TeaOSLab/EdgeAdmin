@@ -1,11 +1,10 @@
 package ui
 
 import (
-	"compress/gzip"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/iwind/TeaGo"
-	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/Tea"
 )
 
 func init() {
@@ -15,11 +14,6 @@ func init() {
 
 			// 公共可以访问的链接
 			Get("/image/:fileId", new(ImageAction)).
-
-			// 以下的需要压缩
-			Helper(&actions.Gzip{Level: gzip.BestCompression}).
-			Get("/components.js", new(ComponentsAction)).
-			EndHelpers().
 
 			// 以下需要登录
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeCommon)).
@@ -31,7 +25,13 @@ func init() {
 			Post("/hideTip", new(HideTipAction)).
 			Post("/theme", new(ThemeAction)).
 			Post("/validateIPs", new(ValidateIPsAction)).
-
 			EndAll()
+
+		// 开发环境下总是动态加载，以便于调试
+		if Tea.IsTesting() {
+			server.
+				Get("/js/components.js", new(ComponentsAction)).
+				EndAll()
+		}
 	})
 }
