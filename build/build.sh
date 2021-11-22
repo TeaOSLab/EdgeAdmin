@@ -58,6 +58,10 @@ function build() {
 	rm -f $(basename $EDGE_API_ZIP_FILE)
 	cd -
 
+    # generate files
+    echo "generating files ..."
+	go run  -tags $TAG $ROOT/../cmd/edge-admin/main.go generate
+
 	# build
 	echo "building "${NAME}" ..."
 	env GOOS=$OS GOARCH=$ARCH go build -tags $TAG -ldflags="-s -w" -o $DIST/bin/${NAME} $ROOT/../cmd/edge-admin/main.go
