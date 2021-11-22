@@ -57,6 +57,14 @@ func (this *CreateAction) RunGet(params struct{}) {
 	// 服务类型
 	this.Data["serverTypes"] = serverconfigs.AllServerTypes()
 
+	// 检查是否有用户
+	countUsersResp, err := this.RPC().UserRPC().CountAllEnabledUsers(this.AdminContext(), &pb.CountAllEnabledUsersRequest{})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["hasUsers"] = countUsersResp.Count > 0
+
 	this.Show()
 }
 
@@ -94,14 +102,16 @@ func (this *CreateAction) RunPost(params struct {
 
 	// 用户
 	var userId = params.UserId
-	clusterIdResp, err := this.RPC().UserRPC().FindUserNodeClusterId(this.AdminContext(), &pb.FindUserNodeClusterIdRequest{UserId: userId})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	clusterId = clusterIdResp.NodeClusterId
-	if clusterId <= 0 {
-		this.Fail("请选择部署的集群")
+	if userId > 0 {
+		clusterIdResp, err := this.RPC().UserRPC().FindUserNodeClusterId(this.AdminContext(), &pb.FindUserNodeClusterIdRequest{UserId: userId})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		clusterId = clusterIdResp.NodeClusterId
+		if clusterId <= 0 {
+			this.Fail("请选择部署的集群")
+		}
 	}
 
 	// 套餐

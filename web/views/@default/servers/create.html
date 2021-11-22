@@ -11,7 +11,7 @@
 				<input type="text" name="name" maxlength="60" ref="focus"/>
 			</td>
 		</tr>
-        <tr>
+        <tr v-show="hasUsers">
             <td>选择用户</td>
             <td>
                 <user-selector @change="changeUserId"></user-selector>
