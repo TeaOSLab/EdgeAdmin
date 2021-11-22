@@ -1,7 +1,7 @@
 package teaconst
 
 const (
-	Version = "0.3.5"
+	Version = "0.3.5.1"
 
 	APINodeVersion = "0.3.5"
 
