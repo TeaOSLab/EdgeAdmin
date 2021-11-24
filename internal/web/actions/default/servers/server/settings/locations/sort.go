@@ -47,7 +47,7 @@ func (this *SortAction) RunPost(params struct {
 		return
 	}
 	_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebLocations(this.AdminContext(), &pb.UpdateHTTPWebLocationsRequest{
-		WebId:         params.WebId,
+		HttpWebId:     params.WebId,
 		LocationsJSON: newRefsJSON,
 	})
 	if err != nil {

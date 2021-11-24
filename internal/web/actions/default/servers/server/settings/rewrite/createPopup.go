@@ -108,7 +108,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 
 	// 设置Web中的重写规则
 	_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebRewriteRules(this.AdminContext(), &pb.UpdateHTTPWebRewriteRulesRequest{
-		WebId:            params.WebId,
+		HttpWebId:        params.WebId,
 		RewriteRulesJSON: refsJSON,
 	})
 	if err != nil {

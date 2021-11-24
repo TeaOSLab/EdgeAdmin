@@ -64,7 +64,7 @@ func (this *IndexAction) RunPost(params struct {
 	// TODO 检查配置
 
 	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebFirewall(this.AdminContext(), &pb.UpdateHTTPWebFirewallRequest{
-		WebId:        params.WebId,
+		HttpWebId:    params.WebId,
 		FirewallJSON: params.FirewallJSON,
 	})
 	if err != nil {

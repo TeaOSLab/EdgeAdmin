@@ -48,7 +48,7 @@ func (this *IndexAction) RunGet(params struct {
 			return
 		}
 		_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebRequestHeader(this.AdminContext(), &pb.UpdateHTTPWebRequestHeaderRequest{
-			WebId:      webId,
+			HttpWebId:  webId,
 			HeaderJSON: refJSON,
 		})
 		isChanged = true
@@ -71,7 +71,7 @@ func (this *IndexAction) RunGet(params struct {
 			return
 		}
 		_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebResponseHeader(this.AdminContext(), &pb.UpdateHTTPWebResponseHeaderRequest{
-			WebId:      webId,
+			HttpWebId:  webId,
 			HeaderJSON: refJSON,
 		})
 		isChanged = true
@@ -109,7 +109,7 @@ func (this *IndexAction) RunPost(params struct {
 	switch params.Type {
 	case "request":
 		_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebRequestHeader(this.AdminContext(), &pb.UpdateHTTPWebRequestHeaderRequest{
-			WebId:      params.WebId,
+			HttpWebId:  params.WebId,
 			HeaderJSON: params.RequestHeaderJSON,
 		})
 		if err != nil {
@@ -118,7 +118,7 @@ func (this *IndexAction) RunPost(params struct {
 		}
 	case "response":
 		_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebResponseHeader(this.AdminContext(), &pb.UpdateHTTPWebResponseHeaderRequest{
-			WebId:      params.WebId,
+			HttpWebId:  params.WebId,
 			HeaderJSON: params.ResponseHeaderJSON,
 		})
 		if err != nil {

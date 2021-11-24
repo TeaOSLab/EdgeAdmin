@@ -66,7 +66,7 @@ func (this *IndexAction) RunPost(params struct {
 	}
 
 	_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebCompression(this.AdminContext(), &pb.UpdateHTTPWebCompressionRequest{
-		WebId:           params.WebId,
+		HttpWebId:       params.WebId,
 		CompressionJSON: params.CompressionJSON,
 	})
 	if err != nil {

@@ -52,7 +52,7 @@ func (this *IndexAction) RunPost(params struct {
 	defer this.CreateLog(oplogs.LevelInfo, "修改Web %d 的字符集设置", params.WebId)
 
 	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebCharset(this.AdminContext(), &pb.UpdateHTTPWebCharsetRequest{
-		WebId:       params.WebId,
+		HttpWebId:   params.WebId,
 		CharsetJSON: params.CharsetJSON,
 	})
 	if err != nil {

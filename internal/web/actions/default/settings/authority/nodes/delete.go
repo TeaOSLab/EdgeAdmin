@@ -15,7 +15,7 @@ func (this *DeleteAction) RunPost(params struct {
 }) {
 	// TODO 检查权限
 
-	_, err := this.RPC().AuthorityNodeRPC().DeleteAuthorityNode(this.AdminContext(), &pb.DeleteAuthorityNodeRequest{NodeId: params.NodeId})
+	_, err := this.RPC().AuthorityNodeRPC().DeleteAuthorityNode(this.AdminContext(), &pb.DeleteAuthorityNodeRequest{AuthorityNodeId: params.NodeId})
 	if err != nil {
 		this.ErrorPage(err)
 		return

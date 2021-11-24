@@ -49,8 +49,8 @@ func (this *IndexAction) RunPost(params struct {
 	// TODO 校验配置
 
 	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebStat(this.AdminContext(), &pb.UpdateHTTPWebStatRequest{
-		WebId:    params.WebId,
-		StatJSON: params.StatJSON,
+		HttpWebId: params.WebId,
+		StatJSON:  params.StatJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)

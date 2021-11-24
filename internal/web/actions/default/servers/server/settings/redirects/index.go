@@ -42,7 +42,7 @@ func (this *IndexAction) RunPost(params struct {
 	defer this.CreateLogInfo("修改Web %d 的URL跳转设置", params.WebId)
 
 	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebHostRedirects(this.AdminContext(), &pb.UpdateHTTPWebHostRedirectsRequest{
-		WebId:             params.WebId,
+		HttpWebId:         params.WebId,
 		HostRedirectsJSON: params.HostRedirectsJSON,
 	})
 	if err != nil {
