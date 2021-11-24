@@ -1,9 +1,9 @@
 package teaconst
 
 const (
-	Version = "0.3.5.2"
+	Version = "0.3.6"
 
-	APINodeVersion = "0.3.5.2"
+	APINodeVersion = "0.3.6"
 
 	ProductName   = "Edge Admin"
 	ProcessName   = "edge-admin"
