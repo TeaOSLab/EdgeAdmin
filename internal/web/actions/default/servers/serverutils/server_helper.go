@@ -357,6 +357,19 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 				"isOn":     serverConfig.TrafficLimit != nil && serverConfig.TrafficLimit.IsOn,
 			})
 		}
+
+		menuItems = append(menuItems, maps.Map{
+			"name":     "-",
+			"url":      "",
+			"isActive": false,
+		})
+
+		menuItems = append(menuItems, maps.Map{
+			"name":     "其他设置",
+			"url":      "/servers/server/settings/common?serverId=" + serverIdString,
+			"isActive": secondMenuItem == "common",
+			"isOn":     serverConfig.Web != nil && serverConfig.Web.MergeSlashes,
+		})
 	} else if serverConfig.IsTCPFamily() {
 		menuItems = append(menuItems, maps.Map{
 			"name":     "TCP",
