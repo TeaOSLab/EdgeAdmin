@@ -45,7 +45,7 @@ func (this *IndexAction) RunPost(params struct {
 	// TODO 检查参数
 
 	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebAccessLog(this.AdminContext(), &pb.UpdateHTTPWebAccessLogRequest{
-		WebId:         params.WebId,
+		HttpWebId:     params.WebId,
 		AccessLogJSON: params.AccessLogJSON,
 	})
 	if err != nil {

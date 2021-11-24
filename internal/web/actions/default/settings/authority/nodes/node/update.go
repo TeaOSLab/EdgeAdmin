@@ -20,13 +20,13 @@ func (this *UpdateAction) RunGet(params struct {
 	NodeId int64
 }) {
 	nodeResp, err := this.RPC().AuthorityNodeRPC().FindEnabledAuthorityNode(this.AdminContext(), &pb.FindEnabledAuthorityNodeRequest{
-		NodeId: params.NodeId,
+		AuthorityNodeId: params.NodeId,
 	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	node := nodeResp.Node
+	node := nodeResp.AuthorityNode
 	if node == nil {
 		this.WriteString("要操作的节点不存在")
 		return
@@ -56,10 +56,10 @@ func (this *UpdateAction) RunPost(params struct {
 		Require("请输入认证节点名称")
 
 	_, err := this.RPC().AuthorityNodeRPC().UpdateAuthorityNode(this.AdminContext(), &pb.UpdateAuthorityNodeRequest{
-		NodeId:      params.NodeId,
-		Name:        params.Name,
-		Description: params.Description,
-		IsOn:        params.IsOn,
+		AuthorityNodeId: params.NodeId,
+		Name:            params.Name,
+		Description:     params.Description,
+		IsOn:            params.IsOn,
 	})
 	if err != nil {
 		this.ErrorPage(err)

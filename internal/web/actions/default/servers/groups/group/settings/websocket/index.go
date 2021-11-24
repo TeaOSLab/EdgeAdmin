@@ -110,7 +110,7 @@ func (this *IndexAction) RunPost(params struct {
 		return
 	}
 	_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebWebsocket(this.AdminContext(), &pb.UpdateHTTPWebWebsocketRequest{
-		WebId:         params.WebId,
+		HttpWebId:     params.WebId,
 		WebsocketJSON: websocketRefJSON,
 	})
 	if err != nil {

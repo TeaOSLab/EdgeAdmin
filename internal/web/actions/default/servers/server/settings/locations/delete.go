@@ -28,7 +28,7 @@ func (this *DeleteAction) RunPost(params struct {
 		return
 	}
 	_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebLocations(this.AdminContext(), &pb.UpdateHTTPWebLocationsRequest{
-		WebId:         params.WebId,
+		HttpWebId:     params.WebId,
 		LocationsJSON: refJSON,
 	})
 	if err != nil {

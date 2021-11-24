@@ -364,7 +364,7 @@ func (this *CreateAction) RunPost(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		webId = webResp.WebId
+		webId = webResp.HttpWebId
 	}
 
 	// 包含条件
@@ -462,7 +462,7 @@ func (this *CreateAction) RunPost(params struct {
 			// 访问日志
 			if params.AccessLogIsOn {
 				_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebAccessLog(this.AdminContext(), &pb.UpdateHTTPWebAccessLogRequest{
-					WebId: webConfig.Id,
+					HttpWebId: webConfig.Id,
 					AccessLogJSON: []byte(`{
 			"isPrior": false,
 			"isOn": true,
@@ -501,7 +501,7 @@ func (this *CreateAction) RunPost(params struct {
 				} else {
 					websocketId := createWebSocketResp.WebsocketId
 					_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebWebsocket(this.AdminContext(), &pb.UpdateHTTPWebWebsocketRequest{
-						WebId: webConfig.Id,
+						HttpWebId: webConfig.Id,
 						WebsocketJSON: []byte(` {
 				"isPrior": false,
 				"isOn": true,
@@ -530,7 +530,7 @@ func (this *CreateAction) RunPost(params struct {
 					return
 				}
 				_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebCache(this.AdminContext(), &pb.UpdateHTTPWebCacheRequest{
-					WebId:     webConfig.Id,
+					HttpWebId: webConfig.Id,
 					CacheJSON: cacheConfigJSON,
 				})
 				if err != nil {
@@ -552,7 +552,7 @@ func (this *CreateAction) RunPost(params struct {
 					return
 				}
 				_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebFirewall(this.AdminContext(), &pb.UpdateHTTPWebFirewallRequest{
-					WebId:        webConfig.Id,
+					HttpWebId:    webConfig.Id,
 					FirewallJSON: firewallRefJSON,
 				})
 				if err != nil {
@@ -575,7 +575,7 @@ func (this *CreateAction) RunPost(params struct {
 				return
 			}
 			_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebRemoteAddr(this.AdminContext(), &pb.UpdateHTTPWebRemoteAddrRequest{
-				WebId:          webConfig.Id,
+				HttpWebId:      webConfig.Id,
 				RemoteAddrJSON: remoteAddrConfigJSON,
 			})
 			if err != nil {

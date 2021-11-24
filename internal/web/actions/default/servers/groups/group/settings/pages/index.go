@@ -52,7 +52,7 @@ func (this *IndexAction) RunPost(params struct {
 	// TODO 检查配置
 
 	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebPages(this.AdminContext(), &pb.UpdateHTTPWebPagesRequest{
-		WebId:     params.WebId,
+		HttpWebId: params.WebId,
 		PagesJSON: []byte(params.PagesJSON),
 	})
 	if err != nil {
@@ -61,7 +61,7 @@ func (this *IndexAction) RunPost(params struct {
 	}
 
 	_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebShutdown(this.AdminContext(), &pb.UpdateHTTPWebShutdownRequest{
-		WebId:        params.WebId,
+		HttpWebId:    params.WebId,
 		ShutdownJSON: []byte(params.ShutdownJSON),
 	})
 	if err != nil {

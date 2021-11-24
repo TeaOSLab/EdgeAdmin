@@ -48,7 +48,7 @@ func (this *IndexAction) RunPost(params struct {
 	}
 
 	_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebRemoteAddr(this.AdminContext(), &pb.UpdateHTTPWebRemoteAddrRequest{
-		WebId:          params.WebId,
+		HttpWebId:      params.WebId,
 		RemoteAddrJSON: params.RemoteAddrJSON,
 	})
 	if err != nil {

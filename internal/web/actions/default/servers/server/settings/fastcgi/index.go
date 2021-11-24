@@ -58,7 +58,7 @@ func (this *IndexAction) RunPost(params struct {
 		return
 	}
 	_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebFastcgi(this.AdminContext(), &pb.UpdateHTTPWebFastcgiRequest{
-		WebId:       params.WebId,
+		HttpWebId:   params.WebId,
 		FastcgiJSON: fastcgiRefJSON,
 	})
 	if err != nil {

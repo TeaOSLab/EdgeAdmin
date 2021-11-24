@@ -61,8 +61,8 @@ func (this *IndexAction) RunPost(params struct {
 	}
 
 	_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebWebP(this.AdminContext(), &pb.UpdateHTTPWebWebPRequest{
-		WebId:    params.WebId,
-		WebpJSON: params.WebpJSON,
+		HttpWebId: params.WebId,
+		WebpJSON:  params.WebpJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)

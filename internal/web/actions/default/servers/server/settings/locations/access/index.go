@@ -64,8 +64,8 @@ func (this *IndexAction) RunPost(params struct {
 		return
 	}
 	_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebAuth(this.AdminContext(), &pb.UpdateHTTPWebAuthRequest{
-		WebId:    params.WebId,
-		AuthJSON: configJSON,
+		HttpWebId: params.WebId,
+		AuthJSON:  configJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)

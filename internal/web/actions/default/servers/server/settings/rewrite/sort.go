@@ -40,7 +40,7 @@ func (this *SortAction) RunPost(params struct {
 		return
 	}
 	_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebRewriteRules(this.AdminContext(), &pb.UpdateHTTPWebRewriteRulesRequest{
-		WebId:            params.WebId,
+		HttpWebId:        params.WebId,
 		RewriteRulesJSON: refsJSON,
 	})
 	if err != nil {

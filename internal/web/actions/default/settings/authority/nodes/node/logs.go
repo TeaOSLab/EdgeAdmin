@@ -31,12 +31,12 @@ func (this *LogsAction) RunGet(params struct {
 	this.Data["keyword"] = params.Keyword
 	this.Data["level"] = params.Level
 
-	authorityNodeResp, err := this.RPC().AuthorityNodeRPC().FindEnabledAuthorityNode(this.AdminContext(), &pb.FindEnabledAuthorityNodeRequest{NodeId: params.NodeId})
+	authorityNodeResp, err := this.RPC().AuthorityNodeRPC().FindEnabledAuthorityNode(this.AdminContext(), &pb.FindEnabledAuthorityNodeRequest{AuthorityNodeId: params.NodeId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	authorityNode := authorityNodeResp.Node
+	authorityNode := authorityNodeResp.AuthorityNode
 	if authorityNode == nil {
 		this.NotFound("authorityNode", params.NodeId)
 		return
