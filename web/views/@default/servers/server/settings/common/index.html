@@ -1,0 +1,15 @@
+{$layout}
+
+{$template "/left_menu"}
+
+<div class="right-box">
+    <div :class="{'opacity-mask': hasGroupConfig}">
+        <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+            <csrf-token></csrf-token>
+
+            <input type="hidden" name="webId" :value="webId"/>
+            <http-common-config-box :v-common-config="commonConfig"></http-common-config-box>
+            <submit-btn></submit-btn>
+        </form>
+    </div>
+</div>
