@@ -10,7 +10,9 @@ type CheckAction struct {
 }
 
 func (this *CheckAction) RunPost(params struct{}) {
-	resp, err := this.RPC().NodeTaskRPC().ExistsNodeTasks(this.AdminContext(), &pb.ExistsNodeTasksRequest{})
+	resp, err := this.RPC().NodeTaskRPC().ExistsNodeTasks(this.AdminContext(), &pb.ExistsNodeTasksRequest{
+		ExcludeTypes: []string{"ipItemChanged"},
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
