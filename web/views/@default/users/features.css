@@ -1,4 +1,9 @@
 .feature-boxes .feature-box {
-  margin-bottom: 0.7em;
+  margin-bottom: 1em;
+  width: 24em;
+  float: left;
+}
+.feature-boxes .feature-box:hover label {
+  font-weight: bold;
 }
 /*# sourceMappingURL=features.css.map */
