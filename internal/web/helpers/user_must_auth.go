@@ -382,13 +382,13 @@ func (this *userMustAuth) modules(actionPtr actions.ActionWrapper, adminId int64
 					"isOn": teaconst.IsPlus,
 				},
 				{
-					"name": "操作记录",
+					"name": "收支明细",
 					"url":  "/finance/logs",
 					"code": "logs",
 					"isOn": teaconst.IsPlus,
 				},
 				{
-					"name": "收支报表",
+					"name": "统计报表",
 					"url":  "/finance/income",
 					"code": "income",
 					"isOn": teaconst.IsPlus,
