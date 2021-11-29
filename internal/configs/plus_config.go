@@ -11,7 +11,9 @@ import (
 var plusConfigFile = "plus.cache.json"
 
 type PlusConfig struct {
-	IsPlus bool `json:"isPlus"`
+	IsPlus     bool     `json:"isPlus"`
+	Components []string `json:"components"`
+	DayTo      string   `json:"dayTo"`
 }
 
 func ReadPlusConfig() *PlusConfig {
