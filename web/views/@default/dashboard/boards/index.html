@@ -10,6 +10,12 @@
     </div>
 </div>
 
+<!-- 商业版错误 -->
+<div class="ui icon message error" v-if="plusErr.length > 0">
+    <i class="icon warning circle"></i>
+    {{plusErr}}
+</div>
+
 <!-- 没有节点提醒 -->
 <div class="ui icon message warning" v-if="!isLoading && dashboard.defaultClusterId > 0 && dashboard.countNodes == 0">
     <i class="icon warning circle"></i>

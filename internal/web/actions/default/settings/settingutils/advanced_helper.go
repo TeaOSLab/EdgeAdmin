@@ -1,8 +1,10 @@
+//go:build community
+// +build community
+
 package settingutils
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
-	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/iwind/TeaGo/actions"
 )
@@ -33,17 +35,8 @@ func (this *AdvancedHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNex
 	if configloaders.AllowModule(adminId, configloaders.AdminModuleCodeSetting) {
 		tabbar.Add("数据库", "", "/settings/database", "", this.tab == "database")
 		tabbar.Add("API节点", "", "/api", "", this.tab == "apiNodes")
-		if teaconst.IsPlus {
-			tabbar.Add("用户节点", "", "/settings/userNodes", "", this.tab == "userNodes")
-		}
 		tabbar.Add("日志数据库", "", "/db", "", this.tab == "dbNodes")
-		if teaconst.IsPlus {
-			tabbar.Add("监控节点", "", "/settings/monitorNodes", "", this.tab == "monitorNodes")
-		}
 		tabbar.Add("迁移", "", "/settings/transfer", "", this.tab == "transfer")
-		if teaconst.BuildPlus {
-			tabbar.Add("商业版认证", "", "/settings/authority", "", this.tab == "authority")
-		}
 
 		//tabbar.Add("备份", "", "/settings/backup", "", this.tab == "backup")
 	}
