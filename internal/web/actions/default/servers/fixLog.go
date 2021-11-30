@@ -12,9 +12,9 @@ type FixLogAction struct {
 }
 
 func (this *FixLogAction) RunPost(params struct {
-	LogId int64
+	LogIds []int64
 }) {
-	_, err := this.RPC().NodeLogRPC().FixNodeLog(this.AdminContext(), &pb.FixNodeLogRequest{NodeLogId: params.LogId})
+	_, err := this.RPC().NodeLogRPC().FixNodeLogs(this.AdminContext(), &pb.FixNodeLogsRequest{NodeLogIds: params.LogIds})
 	if err != nil {
 		this.ErrorPage(err)
 		return
