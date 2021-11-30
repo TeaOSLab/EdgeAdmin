@@ -55,7 +55,28 @@ Tea.context(function () {
 		teaweb.confirm("确定要关闭此错误提示吗？", function () {
 			that.$post(".fixLog")
 				.params({
-					logId: logId
+					logIds: logId
+				})
+				.success(function () {
+					teaweb.reload()
+				})
+		})
+	}
+
+	this.fixPageLogs = function () {
+		let logIds = this.errorLogs.map(function (v) {
+			return v.id
+		})
+		if (logIds.length == 0) {
+			teaweb.reload()
+			return
+		}
+
+		let that = this
+		teaweb.confirm("确定要关闭此页错误提示吗？", function () {
+			that.$post(".fixLog")
+				.params({
+					logIds: logIds
 				})
 				.success(function () {
 					teaweb.reload()

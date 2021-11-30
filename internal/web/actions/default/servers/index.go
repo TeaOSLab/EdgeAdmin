@@ -258,7 +258,7 @@ func (this *IndexAction) RunGet(params struct {
 		NodeId:     0,
 		Role:       nodeconfigs.NodeRoleNode,
 		Offset:     0,
-		Size:       10,
+		Size:       20,
 		Level:      "",
 		FixedState: int32(configutils.BoolStateNo),
 		AllServers: true,
@@ -279,7 +279,7 @@ func (this *IndexAction) RunGet(params struct {
 		var server = serverResp.Server
 		if server == nil {
 			// 设置为已修复
-			_, err = this.RPC().NodeLogRPC().FixNodeLog(this.AdminContext(), &pb.FixNodeLogRequest{NodeLogId: errorLog.Id})
+			_, err = this.RPC().NodeLogRPC().FixNodeLogs(this.AdminContext(), &pb.FixNodeLogsRequest{NodeLogIds: []int64{errorLog.Id}})
 			if err != nil {
 				this.ErrorPage(err)
 				return
@@ -297,7 +297,7 @@ func (this *IndexAction) RunGet(params struct {
 		var node = nodeResp.Node
 		if node == nil || node.NodeCluster == nil {
 			// 设置为已修复
-			_, err = this.RPC().NodeLogRPC().FixNodeLog(this.AdminContext(), &pb.FixNodeLogRequest{NodeLogId: errorLog.Id})
+			_, err = this.RPC().NodeLogRPC().FixNodeLogs(this.AdminContext(), &pb.FixNodeLogsRequest{NodeLogIds: []int64{errorLog.Id}})
 			if err != nil {
 				this.ErrorPage(err)
 				return
