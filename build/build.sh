@@ -20,6 +20,18 @@ function build() {
 		TAG="community"
 	fi
 
+	# checking environment
+	echo "checking required commands ..."
+	commands=("zip" "unzip" "go" "find" "sed")
+	for cmd in "${commands[@]}"; do
+		if [ `which ${cmd}` ]; then
+			echo "checking ${cmd}: ok"
+		else
+			echo "checking ${cmd}: not found"
+			return
+		fi
+	done
+
 	VERSION=$(lookup-version $ROOT/../internal/const/const.go)
 	ZIP="${NAME}-${OS}-${ARCH}-${TAG}-v${VERSION}.zip"
 
@@ -50,6 +62,19 @@ function build() {
 	cp -R $ROOT/../web $DIST/
 	rm -f $DIST/web/tmp/*
 	cp $ROOT/configs/server.template.yaml $DIST/configs/
+
+	# change _plus.[ext] to .[ext]
+	if [ "${TAG}" = "plus" ]; then
+		echo "converting filenames ..."
+		exts=("html" "js" "css")
+		for ext in "${exts[@]}"; do
+			pattern="*_plus."${ext}
+			find $DIST/web/views -type f -name $pattern | \
+				while read filename; do
+					mv ${filename} "${filename/_plus."${ext}"/."${ext}"}"
+				done
+		done
+	fi
 
 	EDGE_API_ZIP_FILE=$ROOT"/../../EdgeAPI/dist/edge-api-${OS}-${ARCH}-${TAG}-v${APINodeVersion}.zip"
 	cp $EDGE_API_ZIP_FILE $DIST/
