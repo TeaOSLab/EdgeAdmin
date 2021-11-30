@@ -3599,7 +3599,7 @@ Vue.component("origin-list-box", {
 				Tea.action("/servers/server/settings/origins/delete?" + that.vParams + "&originId=" + originId + "&originType=" + originType)
 					.post()
 					.success(function () {
-						teaweb.success("保存成功", function () {
+						teaweb.success("删除成功", function () {
 							window.location.reload()
 						})
 					})
