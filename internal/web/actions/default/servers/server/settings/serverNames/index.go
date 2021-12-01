@@ -30,8 +30,26 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 
+	// 已审核域名
+	var passedDomains = []string{}
+	if len(serverNamesResp.ServerNamesJSON) > 0 {
+		var passedServerNameConfigs = []*serverconfigs.ServerNameConfig{}
+		err = json.Unmarshal(serverNamesResp.ServerNamesJSON, &passedServerNameConfigs)
+		if err == nil {
+			passedDomains = serverconfigs.PlainServerNames(passedServerNameConfigs)
+		}
+	}
+	this.Data["passedDomains"] = passedDomains
+
+	// 提交审核时间
+	var auditingTime = ""
+	if serverNamesResp.AuditingAt > 0 {
+		auditingTime = timeutil.FormatTime("Y-m-d", serverNamesResp.AuditingAt)
+	}
+
 	serverNamesConfig := []*serverconfigs.ServerNameConfig{}
 	this.Data["isAuditing"] = serverNamesResp.IsAuditing
+	this.Data["auditingTime"] = auditingTime
 	this.Data["auditingResult"] = maps.Map{
 		"isOk": true,
 	}

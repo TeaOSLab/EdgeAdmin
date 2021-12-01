@@ -199,6 +199,12 @@ func (this *IndexAction) RunGet(params struct {
 			}
 		}
 
+		// 提交审核时间
+		var auditingTime = ""
+		if server.AuditingAt > 0 {
+			auditingTime = timeutil.FormatTime("Y-m-d", server.AuditingAt)
+		}
+
 		serverMaps = append(serverMaps, maps.Map{
 			"id":   server.Id,
 			"isOn": server.IsOn,
@@ -215,6 +221,7 @@ func (this *IndexAction) RunGet(params struct {
 			"isAuditing":       server.IsAuditing,
 			"auditingIsOk":     auditingIsOk,
 			"user":             userMap,
+			"auditingTime":     auditingTime,
 		})
 	}
 	this.Data["servers"] = serverMaps
