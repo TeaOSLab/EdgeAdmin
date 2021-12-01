@@ -18,7 +18,8 @@ Vue.component("http-access-log-config-box", {
 			status4: true,
 			status5: true,
 
-            firewallOnly: false
+            firewallOnly: false,
+			enableClientClosed: false
 		}
 		if (this.vAccessLogConfig != null) {
 			accessLog = this.vAccessLogConfig
@@ -94,6 +95,16 @@ Vue.component("http-access-log-config-box", {
 						<input type="checkbox" v-model="accessLog.status5"/>
 						<label>5xx</label>
 					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>记录客户端中断日志</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="accessLog.enableClientClosed"/>
+						<label></label>
+					</div>
+					<p class="comment">以<code-label>499</code-label>的状态码记录客户端主动中断日志。</p>
 				</td>
 			</tr>
 		</tbody>
