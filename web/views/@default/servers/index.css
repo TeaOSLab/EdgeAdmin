@@ -7,7 +7,7 @@
   padding-right: 1em;
 }
 .node-logs-box {
-  max-height: 11.6em;
+  max-height: 14em;
   overflow-y: auto;
 }
 .node-logs-box::-webkit-scrollbar {

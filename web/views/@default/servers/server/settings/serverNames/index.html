@@ -12,10 +12,15 @@
                 <tr>
                     <td class="title">审核中域名</td>
                     <td>
-                        <span v-for="serverName in allServerNames" class="ui label basic">
-                            {{serverName}}
+                        <span v-for="serverName in allServerNames" class="ui label basic" :class="{green: serverName.isPassed}">
+                            {{serverName.name}}
                         </span>
+                        <p class="comment" v-if="hasPassedDomains"><span class="green">绿色</span>标注的域名表示之前已经审核通过的域名。</p>
                     </td>
+                </tr>
+                <tr v-if="auditingTime.length > 0">
+                    <td>提交审核时间</td>
+                    <td>{{auditingTime}}</td>
                 </tr>
                 <tr>
                     <td>审核结果</td>
