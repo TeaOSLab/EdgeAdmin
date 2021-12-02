@@ -1,7 +1,8 @@
 {$layout}
-{$template "/left_menu"}
+{$template "../../settings_menu"}
+{$template "/left_menu_with_menu"}
 
-<div class="right-box">
+<div class="right-box with-menu">
     {$template "../menu"}
 
     <warning-message v-if="!featureIsOn">尚未为当前用户开通此功能。</warning-message>

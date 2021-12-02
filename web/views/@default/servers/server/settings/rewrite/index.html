@@ -1,7 +1,8 @@
 {$layout}
-{$template "/left_menu"}
+{$template "../settings_menu"}
+{$template "/left_menu_with_menu"}
 
-<div class="right-box">
+<div class="right-box with-menu">
 	<first-menu>
 		<a class="item" @click.prevent="createRewriteRule()">[创建]</a>
 	</first-menu>

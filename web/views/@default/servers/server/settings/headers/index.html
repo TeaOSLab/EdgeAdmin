@@ -1,8 +1,8 @@
 {$layout}
+{$template "../settings_menu"}
+{$template "/left_menu_with_menu"}
 
-{$template "/left_menu"}
-
-<div class="right-box">
+<div class="right-box with-menu">
 	<http-header-policy-box
             :v-request-header-policy="requestHeaderPolicy"
             :v-response-header-policy="responseHeaderPolicy"

@@ -1,7 +1,8 @@
 {$layout}
-{$template "/left_menu"}
+{$template "../settings_menu"}
+{$template "/left_menu_with_menu"}
 
-<div class="right-box">
+<div class="right-box with-menu">
     <form class="ui form" method="post" data-tea-action="$">
         <input type="hidden" name="webId" :value="webId"/>
         <http-host-redirect-box :v-redirects="redirects" @change="change"></http-host-redirect-box>

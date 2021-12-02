@@ -1,11 +1,13 @@
 {$layout}
-{$template "/left_menu"}
 
 {$var "header"}
 <script type="text/javascript" src="/js/sortable.min.js"></script>
 {$end}
 
-<div class="right-box">
+{$template "../settings_menu"}
+{$template "/left_menu_with_menu"}
+
+<div class="right-box with-menu">
 	{$template "menu"}
 
 	<p class="comment" v-if="locations.length == 0">暂时还没有路由规则。</p>

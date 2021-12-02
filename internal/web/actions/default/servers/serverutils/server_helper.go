@@ -68,6 +68,11 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 		return
 	}
 
+	// 初始化数据
+	if !action.Data.Has("server") {
+		action.Data["server"] = maps.Map{"id": server.Id, "name": server.Name}
+	}
+
 	// 服务管理
 	serverConfig := &serverconfigs.ServerConfig{}
 	err = json.Unmarshal(server.Config, serverConfig)

@@ -1,12 +1,14 @@
 {$layout}
-{$template "/left_menu"}
 
 {$var "header"}
 <script src="/servers/certs/datajs" type="text/javascript"></script>
 <script src="/js/sortable.min.js" type="text/javascript"></script>
 {$end}
 
-<div class="right-box">
+{$template "../settings_menu"}
+{$template "/left_menu_with_menu"}
+
+<div class="right-box with-menu">
 	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 		<input type="hidden" name="serverId" :value="serverId"/>
 		<input type="hidden" name="serverType" :value="serverType"/>
