@@ -14,19 +14,30 @@ type AddIPAction struct {
 }
 
 func (this *AddIPAction) RunPost(params struct {
-	ListId int64
-	Ip     string
+	ListId    int64
+	Ip        string
+	ExpiredAt int64
 }) {
+	var itemId int64 = 0
+
+	defer func() {
+		this.CreateLogInfo("在名单 %d 中创建IP %d", params.ListId, itemId)
+	}()
+
 	var ipType = "ipv4"
 	if strings.Contains(params.Ip, ":") {
 		ipType = "ipv6"
 	}
 
-	_, err := this.RPC().IPItemRPC().CreateIPItem(this.AdminContext(), &pb.CreateIPItemRequest{
+	if params.ExpiredAt <= 0 {
+		params.ExpiredAt = time.Now().Unix() + 86400
+	}
+
+	createResp, err := this.RPC().IPItemRPC().CreateIPItem(this.AdminContext(), &pb.CreateIPItemRequest{
 		IpListId:   params.ListId,
 		IpFrom:     params.Ip,
 		IpTo:       "",
-		ExpiredAt:  time.Now().Unix() + 86400, // TODO 可以自定义时间
+		ExpiredAt:  params.ExpiredAt,
 		Reason:     "从IPBox中加入名单",
 		Type:       ipType,
 		EventLevel: "critical",
@@ -35,6 +46,8 @@ func (this *AddIPAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
+
+	itemId = createResp.IpItemId
 
 	this.Success()
 }

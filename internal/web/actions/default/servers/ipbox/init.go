@@ -15,6 +15,7 @@ func init() {
 			Prefix("/servers/ipbox").
 			Get("", new(IndexAction)).
 			Post("/addIP", new(AddIPAction)).
+			Post("/deleteFromList", new(DeleteFromListAction)).
 			EndAll()
 	})
 }
