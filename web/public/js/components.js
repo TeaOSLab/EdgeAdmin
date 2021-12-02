@@ -2968,6 +2968,7 @@ Vue.component("http-cache-config-box", {
 				isPrior: false,
 				isOn: false,
 				addStatusHeader: true,
+				addAgeHeader: false,
 				cacheRefs: [],
 				purgeIsOn: false,
 				purgeKey: ""
@@ -3032,10 +3033,17 @@ Vue.component("http-cache-config-box", {
 		</tbody>
 		<tbody v-show="isOn() && moreOptionsVisible">
 			<tr>
-				<td>自动添加X-Cache Header</td>
+				<td>添加X-Cache Header</td>
 				<td>
 					<checkbox v-model="cacheConfig.addStatusHeader"></checkbox>
-					<p class="comment">选中后自动在响应Header中增加<code-label>X-Cache: BYPASS|MISS|HIT</code-label>。</p>
+					<p class="comment">选中后自动在响应Header中增加<code-label>X-Cache: BYPASS|MISS|HIT|PURGE</code-label>。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>添加Age Header</td>
+				<td>
+					<checkbox v-model="cacheConfig.addAgeHeader"></checkbox>
+					<p class="comment">选中后自动在响应Header中增加<code-label>Age: [有效时间秒数]</code-label>。</p>
 				</td>
 			</tr>
 			<tr>
@@ -6118,7 +6126,8 @@ Vue.component("http-access-log-config-box", {
 			status4: true,
 			status5: true,
 
-            firewallOnly: false
+            firewallOnly: false,
+			enableClientClosed: false
 		}
 		if (this.vAccessLogConfig != null) {
 			accessLog = this.vAccessLogConfig
@@ -6194,6 +6203,16 @@ Vue.component("http-access-log-config-box", {
 						<input type="checkbox" v-model="accessLog.status5"/>
 						<label>5xx</label>
 					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>记录客户端中断日志</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="accessLog.enableClientClosed"/>
+						<label></label>
+					</div>
+					<p class="comment">以<code-label>499</code-label>的状态码记录客户端主动中断日志。</p>
 				</td>
 			</tr>
 		</tbody>

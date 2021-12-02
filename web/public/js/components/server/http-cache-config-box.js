@@ -7,6 +7,7 @@ Vue.component("http-cache-config-box", {
 				isPrior: false,
 				isOn: false,
 				addStatusHeader: true,
+				addAgeHeader: false,
 				cacheRefs: [],
 				purgeIsOn: false,
 				purgeKey: ""
@@ -71,10 +72,17 @@ Vue.component("http-cache-config-box", {
 		</tbody>
 		<tbody v-show="isOn() && moreOptionsVisible">
 			<tr>
-				<td>自动添加X-Cache Header</td>
+				<td>添加X-Cache Header</td>
 				<td>
 					<checkbox v-model="cacheConfig.addStatusHeader"></checkbox>
-					<p class="comment">选中后自动在响应Header中增加<code-label>X-Cache: BYPASS|MISS|HIT</code-label>。</p>
+					<p class="comment">选中后自动在响应Header中增加<code-label>X-Cache: BYPASS|MISS|HIT|PURGE</code-label>。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>添加Age Header</td>
+				<td>
+					<checkbox v-model="cacheConfig.addAgeHeader"></checkbox>
+					<p class="comment">选中后自动在响应Header中增加<code-label>Age: [有效时间秒数]</code-label>。</p>
 				</td>
 			</tr>
 			<tr>
