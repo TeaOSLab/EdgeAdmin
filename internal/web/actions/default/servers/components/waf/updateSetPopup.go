@@ -97,6 +97,7 @@ func (this *UpdateSetPopupAction) RunPost(params struct {
 	RulesJSON   []byte
 	Connector   string
 	ActionsJSON []byte
+	IgnoreLocal bool
 
 	Must *actions.Must
 }) {
@@ -144,6 +145,7 @@ func (this *UpdateSetPopupAction) RunPost(params struct {
 	setConfig.Connector = params.Connector
 	setConfig.Rules = rules
 	setConfig.Actions = actionConfigs
+	setConfig.IgnoreLocal = params.IgnoreLocal
 
 	setConfigJSON, err := json.Marshal(setConfig)
 	if err != nil {
