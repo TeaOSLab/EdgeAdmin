@@ -18,7 +18,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td>规则之间的关系</td>
+			<td>规则之间的关系 *</td>
 			<td>
 				<select class="ui dropdown" name="connector" style="width:10em" @change="changeConnector()" v-model="selectedConnector">
 					<option v-for="connector in connectors" :value="connector.value">{{connector.name}}</option>
@@ -30,6 +30,13 @@
             <td>执行动作 *</td>
             <td>
                 <http-firewall-actions-box :v-actions="actions" :v-firewall-policy="firewallPolicy" :v-action-configs="actionConfigs"></http-firewall-actions-box>
+            </td>
+        </tr>
+        <tr>
+            <td>忽略局域网IP</td>
+            <td>
+                <checkbox name="ignoreLocal" v-model="setConfig.ignoreLocal"></checkbox>
+                <p class="comment">选中后表示如果请求来自局域网IP，则直接跳过当前规则集。</p>
             </td>
         </tr>
 	</table>
