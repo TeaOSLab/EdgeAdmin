@@ -12,25 +12,25 @@
 	<table class="ui table selectable small">
 		<tr>
 			<td style="width: 50%">请求概要<em>(Request)</em>：{{accessLog.request}}</td>
-			<td>请求URI<em>(RequestURI)</em>：{{accessLog.requestURI}}</td>
+            <td>请求ID：{{accessLog.requestId}}</td>
 		</tr>
 		<tr>
 			<td>请求方法<em>(RequestMethod)</em>：{{accessLog.requestMethod}}</td>
-			<td>主机地址<em>(Host)</em>：{{accessLog.host}}</td>
+            <td>请求URI<em>(RequestURI)</em>：{{accessLog.requestURI}}</td>
 		</tr>
 		<tr>
-			<td>请求来源<em>(Referer)</em>：
-				<span v-if="accessLog.referer != null && accessLog.referer.length > 0">{{accessLog.referer}}</span>
-				<span v-else>-</span>
-			</td>
+            <td>主机地址<em>(Host)</em>：{{accessLog.host}}</td>
 			<td>终端地址<em>(RemoteAddr:RemotePort)</em>：{{accessLog.remoteAddr}}:{{accessLog.remotePort}}</td>
 		</tr>
 		<tr>
+            <td>请求来源<em>(Referer)</em>：
+                <span v-if="accessLog.referer != null && accessLog.referer.length > 0">{{accessLog.referer}}</span>
+                <span v-else class="disabled">[没有设置]</span>
+            </td>
 			<td>终端信息<em>(UserAgent)</em>：
 				<span v-if="accessLog.userAgent != null && accessLog.userAgent.length > 0">{{accessLog.userAgent}}</span>
-				<span v-else>-</span>
+				<span v-else class="disabled">[没有设置]</span>
 			</td>
-			<td>协议<em>(Proto)</em>：{{accessLog.proto}}</td>
 		</tr>
 		<tr>
 			<td>状态<em>(StatusMessage)</em>：<span :class="{red:accessLog.status>=400, green:accessLog.status<400}">{{accessLog.status}} {{accessLog.statusMessage}}</span></td>
