@@ -1,8 +1,8 @@
 {$layout}
+{$template "../settings_menu"}
+{$template "/left_menu_with_menu"}
 
-{$template "/left_menu"}
-
-<div class="right-box">
+<div class="right-box with-menu">
 	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 		<input type="hidden" name="serverId" :value="serverId"/>
 		<input type="hidden" name="serverType" :value="serverType"/>

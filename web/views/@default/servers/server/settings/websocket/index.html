@@ -1,8 +1,8 @@
 {$layout}
+{$template "../settings_menu"}
+{$template "/left_menu_with_menu"}
 
-{$template "/left_menu"}
-
-<div class="right-box">
+<div class="right-box with-menu">
     <div v-if="hasGroupConfig">
         <div class="margin"></div>
         <warning-message>由于已经在当前<a :href="groupSettingURL">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>

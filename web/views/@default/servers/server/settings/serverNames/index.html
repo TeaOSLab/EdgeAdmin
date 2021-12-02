@@ -1,7 +1,8 @@
 {$layout}
-{$template "/left_menu"}
+{$template "../settings_menu"}
+{$template "/left_menu_with_menu"}
 
-<div class="right-box">
+<div class="right-box with-menu">
     <!-- 审核中 -->
     <div v-show="isAuditing">
         <warning-message>当前域名正在审核中，请审核域名的所有人、备案情况等。</warning-message>
