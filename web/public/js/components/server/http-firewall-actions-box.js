@@ -48,8 +48,10 @@ Vue.component("http-firewall-actions-box", {
 
 		var defaultPageBody = `<!DOCTYPE html>
 <html>
+<title>403 Forbidden</title>
 <body>
-403 Forbidden
+<h1>403 Forbidden</h1>
+<address>Request ID: \${requestId}.</address>
 </body>
 </html>`
 
