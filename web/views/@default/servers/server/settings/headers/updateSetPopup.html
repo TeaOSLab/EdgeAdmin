@@ -9,12 +9,14 @@
 			<td class="title">名称<em>（Name）</em></td>
 			<td>
 				<input type="text" name="name" value="" v-model="headerConfig.name" maxlength="200" placeholder="类似于Server、Content-Type之类" ref="focus"/>
+                <p class="comment">请注意名称的大小写，如无特殊需求，Header名称的格式通常为<code-label>Xxx</code-label>或者<code-label>Xxx-Yyy</code-label>。</p>
 			</td>
 		</tr>
 		<tr>
 			<td>值<em>（Value）</em></td>
 			<td>
 				<input type="text" name="value" v-model="headerConfig.value" maxlength="500"/>
+                <p class="comment">可以包含请求变量。</p>
 			</td>
 		</tr>
 	</table>
