@@ -37,17 +37,44 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["isp"] = regionResp.IpRegion.Isp
 
 	// IP列表
-	ipListResp, err := this.RPC().IPListRPC().FindEnabledIPListContainsIP(this.AdminContext(), &pb.FindEnabledIPListContainsIPRequest{Ip: params.Ip})
+	ipListResp, err := this.RPC().IPListRPC().FindEnabledIPListContainsIP(this.AdminContext(), &pb.FindEnabledIPListContainsIPRequest{
+		Ip: params.Ip,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 	var ipListMaps = []maps.Map{}
 	for _, ipList := range ipListResp.IpLists {
+		itemsResp, err := this.RPC().IPItemRPC().ListIPItemsWithListId(this.AdminContext(), &pb.ListIPItemsWithListIdRequest{
+			IpListId: ipList.Id,
+			Keyword:  "",
+			IpFrom:   params.Ip,
+			IpTo:     "",
+			Offset:   0,
+			Size:     1,
+		})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		var items = itemsResp.IpItems
+		if len(items) == 0 {
+			continue
+		}
+		var item = items[0]
+
+		var expiredTime = ""
+		if item.ExpiredAt > 0 {
+			expiredTime = timeutil.FormatTime("Y-m-d H:i:s", item.ExpiredAt)
+		}
+
 		ipListMaps = append(ipListMaps, maps.Map{
-			"id":   ipList.Id,
-			"name": ipList.Name,
-			"type": ipList.Type,
+			"id":              ipList.Id,
+			"name":            ipList.Name,
+			"type":            ipList.Type,
+			"itemExpiredTime": expiredTime,
+			"itemId":          item.Id,
 		})
 	}
 	this.Data["ipLists"] = ipListMaps
@@ -58,7 +85,7 @@ func (this *IndexAction) RunGet(params struct {
 		IsPublic: true,
 		Keyword:  "",
 		Offset:   0,
-		Size:     10, // TODO 将来考虑到支持更多的黑名单
+		Size:     20, // TODO 将来考虑到支持更多的黑名单
 	})
 	if err != nil {
 		this.ErrorPage(err)

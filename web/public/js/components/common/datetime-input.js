@@ -135,6 +135,7 @@ Vue.component("datetime-input", {
 			this.timestamp = Math.floor(date.getTime() / 1000)
 		},
 		leadingZero: function (s, l) {
+			s = s.toString()
 			if (l <= s.length) {
 				return s
 			}
@@ -142,6 +143,18 @@ Vue.component("datetime-input", {
 				s = "0" + s
 			}
 			return s
+		},
+		resultTimestamp: function () {
+			return this.timestamp
+		},
+		nextDays: function (days) {
+			let date = new Date()
+			date.setTime(date.getTime() + days * 86400 * 1000)
+			this.day = date.getFullYear() + "-" + this.leadingZero(date.getMonth() + 1, 2) + "-" + this.leadingZero(date.getDate(), 2)
+			this.hour = this.leadingZero(date.getHours(), 2)
+			this.minute = this.leadingZero(date.getMinutes(), 2)
+			this.second = this.leadingZero(date.getSeconds(), 2)
+			this.change()
 		}
 	},
 	template: `<div>
@@ -156,5 +169,6 @@ Vue.component("datetime-input", {
 		<div class="ui field">:</div>
 		<div class="ui field" :class="{error: hasSecondError}"><input type="text" v-model="second" maxlength="2" style="width:4em" placeholder="秒" @input="change"/></div>
 	</div>
+	<p class="comment">常用时间：<a href="" @click.prevent="nextDays(1)"> &nbsp;1天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(3)"> &nbsp;3天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(7)"> &nbsp;一周&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(30)"> &nbsp;30天&nbsp; </a> </p>
 </div>`
 })

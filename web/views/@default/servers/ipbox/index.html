@@ -23,19 +23,44 @@
     <tr v-if="publicBlackIPLists.length > 0">
         <td>所在IP名单</td>
         <td colspan="5">
-            <div class="ui label basic small" v-for="ipList in ipLists">
+            <div class="ui label basic small" v-for="ipList in ipLists" style="margin-bottom: 0.5em">
                 {{ipList.name}}
+
+                <!-- 过期时间 -->
+                <span v-if="ipList.itemExpiredTime.length == 0" class="grey small">（不过期）</span>
+                <span v-else class="grey small">（有效至：{{ipList.itemExpiredTime}}）</span>
+
+                <!-- 操作 -->
+                <a href="" title="删除" @click.prevent="deleteFromList(ipList.id, ipList.itemId)"><i class="icon remove small"></i></a>
             </div>
+            <span v-if="ipLists.length == 0" class="disabled">暂时未在任何名单。</span>
             &nbsp; &nbsp;
-            <a href="" @click.prevent="showBlackLists"><i class="icon angle" :class="{up: blackListsVisible, down: !blackListsVisible}"></i>加入到黑名单</a>
+            <div>
+                <a href="" @click.prevent="showBlackLists"><i class="icon angle" :class="{up: blackListsVisible, down: !blackListsVisible}"></i>加入到<span v-if="ipLists.length > 0">其他</span>黑名单</a>
+            </div>
         </td>
     </tr>
     <tr v-if="publicBlackIPLists.length > 0 && blackListsVisible">
         <td>加入黑名单</td>
         <td colspan="5">
-            <a class="ui label basic small" v-for="ipList in publicBlackIPLists" @click.prevent="addBlackIP(ipList)">
-                {{ipList.name}}
-            </a>
+            <form class="ui form">
+                <table class="ui table">
+                    <tr>
+                        <td class="title">过期时间</td>
+                        <td>
+                            <datetime-input :v-timestamp="defaultItemExpiredAt" ref="itemExpiredTimestamp"></datetime-input>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>选择名单 *</td>
+                        <td>
+                            <a class="ui label basic small" :class="{blue: selectedListId == ipList.id}" v-for="ipList in publicBlackIPLists" @click.prevent="addBlackIP(ipList)" style="margin-top: 0.3em">
+                                {{ipList.name}}
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </form>
         </td>
     </tr>
 </table>
