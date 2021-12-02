@@ -17,7 +17,7 @@
             </td>
         </tr>
         <tr>
-            <td>匹配模式</td>
+            <td>匹配模式 *</td>
             <td>
                 <select class="ui dropdown auto-width" name="mode" v-model="mode">
                     <option value="equal">精准匹配</option>
@@ -26,14 +26,7 @@
                 </select>
                 <p class="comment" v-if="mode == 'equal'">精准匹配跳转前的URL，即只有访问完全一样的URL才会跳转。</p>
                 <p class="comment" v-if="mode == 'matchPrefix'">只要访问的URL头部部分包含跳转前URL，即可跳转。</p>
-                <p class="comment" v-if="mode == 'matchRegexp'">可以在跳转前URL中使用正则表达式，然后可以在跳转后URL中使用正则表达式中括号的变量，比如<code-label>${1}</code-label>、<code-label>${2}</code-label>等。</p>
-            </td>
-        </tr>
-        <tr v-if="mode == 'matchPrefix'">
-            <td>是否保留URL路径参数</td>
-            <td>
-                <checkbox name="keepRequestURI" value="1" v-model="redirect.keepRequestURI"></checkbox>
-                <p class="comment">选中后，则跳转之后，保留跳转之前的URL路径和参数。</p>
+                <p class="comment" v-if="mode == 'matchRegexp'">可以在跳转前URL中使用正则表达式，然后可以在跳转后URL中使用正则表达式中括号的变量，比如<code-label>${1}</code-label>、<code-label>${2}</code-label>分别表示第一个和第二个括号内的变量值。</p>
             </td>
         </tr>
         <tr>
@@ -41,6 +34,13 @@
             <td>
                 <input type="text" name="afterURL" placeholder="比如 https://www.url2.cn" v-model="redirect.afterURL"/>
                 <p class="comment">需要填写完整的URL，包括<code-label>http://</code-label>或者<code-label>https://</code-label>，如果有非默认端口，也需要带上端口号。</p>
+            </td>
+        </tr>
+        <tr v-if="mode == 'matchPrefix'">
+            <td>是否保留URL路径参数</td>
+            <td>
+                <checkbox name="keepRequestURI" value="1" v-model="redirect.keepRequestURI"></checkbox>
+                <p class="comment">选中后，则跳转之后，保留跳转之前的URL路径和参数。</p>
             </td>
         </tr>
         <tr>
