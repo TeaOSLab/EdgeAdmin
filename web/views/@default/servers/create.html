@@ -105,7 +105,7 @@
 			</td>
 		</tr>
 
-        <tr>
+        <tr v-if="serverType == 'httpProxy' || serverType == 'httpWeb'">
             <td>默认开启配置</td>
             <td>
                 <checkbox checked="checked" name="accessLogIsOn">访问日志</checkbox>
@@ -117,6 +117,8 @@
                 <checkbox name="wafIsOn">WAF</checkbox>
                 &nbsp; &nbsp;
                 <checkbox name="remoteAddrIsOn">从上级代理中读取IP <tip-icon content="用来支持读取上级代理传递的X-Real-IP、X-Forwarded-For等信息。如果用户需要通过别的代理服务才能访问到这个网站服务，才需要选中。"></tip-icon> </checkbox>
+                &nbsp; &nbsp;
+                <checkbox name="statIsOn">统计</checkbox>
             </td>
         </tr>
 
