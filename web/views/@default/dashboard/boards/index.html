@@ -88,7 +88,19 @@
 
     <div class="ui column">
         <h4>服务<link-icon href="/servers" v-if="dashboard.canGoServers"></link-icon></h4>
-        <div class="value"><span>{{dashboard.countServers}}</span>个</div>
+        <div class="value"><span>{{dashboard.countServers}}</span>个
+            <span style="font-size: 1em" v-if="dashboard.countAuditingServers > 0">/ <a href="/servers?auditingFlag=1" v-if="dashboard.canGoServers"><span class="red" style="font-size: 1em">{{dashboard.countAuditingServers}}审核</span></a><span class="red" style="font-size: 1em" v-else>{{dashboard.countAuditingServers}}审核</span></span>
+        </div>
+    </div>
+
+    <div class="ui column no-border">
+        <h4>本周流量</h4>
+        <div class="value"><span>{{weekTraffic}}</span>{{weekTrafficUnit}}</div>
+    </div>
+
+    <div class="ui column no-border">
+        <h4>昨日流量</h4>
+        <div class="value"><span>{{yesterdayTraffic}}</span>{{yesterdayTrafficUnit}}</div>
     </div>
 
     <div class="ui column no-border">
