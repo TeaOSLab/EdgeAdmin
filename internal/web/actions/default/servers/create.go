@@ -89,6 +89,7 @@ func (this *CreateAction) RunPost(params struct {
 	CacheIsOn      bool
 	WafIsOn        bool
 	RemoteAddrIsOn bool
+	StatIsOn       bool
 
 	WebRoot string
 
@@ -581,6 +582,27 @@ func (this *CreateAction) RunPost(params struct {
 			if err != nil {
 				this.ErrorPage(err)
 				return
+			}
+
+			// 统计
+			if params.StatIsOn {
+				var statConfig = &serverconfigs.HTTPStatRef{
+					IsPrior: false,
+					IsOn:    true,
+				}
+				statJSON, err := json.Marshal(statConfig)
+				if err != nil {
+					this.ErrorPage(err)
+					return
+				}
+				_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebStat(this.AdminContext(), &pb.UpdateHTTPWebStatRequest{
+					HttpWebId: webConfig.Id,
+					StatJSON:  statJSON,
+				})
+				if err != nil {
+					this.ErrorPage(err)
+					return
+				}
 			}
 		}
 	}
