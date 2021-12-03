@@ -1,14 +1,17 @@
 Vue.component("ip-box", {
-	props: [],
+	props: ["v-ip"],
 	methods: {
 		popup: function () {
-			let e = this.$refs.container
-			let text = e.innerText
-			if (text == null) {
-				text = e.textContent
+			let ip = this.vIp
+			if (ip == null || ip.length == 0) {
+				let e = this.$refs.container
+				ip = e.innerText
+				if (ip == null) {
+					ip = e.textContent
+				}
 			}
 
-			teaweb.popup("/servers/ipbox?ip=" + text, {
+			teaweb.popup("/servers/ipbox?ip=" + ip, {
 				width: "50em",
 				height: "30em"
 			})
