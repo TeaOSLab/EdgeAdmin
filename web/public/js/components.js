@@ -1,3 +1,213 @@
+Vue.component("traffic-map-box", {
+	props: ["v-stats", "v-is-attack"],
+	mounted: function () {
+		this.render()
+	},
+	data: function () {
+		let maxPercent = 0
+		let isAttack = this.vIsAttack
+		this.vStats.forEach(function (v) {
+			let percent = parseFloat(v.percent)
+			if (percent > maxPercent) {
+				maxPercent = percent
+			}
+
+			v.formattedCountRequests = teaweb.formatCount(v.countRequests) + "次"
+			v.formattedCountAttackRequests = teaweb.formatCount(v.countAttackRequests) + "次"
+		})
+
+		if (maxPercent < 100) {
+			maxPercent *= 1.2 // 不要让某一项100%
+		}
+
+		return {
+			isAttack: isAttack,
+			stats: this.vStats,
+			chart: null,
+			minOpacity: 0.2,
+			maxPercent: maxPercent,
+			selectedCountryName: ""
+		}
+	},
+	methods: {
+		render: function () {
+			this.chart = teaweb.initChart(document.getElementById("traffic-map-box"));
+			let that = this
+			this.chart.setOption({
+				backgroundColor: "white",
+				grid: {
+					top: 0,
+					bottom: 0,
+					left: 0,
+					right: 0
+				},
+				roam: true,
+				tooltip: {
+					trigger: "item"
+				},
+				series: [{
+					type: "map",
+					map: "world",
+					zoom: 1.2,
+					selectedMode: false,
+					itemStyle: {
+						areaColor: "#E9F0F9",
+						borderColor: "#DDD"
+					},
+					emphasis: {
+						itemStyle: {
+							areaColor: "#8B9BD3",
+							opacity: 1.0
+						}
+					},
+					//select: {itemStyle:{ areaColor: "#8B9BD3", opacity: 0.8 }},
+					tooltip: {
+						formatter: function (args) {
+							let name = args.name
+							let stat = null
+							that.stats.forEach(function (v) {
+								if (v.name == name) {
+									stat = v
+								}
+							})
+
+							if (stat != null) {
+								return name + "<br/>流量：" + stat.formattedBytes + "<br/>流量占比：" + stat.percent + "%<br/>请求数：" + stat.formattedCountRequests + "<br/>攻击数：" + stat.formattedCountAttackRequests
+							}
+							return name
+						}
+					},
+					data: this.stats.map(function (v) {
+						let opacity = parseFloat(v.percent) / that.maxPercent
+						if (opacity < that.minOpacity) {
+							opacity = that.minOpacity
+						}
+						let fullOpacity = opacity * 3
+						if (fullOpacity > 1) {
+							fullOpacity = 1
+						}
+						let isAttack = that.vIsAttack
+						let bgColor = "#276AC6"
+						if (isAttack) {
+							bgColor = "#B03A5B"
+						}
+
+						return {
+							name: v.name,
+							value: v.bytes,
+							percent: parseFloat(v.percent),
+							itemStyle: {
+								areaColor: bgColor,
+								opacity: opacity
+							},
+							emphasis: {
+								itemStyle: {
+									areaColor: bgColor,
+									opacity: fullOpacity
+								}
+							},
+							label: {
+								show: false,
+								formatter: function (args) {
+									if (args.name == that.selectedCountryName) {
+										return args.name
+									}
+									return ""
+								},
+								fontSize: "10px",
+								color: "#fff",
+								backgroundColor: "#8B9BD3",
+								padding: [2, 2, 2, 2]
+							}
+						}
+					}),
+					nameMap: window.WorldCountriesMap
+				}]
+			})
+			this.chart.resize()
+		},
+		select: function (countryName) {
+			if (this.chart == null) {
+				return
+			}
+			let option = this.chart.getOption()
+			let that = this
+			option.series[0].data.forEach(function (v) {
+				let opacity = v.percent / that.maxPercent
+				if (opacity < that.minOpacity) {
+					opacity = that.minOpacity
+				}
+
+				if (v.name == countryName) {
+					if (v.isSelected) {
+						v.itemStyle.opacity = opacity
+						v.isSelected = false
+						v.label.show = false
+						that.selectedCountryName = ""
+						return
+					}
+					v.isSelected = true
+					that.selectedCountryName = countryName
+					opacity *= 3
+					if (opacity > 1) {
+						opacity = 1
+					}
+
+					// 至少是0.5，让用户能够看清
+					if (opacity < 0.5) {
+						opacity = 0.5
+					}
+					v.itemStyle.opacity = opacity
+					v.label.show = true
+				} else {
+					v.itemStyle.opacity = opacity
+					v.isSelected = false
+					v.label.show = false
+				}
+			})
+			this.chart.setOption(option)
+		}
+	},
+	template: `<div>
+<table style="width: 100%; border: 0; padding: 0; margin: 0">
+       <tr>
+           <td>
+               <div class="traffic-map-box" id="traffic-map-box" ></div>
+           </td>
+           <td style="width: 14em">
+           		<div style="overflow-y: auto; height: 16em">
+				   <table class="ui table selectable">
+					  <thead>
+						<tr>
+							<th colspan="2">国家/地区排行</th>
+						</tr>
+					  </thead>
+					   <tbody v-if="stats.length == 0">
+						   <tr>
+							   <td colspan="2">暂无数据</td>
+						   </tr>
+					   </tbody>
+					   <tbody>
+						   <tr v-for="(stat, index) in stats.slice(0, 10)">
+							   <td @click.prevent="select(stat.name)" style="cursor: pointer" colspan="2">
+								   <div class="ui progress bar" :class="{red: vIsAttack, blue:!vIsAttack}" style="margin-bottom: 0.3em">
+									   <div class="bar" style="min-width: 0; height: 4px;" :style="{width: stat.percent + '%'}"></div>
+								   </div>
+								  <div>{{stat.name}}</div> 
+								   <div><span class="grey">{{stat.percent}}% </span>
+								   <span class="small grey" v-if="isAttack">{{stat.formattedCountAttackRequests}}</span>
+								   <span class="small grey" v-if="!isAttack">（{{stat.formattedBytes}}）</span></div>
+							   </td>
+						   </tr>
+					   </tbody>
+				   </table>
+               </div>
+           </td>
+       </tr>
+   </table>
+</div>`
+})
+
 // 显示节点的多个集群
 Vue.component("node-clusters-labels", {
 	props: ["v-primary-cluster", "v-secondary-clusters", "size"],
@@ -2951,7 +3161,7 @@ Vue.component("metric-chart", {
 	template: `<div style="float: left" :style="{'width': width}">
 	<h4>{{chart.name}} <span>（{{valueTypeName}}）</span></h4>
 	<div class="ui divider"></div>
-	<div style="height: 20em; padding-bottom: 1em; " :id="chartId" :class="{'scroll-box': chart.type == 'table'}"></div>
+	<div style="height: 14em; padding-bottom: 1em; " :id="chartId" :class="{'scroll-box': chart.type == 'table'}"></div>
 </div>`
 })
 
@@ -4397,8 +4607,10 @@ Vue.component("http-firewall-actions-box", {
 
 		var defaultPageBody = `<!DOCTYPE html>
 <html>
+<title>403 Forbidden</title>
 <body>
-403 Forbidden
+<h1>403 Forbidden</h1>
+<address>Request ID: \${requestId}.</address>
 </body>
 </html>`
 
@@ -5592,10 +5804,10 @@ Vue.component("http-pages-and-shutdown-box", {
 </head>
 <body>
 
-<h3>网站升级中</h3>
+<h1>网站升级中</h1>
 <p>为了给您提供更好的服务，我们正在升级网站，请稍后重新访问。</p>
 
-<footer>Powered by GoEdge.</footer>
+<address>Request ID: \${requestId}, Powered by GoEdge.</address>
 
 </body>
 </html>`
@@ -6109,7 +6321,7 @@ Vue.component("http-access-log-box", {
 	template: `<div style="word-break: break-all" :style="{'color': (accessLog.status >= 400) ? '#dc143c' : ''}" ref="box">
 	<a v-if="accessLog.node != null && accessLog.node.nodeCluster != null" :href="'/clusters/cluster/node?nodeId=' + accessLog.node.id + '&clusterId=' + accessLog.node.nodeCluster.id" title="点击查看节点详情" target="_top"><span class="grey">[{{accessLog.node.name}}<span v-if="!accessLog.node.name.endsWith('节点')">节点</span>]</span></a>
 	<a :href="'/servers/server/log?serverId=' + accessLog.serverId" title="点击到网站服务" v-if="vShowServerLink"><span class="grey">[服务]</span></a>
-	<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey">[{{accessLog.region}}]</span> <ip-box><keyword :v-word="vKeyword">{{accessLog.remoteAddr}}</keyword></ip-box> [{{accessLog.timeLocal}}] <em>&quot;<keyword :v-word="vKeyword">{{accessLog.requestMethod}}</keyword> {{accessLog.scheme}}://<keyword :v-word="vKeyword">{{accessLog.host}}</keyword><keyword :v-word="vKeyword">{{accessLog.requestURI}}</keyword> <a :href="accessLog.scheme + '://' + accessLog.host + accessLog.requestURI" target="_blank" title="新窗口打开" class="disabled"><i class="external icon tiny"></i> </a> {{accessLog.proto}}&quot; </em> <keyword :v-word="vKeyword">{{accessLog.status}}</keyword> <code-label v-if="accessLog.attrs != null && accessLog.attrs['cache.status'] == 'HIT'">cache hit</code-label> <code-label v-if="accessLog.firewallActions != null && accessLog.firewallActions.length > 0">waf {{accessLog.firewallActions}}</code-label> <span v-if="accessLog.tags != null && accessLog.tags.length > 0">- <code-label v-for="tag in accessLog.tags" :key="tag">{{tag}}</code-label></span> - 耗时:{{formatCost(accessLog.requestTime)}} ms <span v-if="accessLog.humanTime != null && accessLog.humanTime.length > 0" class="grey small">&nbsp; ({{accessLog.humanTime}})</span>
+	<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey"><ip-box :v-ip="accessLog.remoteAddr">[{{accessLog.region}}]</ip-box></span> <ip-box><keyword :v-word="vKeyword">{{accessLog.remoteAddr}}</keyword></ip-box> [{{accessLog.timeLocal}}] <em>&quot;<keyword :v-word="vKeyword">{{accessLog.requestMethod}}</keyword> {{accessLog.scheme}}://<keyword :v-word="vKeyword">{{accessLog.host}}</keyword><keyword :v-word="vKeyword">{{accessLog.requestURI}}</keyword> <a :href="accessLog.scheme + '://' + accessLog.host + accessLog.requestURI" target="_blank" title="新窗口打开" class="disabled"><i class="external icon tiny"></i> </a> {{accessLog.proto}}&quot; </em> <keyword :v-word="vKeyword">{{accessLog.status}}</keyword> <code-label v-if="accessLog.attrs != null && accessLog.attrs['cache.status'] == 'HIT'">cache hit</code-label> <code-label v-if="accessLog.firewallActions != null && accessLog.firewallActions.length > 0">waf {{accessLog.firewallActions}}</code-label> <span v-if="accessLog.tags != null && accessLog.tags.length > 0">- <code-label v-for="tag in accessLog.tags" :key="tag">{{tag}}</code-label></span> - 耗时:{{formatCost(accessLog.requestTime)}} ms <span v-if="accessLog.humanTime != null && accessLog.humanTime.length > 0" class="grey small">&nbsp; ({{accessLog.humanTime}})</span>
 	&nbsp; <a href="" @click.prevent="showLog" title="查看详情"><i class="icon expand"></i></a>
 </div>`
 })
@@ -8576,7 +8788,9 @@ Vue.component("traffic-limit-config-box", {
 <title>Traffic Limit Exceeded Warning</title>
 <body>
 
-The site traffic has exceeded the limit. Please contact with the site administrator.
+<h1>Traffic Limit Exceeded Warning</h1>
+<p>The site traffic has exceeded the limit. Please contact with the site administrator.</p>
+<address>Request ID: \${requestId}.</address>
 
 </body>
 </html>`
@@ -8905,16 +9119,19 @@ Vue.component("ip-item-text", {
 })
 
 Vue.component("ip-box", {
-	props: [],
+	props: ["v-ip"],
 	methods: {
 		popup: function () {
-			let e = this.$refs.container
-			let text = e.innerText
-			if (text == null) {
-				text = e.textContent
+			let ip = this.vIp
+			if (ip == null || ip.length == 0) {
+				let e = this.$refs.container
+				ip = e.innerText
+				if (ip == null) {
+					ip = e.textContent
+				}
 			}
 
-			teaweb.popup("/servers/ipbox?ip=" + text, {
+			teaweb.popup("/servers/ipbox?ip=" + ip, {
 				width: "50em",
 				height: "30em"
 			})
@@ -9726,6 +9943,7 @@ Vue.component("datetime-input", {
 			this.timestamp = Math.floor(date.getTime() / 1000)
 		},
 		leadingZero: function (s, l) {
+			s = s.toString()
 			if (l <= s.length) {
 				return s
 			}
@@ -9733,6 +9951,18 @@ Vue.component("datetime-input", {
 				s = "0" + s
 			}
 			return s
+		},
+		resultTimestamp: function () {
+			return this.timestamp
+		},
+		nextDays: function (days) {
+			let date = new Date()
+			date.setTime(date.getTime() + days * 86400 * 1000)
+			this.day = date.getFullYear() + "-" + this.leadingZero(date.getMonth() + 1, 2) + "-" + this.leadingZero(date.getDate(), 2)
+			this.hour = this.leadingZero(date.getHours(), 2)
+			this.minute = this.leadingZero(date.getMinutes(), 2)
+			this.second = this.leadingZero(date.getSeconds(), 2)
+			this.change()
 		}
 	},
 	template: `<div>
@@ -9747,6 +9977,7 @@ Vue.component("datetime-input", {
 		<div class="ui field">:</div>
 		<div class="ui field" :class="{error: hasSecondError}"><input type="text" v-model="second" maxlength="2" style="width:4em" placeholder="秒" @input="change"/></div>
 	</div>
+	<p class="comment">常用时间：<a href="" @click.prevent="nextDays(1)"> &nbsp;1天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(3)"> &nbsp;3天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(7)"> &nbsp;一周&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(30)"> &nbsp;30天&nbsp; </a> </p>
 </div>`
 })
 

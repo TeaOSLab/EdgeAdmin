@@ -52,7 +52,7 @@ Vue.component("traffic-map-box", {
 					selectedMode: false,
 					itemStyle: {
 						areaColor: "#E9F0F9",
-						borderColor: "#999"
+						borderColor: "#DDD"
 					},
 					emphasis: {
 						itemStyle: {
