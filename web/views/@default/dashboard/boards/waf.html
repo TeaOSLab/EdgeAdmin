@@ -1,6 +1,13 @@
 {$layout}
+
+{$var "header"}
+<!-- world map -->
+<script type="text/javascript" src="/js/echarts/echarts.min.js"></script>
+<script type="text/javascript" src="/js/world.js"></script>
+<script type="text/javascript" src="/js/world-countries-map.js"></script>
+{$end}
+
 {$template "menu"}
-{$template "/echarts"}
 
 <div class="ui four columns grid">
     <div class="ui column">
@@ -23,6 +30,13 @@
         <div class="value"><span>{{board.countWeeklyBlocks}}</span>次</div>
     </div>
 </div>
+
+<!-- 流量地图 -->
+<div class="ui divider"></div>
+<div class="traffic-map-box" v-if="!isLoading">
+    <traffic-map-box :v-stats="topCountryStats" :v-is-attack="true"></traffic-map-box>
+</div>
+<div class="ui divider"></div>
 
 <!-- 最近日志 -->
 <div v-if="accessLogs.length > 0">

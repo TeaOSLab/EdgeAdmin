@@ -2,8 +2,6 @@ Tea.context(function () {
 	this.isLoading = false
 
 	this.$delay(function () {
-		let that = this
-
 		this.board.countDailyBlocks = teaweb.formatCount(this.board.countDailyBlocks)
 		this.board.countDailyCaptcha = teaweb.formatCount(this.board.countDailyCaptcha)
 		this.board.countDailyLogs = teaweb.formatCount(this.board.countDailyLogs)
