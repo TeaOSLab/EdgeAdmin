@@ -30,6 +30,12 @@
 .chart-box {
   height: 14em;
 }
+.traffic-map-box {
+  height: 16em;
+}
+.traffic-map-box div::-webkit-scrollbar {
+  width: 4px;
+}
 .color-span {
   font-size: 0.8em;
   padding: 4px;

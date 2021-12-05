@@ -5,11 +5,15 @@ Vue.component("traffic-map-box", {
 	},
 	data: function () {
 		let maxPercent = 0
+		let isAttack = this.vIsAttack
 		this.vStats.forEach(function (v) {
 			let percent = parseFloat(v.percent)
 			if (percent > maxPercent) {
 				maxPercent = percent
 			}
+
+			v.formattedCountRequests = teaweb.formatCount(v.countRequests) + "次"
+			v.formattedCountAttackRequests = teaweb.formatCount(v.countAttackRequests) + "次"
 		})
 
 		if (maxPercent < 100) {
@@ -17,10 +21,12 @@ Vue.component("traffic-map-box", {
 		}
 
 		return {
+			isAttack: isAttack,
 			stats: this.vStats,
 			chart: null,
 			minOpacity: 0.2,
-			maxPercent: maxPercent
+			maxPercent: maxPercent,
+			selectedCountryName: ""
 		}
 	},
 	methods: {
@@ -29,7 +35,12 @@ Vue.component("traffic-map-box", {
 			let that = this
 			this.chart.setOption({
 				backgroundColor: "white",
-				grid: {top: 0, bottom: 0, left: 0, right: 0},
+				grid: {
+					top: 0,
+					bottom: 0,
+					left: 0,
+					right: 0
+				},
 				roam: true,
 				tooltip: {
 					trigger: "item"
@@ -50,12 +61,6 @@ Vue.component("traffic-map-box", {
 						}
 					},
 					//select: {itemStyle:{ areaColor: "#8B9BD3", opacity: 0.8 }},
-					label: {
-						show: true,
-						formatter: function (args) {
-							return ""
-						}
-					},
 					tooltip: {
 						formatter: function (args) {
 							let name = args.name
@@ -67,7 +72,7 @@ Vue.component("traffic-map-box", {
 							})
 
 							if (stat != null) {
-								return name + "<br/>流量：" + stat.formattedBytes + "<br/>请求数：" + teaweb.formatNumber(stat.countRequests) + "<br/>流量占比：" + stat.percent + "%"
+								return name + "<br/>流量：" + stat.formattedBytes + "<br/>流量占比：" + stat.percent + "%<br/>请求数：" + stat.formattedCountRequests + "<br/>攻击数：" + stat.formattedCountAttackRequests
 							}
 							return name
 						}
@@ -81,11 +86,12 @@ Vue.component("traffic-map-box", {
 						if (fullOpacity > 1) {
 							fullOpacity = 1
 						}
-						let isAttack = this.vIsAttack
+						let isAttack = that.vIsAttack
 						let bgColor = "#276AC6"
 						if (isAttack) {
 							bgColor = "#B03A5B"
 						}
+
 						return {
 							name: v.name,
 							value: v.bytes,
@@ -99,6 +105,19 @@ Vue.component("traffic-map-box", {
 									areaColor: bgColor,
 									opacity: fullOpacity
 								}
+							},
+							label: {
+								show: false,
+								formatter: function (args) {
+									if (args.name == that.selectedCountryName) {
+										return args.name
+									}
+									return ""
+								},
+								fontSize: "10px",
+								color: "#fff",
+								backgroundColor: "#8B9BD3",
+								padding: [2, 2, 2, 2]
 							}
 						}
 					}),
@@ -123,9 +142,12 @@ Vue.component("traffic-map-box", {
 					if (v.isSelected) {
 						v.itemStyle.opacity = opacity
 						v.isSelected = false
+						v.label.show = false
+						that.selectedCountryName = ""
 						return
 					}
 					v.isSelected = true
+					that.selectedCountryName = countryName
 					opacity *= 3
 					if (opacity > 1) {
 						opacity = 1
@@ -136,9 +158,11 @@ Vue.component("traffic-map-box", {
 						opacity = 0.5
 					}
 					v.itemStyle.opacity = opacity
+					v.label.show = true
 				} else {
 					v.itemStyle.opacity = opacity
 					v.isSelected = false
+					v.label.show = false
 				}
 			})
 			this.chart.setOption(option)
@@ -166,11 +190,13 @@ Vue.component("traffic-map-box", {
 					   <tbody>
 						   <tr v-for="(stat, index) in stats.slice(0, 10)">
 							   <td @click.prevent="select(stat.name)" style="cursor: pointer" colspan="2">
-								   <div class="ui progress bar blue" style="margin-bottom: 0.3em">
+								   <div class="ui progress bar" :class="{red: vIsAttack, blue:!vIsAttack}" style="margin-bottom: 0.3em">
 									   <div class="bar" style="min-width: 0; height: 4px;" :style="{width: stat.percent + '%'}"></div>
 								   </div>
 								  <div>{{stat.name}}</div> 
-								   <div><span class="grey">{{stat.percent}}% </span><span class="small grey">（{{stat.formattedBytes}}）</span></div>
+								   <div><span class="grey">{{stat.percent}}% </span>
+								   <span class="small grey" v-if="isAttack">{{stat.formattedCountAttackRequests}}</span>
+								   <span class="small grey" v-if="!isAttack">（{{stat.formattedBytes}}）</span></div>
 							   </td>
 						   </tr>
 					   </tbody>
