@@ -1,5 +1,11 @@
 {$layout}
-{$template "/echarts"}
+
+{$var "header"}
+<!-- world map -->
+<script type="text/javascript" src="/js/echarts/echarts.min.js"></script>
+<script type="text/javascript" src="/js/world.js"></script>
+<script type="text/javascript" src="/js/world-countries-map.js"></script>
+{$end}
 
 {$template "menu"}
 
@@ -109,6 +115,12 @@
     </div>
 </div>
 
+<div class="ui divider"></div>
+
+<!-- 流量地图 -->
+<div class="traffic-map-box" v-if="!isLoading">
+    <traffic-map-box :v-stats="topCountryStats"></traffic-map-box>
+</div>
 <div class="ui divider"></div>
 
 <!-- 流量 -->
