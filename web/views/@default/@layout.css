@@ -95,6 +95,9 @@ body.expanded .right-box {
 .main.without-footer .left-box {
   bottom: 0.2em;
 }
+.narrow-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
 /** 通用 **/
 .clear {
   clear: both;
