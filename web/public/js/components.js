@@ -20,13 +20,16 @@ Vue.component("traffic-map-box", {
 			maxPercent *= 1.2 // 不要让某一项100%
 		}
 
+		let screenIsNarrow = window.innerWidth < 512
+
 		return {
 			isAttack: isAttack,
 			stats: this.vStats,
 			chart: null,
 			minOpacity: 0.2,
 			maxPercent: maxPercent,
-			selectedCountryName: ""
+			selectedCountryName: "",
+			screenIsNarrow: screenIsNarrow
 		}
 	},
 	methods: {
@@ -41,14 +44,14 @@ Vue.component("traffic-map-box", {
 					left: 0,
 					right: 0
 				},
-				roam: true,
+				roam: false,
 				tooltip: {
 					trigger: "item"
 				},
 				series: [{
 					type: "map",
 					map: "world",
-					zoom: 1.2,
+					zoom: 1.3,
 					selectedMode: false,
 					itemStyle: {
 						areaColor: "#E9F0F9",
@@ -126,7 +129,7 @@ Vue.component("traffic-map-box", {
 			})
 			this.chart.resize()
 		},
-		select: function (countryName) {
+		selectCountry: function (countryName) {
 			if (this.chart == null) {
 				return
 			}
@@ -166,46 +169,74 @@ Vue.component("traffic-map-box", {
 				}
 			})
 			this.chart.setOption(option)
+		},
+		select: function (args) {
+			this.selectCountry(args.countryName)
 		}
 	},
 	template: `<div>
-<table style="width: 100%; border: 0; padding: 0; margin: 0">
-       <tr>
+	<table style="width: 100%; border: 0; padding: 0; margin: 0">
+		<tbody>
+       	<tr>
            <td>
-               <div class="traffic-map-box" id="traffic-map-box" ></div>
+               <div class="traffic-map-box" id="traffic-map-box"></div>
            </td>
-           <td style="width: 14em">
-           		<div style="overflow-y: auto; height: 16em">
-				   <table class="ui table selectable">
-					  <thead>
-						<tr>
-							<th colspan="2">国家/地区排行</th>
-						</tr>
-					  </thead>
-					   <tbody v-if="stats.length == 0">
-						   <tr>
-							   <td colspan="2">暂无数据</td>
-						   </tr>
-					   </tbody>
-					   <tbody>
-						   <tr v-for="(stat, index) in stats.slice(0, 10)">
-							   <td @click.prevent="select(stat.name)" style="cursor: pointer" colspan="2">
-								   <div class="ui progress bar" :class="{red: vIsAttack, blue:!vIsAttack}" style="margin-bottom: 0.3em">
-									   <div class="bar" style="min-width: 0; height: 4px;" :style="{width: stat.percent + '%'}"></div>
-								   </div>
-								  <div>{{stat.name}}</div> 
-								   <div><span class="grey">{{stat.percent}}% </span>
-								   <span class="small grey" v-if="isAttack">{{stat.formattedCountAttackRequests}}</span>
-								   <span class="small grey" v-if="!isAttack">（{{stat.formattedBytes}}）</span></div>
-							   </td>
-						   </tr>
-					   </tbody>
-				   </table>
-               </div>
+           <td style="width: 14em" v-if="!screenIsNarrow">
+           		<traffic-map-box-table :v-stats="stats" :v-is-attack="isAttack" @select="select"></traffic-map-box-table>
            </td>
        </tr>
+       </tbody>
+       <tbody v-if="screenIsNarrow">
+		   <tr>
+				<td colspan="2">
+					<traffic-map-box-table :v-stats="stats" :v-is-attack="isAttack" @select="select"></traffic-map-box-table>
+				</td>
+			</tr>
+		</tbody>
    </table>
 </div>`
+})
+
+Vue.component("traffic-map-box-table", {
+	props: ["v-stats", "v-is-attack"],
+	data: function () {
+		return {
+			stats: this.vStats,
+			isAttack: this.vIsAttack
+		}
+	},
+	methods: {
+		select: function (countryName) {
+			this.$emit("select", {countryName: countryName})
+		}
+	},
+	template: `<div style="overflow-y: auto; max-height: 16em" class="narrow-scrollbar">
+	   <table class="ui table selectable">
+		  <thead>
+			<tr>
+				<th colspan="2">国家/地区排行&nbsp; <tip-icon content="只有开启了统计的服务才会有记录。"></tip-icon></th>
+			</tr>
+		  </thead>
+		   <tbody v-if="stats.length == 0">
+			   <tr>
+				   <td colspan="2">暂无数据</td>
+			   </tr>
+		   </tbody>
+		   <tbody>
+			   <tr v-for="(stat, index) in stats.slice(0, 10)">
+				   <td @click.prevent="select(stat.name)" style="cursor: pointer" colspan="2">
+					   <div class="ui progress bar" :class="{red: vIsAttack, blue:!vIsAttack}" style="margin-bottom: 0.3em">
+						   <div class="bar" style="min-width: 0; height: 4px;" :style="{width: stat.percent + '%'}"></div>
+					   </div>
+					  <div>{{stat.name}}</div> 
+					   <div><span class="grey">{{stat.percent}}% </span>
+					   <span class="small grey" v-if="isAttack">{{stat.formattedCountAttackRequests}}</span>
+					   <span class="small grey" v-if="!isAttack">（{{stat.formattedBytes}}）</span></div>
+				   </td>
+			   </tr>
+		   </tbody>
+	   </table>
+   </div>`
 })
 
 // 显示节点的多个集群

@@ -33,7 +33,7 @@
 
 <!-- 流量地图 -->
 <div class="ui divider"></div>
-<div class="traffic-map-box" v-if="!isLoading">
+<div v-if="!isLoading">
     <traffic-map-box :v-stats="topCountryStats" :v-is-attack="true"></traffic-map-box>
 </div>
 <div class="ui divider"></div>
