@@ -1,5 +1,11 @@
 {$layout}
-{$template "/echarts"}
+
+{$var "header"}
+<!-- world map -->
+<script type="text/javascript" src="/js/echarts/echarts.min.js"></script>
+<script type="text/javascript" src="/js/world.js"></script>
+<script type="text/javascript" src="/js/world-countries-map.js"></script>
+{$end}
 
 <first-menu>
     <menu-item href="/servers">服务列表</menu-item>
@@ -17,6 +23,12 @@
         <div class="ui active inline loader small"></div>  &nbsp; 数据加载中...
     </div>
 </div>
+
+<!-- 流量地图 -->
+<div v-if="!isLoading">
+    <traffic-map-box :v-stats="topCountryStats"></traffic-map-box>
+</div>
+<div class="ui divider"></div>
 
 <div class="ui menu tabular" v-show="!isLoading">
     <a href="" class="item" :class="{active: trafficTab == 'hourly'}" @click.prevent="selectTrafficTab('hourly')">24小时流量趋势</a>

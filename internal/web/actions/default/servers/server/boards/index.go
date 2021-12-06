@@ -1,7 +1,9 @@
 package boards
 
 import (
+	"fmt"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -120,6 +122,22 @@ func (this *IndexAction) RunPost(params struct {
 		this.Data["topDomainStats"] = statMaps
 	}
 
+	// 地区排行
+	{
+		var countryMaps = []maps.Map{}
+		for _, stat := range resp.TopCountryStats {
+			countryMaps = append(countryMaps, maps.Map{
+				"name":                stat.CountryName,
+				"bytes":               stat.Bytes,
+				"formattedBytes":      numberutils.FormatBytes(stat.Bytes),
+				"countRequests":       stat.CountRequests,
+				"countAttackRequests": stat.CountAttackRequests,
+				"percent":             fmt.Sprintf("%.2f", stat.Percent),
+			})
+		}
+		this.Data["topCountryStats"] = countryMaps
+	}
+
 	// 指标
 	{
 		var chartMaps = []maps.Map{}
@@ -157,5 +175,6 @@ func (this *IndexAction) RunPost(params struct {
 		}
 		this.Data["metricCharts"] = chartMaps
 	}
+
 	this.Success()
 }
