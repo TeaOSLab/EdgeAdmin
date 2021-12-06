@@ -62,7 +62,13 @@
                 </td>
             </tr>
 		</tbody>
-
+        <tr>
+            <td>执行sudo</td>
+            <td>
+                <checkbox name="su" v-model="grant.su"></checkbox>
+                <p class="comment">非root的用户可以使用<code-label>sudo</code-label>获得更高权限来执行命令。</p>
+            </td>
+        </tr>
 		<tr>
 			<td>备注</td>
 			<td>

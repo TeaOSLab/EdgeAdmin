@@ -30,6 +30,7 @@ func (this *CreateAction) RunPost(params struct {
 	PrivateKey  string
 	Passphrase  string
 	Description string
+	Su          bool
 
 	Must *actions.Must
 }) {
@@ -61,6 +62,7 @@ func (this *CreateAction) RunPost(params struct {
 		PrivateKey:  params.PrivateKey,
 		Passphrase:  params.Passphrase,
 		Description: params.Description,
+		Su:          params.Su,
 		NodeId:      0,
 	})
 	if err != nil {

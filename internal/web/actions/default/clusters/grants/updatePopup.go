@@ -44,6 +44,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		"description": grant.Description,
 		"privateKey":  grant.PrivateKey,
 		"passphrase":  grant.Passphrase,
+		"su":          grant.Su,
 	}
 
 	this.Show()
@@ -59,6 +60,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	PrivateKey  string
 	Passphrase  string
 	Description string
+	Su          bool
 
 	Must *actions.Must
 }) {
@@ -96,6 +98,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		Passphrase:  params.Passphrase,
 		Description: params.Description,
 		NodeId:      params.NodeId,
+		Su:          params.Su,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -108,6 +111,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		"name":       params.Name,
 		"method":     params.Method,
 		"methodName": grantutils.FindGrantMethodName(params.Method),
+		"username":   params.Username,
 	}
 
 	this.Success()
