@@ -31,6 +31,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	PrivateKey  string
 	Passphrase  string
 	Description string
+	Su          bool
 
 	Must *actions.Must
 }) {
@@ -62,6 +63,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		PrivateKey:  params.PrivateKey,
 		Passphrase:  params.Passphrase,
 		Description: params.Description,
+		Su:          params.Su,
 		NodeId:      0,
 	})
 	if err != nil {
@@ -74,6 +76,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		"name":       params.Name,
 		"method":     params.Method,
 		"methodName": grantutils.FindGrantMethodName(params.Method),
+		"username":   params.Username,
 	}
 
 	// 创建日志

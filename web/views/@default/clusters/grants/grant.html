@@ -56,7 +56,13 @@
             </td>
         </tr>
 	</tbody>
-
+    <tr>
+        <td>执行sudo</td>
+        <td>
+            <span v-if="grant.su" class="green">Y</span>
+            <span v-else class="disabled">N</span>
+        </td>
+    </tr>
 	<tr>
 		<td>备注</td>
 		<td>

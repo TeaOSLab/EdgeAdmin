@@ -65,6 +65,13 @@
 		</tr>
 
 		<tbody v-show="moreOptionsVisible">
+            <tr>
+                <td>执行sudo</td>
+                <td>
+                    <checkbox name="su"></checkbox>
+                    <p class="comment">非root的用户可以使用<code-label>sudo</code-label>获得更高权限来执行命令。</p>
+                </td>
+            </tr>
 			<tr>
 				<td>备注</td>
 				<td>
