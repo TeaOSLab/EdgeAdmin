@@ -34,7 +34,8 @@ Vue.component("http-access-log-config-box", {
 		})
 
 		return {
-			accessLog: accessLog
+			accessLog: accessLog,
+			hasRequestBodyField: this.vFields.$contains(8)
 		}
 	},
 	methods: {
@@ -44,6 +45,7 @@ Vue.component("http-access-log-config-box", {
 			}).map(function (v) {
 				return v.code
 			})
+			this.hasRequestBodyField = this.accessLog.fields.$contains(8)
 		}
 	},
 	template: `<div>
@@ -64,12 +66,19 @@ Vue.component("http-access-log-config-box", {
 		</tbody>
 		<tbody  v-show="((!vIsLocation && !vIsGroup) || accessLog.isPrior) && accessLog.isOn">
 			<tr>
-				<td>要存储的访问日志字段</td>
+				<td>基础信息</td>
+				<td><p class="comment" style="padding-top: 0">默认记录客户端IP、请求URL等基础信息。</p></td>
+			</tr>
+			<tr>
+				<td>高级信息</td>
 				<td>
-					<div class="ui checkbox" v-for="field in vFields" style="width:10em;margin-bottom:0.8em">
-						<input type="checkbox" v-model="field.isChecked" @change="changeFields"/>
-						<label>{{field.name}}</label>
+					<div class="ui checkbox" v-for="(field, index) in vFields" style="width:10em;margin-bottom:0.8em">
+						<input type="checkbox" v-model="field.isChecked" @change="changeFields" :id="'access-log-field-' + index"/>
+						<label :for="'access-log-field-' + index">{{field.name}}</label>
 					</div>
+					<p class="comment">在基础信息之外要存储的信息。
+						<span class="red" v-if="hasRequestBodyField">记录"请求Body"将会显著消耗更多的系统资源，建议仅在调试时启用，最大记录尺寸为2MB。</span>
+					</p>
 				</td>
 			</tr>
 			<tr>

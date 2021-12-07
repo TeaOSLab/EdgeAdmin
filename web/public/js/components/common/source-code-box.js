@@ -1,7 +1,7 @@
 let sourceCodeBoxIndex = 0
 
 Vue.component("source-code-box", {
-	props: ["name", "type", "id", "read-only"],
+	props: ["name", "type", "id", "read-only", "width", "height"],
 	mounted: function () {
 		let readOnly = this.readOnly
 		if (typeof readOnly != "boolean") {
@@ -15,27 +15,46 @@ Vue.component("source-code-box", {
 		} else if (valueBox.innerText != null) {
 			value = valueBox.innerText
 		}
-		let boxEditor = CodeMirror.fromTextArea(box, {
-			theme: "idea",
-			lineNumbers: true,
-			value: "",
-			readOnly: readOnly,
-			showCursorWhenSelecting: true,
-			height: "auto",
-			//scrollbarStyle: null,
-			viewportMargin: Infinity,
-			lineWrapping: true,
-			highlightFormatting: false,
-			indentUnit: 4,
-			indentWithTabs: true
-		})
-		boxEditor.setValue(value)
 
-		let info = CodeMirror.findModeByMIME(this.type)
-		if (info != null) {
-			boxEditor.setOption("mode", info.mode)
-			CodeMirror.modeURL = "/codemirror/mode/%N/%N.js"
-			CodeMirror.autoLoadMode(boxEditor, info.mode)
+		this.createEditor(box, value, readOnly)
+	},
+	methods: {
+		createEditor: function (box, value, readOnly) {
+			let boxEditor = CodeMirror.fromTextArea(box, {
+				theme: "idea",
+				lineNumbers: true,
+				value: "",
+				readOnly: readOnly,
+				showCursorWhenSelecting: true,
+				height: "auto",
+				//scrollbarStyle: null,
+				viewportMargin: Infinity,
+				lineWrapping: true,
+				highlightFormatting: false,
+				indentUnit: 4,
+				indentWithTabs: true
+			})
+			boxEditor.setValue(value)
+
+			let width = this.width
+			let height = this.height
+			if (width != null && height != null) {
+				width = parseInt(width)
+				height = parseInt(height)
+				if (!isNaN(width) && !isNaN(height)) {
+					if (width <= 0) {
+						width = box.parentNode.offsetWidth
+					}
+					boxEditor.setSize(width, height)
+				}
+			}
+
+			let info = CodeMirror.findModeByMIME(this.type)
+			if (info != null) {
+				boxEditor.setOption("mode", info.mode)
+				CodeMirror.modeURL = "/codemirror/mode/%N/%N.js"
+				CodeMirror.autoLoadMode(boxEditor, info.mode)
+			}
 		}
 	},
 	data: function () {

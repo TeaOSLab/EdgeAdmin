@@ -1,4 +1,5 @@
 {$layout "layout_popup"}
+{$template "/code_editor"}
 
 <div class="ui menu tabular tiny">
 	<a class="item" :class="{active: tab == 'summary'}" @click.prevent="switchTab('summary')">综合信息</a>
@@ -87,6 +88,11 @@
 			<td class="title">{{k}}</td>
 			<td>{{v.values[0]}}</td>
 		</tr>
+        <tr v-if="requestBody.length > 0">
+            <td colspan="2">
+                <source-code-box :type="requestContentType" width="0" height="200">{{requestBody}}</source-code-box>
+            </td>
+        </tr>
 	</table>
 </div>
 
