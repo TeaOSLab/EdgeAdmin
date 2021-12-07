@@ -110,7 +110,7 @@ Vue.component("http-cache-ref-box", {
 		<td>请求方法</td>
 		<td>
 			<values-box size="5" maxlength="10" :values="ref.methods" @change="changeMethods"></values-box>
-			<p class="comment">允许请求的缓存方法，如果没有设置，则默认为<code-label>GET</code-label>、<code-label>HEAD</code-label>。</p>
+			<p class="comment">允许请求的缓存方法，默认支持所有的请求方法。</p>
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
