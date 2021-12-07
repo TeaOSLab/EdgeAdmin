@@ -3,6 +3,7 @@ package cluster
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
@@ -167,9 +168,13 @@ func (this *CreateNodeAction) RunPost(params struct {
 	nodeId := createResp.NodeId
 
 	// IP地址
+	var resultIPAddresses = []string{}
 	for _, addr := range ipAddresses {
+		var resultAddrIds = []int64{}
+
 		addrId := addr.GetInt64("id")
 		if addrId > 0 {
+			resultAddrIds = append(resultAddrIds, addrId)
 			_, err = this.RPC().NodeIPAddressRPC().UpdateNodeIPAddressNodeId(this.AdminContext(), &pb.UpdateNodeIPAddressNodeIdRequest{
 				NodeIPAddressId: addrId,
 				NodeId:          nodeId,
@@ -178,20 +183,50 @@ func (this *CreateNodeAction) RunPost(params struct {
 				this.ErrorPage(err)
 				return
 			}
+
+			resultIPAddresses = append(resultIPAddresses, addr.GetString("ip"))
 		} else {
-			createResp, err := this.RPC().NodeIPAddressRPC().CreateNodeIPAddress(this.AdminContext(), &pb.CreateNodeIPAddressRequest{
-				NodeId:    nodeId,
-				Role:      nodeconfigs.NodeRoleNode,
-				Name:      addr.GetString("name"),
-				Ip:        addr.GetString("ip"),
-				CanAccess: addr.GetBool("canAccess"),
-				IsUp:      addr.GetBool("isUp"),
-			})
+			var ipStrings = addr.GetString("ip")
+			result, err := utils.ExtractIP(ipStrings)
 			if err != nil {
-				this.ErrorPage(err)
-				return
+				this.Fail("节点创建成功，但是保存IP失败：" + err.Error())
 			}
-			addrId = createResp.NodeIPAddressId
+
+			resultIPAddresses = append(resultIPAddresses, result...)
+
+			if len(result) == 1 {
+				// 单个创建
+				createResp, err := this.RPC().NodeIPAddressRPC().CreateNodeIPAddress(this.AdminContext(), &pb.CreateNodeIPAddressRequest{
+					NodeId:    nodeId,
+					Role:      nodeconfigs.NodeRoleNode,
+					Name:      addr.GetString("name"),
+					Ip:        result[0],
+					CanAccess: addr.GetBool("canAccess"),
+					IsUp:      addr.GetBool("isUp"),
+				})
+				if err != nil {
+					this.ErrorPage(err)
+					return
+				}
+				addrId = createResp.NodeIPAddressId
+				resultAddrIds = append(resultAddrIds, addrId)
+			} else if len(result) > 1 {
+				// 批量创建
+				createResp, err := this.RPC().NodeIPAddressRPC().CreateNodeIPAddresses(this.AdminContext(), &pb.CreateNodeIPAddressesRequest{
+					NodeId:     nodeId,
+					Role:       nodeconfigs.NodeRoleNode,
+					Name:       addr.GetString("name"),
+					IpList:     result,
+					CanAccess:  addr.GetBool("canAccess"),
+					IsUp:       addr.GetBool("isUp"),
+					GroupValue: ipStrings,
+				})
+				if err != nil {
+					this.ErrorPage(err)
+					return
+				}
+				resultAddrIds = append(resultAddrIds, createResp.NodeIPAddressIds...)
+			}
 		}
 
 		// 阈值
@@ -202,13 +237,16 @@ func (this *CreateNodeAction) RunPost(params struct {
 				this.ErrorPage(err)
 				return
 			}
-			_, err = this.RPC().NodeIPAddressThresholdRPC().UpdateAllNodeIPAddressThresholds(this.AdminContext(), &pb.UpdateAllNodeIPAddressThresholdsRequest{
-				NodeIPAddressId:             addrId,
-				NodeIPAddressThresholdsJSON: thresholdsJSON,
-			})
-			if err != nil {
-				this.ErrorPage(err)
-				return
+
+			for _, addrId := range resultAddrIds {
+				_, err = this.RPC().NodeIPAddressThresholdRPC().UpdateAllNodeIPAddressThresholds(this.AdminContext(), &pb.UpdateAllNodeIPAddressThresholdsRequest{
+					NodeIPAddressId:             addrId,
+					NodeIPAddressThresholdsJSON: thresholdsJSON,
+				})
+				if err != nil {
+					this.ErrorPage(err)
+					return
+				}
 			}
 		}
 	}
@@ -224,11 +262,6 @@ func (this *CreateNodeAction) RunPost(params struct {
 		return
 	}
 	if nodeResp.Node != nil {
-		var addresses = []string{}
-		for _, addrMap := range ipAddresses {
-			addresses = append(addresses, addrMap.GetString("ip"))
-		}
-
 		var grantMap maps.Map = nil
 		grantId := params.GrantId
 		if grantId > 0 {
@@ -253,7 +286,7 @@ func (this *CreateNodeAction) RunPost(params struct {
 			"name":      nodeResp.Node.Name,
 			"uniqueId":  nodeResp.Node.UniqueId,
 			"secret":    nodeResp.Node.Secret,
-			"addresses": addresses,
+			"addresses": resultIPAddresses,
 			"login": maps.Map{
 				"id":   0,
 				"name": "SSH",

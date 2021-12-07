@@ -3,6 +3,7 @@ package ipAddresses
 import (
 	"encoding/json"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -39,9 +40,15 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Field("ip", params.IP).
 		Require("请输入IP地址")
 
-	ip := net.ParseIP(params.IP)
-	if len(ip) == 0 {
-		this.FailField("ip", "请输入正确的IP")
+	result, err := utils.ExtractIP(params.IP)
+	if err != nil {
+		this.Fail("IP格式错误'" + params.IP + "'")
+	}
+
+	for _, ip := range result {
+		if len(net.ParseIP(ip)) == 0 {
+			this.FailField("ip", "请输入正确的IP")
+		}
 	}
 
 	// 阈值设置
