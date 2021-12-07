@@ -9,6 +9,8 @@
 			<td class="title">IP地址 *</td>
 			<td>
 				<input type="text" name="ip" maxlength="128" ref="focus" v-model="address.ip"/>
+                <p class="comment" v-if="address.id > 0">只支持单个IP。</p>
+                <p class="comment" v-if="address.id == 0">支持单个IP、CIDR格式的一组IP（位数不能小于24）、IP范围（类似于<code-label>x.x.x.x-x.x.x.x</code-label>，最多只取256个）等。</p>
 			</td>
 		</tr>
 		<tr>

@@ -3,6 +3,7 @@ package ipAddresses
 import (
 	"encoding/json"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -57,9 +58,22 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		}
 	}
 
-	ip := net.ParseIP(params.IP)
-	if len(ip) == 0 {
-		this.Fail("请输入正确的IP")
+	if params.AddressId > 0 {
+		ip := net.ParseIP(params.IP)
+		if len(ip) == 0 {
+			this.Fail("请输入正确的IP")
+		}
+	} else {
+		result, err := utils.ExtractIP(params.IP)
+		if err != nil {
+			this.Fail("IP格式错误'" + params.IP + "'")
+		}
+
+		for _, ip := range result {
+			if len(net.ParseIP(ip)) == 0 {
+				this.FailField("ip", "请输入正确的IP")
+			}
+		}
 	}
 
 	var thresholds = []*nodeconfigs.IPAddressThresholdConfig{}

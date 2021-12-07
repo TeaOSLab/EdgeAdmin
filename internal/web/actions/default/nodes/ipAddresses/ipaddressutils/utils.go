@@ -2,6 +2,7 @@ package ipaddressutils
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -16,8 +17,11 @@ func UpdateNodeIPAddresses(parentAction *actionutils.ParentAction, nodeId int64,
 		return err
 	}
 	for _, addr := range addresses {
+		var resultAddrIds = []int64{}
 		addrId := addr.GetInt64("id")
 		if addrId > 0 {
+			resultAddrIds = append(resultAddrIds, addrId)
+
 			var isOn = false
 			if !addr.Has("isOn") { // 兼容老版本
 				isOn = true
@@ -37,18 +41,40 @@ func UpdateNodeIPAddresses(parentAction *actionutils.ParentAction, nodeId int64,
 				return err
 			}
 		} else {
-			createResp, err := parentAction.RPC().NodeIPAddressRPC().CreateNodeIPAddress(parentAction.AdminContext(), &pb.CreateNodeIPAddressRequest{
-				NodeId:    nodeId,
-				Role:      role,
-				Name:      addr.GetString("name"),
-				Ip:        addr.GetString("ip"),
-				CanAccess: addr.GetBool("canAccess"),
-				IsUp:      addr.GetBool("isUp"),
-			})
-			if err != nil {
-				return err
+			var ipStrings = addr.GetString("ip")
+			result, _ := utils.ExtractIP(ipStrings)
+
+			if len(result) == 1 {
+				// 单个创建
+				createResp, err := parentAction.RPC().NodeIPAddressRPC().CreateNodeIPAddress(parentAction.AdminContext(), &pb.CreateNodeIPAddressRequest{
+					NodeId:    nodeId,
+					Role:      role,
+					Name:      addr.GetString("name"),
+					Ip:        result[0],
+					CanAccess: addr.GetBool("canAccess"),
+					IsUp:      addr.GetBool("isUp"),
+				})
+				if err != nil {
+					return err
+				}
+				addrId = createResp.NodeIPAddressId
+				resultAddrIds = append(resultAddrIds, addrId)
+			} else if len(result) > 1 {
+				// 批量创建
+				createResp, err := parentAction.RPC().NodeIPAddressRPC().CreateNodeIPAddresses(parentAction.AdminContext(), &pb.CreateNodeIPAddressesRequest{
+					NodeId:     nodeId,
+					Role:       role,
+					Name:       addr.GetString("name"),
+					IpList:     result,
+					CanAccess:  addr.GetBool("canAccess"),
+					IsUp:       addr.GetBool("isUp"),
+					GroupValue: ipStrings,
+				})
+				if err != nil {
+					return err
+				}
+				resultAddrIds = append(resultAddrIds, createResp.NodeIPAddressIds...)
 			}
-			addrId = createResp.NodeIPAddressId
 		}
 
 		// 保存阈值
@@ -58,12 +84,15 @@ func UpdateNodeIPAddresses(parentAction *actionutils.ParentAction, nodeId int64,
 			if err != nil {
 				return err
 			}
-			_, err = parentAction.RPC().NodeIPAddressThresholdRPC().UpdateAllNodeIPAddressThresholds(parentAction.AdminContext(), &pb.UpdateAllNodeIPAddressThresholdsRequest{
-				NodeIPAddressId:             addrId,
-				NodeIPAddressThresholdsJSON: thresholdsJSON,
-			})
-			if err != nil {
-				return err
+
+			for _, addrId := range resultAddrIds {
+				_, err = parentAction.RPC().NodeIPAddressThresholdRPC().UpdateAllNodeIPAddressThresholds(parentAction.AdminContext(), &pb.UpdateAllNodeIPAddressThresholdsRequest{
+					NodeIPAddressId:             addrId,
+					NodeIPAddressThresholdsJSON: thresholdsJSON,
+				})
+				if err != nil {
+					return err
+				}
 			}
 		}
 	}

@@ -3,6 +3,7 @@ package cluster
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -87,14 +88,31 @@ func (this *CreateNodeAction) RunPost(params struct {
 				NodeId:          nodeId,
 			})
 		} else {
-			_, err = this.RPC().NodeIPAddressRPC().CreateNodeIPAddress(this.AdminContext(), &pb.CreateNodeIPAddressRequest{
-				NodeId:    nodeId,
-				Role:      nodeconfigs.NodeRoleDNS,
-				Name:      addrMap.GetString("name"),
-				Ip:        addrMap.GetString("ip"),
-				CanAccess: addrMap.GetBool("canAccess"),
-				IsUp:      addrMap.GetBool("isUp"),
-			})
+			var ipStrings = addrMap.GetString("ip")
+			result, _ := utils.ExtractIP(ipStrings)
+
+			if len(result) == 1 {
+				// 单个创建
+				_, err = this.RPC().NodeIPAddressRPC().CreateNodeIPAddress(this.AdminContext(), &pb.CreateNodeIPAddressRequest{
+					NodeId:    nodeId,
+					Role:      nodeconfigs.NodeRoleDNS,
+					Name:      addrMap.GetString("name"),
+					Ip:        result[0],
+					CanAccess: addrMap.GetBool("canAccess"),
+					IsUp:      addrMap.GetBool("isUp"),
+				})
+			} else if len(result) > 1 {
+				// 批量创建
+				_, err = this.RPC().NodeIPAddressRPC().CreateNodeIPAddresses(this.AdminContext(), &pb.CreateNodeIPAddressesRequest{
+					NodeId:     nodeId,
+					Role:       nodeconfigs.NodeRoleDNS,
+					Name:       addrMap.GetString("name"),
+					IpList:     result,
+					CanAccess:  addrMap.GetBool("canAccess"),
+					IsUp:       addrMap.GetBool("isUp"),
+					GroupValue: ipStrings,
+				})
+			}
 		}
 		if err != nil {
 			this.ErrorPage(err)
