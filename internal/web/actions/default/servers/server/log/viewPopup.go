@@ -5,6 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 	"net/http"
+	"strings"
 )
 
 type ViewPopupAction struct {
@@ -97,6 +98,20 @@ func (this *ViewPopupAction) RunGet(params struct {
 		}
 	}
 	this.Data["region"] = regionMap
+
+	// 请求内容
+	this.Data["requestBody"] = string(accessLog.RequestBody)
+	this.Data["requestContentType"] = "text/plain"
+
+	requestContentType, ok := accessLog.Header["Content-Type"]
+	if ok {
+		if len(requestContentType.Values) > 0 {
+			var contentType = requestContentType.Values[0]
+			if strings.HasSuffix(contentType, "/json") || strings.Contains(contentType, "/json;") {
+				this.Data["requestContentType"] = "application/json"
+			}
+		}
+	}
 
 	this.Show()
 }
