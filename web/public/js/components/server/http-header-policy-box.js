@@ -53,7 +53,7 @@ Vue.component("http-header-policy-box", {
 				responseDeletingHeaders = responsePolicy.deleteHeaders
 			}
 		}
-		
+
 		return {
 			type: type,
 			typeName: (type == "request") ? "请求" : "响应",
@@ -74,21 +74,21 @@ Vue.component("http-header-policy-box", {
 		addSettingHeader: function (policyId) {
 			teaweb.popup("/servers/server/settings/headers/createSetPopup?" + this.vParams + "&headerPolicyId=" + policyId, {
 				callback: function () {
-					window.location.reload()
+					teaweb.successRefresh("保存成功")
 				}
 			})
 		},
 		addDeletingHeader: function (policyId, type) {
 			teaweb.popup("/servers/server/settings/headers/createDeletePopup?" + this.vParams + "&headerPolicyId=" + policyId + "&type=" + type, {
 				callback: function () {
-					window.location.reload()
+					teaweb.successRefresh("保存成功")
 				}
 			})
 		},
 		updateSettingPopup: function (policyId, headerId) {
 			teaweb.popup("/servers/server/settings/headers/updateSetPopup?" + this.vParams + "&headerPolicyId=" + policyId + "&headerId=" + headerId, {
 				callback: function () {
-					window.location.reload()
+					teaweb.successRefresh("保存成功")
 				}
 			})
 		},

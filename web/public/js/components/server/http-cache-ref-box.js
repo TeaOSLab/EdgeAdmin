@@ -1,13 +1,16 @@
 // 单个缓存条件设置
 Vue.component("http-cache-ref-box", {
 	props: ["v-cache-ref", "v-is-reverse"],
+	mounted: function () {
+		this.$refs.variablesDescriber.update(this.ref.key)
+	},
 	data: function () {
 		let ref = this.vCacheRef
 		if (ref == null) {
 			ref = {
 				isOn: true,
 				cachePolicyId: 0,
-				key: "${scheme}://${host}${requestURI}",
+				key: "${scheme}://${host}${requestPath}${isArgs}${args}",
 				life: {count: 2, unit: "hour"},
 				status: [200],
 				maxSize: {count: 32, unit: "mb"},
@@ -20,6 +23,10 @@ Vue.component("http-cache-ref-box", {
 				isReverse: this.vIsReverse
 			}
 		}
+		if (ref.key == null) {
+			ref.key = ""
+		}
+
 		if (ref.life == null) {
 			ref.life = {count: 2, unit: "hour"}
 		}
@@ -60,6 +67,9 @@ Vue.component("http-cache-ref-box", {
 				result.push(statusNumber)
 			})
 			this.ref.status = result
+		},
+		changeKey: function (key) {
+			this.$refs.variablesDescriber.update(key)
 		}
 	},
 	template: `<tbody>
@@ -80,8 +90,8 @@ Vue.component("http-cache-ref-box", {
 	<tr v-show="!vIsReverse">
 		<td>缓存Key *</td>
 		<td>
-			<input type="text" v-model="ref.key"/>
-			<p class="comment">用来区分不同缓存内容的唯一Key。</p>
+			<input type="text" v-model="ref.key" @input="changeKey(ref.key)"/>
+			<p class="comment">用来区分不同缓存内容的唯一Key。<request-variables-describer ref="variablesDescriber"></request-variables-describer>。</p>
 		</td>
 	</tr>
 	<tr v-show="!vIsReverse">
