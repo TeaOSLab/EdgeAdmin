@@ -20,11 +20,15 @@ Vue.component("http-cache-ref-box", {
 				enableRequestCachePragma: false,
 				conds: null,
 				allowChunkedEncoding: true,
-				isReverse: this.vIsReverse
+				isReverse: this.vIsReverse,
+				methods: []
 			}
 		}
 		if (ref.key == null) {
 			ref.key = ""
+		}
+		if (ref.methods == null) {
+			ref.methods = []
 		}
 
 		if (ref.life == null) {
@@ -68,6 +72,11 @@ Vue.component("http-cache-ref-box", {
 			})
 			this.ref.status = result
 		},
+		changeMethods: function (methods) {
+			this.ref.methods = methods.map(function (v) {
+				return v.toUpperCase()
+			})
+		},
 		changeKey: function (key) {
 			this.$refs.variablesDescriber.update(key)
 		}
@@ -96,6 +105,13 @@ Vue.component("http-cache-ref-box", {
 	</tr>
 	<tr v-show="!vIsReverse">
 		<td colspan="2"><more-options-indicator @change="changeOptionsVisible"></more-options-indicator></td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>请求方法</td>
+		<td>
+			<values-box size="5" maxlength="10" :values="ref.methods" @change="changeMethods"></values-box>
+			<p class="comment">允许请求的缓存方法，如果没有设置，则默认为<code-label>GET</code-label>、<code-label>HEAD</code-label>。</p>
+		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
 		<td>可缓存的最大内容尺寸</td>
