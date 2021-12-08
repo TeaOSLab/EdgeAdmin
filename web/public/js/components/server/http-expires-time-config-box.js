@@ -61,6 +61,7 @@ Vue.component("http-expires-time-config-box", {
 				<td>强制缓存时间</td>
 				<td>
 					<time-duration-box :v-value="expiresTime.duration" @change="notifyChange"></time-duration-box>
+					<p class="comment">从客户端访问的时间开始要缓存的时长。</p>
 				</td>
 			</tr>
 		</tbody>
