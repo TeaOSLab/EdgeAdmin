@@ -2275,6 +2275,7 @@ Vue.component("http-cache-refs-box", {
 						</grey-label>
 						<grey-label v-else-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">0 - {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</grey-label>
 						<grey-label v-if="cacheRef.methods != null && cacheRef.methods.length > 0">{{cacheRef.methods.join(", ")}}</grey-label>
+						<grey-label v-if="cacheRef.expiresTime != null && cacheRef.expiresTime.isPrior && cacheRef.expiresTime.isOn">Expires</grey-label>
 						<grey-label v-if="cacheRef.status != null && cacheRef.status.length > 0 && (cacheRef.status.length > 1 || cacheRef.status[0] != 200)">状态码：{{cacheRef.status.map(function(v) {return v.toString()}).join(", ")}}</grey-label>
 					</td>
 					<td>
@@ -2556,7 +2557,14 @@ Vue.component("http-cache-ref-box", {
 				conds: null,
 				allowChunkedEncoding: true,
 				isReverse: this.vIsReverse,
-				methods: []
+				methods: [],
+				expiresTime: {
+					isPrior: false,
+					isOn: false,
+					overwrite: true,
+					autoCalculate: true,
+					duration: {count: -1, "unit": "hour"}
+				}
 			}
 		}
 		if (ref.key == null) {
@@ -2614,6 +2622,9 @@ Vue.component("http-cache-ref-box", {
 		},
 		changeKey: function (key) {
 			this.$refs.variablesDescriber.update(key)
+		},
+		changeExpiresTime: function (expiresTime) {
+			this.ref.expiresTime = expiresTime
 		}
 	},
 	template: `<tbody>
@@ -2642,10 +2653,16 @@ Vue.component("http-cache-ref-box", {
 		<td colspan="2"><more-options-indicator @change="changeOptionsVisible"></more-options-indicator></td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
-		<td>请求方法</td>
+		<td>请求方法限制</td>
 		<td>
 			<values-box size="5" maxlength="10" :values="ref.methods" @change="changeMethods"></values-box>
 			<p class="comment">允许请求的缓存方法，默认支持所有的请求方法。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>客户端过期时间<em>（Expires）</em></td>
+		<td>
+			<http-expires-time-config-box :v-expires-time="ref.expiresTime" @change="changeExpiresTime"></http-expires-time-config-box>		
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
@@ -3839,6 +3856,7 @@ Vue.component("http-cache-refs-config-box", {
 						</grey-label>
 						<grey-label v-else-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">0 - {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</grey-label>
 						<grey-label v-if="cacheRef.methods != null && cacheRef.methods.length > 0">{{cacheRef.methods.join(", ")}}</grey-label>
+						<grey-label v-if="cacheRef.expiresTime != null && cacheRef.expiresTime.isPrior && cacheRef.expiresTime.isOn">Expires</grey-label>
 						<grey-label v-if="cacheRef.status != null && cacheRef.status.length > 0 && (cacheRef.status.length > 1 || cacheRef.status[0] != 200)">状态码：{{cacheRef.status.map(function(v) {return v.toString()}).join(", ")}}</grey-label>
 					</td>
 					<td>
@@ -6344,6 +6362,76 @@ Vue.component("http-charsets-box", {
 		</tbody>
 	</table>
 	<div class="margin"></div>
+</div>`
+})
+
+Vue.component("http-expires-time-config-box", {
+	props: ["v-expires-time"],
+	data: function () {
+		let expiresTime = this.vExpiresTime
+		if (expiresTime == null) {
+			expiresTime = {
+				isPrior: false,
+				isOn: false,
+				overwrite: true,
+				autoCalculate: true,
+				duration: {count: -1, "unit": "hour"}
+			}
+		}
+		return {
+			expiresTime: expiresTime
+		}
+	},
+	watch: {
+		"expiresTime.isPrior": function () {
+			this.notifyChange()
+		},
+		"expiresTime.isOn": function () {
+			this.notifyChange()
+		},
+		"expiresTime.overwrite": function () {
+			this.notifyChange()
+		},
+		"expiresTime.autoCalculate": function () {
+			this.notifyChange()
+		}
+	},
+	methods: {
+		notifyChange: function () {
+			this.$emit("change", this.expiresTime)
+		}
+	},
+	template: `<div>
+	<table class="ui table">
+		<prior-checkbox :v-config="expiresTime"></prior-checkbox>
+		<tbody v-show="expiresTime.isPrior">
+			<tr>
+				<td class="title">是否启用</td>
+				<td><checkbox v-model="expiresTime.isOn"></checkbox>
+					<p class="comment">启用后，将会在响应的Header中添加<code-label>Expires</code-label>字段，浏览器据此会将内容缓存在客户端；同时，在管理后台执行清理缓存时，也将无法清理客户端已有的缓存。</p>
+				</td>
+			</tr>
+			<tr v-show="expiresTime.isPrior && expiresTime.isOn">
+				<td>覆盖源站设置</td>
+				<td>
+					<checkbox v-model="expiresTime.overwrite"></checkbox>
+					<p class="comment">选中后，会覆盖源站Header中已有的<code-label>Expires</code-label>字段。</p>
+				</td>
+			</tr>
+			<tr v-show="expiresTime.isPrior && expiresTime.isOn">
+				<td>自动计算时间</td>
+				<td><checkbox v-model="expiresTime.autoCalculate"></checkbox>
+					<p class="comment">根据已设置的缓存有效期进行计算。</p>
+				</td>
+			</tr>
+			<tr v-show="expiresTime.isPrior && expiresTime.isOn && !expiresTime.autoCalculate">
+				<td>强制缓存时间</td>
+				<td>
+					<time-duration-box :v-value="expiresTime.duration" @change="notifyChange"></time-duration-box>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </div>`
 })
 
@@ -10141,6 +10229,40 @@ Vue.component("more-options-indicator", {
 	template: '<a href="" style="font-weight: normal" @click.prevent="changeVisible()"><slot><span v-if="!visible">更多选项</span><span v-if="visible">收起选项</span></slot> <i class="icon angle" :class="{down:!visible, up:visible}"></i> </a>'
 });
 
+Vue.component("page-size-selector", {
+	data: function () {
+		let query = window.location.search
+		let pageSize = 10
+		if (query.length > 0) {
+			query = query.substr(1)
+			let params = query.split("&")
+			params.forEach(function (v) {
+				let pieces = v.split("=")
+				if (pieces.length == 2 && pieces[0] == "pageSize") {
+					let pageSizeString = pieces[1]
+					if (pageSizeString.match(/^\d+$/)) {
+						pageSize = parseInt(pageSizeString, 10)
+						if (isNaN(pageSize) || pageSize < 1) {
+							pageSize = 10
+						}
+					}
+				}
+			})
+		}
+		return {
+			pageSize: pageSize
+		}
+	},
+	watch: {
+		pageSize: function () {
+			window.ChangePageSize(this.pageSize)
+		}
+	},
+	template: `<select class="ui dropdown" style="height:34px;padding-top:0;padding-bottom:0;margin-left:1em;color:#666" v-model="pageSize">
+\t<option value="10">[每页]</option><option value="10" selected="selected">10条</option><option value="20">20条</option><option value="30">30条</option><option value="40">40条</option><option value="50">50条</option><option value="60">60条</option><option value="70">70条</option><option value="80">80条</option><option value="90">90条</option><option value="100">100条</option>
+</select>`
+})
+
 /**
  * 二级菜单
  */
@@ -10566,6 +10688,7 @@ Vue.component("time-duration-box", {
 			<option value="minute">分钟</option>
 			<option value="hour">小时</option>
 			<option value="day">天</option>
+			<option value="week">周</option>
 		</select>
 	</div>
 </div>`
