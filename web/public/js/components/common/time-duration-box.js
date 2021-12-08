@@ -50,6 +50,7 @@ Vue.component("time-duration-box", {
 			<option value="minute">分钟</option>
 			<option value="hour">小时</option>
 			<option value="day">天</option>
+			<option value="week">周</option>
 		</select>
 	</div>
 </div>`

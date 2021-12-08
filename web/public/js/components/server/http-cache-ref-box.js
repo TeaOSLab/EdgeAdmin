@@ -21,7 +21,14 @@ Vue.component("http-cache-ref-box", {
 				conds: null,
 				allowChunkedEncoding: true,
 				isReverse: this.vIsReverse,
-				methods: []
+				methods: [],
+				expiresTime: {
+					isPrior: false,
+					isOn: false,
+					overwrite: true,
+					autoCalculate: true,
+					duration: {count: -1, "unit": "hour"}
+				}
 			}
 		}
 		if (ref.key == null) {
@@ -79,6 +86,9 @@ Vue.component("http-cache-ref-box", {
 		},
 		changeKey: function (key) {
 			this.$refs.variablesDescriber.update(key)
+		},
+		changeExpiresTime: function (expiresTime) {
+			this.ref.expiresTime = expiresTime
 		}
 	},
 	template: `<tbody>
@@ -107,10 +117,16 @@ Vue.component("http-cache-ref-box", {
 		<td colspan="2"><more-options-indicator @change="changeOptionsVisible"></more-options-indicator></td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
-		<td>请求方法</td>
+		<td>请求方法限制</td>
 		<td>
 			<values-box size="5" maxlength="10" :values="ref.methods" @change="changeMethods"></values-box>
 			<p class="comment">允许请求的缓存方法，默认支持所有的请求方法。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>客户端过期时间<em>（Expires）</em></td>
+		<td>
+			<http-expires-time-config-box :v-expires-time="ref.expiresTime" @change="changeExpiresTime"></http-expires-time-config-box>		
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
