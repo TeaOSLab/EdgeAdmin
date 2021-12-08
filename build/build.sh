@@ -50,6 +50,10 @@ function build() {
 	echo "=============================="
 	cd -
 
+    # generate files
+    echo "generating files ..."
+	go run -tags $TAG $ROOT/../cmd/edge-admin/main.go generate
+
 	# create dir & copy files
 	echo "copying ..."
 	if [ ! -d $DIST ]; then
@@ -82,10 +86,6 @@ function build() {
 	unzip -q $(basename $EDGE_API_ZIP_FILE)
 	rm -f $(basename $EDGE_API_ZIP_FILE)
 	cd -
-
-    # generate files
-    echo "generating files ..."
-	go run  -tags $TAG $ROOT/../cmd/edge-admin/main.go generate
 
 	# build
 	echo "building "${NAME}" ..."
