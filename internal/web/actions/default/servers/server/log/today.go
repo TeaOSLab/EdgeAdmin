@@ -25,7 +25,7 @@ func (this *TodayAction) RunGet(params struct {
 	Ip        string
 	Domain    string
 }) {
-	size := int64(10)
+	size := int64(20)
 
 	this.Data["path"] = this.Request.URL.Path
 	this.Data["hasError"] = params.HasError

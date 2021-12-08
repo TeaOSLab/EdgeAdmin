@@ -47,7 +47,7 @@ func (this *HistoryAction) RunGet(params struct {
 
 	if len(day) > 0 && regexp.MustCompile(`\d{4}-\d{2}-\d{2}`).MatchString(day) {
 		day = strings.ReplaceAll(day, "-", "")
-		size := int64(10)
+		size := int64(20)
 
 		this.Data["hasError"] = params.HasError
 
