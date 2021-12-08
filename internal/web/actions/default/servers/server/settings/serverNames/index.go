@@ -37,6 +37,9 @@ func (this *IndexAction) RunGet(params struct {
 		err = json.Unmarshal(serverNamesResp.ServerNamesJSON, &passedServerNameConfigs)
 		if err == nil {
 			passedDomains = serverconfigs.PlainServerNames(passedServerNameConfigs)
+			if passedDomains == nil {
+				passedDomains = []string{}
+			}
 		}
 	}
 	this.Data["passedDomains"] = passedDomains
