@@ -82,7 +82,7 @@ Tea.context(function () {
 						return v.countRequests / axis.divider
 					}),
 					itemStyle: {
-						color: "#61A0A8"
+						color: "#9DD3E8"
 					},
 					areaStyle: {
 						color: "#9DD3E8"
