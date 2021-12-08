@@ -161,9 +161,17 @@ Tea.context(function () {
 		this.$post(".wafLogs")
 			.success(function (resp) {
 				if (resp.data.accessLogs != null) {
+					let regions = resp.data.regions
+
 					let that = this
-					resp.data.accessLogs.forEach(function (v) {
-						that.formatTime(v)
+					resp.data.accessLogs.forEach(function (accessLog) {
+						that.formatTime(accessLog)
+
+						if (typeof (regions[accessLog.remoteAddr]) == "string") {
+							accessLog.region = regions[accessLog.remoteAddr]
+						} else {
+							accessLog.region = ""
+						}
 					})
 					this.accessLogs = resp.data.accessLogs
 				}
