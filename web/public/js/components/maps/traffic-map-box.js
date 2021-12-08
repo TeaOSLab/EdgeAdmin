@@ -57,10 +57,24 @@ Vue.component("traffic-map-box", {
 						areaColor: "#E9F0F9",
 						borderColor: "#DDD"
 					},
+					label: {
+						show: false,
+						fontSize: "10px",
+						color: "#fff",
+						backgroundColor: "#8B9BD3",
+						padding: [2, 2, 2, 2]
+					},
 					emphasis: {
 						itemStyle: {
 							areaColor: "#8B9BD3",
 							opacity: 1.0
+						},
+						label: {
+							show: true,
+							fontSize: "10px",
+							color: "#fff",
+							backgroundColor: "#8B9BD3",
+							padding: [2, 2, 2, 2]
 						}
 					},
 					//select: {itemStyle:{ areaColor: "#8B9BD3", opacity: 0.8 }},
@@ -107,6 +121,12 @@ Vue.component("traffic-map-box", {
 								itemStyle: {
 									areaColor: bgColor,
 									opacity: fullOpacity
+								},
+								label: {
+									show: true,
+									formatter: function (args) {
+										return args.name
+									}
 								}
 							},
 							label: {
