@@ -24,8 +24,15 @@ func (this *TodayAction) RunGet(params struct {
 	Keyword   string
 	Ip        string
 	Domain    string
+
+	PageSize int
 }) {
-	size := int64(20)
+	this.Data["pageSize"] = params.PageSize
+
+	size := int64(params.PageSize)
+	if size < 1 {
+		size = 20
+	}
 
 	this.Data["path"] = this.Request.URL.Path
 	this.Data["hasError"] = params.HasError

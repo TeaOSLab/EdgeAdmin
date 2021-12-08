@@ -29,6 +29,8 @@ func (this *IndexAction) RunGet(params struct {
 
 	RequestId string
 	ServerId  int64
+
+	PageSize int64
 }) {
 	if len(params.Day) == 0 {
 		params.Day = timeutil.Format("Y-m-d")
@@ -43,13 +45,17 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["accessLogs"] = []interface{}{}
 	this.Data["hasError"] = params.HasError
 	this.Data["hasWAF"] = params.HasWAF
+	this.Data["pageSize"] = params.PageSize
 
 	day := params.Day
 	ipList := []string{}
 
 	if len(day) > 0 && regexp.MustCompile(`\d{4}-\d{2}-\d{2}`).MatchString(day) {
 		day = strings.ReplaceAll(day, "-", "")
-		size := int64(20)
+		size := params.PageSize
+		if size < 1 {
+			size = 20
+		}
 
 		this.Data["hasError"] = params.HasError
 

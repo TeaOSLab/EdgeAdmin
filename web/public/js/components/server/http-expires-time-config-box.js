@@ -54,7 +54,7 @@ Vue.component("http-expires-time-config-box", {
 			<tr v-show="expiresTime.isPrior && expiresTime.isOn">
 				<td>自动计算时间</td>
 				<td><checkbox v-model="expiresTime.autoCalculate"></checkbox>
-					<p class="comment">根据当前页面中设置的缓存有效期进行计算。</p>
+					<p class="comment">根据已设置的缓存有效期进行计算。</p>
 				</td>
 			</tr>
 			<tr v-show="expiresTime.isPrior && expiresTime.isOn && !expiresTime.autoCalculate">
