@@ -20,27 +20,46 @@
 				<td>节点安装目录</td>
 				<td>
 					<input type="text" name="installDir" maxlength="100" v-model="cluster.installDir"/>
-					<p class="comment">当节点没有单独设置安装目录时，默认使用此设置。如果集群和节点都没有设置安装目录，则使用<span class="ui label tiny">/$登录用户/edge-node</span> 目录。</p>
+					<p class="comment">当节点没有单独设置安装目录时，默认使用此设置。如果集群和节点都没有设置安装目录，则使用<span class="ui label tiny">$登录用户HOME路径/edge-node</span> 目录。</p>
 				</td>
 			</tr>
             <tr>
-                <td>时区</td>
-                <td>
-                    <div class="ui fields inline">
-                        <div class="ui field">
-                            <select class="ui dropdown" v-model="timeZoneGroupCode">
-                                <option v-for="timeZoneGroup in timeZoneGroups" :value="timeZoneGroup.code">{{timeZoneGroup.name}}</option>
-                            </select>
-                        </div>
-                        <div class="ui field">
-                            <select class="ui dropdown" name="timeZone" v-model="cluster.timeZone">
-                                <option v-for="timeZoneLocation in timeZoneLocations" :value="timeZoneLocation.name" v-if="timeZoneLocation.group == timeZoneGroupCode">{{timeZoneLocation.name}} ({{timeZoneLocation.offset}})</option>
-                            </select>
-                        </div>
-                    </div>
-                    <p class="comment">节点记录日志使用的时区。</p>
-                </td>
+                <td colspan="2"><more-options-indicator></more-options-indicator></td>
             </tr>
+            <tbody v-show="moreOptionsVisible">
+                <tr>
+                    <td>时区</td>
+                    <td>
+                        <div class="ui fields inline">
+                            <div class="ui field">
+                                <select class="ui dropdown" v-model="timeZoneGroupCode">
+                                    <option v-for="timeZoneGroup in timeZoneGroups" :value="timeZoneGroup.code">{{timeZoneGroup.name}}</option>
+                                </select>
+                            </div>
+                            <div class="ui field">
+                                <select class="ui dropdown" name="timeZone" v-model="cluster.timeZone">
+                                    <option v-for="timeZoneLocation in timeZoneLocations" :value="timeZoneLocation.name" v-if="timeZoneLocation.group == timeZoneGroupCode">{{timeZoneLocation.name}} ({{timeZoneLocation.offset}})</option>
+                                </select>
+                            </div>
+                        </div>
+                        <p class="comment">节点记录日志使用的时区。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>单节点最大线程数</td>
+                    <td>
+                        <input type="text" name="nodeMaxThreads" maxlength="6" v-model="cluster.nodeMaxThreads"/>
+                        <p class="comment">取值在{{defaultNodeMaxThreadsMin}}和{{defaultNodeMaxThreadsMax}}之间；如果为0，则默认为{{defaultNodeMaxThreads}}。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>单节点TCP最大连接数</td>
+                    <td>
+                        <input type="text" name="nodeTCPMaxConnections" maxlength="6" v-model="cluster.nodeTCPMaxConnections"/>
+                        <p class="comment">如果为0，则默认为{{defaultNodeTCPMaxConnections}}。</p>
+                    </td>
+                </tr>
+            </tbody>
 		</table>
 		<submit-btn></submit-btn>
 	</form>

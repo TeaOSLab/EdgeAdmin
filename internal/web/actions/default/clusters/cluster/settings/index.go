@@ -8,6 +8,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/iwind/TeaGo/types"
 )
 
 type IndexAction struct {
@@ -65,22 +66,32 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["timeZoneLocation"] = nodeconfigs.FindTimeZoneLocation(cluster.TimeZone)
 
 	this.Data["cluster"] = maps.Map{
-		"id":         cluster.Id,
-		"name":       cluster.Name,
-		"installDir": cluster.InstallDir,
-		"timeZone":   cluster.TimeZone,
+		"id":                    cluster.Id,
+		"name":                  cluster.Name,
+		"installDir":            cluster.InstallDir,
+		"timeZone":              cluster.TimeZone,
+		"nodeMaxThreads":        cluster.NodeMaxThreads,
+		"nodeTCPMaxConnections": cluster.NodeTCPMaxConnections,
 	}
+
+	// 默认值
+	this.Data["defaultNodeMaxThreads"] = nodeconfigs.DefaultMaxThreads
+	this.Data["defaultNodeMaxThreadsMin"] = nodeconfigs.DefaultMaxThreadsMin
+	this.Data["defaultNodeMaxThreadsMax"] = nodeconfigs.DefaultMaxThreadsMax
+	this.Data["defaultNodeTCPMaxConnections"] = nodeconfigs.DefaultTCPMaxConnections
 
 	this.Show()
 }
 
 // RunPost 保存设置
 func (this *IndexAction) RunPost(params struct {
-	ClusterId  int64
-	Name       string
-	GrantId    int64
-	InstallDir string
-	TimeZone   string
+	ClusterId             int64
+	Name                  string
+	GrantId               int64
+	InstallDir            string
+	TimeZone              string
+	NodeMaxThreads        int32
+	NodeTCPMaxConnections int32
 
 	Must *actions.Must
 }) {
@@ -91,12 +102,21 @@ func (this *IndexAction) RunPost(params struct {
 		Field("name", params.Name).
 		Require("请输入集群名称")
 
+	if params.NodeMaxThreads > 0 {
+		params.Must.
+			Field("nodeMaxThreads", params.NodeMaxThreads).
+			Gte(int64(nodeconfigs.DefaultMaxThreadsMin), "单节点最大线程数最小值不能小于"+types.String(nodeconfigs.DefaultMaxThreadsMin)).
+			Lte(int64(nodeconfigs.DefaultMaxThreadsMax), "单节点最大线程数最大值不能大于"+types.String(nodeconfigs.DefaultMaxThreadsMax))
+	}
+
 	_, err := this.RPC().NodeClusterRPC().UpdateNodeCluster(this.AdminContext(), &pb.UpdateNodeClusterRequest{
-		NodeClusterId: params.ClusterId,
-		Name:          params.Name,
-		NodeGrantId:   params.GrantId,
-		InstallDir:    params.InstallDir,
-		TimeZone:      params.TimeZone,
+		NodeClusterId:         params.ClusterId,
+		Name:                  params.Name,
+		NodeGrantId:           params.GrantId,
+		InstallDir:            params.InstallDir,
+		TimeZone:              params.TimeZone,
+		NodeMaxThreads:        params.NodeMaxThreads,
+		NodeTCPMaxConnections: params.NodeTCPMaxConnections,
 	})
 	if err != nil {
 		this.ErrorPage(err)
