@@ -4,7 +4,7 @@
 <tip-message-box code="iplist-public-tip">这里是公用的IP名单，可以在WAF策略里直接引用。</tip-message-box>
 
 <div class="margin"></div>
-<form class="ui form" action="/servers/iplists">
+<form class="ui form" action="/servers/iplists/lists">
     <input type="hidden" name="type" :value="type"/>
     <div class="ui fields inline">
         <div class="ui field">
@@ -13,7 +13,7 @@
         <div class="ui field">
             <button type="submit" class="ui button">搜索</button>
             &nbsp;
-            <a :href="'/servers/iplists?type=' + type" v-if="keyword.length > 0">[清除条件]</a>
+            <a :href="'/servers/iplists/lists?type=' + type" v-if="keyword.length > 0">[清除条件]</a>
         </div>
     </div>
 </form>
