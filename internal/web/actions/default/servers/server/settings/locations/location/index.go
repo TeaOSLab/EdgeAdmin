@@ -31,6 +31,7 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["isReverse"] = locationConfig.IsReverse()
 	this.Data["isCaseInsensitive"] = locationConfig.IsCaseInsensitive()
 	this.Data["conds"] = locationConfig.Conds
+	this.Data["domains"] = locationConfig.Domains
 
 	this.Show()
 }
@@ -49,6 +50,8 @@ func (this *IndexAction) RunPost(params struct {
 	IsOn              bool
 
 	CondsJSON []byte
+
+	DomainsJSON []byte
 
 	Must *actions.Must
 }) {
@@ -86,6 +89,21 @@ func (this *IndexAction) RunPost(params struct {
 		}
 	}
 
+	// 域名
+	var domains = []string{}
+	if len(params.DomainsJSON) > 0 {
+		err := json.Unmarshal(params.DomainsJSON, &domains)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+
+		// 去除可能误加的斜杠
+		for index, domain := range domains {
+			domains[index] = strings.TrimSuffix(domain, "/")
+		}
+	}
+
 	location := &serverconfigs.HTTPLocationConfig{}
 	location.SetPattern(params.Pattern, params.PatternType, params.IsCaseInsensitive, params.IsReverse)
 	resultPattern := location.Pattern
@@ -98,6 +116,7 @@ func (this *IndexAction) RunPost(params struct {
 		IsBreak:     params.IsBreak,
 		IsOn:        params.IsOn,
 		CondsJSON:   params.CondsJSON,
+		Domains:     domains,
 	})
 	if err != nil {
 		this.ErrorPage(err)

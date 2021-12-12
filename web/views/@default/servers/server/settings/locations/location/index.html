@@ -53,6 +53,14 @@
 				</tr>
 				<tbody v-show="moreOptionsVisible">
                     <tr>
+                        <td>专属域名</td>
+                        <td>
+                            <domains-box :v-domains="domains"></domains-box>
+                            <p class="comment">默认不需要填写，表示支持所有域名。如果填写了专属域名，表示当前路由规则只会在这些域名被访问时才生效。</p>
+                        </td>
+                    </tr>
+                    <tr>
+                    <tr>
                         <td>不区分大小写</td>
                         <td>
                             <div class="ui checkbox">
