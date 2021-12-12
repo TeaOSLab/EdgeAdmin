@@ -1,8 +1,10 @@
 <first-menu>
     <menu-item href="/servers">服务列表</menu-item>
     <span class="item disabled">|</span>
-    <menu-item :href="'/servers/server/settings?serverId=' + server.id" active="true">"{{server.name}}"设置</menu-item>
-    <span class="disabled item">|</span>
+    <menu-item :href="'/servers/server/settings?serverId=' + server.id" :active="leftMenuActiveItem == null">"{{server.name}}"设置</menu-item>
+    <span class="disabled item">&raquo;</span>
+    <a class="item active" v-if="leftMenuActiveItem != null" :href="leftMenuActiveItem.url">"{{leftMenuActiveItem.name}}"设置</a>
+    <span class="disabled item" v-if="leftMenuActiveItem != null">|</span>
     <more-items-angle
             :v-data-url="'/servers/nearby?serverId=' + server.id"
             :v-url="'/servers/server/settings?serverId=${serverId}'"></more-items-angle>

@@ -13,6 +13,16 @@ func FormatInt(value int) string {
 	return strconv.Itoa(value)
 }
 
+func Pow1024(n int) int64 {
+	if n <= 0 {
+		return 1
+	}
+	if n == 1 {
+		return 1024
+	}
+	return Pow1024(n-1) * 1024
+}
+
 func FormatBytes(bytes int64) string {
 	if bytes < 1024 {
 		return FormatInt64(bytes) + "B"

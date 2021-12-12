@@ -116,22 +116,25 @@ window.teaweb = {
 
 	formatBytes: function (bytes) {
 		bytes = Math.ceil(bytes);
-		if (bytes < 1024) {
+		if (bytes < Math.pow(1024, 1)) {
 			return bytes + "B";
 		}
-		if (bytes < 1024 * 1024) {
-			return (Math.round(bytes * 100 / 1024) / 100) + "K";
+		if (bytes < Math.pow(1024, 2)) {
+			return (Math.round(bytes * 100 / Math.pow(1024, 1)) / 100) + "KB";
 		}
-		if (bytes < 1024 * 1024 * 1024) {
-			return (Math.round(bytes * 100 / 1024 / 1024) / 100) + "M";
+		if (bytes < Math.pow(1024, 3)) {
+			return (Math.round(bytes * 100 / Math.pow(1024, 2)) / 100) + "MB";
 		}
-		if (bytes < 1024 * 1024 * 1024 * 1024) {
-			return (Math.round(bytes * 100 / 1024 / 1024 / 1024) / 100) + "G";
+		if (bytes < Math.pow(1024, 4)) {
+			return (Math.round(bytes * 100 / Math.pow(1024, 3)) / 100) + "GB";
 		}
-		if (bytes < 1024 * 1024 * 1024 * 1024 * 1024) {
-			return (Math.round(bytes * 100 / 1024 / 1024 / 1024 / 1024) / 100) + "T";
+		if (bytes < Math.pow(1024, 5)) {
+			return (Math.round(bytes * 100 / Math.pow(1024, 4)) / 100) + "TB";
 		}
-		return (Math.round(bytes * 100 / 1024 / 1024 / 1024 / 1024 / 1024) / 100) + "P";
+		if (bytes < Math.pow(1024, 6)) {
+			return (Math.round(bytes * 100 / Math.pow(1024, 5)) / 100) + "PB";
+		}
+		return (Math.round(bytes * 100 / Math.pow(1024, 6)) / 100) + "EB";
 	},
 	formatNumber: function (x) {
 		if (x == null) {
@@ -178,18 +181,24 @@ window.teaweb = {
 		let max = Math.max.apply(this, stats.map(countFunc))
 		let divider = 1
 		let unit = ""
-		if (max >= 1024 * 1024 * 1024 * 1024) {
-			unit = "T"
-			divider = 1024 * 1024 * 1024 * 1024
-		} else if (max >= 1024 * 1024 * 1024) {
-			unit = "G"
-			divider = 1024 * 1024 * 1024
-		} else if (max >= 1024 * 1024) {
-			unit = "M"
-			divider = 1024 * 1024
-		} else if (max >= 1024) {
-			unit = "K"
-			divider = 1024
+		if (max >= Math.pow(1024, 6)) {
+			unit = "EB"
+			divider = Math.pow(1024, 6)
+		} else if (max >= Math.pow(1024, 5)) {
+			unit = "PB"
+			divider = Math.pow(1024, 5)
+		} else if (max >= Math.pow(1024, 4)) {
+			unit = "TB"
+			divider = Math.pow(1024, 4)
+		} else if (max >= Math.pow(1024, 3)) {
+			unit = "GB"
+			divider = Math.pow(1024, 3)
+		} else if (max >= Math.pow(1024, 2)) {
+			unit = "MB"
+			divider = Math.pow(1024, 2)
+		} else if (max >= Math.pow(1024, 1)) {
+			unit = "KB"
+			divider = Math.pow(1024, 1)
 		}
 		return {
 			unit: unit,

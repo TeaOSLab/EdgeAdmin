@@ -18,7 +18,7 @@ func TestRPCClient_NodeRPC(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	rpc, err := NewRPCClient(config)
+	rpc, err := NewRPCClient(config, true)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -41,7 +41,7 @@ func TestRPC_Dial_HTTP(t *testing.T) {
 		},
 		NodeId: "a7e55782dab39bce0901058a1e14a0e6",
 		Secret: "lvyPobI3BszkJopz5nPTocOs0OLkEJ7y",
-	})
+	}, true)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -62,7 +62,7 @@ func TestRPC_Dial_HTTP_2(t *testing.T) {
 		},
 		NodeId: "a7e55782dab39bce0901058a1e14a0e6",
 		Secret: "lvyPobI3BszkJopz5nPTocOs0OLkEJ7y",
-	})
+	}, true)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -83,7 +83,7 @@ func TestRPC_Dial_HTTPS(t *testing.T) {
 		},
 		NodeId: "a7e55782dab39bce0901058a1e14a0e6",
 		Secret: "lvyPobI3BszkJopz5nPTocOs0OLkEJ7y",
-	})
+	}, true)
 	if err != nil {
 		t.Fatal(err)
 	}

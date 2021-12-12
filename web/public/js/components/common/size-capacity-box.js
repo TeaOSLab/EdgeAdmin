@@ -1,5 +1,5 @@
 Vue.component("size-capacity-box", {
-	props: ["v-name", "v-value", "v-count", "v-unit", "size", "maxlength"],
+	props: ["v-name", "v-value", "v-count", "v-unit", "size", "maxlength", "v-supported-units"],
 	data: function () {
 		let v = this.vValue
 		if (v == null) {
@@ -22,11 +22,17 @@ Vue.component("size-capacity-box", {
 			vMaxlength = 10
 		}
 
+		let supportedUnits = this.vSupportedUnits
+		if (supportedUnits == null) {
+			supportedUnits = []
+		}
+
 		return {
 			capacity: v,
 			countString: (v.count >= 0) ? v.count.toString() : "",
 			vSize: vSize,
-			vMaxlength: vMaxlength
+			vMaxlength: vMaxlength,
+			supportedUnits: supportedUnits
 		}
 	},
 	watch: {
@@ -56,12 +62,13 @@ Vue.component("size-capacity-box", {
 	</div>
 	<div class="ui field">
 		<select class="ui dropdown" v-model="capacity.unit" @change="change">
-			<option value="byte">字节</option>
-			<option value="kb">KB</option>
-			<option value="mb">MB</option>
-			<option value="gb">GB</option>
-			<option value="tb">TB</option>
-			<option value="pb">PB</option>
+			<option value="byte" v-if="supportedUnits.length == 0 || supportedUnits.$contains('byte')">字节</option>
+			<option value="kb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('kb')">KB</option>
+			<option value="mb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('mb')">MB</option>
+			<option value="gb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('gb')">GB</option>
+			<option value="tb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('tb')">TB</option>
+			<option value="pb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('pb')">PB</option>
+			<option value="eb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('eb')">EB</option>
 		</select>
 	</div>
 </div>`
