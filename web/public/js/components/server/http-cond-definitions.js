@@ -89,6 +89,97 @@ Vue.component("http-cond-url-extension", {
 </div>`
 })
 
+// URL扩展名条件
+Vue.component("http-cond-url-not-extension", {
+	props: ["v-cond"],
+	data: function () {
+		let cond = {
+			isRequest: true,
+			param: "${requestPathExtension}",
+			operator: "not in",
+			value: "[]"
+		}
+		if (this.vCond != null && this.vCond.param == cond.param) {
+			cond.value = this.vCond.value
+		}
+
+		let extensions = []
+		try {
+			extensions = JSON.parse(cond.value)
+		} catch (e) {
+
+		}
+
+		return {
+			cond: cond,
+			extensions: extensions, // TODO 可以拖动排序
+
+			isAdding: false,
+			addingExt: ""
+		}
+	},
+	watch: {
+		extensions: function () {
+			this.cond.value = JSON.stringify(this.extensions)
+		}
+	},
+	methods: {
+		addExt: function () {
+			this.isAdding = !this.isAdding
+
+			if (this.isAdding) {
+				let that = this
+				setTimeout(function () {
+					that.$refs.addingExt.focus()
+				}, 100)
+			}
+		},
+		cancelAdding: function () {
+			this.isAdding = false
+			this.addingExt = ""
+		},
+		confirmAdding: function () {
+			// TODO 做更详细的校验
+			// TODO 如果有重复的则提示之
+
+			if (this.addingExt.length == 0) {
+				return
+			}
+			if (this.addingExt[0] != ".") {
+				this.addingExt = "." + this.addingExt
+			}
+			this.addingExt = this.addingExt.replace(/\s+/g, "").toLowerCase()
+			this.extensions.push(this.addingExt)
+
+			// 清除状态
+			this.cancelAdding()
+		},
+		removeExt: function (index) {
+			this.extensions.$remove(index)
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<div v-if="extensions.length > 0">
+		<div class="ui label small" v-for="(ext, index) in extensions">{{ext}} <a href="" title="删除" @click.prevent="removeExt(index)"><i class="icon remove"></i></a></div>
+		<div class="ui divider"></div>
+	</div>
+	<div class="ui fields inline" v-if="isAdding">
+		<div class="ui field">
+			<input type="text" size="6" maxlength="100" v-model="addingExt" ref="addingExt" placeholder=".xxx" @keyup.enter="confirmAdding" @keypress.enter.prevent="1" />
+		</div>
+		<div class="ui field">
+			<button class="ui button tiny" type="button" @click.prevent="confirmAdding">确认</button>
+			<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove"></i></a>
+		</div> 
+	</div>
+	<div style="margin-top: 1em">
+		<button class="ui button tiny" type="button" @click.prevent="addExt()">+添加扩展名</button>
+	</div>
+	<p class="comment">扩展名需要包含点（.）符号，例如<span class="ui label tiny">.jpg</span>、<span class="ui label tiny">.png</span>之类。</p>
+</div>`
+})
+
 // 根据URL前缀
 Vue.component("http-cond-url-prefix", {
 	props: ["v-cond"],
