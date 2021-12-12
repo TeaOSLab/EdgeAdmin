@@ -32,24 +32,36 @@ func (this *ExportAction) RunGet(params struct {
 		return
 	}
 
-	inboundGroups := []*firewallconfigs.HTTPFirewallRuleGroup{}
-	outboundGroups := []*firewallconfigs.HTTPFirewallRuleGroup{}
+	enabledInboundGroups := []*firewallconfigs.HTTPFirewallRuleGroup{}
+	enabledOutboundGroups := []*firewallconfigs.HTTPFirewallRuleGroup{}
+
+	disabledInboundGroups := []*firewallconfigs.HTTPFirewallRuleGroup{}
+	disabledOutboundGroups := []*firewallconfigs.HTTPFirewallRuleGroup{}
+
 	if policy.Inbound != nil {
 		for _, g := range policy.Inbound.Groups {
 			if g.IsOn {
-				inboundGroups = append(inboundGroups, g)
+				enabledInboundGroups = append(enabledInboundGroups, g)
+			} else {
+				disabledInboundGroups = append(disabledInboundGroups, g)
 			}
 		}
 	}
 	if policy.Outbound != nil {
 		for _, g := range policy.Outbound.Groups {
 			if g.IsOn {
-				outboundGroups = append(outboundGroups, g)
+				enabledOutboundGroups = append(enabledOutboundGroups, g)
+			} else {
+				disabledOutboundGroups = append(disabledOutboundGroups, g)
 			}
 		}
 	}
-	this.Data["inboundGroups"] = inboundGroups
-	this.Data["outboundGroups"] = outboundGroups
+
+	this.Data["enabledInboundGroups"] = enabledInboundGroups
+	this.Data["enabledOutboundGroups"] = enabledOutboundGroups
+
+	this.Data["disabledInboundGroups"] = disabledInboundGroups
+	this.Data["disabledOutboundGroups"] = disabledOutboundGroups
 
 	this.Show()
 }
@@ -116,5 +128,6 @@ func (this *ExportAction) RunPost(params struct {
 	ttlcache.DefaultCache.Write(key, configJSON, time.Now().Unix()+600)
 
 	this.Data["key"] = key
+	this.Data["id"] = params.FirewallPolicyId
 	this.Success()
 }

@@ -3,6 +3,7 @@ package waf
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/ttlcache"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/iwind/TeaGo/types"
 	"strconv"
 )
 
@@ -15,7 +16,8 @@ func (this *ExportDownloadAction) Init() {
 }
 
 func (this *ExportDownloadAction) RunGet(params struct {
-	Key string
+	Key      string
+	PolicyId int64
 }) {
 	item := ttlcache.DefaultCache.Read(params.Key)
 	if item == nil || item.Value == nil {
@@ -27,7 +29,7 @@ func (this *ExportDownloadAction) RunGet(params struct {
 
 	data, ok := item.Value.([]byte)
 	if ok {
-		this.AddHeader("Content-Disposition", "attachment; filename=\"WAF.json\";")
+		this.AddHeader("Content-Disposition", "attachment; filename=\"WAF-"+types.String(params.PolicyId)+".json\";")
 		this.AddHeader("Content-Length", strconv.Itoa(len(data)))
 		this.Write(data)
 	} else {

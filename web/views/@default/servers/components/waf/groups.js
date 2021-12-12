@@ -57,7 +57,6 @@ Tea.context(function () {
 	// 添加分组
 	this.createGroup = function (type) {
 		teaweb.popup("/servers/components/waf/createGroupPopup?firewallPolicyId=" + this.firewallPolicyId + "&type=" + type, {
-			height: "16em",
 			callback: function () {
 				teaweb.success("保存成功", function () {
 					window.location.reload()

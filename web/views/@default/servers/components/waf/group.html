@@ -8,6 +8,13 @@
 			<td class="title">名称</td>
 			<td>{{group.name}}</td>
 		</tr>
+        <tr>
+            <td>代号</td>
+            <td>
+                <span v-if="group.code.length > 0">{{group.code}}</span>
+                <span v-else class="disabled">没有设置。</span>
+            </td>
+        </tr>
 		<tr>
 			<td>描述</td>
 			<td>
