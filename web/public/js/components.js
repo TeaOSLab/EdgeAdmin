@@ -209,7 +209,7 @@ Vue.component("traffic-map-box", {
        <tbody v-if="screenIsNarrow">
 		   <tr>
 				<td colspan="2">
-					<traffic-map-box-table :v-stats="stats" :v-is-attack="isAttack" @select="select"></traffic-map-box-table>
+					<traffic-map-box-table :v-stats="stats" :v-is-attack="isAttack" :v-screen-is-narrow="true" @select="select"></traffic-map-box-table>
 				</td>
 			</tr>
 		</tbody>
@@ -218,7 +218,7 @@ Vue.component("traffic-map-box", {
 })
 
 Vue.component("traffic-map-box-table", {
-	props: ["v-stats", "v-is-attack"],
+	props: ["v-stats", "v-is-attack", "v-screen-is-narrow"],
 	data: function () {
 		return {
 			stats: this.vStats,
@@ -230,7 +230,7 @@ Vue.component("traffic-map-box-table", {
 			this.$emit("select", {countryName: countryName})
 		}
 	},
-	template: `<div style="overflow-y: auto; max-height: 16em" class="narrow-scrollbar">
+	template: `<div style="overflow-y: auto" :style="{'max-height':vScreenIsNarrow ? 'auto' : '16em'}" class="narrow-scrollbar">
 	   <table class="ui table selectable">
 		  <thead>
 			<tr>
@@ -1626,6 +1626,7 @@ Vue.component("http-request-conds-box", {
 								<var v-if="cond.type.length == 0 || cond.type == 'params'" style="font-style: normal">{{cond.param}} <var>{{cond.operator}}</var></var>
 								<var v-if="cond.type.length > 0 && cond.type != 'params'" style="font-style: normal">{{typeName(cond)}}: </var>
 								{{cond.value}}
+								<sup v-if="cond.isCaseInsensitive" title="不区分大小写"><i class="icon info small"></i></sup>
 							</span>
 							
 							<var v-if="index < group.conds.length - 1"> {{group.connector}} &nbsp;</var>
@@ -2725,7 +2726,7 @@ Vue.component("http-cache-ref-box", {
 
 // 请求限制
 Vue.component("http-request-limit-config-box", {
-	props: ["v-request-limit-config"],
+	props: ["v-request-limit-config", "v-is-group", "v-is-location"],
 	data: function () {
 		let config = this.vRequestLimitConfig
 		if (config == null) {
@@ -2776,10 +2777,16 @@ Vue.component("http-request-limit-config-box", {
 			}
 		}
 	},
+	methods: {
+		isOn: function () {
+			return ((!this.vIsLocation && !this.vIsGroup) || this.config.isPrior) && this.config.isOn
+		}
+	},
 	template: `<div>
 	<input type="hidden" name="requestLimitJSON" :value="JSON.stringify(config)"/>
 	<table class="ui table selectable definition">
-		<tbody>
+		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
 			<tr>
 				<td class="title">是否启用</td>
 				<td>
@@ -2787,7 +2794,7 @@ Vue.component("http-request-limit-config-box", {
 				</td>
 			</tr>
 		</tbody>
-		<tbody v-show="config.isOn">
+		<tbody v-show="isOn()">
 			<tr>
 				<td>最大并发连接数</td>
 				<td>
@@ -2882,6 +2889,7 @@ Vue.component("http-request-conds-view", {
 						<var v-if="cond.type.length == 0 || cond.type == 'params'" style="font-style: normal">{{cond.param}} <var>{{cond.operator}}</var></var>
 						<var v-if="cond.type.length > 0 && cond.type != 'params'" style="font-style: normal">{{cond.typeName}}: </var>
 						{{cond.value}}
+						<sup v-if="cond.isCaseInsensitive" title="不区分大小写"><i class="icon info small"></i></sup>
 					</span>
 					
 					<var v-if="index < group.conds.length - 1"> {{group.connector}} &nbsp;</var>
@@ -6876,6 +6884,13 @@ Vue.component("http-location-labels", {
 	template: `	<div class="labels-box">
 	<!-- 基本信息 -->
 	<http-location-labels-label v-if="location.name != null && location.name.length > 0" :class="'olive'" :href="url('/location')">{{location.name}}</http-location-labels-label>
+	
+	<!-- domains -->
+	<div v-if="location.domains != null && location.domains.length > 0">
+		<grey-label v-for="domain in location.domains">{{domain}}</grey-label>
+	</div>
+	
+	<!-- break -->
 	<http-location-labels-label v-if="location.isBreak" :href="url('/location')">BREAK</http-location-labels-label>
 	
 	<!-- redirectToHTTPS -->
@@ -8414,6 +8429,97 @@ Vue.component("http-cond-url-extension", {
 </div>`
 })
 
+// URL扩展名条件
+Vue.component("http-cond-url-not-extension", {
+	props: ["v-cond"],
+	data: function () {
+		let cond = {
+			isRequest: true,
+			param: "${requestPathExtension}",
+			operator: "not in",
+			value: "[]"
+		}
+		if (this.vCond != null && this.vCond.param == cond.param) {
+			cond.value = this.vCond.value
+		}
+
+		let extensions = []
+		try {
+			extensions = JSON.parse(cond.value)
+		} catch (e) {
+
+		}
+
+		return {
+			cond: cond,
+			extensions: extensions, // TODO 可以拖动排序
+
+			isAdding: false,
+			addingExt: ""
+		}
+	},
+	watch: {
+		extensions: function () {
+			this.cond.value = JSON.stringify(this.extensions)
+		}
+	},
+	methods: {
+		addExt: function () {
+			this.isAdding = !this.isAdding
+
+			if (this.isAdding) {
+				let that = this
+				setTimeout(function () {
+					that.$refs.addingExt.focus()
+				}, 100)
+			}
+		},
+		cancelAdding: function () {
+			this.isAdding = false
+			this.addingExt = ""
+		},
+		confirmAdding: function () {
+			// TODO 做更详细的校验
+			// TODO 如果有重复的则提示之
+
+			if (this.addingExt.length == 0) {
+				return
+			}
+			if (this.addingExt[0] != ".") {
+				this.addingExt = "." + this.addingExt
+			}
+			this.addingExt = this.addingExt.replace(/\s+/g, "").toLowerCase()
+			this.extensions.push(this.addingExt)
+
+			// 清除状态
+			this.cancelAdding()
+		},
+		removeExt: function (index) {
+			this.extensions.$remove(index)
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<div v-if="extensions.length > 0">
+		<div class="ui label small" v-for="(ext, index) in extensions">{{ext}} <a href="" title="删除" @click.prevent="removeExt(index)"><i class="icon remove"></i></a></div>
+		<div class="ui divider"></div>
+	</div>
+	<div class="ui fields inline" v-if="isAdding">
+		<div class="ui field">
+			<input type="text" size="6" maxlength="100" v-model="addingExt" ref="addingExt" placeholder=".xxx" @keyup.enter="confirmAdding" @keypress.enter.prevent="1" />
+		</div>
+		<div class="ui field">
+			<button class="ui button tiny" type="button" @click.prevent="confirmAdding">确认</button>
+			<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove"></i></a>
+		</div> 
+	</div>
+	<div style="margin-top: 1em">
+		<button class="ui button tiny" type="button" @click.prevent="addExt()">+添加扩展名</button>
+	</div>
+	<p class="comment">扩展名需要包含点（.）符号，例如<span class="ui label tiny">.jpg</span>、<span class="ui label tiny">.png</span>之类。</p>
+</div>`
+})
+
 // 根据URL前缀
 Vue.component("http-cond-url-prefix", {
 	props: ["v-cond"],
@@ -8422,13 +8528,19 @@ Vue.component("http-cond-url-prefix", {
 			isRequest: true,
 			param: "${requestPath}",
 			operator: "prefix",
-			value: ""
+			value: "",
+			isCaseInsensitive: false
 		}
 		if (this.vCond != null && typeof (this.vCond.value) == "string") {
 			cond.value = this.vCond.value
 		}
 		return {
 			cond: cond
+		}
+	},
+	methods: {
+		changeCaseInsensitive: function (isCaseInsensitive) {
+			this.cond.isCaseInsensitive = isCaseInsensitive
 		}
 	},
 	template: `<div>
@@ -8446,13 +8558,19 @@ Vue.component("http-cond-url-not-prefix", {
 			param: "${requestPath}",
 			operator: "prefix",
 			value: "",
-			isReverse: true
+			isReverse: true,
+			isCaseInsensitive: false
 		}
 		if (this.vCond != null && typeof this.vCond.value == "string") {
 			cond.value = this.vCond.value
 		}
 		return {
 			cond: cond
+		}
+	},
+	methods: {
+		changeCaseInsensitive: function (isCaseInsensitive) {
+			this.cond.isCaseInsensitive = isCaseInsensitive
 		}
 	},
 	template: `<div>
@@ -8470,13 +8588,19 @@ Vue.component("http-cond-url-eq", {
 			isRequest: true,
 			param: "${requestPath}",
 			operator: "eq",
-			value: ""
+			value: "",
+			isCaseInsensitive: false
 		}
 		if (this.vCond != null && typeof this.vCond.value == "string") {
 			cond.value = this.vCond.value
 		}
 		return {
 			cond: cond
+		}
+	},
+	methods: {
+		changeCaseInsensitive: function (isCaseInsensitive) {
+			this.cond.isCaseInsensitive = isCaseInsensitive
 		}
 	},
 	template: `<div>
@@ -8494,13 +8618,19 @@ Vue.component("http-cond-url-not-eq", {
 			param: "${requestPath}",
 			operator: "eq",
 			value: "",
-			isReverse: true
+			isReverse: true,
+			isCaseInsensitive: false
 		}
 		if (this.vCond != null && typeof this.vCond.value == "string") {
 			cond.value = this.vCond.value
 		}
 		return {
 			cond: cond
+		}
+	},
+	methods: {
+		changeCaseInsensitive: function (isCaseInsensitive) {
+			this.cond.isCaseInsensitive = isCaseInsensitive
 		}
 	},
 	template: `<div>
@@ -8518,13 +8648,19 @@ Vue.component("http-cond-url-regexp", {
 			isRequest: true,
 			param: "${requestPath}",
 			operator: "regexp",
-			value: ""
+			value: "",
+			isCaseInsensitive: false
 		}
 		if (this.vCond != null && typeof this.vCond.value == "string") {
 			cond.value = this.vCond.value
 		}
 		return {
 			cond: cond
+		}
+	},
+	methods: {
+		changeCaseInsensitive: function (isCaseInsensitive) {
+			this.cond.isCaseInsensitive = isCaseInsensitive
 		}
 	},
 	template: `<div>
@@ -8542,7 +8678,8 @@ Vue.component("http-cond-url-not-regexp", {
 			isRequest: true,
 			param: "${requestPath}",
 			operator: "not regexp",
-			value: ""
+			value: "",
+			isCaseInsensitive: false
 		}
 		if (this.vCond != null && typeof this.vCond.value == "string") {
 			cond.value = this.vCond.value
@@ -8551,10 +8688,76 @@ Vue.component("http-cond-url-not-regexp", {
 			cond: cond
 		}
 	},
+	methods: {
+		changeCaseInsensitive: function (isCaseInsensitive) {
+			this.cond.isCaseInsensitive = isCaseInsensitive
+		}
+	},
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<input type="text" v-model="cond.value"/>
 	<p class="comment"><strong>不要</strong>匹配URL的正则表达式，意即只要匹配成功则排除此条件，比如<code-label>^/static/(.*).js$</code-label>。</p>
+</div>`
+})
+
+
+// User-Agent正则匹配
+Vue.component("http-cond-user-agent-regexp", {
+	props: ["v-cond"],
+	data: function () {
+		let cond = {
+			isRequest: true,
+			param: "${userAgent}",
+			operator: "regexp",
+			value: "",
+			isCaseInsensitive: false
+		}
+		if (this.vCond != null && typeof this.vCond.value == "string") {
+			cond.value = this.vCond.value
+		}
+		return {
+			cond: cond
+		}
+	},
+	methods: {
+		changeCaseInsensitive: function (isCaseInsensitive) {
+			this.cond.isCaseInsensitive = isCaseInsensitive
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value"/>
+	<p class="comment">匹配User-Agent的正则表达式，比如<code-label>Android|iPhone</code-label>。</p>
+</div>`
+})
+
+// User-Agent正则不匹配
+Vue.component("http-cond-user-agent-not-regexp", {
+	props: ["v-cond"],
+	data: function () {
+		let cond = {
+			isRequest: true,
+			param: "${userAgent}",
+			operator: "not regexp",
+			value: "",
+			isCaseInsensitive: false
+		}
+		if (this.vCond != null && typeof this.vCond.value == "string") {
+			cond.value = this.vCond.value
+		}
+		return {
+			cond: cond
+		}
+	},
+	methods: {
+		changeCaseInsensitive: function (isCaseInsensitive) {
+			this.cond.isCaseInsensitive = isCaseInsensitive
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value"/>
+	<p class="comment">匹配User-Agent的正则表达式，比如<code-label>Android|iPhone</code-label>，如果匹配，则排除此条件。</p>
 </div>`
 })
 
@@ -8701,7 +8904,8 @@ Vue.component("http-cond-params", {
 			isRequest: true,
 			param: "",
 			operator: window.REQUEST_COND_OPERATORS[0].op,
-			value: ""
+			value: "",
+			isCaseInsensitive: false
 		}
 		if (this.vCond != null) {
 			cond = this.vCond
@@ -8905,6 +9109,16 @@ Vue.component("http-cond-params", {
 				<input type="text" maxlength="11" size="11" style="width: 5em" v-model="numberValue"/>
 				<p class="comment">参数中IP转换成整数后除以100的余数，在0-99之间。</p>
 			</div>
+		</td>
+	</tr>
+	<tr v-if="['regexp', 'not regexp', 'eq', 'not', 'prefix', 'suffix', 'contains', 'not contains', 'in', 'not in'].$contains(cond.operator)">
+		<td>不区分大小写</td>
+		<td>
+		   <div class="ui checkbox">
+				<input type="checkbox" v-model="cond.isCaseInsensitive"/>
+				<label></label>
+			</div>
+			<p class="comment">选中后表示对比时忽略参数值的大小写。</p>
 		</td>
 	</tr>
 </tbody>`
@@ -12694,7 +12908,7 @@ Vue.component("grant-selector", {
 </div>`
 })
 
-window.REQUEST_COND_COMPONENTS = [{"type":"url-extension","name":"URL扩展名","description":"根据URL中的文件路径扩展名进行过滤","component":"http-cond-url-extension","paramsTitle":"扩展名列表","isRequest":true},{"type":"url-prefix","name":"URL前缀","description":"根据URL中的文件路径前缀进行过滤","component":"http-cond-url-prefix","paramsTitle":"URL前缀","isRequest":true},{"type":"url-eq","name":"URL精准匹配","description":"检查URL中的文件路径是否一致","component":"http-cond-url-eq","paramsTitle":"URL完整路径","isRequest":true},{"type":"url-regexp","name":"URL正则匹配","description":"使用正则表达式检查URL中的文件路径是否一致","component":"http-cond-url-regexp","paramsTitle":"正则表达式","isRequest":true},{"type":"params","name":"参数匹配","description":"根据参数值进行匹配","component":"http-cond-params","paramsTitle":"参数配置","isRequest":true},{"type":"url-not-prefix","name":"排除：URL前缀","description":"根据URL中的文件路径前缀进行过滤","component":"http-cond-url-not-prefix","paramsTitle":"URL前缀","isRequest":true},{"type":"url-not-eq","name":"排除：URL精准匹配","description":"检查URL中的文件路径是否一致","component":"http-cond-url-not-eq","paramsTitle":"URL完整路径","isRequest":true},{"type":"url-not-regexp","name":"排除：URL正则匹配","description":"使用正则表达式检查URL中的文件路径是否一致，如果一致，则不匹配","component":"http-cond-url-not-regexp","paramsTitle":"正则表达式","isRequest":true},{"type":"mime-type","name":"内容MimeType","description":"根据服务器返回的内容的MimeType进行过滤。注意：当用于缓存条件时，此条件需要结合别的请求条件使用。","component":"http-cond-mime-type","paramsTitle":"MimeType列表","isRequest":false}]
+window.REQUEST_COND_COMPONENTS = [{"type":"url-extension","name":"URL扩展名","description":"根据URL中的文件路径扩展名进行过滤","component":"http-cond-url-extension","paramsTitle":"扩展名列表","isRequest":true,"caseInsensitive":false},{"type":"url-prefix","name":"URL前缀","description":"根据URL中的文件路径前缀进行过滤","component":"http-cond-url-prefix","paramsTitle":"URL前缀","isRequest":true,"caseInsensitive":true},{"type":"url-eq","name":"URL精准匹配","description":"检查URL中的文件路径是否一致","component":"http-cond-url-eq","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":true},{"type":"url-regexp","name":"URL正则匹配","description":"使用正则表达式检查URL中的文件路径是否一致","component":"http-cond-url-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"user-agent-regexp","name":"User-Agent正则匹配","description":"使用正则表达式检查User-Agent中是否含有某些浏览器和系统标识","component":"http-cond-user-agent-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"params","name":"参数匹配","description":"根据参数值进行匹配","component":"http-cond-params","paramsTitle":"参数配置","isRequest":true,"caseInsensitive":false},{"type":"url-not-extension","name":"排除：URL扩展名","description":"根据URL中的文件路径扩展名进行过滤","component":"http-cond-url-not-extension","paramsTitle":"扩展名列表","isRequest":true,"caseInsensitive":false},{"type":"url-not-prefix","name":"排除：URL前缀","description":"根据URL中的文件路径前缀进行过滤","component":"http-cond-url-not-prefix","paramsTitle":"URL前缀","isRequest":true,"caseInsensitive":true},{"type":"url-not-eq","name":"排除：URL精准匹配","description":"检查URL中的文件路径是否一致","component":"http-cond-url-not-eq","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":true},{"type":"url-not-regexp","name":"排除：URL正则匹配","description":"使用正则表达式检查URL中的文件路径是否一致，如果一致，则不匹配","component":"http-cond-url-not-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"user-agent-not-regexp","name":"排除：User-Agent正则匹配","description":"使用正则表达式检查User-Agent中是否含有某些浏览器和系统标识，如果含有，则不匹配","component":"http-cond-user-agent-not-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"mime-type","name":"内容MimeType","description":"根据服务器返回的内容的MimeType进行过滤。注意：当用于缓存条件时，此条件需要结合别的请求条件使用。","component":"http-cond-mime-type","paramsTitle":"MimeType列表","isRequest":false,"caseInsensitive":false}]
 
 window.REQUEST_COND_OPERATORS = [{"description":"判断是否正则表达式匹配","name":"正则表达式匹配","op":"regexp"},{"description":"判断是否正则表达式不匹配","name":"正则表达式不匹配","op":"not regexp"},{"description":"使用字符串对比参数值是否相等于某个值","name":"字符串等于","op":"eq"},{"description":"参数值包含某个前缀","name":"字符串前缀","op":"prefix"},{"description":"参数值包含某个后缀","name":"字符串后缀","op":"suffix"},{"description":"参数值包含另外一个字符串","name":"字符串包含","op":"contains"},{"description":"参数值不包含另外一个字符串","name":"字符串不包含","op":"not contains"},{"description":"使用字符串对比参数值是否不相等于某个值","name":"字符串不等于","op":"not"},{"description":"判断参数值在某个列表中","name":"在列表中","op":"in"},{"description":"判断参数值不在某个列表中","name":"不在列表中","op":"not in"},{"description":"判断小写的扩展名（不带点）在某个列表中","name":"扩展名","op":"file ext"},{"description":"判断MimeType在某个列表中，支持类似于image/*的语法","name":"MimeType","op":"mime type"},{"description":"判断版本号在某个范围内，格式为version1,version2","name":"版本号范围","op":"version range"},{"description":"将参数转换为整数数字后进行对比","name":"整数等于","op":"eq int"},{"description":"将参数转换为可以有小数的浮点数字进行对比","name":"浮点数等于","op":"eq float"},{"description":"将参数转换为数字进行对比","name":"数字大于","op":"gt"},{"description":"将参数转换为数字进行对比","name":"数字大于等于","op":"gte"},{"description":"将参数转换为数字进行对比","name":"数字小于","op":"lt"},{"description":"将参数转换为数字进行对比","name":"数字小于等于","op":"lte"},{"description":"对整数参数值取模，除数为10，对比值为余数","name":"整数取模10","op":"mod 10"},{"description":"对整数参数值取模，除数为100，对比值为余数","name":"整数取模100","op":"mod 100"},{"description":"对整数参数值取模，对比值格式为：除数,余数，比如10,1","name":"整数取模","op":"mod"},{"description":"将参数转换为IP进行对比","name":"IP等于","op":"eq ip"},{"description":"将参数转换为IP进行对比","name":"IP大于","op":"gt ip"},{"description":"将参数转换为IP进行对比","name":"IP大于等于","op":"gte ip"},{"description":"将参数转换为IP进行对比","name":"IP小于","op":"lt ip"},{"description":"将参数转换为IP进行对比","name":"IP小于等于","op":"lte ip"},{"description":"IP在某个范围之内，范围格式可以是英文逗号分隔的ip1,ip2，或者CIDR格式的ip/bits","name":"IP范围","op":"ip range"},{"description":"对IP参数值取模，除数为10，对比值为余数","name":"IP取模10","op":"ip mod 10"},{"description":"对IP参数值取模，除数为100，对比值为余数","name":"IP取模100","op":"ip mod 100"},{"description":"对IP参数值取模，对比值格式为：除数,余数，比如10,1","name":"IP取模","op":"ip mod"},{"description":"判断参数值解析后的文件是否存在","name":"文件存在","op":"file exist"},{"description":"判断参数值解析后的文件是否不存在","name":"文件不存在","op":"file not exist"}]
 
