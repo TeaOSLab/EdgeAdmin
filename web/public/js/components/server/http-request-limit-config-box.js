@@ -1,6 +1,6 @@
 // 请求限制
 Vue.component("http-request-limit-config-box", {
-	props: ["v-request-limit-config"],
+	props: ["v-request-limit-config", "v-is-group", "v-is-location"],
 	data: function () {
 		let config = this.vRequestLimitConfig
 		if (config == null) {
@@ -51,10 +51,16 @@ Vue.component("http-request-limit-config-box", {
 			}
 		}
 	},
+	methods: {
+		isOn: function () {
+			return ((!this.vIsLocation && !this.vIsGroup) || this.config.isPrior) && this.config.isOn
+		}
+	},
 	template: `<div>
 	<input type="hidden" name="requestLimitJSON" :value="JSON.stringify(config)"/>
 	<table class="ui table selectable definition">
-		<tbody>
+		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
 			<tr>
 				<td class="title">是否启用</td>
 				<td>
@@ -62,7 +68,7 @@ Vue.component("http-request-limit-config-box", {
 				</td>
 			</tr>
 		</tbody>
-		<tbody v-show="config.isOn">
+		<tbody v-show="isOn()">
 			<tr>
 				<td>最大并发连接数</td>
 				<td>
