@@ -125,7 +125,17 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 	case "stat":
 		action.Data["leftMenuItems"] = this.createStatMenu(types.String(secondMenuItem), serverIdString, serverConfig)
 	case "setting":
-		action.Data["leftMenuItems"] = this.createSettingsMenu(types.String(secondMenuItem), serverIdString, serverConfig)
+		var menuItems = this.createSettingsMenu(types.String(secondMenuItem), serverIdString, serverConfig)
+		action.Data["leftMenuItems"] = menuItems
+
+		// 当前菜单
+		action.Data["leftMenuActiveItem"] = nil
+		for _, item := range menuItems {
+			if item.GetBool("isActive") {
+				action.Data["leftMenuActiveItem"] = item
+				break
+			}
+		}
 	case "delete":
 		action.Data["leftMenuItems"] = this.createDeleteMenu(types.String(secondMenuItem), serverIdString, serverConfig)
 	}
@@ -352,6 +362,13 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"url":      "/servers/server/settings/remoteAddr?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "remoteAddr",
 			"isOn":     serverConfig.Web != nil && serverConfig.Web.RemoteAddr != nil && serverConfig.Web.RemoteAddr.IsOn,
+		})
+
+		menuItems = append(menuItems, maps.Map{
+			"name":     "请求限制",
+			"url":      "/servers/server/settings/requestLimit?serverId=" + serverIdString,
+			"isActive": secondMenuItem == "requestLimit",
+			"isOn":     serverConfig.Web != nil && serverConfig.Web.RequestLimit != nil && serverConfig.Web.RequestLimit.IsOn,
 		})
 
 		if teaconst.IsPlus {

@@ -153,7 +153,7 @@ Vue.component("http-pages-and-shutdown-box", {
 						</tr>
 					</tbody>
 				</table>
-				<p class="comment">开启临时关闭页面时，所有请求的响应都会显示此页面。可用于临时升级网站使用。</p>
+				<p class="comment">开启临时关闭页面时，所有请求都会直接显示此页面。可用于临时升级网站或者禁止用户访问某个网页。</p>
 			</div>
 		</td>
 	</tr>
