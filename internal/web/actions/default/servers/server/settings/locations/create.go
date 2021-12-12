@@ -51,8 +51,12 @@ func (this *CreateAction) RunPost(params struct {
 	IsReverse         bool
 	CondsJSON         []byte
 
+	DomainsJSON []byte
+
 	Must *actions.Must
 }) {
+	defer this.CreateLogInfo("创建路由规则：%s", params.Pattern)
+
 	params.Must.
 		Field("pattern", params.Pattern).
 		Require("请输入路径匹配规则")
@@ -85,6 +89,21 @@ func (this *CreateAction) RunPost(params struct {
 		params.Pattern = "/" + strings.TrimLeft(params.Pattern, "/")
 	}
 
+	// 域名
+	var domains = []string{}
+	if len(params.DomainsJSON) > 0 {
+		err := json.Unmarshal(params.DomainsJSON, &domains)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+
+		// 去除可能误加的斜杠
+		for index, domain := range domains {
+			domains[index] = strings.TrimSuffix(domain, "/")
+		}
+	}
+
 	location := &serverconfigs.HTTPLocationConfig{}
 	location.SetPattern(params.Pattern, params.PatternType, params.IsCaseInsensitive, params.IsReverse)
 	resultPattern := location.Pattern
@@ -96,6 +115,7 @@ func (this *CreateAction) RunPost(params struct {
 		Pattern:     resultPattern,
 		IsBreak:     params.IsBreak,
 		CondsJSON:   params.CondsJSON,
+		Domains:     domains,
 	})
 	if err != nil {
 		this.ErrorPage(err)

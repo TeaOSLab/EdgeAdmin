@@ -25,6 +25,13 @@ Vue.component("http-location-labels", {
 	template: `	<div class="labels-box">
 	<!-- 基本信息 -->
 	<http-location-labels-label v-if="location.name != null && location.name.length > 0" :class="'olive'" :href="url('/location')">{{location.name}}</http-location-labels-label>
+	
+	<!-- domains -->
+	<div v-if="location.domains != null && location.domains.length > 0">
+		<grey-label v-for="domain in location.domains">{{domain}}</grey-label>
+	</div>
+	
+	<!-- break -->
 	<http-location-labels-label v-if="location.isBreak" :href="url('/location')">BREAK</http-location-labels-label>
 	
 	<!-- redirectToHTTPS -->
