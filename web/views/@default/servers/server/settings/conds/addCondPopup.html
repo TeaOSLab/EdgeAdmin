@@ -20,11 +20,21 @@
 			<td>
 				{$ range .components}
                     {$if not (eq .Type "params") }
-					    <{$ .Component} v-if="condType == '{$ .Type}'" :v-cond="cond"></{$ .Component}>
+					    <{$ .Component} v-if="condType == '{$ .Type}'" :v-cond="cond" ref="component"></{$ .Component}>
                     {$end}
 				{$ end}
 			</td>
 		</tr>
+        <tr v-if="paramsCaseInsensitive">
+            <td>不区分大小写</td>
+            <td>
+                <div class="ui checkbox">
+                    <input type="checkbox" v-model="isCaseInsensitive" @change="changeCaseInsensitive"/>
+                    <label></label>
+                </div>
+                <p class="comment">选中后表示对比时忽略参数值的大小写。</p>
+            </td>
+        </tr>
 
         <!-- 变量相关 -->
         <tbody is="http-cond-params" :v-cond="cond" v-if="condType == 'params'"></tbody>

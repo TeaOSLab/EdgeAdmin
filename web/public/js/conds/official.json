@@ -13,7 +13,8 @@
     "description": "根据URL中的文件路径前缀进行过滤",
     "component": "http-cond-url-prefix",
     "paramsTitle": "URL前缀",
-    "isRequest": true
+    "isRequest": true,
+    "caseInsensitive": true
   },
   {
     "type": "url-eq",
@@ -21,7 +22,8 @@
     "description": "检查URL中的文件路径是否一致",
     "component": "http-cond-url-eq",
     "paramsTitle": "URL完整路径",
-    "isRequest": true
+    "isRequest": true,
+    "caseInsensitive": true
   },
   {
     "type": "url-regexp",
@@ -29,7 +31,17 @@
     "description": "使用正则表达式检查URL中的文件路径是否一致",
     "component": "http-cond-url-regexp",
     "paramsTitle": "正则表达式",
-    "isRequest": true
+    "isRequest": true,
+    "caseInsensitive": true
+  },
+  {
+    "type": "user-agent-regexp",
+    "name": "User-Agent正则匹配",
+    "description": "使用正则表达式检查User-Agent中是否含有某些浏览器和系统标识",
+    "component": "http-cond-user-agent-regexp",
+    "paramsTitle": "正则表达式",
+    "isRequest": true,
+    "caseInsensitive": true
   },
   {
     "type": "params",
@@ -45,7 +57,8 @@
     "description": "根据URL中的文件路径前缀进行过滤",
     "component": "http-cond-url-not-prefix",
     "paramsTitle": "URL前缀",
-    "isRequest": true
+    "isRequest": true,
+    "caseInsensitive": true
   },
   {
     "type": "url-not-eq",
@@ -53,7 +66,8 @@
     "description": "检查URL中的文件路径是否一致",
     "component": "http-cond-url-not-eq",
     "paramsTitle": "URL完整路径",
-    "isRequest": true
+    "isRequest": true,
+    "caseInsensitive": true
   },
   {
     "type": "url-not-regexp",
@@ -61,7 +75,17 @@
     "description": "使用正则表达式检查URL中的文件路径是否一致，如果一致，则不匹配",
     "component": "http-cond-url-not-regexp",
     "paramsTitle": "正则表达式",
-    "isRequest": true
+    "isRequest": true,
+    "caseInsensitive": true
+  },
+  {
+    "type": "user-agent-not-regexp",
+    "name": "排除：User-Agent正则匹配",
+    "description": "使用正则表达式检查User-Agent中是否含有某些浏览器和系统标识，如果含有，则不匹配",
+    "component": "http-cond-user-agent-not-regexp",
+    "paramsTitle": "正则表达式",
+    "isRequest": true,
+    "caseInsensitive": true
   },
   {
     "type": "mime-type",
