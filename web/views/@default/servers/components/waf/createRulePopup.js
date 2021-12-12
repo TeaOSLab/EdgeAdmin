@@ -68,4 +68,57 @@ Tea.context(function () {
 		}
 	};
 	this.changeOperator()
+
+	/**
+	 * caseInsensitive
+	 */
+	this.changeCaseInsensitive = function () {
+		if (this.rule.operator == "match" || this.rule.operator == "not match") {
+			if (this.regexpTestIsOn) {
+				this.changeRegexpTestBody()
+			}
+		}
+	}
+
+	/**
+	 * value
+	 */
+	this.changeRuleValue = function () {
+		if (this.rule.operator == "match" || this.rule.operator == "not match") {
+			if (this.regexpTestIsOn) {
+				this.changeRegexpTestBody()
+			}
+		} else {
+			this.regexpTestIsOn = false
+			this.regexpTestResult = {isOk: false, message: ""}
+		}
+	}
+
+	/**
+	 * 正则测试
+	 */
+	this.regexpTestIsOn = false
+	this.regexpTestBody = ""
+	this.regexpTestResult = {isOk: false, message: ""}
+
+	this.changeRegexpTestIsOn = function () {
+		this.regexpTestIsOn = !this.regexpTestIsOn
+		if (this.regexpTestIsOn) {
+			this.$delay(function () {
+				this.$refs.regexpTestBody.focus()
+			})
+		}
+	}
+
+	this.changeRegexpTestBody = function () {
+		this.$post(".testRegexp")
+			.params({
+				"regexp": this.rule.value,
+				"body": this.regexpTestBody,
+				"isCaseInsensitive": this.rule.isCaseInsensitive
+			})
+			.success(function (resp) {
+				this.regexpTestResult = resp.data.result
+			})
+	}
 })

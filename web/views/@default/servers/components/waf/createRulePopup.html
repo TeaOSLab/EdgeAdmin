@@ -8,7 +8,7 @@
 	<input type="hidden" name="optionsJSON" v-if="checkpoint != null && checkpoint.options != null" :value="JSON.stringify(checkpoint.options)"/>
 	<table class="ui table definition selectable">
 		<tr>
-			<td class="title">参数</td>
+			<td class="title">参数 *</td>
 			<td>
 				<select name="prefix" class="ui dropdown auto-width" @change="changeCheckpoint()" v-model="rule.checkpointPrefix">
 					<option value="">[选择参数]</option>
@@ -51,14 +51,6 @@
 			</tr>
 		</tbody>
 
-		<!-- 参数过滤器 -->
-		<tr v-if="checkpoint != null && !checkpoint.isComposed">
-			<td>编解码</td>
-			<td>
-				<http-firewall-param-filters-box :v-filters="rule.paramFilters"></http-firewall-param-filters-box>
-			</td>
-		</tr>
-
 		<!-- 选项 -->
 		<tbody v-if="checkpoint != null && !checkpoint.isComposed && checkpoint.options != null && checkpoint.options.length > 0">
 			<tr v-for="option in checkpoint.options">
@@ -89,7 +81,7 @@
 
 		<tbody v-show="checkpoint != null && !checkpoint.isComposed">
 			<tr>
-				<td>操作符</td>
+				<td>操作符 *</td>
 				<td>
 					<select class="ui dropdown" name="operator" style="width:10em" v-model="rule.operator" @change="changeOperator()">
 						<option v-for="op in operators" :value="op.code">{{op.name}}</option>
@@ -97,18 +89,11 @@
 					<p class="comment" v-if="operator != null" v-html="operator.description"></p>
 				</td>
 			</tr>
-			<tr v-if="operator.case != 'none'">
-				<td>开启大小写不敏感</td>
-				<td>
-					<div class="ui checkbox">
-						<input name="case" type="checkbox" value="1"  v-model="rule.isCaseInsensitive"/>
-						<label></label>
-					</div>
-					<p class="comment">开启后忽略英文字母大小写</p>
-				</td>
-			</tr>
 			<tr>
-				<td>对比值</td>
+				<td>
+                    <span v-if="rule.operator == 'match' || rule.operator == 'not match'">正则表达式</span>
+                    <span v-else>对比值</span>
+                </td>
 				<td>
 					<!-- 二进制数据 -->
 					<div v-if="rule.operator == 'contains binary'">
@@ -121,9 +106,41 @@
 					</div>
 
 					<!-- 其余数据 -->
-					<textarea rows="3" maxlength="4096" name="value" v-model="rule.value" v-else></textarea>
+					<textarea rows="3" maxlength="4096" name="value" v-model="rule.value" @input="changeRuleValue" v-else></textarea>
 				</td>
 			</tr>
+            <tr v-if="rule.operator == 'match' || rule.operator == 'not match'">
+                <td>正则表达式测试</td>
+                <td>
+                    <a href="" v-if="!regexpTestIsOn" @click.prevent="changeRegexpTestIsOn">[输入测试字符串]</a>
+                    <div v-if="regexpTestIsOn">
+                        <textarea placeholder="输入要测试的内容" rows="3" v-model="regexpTestBody" ref="regexpTestBody" @input="changeRegexpTestBody"></textarea>
+                        <p class="comment">
+                            <span v-if="regexpTestResult.isOk" class="green">{{regexpTestResult.message}}</span>
+                            <span v-if="!regexpTestResult.isOk" class="red">{{regexpTestResult.message}}</span>
+
+                            &nbsp; <a href="" @click.prevent="changeRegexpTestIsOn">[结束测试]</a>
+                        </p>
+                    </div>
+                </td>
+            </tr>
+            <tr v-if="operator.case != 'none'">
+                <td>不区分大小写</td>
+                <td>
+                    <div class="ui checkbox">
+                        <input name="case" type="checkbox" value="1"  v-model="rule.isCaseInsensitive" @change="changeCaseInsensitive"/>
+                        <label></label>
+                    </div>
+                    <p class="comment">开启后忽略英文字母大小写</p>
+                </td>
+            </tr>
+            <!-- 参数过滤器 -->
+            <tr v-if="checkpoint != null && !checkpoint.isComposed">
+                <td>编解码</td>
+                <td>
+                    <http-firewall-param-filters-box :v-filters="rule.paramFilters"></http-firewall-param-filters-box>
+                </td>
+            </tr>
 		</tbody>
 	</table>
 
