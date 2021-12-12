@@ -209,7 +209,7 @@ Vue.component("traffic-map-box", {
        <tbody v-if="screenIsNarrow">
 		   <tr>
 				<td colspan="2">
-					<traffic-map-box-table :v-stats="stats" :v-is-attack="isAttack" @select="select"></traffic-map-box-table>
+					<traffic-map-box-table :v-stats="stats" :v-is-attack="isAttack" :v-screen-is-narrow="true" @select="select"></traffic-map-box-table>
 				</td>
 			</tr>
 		</tbody>
@@ -218,7 +218,7 @@ Vue.component("traffic-map-box", {
 })
 
 Vue.component("traffic-map-box-table", {
-	props: ["v-stats", "v-is-attack"],
+	props: ["v-stats", "v-is-attack", "v-screen-is-narrow"],
 	data: function () {
 		return {
 			stats: this.vStats,
@@ -230,7 +230,7 @@ Vue.component("traffic-map-box-table", {
 			this.$emit("select", {countryName: countryName})
 		}
 	},
-	template: `<div style="overflow-y: auto; max-height: 16em" class="narrow-scrollbar">
+	template: `<div style="overflow-y: auto" :style="{'max-height':vScreenIsNarrow ? 'auto' : '16em'}" class="narrow-scrollbar">
 	   <table class="ui table selectable">
 		  <thead>
 			<tr>
