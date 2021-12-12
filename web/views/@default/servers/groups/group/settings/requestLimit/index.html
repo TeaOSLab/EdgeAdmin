@@ -1,0 +1,16 @@
+{$layout}
+{$template "/servers/groups/group/menu"}
+{$template "/left_menu_without_menu"}
+
+<div class="right-box without-menu">
+	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+		<input type="hidden" name="webId" :value="webId"/>
+        <csrf-token></csrf-token>
+
+        <http-request-limit-config-box
+                :v-request-limit-config="requestLimitConfig"
+                :v-is-group="true"></http-request-limit-config-box>
+
+		<submit-btn></submit-btn>
+	</form>
+</div>

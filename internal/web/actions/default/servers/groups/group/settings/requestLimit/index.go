@@ -4,10 +4,10 @@ package requestlimit
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/groups/group/servergrouputils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
-	"github.com/iwind/TeaGo/types"
 )
 
 type IndexAction struct {
@@ -20,22 +20,15 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct {
-	ServerId int64
+	GroupId int64
 }) {
-	// 服务分组设置
-	groupResp, err := this.RPC().ServerGroupRPC().FindEnabledServerGroupConfigInfo(this.AdminContext(), &pb.FindEnabledServerGroupConfigInfoRequest{
-		ServerId: params.ServerId,
-	})
+	_, err := servergrouputils.InitGroup(this.Parent(), params.GroupId, "requestLimit")
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	this.Data["hasGroupConfig"] = groupResp.HasRequestLimitConfig
-	this.Data["groupSettingURL"] = "/servers/groups/group/settings/requestLimit?groupId=" + types.String(groupResp.ServerGroupId)
 
-	this.Data["serverId"] = params.ServerId
-
-	webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithServerId(this.AdminContext(), params.ServerId)
+	webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithServerGroupId(this.AdminContext(), params.GroupId)
 	if err != nil {
 		this.ErrorPage(err)
 		return

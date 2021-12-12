@@ -144,6 +144,15 @@ func InitGroup(parent *actionutils.ParentAction, groupId int64, menuItem string)
 			"isActive": menuItem == "remoteAddr",
 			"isOn":     configInfoResp.HasRemoteAddrConfig,
 		})
+
+		if teaconst.IsPlus {
+			leftMenuItems = append(leftMenuItems, maps.Map{
+				"name":     "请求限制",
+				"url":      urlPrefix + "/requestLimit?groupId=" + types.String(groupId),
+				"isActive": menuItem == "requestLimit",
+				"isOn":     configInfoResp.HasRequestLimitConfig,
+			})
+		}
 		parent.Data["leftMenuItems"] = leftMenuItems
 	}
 
