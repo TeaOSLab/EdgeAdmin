@@ -97,13 +97,19 @@ Vue.component("http-cond-url-prefix", {
 			isRequest: true,
 			param: "${requestPath}",
 			operator: "prefix",
-			value: ""
+			value: "",
+			isCaseInsensitive: false
 		}
 		if (this.vCond != null && typeof (this.vCond.value) == "string") {
 			cond.value = this.vCond.value
 		}
 		return {
 			cond: cond
+		}
+	},
+	methods: {
+		changeCaseInsensitive: function (isCaseInsensitive) {
+			this.cond.isCaseInsensitive = isCaseInsensitive
 		}
 	},
 	template: `<div>
@@ -121,13 +127,19 @@ Vue.component("http-cond-url-not-prefix", {
 			param: "${requestPath}",
 			operator: "prefix",
 			value: "",
-			isReverse: true
+			isReverse: true,
+			isCaseInsensitive: false
 		}
 		if (this.vCond != null && typeof this.vCond.value == "string") {
 			cond.value = this.vCond.value
 		}
 		return {
 			cond: cond
+		}
+	},
+	methods: {
+		changeCaseInsensitive: function (isCaseInsensitive) {
+			this.cond.isCaseInsensitive = isCaseInsensitive
 		}
 	},
 	template: `<div>
@@ -145,13 +157,19 @@ Vue.component("http-cond-url-eq", {
 			isRequest: true,
 			param: "${requestPath}",
 			operator: "eq",
-			value: ""
+			value: "",
+			isCaseInsensitive: false
 		}
 		if (this.vCond != null && typeof this.vCond.value == "string") {
 			cond.value = this.vCond.value
 		}
 		return {
 			cond: cond
+		}
+	},
+	methods: {
+		changeCaseInsensitive: function (isCaseInsensitive) {
+			this.cond.isCaseInsensitive = isCaseInsensitive
 		}
 	},
 	template: `<div>
@@ -169,13 +187,19 @@ Vue.component("http-cond-url-not-eq", {
 			param: "${requestPath}",
 			operator: "eq",
 			value: "",
-			isReverse: true
+			isReverse: true,
+			isCaseInsensitive: false
 		}
 		if (this.vCond != null && typeof this.vCond.value == "string") {
 			cond.value = this.vCond.value
 		}
 		return {
 			cond: cond
+		}
+	},
+	methods: {
+		changeCaseInsensitive: function (isCaseInsensitive) {
+			this.cond.isCaseInsensitive = isCaseInsensitive
 		}
 	},
 	template: `<div>
@@ -193,13 +217,19 @@ Vue.component("http-cond-url-regexp", {
 			isRequest: true,
 			param: "${requestPath}",
 			operator: "regexp",
-			value: ""
+			value: "",
+			isCaseInsensitive: false
 		}
 		if (this.vCond != null && typeof this.vCond.value == "string") {
 			cond.value = this.vCond.value
 		}
 		return {
 			cond: cond
+		}
+	},
+	methods: {
+		changeCaseInsensitive: function (isCaseInsensitive) {
+			this.cond.isCaseInsensitive = isCaseInsensitive
 		}
 	},
 	template: `<div>
@@ -217,7 +247,8 @@ Vue.component("http-cond-url-not-regexp", {
 			isRequest: true,
 			param: "${requestPath}",
 			operator: "not regexp",
-			value: ""
+			value: "",
+			isCaseInsensitive: false
 		}
 		if (this.vCond != null && typeof this.vCond.value == "string") {
 			cond.value = this.vCond.value
@@ -226,10 +257,76 @@ Vue.component("http-cond-url-not-regexp", {
 			cond: cond
 		}
 	},
+	methods: {
+		changeCaseInsensitive: function (isCaseInsensitive) {
+			this.cond.isCaseInsensitive = isCaseInsensitive
+		}
+	},
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<input type="text" v-model="cond.value"/>
 	<p class="comment"><strong>不要</strong>匹配URL的正则表达式，意即只要匹配成功则排除此条件，比如<code-label>^/static/(.*).js$</code-label>。</p>
+</div>`
+})
+
+
+// User-Agent正则匹配
+Vue.component("http-cond-user-agent-regexp", {
+	props: ["v-cond"],
+	data: function () {
+		let cond = {
+			isRequest: true,
+			param: "${userAgent}",
+			operator: "regexp",
+			value: "",
+			isCaseInsensitive: false
+		}
+		if (this.vCond != null && typeof this.vCond.value == "string") {
+			cond.value = this.vCond.value
+		}
+		return {
+			cond: cond
+		}
+	},
+	methods: {
+		changeCaseInsensitive: function (isCaseInsensitive) {
+			this.cond.isCaseInsensitive = isCaseInsensitive
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value"/>
+	<p class="comment">匹配User-Agent的正则表达式，比如<code-label>Android|iPhone</code-label>。</p>
+</div>`
+})
+
+// User-Agent正则不匹配
+Vue.component("http-cond-user-agent-not-regexp", {
+	props: ["v-cond"],
+	data: function () {
+		let cond = {
+			isRequest: true,
+			param: "${userAgent}",
+			operator: "not regexp",
+			value: "",
+			isCaseInsensitive: false
+		}
+		if (this.vCond != null && typeof this.vCond.value == "string") {
+			cond.value = this.vCond.value
+		}
+		return {
+			cond: cond
+		}
+	},
+	methods: {
+		changeCaseInsensitive: function (isCaseInsensitive) {
+			this.cond.isCaseInsensitive = isCaseInsensitive
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value"/>
+	<p class="comment">匹配User-Agent的正则表达式，比如<code-label>Android|iPhone</code-label>，如果匹配，则排除此条件。</p>
 </div>`
 })
 
@@ -376,7 +473,8 @@ Vue.component("http-cond-params", {
 			isRequest: true,
 			param: "",
 			operator: window.REQUEST_COND_OPERATORS[0].op,
-			value: ""
+			value: "",
+			isCaseInsensitive: false
 		}
 		if (this.vCond != null) {
 			cond = this.vCond
@@ -580,6 +678,16 @@ Vue.component("http-cond-params", {
 				<input type="text" maxlength="11" size="11" style="width: 5em" v-model="numberValue"/>
 				<p class="comment">参数中IP转换成整数后除以100的余数，在0-99之间。</p>
 			</div>
+		</td>
+	</tr>
+	<tr v-if="['regexp', 'not regexp', 'eq', 'not', 'prefix', 'suffix', 'contains', 'not contains', 'in', 'not in'].$contains(cond.operator)">
+		<td>不区分大小写</td>
+		<td>
+		   <div class="ui checkbox">
+				<input type="checkbox" v-model="cond.isCaseInsensitive"/>
+				<label></label>
+			</div>
+			<p class="comment">选中后表示对比时忽略参数值的大小写。</p>
 		</td>
 	</tr>
 </tbody>`

@@ -70,6 +70,7 @@ Vue.component("http-request-conds-box", {
 								<var v-if="cond.type.length == 0 || cond.type == 'params'" style="font-style: normal">{{cond.param}} <var>{{cond.operator}}</var></var>
 								<var v-if="cond.type.length > 0 && cond.type != 'params'" style="font-style: normal">{{typeName(cond)}}: </var>
 								{{cond.value}}
+								<sup v-if="cond.isCaseInsensitive" title="不区分大小写"><i class="icon info small"></i></sup>
 							</span>
 							
 							<var v-if="index < group.conds.length - 1"> {{group.connector}} &nbsp;</var>
