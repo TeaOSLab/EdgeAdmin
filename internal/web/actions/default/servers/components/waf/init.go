@@ -41,6 +41,7 @@ func init() {
 			GetPost("/updateSetPopup", new(UpdateSetPopupAction)).
 			Post("/count", new(CountAction)).
 			Get("/selectPopup", new(SelectPopupAction)).
+			Post("/testRegexp", new(TestRegexpAction)).
 
 			// IP管理
 			GetPost("/ipadmin", new(ipadmin.IndexAction)).
