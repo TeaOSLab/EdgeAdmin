@@ -7,27 +7,47 @@
 
 	<table class="ui table definition selectable">
 		<tr>
-			<td class="title">选择入站规则</td>
+			<td class="title">启用的入站规则</td>
 			<td>
-				<span v-if="inboundGroups.length == 0" class="disabled">暂时还没有入站规则。</span>
-				<div class="groups-box" v-show="inboundGroups.length > 0">
-					<div v-for="g in inboundGroups" class="group-box">
+				<span v-if="enabledInboundGroups.length == 0" class="disabled">暂时还没有入站规则。</span>
+				<div class="groups-box" v-show="enabledInboundGroups.length > 0">
+					<div v-for="g in enabledInboundGroups" class="group-box">
 						<checkbox name="inboundGroupIds" :value="true" :v-value="g.id">{{g.name}}</checkbox>
 					</div>
 				</div>
 			</td>
 		</tr>
+        <tr v-if="disabledInboundGroups.length > 0">
+            <td class="title">停用的入站规则</td>
+            <td>
+                <div class="groups-box" v-show="disabledInboundGroups.length > 0">
+                    <div v-for="g in disabledInboundGroups" class="group-box">
+                        <checkbox name="inboundGroupIds" :value="false" :v-value="g.id">{{g.name}} &nbsp;<sup><span class="red">停用</span></sup></checkbox>
+                    </div>
+                </div>
+            </td>
+        </tr>
 		<tr>
-			<td>选择出站规则</td>
+			<td>启用的出站规则</td>
 			<td>
-				<span v-if="outboundGroups.length == 0" class="disabled">暂时还没有出站规则。</span>
-				<div class="groups-box" v-show="outboundGroups.length > 0">
-					<div v-for="g in outboundGroups" class="group-box">
+				<span v-if="enabledOutboundGroups.length == 0" class="disabled">暂时还没有出站规则。</span>
+				<div class="groups-box" v-show="enabledOutboundGroups.length > 0">
+					<div v-for="g in enabledOutboundGroups" class="group-box">
 						<checkbox name="outboundGroupIds" :value="true" :v-value="g.id">{{g.name}}</checkbox>
 					</div>
 				</div>
 			</td>
 		</tr>
+        <tr v-if="disabledOutboundGroups.length > 0">
+            <td>停用的出站规则</td>
+            <td>
+                <div class="groups-box" v-show="disabledOutboundGroups.length > 0">
+                    <div v-for="g in disabledOutboundGroups" class="group-box">
+                        <checkbox name="outboundGroupIds" :value="false" :v-value="g.id">{{g.name}} &nbsp;<sup><span class="red">停用</span></sup></checkbox>
+                    </div>
+                </div>
+            </td>
+        </tr>
 	</table>
 	<submit-btn>导出</submit-btn>
 </form>

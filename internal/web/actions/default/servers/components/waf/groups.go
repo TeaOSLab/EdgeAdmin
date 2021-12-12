@@ -43,7 +43,8 @@ func (this *GroupsAction) RunGet(params struct {
 					"isOn":        g.IsOn,
 					"description": g.Description,
 					"countSets":   len(g.Sets),
-					"canDelete":   len(g.Code) == 0,
+					"isTemplate":  g.IsTemplate,
+					"canDelete":   !g.IsTemplate,
 				})
 			}
 		}
@@ -60,7 +61,8 @@ func (this *GroupsAction) RunGet(params struct {
 					"isOn":        g.IsOn,
 					"description": g.Description,
 					"countSets":   len(g.Sets),
-					"canDelete":   len(g.Code) == 0,
+					"isTemplate":  g.IsTemplate,
+					"canDelete":   !g.IsTemplate,
 				})
 			}
 		}

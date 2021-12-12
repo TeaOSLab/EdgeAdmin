@@ -30,6 +30,7 @@ func (this *CreateGroupPopupAction) RunPost(params struct {
 	Type             string
 
 	Name        string
+	Code        string
 	Description string
 	IsOn        bool
 
@@ -52,6 +53,7 @@ func (this *CreateGroupPopupAction) RunPost(params struct {
 	createResp, err := this.RPC().HTTPFirewallRuleGroupRPC().CreateHTTPFirewallRuleGroup(this.AdminContext(), &pb.CreateHTTPFirewallRuleGroupRequest{
 		IsOn:        params.IsOn,
 		Name:        params.Name,
+		Code:        params.Code,
 		Description: params.Description,
 	})
 	if err != nil {

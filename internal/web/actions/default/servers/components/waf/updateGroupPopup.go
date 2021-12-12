@@ -35,6 +35,7 @@ func (this *UpdateGroupPopupAction) RunGet(params struct {
 		"name":        groupConfig.Name,
 		"description": groupConfig.Description,
 		"isOn":        groupConfig.IsOn,
+		"code":        groupConfig.Code,
 	}
 
 	this.Show()
@@ -43,6 +44,7 @@ func (this *UpdateGroupPopupAction) RunGet(params struct {
 func (this *UpdateGroupPopupAction) RunPost(params struct {
 	GroupId     int64
 	Name        string
+	Code        string
 	Description string
 	IsOn        bool
 
@@ -59,6 +61,7 @@ func (this *UpdateGroupPopupAction) RunPost(params struct {
 		FirewallRuleGroupId: params.GroupId,
 		IsOn:                params.IsOn,
 		Name:                params.Name,
+		Code:                params.Code,
 		Description:         params.Description,
 	})
 	if err != nil {

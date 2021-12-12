@@ -25,8 +25,9 @@
                 <p style="margin-top: 0.5em">
                     <span v-if="group.isOn" class="ui label tiny basic green">启用</span>
                     <span v-if="!group.isOn" class="ui label tiny basic red">停用</span>
-                    <span v-if="group.code.length > 0" class="ui label basic tiny">预置</span>
-                    <span v-if="group.code.length == 0" class="ui label basic tiny">自定义</span>
+                    <span v-if="group.isTemplate" class="ui label basic tiny">预置</span>
+                    <span v-if="!group.isTemplate" class="ui label basic tiny">自定义</span>
+                    <span v-if="group.code.length > 0" class="ui label basic tiny">代号：{{group.code}}</span>
                 </p>
             </td>
             <td class="center">
