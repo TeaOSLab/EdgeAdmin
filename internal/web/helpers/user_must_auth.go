@@ -191,8 +191,8 @@ func (this *userMustAuth) modules(actionPtr actions.ActionWrapper, adminId int64
 				var countNodeLogs = countNodeLogsResp.Count
 				if countNodeLogs > 0 {
 					countUnreadNodeLogs = countNodeLogs
-					if countUnreadNodeLogs >= 1000 {
-						countUnreadNodeLogs = 999
+					if countUnreadNodeLogs >= 100 {
+						countUnreadNodeLogs = 99
 					}
 					nodeLogsType = "unread"
 				}

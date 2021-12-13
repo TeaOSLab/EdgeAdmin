@@ -24,37 +24,19 @@ func Pow1024(n int) int64 {
 }
 
 func FormatBytes(bytes int64) string {
-	if bytes < 1024 {
+	if bytes < Pow1024(1) {
 		return FormatInt64(bytes) + "B"
-	} else if bytes < 1024*1024 {
-		return fmt.Sprintf("%.2fKB", float64(bytes)/1024)
-	} else if bytes < 1024*1024*1024 {
-		return fmt.Sprintf("%.2fMB", float64(bytes)/1024/1024)
-	} else if bytes < 1024*1024*1024*1024 {
-		return fmt.Sprintf("%.2fGB", float64(bytes)/1024/1024/1024)
-	} else if bytes < 1024*1024*1024*1024*1024 {
-		return fmt.Sprintf("%.2fTB", float64(bytes)/1024/1024/1024/1024)
-	} else if bytes < 1024*1024*1024*1024*1024*1024 {
-		return fmt.Sprintf("%.2fPB", float64(bytes)/1024/1024/1024/1024/1024)
+	} else if bytes < Pow1024(2) {
+		return fmt.Sprintf("%.2fKB", float64(bytes)/float64(Pow1024(1)))
+	} else if bytes < Pow1024(3) {
+		return fmt.Sprintf("%.2fMB", float64(bytes)/float64(Pow1024(2)))
+	} else if bytes < Pow1024(4) {
+		return fmt.Sprintf("%.2fGB", float64(bytes)/float64(Pow1024(3)))
+	} else if bytes < Pow1024(5) {
+		return fmt.Sprintf("%.2fTB", float64(bytes)/float64(Pow1024(4)))
+	} else if bytes < Pow1024(6) {
+		return fmt.Sprintf("%.2fPB", float64(bytes)/float64(Pow1024(5)))
 	} else {
-		return fmt.Sprintf("%.2fEB", float64(bytes)/1024/1024/1024/1024/1024/1024)
-	}
-}
-
-func FormatBits(bits int64) string {
-	if bits < 1000 {
-		return FormatInt64(bits) + "B"
-	} else if bits < 1000*1000 {
-		return fmt.Sprintf("%.2fKB", float64(bits)/1000)
-	} else if bits < 1000*1000*1000 {
-		return fmt.Sprintf("%.2fMB", float64(bits)/1000/1000)
-	} else if bits < 1000*1000*1000*1000 {
-		return fmt.Sprintf("%.2fGB", float64(bits)/1000/1000/1000)
-	} else if bits < 1000*1000*1000*1000*1000 {
-		return fmt.Sprintf("%.2fTB", float64(bits)/1000/1000/1000/1000)
-	} else if bits < 1000*1000*1000*1000*1000*1000 {
-		return fmt.Sprintf("%.2fPB", float64(bits)/1000/1000/1000/1000/1000)
-	} else {
-		return fmt.Sprintf("%.2fEB", float64(bits)/1000/1000/1000/1000/1000/1000)
+		return fmt.Sprintf("%.2fEB", float64(bytes)/float64(Pow1024(6)))
 	}
 }
