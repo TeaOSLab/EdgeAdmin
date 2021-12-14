@@ -1,0 +1,45 @@
+{$layout}
+
+<first-menu>
+    <menu-item :href="'/servers/logs'">所有日志</menu-item>
+    <menu-item :href="'/servers/logs?hasError=1'">错误日志</menu-item>
+    <menu-item :href="'/servers/logs?hasWAF=1'">WAF日志</menu-item>
+    <menu-item :href="'/servers/logs/settings'" code="settings">设置</menu-item>
+</first-menu>
+
+<div class="margin"></div>
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+    <csrf-token></csrf-token>
+
+    <h3>存储队列设置</h3>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">采样率</td>
+            <td>
+                <div class="ui input right labeled">
+                    <input type="text" name="percent" v-model="config.percent" size="3" maxlength="3" style="width: 4em"/>
+                    <span class="ui label">%</span>
+                </div>
+                <p class="comment">表示将写入{{config.percent}}%的访问日志数据；此设置不影响WAF相关日志。</p>
+            </td>
+        </tr>
+        <tr>
+            <td>写入速度</td>
+            <td>
+                <div class="ui input right labeled">
+                    <input type="text" name="countPerSecond" v-model="config.countPerSecond" size="6" maxlength="6" style="width: 6em"/>
+                    <span class="ui label">条/秒</span>
+                </div>
+                <p class="comment">单个API节点每秒写入的访问日志数量；0表示不限制。</p>
+            </td>
+        </tr>
+        <tr>
+            <td>队列长度</td>
+            <td>
+                <input type="text" name="maxLength" v-model="config.maxLength" size="6" maxlength="6" style="width: 6em"/>
+                <p class="comment">等待写入的队列最大长度，超出此长度的访问日志将被丢弃；0表示不限制。</p>
+            </td>
+        </tr>
+    </table>
+    <submit-btn></submit-btn>
+</form>
