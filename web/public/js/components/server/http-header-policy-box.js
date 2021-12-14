@@ -1,10 +1,10 @@
 Vue.component("http-header-policy-box", {
 	props: ["v-request-header-policy", "v-request-header-ref", "v-response-header-policy", "v-response-header-ref", "v-params", "v-is-location", "v-is-group", "v-has-group-request-config", "v-has-group-response-config", "v-group-setting-url"],
 	data: function () {
-		let type = "request"
+		let type = "response"
 		let hash = window.location.hash
-		if (hash == "#response") {
-			type = "response"
+		if (hash == "#request") {
+			type = "request"
 		}
 
 		// ref
@@ -72,7 +72,7 @@ Vue.component("http-header-policy-box", {
 			window.location.reload()
 		},
 		addSettingHeader: function (policyId) {
-			teaweb.popup("/servers/server/settings/headers/createSetPopup?" + this.vParams + "&headerPolicyId=" + policyId, {
+			teaweb.popup("/servers/server/settings/headers/createSetPopup?" + this.vParams + "&headerPolicyId=" + policyId + "&type=" + this.type, {
 				callback: function () {
 					teaweb.successRefresh("保存成功")
 				}
@@ -86,7 +86,7 @@ Vue.component("http-header-policy-box", {
 			})
 		},
 		updateSettingPopup: function (policyId, headerId) {
-			teaweb.popup("/servers/server/settings/headers/updateSetPopup?" + this.vParams + "&headerPolicyId=" + policyId + "&headerId=" + headerId, {
+			teaweb.popup("/servers/server/settings/headers/updateSetPopup?" + this.vParams + "&headerPolicyId=" + policyId + "&headerId=" + headerId+ "&type=" + this.type, {
 				callback: function () {
 					teaweb.successRefresh("保存成功")
 				}
@@ -118,8 +118,8 @@ Vue.component("http-header-policy-box", {
 	},
 	template: `<div>
 	<div class="ui menu tabular small">
-		<a class="item" :class="{active:type == 'request'}" @click.prevent="selectType('request')">请求Header<span v-if="requestSettingHeaders.length > 0">({{requestSettingHeaders.length}})</span></a>
 		<a class="item" :class="{active:type == 'response'}" @click.prevent="selectType('response')">响应Header<span v-if="responseSettingHeaders.length > 0">({{responseSettingHeaders.length}})</span></a>
+		<a class="item" :class="{active:type == 'request'}" @click.prevent="selectType('request')">请求Header<span v-if="requestSettingHeaders.length > 0">({{requestSettingHeaders.length}})</span></a>
 	</div>
 	
 	<div class="margin"></div>
@@ -152,7 +152,17 @@ Vue.component("http-header-policy-box", {
 					</tr>
 				</thead>
 				<tr v-for="header in requestSettingHeaders">
-					<td class="five wide">{{header.name}}</td>
+					<td class="five wide">
+						{{header.name}}
+						<div>
+							<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
+							<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
+							<span v-if="header.domains != null && header.domains.length > 0"><grey-label v-for="domain in header.domains" :key="domain">{{domain}}</grey-label></span>
+							<grey-label v-if="header.shouldAppend">附加</grey-label>
+							<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
+							<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
+						</div>
+					</td>
 					<td>{{header.value}}</td>
 					<td><a href="" @click.prevent="updateSettingPopup(vRequestHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteHeader(vRequestHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
 				</tr>
@@ -201,7 +211,17 @@ Vue.component("http-header-policy-box", {
 					</tr>
 				</thead>
 				<tr v-for="header in responseSettingHeaders">
-					<td class="five wide">{{header.name}}</td>
+					<td class="five wide">
+						{{header.name}}
+						<div>
+							<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
+							<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
+							<span v-if="header.domains != null && header.domains.length > 0"><grey-label v-for="domain in header.domains" :key="domain">{{domain}}</grey-label></span>
+							<grey-label v-if="header.shouldAppend">附加</grey-label>
+							<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
+							<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
+						</div>
+					</td>
 					<td>{{header.value}}</td>
 					<td><a href="" @click.prevent="updateSettingPopup(vResponseHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteHeader(vResponseHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
 				</tr>

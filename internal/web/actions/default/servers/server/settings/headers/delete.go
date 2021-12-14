@@ -35,26 +35,6 @@ func (this *DeleteAction) RunPost(params struct {
 	}
 
 	switch params.Type {
-	case "addHeader":
-		result := []*shared.HTTPHeaderRef{}
-		for _, h := range policyConfig.AddHeaderRefs {
-			if h.HeaderId != params.HeaderId {
-				result = append(result, h)
-			}
-		}
-		resultJSON, err := json.Marshal(result)
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-		_, err = this.RPC().HTTPHeaderPolicyRPC().UpdateHTTPHeaderPolicyAddingHeaders(this.AdminContext(), &pb.UpdateHTTPHeaderPolicyAddingHeadersRequest{
-			HeaderPolicyId: params.HeaderPolicyId,
-			HeadersJSON:    resultJSON,
-		})
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
 	case "setHeader":
 		result := []*shared.HTTPHeaderRef{}
 		for _, h := range policyConfig.SetHeaderRefs {
@@ -68,46 +48,6 @@ func (this *DeleteAction) RunPost(params struct {
 			return
 		}
 		_, err = this.RPC().HTTPHeaderPolicyRPC().UpdateHTTPHeaderPolicySettingHeaders(this.AdminContext(), &pb.UpdateHTTPHeaderPolicySettingHeadersRequest{
-			HeaderPolicyId: params.HeaderPolicyId,
-			HeadersJSON:    resultJSON,
-		})
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-	case "replace":
-		result := []*shared.HTTPHeaderRef{}
-		for _, h := range policyConfig.ReplaceHeaderRefs {
-			if h.HeaderId != params.HeaderId {
-				result = append(result, h)
-			}
-		}
-		resultJSON, err := json.Marshal(result)
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-		_, err = this.RPC().HTTPHeaderPolicyRPC().UpdateHTTPHeaderPolicyReplacingHeaders(this.AdminContext(), &pb.UpdateHTTPHeaderPolicyReplacingHeadersRequest{
-			HeaderPolicyId: params.HeaderPolicyId,
-			HeadersJSON:    resultJSON,
-		})
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-	case "addTrailer":
-		result := []*shared.HTTPHeaderRef{}
-		for _, h := range policyConfig.AddTrailerRefs {
-			if h.HeaderId != params.HeaderId {
-				result = append(result, h)
-			}
-		}
-		resultJSON, err := json.Marshal(result)
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-		_, err = this.RPC().HTTPHeaderPolicyRPC().UpdateHTTPHeaderPolicyAddingTrailers(this.AdminContext(), &pb.UpdateHTTPHeaderPolicyAddingTrailersRequest{
 			HeaderPolicyId: params.HeaderPolicyId,
 			HeadersJSON:    resultJSON,
 		})
