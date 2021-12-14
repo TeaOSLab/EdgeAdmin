@@ -16,6 +16,7 @@ func init() {
 			Data("teaSubMenu", "log").
 			Prefix("/servers/logs").
 			Get("", new(IndexAction)).
+			GetPost("/settings", new(SettingsAction)).
 			EndAll()
 	})
 }
