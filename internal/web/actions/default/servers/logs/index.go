@@ -3,12 +3,14 @@
 package logs
 
 import (
+	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/lists"
 	timeutil "github.com/iwind/TeaGo/utils/time"
 	"regexp"
 	"strings"
+	"time"
 )
 
 type IndexAction struct {
@@ -46,6 +48,8 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["hasError"] = params.HasError
 	this.Data["hasWAF"] = params.HasWAF
 	this.Data["pageSize"] = params.PageSize
+	this.Data["isSlowQuery"] = false
+	this.Data["slowQueryCost"] = ""
 
 	day := params.Day
 	ipList := []string{}
@@ -59,6 +63,7 @@ func (this *IndexAction) RunGet(params struct {
 
 		this.Data["hasError"] = params.HasError
 
+		var before = time.Now()
 		resp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
 			RequestId:         params.RequestId,
 			ServerId:          params.ServerId,
@@ -73,6 +78,12 @@ func (this *IndexAction) RunGet(params struct {
 		if err != nil {
 			this.ErrorPage(err)
 			return
+		}
+
+		var cost = time.Since(before).Seconds()
+		if cost > 5 {
+			this.Data["slowQueryCost"] = fmt.Sprintf("%.2f", cost)
+			this.Data["isSlowQuery"] = true
 		}
 
 		if len(resp.HttpAccessLogs) == 0 {
