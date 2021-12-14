@@ -467,7 +467,7 @@ func (this *CreateAction) RunPost(params struct {
 					AccessLogJSON: []byte(`{
 			"isPrior": false,
 			"isOn": true,
-			"fields": [6, 7],
+			"fields": [1, 2, 6, 7],
 			"status1": true,
 			"status2": true,
 			"status3": true,

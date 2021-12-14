@@ -121,7 +121,7 @@ p.margin {
 .main table td {
   vertical-align: top;
 }
-.main table td.color-border {
+table td.color-border {
   border-left: 1px #276ac6 solid !important;
 }
 .main table td.vertical-top {
