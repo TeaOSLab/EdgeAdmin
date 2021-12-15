@@ -118,6 +118,7 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/server"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/transfer"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/ui"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/updates"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/upgrade"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/user-ui"
 
