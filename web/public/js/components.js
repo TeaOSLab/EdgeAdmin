@@ -2829,6 +2829,84 @@ Vue.component("http-request-limit-config-box", {
 </div>`
 })
 
+Vue.component("http-header-replace-values", {
+	props: ["v-replace-values"],
+	data: function () {
+		let values = this.vReplaceValues
+		if (values == null) {
+			values = []
+		}
+		return {
+			values: values,
+			isAdding: false,
+			addingValue: {"pattern": "", "replacement": "", "isCaseInsensitive": false, "isRegexp": false}
+		}
+	},
+	methods: {
+		add: function () {
+			this.isAdding = true
+			let that = this
+			setTimeout(function () {
+				that.$refs.pattern.focus()
+			})
+		},
+		remove: function (index) {
+			this.values.$remove(index)
+		},
+		confirm: function () {
+			let that = this
+			if (this.addingValue.pattern.length == 0) {
+				teaweb.warn("替换前内容不能为空", function () {
+					that.$refs.pattern.focus()
+				})
+				return
+			}
+
+			this.values.push(this.addingValue)
+			this.cancel()
+		},
+		cancel: function () {
+			this.isAdding = false
+			this.addingValue = {"pattern": "", "replacement": "", "isCaseInsensitive": false, "isRegexp": false}
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="replaceValuesJSON" :value="JSON.stringify(values)"/>
+	<div>
+		<div v-for="(value, index) in values" class="ui label small" style="margin-bottom: 0.5em">
+			<var>{{value.pattern}}</var><sup v-if="value.isCaseInsensitive" title="不区分大小写"><i class="icon info tiny"></i></sup> =&gt; <var v-if="value.replacement.length > 0">{{value.replacement}}</var><var v-else><span class="small grey">[空]</span></var>
+			<a href="" @click.prevent="remove(index)" title="删除"><i class="icon remove small"></i></a>
+		</div>
+	</div>
+	<div v-if="isAdding">
+		<table class="ui table">
+			<tr>
+				<td class="title">替换前内容 *</td>
+				<td><input type="text" v-model="addingValue.pattern" placeholder="替换前内容" ref="pattern" @keyup.enter="confirm()" @keypress.enter.prevent="1"/></td>
+			</tr>	
+			<tr>
+				<td>替换后内容</td>
+				<td><input type="text" v-model="addingValue.replacement" placeholder="替换后内容" @keyup.enter="confirm()" @keypress.enter.prevent="1"/></td>
+			</tr>
+			<tr>
+				<td>是否忽略大小写</td>
+				<td>
+					<checkbox v-model="addingValue.isCaseInsensitive"></checkbox>
+				</td>
+			</tr>
+		</table>
+
+		<div>
+			<button type="button" class="ui button tiny" @click.prevent="confirm">确定</button> &nbsp;
+			<a href="" title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
+		</div>
+	</div>
+	<div v-if="!isAdding">
+		<button type="button" class="ui button tiny" @click.prevent="add">+</button>
+	</div>
+</div>`
+})
+
 // 浏览条件列表
 Vue.component("http-request-conds-view", {
 	props: ["v-conds"],
@@ -5622,10 +5700,10 @@ Vue.component("user-selector", {
 Vue.component("http-header-policy-box", {
 	props: ["v-request-header-policy", "v-request-header-ref", "v-response-header-policy", "v-response-header-ref", "v-params", "v-is-location", "v-is-group", "v-has-group-request-config", "v-has-group-response-config", "v-group-setting-url"],
 	data: function () {
-		let type = "request"
+		let type = "response"
 		let hash = window.location.hash
-		if (hash == "#response") {
-			type = "response"
+		if (hash == "#request") {
+			type = "request"
 		}
 
 		// ref
@@ -5693,7 +5771,7 @@ Vue.component("http-header-policy-box", {
 			window.location.reload()
 		},
 		addSettingHeader: function (policyId) {
-			teaweb.popup("/servers/server/settings/headers/createSetPopup?" + this.vParams + "&headerPolicyId=" + policyId, {
+			teaweb.popup("/servers/server/settings/headers/createSetPopup?" + this.vParams + "&headerPolicyId=" + policyId + "&type=" + this.type, {
 				callback: function () {
 					teaweb.successRefresh("保存成功")
 				}
@@ -5707,7 +5785,7 @@ Vue.component("http-header-policy-box", {
 			})
 		},
 		updateSettingPopup: function (policyId, headerId) {
-			teaweb.popup("/servers/server/settings/headers/updateSetPopup?" + this.vParams + "&headerPolicyId=" + policyId + "&headerId=" + headerId, {
+			teaweb.popup("/servers/server/settings/headers/updateSetPopup?" + this.vParams + "&headerPolicyId=" + policyId + "&headerId=" + headerId+ "&type=" + this.type, {
 				callback: function () {
 					teaweb.successRefresh("保存成功")
 				}
@@ -5739,8 +5817,8 @@ Vue.component("http-header-policy-box", {
 	},
 	template: `<div>
 	<div class="ui menu tabular small">
-		<a class="item" :class="{active:type == 'request'}" @click.prevent="selectType('request')">请求Header<span v-if="requestSettingHeaders.length > 0">({{requestSettingHeaders.length}})</span></a>
 		<a class="item" :class="{active:type == 'response'}" @click.prevent="selectType('response')">响应Header<span v-if="responseSettingHeaders.length > 0">({{responseSettingHeaders.length}})</span></a>
+		<a class="item" :class="{active:type == 'request'}" @click.prevent="selectType('request')">请求Header<span v-if="requestSettingHeaders.length > 0">({{requestSettingHeaders.length}})</span></a>
 	</div>
 	
 	<div class="margin"></div>
@@ -5773,7 +5851,17 @@ Vue.component("http-header-policy-box", {
 					</tr>
 				</thead>
 				<tr v-for="header in requestSettingHeaders">
-					<td class="five wide">{{header.name}}</td>
+					<td class="five wide">
+						{{header.name}}
+						<div>
+							<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
+							<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
+							<span v-if="header.domains != null && header.domains.length > 0"><grey-label v-for="domain in header.domains" :key="domain">{{domain}}</grey-label></span>
+							<grey-label v-if="header.shouldAppend">附加</grey-label>
+							<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
+							<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
+						</div>
+					</td>
 					<td>{{header.value}}</td>
 					<td><a href="" @click.prevent="updateSettingPopup(vRequestHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteHeader(vRequestHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
 				</tr>
@@ -5822,7 +5910,17 @@ Vue.component("http-header-policy-box", {
 					</tr>
 				</thead>
 				<tr v-for="header in responseSettingHeaders">
-					<td class="five wide">{{header.name}}</td>
+					<td class="five wide">
+						{{header.name}}
+						<div>
+							<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
+							<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
+							<span v-if="header.domains != null && header.domains.length > 0"><grey-label v-for="domain in header.domains" :key="domain">{{domain}}</grey-label></span>
+							<grey-label v-if="header.shouldAppend">附加</grey-label>
+							<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
+							<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
+						</div>
+					</td>
 					<td>{{header.value}}</td>
 					<td><a href="" @click.prevent="updateSettingPopup(vResponseHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteHeader(vResponseHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
 				</tr>
@@ -8338,6 +8436,88 @@ Vue.component("http-fastcgi-box", {
 </div>`
 })
 
+// 请求方法列表
+Vue.component("http-methods-box", {
+	props: ["v-methods"],
+	data: function () {
+		let methods = this.vMethods
+		if (methods == null) {
+			methods = []
+		}
+		return {
+			methods: methods,
+			isAdding: false,
+			addingMethod: ""
+		}
+	},
+	methods: {
+		add: function () {
+			this.isAdding = true
+			let that = this
+			setTimeout(function () {
+				that.$refs.addingMethod.focus()
+			}, 100)
+		},
+		confirm: function () {
+			let that = this
+
+			// 删除其中的空格
+			this.addingMethod = this.addingMethod.replace(/\s/g, "").toUpperCase()
+
+			if (this.addingMethod.length == 0) {
+				teaweb.warn("请输入要添加的请求方法", function () {
+					that.$refs.addingMethod.focus()
+				})
+				return
+			}
+
+			// 是否已经存在
+			if (this.methods.$contains(this.addingMethod)) {
+				teaweb.warn("此请求方法已经存在，无需重复添加", function () {
+					that.$refs.addingMethod.focus()
+				})
+				return
+			}
+
+			this.methods.push(this.addingMethod)
+			this.cancel()
+		},
+		remove: function (index) {
+			this.methods.$remove(index)
+		},
+		cancel: function () {
+			this.isAdding = false
+			this.addingMethod = ""
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="methodsJSON" :value="JSON.stringify(methods)"/>
+	<div v-if="methods.length > 0">
+		<span class="ui label small basic" v-for="(method, index) in methods">
+			{{method}}
+			&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+		</span>
+		<div class="ui divider"></div>
+	</div>
+	<div v-if="isAdding">
+		<div class="ui fields">
+			<div class="ui field">
+				<input type="text" v-model="addingMethod" @keyup.enter="confirm()" @keypress.enter.prevent="1" ref="addingMethod" placeholder="如GET" size="10"/>
+			</div>
+			<div class="ui field">
+				<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button>
+				&nbsp; <a href="" title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
+			</div>
+		</div>
+		<p class="comment">格式为大写，比如<code-label>GET</code-label>、<code-label>POST</code-label>等。</p>
+		<div class="ui divider"></div>
+	</div>
+	<div style="margin-top: 0.5em" v-if="!isAdding">
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	</div>
+</div>`
+})
+
 // URL扩展名条件
 Vue.component("http-cond-url-extension", {
 	props: ["v-cond"],
@@ -9122,6 +9302,96 @@ Vue.component("http-cond-params", {
 		</td>
 	</tr>
 </tbody>`
+})
+
+// 请求方法列表
+Vue.component("http-status-box", {
+	props: ["v-status-list"],
+	data: function () {
+		let statusList = this.vStatusList
+		if (statusList == null) {
+			statusList = []
+		}
+		return {
+			statusList: statusList,
+			isAdding: false,
+			addingStatus: ""
+		}
+	},
+	methods: {
+		add: function () {
+			this.isAdding = true
+			let that = this
+			setTimeout(function () {
+				that.$refs.addingStatus.focus()
+			}, 100)
+		},
+		confirm: function () {
+			let that = this
+
+			// 删除其中的空格
+			this.addingStatus = this.addingStatus.replace(/\s/g, "").toUpperCase()
+
+			if (this.addingStatus.length == 0) {
+				teaweb.warn("请输入要添加的状态码", function () {
+					that.$refs.addingStatus.focus()
+				})
+				return
+			}
+
+			// 是否已经存在
+			if (this.statusList.$contains(this.addingStatus)) {
+				teaweb.warn("此状态码已经存在，无需重复添加", function () {
+					that.$refs.addingStatus.focus()
+				})
+				return
+			}
+
+			// 格式
+			if (!this.addingStatus.match(/^\d{3}$/)) {
+				teaweb.warn("请输入正确的状态码", function () {
+					that.$refs.addingStatus.focus()
+				})
+				return
+			}
+
+			this.statusList.push(parseInt(this.addingStatus, 10))
+			this.cancel()
+		},
+		remove: function (index) {
+			this.statusList.$remove(index)
+		},
+		cancel: function () {
+			this.isAdding = false
+			this.addingStatus = ""
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="statusListJSON" :value="JSON.stringify(statusList)"/>
+	<div v-if="statusList.length > 0">
+		<span class="ui label small basic" v-for="(status, index) in statusList">
+			{{status}}
+			&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+		</span>
+		<div class="ui divider"></div>
+	</div>
+	<div v-if="isAdding">
+		<div class="ui fields">
+			<div class="ui field">
+				<input type="text" v-model="addingStatus" @keyup.enter="confirm()" @keypress.enter.prevent="1" ref="addingStatus" placeholder="如200" size="3" maxlength="3" style="width: 5em"/>
+			</div>
+			<div class="ui field">
+				<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button>
+				&nbsp; <a href="" title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
+			</div>
+		</div>
+		<p class="comment">格式为三位数字，比如<code-label>200</code-label>、<code-label>404</code-label>等。</p>
+		<div class="ui divider"></div>
+	</div>
+	<div style="margin-top: 0.5em" v-if="!isAdding">
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	</div>
+</div>`
 })
 
 Vue.component("server-group-selector", {
