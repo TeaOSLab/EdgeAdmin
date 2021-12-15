@@ -1,0 +1,25 @@
+{$layout}
+
+<div class="ui margin"></div>
+<form class="ui form">
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">当前已安装版本</td>
+            <td>v{{version}}</td>
+        </tr>
+        <tr v-if="isStarted">
+            <td>最新版本</td>
+            <td>
+                <div v-if="isChecking">
+                    <span class="blue">正在连接服务器检查更新...</span>
+                </div>
+                <div v-if="!isChecking">
+                    <span class="green" v-if="result.isOk">{{result.message}}<span v-if="result.hasNew">：<br/><a :href="result.dlURL">下载地址：{{result.dlURL}}</a> </span></span>
+                    <span class="red" v-if="!result.isOk">{{result.message}}</span>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <button class="ui button primary" type="button"  @click.prevent="start">开始检查</button>
+</form>
