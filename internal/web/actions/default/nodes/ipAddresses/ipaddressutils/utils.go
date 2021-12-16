@@ -94,6 +94,16 @@ func UpdateNodeIPAddresses(parentAction *actionutils.ParentAction, nodeId int64,
 					return err
 				}
 			}
+		} else {
+			for _, addrId := range resultAddrIds {
+				_, err = parentAction.RPC().NodeIPAddressThresholdRPC().UpdateAllNodeIPAddressThresholds(parentAction.AdminContext(), &pb.UpdateAllNodeIPAddressThresholdsRequest{
+					NodeIPAddressId:             addrId,
+					NodeIPAddressThresholdsJSON: []byte("[]"),
+				})
+				if err != nil {
+					return err
+				}
+			}
 		}
 	}
 	return nil

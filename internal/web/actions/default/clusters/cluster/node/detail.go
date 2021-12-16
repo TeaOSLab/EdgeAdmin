@@ -86,9 +86,16 @@ func (this *DetailAction) RunGet(params struct {
 			return
 		}
 
+		// 是否有备用IP
+		var originIP = addr.Ip
+		if len(addr.BackupIP) > 0 {
+			addr.Ip = addr.BackupIP
+		}
+
 		ipAddressMaps = append(ipAddressMaps, maps.Map{
 			"id":         addr.Id,
 			"name":       addr.Name,
+			"originIP":   originIP,
 			"ip":         addr.Ip,
 			"canAccess":  addr.CanAccess,
 			"isOn":       addr.IsOn,
