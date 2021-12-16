@@ -26,6 +26,9 @@ Vue.component("http-cache-config-box", {
 		isOn: function () {
 			return ((!this.vIsLocation && !this.vIsGroup) || this.cacheConfig.isPrior) && this.cacheConfig.isOn
 		},
+		isPlus: function () {
+			return Tea.Vue.teaIsPlus
+		},
 		generatePurgeKey: function () {
 			let r = Math.random().toString() + Math.random().toString()
 			let s = r.replace(/0\./g, "")
@@ -38,6 +41,9 @@ Vue.component("http-cache-config-box", {
 		},
 		showMoreOptions: function () {
 			this.moreOptionsVisible = !this.moreOptionsVisible
+		},
+		changeStale: function (stale) {
+			this.cacheConfig.stale = stale
 		}
 	},
 	template: `<div>
@@ -94,14 +100,14 @@ Vue.component("http-cache-config-box", {
 				</td>
 			</tr>
 			<tr>
-				<td>允许PURGE</td>
+				<td class="color-border">允许PURGE</td>
 				<td>
 					<checkbox v-model="cacheConfig.purgeIsOn"></checkbox>
 					<p class="comment">允许使用PURGE方法清除某个URL缓存。</p>
 				</td>
 			</tr>
 			<tr v-show="cacheConfig.purgeIsOn">
-				<td>PURGE Key *</td>
+				<td class="color-border">PURGE Key *</td>
 				<td>
 					<input type="text" maxlength="200" v-model="cacheConfig.purgeKey"/>
 					<p class="comment"><a href="" @click.prevent="generatePurgeKey">[随机生成]</a>。需要在PURGE方法调用时加入<code-label>Edge-Purge-Key: {{cacheConfig.purgeKey}}</code-label> Header。只能包含字符、数字、下划线。</p>
@@ -110,7 +116,12 @@ Vue.component("http-cache-config-box", {
 		</tbody>
 	</table>
 	
-	<div v-show="isOn()">
+	<div v-if="isOn() && moreOptionsVisible && isPlus()">
+		<h4>陈旧缓存策略</h4>
+		<http-cache-stale-config :v-cache-stale-config="cacheConfig.stale" @change="changeStale"></http-cache-stale-config>
+	</div>
+	
+	<div v-show="isOn()" style="margin-top: 1em">
 		<h4>缓存条件</h4>
 		<http-cache-refs-config-box :v-cache-config="cacheConfig" :v-cache-refs="cacheConfig.cacheRefs" ></http-cache-refs-config-box>
 	</div>
