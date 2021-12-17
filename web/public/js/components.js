@@ -3477,6 +3477,9 @@ Vue.component("http-cache-config-box", {
 		isOn: function () {
 			return ((!this.vIsLocation && !this.vIsGroup) || this.cacheConfig.isPrior) && this.cacheConfig.isOn
 		},
+		isPlus: function () {
+			return Tea.Vue.teaIsPlus
+		},
 		generatePurgeKey: function () {
 			let r = Math.random().toString() + Math.random().toString()
 			let s = r.replace(/0\./g, "")
@@ -3489,6 +3492,9 @@ Vue.component("http-cache-config-box", {
 		},
 		showMoreOptions: function () {
 			this.moreOptionsVisible = !this.moreOptionsVisible
+		},
+		changeStale: function (stale) {
+			this.cacheConfig.stale = stale
 		}
 	},
 	template: `<div>
@@ -3545,14 +3551,14 @@ Vue.component("http-cache-config-box", {
 				</td>
 			</tr>
 			<tr>
-				<td>允许PURGE</td>
+				<td class="color-border">允许PURGE</td>
 				<td>
 					<checkbox v-model="cacheConfig.purgeIsOn"></checkbox>
 					<p class="comment">允许使用PURGE方法清除某个URL缓存。</p>
 				</td>
 			</tr>
 			<tr v-show="cacheConfig.purgeIsOn">
-				<td>PURGE Key *</td>
+				<td class="color-border">PURGE Key *</td>
 				<td>
 					<input type="text" maxlength="200" v-model="cacheConfig.purgeKey"/>
 					<p class="comment"><a href="" @click.prevent="generatePurgeKey">[随机生成]</a>。需要在PURGE方法调用时加入<code-label>Edge-Purge-Key: {{cacheConfig.purgeKey}}</code-label> Header。只能包含字符、数字、下划线。</p>
@@ -3561,7 +3567,12 @@ Vue.component("http-cache-config-box", {
 		</tbody>
 	</table>
 	
-	<div v-show="isOn()">
+	<div v-if="isOn() && moreOptionsVisible && isPlus()">
+		<h4>过时缓存策略</h4>
+		<http-cache-stale-config :v-cache-stale-config="cacheConfig.stale" @change="changeStale"></http-cache-stale-config>
+	</div>
+	
+	<div v-show="isOn()" style="margin-top: 1em">
 		<h4>缓存条件</h4>
 		<http-cache-refs-config-box :v-cache-config="cacheConfig" :v-cache-refs="cacheConfig.cacheRefs" ></http-cache-refs-config-box>
 	</div>
@@ -4585,6 +4596,68 @@ Vue.component("server-name-box", {
         </div>
     </div>
 </div>`
+})
+
+Vue.component("http-cache-stale-config", {
+	props: ["v-cache-stale-config"],
+	data: function () {
+		let config = this.vCacheStaleConfig
+		if (config == null) {
+			config = {
+				isPrior: false,
+				isOn: false,
+				status: [],
+				supportStaleIfErrorHeader: true,
+				life: {
+					count: 1,
+					unit: "day"
+				}
+			}
+		}
+		return {
+			config: config
+		}
+	},
+	watch: {
+		config: {
+			deep: true,
+			handler: function () {
+				this.$emit("change", this.config)
+			}
+		}
+	},
+	methods: {},
+	template: `<table class="ui table definition selectable">
+	<tbody>
+		<tr>
+			<td class="title">启用过时缓存</td>
+			<td>
+				<checkbox v-model="config.isOn"></checkbox>
+				<p class="comment">选中后，在更新缓存失败后会尝试读取过时的缓存。</p>
+			</td>
+		</tr>
+		<tr v-show="config.isOn">
+			<td>有效期</td>
+			<td>
+				<time-duration-box :v-value="config.life"></time-duration-box>
+				<p class="comment">缓存在过期之后，仍然保留的时间。</p>
+			</td>
+		</tr>
+		<tr v-show="config.isOn">
+			<td>状态码</td>
+			<td><http-status-box :v-status-list="config.status"></http-status-box>
+				<p class="comment">在这些状态码出现时使用过时缓存，默认支持<code-label>50x</code-label>状态码。</p>
+			</td>
+		</tr>
+		<tr v-show="config.isOn">
+			<td>支持stale-if-error</td>
+			<td>
+				<checkbox v-model="config.supportStaleIfErrorHeader"></checkbox>
+				<p class="comment">选中后，支持在Cache-Control中通过<code-label>stale-if-error</code-label>指定过时缓存有效期。</p>
+			</td>
+		</tr>
+	</tbody>
+</table>`
 })
 
 // 域名列表
@@ -6694,7 +6767,7 @@ Vue.component("http-access-log-box", {
 	template: `<div style="word-break: break-all" :style="{'color': (accessLog.status >= 400) ? '#dc143c' : ''}" ref="box">
 	<a v-if="accessLog.node != null && accessLog.node.nodeCluster != null" :href="'/clusters/cluster/node?nodeId=' + accessLog.node.id + '&clusterId=' + accessLog.node.nodeCluster.id" title="点击查看节点详情" target="_top"><span class="grey">[{{accessLog.node.name}}<span v-if="!accessLog.node.name.endsWith('节点')">节点</span>]</span></a>
 	<a :href="'/servers/server/log?serverId=' + accessLog.serverId" title="点击到网站服务" v-if="vShowServerLink"><span class="grey">[服务]</span></a>
-	<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey"><ip-box :v-ip="accessLog.remoteAddr">[{{accessLog.region}}]</ip-box></span> <ip-box><keyword :v-word="vKeyword">{{accessLog.remoteAddr}}</keyword></ip-box> [{{accessLog.timeLocal}}] <em>&quot;<keyword :v-word="vKeyword">{{accessLog.requestMethod}}</keyword> {{accessLog.scheme}}://<keyword :v-word="vKeyword">{{accessLog.host}}</keyword><keyword :v-word="vKeyword">{{accessLog.requestURI}}</keyword> <a :href="accessLog.scheme + '://' + accessLog.host + accessLog.requestURI" target="_blank" title="新窗口打开" class="disabled"><i class="external icon tiny"></i> </a> {{accessLog.proto}}&quot; </em> <keyword :v-word="vKeyword">{{accessLog.status}}</keyword> <code-label v-if="accessLog.attrs != null && accessLog.attrs['cache.status'] == 'HIT'">cache hit</code-label> <code-label v-if="accessLog.firewallActions != null && accessLog.firewallActions.length > 0">waf {{accessLog.firewallActions}}</code-label> <span v-if="accessLog.tags != null && accessLog.tags.length > 0">- <code-label v-for="tag in accessLog.tags" :key="tag">{{tag}}</code-label></span> - 耗时:{{formatCost(accessLog.requestTime)}} ms <span v-if="accessLog.humanTime != null && accessLog.humanTime.length > 0" class="grey small">&nbsp; ({{accessLog.humanTime}})</span>
+	<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey"><ip-box :v-ip="accessLog.remoteAddr">[{{accessLog.region}}]</ip-box></span> <ip-box><keyword :v-word="vKeyword">{{accessLog.remoteAddr}}</keyword></ip-box> [{{accessLog.timeLocal}}] <em>&quot;<keyword :v-word="vKeyword">{{accessLog.requestMethod}}</keyword> {{accessLog.scheme}}://<keyword :v-word="vKeyword">{{accessLog.host}}</keyword><keyword :v-word="vKeyword">{{accessLog.requestURI}}</keyword> <a :href="accessLog.scheme + '://' + accessLog.host + accessLog.requestURI" target="_blank" title="新窗口打开" class="disabled"><i class="external icon tiny"></i> </a> {{accessLog.proto}}&quot; </em> <keyword :v-word="vKeyword">{{accessLog.status}}</keyword> <code-label v-if="accessLog.attrs != null && (accessLog.attrs['cache.status'] == 'HIT' || accessLog.attrs['cache.status'] == 'STALE')">cache {{accessLog.attrs['cache.status'].toLowerCase()}}</code-label> <code-label v-if="accessLog.firewallActions != null && accessLog.firewallActions.length > 0">waf {{accessLog.firewallActions}}</code-label> <span v-if="accessLog.tags != null && accessLog.tags.length > 0">- <code-label v-for="tag in accessLog.tags" :key="tag">{{tag}}</code-label></span> - 耗时:{{formatCost(accessLog.requestTime)}} ms <span v-if="accessLog.humanTime != null && accessLog.humanTime.length > 0" class="grey small">&nbsp; ({{accessLog.humanTime}})</span>
 	&nbsp; <a href="" @click.prevent="showLog" title="查看详情"><i class="icon expand"></i></a>
 </div>`
 })

@@ -30,10 +30,10 @@ Vue.component("http-cache-stale-config", {
 	template: `<table class="ui table definition selectable">
 	<tbody>
 		<tr>
-			<td class="title">启用陈旧缓存</td>
+			<td class="title">启用过时缓存</td>
 			<td>
 				<checkbox v-model="config.isOn"></checkbox>
-				<p class="comment">选中后，在更新缓存失败后会尝试读取陈旧的缓存。</p>
+				<p class="comment">选中后，在更新缓存失败后会尝试读取过时的缓存。</p>
 			</td>
 		</tr>
 		<tr v-show="config.isOn">
@@ -46,14 +46,14 @@ Vue.component("http-cache-stale-config", {
 		<tr v-show="config.isOn">
 			<td>状态码</td>
 			<td><http-status-box :v-status-list="config.status"></http-status-box>
-				<p class="comment">在这些状态码出现时使用陈旧缓存，默认支持<code-label>50x</code-label>状态码。</p>
+				<p class="comment">在这些状态码出现时使用过时缓存，默认支持<code-label>50x</code-label>状态码。</p>
 			</td>
 		</tr>
 		<tr v-show="config.isOn">
 			<td>支持stale-if-error</td>
 			<td>
 				<checkbox v-model="config.supportStaleIfErrorHeader"></checkbox>
-				<p class="comment">选中后，支持在Cache-Control中通过<code-label>stale-if-error</code-label>指定陈旧缓存有效期。</p>
+				<p class="comment">选中后，支持在Cache-Control中通过<code-label>stale-if-error</code-label>指定过时缓存有效期。</p>
 			</td>
 		</tr>
 	</tbody>
