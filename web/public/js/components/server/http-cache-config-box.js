@@ -117,7 +117,7 @@ Vue.component("http-cache-config-box", {
 	</table>
 	
 	<div v-if="isOn() && moreOptionsVisible && isPlus()">
-		<h4>陈旧缓存策略</h4>
+		<h4>过时缓存策略</h4>
 		<http-cache-stale-config :v-cache-stale-config="cacheConfig.stale" @change="changeStale"></http-cache-stale-config>
 	</div>
 	
