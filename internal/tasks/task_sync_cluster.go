@@ -51,7 +51,7 @@ func (this *SyncClusterTask) loop() error {
 	}
 	ctx := rpcClient.Context(0)
 
-	tasksResp, err := rpcClient.NodeTaskRPC().FindNotifyingNodeTasks(ctx, &pb.FindNotifyingNodeTasksRequest{Size: 200})
+	tasksResp, err := rpcClient.NodeTaskRPC().FindNotifyingNodeTasks(ctx, &pb.FindNotifyingNodeTasksRequest{Size: 500})
 	if err != nil {
 		return err
 	}
