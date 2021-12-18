@@ -1711,7 +1711,7 @@ Vue.component("ssl-config-box", {
 		if (hsts == null) {
 			hsts = {
 				isOn: false,
-				maxAge: 0,
+				maxAge: 31536000,
 				includeSubDomains: false,
 				preload: false,
 				domains: []
@@ -2098,6 +2098,25 @@ Vue.component("ssl-config-box", {
 						  <span v-if="hsts.isOn">
 							<a href="" @click.prevent="showMoreHSTS()">修改<i class="icon angle" :class="{down:!hstsOptionsVisible, up:hstsOptionsVisible}"></i> </a>
 						 </span>
+					</p>
+				</td>
+			</tr>
+			<tr v-show="hsts.isOn && hstsOptionsVisible">
+				<td class="color-border">HSTS有效时间<em>（max-age）</em></td>
+				<td>
+					<div class="ui fields inline">
+						<div class="ui field">
+							<input type="text" name="hstsMaxAge" v-model="hsts.maxAge" maxlength="10" size="10" @input="changeHSTSMaxAge()"/>
+						</div>
+						<div class="ui field">
+							秒
+						</div>
+						<div class="ui field">{{hsts.days}}天</div>
+					</div>
+					<p class="comment">
+						<a href="" @click.prevent="setHSTSMaxAge(31536000)" :class="{active:hsts.maxAge == 31536000}">[1年/365天]</a> &nbsp; &nbsp;
+						<a href="" @click.prevent="setHSTSMaxAge(15768000)" :class="{active:hsts.maxAge == 15768000}">[6个月/182.5天]</a> &nbsp;  &nbsp;
+						<a href="" @click.prevent="setHSTSMaxAge(2592000)"  :class="{active:hsts.maxAge == 2592000}">[1个月/30天]</a>
 					</p>
 				</td>
 			</tr>
