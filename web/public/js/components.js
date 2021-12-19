@@ -2818,14 +2818,14 @@ Vue.component("http-request-limit-config-box", {
 				<td>最大并发连接数</td>
 				<td>
 					<input type="text" maxlength="6" v-model="maxConns"/>
-					<p class="comment">为0表示不限制。</p>
+					<p class="comment">当前服务最大并发连接数。为0表示不限制。</p>
 				</td>
 			</tr>
 			<tr>
 				<td>单IP最大并发连接数</td>
 				<td>
 					<input type="text" maxlength="6" v-model="maxConnsPerIP"/>
-					<p class="comment">为0表示不限制。</p>
+					<p class="comment">单IP最大连接数，统计单个IP总连接数时不区分服务。为0表示不限制。</p>
 				</td>
 			</tr>
 			<tr>
