@@ -6804,7 +6804,7 @@ Vue.component("http-access-log-config-box", {
 		let accessLog = {
 			isPrior: false,
 			isOn: false,
-			fields: [],
+			fields: [1, 2, 6, 7],
 			status1: true,
 			status2: true,
 			status3: true,
