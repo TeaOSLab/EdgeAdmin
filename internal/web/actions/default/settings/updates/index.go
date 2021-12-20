@@ -97,7 +97,7 @@ func (this *IndexAction) RunPost(params struct {
 				} else {
 					this.Data["result"] = maps.Map{
 						"isOk":    true,
-						"message": "你安装已经是最新版本，无需更新",
+						"message": "你已安装最新版本，无需更新",
 					}
 					this.Success()
 				}
