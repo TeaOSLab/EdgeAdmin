@@ -40,6 +40,11 @@ func (this *IndexAction) RunGet(params struct{}) {
 		}
 	}
 
+	// 版本更新
+	this.Data["currentVersionCode"] = teaconst.Version
+	this.Data["newVersionCode"] = teaconst.NewVersionCode
+	this.Data["newVersionDownloadURL"] = teaconst.NewVersionDownloadURL
+
 	this.Show()
 }
 

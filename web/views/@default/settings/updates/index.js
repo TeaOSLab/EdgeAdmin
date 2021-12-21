@@ -21,4 +21,11 @@ Tea.context(function () {
 				this.isChecking = false
 			})
 	}
+
+	this.changeAutoCheck = function () {
+		this.$post(".update")
+			.params({
+				autoCheck: this.config.autoCheck ? 1 : 0
+			})
+	}
 })

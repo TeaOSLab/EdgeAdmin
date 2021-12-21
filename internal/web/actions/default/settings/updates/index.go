@@ -6,11 +6,14 @@ import (
 	"encoding/json"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
 	stringutil "github.com/iwind/TeaGo/utils/string"
 	"io/ioutil"
 	"net/http"
+	"runtime"
 	"strings"
 )
 
@@ -25,6 +28,22 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct{}) {
 	this.Data["version"] = teaconst.Version
 
+	valueResp, err := this.RPC().SysSettingRPC().ReadSysSetting(this.AdminContext(), &pb.ReadSysSettingRequest{Code: systemconfigs.SettingCodeCheckUpdates})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	var valueJSON = valueResp.ValueJSON
+	var config = &systemconfigs.CheckUpdatesConfig{AutoCheck: false}
+	if len(valueJSON) > 0 {
+		err = json.Unmarshal(valueJSON, config)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+	this.Data["config"] = config
+
 	this.Show()
 }
 
@@ -37,8 +56,8 @@ func (this *IndexAction) RunPost(params struct {
 	}
 
 	var apiURL = teaconst.UpdatesURL
-	apiURL = strings.ReplaceAll(apiURL, "${os}", "linux")   //runtime.GOOS)
-	apiURL = strings.ReplaceAll(apiURL, "${arch}", "amd64") // runtime.GOARCH)
+	apiURL = strings.ReplaceAll(apiURL, "${os}", runtime.GOOS)
+	apiURL = strings.ReplaceAll(apiURL, "${arch}", runtime.GOARCH)
 	resp, err := http.Get(apiURL)
 	if err != nil {
 		this.Data["result"] = maps.Map{
@@ -109,7 +128,6 @@ func (this *IndexAction) RunPost(params struct {
 		"isOk":    false,
 		"message": "找不到更新信息",
 	}
-	this.Success()
 
 	this.Success()
 }
