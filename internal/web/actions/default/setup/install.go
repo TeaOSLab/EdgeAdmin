@@ -246,6 +246,8 @@ func (this *InstallAction) RunPost(params struct {
 			// 这里我们尝试多次是为了等待API节点启动完毕
 			if err != nil {
 				time.Sleep(1 * time.Second)
+			} else {
+				break
 			}
 		}
 		if err != nil {
