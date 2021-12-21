@@ -7,6 +7,13 @@
             <td class="title">当前已安装版本</td>
             <td>v{{version}}</td>
         </tr>
+        <tr>
+            <td>自动检查</td>
+            <td>
+                <checkbox v-model="config.autoCheck" @input="changeAutoCheck"></checkbox>
+                <p class="comment">选中后系统将定时检查是否有新版本更新。</p>
+            </td>
+        </tr>
         <tr v-if="isStarted">
             <td>最新版本</td>
             <td>

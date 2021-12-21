@@ -3,6 +3,7 @@ package tasks
 import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
+	"github.com/TeaOSLab/EdgeAdmin/internal/goman"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/nodeutils"
@@ -17,7 +18,9 @@ import (
 func init() {
 	events.On(events.EventStart, func() {
 		task := NewSyncClusterTask()
-		go task.Start()
+		goman.New(func() {
+			task.Start()
+		})
 	})
 }
 

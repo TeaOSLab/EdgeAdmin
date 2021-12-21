@@ -14,6 +14,7 @@ func init() {
 			Helper(settingutils.NewHelper("updates")).
 			Prefix("/settings/updates").
 			GetPost("", new(IndexAction)).
+			Post("/update", new(UpdateAction)).
 			EndAll()
 	})
 }

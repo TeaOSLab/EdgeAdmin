@@ -49,7 +49,7 @@ func (this *PolicyAction) RunGet(params struct {
 
 	// 检查是否有升级
 	var templatePolicy = firewallconfigs.HTTPFirewallTemplate()
-	var upgradeItems = []string{}
+	var upgradeItems = []maps.Map{}
 	if templatePolicy.Inbound != nil {
 		for _, group := range templatePolicy.Inbound.Groups {
 			if len(group.Code) == 0 {
@@ -57,7 +57,10 @@ func (this *PolicyAction) RunGet(params struct {
 			}
 			var oldGroup = firewallPolicy.FindRuleGroupWithCode(group.Code)
 			if oldGroup == nil {
-				upgradeItems = append(upgradeItems, group.Name)
+				upgradeItems = append(upgradeItems, maps.Map{
+					"name": group.Name,
+					"isOn": group.IsOn,
+				})
 				continue
 			}
 			for _, set := range group.Sets {
@@ -66,7 +69,10 @@ func (this *PolicyAction) RunGet(params struct {
 				}
 				var oldSet = oldGroup.FindRuleSetWithCode(set.Code)
 				if oldSet == nil {
-					upgradeItems = append(upgradeItems, group.Name+" -- "+set.Name)
+					upgradeItems = append(upgradeItems, maps.Map{
+						"name": group.Name + " -- " + set.Name,
+						"isOn": set.IsOn,
+					})
 					continue
 				}
 			}

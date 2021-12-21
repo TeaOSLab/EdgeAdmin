@@ -22,7 +22,7 @@
             <span class="ui label tiny basic" v-for="group in firewallPolicy.groups" style="margin-bottom:0.5em" :class="{disabled:!group.isOn}">{{group.name}}</span>
            <div v-if="upgradeItems.length > 0">
                <div class="ui divider"></div>
-               <a href=""><span class="red">升级提醒：官方提供了新的规则，是否要加入以下规则：<span class="ui label tiny basic" v-for="item in upgradeItems" style="margin-bottom: 0.2em">{{item}}</span></span></a> &nbsp; &nbsp; <a href="" @click.prevent="upgradeTemplate">[加入]</a>
+               <a href=""><span class="red">升级提醒：官方提供了新的规则，是否要加入以下规则：<span class="ui label tiny basic" v-for="item in upgradeItems" style="margin-bottom: 0.2em">{{item.name}}<span v-if="!item.isOn" class="small">（默认不启用）</span></span></span></a> &nbsp; &nbsp; <a href="" @click.prevent="upgradeTemplate">[加入]</a>
            </div>
         </td>
     </tr>
