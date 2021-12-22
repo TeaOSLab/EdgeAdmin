@@ -4,6 +4,7 @@ package updates
 
 import (
 	"encoding/json"
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
@@ -46,6 +47,12 @@ func (this *UpdateAction) RunPost(params struct {
 	if err != nil {
 		this.ErrorPage(err)
 		return
+	}
+
+	// 重置状态
+	if !config.AutoCheck {
+		teaconst.NewVersionCode = ""
+		teaconst.NewVersionDownloadURL = ""
 	}
 
 	this.Success()
