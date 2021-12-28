@@ -193,7 +193,7 @@ Vue.component("http-header-policy-box", {
 		<submit-btn></submit-btn>
 	</div>
 	
-	<div v-if="((!vIsLocation && !vIsGroup) || requestHeaderRef.isPrior) && type == 'response'">
+	<div v-if="((!vIsLocation && !vIsGroup) || responseHeaderRef.isPrior) && type == 'response'">
 		<div v-if="vHasGroupResponseConfig">
         	<div class="margin"></div>
         	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#response'">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
