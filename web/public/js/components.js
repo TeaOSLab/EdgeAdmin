@@ -2203,6 +2203,42 @@ Vue.component("http-firewall-actions-view", {
 </div>`
 })
 
+Vue.component("http-request-scripts-config-box", {
+	props: ["vRequestScriptsConfig"],
+	data: function () {
+		let config = this.vRequestScriptsConfig
+		if (config == null) {
+			config = {}
+		}
+		return {
+			config: config
+		}
+	},
+	methods: {
+		changeInitScript: function (scriptConfig) {
+			this.config.onInitScript = scriptConfig
+			this.$forceUpdate()
+		},
+		changeRequestScript: function (scriptConfig) {
+			this.config.onRequestScript = scriptConfig
+			this.$forceUpdate()
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="requestScriptsJSON" :value="JSON.stringify(config)"/>
+	<div class="margin"></div>
+	<h4>请求初始化</h4>
+	<div>
+		<script-config-box id="init-script" :v-script-config="config.onInitScript" comment="在接收到客户端请求之后立即调用。预置req、resp变量。" @change="changeInitScript"></script-config-box>
+	</div>
+	<h4>准备发送请求</h4>
+	<div>
+		<script-config-box id="request-script" :v-script-config="config.onRequestScript" comment="在准备好转发客户端请求之前调用。预置req、resp变量。" @change="changeRequestScript"></script-config-box>
+	</div>
+	<div class="margin"></div>
+</div>`
+})
+
 // 显示WAF规则的标签
 Vue.component("http-firewall-rule-label", {
 	props: ["v-rule"],
@@ -5984,7 +6020,7 @@ Vue.component("http-header-policy-box", {
 		<submit-btn></submit-btn>
 	</div>
 	
-	<div v-if="((!vIsLocation && !vIsGroup) || requestHeaderRef.isPrior) && type == 'response'">
+	<div v-if="((!vIsLocation && !vIsGroup) || responseHeaderRef.isPrior) && type == 'response'">
 		<div v-if="vHasGroupResponseConfig">
         	<div class="margin"></div>
         	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#response'">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
@@ -7217,6 +7253,60 @@ Vue.component("http-gzip-box", {
 		</tr>
 	</tbody>
 </table>
+</div>`
+})
+
+Vue.component("script-config-box", {
+	props: ["id", "v-script-config", "comment"],
+	data: function () {
+		let config = this.vScriptConfig
+		if (config == null) {
+			config = {
+				isPrior: false,
+				isOn: false,
+				code: ""
+			}
+		}
+
+		if (config.code.length == 0) {
+			config.code = "\n\n\n\n"
+		}
+
+		return {
+			config: config
+		}
+	},
+	watch: {
+		"config.isOn": function () {
+			this.change()
+		}
+	},
+	methods: {
+		change: function () {
+			this.$emit("change", this.config)
+		},
+		changeCode: function (code) {
+			this.config.code = code
+			this.change()
+		}
+	},
+	template: `<div>
+	<table class="ui table definition selectable">
+		<tbody>
+			<tr>
+				<td class="title">是否启用</td>
+				<td><checkbox v-model="config.isOn"></checkbox></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr :style="{opacity: !config.isOn ? 0.5 : 1}">
+				<td>脚本代码</td>	
+				<td><source-code-box :id="id" type="text/javascript" :read-only="false" @change="changeCode">{{config.code}}</source-code-box>
+					<p class="comment">{{comment}}</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </div>`
 })
 
@@ -11725,6 +11815,19 @@ Vue.component("source-code-box", {
 
 		this.createEditor(box, value, readOnly)
 	},
+	data: function () {
+		let index = sourceCodeBoxIndex++
+
+		let valueBoxId = 'source-code-box-value-' + sourceCodeBoxIndex
+		if (this.id != null) {
+			valueBoxId = this.id
+		}
+
+		return {
+			index: index,
+			valueBoxId: valueBoxId
+		}
+	},
 	methods: {
 		createEditor: function (box, value, readOnly) {
 			let boxEditor = CodeMirror.fromTextArea(box, {
@@ -11739,7 +11842,11 @@ Vue.component("source-code-box", {
 				lineWrapping: true,
 				highlightFormatting: false,
 				indentUnit: 4,
-				indentWithTabs: true
+				indentWithTabs: true,
+			})
+			let that = this
+			boxEditor.on("change", function () {
+				that.change(boxEditor.getValue())
 			})
 			boxEditor.setValue(value)
 
@@ -11762,19 +11869,9 @@ Vue.component("source-code-box", {
 				CodeMirror.modeURL = "/codemirror/mode/%N/%N.js"
 				CodeMirror.autoLoadMode(boxEditor, info.mode)
 			}
-		}
-	},
-	data: function () {
-		let index = sourceCodeBoxIndex++
-
-		let valueBoxId = 'source-code-box-value-' + sourceCodeBoxIndex
-		if (this.id != null) {
-			valueBoxId = this.id
-		}
-
-		return {
-			index: index,
-			valueBoxId: valueBoxId
+		},
+		change: function (code) {
+			this.$emit("change", code)
 		}
 	},
 	template: `<div class="source-code-box">
