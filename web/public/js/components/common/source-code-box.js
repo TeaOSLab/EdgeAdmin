@@ -18,6 +18,19 @@ Vue.component("source-code-box", {
 
 		this.createEditor(box, value, readOnly)
 	},
+	data: function () {
+		let index = sourceCodeBoxIndex++
+
+		let valueBoxId = 'source-code-box-value-' + sourceCodeBoxIndex
+		if (this.id != null) {
+			valueBoxId = this.id
+		}
+
+		return {
+			index: index,
+			valueBoxId: valueBoxId
+		}
+	},
 	methods: {
 		createEditor: function (box, value, readOnly) {
 			let boxEditor = CodeMirror.fromTextArea(box, {
@@ -32,7 +45,11 @@ Vue.component("source-code-box", {
 				lineWrapping: true,
 				highlightFormatting: false,
 				indentUnit: 4,
-				indentWithTabs: true
+				indentWithTabs: true,
+			})
+			let that = this
+			boxEditor.on("change", function () {
+				that.change(boxEditor.getValue())
 			})
 			boxEditor.setValue(value)
 
@@ -55,19 +72,9 @@ Vue.component("source-code-box", {
 				CodeMirror.modeURL = "/codemirror/mode/%N/%N.js"
 				CodeMirror.autoLoadMode(boxEditor, info.mode)
 			}
-		}
-	},
-	data: function () {
-		let index = sourceCodeBoxIndex++
-
-		let valueBoxId = 'source-code-box-value-' + sourceCodeBoxIndex
-		if (this.id != null) {
-			valueBoxId = this.id
-		}
-
-		return {
-			index: index,
-			valueBoxId: valueBoxId
+		},
+		change: function (code) {
+			this.$emit("change", code)
 		}
 	},
 	template: `<div class="source-code-box">
