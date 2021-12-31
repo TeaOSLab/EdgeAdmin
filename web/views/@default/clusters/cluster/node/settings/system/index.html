@@ -10,8 +10,8 @@
             <tr>
                 <td class="title">CPU线程数</td>
                 <td>
-                    <input type="text" name="maxCPU" v-model="node.maxCPU" style="width:5em" maxlength="5em"/>
-                    <p class="comment">当前节点可以使用的最多的CPU线程数，如果为0表示可以使用全部CPU。</p>
+                    <input type="text" name="maxCPU" v-model="node.maxCPU" style="width:5em" maxlength="4"/>
+                    <p class="comment">当前节点可以使用的最多的CPU线程数，如果为0则默认为4倍的CPU线程数。</p>
                 </td>
             </tr>
         </table>
