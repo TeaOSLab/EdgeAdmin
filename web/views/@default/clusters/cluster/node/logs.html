@@ -22,12 +22,18 @@
             </select>
         </div>
         <div class="ui field">
+            <select class="ui dropdown" name="tag" v-model="tag">
+                <option value="">[标签]</option>
+                <option v-for="tag in tags" :value="tag.code">{{tag.name}}</option>
+            </select>
+        </div>
+        <div class="ui field">
             <input type="text" name="keyword" style="width:10em" v-model="keyword" placeholder="关键词"/>
         </div>
         <div class="ui field">
             <button type="submit" class="ui button">查询</button>
         </div>
-        <div class="ui field" v-if="dayFrom.length > 0 || dayTo.length > 0 || keyword.length > 0 || level.length > 0">
+        <div class="ui field" v-if="dayFrom.length > 0 || dayTo.length > 0 || keyword.length > 0 || level.length > 0 || tag.length > 0">
             <a :href="'/clusters/cluster/node/logs?clusterId=' + clusterId + '&nodeId=' + nodeId">[清除条件]</a>
         </div>
     </div>
