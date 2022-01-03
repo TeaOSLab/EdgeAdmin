@@ -59,6 +59,13 @@
                         <p class="comment">如果为0，则默认为{{defaultNodeTCPMaxConnections}}。</p>
                     </td>
                 </tr>
+                <tr>
+                    <td>自动开放端口</td>
+                    <td>
+                        <checkbox name="autoOpenPorts" v-model="cluster.autoOpenPorts"></checkbox>
+                        <p class="comment">选中后会自动尝试在边缘节点正在运行的firewalld中开放所需端口；如果有别的防火墙或者安全策略，仍然需要手工操作。</p>
+                    </td>
+                </tr>
             </tbody>
 		</table>
 		<submit-btn></submit-btn>
