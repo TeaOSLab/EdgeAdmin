@@ -266,7 +266,7 @@ func (this *IndexAction) RunGet(params struct {
 		Role:       nodeconfigs.NodeRoleNode,
 		Offset:     0,
 		Size:       20,
-		Level:      "",
+		Level:      "error,success,warning",
 		FixedState: int32(configutils.BoolStateNo),
 		AllServers: true,
 	})

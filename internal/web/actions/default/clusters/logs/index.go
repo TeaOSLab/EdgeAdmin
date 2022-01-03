@@ -1,6 +1,7 @@
 package logs
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils/nodelogutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -26,12 +27,17 @@ func (this *IndexAction) RunGet(params struct {
 	Keyword string
 	Level   string
 	Type    string
+	Tag     string
 }) {
 	this.Data["dayFrom"] = params.DayFrom
 	this.Data["dayTo"] = params.DayTo
 	this.Data["keyword"] = params.Keyword
 	this.Data["level"] = params.Level
 	this.Data["type"] = params.Type
+	this.Data["tag"] = params.Tag
+
+	// 常见标签
+	this.Data["tags"] = nodelogutils.FindNodeCommonTags()
 
 	// 未读数量
 	countUnreadResp, err := this.RPC().NodeLogRPC().CountNodeLogs(this.AdminContext(), &pb.CountNodeLogsRequest{
@@ -53,6 +59,7 @@ func (this *IndexAction) RunGet(params struct {
 		Keyword:  params.Keyword,
 		Level:    params.Level,
 		IsUnread: params.Type == "unread",
+		Tag:      params.Tag,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -70,6 +77,7 @@ func (this *IndexAction) RunGet(params struct {
 		Keyword:  params.Keyword,
 		Level:    params.Level,
 		IsUnread: params.Type == "unread",
+		Tag:      params.Tag,
 		Offset:   page.Offset,
 		Size:     page.Size,
 	})

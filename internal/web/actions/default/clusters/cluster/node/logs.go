@@ -1,6 +1,7 @@
 package node
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils/nodelogutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/nodeutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -23,6 +24,7 @@ func (this *LogsAction) RunGet(params struct {
 	DayTo   string
 	Keyword string
 	Level   string
+	Tag     string
 }) {
 	// 初始化节点信息（用于菜单）
 	_, err := nodeutils.InitNodeInfo(this.Parent(), params.NodeId)
@@ -31,11 +33,14 @@ func (this *LogsAction) RunGet(params struct {
 		return
 	}
 
+	this.Data["tags"] = nodelogutils.FindNodeCommonTags()
+
 	this.Data["nodeId"] = params.NodeId
 	this.Data["dayFrom"] = params.DayFrom
 	this.Data["dayTo"] = params.DayTo
 	this.Data["keyword"] = params.Keyword
 	this.Data["level"] = params.Level
+	this.Data["tag"] = params.Tag
 
 	countResp, err := this.RPC().NodeLogRPC().CountNodeLogs(this.AdminContext(), &pb.CountNodeLogsRequest{
 		Role:    "node",
@@ -44,6 +49,7 @@ func (this *LogsAction) RunGet(params struct {
 		DayTo:   params.DayTo,
 		Keyword: params.Keyword,
 		Level:   params.Level,
+		Tag:     params.Tag,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -59,6 +65,7 @@ func (this *LogsAction) RunGet(params struct {
 		DayTo:   params.DayTo,
 		Keyword: params.Keyword,
 		Level:   params.Level,
+		Tag:     params.Tag,
 		Offset:  page.Offset,
 		Size:    page.Size,
 	})
