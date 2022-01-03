@@ -72,6 +72,7 @@ func (this *IndexAction) RunGet(params struct {
 		"timeZone":              cluster.TimeZone,
 		"nodeMaxThreads":        cluster.NodeMaxThreads,
 		"nodeTCPMaxConnections": cluster.NodeTCPMaxConnections,
+		"autoOpenPorts":         cluster.AutoOpenPorts,
 	}
 
 	// 默认值
@@ -92,6 +93,7 @@ func (this *IndexAction) RunPost(params struct {
 	TimeZone              string
 	NodeMaxThreads        int32
 	NodeTCPMaxConnections int32
+	AutoOpenPorts         bool
 
 	Must *actions.Must
 }) {
@@ -117,6 +119,7 @@ func (this *IndexAction) RunPost(params struct {
 		TimeZone:              params.TimeZone,
 		NodeMaxThreads:        params.NodeMaxThreads,
 		NodeTCPMaxConnections: params.NodeTCPMaxConnections,
+		AutoOpenPorts:         params.AutoOpenPorts,
 	})
 	if err != nil {
 		this.ErrorPage(err)
