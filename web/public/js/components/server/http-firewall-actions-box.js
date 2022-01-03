@@ -559,7 +559,7 @@ Vue.component("http-firewall-actions-box", {
 				<td>封锁时间</td>
 				<td>
 					<div class="ui input right labeled">
-						<input type="text" style="width: 5em" maxlength="10" v-model="blockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<input type="text" style="width: 5em" maxlength="9" v-model="blockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">秒</span>
 					</div>
 				</td>
@@ -579,7 +579,7 @@ Vue.component("http-firewall-actions-box", {
 				<td>有效时间</td>
 				<td>
 					<div class="ui input right labeled">
-						<input type="text" style="width: 5em" maxlength="10" v-model="captchaLife" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<input type="text" style="width: 5em" maxlength="9" v-model="captchaLife" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">秒</span>
 					</div>
 					<p class="comment">验证通过后在这个时间内不再验证，默认600秒。</p>
@@ -591,7 +591,7 @@ Vue.component("http-firewall-actions-box", {
 				<td>有效时间</td>
 				<td>
 					<div class="ui input right labeled">
-						<input type="text" style="width: 5em" maxlength="10" v-model="get302Life" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<input type="text" style="width: 5em" maxlength="9" v-model="get302Life" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">秒</span>
 					</div>
 					<p class="comment">验证通过后在这个时间内不再验证。</p>
@@ -603,7 +603,7 @@ Vue.component("http-firewall-actions-box", {
 				<td>有效时间</td>
 				<td>
 					<div class="ui input right labeled">
-						<input type="text" style="width: 5em" maxlength="10" v-model="post307Life" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<input type="text" style="width: 5em" maxlength="9" v-model="post307Life" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">秒</span>
 					</div>
 					<p class="comment">验证通过后在这个时间内不再验证。</p>
@@ -640,7 +640,7 @@ Vue.component("http-firewall-actions-box", {
 				<td>超时时间</td>
 				<td>
 					<div class="ui input right labeled">
-						<input type="text" style="width: 6em" maxlength="10" v-model="recordIPTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<input type="text" style="width: 6em" maxlength="9" v-model="recordIPTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">秒</span>
 					</div>
 					<p class="comment">0表示不超时。</p>
