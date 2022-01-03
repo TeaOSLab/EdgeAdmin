@@ -2,6 +2,7 @@ package numberutils
 
 import (
 	"fmt"
+	"github.com/iwind/TeaGo/types"
 	"strconv"
 )
 
@@ -39,4 +40,17 @@ func FormatBytes(bytes int64) string {
 	} else {
 		return fmt.Sprintf("%.2fEB", float64(bytes)/float64(Pow1024(6)))
 	}
+}
+
+func FormatCount(count int64) string {
+	if count < 1000 {
+		return types.String(count)
+	}
+	if count < 1000 * 1000 {
+		return fmt.Sprintf("%.1fK", float32(count)/1000)
+	}
+	if count < 1000 * 1000 * 1000{
+		return fmt.Sprintf("%.1fM", float32(count)/1000/1000)
+	}
+	return fmt.Sprintf("%.1fB", float32(count)/1000/1000/1000)
 }
