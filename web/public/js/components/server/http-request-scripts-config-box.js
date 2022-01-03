@@ -10,12 +10,12 @@ Vue.component("http-request-scripts-config-box", {
 		}
 	},
 	methods: {
-		changeInitScript: function (scriptConfig) {
-			this.config.onInitScript = scriptConfig
+		changeInitGroup: function (group) {
+			this.config.initGroup = group
 			this.$forceUpdate()
 		},
-		changeRequestScript: function (scriptConfig) {
-			this.config.onRequestScript = scriptConfig
+		changeRequestGroup: function (group) {
+			this.config.requestGroup = group
 			this.$forceUpdate()
 		}
 	},
@@ -25,12 +25,12 @@ Vue.component("http-request-scripts-config-box", {
 	<h4 style="margin-bottom: 0">请求初始化</h4>
 	<p class="comment">在请求刚初始化时调用，此时自定义Header等尚未生效。</p>
 	<div>
-		<script-config-box id="init-script" :v-script-config="config.onInitScript" comment="在接收到客户端请求之后立即调用。预置req、resp变量。" @change="changeInitScript"></script-config-box>
+		<script-group-config-box :v-group="config.initGroup" @change="changeInitGroup"></script-group-config-box>
 	</div>
 	<h4 style="margin-bottom: 0">准备发送请求</h4>
 	<p class="comment">在准备执行请求或者转发请求之前调用，此时自定义Header、源站等已准备好。</p>
 	<div>
-		<script-config-box id="request-script" :v-script-config="config.onRequestScript" comment="在准备好转发客户端请求之前调用。预置req、resp变量。" @change="changeRequestScript"></script-config-box>
+		<script-group-config-box :v-group="config.requestGroup" @change="changeRequestGroup"></script-group-config-box>
 	</div>
 	<div class="margin"></div>
 </div>`
