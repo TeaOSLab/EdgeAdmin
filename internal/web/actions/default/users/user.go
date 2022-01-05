@@ -20,6 +20,11 @@ func (this *UserAction) RunGet(params struct {
 }) {
 	err := userutils.InitUser(this.Parent(), params.UserId)
 	if err != nil {
+		if err == userutils.ErrUserNotFound {
+			this.RedirectURL("/users")
+			return
+		}
+
 		this.ErrorPage(err)
 		return
 	}
@@ -51,17 +56,35 @@ func (this *UserAction) RunGet(params struct {
 	}
 	countAccessKeys := countAccessKeyResp.Count
 
+	// IP地址
+	var registeredRegion = ""
+	if len(user.RegisteredIP) > 0 {
+		regionResp, err := this.RPC().IPLibraryRPC().LookupIPRegion(this.AdminContext(), &pb.LookupIPRegionRequest{Ip: user.RegisteredIP})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		if regionResp.IpRegion != nil {
+			registeredRegion = regionResp.IpRegion.Summary
+		}
+	}
+
 	this.Data["user"] = maps.Map{
-		"id":              user.Id,
-		"username":        user.Username,
-		"fullname":        user.Fullname,
-		"email":           user.Email,
-		"tel":             user.Tel,
-		"remark":          user.Remark,
-		"mobile":          user.Mobile,
-		"isOn":            user.IsOn,
-		"cluster":         clusterMap,
-		"countAccessKeys": countAccessKeys,
+		"id":               user.Id,
+		"username":         user.Username,
+		"fullname":         user.Fullname,
+		"email":            user.Email,
+		"tel":              user.Tel,
+		"remark":           user.Remark,
+		"mobile":           user.Mobile,
+		"isOn":             user.IsOn,
+		"cluster":          clusterMap,
+		"countAccessKeys":  countAccessKeys,
+		"isRejected":       user.IsRejected,
+		"rejectReason":     user.RejectReason,
+		"isVerified":       user.IsVerified,
+		"registeredIP":     user.RegisteredIP,
+		"registeredRegion": registeredRegion,
 	}
 
 	this.Show()

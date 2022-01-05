@@ -19,6 +19,7 @@ func init() {
 			GetPost("/update", new(UpdateAction)).
 			Post("/delete", new(DeleteAction)).
 			GetPost("/features", new(FeaturesAction)).
+			GetPost("/verifyPopup", new(VerifyPopupAction)).
 
 			// AccessKeys
 			Prefix("/users/accessKeys").
@@ -26,7 +27,6 @@ func init() {
 			GetPost("/createPopup", new(accesskeys.CreatePopupAction)).
 			Post("/delete", new(accesskeys.DeleteAction)).
 			Post("/updateIsOn", new(accesskeys.UpdateIsOnAction)).
-
 			EndAll()
 	})
 }

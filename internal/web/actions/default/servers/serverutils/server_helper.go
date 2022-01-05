@@ -378,6 +378,10 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 				"isActive": secondMenuItem == "traffic",
 				"isOn":     serverConfig.TrafficLimit != nil && serverConfig.TrafficLimit.IsOn,
 			})
+
+			if serverConfig.Web != nil && serverConfig.Web.RequestScripts != nil {
+				_ = serverConfig.Web.RequestScripts.Init()
+			}
 			menuItems = append(menuItems, maps.Map{
 				"name":     "边缘脚本",
 				"url":      "/servers/server/settings/requestScripts?serverId=" + serverIdString,

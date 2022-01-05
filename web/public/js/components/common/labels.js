@@ -31,5 +31,15 @@ Vue.component("micro-basic-label", {
 
 // 灰色的Label
 Vue.component("grey-label", {
-	template: `<span class="ui label basic grey tiny" style="margin-top: 0.4em; font-size: 0.7em; border: 1px solid #ddd!important; font-weight: normal;"><slot></slot></span>`
+	props: ["color"],
+	data: function () {
+		let color = "grey"
+		if (this.color != null && this.color.length > 0) {
+			color = "red"
+		}
+		return {
+			labelColor: color
+		}
+	},
+	template: `<span class="ui label basic tiny" :class="labelColor" style="margin-top: 0.4em; font-size: 0.7em; border: 1px solid #ddd!important; font-weight: normal;"><slot></slot></span>`
 })
