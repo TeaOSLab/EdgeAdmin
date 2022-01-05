@@ -14,7 +14,7 @@ func (this *SortAction) RunPost(params struct {
 	GroupIds []int64
 }) {
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改代理分组排序")
+	defer this.CreateLog(oplogs.LevelInfo, "修改服务分组排序")
 
 	_, err := this.RPC().ServerGroupRPC().UpdateServerGroupOrders(this.AdminContext(), &pb.UpdateServerGroupOrdersRequest{ServerGroupIds: params.GroupIds})
 	if err != nil {
