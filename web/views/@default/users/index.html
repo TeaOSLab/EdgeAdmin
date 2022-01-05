@@ -1,8 +1,26 @@
 {$layout}
 
 <first-menu>
-	<menu-item @click.prevent="createUser">创建</menu-item>
+    <menu-item href="/users" :active="!isVerifying">全部用户</menu-item>
+    <menu-item href="/users?verifying=1" :active="isVerifying" v-if="teaIsPlus">待审核</menu-item>
+    <span class="item disabled">|</span>
+	<menu-item @click.prevent="createUser">[创建用户]</menu-item>
 </first-menu>
+
+<div class="margin"></div>
+<form class="ui form" action="/users" method="get">
+    <input type="hidden" name="verifying" :value="isVerifying ? 1 : 0"/>
+    <div class="ui fields inline">
+        <div class="ui field">
+            <input type="text" placeholder="用户名、全名、手机号..." name="keyword" v-model="keyword"/>
+        </div>
+        <div class="ui field">
+            <button type="submit" class="ui button">搜索</button>
+            &nbsp;
+            <a :href="'/users?verifying=' + (isVerifying ? 1 : 0)" v-if="keyword.length > 0">[清除条件]</a>
+        </div>
+    </div>
+</form>
 
 <p class="comment" v-if="users.length == 0">暂时还没有用户。</p>
 <table class="ui table selectable" v-if="users.length > 0">
@@ -19,7 +37,9 @@
 	</thead>
 	<tr v-for="user in users">
         <td :class="{disabled:!user.isOn}">
-            <a :href="'/users/user?userId=' + user.id">{{user.username}}</a>
+            <a :href="'/users/user?userId=' + user.id">
+                <keyword :v-word="keyword">{{user.username}}</keyword>
+            </a>
             <div v-if="!user.isVerified">
                 <grey-label color="red">未审核</grey-label>
             </div>
@@ -27,13 +47,15 @@
                 <grey-label color="red">已拒绝</grey-label>
             </div>
         </td>
-        <td :class="{disabled:!user.isOn}">{{user.fullname}}</td>
+        <td :class="{disabled:!user.isOn}">
+            <keyword :v-word="keyword">{{user.fullname}}</keyword>
+        </td>
         <td>
             <span v-if="user.cluster != null">{{user.cluster.name}} <link-icon :href="'/clusters/cluster?clusterId=' + user.cluster.id"></link-icon></span>
             <span v-else class="disabled">-</span>
         </td>
         <td :class="{disabled:!user.isOn}">
-            <span v-if="user.mobile.length > 0">{{user.mobile}}</span>
+            <span v-if="user.mobile.length > 0"><keyword :v-word="keyword">{{user.mobile}}</keyword></span>
             <span v-else class="disabled">-</span>
         </td>
         <td :class="{disabled:!user.isOn}">{{user.createdTime}}</td>

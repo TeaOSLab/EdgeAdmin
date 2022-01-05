@@ -16,9 +16,16 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct {
-	Keyword string
+	Keyword   string
+	Verifying bool
 }) {
-	countResp, err := this.RPC().UserRPC().CountAllEnabledUsers(this.AdminContext(), &pb.CountAllEnabledUsersRequest{Keyword: params.Keyword})
+	this.Data["keyword"] = params.Keyword
+	this.Data["isVerifying"] = params.Verifying
+
+	countResp, err := this.RPC().UserRPC().CountAllEnabledUsers(this.AdminContext(), &pb.CountAllEnabledUsersRequest{
+		Keyword:     params.Keyword,
+		IsVerifying: params.Verifying,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -28,9 +35,10 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["page"] = page.AsHTML()
 
 	usersResp, err := this.RPC().UserRPC().ListEnabledUsers(this.AdminContext(), &pb.ListEnabledUsersRequest{
-		Keyword: params.Keyword,
-		Offset:  page.Offset,
-		Size:    page.Size,
+		Keyword:     params.Keyword,
+		IsVerifying: params.Verifying,
+		Offset:      page.Offset,
+		Size:        page.Size,
 	})
 	if err != nil {
 		this.ErrorPage(err)
