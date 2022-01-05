@@ -5,7 +5,16 @@
     <tr>
         <td>状态</td>
         <td>
-            <label-on :v-is-on="user.isOn"></label-on>
+            <span v-if="!user.isVerified" class="red">
+                未审核 &nbsp; <a href="" @click.prevent="verify">[审核]</a>
+            </span>
+            <span v-else-if="user.isRejected" class="red">已拒绝
+                 &nbsp; <a href="" @click.prevent="verify">[重新审核]</a>
+            </span>
+            <span v-else>
+                <label-on :v-is-on="user.isOn"></label-on>
+            </span>
+            <p class="comment" v-if="user.isVerified && user.isRejected && user.rejectReason.length > 0">拒绝原因：{{user.rejectReason}}</p>
         </td>
     </tr>
     <tr>
@@ -53,6 +62,14 @@
         <td>
             <span v-if="user.remark.length > 0">{{user.remark}}</span>
             <span v-else class="disabled">-</span>
+        </td>
+    </tr>
+    <tr>
+        <td>注册IP</td>
+        <td>
+            <span v-if="user.registeredIP.length == 0" class="disabled">-</span>
+            <span v-else-if="user.registeredRegion.length == 0">{{user.registeredIP}}</span>
+            <span v-else>{{user.registeredIP}}<span class="grey small">（{{user.registeredRegion}}）</span></span>
         </td>
     </tr>
 </table>

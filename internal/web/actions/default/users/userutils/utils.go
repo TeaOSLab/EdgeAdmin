@@ -7,6 +7,8 @@ import (
 	"github.com/iwind/TeaGo/maps"
 )
 
+var ErrUserNotFound = errors.New("not found user")
+
 // InitUser 查找用户基本信息
 func InitUser(p *actionutils.ParentAction, userId int64) error {
 	resp, err := p.RPC().UserRPC().FindEnabledUser(p.AdminContext(), &pb.FindEnabledUserRequest{UserId: userId})
@@ -14,7 +16,7 @@ func InitUser(p *actionutils.ParentAction, userId int64) error {
 		return err
 	}
 	if resp.User == nil {
-		return errors.New("not found user")
+		return ErrUserNotFound
 	}
 
 	// AccessKey数量

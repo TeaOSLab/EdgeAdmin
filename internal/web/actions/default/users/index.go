@@ -36,7 +36,7 @@ func (this *IndexAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	userMaps := []maps.Map{}
+	var userMaps = []maps.Map{}
 	for _, user := range usersResp.Users {
 		var clusterMap maps.Map = nil
 		if user.NodeCluster != nil {
@@ -45,16 +45,20 @@ func (this *IndexAction) RunGet(params struct {
 				"name": user.NodeCluster.Name,
 			}
 		}
+
 		userMaps = append(userMaps, maps.Map{
-			"id":          user.Id,
-			"username":    user.Username,
-			"isOn":        user.IsOn,
-			"fullname":    user.Fullname,
-			"email":       user.Email,
-			"mobile":      user.Mobile,
-			"tel":         user.Tel,
-			"createdTime": timeutil.FormatTime("Y-m-d H:i:s", user.CreatedAt),
-			"cluster":     clusterMap,
+			"id":           user.Id,
+			"username":     user.Username,
+			"isOn":         user.IsOn,
+			"fullname":     user.Fullname,
+			"email":        user.Email,
+			"mobile":       user.Mobile,
+			"tel":          user.Tel,
+			"createdTime":  timeutil.FormatTime("Y-m-d H:i:s", user.CreatedAt),
+			"cluster":      clusterMap,
+			"registeredIP": user.RegisteredIP,
+			"isVerified":   user.IsVerified,
+			"isRejected":   user.IsRejected,
 		})
 	}
 	this.Data["users"] = userMaps
