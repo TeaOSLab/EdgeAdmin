@@ -81,7 +81,7 @@
 		</tr>
 	</thead>
 	<tr v-for="server in servers">
-        <td><a :href="'/servers/server?serverId=' + server.id"><keyword :v-word="keyword">{{server.name}}</keyword></a>
+        <td class="server-name-td"><a :href="'/servers/server?serverId=' + server.id"><keyword :v-word="keyword">{{server.name}}</keyword></a>  &nbsp; <a :href="'/servers/server/settings?serverId=' + server.id" title="设置"><i class="icon setting grey"></i></a>
 			<div style="margin-top:0.4em">
 				<grey-label>{{server.serverTypeName}}</grey-label>
 			</div>

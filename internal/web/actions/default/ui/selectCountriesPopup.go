@@ -29,7 +29,7 @@ func (this *SelectCountriesPopupAction) RunGet(params struct {
 		return
 	}
 	countryMaps := []maps.Map{}
-	for _, country := range countriesResp.Countries {
+	for _, country := range countriesResp.RegionCountries {
 		countryMaps = append(countryMaps, maps.Map{
 			"id":        country.Id,
 			"name":      country.Name,
@@ -50,12 +50,12 @@ func (this *SelectCountriesPopupAction) RunPost(params struct {
 }) {
 	countryMaps := []maps.Map{}
 	for _, countryId := range params.CountryIds {
-		countryResp, err := this.RPC().RegionCountryRPC().FindEnabledRegionCountry(this.AdminContext(), &pb.FindEnabledRegionCountryRequest{CountryId: countryId})
+		countryResp, err := this.RPC().RegionCountryRPC().FindEnabledRegionCountry(this.AdminContext(), &pb.FindEnabledRegionCountryRequest{RegionCountryId: countryId})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-		country := countryResp.Country
+		country := countryResp.RegionCountry
 		if country == nil {
 			continue
 		}

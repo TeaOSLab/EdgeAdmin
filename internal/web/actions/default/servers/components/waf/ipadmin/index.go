@@ -47,7 +47,7 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 	countryMaps := []maps.Map{}
-	for _, country := range countriesResp.Countries {
+	for _, country := range countriesResp.RegionCountries {
 		countryMaps = append(countryMaps, maps.Map{
 			"id":        country.Id,
 			"name":      country.Name,
