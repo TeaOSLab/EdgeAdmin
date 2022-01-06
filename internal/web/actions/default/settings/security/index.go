@@ -31,12 +31,12 @@ func (this *IndexAction) RunGet(params struct{}) {
 	// 国家和地区
 	countryMaps := []maps.Map{}
 	for _, countryId := range config.AllowCountryIds {
-		countryResp, err := this.RPC().RegionCountryRPC().FindEnabledRegionCountry(this.AdminContext(), &pb.FindEnabledRegionCountryRequest{CountryId: countryId})
+		countryResp, err := this.RPC().RegionCountryRPC().FindEnabledRegionCountry(this.AdminContext(), &pb.FindEnabledRegionCountryRequest{RegionCountryId: countryId})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-		country := countryResp.Country
+		country := countryResp.RegionCountry
 		if country != nil {
 			countryMaps = append(countryMaps, maps.Map{
 				"id":   country.Id,
@@ -49,12 +49,12 @@ func (this *IndexAction) RunGet(params struct{}) {
 	// 省份
 	provinceMaps := []maps.Map{}
 	for _, provinceId := range config.AllowProvinceIds {
-		provinceResp, err := this.RPC().RegionProvinceRPC().FindEnabledRegionProvince(this.AdminContext(), &pb.FindEnabledRegionProvinceRequest{ProvinceId: provinceId})
+		provinceResp, err := this.RPC().RegionProvinceRPC().FindEnabledRegionProvince(this.AdminContext(), &pb.FindEnabledRegionProvinceRequest{RegionProvinceId: provinceId})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-		province := provinceResp.Province
+		province := provinceResp.RegionProvince
 		if province != nil {
 			provinceMaps = append(provinceMaps, maps.Map{
 				"id":   province.Id,

@@ -24,13 +24,13 @@ func (this *SelectProvincesPopupAction) RunGet(params struct {
 }) {
 	selectedProvinceIds := utils.SplitNumbers(params.ProvinceIds)
 
-	provincesResp, err := this.RPC().RegionProvinceRPC().FindAllEnabledRegionProvincesWithCountryId(this.AdminContext(), &pb.FindAllEnabledRegionProvincesWithCountryIdRequest{CountryId: ChinaCountryId})
+	provincesResp, err := this.RPC().RegionProvinceRPC().FindAllEnabledRegionProvincesWithCountryId(this.AdminContext(), &pb.FindAllEnabledRegionProvincesWithCountryIdRequest{RegionCountryId: ChinaCountryId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 	provinceMaps := []maps.Map{}
-	for _, province := range provincesResp.Provinces {
+	for _, province := range provincesResp.RegionProvinces {
 		provinceMaps = append(provinceMaps, maps.Map{
 			"id":        province.Id,
 			"name":      province.Name,
@@ -50,12 +50,12 @@ func (this *SelectProvincesPopupAction) RunPost(params struct {
 }) {
 	provinceMaps := []maps.Map{}
 	for _, provinceId := range params.ProvinceIds {
-		provinceResp, err := this.RPC().RegionProvinceRPC().FindEnabledRegionProvince(this.AdminContext(), &pb.FindEnabledRegionProvinceRequest{ProvinceId: provinceId})
+		provinceResp, err := this.RPC().RegionProvinceRPC().FindEnabledRegionProvince(this.AdminContext(), &pb.FindEnabledRegionProvinceRequest{RegionProvinceId: provinceId})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-		province := provinceResp.Province
+		province := provinceResp.RegionProvince
 		if province == nil {
 			continue
 		}
