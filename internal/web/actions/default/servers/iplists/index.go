@@ -22,14 +22,28 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	Ip         string
 	GlobalOnly bool
+	Unread     bool
 }) {
 	this.Data["type"] = ""
 	this.Data["ip"] = params.Ip
 	this.Data["globalOnly"] = params.GlobalOnly
+	this.Data["unread"] = params.Unread
+
+	countUnreadResp, err := this.RPC().IPItemRPC().CountAllEnabledIPItems(this.AdminContext(), &pb.CountAllEnabledIPItemsRequest{
+		Ip:         params.Ip,
+		GlobalOnly: params.GlobalOnly,
+		Unread:     true,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["countUnread"] = countUnreadResp.Count
 
 	countResp, err := this.RPC().IPItemRPC().CountAllEnabledIPItems(this.AdminContext(), &pb.CountAllEnabledIPItemsRequest{
 		Ip:         params.Ip,
 		GlobalOnly: params.GlobalOnly,
+		Unread:     params.Unread,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -42,6 +56,7 @@ func (this *IndexAction) RunGet(params struct {
 	itemsResp, err := this.RPC().IPItemRPC().ListAllEnabledIPItems(this.AdminContext(), &pb.ListAllEnabledIPItemsRequest{
 		Ip:         params.Ip,
 		GlobalOnly: params.GlobalOnly,
+		Unread:     params.Unread,
 		Offset:     page.Offset,
 		Size:       page.Size,
 	})
@@ -127,6 +142,8 @@ func (this *IndexAction) RunGet(params struct {
 			"expiredTime":    expiredTime,
 			"reason":         item.Reason,
 			"type":           item.Type,
+			"isRead":         item.IsRead,
+			"lifeSeconds":    item.ExpiredAt - time.Now().Unix(),
 			"eventLevelName": firewallconfigs.FindFirewallEventLevelName(item.EventLevel),
 			"sourcePolicy":   sourcePolicyMap,
 			"sourceGroup":    sourceGroupMap,

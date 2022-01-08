@@ -113,6 +113,7 @@ func (this *AllowListAction) RunGet(params struct {
 			"ipTo":           item.IpTo,
 			"createdTime":    timeutil.FormatTime("Y-m-d", item.CreatedAt),
 			"expiredTime":    expiredTime,
+			"lifeSeconds":    item.ExpiredAt - time.Now().Unix(),
 			"reason":         item.Reason,
 			"type":           item.Type,
 			"isExpired":      item.ExpiredAt > 0 && item.ExpiredAt < time.Now().Unix(),

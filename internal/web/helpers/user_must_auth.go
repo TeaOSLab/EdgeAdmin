@@ -171,8 +171,12 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 
 // 菜单配置
 func (this *userMustAuth) modules(actionPtr actions.ActionWrapper, adminId int64) []maps.Map {
+	// 运行日志
 	var countUnreadNodeLogs int64 = 0
 	var nodeLogsType = ""
+
+	// IP名单
+	var countUnreadIPItems int64 = 0
 
 	// 父级动作
 	parentAction, ok := actionPtr.(actionutils.ActionInterface)
@@ -180,7 +184,8 @@ func (this *userMustAuth) modules(actionPtr actions.ActionWrapper, adminId int64
 		var action = actionPtr.Object()
 
 		// 未读日志数
-		if action.Data.GetString("teaMenu") == "clusters" {
+		var mainMenu = action.Data.GetString("teaMenu")
+		if mainMenu == "clusters" {
 			countNodeLogsResp, err := parentAction.RPC().NodeLogRPC().CountNodeLogs(parentAction.AdminContext(), &pb.CountNodeLogsRequest{
 				Role:     nodeconfigs.NodeRoleNode,
 				IsUnread: true,
@@ -197,11 +202,18 @@ func (this *userMustAuth) modules(actionPtr actions.ActionWrapper, adminId int64
 					nodeLogsType = "unread"
 				}
 			}
+		} else if mainMenu == "servers" {
+			countUnreadIPItemsResp, err := parentAction.RPC().IPItemRPC().CountAllEnabledIPItems(parentAction.AdminContext(), &pb.CountAllEnabledIPItemsRequest{Unread: true})
+			if err != nil {
+				logs.Error(err)
+			} else {
+				countUnreadIPItems = countUnreadIPItemsResp.Count
+			}
 		}
 	}
 
 	result := []maps.Map{}
-	for _, m := range FindAllMenuMaps(nodeLogsType, countUnreadNodeLogs) {
+	for _, m := range FindAllMenuMaps(nodeLogsType, countUnreadNodeLogs, countUnreadIPItems) {
 		if m.GetString("code") == "finance" && !configloaders.ShowFinance() {
 			continue
 		}

@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
+	"time"
 )
 
 type ListsAction struct {
@@ -109,6 +110,7 @@ func (this *ListsAction) RunGet(params struct {
 			"sourceGroup":    sourceGroupMap,
 			"sourceSet":      sourceSetMap,
 			"sourceServer":   sourceServerMap,
+			"lifeSeconds":    item.ExpiredAt - time.Now().Unix(),
 		})
 	}
 	this.Data["items"] = itemMaps

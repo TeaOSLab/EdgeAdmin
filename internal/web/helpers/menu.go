@@ -9,7 +9,7 @@ import (
 	"github.com/iwind/TeaGo/maps"
 )
 
-func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64) []maps.Map {
+func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnreadIPItems int64) []maps.Map {
 	return []maps.Map{
 		{
 			"code":   "dashboard",
@@ -50,9 +50,10 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64) []maps.Map 
 					"code": "waf",
 				},
 				{
-					"name": "IP名单",
-					"url":  "/servers/iplists",
-					"code": "iplist",
+					"name":  "IP名单",
+					"url":   "/servers/iplists",
+					"code":  "iplist",
+					"badge": countUnreadIPItems,
 				},
 				{
 					"name": "统计指标",

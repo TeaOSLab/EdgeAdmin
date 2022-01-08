@@ -70,6 +70,18 @@ Vue.component("ip-list-table", {
 				.success(function () {
 					teaweb.successToast("批量删除成功", 1200, teaweb.reload)
 				})
+		},
+		formatSeconds: function (seconds) {
+			if (seconds < 60) {
+				return seconds + "秒"
+			}
+			if (seconds < 3600) {
+				return Math.ceil(seconds / 60) + "分钟"
+			}
+			if (seconds < 86400) {
+				return Math.ceil(seconds / 3600) + "小时"
+			}
+			return Math.ceil(seconds / 86400) + "天"
 		}
 	},
 	template: `<div>
@@ -103,7 +115,7 @@ Vue.component("ip-list-table", {
 				</td>
 				<td>
 					<span v-if="item.type != 'all'">
-					<keyword :v-word="keyword">{{item.ipFrom}}</keyword> <span>&nbsp;<a :href="'/servers/iplists?ip=' + item.ipFrom" v-if="vShowSearchButton" title="搜索此IP"><span><i class="icon search small" style="color: #ccc"></i></span></a></span>
+					<keyword :v-word="keyword">{{item.ipFrom}}</keyword> <span> <span class="small red" v-if="item.isRead != null && !item.isRead">&nbsp;New&nbsp;</span>&nbsp;<a :href="'/servers/iplists?ip=' + item.ipFrom" v-if="vShowSearchButton" title="搜索此IP"><span><i class="icon search small" style="color: #ccc"></i></span></a></span>
 					<span v-if="item.ipTo.length > 0"> - <keyword :v-word="keyword">{{item.ipTo}}</keyword></span></span>
 					<span v-else class="disabled">*</span>
 					<div v-if="item.createdTime != null">
@@ -142,6 +154,9 @@ Vue.component("ip-list-table", {
 						{{item.expiredTime}}
 						<div v-if="item.isExpired" style="margin-top: 0.5em">
 							<span class="ui label tiny basic red">已过期</span>
+						</div>
+						<div  v-if="item.lifeSeconds != null && item.lifeSeconds > 0">
+							<span class="small grey">{{formatSeconds(item.lifeSeconds)}}</span>
 						</div>
 					</div>
 					<span v-else class="disabled">不过期</span>
