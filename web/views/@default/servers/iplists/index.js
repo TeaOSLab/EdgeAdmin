@@ -20,4 +20,11 @@ Tea.context(function () {
 				.refresh()
 		})
 	}
+
+	this.readAllItems = function () {
+		this.$post(".readAll")
+			.success(function () {
+				teaweb.reload()
+			})
+	}
 })

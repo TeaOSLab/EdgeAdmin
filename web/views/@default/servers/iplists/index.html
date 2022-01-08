@@ -13,10 +13,22 @@
                 <label>自动拦截名单</label>
             </div>
         </div>
+        <div class="ui field" v-if="countUnread > 0">
+            <div class="ui checkbox">
+                <input type="checkbox" name="unread" value="1" v-model="unread"/>
+                <label><span class="red">New</span></label>
+            </div>
+        </div>
         <div class="ui field">
             <button class="ui button" type="submit">搜索</button>
             &nbsp;
-            <a href="/servers/iplists" v-if="ip.length > 0 || globalOnly">[清除条件]</a>
+            <a href="/servers/iplists" v-if="ip.length > 0 || globalOnly || unread">[清除条件]</a>
+        </div>
+        <div class="ui field" v-if="countUnread > 0">
+            <span class="disabled">|</span>
+        </div>
+        <div class="ui field" v-if="countUnread > 0">
+            <a href="" @click.prevent="readAllItems" title="消除未读标记New">[全部已读]</a>
         </div>
     </div>
 </form>
