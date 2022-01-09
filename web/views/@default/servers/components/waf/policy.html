@@ -52,6 +52,14 @@
         </td>
     </tr>
     <tr>
+        <td>使用系统防火墙</td>
+        <td>
+            <span class="green" v-if="firewallPolicy.useLocalFirewall">启用</span>
+            <span class="disabled" v-if="!firewallPolicy.useLocalFirewall">不启用</span>
+            <p class="comment" v-if="firewallPolicy.useLocalFirewall">可以在合适的时候自动使用系统自带防火墙进行防御。</p>
+        </td>
+    </tr>
+    <tr>
         <td>描述</td>
         <td>
             <span v-if="firewallPolicy.description.length > 0">{{firewallPolicy.description}}</span>

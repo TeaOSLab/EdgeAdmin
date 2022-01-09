@@ -16,7 +16,7 @@ type IndexAction struct {
 }
 
 func (this *IndexAction) Init() {
-	this.Nav("", "", "update")
+	this.Nav("", "node", "update")
 	this.SecondMenu("dns")
 }
 

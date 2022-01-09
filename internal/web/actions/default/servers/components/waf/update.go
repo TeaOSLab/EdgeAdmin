@@ -49,12 +49,13 @@ func (this *UpdateAction) RunGet(params struct {
 	this.Data["modes"] = firewallconfigs.FindAllFirewallModes()
 
 	this.Data["firewallPolicy"] = maps.Map{
-		"id":           firewallPolicy.Id,
-		"name":         firewallPolicy.Name,
-		"description":  firewallPolicy.Description,
-		"isOn":         firewallPolicy.IsOn,
-		"mode":         firewallPolicy.Mode,
-		"blockOptions": firewallPolicy.BlockOptions,
+		"id":               firewallPolicy.Id,
+		"name":             firewallPolicy.Name,
+		"description":      firewallPolicy.Description,
+		"isOn":             firewallPolicy.IsOn,
+		"mode":             firewallPolicy.Mode,
+		"blockOptions":     firewallPolicy.BlockOptions,
+		"useLocalFirewall": firewallPolicy.UseLocalFirewall,
 	}
 
 	// 预置分组
@@ -87,6 +88,7 @@ func (this *UpdateAction) RunPost(params struct {
 	Description      string
 	IsOn             bool
 	Mode             string
+	UseLocalFirewall bool
 
 	Must *actions.Must
 }) {
@@ -112,6 +114,7 @@ func (this *UpdateAction) RunPost(params struct {
 		FirewallGroupCodes:   params.GroupCodes,
 		BlockOptionsJSON:     params.BlockOptionsJSON,
 		Mode:                 params.Mode,
+		UseLocalFirewall:     params.UseLocalFirewall,
 	})
 	if err != nil {
 		this.ErrorPage(err)
