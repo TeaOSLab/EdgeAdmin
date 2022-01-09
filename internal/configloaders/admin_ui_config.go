@@ -11,10 +11,6 @@ import (
 
 var sharedAdminUIConfig *systemconfigs.AdminUIConfig = nil
 
-const (
-	AdminUISettingName = "adminUIConfig"
-)
-
 func LoadAdminUIConfig() (*systemconfigs.AdminUIConfig, error) {
 	locker.Lock()
 	defer locker.Unlock()
@@ -41,7 +37,7 @@ func UpdateAdminUIConfig(uiConfig *systemconfigs.AdminUIConfig) error {
 		return err
 	}
 	_, err = rpcClient.SysSettingRPC().UpdateSysSetting(rpcClient.Context(0), &pb.UpdateSysSettingRequest{
-		Code:      AdminUISettingName,
+		Code:      systemconfigs.SettingCodeAdminUIConfig,
 		ValueJSON: valueJSON,
 	})
 	if err != nil {
@@ -52,7 +48,7 @@ func UpdateAdminUIConfig(uiConfig *systemconfigs.AdminUIConfig) error {
 	return nil
 }
 
-// 是否显示财务信息
+// ShowFinance 是否显示财务信息
 func ShowFinance() bool {
 	config, _ := LoadAdminUIConfig()
 	if config != nil && !config.ShowFinance {
@@ -70,7 +66,7 @@ func loadAdminUIConfig() (*systemconfigs.AdminUIConfig, error) {
 		return nil, err
 	}
 	resp, err := rpcClient.SysSettingRPC().ReadSysSetting(rpcClient.Context(0), &pb.ReadSysSettingRequest{
-		Code: AdminUISettingName,
+		Code: systemconfigs.SettingCodeAdminUIConfig,
 	})
 	if err != nil {
 		return nil, err

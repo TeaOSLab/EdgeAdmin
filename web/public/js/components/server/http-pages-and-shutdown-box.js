@@ -81,7 +81,7 @@ Vue.component("http-pages-and-shutdown-box", {
 <h1>网站升级中</h1>
 <p>为了给您提供更好的服务，我们正在升级网站，请稍后重新访问。</p>
 
-<address>Request ID: \${requestId}, Powered by GoEdge.</address>
+<address>Request ID: \${requestId}.</address>
 
 </body>
 </html>`

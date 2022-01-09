@@ -20,7 +20,7 @@ Tea.context(function () {
 <h1>\${status} \${statusMessage}</h1>
 <p><!-- 内容 --></p>
 
-<address>Request ID: \${requestId}, Powered by GoEdge.</address>
+<address>Request ID: \${requestId}.</address>
 
 </body>
 </html>`

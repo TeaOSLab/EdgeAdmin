@@ -5,15 +5,17 @@
 
 	<table class="ui table definition selectable">
 		<tr>
-			<td class="title">产品名称 *</td>
+			<td class="title">产品代号 *</td>
 			<td>
 				<input type="text" name="productName" v-model="config.productName" maxlength="100"/>
+                <p class="comment">可以使用变量<code-label>${product.name}</code-label>在网页里展示此代号。</p>
 			</td>
 		</tr>
 		<tr>
 			<td>管理员系统名称 *</td>
 			<td>
 				<input type="text" name="adminSystemName" v-model="config.adminSystemName" maxlength="100"/>
+                <p class="comment">当前管理系统界面上显示的名称。</p>
 			</td>
 		</tr>
 		<tr>
@@ -26,9 +28,10 @@
 			<td>是否显示版本号</td>
 			<td>
 				<checkbox name="showVersion" v-model="config.showVersion"></checkbox>
+                <p class="comment">选中后，在界面中显示系统版本号。</p>
 			</td>
 		</tr>
-		<tr v-show="config.showVersion">
+		<tr>
 			<td>定制版本号</td>
 			<td>
 				<input type="text" name="version" v-model="config.version" maxlength="100"/>
