@@ -85,14 +85,15 @@ func (this *PolicyAction) RunGet(params struct {
 		firewallPolicy.Mode = firewallconfigs.FirewallModeDefend
 	}
 	this.Data["firewallPolicy"] = maps.Map{
-		"id":           firewallPolicy.Id,
-		"name":         firewallPolicy.Name,
-		"isOn":         firewallPolicy.IsOn,
-		"description":  firewallPolicy.Description,
-		"mode":         firewallPolicy.Mode,
-		"modeInfo":     firewallconfigs.FindFirewallMode(firewallPolicy.Mode),
-		"groups":       internalGroups,
-		"blockOptions": firewallPolicy.BlockOptions,
+		"id":               firewallPolicy.Id,
+		"name":             firewallPolicy.Name,
+		"isOn":             firewallPolicy.IsOn,
+		"description":      firewallPolicy.Description,
+		"mode":             firewallPolicy.Mode,
+		"modeInfo":         firewallconfigs.FindFirewallMode(firewallPolicy.Mode),
+		"groups":           internalGroups,
+		"blockOptions":     firewallPolicy.BlockOptions,
+		"useLocalFirewall": firewallPolicy.UseLocalFirewall,
 	}
 
 	// 正在使用此策略的集群
