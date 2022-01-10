@@ -55,6 +55,9 @@ Vue.component("http-firewall-rules-box", {
 					<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> <var>{{rule.operator}}</var> {{rule.value}}
 				</span>
 				
+				<!-- description -->
+				<span v-if="rule.description != null && rule.description.length > 0" class="grey small">（{{rule.description}}）</span>
+				
 				<a href="" title="修改" @click.prevent="updateRule(index, rule)"><i class="icon pencil small"></i></a>
 				<a href="" title="删除" @click.prevent="removeRule(index)"><i class="icon remove"></i></a>
 			</div>

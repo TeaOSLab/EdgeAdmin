@@ -61,6 +61,7 @@ func (this *CreateRulePopupAction) RunPost(params struct {
 	OptionsJSON      []byte
 	Value            string
 	Case             bool
+	Description      string
 
 	Must *actions.Must
 }) {
@@ -91,6 +92,7 @@ func (this *CreateRulePopupAction) RunPost(params struct {
 	rule.Operator = params.Operator
 	rule.Value = params.Value
 	rule.IsCaseInsensitive = params.Case
+	rule.Description = params.Description
 
 	if len(params.OptionsJSON) > 0 {
 		options := []maps.Map{}
