@@ -4,7 +4,8 @@ Vue.component("http-firewall-block-options", {
 		return {
 			blockOptions: this.vBlockOptions,
 			statusCode: this.vBlockOptions.statusCode,
-			timeout: this.vBlockOptions.timeout
+			timeout: this.vBlockOptions.timeout,
+			isEditing: false
 		}
 	},
 	watch: {
@@ -25,9 +26,15 @@ Vue.component("http-firewall-block-options", {
 			}
 		}
 	},
+	methods: {
+		edit: function () {
+			this.isEditing = !this.isEditing
+		}
+	},
 	template: `<div>
-<input type="hidden" name="blockOptionsJSON" :value="JSON.stringify(blockOptions)"/>
-	<table class="ui table">
+	<input type="hidden" name="blockOptionsJSON" :value="JSON.stringify(blockOptions)"/>
+	<a href="" @click.prevent="edit">状态码：{{statusCode}} / 提示内容：<span v-if="blockOptions.body != null && blockOptions.body.length > 0">[{{blockOptions.body.length}}字符]</span><span v-else class="disabled">[无]</span>  / 超时时间：{{timeout}}秒 <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
+	<table class="ui table" v-show="isEditing">
 		<tr>
 			<td class="title">状态码</td>
 			<td>
