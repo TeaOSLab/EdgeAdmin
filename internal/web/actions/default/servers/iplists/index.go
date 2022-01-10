@@ -133,6 +133,16 @@ func (this *IndexAction) RunGet(params struct {
 			}
 		}
 
+		// node
+		var sourceNodeMap = maps.Map{"id": 0}
+		if item.SourceNode != nil && item.SourceNode.NodeCluster != nil {
+			sourceNodeMap = maps.Map{
+				"id":        item.SourceNode.Id,
+				"name":      item.SourceNode.Name,
+				"clusterId": item.SourceNode.NodeCluster.Id,
+			}
+		}
+
 		itemMaps = append(itemMaps, maps.Map{
 			"id":             item.Id,
 			"ipFrom":         item.IpFrom,
@@ -149,6 +159,7 @@ func (this *IndexAction) RunGet(params struct {
 			"sourceGroup":    sourceGroupMap,
 			"sourceSet":      sourceSetMap,
 			"sourceServer":   sourceServerMap,
+			"sourceNode":     sourceNodeMap,
 			"list":           listMap,
 			"policy":         policyMap,
 		})

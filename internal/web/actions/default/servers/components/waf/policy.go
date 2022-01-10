@@ -84,6 +84,7 @@ func (this *PolicyAction) RunGet(params struct {
 	if len(firewallPolicy.Mode) == 0 {
 		firewallPolicy.Mode = firewallconfigs.FirewallModeDefend
 	}
+
 	this.Data["firewallPolicy"] = maps.Map{
 		"id":               firewallPolicy.Id,
 		"name":             firewallPolicy.Name,
@@ -94,6 +95,7 @@ func (this *PolicyAction) RunGet(params struct {
 		"groups":           internalGroups,
 		"blockOptions":     firewallPolicy.BlockOptions,
 		"useLocalFirewall": firewallPolicy.UseLocalFirewall,
+		"synFlood":         firewallPolicy.SYNFlood,
 	}
 
 	// 正在使用此策略的集群

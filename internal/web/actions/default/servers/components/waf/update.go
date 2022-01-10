@@ -48,6 +48,16 @@ func (this *UpdateAction) RunGet(params struct {
 	}
 	this.Data["modes"] = firewallconfigs.FindAllFirewallModes()
 
+	// syn flood
+	if firewallPolicy.SYNFlood == nil {
+		firewallPolicy.SYNFlood = &firewallconfigs.SYNFloodConfig{
+			IsOn:           false,
+			MinAttempts:    10,
+			TimeoutSeconds: 600,
+			IgnoreLocal:    true,
+		}
+	}
+
 	this.Data["firewallPolicy"] = maps.Map{
 		"id":               firewallPolicy.Id,
 		"name":             firewallPolicy.Name,
@@ -56,6 +66,7 @@ func (this *UpdateAction) RunGet(params struct {
 		"mode":             firewallPolicy.Mode,
 		"blockOptions":     firewallPolicy.BlockOptions,
 		"useLocalFirewall": firewallPolicy.UseLocalFirewall,
+		"synFloodConfig":   firewallPolicy.SYNFlood,
 	}
 
 	// 预置分组
@@ -89,6 +100,7 @@ func (this *UpdateAction) RunPost(params struct {
 	IsOn             bool
 	Mode             string
 	UseLocalFirewall bool
+	SynFloodJSON     []byte
 
 	Must *actions.Must
 }) {
@@ -115,6 +127,7 @@ func (this *UpdateAction) RunPost(params struct {
 		BlockOptionsJSON:     params.BlockOptionsJSON,
 		Mode:                 params.Mode,
 		UseLocalFirewall:     params.UseLocalFirewall,
+		SynFloodJSON:         params.SynFloodJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)
