@@ -14,7 +14,7 @@ Vue.component("http-firewall-rule-label", {
 
 	},
 	template: `<div>
-	<div class="ui label tiny basic">
+	<div class="ui label tiny basic" style="line-height: 1.5">
 		{{rule.name}}[{{rule.param}}] 
 
 		<!-- cc2 -->
@@ -32,6 +32,9 @@ Vue.component("http-firewall-rule-label", {
 		<var :class="{dash:rule.isCaseInsensitive}" :title="rule.isCaseInsensitive ? '大小写不敏感':''" v-if="!rule.isComposed">{{rule.operator}}</var> 
 		{{rule.value}}
 		</span>
+		
+		<!-- description -->
+		<span v-if="rule.description != null && rule.description.length > 0" class="grey small">（{{rule.description}}）</span>
 		
 		<a href="" v-if="rule.err != null && rule.err.length > 0" @click.prevent="showErr(rule.err)" style="color: #db2828; opacity: 1; border-bottom: 1px #db2828 dashed; margin-left: 0.5em">规则错误</a>
 	</div>

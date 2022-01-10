@@ -85,6 +85,7 @@ func (this *GroupAction) RunGet(params struct {
 					"operator":          rule.Operator,
 					"value":             rule.Value,
 					"isCaseInsensitive": rule.IsCaseInsensitive,
+					"description":       rule.Description,
 					"isComposed":        firewallconfigs.CheckCheckpointIsComposed(rule.Prefix()),
 					"checkpointOptions": rule.CheckpointOptions,
 					"err":               errString,
