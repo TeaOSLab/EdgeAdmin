@@ -17,12 +17,15 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct {
-	Keyword string
+	ClusterId int64
+	Keyword   string
 }) {
 	this.Data["keyword"] = params.Keyword
+	this.Data["clusterId"] = params.ClusterId
 
 	countResp, err := this.RPC().HTTPCachePolicyRPC().CountAllEnabledHTTPCachePolicies(this.AdminContext(), &pb.CountAllEnabledHTTPCachePoliciesRequest{
-		Keyword: params.Keyword,
+		NodeClusterId: params.ClusterId,
+		Keyword:       params.Keyword,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -33,9 +36,10 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["page"] = page.AsHTML()
 
 	listResp, err := this.RPC().HTTPCachePolicyRPC().ListEnabledHTTPCachePolicies(this.AdminContext(), &pb.ListEnabledHTTPCachePoliciesRequest{
-		Keyword: params.Keyword,
-		Offset:  page.Offset,
-		Size:    page.Size,
+		Keyword:       params.Keyword,
+		NodeClusterId: params.ClusterId,
+		Offset:        page.Offset,
+		Size:          page.Size,
 	})
 	if err != nil {
 		this.ErrorPage(err)

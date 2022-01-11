@@ -11,12 +11,15 @@
 <form class="ui form" method="get" action="/servers/components/cache">
     <div class="ui fields inline">
         <div class="ui field">
+            <node-cluster-combo-box :v-cluster-id="clusterId"></node-cluster-combo-box>
+        </div>
+        <div class="ui field">
             <input type="text" name="keyword" v-model="keyword" placeholder="策略名称..."/>
         </div>
         <div class="ui field">
             <button type="submit" class="ui button">搜索</button>
             &nbsp;
-            <a :href="Tea.url('.')" v-if="keyword.length > 0">[清除条件]</a>
+            <a :href="Tea.url('.')" v-if="keyword.length > 0 || clusterId > 0">[清除条件]</a>
         </div>
     </div>
 </form>
