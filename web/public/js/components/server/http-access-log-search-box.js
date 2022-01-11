@@ -1,6 +1,13 @@
 // 访问日志搜索框
 Vue.component("http-access-log-search-box", {
-	props: ["v-ip", "v-domain", "v-keyword"],
+	props: ["v-ip", "v-domain", "v-keyword", "v-cluster-id", "v-node-id", "v-clusters"],
+	mounted: function () {
+		if (this.vClusterId >0) {
+			this.changeCluster({
+				value: this.vClusterId
+			})
+		}
+	},
 	data: function () {
 		let ip = this.vIp
 		if (ip == null) {
@@ -20,7 +27,8 @@ Vue.component("http-access-log-search-box", {
 		return {
 			ip: ip,
 			domain: domain,
-			keyword: keyword
+			keyword: keyword,
+			nodes: []
 		}
 	},
 	methods: {
@@ -52,9 +60,23 @@ Vue.component("http-access-log-search-box", {
 					parent.submit()
 				}, 500)
 			}
+		},
+		changeCluster: function (item) {
+			this.nodes = []
+			if (item != null) {
+				let that = this
+				Tea.action("/servers/logs/nodeOptions")
+					.params({
+						clusterId: item.value
+					})
+					.post()
+					.success(function (resp) {
+						that.nodes = resp.data.nodes
+					})
+			}
 		}
 	},
-	template: `<div>
+	template: `<div style="z-index: 10">
 	<div class="margin"></div>
 	<div class="ui fields inline">
 		<div class="ui field">
@@ -79,8 +101,16 @@ Vue.component("http-access-log-search-box", {
 			</div>
 		</div>
 		<slot></slot>
+	</div>
+	<div class="ui fields inline" style="margin-top: 0.5em">
+		<div class="ui field" v-if="vClusters != null && vClusters.length > 0">
+			<combo-box title="集群" name="clusterId" placeholder="集群名称" :v-items="vClusters" :v-value="vClusterId" @change="changeCluster"></combo-box>
+		</div>
+		<div class="ui field" v-if="nodes.length > 0">
+			<combo-box title="节点" name="nodeId" placeholder="节点名称" :v-items="nodes" :v-value="vNodeId"></combo-box>
+		</div>
 		<div class="ui field">
-			<button class="ui button small" type="submit">查找</button>
+			<button class="ui button small" type="submit">搜索日志</button>
 		</div>
 	</div>
 </div>`
