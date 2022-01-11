@@ -38,4 +38,8 @@ Tea.context(function () {
 				})
 		})
 	}
+
+	this.changeCluster = function (clusterId) {
+		this.clusterId = clusterId
+	}
 })

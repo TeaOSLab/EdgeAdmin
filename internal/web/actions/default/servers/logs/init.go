@@ -17,7 +17,6 @@ func init() {
 			Prefix("/servers/logs").
 			Get("", new(IndexAction)).
 			GetPost("/settings", new(SettingsAction)).
-			Post("/nodeOptions", new(NodeOptionsAction)).
 			EndAll()
 	})
 }

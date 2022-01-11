@@ -31,10 +31,18 @@
         <div class="ui field">
             <input type="text" name="keyword" style="width:10em" v-model="keyword" placeholder="关键词"/>
         </div>
+    </div>
+    <div class="ui fields inline" style="margin-top: 0.5em">
+        <div class="ui field">
+            <node-cluster-combo-box :v-cluster-id="clusterId" @change="changeCluster"></node-cluster-combo-box>
+        </div>
+        <div class="ui field" v-if="clusterId > 0">
+            <node-combo-box :v-cluster-id="clusterId" :v-node-id="nodeId"></node-combo-box>
+        </div>
         <div class="ui field">
             <button type="submit" class="ui button">查询</button>
         </div>
-        <div class="ui field" v-if="dayFrom.length > 0 || dayTo.length > 0 || keyword.length > 0 || level.length > 0 || tag.length > 0">
+        <div class="ui field" v-if="dayFrom.length > 0 || dayTo.length > 0 || keyword.length > 0 || level.length > 0 || tag.length > 0 || clusterId > 0 || nodeId > 0">
             <a :href="'/clusters/logs?type=' + type">[清除条件]</a>
         </div>
     </div>
