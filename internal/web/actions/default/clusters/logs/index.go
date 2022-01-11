@@ -22,12 +22,14 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct {
-	DayFrom string
-	DayTo   string
-	Keyword string
-	Level   string
-	Type    string
-	Tag     string
+	DayFrom   string
+	DayTo     string
+	Keyword   string
+	Level     string
+	Type      string
+	Tag       string
+	ClusterId int64
+	NodeId    int64
 }) {
 	this.Data["dayFrom"] = params.DayFrom
 	this.Data["dayTo"] = params.DayTo
@@ -35,6 +37,8 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["level"] = params.Level
 	this.Data["type"] = params.Type
 	this.Data["tag"] = params.Tag
+	this.Data["clusterId"] = params.ClusterId
+	this.Data["nodeId"] = params.NodeId
 
 	// 常见标签
 	this.Data["tags"] = nodelogutils.FindNodeCommonTags()
@@ -52,14 +56,15 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 日志数量
 	countResp, err := this.RPC().NodeLogRPC().CountNodeLogs(this.AdminContext(), &pb.CountNodeLogsRequest{
-		NodeId:   0,
-		Role:     nodeconfigs.NodeRoleNode,
-		DayFrom:  params.DayFrom,
-		DayTo:    params.DayTo,
-		Keyword:  params.Keyword,
-		Level:    params.Level,
-		IsUnread: params.Type == "unread",
-		Tag:      params.Tag,
+		NodeClusterId: params.ClusterId,
+		NodeId:        params.NodeId,
+		Role:          nodeconfigs.NodeRoleNode,
+		DayFrom:       params.DayFrom,
+		DayTo:         params.DayTo,
+		Keyword:       params.Keyword,
+		Level:         params.Level,
+		IsUnread:      params.Type == "unread",
+		Tag:           params.Tag,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -70,16 +75,17 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["page"] = page.AsHTML()
 
 	logsResp, err := this.RPC().NodeLogRPC().ListNodeLogs(this.AdminContext(), &pb.ListNodeLogsRequest{
-		NodeId:   0,
-		Role:     nodeconfigs.NodeRoleNode,
-		DayFrom:  params.DayFrom,
-		DayTo:    params.DayTo,
-		Keyword:  params.Keyword,
-		Level:    params.Level,
-		IsUnread: params.Type == "unread",
-		Tag:      params.Tag,
-		Offset:   page.Offset,
-		Size:     page.Size,
+		NodeClusterId: params.ClusterId,
+		NodeId:        params.NodeId,
+		Role:          nodeconfigs.NodeRoleNode,
+		DayFrom:       params.DayFrom,
+		DayTo:         params.DayTo,
+		Keyword:       params.Keyword,
+		Level:         params.Level,
+		IsUnread:      params.Type == "unread",
+		Tag:           params.Tag,
+		Offset:        page.Offset,
+		Size:          page.Size,
 	})
 	if err != nil {
 		this.ErrorPage(err)

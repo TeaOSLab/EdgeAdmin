@@ -12,7 +12,7 @@
     <input type="hidden" name="serverId" :value="serverId"/>
     <input type="hidden" name="hasError" :value="hasError"/>
     <input type="hidden" name="hasWAF" :value="hasWAF"/>
-    <http-access-log-search-box :v-clusters="clusters" :v-cluster-id="clusterId" :v-node-id="nodeId" :v-ip="ip" :v-domain="domain" :v-keyword="keyword">
+    <http-access-log-search-box :v-cluster-id="clusterId" :v-node-id="nodeId" :v-ip="ip" :v-domain="domain" :v-keyword="keyword">
         <div class="ui field">
             <input type="text" name="day" maxlength="10" placeholder="选择日期" style="width:7.8em" id="day-input" v-model="day"/>
         </div>

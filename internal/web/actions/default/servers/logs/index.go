@@ -7,7 +7,6 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/lists"
-	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
 	"regexp"
 	"strings"
@@ -152,21 +151,6 @@ func (this *IndexAction) RunGet(params struct {
 		}
 	}
 	this.Data["regions"] = regionMap
-
-	// 集群列表
-	var clusterMaps = []maps.Map{}
-	clusterResp, err := this.RPC().NodeClusterRPC().FindAllEnabledNodeClusters(this.AdminContext(), &pb.FindAllEnabledNodeClustersRequest{})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	for _, cluster := range clusterResp.NodeClusters {
-		clusterMaps = append(clusterMaps, maps.Map{
-			"id":   cluster.Id,
-			"name": cluster.Name,
-		})
-	}
-	this.Data["clusters"] = clusterMaps
 
 	this.Show()
 }

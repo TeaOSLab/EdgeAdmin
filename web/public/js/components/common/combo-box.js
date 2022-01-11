@@ -112,7 +112,7 @@ Vue.component("combo-box", {
 			this.$emit("change", this.selectedItem)
 		}
 	},
-	template: `<div style="display: inline">
+	template: `<div style="display: inline; z-index: 10; background: white">
 	<!-- 搜索框 -->
 	<div v-if="selectedItem == null">
 		<input type="text" v-model="keyword" :placeholder="placeholder" :size="size" style="width: 11em" @input="changeKeyword" @focus="show" @blur="hide" @keyup.enter="confirm()" @keypress.enter.prevent="1" ref="searchBox" @keyup.down="downItem" @keyup.up="upItem"/>
@@ -128,7 +128,7 @@ Vue.component("combo-box", {
 	
 	<!-- 菜单 -->
 	<div v-if="selectedItem == null && items.length > 0 && visible">
-		<div class="ui menu vertical small narrow-scrollbar" style="width: 11em; max-height: 17em; overflow-y: auto; position: absolute; border: rgba(129, 177, 210, 0.81) 1px solid; border-top: 0">
+		<div class="ui menu vertical small narrow-scrollbar" style="width: 11em; max-height: 17em; overflow-y: auto; position: absolute; border: rgba(129, 177, 210, 0.81) 1px solid; border-top: 0; z-index: 100">
 			<a href="" v-for="(item, index) in items" ref="itemRef" class="item" :class="{active: index == hoverIndex, blue: index == hoverIndex}" @click.prevent="selectItem(item)" style="line-height: 1.4">{{item.name}}</a>
 		</div>
 	</div>
