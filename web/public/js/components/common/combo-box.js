@@ -110,6 +110,29 @@ Vue.component("combo-box", {
 		},
 		change: function () {
 			this.$emit("change", this.selectedItem)
+
+			let that = this
+			setTimeout(function () {
+				if (that.$refs.selectedLabel != null) {
+					that.$refs.selectedLabel.focus()
+				}
+			})
+		},
+		submitForm: function (event) {
+			if (event.target.tagName != "A") {
+				return
+			}
+			let parentBox = this.$refs.selectedLabel.parentNode
+			while (true) {
+				parentBox = parentBox.parentNode
+				if (parentBox == null || parentBox.tagName == "BODY") {
+					return
+				}
+				if (parentBox.tagName == "FORM") {
+					parentBox.submit()
+					break
+				}
+			}
 		}
 	},
 	template: `<div style="display: inline; z-index: 10; background: white">
@@ -121,9 +144,9 @@ Vue.component("combo-box", {
 	<!-- 当前选中 -->
 	<div v-if="selectedItem != null">
 		<input type="hidden" :name="name" :value="selectedItem.value"/>
-		<span class="ui label basic">{{title}}：{{selectedItem.name}}
-			<a href="" title="清除" @click.prevent="reset"><i class="icon remove small"></i></a>
-		</span>
+		<a href="" class="ui label basic" ref="selectedLabel" @click.prevent="submitForm"><span>{{title}}：{{selectedItem.name}}</span>
+			<span title="清除" @click.prevent="reset"><i class="icon remove small"></i></span>
+		</a>
 	</div>
 	
 	<!-- 菜单 -->

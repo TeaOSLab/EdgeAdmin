@@ -6,10 +6,7 @@
 <form class="ui form" method="get" action="/clusters/ip-addrs">
     <div class="ui fields inline">
         <div class="ui field">
-            集群：
-        </div>
-        <div class="ui field">
-            <cluster-selector :v-cluster-id="clusterId"></cluster-selector>
+            <node-cluster-combo-box :v-cluster-id="clusterId"></node-cluster-combo-box>
         </div>
         <div class="ui field">
             状态：
