@@ -321,6 +321,33 @@ Vue.component("cluster-selector", {
 </div>`
 })
 
+Vue.component("node-cluster-combo-box", {
+	props: ["v-cluster-id"],
+	data: function () {
+		let that = this
+		Tea.action("/clusters/options")
+			.post()
+			.success(function (resp) {
+				that.clusters = resp.data.clusters
+			})
+		return {
+			clusters: []
+		}
+	},
+	methods: {
+		change: function (item) {
+			if (item == null) {
+				this.$emit("change", 0)
+			} else {
+				this.$emit("change", item.value)
+			}
+		}
+	},
+	template: `<div v-if="clusters.length > 0">
+	<combo-box title="集群" placeholder="集群名称" :v-items="clusters" name="clusterId" :v-value="vClusterId" @change="change"></combo-box>
+</div>`
+})
+
 // 一个节点的多个集群选择器
 Vue.component("node-clusters-selector", {
 	props: ["v-primary-cluster", "v-secondary-clusters"],
@@ -7836,14 +7863,7 @@ Vue.component("http-remote-addr-config-box", {
 
 // 访问日志搜索框
 Vue.component("http-access-log-search-box", {
-	props: ["v-ip", "v-domain", "v-keyword", "v-cluster-id", "v-node-id", "v-clusters"],
-	mounted: function () {
-		if (this.vClusterId >0) {
-			this.changeCluster({
-				value: this.vClusterId
-			})
-		}
-	},
+	props: ["v-ip", "v-domain", "v-keyword", "v-cluster-id", "v-node-id"],
 	data: function () {
 		let ip = this.vIp
 		if (ip == null) {
@@ -7864,7 +7884,7 @@ Vue.component("http-access-log-search-box", {
 			ip: ip,
 			domain: domain,
 			keyword: keyword,
-			nodes: []
+			clusterId: this.vClusterId
 		}
 	},
 	methods: {
@@ -7897,19 +7917,8 @@ Vue.component("http-access-log-search-box", {
 				}, 500)
 			}
 		},
-		changeCluster: function (item) {
-			this.nodes = []
-			if (item != null) {
-				let that = this
-				Tea.action("/servers/logs/nodeOptions")
-					.params({
-						clusterId: item.value
-					})
-					.post()
-					.success(function (resp) {
-						that.nodes = resp.data.nodes
-					})
-			}
+		changeCluster: function (clusterId) {
+			this.clusterId = clusterId
 		}
 	},
 	template: `<div style="z-index: 10">
@@ -7939,11 +7948,11 @@ Vue.component("http-access-log-search-box", {
 		<slot></slot>
 	</div>
 	<div class="ui fields inline" style="margin-top: 0.5em">
-		<div class="ui field" v-if="vClusters != null && vClusters.length > 0">
-			<combo-box title="集群" name="clusterId" placeholder="集群名称" :v-items="vClusters" :v-value="vClusterId" @change="changeCluster"></combo-box>
+		<div class="ui field">
+			<node-cluster-combo-box :v-cluster-id="clusterId" @change="changeCluster"></node-cluster-combo-box>
 		</div>
-		<div class="ui field" v-if="nodes.length > 0">
-			<combo-box title="节点" name="nodeId" placeholder="节点名称" :v-items="nodes" :v-value="vNodeId"></combo-box>
+		<div class="ui field" v-if="clusterId > 0">
+			<node-combo-box :v-cluster-id="clusterId" :v-node-id="vNodeId"></node-combo-box>
 		</div>
 		<div class="ui field">
 			<button class="ui button small" type="submit">搜索日志</button>
@@ -11719,9 +11728,32 @@ Vue.component("combo-box", {
 		},
 		change: function () {
 			this.$emit("change", this.selectedItem)
+
+			let that = this
+			setTimeout(function () {
+				if (that.$refs.selectedLabel != null) {
+					that.$refs.selectedLabel.focus()
+				}
+			})
+		},
+		submitForm: function (event) {
+			if (event.target.tagName != "A") {
+				return
+			}
+			let parentBox = this.$refs.selectedLabel.parentNode
+			while (true) {
+				parentBox = parentBox.parentNode
+				if (parentBox == null || parentBox.tagName == "BODY") {
+					return
+				}
+				if (parentBox.tagName == "FORM") {
+					parentBox.submit()
+					break
+				}
+			}
 		}
 	},
-	template: `<div style="display: inline">
+	template: `<div style="display: inline; z-index: 10; background: white">
 	<!-- 搜索框 -->
 	<div v-if="selectedItem == null">
 		<input type="text" v-model="keyword" :placeholder="placeholder" :size="size" style="width: 11em" @input="changeKeyword" @focus="show" @blur="hide" @keyup.enter="confirm()" @keypress.enter.prevent="1" ref="searchBox" @keyup.down="downItem" @keyup.up="upItem"/>
@@ -11730,14 +11762,14 @@ Vue.component("combo-box", {
 	<!-- 当前选中 -->
 	<div v-if="selectedItem != null">
 		<input type="hidden" :name="name" :value="selectedItem.value"/>
-		<span class="ui label basic">{{title}}：{{selectedItem.name}}
-			<a href="" title="清除" @click.prevent="reset"><i class="icon remove small"></i></a>
-		</span>
+		<a href="" class="ui label basic" ref="selectedLabel" @click.prevent="submitForm"><span>{{title}}：{{selectedItem.name}}</span>
+			<span title="清除" @click.prevent="reset"><i class="icon remove small"></i></span>
+		</a>
 	</div>
 	
 	<!-- 菜单 -->
 	<div v-if="selectedItem == null && items.length > 0 && visible">
-		<div class="ui menu vertical small narrow-scrollbar" style="width: 11em; max-height: 17em; overflow-y: auto; position: absolute; border: rgba(129, 177, 210, 0.81) 1px solid; border-top: 0">
+		<div class="ui menu vertical small narrow-scrollbar" style="width: 11em; max-height: 17em; overflow-y: auto; position: absolute; border: rgba(129, 177, 210, 0.81) 1px solid; border-top: 0; z-index: 100">
 			<a href="" v-for="(item, index) in items" ref="itemRef" class="item" :class="{active: index == hoverIndex, blue: index == hoverIndex}" @click.prevent="selectItem(item)" style="line-height: 1.4">{{item.name}}</a>
 		</div>
 	</div>
@@ -13443,6 +13475,27 @@ Vue.component("node-region-selector", {
 	<div v-if="selectedRegion == null">
 		<a href="" @click.prevent="selectRegion()">[选择区域]</a> &nbsp; <a href="" @click.prevent="addRegion()">[添加区域]</a>
 	</div>
+</div>`
+})
+
+Vue.component("node-combo-box", {
+	props: ["v-cluster-id", "v-node-id"],
+	data: function () {
+		let that = this
+		Tea.action("/clusters/nodeOptions")
+			.params({
+				clusterId: this.vClusterId
+			})
+			.post()
+			.success(function (resp) {
+				that.nodes = resp.data.nodes
+			})
+		return {
+			nodes: []
+		}
+	},
+	template: `<div v-if="nodes.length > 0">
+	<combo-box title="节点" placeholder="节点名称" :v-items="nodes" name="nodeId" :v-value="vNodeId"></combo-box>
 </div>`
 })
 
