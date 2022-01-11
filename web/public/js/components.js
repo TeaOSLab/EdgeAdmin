@@ -2257,7 +2257,7 @@ Vue.component("http-firewall-rule-label", {
 
 	},
 	template: `<div>
-	<div class="ui label tiny basic">
+	<div class="ui label tiny basic" style="line-height: 1.5">
 		{{rule.name}}[{{rule.param}}] 
 
 		<!-- cc2 -->
@@ -2275,6 +2275,9 @@ Vue.component("http-firewall-rule-label", {
 		<var :class="{dash:rule.isCaseInsensitive}" :title="rule.isCaseInsensitive ? '大小写不敏感':''" v-if="!rule.isComposed">{{rule.operator}}</var> 
 		{{rule.value}}
 		</span>
+		
+		<!-- description -->
+		<span v-if="rule.description != null && rule.description.length > 0" class="grey small">（{{rule.description}}）</span>
 		
 		<a href="" v-if="rule.err != null && rule.err.length > 0" @click.prevent="showErr(rule.err)" style="color: #db2828; opacity: 1; border-bottom: 1px #db2828 dashed; margin-left: 0.5em">规则错误</a>
 	</div>
@@ -7833,7 +7836,14 @@ Vue.component("http-remote-addr-config-box", {
 
 // 访问日志搜索框
 Vue.component("http-access-log-search-box", {
-	props: ["v-ip", "v-domain", "v-keyword"],
+	props: ["v-ip", "v-domain", "v-keyword", "v-cluster-id", "v-node-id", "v-clusters"],
+	mounted: function () {
+		if (this.vClusterId >0) {
+			this.changeCluster({
+				value: this.vClusterId
+			})
+		}
+	},
 	data: function () {
 		let ip = this.vIp
 		if (ip == null) {
@@ -7853,7 +7863,8 @@ Vue.component("http-access-log-search-box", {
 		return {
 			ip: ip,
 			domain: domain,
-			keyword: keyword
+			keyword: keyword,
+			nodes: []
 		}
 	},
 	methods: {
@@ -7885,9 +7896,23 @@ Vue.component("http-access-log-search-box", {
 					parent.submit()
 				}, 500)
 			}
+		},
+		changeCluster: function (item) {
+			this.nodes = []
+			if (item != null) {
+				let that = this
+				Tea.action("/servers/logs/nodeOptions")
+					.params({
+						clusterId: item.value
+					})
+					.post()
+					.success(function (resp) {
+						that.nodes = resp.data.nodes
+					})
+			}
 		}
 	},
-	template: `<div>
+	template: `<div style="z-index: 10">
 	<div class="margin"></div>
 	<div class="ui fields inline">
 		<div class="ui field">
@@ -7912,8 +7937,16 @@ Vue.component("http-access-log-search-box", {
 			</div>
 		</div>
 		<slot></slot>
+	</div>
+	<div class="ui fields inline" style="margin-top: 0.5em">
+		<div class="ui field" v-if="vClusters != null && vClusters.length > 0">
+			<combo-box title="集群" name="clusterId" placeholder="集群名称" :v-items="vClusters" :v-value="vClusterId" @change="changeCluster"></combo-box>
+		</div>
+		<div class="ui field" v-if="nodes.length > 0">
+			<combo-box title="节点" name="nodeId" placeholder="节点名称" :v-items="nodes" :v-value="vNodeId"></combo-box>
+		</div>
 		<div class="ui field">
-			<button class="ui button small" type="submit">查找</button>
+			<button class="ui button small" type="submit">搜索日志</button>
 		</div>
 	</div>
 </div>`
@@ -8412,7 +8445,8 @@ Vue.component("http-firewall-block-options", {
 		return {
 			blockOptions: this.vBlockOptions,
 			statusCode: this.vBlockOptions.statusCode,
-			timeout: this.vBlockOptions.timeout
+			timeout: this.vBlockOptions.timeout,
+			isEditing: false
 		}
 	},
 	watch: {
@@ -8433,9 +8467,15 @@ Vue.component("http-firewall-block-options", {
 			}
 		}
 	},
+	methods: {
+		edit: function () {
+			this.isEditing = !this.isEditing
+		}
+	},
 	template: `<div>
-<input type="hidden" name="blockOptionsJSON" :value="JSON.stringify(blockOptions)"/>
-	<table class="ui table">
+	<input type="hidden" name="blockOptionsJSON" :value="JSON.stringify(blockOptions)"/>
+	<a href="" @click.prevent="edit">状态码：{{statusCode}} / 提示内容：<span v-if="blockOptions.body != null && blockOptions.body.length > 0">[{{blockOptions.body.length}}字符]</span><span v-else class="disabled">[无]</span>  / 超时时间：{{timeout}}秒 <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
+	<table class="ui table" v-show="isEditing">
 		<tr>
 			<td class="title">状态码</td>
 			<td>
@@ -8519,6 +8559,9 @@ Vue.component("http-firewall-rules-box", {
 				<span v-else>
 					<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> <var>{{rule.operator}}</var> {{rule.value}}
 				</span>
+				
+				<!-- description -->
+				<span v-if="rule.description != null && rule.description.length > 0" class="grey small">（{{rule.description}}）</span>
 				
 				<a href="" title="修改" @click.prevent="updateRule(index, rule)"><i class="icon pencil small"></i></a>
 				<a href="" title="删除" @click.prevent="removeRule(index)"><i class="icon remove"></i></a>
@@ -9824,6 +9867,99 @@ Vue.component("traffic-limit-config-box", {
 </div>`
 })
 
+Vue.component("firewall-syn-flood-config-box", {
+	props: ["v-syn-flood-config"],
+	data: function () {
+		let config = this.vSynFloodConfig
+		if (config == null) {
+			config = {
+				isOn: false,
+				minAttempts: 10,
+				timeoutSeconds: 600,
+				ignoreLocal: true
+			}
+		}
+		return {
+			config: config,
+			isEditing: false,
+			minAttempts: config.minAttempts,
+			timeoutSeconds: config.timeoutSeconds
+		}
+	},
+	methods: {
+		edit: function () {
+			this.isEditing = !this.isEditing
+		}
+	},
+	watch: {
+		minAttempts: function (v) {
+			let count = parseInt(v)
+			if (isNaN(count)) {
+				count = 10
+			}
+			if (count < 3) {
+				count = 3
+			}
+			this.config.minAttempts = count
+		},
+		timeoutSeconds: function (v) {
+			let seconds = parseInt(v)
+			if (isNaN(seconds)) {
+				seconds = 10
+			}
+			if (seconds < 60) {
+				seconds = 60
+			}
+			this.config.timeoutSeconds = seconds
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="synFloodJSON" :value="JSON.stringify(config)"/>
+	<a href="" @click.prevent="edit">
+		<span v-if="config.isOn">
+			已启用 / <span>空连接次数：{{config.minAttempts}}次/分钟</span> / 封禁时间：{{config.timeoutSeconds}}秒 <span v-if="config.ignoreLocal">/ 忽略局域网访问</span>
+		</span>
+		<span v-else>未启用</span>
+		<i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i>
+	</a>
+	
+	<table class="ui table selectable" v-show="isEditing">
+		<tr>
+			<td class="title">是否启用</td>
+			<td>
+				<checkbox v-model="config.isOn"></checkbox>
+				<p class="comment">启用后，WAF将会尝试自动检测并阻止SYN Flood攻击。此功能需要节点已安装并启用Firewalld。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>空连接次数</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" v-model="minAttempts" style="width: 5em" maxlength="4"/>
+					<span class="ui label">次/分钟</span>
+				</div>
+				<p class="comment">超过此数字的"空连接"将被视为SYN Flood攻击，为了防止误判，此数值默认不小于3。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>封禁时间</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" v-model="timeoutSeconds" style="width: 5em" maxlength="4"/>
+					<span class="ui label">秒</span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>忽略局域网访问</td>
+			<td>
+				<checkbox v-model="config.ignoreLocal"></checkbox>
+			</td>
+		</tr>
+	</table>
+</div>`
+})
+
 // TODO 支持关键词搜索
 // TODO 改成弹窗选择
 Vue.component("admin-selector", {
@@ -10090,6 +10226,9 @@ Vue.component("ip-list-table", {
 					<div v-if="item.sourcePolicy != null && item.sourcePolicy.id > 0" style="margin-top: 0.4em">
 						<a :href="'/servers/components/waf/group?firewallPolicyId=' +  item.sourcePolicy.id + '&type=inbound&groupId=' + item.sourceGroup.id" v-if="item.sourcePolicy.serverId == 0"><span class="small "><i class="icon shield"></i>{{item.sourcePolicy.name}} &raquo; {{item.sourceGroup.name}} &raquo; {{item.sourceSet.name}}</span></a>
 						<a :href="'/servers/server/settings/waf/group?serverId=' + item.sourcePolicy.serverId + '&firewallPolicyId=' + item.sourcePolicy.id + '&type=inbound&groupId=' + item.sourceGroup.id" v-if="item.sourcePolicy.serverId > 0"><span class="small "><i class="icon shield"></i> {{item.sourcePolicy.name}} &raquo; {{item.sourceGroup.name}} &raquo; {{item.sourceSet.name}}</span></a>
+					</div>
+					<div v-if="item.sourceNode != null && item.sourceNode.id > 0" style="margin-top: 0.4em">
+						<a :href="'/clusters/cluster/node?clusterId=' + item.sourceNode.clusterId + '&nodeId=' + item.sourceNode.id"><span class="small"><i class="icon cloud"></i>{{item.sourceNode.name}}</span></a>
 					</div>
 				</td>
 				<td>
@@ -11467,6 +11606,143 @@ Vue.component("request-variables-describer", {
 </span>`
 })
 
+
+Vue.component("combo-box", {
+	props: ["name", "title", "placeholder", "size", "v-items", "v-value"],
+	data: function () {
+		let items = this.vItems
+		if (items == null || !(items instanceof Array)) {
+			items = []
+		}
+
+		// 自动使用ID作为值
+		items.forEach(function (v) {
+			if (v.value == null) {
+				v.value = v.id
+			}
+		})
+
+		// 当前选中项
+		let selectedItem = null
+		if (this.vValue != null) {
+			let that = this
+			items.forEach(function (v) {
+				if (v.value == that.vValue) {
+					selectedItem = v
+				}
+			})
+		}
+
+		return {
+			allItems: items,
+			items: items.$copy(),
+			selectedItem: selectedItem,
+			keyword: "",
+			visible: false,
+			hideTimer: null,
+			hoverIndex: 0
+		}
+	},
+	methods: {
+		reset: function () {
+			this.selectedItem = null
+			this.change()
+			this.hoverIndex = 0
+
+			let that = this
+			setTimeout(function () {
+				if (that.$refs.searchBox) {
+					that.$refs.searchBox.focus()
+				}
+			})
+		},
+		changeKeyword: function () {
+			this.hoverIndex = 0
+			let keyword = this.keyword
+			if (keyword.length == 0) {
+				this.items = this.allItems.$copy()
+				return
+			}
+			this.items = this.allItems.$copy().filter(function (v) {
+				return teaweb.match(v.name, keyword)
+			})
+		},
+		selectItem: function (item) {
+			this.selectedItem = item
+			this.change()
+			this.hoverIndex = 0
+			this.keyword = ""
+			this.changeKeyword()
+		},
+		confirm: function () {
+			if (this.items.length > this.hoverIndex) {
+				this.selectItem(this.items[this.hoverIndex])
+			}
+		},
+		show: function () {
+			this.visible = true
+
+			// 不要重置hoverIndex，以便焦点可以在输入框和可选项之间切换
+		},
+		hide: function () {
+			let that = this
+			this.hideTimer = setTimeout(function () {
+				that.visible = false
+			}, 500)
+		},
+		downItem: function () {
+			this.hoverIndex++
+			if (this.hoverIndex > this.items.length - 1) {
+				this.hoverIndex = 0
+			}
+			this.focusItem()
+		},
+		upItem: function () {
+			this.hoverIndex--
+			if (this.hoverIndex < 0) {
+				this.hoverIndex = 0
+			}
+			this.focusItem()
+		},
+		focusItem: function () {
+			if (this.hoverIndex < this.items.length) {
+				this.$refs.itemRef[this.hoverIndex].focus()
+				let that = this
+				setTimeout(function () {
+					that.$refs.searchBox.focus()
+					if (that.hideTimer != null) {
+						clearTimeout(that.hideTimer)
+						that.hideTimer = null
+					}
+				})
+			}
+		},
+		change: function () {
+			this.$emit("change", this.selectedItem)
+		}
+	},
+	template: `<div style="display: inline">
+	<!-- 搜索框 -->
+	<div v-if="selectedItem == null">
+		<input type="text" v-model="keyword" :placeholder="placeholder" :size="size" style="width: 11em" @input="changeKeyword" @focus="show" @blur="hide" @keyup.enter="confirm()" @keypress.enter.prevent="1" ref="searchBox" @keyup.down="downItem" @keyup.up="upItem"/>
+	</div>
+	
+	<!-- 当前选中 -->
+	<div v-if="selectedItem != null">
+		<input type="hidden" :name="name" :value="selectedItem.value"/>
+		<span class="ui label basic">{{title}}：{{selectedItem.name}}
+			<a href="" title="清除" @click.prevent="reset"><i class="icon remove small"></i></a>
+		</span>
+	</div>
+	
+	<!-- 菜单 -->
+	<div v-if="selectedItem == null && items.length > 0 && visible">
+		<div class="ui menu vertical small narrow-scrollbar" style="width: 11em; max-height: 17em; overflow-y: auto; position: absolute; border: rgba(129, 177, 210, 0.81) 1px solid; border-top: 0">
+			<a href="" v-for="(item, index) in items" ref="itemRef" class="item" :class="{active: index == hoverIndex, blue: index == hoverIndex}" @click.prevent="selectItem(item)" style="line-height: 1.4">{{item.name}}</a>
+		</div>
+	</div>
+</div>`
+})
 
 Vue.component("time-duration-box", {
 	props: ["v-name", "v-value", "v-count", "v-unit"],

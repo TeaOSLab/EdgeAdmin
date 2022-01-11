@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/lists"
+	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
 	"regexp"
 	"strings"
@@ -22,12 +23,14 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct {
-	Day      string
-	Keyword  string
-	Ip       string
-	Domain   string
-	HasError int
-	HasWAF   int
+	ClusterId int64
+	NodeId    int64
+	Day       string
+	Keyword   string
+	Ip        string
+	Domain    string
+	HasError  int
+	HasWAF    int
 
 	RequestId string
 	ServerId  int64
@@ -38,6 +41,8 @@ func (this *IndexAction) RunGet(params struct {
 		params.Day = timeutil.Format("Y-m-d")
 	}
 
+	this.Data["clusterId"] = params.ClusterId
+	this.Data["nodeId"] = params.NodeId
 	this.Data["serverId"] = 0
 	this.Data["path"] = this.Request.URL.Path
 	this.Data["day"] = params.Day
@@ -66,6 +71,8 @@ func (this *IndexAction) RunGet(params struct {
 		var before = time.Now()
 		resp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
 			RequestId:         params.RequestId,
+			NodeClusterId:     params.ClusterId,
+			NodeId:            params.NodeId,
 			ServerId:          params.ServerId,
 			HasError:          params.HasError > 0,
 			HasFirewallPolicy: params.HasWAF > 0,
@@ -108,6 +115,8 @@ func (this *IndexAction) RunGet(params struct {
 			this.Data["hasPrev"] = true
 			prevResp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
 				RequestId:         params.RequestId,
+				NodeClusterId:     params.ClusterId,
+				NodeId:            params.NodeId,
 				ServerId:          params.ServerId,
 				HasError:          params.HasError > 0,
 				HasFirewallPolicy: params.HasWAF > 0,
@@ -143,6 +152,21 @@ func (this *IndexAction) RunGet(params struct {
 		}
 	}
 	this.Data["regions"] = regionMap
+
+	// 集群列表
+	var clusterMaps = []maps.Map{}
+	clusterResp, err := this.RPC().NodeClusterRPC().FindAllEnabledNodeClusters(this.AdminContext(), &pb.FindAllEnabledNodeClustersRequest{})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	for _, cluster := range clusterResp.NodeClusters {
+		clusterMaps = append(clusterMaps, maps.Map{
+			"id":   cluster.Id,
+			"name": cluster.Name,
+		})
+	}
+	this.Data["clusters"] = clusterMaps
 
 	this.Show()
 }
