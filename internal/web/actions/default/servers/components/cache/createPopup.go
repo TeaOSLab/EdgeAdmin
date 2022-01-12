@@ -31,6 +31,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	// file
 	FileDir                string
 	FileMemoryCapacityJSON []byte
+	FileOpenFileCacheMax   int
 
 	CapacityJSON []byte
 	MaxSizeJSON  []byte
@@ -62,15 +63,23 @@ func (this *CreatePopupAction) RunPost(params struct {
 			}
 		}
 
+		var openFileCacheConfig *serverconfigs.OpenFileCacheConfig
+		if params.FileOpenFileCacheMax > 0 {
+			openFileCacheConfig = &serverconfigs.OpenFileCacheConfig{
+				IsOn: true,
+				Max:  params.FileOpenFileCacheMax,
+			}
+		}
+
 		options = &serverconfigs.HTTPFileCacheStorage{
 			Dir: params.FileDir,
 			MemoryPolicy: &serverconfigs.HTTPCachePolicy{
 				Capacity: memoryCapacity,
 			},
+			OpenFileCache: openFileCacheConfig,
 		}
 	case serverconfigs.CachePolicyStorageMemory:
-		options = &serverconfigs.HTTPMemoryCacheStorage{
-		}
+		options = &serverconfigs.HTTPMemoryCacheStorage{}
 	default:
 		this.Fail("请选择正确的缓存类型")
 	}

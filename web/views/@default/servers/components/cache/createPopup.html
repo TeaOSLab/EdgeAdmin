@@ -26,7 +26,7 @@
 				</td>
 			</tr>
             <tr>
-                <td class="color-border">文件目录最大容量</td>
+                <td class="color-border">文件目录最大容量 *</td>
                 <td>
                     <size-capacity-box :v-name="'capacityJSON'" :v-count="128" :v-unit="'gb'" :key="'capacityJSON1'"></size-capacity-box>
                     <p class="comment">作为二级缓存的文件目录允许缓存的最大容量，如果为0表示没有限制。</p>
@@ -37,6 +37,13 @@
                 <td>
                    <size-capacity-box :v-name="'fileMemoryCapacityJSON'" :v-count="0" :v-unit="'gb'" :key="'fileMemoryCapacityJSON'"></size-capacity-box>
                     <p class="comment">作为一级缓存的内存最大容量，如果为0表示不使用内存作为一级缓存。</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="color-border">缓存文件句柄缓存</td>
+                <td>
+                    <input type="text" name="fileOpenFileCacheMax" maxlength="6" value="0" style="width: 10em"/>
+                    <p class="comment">保持缓存文件句柄，提升缓存文件打开速度，建议数量是缓存文件数量的10%。</p>
                 </td>
             </tr>
 		</tbody>

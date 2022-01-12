@@ -40,6 +40,10 @@
                 <p class="comment">作为一级缓存的内存最大容量，如果为0表示不使用内存作为一级缓存。</p>
             </td>
         </tr>
+        <tr v-if="cachePolicy.options.openFileCache != null && cachePolicy.options.openFileCache.isOn && cachePolicy.options.openFileCache.max > 0">
+            <td>缓存文件句柄缓存</td>
+            <td>{{cachePolicy.options.openFileCache.max}}</td>
+        </tr>
     </tbody>
 
    <tbody v-if="cachePolicy.type != 'file'">
