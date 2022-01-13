@@ -9906,8 +9906,8 @@ Vue.component("firewall-syn-flood-config-box", {
 			if (isNaN(count)) {
 				count = 10
 			}
-			if (count < 3) {
-				count = 3
+			if (count < 5) {
+				count = 5
 			}
 			this.config.minAttempts = count
 		},
@@ -9947,7 +9947,7 @@ Vue.component("firewall-syn-flood-config-box", {
 					<input type="text" v-model="minAttempts" style="width: 5em" maxlength="4"/>
 					<span class="ui label">次/分钟</span>
 				</div>
-				<p class="comment">超过此数字的"空连接"将被视为SYN Flood攻击，为了防止误判，此数值默认不小于3。</p>
+				<p class="comment">超过此数字的"空连接"将被视为SYN Flood攻击，为了防止误判，此数值默认不小于5。</p>
 			</td>
 		</tr>
 		<tr>
