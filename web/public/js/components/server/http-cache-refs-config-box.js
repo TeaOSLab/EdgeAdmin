@@ -193,7 +193,7 @@ Vue.component("http-cache-refs-config-box", {
 		</table>
 		<p class="comment" v-if="refs.length > 1">所有条件匹配顺序为从上到下，可以拖动左侧的<i class="icon bars"></i>排序。服务设置的优先级比全局缓存策略设置的优先级要高。</p>
 		
-		<button class="ui button tiny" @click.prevent="addRef(false)">+添加缓存设置</button> &nbsp; &nbsp; <a href="" @click.prevent="addRef(true)">+添加不缓存设置</a>
+		<button class="ui button tiny" @click.prevent="addRef(false)" type="button">+添加缓存设置</button> &nbsp; &nbsp; <a href="" @click.prevent="addRef(true)">+添加不缓存设置</a>
 	</div>
 	<div class="margin"></div>
 </div>`
