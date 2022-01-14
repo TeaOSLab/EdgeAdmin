@@ -56,7 +56,9 @@
 			</td>
 		</tr>
 		<tr v-if="wafInfo != null && wafInfo.set != null">
-			<td class="color-border">WAF规则集：{{wafInfo.set.name}}</td>
+			<td class="color-border">WAF规则集：
+                <a :href="'/servers/components/waf/group?firewallPolicyId=' +  accessLog.firewallPolicyId + '&type=inbound&groupId=' + accessLog.firewallRuleGroupId+ '#set' + accessLog.firewallRuleSetId" v-if="wafInfo.policy.serverId == 0" target="_parent">{{wafInfo.set.name}}</a>
+                <a :href="'/servers/server/settings/waf/group?serverId=' + accessLog.serverId + '&firewallPolicyId=' + accessLog.firewallPolicyId + '&type=inbound&groupId=' + accessLog.firewallRuleGroupId + '#set' + accessLog.firewallRuleSetId" target="_parent" v-if="wafInfo.policy.serverId > 0">{{wafInfo.set.name}}</a> </td>
 			<td></td>
 		</tr>
 		<tr v-if="accessLog.errors != null && accessLog.errors.length > 0">

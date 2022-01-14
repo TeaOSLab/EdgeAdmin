@@ -48,8 +48,9 @@ func (this *ViewPopupAction) RunGet(params struct {
 		if policyResp.HttpFirewallPolicy != nil {
 			wafMap = maps.Map{
 				"policy": maps.Map{
-					"id":   policyResp.HttpFirewallPolicy.Id,
-					"name": policyResp.HttpFirewallPolicy.Name,
+					"id":       policyResp.HttpFirewallPolicy.Id,
+					"name":     policyResp.HttpFirewallPolicy.Name,
+					"serverId": policyResp.HttpFirewallPolicy.ServerId,
 				},
 			}
 			if accessLog.FirewallRuleGroupId > 0 {
