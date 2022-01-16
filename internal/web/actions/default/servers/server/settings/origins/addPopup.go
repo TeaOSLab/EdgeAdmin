@@ -8,6 +8,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"net/url"
 	"regexp"
@@ -61,6 +62,8 @@ func (this *AddPopupAction) RunPost(params struct {
 	MaxConns     int32
 	MaxIdleConns int32
 	IdleTimeout  int
+
+	CertIdsJSON []byte
 
 	DomainsJSON []byte
 
@@ -129,6 +132,31 @@ func (this *AddPopupAction) RunPost(params struct {
 		return
 	}
 
+	// 证书
+	var certIds = []int64{}
+	if len(params.CertIdsJSON) > 0 {
+		err = json.Unmarshal(params.CertIdsJSON, &certIds)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+	var certRefJSON []byte
+	if len(certIds) > 0 {
+		var certId = certIds[0]
+		if certId > 0 {
+			var certRef = &sslconfigs.SSLCertRef{
+				IsOn:   true,
+				CertId: certId,
+			}
+			certRefJSON, err = json.Marshal(certRef)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+		}
+	}
+
 	var domains = []string{}
 	if len(params.DomainsJSON) > 0 {
 		err = json.Unmarshal(params.DomainsJSON, &domains)
@@ -158,6 +186,7 @@ func (this *AddPopupAction) RunPost(params struct {
 		IdleTimeoutJSON: idleTimeoutJSON,
 		MaxConns:        params.MaxConns,
 		MaxIdleConns:    params.MaxIdleConns,
+		CertRefJSON:     certRefJSON,
 		Domains:         domains,
 	})
 	if err != nil {

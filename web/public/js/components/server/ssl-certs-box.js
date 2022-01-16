@@ -1,18 +1,29 @@
 Vue.component("ssl-certs-box", {
 	props: [
 		"v-certs", // 证书列表
+		"v-cert", // 单个证书
 		"v-protocol", // 协议：https|tls
-		"v-view-size", // 弹窗尺寸
-		"v-single-mode" // 单证书模式
+		"v-view-size", // 弹窗尺寸：normal, mini
+		"v-single-mode", // 单证书模式
+		"v-description" // 描述文字
 	],
 	data: function () {
 		let certs = this.vCerts
 		if (certs == null) {
 			certs = []
 		}
+		if (this.vCert != null) {
+			certs.push(this.vCert)
+		}
+
+		let description = this.vDescription
+		if (description == null || typeof (description) != "string") {
+			description = ""
+		}
 
 		return {
-			certs: certs
+			certs: certs,
+			description: description
 		}
 	},
 	methods: {
@@ -77,13 +88,14 @@ Vue.component("ssl-certs-box", {
 	template: `<div>
 	<input type="hidden" name="certIdsJSON" :value="JSON.stringify(certIds())"/>
 	<div v-if="certs != null && certs.length > 0">
-		<div class="ui label small" v-for="(cert, index) in certs">
+		<div class="ui label small basic" v-for="(cert, index) in certs">
 			{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp; <a href="" title="删除" @click.prevent="removeCert(index)"><i class="icon remove"></i></a>
 		</div>
 		<div class="ui divider" v-if="buttonsVisible()"></div>
 	</div>
 	<div v-else>
-		<span class="red">选择或上传证书后<span v-if="vProtocol == 'https'">HTTPS</span><span v-if="vProtocol == 'tls'">TLS</span>服务才能生效。</span>
+		<span class="red" v-if="description.length == 0">选择或上传证书后<span v-if="vProtocol == 'https'">HTTPS</span><span v-if="vProtocol == 'tls'">TLS</span>服务才能生效。</span>
+		<span class="grey" v-if="description.length > 0">{{description}}</span>
 		<div class="ui divider" v-if="buttonsVisible()"></div>
 	</div>
 	<div v-if="buttonsVisible()">
