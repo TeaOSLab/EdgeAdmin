@@ -92,6 +92,9 @@ Vue.component("origin-list-table", {
 			<div v-if="origin.domains != null && origin.domains.length > 0">
 				<grey-label v-for="domain in origin.domains">{{domain}}</grey-label>
 			</div>
+			<div v-if="origin.hasCert">
+				<tiny-basic-label>证书</tiny-basic-label>
+			</div>
 		</td>
 		<td :class="{disabled:!origin.isOn}">{{origin.weight}}</td>
 		<td>

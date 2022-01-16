@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
@@ -86,6 +87,12 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		config.Domains = []string{}
 	}
 
+	// 重置数据
+	if config.Cert != nil {
+		config.Cert.CertData = nil
+		config.Cert.KeyData = nil
+	}
+
 	this.Data["origin"] = maps.Map{
 		"id":           config.Id,
 		"protocol":     config.Addr.Protocol,
@@ -99,6 +106,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		"idleTimeout":  idleTimeout,
 		"maxConns":     config.MaxConns,
 		"maxIdleConns": config.MaxIdleConns,
+		"cert":         config.Cert,
 		"domains":      config.Domains,
 	}
 
@@ -121,6 +129,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	MaxIdleConns int32
 	IdleTimeout  int
 
+	CertIdsJSON []byte
 	DomainsJSON []byte
 
 	Description string
@@ -188,6 +197,31 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		return
 	}
 
+	// 证书
+	var certIds = []int64{}
+	if len(params.CertIdsJSON) > 0 {
+		err = json.Unmarshal(params.CertIdsJSON, &certIds)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+	var certRefJSON []byte
+	if len(certIds) > 0 {
+		var certId = certIds[0]
+		if certId > 0 {
+			var certRef = &sslconfigs.SSLCertRef{
+				IsOn:   true,
+				CertId: certId,
+			}
+			certRefJSON, err = json.Marshal(certRef)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+		}
+	}
+
 	var domains = []string{}
 	if len(params.DomainsJSON) > 0 {
 		err = json.Unmarshal(params.DomainsJSON, &domains)
@@ -218,6 +252,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		IdleTimeoutJSON: idleTimeoutJSON,
 		MaxConns:        params.MaxConns,
 		MaxIdleConns:    params.MaxIdleConns,
+		CertRefJSON:     certRefJSON,
 		Domains:         domains,
 	})
 	if err != nil {

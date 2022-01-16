@@ -64,6 +64,7 @@ func (this *IndexAction) RunGet(params struct {
 			"name":    originConfig.Name,
 			"isOn":    originConfig.IsOn,
 			"domains": originConfig.Domains,
+			"hasCert": originConfig.Cert != nil,
 		}
 		primaryOriginMaps = append(primaryOriginMaps, m)
 	}
@@ -78,6 +79,7 @@ func (this *IndexAction) RunGet(params struct {
 			"name":    originConfig.Name,
 			"isOn":    originConfig.IsOn,
 			"domains": originConfig.Domains,
+			"hasCert": originConfig.Cert != nil,
 		}
 		backupOriginMaps = append(backupOriginMaps, m)
 	}
