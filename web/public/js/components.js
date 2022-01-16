@@ -5077,6 +5077,8 @@ Vue.component("http-firewall-actions-box", {
 			blockScope: "global",
 
 			captchaLife: "",
+			captchaMaxFails: "",
+			captchaFailBlockTimeout: "",
 			get302Life: "",
 			post307Life: "",
 			recordIPType: "black",
@@ -5123,6 +5125,22 @@ Vue.component("http-firewall-actions-box", {
 				this.actionOptions["life"] = 0
 			} else {
 				this.actionOptions["life"] = v
+			}
+		},
+		captchaMaxFails: function (v) {
+			v = parseInt(v)
+			if (isNaN(v)) {
+				this.actionOptions["maxFails"] = 0
+			} else {
+				this.actionOptions["maxFails"] = v
+			}
+		},
+		captchaFailBlockTimeout: function (v) {
+			v = parseInt(v)
+			if (isNaN(v)) {
+				this.actionOptions["failBlockTimeout"] = 0
+			} else {
+				this.actionOptions["failBlockTimeout"] = v
 			}
 		},
 		get302Life: function (v) {
@@ -5191,6 +5209,8 @@ Vue.component("http-firewall-actions-box", {
 			this.blockTimeout = ""
 			this.blockScope = "global"
 			this.captchaLife = ""
+			this.captchaMaxFails = ""
+			this.captchaFailBlockTimeout = ""
 			this.get302Life = ""
 			this.post307Life = ""
 
@@ -5258,6 +5278,14 @@ Vue.component("http-firewall-actions-box", {
 					this.captchaLife = ""
 					if (config.options.life != null || config.options.life > 0) {
 						this.captchaLife = config.options.life.toString()
+					}
+					this.captchaMaxFails = ""
+					if (config.options.maxFails != null || config.options.maxFails > 0) {
+						this.captchaMaxFails = config.options.maxFails.toString()
+					}
+					this.captchaFailBlockTimeout = ""
+					if (config.options.failBlockTimeout != null || config.options.failBlockTimeout > 0) {
+						this.captchaFailBlockTimeout = config.options.failBlockTimeout.toString()
 					}
 					break
 				case "notify":
@@ -5584,6 +5612,26 @@ Vue.component("http-firewall-actions-box", {
 						<span class="ui label">秒</span>
 					</div>
 					<p class="comment">验证通过后在这个时间内不再验证，默认600秒。</p>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'captcha'">
+				<td>最多失败次数</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="captchaMaxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">次</span>
+					</div>
+					<p class="comment">如果为空或者为0，表示不限制。</p>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'captcha'">
+				<td>失败拦截时间</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="captchaFailBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">秒</span>
+					</div>
+					<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时间；如果为0表示不自动拦截。</p>
 				</td>
 			</tr>
 			
