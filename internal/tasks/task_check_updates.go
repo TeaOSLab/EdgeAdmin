@@ -8,6 +8,9 @@ import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
 	"github.com/TeaOSLab/EdgeAdmin/internal/goman"
+	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
 	stringutil "github.com/iwind/TeaGo/utils/string"
@@ -46,6 +49,30 @@ func (this *CheckUpdatesTask) Start() {
 }
 
 func (this *CheckUpdatesTask) Loop() error {
+	// 检查是否开启
+	rpcClient, err := rpc.SharedRPC()
+	if err != nil {
+		return err
+	}
+	valueResp, err := rpcClient.SysSettingRPC().ReadSysSetting(rpcClient.Context(0), &pb.ReadSysSettingRequest{Code: systemconfigs.SettingCodeCheckUpdates})
+	if err != nil {
+		return err
+	}
+	var valueJSON = valueResp.ValueJSON
+	var config = &systemconfigs.CheckUpdatesConfig{AutoCheck: false}
+	if len(valueJSON) > 0 {
+		err = json.Unmarshal(valueJSON, config)
+		if err != nil {
+			return errors.New("decode config failed: " + err.Error())
+		}
+		if !config.AutoCheck {
+			return nil
+		}
+	} else {
+		return nil
+	}
+
+	// 开始检查
 	type Response struct {
 		Code    int         `json:"code"`
 		Message string      `json:"message"`
