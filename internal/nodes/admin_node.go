@@ -325,7 +325,9 @@ func (this *AdminNode) listenSock() error {
 				_ = cmd.ReplyOk()
 			case "demo":
 				teaconst.IsDemoMode = !teaconst.IsDemoMode
-				_ = cmd.ReplyOk()
+				_ = cmd.Reply(&gosock.Command{
+					Params: map[string]interface{}{"isDemo": teaconst.IsDemoMode},
+				})
 			case "info":
 				exePath, _ := os.Executable()
 				_ = cmd.Reply(&gosock.Command{
