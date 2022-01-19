@@ -9,6 +9,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
+	timeutil "github.com/iwind/TeaGo/utils/time"
 	"time"
 )
 
@@ -26,11 +27,11 @@ func (this *IndexAction) RunGet(params struct{}) {
 		this.ErrorPage(err)
 		return
 	}
-	count := countResp.Count
-	page := this.NewPage(count)
+	var count = countResp.Count
+	var page = this.NewPage(count)
 	this.Data["page"] = page.AsHTML()
 
-	nodeMaps := []maps.Map{}
+	var nodeMaps = []maps.Map{}
 	if count > 0 {
 		nodesResp, err := this.RPC().APINodeRPC().ListEnabledAPINodes(this.AdminContext(), &pb.ListEnabledAPINodesRequest{
 			Offset: page.Offset,
@@ -105,6 +106,14 @@ func (this *IndexAction) RunGet(params struct{}) {
 		}
 	}
 	this.Data["nodes"] = nodeMaps
+
+	// 检查是否有调试数据
+	countMethodStatsResp, err := this.RPC().APIMethodStatRPC().CountAPIMethodStatsWithDay(this.AdminContext(), &pb.CountAPIMethodStatsWithDayRequest{Day: timeutil.Format("Ymd")})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["hasMethodStats"] = countMethodStatsResp.Count > 0
 
 	this.Show()
 }

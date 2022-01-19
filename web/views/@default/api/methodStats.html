@@ -1,0 +1,46 @@
+{$layout}
+
+<div class="margin"></div>
+<form method="get" action="/api/methodStats" class="ui form">
+    <div class="ui fields inline">
+        <div class="ui field">
+            <input type="text" name="method" v-model="method" placeholder="方法"/>
+        </div>
+        <div class="ui field">
+            <input type="text" name="tag" v-model="tag" placeholder="标签"/>
+        </div>
+        <div class="ui field">
+            <select class="ui dropdown auto-width" name="order" v-model="order">
+                <option value="">[排序]</option>
+                <option value="method">方法</option>
+                <option value="costMs.desc">平均耗时</option>
+                <option value="peekMs.desc">峰值耗时</option>
+                <option value="calls.desc">调用次数</option>
+            </select>
+        </div>
+        <div class="ui field">
+            <button class="ui button" type="submit">搜索</button>
+            &nbsp;
+            <a href="/api/methodStats" v-if="method.length > 0 || tag.length > 0 || order.length > 0">清除条件</a>
+        </div>
+    </div>
+</form>
+
+<table class="ui table selectable celled">
+    <thead>
+        <tr>
+            <th>方法</th>
+            <th>标签</th>
+            <th>平均耗时</th>
+            <th>峰值耗时</th>
+            <td>调用次数</td>
+        </tr>
+    </thead>
+    <tr v-for="stat in stats">
+        <td>{{stat.method}}</td>
+        <td>{{stat.tag}}</td>
+        <td>{{stat.costMs}}ms</td>
+        <td>{{stat.peekMs}}ms</td>
+        <td>{{stat.countCalls}}次</td>
+    </tr>
+</table>

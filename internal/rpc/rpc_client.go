@@ -161,6 +161,10 @@ func (this *RPCClient) APINodeRPC() pb.APINodeServiceClient {
 	return pb.NewAPINodeServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) APIMethodStatRPC() pb.APIMethodStatServiceClient {
+	return pb.NewAPIMethodStatServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) UserNodeRPC() pb.UserNodeServiceClient {
 	return pb.NewUserNodeServiceClient(this.pickConn())
 }

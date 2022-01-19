@@ -16,6 +16,7 @@ func init() {
 			Helper(settingutils.NewAdvancedHelper("apiNodes")).
 			Prefix("/api").
 			Get("", new(IndexAction)).
+			Get("/methodStats", new(MethodStatsAction)).
 			GetPost("/node/createPopup", new(node.CreatePopupAction)).
 			Post("/delete", new(DeleteAction)).
 			EndAll()
