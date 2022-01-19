@@ -9,6 +9,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/nodes"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web"
 	_ "github.com/iwind/TeaGo/bootstrap"
+	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/gosock/pkg/gosock"
 )
 
@@ -64,12 +65,17 @@ func main() {
 			fmt.Println("[ERROR]the service not started yet, you should start the service first")
 			return
 		}
-		_, err := sock.Send(&gosock.Command{Code: "demo"})
+		reply, err := sock.Send(&gosock.Command{Code: "demo"})
 		if err != nil {
 			fmt.Println("[ERROR]change demo mode failed: " + err.Error())
 			return
 		}
-		fmt.Println("change demo mode successfully")
+		var isDemo = maps.NewMap(reply.Params).GetBool("isDemo")
+		if isDemo {
+			fmt.Println("change demo mode to: on")
+		} else {
+			fmt.Println("change demo mode to: off")
+		}
 	})
 	app.On("generate", func() {
 		err := gen.Generate()
