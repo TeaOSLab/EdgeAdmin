@@ -29,6 +29,9 @@ func (this *HistoryAction) RunGet(params struct {
 	RequestId string
 	HasError  int
 
+	ClusterId int64
+	NodeId    int64
+
 	PageSize int
 }) {
 	if len(params.Day) == 0 {
@@ -44,6 +47,8 @@ func (this *HistoryAction) RunGet(params struct {
 	this.Data["hasError"] = params.HasError
 	this.Data["hasWAF"] = params.HasWAF
 	this.Data["pageSize"] = params.PageSize
+	this.Data["clusterId"] = params.ClusterId
+	this.Data["nodeId"] = params.NodeId
 
 	day := params.Day
 	ipList := []string{}
@@ -66,6 +71,8 @@ func (this *HistoryAction) RunGet(params struct {
 			Keyword:           params.Keyword,
 			Ip:                params.Ip,
 			Domain:            params.Domain,
+			NodeId:            params.NodeId,
+			NodeClusterId:     params.ClusterId,
 			Size:              size,
 		})
 		if err != nil {
@@ -102,6 +109,8 @@ func (this *HistoryAction) RunGet(params struct {
 				Keyword:           params.Keyword,
 				Ip:                params.Ip,
 				Domain:            params.Domain,
+				NodeId:            params.NodeId,
+				NodeClusterId:     params.ClusterId,
 				Size:              size,
 				Reverse:           true,
 			})

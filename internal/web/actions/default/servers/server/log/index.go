@@ -22,6 +22,8 @@ func (this *IndexAction) RunGet(params struct {
 	RequestId string
 	Ip        string
 	Domain    string
+	ClusterId int64
+	NodeId    int64
 	Keyword   string
 }) {
 	this.Data["serverId"] = params.ServerId
@@ -30,6 +32,8 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["domain"] = params.Domain
 	this.Data["keyword"] = params.Keyword
 	this.Data["path"] = this.Request.URL.Path
+	this.Data["clusterId"] = params.ClusterId
+	this.Data["nodeId"] = params.NodeId
 
 	// 记录最近使用
 	_, err := this.RPC().LatestItemRPC().IncreaseLatestItem(this.AdminContext(), &pb.IncreaseLatestItemRequest{
@@ -50,19 +54,23 @@ func (this *IndexAction) RunPost(params struct {
 	Keyword   string
 	Ip        string
 	Domain    string
+	ClusterId int64
+	NodeId    int64
 
 	Must *actions.Must
 }) {
 	isReverse := len(params.RequestId) > 0
 	accessLogsResp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
-		ServerId:  params.ServerId,
-		RequestId: params.RequestId,
-		Size:      20,
-		Day:       timeutil.Format("Ymd"),
-		Keyword:   params.Keyword,
-		Ip:        params.Ip,
-		Domain:    params.Domain,
-		Reverse:   isReverse,
+		ServerId:      params.ServerId,
+		RequestId:     params.RequestId,
+		Size:          20,
+		Day:           timeutil.Format("Ymd"),
+		Keyword:       params.Keyword,
+		Ip:            params.Ip,
+		Domain:        params.Domain,
+		NodeId:        params.NodeId,
+		NodeClusterId: params.ClusterId,
+		Reverse:       isReverse,
 	})
 	if err != nil {
 		this.ErrorPage(err)

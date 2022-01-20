@@ -14,7 +14,9 @@ Tea.context(function () {
 				requestId: this.requestId,
 				keyword: this.keyword,
 				ip: this.ip,
-				domain: this.domain
+				domain: this.domain,
+				clusterId: this.clusterId,
+				nodeId: this.nodeId
 			})
 			.success(function (resp) {
 				this.accessLogs = resp.data.accessLogs.concat(this.accessLogs)
