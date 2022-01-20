@@ -6,7 +6,7 @@
 
 <form method="get" action="/clusters/logs" class="ui form" autocomplete="off">
     <input type="hidden" name="type" :value="type"/>
-    <div class="ui fields inline">
+    <div class="ui fields">
         <div class="ui field">
             <input type="text" name="dayFrom" placeholder="开始日期" v-model="dayFrom" value="" style="width:8em" id="day-from-picker"/>
         </div>
@@ -31,8 +31,6 @@
         <div class="ui field">
             <input type="text" name="keyword" style="width:10em" v-model="keyword" placeholder="关键词"/>
         </div>
-    </div>
-    <div class="ui fields inline" style="margin-top: 0.5em">
         <div class="ui field">
             <node-cluster-combo-box :v-cluster-id="clusterId" @change="changeCluster"></node-cluster-combo-box>
         </div>
