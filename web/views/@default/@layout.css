@@ -274,6 +274,12 @@ p.margin {
 .field.text {
   padding: .5em;
 }
+.form .fields:not(.inline) .field {
+  margin-bottom: 0.5em !important;
+}
+.form .fields:not(.inline) .field .button {
+  min-width: 5em;
+}
 /** body **/
 @keyframes blink {
   from {
