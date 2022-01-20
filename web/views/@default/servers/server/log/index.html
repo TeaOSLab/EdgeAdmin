@@ -4,7 +4,7 @@
 <div class="right-box">
     <form method="get" class="ui form small" :action="path" autocomplete="off">
         <input type="hidden" name="serverId" :value="serverId"/>
-        <http-access-log-search-box :v-ip="ip" :v-domain="domain" :v-keyword="keyword"></http-access-log-search-box>
+        <http-access-log-search-box :v-ip="ip" :v-domain="domain" :v-keyword="keyword"  :v-cluster-id="clusterId" :v-node-id="nodeId"></http-access-log-search-box>
     </form>
 
 	<p class="comment" v-if="isLoaded && accessLogs.length == 0">今天暂时还没有访问日志。</p>

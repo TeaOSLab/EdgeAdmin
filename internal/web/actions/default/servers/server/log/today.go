@@ -24,6 +24,8 @@ func (this *TodayAction) RunGet(params struct {
 	Keyword   string
 	Ip        string
 	Domain    string
+	ClusterId int64
+	NodeId    int64
 
 	PageSize int
 }) {
@@ -40,6 +42,8 @@ func (this *TodayAction) RunGet(params struct {
 	this.Data["ip"] = params.Ip
 	this.Data["domain"] = params.Domain
 	this.Data["hasWAF"] = params.HasWAF
+	this.Data["clusterId"] = params.ClusterId
+	this.Data["nodeId"] = params.NodeId
 
 	resp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
 		RequestId:         params.RequestId,
@@ -50,6 +54,8 @@ func (this *TodayAction) RunGet(params struct {
 		Keyword:           params.Keyword,
 		Ip:                params.Ip,
 		Domain:            params.Domain,
+		NodeId:            params.NodeId,
+		NodeClusterId:     params.ClusterId,
 		Size:              size,
 	})
 	if err != nil {
@@ -87,6 +93,8 @@ func (this *TodayAction) RunGet(params struct {
 			Keyword:           params.Keyword,
 			Ip:                params.Ip,
 			Domain:            params.Domain,
+			NodeId:            params.NodeId,
+			NodeClusterId:     params.ClusterId,
 			Size:              size,
 			Reverse:           true,
 		})
