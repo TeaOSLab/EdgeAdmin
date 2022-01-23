@@ -1,10 +1,10 @@
 // 套餐价格配置
 Vue.component("plan-price-config-box", {
-	props: ["v-price-type", "v-monthly-price", "v-seasonally-price", "v-yearly-price", "v-traffic-price", "v-bandwidth-price"],
+	props: ["v-price-type", "v-monthly-price", "v-seasonally-price", "v-yearly-price", "v-traffic-price", "v-bandwidth-price", "v-disable-period"],
 	data: function () {
 		let priceType = this.vPriceType
 		if (priceType == null) {
-			priceType = "period"
+			priceType = "bandwidth"
 		}
 
 		// 按时间周期计费
@@ -140,9 +140,9 @@ Vue.component("plan-price-config-box", {
 	<input type="hidden" name="bandwidthPriceJSON" :value="JSON.stringify(bandwidthPrice)"/>
 	
 	<div>
-		<radio :v-value="'period'" :value="priceType" v-model="priceType">&nbsp;按时间周期</radio> &nbsp; &nbsp;
-		<radio :v-value="'traffic'" :value="priceType" v-model="priceType">&nbsp;按流量</radio> &nbsp; &nbsp;
-		<radio :v-value="'bandwidth'" :value="priceType" v-model="priceType">&nbsp;按带宽</radio>
+		<radio :v-value="'bandwidth'" :value="priceType" v-model="priceType">&nbsp;按带宽</radio> &nbsp;
+		<radio :v-value="'traffic'" :value="priceType" v-model="priceType">&nbsp;按流量</radio> &nbsp;
+		<radio :v-value="'period'" :value="priceType" v-model="priceType" v-show="typeof(vDisablePeriod) != 'boolean' || !vDisablePeriod">&nbsp;按时间周期</radio>
 	</div>
 	
 	<!-- 按时间周期 -->
