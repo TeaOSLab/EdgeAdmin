@@ -93,7 +93,10 @@
 				</a>
 				<div v-if="teaMenu == module.code" class="sub-items">
 					<a class="item" v-for="subItem in module.subItems" v-if="subItem.isOn !== false" :href="subItem.url"><i class="icon angle right" v-if="subItem.code == teaSubMenu"></i> {{subItem.name}}
-                        <span class="ui label tiny red" v-if="subItem.badge != null && subItem.badge > 0">{{subItem.badge}}</span>
+                        <span class="ui label tiny red" v-if="subItem.badge != null && subItem.badge > 0">
+                            <span v-if="subItem.badge < 100">{{subItem.badge}}</span>
+                            <span v-else>99+</span>
+                        </span>
                     </a>
 				</div>
 			</div>
