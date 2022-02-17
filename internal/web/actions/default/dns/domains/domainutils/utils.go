@@ -17,7 +17,7 @@ func ValidateDomainFormat(domain string) bool {
 		if piece == "-" ||
 			strings.HasPrefix(piece, "-") ||
 			strings.HasSuffix(piece, "-") ||
-			strings.Contains(piece, "--") ||
+			//strings.Contains(piece, "--") ||
 			len(piece) > 63 ||
 			!regexp.MustCompile(`^[a-z0-9-]+$`).MatchString(piece) {
 			return false
@@ -75,7 +75,7 @@ func ValidateRecordName(name string) bool {
 		if piece == "-" ||
 			strings.HasPrefix(piece, "-") ||
 			strings.HasSuffix(piece, "-") ||
-			strings.Contains(piece, "--") ||
+			//strings.Contains(piece, "--") ||
 			len(piece) > 63 ||
 			!regexp.MustCompile(`^[_a-z0-9-]+$`).MatchString(piece) {
 			return false
