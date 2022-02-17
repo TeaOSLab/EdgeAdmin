@@ -1370,25 +1370,182 @@ Vue.component("plan-price-view", {
 	},
 	template: `<div>
 	 <span v-if="plan.priceType == 'period'">
-		<span v-if="plan.monthlyPrice > 0">月度：￥{{plan.monthlyPrice}}元<br/></span>
-		<span v-if="plan.seasonallyPrice > 0">季度：￥{{plan.seasonallyPrice}}元<br/></span>
-		<span v-if="plan.yearlyPrice > 0">年度：￥{{plan.yearlyPrice}}元</span>
+	 	按时间周期计费
+	 	<div>
+	 		<span class="grey small">
+				<span v-if="plan.monthlyPrice > 0">月度：￥{{plan.monthlyPrice}}元<br/></span>
+				<span v-if="plan.seasonallyPrice > 0">季度：￥{{plan.seasonallyPrice}}元<br/></span>
+				<span v-if="plan.yearlyPrice > 0">年度：￥{{plan.yearlyPrice}}元</span>
+			</span>
+		</div>
 	</span>
 	<span v-if="plan.priceType == 'traffic'">
-		基础价格：￥{{plan.trafficPrice.base}}元/GB
+		按流量计费
+		<div>
+			<span class="grey small">基础价格：￥{{plan.trafficPrice.base}}元/GB</span>
+		</div>
 	</span>
+	<div v-if="plan.priceType == 'bandwidth' && plan.bandwidthPrice != null && plan.bandwidthPrice.percentile > 0">
+		按{{plan.bandwidthPrice.percentile}}th带宽计费 
+		<div>
+			<div v-for="range in plan.bandwidthPrice.ranges">
+				<span class="small grey">{{range.minMB}} - <span v-if="range.maxMB > 0">{{range.maxMB}}MB</span><span v-else>&infin;</span>： {{range.pricePerMB}}元/MB</span>
+			</div>
+		</div>
+	</div>
+</div>`
+})
+
+Vue.component("plan-bandwidth-ranges", {
+	props: ["v-ranges"],
+	data: function () {
+		let ranges = this.vRanges
+		if (ranges == null) {
+			ranges = []
+		}
+		return {
+			ranges: ranges,
+			isAdding: false,
+
+			minMB: "",
+			maxMB: "",
+			pricePerMB: "",
+			addingRange: {
+				minMB: 0,
+				maxMB: 0,
+				pricePerMB: 0,
+				totalPrice: 0
+			}
+		}
+	},
+	methods: {
+		add: function () {
+			this.isAdding = !this.isAdding
+			let that = this
+			setTimeout(function () {
+				that.$refs.minMB.focus()
+			})
+		},
+		cancelAdding: function () {
+			this.isAdding = false
+		},
+		confirm: function () {
+			this.isAdding = false
+			this.minMB = ""
+			this.maxMB = ""
+			this.pricePerMB = ""
+			this.ranges.push(this.addingRange)
+			this.ranges.$sort(function (v1, v2) {
+				if (v1.minMB < v2.minMB) {
+					return -1
+				}
+				if (v1.minMB == v2.minMB) {
+					return 0
+				}
+				return 1
+			})
+			this.change()
+			this.addingRange = {
+				minMB: 0,
+				maxMB: 0,
+				pricePerMB: 0,
+				totalPrice: 0
+			}
+		},
+		remove: function (index) {
+			this.ranges.$remove(index)
+			this.change()
+		},
+		change: function () {
+			this.$emit("change", this.ranges)
+		}
+	},
+	watch: {
+		minMB: function (v) {
+			let minMB = parseInt(v.toString())
+			if (isNaN(minMB) || minMB < 0) {
+				minMB = 0
+			}
+			this.addingRange.minMB = minMB
+		},
+		maxMB: function (v) {
+			let maxMB = parseInt(v.toString())
+			if (isNaN(maxMB) || maxMB < 0) {
+				maxMB = 0
+			}
+			this.addingRange.maxMB = maxMB
+		},
+		pricePerMB: function (v) {
+			let pricePerMB = parseFloat(v.toString())
+			if (isNaN(pricePerMB) || pricePerMB < 0) {
+				pricePerMB = 0
+			}
+			this.addingRange.pricePerMB = pricePerMB
+		}
+	},
+	template: `<div>
+	<!-- 已有价格 -->
+	<div v-if="ranges.length > 0">
+		<div class="ui label basic small" v-for="(range, index) in ranges" style="margin-bottom: 0.5em">
+			{{range.minMB}}MB - <span v-if="range.maxMB > 0">{{range.maxMB}}MB</span><span v-else>&infin;</span> &nbsp;  价格：{{range.pricePerMB}}元/MB
+			&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+		</div>
+		<div class="ui divider"></div>
+	</div>
+	
+	<!-- 添加 -->
+	<div v-if="isAdding">
+		<table class="ui table">
+			<tr>
+				<td class="title">带宽下限</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" placeholder="最小带宽" style="width: 7em" maxlength="10" ref="minMB" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="minMB"/>
+						<span class="ui label">MB</span>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">带宽上限</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" placeholder="最大带宽" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="maxMB"/>
+						<span class="ui label">MB</span>
+					</div>
+					<p class="comment">如果填0，表示上不封顶。</p>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">单位价格</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" placeholder="单位价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="pricePerMB"/>
+						<span class="ui label">元/MB</span>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<button class="ui button small" type="button" @click.prevent="confirm">确定</button> &nbsp;
+		<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove small"></i></a>
+	</div>
+	
+	<!-- 按钮 -->
+	<div v-if="!isAdding">
+		<button class="ui button small" type="button" @click.prevent="add">+</button>
+	</div>
 </div>`
 })
 
 // 套餐价格配置
 Vue.component("plan-price-config-box", {
-	props: ["v-price-type", "v-monthly-price", "v-seasonally-price", "v-yearly-price", "v-traffic-price"],
+	props: ["v-price-type", "v-monthly-price", "v-seasonally-price", "v-yearly-price", "v-traffic-price", "v-bandwidth-price", "v-disable-period"],
 	data: function () {
 		let priceType = this.vPriceType
 		if (priceType == null) {
-			priceType = "period"
+			priceType = "bandwidth"
 		}
 
+		// 按时间周期计费
 		let monthlyPriceNumber = 0
 		let monthlyPrice = this.vMonthlyPrice
 		if (monthlyPrice == null || monthlyPrice <= 0) {
@@ -1425,6 +1582,7 @@ Vue.component("plan-price-config-box", {
 			}
 		}
 
+		// 按流量计费
 		let trafficPrice = this.vTrafficPrice
 		let trafficPriceBaseNumber = 0
 		if (trafficPrice != null) {
@@ -1439,6 +1597,17 @@ Vue.component("plan-price-config-box", {
 			trafficPriceBase = trafficPriceBaseNumber.toString()
 		}
 
+		// 按带宽计费
+		let bandwidthPrice = this.vBandwidthPrice
+		if (bandwidthPrice == null) {
+			bandwidthPrice = {
+				percentile: 95,
+				ranges: []
+			}
+		} else if (bandwidthPrice.ranges == null) {
+			bandwidthPrice.ranges = []
+		}
+
 		return {
 			priceType: priceType,
 			monthlyPrice: monthlyPrice,
@@ -1450,7 +1619,15 @@ Vue.component("plan-price-config-box", {
 			yearlyPriceNumber: yearlyPriceNumber,
 
 			trafficPriceBase: trafficPriceBase,
-			trafficPrice: trafficPrice
+			trafficPrice: trafficPrice,
+
+			bandwidthPrice: bandwidthPrice,
+			bandwidthPercentile: bandwidthPrice.percentile
+		}
+	},
+	methods: {
+		changeBandwidthPriceRanges: function (ranges) {
+			this.bandwidthPrice.ranges = ranges
 		}
 	},
 	watch: {
@@ -1481,6 +1658,15 @@ Vue.component("plan-price-config-box", {
 				price = 0
 			}
 			this.trafficPrice.base = price
+		},
+		bandwidthPercentile: function (v) {
+			let percentile = parseInt(v)
+			if (isNaN(percentile) || percentile <= 0) {
+				percentile = 95
+			} else if (percentile > 100) {
+				percentile = 100
+			}
+			this.bandwidthPrice.percentile = percentile
 		}
 	},
 	template: `<div>
@@ -1489,10 +1675,12 @@ Vue.component("plan-price-config-box", {
 	<input type="hidden" name="seasonallyPrice" :value="seasonallyPriceNumber"/>
 	<input type="hidden" name="yearlyPrice" :value="yearlyPriceNumber"/>
 	<input type="hidden" name="trafficPriceJSON" :value="JSON.stringify(trafficPrice)"/>
+	<input type="hidden" name="bandwidthPriceJSON" :value="JSON.stringify(bandwidthPrice)"/>
 	
 	<div>
-		<radio :v-value="'period'" :value="priceType" v-model="priceType">&nbsp;按时间周期</radio> &nbsp; &nbsp;
-		<radio :v-value="'traffic'" :value="priceType" v-model="priceType">&nbsp;按流量</radio>
+		<radio :v-value="'bandwidth'" :value="priceType" v-model="priceType">&nbsp;按带宽</radio> &nbsp;
+		<radio :v-value="'traffic'" :value="priceType" v-model="priceType">&nbsp;按流量</radio> &nbsp;
+		<radio :v-value="'period'" :value="priceType" v-model="priceType" v-show="typeof(vDisablePeriod) != 'boolean' || !vDisablePeriod">&nbsp;按时间周期</radio>
 	</div>
 	
 	<!-- 按时间周期 -->
@@ -1534,12 +1722,34 @@ Vue.component("plan-price-config-box", {
 		<div class="ui divider"></div>
 		<table class="ui table">
 			<tr>
-				<td class="title">基础流量费用</td>
+				<td class="title">基础流量费用 *</td>
 				<td>
 					<div class="ui input right labeled">
 						<input type="text" v-model="trafficPriceBase" maxlength="10" style="width: 7em"/>
 						<span class="ui label">元/GB</span>
 					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 按带宽 -->
+	<div v-show="priceType == 'bandwidth'">
+		<div class="ui divider"></div>
+		<table class="ui table">
+			<tr>
+				<td class="title">带宽百分位 *</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 4em" maxlength="3" v-model="bandwidthPercentile"/>
+						<span class="ui label">th</span>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>带宽价格</td>
+				<td>
+					<plan-bandwidth-ranges :v-ranges="bandwidthPrice.ranges" @change="changeBandwidthPriceRanges"></plan-bandwidth-ranges>
 				</td>
 			</tr>
 		</table>
@@ -1647,7 +1857,7 @@ Vue.component("http-request-conds-box", {
 			<table class="ui table">
 				<tr v-for="(group, groupIndex) in conds.groups">
 					<td class="title" :class="{'color-border':conds.connector == 'and'}" :style="{'border-bottom':(groupIndex < conds.groups.length-1) ? '1px solid rgba(34,36,38,.15)':''}">分组{{groupIndex+1}}</td>
-					<td style="background: white;" :style="{'border-bottom':(groupIndex < conds.groups.length-1) ? '1px solid rgba(34,36,38,.15)':''}">
+					<td style="background: white; word-break: break-all" :style="{'border-bottom':(groupIndex < conds.groups.length-1) ? '1px solid rgba(34,36,38,.15)':''}">
 						<var v-for="(cond, index) in group.conds" style="font-style: normal;display: inline-block; margin-bottom:0.5em">
 							<span class="ui label tiny">
 								<var v-if="cond.type.length == 0 || cond.type == 'params'" style="font-style: normal">{{cond.param}} <var>{{cond.operator}}</var></var>
