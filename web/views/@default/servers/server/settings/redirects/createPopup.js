@@ -11,6 +11,7 @@ Tea.context(function () {
 			matchPrefix: false,
 			matchRegexp: false,
 			keepRequestURI: false,
+			keepArgs: true,
 			conds: null,
 			isOn: true
 		}
@@ -22,8 +23,7 @@ Tea.context(function () {
 	} else if (this.redirect.matchRegexp) {
 		this.mode = "matchRegexp"
 	} else {
-		this.mode = "matchPrefix"
-		this.redirect.matchPrefix = true
+		this.mode = "equal"
 	}
 
 	this.$delay(function () {

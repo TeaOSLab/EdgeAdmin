@@ -27,11 +27,13 @@ func (this *CreatePopupAction) RunGet(params struct {
 }
 
 func (this *CreatePopupAction) RunPost(params struct {
+	Mode           string
 	BeforeURL      string
 	AfterURL       string
 	MatchPrefix    bool
 	MatchRegexp    bool
 	KeepRequestURI bool
+	KeepArgs       bool
 	Status         int
 	CondsJSON      []byte
 	IsOn           bool
@@ -99,12 +101,14 @@ func (this *CreatePopupAction) RunPost(params struct {
 	}
 
 	this.Data["redirect"] = maps.Map{
+		"mode":           params.Mode,
 		"status":         params.Status,
 		"beforeURL":      params.BeforeURL,
 		"afterURL":       params.AfterURL,
 		"matchPrefix":    params.MatchPrefix,
 		"matchRegexp":    params.MatchRegexp,
 		"keepRequestURI": params.KeepRequestURI,
+		"keepArgs":       params.KeepArgs,
 		"conds":          conds,
 		"isOn":           params.IsOn,
 	}
