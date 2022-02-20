@@ -43,6 +43,13 @@
                 <p class="comment">选中后，则跳转之后，保留跳转之前的URL路径和参数。</p>
             </td>
         </tr>
+        <tr v-if="mode == 'equal' || mode == 'matchRegexp'">
+            <td>是否保留请求参数</td>
+            <td>
+                <checkbox name="keepArgs" value="1" v-model="redirect.keepArgs"></checkbox>
+                <p class="comment">选中后，则跳转之后，保留跳转之前的URL上的参数（即问号之后的部分）。</p>
+            </td>
+        </tr>
         <tr>
             <td>跳转状态码</td>
             <td>
