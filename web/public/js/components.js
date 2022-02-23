@@ -12246,9 +12246,10 @@ Vue.component("keyword", {
 	},
 	methods: {
 		encodeHTML: function (s) {
-			s = s.replace("&", "&amp;")
-			s = s.replace("<", "&lt;")
-			s = s.replace(">", "&gt;")
+			s = s.replace(/&/g, "&amp;")
+			s = s.replace(/</g, "&lt;")
+			s = s.replace(/>/g, "&gt;")
+			s = s.replace(/"/g, "&quot;")
 			return s
 		}
 	},
