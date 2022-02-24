@@ -75,6 +75,13 @@
             </td>
         </tr>
         <tr>
+            <td>同步写入压缩缓存</td>
+            <td>
+                <span v-if="cachePolicy.syncCompressionCache" class="green">Y</span>
+                <span v-else class="disabled">N</span>
+            </td>
+        </tr>
+        <tr>
             <td>描述</td>
             <td>
                 <span v-if="cachePolicy.description.length > 0">{{cachePolicy.description}}</span>

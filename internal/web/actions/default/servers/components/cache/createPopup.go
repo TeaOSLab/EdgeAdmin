@@ -33,9 +33,10 @@ func (this *CreatePopupAction) RunPost(params struct {
 	FileMemoryCapacityJSON []byte
 	FileOpenFileCacheMax   int
 
-	CapacityJSON []byte
-	MaxSizeJSON  []byte
-	MaxKeys      int64
+	CapacityJSON         []byte
+	MaxSizeJSON          []byte
+	MaxKeys              int64
+	SyncCompressionCache bool
 
 	Description string
 	IsOn        bool
@@ -90,14 +91,15 @@ func (this *CreatePopupAction) RunPost(params struct {
 		return
 	}
 	createResp, err := this.RPC().HTTPCachePolicyRPC().CreateHTTPCachePolicy(this.AdminContext(), &pb.CreateHTTPCachePolicyRequest{
-		IsOn:         params.IsOn,
-		Name:         params.Name,
-		Description:  params.Description,
-		CapacityJSON: params.CapacityJSON,
-		MaxKeys:      params.MaxKeys,
-		MaxSizeJSON:  params.MaxSizeJSON,
-		Type:         params.Type,
-		OptionsJSON:  optionsJSON,
+		IsOn:                 params.IsOn,
+		Name:                 params.Name,
+		Description:          params.Description,
+		CapacityJSON:         params.CapacityJSON,
+		MaxKeys:              params.MaxKeys,
+		MaxSizeJSON:          params.MaxSizeJSON,
+		Type:                 params.Type,
+		OptionsJSON:          optionsJSON,
+		SyncCompressionCache: params.SyncCompressionCache,
 	})
 	if err != nil {
 		this.ErrorPage(err)

@@ -84,6 +84,13 @@
 						<p class="comment">可以容纳多少数量的Key，0表示不限制。</p>
 					</td>
 				</tr>
+                <tr>
+                    <td>同步写入压缩缓存</td>
+                    <td>
+                        <checkbox name="syncCompressionCache" v-model="cachePolicy.syncCompressionCache"></checkbox>
+                        <p class="comment">选中后，在压缩设置开启的情况下，在缓存源站内容的同时，也会同步写入压缩缓存；不选中，表示在源站内容缓存后，下一次调用才会缓存压缩内容，防止同一时间内硬盘IO负载过高。</p>
+                    </td>
+                </tr>
 				<tr>
 					<td>描述</td>
 					<td>
