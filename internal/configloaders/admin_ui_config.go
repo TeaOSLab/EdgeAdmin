@@ -94,5 +94,6 @@ func defaultAdminUIConfig() *systemconfigs.AdminUIConfig {
 		ShowOpenSourceInfo: true,
 		ShowVersion:        true,
 		ShowFinance:        true,
+		DefaultPageSize:    10,
 	}
 }

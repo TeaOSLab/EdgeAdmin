@@ -76,5 +76,16 @@
         </tr>
 	</table>
 
+    <h4>其他</h4>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">每页显示数</td>
+            <td>
+                <input type="text" name="defaultPageSize" v-model="config.defaultPageSize" maxlength="3" style="width: 4em"/>
+                <p class="comment">在有分页的地方每页显示数量；不能超过100。</p>
+            </td>
+        </tr>
+    </table>
+
 	<submit-btn></submit-btn>
 </form>
