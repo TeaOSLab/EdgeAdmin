@@ -11,15 +11,23 @@ Vue.component("http-cache-config-box", {
 				enableCacheControlMaxAge: false,
 				cacheRefs: [],
 				purgeIsOn: false,
-				purgeKey: ""
+				purgeKey: "",
+				disablePolicyRefs: false
 			}
 		}
 		if (cacheConfig.cacheRefs == null) {
 			cacheConfig.cacheRefs = []
 		}
+
 		return {
 			cacheConfig: cacheConfig,
-			moreOptionsVisible: false
+			moreOptionsVisible: false,
+			enablePolicyRefs: !cacheConfig.disablePolicyRefs
+		}
+	},
+	watch: {
+		enablePolicyRefs: function (v) {
+			this.cacheConfig.disablePolicyRefs = !v
 		}
 	},
 	methods: {
@@ -58,6 +66,13 @@ Vue.component("http-cache-config-box", {
 						<p class="comment">使用当前服务所在集群的设置。</p>
 					</div>
 					<span v-else class="red">当前集群没有设置缓存策略，当前配置无法生效。</span>
+				</td>
+			</tr>
+			<tr>
+				<td>使用默认缓存条件</td>
+				<td>	
+					<checkbox v-model="enablePolicyRefs"></checkbox>
+					<p class="comment">选中后使用系统缓存策略中定义的默认的缓存条件。</p>
 				</td>
 			</tr>
 			<tr>
