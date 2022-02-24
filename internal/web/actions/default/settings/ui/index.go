@@ -22,6 +22,9 @@ func (this *IndexAction) RunGet(params struct{}) {
 		this.ErrorPage(err)
 		return
 	}
+	if config.DefaultPageSize == 0 {
+		config.DefaultPageSize = 10
+	}
 	this.Data["config"] = config
 
 	this.Show()
@@ -36,6 +39,7 @@ func (this *IndexAction) RunPost(params struct {
 	Version            string
 	FaviconFile        *actions.File
 	LogoFile           *actions.File
+	DefaultPageSize    int
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -46,7 +50,10 @@ func (this *IndexAction) RunPost(params struct {
 		Field("productName", params.ProductName).
 		Require("请输入产品名称").
 		Field("adminSystemName", params.AdminSystemName).
-		Require("请输入管理员系统名称")
+		Require("请输入管理员系统名称").
+		Field("defaultPageSize", params.DefaultPageSize).
+		Gte(0, "默认每页显示数不能小于0").
+		Lte(100, "默认每页显示数不能大于100")
 
 	config, err := configloaders.LoadAdminUIConfig()
 	if err != nil {
@@ -59,6 +66,12 @@ func (this *IndexAction) RunPost(params struct {
 	config.ShowFinance = params.ShowFinance
 	config.ShowVersion = params.ShowVersion
 	config.Version = params.Version
+
+	if params.DefaultPageSize > 0 {
+		config.DefaultPageSize = params.DefaultPageSize
+	} else {
+		config.DefaultPageSize = 10
+	}
 
 	// 上传Favicon文件
 	if params.FaviconFile != nil {

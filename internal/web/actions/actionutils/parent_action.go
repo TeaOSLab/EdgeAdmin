@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
@@ -55,7 +56,14 @@ func (this *ParentAction) NewPage(total int64, size ...int64) *Page {
 	if len(size) > 0 {
 		return NewActionPage(this, total, size[0])
 	}
-	return NewActionPage(this, total, 10)
+
+	var pageSize int64 = 10
+	adminConfig, err := configloaders.LoadAdminUIConfig()
+	if err == nil && adminConfig.DefaultPageSize > 0 {
+		pageSize = int64(adminConfig.DefaultPageSize)
+	}
+
+	return NewActionPage(this, total, pageSize)
 }
 
 func (this *ParentAction) Nav(mainMenu string, tab string, firstMenu string) {
