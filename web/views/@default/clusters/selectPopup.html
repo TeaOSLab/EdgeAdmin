@@ -13,7 +13,8 @@
     </div>
 </form>
 
-<table class="ui table celled selectable">
+<p class="comment" v-if="clusters.length == 0">没有找到相应的集群。</p>
+<table class="ui table celled selectable" v-if="clusters.length > 0">
     <thead>
         <tr>
             <th>集群名称</th>
