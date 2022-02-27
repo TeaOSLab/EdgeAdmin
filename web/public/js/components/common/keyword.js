@@ -5,17 +5,39 @@ Vue.component("keyword", {
 		if (word == null) {
 			word = ""
 		} else {
-			word = word.replace(/\)/, "\\)")
-			word = word.replace(/\(/, "\\(")
-			word = word.replace(/\+/, "\\+")
-			word = word.replace(/\^/, "\\^")
-			word = word.replace(/\$/, "\\$")
+			word = word.replace(/\)/g, "\\)")
+			word = word.replace(/\(/g, "\\(")
+			word = word.replace(/\+/g, "\\+")
+			word = word.replace(/\^/g, "\\^")
+			word = word.replace(/\$/g, "\\$")
+			word = word.replace(/\?/, "\\?")
+			word = word.replace(/\*/, "\\*")
+			word = word.replace(/\[/, "\\[")
+			word = word.replace(/{/, "\\{")
+			word = word.replace(/\./, "\\.")
 		}
 
 		let slot = this.$slots["default"][0]
-		let text = this.encodeHTML(slot.text)
+		let text = slot.text
 		if (word.length > 0) {
-			text = text.replace(new RegExp("(" + word + ")", "ig"), "<span style=\"border: 1px #ccc dashed; color: #ef4d58\">$1</span>")
+			let that = this
+			let m = []  // replacement => tmp
+			let tmpIndex = 0
+			text = text.replaceAll(new RegExp("(" + word + ")", "ig"), function (replacement) {
+				tmpIndex++
+				let s = "<span style=\"border: 1px #ccc dashed; color: #ef4d58\">" + that.encodeHTML(replacement) + "</span>"
+				let tmpKey = "$TMP__KEY__" + tmpIndex.toString() + "$"
+				m.push([tmpKey, s])
+				return tmpKey
+			})
+			text = this.encodeHTML(text)
+
+			m.forEach(function (r) {
+				text = text.replace(r[0], r[1])
+			})
+
+		} else {
+			text = this.encodeHTML(text)
 		}
 
 		return {

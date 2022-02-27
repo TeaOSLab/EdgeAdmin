@@ -69,14 +69,7 @@ Vue.component("http-cache-config-box", {
 				</td>
 			</tr>
 			<tr>
-				<td>使用默认缓存条件</td>
-				<td>	
-					<checkbox v-model="enablePolicyRefs"></checkbox>
-					<p class="comment">选中后使用系统缓存策略中定义的默认的缓存条件。</p>
-				</td>
-			</tr>
-			<tr>
-				<td class="title">是否开启缓存</td>
+				<td class="title">开启缓存</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="cacheConfig.isOn"/>
@@ -93,6 +86,13 @@ Vue.component("http-cache-config-box", {
 			</tr>
 		</tbody>
 		<tbody v-show="isOn() && moreOptionsVisible">
+			<tr>
+				<td>使用默认缓存条件</td>
+				<td>	
+					<checkbox v-model="enablePolicyRefs"></checkbox>
+					<p class="comment">选中后使用系统中已经定义的默认缓存条件。</p>
+				</td>
+			</tr>
 			<tr>
 				<td>添加X-Cache Header</td>
 				<td>
