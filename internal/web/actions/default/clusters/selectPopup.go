@@ -35,11 +35,11 @@ func (this *SelectPopupAction) RunGet(params struct {
 		return
 	}
 	var count = countResp.Count
-	var page = this.NewPage(count)
-	page.Size = 6
+	var pageSize int64 = 6
 	if params.PageSize > 0 {
-		page.Size = params.PageSize
+		pageSize = params.PageSize
 	}
+	var page = this.NewPage(count, pageSize)
 	this.Data["page"] = page.AsHTML()
 
 	clustersResp, err := this.RPC().NodeClusterRPC().ListEnabledNodeClusters(this.AdminContext(), &pb.ListEnabledNodeClustersRequest{

@@ -24,7 +24,9 @@
         </tr>
     </thead>
     <tr v-for="cluster in clusters">
-        <td>{{cluster.name}}</td>
+        <td>
+            <keyword :v-word="keyword">{{cluster.name}}</keyword>
+        </td>
         <td>{{cluster.countNodes}}</td>
         <td><label-on :v-is-on="cluster.isOn"></label-on></td>
         <td>
