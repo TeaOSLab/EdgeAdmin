@@ -2866,6 +2866,7 @@ Vue.component("http-cache-ref-box", {
 				enableRequestCachePragma: false,
 				conds: null,
 				allowChunkedEncoding: true,
+				allowPartialContent: false,
 				isReverse: this.vIsReverse,
 				methods: [],
 				expiresTime: {
@@ -2993,7 +2994,14 @@ Vue.component("http-cache-ref-box", {
 		<td>支持分片内容</td>
 		<td>
 			<checkbox name="allowChunkedEncoding" value="1" v-model="ref.allowChunkedEncoding"></checkbox>
-			<p class="comment">选中后，Gzip和Chunked内容可以直接缓存，无需检查内容长度。</p>
+			<p class="comment">选中后，Gzip等压缩后的Chunked内容可以直接缓存，无需检查内容长度。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>支持缓存区间内容</td>
+		<td>
+			<checkbox name="allowPartialContent" value="1" v-model="ref.allowPartialContent"></checkbox>
+			<p class="comment">选中后，支持缓存源站返回的某个区间的内容，该内容通过<code-label>206 Partial Content</code-label>状态码返回。此功能目前为<code-label>试验性质</code-label>。</p>
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
@@ -3771,15 +3779,23 @@ Vue.component("http-cache-config-box", {
 				enableCacheControlMaxAge: false,
 				cacheRefs: [],
 				purgeIsOn: false,
-				purgeKey: ""
+				purgeKey: "",
+				disablePolicyRefs: false
 			}
 		}
 		if (cacheConfig.cacheRefs == null) {
 			cacheConfig.cacheRefs = []
 		}
+
 		return {
 			cacheConfig: cacheConfig,
-			moreOptionsVisible: false
+			moreOptionsVisible: false,
+			enablePolicyRefs: !cacheConfig.disablePolicyRefs
+		}
+	},
+	watch: {
+		enablePolicyRefs: function (v) {
+			this.cacheConfig.disablePolicyRefs = !v
 		}
 	},
 	methods: {
@@ -3821,7 +3837,7 @@ Vue.component("http-cache-config-box", {
 				</td>
 			</tr>
 			<tr>
-				<td class="title">是否开启缓存</td>
+				<td class="title">开启缓存</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="cacheConfig.isOn"/>
@@ -3838,6 +3854,13 @@ Vue.component("http-cache-config-box", {
 			</tr>
 		</tbody>
 		<tbody v-show="isOn() && moreOptionsVisible">
+			<tr>
+				<td>使用默认缓存条件</td>
+				<td>	
+					<checkbox v-model="enablePolicyRefs"></checkbox>
+					<p class="comment">选中后使用系统中已经定义的默认缓存条件。</p>
+				</td>
+			</tr>
 			<tr>
 				<td>添加X-Cache Header</td>
 				<td>
@@ -12226,17 +12249,39 @@ Vue.component("keyword", {
 		if (word == null) {
 			word = ""
 		} else {
-			word = word.replace(/\)/, "\\)")
-			word = word.replace(/\(/, "\\(")
-			word = word.replace(/\+/, "\\+")
-			word = word.replace(/\^/, "\\^")
-			word = word.replace(/\$/, "\\$")
+			word = word.replace(/\)/g, "\\)")
+			word = word.replace(/\(/g, "\\(")
+			word = word.replace(/\+/g, "\\+")
+			word = word.replace(/\^/g, "\\^")
+			word = word.replace(/\$/g, "\\$")
+			word = word.replace(/\?/, "\\?")
+			word = word.replace(/\*/, "\\*")
+			word = word.replace(/\[/, "\\[")
+			word = word.replace(/{/, "\\{")
+			word = word.replace(/\./, "\\.")
 		}
 
 		let slot = this.$slots["default"][0]
-		let text = this.encodeHTML(slot.text)
+		let text = slot.text
 		if (word.length > 0) {
-			text = text.replace(new RegExp("(" + word + ")", "ig"), "<span style=\"border: 1px #ccc dashed; color: #ef4d58\">$1</span>")
+			let that = this
+			let m = []  // replacement => tmp
+			let tmpIndex = 0
+			text = text.replaceAll(new RegExp("(" + word + ")", "ig"), function (replacement) {
+				tmpIndex++
+				let s = "<span style=\"border: 1px #ccc dashed; color: #ef4d58\">" + that.encodeHTML(replacement) + "</span>"
+				let tmpKey = "$TMP__KEY__" + tmpIndex.toString() + "$"
+				m.push([tmpKey, s])
+				return tmpKey
+			})
+			text = this.encodeHTML(text)
+
+			m.forEach(function (r) {
+				text = text.replace(r[0], r[1])
+			})
+
+		} else {
+			text = this.encodeHTML(text)
 		}
 
 		return {

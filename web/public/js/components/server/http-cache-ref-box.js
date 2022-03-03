@@ -20,6 +20,7 @@ Vue.component("http-cache-ref-box", {
 				enableRequestCachePragma: false,
 				conds: null,
 				allowChunkedEncoding: true,
+				allowPartialContent: false,
 				isReverse: this.vIsReverse,
 				methods: [],
 				expiresTime: {
@@ -147,7 +148,14 @@ Vue.component("http-cache-ref-box", {
 		<td>支持分片内容</td>
 		<td>
 			<checkbox name="allowChunkedEncoding" value="1" v-model="ref.allowChunkedEncoding"></checkbox>
-			<p class="comment">选中后，Gzip和Chunked内容可以直接缓存，无需检查内容长度。</p>
+			<p class="comment">选中后，Gzip等压缩后的Chunked内容可以直接缓存，无需检查内容长度。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>支持缓存区间内容</td>
+		<td>
+			<checkbox name="allowPartialContent" value="1" v-model="ref.allowPartialContent"></checkbox>
+			<p class="comment">选中后，支持缓存源站返回的某个区间的内容，该内容通过<code-label>206 Partial Content</code-label>状态码返回。此功能目前为<code-label>试验性质</code-label>。</p>
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
