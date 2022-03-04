@@ -2,6 +2,7 @@ package cache
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -28,7 +29,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
-	cacheRef := &serverconfigs.HTTPCacheRef{}
+	var cacheRef = &serverconfigs.HTTPCacheRef{}
 	err := json.Unmarshal(params.CacheRefJSON, cacheRef)
 	if err != nil {
 		this.ErrorPage(err)
@@ -42,7 +43,13 @@ func (this *CreatePopupAction) RunPost(params struct {
 		this.Fail("请填写匹配条件分组")
 	}
 
-	err = cacheRef.Init()
+	this.Data["cacheRef"] = cacheRef
+
+	cacheRefClone, err := utils.JSONClone(cacheRef)
+	if err != nil {
+		this.Fail(err.Error())
+	}
+	err = cacheRefClone.(*serverconfigs.HTTPCacheRef).Init()
 	if err != nil {
 		this.ErrorPage(err)
 		return
