@@ -175,6 +175,7 @@ Vue.component("http-cache-refs-config-box", {
 						<grey-label v-if="cacheRef.methods != null && cacheRef.methods.length > 0">{{cacheRef.methods.join(", ")}}</grey-label>
 						<grey-label v-if="cacheRef.expiresTime != null && cacheRef.expiresTime.isPrior && cacheRef.expiresTime.isOn">Expires</grey-label>
 						<grey-label v-if="cacheRef.status != null && cacheRef.status.length > 0 && (cacheRef.status.length > 1 || cacheRef.status[0] != 200)">状态码：{{cacheRef.status.map(function(v) {return v.toString()}).join(", ")}}</grey-label>
+						<grey-label v-if="cacheRef.allowPartialContent">区间缓存</grey-label>
 					</td>
 					<td>
 						<span v-if="cacheRef.conds.connector == 'and'">和</span>
