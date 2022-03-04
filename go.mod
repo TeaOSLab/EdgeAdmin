@@ -9,7 +9,7 @@ require (
 	github.com/cespare/xxhash v1.1.0
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/google/go-cmp v0.5.6 // indirect
-	github.com/iwind/TeaGo v0.0.0-20220304042834-d8b5103e9027
+	github.com/iwind/TeaGo v0.0.0-20220304043459-0dd944a5b475
 	github.com/iwind/gosock v0.0.0-20211103081026-ee4652210ca4
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/miekg/dns v1.1.35
