@@ -3,10 +3,10 @@ package database
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/go-sql-driver/mysql"
-	"github.com/go-yaml/yaml"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/dbs"
 	"github.com/iwind/TeaGo/maps"
+	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"strings"
 )

@@ -2,8 +2,8 @@ package configs
 
 import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
-	"github.com/go-yaml/yaml"
 	"github.com/iwind/TeaGo/Tea"
+	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"os"
 	"path/filepath"
