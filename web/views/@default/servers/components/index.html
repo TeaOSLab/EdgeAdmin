@@ -13,7 +13,7 @@
     <div v-show="tab == 'domainMatch'">
         <table class="ui table selectable definition">
             <tr>
-                <td class="title">是否严格匹配域名</td>
+                <td class="title">严格匹配域名</td>
                 <td>
                     <checkbox name="matchDomainStrictly" v-model="globalConfig.httpAll.matchDomainStrictly"></checkbox>
                     <p class="comment">如果选择了严格匹配域名，找不到匹配的域名时会采取对应的动作。</p>
