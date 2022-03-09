@@ -27,9 +27,11 @@ func (this *SettingsAction) RunGet(params struct{}) {
 	}
 
 	var config = &serverconfigs.AccessLogQueueConfig{
-		MaxLength:      0,
-		CountPerSecond: 0,
-		Percent:        100,
+		MaxLength:         0,
+		CountPerSecond:    0,
+		Percent:           100,
+		EnableAutoPartial: true,
+		RowsPerTable:      500_000,
 	}
 	if len(settingsResp.ValueJSON) > 0 {
 		err = json.Unmarshal(settingsResp.ValueJSON, config)
@@ -59,9 +61,11 @@ func (this *SettingsAction) RunGet(params struct{}) {
 }
 
 func (this *SettingsAction) RunPost(params struct {
-	Percent        int
-	CountPerSecond int
-	MaxLength      int
+	Percent           int
+	CountPerSecond    int
+	MaxLength         int
+	EnableAutoPartial bool
+	RowsPerTable      int64
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -72,9 +76,11 @@ func (this *SettingsAction) RunPost(params struct {
 		Lte(100, "请输入小于100的整数")
 
 	var config = &serverconfigs.AccessLogQueueConfig{
-		MaxLength:      params.MaxLength,
-		CountPerSecond: params.CountPerSecond,
-		Percent:        params.Percent,
+		MaxLength:         params.MaxLength,
+		CountPerSecond:    params.CountPerSecond,
+		Percent:           params.Percent,
+		EnableAutoPartial: params.EnableAutoPartial,
+		RowsPerTable:      params.RowsPerTable,
 	}
 	configJSON, err := json.Marshal(config)
 	if err != nil {
