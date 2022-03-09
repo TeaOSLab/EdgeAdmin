@@ -41,5 +41,24 @@
             </td>
         </tr>
     </table>
+
+    <h3>自动分表设置</h3>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">启用自动分表</td>
+            <td>
+                <checkbox name="enableAutoPartial" v-model="config.enableAutoPartial"></checkbox>
+                <p class="comment">启用后，可以将单天访问日志自动存储到多个数据表中，以提升查询速度。</p>
+            </td>
+        </tr>
+        <tr v-show="config.enableAutoPartial">
+            <td>单表最多行数</td>
+            <td>
+                <input type="text" style="width: 8em" name="rowsPerTable" v-model="config.rowsPerTable" maxlength="16"/>
+                <p class="comment">单个数据表最多能存储的最多行数。</p>
+            </td>
+        </tr>
+    </table>
+
     <submit-btn></submit-btn>
 </form>
