@@ -78,11 +78,11 @@ Vue.component("http-access-log-search-box", {
 		<div class="ui field">
 			<div class="ui input left right labeled small">
 				<span class="ui label basic" style="font-weight: normal">关键词</span>
-				<input type="text" name="keyword" v-model="keyword" placeholder="路径、UserAgent等..." size="18"/>
+				<input type="text" name="keyword" v-model="keyword" placeholder="路径、UserAgent等..." size="30"/>
 				<a class="ui label basic" :class="{disabled: keyword.length == 0}" @click.prevent="cleanKeyword"><i class="icon remove small"></i></a>
 			</div>
 		</div>
-		<slot></slot>
+		<div class="ui field"><tip-icon content="一些特殊的关键词：<br/>单个状态码：status:200<br/>状态码范围：status:500-504<br/>查询IP：ip:192.168.1.100"></tip-icon></div>
 	</div>
 	<div class="ui fields inline" style="margin-top: 0.5em">
 		<div class="ui field">
@@ -91,6 +91,7 @@ Vue.component("http-access-log-search-box", {
 		<div class="ui field" v-if="clusterId > 0">
 			<node-combo-box :v-cluster-id="clusterId" :v-node-id="vNodeId"></node-combo-box>
 		</div>
+		<slot></slot>
 		<div class="ui field">
 			<button class="ui button small" type="submit">搜索日志</button>
 		</div>
