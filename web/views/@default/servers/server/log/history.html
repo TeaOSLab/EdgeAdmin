@@ -5,9 +5,9 @@
 
 <div class="right-box">
 	<first-menu>
-		<menu-item :href="path + '?serverId=' + serverId + '&day=' + day + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&pageSize=' + pageSize" :active="hasError == 0 && hasWAF == 0">所有日志</menu-item>
-		<menu-item :href="path + '?serverId=' + serverId + '&day=' + day + '&hasError=1' + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&pageSize=' + pageSize" :active="hasError > 0">错误日志</menu-item>
-        <menu-item :href="path + '?serverId=' + serverId + '&day=' + day + '&hasWAF=1' + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&pageSize=' + pageSize" :active="hasWAF > 0">WAF日志</menu-item>
+		<menu-item :href="path + '?serverId=' + serverId + '&day=' + day + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&hour=' + hour + '&pageSize=' + pageSize" :active="hasError == 0 && hasWAF == 0">所有日志</menu-item>
+		<menu-item :href="path + '?serverId=' + serverId + '&day=' + day + '&hasError=1' + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&hour=' + hour + '&pageSize=' + pageSize" :active="hasError > 0">错误日志</menu-item>
+        <menu-item :href="path + '?serverId=' + serverId + '&day=' + day + '&hasWAF=1' + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&hour=' + hour + '&pageSize=' + pageSize" :active="hasWAF > 0">WAF日志</menu-item>
 	</first-menu>
 
     <form method="get" class="ui form small" :action="path">
@@ -17,6 +17,12 @@
         <http-access-log-search-box :v-ip="ip" :v-domain="domain" :v-keyword="keyword"  :v-cluster-id="clusterId" :v-node-id="nodeId">
             <div class="ui field">
                 <input type="text" name="day" maxlength="10" placeholder="选择日期" style="width:7.8em" id="day-input" v-model="day"/>
+            </div>
+            <div class="ui field">
+                <div class="ui right labeled input">
+                    <input type="text" name="hour" maxlength="2" style="width: 3.5em" v-model="hour"/>
+                    <span class="ui label">时</span>
+                </div>
             </div>
         </http-access-log-search-box>
     </form>
@@ -31,10 +37,10 @@
 	</table>
 
 	<div v-if="accessLogs.length > 0">
-		<a :href="path + '?serverId=' + serverId + '&requestId=' + lastRequestId + '&day=' + day + '&hasError=' + hasError + '&hasWAF=' + hasWAF + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&pageSize=' + pageSize" v-if="hasPrev">上一页</a>
+		<a :href="path + '?serverId=' + serverId + '&requestId=' + lastRequestId + '&day=' + day + '&hasError=' + hasError + '&hasWAF=' + hasWAF + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&hour=' + hour + '&pageSize=' + pageSize" v-if="hasPrev">上一页</a>
 		<span v-else class="disabled">上一页</span>
 		<span class="disabled">&nbsp; | &nbsp;</span>
-		<a :href="path + '?serverId=' + serverId + '&requestId=' + nextRequestId + '&day=' + day + '&hasError=' + hasError + '&hasWAF=' + hasWAF + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&pageSize=' + pageSize" v-if="hasMore">下一页</a>
+		<a :href="path + '?serverId=' + serverId + '&requestId=' + nextRequestId + '&day=' + day + '&hasError=' + hasError + '&hasWAF=' + hasWAF + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&hour=' + hour + '&pageSize=' + pageSize" v-if="hasMore">下一页</a>
 		<span v-else class="disabled">下一页</span>
         <page-size-selector></page-size-selector>
 	</div>

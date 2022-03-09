@@ -25,6 +25,7 @@ func (this *IndexAction) RunGet(params struct {
 	ClusterId int64
 	NodeId    int64
 	Day       string
+	Hour      string
 	Keyword   string
 	Ip        string
 	Domain    string
@@ -45,6 +46,7 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["serverId"] = 0
 	this.Data["path"] = this.Request.URL.Path
 	this.Data["day"] = params.Day
+	this.Data["hour"] = params.Hour
 	this.Data["keyword"] = params.Keyword
 	this.Data["ip"] = params.Ip
 	this.Data["domain"] = params.Domain
@@ -76,6 +78,8 @@ func (this *IndexAction) RunGet(params struct {
 			HasError:          params.HasError > 0,
 			HasFirewallPolicy: params.HasWAF > 0,
 			Day:               day,
+			HourFrom:          params.Hour,
+			HourTo:            params.Hour,
 			Keyword:           params.Keyword,
 			Ip:                params.Ip,
 			Domain:            params.Domain,
