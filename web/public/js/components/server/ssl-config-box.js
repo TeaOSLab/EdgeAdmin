@@ -21,7 +21,8 @@ Vue.component("ssl-config-box", {
 				hsts: null,
 				cipherSuitesIsOn: false,
 				cipherSuites: [],
-				http2Enabled: true
+				http2Enabled: true,
+				ocspIsOn: false
 			}
 		} else {
 			if (policy.certRefs == null) {
@@ -495,6 +496,14 @@ Vue.component("ssl-config-box", {
 						<button class="ui button tiny" type="button" @click="addHstsDomain()">+</button>
 					</div>
 					<p class="comment">如果没有设置域名的话，则默认支持所有的域名。</p>
+				</td>
+			</tr>
+			
+			<!-- OCSP -->
+			<tr>
+				<td>OCSP Stapling</td>
+				<td><checkbox name="ocspIsOn" v-model="policy.ocspIsOn"></checkbox>
+					<p class="comment">选中表示启用OCSP Stapling。</p>
 				</td>
 			</tr>
 			
