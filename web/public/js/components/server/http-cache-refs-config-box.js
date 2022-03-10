@@ -97,10 +97,6 @@ Vue.component("http-cache-refs-config-box", {
 				callback: function (resp) {
 					resp.data.cacheRef.id = that.refs[index].id
 					Vue.set(that.refs, index, resp.data.cacheRef)
-
-					// 通知子组件更新
-					that.$refs.cacheRef[index].notifyChange()
-
 					that.change()
 				}
 			})
