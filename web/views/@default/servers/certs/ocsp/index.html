@@ -1,0 +1,84 @@
+{$layout}
+{$template "/left_menu_top"}
+
+<div class="right-box without-tabbar">
+    <div class="margin"></div>
+
+    <form class="ui form" method="get" action="/servers/certs/ocsp">
+        <div class="ui fields inline">
+            <div class="ui field">
+                <input type="text" placeholder="关键词" style="width: 10em" name="keyword" v-model="keyword"/>
+            </div>
+            <div class="ui field">
+                <button class="ui button small">搜索</button>
+                &nbsp; <a href="/servers/certs/ocsp" v-if="keyword.length > 0">[清除条件]</a>
+            </div>
+        </div>
+    </form>
+    <div class="margin"></div>
+
+    <form class="ui form" v-if="certs.length > 0">
+        <div class="ui divider"></div>
+        <div class="ui fields inline">
+            <div class="ui field" v-if="certIds.length == 0" @click.prevent="resetAllCerts">
+                <button class="ui button small basic">重试所有证书</button>
+            </div>
+            <div class="ui field" v-if="certIds.length > 0">
+                <button class="ui button small basic" @click.prevent="resetCerts">重试选中证书</button>
+            </div>
+            <div class="ui field" v-if="certIds.length > 0">
+                <button class="ui button small basic" @click.prevent="ignoreCerts">忽略选中证书</button>
+            </div>
+        </div>
+    </form>
+
+    <p class="comment" v-if="certs.length == 0">暂时没有OCSP日志。</p>
+
+    <table class="ui table selectable celled" v-if="certs.length > 0">
+        <thead>
+            <tr>
+                <th style="width: 1em"><checkbox v-model="allChecked"></checkbox></th>
+                <th>证书说明</th>
+                <th>顶级发行组织</th>
+                <th>域名</th>
+                <th>错误信息</th>
+                <th class="center">状态</th>
+                <th class="one op">操作</th>
+            </tr>
+        </thead>
+        <tbody v-for="(cert, index) in certs">
+            <tr>
+                <td><checkbox :id="'cert_' + cert.id" ref="certCheckboxes" @input="changeCerts"></checkbox></td>
+                <td><keyword :v-word="keyword">{{cert.name}}</keyword>
+                    <div v-if="cert.isCA" style="margin-top:0.5em">
+                        <micro-basic-label class="olive">CA</micro-basic-label>
+                    </div>
+                    <div v-if="cert.isACME" style="margin-top: 0.5em">
+                        <micro-basic-label class="olive" title="通过ACME协议免费申请">ACME</micro-basic-label>
+                    </div>
+                </td>
+                <td>
+                    <span v-if="cert.commonNames != null && cert.commonNames.length > 0">{{cert.commonNames[cert.commonNames.length-1]}}</span>
+                </td>
+                <td>
+                    <div v-for="dnsName in cert.dnsNames" style="margin-bottom:0.4em">
+                        <span class="ui label tiny basic"><keyword :v-word="keyword">{{dnsName}}</keyword></span>
+                    </div>
+                </td>
+                <td style="word-break: break-all">
+                    <span class="red">{{cert.ocspError}}</span>
+                </td>
+                <td nowrap="" class="center">
+                    <span class="ui label red tiny basic" v-if="!cert.isOn">未启用</span>
+                    <span class="ui label red tiny basic" v-else-if="cert.isExpired">已过期</span>
+                    <span class="ui label green tiny basic" v-else>有效中</span>
+                </td>
+                <td>
+                    <a href="" @click.prevent="viewCert(cert.id)">详情</a> &nbsp;
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="page" v-html="page"></div>
+</div>

@@ -14,9 +14,9 @@ Vue.component("checkbox", {
 		}
 
 		let checkedValue = this.value
-        if (checkedValue == null && this.checked == "checked") {
-            checkedValue = elementValue
-        }
+		if (checkedValue == null && this.checked == "checked") {
+			checkedValue = elementValue
+		}
 
 		return {
 			elementId: elementId,
@@ -27,15 +27,24 @@ Vue.component("checkbox", {
 	methods: {
 		change: function () {
 			this.$emit("input", this.newValue)
+		},
+		check: function () {
+			this.newValue = this.elementValue
+		},
+		uncheck: function () {
+			this.newValue = ""
+		},
+		isChecked: function () {
+			return this.newValue == this.elementValue
 		}
 	},
-    watch: {
-	    value: function (v) {
-	        if (typeof v == "boolean") {
-	            this.newValue = v
-            }
-        }
-    },
+	watch: {
+		value: function (v) {
+			if (typeof v == "boolean") {
+				this.newValue = v
+			}
+		}
+	},
 	template: `<div class="ui checkbox">
 	<input type="checkbox" :name="name" :value="elementValue" :id="elementId" @change="change" v-model="newValue"/>
 	<label :for="elementId" style="font-size: 0.85em!important;"><slot></slot></label>

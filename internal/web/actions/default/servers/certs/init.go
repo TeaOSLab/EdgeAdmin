@@ -5,6 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/certs/acme"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/certs/acme/accounts"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/certs/acme/users"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/certs/ocsp"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/iwind/TeaGo"
 )
@@ -54,6 +55,14 @@ func init() {
 			GetPost("/createPopup", new(accounts.CreatePopupAction)).
 			GetPost("/updatePopup", new(accounts.UpdatePopupAction)).
 			Post("/delete", new(accounts.DeleteAction)).
+
+			// OCSP
+			Prefix("/servers/certs/ocsp").
+			Data("leftMenuItem", "ocsp").
+			Get("", new(ocsp.IndexAction)).
+			Post("/reset", new(ocsp.ResetAction)).
+			Post("/resetAll", new(ocsp.ResetAllAction)).
+			Post("/ignore", new(ocsp.IgnoreAction)).
 
 			//
 			EndAll()

@@ -26,14 +26,14 @@ func (this *CertPopupAction) RunGet(params struct {
 		return
 	}
 
-	certConfig := &sslconfigs.SSLCertConfig{}
+	var certConfig = &sslconfigs.SSLCertConfig{}
 	err = json.Unmarshal(certResp.SslCertJSON, certConfig)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 
-	reverseCommonNames := []string{}
+	var reverseCommonNames = []string{}
 	for i := len(certConfig.CommonNames) - 1; i >= 0; i-- {
 		reverseCommonNames = append(reverseCommonNames, certConfig.CommonNames[i])
 	}
@@ -62,7 +62,7 @@ func (this *CertPopupAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	serverMaps := []maps.Map{}
+	var serverMaps = []maps.Map{}
 	for _, server := range serversResp.Servers {
 		serverMaps = append(serverMaps, maps.Map{
 			"id":   server.Id,
