@@ -25,12 +25,12 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["type"] = params.Type
 	this.Data["keyword"] = params.Keyword
 
-	countAll := int64(0)
-	countCA := int64(0)
-	countAvailable := int64(0)
-	countExpired := int64(0)
-	count7Days := int64(0)
-	count30Days := int64(0)
+	var countAll = int64(0)
+	var countCA = int64(0)
+	var countAvailable = int64(0)
+	var countExpired = int64(0)
+	var count7Days = int64(0)
+	var count30Days = int64(0)
 
 	// 计算数量
 	{
@@ -147,7 +147,7 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 
-	certConfigs := []*sslconfigs.SSLCertConfig{}
+	var certConfigs = []*sslconfigs.SSLCertConfig{}
 	err = json.Unmarshal(listResp.SslCertsJSON, &certConfigs)
 	if err != nil {
 		this.ErrorPage(err)
@@ -155,8 +155,8 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	this.Data["certs"] = certConfigs
 
-	certMaps := []maps.Map{}
-	nowTime := time.Now().Unix()
+	var certMaps = []maps.Map{}
+	var nowTime = time.Now().Unix()
 	for _, certConfig := range certConfigs {
 		countServersResp, err := this.RPC().ServerRPC().CountAllEnabledServersWithSSLCertId(this.AdminContext(), &pb.CountAllEnabledServersWithSSLCertIdRequest{SslCertId: certConfig.Id})
 		if err != nil {
