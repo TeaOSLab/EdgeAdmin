@@ -28,7 +28,7 @@
     </http-access-log-search-box>
 </form>
 
-<warning-message v-if="isSlowQuery">看起来你的访问日志查询非常慢（{{slowQueryCost}}s），建议通过添加新的 <a href="/db">[日志节点]</a> 来分散存储访问日志。</warning-message>
+<warning-message v-if="isSlowQuery">看起来你的访问日志查询非常慢（{{slowQueryCost}}s），建议<span v-if="domain.length == 0"> 1）指定具体域名查询；2）</span>通过添加新的 <a href="/db">[日志节点]</a> 来分散存储访问日志。</warning-message>
 
 <p class="comment" v-if="accessLogs.length == 0">暂时还没有访问日志。</p>
 
