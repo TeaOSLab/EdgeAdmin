@@ -131,6 +131,7 @@ func (this *SettingAction) RunPost(params struct {
 		MaxConns:          types.Int32(reverseProxyConfig.MaxConns),
 		MaxIdleConns:      types.Int32(reverseProxyConfig.MaxIdleConns),
 		ProxyProtocolJSON: proxyProtocolJSON,
+		FollowRedirects:   reverseProxyConfig.FollowRedirects,
 	})
 	if err != nil {
 		this.ErrorPage(err)
