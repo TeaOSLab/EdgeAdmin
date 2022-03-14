@@ -96,6 +96,7 @@ func (this *SettingAction) RunPost(params struct {
 		StripPrefix:     reverseProxyConfig.StripPrefix,
 		AutoFlush:       reverseProxyConfig.AutoFlush,
 		AddHeaders:      reverseProxyConfig.AddHeaders,
+		FollowRedirects:   reverseProxyConfig.FollowRedirects,
 	})
 
 	this.Success()

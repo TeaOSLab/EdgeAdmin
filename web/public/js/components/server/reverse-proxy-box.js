@@ -23,7 +23,8 @@ Vue.component("reverse-proxy-box", {
 				readTimeout: {count: 0, unit: "second"},
 				idleTimeout: {count: 0, unit: "second"},
 				maxConns: 0,
-				maxIdleConns: 0
+				maxIdleConns: 0,
+				followRedirects: false
 			}
 		}
 		if (reverseProxyConfig.addHeaders == null) {
@@ -183,6 +184,13 @@ Vue.component("reverse-proxy-box", {
 		</tbody>
 		<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
 		<tbody v-show="isOn() && advancedVisible">
+			<tr v-show="family == null || family == 'http'">
+				<td>回源跟随</td>
+				<td>
+					<checkbox v-model="reverseProxyConfig.followRedirects"></checkbox>
+					<p class="comment">选中后，自动读取源站跳转后的网页内容。</p>
+				</td>
+			</tr>
 		    <tr v-show="family == null || family == 'http'">
 		        <td>自动添加的Header</td>
 		        <td>
