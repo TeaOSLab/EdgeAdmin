@@ -5855,6 +5855,8 @@ Vue.component("http-firewall-actions-box", {
 						<option value="service">当前服务</option>
 						<option value="global">所有服务</option>
 					</select>
+					<p class="comment" v-if="blockScope == 'service'">只封锁用户对当前网站服务的访问，其他服务不受影响。</p>
+					<p class="comment" v-if="blockScope =='global'">封锁用户对所有网站服务的访问。</p>
 				</td>
 			</tr>
 			
@@ -7704,7 +7706,8 @@ Vue.component("reverse-proxy-box", {
 				readTimeout: {count: 0, unit: "second"},
 				idleTimeout: {count: 0, unit: "second"},
 				maxConns: 0,
-				maxIdleConns: 0
+				maxIdleConns: 0,
+				followRedirects: false
 			}
 		}
 		if (reverseProxyConfig.addHeaders == null) {
@@ -7864,6 +7867,13 @@ Vue.component("reverse-proxy-box", {
 		</tbody>
 		<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
 		<tbody v-show="isOn() && advancedVisible">
+			<tr v-show="family == null || family == 'http'">
+				<td>回源跟随</td>
+				<td>
+					<checkbox v-model="reverseProxyConfig.followRedirects"></checkbox>
+					<p class="comment">选中后，自动读取源站跳转后的网页内容。</p>
+				</td>
+			</tr>
 		    <tr v-show="family == null || family == 'http'">
 		        <td>自动添加的Header</td>
 		        <td>
@@ -12167,9 +12177,9 @@ Vue.component("checkbox", {
 		}
 
 		let checkedValue = this.value
-        if (checkedValue == null && this.checked == "checked") {
-            checkedValue = elementValue
-        }
+		if (checkedValue == null && this.checked == "checked") {
+			checkedValue = elementValue
+		}
 
 		return {
 			elementId: elementId,
@@ -12180,15 +12190,24 @@ Vue.component("checkbox", {
 	methods: {
 		change: function () {
 			this.$emit("input", this.newValue)
+		},
+		check: function () {
+			this.newValue = this.elementValue
+		},
+		uncheck: function () {
+			this.newValue = ""
+		},
+		isChecked: function () {
+			return this.newValue == this.elementValue
 		}
 	},
-    watch: {
-	    value: function (v) {
-	        if (typeof v == "boolean") {
-	            this.newValue = v
-            }
-        }
-    },
+	watch: {
+		value: function (v) {
+			if (typeof v == "boolean") {
+				this.newValue = v
+			}
+		}
+	},
 	template: `<div class="ui checkbox">
 	<input type="checkbox" :name="name" :value="elementValue" :id="elementId" @change="change" v-model="newValue"/>
 	<label :for="elementId" style="font-size: 0.85em!important;"><slot></slot></label>
