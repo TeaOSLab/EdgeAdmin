@@ -252,7 +252,7 @@ Tea.context(function () {
 				attackRatio = Math.round(stats[index].countAttackRequests * 10000 / stats[index].countRequests) / 100
 			}
 
-			return stats[index].day + " " + stats[index].hour + "时<br/>总请求数：" + stats[index].countRequests + "<br/>缓存请求数：" + stats[index].countCachedRequests + "<br/>缓存命中率：" + cachedRatio + "%<br/>拦截攻击数：" + stats[index].countAttackRequests + "<br/>拦截比例：" + attackRatio + "%"
+			return stats[index].day + " " + stats[index].hour + "时<br/>总请求数：" + teaweb.formatNumber(stats[index].countRequests) + "<br/>缓存请求数：" + teaweb.formatNumber(stats[index].countCachedRequests) + "<br/>缓存命中率：" + cachedRatio + "%<br/>拦截攻击数：" + teaweb.formatNumber(stats[index].countAttackRequests) + "<br/>拦截比例：" + attackRatio + "%"
 		})
 	}
 
@@ -267,7 +267,7 @@ Tea.context(function () {
 				attackRatio = Math.round(stats[index].countAttackRequests * 10000 / stats[index].countRequests) / 100
 			}
 
-			return stats[index].day + "<br/>总请求数：" + stats[index].countRequests + "<br/>缓存请求数：" + stats[index].countCachedRequests + "<br/>缓存命中率：" + cachedRatio + "%<br/>拦截攻击数：" + stats[index].countAttackRequests + "<br/>拦截比例：" + attackRatio + "%"
+			return stats[index].day + "<br/>总请求数：" + teaweb.formatNumber(stats[index].countRequests) + "<br/>缓存请求数：" + teaweb.formatNumber(stats[index].countCachedRequests) + "<br/>缓存命中率：" + cachedRatio + "%<br/>拦截攻击数：" + teaweb.formatNumber(stats[index].countAttackRequests) + "<br/>拦截比例：" + attackRatio + "%"
 		})
 	}
 
