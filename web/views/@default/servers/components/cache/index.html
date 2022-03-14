@@ -17,9 +17,15 @@
             <input type="text" name="keyword" v-model="keyword" placeholder="策略名称..."/>
         </div>
         <div class="ui field">
+            <select class="ui dropdown" name="storageType" v-model="storageType">
+                <option value="">[存储类型]</option>
+                <option v-for="storageType in storageTypes" :value="storageType.type">{{storageType.name}}</option>
+            </select>
+        </div>
+        <div class="ui field">
             <button type="submit" class="ui button">搜索</button>
             &nbsp;
-            <a :href="Tea.url('.')" v-if="keyword.length > 0 || clusterId > 0">[清除条件]</a>
+            <a :href="Tea.url('.')" v-if="keyword.length > 0 || clusterId > 0 || storageType.length > 0">[清除条件]</a>
         </div>
     </div>
 </form>
@@ -38,10 +44,20 @@
         </tr>
     </thead>
     <tr v-for="(policy, index) in cachePolicies">
-        <td><a :href="'/servers/components/cache/policy?cachePolicyId=' + policy.id"><keyword :v-word="keyword">{{policy.name}}</keyword></a></td>
+        <td>
+            <a :href="'/servers/components/cache/policy?cachePolicyId=' + policy.id"><keyword :v-word="keyword">{{policy.name}}</keyword>
+                &nbsp;
+                <i class="icon disk small blue" v-if="policy.type == 'file'" title="硬盘"></i>
+            </a>
+        </td>
         <td>{{infos[index].typeName}} <span class="small">（{{policy.type}}）</span></td>
         <td>
-            <span v-if="policy.capacity != null && policy.capacity.count > 0">{{policy.capacity.count}}{{policy.capacity.unit.toUpperCase()}}</span>
+            <span v-if="policy.capacity != null && policy.capacity.count > 0">
+                {{policy.capacity.count}}{{policy.capacity.unit.toUpperCase()}}
+                <span v-if="policy.type == 'file' && policy.options.memoryPolicy != null && policy.options.memoryPolicy.capacity != null && policy.options.memoryPolicy.capacity.count > 0" class="small grey" title="内存容量">
+                    （内存：{{policy.options.memoryPolicy.capacity.count}}{{policy.options.memoryPolicy.capacity.unit.toUpperCase()}}）
+                </span>
+            </span>
             <span v-else class="disabled">不限</span>
         </td>
         <td class="center">{{infos[index].countClusters}}</td>

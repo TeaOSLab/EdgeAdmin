@@ -17,15 +17,18 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct {
-	ClusterId int64
-	Keyword   string
+	ClusterId   int64
+	Keyword     string
+	StorageType string
 }) {
 	this.Data["keyword"] = params.Keyword
 	this.Data["clusterId"] = params.ClusterId
+	this.Data["storageType"] = params.StorageType
 
 	countResp, err := this.RPC().HTTPCachePolicyRPC().CountAllEnabledHTTPCachePolicies(this.AdminContext(), &pb.CountAllEnabledHTTPCachePoliciesRequest{
 		NodeClusterId: params.ClusterId,
 		Keyword:       params.Keyword,
+		Type:          params.StorageType,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -38,6 +41,7 @@ func (this *IndexAction) RunGet(params struct {
 	listResp, err := this.RPC().HTTPCachePolicyRPC().ListEnabledHTTPCachePolicies(this.AdminContext(), &pb.ListEnabledHTTPCachePoliciesRequest{
 		Keyword:       params.Keyword,
 		NodeClusterId: params.ClusterId,
+		Type:          params.StorageType,
 		Offset:        page.Offset,
 		Size:          page.Size,
 	})
@@ -69,6 +73,9 @@ func (this *IndexAction) RunGet(params struct {
 		})
 	}
 	this.Data["infos"] = infos
+
+	// 所有的存储类型
+	this.Data["storageTypes"] = serverconfigs.AllCachePolicyStorageTypes
 
 	this.Show()
 }
