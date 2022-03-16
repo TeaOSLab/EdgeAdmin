@@ -32,17 +32,31 @@
         <!-- IPSet -->
         <tbody v-if="type == 'ipset'">
             <tr>
-                <td>IPSet白名单名称 *</td>
+                <td>IPv4白名单名称 *</td>
                 <td>
                     <input type="text" name="ipsetWhiteName" value="edge_white_list" maxlength="64"/>
-                    <p class="comment">只能是英文、数字、下划线的组合。</p>
+                    <p class="comment"><span class="ui label basic grey tiny">白名单</span> 用来存放<span class="red">IPv4地址</span>。只能是英文、数字、下划线的组合。</p>
                 </td>
             </tr>
             <tr>
-                <td>IPSet黑名单名称 *</td>
+                <td>IPv6白名单名称 *</td>
+                <td>
+                    <input type="text" name="ipsetWhiteNameIPv6" value="edge_white_list_ipv6" maxlength="64"/>
+                    <p class="comment"><span class="ui label basic grey tiny">白名单</span> 用来存放<span class="red">IPv6地址</span>。只能是英文、数字、下划线的组合。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>IPv4黑名单名称 *</td>
                 <td>
                     <input type="text" name="ipsetBlackName" value="edge_black_list" maxlength="64"/>
-                    <p class="comment">只能是英文、数字、下划线的组合。</p>
+                    <p class="comment"><span class="ui label black tiny">黑名单</span> 用来存放<span class="red">IPv4地址</span>。只能是英文、数字、下划线的组合。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>IPv6 黑名单名称 *</td>
+                <td>
+                    <input type="text" name="ipsetBlackNameIPv6" value="edge_black_list_ipv6" maxlength="64"/>
+                    <p class="comment"><span class="ui label black tiny">黑名单</span> 用来存放<span class="red">IPv6地址</span>。只能是英文、数字、下划线的组合。</p>
                 </td>
             </tr>
             <tr>

@@ -34,6 +34,8 @@ func (this *CreatePopupAction) RunPost(params struct {
 	// ipset
 	IpsetWhiteName          string
 	IpsetBlackName          string
+	IpsetWhiteNameIPv6      string
+	IpsetBlackNameIPv6      string
 	IpsetAutoAddToIPTables  bool
 	IpsetAutoAddToFirewalld bool
 
@@ -49,7 +51,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("创建WAF动作")
+	defer this.CreateLogInfo("创建集群 %d 的WAF动作", params.ClusterId)
 
 	params.Must.
 		Field("name", params.Name).
@@ -66,11 +68,19 @@ func (this *CreatePopupAction) RunPost(params struct {
 			Match(`^\w+$`, "请输入正确的IPSet白名单名称").
 			Field("ipsetBlackName", params.IpsetBlackName).
 			Require("请输入IPSet黑名单名称").
-			Match(`^\w+$`, "请输入正确的IPSet黑名单名称")
+			Match(`^\w+$`, "请输入正确的IPSet黑名单名称").
+			Field("ipsetWhiteNameIPv6", params.IpsetWhiteNameIPv6).
+			Require("请输入IPSet IPv6白名单名称").
+			Match(`^\w+$`, "请输入正确的IPSet IPv6白名单名称").
+			Field("ipsetBlackNameIPv6", params.IpsetBlackNameIPv6).
+			Require("请输入IPSet IPv6黑名单名称").
+			Match(`^\w+$`, "请输入正确的IPSet IPv6黑名单名称")
 
 		actionParams = &firewallconfigs.FirewallActionIPSetConfig{
 			WhiteName:          params.IpsetWhiteName,
 			BlackName:          params.IpsetBlackName,
+			WhiteNameIPv6:      params.IpsetWhiteNameIPv6,
+			BlackNameIPv6:      params.IpsetBlackNameIPv6,
 			AutoAddToIPTables:  params.IpsetAutoAddToIPTables,
 			AutoAddToFirewalld: params.IpsetAutoAddToFirewalld,
 		}
