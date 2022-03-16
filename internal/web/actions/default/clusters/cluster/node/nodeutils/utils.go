@@ -60,11 +60,15 @@ func InitNodeInfo(parentAction *actionutils.ParentAction, nodeId int64) (*pb.Nod
 			"name":     "DNS设置",
 			"url":      prefix + "/settings/dns?" + query,
 			"isActive": menuItem == "dns",
+			"isOn":     len(node.DnsRoutes) > 0,
 		},
 		{
 			"name":     "缓存设置",
 			"url":      prefix + "/settings/cache?" + query,
 			"isActive": menuItem == "cache",
+			"isOn": len(node.CacheDiskDir) > 0 ||
+				(node.MaxCacheDiskCapacity != nil && node.MaxCacheDiskCapacity.Count > 0) ||
+				(node.MaxCacheMemoryCapacity != nil && node.MaxCacheMemoryCapacity.Count > 0),
 		},
 	}
 	if teaconst.IsPlus {
@@ -81,11 +85,13 @@ func InitNodeInfo(parentAction *actionutils.ParentAction, nodeId int64) (*pb.Nod
 			"name":     "SSH设置",
 			"url":      prefix + "/settings/ssh?" + query,
 			"isActive": menuItem == "ssh",
+			"isOn":     node.NodeLogin != nil,
 		},
 		{
 			"name":     "系统设置",
 			"url":      prefix + "/settings/system?" + query,
 			"isActive": menuItem == "system",
+			"isOn":     node.MaxCPU > 0,
 		},
 	}...)
 	parentAction.Data["leftMenuItems"] = menuItems
