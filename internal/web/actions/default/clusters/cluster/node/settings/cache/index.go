@@ -59,6 +59,7 @@ func (this *IndexAction) RunGet(params struct {
 
 	var nodeMap = this.Data["node"].(maps.Map)
 	nodeMap["maxCacheDiskCapacity"] = maxCacheDiskCapacity
+	nodeMap["cacheDiskDir"] = node.CacheDiskDir
 	nodeMap["maxCacheMemoryCapacity"] = maxCacheMemoryCapacity
 
 	this.Show()
@@ -67,6 +68,7 @@ func (this *IndexAction) RunGet(params struct {
 func (this *IndexAction) RunPost(params struct {
 	NodeId                     int64
 	MaxCacheDiskCapacityJSON   []byte
+	CacheDiskDir               string
 	MaxCacheMemoryCapacityJSON []byte
 
 	Must *actions.Must
@@ -106,6 +108,7 @@ func (this *IndexAction) RunPost(params struct {
 	_, err := this.RPC().NodeRPC().UpdateNodeCache(this.AdminContext(), &pb.UpdateNodeCacheRequest{
 		NodeId:                 params.NodeId,
 		MaxCacheDiskCapacity:   pbMaxCacheDiskCapacity,
+		CacheDiskDir:           params.CacheDiskDir,
 		MaxCacheMemoryCapacity: pbMaxCacheMemoryCapacity,
 	})
 	if err != nil {
