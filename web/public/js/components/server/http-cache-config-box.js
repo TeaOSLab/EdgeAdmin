@@ -69,7 +69,7 @@ Vue.component("http-cache-config-box", {
 				</td>
 			</tr>
 			<tr>
-				<td class="title">开启缓存</td>
+				<td class="title">启用缓存</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="cacheConfig.isOn"/>
