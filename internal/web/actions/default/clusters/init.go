@@ -16,6 +16,7 @@ func init() {
 			Prefix("/clusters").
 			Get("", new(IndexAction)).
 			GetPost("/create", new(CreateAction)).
+			Post("/pin", new(PinAction)).
 
 			// 只要登录即可访问的Action
 			EndHelpers().

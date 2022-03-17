@@ -145,6 +145,7 @@ func (this *IndexAction) RunGet(params struct {
 				"dnsDomainName":     dnsDomainName,
 				"countServers":      countServersResp.Count,
 				"timeZone":          cluster.TimeZone,
+				"isPinned":          cluster.IsPinned,
 			})
 		}
 	}
