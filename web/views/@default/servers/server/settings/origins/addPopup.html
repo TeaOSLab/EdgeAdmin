@@ -46,6 +46,13 @@
                 </td>
             </tr>
             <tr v-if="isHTTP">
+                <td>回源主机名</td>
+                <td>
+                    <input type="text" name="host" placeholder="比如example.com" maxlength="100"/>
+                    <p class="comment">请求源站时的Host，用于修改源站接收到的域名，自定义Host内容中支持请求变量。</p>
+                </td>
+            </tr>
+            <tr v-if="isHTTP">
                 <td>专属域名</td>
                 <td>
                     <domains-box></domains-box>

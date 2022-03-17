@@ -86,14 +86,11 @@ Vue.component("origin-list-table", {
 	</thead>
 	<tr v-for="origin in vOrigins">
 		<td :class="{disabled:!origin.isOn}"><a href="" @click.prevent="updateOrigin(origin.id)">{{origin.addr}} &nbsp;<i class="icon clone outline small"></i></a>
-			<div v-if="origin.name.length > 0" style="margin-top: 0.5em">
-				<tiny-basic-label>{{origin.name}}</tiny-basic-label>
-			</div>
-			<div v-if="origin.domains != null && origin.domains.length > 0">
-				<grey-label v-for="domain in origin.domains">{{domain}}</grey-label>
-			</div>
-			<div v-if="origin.hasCert">
-				<tiny-basic-label>证书</tiny-basic-label>
+			<div style="margin-top: 0.3em" v-if="origin.name.length > 0 || origin.hasCert || (origin.host != null && origin.host.length > 0) || (origin.domains != null && origin.domains.length > 0)">
+				<tiny-basic-label v-if="origin.name.length > 0">{{origin.name}}</tiny-basic-label>
+				<tiny-basic-label v-if="origin.hasCert">证书</tiny-basic-label>
+				<tiny-basic-label v-if="origin.host != null && origin.host.length > 0">主机名: {{origin.host}}</tiny-basic-label>
+				<span v-if="origin.domains != null && origin.domains.length > 0"><tiny-basic-label v-for="domain in origin.domains">匹配: {{domain}}</tiny-basic-label></span>
 			</div>
 		</td>
 		<td :class="{disabled:!origin.isOn}">{{origin.weight}}</td>

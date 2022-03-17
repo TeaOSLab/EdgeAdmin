@@ -60,17 +60,17 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	configData := originResp.OriginJSON
-	config := &serverconfigs.OriginConfig{}
+	var configData = originResp.OriginJSON
+	var config = &serverconfigs.OriginConfig{}
 	err = json.Unmarshal(configData, config)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 
-	connTimeout := 0
-	readTimeout := 0
-	idleTimeout := 0
+	var connTimeout = 0
+	var readTimeout = 0
+	var idleTimeout = 0
 	if config.ConnTimeout != nil {
 		connTimeout = types.Int(config.ConnTimeout.Count)
 	}
@@ -108,6 +108,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		"maxIdleConns": config.MaxIdleConns,
 		"cert":         config.Cert,
 		"domains":      config.Domains,
+		"host":         config.RequestHost,
 	}
 
 	this.Show()
@@ -130,7 +131,9 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	IdleTimeout  int
 
 	CertIdsJSON []byte
+
 	DomainsJSON []byte
+	Host        string
 
 	Description string
 	IsOn        bool
@@ -164,8 +167,8 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		}
 		portIndex = strings.LastIndex(addr, ":")
 	}
-	host := addr[:portIndex]
-	port := addr[portIndex+1:]
+	var host = addr[:portIndex]
+	var port = addr[portIndex+1:]
 	if port == "0" {
 		this.Fail("端口号不能为0")
 	}
@@ -222,6 +225,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		}
 	}
 
+	// 专属域名
 	var domains = []string{}
 	if len(params.DomainsJSON) > 0 {
 		err = json.Unmarshal(params.DomainsJSON, &domains)
@@ -254,6 +258,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		MaxIdleConns:    params.MaxIdleConns,
 		CertRefJSON:     certRefJSON,
 		Domains:         domains,
+		Host:            params.Host,
 	})
 	if err != nil {
 		this.ErrorPage(err)
