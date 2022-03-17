@@ -66,6 +66,7 @@ func (this *AddPopupAction) RunPost(params struct {
 	CertIdsJSON []byte
 
 	DomainsJSON []byte
+	Host        string
 
 	Description string
 	IsOn        bool
@@ -157,6 +158,7 @@ func (this *AddPopupAction) RunPost(params struct {
 		}
 	}
 
+	// 专属域名
 	var domains = []string{}
 	if len(params.DomainsJSON) > 0 {
 		err = json.Unmarshal(params.DomainsJSON, &domains)
@@ -188,6 +190,7 @@ func (this *AddPopupAction) RunPost(params struct {
 		MaxIdleConns:    params.MaxIdleConns,
 		CertRefJSON:     certRefJSON,
 		Domains:         domains,
+		Host:            params.Host,
 	})
 	if err != nil {
 		this.ErrorPage(err)
