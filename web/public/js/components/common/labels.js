@@ -43,3 +43,8 @@ Vue.component("grey-label", {
 	},
 	template: `<span class="ui label basic tiny" :class="labelColor" style="margin-top: 0.4em; font-size: 0.7em; border: 1px solid #ddd!important; font-weight: normal;"><slot></slot></span>`
 })
+
+// 可选标签
+Vue.component("optional-label", {
+	template: `<em><span class="grey">（可选）</span></em>`
+})
