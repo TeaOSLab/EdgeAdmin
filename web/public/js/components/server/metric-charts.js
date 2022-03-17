@@ -103,8 +103,11 @@ Vue.component("metric-chart", {
 							case "byte":
 								value = teaweb.formatBytes(value)
 								break
+							case "count":
+								value = teaweb.formatNumber(value)
+								break
 						}
-						return stat.keys[0] + ": " + value + "，占比：" + percent + "%"
+						return stat.keys[0] + "<br/>" + that.valueTypeName + ": " + value + "<br/>占比：" + percent + "%"
 					}
 				},
 				series: [
@@ -312,8 +315,11 @@ Vue.component("metric-chart", {
 							case "byte":
 								value = teaweb.formatBytes(value)
 								break
+							case "count":
+								value = teaweb.formatNumber(value)
+								break
 						}
-						return stat.keys[0] + ": " + value + "，占比：" + percent + "%"
+						return stat.keys[0] + "<br/>" + that.valueTypeName + "：" + value + "<br/>占比：" + percent + "%"
 					}
 				},
 				yAxis: {
