@@ -27,6 +27,14 @@ func (this *CreateAction) RunGet(params struct{}) {
 	}
 	this.Data["hasDomains"] = hasDomainsResp.Exist
 
+	// 集群总数
+	totalResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClusters(this.AdminContext(), &pb.CountAllEnabledNodeClustersRequest{})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["totalNodeClusters"] = totalResp.Count
+
 	this.Show()
 }
 
