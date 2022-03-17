@@ -1,0 +1,21 @@
+.cluster-name-td {
+  position: relative;
+}
+.cluster-name-td .icon.pin {
+  display: none;
+  position: absolute;
+  right: 1em;
+  top: 50%;
+  margin-top: -0.7em;
+  opacity: 0.6;
+}
+.cluster-name-td .icon.visible {
+  display: inline;
+}
+.cluster-name-td .icon.opacity {
+  opacity: 0.3;
+}
+.cluster-name-td:hover .icon.pin {
+  display: inline;
+}
+/*# sourceMappingURL=index.css.map */
