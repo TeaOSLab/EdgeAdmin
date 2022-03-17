@@ -124,6 +124,8 @@ func (this *IndexAction) RunGet(params struct {
 				HasError:          params.HasError > 0,
 				HasFirewallPolicy: params.HasWAF > 0,
 				Day:               day,
+				HourFrom:          params.Hour,
+				HourTo:            params.Hour,
 				Keyword:           params.Keyword,
 				Ip:                params.Ip,
 				Domain:            params.Domain,
