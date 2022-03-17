@@ -29,6 +29,14 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["searchType"] = params.SearchType
 	this.Data["isSearching"] = isSearching
 
+	// 集群总数
+	totalResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClusters(this.AdminContext(), &pb.CountAllEnabledNodeClustersRequest{})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["totalNodeClusters"] = totalResp.Count
+
 	// 常用的集群
 	latestClusterMaps := []maps.Map{}
 	if !isSearching {
