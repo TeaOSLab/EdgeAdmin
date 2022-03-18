@@ -32,7 +32,7 @@ Tea.context(function () {
 	this.resetAllCerts = function () {
 		this.$post(".resetAll")
 			.success(function () {
-				teaweb.successRefresh("重置成功")
+				teaweb.successRefresh("操作成功，将很快开始重试")
 			})
 	}
 
@@ -40,7 +40,7 @@ Tea.context(function () {
 		this.$post(".reset")
 			.params({ certIds: this.certIds })
 			.success(function () {
-				teaweb.successRefresh("重置成功")
+				teaweb.successRefresh("操作成功，将很快开始重试")
 			})
 	}
 
