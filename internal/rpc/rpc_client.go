@@ -16,6 +16,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
 	"net/url"
 	"sync"
@@ -561,7 +562,7 @@ func (this *RPCClient) init() error {
 		}
 		var conn *grpc.ClientConn
 		if u.Scheme == "http" {
-			conn, err = grpc.Dial(u.Host, grpc.WithInsecure(), grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(128*1024*1024)))
+			conn, err = grpc.Dial(u.Host, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(128*1024*1024)))
 		} else if u.Scheme == "https" {
 			conn, err = grpc.Dial(u.Host, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{
 				InsecureSkipVerify: true,
