@@ -3888,7 +3888,7 @@ Vue.component("http-cache-config-box", {
 				<td>添加Age Header</td>
 				<td>
 					<checkbox v-model="cacheConfig.addAgeHeader"></checkbox>
-					<p class="comment">选中后自动在响应Header中增加<code-label>Age: [有效时间秒数]</code-label>。</p>
+					<p class="comment">选中后自动在响应Header中增加<code-label>Age: [存活时间秒数]</code-label>。</p>
 				</td>
 			</tr>
 			<tr>
