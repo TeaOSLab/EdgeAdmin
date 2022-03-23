@@ -17,7 +17,6 @@ func init() {
 			Get("", new(IndexAction)).
 			GetPost("/create", new(CreateAction)).
 			GetPost("/update", new(UpdateAction)).
-			Post("/fixLog", new(FixLogAction)).
 			Post("/nearby", new(NearbyAction)).
 
 			//

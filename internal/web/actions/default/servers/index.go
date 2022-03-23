@@ -5,7 +5,6 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
-	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/maps"
@@ -260,72 +259,16 @@ func (this *IndexAction) RunGet(params struct {
 	// 是否有用户管理权限
 	this.Data["canVisitUser"] = configloaders.AllowModule(this.AdminId(), configloaders.AdminModuleCodeUser)
 
-	// 显示服务相关的日志
-	errorLogsResp, err := this.RPC().NodeLogRPC().ListNodeLogs(this.AdminContext(), &pb.ListNodeLogsRequest{
-		NodeId:     0,
-		Role:       nodeconfigs.NodeRoleNode,
-		Offset:     0,
-		Size:       20,
-		Level:      "error,success,warning",
-		FixedState: int32(configutils.BoolStateNo),
+	// 显示服务需要修复的日志数量
+	countNeedFixLogsResp, err := this.RPC().NodeLogRPC().CountNodeLogs(this.AdminContext(), &pb.CountNodeLogsRequest{
 		AllServers: true,
+		FixedState: int32(configutils.BoolStateNo),
 	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	errorLogMaps := []maps.Map{}
-	for _, errorLog := range errorLogsResp.NodeLogs {
-		serverResp, err := this.RPC().ServerRPC().FindEnabledUserServerBasic(this.AdminContext(), &pb.FindEnabledUserServerBasicRequest{ServerId: errorLog.ServerId})
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-
-		// 服务
-		var server = serverResp.Server
-		if server == nil {
-			// 设置为已修复
-			_, err = this.RPC().NodeLogRPC().FixNodeLogs(this.AdminContext(), &pb.FixNodeLogsRequest{NodeLogIds: []int64{errorLog.Id}})
-			if err != nil {
-				this.ErrorPage(err)
-				return
-			}
-
-			continue
-		}
-
-		// 节点
-		nodeResp, err := this.RPC().NodeRPC().FindEnabledNode(this.AdminContext(), &pb.FindEnabledNodeRequest{NodeId: errorLog.NodeId})
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-		var node = nodeResp.Node
-		if node == nil || node.NodeCluster == nil {
-			// 设置为已修复
-			_, err = this.RPC().NodeLogRPC().FixNodeLogs(this.AdminContext(), &pb.FixNodeLogsRequest{NodeLogIds: []int64{errorLog.Id}})
-			if err != nil {
-				this.ErrorPage(err)
-				return
-			}
-
-			continue
-		}
-
-		errorLogMaps = append(errorLogMaps, maps.Map{
-			"id":          errorLog.Id,
-			"description": errorLog.Description,
-			"createdTime": timeutil.FormatTime("Y-m-d H:i:s", errorLog.CreatedAt),
-			"serverId":    errorLog.ServerId,
-			"level":       errorLog.Level,
-			"serverName":  server.Name,
-			"nodeId":      node.Id,
-			"nodeName":    node.Name,
-			"clusterId":   node.NodeCluster.Id,
-		})
-	}
-	this.Data["errorLogs"] = errorLogMaps
+	this.Data["countNeedFixLogs"] = countNeedFixLogsResp.Count
 
 	this.Show()
 }
