@@ -46,6 +46,7 @@
     </div>
 </form>
 
+<!-- 未读操作 -->
 <div v-if="type == 'unread'">
     <div class="ui divider" style="margin-bottom: 0"></div>
     <second-menu v-if="logs.length > 0">
@@ -54,7 +55,17 @@
     </second-menu>
 </div>
 
-<p class="comment" v-if="logs.length == 0">暂时还没有日志。</p>
+<!-- 未修复操作 -->
+<div v-if="type == 'needFix'">
+    <div class="ui divider" style="margin-bottom: 0"></div>
+    <second-menu v-if="logs.length > 0">
+        <a href="" class="item" @click.prevent="fixPageLogs()">[本页已修复]</a>
+        <a href="" class="item" @click.prevent="fixAllLogs()">[全部已修复]</a>
+    </second-menu>
+    <p class="ui message" v-if="logs.length > 0">已合并重复内容，当前显示数据和总数量可能不一致。</p>
+</div>
+
+<p class="comment" v-if="logs.length == 0">暂时还没有<span v-if="type == 'unread'">未读</span><span v-if="type == 'needFix'">需修复</span>日志。</p>
 
 <table class="ui table selectable celled" v-if="logs.length > 0">
     <thead>
@@ -62,7 +73,7 @@
             <th>集群</th>
             <th>节点</th>
             <th>信息</th>
-            <th class="one op">操作</th>
+            <th style="width: 5em">操作</th>
         </tr>
     </thead>
     <tr v-for="log in logs">
@@ -72,7 +83,8 @@
             <node-log-row :v-log="log" :v-keyword="keyword"></node-log-row>
         </td>
         <td>
-            <a href="" @click.prevent="updateRead(log.id)" v-if="!log.isRead">已读</a>
+            <a href="" v-if="!log.isFixed" @click.prevent="fixLog(log.id)">已修复</a>
+            <a href="" @click.prevent="updateRead(log.id)" v-if="log.isFixed && !log.isRead">已读</a>
         </td>
     </tr>
 </table>

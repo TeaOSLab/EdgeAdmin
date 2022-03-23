@@ -2,24 +2,12 @@
 {$template "menu"}
 
 <!-- 错误日志 -->
-<div v-if="errorLogs.length > 0">
+<div v-if="countNeedFixLogs > 0">
     <div class="margin"></div>
-    <div class="ui menu tabular attached">
-        <span class="ui item active"><span class="red">需要修复的错误 &nbsp; <a href="" title="本页已修复" @click.prevent="fixPageLogs"><i class="icon remove small"></i> </a></span></span>
-    </div>
-    <div class="ui segment attached node-logs-box">
-        <div class="ui icon message small" v-for="log in errorLogs" :class="{error: log.level == 'error', success: log.level == 'success'}">
-            <i class="icon warning circle"></i>
-            <div class="content">
-                [{{log.createdTime}}]
-                <a :href="'/clusters/cluster/node?clusterId=' + log.clusterId + '&nodeId=' + log.nodeId">[节点：{{log.nodeName}}]</a>
-                <a :href="'/servers/server/settings?serverId=' + log.serverId"><span v-if="log.serverName.length > 0">[服务：{{log.serverName}}]</span><span v-else>[服务]</span></a>
-                <span v-if="log.level == 'error'">[错误]</span>
-                <span v-if="log.level == 'success'">[成功]</span>
-                {{log.description}}
-            </div>
-            <a href="" title="关闭" @click.prevent="fixLog(log.id)"><i class="ui icon remove small"></i></a>
-        </div>
+
+    <div class="ui icon message small error">
+        <i class="icon warning circle"></i>
+        <div class="content"><a href="/clusters/logs?type=needFix">有{{countNeedFixLogs}}个网站服务相关的错误需要修复。</a></div>
     </div>
 </div>
 

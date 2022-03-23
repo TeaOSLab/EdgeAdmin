@@ -16,6 +16,8 @@ func init() {
 			Get("", new(IndexAction)).
 			Post("/readLogs", new(ReadLogsAction)).
 			Post("/readAllLogs", new(ReadAllLogsAction)).
+			Post("/fix", new(FixAction)).
+			Post("/fixAll", new(FixAllAction)).
 			EndAll()
 	})
 }

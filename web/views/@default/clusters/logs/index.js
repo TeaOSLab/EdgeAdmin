@@ -18,8 +18,43 @@ Tea.context(function () {
 		let logIds = this.logs.map(function (v) {
 			return v.id
 		})
-		teaweb.confirm("确定要设置本页日志为已读吗？", function () {
-			this.$post(".readLogs")
+		this.$post(".readLogs")
+			.params({
+				logIds: logIds
+			})
+			.success(function () {
+				teaweb.reload()
+			})
+	}
+
+	this.updateAllRead = function () {
+		this.$post(".readAllLogs")
+			.params({})
+			.success(function () {
+				teaweb.reload()
+			})
+	}
+
+	this.changeCluster = function (clusterId) {
+		this.clusterId = clusterId
+	}
+
+	this.fixLog = function (logId) {
+		this.$post(".fixLogs")
+			.params({
+				logIds: [logId]
+			})
+			.success(function () {
+				teaweb.reload()
+			})
+	}
+
+	this.fixPageLogs = function () {
+		let logIds = this.logs.map(function (v) {
+			return v.id
+		})
+		teaweb.confirm("确定已修复并消除当前页的问题？", function () {
+			this.$post(".fix")
 				.params({
 					logIds: logIds
 				})
@@ -29,17 +64,12 @@ Tea.context(function () {
 		})
 	}
 
-	this.updateAllRead = function () {
-		teaweb.confirm("确定要设置所有日志为已读吗？", function () {
-			this.$post(".readAllLogs")
-				.params({})
+	this.fixAllLogs = function () {
+		teaweb.confirm("确定已修复并消除所有的问题？", function () {
+			this.$post(".fixAll")
 				.success(function () {
 					teaweb.reload()
 				})
 		})
-	}
-
-	this.changeCluster = function (clusterId) {
-		this.clusterId = clusterId
 	}
 })
