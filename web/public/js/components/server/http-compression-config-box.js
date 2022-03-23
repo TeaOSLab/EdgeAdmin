@@ -202,7 +202,7 @@ Vue.component("http-compression-config-box", {
 						</div>
 					</div>
 					
-					<p class="comment">选择支持的压缩算法和优先顺序，拖动<i class="icon list small grey"></i>图表排序。</p>
+					<p class="comment" v-show="!config.useDefaultTypes">选择支持的压缩算法和优先顺序，拖动<i class="icon list small grey"></i>图表排序。</p>
 				</td>
 			</tr>
 			<tr>
