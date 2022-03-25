@@ -9,7 +9,7 @@
         <thead>
             <tr>
                 <th style="width:3em"><checkbox @input="checkAll"></checkbox></th>
-                <th>集群</th>
+                <th class="three wide">集群</th>
                 <th>节点</th>
                 <th>任务</th>
                 <th>状态</th>
@@ -29,6 +29,7 @@
                 <td>
                     <span v-if="task.type == 'configChanged'">同步配置</span>
                     <span v-if="task.type == 'ipItemChanged'">同步IP名单</span>
+                    <span v-if="task.type == 'scriptsChanged'">同步脚本</span>
                 </td>
                 <td>
                     <span v-if="task.isDone" class="red">{{task.error}}</span>

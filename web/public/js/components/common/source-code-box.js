@@ -1,7 +1,7 @@
 let sourceCodeBoxIndex = 0
 
 Vue.component("source-code-box", {
-	props: ["name", "type", "id", "read-only", "width", "height"],
+	props: ["name", "type", "id", "read-only", "width", "height", "focus"],
 	mounted: function () {
 		let readOnly = this.readOnly
 		if (typeof readOnly != "boolean") {
@@ -53,6 +53,10 @@ Vue.component("source-code-box", {
 			})
 			boxEditor.setValue(value)
 
+			if (this.focus) {
+				boxEditor.focus()
+			}
+
 			let width = this.width
 			let height = this.height
 			if (width != null && height != null) {
@@ -63,6 +67,11 @@ Vue.component("source-code-box", {
 						width = box.parentNode.offsetWidth
 					}
 					boxEditor.setSize(width, height)
+				}
+			} else if (height != null) {
+				height = parseInt(height)
+				if (!isNaN(height)) {
+					boxEditor.setSize("100%", height)
 				}
 			}
 
