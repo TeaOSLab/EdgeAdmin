@@ -299,16 +299,19 @@ func (this *CreateAction) RunPost(params struct {
 	}
 
 	// 源站地址
-	reverseProxyRefJSON := []byte{}
+	var reverseProxyRefJSON = []byte{}
 	switch params.ServerType {
 	case serverconfigs.ServerTypeHTTPProxy, serverconfigs.ServerTypeTCPProxy, serverconfigs.ServerTypeUDPProxy:
-		originConfigs := []*serverconfigs.OriginConfig{}
+		var originConfigs = []*serverconfigs.OriginConfig{}
 		err := json.Unmarshal([]byte(params.Origins), &originConfigs)
 		if err != nil {
 			this.Fail("源站地址解析失败：" + err.Error())
 		}
+		if len(originConfigs) == 0 {
+			this.Fail("请添加至少一个源站地址")
+		}
 
-		originRefs := []*serverconfigs.OriginRef{}
+		var originRefs = []*serverconfigs.OriginRef{}
 		for _, originConfig := range originConfigs {
 			if originConfig.Id > 0 {
 				originRefs = append(originRefs, &serverconfigs.OriginRef{
