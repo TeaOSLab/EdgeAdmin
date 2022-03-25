@@ -6862,14 +6862,14 @@ Vue.component("http-compression-config-box", {
 						</div>
 					</div>
 					
-					<p class="comment">选择支持的压缩算法和优先顺序，拖动<i class="icon list small grey"></i>图表排序。</p>
+					<p class="comment" v-show="!config.useDefaultTypes">选择支持的压缩算法和优先顺序，拖动<i class="icon list small grey"></i>图表排序。</p>
 				</td>
 			</tr>
 			<tr>
 				<td>支持已压缩内容</td>
 				<td>
 					<checkbox v-model="config.decompressData"></checkbox>
-					<p class="comment">支持对已压缩内容尝试重新使用新的算法压缩。</p>
+					<p class="comment">支持对已压缩内容尝试重新使用新的算法压缩；不选中表示保留当前的压缩格式。</p>
 				</td>
 			</tr>
 			<tr>
