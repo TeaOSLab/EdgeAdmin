@@ -40,7 +40,7 @@ Tea.context(function () {
 	}
 
 	this.fixLog = function (logId) {
-		this.$post(".fixLogs")
+		this.$post(".fix")
 			.params({
 				logIds: [logId]
 			})
