@@ -1,36 +1,36 @@
 {$layout}
 
-	<first-menu>
-		<menu-item v-for="type in types" :href="'/settings/ip-library?type=' + type.code" :active="type.code == selectedType">{{type.name}}</menu-item>
-		<span class="item">|</span>
-		<a href="" class="item" @click.prevent="upload()">[上传]</a>
-	</first-menu>
+<first-menu>
+    <menu-item v-for="type in types" :href="'/settings/ip-library?type=' + type.code" :active="type.code == selectedType">{{type.name}}</menu-item>
+    <span class="item">|</span>
+    <a href="" class="item" @click.prevent="upload()">[上传]</a>
+</first-menu>
 
-	<p class="comment" v-if="libraries.length == 0">暂时还没有IP库。</p>
-	<div v-if="libraries.length > 0">
-		<div class="margin"></div>
-		<table class="ui table selectable celled">
-			<thead>
-				<tr>
-					<th>文件名</th>
-					<th>文件尺寸</th>
-					<th>上传时间</th>
-					<th class="two op">操作</th>
-				</tr>
-			</thead>
-			<tr v-for="library in libraries">
-				<td>
-					<span v-if="library.file != null">{{library.file.filename}}</span>
-					<span v-else>-</span>
-				</td>
-				<td>
-					<span v-if="library.file != null">{{library.file.sizeMB}}MB</span>
-					<span v-else>-</span>
-				</td>
-				<td>{{library.createdTime}}</td>
-				<td>
-					<a :href="'/settings/ip-library/download?libraryId=' + library.id" target="_blank">下载</a> &nbsp; <a href="" @click.prevent="deleteLibrary(library.id)">删除</a>
-				</td>
-			</tr>
-		</table>
-	</div>
+<p class="comment" v-if="libraries.length == 0">暂时还没有IP库，系统会使用默认的IP库。</p>
+<div v-if="libraries.length > 0">
+    <div class="margin"></div>
+    <table class="ui table selectable celled">
+        <thead>
+            <tr>
+                <th>文件名</th>
+                <th>文件尺寸</th>
+                <th>上传时间</th>
+                <th class="two op">操作</th>
+            </tr>
+        </thead>
+        <tr v-for="library in libraries">
+            <td>
+                <span v-if="library.file != null">{{library.file.filename}}</span>
+                <span v-else>-</span>
+            </td>
+            <td>
+                <span v-if="library.file != null">{{library.file.sizeMB}}MB</span>
+                <span v-else>-</span>
+            </td>
+            <td>{{library.createdTime}}</td>
+            <td>
+                <a :href="'/settings/ip-library/download?libraryId=' + library.id" target="_blank">下载</a> &nbsp; <a href="" @click.prevent="deleteLibrary(library.id)">删除</a>
+            </td>
+        </tr>
+    </table>
+</div>
