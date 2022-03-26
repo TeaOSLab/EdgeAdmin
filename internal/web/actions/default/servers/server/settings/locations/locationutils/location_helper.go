@@ -1,6 +1,7 @@
 package locationutils
 
 import (
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -160,6 +161,18 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"isActive": secondMenuItem == "fastcgi",
 		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.FastcgiRef != nil && locationConfig.Web.FastcgiRef.IsPrior,
 	})
+
+	if teaconst.IsPlus {
+		if locationConfig.Web != nil && locationConfig.Web.RequestScripts != nil {
+			_ = locationConfig.Web.RequestScripts.Init()
+		}
+		menuItems = append(menuItems, maps.Map{
+			"name":     "边缘脚本",
+			"url":      "/servers/server/settings/locations/requestScripts?serverId=" + serverIdString + "&locationId=" + locationIdString,
+			"isActive": secondMenuItem == "requestScripts",
+			"isOn":     locationConfig.Web != nil && locationConfig.Web.RequestScripts != nil && !locationConfig.Web.RequestScripts.IsEmpty(),
+		})
+	}
 
 	menuItems = append(menuItems, maps.Map{
 		"name":     "-",
