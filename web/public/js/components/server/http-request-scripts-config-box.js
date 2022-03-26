@@ -1,5 +1,5 @@
 Vue.component("http-request-scripts-config-box", {
-	props: ["vRequestScriptsConfig"],
+	props: ["vRequestScriptsConfig", "v-is-location"],
 	data: function () {
 		let config = this.vRequestScriptsConfig
 		if (config == null) {
@@ -25,12 +25,12 @@ Vue.component("http-request-scripts-config-box", {
 	<h4 style="margin-bottom: 0">请求初始化</h4>
 	<p class="comment">在请求刚初始化时调用，此时自定义Header等尚未生效。</p>
 	<div>
-		<script-group-config-box :v-group="config.initGroup" @change="changeInitGroup"></script-group-config-box>
+		<script-group-config-box :v-group="config.initGroup" @change="changeInitGroup" :v-is-location="vIsLocation"></script-group-config-box>
 	</div>
 	<h4 style="margin-bottom: 0">准备发送请求</h4>
 	<p class="comment">在准备执行请求或者转发请求之前调用，此时自定义Header、源站等已准备好。</p>
 	<div>
-		<script-group-config-box :v-group="config.requestGroup" @change="changeRequestGroup"></script-group-config-box>
+		<script-group-config-box :v-group="config.requestGroup" @change="changeRequestGroup" :v-is-location="vIsLocation"></script-group-config-box>
 	</div>
 	<div class="margin"></div>
 </div>`
