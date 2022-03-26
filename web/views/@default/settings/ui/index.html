@@ -85,6 +85,24 @@
                 <p class="comment">在有分页的地方每页显示数量；不能超过100。</p>
             </td>
         </tr>
+        <tr>
+            <td>时区</td>
+            <td>
+                <div class="ui fields inline">
+                    <div class="ui field">
+                        <select class="ui dropdown" v-model="timeZoneGroupCode">
+                            <option v-for="timeZoneGroup in timeZoneGroups" :value="timeZoneGroup.code">{{timeZoneGroup.name}}</option>
+                        </select>
+                    </div>
+                    <div class="ui field">
+                        <select class="ui dropdown" name="timeZone" v-model="config.timeZone">
+                            <option v-for="timeZoneLocation in timeZoneLocations" :value="timeZoneLocation.name" v-if="timeZoneLocation.group == timeZoneGroupCode">{{timeZoneLocation.name}} ({{timeZoneLocation.offset}})</option>
+                        </select>
+                    </div>
+                </div>
+                <p class="comment">显示时间使用的时区。</p>
+            </td>
+        </tr>
     </table>
 
 	<submit-btn></submit-btn>

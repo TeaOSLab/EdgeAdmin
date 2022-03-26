@@ -3,6 +3,7 @@ package ui
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"io"
@@ -27,6 +28,15 @@ func (this *IndexAction) RunGet(params struct{}) {
 	}
 	this.Data["config"] = config
 
+	// 时区
+	this.Data["timeZoneGroups"] = nodeconfigs.FindAllTimeZoneGroups()
+	this.Data["timeZoneLocations"] = nodeconfigs.FindAllTimeZoneLocations()
+
+	if len(config.TimeZone) == 0 {
+		config.TimeZone = nodeconfigs.DefaultTimeZoneLocation
+	}
+	this.Data["timeZoneLocation"] = nodeconfigs.FindTimeZoneLocation(config.TimeZone)
+
 	this.Show()
 }
 
@@ -40,6 +50,7 @@ func (this *IndexAction) RunPost(params struct {
 	FaviconFile        *actions.File
 	LogoFile           *actions.File
 	DefaultPageSize    int
+	TimeZone           string
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -66,6 +77,7 @@ func (this *IndexAction) RunPost(params struct {
 	config.ShowFinance = params.ShowFinance
 	config.ShowVersion = params.ShowVersion
 	config.Version = params.Version
+	config.TimeZone = params.TimeZone
 
 	if params.DefaultPageSize > 0 {
 		config.DefaultPageSize = params.DefaultPageSize
