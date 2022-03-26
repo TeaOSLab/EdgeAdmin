@@ -68,6 +68,9 @@ Vue.component("http-location-labels", {
 	<!-- Websocket -->
 	<http-location-labels-label v-if="location.web != null && refIsOn(location.web.websocketRef, location.web.websocket)" :href="url('/websocket')">Websocket</http-location-labels-label>
 	
+	<!-- 请求脚本 -->
+	<http-location-labels-label v-if="location.web != null && location.web.requestScripts != null && ((location.web.requestScripts.initGroup != null && location.web.requestScripts.initGroup.isPrior) || (location.web.requestScripts.requestGroup != null && location.web.requestScripts.requestGroup.isPrior))" :href="url('/requestScripts')">请求脚本</http-location-labels-label>
+	
 	<!-- 特殊页面 -->
 	<div v-if="location.web != null && location.web.pages != null && location.web.pages.length > 0">
 		<div v-for="page in location.web.pages" :key="page.id"><http-location-labels-label :href="url('/pages')">PAGE [状态码{{page.status[0]}}] -&gt; {{page.url}}</http-location-labels-label></div>
@@ -87,5 +90,5 @@ Vue.component("http-location-labels", {
 
 Vue.component("http-location-labels-label", {
 	props: ["v-class", "v-href"],
-	template: `<a :href="vHref" class="ui label tiny" :class="vClass" style="font-size:0.7em;padding:4px;margin-top:0.3em;margin-bottom:0.3em"><slot></slot></a>`
+	template: `<a :href="vHref" class="ui label tiny basic" :class="vClass" style="font-size:0.7em;padding:4px;margin-top:0.3em;margin-bottom:0.3em"><slot></slot></a>`
 })
