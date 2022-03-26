@@ -78,6 +78,29 @@
             </td>
         </tr>
     </table>
+
+    <h4>其他</h4>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">时区</td>
+            <td>
+                <div class="ui fields inline">
+                    <div class="ui field">
+                        <select class="ui dropdown" v-model="timeZoneGroupCode">
+                            <option v-for="timeZoneGroup in timeZoneGroups" :value="timeZoneGroup.code">{{timeZoneGroup.name}}</option>
+                        </select>
+                    </div>
+                    <div class="ui field">
+                        <select class="ui dropdown" name="timeZone" v-model="config.timeZone">
+                            <option v-for="timeZoneLocation in timeZoneLocations" :value="timeZoneLocation.name" v-if="timeZoneLocation.group == timeZoneGroupCode">{{timeZoneLocation.name}} ({{timeZoneLocation.offset}})</option>
+                        </select>
+                    </div>
+                </div>
+                <p class="comment">显示时间使用的时区。</p>
+            </td>
+        </tr>
+    </table>
+
     <p class="comment">修改后，在3分钟内生效。</p>
 
     <submit-btn></submit-btn>

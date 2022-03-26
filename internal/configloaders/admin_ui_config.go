@@ -3,10 +3,12 @@ package configloaders
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
+	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/iwind/TeaGo/logs"
 	"reflect"
+	"time"
 )
 
 var sharedAdminUIConfig *systemconfigs.AdminUIConfig = nil
@@ -45,6 +47,9 @@ func UpdateAdminUIConfig(uiConfig *systemconfigs.AdminUIConfig) error {
 	}
 	sharedAdminUIConfig = uiConfig
 
+	// timezone
+	updateTimeZone(uiConfig)
+
 	return nil
 }
 
@@ -76,13 +81,17 @@ func loadAdminUIConfig() (*systemconfigs.AdminUIConfig, error) {
 		return sharedAdminUIConfig, nil
 	}
 
-	config := &systemconfigs.AdminUIConfig{}
+	var config = &systemconfigs.AdminUIConfig{}
 	err = json.Unmarshal(resp.ValueJSON, config)
 	if err != nil {
 		logs.Println("[UI_MANAGER]" + err.Error())
 		sharedAdminUIConfig = defaultAdminUIConfig()
 		return sharedAdminUIConfig, nil
 	}
+
+	// timezone
+	updateTimeZone(config)
+
 	sharedAdminUIConfig = config
 	return sharedAdminUIConfig, nil
 }
@@ -95,5 +104,16 @@ func defaultAdminUIConfig() *systemconfigs.AdminUIConfig {
 		ShowVersion:        true,
 		ShowFinance:        true,
 		DefaultPageSize:    10,
+		TimeZone:           nodeconfigs.DefaultTimeZoneLocation,
+	}
+}
+
+// 修改时区
+func updateTimeZone(config *systemconfigs.AdminUIConfig) {
+	if len(config.TimeZone) > 0 {
+		location, err := time.LoadLocation(config.TimeZone)
+		if err == nil && time.Local != location {
+			time.Local = location
+		}
 	}
 }
