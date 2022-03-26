@@ -2450,7 +2450,7 @@ Vue.component("http-firewall-actions-view", {
 })
 
 Vue.component("http-request-scripts-config-box", {
-	props: ["vRequestScriptsConfig"],
+	props: ["vRequestScriptsConfig", "v-is-location"],
 	data: function () {
 		let config = this.vRequestScriptsConfig
 		if (config == null) {
@@ -2476,12 +2476,12 @@ Vue.component("http-request-scripts-config-box", {
 	<h4 style="margin-bottom: 0">请求初始化</h4>
 	<p class="comment">在请求刚初始化时调用，此时自定义Header等尚未生效。</p>
 	<div>
-		<script-group-config-box :v-group="config.initGroup" @change="changeInitGroup"></script-group-config-box>
+		<script-group-config-box :v-group="config.initGroup" @change="changeInitGroup" :v-is-location="vIsLocation"></script-group-config-box>
 	</div>
 	<h4 style="margin-bottom: 0">准备发送请求</h4>
 	<p class="comment">在准备执行请求或者转发请求之前调用，此时自定义Header、源站等已准备好。</p>
 	<div>
-		<script-group-config-box :v-group="config.requestGroup" @change="changeRequestGroup"></script-group-config-box>
+		<script-group-config-box :v-group="config.requestGroup" @change="changeRequestGroup" :v-is-location="vIsLocation"></script-group-config-box>
 	</div>
 	<div class="margin"></div>
 </div>`
@@ -7493,6 +7493,9 @@ Vue.component("http-location-labels", {
 	<!-- Websocket -->
 	<http-location-labels-label v-if="location.web != null && refIsOn(location.web.websocketRef, location.web.websocket)" :href="url('/websocket')">Websocket</http-location-labels-label>
 	
+	<!-- 请求脚本 -->
+	<http-location-labels-label v-if="location.web != null && location.web.requestScripts != null && ((location.web.requestScripts.initGroup != null && location.web.requestScripts.initGroup.isPrior) || (location.web.requestScripts.requestGroup != null && location.web.requestScripts.requestGroup.isPrior))" :href="url('/requestScripts')">请求脚本</http-location-labels-label>
+	
 	<!-- 特殊页面 -->
 	<div v-if="location.web != null && location.web.pages != null && location.web.pages.length > 0">
 		<div v-for="page in location.web.pages" :key="page.id"><http-location-labels-label :href="url('/pages')">PAGE [状态码{{page.status[0]}}] -&gt; {{page.url}}</http-location-labels-label></div>
@@ -7512,7 +7515,7 @@ Vue.component("http-location-labels", {
 
 Vue.component("http-location-labels-label", {
 	props: ["v-class", "v-href"],
-	template: `<a :href="vHref" class="ui label tiny" :class="vClass" style="font-size:0.7em;padding:4px;margin-top:0.3em;margin-bottom:0.3em"><slot></slot></a>`
+	template: `<a :href="vHref" class="ui label tiny basic" :class="vClass" style="font-size:0.7em;padding:4px;margin-top:0.3em;margin-bottom:0.3em"><slot></slot></a>`
 })
 
 Vue.component("http-gzip-box", {
@@ -10002,7 +10005,7 @@ Vue.component("server-group-selector", {
 })
 
 Vue.component("script-group-config-box", {
-	props: ["v-group"],
+	props: ["v-group", "v-is-location"],
 	data: function () {
 		let group = this.vGroup
 		if (group == null) {
@@ -10036,7 +10039,12 @@ Vue.component("script-group-config-box", {
 		}
 	},
 	template: `<div>
-		<script-config-box :v-script-config="script" comment="在接收到客户端请求之后立即调用。预置req、resp变量。" @change="changeScript"></script-config-box>
+		<table class="ui table definition selectable">
+			<prior-checkbox :v-config="group" v-if="vIsLocation"></prior-checkbox>
+		</table>
+		<div :style="{opacity: (!vIsLocation || group.isPrior) ? 1 : 0.5}">
+			<script-config-box :v-script-config="script" comment="在接收到客户端请求之后立即调用。预置req、resp变量。" @change="changeScript" :v-is-location="vIsLocation"></script-config-box>
+		</div>
 </div>`
 })
 
@@ -12525,7 +12533,7 @@ Vue.component("node-role-name", {
 let sourceCodeBoxIndex = 0
 
 Vue.component("source-code-box", {
-	props: ["name", "type", "id", "read-only", "width", "height"],
+	props: ["name", "type", "id", "read-only", "width", "height", "focus"],
 	mounted: function () {
 		let readOnly = this.readOnly
 		if (typeof readOnly != "boolean") {
@@ -12577,6 +12585,10 @@ Vue.component("source-code-box", {
 			})
 			boxEditor.setValue(value)
 
+			if (this.focus) {
+				boxEditor.focus()
+			}
+
 			let width = this.width
 			let height = this.height
 			if (width != null && height != null) {
@@ -12587,6 +12599,11 @@ Vue.component("source-code-box", {
 						width = box.parentNode.offsetWidth
 					}
 					boxEditor.setSize(width, height)
+				}
+			} else if (height != null) {
+				height = parseInt(height)
+				if (!isNaN(height)) {
+					boxEditor.setSize("100%", height)
 				}
 			}
 
