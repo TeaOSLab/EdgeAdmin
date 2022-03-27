@@ -484,6 +484,10 @@ func (this *RPCClient) ServerStatBoardRPC() pb.ServerStatBoardServiceClient {
 	return pb.NewServerStatBoardServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) ServerDomainHourlyStatRPC() pb.ServerDomainHourlyStatServiceClient {
+	return pb.NewServerDomainHourlyStatServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) ServerStatBoardChartRPC() pb.ServerStatBoardChartServiceClient {
 	return pb.NewServerStatBoardChartServiceClient(this.pickConn())
 }
