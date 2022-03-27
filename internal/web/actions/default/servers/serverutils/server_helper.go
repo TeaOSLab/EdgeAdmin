@@ -109,10 +109,6 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 	}
 	tabbar.Add("设置", "", "/servers/server/settings?serverId="+serverIdString, "setting", selectedTabbar == "setting")
 	tabbar.Add("删除", "", "/servers/server/delete?serverId="+serverIdString, "trash", selectedTabbar == "delete")
-	{
-		m := tabbar.Add("当前服务："+server.Name, "", "/servers/server?serverId="+serverIdString, "", false)
-		m["right"] = true
-	}
 
 	actionutils.SetTabbar(action, tabbar)
 

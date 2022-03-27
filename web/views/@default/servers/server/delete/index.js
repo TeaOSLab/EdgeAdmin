@@ -1,6 +1,6 @@
 Tea.context(function () {
 	this.deleteServer = function (serverId) {
-		teaweb.confirm("确定要删除当前服务吗？", function () {
+		teaweb.confirm("html:确定要删除当前服务吗？<br/>请慎重操作，删除后无法恢复！", function () {
 			this.$post("$")
 				.params({
 					"serverId": serverId

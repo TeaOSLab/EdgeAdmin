@@ -1,8 +1,15 @@
 {$layout}
-{$template "/left_menu"}
 
-<div class="right-box">
-    <div style="width:20em">
-        <button class="ui button red large fluid" type="button" @click.prevent="deleteServer(serverId)">删除当前服务</button>
-    </div>
+<first-menu>
+    <menu-item href="/servers">服务列表</menu-item>
+    <span class="item disabled">|</span>
+    <menu-item :href="'/servers/server/delete?serverId=' + server.id" active="true">"{{server.name}}"删除</menu-item>
+    <span class="disabled item">|</span>
+    <more-items-angle
+            :v-data-url="'/servers/nearby?serverId=' + server.id"
+            :v-url="'/servers/server/delete?serverId=${serverId}'"></more-items-angle>
+</first-menu>
+
+<div class="delete-box">
+    <button class="ui button red large fluid" type="button" @click.prevent="deleteServer(serverId)">删除当前服务</button>
 </div>
