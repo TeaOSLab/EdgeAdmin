@@ -1,7 +1,17 @@
 {$layout}
 
-{$template "/left_menu"}
-<div class="right-box">
+<first-menu>
+    <menu-item href="/servers">服务列表</menu-item>
+    <span class="item disabled">|</span>
+    <menu-item :href="'/servers/server/log?serverId=' + server.id" active="true">"{{server.name}}"日志</menu-item>
+    <span class="disabled item">|</span>
+    <more-items-angle
+            :v-data-url="'/servers/nearby?serverId=' + server.id"
+            :v-url="'/servers/server/log?serverId=${serverId}'"></more-items-angle>
+</first-menu>
+
+{$template "/left_menu_with_menu"}
+<div class="right-box with-menu">
 	<first-menu>
 		<menu-item :href="path + '?serverId=' + serverId + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&pageSize=' + pageSize" :active="hasError == 0 && hasWAF == 0">所有日志</menu-item>
 		<menu-item :href="path + '?serverId=' + serverId + '&hasError=1' + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&pageSize=' + pageSize" :active="hasError > 0">错误日志</menu-item>

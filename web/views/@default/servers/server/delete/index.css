@@ -1,5 +1,7 @@
-.right-box {
-  text-align: center;
+.delete-box {
   margin-top: 1em;
+}
+.delete-box button {
+  width: 20em!important;
 }
 /*# sourceMappingURL=index.css.map */
