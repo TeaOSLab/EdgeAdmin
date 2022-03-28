@@ -35,13 +35,14 @@ func (this *UpdateAction) RunGet(params struct {
 }
 
 func (this *UpdateAction) RunPost(params struct {
-	ItemId     int64
-	Name       string
-	KeysJSON   []byte
-	PeriodJSON []byte
-	Value      string
-	IsOn       bool
-	IsPublic   bool
+	ItemId        int64
+	Name          string
+	KeysJSON      []byte
+	PeriodJSON    []byte
+	ExpiresPeriod int32
+	Value         string
+	IsOn          bool
+	IsPublic      bool
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -71,15 +72,20 @@ func (this *UpdateAction) RunPost(params struct {
 	var period = periodMap.GetInt32("period")
 	var periodUnit = periodMap.GetString("unit")
 
+	if params.ExpiresPeriod < 0 {
+		params.ExpiresPeriod = 0
+	}
+
 	_, err = this.RPC().MetricItemRPC().UpdateMetricItem(this.AdminContext(), &pb.UpdateMetricItemRequest{
-		MetricItemId: params.ItemId,
-		Name:         params.Name,
-		Keys:         keys,
-		Period:       period,
-		PeriodUnit:   periodUnit,
-		Value:        params.Value,
-		IsOn:         params.IsOn,
-		IsPublic:     params.IsPublic,
+		MetricItemId:  params.ItemId,
+		Name:          params.Name,
+		Keys:          keys,
+		Period:        period,
+		PeriodUnit:    periodUnit,
+		Value:         params.Value,
+		IsOn:          params.IsOn,
+		IsPublic:      params.IsPublic,
+		ExpiresPeriod: params.ExpiresPeriod,
 	})
 	if err != nil {
 		this.ErrorPage(err)
