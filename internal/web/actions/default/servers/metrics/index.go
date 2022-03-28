@@ -53,6 +53,7 @@ func (this *IndexAction) RunGet(params struct {
 			"period":         item.Period,
 			"periodUnit":     item.PeriodUnit,
 			"periodUnitName": serverconfigs.FindMetricPeriodUnitName(item.PeriodUnit),
+			"expiresPeriod":  item.ExpiresPeriod,
 			"keys":           item.Keys,
 			"value":          item.Value,
 			"valueName":      serverconfigs.FindMetricValueName(item.Category, item.Value),

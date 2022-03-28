@@ -46,6 +46,7 @@ func InitItem(parent *actionutils.ParentAction, itemId int64) (*pb.MetricItem, e
 		"category":       item.Category,
 		"isPublic":       item.IsPublic,
 		"countCharts":    countCharts,
+		"expiresPeriod":  item.ExpiresPeriod,
 	}
 	return item, nil
 }

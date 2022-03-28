@@ -31,6 +31,14 @@
         </td>
     </tr>
     <tr>
+        <td>数据保留周期</td>
+        <td>
+            <span v-if="item.expiresPeriod > 0">{{item.expiresPeriod}}</span>
+            <span v-else>自动</span>
+            <p class="comment" v-if="item.expiresPeriod > 0">单位和统计周期一致。</p>
+        </td>
+    </tr>
+    <tr>
         <td>是否公用</td>
         <td>
             <span class="green" v-if="item.isPublic">公用</span>

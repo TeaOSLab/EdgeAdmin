@@ -29,12 +29,13 @@ func (this *CreatePopupAction) RunGet(params struct {
 }
 
 func (this *CreatePopupAction) RunPost(params struct {
-	Name       string
-	Category   string
-	KeysJSON   []byte
-	PeriodJSON []byte
-	Value      string
-	IsPublic   bool
+	Name          string
+	Category      string
+	KeysJSON      []byte
+	PeriodJSON    []byte
+	Value         string
+	IsPublic      bool
+	ExpiresPeriod int32
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -68,15 +69,20 @@ func (this *CreatePopupAction) RunPost(params struct {
 	var period = periodMap.GetInt32("period")
 	var periodUnit = periodMap.GetString("unit")
 
+	if params.ExpiresPeriod < 0 {
+		params.ExpiresPeriod = 0
+	}
+
 	createResp, err := this.RPC().MetricItemRPC().CreateMetricItem(this.AdminContext(), &pb.CreateMetricItemRequest{
-		Code:       "", // TODO 未来实现
-		Category:   params.Category,
-		Name:       params.Name,
-		Keys:       keys,
-		Period:     period,
-		PeriodUnit: periodUnit,
-		Value:      params.Value,
-		IsPublic:   params.IsPublic,
+		Code:          "", // TODO 未来实现
+		Category:      params.Category,
+		Name:          params.Name,
+		Keys:          keys,
+		Period:        period,
+		PeriodUnit:    periodUnit,
+		ExpiresPeriod: params.ExpiresPeriod,
+		Value:         params.Value,
+		IsPublic:      params.IsPublic,
 	})
 	if err != nil {
 		this.ErrorPage(err)
