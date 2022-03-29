@@ -250,6 +250,23 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isActive": secondMenuItem == "reverseProxy",
 			"isOn":     serverConfig.ReverseProxyRef != nil && serverConfig.ReverseProxyRef.IsOn,
 		})
+
+		if teaconst.IsPlus {
+			menuItems = append(menuItems, maps.Map{
+				"name":     "-",
+				"url":      "",
+				"isActive": false,
+			})
+
+			menuItems = append(menuItems, maps.Map{
+				"name":        "全站防护",
+				"url":         "/servers/server/settings/uam?serverId=" + serverIdString,
+				"isActive":    secondMenuItem == "uam",
+				"isOn":        serverConfig.UAM != nil && serverConfig.UAM.IsOn,
+				"isImportant": serverConfig.UAM != nil && serverConfig.UAM.IsOn,
+			})
+		}
+
 		menuItems = append(menuItems, maps.Map{
 			"name":     "-",
 			"url":      "",
