@@ -2,6 +2,15 @@ Tea.context(function () {
 	this.$delay(function () {
 		let that = this
 
+		// 每N分钟取一次
+		let newStats = []
+		for (let i = 0; i < this.minutelyStats.length; i++) {
+			if (i % 5 == 0) {
+				newStats.push(this.minutelyStats[i])
+			}
+		}
+		this.minutelyStats = newStats
+
 		this.reloadRequestsChart("minutely-requests-chart", "请求数统计", this.minutelyStats, function (args) {
 			if (args.seriesIndex == 0) {
 				return that.minutelyStats[args.dataIndex].day + " " + that.minutelyStats[args.dataIndex].minute + "<br/>请求数: " + teaweb.formatNumber(that.minutelyStats[args.dataIndex].countRequests)
@@ -35,15 +44,6 @@ Tea.context(function () {
 		if (chartBox == null) {
 			return
 		}
-
-		// 每N分钟取一次
-		let newStats = []
-		for (let i = 0; i < stats.length; i++) {
-			if (i % 5 == 0) {
-				newStats.push(stats[i])
-			}
-		}
-		stats = newStats
 
 		let axis = teaweb.countAxis(stats, function (v) {
 			return Math.max(v.countRequests, v.countCachedRequests)
@@ -118,15 +118,6 @@ Tea.context(function () {
 		if (chartBox == null) {
 			return
 		}
-
-		// 每N分钟取一次
-		let newStats = []
-		for (let i = 0; i < stats.length; i++) {
-			if (i % 5 == 0) {
-				newStats.push(stats[i])
-			}
-		}
-		stats = newStats
 
 		let axis = teaweb.bytesAxis(stats, function (v) {
 			return Math.max(v.bytes, v.cachedBytes)
