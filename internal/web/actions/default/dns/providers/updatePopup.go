@@ -89,8 +89,9 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	Type string
 
 	// DNSPod
-	ParamId    string
-	ParamToken string
+	ParamId     string
+	ParamToken  string
+	ParamRegion string
 
 	// AliDNS
 	ParamAccessKeyId     string
@@ -137,6 +138,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 
 		apiParams["id"] = params.ParamId
 		apiParams["token"] = params.ParamToken
+		apiParams["region"] = params.ParamRegion
 	case "alidns":
 		params.Must.
 			Field("paramAccessKeyId", params.ParamAccessKeyId).
