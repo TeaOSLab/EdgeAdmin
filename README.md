@@ -12,9 +12,9 @@
 * [http://demo.goedge.cn](http://demo.goedge.cn)
 
 ## 文档
-* [新手指南](https://edge.teaos.cn/docs/QuickStart/Index.md)
-* [完整文档](https://edge.teaos.cn/docs)
-* [开发者指南](https://edge.teaos.cn/docs/Developer/Build.md)
+* [新手指南](https://goedge.cn/docs/QuickStart/Index.md)
+* [完整文档](https://goedge.cn/docs)
+* [开发者指南](https://goedge.cn/docs/Developer/Build.md)
 
 ## 架构
 ![架构](doc/architect-zh.jpg)
@@ -25,7 +25,7 @@
 * [管理平台](https://github.com/TeaOSLab/EdgeAdmin)
 
 ## 联系我们
-有什么问题和建议都可以加入QQ群 `659832182`。
+有什么问题和建议都可以加入QQ群 `659832182` 或者 [Telegram群](https://t.me/+5kVCMGxQhZxiODY9) 。
 
 ## 感谢
-* 感谢[Gitee](https://gitee.com/)提供国内源代码托管平台
+* 感谢 [Gitee](https://gitee.com/) 提供国内源代码托管平台
