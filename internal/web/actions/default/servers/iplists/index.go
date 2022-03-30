@@ -23,16 +23,19 @@ func (this *IndexAction) RunGet(params struct {
 	Ip         string
 	GlobalOnly bool
 	Unread     bool
+	EventLevel string
 }) {
 	this.Data["type"] = ""
 	this.Data["ip"] = params.Ip
 	this.Data["globalOnly"] = params.GlobalOnly
 	this.Data["unread"] = params.Unread
+	this.Data["eventLevel"] = params.EventLevel
 
 	countUnreadResp, err := this.RPC().IPItemRPC().CountAllEnabledIPItems(this.AdminContext(), &pb.CountAllEnabledIPItemsRequest{
 		Ip:         params.Ip,
 		GlobalOnly: params.GlobalOnly,
 		Unread:     true,
+		EventLevel: params.EventLevel,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -44,6 +47,7 @@ func (this *IndexAction) RunGet(params struct {
 		Ip:         params.Ip,
 		GlobalOnly: params.GlobalOnly,
 		Unread:     params.Unread,
+		EventLevel: params.EventLevel,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -57,6 +61,7 @@ func (this *IndexAction) RunGet(params struct {
 		Ip:         params.Ip,
 		GlobalOnly: params.GlobalOnly,
 		Unread:     params.Unread,
+		EventLevel: params.EventLevel,
 		Offset:     page.Offset,
 		Size:       page.Size,
 	})
@@ -165,6 +170,9 @@ func (this *IndexAction) RunGet(params struct {
 		})
 	}
 	this.Data["items"] = itemMaps
+
+	// 所有级别
+	this.Data["eventLevels"] = firewallconfigs.FindAllFirewallEventLevels()
 
 	this.Show()
 }

@@ -20,10 +20,12 @@ func (this *ItemsAction) Init() {
 }
 
 func (this *ItemsAction) RunGet(params struct {
-	ListId  int64
-	Keyword string
+	ListId     int64
+	Keyword    string
+	EventLevel string
 }) {
 	this.Data["keyword"] = params.Keyword
+	this.Data["eventLevel"] = params.EventLevel
 
 	err := InitIPList(this.Parent(), params.ListId)
 	if err != nil {
@@ -34,8 +36,9 @@ func (this *ItemsAction) RunGet(params struct {
 	// 数量
 	var listId = params.ListId
 	countResp, err := this.RPC().IPItemRPC().CountIPItemsWithListId(this.AdminContext(), &pb.CountIPItemsWithListIdRequest{
-		IpListId: listId,
-		Keyword:  params.Keyword,
+		IpListId:   listId,
+		Keyword:    params.Keyword,
+		EventLevel: params.EventLevel,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -47,10 +50,11 @@ func (this *ItemsAction) RunGet(params struct {
 
 	// 列表
 	itemsResp, err := this.RPC().IPItemRPC().ListIPItemsWithListId(this.AdminContext(), &pb.ListIPItemsWithListIdRequest{
-		IpListId: listId,
-		Keyword:  params.Keyword,
-		Offset:   page.Offset,
-		Size:     page.Size,
+		IpListId:   listId,
+		Keyword:    params.Keyword,
+		EventLevel: params.EventLevel,
+		Offset:     page.Offset,
+		Size:       page.Size,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -117,6 +121,9 @@ func (this *ItemsAction) RunGet(params struct {
 		})
 	}
 	this.Data["items"] = itemMaps
+
+	// 所有级别
+	this.Data["eventLevels"] = firewallconfigs.FindAllFirewallEventLevels()
 
 	this.Show()
 }
