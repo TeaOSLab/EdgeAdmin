@@ -12,9 +12,15 @@
             <input type="text" size="20" placeholder="x.x.x.x" name="keyword" v-model="keyword"/>
         </div>
         <div class="ui field">
+            <select class="ui dropdown" name="eventLevel" v-model="eventLevel">
+                <option value="">[级别]</option>
+                <option v-for="level in eventLevels" :value="level.code">{{level.name}}</option>
+            </select>
+        </div>
+        <div class="ui field">
             <button class="ui button" type="submit">搜索</button>
             &nbsp;
-            <a :href="'/servers/iplists/items?listId=' + list.id" v-if="keyword.length > 0">[清除条件]</a>
+            <a :href="'/servers/iplists/items?listId=' + list.id" v-if="keyword.length > 0 || eventLevel.length > 0">[清除条件]</a>
         </div>
     </div>
     <div class="margin"></div>
