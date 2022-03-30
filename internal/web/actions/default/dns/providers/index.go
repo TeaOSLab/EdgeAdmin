@@ -5,6 +5,8 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
+	"regexp"
+	"strings"
 )
 
 type IndexAction struct {
@@ -17,12 +19,20 @@ func (this *IndexAction) Init() {
 
 func (this *IndexAction) RunGet(params struct {
 	Keyword string
+	Domain  string
 }) {
 	this.Data["keyword"] = params.Keyword
+	this.Data["domain"] = params.Domain
+
+	// 格式化域名
+	var domain = params.Domain
+	domain = regexp.MustCompile(`^(www\.)`).ReplaceAllString(params.Domain, "")
+	domain = strings.ToLower(domain)
 
 	countResp, err := this.RPC().DNSProviderRPC().CountAllEnabledDNSProviders(this.AdminContext(), &pb.CountAllEnabledDNSProvidersRequest{
 		AdminId: this.AdminId(),
 		Keyword: params.Keyword,
+		Domain:  domain,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -35,6 +45,7 @@ func (this *IndexAction) RunGet(params struct {
 	providersResp, err := this.RPC().DNSProviderRPC().ListEnabledDNSProviders(this.AdminContext(), &pb.ListEnabledDNSProvidersRequest{
 		AdminId: this.AdminId(),
 		Keyword: params.Keyword,
+		Domain:  domain,
 		Offset:  page.Offset,
 		Size:    page.Size,
 	})
