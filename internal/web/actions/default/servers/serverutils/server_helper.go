@@ -259,7 +259,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			})
 
 			menuItems = append(menuItems, maps.Map{
-				"name":        "全站防护",
+				"name":        "5秒盾",
 				"url":         "/servers/server/settings/uam?serverId=" + serverIdString,
 				"isActive":    secondMenuItem == "uam",
 				"isOn":        serverConfig.UAM != nil && serverConfig.UAM.IsOn,
