@@ -24,7 +24,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 }) {
 	this.Data["bodyTypes"] = shared.FindAllBodyTypes()
 
-	configResp, err := this.RPC().HTTPPageRPC().FindEnabledHTTPPageConfig(this.AdminContext(), &pb.FindEnabledHTTPPageConfigRequest{PageId: params.PageId})
+	configResp, err := this.RPC().HTTPPageRPC().FindEnabledHTTPPageConfig(this.AdminContext(), &pb.FindEnabledHTTPPageConfigRequest{HttpPageId: params.PageId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -73,7 +73,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	}
 
 	_, err := this.RPC().HTTPPageRPC().UpdateHTTPPage(this.AdminContext(), &pb.UpdateHTTPPageRequest{
-		PageId:     params.PageId,
+		HttpPageId: params.PageId,
 		StatusList: []string{params.Status},
 		BodyType:   params.BodyType,
 		Url:        params.URL,
@@ -86,7 +86,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	}
 
 	// 返回修改后的配置
-	configResp, err := this.RPC().HTTPPageRPC().FindEnabledHTTPPageConfig(this.AdminContext(), &pb.FindEnabledHTTPPageConfigRequest{PageId: params.PageId})
+	configResp, err := this.RPC().HTTPPageRPC().FindEnabledHTTPPageConfig(this.AdminContext(), &pb.FindEnabledHTTPPageConfigRequest{HttpPageId: params.PageId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
