@@ -63,9 +63,9 @@ func (this *CreatePopupAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	pageId := createResp.PageId
+	pageId := createResp.HttpPageId
 
-	configResp, err := this.RPC().HTTPPageRPC().FindEnabledHTTPPageConfig(this.AdminContext(), &pb.FindEnabledHTTPPageConfigRequest{PageId: pageId})
+	configResp, err := this.RPC().HTTPPageRPC().FindEnabledHTTPPageConfig(this.AdminContext(), &pb.FindEnabledHTTPPageConfigRequest{HttpPageId: pageId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
