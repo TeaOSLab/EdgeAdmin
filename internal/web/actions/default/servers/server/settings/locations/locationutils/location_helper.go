@@ -132,7 +132,7 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.Compression != nil && locationConfig.Web.Compression.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
-		"name":     "特殊页面",
+		"name":     "自定义页面",
 		"url":      "/servers/server/settings/locations/pages?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "pages",
 		"isOn":     locationConfig != nil && locationConfig.Web != nil && (len(locationConfig.Web.Pages) > 0 || (locationConfig.Web.Shutdown != nil && locationConfig.Web.Shutdown.IsPrior)),

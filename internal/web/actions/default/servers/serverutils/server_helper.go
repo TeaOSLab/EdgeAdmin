@@ -333,7 +333,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":     serverConfig.Web != nil && serverConfig.Web.Compression != nil && serverConfig.Web.Compression.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     "特殊页面",
+			"name":     "自定义页面",
 			"url":      "/servers/server/settings/pages?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "pages",
 			"isOn":     serverConfig.Web != nil && (len(serverConfig.Web.Pages) > 0 || (serverConfig.Web.Shutdown != nil && serverConfig.Web.Shutdown.IsOn)),

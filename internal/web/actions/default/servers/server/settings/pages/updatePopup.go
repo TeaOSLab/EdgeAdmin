@@ -55,7 +55,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	// 日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改特殊页面 %d", params.PageId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改自定义页面 %d", params.PageId)
 
 	params.Must.
 		Field("status", params.Status).
