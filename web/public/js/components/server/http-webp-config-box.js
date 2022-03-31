@@ -69,13 +69,13 @@ Vue.component("http-webp-config-box", {
 		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
 			<tr>
-				<td class="title">是否启用</td>
+				<td class="title">启用</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" value="1" v-model="config.isOn"/>
 						<label></label>
 					</div>
-					<p class="comment">选中后表示开启自动WebP压缩。</p>
+					<p class="comment">选中后表示开启自动WebP压缩；只有满足缓存条件的图片内容才会被转换。</p>
 				</td>
 			</tr>
 		</tbody>
