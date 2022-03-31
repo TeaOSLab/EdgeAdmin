@@ -80,7 +80,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	this.Data["page"] = pageConfig
 
 	// 日志
-	defer this.CreateLog(oplogs.LevelInfo, "创建特殊页面 %d", pageId)
+	defer this.CreateLog(oplogs.LevelInfo, "创建自定义页面 %d", pageId)
 
 	this.Success()
 }

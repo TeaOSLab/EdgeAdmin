@@ -108,7 +108,7 @@ func InitGroup(parent *actionutils.ParentAction, groupId int64, menuItem string)
 					"isOn":     configInfoResp.HasCompressionConfig,
 				},
 				{
-					"name":     "特殊页面",
+					"name":     "自定义页面",
 					"url":      urlPrefix + "/pages?groupId=" + types.String(groupId),
 					"isActive": menuItem == "pages",
 					"isOn":     configInfoResp.HasPagesConfig,

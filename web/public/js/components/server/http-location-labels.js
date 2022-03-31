@@ -71,7 +71,7 @@ Vue.component("http-location-labels", {
 	<!-- 请求脚本 -->
 	<http-location-labels-label v-if="location.web != null && location.web.requestScripts != null && ((location.web.requestScripts.initGroup != null && location.web.requestScripts.initGroup.isPrior) || (location.web.requestScripts.requestGroup != null && location.web.requestScripts.requestGroup.isPrior))" :href="url('/requestScripts')">请求脚本</http-location-labels-label>
 	
-	<!-- 特殊页面 -->
+	<!-- 自定义页面 -->
 	<div v-if="location.web != null && location.web.pages != null && location.web.pages.length > 0">
 		<div v-for="page in location.web.pages" :key="page.id"><http-location-labels-label :href="url('/pages')">PAGE [状态码{{page.status[0]}}] -&gt; {{page.url}}</http-location-labels-label></div>
 	</div>

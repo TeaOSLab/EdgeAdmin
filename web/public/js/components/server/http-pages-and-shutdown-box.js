@@ -92,7 +92,7 @@ Vue.component("http-pages-and-shutdown-box", {
 <input type="hidden" name="shutdownJSON" :value="JSON.stringify(shutdownConfig)"/>
 <table class="ui table selectable definition">
 	<tr>
-		<td class="title">特殊页面</td>
+		<td class="title">自定义页面</td>
 		<td>
 			<div v-if="pages.length > 0">
 				<div class="ui label small basic" v-for="(page,index) in pages">
@@ -103,7 +103,7 @@ Vue.component("http-pages-and-shutdown-box", {
 			<div>
 				<button class="ui button small" type="button" @click.prevent="addPage()">+</button>
 			</div>
-			<p class="comment">根据响应状态码返回一些特殊页面，比如404，500等错误页面。</p>
+			<p class="comment">根据响应状态码返回一些自定义页面，比如404，500等错误页面。</p>
 		</td>
 	</tr>	
 	<tr>
