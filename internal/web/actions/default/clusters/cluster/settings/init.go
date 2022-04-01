@@ -12,6 +12,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/thresholds"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/toa"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/waf"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/webp"
 	clusters "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/clusterutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/iwind/TeaGo"
@@ -73,6 +74,10 @@ func init() {
 			Get("", new(metrics.IndexAction)).
 			GetPost("/createPopup", new(metrics.CreatePopupAction)).
 			Post("/delete", new(metrics.DeleteAction)).
+
+			// WebP
+			Prefix("/clusters/cluster/settings/webp").
+			GetPost("", new(webp.IndexAction)).
 
 			EndAll()
 	})

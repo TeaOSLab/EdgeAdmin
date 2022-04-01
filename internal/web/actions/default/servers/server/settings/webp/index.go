@@ -5,6 +5,7 @@ package webp
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -43,6 +44,25 @@ func (this *IndexAction) RunGet(params struct {
 
 	this.Data["webId"] = webConfig.Id
 	this.Data["webpConfig"] = webConfig.WebP
+
+	// WebP策略配置
+	var serverMap = this.Data.GetMap("server")
+	var clusterId = serverMap.GetInt64("clusterId")
+	webpPolicyResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeClusterWebPPolicy(this.AdminContext(), &pb.FindEnabledNodeClusterWebPPolicyRequest{NodeClusterId: clusterId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["requireCache"] = true
+	if len(webpPolicyResp.WebpPolicyJSON) > 0 {
+		var webpPolicy = &nodeconfigs.WebPImagePolicy{}
+		err = json.Unmarshal(webpPolicyResp.WebpPolicyJSON, webpPolicy)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		this.Data["requireCache"] = webpPolicy.RequireCache
+	}
 
 	this.Show()
 }
