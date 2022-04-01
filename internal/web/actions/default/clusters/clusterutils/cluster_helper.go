@@ -13,7 +13,7 @@ import (
 	"strconv"
 )
 
-// 单个集群的帮助
+// ClusterHelper 单个集群的帮助
 type ClusterHelper struct {
 }
 
@@ -123,6 +123,12 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 		"url":      "/clusters/cluster/settings/dns?clusterId=" + clusterId,
 		"isActive": selectedItem == "dns",
 		"isOn":     cluster.DnsDomainId > 0 || len(cluster.DnsName) > 0,
+	})
+	items = append(items, maps.Map{
+		"name":     "WebP",
+		"url":      "/clusters/cluster/settings/webp?clusterId=" + clusterId,
+		"isActive": selectedItem == "webp",
+		"isOn":     info != nil && info.WebpIsOn,
 	})
 	items = append(items, maps.Map{
 		"name":     "统计指标",

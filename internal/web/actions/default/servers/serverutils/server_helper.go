@@ -62,7 +62,7 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 		logs.Error(err)
 		return
 	}
-	server := serverResp.Server
+	var server = serverResp.Server
 	if server == nil {
 		logs.Error(errors.New("can not find the server"))
 		return
@@ -70,11 +70,18 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 
 	// 初始化数据
 	if !action.Data.Has("server") {
-		action.Data["server"] = maps.Map{"id": server.Id, "name": server.Name}
+		if server.NodeCluster == nil {
+			server.NodeCluster = &pb.NodeCluster{Id: 0}
+		}
+		action.Data["server"] = maps.Map{
+			"id":        server.Id,
+			"name":      server.Name,
+			"clusterId": server.NodeCluster.Id,
+		}
 	}
 
 	// 服务管理
-	serverConfig := &serverconfigs.ServerConfig{}
+	var serverConfig = &serverconfigs.ServerConfig{}
 	err = json.Unmarshal(server.Config, serverConfig)
 	if err != nil {
 		logs.Error(err)

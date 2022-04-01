@@ -1,5 +1,5 @@
 Vue.component("http-webp-config-box", {
-	props: ["v-webp-config", "v-is-location", "v-is-group"],
+	props: ["v-webp-config", "v-is-location", "v-is-group", "v-require-cache"],
 	data: function () {
 		let config = this.vWebpConfig
 		if (config == null) {
@@ -75,7 +75,7 @@ Vue.component("http-webp-config-box", {
 						<input type="checkbox" value="1" v-model="config.isOn"/>
 						<label></label>
 					</div>
-					<p class="comment">选中后表示开启自动WebP压缩；只有满足缓存条件的图片内容才会被转换。</p>
+					<p class="comment">选中后表示开启自动WebP压缩<span v-if="vRequireCache">；只有满足缓存条件的图片内容才会被转换</span>。</p>
 				</td>
 			</tr>
 		</tbody>

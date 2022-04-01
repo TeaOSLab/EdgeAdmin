@@ -1,0 +1,42 @@
+{$layout}
+{$template "/left_menu"}
+
+<div class="right-box">
+    <form class="ui form" method="post" data-tea-action="$" data-tea-success="success">
+        <csrf-token></csrf-token>
+        <input type="hidden" name="clusterId" :value="clusterId"/>
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title">启用</td>
+                <td>
+                    <checkbox name="isOn" v-model="webpPolicy.isOn"></checkbox>
+                    <p class="comment">选中后，表示当前集群下的服务可以使用WebP转换功能。</p>
+                </td>
+            </tr>
+            <tbody v-show="webpPolicy.isOn">
+                <tr>
+                    <td>需要满足缓存条件</td>
+                    <td>
+                        <checkbox name="requireCache" v-model="webpPolicy.requireCache"></checkbox>
+                        <p class="comment">选中后，表示图片URL需要满足缓存条件后才会转换，防止实时转换消耗巨大的系统资源。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>可转换的最小尺寸</td>
+                    <td>
+                        <size-capacity-box :v-name="'minLengthJSON'" :v-value="webpPolicy.minLength"></size-capacity-box>
+                        <p class="comment">不低于此尺寸的图像文件的才会转换。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>可转换的最大尺寸</td>
+                    <td>
+                        <size-capacity-box :v-name="'maxLengthJSON'" :v-value="webpPolicy.maxLength"></size-capacity-box>
+                        <p class="comment">不高于此尺寸的图像文件的才会转换。</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <submit-btn></submit-btn>
+    </form>
+</div>

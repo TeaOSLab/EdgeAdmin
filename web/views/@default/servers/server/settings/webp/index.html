@@ -13,7 +13,7 @@
             <csrf-token></csrf-token>
             <input type="hidden" name="webId" :value="webId"/>
 
-            <http-webp-config-box :v-webp-config="webpConfig"></http-webp-config-box>
+            <http-webp-config-box :v-webp-config="webpConfig" :v-require-cache="requireCache"></http-webp-config-box>
 
             <submit-btn></submit-btn>
         </form>
