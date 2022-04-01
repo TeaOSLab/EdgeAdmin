@@ -5,5 +5,10 @@ Tea.context(function () {
 
 	this.switchTextMode = function () {
 		this.textMode = !this.textMode
+		if (this.textMode) {
+			this.$delay(function () {
+				this.$refs.certTextField.focus()
+			})
+		}
 	}
 })
