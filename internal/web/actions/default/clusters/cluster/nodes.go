@@ -72,7 +72,7 @@ func (this *NodesAction) RunGet(params struct {
 		return
 	}
 
-	page := this.NewPage(countResp.Count)
+	var page = this.NewPage(countResp.Count)
 	this.Data["page"] = page.AsHTML()
 
 	var req = &pb.ListEnabledNodesMatchRequest{
@@ -107,7 +107,7 @@ func (this *NodesAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	nodeMaps := []maps.Map{}
+	var nodeMaps = []maps.Map{}
 	for _, node := range nodesResp.Nodes {
 		// 状态
 		isSynced := false
@@ -215,7 +215,7 @@ func (this *NodesAction) RunGet(params struct {
 	this.Data["nodes"] = nodeMaps
 
 	// 所有分组
-	groupMaps := []maps.Map{}
+	var groupMaps = []maps.Map{}
 	groupsResp, err := this.RPC().NodeGroupRPC().FindAllEnabledNodeGroupsWithNodeClusterId(this.AdminContext(), &pb.FindAllEnabledNodeGroupsWithNodeClusterIdRequest{
 		NodeClusterId: params.ClusterId,
 	})
@@ -224,12 +224,12 @@ func (this *NodesAction) RunGet(params struct {
 		return
 	}
 	for _, group := range groupsResp.NodeGroups {
-		countResp, err := this.RPC().NodeRPC().CountAllEnabledNodesWithNodeGroupId(this.AdminContext(), &pb.CountAllEnabledNodesWithNodeGroupIdRequest{NodeGroupId: group.Id})
+		countNodesInGroupResp, err := this.RPC().NodeRPC().CountAllEnabledNodesWithNodeGroupId(this.AdminContext(), &pb.CountAllEnabledNodesWithNodeGroupIdRequest{NodeGroupId: group.Id})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-		countNodes := countResp.Count
+		countNodes := countNodesInGroupResp.Count
 		groupName := group.Name
 		if countNodes > 0 {
 			groupName += "(" + strconv.FormatInt(countNodes, 10) + ")"
@@ -248,7 +248,7 @@ func (this *NodesAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	regionMaps := []maps.Map{}
+	var regionMaps = []maps.Map{}
 	for _, region := range regionsResp.NodeRegions {
 		regionMaps = append(regionMaps, maps.Map{
 			"id":   region.Id,

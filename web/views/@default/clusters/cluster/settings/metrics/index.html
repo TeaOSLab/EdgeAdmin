@@ -1,7 +1,8 @@
 {$layout}
-{$template "/left_menu"}
+{$template "../menu"}
+{$template "/left_menu_with_menu"}
 
-<div class="right-box">
+<div class="right-box with-menu">
     <first-menu>
         <menu-item :href="'/clusters/cluster/settings/metrics?category=http&clusterId=' + clusterId" :active="category == 'http'">HTTP</menu-item>
         <!--<menu-item :href="'/clusters/cluster/settings/metrics?category=tcp&clusterId=' + clusterId" :active="category == 'tcp'">TCP</menu-item>

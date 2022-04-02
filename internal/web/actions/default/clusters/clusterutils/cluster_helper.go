@@ -65,18 +65,23 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 		tabbar.Add("集群节点", "", "/clusters/cluster/nodes?clusterId="+clusterIdString, "server", selectedTabbar == "node")
 		tabbar.Add("集群设置", "", "/clusters/cluster/settings?clusterId="+clusterIdString, "setting", selectedTabbar == "setting")
 		tabbar.Add("删除集群", "", "/clusters/cluster/delete?clusterId="+clusterIdString, "trash", selectedTabbar == "delete")
-
-		{
-			m := tabbar.Add("当前集群："+cluster.Name, "", "/clusters/cluster?clusterId="+clusterIdString, "", false)
-			m["right"] = true
-		}
 		actionutils.SetTabbar(action, tabbar)
 
 		// 左侧菜单
 		secondMenuItem := action.Data.GetString("secondMenuItem")
 		switch selectedTabbar {
 		case "setting":
-			action.Data["leftMenuItems"] = this.createSettingMenu(cluster, clusterInfo, secondMenuItem)
+			var menuItems = this.createSettingMenu(cluster, clusterInfo, secondMenuItem)
+			action.Data["leftMenuItems"] = menuItems
+
+			// 当前菜单
+			action.Data["leftMenuActiveItem"] = nil
+			for _, item := range menuItems {
+				if item.GetBool("isActive") {
+					action.Data["leftMenuActiveItem"] = item
+					break
+				}
+			}
 		}
 	}
 
