@@ -15,6 +15,9 @@
                         <dns-route-selector :v-all-routes="allDNSRoutes" :v-routes="dnsRoutes"></dns-route-selector>
                         <p class="comment">当前节点对应的DNS线路，可用线路是根据集群设置的域名获取的，注意DNS服务商可能对这些线路有其他限制。</p>
                     </div>
+                    <div v-else>
+                        <span class="disabled">暂时没有可选的线路。</span>
+                    </div>
                 </td>
             </tr>
         </table>
