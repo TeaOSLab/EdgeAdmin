@@ -1,5 +1,11 @@
 {$layout}
 
+<second-menu>
+    <menu-item :href="'/clusters/cluster?clusterId=' + clusterId">{{currentClusterName}}</menu-item>
+    <span class="disabled item" style="padding: 0">&raquo;</span>
+    <span class="item active">删除</span>
+</second-menu>
+
 <div class="buttons-box">
 	<button class="ui button red" type="button" @click.prevent="deleteCluster(clusterId)">删除当前集群</button>
 </div>

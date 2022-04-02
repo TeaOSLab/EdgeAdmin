@@ -1,7 +1,8 @@
 {$layout}
-{$template "/left_menu"}
+{$template "../menu"}
+{$template "/left_menu_with_menu"}
 
-<div class="right-box">
+<div class="right-box with-menu">
 	<tip-icon content="TCP Option Address(TOA)可以在TCP选项中传递客户端IP，多用在源站需要获取客户端真实IP的场景。<br/><br/>如需修改配置，请在专业人士指导下操作。"></tip-icon>
 	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 		<input type="hidden" name="clusterId" :value="clusterId"/>

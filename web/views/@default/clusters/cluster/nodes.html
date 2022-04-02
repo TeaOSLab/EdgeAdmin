@@ -5,30 +5,30 @@
 <form class="ui form" action="/clusters/cluster/nodes" v-show="countAll > 0">
 	<input type="hidden" name="clusterId" :value="clusterId"/>
 	<div class="ui fields inline">
-        <div class="ui field" v-if="regions.length > 0">
-            <select class="ui dropdown" name="regionId" v-model="regionId">
-                <option value="0">[全部区域]</option>
-                <option v-for="region in regions" :value="region.id">{{region.name}}</option>
-            </select>
-        </div>
 		<div class="ui field" v-if="groups.length > 0">
 			<select class="ui dropdown" name="groupId" v-model="groupId">
 				<option value="0">[全部分组]</option>
 				<option v-for="group in groups" :value="group.id">{{group.name}}</option>
 			</select>
 		</div>
+        <div class="ui field" v-if="regions.length > 0">
+            <select class="ui dropdown" name="regionId" v-model="regionId">
+                <option value="0">[全部区域]</option>
+                <option v-for="region in regions" :value="region.id">{{region.name}}</option>
+            </select>
+        </div>
+        <div class="ui field">
+            <select class="ui dropdown" name="activeState" v-model="activeState">
+                <option value="0">[在线状态]</option>
+                <option value="1">在线</option>
+                <option value="2">不在线</option>
+            </select>
+        </div>
 		<div class="ui field">
 			<select class="ui dropdown" name="installedState" v-model="installState">
 				<option value="0">[安装状态]</option>
 				<option value="1">已安装</option>
 				<option value="2">未安装</option>
-			</select>
-		</div>
-		<div class="ui field">
-			<select class="ui dropdown" name="activeState" v-model="activeState">
-				<option value="0">[在线状态]</option>
-				<option value="1">在线</option>
-				<option value="2">不在线</option>
 			</select>
 		</div>
 		<div class="ui field">
