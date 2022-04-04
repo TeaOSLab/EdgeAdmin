@@ -30,6 +30,7 @@
                     <span v-if="task.type == 'configChanged'">同步配置</span>
                     <span v-if="task.type == 'ipItemChanged'">同步IP名单</span>
                     <span v-if="task.type == 'scriptsChanged'">同步脚本</span>
+                    <span v-if="task.type == 'nodeLevelChanged'">同步L2节点</span>
                 </td>
                 <td>
                     <span v-if="task.isDone" class="red">{{task.error}}</span>

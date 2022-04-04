@@ -31,12 +31,18 @@
 				<option value="2">未安装</option>
 			</select>
 		</div>
+        <div class="ui field" v-if="teaIsPlus && levels.length > 0">
+            <select class="ui dropdown" name="level" v-model="level">
+                <option value="0">[级别]</option>
+                <option v-for="levelInfo in levels" :value="levelInfo.code">{{levelInfo.name}}</option>
+            </select>
+        </div>
 		<div class="ui field">
 			<input type="text" name="keyword" placeholder="关键词" v-model="keyword" style="width:10em"/>
 		</div>
 		<div class="ui field">
 			<button class="ui button" type="submit">搜索</button> &nbsp;
-            <a :href="'/clusters/cluster/nodes?clusterId=' + clusterId" v-if="regionId >0 || groupId > 0 || installState > 0 || activeState > 0 || keyword.length > 0">[清除条件]</a>
+            <a :href="'/clusters/cluster/nodes?clusterId=' + clusterId" v-if="regionId > 0 || groupId > 0 || installState > 0 || activeState > 0 || keyword.length > 0 || level > 0">[清除条件]</a>
 		</div>
 	</div>
 </form>
@@ -66,7 +72,7 @@
 	</tr>
 	</thead>
 	<tr v-for="node in nodes">
-        <td><a :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id">{{node.name}}</a>
+        <td><a :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id">{{node.name}}<sup v-if="node.level > 1"><span class="blue"> &nbsp;L{{node.level}}</span></sup></a>
             <div v-if="node.region != null">
                 <grey-label>区域：{{node.region.name}}</grey-label>
             </div>

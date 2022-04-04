@@ -33,7 +33,7 @@ func (this *DetailAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	node := nodeResp.Node
+	var node = nodeResp.Node
 	if node == nil {
 		this.WriteString("找不到要操作的节点")
 		return
@@ -197,7 +197,7 @@ func (this *DetailAction) RunGet(params struct {
 	}
 
 	// 运行状态
-	status := &nodeconfigs.NodeStatus{}
+	var status = &nodeconfigs.NodeStatus{}
 	if len(node.StatusJSON) > 0 {
 		err = json.Unmarshal(node.StatusJSON, &status)
 		if err != nil {
@@ -285,6 +285,8 @@ func (this *DetailAction) RunGet(params struct {
 		"isOn":              node.IsOn,
 		"records":           recordMaps,
 		"routes":            routeMaps,
+		"level":             node.Level,
+		"levelInfo":         nodeconfigs.FindNodeLevel(int(node.Level)),
 
 		"status": maps.Map{
 			"isActive":             status.IsActive,
