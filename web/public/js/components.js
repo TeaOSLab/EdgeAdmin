@@ -4978,7 +4978,7 @@ Vue.component("http-cache-stale-config", {
 			<td class="title">启用过时缓存</td>
 			<td>
 				<checkbox v-model="config.isOn"></checkbox>
-				<p class="comment">选中后，在更新缓存失败后会尝试读取过时的缓存。</p>
+				<p class="comment"><plus-label></plus-label>选中后，在更新缓存失败后会尝试读取过时的缓存。</p>
 			</td>
 		</tr>
 		<tr v-show="config.isOn">
@@ -6617,7 +6617,7 @@ Vue.component("http-pages-and-shutdown-box", {
 <input type="hidden" name="shutdownJSON" :value="JSON.stringify(shutdownConfig)"/>
 <table class="ui table selectable definition">
 	<tr>
-		<td class="title">特殊页面</td>
+		<td class="title">自定义页面</td>
 		<td>
 			<div v-if="pages.length > 0">
 				<div class="ui label small basic" v-for="(page,index) in pages">
@@ -6628,7 +6628,7 @@ Vue.component("http-pages-and-shutdown-box", {
 			<div>
 				<button class="ui button small" type="button" @click.prevent="addPage()">+</button>
 			</div>
-			<p class="comment">根据响应状态码返回一些特殊页面，比如404，500等错误页面。</p>
+			<p class="comment">根据响应状态码返回一些自定义页面，比如404，500等错误页面。</p>
 		</td>
 	</tr>	
 	<tr>
@@ -7525,7 +7525,7 @@ Vue.component("http-location-labels", {
 	<!-- 请求脚本 -->
 	<http-location-labels-label v-if="location.web != null && location.web.requestScripts != null && ((location.web.requestScripts.initGroup != null && location.web.requestScripts.initGroup.isPrior) || (location.web.requestScripts.requestGroup != null && location.web.requestScripts.requestGroup.isPrior))" :href="url('/requestScripts')">请求脚本</http-location-labels-label>
 	
-	<!-- 特殊页面 -->
+	<!-- 自定义页面 -->
 	<div v-if="location.web != null && location.web.pages != null && location.web.pages.length > 0">
 		<div v-for="page in location.web.pages" :key="page.id"><http-location-labels-label :href="url('/pages')">PAGE [状态码{{page.status[0]}}] -&gt; {{page.url}}</http-location-labels-label></div>
 	</div>
@@ -8628,7 +8628,7 @@ Vue.component("http-web-root-box", {
 })
 
 Vue.component("http-webp-config-box", {
-	props: ["v-webp-config", "v-is-location", "v-is-group"],
+	props: ["v-webp-config", "v-is-location", "v-is-group", "v-require-cache"],
 	data: function () {
 		let config = this.vWebpConfig
 		if (config == null) {
@@ -8698,13 +8698,13 @@ Vue.component("http-webp-config-box", {
 		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
 			<tr>
-				<td class="title">是否启用</td>
+				<td class="title">启用</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" value="1" v-model="config.isOn"/>
 						<label></label>
 					</div>
-					<p class="comment">选中后表示开启自动WebP压缩。</p>
+					<p class="comment">选中后表示开启自动WebP压缩<span v-if="vRequireCache">；只有满足缓存条件的图片内容才会被转换</span>。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -11142,6 +11142,10 @@ Vue.component("countries-selector", {
 </div>`
 })
 
+Vue.component("raquo-item", {
+	template: `<span class="item disabled" style="padding: 0">&raquo;</span>`
+})
+
 Vue.component("more-options-tbody", {
 	data: function () {
 		return {
@@ -11530,6 +11534,11 @@ Vue.component("grey-label", {
 // 可选标签
 Vue.component("optional-label", {
 	template: `<em><span class="grey">（可选）</span></em>`
+})
+
+// Plus专属
+Vue.component("plus-label", {
+	template: `<span style="color: #B18701;">Plus专属功能。</span>`
 })
 
 /**
@@ -13901,6 +13910,39 @@ Vue.component("node-combo-box", {
 	},
 	template: `<div v-if="nodes.length > 0">
 	<combo-box title="节点" placeholder="节点名称" :v-items="nodes" name="nodeId" :v-value="vNodeId"></combo-box>
+</div>`
+})
+
+// 节点级别选择器
+Vue.component("node-level-selector", {
+	props: ["v-node-level"],
+	data: function () {
+		let levelCode = this.vNodeLevel
+		if (levelCode == null || levelCode < 1) {
+			levelCode = 1
+		}
+		return {
+			levels: [
+				{
+					name: "边缘节点",
+					code: 1,
+					description: "普通的边缘节点。"
+				},
+				{
+					name: "L2节点",
+					code: 2,
+					description: "特殊的边缘节点，同时负责同组上一级节点的回源。"
+				}
+			],
+			levelCode: levelCode
+		}
+	},
+	template: `<div>
+	<select class="ui dropdown auto-width" name="level" v-model="levelCode">
+	<option v-for="level in levels" :value="level.code">{{level.name}}</option>
+</select>
+<p class="comment" v-if="typeof(levels[levelCode - 1]) != null"><plus-label
+></plus-label>{{levels[levelCode - 1].description}}</p>
 </div>`
 })
 

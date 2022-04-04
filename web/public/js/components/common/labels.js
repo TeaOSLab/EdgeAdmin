@@ -48,3 +48,8 @@ Vue.component("grey-label", {
 Vue.component("optional-label", {
 	template: `<em><span class="grey">（可选）</span></em>`
 })
+
+// Plus专属
+Vue.component("plus-label", {
+	template: `<span style="color: #B18701;">Plus专属功能。</span>`
+})

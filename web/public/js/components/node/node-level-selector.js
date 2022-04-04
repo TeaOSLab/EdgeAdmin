@@ -26,6 +26,7 @@ Vue.component("node-level-selector", {
 	<select class="ui dropdown auto-width" name="level" v-model="levelCode">
 	<option v-for="level in levels" :value="level.code">{{level.name}}</option>
 </select>
-<p class="comment" v-if="typeof(levels[levelCode - 1]) != null">{{levels[levelCode - 1].description}}</p>
+<p class="comment" v-if="typeof(levels[levelCode - 1]) != null"><plus-label
+></plus-label>{{levels[levelCode - 1].description}}</p>
 </div>`
 })

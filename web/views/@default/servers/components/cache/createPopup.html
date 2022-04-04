@@ -46,6 +46,13 @@
                     <p class="comment">保持缓存文件句柄，提升缓存文件打开速度，建议数量是缓存文件数量的10%。</p>
                 </td>
             </tr>
+            <tr>
+                <td class="color-border" v-show="teaIsPlus">开启Sendfile</td>
+                <td>
+                    <checkbox name="fileEnableSendfile"></checkbox>
+                    <p class="comment"><plus-label></plus-label>使用sendfile提升发送缓存文件的效率。</p>
+                </td>
+            </tr>
 		</tbody>
 
         <tbody v-if="policyType == 'memory'">
