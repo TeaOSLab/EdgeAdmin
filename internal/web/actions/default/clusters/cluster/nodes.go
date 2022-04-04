@@ -3,6 +3,7 @@ package cluster
 import (
 	"encoding/json"
 	"fmt"
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -29,6 +30,7 @@ func (this *NodesAction) RunGet(params struct {
 	InstalledState int
 	ActiveState    int
 	Keyword        string
+	Level          int32
 
 	CpuOrder        string
 	MemoryOrder     string
@@ -40,6 +42,7 @@ func (this *NodesAction) RunGet(params struct {
 	this.Data["installState"] = params.InstalledState
 	this.Data["activeState"] = params.ActiveState
 	this.Data["keyword"] = params.Keyword
+	this.Data["level"] = params.Level
 
 	// 集群是否已经设置了线路
 	clusterDNSResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeClusterDNS(this.AdminContext(), &pb.FindEnabledNodeClusterDNSRequest{NodeClusterId: params.ClusterId})
@@ -63,6 +66,7 @@ func (this *NodesAction) RunGet(params struct {
 		NodeClusterId: params.ClusterId,
 		NodeGroupId:   params.GroupId,
 		NodeRegionId:  params.RegionId,
+		Level:         params.Level,
 		InstallState:  types.Int32(params.InstalledState),
 		ActiveState:   types.Int32(params.ActiveState),
 		Keyword:       params.Keyword,
@@ -81,6 +85,7 @@ func (this *NodesAction) RunGet(params struct {
 		NodeClusterId: params.ClusterId,
 		NodeGroupId:   params.GroupId,
 		NodeRegionId:  params.RegionId,
+		Level:         params.Level,
 		InstallState:  types.Int32(params.InstalledState),
 		ActiveState:   types.Int32(params.ActiveState),
 		Keyword:       params.Keyword,
@@ -210,6 +215,7 @@ func (this *NodesAction) RunGet(params struct {
 			"group":             groupMap,
 			"region":            regionMap,
 			"dnsRouteNames":     dnsRouteNames,
+			"level":             node.Level,
 		})
 	}
 	this.Data["nodes"] = nodeMaps
@@ -256,6 +262,12 @@ func (this *NodesAction) RunGet(params struct {
 		})
 	}
 	this.Data["regions"] = regionMaps
+
+	// 级别
+	this.Data["levels"] = []maps.Map{}
+	if teaconst.IsPlus {
+		this.Data["levels"] = nodeconfigs.FindAllNodeLevels()
+	}
 
 	// 记录最近访问
 	_, err = this.RPC().LatestItemRPC().IncreaseLatestItem(this.AdminContext(), &pb.IncreaseLatestItemRequest{

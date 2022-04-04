@@ -84,6 +84,12 @@
 				<span v-else class="disabled">没有设置分组。</span>
 			</td>
 		</tr>
+        <tr v-if="teaIsPlus">
+            <td>级别</td>
+            <td>
+                <span :class="{blue: node.levelInfo.code > 1}">{{node.levelInfo.name}}</span>
+            </td>
+        </tr>
 		<tr>
 			<td colspan="2"><more-options-indicator>更多选项</more-options-indicator></td>
 		</tr>

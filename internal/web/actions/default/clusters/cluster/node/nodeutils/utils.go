@@ -38,6 +38,7 @@ func InitNodeInfo(parentAction *actionutils.ParentAction, nodeId int64) (*pb.Nod
 		"isOn":  node.IsOn,
 		"isUp":  node.IsUp,
 		"group": groupMap,
+		"level": node.Level,
 	}
 	var clusterId int64 = 0
 	if node.NodeCluster != nil {

@@ -37,7 +37,7 @@ func (this *UpdateAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	node := nodeResp.Node
+	var node = nodeResp.Node
 	if node == nil {
 		this.WriteString("找不到要操作的节点")
 		return
@@ -97,7 +97,7 @@ func (this *UpdateAction) RunGet(params struct {
 		}
 	}
 
-	var m = maps.Map{
+	var nodeMap = maps.Map{
 		"id":          node.Id,
 		"name":        node.Name,
 		"ipAddresses": ipAddressMaps,
@@ -105,15 +105,16 @@ func (this *UpdateAction) RunGet(params struct {
 		"isOn":        node.IsOn,
 		"group":       groupMap,
 		"region":      regionMap,
+		"level":       node.Level,
 	}
 
 	if node.NodeCluster != nil {
-		m["primaryCluster"] = maps.Map{
+		nodeMap["primaryCluster"] = maps.Map{
 			"id":   node.NodeCluster.Id,
 			"name": node.NodeCluster.Name,
 		}
 	} else {
-		m["primaryCluster"] = nil
+		nodeMap["primaryCluster"] = nil
 	}
 
 	if len(node.SecondaryNodeClusters) > 0 {
@@ -124,12 +125,12 @@ func (this *UpdateAction) RunGet(params struct {
 				"name": cluster.Name,
 			})
 		}
-		m["secondaryClusters"] = secondaryClusterMaps
+		nodeMap["secondaryClusters"] = secondaryClusterMaps
 	} else {
-		m["secondaryClusters"] = []interface{}{}
+		nodeMap["secondaryClusters"] = []interface{}{}
 	}
 
-	this.Data["node"] = m
+	this.Data["node"] = nodeMap
 
 	this.Show()
 }
@@ -144,11 +145,12 @@ func (this *UpdateAction) RunPost(params struct {
 	PrimaryClusterId    int64
 	SecondaryClusterIds []byte
 	IsOn                bool
+	Level               int32
 
 	Must *actions.Must
 }) {
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改节点 %d", params.NodeId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改节点 %d 基本信息", params.NodeId)
 
 	if params.NodeId <= 0 {
 		this.Fail("要操作的节点不存在")
@@ -194,6 +196,7 @@ func (this *UpdateAction) RunPost(params struct {
 		NodeClusterId:           params.PrimaryClusterId,
 		SecondaryNodeClusterIds: secondaryClusterIds,
 		IsOn:                    params.IsOn,
+		Level:                   params.Level,
 	})
 	if err != nil {
 		this.ErrorPage(err)
