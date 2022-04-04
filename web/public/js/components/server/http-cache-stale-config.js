@@ -33,7 +33,7 @@ Vue.component("http-cache-stale-config", {
 			<td class="title">启用过时缓存</td>
 			<td>
 				<checkbox v-model="config.isOn"></checkbox>
-				<p class="comment">选中后，在更新缓存失败后会尝试读取过时的缓存。</p>
+				<p class="comment"><plus-label></plus-label>选中后，在更新缓存失败后会尝试读取过时的缓存。</p>
 			</td>
 		</tr>
 		<tr v-show="config.isOn">

@@ -32,6 +32,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	FileDir                string
 	FileMemoryCapacityJSON []byte
 	FileOpenFileCacheMax   int
+	FileEnableSendfile     bool
 
 	CapacityJSON         []byte
 	MaxSizeJSON          []byte
@@ -77,7 +78,8 @@ func (this *CreatePopupAction) RunPost(params struct {
 			MemoryPolicy: &serverconfigs.HTTPCachePolicy{
 				Capacity: memoryCapacity,
 			},
-			OpenFileCache: openFileCacheConfig,
+			OpenFileCache:  openFileCacheConfig,
+			EnableSendfile: params.FileEnableSendfile,
 		}
 	case serverconfigs.CachePolicyStorageMemory:
 		options = &serverconfigs.HTTPMemoryCacheStorage{}

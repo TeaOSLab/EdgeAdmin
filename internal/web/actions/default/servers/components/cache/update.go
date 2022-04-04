@@ -26,13 +26,13 @@ func (this *UpdateAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	configJSON := configResp.HttpCachePolicyJSON
+	var configJSON = configResp.HttpCachePolicyJSON
 	if len(configJSON) == 0 {
 		this.NotFound("cachePolicy", params.CachePolicyId)
 		return
 	}
 
-	cachePolicy := &serverconfigs.HTTPCachePolicy{}
+	var cachePolicy = &serverconfigs.HTTPCachePolicy{}
 	err = json.Unmarshal(configJSON, cachePolicy)
 	if err != nil {
 		this.ErrorPage(err)
@@ -56,6 +56,7 @@ func (this *UpdateAction) RunPost(params struct {
 	FileDir                string
 	FileMemoryCapacityJSON []byte
 	FileOpenFileCacheMax   int
+	FileEnableSendfile     bool
 
 	CapacityJSON         []byte
 	MaxSizeJSON          []byte
@@ -106,7 +107,8 @@ func (this *UpdateAction) RunPost(params struct {
 			MemoryPolicy: &serverconfigs.HTTPCachePolicy{
 				Capacity: memoryCapacity,
 			},
-			OpenFileCache: openFileCacheConfig,
+			OpenFileCache:  openFileCacheConfig,
+			EnableSendfile: params.FileEnableSendfile,
 		}
 	case serverconfigs.CachePolicyStorageMemory:
 		options = &serverconfigs.HTTPMemoryCacheStorage{}
