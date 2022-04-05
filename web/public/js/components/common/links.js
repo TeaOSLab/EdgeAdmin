@@ -51,7 +51,7 @@ Vue.component("popup-icon", {
 			}
 		}
 	},
-	template: `<span><slot></slot>&nbsp;<a href="" :title="title" @click.prevent="clickPrevent"><i class="icon clone outline small"></i></a></span>`
+	template: `<span><slot></slot>&nbsp;<a href="" :title="title" @click.prevent="clickPrevent"><i class="icon expand small"></i></a></span>`
 })
 
 // 小提示
