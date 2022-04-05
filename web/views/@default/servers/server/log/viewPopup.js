@@ -14,7 +14,8 @@ Tea.context(function () {
 			}
 			this.requestHeaders.push({
 				name: k,
-				values: v.values
+				values: v.values,
+				isGeneral: !k.startsWith("X-")
 			})
 		}
 	}
@@ -32,7 +33,8 @@ Tea.context(function () {
 			}
 			this.responseHeaders.push({
 				name: k,
-				values: v.values
+				values: v.values,
+				isGeneral: !k.startsWith("X-")
 			})
 		}
 	}
