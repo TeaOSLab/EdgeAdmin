@@ -72,13 +72,13 @@
 </div>
 
 <div v-if="tab == 'response'">
-    <table class="ui table selectable small">
+    <table class="ui table definition selectable small">
         <tr>
             <td class="title">Status</td>
             <td>{{accessLog.status}} {{accessLog.statusMessage}}</td>
         </tr>
     </table>
-	<table class="ui table selectable small">
+	<table class="ui table definition selectable small" v-if="responseHeaders.length > 0">
         <tbody v-for="header in responseHeaders">
             <tr v-for="value in header.values">
                 <td class="title">
@@ -92,7 +92,7 @@
 </div>
 
 <div v-if="tab == 'request'">
-	<table class="ui table selectable small">
+	<table class="ui table definition selectable small">
         <tbody v-for="header in requestHeaders">
             <tr v-for="value in header.values">
                 <td class="title">
@@ -113,22 +113,25 @@
 </div>
 
 <div v-if="tab == 'cookie'">
-	<p class="comment" v-if="accessLog.cookie == null">暂时没有Cookie数据。</p>
+	<p class="comment" v-if="cookies.length == 0">暂时没有Cookie数据。</p>
 	<div v-else>
-		<table class="ui table selectable small">
-			<tr v-for="(v, k) in accessLog.cookie">
-				<td class="title">{{k}}</td>
-				<td>{{v}}</td>
+		<table class="ui table definition selectable small">
+			<tr v-for="cookie in cookies">
+				<td class="title">{{cookie.name}}</td>
+				<td>{{cookie.value}}</td>
 			</tr>
 		</table>
 	</div>
 </div>
 
 <div v-if="tab == 'client'">
-	<table class="ui table selectable small">
+	<table class="ui table definition selectable small">
 		<tr>
 			<td class="title">综合信息<em>(UserAgent)</em></td>
-			<td>{{accessLog.userAgent}}</td>
+			<td>
+                <span v-if="accessLog.userAgent != null && accessLog.userAgent.length > 0">{{accessLog.userAgent}}</span>
+                <span class="disabled" v-else>[没有设置]</span>
+            </td>
 		</tr>
 		<tr>
 			<td>IP</td>
