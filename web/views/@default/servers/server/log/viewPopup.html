@@ -81,7 +81,10 @@
 	<table class="ui table selectable small">
         <tbody v-for="header in responseHeaders">
             <tr v-for="value in header.values">
-                <td class="title">{{header.name}}</td>
+                <td class="title">
+                    <span v-if="header.isGeneral">{{header.name}}</span>
+                    <span style="font-style: italic" v-else>{{header.name}}</span>
+                </td>
                 <td>{{value}}</td>
             </tr>
         </tbody>
@@ -92,7 +95,10 @@
 	<table class="ui table selectable small">
         <tbody v-for="header in requestHeaders">
             <tr v-for="value in header.values">
-                <td class="title">{{header.name}}</td>
+                <td class="title">
+                    <span v-if="header.isGeneral">{{header.name}}</span>
+                    <span style="font-style: italic" v-else>{{header.name}}</span>
+                </td>
                 <td>{{value}}</td>
             </tr>
         </tbody>
