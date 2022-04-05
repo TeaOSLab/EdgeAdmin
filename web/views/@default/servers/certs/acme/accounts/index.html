@@ -22,7 +22,7 @@
         </thead>
         <tr v-for="account in accounts">
             <td>
-                <a href="" @click.prevent="updateAccount(account.id)">{{account.name}} <i class="icon clone outline small"></i></a>
+                <a href="" @click.prevent="updateAccount(account.id)">{{account.name}} <i class="icon expand small"></i></a>
             </td>
             <td>
                 <span v-if="account.provider != null">{{account.provider.name}}</span>

@@ -21,7 +21,7 @@
 		</thead>
 		<tr v-for="user in users">
 			<td>
-                <a href="" @click.prevent="updateUser(user.id)">{{user.email}} <i class="icon clone outline small"></i></a>
+                <a href="" @click.prevent="updateUser(user.id)">{{user.email}} <i class="icon expand small"></i></a>
                 <div>
                     <grey-label v-if="user.provider != null">{{user.provider.name}}</grey-label>
                     <grey-label v-if="user.account != null">{{user.account.name}}</grey-label>
