@@ -72,29 +72,37 @@
 </div>
 
 <div v-if="tab == 'response'">
+    <table class="ui table selectable small">
+        <tr>
+            <td class="title">Status</td>
+            <td>{{accessLog.status}} {{accessLog.statusMessage}}</td>
+        </tr>
+    </table>
 	<table class="ui table selectable small">
-		<tr>
-			<td class="title">Status</td>
-			<td>{{accessLog.status}} {{accessLog.statusMessage}}</td>
-		</tr>
-		<tr v-if="accessLog.sentHeader != null" v-for="(v, k) in accessLog.sentHeader">
-			<td>{{k}}</td>
-			<td>{{v.values[0]}}</td>
-		</tr>
+        <tbody v-for="header in responseHeaders">
+            <tr v-for="value in header.values">
+                <td class="title">{{header.name}}</td>
+                <td>{{value}}</td>
+            </tr>
+        </tbody>
 	</table>
 </div>
 
 <div v-if="tab == 'request'">
 	<table class="ui table selectable small">
-		<tr v-if="accessLog.header != null" v-for="(v, k) in accessLog.header">
-			<td class="title">{{k}}</td>
-			<td>{{v.values[0]}}</td>
-		</tr>
-        <tr v-if="requestBody.length > 0">
-            <td colspan="2">
-                <source-code-box :type="requestContentType" width="0" height="200">{{requestBody}}</source-code-box>
-            </td>
-        </tr>
+        <tbody v-for="header in requestHeaders">
+            <tr v-for="value in header.values">
+                <td class="title">{{header.name}}</td>
+                <td>{{value}}</td>
+            </tr>
+        </tbody>
+        <tbody v-if="requestBody.length > 0">
+            <tr>
+                <td colspan="2">
+                    <source-code-box :type="requestContentType" width="0" height="200">{{requestBody}}</source-code-box>
+                </td>
+            </tr>
+        </tbody>
 	</table>
 </div>
 
