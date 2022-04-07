@@ -5,16 +5,30 @@
 }
 .grid.realtime-chart {
   margin-left: 0.4em !important;
+  position: relative;
 }
 .grid.realtime-chart .column {
   margin-bottom: 1em;
-  border-right: 1px rgba(0, 0, 0, 0.1) solid;
+  border: 1px rgba(0, 0, 0, 0.1) solid;
+  border-right: none;
 }
-.grid.realtime-chart .column.no-border {
-  border-right: 0;
+.grid.realtime-chart .column.with-border {
+  border-right: 1px rgba(0, 0, 0, 0.1) solid;
 }
 .grid.realtime-chart .chart {
   height: 10em;
+}
+.grid.realtime-chart a {
+  display: none;
+  font-size: 0.85em;
+  position: absolute;
+  right: 1em;
+}
+.grid.realtime-chart .column:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+.grid.realtime-chart .column:hover a {
+  display: inline;
 }
 .chart-box {
   height: 14em;

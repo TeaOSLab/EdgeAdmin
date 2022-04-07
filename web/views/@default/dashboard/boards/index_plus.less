@@ -10,18 +10,35 @@
 
 .grid.realtime-chart {
 	margin-left: 0.4em !important;
+	position: relative;
 
 	.column {
 		margin-bottom: 1em;
-		border-right: 1px rgba(0, 0, 0, .1) solid;
+		border: 1px rgba(0, 0, 0, .1) solid;
+		border-right: none;
 	}
 
-	.column.no-border {
-		border-right: 0;
+	.column.with-border {
+		border-right: 1px rgba(0, 0, 0, .1) solid;
 	}
 
 	.chart {
 		height: 10em;
+	}
+
+	a {
+		display: none;
+		font-size: 0.85em;
+		position: absolute;
+		right: 1em;
+	}
+
+	.column:hover {
+		background: rgba(0, 0, 0, .03);
+
+		a {
+			display: inline;
+		}
 	}
 }
 

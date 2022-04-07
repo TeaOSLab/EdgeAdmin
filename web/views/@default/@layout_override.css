@@ -48,4 +48,10 @@ select.dropdown {
 body.swal2-shown {
   overflow: auto !important;
 }
+.grid {
+  margin-right: 0!important;
+}
+.fields button {
+  min-width: 5em;
+}
 /*# sourceMappingURL=@layout_override.css.map */

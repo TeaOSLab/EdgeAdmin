@@ -34,7 +34,7 @@
 </div>
 
 <!-- 统计图表 -->
-<div class="ui three columns grid" v-if="!isLoading">
+<div class="ui three columns grid counter-chart" v-if="!isLoading">
     <div class="ui column">
         <h4>集群<link-icon href="/clusters" v-if="dashboard.canGoNodes"></link-icon></h4>
         <div class="value"><span>{{dashboard.countNodeClusters}}</span>个</div>

@@ -17,6 +17,7 @@ func init() {
 			Get("", new(IndexAction)).
 			GetPost("/create", new(CreateAction)).
 			Post("/pin", new(PinAction)).
+			Get("/nodes", new(NodesAction)).
 
 			// 只要登录即可访问的Action
 			EndHelpers().

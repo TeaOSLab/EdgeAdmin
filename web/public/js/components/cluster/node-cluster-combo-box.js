@@ -20,7 +20,7 @@ Vue.component("node-cluster-combo-box", {
 			}
 		}
 	},
-	template: `<div v-if="clusters.length > 0">
+	template: `<div v-if="clusters.length > 0" style="min-width: 10.4em">
 	<combo-box title="集群" placeholder="集群名称" :v-items="clusters" name="clusterId" :v-value="vClusterId" @change="change"></combo-box>
 </div>`
 })
