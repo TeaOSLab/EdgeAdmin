@@ -604,6 +604,272 @@ window.teaweb = {
 		chart.setOption(option)
 		chart.resize()
 	},
+	renderGaugeChart: function (options) {
+		let chartId = options.id
+		let name = options.name // 标题
+		let min = options.min // 最小值
+		let max = options.max // 最大值
+		let value = options.value // 当前值
+		let unit = options.unit // 单位
+		let detail = options.detail // 说明文字
+		let color = options.color // 颜色
+		let startAngle = options.startAngle
+		if (startAngle == null) {
+			startAngle = 225
+		}
+		let endAngle = options.endAngle
+		if (endAngle == null) {
+			endAngle = -45
+		}
+
+		color = this.chartColor(color)
+
+		let chartBox = document.getElementById(chartId)
+		if (chartBox == null) {
+			return
+		}
+		let chart = this.initChart(chartBox)
+
+		let option = {
+			textStyle: {
+				fontFamily: "Lato,'Helvetica Neue',Arial,Helvetica,sans-serif"
+			},
+			color: color,
+			title: (name != null && name.length > 0) ? {
+				text: name,
+				top: 1,
+				bottom: 0,
+				x: "center",
+				textStyle: {
+					fontSize: 12,
+					fontWeight: "bold",
+					fontFamily: "Lato,'Helvetica Neue',Arial,Helvetica,sans-serif"
+				}
+			} : null,
+			legend: {
+				data: [""]
+			},
+			xAxis: {
+				data: []
+			},
+			yAxis: {},
+			series: [{
+				name: "",
+				type: "gauge",
+				min: min,
+				max: max,
+				startAngle: startAngle,
+				endAngle: endAngle,
+
+				data: [
+					{
+						"name": "",// 不显示名称
+						"value": Math.round(value * 100) / 100
+					}
+				],
+				radius: "100%",
+				center: ["50%", (name != null && name.length > 0) ? "60%" : "50%"],
+
+				splitNumber: 5,
+				splitLine: {
+					length: 4
+				},
+
+				axisLine: {
+					lineStyle: {
+						width: 4
+					}
+				},
+				axisTick: {
+					show: true,
+					length: 2
+				},
+				axisLabel: {
+					formatter: function (v) {
+						return v;
+					},
+					textStyle: {
+						fontSize: 8
+					}
+				},
+				progress: {
+					show: true,
+					width: 4
+				},
+				detail: {
+					formatter: function (v) {
+						return unit;
+					},
+					textStyle: {
+						fontSize: 12,
+						fontWeight: "normal",
+						fontFamily: "Arial,Helvetica,sans-serif",
+						color: "grey"
+						//lineHeight: 16
+					},
+					valueAnimation: true
+				},
+
+				pointer: {
+					width: 2
+				}
+			}],
+
+			grid: {
+				left: -2,
+				right: 0,
+				bottom: 0,
+				top: 0
+			},
+			axisPointer: {
+				show: false
+			},
+			tooltip: {
+				formatter: 'X:{b0} Y:{c0}',
+				show: false
+			},
+			animation: true
+		};
+
+		chart.setOption(option)
+	},
+
+	renderPercentChart: function (options) {
+		let chartId = options.id
+		let color = this.chartColor(options.color)
+		let value = options.value
+		let name = options.name
+		let total = options.total
+		if (total == null) {
+			total = 100
+		}
+		let unit = options.unit
+		if (unit == null) {
+			unit = ""
+		}
+
+		let max = options.max
+		if (max != null && max <= value) {
+			max = null
+		}
+		let maxColor = this.chartColor(options.maxColor)
+		let maxName = options.maxName
+
+		let chartBox = document.getElementById(chartId)
+		if (chartBox == null) {
+			return
+		}
+		let chart = this.initChart(chartBox)
+
+		let option = {
+			tooltip: {
+				formatter: "{a} <br/>{b} : {c}" + unit
+			},
+			series: [
+				{
+					name: name,
+					max: total,
+					type: "gauge",
+					radius: "100%",
+					detail: {
+						formatter: "{value}",
+						show: false,
+						valueAnimation: true
+					},
+					data: [
+						{
+							value: value,
+							name: name
+						}
+					],
+					pointer: {
+						show: false
+					},
+					splitLine: {
+						show: false
+					},
+					axisTick: {
+						show: false
+					},
+					axisLine: {
+						show: true,
+						lineStyle: {
+							width: 4
+						}
+					},
+					progress: {
+						show: true,
+						width: 4,
+						itemStyle: {
+							color: color
+						}
+					},
+					splitNumber: {
+						show: false
+					},
+					title: {
+						show: false
+					},
+					startAngle: 270,
+					endAngle: -90
+				}
+			]
+		}
+
+		if (max != null) {
+			option.series.push({
+				name: maxName,
+				max: total,
+				type: "gauge",
+				radius: "100%",
+				detail: {
+					formatter: "{value}",
+					show: false,
+					valueAnimation: true
+				},
+				data: [
+					{
+						value: max,
+						name: maxName
+					}
+				],
+				pointer: {
+					show: false
+				},
+				splitLine: {
+					show: false
+				},
+				axisTick: {
+					show: false
+				},
+				axisLine: {
+					show: true,
+					lineStyle: {
+						width: 4
+					}
+				},
+				progress: {
+					show: true,
+					width: 4,
+					itemStyle: {
+						color: maxColor,
+						opacity: 0.3
+					}
+				},
+				splitNumber: {
+					show: false
+				},
+				title: {
+					show: false
+				},
+				startAngle: 270,
+				endAngle: -90
+			})
+		}
+
+		chart.setOption(option)
+	},
+
 	xRotation: function (chart, names) {
 		let chartWidth = chart.getWidth()
 		let width = 0
@@ -616,11 +882,17 @@ window.teaweb = {
 
 		return [40, -20]
 	},
+	chartMap: {}, // dom id => chart
 	initChart: function (dom) {
+		let domId = dom.getAttribute("id")
+		if (domId != null && domId.length > 0 && typeof (this.chartMap[domId]) == "object") {
+			return this.chartMap[domId]
+		}
 		let instance = echarts.init(dom)
 		window.addEventListener("resize", function () {
 			instance.resize()
 		})
+		this.chartMap[domId] = instance
 		return instance
 	},
 	encodeHTML: function (s) {
@@ -629,6 +901,25 @@ window.teaweb = {
 		s = s.replace(/>/g, "&gt;")
 		s = s.replace(/"/, "&quot;")
 		return s
+	},
+	chartColor: function (color) {
+		if (color == null || color.length == 0) {
+			color = "#5470c6"
+		}
+
+		if (color == "red") {
+			color = "#ee6666"
+		}
+		if (color == "yellow") {
+			color = "#fac858"
+		}
+		if (color == "blue") {
+			color = "#5470c6"
+		}
+		if (color == "green") {
+			color = "#3ba272"
+		}
+		return color
 	}
 }
 

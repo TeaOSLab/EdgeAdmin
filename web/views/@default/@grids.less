@@ -1,0 +1,44 @@
+.grid.counter-chart {
+	margin-top: 1.5em !important;
+	margin-left: 0.4em !important;
+
+	.column {
+		margin-bottom: 1em;
+		font-size: 0.85em;
+		text-align: center;
+		position: relative;
+		border: 1px rgba(0, 0, 0, .1) solid;
+		border-right: 0;
+
+		div.value {
+			margin-top: 1.5em;
+			font-weight: normal;
+
+			span {
+				font-size: 1.5em;
+				margin-right: 0.2em;
+			}
+		}
+	}
+
+	.column.with-border {
+		border-right: 1px rgba(0, 0, 0, .1) solid;
+	}
+
+	h4 {
+		a {
+			display: none;
+		}
+
+		font-size: 1.0em;
+		text-align: left;
+	}
+
+	.column:hover {
+		background: rgba(0, 0, 0, .05)!important;
+
+		a {
+			display: inline;
+		}
+	}
+}

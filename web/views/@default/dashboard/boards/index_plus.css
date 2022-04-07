@@ -3,29 +3,18 @@
   right: 1em;
   top: 2em;
 }
-.grid {
-  margin-top: 2em !important;
-  margin-left: 2em !important;
+.grid.realtime-chart {
+  margin-left: 0.4em !important;
 }
-.grid .column {
-  margin-bottom: 2em;
-  border-right: 1px #eee solid;
+.grid.realtime-chart .column {
+  margin-bottom: 1em;
+  border-right: 1px rgba(0, 0, 0, 0.1) solid;
 }
-.grid .column div.value {
-  margin-top: 1.5em;
-}
-.grid .column div.value span {
-  font-size: 2em;
-  margin-right: 0.2em;
-}
-.grid .column.no-border {
+.grid.realtime-chart .column.no-border {
   border-right: 0;
 }
-.grid h4 a {
-  display: none;
-}
-.grid .column:hover a {
-  display: inline;
+.grid.realtime-chart .chart {
+  height: 10em;
 }
 .chart-box {
   height: 14em;
@@ -40,4 +29,33 @@ h4 span {
   font-size: 0.8em;
   color: grey;
 }
-/*# sourceMappingURL=index.css.map */
+.percent-box {
+  position: relative;
+  text-align: center;
+}
+.percent-box .detail {
+  position: absolute;
+  top: 50%;
+  margin-top: -2em;
+  left: 0;
+  right: 0;
+  font-size: 0.8em;
+}
+.percent-box .detail .label {
+  color: grey;
+}
+.percent-box .detail .value {
+  font-size: 1.2em;
+}
+.percent-box .summary {
+  color: grey;
+  margin-top: 0.5em;
+}
+.percent-box .summary span {
+  font-size: 0.8em;
+  padding-left: 0.2em;
+}
+.percent-box .summary a {
+  font-size: 0.8em;
+}
+/*# sourceMappingURL=index_plus.css.map */

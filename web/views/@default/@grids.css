@@ -1,0 +1,37 @@
+.grid.counter-chart {
+  margin-top: 1.5em !important;
+  margin-left: 0.4em !important;
+}
+.grid.counter-chart .column {
+  margin-bottom: 1em;
+  font-size: 0.85em;
+  text-align: center;
+  position: relative;
+  border: 1px rgba(0, 0, 0, 0.1) solid;
+  border-right: 0;
+}
+.grid.counter-chart .column div.value {
+  margin-top: 1.5em;
+  font-weight: normal;
+}
+.grid.counter-chart .column div.value span {
+  font-size: 1.5em;
+  margin-right: 0.2em;
+}
+.grid.counter-chart .column.with-border {
+  border-right: 1px rgba(0, 0, 0, 0.1) solid;
+}
+.grid.counter-chart h4 {
+  font-size: 1em;
+  text-align: left;
+}
+.grid.counter-chart h4 a {
+  display: none;
+}
+.grid.counter-chart .column:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+.grid.counter-chart .column:hover a {
+  display: inline;
+}
+/*# sourceMappingURL=@grids.css.map */
