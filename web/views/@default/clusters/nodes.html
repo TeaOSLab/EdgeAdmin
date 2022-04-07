@@ -104,7 +104,7 @@
             <span v-else class="disabled">-</span>
         </td>
         <td class="center">
-            <span v-if="node.status.isActive" :class="{red:node.status.cpuUsage > 0.80}">{{node.status.cpuUsageText}}</span>
+            <span v-if="node.status.isActive" :class="{red:node.status.cpuUsage > 0.50}">{{node.status.cpuUsageText}}</span>
             <span v-else class="disabled">-</span>
         </td>
         <td class="center">
@@ -116,7 +116,7 @@
             <span v-else class="disabled">-</span>
         </td>
         <td class="center">
-            <span v-if="node.status.isActive">{{node.status.load1m}}<br/><span class="grey small"></span></span>
+            <span v-if="node.status.isActive">{{node.status.load1m}}<span class="grey small"></span></span>
             <span v-else class="disabled">-</span>
         </td>
         <td class="center">
