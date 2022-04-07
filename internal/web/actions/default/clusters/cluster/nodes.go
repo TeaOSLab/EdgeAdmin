@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -210,7 +211,7 @@ func (this *NodesAction) RunGet(params struct {
 				"memUsageText":    fmt.Sprintf("%.2f%%", status.MemoryUsage*100),
 				"trafficInBytes":  status.TrafficInBytes,
 				"trafficOutBytes": status.TrafficOutBytes,
-				"load1m":          fmt.Sprintf("%.2f", status.Load1m),
+				"load1m":          numberutils.FormatFloat2(status.Load1m),
 			},
 			"cluster": maps.Map{
 				"id":   node.NodeCluster.Id,

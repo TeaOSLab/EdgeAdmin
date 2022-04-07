@@ -46,11 +46,31 @@ func FormatCount(count int64) string {
 	if count < 1000 {
 		return types.String(count)
 	}
-	if count < 1000 * 1000 {
+	if count < 1000*1000 {
 		return fmt.Sprintf("%.1fK", float32(count)/1000)
 	}
-	if count < 1000 * 1000 * 1000{
+	if count < 1000*1000*1000 {
 		return fmt.Sprintf("%.1fM", float32(count)/1000/1000)
 	}
 	return fmt.Sprintf("%.1fB", float32(count)/1000/1000/1000)
+}
+
+func FormatFloat(f interface{}, decimal int) string {
+	if f == nil {
+		return ""
+	}
+	switch x := f.(type) {
+	case float32, float64:
+		var s = fmt.Sprintf("%."+types.String(decimal)+"f", x)
+		return s
+	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
+		return types.String(x)
+	case string:
+		return x
+	}
+	return ""
+}
+
+func FormatFloat2(f interface{}) string {
+	return FormatFloat(f, 2)
 }
