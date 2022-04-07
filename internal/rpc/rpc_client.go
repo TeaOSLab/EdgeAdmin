@@ -500,6 +500,10 @@ func (this *RPCClient) UserPlanRPC() pb.UserPlanServiceClient {
 	return pb.NewUserPlanServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) TrafficDailyStatRPC() pb.TrafficDailyStatServiceClient {
+	return pb.NewTrafficDailyStatServiceClient(this.pickConn())
+}
+
 // Context 构造Admin上下文
 func (this *RPCClient) Context(adminId int64) context.Context {
 	ctx := context.Background()

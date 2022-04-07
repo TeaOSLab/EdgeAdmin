@@ -225,6 +225,12 @@ window.teaweb = {
 			max: max
 		}
 	},
+	splitFormat: function (s) {
+		let matchResult = s.match(/^([0-9.]+)([a-zA-Z]+)$/)
+		let size = parseFloat(matchResult[1])
+		let unit = matchResult[2]
+		return [size, unit]
+	},
 	popup: function (url, options) {
 		if (url != null && url.length > 0 && url.substring(0, 1) == '.') {
 			url = Tea.url(url)
