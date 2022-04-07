@@ -343,7 +343,7 @@ Vue.component("node-cluster-combo-box", {
 			}
 		}
 	},
-	template: `<div v-if="clusters.length > 0">
+	template: `<div v-if="clusters.length > 0" style="min-width: 10.4em">
 	<combo-box title="集群" placeholder="集群名称" :v-items="clusters" name="clusterId" :v-value="vClusterId" @change="change"></combo-box>
 </div>`
 })
@@ -12135,7 +12135,7 @@ Vue.component("combo-box", {
 	<!-- 当前选中 -->
 	<div v-if="selectedItem != null">
 		<input type="hidden" :name="name" :value="selectedItem.value"/>
-		<a href="" class="ui label basic" ref="selectedLabel" @click.prevent="submitForm"><span>{{title}}：{{selectedItem.name}}</span>
+		<a href="" class="ui label basic" style="line-height: 1.4; font-weight: normal; font-size: 1em" ref="selectedLabel" @click.prevent="submitForm"><span>{{title}}：{{selectedItem.name}}</span>
 			<span title="清除" @click.prevent="reset"><i class="icon remove small"></i></span>
 		</a>
 	</div>
