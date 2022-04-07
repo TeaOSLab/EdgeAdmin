@@ -10,6 +10,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/iwind/TeaGo/types"
 )
 
 type UpdateAction struct {
@@ -132,6 +133,8 @@ func (this *UpdateAction) RunGet(params struct {
 
 	this.Data["node"] = nodeMap
 
+	this.Data["canUpdateLevel"] = this.CanUpdateLevel(2)
+
 	this.Show()
 }
 
@@ -188,6 +191,10 @@ func (this *UpdateAction) RunPost(params struct {
 	}
 
 	// 保存
+	if !this.CanUpdateLevel(params.Level) {
+		this.Fail("没有权限修改节点级别：" + types.String(params.Level))
+	}
+
 	_, err := this.RPC().NodeRPC().UpdateNode(this.AdminContext(), &pb.UpdateNodeRequest{
 		NodeId:                  params.NodeId,
 		NodeGroupId:             params.GroupId,
