@@ -1,0 +1,153 @@
+{$layout}
+{$template "menu"}
+
+<div class="margin"></div>
+
+<form class="ui form" action="/clusters/nodes">
+    <div class="ui fields inline">
+        <div class="ui field">
+            <node-cluster-combo-box :v-cluster-id="clusterId"></node-cluster-combo-box>
+        </div>
+        <div class="ui field" v-if="groups.length > 0">
+            <select class="ui dropdown" name="groupId" v-model="groupId">
+                <option value="0">[全部分组]</option>
+                <option v-for="group in groups" :value="group.id">{{group.name}}</option>
+            </select>
+        </div>
+        <div class="ui field" v-if="regions.length > 0">
+            <select class="ui dropdown" name="regionId" v-model="regionId">
+                <option value="0">[全部区域]</option>
+                <option v-for="region in regions" :value="region.id">{{region.name}}</option>
+            </select>
+        </div>
+        <div class="ui field">
+            <select class="ui dropdown" name="activeState" v-model="activeState">
+                <option value="0">[在线状态]</option>
+                <option value="1">在线</option>
+                <option value="2">不在线</option>
+            </select>
+        </div>
+        <div class="ui field">
+            <select class="ui dropdown" name="installedState" v-model="installState">
+                <option value="0">[安装状态]</option>
+                <option value="1">已安装</option>
+                <option value="2">未安装</option>
+            </select>
+        </div>
+        <div class="ui field" v-if="teaIsPlus && levels.length > 0">
+            <select class="ui dropdown" name="level" v-model="level">
+                <option value="0">[级别]</option>
+                <option v-for="levelInfo in levels" :value="levelInfo.code">{{levelInfo.name}}</option>
+            </select>
+        </div>
+        <div class="ui field">
+            <input type="text" name="keyword" placeholder="关键词" v-model="keyword" style="width:10em"/>
+        </div>
+        <div class="ui field">
+            <button class="ui button" type="submit">搜索</button> &nbsp;
+            <a :href="'/clusters/nodes'" v-if="clusterId > 0 || regionId > 0 || groupId > 0 || installState > 0 || activeState > 0 || keyword.length > 0 || level > 0 || hasOrder">[清除条件]</a>
+        </div>
+    </div>
+</form>
+
+<p class="comment" v-if="nodes.length == 0">暂时还没有节点。</p>
+
+<table class="ui table selectable celled" v-if="nodes.length > 0">
+    <thead>
+    <tr>
+        <th>节点名称</th>
+        <th>IP</th>
+        <th class="width10">DNS线路</th>
+        <th class="width5 center">CPU<sort-arrow name="cpuOrder"></sort-arrow></th>
+        <th class="width5 center">内存<sort-arrow name="memoryOrder"></sort-arrow></th>
+        <th class="center" style="width: 7em">下行流量<sort-arrow name="trafficOutOrder"></sort-arrow></th>
+        <th class="center" style="width: 7em">负载<sort-arrow name="loadOrder"></sort-arrow></th>
+        <th class="two wide center">状态</th>
+        <th class="one op">操作</th>
+    </tr>
+    </thead>
+    <tr v-for="node in nodes">
+        <td><a :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id">{{node.name}}<sup v-if="node.level > 1"><span class="blue"> &nbsp;L{{node.level}}</span></sup></a>
+            <div v-if="node.region != null">
+                <grey-label>区域：{{node.region.name}}</grey-label>
+            </div>
+            <div v-if="node.group != null">
+                <grey-label>分组：{{node.group.name}}</grey-label>
+            </div>
+            <div v-if="node.secondaryClusters != null && node.secondaryClusters.length > 0">
+                <node-clusters-labels :v-primary-cluster="node.cluster" :v-secondary-clusters="node.secondaryClusters" size="tiny"></node-clusters-labels>
+            </div>
+        </td>
+        <td>
+            <span v-if="node.ipAddresses.length == 0" class="disabled">-</span>
+            <div v-else class="address-box">
+                <div v-for="addr in node.ipAddresses" style="margin-bottom:0.3em">
+                    <div class="ui label tiny basic">{{addr.ip}}
+                        <span class="small" v-if="addr.name.length > 0">（{{addr.name}}<span v-if="!addr.canAccess">，不可访问</span>）</span>
+                        <span class="small" v-if="addr.name.length == 0 && !addr.canAccess">（不可访问）</span>
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td class="routes-box" :class="{'show-link': node.dnsRouteNames.length == 0 &&  hasClusterDNS}">
+            <div v-if="node.dnsRouteNames.length > 0">
+                <div v-for="routeName in node.dnsRouteNames">
+                    <tiny-basic-label>{{routeName}}</tiny-basic-label>
+                </div>
+                <div>
+                    <a href="" @click.prevent="updateNodeDNS(node.id)" class="small">[修改]</a>
+                </div>
+            </div>
+            <span v-else-if="hasClusterDNS">
+                <a href="" @click.prevent="updateNodeDNS(node.id)" class="small">[设置]</a>
+            </span>
+            <span v-else class="disabled">-</span>
+        </td>
+        <td class="center">
+            <span v-if="node.status.isActive" :class="{red:node.status.cpuUsage > 0.80}">{{node.status.cpuUsageText}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+        <td class="center">
+            <span v-if="node.status.isActive" :class="{red:node.status.memUsage > 0.80}">{{node.status.memUsageText}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+        <td class="center">
+            <span v-if="node.status.isActive && node.status.trafficOutBytes > 0">{{teaweb.formatBytes(node.status.trafficOutBytes/60)}}<br/><span class="grey small">/s</span></span>
+            <span v-else class="disabled">-</span>
+        </td>
+        <td class="center">
+            <span v-if="node.status.isActive">{{node.status.load1m}}<br/><span class="grey small"></span></span>
+            <span v-else class="disabled">-</span>
+        </td>
+        <td class="center">
+            <div v-if="!node.isUp">
+                <span class="red">健康问题下线</span>
+                <div>
+                    <a href="" @click.prevent="upNode(node.id)">[上线]</a>
+                </div>
+            </div>
+            <div v-else-if="!node.isOn">
+                <label-on :v-is-on="node.isOn"></label-on>
+            </div>
+            <div v-else-if="node.isInstalled">
+                <div v-if="node.status.isActive">
+                    <span v-if="!node.isSynced" class="red">同步中</span>
+                    <span v-else class="green">运行中</span>
+                </div>
+                <span v-else-if="node.status.updatedAt > 0" class="red">已断开</span>
+                <span v-else-if="node.status.updatedAt == 0" class="red">未连接</span>
+            </div>
+            <div v-else>
+                <span v-if="node.installStatus.isRunning" class="red">安装中</span>
+                <a v-if="node.installStatus.isFinished && !node.installStatus.isOk" :href="'/clusters/cluster/node/install?clusterId=' + clusterId + '&nodeId=' + node.id" title="点击看安装错误"><span class="red">安装出错</span></a>
+                <a v-else class="red" :href="'/clusters/cluster/node/install?clusterId=' + clusterId + '&nodeId=' + node.id" title="点击进安装界面"><span class="red">未安装</span></a>
+            </div>
+        </td>
+        <td>
+            <a :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id">详情</a><!-- &nbsp; <a href="" @click.prevent="deleteNode(node.id)">删除</a>-->
+        </td>
+    </tr>
+</table>
+
+
+<div class="page" v-html="page"></div>

@@ -1,4 +1,6 @@
-package cluster
+// Copyright 2022 Liuxiangchao iwind.liu@gmail.com. All rights reserved.
+
+package clusters
 
 import (
 	"encoding/json"
@@ -19,8 +21,7 @@ type NodesAction struct {
 }
 
 func (this *NodesAction) Init() {
-	this.Nav("", "node", "index")
-	this.SecondMenu("nodes")
+	this.Nav("", "", "node")
 }
 
 func (this *NodesAction) RunGet(params struct {
@@ -44,6 +45,7 @@ func (this *NodesAction) RunGet(params struct {
 	this.Data["activeState"] = params.ActiveState
 	this.Data["keyword"] = params.Keyword
 	this.Data["level"] = params.Level
+	this.Data["clusterId"] = params.ClusterId
 	this.Data["hasOrder"] = len(params.CpuOrder) > 0 || len(params.MemoryOrder) > 0 || len(params.TrafficInOrder) > 0 || len(params.TrafficOutOrder) > 0 || len(params.LoadOrder) > 0
 
 	// 集群是否已经设置了线路
@@ -276,15 +278,16 @@ func (this *NodesAction) RunGet(params struct {
 		this.Data["levels"] = nodeconfigs.FindAllNodeLevels()
 	}
 
-	// 记录最近访问
-	_, err = this.RPC().LatestItemRPC().IncreaseLatestItem(this.AdminContext(), &pb.IncreaseLatestItemRequest{
-		ItemType: "cluster",
-		ItemId:   params.ClusterId,
-	})
+	// 集群总数
+	totalClustersResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClusters(this.AdminContext(), &pb.CountAllEnabledNodeClustersRequest{})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
+	this.Data["totalNodeClusters"] = totalClustersResp.Count
+
+	// 节点总数
+	this.Data["totalNodes"] = countResp.Count
 
 	this.Show()
 }
