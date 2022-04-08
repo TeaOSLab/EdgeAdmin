@@ -391,24 +391,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":     serverConfig.Web != nil && serverConfig.Web.RequestLimit != nil && serverConfig.Web.RequestLimit.IsOn,
 		})
 
-		if teaconst.IsPlus {
-			menuItems = append(menuItems, maps.Map{
-				"name":     "流量限制",
-				"url":      "/servers/server/settings/traffic?serverId=" + serverIdString,
-				"isActive": secondMenuItem == "traffic",
-				"isOn":     serverConfig.TrafficLimit != nil && serverConfig.TrafficLimit.IsOn,
-			})
-
-			if serverConfig.Web != nil && serverConfig.Web.RequestScripts != nil {
-				_ = serverConfig.Web.RequestScripts.Init()
-			}
-			menuItems = append(menuItems, maps.Map{
-				"name":     "边缘脚本",
-				"url":      "/servers/server/settings/requestScripts?serverId=" + serverIdString,
-				"isActive": secondMenuItem == "requestScripts",
-				"isOn":     serverConfig.Web != nil && serverConfig.Web.RequestScripts != nil && !serverConfig.Web.RequestScripts.IsEmpty(),
-			})
-		}
+		menuItems = filterMenuItems(serverConfig, menuItems, serverIdString, secondMenuItem)
 
 		menuItems = append(menuItems, maps.Map{
 			"name":     "-",
