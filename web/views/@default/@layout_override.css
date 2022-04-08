@@ -12,6 +12,9 @@
 .ui.label.basic.grey {
   border: 1px #ccc solid !important;
 }
+.disabled .ui.label {
+  color: #ccc !important;
+}
 form .fields {
   margin-bottom: 0 !important;
 }
@@ -49,7 +52,7 @@ body.swal2-shown {
   overflow: auto !important;
 }
 .grid {
-  margin-right: 0!important;
+  margin-right: 0 !important;
 }
 .fields button {
   min-width: 5em;

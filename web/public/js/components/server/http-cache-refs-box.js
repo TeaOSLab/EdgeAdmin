@@ -42,8 +42,8 @@ Vue.component("http-cache-refs-box", {
 					<th class="width10">缓存时间</th>
 				</tr>
 				<tr v-for="(cacheRef, index) in refs">
-					<td :class="{'color-border': cacheRef.conds.connector == 'and'}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
-						<http-request-conds-view :v-conds="cacheRef.conds"></http-request-conds-view>
+					<td :class="{'color-border': cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
+						<http-request-conds-view :v-conds="cacheRef.conds" :class="{disabled: !cacheRef.isOn}"></http-request-conds-view>
 						<grey-label v-if="cacheRef.minSize != null && cacheRef.minSize.count > 0">
 							{{cacheRef.minSize.count}}{{cacheRef.minSize.unit}}
 							<span v-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">- {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</span>
@@ -54,11 +54,11 @@ Vue.component("http-cache-refs-box", {
 						<grey-label v-if="cacheRef.status != null && cacheRef.status.length > 0 && (cacheRef.status.length > 1 || cacheRef.status[0] != 200)">状态码：{{cacheRef.status.map(function(v) {return v.toString()}).join(", ")}}</grey-label>
 						<grey-label v-if="cacheRef.allowPartialContent">区间缓存</grey-label>
 					</td>
-					<td>
+					<td :class="{disabled: !cacheRef.isOn}">
 						<span v-if="cacheRef.conds.connector == 'and'">和</span>
 						<span v-if="cacheRef.conds.connector == 'or'">或</span>
 					</td>
-					<td>
+					<td :class="{disabled: !cacheRef.isOn}">
 						<span v-if="!cacheRef.isReverse">{{cacheRef.life.count}} {{timeUnitName(cacheRef.life.unit)}}</span>
 						<span v-else class="red">不缓存</span>
 					</td>

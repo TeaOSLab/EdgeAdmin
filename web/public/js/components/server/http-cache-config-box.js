@@ -1,5 +1,5 @@
 Vue.component("http-cache-config-box", {
-	props: ["v-cache-config", "v-is-location", "v-is-group", "v-cache-policy"],
+	props: ["v-cache-config", "v-is-location", "v-is-group", "v-cache-policy", "v-web-id"],
 	data: function () {
 		let cacheConfig = this.vCacheConfig
 		if (cacheConfig == null) {
@@ -138,7 +138,7 @@ Vue.component("http-cache-config-box", {
 	
 	<div v-show="isOn()" style="margin-top: 1em">
 		<h4>缓存条件</h4>
-		<http-cache-refs-config-box :v-cache-config="cacheConfig" :v-cache-refs="cacheConfig.cacheRefs" ></http-cache-refs-config-box>
+		<http-cache-refs-config-box :v-cache-config="cacheConfig" :v-cache-refs="cacheConfig.cacheRefs" :v-web-id="vWebId"></http-cache-refs-config-box>
 	</div>
 	<div class="margin"></div>
 </div>`

@@ -1,5 +1,5 @@
 Vue.component("http-cache-refs-config-box", {
-	props: ["v-cache-refs", "v-cache-config", "v-cache-policy-id"],
+	props: ["v-cache-refs", "v-cache-config", "v-cache-policy-id", "v-web-id"],
 	mounted: function () {
 		let that = this
 		sortTable(function (ids) {
@@ -101,6 +101,14 @@ Vue.component("http-cache-refs-config-box", {
 				}
 			})
 		},
+		disableRef: function (ref) {
+			ref.isOn = false
+			this.change()
+		},
+		enableRef: function (ref) {
+			ref.isOn = true
+			this.change()
+		},
 		removeRef: function (index) {
 			let that = this
 			teaweb.confirm("确定要删除此缓存设置吗？", function () {
@@ -133,11 +141,23 @@ Vue.component("http-cache-refs-config-box", {
 		},
 		change: function () {
 			// 自动保存
-			if (this.vCachePolicyId != null && this.vCachePolicyId > 0) {
+			if (this.vCachePolicyId != null && this.vCachePolicyId > 0) { // 缓存策略
 				Tea.action("/servers/components/cache/updateRefs")
 					.params({
 						cachePolicyId: this.vCachePolicyId,
 						refsJSON: JSON.stringify(this.refs)
+					})
+					.post()
+			} else if (this.vWebId != null && this.vWebId > 0) { // Server Web or Group Web
+				Tea.action("/servers/server/settings/cache/updateRefs")
+					.params({
+						webId: this.vWebId,
+						refsJSON: JSON.stringify(this.refs)
+					})
+					.success(function (resp) {
+						if (resp.data.isUpdated) {
+							teaweb.successToast("保存成功")
+						}
 					})
 					.post()
 			}
@@ -155,14 +175,14 @@ Vue.component("http-cache-refs-config-box", {
 					<th>缓存条件</th>
 					<th class="two wide">分组关系</th>
 					<th class="width10">缓存时间</th>
-					<th class="two op">操作</th>
+					<th class="three op">操作</th>
 				</tr>
 			</thead>	
 			<tbody v-for="(cacheRef, index) in refs" :key="cacheRef.id" :v-id="cacheRef.id">
 				<tr>
 					<td style="text-align: center;"><i class="icon bars handle grey"></i> </td>
-					<td :class="{'color-border': cacheRef.conds.connector == 'and'}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
-						<http-request-conds-view :v-conds="cacheRef.conds" ref="cacheRef"></http-request-conds-view>
+					<td :class="{'color-border': cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
+						<http-request-conds-view :v-conds="cacheRef.conds" ref="cacheRef" :class="{disabled: !cacheRef.isOn}"></http-request-conds-view>
 						<grey-label v-if="cacheRef.minSize != null && cacheRef.minSize.count > 0">
 							{{cacheRef.minSize.count}}{{cacheRef.minSize.unit}}
 							<span v-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">- {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</span>
@@ -173,16 +193,17 @@ Vue.component("http-cache-refs-config-box", {
 						<grey-label v-if="cacheRef.status != null && cacheRef.status.length > 0 && (cacheRef.status.length > 1 || cacheRef.status[0] != 200)">状态码：{{cacheRef.status.map(function(v) {return v.toString()}).join(", ")}}</grey-label>
 						<grey-label v-if="cacheRef.allowPartialContent">区间缓存</grey-label>
 					</td>
-					<td>
+					<td :class="{disabled: !cacheRef.isOn}">
 						<span v-if="cacheRef.conds.connector == 'and'">和</span>
 						<span v-if="cacheRef.conds.connector == 'or'">或</span>
 					</td>
-					<td>
+					<td :class="{disabled: !cacheRef.isOn}">
 						<span v-if="!cacheRef.isReverse">{{cacheRef.life.count}} {{timeUnitName(cacheRef.life.unit)}}</span>
 						<span v-else class="red">不缓存</span>
 					</td>
 					<td>
 						<a href="" @click.prevent="updateRef(index, cacheRef)">修改</a> &nbsp;
+						<a href="" v-if="cacheRef.isOn" @click.prevent="disableRef(cacheRef)">暂停</a><a href="" v-if="!cacheRef.isOn" @click.prevent="enableRef(cacheRef)"><span class="red">恢复</span></a> &nbsp;
 						<a href="" @click.prevent="removeRef(index)">删除</a>
 					</td>
 				</tr>
