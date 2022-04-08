@@ -65,6 +65,8 @@ function build() {
 
 	cp -R $ROOT/../web $DIST/
 	rm -f $DIST/web/tmp/*
+	rm -rf $DIST/web/public/js/components
+	rm -f $DIST/web/public/js/components.src.js
 	cp $ROOT/configs/server.template.yaml $DIST/configs/
 
 	# change _plus.[ext] to .[ext]

@@ -21,7 +21,7 @@ import (
 func Generate() error {
 	err := generateComponentsJSFile()
 	if err != nil {
-		return errors.New("generate 'components.js' failed: " + err.Error())
+		return errors.New("generate 'components.src.js' failed: " + err.Error())
 	}
 
 	return nil
@@ -115,7 +115,7 @@ func generateComponentsJSFile() error {
 		buffer.Write([]byte{'\n', '\n'})
 	}
 
-	fp, err := os.OpenFile(filepath.Clean(Tea.PublicFile("/js/components.js")), os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0777)
+	fp, err := os.OpenFile(filepath.Clean(Tea.PublicFile("/js/components.src.js")), os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0777)
 	if err != nil {
 		return err
 	}
