@@ -27,4 +27,27 @@ Tea.context(function () {
 			}
 		}
 	}
+
+
+	// 测试相关
+	this.resp = null
+	this.isTesting = false
+
+	if (this.grant != null && this.grant.id > 0 && this.sshHost.length > 0 && this.sshPort.toString().length > 0) {
+		this.isTesting = true
+		this.$delay(function () {
+			this.$post(".test")
+				.params({
+					grantId: this.grant.id,
+					host: this.sshHost,
+					port: this.sshPort
+				})
+				.success(function (resp) {
+					this.resp = resp.data
+				})
+				.done(function () {
+					this.isTesting = false
+				})
+		}, 1000)
+	}
 })

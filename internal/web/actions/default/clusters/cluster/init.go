@@ -54,6 +54,7 @@ func init() {
 			GetPost("/settings/dns", new(dns.IndexAction)).
 			GetPost("/settings/system", new(system.IndexAction)).
 			GetPost("/settings/ssh", new(ssh.IndexAction)).
+			GetPost("/settings/ssh/test", new(ssh.TestAction)).
 			GetPost("/settings/thresholds", new(thresholds.IndexAction)).
 
 			// 分组相关
