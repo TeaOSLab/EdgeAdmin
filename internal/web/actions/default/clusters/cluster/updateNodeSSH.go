@@ -8,6 +8,8 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"net"
+	"regexp"
 )
 
 type UpdateNodeSSHAction struct {
@@ -31,7 +33,7 @@ func (this *UpdateNodeSSHAction) RunGet(params struct {
 		return
 	}
 
-	node := nodeResp.Node
+	var node = nodeResp.Node
 	this.Data["node"] = maps.Map{
 		"id":   node.Id,
 		"name": node.Name,
@@ -43,7 +45,7 @@ func (this *UpdateNodeSSHAction) RunGet(params struct {
 	}
 
 	// SSH
-	loginParams := maps.Map{
+	var loginParams = maps.Map{
 		"host":    "",
 		"port":    "",
 		"grantId": 0,
@@ -59,10 +61,22 @@ func (this *UpdateNodeSSHAction) RunGet(params struct {
 			}
 		}
 	}
+
+	if len(loginParams.GetString("host")) == 0 {
+		addressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledNodeIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledNodeIPAddressesWithNodeIdRequest{NodeId: node.Id})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		if len(addressesResp.NodeIPAddresses) > 0 {
+			loginParams["host"] = addressesResp.NodeIPAddresses[0].Ip
+		}
+	}
+
 	this.Data["params"] = loginParams
 
 	// 认证信息
-	grantId := loginParams.GetInt64("grantId")
+	var grantId = loginParams.GetInt64("grantId")
 	grantResp, err := this.RPC().NodeGrantRPC().FindEnabledNodeGrant(this.AdminContext(), &pb.FindEnabledNodeGrantRequest{NodeGrantId: grantId})
 	if err != nil {
 		this.ErrorPage(err)
@@ -101,7 +115,12 @@ func (this *UpdateNodeSSHAction) RunPost(params struct {
 		this.Fail("需要选择或填写至少一个认证信息")
 	}
 
-	login := &pb.NodeLogin{
+	// 检查IP地址
+	if regexp.MustCompile(`^\d+\.\d+\.\d+\.\d+$`).MatchString(params.SshHost) && net.ParseIP(params.SshHost) == nil {
+		this.Fail("SSH主机地址 '" + params.SshHost + "' IP格式错误")
+	}
+
+	var login = &pb.NodeLogin{
 		Id:   params.LoginId,
 		Name: "SSH",
 		Type: "ssh",

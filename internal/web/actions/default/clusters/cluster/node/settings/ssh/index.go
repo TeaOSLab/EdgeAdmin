@@ -10,6 +10,8 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"net"
+	"regexp"
 )
 
 type IndexAction struct {
@@ -33,7 +35,7 @@ func (this *IndexAction) RunGet(params struct {
 	// 登录信息
 	var loginMap maps.Map = nil
 	if node.NodeLogin != nil {
-		loginParams := maps.Map{}
+		var loginParams = maps.Map{}
 		if len(node.NodeLogin.Params) > 0 {
 			err = json.Unmarshal(node.NodeLogin.Params, &loginParams)
 			if err != nil {
@@ -42,7 +44,7 @@ func (this *IndexAction) RunGet(params struct {
 			}
 		}
 
-		grantMap := maps.Map{}
+		var grantMap = maps.Map{}
 		grantId := loginParams.GetInt64("grantId")
 		if grantId > 0 {
 			grantResp, err := this.RPC().NodeGrantRPC().FindEnabledNodeGrant(this.AdminContext(), &pb.FindEnabledNodeGrantRequest{NodeGrantId: grantId})
@@ -70,6 +72,27 @@ func (this *IndexAction) RunGet(params struct {
 		}
 	}
 
+	if loginMap == nil {
+		addressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledNodeIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledNodeIPAddressesWithNodeIdRequest{NodeId: node.Id})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		if len(addressesResp.NodeIPAddresses) > 0 {
+			loginMap = maps.Map{
+				"id":   0,
+				"name": "",
+				"type": "ssh",
+				"params": maps.Map{
+					"host":    addressesResp.NodeIPAddresses[0].Ip,
+					"port":    22,
+					"grantId": 0,
+				},
+				"grant": nil,
+			}
+		}
+	}
+
 	var nodeMap = this.Data["node"].(maps.Map)
 	nodeMap["login"] = loginMap
 
@@ -89,8 +112,13 @@ func (this *IndexAction) RunPost(params struct {
 }) {
 	defer this.CreateLogInfo("修改节点 %d SSH登录信息", params.NodeId)
 
+	// 检查IP地址
+	if regexp.MustCompile(`^\d+\.\d+\.\d+\.\d+$`).MatchString(params.SshHost) && net.ParseIP(params.SshHost) == nil {
+		this.Fail("SSH主机地址 '" + params.SshHost + "' IP格式错误")
+	}
+
 	// TODO 检查登录授权
-	loginInfo := &pb.NodeLogin{
+	var loginInfo = &pb.NodeLogin{
 		Id:   params.LoginId,
 		Name: "SSH",
 		Type: "ssh",
