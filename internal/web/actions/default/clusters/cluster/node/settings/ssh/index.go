@@ -91,6 +91,24 @@ func (this *IndexAction) RunGet(params struct {
 				"grant": nil,
 			}
 		}
+	} else {
+		var loginParams = loginMap.GetMap("params")
+		if len(loginParams.GetString("host")) == 0 {
+			addressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledNodeIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledNodeIPAddressesWithNodeIdRequest{NodeId: node.Id})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			if len(addressesResp.NodeIPAddresses) > 0 {
+				loginParams["host"] = addressesResp.NodeIPAddresses[0].Ip
+			}
+		}
+
+		if loginParams.GetInt("port") == 0 {
+			loginParams["port"] = 22
+		}
+
+		loginMap["params"] = loginParams
 	}
 
 	var nodeMap = this.Data["node"].(maps.Map)
