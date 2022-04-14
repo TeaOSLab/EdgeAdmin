@@ -22,6 +22,7 @@
         <div class="ui field" v-if="groups.length > 0">
             <select class="ui dropdown auto-width" name="groupId" v-model="groupId">
                 <option value="0">[选择分组]</option>
+                <option value="-1">[未分组]</option>
                 <option v-for="group in groups" :value="group.id">{{group.name}}</option>
             </select>
         </div>
