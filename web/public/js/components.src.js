@@ -4942,7 +4942,7 @@ Vue.component("server-name-box", {
     template: `<div>
 	<input type="hidden" name="serverNames" :value="JSON.stringify(serverNames)"/>
 	<div v-if="serverNames.length > 0">
-		<div v-for="(serverName, index) in serverNames" class="ui label small basic">
+		<div v-for="(serverName, index) in serverNames" class="ui label small basic" :class="{hidden: serverName.isShowing === false}">
 			<em v-if="serverName.type != 'full'">{{serverName.type}}</em>  
 			<span v-if="serverName.subNames == null || serverName.subNames.length == 0" :class="{disabled: serverName.isShowing === false}">{{serverName.name}}</span>
 			<span v-else :class="{disabled: serverName.isShowing === false}">{{serverName.subNames[0]}}等{{serverName.subNames.length}}个域名</span>
