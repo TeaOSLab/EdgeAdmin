@@ -246,13 +246,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOff":    serverConfig.HTTPS != nil && !serverConfig.HTTPS.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     "Web设置",
-			"url":      "/servers/server/settings/web?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "web",
-			"isOn":     serverConfig.Web != nil && serverConfig.Web.Root != nil && serverConfig.Web.Root.IsOn,
-		})
-		menuItems = append(menuItems, maps.Map{
-			"name":     "反向代理",
+			"name":     "源站",
 			"url":      "/servers/server/settings/reverseProxy?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "reverseProxy",
 			"isOn":     serverConfig.ReverseProxyRef != nil && serverConfig.ReverseProxyRef.IsOn,
@@ -365,6 +359,12 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 		})
 
 		menuItems = append(menuItems, maps.Map{
+			"name":     "静态分发",
+			"url":      "/servers/server/settings/web?serverId=" + serverIdString,
+			"isActive": secondMenuItem == "web",
+			"isOn":     serverConfig.Web != nil && serverConfig.Web.Root != nil && serverConfig.Web.Root.IsOn,
+		})
+		menuItems = append(menuItems, maps.Map{
 			"name":     "Fastcgi",
 			"url":      "/servers/server/settings/fastcgi?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "fastcgi",
@@ -419,7 +419,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":     serverConfig.TLS != nil && serverConfig.TLS.IsOn && len(serverConfig.TLS.Listen) > 0,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     "反向代理",
+			"name":     "源站",
 			"url":      "/servers/server/settings/reverseProxy?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "reverseProxy",
 			"isOn":     serverConfig.ReverseProxyRef != nil && serverConfig.ReverseProxyRef.IsOn,
@@ -439,7 +439,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":     serverConfig.UDP != nil && serverConfig.UDP.IsOn && len(serverConfig.UDP.Listen) > 0,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     "反向代理",
+			"name":     "源站",
 			"url":      "/servers/server/settings/reverseProxy?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "reverseProxy",
 			"isOn":     serverConfig.ReverseProxyRef != nil && serverConfig.ReverseProxyRef.IsOn,

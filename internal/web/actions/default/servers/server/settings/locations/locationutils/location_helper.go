@@ -66,13 +66,7 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.RedirectToHttps != nil && locationConfig.Web.RedirectToHttps.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
-		"name":     "Web设置",
-		"url":      "/servers/server/settings/locations/web?serverId=" + serverIdString + "&locationId=" + locationIdString,
-		"isActive": secondMenuItem == "web",
-		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.Root != nil && locationConfig.Web.Root.IsPrior,
-	})
-	menuItems = append(menuItems, maps.Map{
-		"name":     "反向代理",
+		"name":     "源站",
 		"url":      "/servers/server/settings/locations/reverseProxy?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "reverseProxy",
 		"isOn":     locationConfig != nil && locationConfig.ReverseProxyRef != nil && locationConfig.ReverseProxyRef.IsPrior,
@@ -153,6 +147,12 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"url":      "/servers/server/settings/locations/webp?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "webp",
 		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.WebP != nil && locationConfig.Web.WebP.IsPrior,
+	})
+	menuItems = append(menuItems, maps.Map{
+		"name":     "静态分发",
+		"url":      "/servers/server/settings/locations/web?serverId=" + serverIdString + "&locationId=" + locationIdString,
+		"isActive": secondMenuItem == "web",
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.Root != nil && locationConfig.Web.Root.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     "Fastcgi",
