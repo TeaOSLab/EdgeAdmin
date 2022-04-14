@@ -4,7 +4,6 @@ package servergrouputils
 
 import (
 	"errors"
-	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
@@ -57,82 +56,7 @@ func InitGroup(parent *actionutils.ParentAction, groupId int64, menuItem string)
 			},
 		}
 
-		if teaconst.IsPlus {
-			leftMenuItems = append([]maps.Map{
-				{
-					"name":     "Web设置",
-					"url":      urlPrefix + "/web?groupId=" + types.String(groupId),
-					"isActive": menuItem == "web",
-					"isOn":     configInfoResp.HasRootConfig,
-				},
-			}, leftMenuItems...)
-			leftMenuItems = append(leftMenuItems, []maps.Map{
-				{
-					"name": "-",
-					"url":  "",
-				},
-				{
-					"name":     "WAF",
-					"url":      urlPrefix + "/waf?groupId=" + types.String(groupId),
-					"isActive": menuItem == "waf",
-					"isOn":     configInfoResp.HasWAFConfig,
-				},
-				{
-					"name":     "缓存",
-					"url":      urlPrefix + "//cache?groupId=" + types.String(groupId),
-					"isActive": menuItem == "cache",
-					"isOn":     configInfoResp.HasCacheConfig,
-				},
-				{
-					"name":     "字符编码",
-					"url":      urlPrefix + "/charset?groupId=" + types.String(groupId),
-					"isActive": menuItem == "charset",
-					"isOn":     configInfoResp.HasCharsetConfig,
-				},
-				{
-					"name":     "访问日志",
-					"url":      urlPrefix + "/accessLog?groupId=" + types.String(groupId),
-					"isActive": menuItem == "accessLog",
-					"isOn":     configInfoResp.HasAccessLogConfig,
-				},
-				{
-					"name":     "统计",
-					"url":      urlPrefix + "/stat?groupId=" + types.String(groupId),
-					"isActive": menuItem == "stat",
-					"isOn":     configInfoResp.HasStatConfig,
-				},
-				{
-					"name":     "内容压缩",
-					"url":      urlPrefix + "/compression?groupId=" + types.String(groupId),
-					"isActive": menuItem == "compression",
-					"isOn":     configInfoResp.HasCompressionConfig,
-				},
-				{
-					"name":     "自定义页面",
-					"url":      urlPrefix + "/pages?groupId=" + types.String(groupId),
-					"isActive": menuItem == "pages",
-					"isOn":     configInfoResp.HasPagesConfig,
-				},
-				{
-					"name":     "HTTP Header",
-					"url":      urlPrefix + "/headers?groupId=" + types.String(groupId),
-					"isActive": menuItem == "headers",
-					"isOn":     configInfoResp.HasRequestHeadersConfig || configInfoResp.HasResponseHeadersConfig,
-				},
-				{
-					"name":     "Websocket",
-					"url":      urlPrefix + "/websocket?groupId=" + types.String(groupId),
-					"isActive": menuItem == "websocket",
-					"isOn":     configInfoResp.HasWebsocketConfig,
-				},
-				{
-					"name":     "WebP",
-					"url":      urlPrefix + "/webp?groupId=" + types.String(groupId),
-					"isActive": menuItem == "webp",
-					"isOn":     configInfoResp.HasWebPConfig,
-				},
-			}...)
-		}
+		leftMenuItems = filterMenuItems(leftMenuItems, groupId, urlPrefix, menuItem, configInfoResp)
 
 		leftMenuItems = append(leftMenuItems, maps.Map{
 			"name": "-",
@@ -145,14 +69,8 @@ func InitGroup(parent *actionutils.ParentAction, groupId int64, menuItem string)
 			"isOn":     configInfoResp.HasRemoteAddrConfig,
 		})
 
-		if teaconst.IsPlus {
-			leftMenuItems = append(leftMenuItems, maps.Map{
-				"name":     "请求限制",
-				"url":      urlPrefix + "/requestLimit?groupId=" + types.String(groupId),
-				"isActive": menuItem == "requestLimit",
-				"isOn":     configInfoResp.HasRequestLimitConfig,
-			})
-		}
+		leftMenuItems = filterMenuItems2(leftMenuItems, groupId, urlPrefix, menuItem, configInfoResp)
+
 		parent.Data["leftMenuItems"] = leftMenuItems
 	}
 

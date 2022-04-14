@@ -44,6 +44,7 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/groups"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/groups/group/settings/httpReverseProxy"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/groups/group/settings/index"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/groups/group/settings/remoteAddr"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/groups/group/settings/tcpReverseProxy"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/groups/group/settings/udpReverseProxy"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/logs"
