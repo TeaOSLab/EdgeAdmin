@@ -32,7 +32,7 @@
         <div class="ui field">
             <button type="submit" class="ui button">搜索</button>
             &nbsp;
-            <a href="/servers" v-if="clusterId > 0 || groupId > 0 || keyword.length > 0">[清除条件]</a>
+            <a href="/servers" v-if="clusterId > 0 || groupId > 0 || keyword.length > 0 || hasOrder">[清除条件]</a>
         </div>
         <div class="ui field" v-if="clusterId == 0 && groupId == 0 && keyword.length == 0 && latestServers.length > 0">
             <a href="" @click.prevent="showLatest()">常用<i class="icon angle" :class="{down: !latestVisible, up: latestVisible}"></i> </a>
@@ -58,6 +58,7 @@
 			<th>部署集群</th>
 			<th>域名</th>
 			<th>端口</th>
+            <th class="center" style="width: 8em">下行带宽<tip-icon content="最近5分钟平均带宽，每5分钟更新一次"></tip-icon><sort-arrow name="trafficOutOrder"></sort-arrow></th>
 			<th class="two wide center">状态</th>
 			<th class="two op">操作</th>
 		</tr>
@@ -97,6 +98,10 @@
                 <tiny-basic-label><keyword :v-word="keyword">{{port.portRange}}</keyword><span class="small">（{{port.protocol}}）</span></tiny-basic-label>
 			</div>
 		</td>
+        <td class="center">
+            <span v-if="server.bandwidth.length > 0">{{server.bandwidth}}</span>
+            <span class="disabled" v-else>-</span>
+        </td>
 		<td class="center">
             <div v-if="!checkDNS">
                 <label-on :v-is-on="server.isOn"></label-on>

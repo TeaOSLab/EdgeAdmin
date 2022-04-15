@@ -9,12 +9,14 @@
 			<td class="title">服务名称 *</td>
 			<td>
 				<input type="text" name="name" maxlength="60" ref="focus"/>
+                <p class="comment">可以是网站用途或者域名等。</p>
 			</td>
 		</tr>
         <tr v-show="hasUsers">
-            <td>选择用户</td>
+            <td>所属用户<optional-label></optional-label></td>
             <td>
                 <user-selector @change="changeUserId"></user-selector>
+                <p class="comment">当前服务所属平台用户。</p>
             </td>
         </tr>
         <tr v-if="plans.length > 0">
@@ -41,7 +43,7 @@
 
         <!-- 域名 -->
         <tr v-if="serverType == 'httpProxy' || serverType == 'httpWeb'">
-            <td>绑定域名</td>
+            <td>绑定域名 *</td>
             <td>
                 <server-name-box></server-name-box>
                 <p class="comment">绑定后，才能通过域名可以访问不同的服务。</p>
@@ -99,7 +101,7 @@
 		</tr>
 
 		<tr>
-			<td>选择分组</td>
+			<td>选择分组<optional-label></optional-label></td>
 			<td>
 				<server-group-selector></server-group-selector>
 			</td>
