@@ -3,6 +3,7 @@ package servers
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
@@ -86,12 +87,14 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 服务列表
 	serversResp, err := this.RPC().ServerRPC().ListEnabledServersMatch(this.AdminContext(), &pb.ListEnabledServersMatchRequest{
-		Offset:        page.Offset,
-		Size:          page.Size,
-		NodeClusterId: params.ClusterId,
-		ServerGroupId: params.GroupId,
-		Keyword:       params.Keyword,
-		AuditingFlag:  params.AuditingFlag,
+		Offset:         page.Offset,
+		Size:           page.Size,
+		NodeClusterId:  params.ClusterId,
+		ServerGroupId:  params.GroupId,
+		Keyword:        params.Keyword,
+		AuditingFlag:   params.AuditingFlag,
+		TrafficOutDesc: params.TrafficOutOrder == "desc",
+		TrafficOutAsc:  params.TrafficOutOrder == "asc",
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -208,6 +211,15 @@ func (this *IndexAction) RunGet(params struct {
 			auditingTime = timeutil.FormatTime("Y-m-d", server.AuditingAt)
 		}
 
+		// 统计数据
+		var bandwidth = ""
+		if server.LatestServerDailyStat != nil {
+			var bytesPerSecond = server.LatestServerDailyStat.Bytes / 300
+			if bytesPerSecond > 0 {
+				bandwidth = numberutils.FormatBytes(bytesPerSecond)
+			}
+		}
+
 		serverMaps = append(serverMaps, maps.Map{
 			"id":   server.Id,
 			"isOn": server.IsOn,
@@ -225,6 +237,7 @@ func (this *IndexAction) RunGet(params struct {
 			"auditingIsOk":     auditingIsOk,
 			"user":             userMap,
 			"auditingTime":     auditingTime,
+			"bandwidth":        bandwidth,
 		})
 	}
 	this.Data["servers"] = serverMaps
