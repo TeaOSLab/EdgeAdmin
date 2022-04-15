@@ -5,6 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/maps"
@@ -25,12 +26,15 @@ func (this *IndexAction) RunGet(params struct {
 	Keyword      string
 	AuditingFlag int32
 	CheckDNS     bool
+
+	TrafficOutOrder string
 }) {
 	this.Data["clusterId"] = params.ClusterId
 	this.Data["groupId"] = params.GroupId
 	this.Data["keyword"] = params.Keyword
 	this.Data["auditingFlag"] = params.AuditingFlag
 	this.Data["checkDNS"] = params.CheckDNS
+	this.Data["hasOrder"] = len(params.TrafficOutOrder) > 0
 
 	isSearching := params.AuditingFlag == 1 || params.ClusterId > 0 || params.GroupId > 0 || len(params.Keyword) > 0
 
@@ -261,6 +265,7 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 显示服务需要修复的日志数量
 	countNeedFixLogsResp, err := this.RPC().NodeLogRPC().CountNodeLogs(this.AdminContext(), &pb.CountNodeLogsRequest{
+		Role:       nodeconfigs.NodeRoleNode,
 		AllServers: true,
 		FixedState: int32(configutils.BoolStateNo),
 	})
