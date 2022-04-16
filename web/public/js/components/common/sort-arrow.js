@@ -16,7 +16,7 @@ Vue.component("sort-arrow", {
 					let argValue = v.substring(eqIndex + 1)
 					if (argName == that.name) {
 						order = argValue
-					} else if (argValue != "asc" && argValue != "desc") {
+					} else if (argName != "page" && argValue != "asc" && argValue != "desc") {
 						newArgs.push(v)
 					}
 				} else {
