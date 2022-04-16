@@ -47,7 +47,7 @@
         </div>
     </div>
 
-    <div class="ui column no-border">
+    <div class="ui column with-border">
         <h4>API节点<link-icon href="/api" v-if="dashboard.canGoSettings"></link-icon></h4>
         <div class="value"><span>{{dashboard.countAPINodes}}</span>个
             <span style="font-size: 1em" v-if="dashboard.countOfflineAPINodes > 0">/ <a href="/api" v-if="dashboard.canGoSettings"><span class="red" style="font-size: 1em">{{dashboard.countOfflineAPINodes}}离线</span></a><span class="red" style="font-size: 1em" v-else>{{dashboard.countOfflineAPINodes}}离线</span></span>
@@ -66,7 +66,7 @@
         <div class="value"><span>{{dashboard.countServers}}</span>个</div>
     </div>
 
-    <div class="ui column no-border">
+    <div class="ui column with-border">
         <h4>今日流量</h4>
         <div class="value"><span>{{todayTraffic}}</span>{{todayTrafficUnit}}</div>
     </div>
