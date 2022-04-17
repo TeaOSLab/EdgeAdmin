@@ -27,6 +27,8 @@ func (this *TodayAction) RunGet(params struct {
 	ClusterId int64
 	NodeId    int64
 
+	Partition int32 `default:"-1"`
+
 	PageSize int
 }) {
 	this.Data["pageSize"] = params.PageSize
@@ -46,6 +48,7 @@ func (this *TodayAction) RunGet(params struct {
 	this.Data["nodeId"] = params.NodeId
 
 	resp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
+		Partition:         params.Partition,
 		RequestId:         params.RequestId,
 		ServerId:          params.ServerId,
 		HasError:          params.HasError > 0,
@@ -85,6 +88,7 @@ func (this *TodayAction) RunGet(params struct {
 	if len(params.RequestId) > 0 {
 		this.Data["hasPrev"] = true
 		prevResp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
+			Partition:         params.Partition,
 			RequestId:         params.RequestId,
 			ServerId:          params.ServerId,
 			HasError:          params.HasError > 0,

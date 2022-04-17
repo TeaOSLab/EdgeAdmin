@@ -31,6 +31,7 @@ func (this *IndexAction) RunGet(params struct {
 	Domain    string
 	HasError  int
 	HasWAF    int
+	Partition int32 `default:"-1"`
 
 	RequestId string
 	ServerId  int64
@@ -56,6 +57,7 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["pageSize"] = params.PageSize
 	this.Data["isSlowQuery"] = false
 	this.Data["slowQueryCost"] = ""
+	this.Data["partition"] = params.Partition
 
 	day := params.Day
 	ipList := []string{}
@@ -71,6 +73,7 @@ func (this *IndexAction) RunGet(params struct {
 
 		var before = time.Now()
 		resp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
+			Partition:         params.Partition,
 			RequestId:         params.RequestId,
 			NodeClusterId:     params.ClusterId,
 			NodeId:            params.NodeId,
@@ -117,6 +120,7 @@ func (this *IndexAction) RunGet(params struct {
 		if len(params.RequestId) > 0 {
 			this.Data["hasPrev"] = true
 			prevResp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
+				Partition:         params.Partition,
 				RequestId:         params.RequestId,
 				NodeClusterId:     params.ClusterId,
 				NodeId:            params.NodeId,

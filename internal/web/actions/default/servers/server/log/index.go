@@ -57,10 +57,13 @@ func (this *IndexAction) RunPost(params struct {
 	ClusterId int64
 	NodeId    int64
 
+	Partition int32 `default:"-1"`
+
 	Must *actions.Must
 }) {
 	isReverse := len(params.RequestId) > 0
 	accessLogsResp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
+		Partition:     params.Partition,
 		ServerId:      params.ServerId,
 		RequestId:     params.RequestId,
 		Size:          20,

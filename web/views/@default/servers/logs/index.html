@@ -28,6 +28,8 @@
     </http-access-log-search-box>
 </form>
 
+<http-access-log-partitions-box :v-partition="partition" :v-day="day"></http-access-log-partitions-box>
+
 <warning-message v-if="isSlowQuery">看起来你的访问日志查询非常慢（{{slowQueryCost}}s），建议<span v-if="domain.length == 0"> 1）指定具体域名查询；2）</span>通过添加新的 <a href="/db">[日志节点]</a> 来分散存储访问日志。</warning-message>
 
 <p class="comment" v-if="accessLogs.length == 0">暂时还没有访问日志。</p>
@@ -40,10 +42,10 @@
 </table>
 
 <div v-if="accessLogs.length > 0">
-    <a :href="path + '?clusterId=' + clusterId + '&nodeId=' + nodeId + '&serverId=' + serverId + '&requestId=' + lastRequestId + '&day=' + day + '&hasError=' + hasError + '&hasWAF=' + hasWAF + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&hour=' + hour + '&pageSize=' + pageSize" v-if="hasPrev">上一页</a>
+    <a :href="path + '?clusterId=' + clusterId + '&nodeId=' + nodeId + '&serverId=' + serverId + '&requestId=' + lastRequestId + '&day=' + day + '&hasError=' + hasError + '&hasWAF=' + hasWAF + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&hour=' + hour + '&pageSize=' + pageSize + '&partition=' + partition" v-if="hasPrev">上一页</a>
     <span v-else class="disabled">上一页</span>
     <span class="disabled">&nbsp; | &nbsp;</span>
-    <a :href="path + '?clusterId=' + clusterId + '&nodeId=' + nodeId + '&serverId=' + serverId + '&requestId=' + nextRequestId + '&day=' + day + '&hasError=' + hasError + '&hasWAF=' + hasWAF + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&hour=' + hour + '&pageSize=' + pageSize" v-if="hasMore">下一页</a>
+    <a :href="path + '?clusterId=' + clusterId + '&nodeId=' + nodeId + '&serverId=' + serverId + '&requestId=' + nextRequestId + '&day=' + day + '&hasError=' + hasError + '&hasWAF=' + hasWAF + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&hour=' + hour + '&pageSize=' + pageSize + '&partition=' + partition" v-if="hasMore">下一页</a>
     <span v-else class="disabled">下一页</span>
 
     <page-size-selector></page-size-selector>

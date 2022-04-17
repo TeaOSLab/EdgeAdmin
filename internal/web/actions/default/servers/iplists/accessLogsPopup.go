@@ -32,20 +32,38 @@ func (this *AccessLogsPopupAction) RunGet(params struct {
 	this.Data["ipFrom"] = item.IpFrom
 	this.Data["ipTo"] = item.IpTo
 
-	accessLogsResp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
-		Day:     timeutil.Format("Ymd"),
-		Keyword: "ip:" + item.IpFrom + "," + item.IpTo,
-		Size:    10,
-	})
+	// 多找几个Partition
+	var day = timeutil.Format("Ymd")
+	partitionsResp, err := this.RPC().HTTPAccessLogRPC().FindHTTPAccessLogPartitions(this.AdminContext(), &pb.FindHTTPAccessLogPartitionsRequest{Day: day})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	var accessLogs = accessLogsResp.HttpAccessLogs
-	if len(accessLogs) == 0 {
-		accessLogs = []*pb.HTTPAccessLog{}
+
+	var hasAccessLogs = false
+
+	for _, partition := range partitionsResp.ReversePartitions {
+		accessLogsResp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
+			Partition: partition,
+			Day:       day,
+			Keyword:   "ip:" + item.IpFrom + "," + item.IpTo,
+			Size:      10,
+		})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		var accessLogs = accessLogsResp.HttpAccessLogs
+		if len(accessLogs) > 0 {
+			this.Data["accessLogs"] = accessLogs
+			hasAccessLogs = true
+			break
+		}
 	}
-	this.Data["accessLogs"] = accessLogs
+
+	if !hasAccessLogs {
+		this.Data["accessLogs"] = []interface{}{}
+	}
 
 	this.Show()
 }

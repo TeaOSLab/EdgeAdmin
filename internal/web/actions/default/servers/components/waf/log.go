@@ -25,6 +25,7 @@ func (this *LogAction) RunGet(params struct {
 	RequestId        string
 	FirewallPolicyId int64
 	GroupId          int64
+	Partition        int32 `default:"-1"`
 }) {
 	if len(params.Day) == 0 {
 		params.Day = timeutil.Format("Y-m-d")
@@ -42,6 +43,7 @@ func (this *LogAction) RunGet(params struct {
 		size := int64(10)
 
 		resp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
+			Partition:           params.Partition,
 			RequestId:           params.RequestId,
 			FirewallPolicyId:    params.FirewallPolicyId,
 			FirewallRuleGroupId: params.GroupId,
@@ -74,6 +76,7 @@ func (this *LogAction) RunGet(params struct {
 		if len(params.RequestId) > 0 {
 			this.Data["hasPrev"] = true
 			prevResp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
+				Partition:           params.Partition,
 				RequestId:           params.RequestId,
 				FirewallPolicyId:    params.FirewallPolicyId,
 				FirewallRuleGroupId: params.GroupId,
