@@ -41,7 +41,12 @@
 			</td>
 		</tr>
 		<tr>
-			<td>发送字节<em>(BytesSent)</em>：{{accessLog.bytesSent}}</td>
+			<td>发送字节<em>(BytesSent)</em>：
+                <span v-if="accessLog.bytesSent != null">{{accessLog.bytesSent}}
+                    <span v-if="accessLog.bytesSent > 0" class="grey small">（{{teaweb.formatBytes(accessLog.bytesSent)}}）</span>
+                </span>
+                <span v-else class="disabled">0</span>
+            </td>
 			<td></td>
 		</tr>
 		<tr>
