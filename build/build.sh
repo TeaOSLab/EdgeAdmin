@@ -2,6 +2,7 @@
 
 function build() {
 	ROOT=$(dirname $0)
+	JS_ROOT=$ROOT/../web/public/js
 	NAME="edge-admin"
 	DIST=$ROOT/"../dist/${NAME}"
 	OS=${1}
@@ -53,6 +54,13 @@ function build() {
     # generate files
     echo "generating files ..."
 	go run -tags $TAG $ROOT/../cmd/edge-admin/main.go generate
+	if [ `which uglifyjs` ]; then
+    	echo "compress to component.js ..."
+    	uglifyjs --compress --mangle -- ${JS_ROOT}/components.src.js > ${JS_ROOT}/components.js
+    else
+    	echo "copy to component.js ..."
+    	cp ${JS_ROOT}/components.src.js ${JS_ROOT}/components.js
+    fi
 
 	# create dir & copy files
 	echo "copying ..."
