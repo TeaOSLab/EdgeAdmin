@@ -1,5 +1,6 @@
 Tea.context(function () {
 	this.tab = "summary"
+	this.teaweb= teaweb
 
 	this.switchTab = function (tab) {
 		this.tab = tab
