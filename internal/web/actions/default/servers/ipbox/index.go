@@ -20,6 +20,8 @@ func (this *IndexAction) Init() {
 
 func (this *IndexAction) RunGet(params struct {
 	Ip string
+
+	Partition int32 `default:"-1"`
 }) {
 	this.Data["ip"] = params.Ip
 
@@ -103,9 +105,10 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 访问日志
 	accessLogsResp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
-		Day:  timeutil.Format("Ymd"),
-		Ip:   params.Ip,
-		Size: 20,
+		Partition: params.Partition,
+		Day:       timeutil.Format("Ymd"),
+		Ip:        params.Ip,
+		Size:      20,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -115,9 +118,10 @@ func (this *IndexAction) RunGet(params struct {
 	if len(accessLogs) == 0 {
 		// 查询昨天
 		accessLogsResp, err = this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
-			Day:  timeutil.Format("Ymd", time.Now().AddDate(0, 0, -1)),
-			Ip:   params.Ip,
-			Size: 20,
+			Partition: params.Partition,
+			Day:       timeutil.Format("Ymd", time.Now().AddDate(0, 0, -1)),
+			Ip:        params.Ip,
+			Size:      20,
 		})
 		if err != nil {
 			this.ErrorPage(err)
