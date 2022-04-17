@@ -20,8 +20,6 @@ func (this *IndexAction) Init() {
 
 func (this *IndexAction) RunGet(params struct {
 	Ip string
-
-	Partition int32 `default:"-1"`
 }) {
 	this.Data["ip"] = params.Ip
 
@@ -104,36 +102,37 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["publicBlackIPLists"] = publicBlackIPListMaps
 
 	// 访问日志
-	accessLogsResp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
-		Partition: params.Partition,
-		Day:       timeutil.Format("Ymd"),
-		Ip:        params.Ip,
-		Size:      20,
-	})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	var accessLogs = accessLogsResp.HttpAccessLogs
-	if len(accessLogs) == 0 {
-		// 查询昨天
-		accessLogsResp, err = this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
-			Partition: params.Partition,
-			Day:       timeutil.Format("Ymd", time.Now().AddDate(0, 0, -1)),
-			Ip:        params.Ip,
-			Size:      20,
-		})
+	var hasAccessLogs = false
+	for _, day := range []string{timeutil.Format("Ymd"), timeutil.Format("Ymd", time.Now().AddDate(0, 0, -1))} {
+		partitionsResp, err := this.RPC().HTTPAccessLogRPC().FindHTTPAccessLogPartitions(this.AdminContext(), &pb.FindHTTPAccessLogPartitionsRequest{Day: day})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-		accessLogs = accessLogsResp.HttpAccessLogs
+		for _, partition := range partitionsResp.ReversePartitions {
+			accessLogsResp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
+				Partition: partition,
+				Day:       day,
+				Ip:        params.Ip,
+				Size:      20,
+			})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
 
-		if len(accessLogs) == 0 {
-			accessLogs = []*pb.HTTPAccessLog{}
+			var accessLogs = accessLogsResp.HttpAccessLogs
+			if len(accessLogs) > 0 {
+				this.Data["accessLogs"] = accessLogs
+				hasAccessLogs = true
+				break
+			}
 		}
 	}
-	this.Data["accessLogs"] = accessLogs
+
+	if !hasAccessLogs {
+		this.Data["accessLogs"] = []interface{}{}
+	}
 
 	this.Show()
 }
