@@ -46,6 +46,8 @@ func (this *TodayAction) RunGet(params struct {
 	this.Data["hasWAF"] = params.HasWAF
 	this.Data["clusterId"] = params.ClusterId
 	this.Data["nodeId"] = params.NodeId
+	this.Data["partition"] = params.Partition
+	this.Data["day"] = timeutil.Format("Ymd")
 
 	resp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
 		Partition:         params.Partition,

@@ -53,6 +53,7 @@ func (this *HistoryAction) RunGet(params struct {
 	this.Data["pageSize"] = params.PageSize
 	this.Data["clusterId"] = params.ClusterId
 	this.Data["nodeId"] = params.NodeId
+	this.Data["partition"] = params.Partition
 
 	day := params.Day
 	ipList := []string{}

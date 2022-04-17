@@ -31,10 +31,10 @@ Vue.component("http-access-log-partitions-box", {
 	methods: {
 		url: function (p) {
 			let u = window.location.toString()
-			u = u.replace(/\?partition=\d+/, "?")
-			u = u.replace(/\?requestId=\d+/, "?")
-			u = u.replace(/&partition=\d+/, "")
-			u = u.replace(/&requestId=\d+/, "")
+			u = u.replace(/\?partition=-?\d+/, "?")
+			u = u.replace(/\?requestId=-?\d+/, "?")
+			u = u.replace(/&partition=-?\d+/, "")
+			u = u.replace(/&requestId=-?\d+/, "")
 			if (u.indexOf("?") > 0) {
 				u += "&partition=" + p
 			} else {
@@ -53,7 +53,7 @@ Vue.component("http-access-log-partitions-box", {
 	template: `<div v-if="partitions.length > 1">
 	<div class="ui divider" style="margin-bottom: 0"></div>
 	<div class="ui menu text small blue" style="margin-bottom: 0; margin-top: 0">
-		<a v-for="p in partitions" :href="url(p.code)" class="item" :class="{active: selectedPartition == p.code, disabled: p.isDisabled}">分表{{p.code}}</a>
+		<a v-for="(p, index) in partitions" :href="url(p.code)" class="item" :class="{active: selectedPartition == p.code, disabled: p.isDisabled}">分表{{p.code+1}} &nbsp; &nbsp; <span class="disabled" v-if="index != partitions.length - 1">|</span></a>
 	</div>
 	<div class="ui divider" style="margin-top: 0"></div>
 </div>`
