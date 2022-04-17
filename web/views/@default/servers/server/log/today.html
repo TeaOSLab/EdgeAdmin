@@ -25,6 +25,9 @@
         <http-access-log-search-box :v-ip="ip" :v-domain="domain" :v-keyword="keyword" :v-cluster-id="clusterId" :v-node-id="nodeId"></http-access-log-search-box>
     </form>
 
+    <!-- 分区 -->
+    <http-access-log-partitions-box :v-day="day" :v-partition="partition"></http-access-log-partitions-box>
+
 	<p class="comment" v-if="accessLogs.length == 0">今天暂时还没有访问日志。</p>
 
 	<table class="ui table selectable" v-if="accessLogs.length > 0">
@@ -35,10 +38,10 @@
 	</table>
 
 	<div v-if="accessLogs.length > 0">
-		<a :href="path + '?serverId=' + serverId + '&requestId=' + lastRequestId + '&hasError=' + hasError + '&hasWAF=' + hasWAF + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&pageSize=' + pageSize" v-if="hasPrev">上一页</a>
+		<a :href="path + '?serverId=' + serverId + '&requestId=' + lastRequestId + '&hasError=' + hasError + '&hasWAF=' + hasWAF + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&pageSize=' + pageSize + '&partition=' + partition" v-if="hasPrev">上一页</a>
 		<span v-else class="disabled">上一页</span>
 		<span class="disabled">&nbsp; | &nbsp;</span>
-		<a :href="path + '?serverId=' + serverId + '&requestId=' + nextRequestId + '&hasError=' + hasError + '&hasWAF=' + hasWAF + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&pageSize=' + pageSize" v-if="hasMore">下一页</a>
+		<a :href="path + '?serverId=' + serverId + '&requestId=' + nextRequestId + '&hasError=' + hasError + '&hasWAF=' + hasWAF + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&pageSize=' + pageSize + '&partition=' + partition" v-if="hasMore">下一页</a>
 		<span v-else class="disabled">下一页</span>
         <page-size-selector></page-size-selector>
 	</div>
