@@ -39,6 +39,7 @@ func init() {
 			// DNS
 			Prefix("/clusters/cluster/settings/dns").
 			GetPost("", new(dns.IndexAction)).
+			Post("/randomName", new(dns.RandomNameAction)).
 
 			// 消息
 			Prefix("/clusters/cluster/settings/message").
@@ -78,7 +79,6 @@ func init() {
 			// WebP
 			Prefix("/clusters/cluster/settings/webp").
 			GetPost("", new(webp.IndexAction)).
-
 			EndAll()
 	})
 }
