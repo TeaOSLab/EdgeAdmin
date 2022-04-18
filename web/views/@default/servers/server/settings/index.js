@@ -7,6 +7,7 @@ Tea.context(function () {
 	this.userId = 0
 	this.plans = []
 	this.userPlanId = 0
+	this.oldClusterId = this.server.clusterId
 
 	if (this.userPlan != null) {
 		this.userPlanId = this.userPlan.id

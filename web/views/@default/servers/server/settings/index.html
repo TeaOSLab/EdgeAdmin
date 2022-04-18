@@ -29,16 +29,20 @@
                 </td>
             </tr>
 			<tr>
-				<td>部署的集群 *</td>
+				<td :class="{'color-border':server.clusterId != oldClusterId}">部署的集群 *</td>
 				<td>
-                    <div v-if="user != null">{{clusterName}}
-                        <p class="comment">此选项跟随用户设置，不能单独修改。</p>
-                    </div>
-					<select class="ui dropdown auto-width" name="clusterId" v-model="server.clusterId" v-show="user == null">
+					<select class="ui dropdown auto-width" name="clusterId" v-model="server.clusterId" >
 						<option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
 					</select>
 				</td>
 			</tr>
+            <tr v-show="server.clusterId != oldClusterId">
+                <td class="color-border">是否保留原集群配置</td>
+                <td>
+                    <checkbox name="keepOldConfigs" checked="checked"></checkbox>
+                    <p class="comment">选中表示在先前的集群节点上仍然保留当前服务的配置，直至节点配置全部刷新时才会删除；不选中，则表示立即删除原集群上关于当前服务的配置。</p>
+                </td>
+            </tr>
 			<tr>
 				<td>服务类型 *</td>
 				<td>
