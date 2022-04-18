@@ -13,7 +13,7 @@
 				<td>选择主域名 *</td>
 				<td>
 					<dns-domain-selector :v-domain-id="domainId" :v-domain-name="domainName" @change="changeDomain"></dns-domain-selector>
-					<p class="comment">用于生成集群节点和网站服务的DNS解析记录。</p>
+                    <p class="comment">用于生成集群节点和网站服务的DNS解析记录<span v-if="domainId > 0">，修改后将自动删除旧域名中的相关记录</span>。</p>
 				</td>
 			</tr>
 			<tr>
@@ -24,7 +24,7 @@
                         <span class="ui label" v-if="domain != null && domain.name != null && domain.name.length > 0">.{{domain.name}}</span>
                         <span class="ui label" v-else>.主域名</span>
 					</div>
-					<p class="comment">当前集群的子域名，和主域名一起组成集群节点的子域名。<a href="" @click.prevent="generateRandName()">[随机生成]</a>。</p>
+					<p class="comment">当前集群的子域名，和主域名一起组成集群节点的子域名，修改后将自动删除旧域名中的相关记录。<a href="" @click.prevent="generateRandName()">[随机生成]</a>。</p>
 				</td>
 			</tr>
             <tr>
