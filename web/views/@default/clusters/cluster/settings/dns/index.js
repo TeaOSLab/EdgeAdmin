@@ -10,4 +10,11 @@ Tea.context(function () {
 	this.addCnameRecord = function (name) {
 		this.$refs.cnameRecords.addValue(name)
 	}
+
+	this.generateRandName = function () {
+		this.$post(".randomName")
+			.success(function (resp) {
+				this.dnsName = resp.data.name
+			})
+	}
 })
