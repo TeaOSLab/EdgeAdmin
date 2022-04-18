@@ -147,13 +147,14 @@ func (this *IndexAction) RunGet(params struct {
 
 // RunPost 保存
 func (this *IndexAction) RunPost(params struct {
-	ServerId    int64
-	Name        string
-	Description string
-	ClusterId   int64
-	GroupIds    []int64
-	IsOn        bool
-	UserPlanId  int64
+	ServerId       int64
+	Name           string
+	Description    string
+	ClusterId      int64
+	KeepOldConfigs bool
+	GroupIds       []int64
+	IsOn           bool
+	UserPlanId     int64
 
 	Must *actions.Must
 }) {
@@ -174,6 +175,7 @@ func (this *IndexAction) RunPost(params struct {
 		Name:           params.Name,
 		Description:    params.Description,
 		NodeClusterId:  params.ClusterId,
+		KeepOldConfigs: params.KeepOldConfigs,
 		IsOn:           params.IsOn,
 		ServerGroupIds: params.GroupIds,
 	})
