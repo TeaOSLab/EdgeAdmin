@@ -93,15 +93,32 @@
             <tr>
                 <td>API密钥 *</td>
                 <td>
-                    <input type="text" name="cloudFlareAPIKey" maxlength="100" v-model="provider.params.apiKey"/>
+                    <input type="text" name="paramCloudFlareAPIKey" maxlength="100" v-model="provider.params.apiKey"/>
                     <p class="comment">在个人资料中的"API令牌"--"API密钥"--"Global API Key"中获取。</p>
                 </td>
             </tr>
             <tr>
                 <td>账号邮箱 *</td>
                 <td>
-                    <input type="text" name="cloudFlareEmail" maxlength="100" v-model="provider.params.email"/>
+                    <input type="text" name="paramCloudFlareEmail" maxlength="100" v-model="provider.params.email"/>
                     <p class="comment">登录账号使用的邮箱。</p>
+                </td>
+            </tr>
+        </tbody>
+
+        <!-- GoDaddy -->
+        <tbody v-if="provider.type == 'godaddy'">
+            <tr>
+                <td>Key *</td>
+                <td>
+                    <input type="text" name="paramGoDaddyKey" maxlength="100" v-model="provider.params.key"/>
+                    <p class="comment">可以在GoDaddy<a href="https://developer.godaddy.com/keys" target="_blank">开发者中心</a>添加。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>Secret *</td>
+                <td>
+                    <input type="text" name="paramGoDaddySecret" maxlength="100" v-model="provider.params.secret"/>
                 </td>
             </tr>
         </tbody>
