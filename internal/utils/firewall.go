@@ -18,7 +18,7 @@ func AddPortsToFirewall(ports []int) {
 			if len(firewallCmd) > 0 {
 				err := exec.Command(firewallCmd, "--add-port="+types.String(port)+"/tcp").Run()
 				if err == nil {
-					logs.Println("API_NODE", "add port '"+types.String(port)+"' to firewalld")
+					logs.Println("ADMIN_NODE", "add port '"+types.String(port)+"' to firewalld")
 
 					_ = exec.Command(firewallCmd, "--add-port="+types.String(port)+"/tcp", "--permanent").Run()
 				}
