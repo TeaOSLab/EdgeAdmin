@@ -104,6 +104,22 @@ func (this *ItemsAction) RunGet(params struct {
 			}
 		}
 
+		// 区域 & ISP
+		var region = ""
+		var isp = ""
+		if len(item.IpFrom) > 0 && len(item.IpTo) == 0 {
+			regionResp, err := this.RPC().IPLibraryRPC().LookupIPRegion(this.AdminContext(), &pb.LookupIPRegionRequest{Ip: item.IpFrom})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			var ipRegion = regionResp.IpRegion
+			if ipRegion != nil {
+				region = ipRegion.Summary
+				isp = ipRegion.Isp
+			}
+		}
+
 		itemMaps = append(itemMaps, maps.Map{
 			"id":             item.Id,
 			"ipFrom":         item.IpFrom,
@@ -118,6 +134,8 @@ func (this *ItemsAction) RunGet(params struct {
 			"sourceSet":      sourceSetMap,
 			"sourceServer":   sourceServerMap,
 			"lifeSeconds":    item.ExpiredAt - time.Now().Unix(),
+			"region":         region,
+			"isp":            isp,
 		})
 	}
 	this.Data["items"] = itemMaps
