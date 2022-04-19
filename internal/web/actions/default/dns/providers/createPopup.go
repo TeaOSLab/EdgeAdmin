@@ -1,3 +1,8 @@
+// Copyright 2022 Liuxiangchao iwind.liu@gmail.com. All rights reserved.
+
+//go:build !plus
+// +build !plus
+
 package providers
 
 import (
@@ -77,8 +82,8 @@ func (this *CreatePopupAction) RunPost(params struct {
 	ParamApiSecret string
 
 	// CloudFlare
-	CloudFlareAPIKey string
-	CloudFlareEmail  string
+	ParamCloudFlareAPIKey string
+	ParamCloudFlareEmail  string
 
 	// Local EdgeDNS
 	ParamLocalEdgeDNSClusterId int64
@@ -137,12 +142,12 @@ func (this *CreatePopupAction) RunPost(params struct {
 		apiParams["apiSecret"] = params.ParamApiSecret
 	case "cloudFlare":
 		params.Must.
-			Field("cloudFlareAPIKey", params.CloudFlareAPIKey).
+			Field("paramCloudFlareAPIKey", params.ParamCloudFlareAPIKey).
 			Require("请输入API密钥").
-			Field("cloudFlareEmail", params.CloudFlareEmail).
+			Field("paramCloudFlareEmail", params.ParamCloudFlareEmail).
 			Email("请输入正确格式的邮箱地址")
-		apiParams["apiKey"] = params.CloudFlareAPIKey
-		apiParams["email"] = params.CloudFlareEmail
+		apiParams["apiKey"] = params.ParamCloudFlareAPIKey
+		apiParams["email"] = params.ParamCloudFlareEmail
 	case "localEdgeDNS":
 		params.Must.
 			Field("ParamLocalEdgeDNSClusterId", params.ParamLocalEdgeDNSClusterId).

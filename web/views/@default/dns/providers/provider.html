@@ -76,6 +76,20 @@
         </tr>
     </tbody>
 
+    <!-- GoDaddy -->
+    <tbody v-if="provider.type == 'godaddy'">
+        <tr>
+            <td class="color-border">Key</td>
+            <td>
+                {{provider.apiParams.key}}
+            </td>
+        </tr>
+        <tr>
+            <td class="color-border">Secret</td>
+            <td>{{provider.apiParams.secret}}</td>
+        </tr>
+    </tbody>
+
     <!-- Local EdgeDNS -->
     <tbody v-if="provider.type == 'localEdgeDNS'">
         <tr>
