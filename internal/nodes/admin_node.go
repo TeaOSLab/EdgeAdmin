@@ -13,9 +13,12 @@ import (
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/rands"
 	"github.com/iwind/TeaGo/sessions"
+	"github.com/iwind/TeaGo/types"
 	"github.com/iwind/gosock/pkg/gosock"
+	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"log"
+	"net"
 	"os"
 	"os/exec"
 	"os/signal"
@@ -57,6 +60,9 @@ func (this *AdminNode) Run() {
 		}
 		return
 	}
+
+	// 添加端口到防火墙
+	this.addPortsToFirewall()
 
 	// 监听信号
 	sigQueue := make(chan os.Signal)
@@ -199,6 +205,44 @@ https:
 	}
 
 	return nil
+}
+
+// 添加端口到防火墙
+func (this *AdminNode) addPortsToFirewall() {
+	var configFile = Tea.ConfigFile("server.yaml")
+	data, err := ioutil.ReadFile(configFile)
+	if err != nil {
+		return
+	}
+
+	var config = &TeaGo.ServerConfig{}
+	err = yaml.Unmarshal(data, config)
+	if err != nil {
+		return
+	}
+
+	var ports = []int{}
+	if config.Http.On {
+		for _, listen := range config.Http.Listen {
+			_, portString, _ := net.SplitHostPort(listen)
+			var port = types.Int(portString)
+			if port > 0 && !lists.ContainsInt(ports, port) {
+				ports = append(ports, port)
+			}
+		}
+	}
+
+	if config.Https.On {
+		for _, listen := range config.Https.Listen {
+			_, portString, _ := net.SplitHostPort(listen)
+			var port = types.Int(portString)
+			if port > 0 && !lists.ContainsInt(ports, port) {
+				ports = append(ports, port)
+			}
+		}
+	}
+
+	utils.AddPortsToFirewall(ports)
 }
 
 // 启动API节点
