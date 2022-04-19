@@ -15,8 +15,8 @@
         </div>
         <div class="ui field">
             <div class="ui checkbox">
-                <input type="checkbox" name="globalOnly" value="1" v-model="globalOnly"/>
-                <label>自动拦截名单</label>
+                <input type="checkbox" name="globalOnly" value="1" v-model="globalOnly" id="global-only-checkbox"/>
+                <label for="global-only-checkbox">自动拦截名单</label>
             </div>
         </div>
         <div class="ui field" v-if="countUnread > 0">
