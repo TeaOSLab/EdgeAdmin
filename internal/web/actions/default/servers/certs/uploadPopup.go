@@ -41,8 +41,8 @@ func (this *UploadPopupAction) RunPost(params struct {
 		Field("name", params.Name).
 		Require("请输入证书说明")
 
-	certData := []byte{}
-	keyData := []byte{}
+	var certData = []byte{}
+	var keyData = []byte{}
 
 	if params.TextMode {
 		if len(params.CertText) == 0 {
@@ -80,12 +80,12 @@ func (this *UploadPopupAction) RunPost(params struct {
 	}
 
 	// 校验
-	sslConfig := &sslconfigs.SSLCertConfig{
+	var certConfig = &sslconfigs.SSLCertConfig{
 		IsCA:     params.IsCA,
 		CertData: certData,
 		KeyData:  keyData,
 	}
-	err := sslConfig.Init()
+	err := certConfig.Init()
 	if err != nil {
 		if params.IsCA {
 			this.Fail("证书校验错误：" + err.Error())
@@ -93,8 +93,15 @@ func (this *UploadPopupAction) RunPost(params struct {
 			this.Fail("证书或密钥校验错误：" + err.Error())
 		}
 	}
-	if len(timeutil.Format("Y", sslConfig.TimeEnd())) != 4 {
+	if len(timeutil.Format("Y", certConfig.TimeEnd())) != 4 {
 		this.Fail("证书格式错误：无法读取到证书有效期")
+	}
+
+	if certConfig.TimeBeginAt < 0 {
+		this.Fail("证书校验错误：有效期开始时间过小，不能小于1970年1月1日")
+	}
+	if certConfig.TimeEndAt < 0 {
+		this.Fail("证书校验错误：有效期结束时间过小，不能小于1970年1月1日")
 	}
 
 	// 保存
@@ -106,10 +113,10 @@ func (this *UploadPopupAction) RunPost(params struct {
 		IsCA:        params.IsCA,
 		CertData:    certData,
 		KeyData:     keyData,
-		TimeBeginAt: sslConfig.TimeBeginAt,
-		TimeEndAt:   sslConfig.TimeEndAt,
-		DnsNames:    sslConfig.DNSNames,
-		CommonNames: sslConfig.CommonNames,
+		TimeBeginAt: certConfig.TimeBeginAt,
+		TimeEndAt:   certConfig.TimeEndAt,
+		DnsNames:    certConfig.DNSNames,
+		CommonNames: certConfig.CommonNames,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -117,13 +124,13 @@ func (this *UploadPopupAction) RunPost(params struct {
 	}
 
 	// 查询已创建的证书并返回，方便调用者进行后续处理
-	certId := createResp.SslCertId
+	var certId = createResp.SslCertId
 	configResp, err := this.RPC().SSLCertRPC().FindEnabledSSLCertConfig(this.AdminContext(), &pb.FindEnabledSSLCertConfigRequest{SslCertId: certId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	certConfig := &sslconfigs.SSLCertConfig{}
+	certConfig = &sslconfigs.SSLCertConfig{}
 	err = json.Unmarshal(configResp.SslCertJSON, certConfig)
 	if err != nil {
 		this.ErrorPage(err)

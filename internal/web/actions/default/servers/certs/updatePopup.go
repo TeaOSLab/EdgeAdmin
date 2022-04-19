@@ -70,13 +70,13 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	certConfigJSON := certConfigResp.SslCertJSON
+	var certConfigJSON = certConfigResp.SslCertJSON
 	if len(certConfigJSON) == 0 {
 		this.NotFound("cert", params.CertId)
 		return
 	}
 
-	certConfig := &sslconfigs.SSLCertConfig{}
+	var certConfig = &sslconfigs.SSLCertConfig{}
 	err = json.Unmarshal(certConfigJSON, certConfig)
 	if err != nil {
 		this.ErrorPage(err)
@@ -99,7 +99,6 @@ func (this *UpdatePopupAction) RunPost(params struct {
 			}
 		}
 	} else {
-
 		if params.CertFile != nil {
 			certConfig.CertData, err = params.CertFile.Read()
 			if err != nil {
@@ -130,6 +129,13 @@ func (this *UpdatePopupAction) RunPost(params struct {
 
 	if len(timeutil.Format("Y", certConfig.TimeEnd())) != 4 {
 		this.Fail("证书格式错误：无法读取到证书有效期")
+	}
+
+	if certConfig.TimeBeginAt < 0 {
+		this.Fail("证书校验错误：有效期开始时间过小，不能小于1970年1月1日")
+	}
+	if certConfig.TimeEndAt < 0 {
+		this.Fail("证书校验错误：有效期结束时间过小，不能小于1970年1月1日")
 	}
 
 	// 保存
