@@ -54,13 +54,12 @@ Vue.component("http-access-log-config-box", {
 		<prior-checkbox :v-config="accessLog" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || accessLog.isPrior">
 			<tr>
-				<td class="title">是否开启访问日志存储</td>
+				<td class="title">开启访问日志</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="accessLog.isOn"/>
 						<label></label>
 					</div>
-					<p class="comment">关闭访问日志，并不影响统计的运行。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -123,7 +122,7 @@ Vue.component("http-access-log-config-box", {
         <h4>WAF相关</h4>
         <table class="ui table definition selectable">
             <tr>
-                <td class="title">是否只记录WAF相关日志</td>
+                <td class="title">只记录WAF相关日志</td>
                 <td>
                     <checkbox v-model="accessLog.firewallOnly"></checkbox>
                     <p class="comment">选中后只记录WAF相关的日志。通过此选项可有效减少访问日志数量，降低网络带宽和存储压力。</p>

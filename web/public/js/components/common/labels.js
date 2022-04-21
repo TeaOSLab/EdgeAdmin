@@ -14,6 +14,11 @@ Vue.component("code-label", {
 	template: `<span class="ui label basic tiny" style="padding: 3px;margin-left:2px;margin-right:2px" @click.prevent="click"><slot></slot></span>`
 })
 
+Vue.component("code-label-plain", {
+	template: `<span class="ui label basic tiny" style="padding: 3px;margin-left:2px;margin-right:2px"><slot></slot></span>`
+})
+
+
 // tiny标签
 Vue.component("tiny-label", {
 	template: `<span class="ui label tiny" style="margin-bottom: 0.5em"><slot></slot></span>`
