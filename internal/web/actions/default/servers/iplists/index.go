@@ -24,18 +24,21 @@ func (this *IndexAction) RunGet(params struct {
 	GlobalOnly bool
 	Unread     bool
 	EventLevel string
+	ListType   string
 }) {
 	this.Data["type"] = ""
 	this.Data["ip"] = params.Ip
 	this.Data["globalOnly"] = params.GlobalOnly
 	this.Data["unread"] = params.Unread
 	this.Data["eventLevel"] = params.EventLevel
+	this.Data["listType"] = params.ListType
 
 	countUnreadResp, err := this.RPC().IPItemRPC().CountAllEnabledIPItems(this.AdminContext(), &pb.CountAllEnabledIPItemsRequest{
 		Ip:         params.Ip,
 		GlobalOnly: params.GlobalOnly,
 		Unread:     true,
 		EventLevel: params.EventLevel,
+		ListType:   params.ListType,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -48,6 +51,7 @@ func (this *IndexAction) RunGet(params struct {
 		GlobalOnly: params.GlobalOnly,
 		Unread:     params.Unread,
 		EventLevel: params.EventLevel,
+		ListType:   params.ListType,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -62,6 +66,7 @@ func (this *IndexAction) RunGet(params struct {
 		GlobalOnly: params.GlobalOnly,
 		Unread:     params.Unread,
 		EventLevel: params.EventLevel,
+		ListType:   params.ListType,
 		Offset:     page.Offset,
 		Size:       page.Size,
 	})

@@ -98,9 +98,9 @@ Vue.component("ip-list-table", {
 					</div>
 				</th>
                 <th style="width:18em">IP</th>
-                <th>类型</th>
-                <th>级别</th>
-                <th>过期时间</th>
+                <th style="width: 6em">类型</th>
+                <th style="width: 6em">级别</th>
+                <th style="width: 12em">过期时间</th>
                 <th>备注</th>
                 <th class="three op">操作</th>
             </tr>
@@ -114,7 +114,7 @@ Vue.component("ip-list-table", {
 					</div>
 				</td>
 				<td>
-					<span v-if="item.type != 'all'">
+					<span v-if="item.type != 'all'" :class="{green: item.list != null && item.list.type == 'white'}">
 					<keyword :v-word="keyword">{{item.ipFrom}}</keyword> <span> <span class="small red" v-if="item.isRead != null && !item.isRead">&nbsp;New&nbsp;</span>&nbsp;<a :href="'/servers/iplists?ip=' + item.ipFrom" v-if="vShowSearchButton" title="搜索此IP"><span><i class="icon search small" style="color: #ccc"></i></span></a></span>
 					<span v-if="item.ipTo.length > 0"> - <keyword :v-word="keyword">{{item.ipTo}}</keyword></span></span>
 					<span v-else class="disabled">*</span>
