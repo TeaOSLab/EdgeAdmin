@@ -8,6 +8,13 @@
             <input type="text" name="ip" placeholder="x.x.x.x" v-model="ip"/>
         </div>
         <div class="ui field">
+            <select class="ui dropdown auto-width" name="listType" v-model="listType">
+                <option value="">[类型]</option>
+                <option value="black">黑名单</option>
+                <option value="white">白名单</option>
+            </select>
+        </div>
+        <div class="ui field">
            <select class="ui dropdown" name="eventLevel" v-model="eventLevel">
                <option value="">[级别]</option>
                <option v-for="level in eventLevels" :value="level.code">{{level.name}}</option>
@@ -16,7 +23,7 @@
         <div class="ui field">
             <div class="ui checkbox">
                 <input type="checkbox" name="globalOnly" value="1" v-model="globalOnly" id="global-only-checkbox"/>
-                <label for="global-only-checkbox">自动拦截名单</label>
+                <label for="global-only-checkbox">系统自动拦截</label>
             </div>
         </div>
         <div class="ui field" v-if="countUnread > 0">
@@ -28,7 +35,7 @@
         <div class="ui field">
             <button class="ui button" type="submit">搜索</button>
             &nbsp;
-            <a href="/servers/iplists" v-if="ip.length > 0 || globalOnly || unread || eventLevel.length > 0">[清除条件]</a>
+            <a href="/servers/iplists" v-if="ip.length > 0 || globalOnly || unread || eventLevel.length > 0 || listType.length > 0">[清除条件]</a>
         </div>
         <div class="ui field" v-if="countUnread > 0">
             <span class="disabled">|</span>
