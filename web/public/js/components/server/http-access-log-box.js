@@ -16,13 +16,16 @@ Vue.component("http-access-log-box", {
 	},
 	methods: {
 		formatCost: function (seconds) {
-			var s = (seconds * 1000).toString();
-			var pieces = s.split(".");
+			if (seconds == null) {
+				return "0"
+			}
+			let s = (seconds * 1000).toString();
+			let pieces = s.split(".");
 			if (pieces.length < 2) {
 				return s;
 			}
 
-			return pieces[0] + "." + pieces[1].substr(0, 3);
+			return pieces[0] + "." + pieces[1].substring(0, 3);
 		},
 		showLog: function () {
 			let that = this
