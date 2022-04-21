@@ -7238,13 +7238,16 @@ Vue.component("http-access-log-box", {
 	},
 	methods: {
 		formatCost: function (seconds) {
-			var s = (seconds * 1000).toString();
-			var pieces = s.split(".");
+			if (seconds == null) {
+				return "0"
+			}
+			let s = (seconds * 1000).toString();
+			let pieces = s.split(".");
 			if (pieces.length < 2) {
 				return s;
 			}
 
-			return pieces[0] + "." + pieces[1].substr(0, 3);
+			return pieces[0] + "." + pieces[1].substring(0, 3);
 		},
 		showLog: function () {
 			let that = this
@@ -7271,10 +7274,26 @@ Vue.component("http-access-log-box", {
 		}
 	},
 	template: `<div style="word-break: break-all" :style="{'color': (accessLog.status >= 400) ? '#dc143c' : ''}" ref="box">
-	<a v-if="accessLog.node != null && accessLog.node.nodeCluster != null" :href="'/clusters/cluster/node?nodeId=' + accessLog.node.id + '&clusterId=' + accessLog.node.nodeCluster.id" title="点击查看节点详情" target="_top"><span class="grey">[{{accessLog.node.name}}<span v-if="!accessLog.node.name.endsWith('节点')">节点</span>]</span></a>
-	<a :href="'/servers/server/log?serverId=' + accessLog.serverId" title="点击到网站服务" v-if="vShowServerLink"><span class="grey">[服务]</span></a>
-	<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey"><ip-box :v-ip="accessLog.remoteAddr">[{{accessLog.region}}]</ip-box></span> <ip-box><keyword :v-word="vKeyword">{{accessLog.remoteAddr}}</keyword></ip-box> [{{accessLog.timeLocal}}] <em>&quot;<keyword :v-word="vKeyword">{{accessLog.requestMethod}}</keyword> {{accessLog.scheme}}://<keyword :v-word="vKeyword">{{accessLog.host}}</keyword><keyword :v-word="vKeyword">{{accessLog.requestURI}}</keyword> <a :href="accessLog.scheme + '://' + accessLog.host + accessLog.requestURI" target="_blank" title="新窗口打开" class="disabled"><i class="external icon tiny"></i> </a> {{accessLog.proto}}&quot; </em> <keyword :v-word="vKeyword">{{accessLog.status}}</keyword> <code-label v-if="accessLog.attrs != null && (accessLog.attrs['cache.status'] == 'HIT' || accessLog.attrs['cache.status'] == 'STALE')">cache {{accessLog.attrs['cache.status'].toLowerCase()}}</code-label> <code-label v-if="accessLog.firewallActions != null && accessLog.firewallActions.length > 0">waf {{accessLog.firewallActions}}</code-label> <span v-if="accessLog.tags != null && accessLog.tags.length > 0">- <code-label v-for="tag in accessLog.tags" :key="tag">{{tag}}</code-label></span> - 耗时:{{formatCost(accessLog.requestTime)}} ms <span v-if="accessLog.humanTime != null && accessLog.humanTime.length > 0" class="grey small">&nbsp; ({{accessLog.humanTime}})</span>
-	&nbsp; <a href="" @click.prevent="showLog" title="查看详情"><i class="icon expand"></i></a>
+	<div>
+		<a v-if="accessLog.node != null && accessLog.node.nodeCluster != null" :href="'/clusters/cluster/node?nodeId=' + accessLog.node.id + '&clusterId=' + accessLog.node.nodeCluster.id" title="点击查看节点详情" target="_top"><span class="grey">[{{accessLog.node.name}}<span v-if="!accessLog.node.name.endsWith('节点')">节点</span>]</span></a>
+		<a :href="'/servers/server/log?serverId=' + accessLog.serverId" title="点击到网站服务" v-if="vShowServerLink"><span class="grey">[服务]</span></a>
+		<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey"><ip-box :v-ip="accessLog.remoteAddr">[{{accessLog.region}}]</ip-box></span> <ip-box><keyword :v-word="vKeyword">{{accessLog.remoteAddr}}</keyword></ip-box> [{{accessLog.timeLocal}}] <em>&quot;<keyword :v-word="vKeyword">{{accessLog.requestMethod}}</keyword> {{accessLog.scheme}}://<keyword :v-word="vKeyword">{{accessLog.host}}</keyword><keyword :v-word="vKeyword">{{accessLog.requestURI}}</keyword> <a :href="accessLog.scheme + '://' + accessLog.host + accessLog.requestURI" target="_blank" title="新窗口打开" class="disabled"><i class="external icon tiny"></i> </a> {{accessLog.proto}}&quot; </em> <keyword :v-word="vKeyword">{{accessLog.status}}</keyword> <code-label v-if="accessLog.attrs != null && (accessLog.attrs['cache.status'] == 'HIT' || accessLog.attrs['cache.status'] == 'STALE')">cache {{accessLog.attrs['cache.status'].toLowerCase()}}</code-label> <code-label v-if="accessLog.firewallActions != null && accessLog.firewallActions.length > 0">waf {{accessLog.firewallActions}}</code-label> <span v-if="accessLog.tags != null && accessLog.tags.length > 0">- <code-label v-for="tag in accessLog.tags" :key="tag">{{tag}}</code-label></span>
+		
+		<span  v-if="accessLog.wafInfo != null">
+			<a :href="(accessLog.wafInfo.policy.serverId == 0) ? '/servers/components/waf/group?firewallPolicyId=' +  accessLog.firewallPolicyId + '&type=inbound&groupId=' + accessLog.firewallRuleGroupId+ '#set' + accessLog.firewallRuleSetId : '/servers/server/settings/waf/group?serverId=' + accessLog.serverId + '&firewallPolicyId=' + accessLog.firewallPolicyId + '&type=inbound&groupId=' + accessLog.firewallRuleGroupId + '#set' + accessLog.firewallRuleSetId" target="_blank">
+				<code-label-plain>
+					<span class="red">
+						WAF --
+						<span v-if="accessLog.wafInfo.group != null">{{accessLog.wafInfo.group.name}} --</span>
+						<span v-if="accessLog.wafInfo.set != null">{{accessLog.wafInfo.set.name}}</span>
+					</span>
+				</code-label-plain>
+			</a>
+		</span>
+			
+		<span v-if="accessLog.requestTime != null"> - 耗时:{{formatCost(accessLog.requestTime)}} ms </span><span v-if="accessLog.humanTime != null && accessLog.humanTime.length > 0" class="grey small">&nbsp; ({{accessLog.humanTime}})</span>
+		&nbsp; <a href="" @click.prevent="showLog" title="查看详情"><i class="icon expand"></i></a>
+	</div>
 </div>`
 })
 
@@ -7334,13 +7353,12 @@ Vue.component("http-access-log-config-box", {
 		<prior-checkbox :v-config="accessLog" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || accessLog.isPrior">
 			<tr>
-				<td class="title">是否开启访问日志存储</td>
+				<td class="title">开启访问日志</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="accessLog.isOn"/>
 						<label></label>
 					</div>
-					<p class="comment">关闭访问日志，并不影响统计的运行。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -7403,7 +7421,7 @@ Vue.component("http-access-log-config-box", {
         <h4>WAF相关</h4>
         <table class="ui table definition selectable">
             <tr>
-                <td class="title">是否只记录WAF相关日志</td>
+                <td class="title">只记录WAF相关日志</td>
                 <td>
                     <checkbox v-model="accessLog.firewallOnly"></checkbox>
                     <p class="comment">选中后只记录WAF相关的日志。通过此选项可有效减少访问日志数量，降低网络带宽和存储压力。</p>
@@ -10598,9 +10616,9 @@ Vue.component("ip-list-table", {
 					</div>
 				</th>
                 <th style="width:18em">IP</th>
-                <th>类型</th>
-                <th>级别</th>
-                <th>过期时间</th>
+                <th style="width: 6em">类型</th>
+                <th style="width: 6em">级别</th>
+                <th style="width: 12em">过期时间</th>
                 <th>备注</th>
                 <th class="three op">操作</th>
             </tr>
@@ -10614,7 +10632,7 @@ Vue.component("ip-list-table", {
 					</div>
 				</td>
 				<td>
-					<span v-if="item.type != 'all'">
+					<span v-if="item.type != 'all'" :class="{green: item.list != null && item.list.type == 'white'}">
 					<keyword :v-word="keyword">{{item.ipFrom}}</keyword> <span> <span class="small red" v-if="item.isRead != null && !item.isRead">&nbsp;New&nbsp;</span>&nbsp;<a :href="'/servers/iplists?ip=' + item.ipFrom" v-if="vShowSearchButton" title="搜索此IP"><span><i class="icon search small" style="color: #ccc"></i></span></a></span>
 					<span v-if="item.ipTo.length > 0"> - <keyword :v-word="keyword">{{item.ipTo}}</keyword></span></span>
 					<span v-else class="disabled">*</span>
@@ -11586,6 +11604,11 @@ Vue.component("code-label", {
 	},
 	template: `<span class="ui label basic tiny" style="padding: 3px;margin-left:2px;margin-right:2px" @click.prevent="click"><slot></slot></span>`
 })
+
+Vue.component("code-label-plain", {
+	template: `<span class="ui label basic tiny" style="padding: 3px;margin-left:2px;margin-right:2px"><slot></slot></span>`
+})
+
 
 // tiny标签
 Vue.component("tiny-label", {
