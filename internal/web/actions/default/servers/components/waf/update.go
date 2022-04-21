@@ -58,6 +58,11 @@ func (this *UpdateAction) RunGet(params struct {
 		}
 	}
 
+	// log
+	if firewallPolicy.Log == nil {
+		firewallPolicy.Log = firewallconfigs.DefaultHTTPFirewallPolicyLogConfig
+	}
+
 	this.Data["firewallPolicy"] = maps.Map{
 		"id":               firewallPolicy.Id,
 		"name":             firewallPolicy.Name,
@@ -67,10 +72,11 @@ func (this *UpdateAction) RunGet(params struct {
 		"blockOptions":     firewallPolicy.BlockOptions,
 		"useLocalFirewall": firewallPolicy.UseLocalFirewall,
 		"synFloodConfig":   firewallPolicy.SYNFlood,
+		"log":              firewallPolicy.Log,
 	}
 
 	// 预置分组
-	groups := []maps.Map{}
+	var groups = []maps.Map{}
 	templatePolicy := firewallconfigs.HTTPFirewallTemplate()
 	for _, group := range templatePolicy.AllRuleGroups() {
 		if len(group.Code) > 0 {
@@ -101,6 +107,7 @@ func (this *UpdateAction) RunPost(params struct {
 	Mode             string
 	UseLocalFirewall bool
 	SynFloodJSON     []byte
+	LogJSON          []byte
 
 	Must *actions.Must
 }) {
@@ -128,6 +135,7 @@ func (this *UpdateAction) RunPost(params struct {
 		Mode:                 params.Mode,
 		UseLocalFirewall:     params.UseLocalFirewall,
 		SynFloodJSON:         params.SynFloodJSON,
+		LogJSON:              params.LogJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)

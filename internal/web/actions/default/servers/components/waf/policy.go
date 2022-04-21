@@ -96,6 +96,7 @@ func (this *PolicyAction) RunGet(params struct {
 		"blockOptions":     firewallPolicy.BlockOptions,
 		"useLocalFirewall": firewallPolicy.UseLocalFirewall,
 		"synFlood":         firewallPolicy.SYNFlood,
+		"log":              firewallPolicy.Log,
 	}
 
 	// 正在使用此策略的集群

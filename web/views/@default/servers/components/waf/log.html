@@ -25,6 +25,8 @@
 	</first-menu>
 	</form>
 
+    <http-access-log-partitions-box :v-day="day" :v-partition="partition"></http-access-log-partitions-box>
+
 	<p class="comment" v-if="accessLogs.length == 0">暂时还没有日志。</p>
 
 	<table class="ui table selectable" v-if="accessLogs.length > 0">
