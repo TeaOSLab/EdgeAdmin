@@ -29,11 +29,12 @@ func (this *AccessLogsPopupAction) RunGet(params struct {
 		this.NotFound("ipItem", params.ItemId)
 		return
 	}
+
 	this.Data["ipFrom"] = item.IpFrom
 	this.Data["ipTo"] = item.IpTo
 
 	// 多找几个Partition
-	var day = timeutil.Format("Ymd")
+	var day = timeutil.FormatTime("Ymd", item.CreatedAt)
 	partitionsResp, err := this.RPC().HTTPAccessLogRPC().FindHTTPAccessLogPartitions(this.AdminContext(), &pb.FindHTTPAccessLogPartitionsRequest{Day: day})
 	if err != nil {
 		this.ErrorPage(err)
@@ -47,7 +48,7 @@ func (this *AccessLogsPopupAction) RunGet(params struct {
 			Partition: partition,
 			Day:       day,
 			Keyword:   "ip:" + item.IpFrom + "," + item.IpTo,
-			Size:      10,
+			Size:      20,
 		})
 		if err != nil {
 			this.ErrorPage(err)
