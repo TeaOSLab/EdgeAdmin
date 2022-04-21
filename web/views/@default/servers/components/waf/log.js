@@ -13,5 +13,10 @@ Tea.context(function () {
         } else {
             accessLog.region = ""
         }
+		if (accessLog.firewallRuleSetId > 0 && typeof (that.wafInfos[accessLog.firewallRuleSetId]) == "object") {
+			accessLog.wafInfo = that.wafInfos[accessLog.firewallRuleSetId]
+		} else {
+			accessLog.wafInfo = null
+		}
     })
 })
