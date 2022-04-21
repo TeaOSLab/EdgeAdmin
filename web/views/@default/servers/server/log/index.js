@@ -30,6 +30,11 @@ Tea.context(function () {
 					} else {
 						accessLog.region = ""
 					}
+					if (accessLog.firewallRuleSetId > 0 && typeof (resp.data.wafInfos[accessLog.firewallRuleSetId]) == "object") {
+						accessLog.wafInfo = resp.data.wafInfos[accessLog.firewallRuleSetId]
+					} else {
+						accessLog.wafInfo = null
+					}
 				})
 
 				let max = 100
