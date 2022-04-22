@@ -27,7 +27,7 @@ func (this *ExportExcelAction) RunGet(params struct {
 }) {
 	logsResp, err := this.RPC().LogRPC().ListLogs(this.AdminContext(), &pb.ListLogsRequest{
 		Offset:   0,
-		Size:     1000, // 日志最大导出1000条，TODO 将来可以配置
+		Size:     10000, // 日志最大导出10000条，TODO 将来可以配置
 		DayFrom:  params.DayFrom,
 		DayTo:    params.DayTo,
 		Keyword:  params.Keyword,
@@ -38,7 +38,7 @@ func (this *ExportExcelAction) RunGet(params struct {
 		return
 	}
 
-	wb := xlsx.NewFile()
+	var wb = xlsx.NewFile()
 	sheet, err := wb.AddSheet("default")
 	if err != nil {
 		this.ErrorPage(err)
@@ -47,7 +47,7 @@ func (this *ExportExcelAction) RunGet(params struct {
 
 	// 头部
 	{
-		row := sheet.AddRow()
+		var row = sheet.AddRow()
 		row.SetHeight(25)
 		row.AddCell().SetString("ID")
 		row.AddCell().SetString("日期")
@@ -61,8 +61,8 @@ func (this *ExportExcelAction) RunGet(params struct {
 
 	// 数据
 	for _, log := range logsResp.Logs {
-		regionName := ""
-		ispName := ""
+		var regionName = ""
+		var ispName = ""
 		regionResp, err := this.RPC().IPLibraryRPC().LookupIPRegion(this.AdminContext(), &pb.LookupIPRegionRequest{Ip: log.Ip})
 		if err != nil {
 			this.ErrorPage(err)
@@ -86,7 +86,7 @@ func (this *ExportExcelAction) RunGet(params struct {
 			}
 		}
 
-		row := sheet.AddRow()
+		var row = sheet.AddRow()
 		row.SetHeight(25)
 		row.AddCell().SetInt64(log.Id)
 		row.AddCell().SetString(timeutil.FormatTime("Y-m-d H:i:s", log.CreatedAt))
@@ -106,7 +106,7 @@ func (this *ExportExcelAction) RunGet(params struct {
 	this.AddHeader("Content-Disposition", "attachment; filename=\"LOG-"+timeutil.Format("YmdHis")+".xlsx\"")
 	this.AddHeader("Cache-Control", "max-age=0")
 
-	buf := bytes.NewBuffer([]byte{})
+	var buf = bytes.NewBuffer([]byte{})
 	err = wb.Write(buf)
 	if err != nil {
 		this.ErrorPage(err)
