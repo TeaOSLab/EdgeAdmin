@@ -103,6 +103,7 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 访问日志
 	var hasAccessLogs = false
+Loop:
 	for _, day := range []string{timeutil.Format("Ymd"), timeutil.Format("Ymd", time.Now().AddDate(0, 0, -1))} {
 		partitionsResp, err := this.RPC().HTTPAccessLogRPC().FindHTTPAccessLogPartitions(this.AdminContext(), &pb.FindHTTPAccessLogPartitionsRequest{Day: day})
 		if err != nil {
@@ -125,7 +126,7 @@ func (this *IndexAction) RunGet(params struct {
 			if len(accessLogs) > 0 {
 				this.Data["accessLogs"] = accessLogs
 				hasAccessLogs = true
-				break
+				break Loop
 			}
 		}
 	}
