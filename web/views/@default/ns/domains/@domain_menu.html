@@ -1,9 +1,0 @@
-<first-menu>
-    <menu-item href="/ns/domains">所有域名</menu-item>
-    <span class="item disabled">|</span>
-    <menu-item :href="'/ns/domains/domain?domainId=' + domain.id" code="index">详情<span class="grey small">（{{domain.name}}）</span></menu-item>
-    <menu-item :href="'/ns/domains/records?domainId=' + domain.id" code="record">记录({{domain.countRecords}})</menu-item>
-    <menu-item :href="'/ns/domains/keys?domainId=' + domain.id" code="key">密钥({{domain.countKeys}})</menu-item>
-    <menu-item :href="'/ns/domains/tsig?domainId=' + domain.id" code="tsig">TSIG</menu-item>
-    <menu-item :href="'/ns/domains/update?domainId=' + domain.id" code="update">修改</menu-item>
-</first-menu>
