@@ -911,7 +911,7 @@ window.teaweb = {
 	chartColor: function (color) {
 		// old blue: #5470c6
 		if (color == null || color.length == 0) {
-			color = "#9DD3E8"
+			color = "#5470c6"
 		}
 
 		if (color == "red") {
@@ -921,7 +921,7 @@ window.teaweb = {
 			color = "#fac858"
 		}
 		if (color == "blue") {
-			color = "#9DD3E8"
+			color = "#5470c6"
 		}
 		if (color == "green") {
 			color = "#3ba272"
