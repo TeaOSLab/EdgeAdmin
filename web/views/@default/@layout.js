@@ -93,7 +93,7 @@ Tea.context(function () {
 	this.showQQGroupQrcode = function () {
 		teaweb.popup("/about/qq", {
 			width: "21em",
-			height: "24em"
+			height: "30em"
 		})
 	}
 
