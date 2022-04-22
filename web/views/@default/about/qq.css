@@ -1,4 +1,10 @@
+h3 {
+  text-align: center;
+}
+.main {
+  padding: 0;
+}
 table img {
-  width: 20em;
+  width: 100%;
 }
 /*# sourceMappingURL=qq.css.map */
