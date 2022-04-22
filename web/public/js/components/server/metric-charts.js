@@ -185,7 +185,7 @@ Vue.component("metric-chart", {
 							return v / axis.divider
 						}),
 						itemStyle: {
-							color: "#9DD3E8"
+							color: teaweb.DefaultChartColor
 						},
 						areaStyle: {},
 						barWidth: "20em"
@@ -257,7 +257,7 @@ Vue.component("metric-chart", {
 							return v / axis.divider
 						}),
 						itemStyle: {
-							color: "#9DD3E8"
+							color: teaweb.DefaultChartColor
 						},
 						areaStyle: {}
 					}
@@ -343,7 +343,7 @@ Vue.component("metric-chart", {
 							return v / axis.divider
 						}),
 						itemStyle: {
-							color: "#9DD3E8"
+							color: teaweb.DefaultChartColor
 						},
 						areaStyle: {},
 						barWidth: "20em"

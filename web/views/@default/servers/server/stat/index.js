@@ -82,10 +82,10 @@ Tea.context(function () {
 						return v.countRequests / axis.divider
 					}),
 					itemStyle: {
-						color: "#9DD3E8"
+						color: teaweb.DefaultChartColor
 					},
 					areaStyle: {
-						color: "#9DD3E8"
+						color: teaweb.DefaultChartColor
 					},
 					smooth: true
 				},
@@ -156,10 +156,10 @@ Tea.context(function () {
 						return v.bytes / axis.divider
 					}),
 					itemStyle: {
-						color: "#9DD3E8"
+						color: teaweb.DefaultChartColor
 					},
 					areaStyle: {
-						color: "#9DD3E8"
+						color: teaweb.DefaultChartColor
 					},
 					smooth: true
 				},
