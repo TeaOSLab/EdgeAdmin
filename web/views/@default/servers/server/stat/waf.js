@@ -79,7 +79,7 @@ Tea.context(function () {
 					}),
 					areaStyle: {},
 					itemStyle: {
-						color: "#9DD3E8"
+						color: teaweb.DefaultChartColor
 					},
 					smooth: true
 				},
@@ -159,7 +159,7 @@ Tea.context(function () {
 						return v.count / axis.divider;
 					}),
 					itemStyle: {
-						color: "#9DD3E8"
+						color: teaweb.DefaultChartColor
 					},
 					barWidth: "20em"
 				}

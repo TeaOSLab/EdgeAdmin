@@ -51,7 +51,7 @@ Tea.context(function () {
 						return v.count / axis.divider;
 					}),
 					itemStyle: {
-						color: "#9DD3E8"
+						color: teaweb.DefaultChartColor
 					},
 					barWidth: "20em"
 				}

@@ -533,7 +533,7 @@ window.teaweb = {
 					type: "bar",
 					data: values.map(valueFunc),
 					itemStyle: {
-						color: "#9DD3E8"
+						color: this.DefaultChartColor
 					},
 					barWidth: "20em"
 				}
@@ -598,7 +598,7 @@ window.teaweb = {
 					type: "line",
 					data: values.map(valueFunc),
 					itemStyle: {
-						color: "#9DD3E8"
+						color: this.DefaultChartColor
 					},
 					areaStyle: {},
 					smooth: true
@@ -909,8 +909,9 @@ window.teaweb = {
 		return s
 	},
 	chartColor: function (color) {
+		// old blue: #5470c6
 		if (color == null || color.length == 0) {
-			color = "#5470c6"
+			color = "#9DD3E8"
 		}
 
 		if (color == "red") {
@@ -920,13 +921,14 @@ window.teaweb = {
 			color = "#fac858"
 		}
 		if (color == "blue") {
-			color = "#5470c6"
+			color = "#9DD3E8"
 		}
 		if (color == "green") {
 			color = "#3ba272"
 		}
 		return color
-	}
+	},
+	DefaultChartColor: "#9DD3E8"
 }
 
 String.prototype.quoteIP = function () {
