@@ -2465,9 +2465,9 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<span  v-if="accessLog.wafInfo != null">
 			<a :href="(accessLog.wafInfo.policy.serverId == 0) ? '/servers/components/waf/group?firewallPolicyId=' +  accessLog.firewallPolicyId + '&type=inbound&groupId=' + accessLog.firewallRuleGroupId+ '#set' + accessLog.firewallRuleSetId : '/servers/server/settings/waf/group?serverId=' + accessLog.serverId + '&firewallPolicyId=' + accessLog.firewallPolicyId + '&type=inbound&groupId=' + accessLog.firewallRuleGroupId + '#set' + accessLog.firewallRuleSetId" target="_blank">
 				<code-label-plain>
-					<span class="red">
-						WAF --
-						<span v-if="accessLog.wafInfo.group != null">{{accessLog.wafInfo.group.name}} --</span>
+					<span>
+						WAF -
+						<span v-if="accessLog.wafInfo.group != null">{{accessLog.wafInfo.group.name}} -</span>
 						<span v-if="accessLog.wafInfo.set != null">{{accessLog.wafInfo.set.name}}</span>
 					</span>
 				</code-label-plain>
