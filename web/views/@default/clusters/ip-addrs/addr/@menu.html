@@ -1,8 +1,0 @@
-<first-menu>
-    <menu-item href="/clusters/ip-addrs">全部地址</menu-item>
-    <span class="item disabled">|</span>
-    <menu-item :href="'.?addrId=' + addr.id" code="addr">"{{addr.ip}}"详情</menu-item>
-    <menu-item :href="'.logs?addrId=' + addr.id" code="log">日志</menu-item>
-    <menu-item :href="'.reports?addrId=' + addr.id" code="report">监控</menu-item>
-    <menu-item :href="'.update?addrId=' + addr.id" code="update">修改</menu-item>
-</first-menu>
