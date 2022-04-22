@@ -3,8 +3,9 @@
 <h3>健康检查</h3>
 
 <span class="red" v-if="isRequesting">正在执行中，请等待执行完毕...</span>
+<span class="red" v-if="!isRequesting && errorString.length > 0">{{errorString}}</span>
 
-<form method="post" class="ui form" v-if="!isRequesting">
+<form method="post" class="ui form" v-if="!isRequesting && errorString.length == 0">
 	<p>成功节点：<span class="green">{{countSuccess}}</span> &nbsp; 失败节点：<span class="red">{{countFail}}</span></p>
 	<table class="ui table selectable celled" v-if="results.length > 0">
 		<thead>

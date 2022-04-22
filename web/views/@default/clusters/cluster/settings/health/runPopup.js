@@ -5,6 +5,7 @@ Tea.context(function () {
 	this.results = []
 	this.countSuccess = 0
 	this.countFail = 0
+	this.errorString = ""
 
 	this.$delay(function () {
 		this.run()
@@ -12,11 +13,13 @@ Tea.context(function () {
 
 	this.run = function () {
 		this.isRequesting = true
+		this.errorString = ""
 
 		this.$post("$")
 			.params({
 				clusterId: this.clusterId
 			})
+			.timeout(60)
 			.success(function (resp) {
 				this.results = resp.data.results
 				let that = this
@@ -31,6 +34,9 @@ Tea.context(function () {
 						that.countFail++
 					}
 				})
+			})
+			.error(function () {
+				this.errorString = "执行健康检查超时，请重试"
 			})
 			.done(function () {
 				this.isRequesting = false
