@@ -95,6 +95,7 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 		"name":     "基础设置",
 		"url":      "/clusters/cluster/settings?clusterId=" + clusterId,
 		"isActive": selectedItem == "basic",
+		"isOn":     true,
 	})
 	items = append(items, maps.Map{
 		"name":     "缓存设置",
@@ -168,6 +169,7 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 		"name":     "系统服务",
 		"url":      "/clusters/cluster/settings/services?clusterId=" + clusterId,
 		"isActive": selectedItem == "service",
+		"isOn":     info != nil && info.HasSystemServices,
 	})
 	{
 		items = append(items, maps.Map{
