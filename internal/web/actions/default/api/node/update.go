@@ -29,13 +29,13 @@ func (this *UpdateAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	node := nodeResp.ApiNode
+	var node = nodeResp.ApiNode
 	if node == nil {
 		this.WriteString("要操作的节点不存在")
 		return
 	}
 
-	httpConfig := &serverconfigs.HTTPProtocolConfig{}
+	var httpConfig = &serverconfigs.HTTPProtocolConfig{}
 	if len(node.HttpJSON) > 0 {
 		err = json.Unmarshal(node.HttpJSON, httpConfig)
 		if err != nil {
@@ -43,7 +43,7 @@ func (this *UpdateAction) RunGet(params struct {
 			return
 		}
 	}
-	httpsConfig := &serverconfigs.HTTPSProtocolConfig{}
+	var httpsConfig = &serverconfigs.HTTPSProtocolConfig{}
 	if len(node.HttpsJSON) > 0 {
 		err = json.Unmarshal(node.HttpsJSON, httpsConfig)
 		if err != nil {
@@ -53,11 +53,11 @@ func (this *UpdateAction) RunGet(params struct {
 	}
 
 	// 监听地址
-	listens := []*serverconfigs.NetworkAddressConfig{}
+	var listens = []*serverconfigs.NetworkAddressConfig{}
 	listens = append(listens, httpConfig.Listen...)
 	listens = append(listens, httpsConfig.Listen...)
 
-	restHTTPConfig := &serverconfigs.HTTPProtocolConfig{}
+	var restHTTPConfig = &serverconfigs.HTTPProtocolConfig{}
 	if len(node.RestHTTPJSON) > 0 {
 		err = json.Unmarshal(node.RestHTTPJSON, restHTTPConfig)
 		if err != nil {
@@ -65,7 +65,7 @@ func (this *UpdateAction) RunGet(params struct {
 			return
 		}
 	}
-	restHTTPSConfig := &serverconfigs.HTTPSProtocolConfig{}
+	var restHTTPSConfig = &serverconfigs.HTTPSProtocolConfig{}
 	if len(node.RestHTTPSJSON) > 0 {
 		err = json.Unmarshal(node.RestHTTPSJSON, restHTTPSConfig)
 		if err != nil {
@@ -75,20 +75,20 @@ func (this *UpdateAction) RunGet(params struct {
 	}
 
 	// 监听地址
-	restListens := []*serverconfigs.NetworkAddressConfig{}
+	var restListens = []*serverconfigs.NetworkAddressConfig{}
 	restListens = append(restListens, restHTTPConfig.Listen...)
 	restListens = append(restListens, restHTTPSConfig.Listen...)
 
 	// 证书信息
-	certs := []*sslconfigs.SSLCertConfig{}
-	sslPolicyId := int64(0)
+	var certs = []*sslconfigs.SSLCertConfig{}
+	var sslPolicyId = int64(0)
 	if httpsConfig.SSLPolicyRef != nil && httpsConfig.SSLPolicyRef.SSLPolicyId > 0 {
 		sslPolicyConfigResp, err := this.RPC().SSLPolicyRPC().FindEnabledSSLPolicyConfig(this.AdminContext(), &pb.FindEnabledSSLPolicyConfigRequest{SslPolicyId: httpsConfig.SSLPolicyRef.SSLPolicyId})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-		sslPolicyConfigJSON := sslPolicyConfigResp.SslPolicyJSON
+		var sslPolicyConfigJSON = sslPolicyConfigResp.SslPolicyJSON
 		if len(sslPolicyConfigJSON) > 0 {
 			sslPolicyId = httpsConfig.SSLPolicyRef.SSLPolicyId
 
@@ -102,7 +102,7 @@ func (this *UpdateAction) RunGet(params struct {
 		}
 	}
 
-	accessAddrs := []*serverconfigs.NetworkAddressConfig{}
+	var accessAddrs = []*serverconfigs.NetworkAddressConfig{}
 	if len(node.AccessAddrsJSON) > 0 {
 		err = json.Unmarshal(node.AccessAddrsJSON, &accessAddrs)
 		if err != nil {
@@ -122,6 +122,7 @@ func (this *UpdateAction) RunGet(params struct {
 		"certs":       certs,
 		"sslPolicyId": sslPolicyId,
 		"accessAddrs": accessAddrs,
+		"isPrimary":   node.IsPrimary,
 	}
 
 	this.Show()
@@ -139,6 +140,7 @@ func (this *UpdateAction) RunPost(params struct {
 	AccessAddrsJSON []byte
 	Description     string
 	IsOn            bool
+	IsPrimary       bool
 
 	Must *actions.Must
 }) {
@@ -146,11 +148,11 @@ func (this *UpdateAction) RunPost(params struct {
 		Field("name", params.Name).
 		Require("请输入API节点名称")
 
-	httpConfig := &serverconfigs.HTTPProtocolConfig{}
-	httpsConfig := &serverconfigs.HTTPSProtocolConfig{}
+	var httpConfig = &serverconfigs.HTTPProtocolConfig{}
+	var httpsConfig = &serverconfigs.HTTPSProtocolConfig{}
 
 	// 监听地址
-	listens := []*serverconfigs.NetworkAddressConfig{}
+	var listens = []*serverconfigs.NetworkAddressConfig{}
 	err := json.Unmarshal(params.ListensJSON, &listens)
 	if err != nil {
 		this.ErrorPage(err)
@@ -170,8 +172,8 @@ func (this *UpdateAction) RunPost(params struct {
 	}
 
 	// Rest监听地址
-	restHTTPConfig := &serverconfigs.HTTPProtocolConfig{}
-	restHTTPSConfig := &serverconfigs.HTTPSProtocolConfig{}
+	var restHTTPConfig = &serverconfigs.HTTPProtocolConfig{}
+	var restHTTPSConfig = &serverconfigs.HTTPSProtocolConfig{}
 	if params.RestIsOn {
 		restListens := []*serverconfigs.NetworkAddressConfig{}
 		err = json.Unmarshal(params.RestListensJSON, &restListens)
@@ -191,7 +193,7 @@ func (this *UpdateAction) RunPost(params struct {
 	}
 
 	// 证书
-	certIds := []int64{}
+	var certIds = []int64{}
 	if len(params.CertIdsJSON) > 0 {
 		err = json.Unmarshal(params.CertIdsJSON, &certIds)
 		if err != nil {
@@ -203,7 +205,7 @@ func (this *UpdateAction) RunPost(params struct {
 		this.Fail("请添加至少一个证书")
 	}
 
-	certRefs := []*sslconfigs.SSLCertRef{}
+	var certRefs = []*sslconfigs.SSLCertRef{}
 	for _, certId := range certIds {
 		certRefs = append(certRefs, &sslconfigs.SSLCertRef{
 			IsOn:   true,
@@ -217,7 +219,7 @@ func (this *UpdateAction) RunPost(params struct {
 	}
 
 	// 创建策略
-	sslPolicyId := params.SslPolicyId
+	var sslPolicyId = params.SslPolicyId
 	if sslPolicyId == 0 {
 		if len(certIds) > 0 {
 			sslPolicyCreateResp, err := this.RPC().SSLPolicyRPC().CreateSSLPolicy(this.AdminContext(), &pb.CreateSSLPolicyRequest{
@@ -249,7 +251,7 @@ func (this *UpdateAction) RunPost(params struct {
 	}
 
 	// 访问地址
-	accessAddrs := []*serverconfigs.NetworkAddressConfig{}
+	var accessAddrs = []*serverconfigs.NetworkAddressConfig{}
 	err = json.Unmarshal(params.AccessAddrsJSON, &accessAddrs)
 	if err != nil {
 		this.ErrorPage(err)
@@ -291,6 +293,7 @@ func (this *UpdateAction) RunPost(params struct {
 		RestHTTPSJSON:   restHTTPSJSON,
 		AccessAddrsJSON: params.AccessAddrsJSON,
 		IsOn:            params.IsOn,
+		IsPrimary:       params.IsPrimary,
 	})
 	if err != nil {
 		this.ErrorPage(err)

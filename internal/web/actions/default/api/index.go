@@ -92,6 +92,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 				"name":            node.Name,
 				"accessAddrs":     node.AccessAddrs,
 				"restAccessAddrs": restAccessAddrs,
+				"isPrimary":       node.IsPrimary,
 				"status": maps.Map{
 					"isActive":     status.IsActive,
 					"updatedAt":    status.UpdatedAt,

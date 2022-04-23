@@ -22,7 +22,9 @@
             </tr>
         </thead>
         <tr v-for="node in nodes">
-            <td><a :href="'/api/node?nodeId=' + node.id">{{node.name}}</a></td>
+            <td><a :href="'/api/node?nodeId=' + node.id">{{node.name}}</a>
+                <grey-label v-if="node.isPrimary">主节点</grey-label>
+            </td>
             <td>
                 <div v-if="node.accessAddrs != null && node.accessAddrs.length > 0">
                     <div v-for="addr in node.accessAddrs">

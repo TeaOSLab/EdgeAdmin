@@ -129,6 +129,7 @@ func (this *IndexAction) RunGet(params struct {
 		"restAccessAddrs": restAccessAddrs,
 		"hasHTTPS":        hasHTTPS,
 		"certs":           certs,
+		"isPrimary":       node.IsPrimary,
 	}
 
 	this.Show()
