@@ -44,6 +44,14 @@
             <p class="comment">通过HTTP访问API节点的网络地址。</p>
         </td>
     </tr>
+    <tr>
+        <td>主节点</td>
+        <td>
+            <span v-if="node.isPrimary" class="green">Y</span>
+            <span v-else class="disabled">N</span>
+            <p class="comment" v-if="node.isPrimary">设置为主节点后，主要的后台任务会在此节点上运行。</p>
+        </td>
+    </tr>
 	<tr>
 		<td>描述</td>
 		<td>

@@ -58,8 +58,15 @@
 					<textarea name="description" maxlength="200" rows="3" v-model="node.description"></textarea>
 				</td>
 			</tr>
+            <tr>
+                <td>主节点</td>
+                <td>
+                    <checkbox name="isPrimary" v-model="node.isPrimary"></checkbox>
+                    <p class="comment">设置为主节点后，主要的后台任务会在此节点上运行。</p>
+                </td>
+            </tr>
 			<tr>
-				<td>是否启用</td>
+				<td>启用</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" name="isOn" value="1" v-model="node.isOn"/>
