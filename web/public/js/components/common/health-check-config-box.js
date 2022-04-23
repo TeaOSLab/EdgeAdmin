@@ -20,7 +20,7 @@ Vue.component("health-check-config-box", {
 				countUp: 1,
 				countDown: 3,
 				userAgent: "",
-				onlyBasicRequest: false
+				onlyBasicRequest: true
 			}
 			let that = this
 			setTimeout(function () {
