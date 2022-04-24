@@ -5,6 +5,7 @@
     <menu-item :href="path + '?clusterId=' + clusterId + '&nodeId=' + nodeId + '&serverId=' + serverId + '&day=' + day + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&hour=' + hour + '&pageSize=' + pageSize" :active="hasError == 0 && hasWAF == 0">所有日志</menu-item>
     <menu-item :href="path + '?clusterId=' + clusterId + '&nodeId=' + nodeId + '&serverId=' + serverId + '&day=' + day + '&hasError=1' + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&hour=' + hour + '&pageSize=' + pageSize" :active="hasError > 0">错误日志</menu-item>
     <menu-item :href="path + '?clusterId=' + clusterId + '&nodeId=' + nodeId + '&serverId=' + serverId + '&day=' + day + '&hasWAF=1' + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&hour=' + hour + '&pageSize=' + pageSize" :active="hasWAF > 0">WAF日志</menu-item>
+    <span class="item disabled">|</span>
     <menu-item :href="'/servers/logs/settings'" code="settings">设置</menu-item>
 </first-menu>
 
