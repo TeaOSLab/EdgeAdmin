@@ -1,6 +1,12 @@
 Tea.context(function () {
 	this.success = NotifyReloadSuccess("保存成功")
 
+	this.$delay(function () {
+		this.$watch("config.showOpenSourceInfo", function (v) {
+			this.teaShowOpenSourceInfo = v
+		})
+	})
+
 	// 时区
 	this.timeZoneGroupCode = "asia"
 	if (this.timeZoneLocation != null) {
