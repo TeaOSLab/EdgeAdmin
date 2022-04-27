@@ -3644,7 +3644,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<td>封禁时间</td>
 			<td>
 				<div class="ui input right labeled">
-					<input type="text" v-model="timeoutSeconds" style="width: 5em" maxlength="4"/>
+					<input type="text" v-model="timeoutSeconds" style="width: 5em" maxlength="8"/>
 					<span class="ui label">秒</span>
 				</div>
 			</td>
