@@ -6,7 +6,7 @@
     <a href="" class="item" @click.prevent="upload()">[上传]</a>
 </first-menu>
 
-<p class="comment" v-if="libraries.length == 0">暂时还没有IP库，系统会使用默认的IP库。</p>
+<p class="comment" v-if="libraries.length == 0">暂时还没有上传的IP库，系统会使用自身内置的IP库。</p>
 <div v-if="libraries.length > 0">
     <div class="margin"></div>
     <table class="ui table selectable celled">
