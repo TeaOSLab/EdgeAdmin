@@ -9,6 +9,10 @@ import (
 	"github.com/iwind/TeaGo/maps"
 )
 
-func filterMenuItems(locationConfig *serverconfigs.HTTPLocationConfig, menuItems []maps.Map, serverIdString string, locationIdString string, secondMenuItem string) []maps.Map {
+func filterMenuItems1(locationConfig *serverconfigs.HTTPLocationConfig, menuItems []maps.Map, serverIdString string, locationIdString string, secondMenuItem string) []maps.Map {
+	return menuItems
+}
+
+func filterMenuItems2(locationConfig *serverconfigs.HTTPLocationConfig, menuItems []maps.Map, serverIdString string, locationIdString string, secondMenuItem string) []maps.Map {
 	return menuItems
 }

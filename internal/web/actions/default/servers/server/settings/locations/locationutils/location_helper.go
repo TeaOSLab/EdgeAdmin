@@ -71,6 +71,9 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"isActive": secondMenuItem == "reverseProxy",
 		"isOn":     locationConfig != nil && locationConfig.ReverseProxyRef != nil && locationConfig.ReverseProxyRef.IsPrior,
 	})
+
+	menuItems = filterMenuItems1(locationConfig, menuItems, serverIdString, locationIdString, secondMenuItem)
+
 	menuItems = append(menuItems, maps.Map{
 		"name":     "-",
 		"url":      "",
@@ -161,7 +164,7 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.FastcgiRef != nil && locationConfig.Web.FastcgiRef.IsPrior,
 	})
 
-	menuItems = filterMenuItems(locationConfig, menuItems, serverIdString, locationIdString, secondMenuItem)
+	menuItems = filterMenuItems2(locationConfig, menuItems, serverIdString, locationIdString, secondMenuItem)
 
 	menuItems = append(menuItems, maps.Map{
 		"name":     "-",
