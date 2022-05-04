@@ -4,7 +4,6 @@ package nodeutils
 
 import (
 	"errors"
-	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
@@ -72,15 +71,7 @@ func InitNodeInfo(parentAction *actionutils.ParentAction, nodeId int64) (*pb.Nod
 				(node.MaxCacheMemoryCapacity != nil && node.MaxCacheMemoryCapacity.Count > 0),
 		},
 	}
-	if teaconst.IsPlus {
-		menuItems = append(menuItems, []maps.Map{
-			{
-				"name":     "阈值设置",
-				"url":      prefix + "/settings/thresholds?" + query,
-				"isActive": menuItem == "threshold",
-			},
-		}...)
-	}
+	menuItems = filterMenuItems(menuItems, menuItem, prefix, query)
 	menuItems = append(menuItems, []maps.Map{
 		{
 			"name":     "SSH设置",
