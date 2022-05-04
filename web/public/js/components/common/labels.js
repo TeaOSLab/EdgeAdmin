@@ -58,3 +58,8 @@ Vue.component("optional-label", {
 Vue.component("plus-label", {
 	template: `<span style="color: #B18701;">Plus专属功能。</span>`
 })
+
+// 提醒设置项为专业设置
+Vue.component("pro-warning-label", {
+	template: `<span><i class="icon warning circle"></i>注意：通常不需要修改；如要修改，请在专家指导下进行。</span>`
+})
