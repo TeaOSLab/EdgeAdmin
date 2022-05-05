@@ -98,6 +98,8 @@ Vue.component("http-cache-refs-config-box", {
 					resp.data.cacheRef.id = that.refs[index].id
 					Vue.set(that.refs, index, resp.data.cacheRef)
 					that.change()
+					that.$refs.cacheRef[index].updateConds(resp.data.cacheRef.conds)
+					that.$refs.cacheRef[index].notifyChange()
 				}
 			})
 		},
@@ -140,6 +142,8 @@ Vue.component("http-cache-refs-config-box", {
 			return unit
 		},
 		change: function () {
+			this.$forceUpdate()
+
 			// 自动保存
 			if (this.vCachePolicyId != null && this.vCachePolicyId > 0) { // 缓存策略
 				Tea.action("/servers/components/cache/updateRefs")

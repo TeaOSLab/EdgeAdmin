@@ -25,8 +25,8 @@ Vue.component("ssl-certs-view", {
 	},
 	template: `<div>
 	<div v-if="certs != null && certs.length > 0">
-		<div class="ui label small" v-for="(cert, index) in certs">
-			{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp;<a href="" title="查看" @click.prevent="viewCert(cert.id)"><i class="icon external alternate"></i></a>
+		<div class="ui label small basic" v-for="(cert, index) in certs">
+			{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp;<a href="" title="查看" @click.prevent="viewCert(cert.id)"><i class="icon expand blue"></i></a>
 		</div>
 	</div>
 </div>`
