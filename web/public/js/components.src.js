@@ -3255,8 +3255,7 @@ Vue.component("http-request-conds-view", {
 		})
 
 		return {
-			initConds: conds,
-			version: 0 // 为了让组件能及时更新加入此变量
+			initConds: conds
 		}
 	},
 	computed: {
@@ -3275,18 +3274,20 @@ Vue.component("http-request-conds-view", {
 			}
 			return cond.param + " " + cond.operator
 		},
+		updateConds: function (conds) {
+			this.initConds = conds
+		},
 		notifyChange: function () {
-			this.version++
 			let that = this
 			this.initConds.groups.forEach(function (group) {
 				group.conds.forEach(function (cond) {
 					cond.typeName = that.typeName(cond)
 				})
 			})
+			this.$forceUpdate()
 		}
 	},
 	template: `<div>
-		<span v-if="version < 0">{{version}}</span>
 		<div v-if="conds.groups.length > 0">
 			<div v-for="(group, groupIndex) in conds.groups">
 				<var v-for="(cond, index) in group.conds" style="font-style: normal;display: inline-block; margin-bottom:0.5em">
@@ -4386,6 +4387,8 @@ Vue.component("http-cache-refs-config-box", {
 					resp.data.cacheRef.id = that.refs[index].id
 					Vue.set(that.refs, index, resp.data.cacheRef)
 					that.change()
+					that.$refs.cacheRef[index].updateConds(resp.data.cacheRef.conds)
+					that.$refs.cacheRef[index].notifyChange()
 				}
 			})
 		},
@@ -4428,6 +4431,8 @@ Vue.component("http-cache-refs-config-box", {
 			return unit
 		},
 		change: function () {
+			this.$forceUpdate()
+
 			// 自动保存
 			if (this.vCachePolicyId != null && this.vCachePolicyId > 0) { // 缓存策略
 				Tea.action("/servers/components/cache/updateRefs")
@@ -6249,11 +6254,12 @@ Vue.component("user-selector", {
 
 // UAM模式配置
 Vue.component("uam-config-box", {
-	props: ["v-uam-config"],
+	props: ["v-uam-config", "v-is-location", "v-is-group"],
 	data: function () {
 		let config = this.vUamConfig
 		if (config == null) {
 			config = {
+				isPrior: false,
 				isOn: false
 			}
 		}
@@ -6264,13 +6270,16 @@ Vue.component("uam-config-box", {
 	template: `<div>
 <input type="hidden" name="uamJSON" :value="JSON.stringify(config)"/>
 <table class="ui table definition selectable">
-	<tr>
-		<td class="title">启用5秒盾</td>
-		<td>
-			<checkbox v-model="config.isOn"></checkbox>
-			<p class="comment"><plus-label></plus-label>启用后，访问网站时，自动检查浏览器环境，阻止非正常访问。</p>
-		</td>
-	</tr>
+	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+	<tbody v-show="((!vIsLocation && !vIsGroup) || config.isPrior)">
+		<tr>
+			<td class="title">启用5秒盾</td>
+			<td>
+				<checkbox v-model="config.isOn"></checkbox>
+				<p class="comment"><plus-label></plus-label>启用后，访问网站时，自动检查浏览器环境，阻止非正常访问。</p>
+			</td>
+		</tr>
+	</tbody>
 </table>
 <div class="margin"></div>
 </div>`
@@ -7809,8 +7818,8 @@ Vue.component("ssl-certs-view", {
 	},
 	template: `<div>
 	<div v-if="certs != null && certs.length > 0">
-		<div class="ui label small" v-for="(cert, index) in certs">
-			{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp;<a href="" title="查看" @click.prevent="viewCert(cert.id)"><i class="icon external alternate"></i></a>
+		<div class="ui label small basic" v-for="(cert, index) in certs">
+			{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp;<a href="" title="查看" @click.prevent="viewCert(cert.id)"><i class="icon expand blue"></i></a>
 		</div>
 	</div>
 </div>`

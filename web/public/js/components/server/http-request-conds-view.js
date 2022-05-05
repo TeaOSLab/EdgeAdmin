@@ -19,8 +19,7 @@ Vue.component("http-request-conds-view", {
 		})
 
 		return {
-			initConds: conds,
-			version: 0 // 为了让组件能及时更新加入此变量
+			initConds: conds
 		}
 	},
 	computed: {
@@ -39,18 +38,20 @@ Vue.component("http-request-conds-view", {
 			}
 			return cond.param + " " + cond.operator
 		},
+		updateConds: function (conds) {
+			this.initConds = conds
+		},
 		notifyChange: function () {
-			this.version++
 			let that = this
 			this.initConds.groups.forEach(function (group) {
 				group.conds.forEach(function (cond) {
 					cond.typeName = that.typeName(cond)
 				})
 			})
+			this.$forceUpdate()
 		}
 	},
 	template: `<div>
-		<span v-if="version < 0">{{version}}</span>
 		<div v-if="conds.groups.length > 0">
 			<div v-for="(group, groupIndex) in conds.groups">
 				<var v-for="(cond, index) in group.conds" style="font-style: normal;display: inline-block; margin-bottom:0.5em">
