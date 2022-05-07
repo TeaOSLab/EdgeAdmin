@@ -56,17 +56,24 @@
 			<tr>
 				<td>AccessKeyId *</td>
 				<td>
-					<input type="text" name="paramAccessKeyId" maxlength="100" v-model="provider.params.accessKeyId"/>
+					<input type="text" name="paramAliDNSAccessKeyId" maxlength="100" v-model="provider.params.accessKeyId"/>
 					<p class="comment">登录阿里云控制台 -- 在"访问控制"中创建和获取。</p>
 				</td>
 			</tr>
 			<tr>
 				<td>AccessKeySecret *</td>
 				<td>
-					<input type="text" name="paramAccessKeySecret" maxlength="100" v-model="provider.params.accessKeySecret"/>
+					<input type="text" name="paramAliDNSAccessKeySecret" maxlength="100" v-model="provider.params.accessKeySecret"/>
 					<p class="comment">登录阿里云控制台 -- 在"访问控制"中创建和获取。</p>
 				</td>
 			</tr>
+            <tr>
+                <td>区域ID<optional-label></optional-label></td>
+                <td>
+                    <input type="text" name="paramAliDNSRegionId" maxlength="100" v-model="provider.params.regionId"/>
+                    <p class="comment">阿里云产品所在区域代号，通常不需要填写。</p>
+                </td>
+            </tr>
 		</tbody>
 
         <!-- 华为云 -->

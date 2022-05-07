@@ -16,7 +16,7 @@
         </div>
         <div class="ui field" v-if="providerTypes.length > 0">
             <select class="ui dropdown auto-width" name="providerType" v-model="providerType">
-                <option value="">[DNS厂家]</option>
+                <option value="">[服务商厂家]</option>
                 <option v-for="p in providerTypes" :value="p.code">{{p.name}}({{p.count}})</option>
             </select>
         </div>
