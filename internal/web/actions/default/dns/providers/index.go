@@ -18,11 +18,13 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct {
-	Keyword string
-	Domain  string
+	Keyword      string
+	Domain       string
+	ProviderType string
 }) {
 	this.Data["keyword"] = params.Keyword
 	this.Data["domain"] = params.Domain
+	this.Data["providerType"] = params.ProviderType
 
 	// 格式化域名
 	var domain = params.Domain
@@ -33,6 +35,7 @@ func (this *IndexAction) RunGet(params struct {
 		AdminId: this.AdminId(),
 		Keyword: params.Keyword,
 		Domain:  domain,
+		Type:    params.ProviderType,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -46,6 +49,7 @@ func (this *IndexAction) RunGet(params struct {
 		AdminId: this.AdminId(),
 		Keyword: params.Keyword,
 		Domain:  domain,
+		Type:    params.ProviderType,
 		Offset:  page.Offset,
 		Size:    page.Size,
 	})
@@ -53,7 +57,7 @@ func (this *IndexAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	providerMaps := []maps.Map{}
+	var providerMaps = []maps.Map{}
 	for _, provider := range providersResp.DnsProviders {
 		dataUpdatedTime := ""
 		if provider.DataUpdatedAt > 0 {
@@ -61,7 +65,9 @@ func (this *IndexAction) RunGet(params struct {
 		}
 
 		// 域名
-		countDomainsResp, err := this.RPC().DNSDomainRPC().CountAllEnabledDNSDomainsWithDNSProviderId(this.AdminContext(), &pb.CountAllEnabledDNSDomainsWithDNSProviderIdRequest{DnsProviderId: provider.Id})
+		countDomainsResp, err := this.RPC().DNSDomainRPC().CountAllEnabledDNSDomainsWithDNSProviderId(this.AdminContext(), &pb.CountAllEnabledDNSDomainsWithDNSProviderIdRequest{
+			DnsProviderId: provider.Id,
+		})
 		if err != nil {
 			this.ErrorPage(err)
 			return
@@ -78,6 +84,31 @@ func (this *IndexAction) RunGet(params struct {
 		})
 	}
 	this.Data["providers"] = providerMaps
+
+	// 类型
+	typesResponse, err := this.RPC().DNSProviderRPC().FindAllDNSProviderTypes(this.AdminContext(), &pb.FindAllDNSProviderTypesRequest{})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	var providerTypeMaps = []maps.Map{}
+	for _, providerType := range typesResponse.ProviderTypes {
+		countProvidersWithTypeResp, err := this.RPC().DNSProviderRPC().CountAllEnabledDNSProviders(this.AdminContext(), &pb.CountAllEnabledDNSProvidersRequest{
+			Type: providerType.Code,
+		})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		if countProvidersWithTypeResp.Count > 0 {
+			providerTypeMaps = append(providerTypeMaps, maps.Map{
+				"name":  providerType.Name,
+				"code":  providerType.Code,
+				"count": countProvidersWithTypeResp.Count,
+			})
+		}
+	}
+	this.Data["providerTypes"] = providerTypeMaps
 
 	this.Show()
 }

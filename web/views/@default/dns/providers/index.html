@@ -14,10 +14,16 @@
         <div class="ui field">
             <input type="text" name="domain" placeholder="域名..." v-model="domain"/>
         </div>
+        <div class="ui field" v-if="providerTypes.length > 0">
+            <select class="ui dropdown auto-width" name="providerType" v-model="providerType">
+                <option value="">[DNS厂家]</option>
+                <option v-for="p in providerTypes" :value="p.code">{{p.name}}({{p.count}})</option>
+            </select>
+        </div>
         <div class="ui field">
             <button class="ui button" type="submit">搜索</button>
             &nbsp;
-            <a :href="Tea.url('.')" v-if="keyword.length > 0 || domain.length > 0">[清除条件]</a>
+            <a :href="Tea.url('.')" v-if="keyword.length > 0 || domain.length > 0 || providerType.length > 0">[清除条件]</a>
         </div>
     </div>
 </form>
@@ -28,13 +34,13 @@
 	<thead>
 		<tr>
 			<th>账号说明</th>
-			<th class="width10">服务商</th>
+			<th class="three wide">服务商</th>
 			<th class="width5 center">域名</th>
 			<th class="two op">操作</th>
 		</tr>
 	</thead>
 	<tr v-for="(provider, index) in providers">
-        <td><a :href="'/dns/providers/provider?providerId=' + provider.id">{{provider.name}}</a></td>
+        <td><a :href="'/dns/providers/provider?providerId=' + provider.id"><keyword :v-word="keyword">{{provider.name}}</keyword></a></td>
 		<td>{{provider.typeName}}</td>
 		<td class="center">
 			<span v-if="provider.countDomains == 0" class="disabled">0</span>
