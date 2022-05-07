@@ -397,9 +397,9 @@ window.teaweb = {
 		})
 	},
 	warn: function (message, callback) {
-		var width = "20em";
+		var width = "20em"
 		if (message.length > 30) {
-			width = "30em";
+			width = "30em"
 		}
 		Swal.fire({
 			text: message,
@@ -415,16 +415,16 @@ window.teaweb = {
 			onAfterClose: function () {
 				if (typeof (callback) == "function") {
 					setTimeout(function () {
-						callback();
-					});
+						callback()
+					})
 				}
 			}
-		});
+		})
 	},
 	confirm: function (message, callback) {
-		let width = "20em";
+		let width = "20em"
 		if (message.length > 30) {
-			width = "30em";
+			width = "30em"
 		}
 		let config = {
 			confirmButtonText: "确定",
@@ -441,7 +441,7 @@ window.teaweb = {
 			width: width,
 			preConfirm: function () {
 				if (typeof (callback) == "function") {
-					callback.call(Tea.Vue);
+					callback.call(Tea.Vue)
 				}
 			}
 		}

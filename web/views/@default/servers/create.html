@@ -3,7 +3,7 @@
 
 <div class="margin"></div>
 
-<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+<form method="post" class="ui form" data-tea-action="$" data-tea-success="success" data-tea-fail="fail">
     <table class="ui table selectable definition">
 		<tr>
 			<td class="title">服务名称 *</td>
@@ -45,7 +45,7 @@
         <tr v-if="serverType == 'httpProxy' || serverType == 'httpWeb'">
             <td>绑定域名 *</td>
             <td>
-                <server-name-box></server-name-box>
+                <server-name-box ref="serverNameBox"></server-name-box>
                 <p class="comment">绑定后，才能通过域名可以访问不同的服务。</p>
             </td>
         </tr>

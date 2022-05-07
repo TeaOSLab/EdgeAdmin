@@ -6,6 +6,32 @@ Tea.context(function () {
 
 	this.success = NotifySuccess("保存成功", "/servers");
 
+	this.fail = function (resp) {
+		if (resp.errors != null && resp.errors.length > 0) {
+			let isFiltered = false
+
+			let that = this
+			resp.errors.forEach(function (err) {
+				if (err.param == "emptyDomain") {
+					isFiltered = true
+					teaweb.warn(err.messages[0], function () {
+						that.$refs.serverNameBox.addServerName()
+					})
+				} else if (err.param == "emptyOrigin") {
+					isFiltered = true
+					teaweb.warn(err.messages[0], function () {
+						that.addOrigin()
+					})
+				}
+			})
+
+			if (isFiltered) {
+				return
+			}
+		}
+		Tea.failResponse(resp)
+	}
+
 	this.changeServerType = function () {
 		this.origins = []
 		this.tlsProtocolName = ""
