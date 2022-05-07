@@ -97,8 +97,9 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	ParamRegion string
 
 	// AliDNS
-	ParamAccessKeyId     string
-	ParamAccessKeySecret string
+	ParamAliDNSAccessKeyId     string
+	ParamAliDNSAccessKeySecret string
+	ParamAliDNSRegionId        string
 
 	// HuaweiDNS
 	ParamHuaweiAccessKeyId     string
@@ -144,13 +145,14 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		apiParams["region"] = params.ParamRegion
 	case "alidns":
 		params.Must.
-			Field("paramAccessKeyId", params.ParamAccessKeyId).
+			Field("paramAliDNSAccessKeyId", params.ParamAliDNSAccessKeyId).
 			Require("请输入AccessKeyId").
-			Field("paramAccessKeySecret", params.ParamAccessKeySecret).
+			Field("paramAliDNSAccessKeySecret", params.ParamAliDNSAccessKeySecret).
 			Require("请输入AccessKeySecret")
 
-		apiParams["accessKeyId"] = params.ParamAccessKeyId
-		apiParams["accessKeySecret"] = params.ParamAccessKeySecret
+		apiParams["accessKeyId"] = params.ParamAliDNSAccessKeyId
+		apiParams["accessKeySecret"] = params.ParamAliDNSAccessKeySecret
+		apiParams["regionId"] = params.ParamAliDNSRegionId
 	case "huaweiDNS":
 		params.Must.
 			Field("paramHuaweiAccessKeyId", params.ParamHuaweiAccessKeyId).

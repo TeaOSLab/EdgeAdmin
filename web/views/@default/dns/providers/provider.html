@@ -48,6 +48,13 @@
 			<td>AccessKeySecret</td>
 			<td>{{provider.apiParams.accessKeySecret}}</td>
 		</tr>
+        <tr>
+            <td>区域ID</td>
+            <td>
+                <span v-if="provider.apiParams.regionId != null && provider.apiParams.regionId.length > 0">{{provider.apiParams.regionId}}</span>
+                <span v-else class="disabled">没有设置。</span>
+            </td>
+        </tr>
 	</tbody>
 
     <!-- HuaweiDNS -->
