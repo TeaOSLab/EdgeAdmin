@@ -80,7 +80,7 @@ func (this *CreateAction) RunPost(params struct {
 
 	ServerType  string
 	Addresses   string
-	ServerNames string
+	ServerNames []byte
 	CertIdsJSON []byte
 	Origins     string
 
@@ -274,9 +274,9 @@ func (this *CreateAction) RunPost(params struct {
 	}
 
 	// 域名
+	var serverNames = []*serverconfigs.ServerNameConfig{}
 	if len(params.ServerNames) > 0 {
-		serverNames := []*serverconfigs.ServerNameConfig{}
-		err := json.Unmarshal([]byte(params.ServerNames), &serverNames)
+		err := json.Unmarshal(params.ServerNames, &serverNames)
 		if err != nil {
 			this.Fail("域名解析失败：" + err.Error())
 		}
@@ -297,6 +297,9 @@ func (this *CreateAction) RunPost(params struct {
 			}
 		}
 	}
+	if params.ServerType == serverconfigs.ServerTypeHTTPProxy && len(serverNames) == 0 {
+		this.FailField("emptyDomain", "请输入添加至少一个域名")
+	}
 
 	// 源站地址
 	var reverseProxyRefJSON = []byte{}
@@ -308,7 +311,7 @@ func (this *CreateAction) RunPost(params struct {
 			this.Fail("源站地址解析失败：" + err.Error())
 		}
 		if len(originConfigs) == 0 {
-			this.Fail("请添加至少一个源站地址")
+			this.FailField("emptyOrigin", "请添加至少一个源站地址")
 		}
 
 		var originRefs = []*serverconfigs.OriginRef{}
@@ -387,7 +390,7 @@ func (this *CreateAction) RunPost(params struct {
 		return
 	}
 
-	req := &pb.CreateServerRequest{
+	var req = &pb.CreateServerRequest{
 		UserId:           userId,
 		UserPlanId:       userPlanId,
 		AdminId:          this.AdminId(),
