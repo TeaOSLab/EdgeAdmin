@@ -11,7 +11,6 @@ import (
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
-	"strconv"
 	"time"
 )
 
@@ -238,7 +237,10 @@ func (this *NodesAction) RunGet(params struct {
 		return
 	}
 	for _, group := range groupsResp.NodeGroups {
-		countNodesInGroupResp, err := this.RPC().NodeRPC().CountAllEnabledNodesWithNodeGroupId(this.AdminContext(), &pb.CountAllEnabledNodesWithNodeGroupIdRequest{NodeGroupId: group.Id})
+		countNodesInGroupResp, err := this.RPC().NodeRPC().CountAllEnabledNodesMatch(this.AdminContext(), &pb.CountAllEnabledNodesMatchRequest{
+			NodeClusterId: params.ClusterId,
+			NodeGroupId:   group.Id,
+		})
 		if err != nil {
 			this.ErrorPage(err)
 			return
@@ -246,7 +248,7 @@ func (this *NodesAction) RunGet(params struct {
 		countNodes := countNodesInGroupResp.Count
 		groupName := group.Name
 		if countNodes > 0 {
-			groupName += "(" + strconv.FormatInt(countNodes, 10) + ")"
+			groupName += "(" + types.String(countNodes) + ")"
 		}
 		groupMaps = append(groupMaps, maps.Map{
 			"id":         group.Id,
@@ -254,6 +256,29 @@ func (this *NodesAction) RunGet(params struct {
 			"countNodes": countNodes,
 		})
 	}
+
+	// 是否有未分组
+	if len(groupMaps) > 0 {
+		countNodesInGroupResp, err := this.RPC().NodeRPC().CountAllEnabledNodesMatch(this.AdminContext(), &pb.CountAllEnabledNodesMatchRequest{
+			NodeClusterId: params.ClusterId,
+			NodeGroupId:   -1,
+		})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		var countUngroupNodes = countNodesInGroupResp.Count
+		if countUngroupNodes > 0 {
+			groupMaps = append([]maps.Map{
+				{
+					"id":         -1,
+					"name":       "[未分组](" + types.String(countUngroupNodes) + ")",
+					"countNodes": countUngroupNodes,
+				},
+			}, groupMaps...)
+		}
+	}
+
 	this.Data["groups"] = groupMaps
 
 	// 所有区域
