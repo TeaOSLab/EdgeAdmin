@@ -3,7 +3,7 @@
 package sizes_test
 
 import (
-	"github.com/TeaOSLab/EdgeNode/internal/utils/sizes"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils/sizes"
 	"github.com/iwind/TeaGo/assert"
 	"testing"
 )
