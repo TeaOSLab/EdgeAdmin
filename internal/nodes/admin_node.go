@@ -41,7 +41,7 @@ func (this *AdminNode) Run() {
 	SharedAdminNode = this
 
 	// 启动管理界面
-	secret := this.genSecret()
+	var secret = this.genSecret()
 	configs.Secret = secret
 
 	// 本地Sock
@@ -382,6 +382,12 @@ func (this *AdminNode) listenSock() error {
 						"path":    exePath,
 					},
 				})
+			case "dev": // 切换到dev
+				Tea.Env = Tea.EnvDev
+				_ = cmd.ReplyOk()
+			case "prod": // 切换到prod
+				Tea.Env = Tea.EnvProd
+				_ = cmd.ReplyOk()
 			}
 		})
 

@@ -18,14 +18,19 @@ func main() {
 		Version(teaconst.Version).
 		Product(teaconst.ProductName).
 		Usage(teaconst.ProcessName+" [-v|start|stop|restart|service|daemon|reset|recover|demo]").
+		Usage(teaconst.ProcessName+" [dev|prod]").
 		Option("-h", "show this help").
 		Option("-v", "show version").
 		Option("start", "start the service").
 		Option("stop", "stop the service").
+		Option("restart", "restart the service").
 		Option("service", "register service into systemd").
 		Option("daemon", "start the service with daemon").
 		Option("reset", "reset configs").
-		Option("recover", "enter recovery mode")
+		Option("recover", "enter recovery mode").
+		Option("demo", "switch to demo mode").
+		Option("dev", "switch to 'dev' mode").
+		Option("prod", "switch to 'prod' mode")
 
 	app.On("daemon", func() {
 		nodes.NewAdminNode().Daemon()
@@ -82,6 +87,32 @@ func main() {
 		if err != nil {
 			fmt.Println("generate failed: " + err.Error())
 			return
+		}
+	})
+	app.On("dev", func() {
+		var env = "dev"
+		var sock = gosock.NewTmpSock(teaconst.ProcessName)
+		_, err := sock.Send(&gosock.Command{
+			Code:   env,
+			Params: nil,
+		})
+		if err != nil {
+			fmt.Println("failed to switch to '" + env + "': " + err.Error())
+		} else {
+			fmt.Println("switch to '" + env + "' ok")
+		}
+	})
+	app.On("prod", func() {
+		var env = "prod"
+		var sock = gosock.NewTmpSock(teaconst.ProcessName)
+		_, err := sock.Send(&gosock.Command{
+			Code:   env,
+			Params: nil,
+		})
+		if err != nil {
+			fmt.Println("failed to switch to '" + env + "': " + err.Error())
+		} else {
+			fmt.Println("switch to '" + env + "' ok")
 		}
 	})
 	app.Run(func() {
