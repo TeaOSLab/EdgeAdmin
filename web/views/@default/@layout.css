@@ -257,9 +257,18 @@ p.margin {
   width: 9.5em !important;
   border-radius: 0 !important;
 }
+.main-menu .ui.menu .item.separator {
+  border-top: 1px rgba(0, 0, 0, 0.15) solid;
+  height: 1px;
+  min-height: 0;
+  padding: 0;
+}
 @media screen and (max-width: 512px) {
   .main-menu .ui.menu {
     width: 3.6em !important;
+  }
+  .main-menu .ui.menu .item.separator {
+    display: none;
   }
   .main-menu .ui.menu .item {
     padding-top: 2em;
