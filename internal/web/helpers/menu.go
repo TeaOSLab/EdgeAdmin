@@ -25,9 +25,9 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnread
 			"icon":     "clone outsize",
 			"subItems": []maps.Map{
 				{
-					"name": "服务分组",
-					"url":  "/servers/groups",
-					"code": "group",
+					"name": "访问日志",
+					"url":  "/servers/logs",
+					"code": "log",
 				},
 				{
 					"name": "证书管理",
@@ -35,14 +35,14 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnread
 					"code": "cert",
 				},
 				{
-					"name": "访问日志",
-					"url":  "/servers/logs",
-					"code": "log",
-				},
-				{
 					"name": "缓存策略",
 					"url":  "/servers/components/cache",
 					"code": "cache",
+				},
+				{
+					"name": "-",
+					"url":  "",
+					"code": "",
 				},
 				{
 					"name": "WAF策略",
@@ -54,6 +54,16 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnread
 					"url":   "/servers/iplists",
 					"code":  "iplist",
 					"badge": countUnreadIPItems,
+				},
+				{
+					"name": "-",
+					"url":  "",
+					"code": "",
+				},
+				{
+					"name": "服务分组",
+					"url":  "/servers/groups",
+					"code": "group",
 				},
 				{
 					"name": "统计指标",
