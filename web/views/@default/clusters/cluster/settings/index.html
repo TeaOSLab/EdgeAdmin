@@ -54,13 +54,6 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>单节点TCP最大连接数</td>
-                    <td>
-                        <input type="text" name="nodeTCPMaxConnections" maxlength="6" v-model="cluster.nodeTCPMaxConnections"/>
-                        <p class="comment">如果为0，则默认为{{defaultNodeTCPMaxConnections}}。</p>
-                    </td>
-                </tr>
-                <tr>
                     <td>自动开放端口</td>
                     <td>
                         <checkbox name="autoOpenPorts" v-model="cluster.autoOpenPorts"></checkbox>

@@ -1,0 +1,17 @@
+{$layout}
+{$template "/clusters/cluster/node/node_menu"}
+{$template "/left_menu_with_menu"}
+
+<div class="right-box with-menu">
+    <form class="ui form" data-tea-action="$" data-tea-success="success">
+        <csrf-token></csrf-token>
+        <input type="hidden" name="nodeId" :value="nodeId"/>
+
+        <node-ddos-protection-config-box :v-ddos-protection-config="config" :v-default-configs="defaultConfigs" :v-is-node="true" :v-cluster-is-on="clusterDDoSProtectionIsOn"></node-ddos-protection-config-box>
+
+        <p class="ui message green" v-if="checkResult != null && checkResult.isOk">节点检查结果：{{checkResult.message}}</p>
+        <p class="ui message red" v-if="checkResult != null && !checkResult.isOk">节点检查结果：有错误发生：{{checkResult.message}}</p>
+
+        <submit-btn></submit-btn>
+    </form>
+</div>

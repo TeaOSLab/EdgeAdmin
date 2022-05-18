@@ -34,7 +34,7 @@ Vue.component("dns-resolver-config-box", {
 				<select class="ui dropdown auto-width" v-model="config.type">
 					<option v-for="t in types" :value="t.code">{{t.name}}</option>
 				</select>
-				<p class="comment">修改此项配置后，需要重启节点进程才会生效。<pro-warning-label></pro-warning-label></p>
+				<p class="comment">边缘节点使用的DNS解析库。修改此项配置后，需要重启节点进程才会生效。<pro-warning-label></pro-warning-label></p>
 			</td>
 		</tr>
 	</table>
