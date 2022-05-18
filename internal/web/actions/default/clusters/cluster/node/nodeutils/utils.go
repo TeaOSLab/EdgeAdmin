@@ -23,6 +23,11 @@ func InitNodeInfo(parentAction *actionutils.ParentAction, nodeId int64) (*pb.Nod
 	}
 	var node = nodeResp.Node
 
+	info, err := parentAction.RPC().NodeRPC().FindEnabledNodeConfigInfo(parentAction.AdminContext(), &pb.FindEnabledNodeConfigInfoRequest{NodeId: nodeId})
+	if err != nil {
+		return nil, err
+	}
+
 	var groupMap maps.Map
 	if node.NodeGroup != nil {
 		groupMap = maps.Map{
@@ -60,30 +65,38 @@ func InitNodeInfo(parentAction *actionutils.ParentAction, nodeId int64) (*pb.Nod
 			"name":     "DNS设置",
 			"url":      prefix + "/settings/dns?" + query,
 			"isActive": menuItem == "dns",
-			"isOn":     len(node.DnsRoutes) > 0,
+			"isOn":     info.HasDNSInfo,
 		},
 		{
 			"name":     "缓存设置",
 			"url":      prefix + "/settings/cache?" + query,
 			"isActive": menuItem == "cache",
-			"isOn": len(node.CacheDiskDir) > 0 ||
-				(node.MaxCacheDiskCapacity != nil && node.MaxCacheDiskCapacity.Count > 0) ||
-				(node.MaxCacheMemoryCapacity != nil && node.MaxCacheMemoryCapacity.Count > 0),
+			"isOn":     info.HasCacheInfo,
+		},
+		{
+			"name":     "DDOS防护",
+			"url":      prefix + "/settings/ddos-protection?" + query,
+			"isActive": menuItem == "ddosProtection",
+			"isOn":     info.HasDDoSProtection,
+		},
+		{
+			"name": "-",
+			"url":  "",
 		},
 	}
-	menuItems = filterMenuItems(menuItems, menuItem, prefix, query)
+	menuItems = filterMenuItems(menuItems, menuItem, prefix, query, info)
 	menuItems = append(menuItems, []maps.Map{
 		{
 			"name":     "SSH设置",
 			"url":      prefix + "/settings/ssh?" + query,
 			"isActive": menuItem == "ssh",
-			"isOn":     node.NodeLogin != nil,
+			"isOn":     info.HasSSH,
 		},
 		{
 			"name":     "系统设置",
 			"url":      prefix + "/settings/system?" + query,
 			"isActive": menuItem == "system",
-			"isOn":     node.MaxCPU > 0,
+			"isOn":     info.HasSystemSettings,
 		},
 	}...)
 	parentAction.Data["leftMenuItems"] = menuItems

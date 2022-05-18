@@ -5,6 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/groups"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/settings/cache"
+	ddosProtection "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/settings/ddos-protection"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/settings/dns"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/settings/ssh"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/settings/system"
@@ -56,6 +57,8 @@ func init() {
 			GetPost("/settings/ssh", new(ssh.IndexAction)).
 			GetPost("/settings/ssh/test", new(ssh.TestAction)).
 			GetPost("/settings/thresholds", new(thresholds.IndexAction)).
+			GetPost("/settings/ddos-protection", new(ddosProtection.IndexAction)).
+			Post("/settings/ddos-protection/status", new(ddosProtection.StatusAction)).
 
 			// 分组相关
 			Prefix("/clusters/cluster/groups").

@@ -32,6 +32,8 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 
+	this.Data["hostIsAutoFilled"] = false
+
 	// 登录信息
 	var loginMap maps.Map = nil
 	if node.NodeLogin != nil {
@@ -79,6 +81,7 @@ func (this *IndexAction) RunGet(params struct {
 			return
 		}
 		if len(addressesResp.NodeIPAddresses) > 0 {
+			this.Data["hostIsAutoFilled"] = true
 			loginMap = maps.Map{
 				"id":   0,
 				"name": "",
@@ -100,6 +103,7 @@ func (this *IndexAction) RunGet(params struct {
 				return
 			}
 			if len(addressesResp.NodeIPAddresses) > 0 {
+				this.Data["hostIsAutoFilled"] = true
 				loginParams["host"] = addressesResp.NodeIPAddresses[0].Ip
 			}
 		}

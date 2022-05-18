@@ -3,6 +3,7 @@ package settings
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/cache"
+	ddosProtection "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/ddos-protection"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/dns"
 	firewallActions "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/firewall-actions"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/health"
@@ -79,6 +80,13 @@ func init() {
 			// WebP
 			Prefix("/clusters/cluster/settings/webp").
 			GetPost("", new(webp.IndexAction)).
+
+			// DDOS Protection
+			Prefix("/clusters/cluster/settings/ddos-protection").
+			GetPost("", new(ddosProtection.IndexAction)).
+			GetPost("/status", new(ddosProtection.StatusAction)).
+
+			//
 			EndAll()
 	})
 }

@@ -118,6 +118,13 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 	})
 
 	items = append(items, maps.Map{
+		"name":     "DDOS防护",
+		"url":      "/clusters/cluster/settings/ddos-protection?clusterId=" + clusterId,
+		"isActive": selectedItem == "ddosProtection",
+		"isOn":     info != nil && info.HasDDoSProtection,
+	})
+
+	items = append(items, maps.Map{
 		"name":     "健康检查",
 		"url":      "/clusters/cluster/settings/health?clusterId=" + clusterId,
 		"isActive": selectedItem == "health",
@@ -136,6 +143,11 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 		"isActive": selectedItem == "webp",
 		"isOn":     info != nil && info.WebpIsOn,
 	})
+
+	items = append(items, maps.Map{
+		"name": "-",
+	})
+
 	items = append(items, maps.Map{
 		"name":     "统计指标",
 		"url":      "/clusters/cluster/settings/metrics?clusterId=" + clusterId,

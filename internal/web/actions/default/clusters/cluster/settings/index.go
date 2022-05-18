@@ -66,34 +66,31 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["timeZoneLocation"] = nodeconfigs.FindTimeZoneLocation(cluster.TimeZone)
 
 	this.Data["cluster"] = maps.Map{
-		"id":                    cluster.Id,
-		"name":                  cluster.Name,
-		"installDir":            cluster.InstallDir,
-		"timeZone":              cluster.TimeZone,
-		"nodeMaxThreads":        cluster.NodeMaxThreads,
-		"nodeTCPMaxConnections": cluster.NodeTCPMaxConnections,
-		"autoOpenPorts":         cluster.AutoOpenPorts,
+		"id":             cluster.Id,
+		"name":           cluster.Name,
+		"installDir":     cluster.InstallDir,
+		"timeZone":       cluster.TimeZone,
+		"nodeMaxThreads": cluster.NodeMaxThreads,
+		"autoOpenPorts":  cluster.AutoOpenPorts,
 	}
 
 	// 默认值
 	this.Data["defaultNodeMaxThreads"] = nodeconfigs.DefaultMaxThreads
 	this.Data["defaultNodeMaxThreadsMin"] = nodeconfigs.DefaultMaxThreadsMin
 	this.Data["defaultNodeMaxThreadsMax"] = nodeconfigs.DefaultMaxThreadsMax
-	this.Data["defaultNodeTCPMaxConnections"] = nodeconfigs.DefaultTCPMaxConnections
 
 	this.Show()
 }
 
 // RunPost 保存设置
 func (this *IndexAction) RunPost(params struct {
-	ClusterId             int64
-	Name                  string
-	GrantId               int64
-	InstallDir            string
-	TimeZone              string
-	NodeMaxThreads        int32
-	NodeTCPMaxConnections int32
-	AutoOpenPorts         bool
+	ClusterId      int64
+	Name           string
+	GrantId        int64
+	InstallDir     string
+	TimeZone       string
+	NodeMaxThreads int32
+	AutoOpenPorts  bool
 
 	Must *actions.Must
 }) {
@@ -112,14 +109,13 @@ func (this *IndexAction) RunPost(params struct {
 	}
 
 	_, err := this.RPC().NodeClusterRPC().UpdateNodeCluster(this.AdminContext(), &pb.UpdateNodeClusterRequest{
-		NodeClusterId:         params.ClusterId,
-		Name:                  params.Name,
-		NodeGrantId:           params.GrantId,
-		InstallDir:            params.InstallDir,
-		TimeZone:              params.TimeZone,
-		NodeMaxThreads:        params.NodeMaxThreads,
-		NodeTCPMaxConnections: params.NodeTCPMaxConnections,
-		AutoOpenPorts:         params.AutoOpenPorts,
+		NodeClusterId:  params.ClusterId,
+		Name:           params.Name,
+		NodeGrantId:    params.GrantId,
+		InstallDir:     params.InstallDir,
+		TimeZone:       params.TimeZone,
+		NodeMaxThreads: params.NodeMaxThreads,
+		AutoOpenPorts:  params.AutoOpenPorts,
 	})
 	if err != nil {
 		this.ErrorPage(err)

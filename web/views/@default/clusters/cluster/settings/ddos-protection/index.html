@@ -1,0 +1,19 @@
+{$layout}
+{$template "../menu"}
+{$template "/left_menu_with_menu"}
+
+<div class="right-box with-menu">
+    <first-menu>
+        <menu-item :href="'.?clusterId=' + clusterId" class="active">设置</menu-item>
+        <menu-item :href="'.status?clusterId=' + clusterId" >状态</menu-item>
+    </first-menu>
+
+    <form class="ui form" data-tea-action="$" data-tea-success="success">
+        <csrf-token></csrf-token>
+        <input type="hidden" name="clusterId" :value="clusterId"/>
+
+        <node-ddos-protection-config-box :v-ddos-protection-config="config" :v-default-configs="defaultConfigs"></node-ddos-protection-config-box>
+
+        <submit-btn></submit-btn>
+    </form>
+</div>
