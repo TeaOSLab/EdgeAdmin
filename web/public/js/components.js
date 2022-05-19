@@ -44,7 +44,37 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			   </tr>
 		   </tbody>
 	   </table>
-   </div>`}),Vue.component("node-clusters-labels",{props:["v-primary-cluster","v-secondary-clusters","size"],data:function(){var e=this.vPrimaryCluster;let t=this.vSecondaryClusters,i=(null==t&&(t=[]),this.size);return null==i&&(i="small"),{cluster:e,secondaryClusters:t,labelSize:i}},template:`<div>
+   </div>`}),Vue.component("ddos-protection-ports-config-box",{props:["v-ports"],data:function(){let e=this.vPorts;return{ports:e=null==e?[]:e,isAdding:!1,addingPort:{port:"",description:""}}},methods:{add:function(){this.isAdding=!0;let e=this;setTimeout(function(){e.$refs.addingPortInput.focus()})},confirm:function(){var e=this.addingPort.port;if(0==e.length)this.warn("请输入端口号");else if(/^\d+$/.test(e)){let i=parseInt(e,10);if(i<=0)this.warn("请输入正确的端口号");else if(65535<i)this.warn("请输入正确的端口号");else{let t=!1;this.ports.forEach(function(e){e.port==i&&(t=!0)}),t?this.warn("端口号已经存在"):(this.ports.push({port:i,description:this.addingPort.description}),this.notifyChange(),this.cancel())}}else this.warn("请输入正确的端口号")},cancel:function(){this.isAdding=!1,this.addingPort={port:"",description:""}},remove:function(e){this.ports.$remove(e),this.notifyChange()},warn:function(e){let t=this;teaweb.warn(e,function(){t.$refs.addingPortInput.focus()})},notifyChange:function(){this.$emit("change",this.ports)}},template:`<div>
+	<div v-if="ports.length > 0">
+		<div class="ui label basic tiny" v-for="(portConfig, index) in ports">
+			{{portConfig.port}} <span class="grey small" v-if="portConfig.description.length > 0">（{{portConfig.description}}）</span> <a href="" @click.prevent="remove(index)" title="删除"><i class="icon remove"></i></a>
+		</div>
+		<div class="ui divider"></div>
+	</div>
+	<div v-if="isAdding">
+		<div class="ui fields inline">
+			<div class="ui field">
+				<div class="ui input left labeled">
+					<span class="ui label">端口</span>
+					<input type="text" v-model="addingPort.port" ref="addingPortInput" maxlength="5" size="5" placeholder="端口号" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+				</div>
+			</div>
+			<div class="ui field">
+				<div class="ui input left labeled">
+					<span class="ui label">备注</span>
+					<input type="text" v-model="addingPort.description" maxlength="12" size="12" placeholder="备注（可选）" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+				</div>
+			</div>
+			<div class="ui field">
+				<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button>
+				&nbsp;<a href="" @click.prevent="cancel()">取消</a>
+			</div>
+		</div>
+	</div>
+	<div v-if="!isAdding">
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	</div>
+</div>`}),Vue.component("node-clusters-labels",{props:["v-primary-cluster","v-secondary-clusters","size"],data:function(){var e=this.vPrimaryCluster;let t=this.vSecondaryClusters,i=(null==t&&(t=[]),this.size);return null==i&&(i="small"),{cluster:e,secondaryClusters:t,labelSize:i}},template:`<div>
 	<a v-if="cluster != null" :href="'/clusters/cluster?clusterId=' + cluster.id" title="主集群" style="margin-bottom: 0.3em;">
 		<span class="ui label basic grey" :class="labelSize" v-if="labelSize != 'tiny'">{{cluster.name}}</span>
 		<grey-label v-if="labelSize == 'tiny'">{{cluster.name}}</grey-label>
@@ -58,6 +88,96 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<option value="0">[选择集群]</option>
 		<option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
 	</select>
+</div>`}),Vue.component("node-ddos-protection-config-box",{props:["v-ddos-protection-config","v-default-configs","v-is-node","v-cluster-is-on"],data:function(){let e=this.vDdosProtectionConfig;return null==(e=null==e?{tcp:{isPrior:!1,isOn:!1,maxConnections:0,maxConnectionsPerIP:0,newConnectionsRate:0,allowIPList:[],ports:[]}}:e).tcp&&(e.tcp={isPrior:!1,isOn:!1,maxConnections:0,maxConnectionsPerIP:0,newConnectionsRate:0,allowIPList:[],ports:[]}),{config:e,defaultConfigs:this.vDefaultConfigs,isNode:this.vIsNode,isAddingPort:!1}},methods:{changeTCPPorts:function(e){this.config.tcp.ports=e},changeTCPAllowIPList:function(e){this.config.tcp.allowIPList=e}},template:`<div>
+ <input type="hidden" name="ddosProtectionJSON" :value="JSON.stringify(config)"/>
+
+ <p class="comment">功能说明：此功能为<strong>试验性质</strong>，目前仅能防御简单的DDoS攻击，试验期间建议仅在被攻击时启用，仅支持已安装<code-label>nftables v0.9</code-label>以上的Linux系统。<pro-warning-label></pro-warning-label></p>
+
+ <div class="ui message" v-if="vClusterIsOn">当前节点所在集群已设置DDoS防护。</div>
+
+ <h4>TCP设置</h4>
+ <table class="ui table definition selectable">
+ 	<prior-checkbox :v-config="config.tcp" v-if="isNode"></prior-checkbox>
+ 	<tbody v-show="config.tcp.isPrior || !isNode">
+		<tr>
+			<td class="title">启用</td>
+			<td>
+				<checkbox v-model="config.tcp.isOn"></checkbox>
+			</td>
+		</tr>
+	</tbody>
+	<tbody v-show="config.tcp.isOn && (config.tcp.isPrior || !isNode)">
+		<tr>
+			<td class="title">单节点TCP最大连接数</td>
+			<td>
+				<digit-input name="tcpMaxConnections" v-model="config.tcp.maxConnections" maxlength="6" size="6" style="width: 6em"></digit-input>
+				<p class="comment">单个节点可以接受的TCP最大连接数。如果为0，则默认为{{defaultConfigs.tcpMaxConnections}}。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>单IP TCP最大连接数</td>
+			<td>
+				<digit-input name="tcpMaxConnectionsPerIP" v-model="config.tcp.maxConnectionsPerIP" maxlength="6" size="6" style="width: 6em"></digit-input>
+				<p class="comment">单个IP可以连接到节点的TCP最大连接数。如果为0，则默认为{{defaultConfigs.tcpMaxConnectionsPerIP}}；最小值为{{defaultConfigs.tcpMinConnectionsPerIP}}。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>单IP TCP新连接速率</td>
+			<td>
+				<div class="ui input right labeled">
+					<digit-input name="tcpNewConnectionsRate" v-model="config.tcp.newConnectionsRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpNewConnectionsMinRate"></digit-input>
+					<span class="ui label">个新连接/每分钟</span>
+				</div>
+				<p class="comment">单个IP可以创建TCP新连接的速率。如果为0，则默认为{{defaultConfigs.tcpNewConnectionsRate}}；最小值为{{defaultConfigs.tcpNewConnectionsMinRate}}。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>TCP端口列表</td>
+			<td>
+				<ddos-protection-ports-config-box :v-ports="config.tcp.ports" @change="changeTCPPorts"></ddos-protection-ports-config-box>
+				<p class="comment">默认为80和443两个端口。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>IP白名单</td>
+			<td>
+				<ddos-protection-ip-list-config-box :v-ip-list="config.tcp.allowIPList" @change="changeTCPAllowIPList"></ddos-protection-ip-list-config-box>
+				<p class="comment">在白名单中的IP不受当前设置的限制。</p>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<div class="margin"></div>
+</div>`}),Vue.component("ddos-protection-ip-list-config-box",{props:["v-ip-list"],data:function(){let e=this.vIpList;return{list:e=null==e?[]:e,isAdding:!1,addingIP:{ip:"",description:""}}},methods:{add:function(){this.isAdding=!0;let e=this;setTimeout(function(){e.$refs.addingIPInput.focus()})},confirm:function(){let i=this.addingIP.ip;if(0==i.length)this.warn("请输入IP");else{let t=!1;if(this.list.forEach(function(e){e.ip==i&&(t=!0)}),t)this.warn("IP '"+i+"'已经存在");else{let e=this;Tea.Vue.$post("/ui/validateIPs").params({ips:[i]}).success(function(){e.list.push({ip:i,description:e.addingIP.description}),e.notifyChange(),e.cancel()}).fail(function(){e.warn("请输入正确的IP")})}}},cancel:function(){this.isAdding=!1,this.addingIP={ip:"",description:""}},remove:function(e){this.list.$remove(e),this.notifyChange()},warn:function(e){let t=this;teaweb.warn(e,function(){t.$refs.addingIPInput.focus()})},notifyChange:function(){this.$emit("change",this.list)}},template:`<div>
+	<div v-if="list.length > 0">
+		<div class="ui label basic tiny" v-for="(ipConfig, index) in list">
+			{{ipConfig.ip}} <span class="grey small" v-if="ipConfig.description.length > 0">（{{ipConfig.description}}）</span> <a href="" @click.prevent="remove(index)" title="删除"><i class="icon remove"></i></a>
+		</div>
+		<div class="ui divider"></div>
+	</div>
+	<div v-if="isAdding">
+		<div class="ui fields inline">
+			<div class="ui field">
+				<div class="ui input left labeled">
+					<span class="ui label">IP</span>
+					<input type="text" v-model="addingIP.ip" ref="addingIPInput" maxlength="40" size="20" placeholder="IP" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+				</div>
+			</div>
+			<div class="ui field">
+				<div class="ui input left labeled">
+					<span class="ui label">备注</span>
+					<input type="text" v-model="addingIP.description" maxlength="10" size="10" placeholder="备注（可选）" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+				</div>
+			</div>
+			<div class="ui field">
+				<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button>
+				&nbsp;<a href="" @click.prevent="cancel()">取消</a>
+			</div>
+		</div>
+	</div>
+	<div v-if="!isAdding">
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	</div>
 </div>`}),Vue.component("node-cluster-combo-box",{props:["v-cluster-id"],data:function(){let t=this;return Tea.action("/clusters/options").post().success(function(e){t.clusters=e.data.clusters}),{clusters:[]}},methods:{change:function(e){null==e?this.$emit("change",0):this.$emit("change",e.value)}},template:`<div v-if="clusters.length > 0" style="min-width: 10.4em">
 	<combo-box title="集群" placeholder="集群名称" :v-items="clusters" name="clusterId" :v-value="vClusterId" @change="change"></combo-box>
 </div>`}),Vue.component("node-clusters-selector",{props:["v-primary-cluster","v-secondary-clusters"],data:function(){var e=this.vPrimaryCluster;let t=this.vSecondaryClusters;return null==t&&(t=[]),{primaryClusterId:null==e?0:e.id,secondaryClusterIds:t.map(function(e){return e.id}),primaryCluster:e,secondaryClusters:t}},methods:{addPrimary:function(){let t=this,e=[this.primaryClusterId].concat(this.secondaryClusterIds);teaweb.popup("/clusters/selectPopup?selectedClusterIds="+e.join(",")+"&mode=single",{height:"30em",width:"50em",callback:function(e){null!=e.data.cluster&&(t.primaryCluster=e.data.cluster,t.primaryClusterId=t.primaryCluster.id,t.notifyChange())}})},removePrimary:function(){this.primaryClusterId=0,this.primaryCluster=null,this.notifyChange()},addSecondary:function(){let t=this,e=[this.primaryClusterId].concat(this.secondaryClusterIds);teaweb.popup("/clusters/selectPopup?selectedClusterIds="+e.join(",")+"&mode=multiple",{height:"30em",width:"50em",callback:function(e){null!=e.data.cluster&&(t.secondaryClusterIds.push(e.data.cluster.id),t.secondaryClusters.push(e.data.cluster),t.notifyChange())}})},removeSecondary:function(e){this.secondaryClusterIds.$remove(e),this.secondaryClusters.$remove(e),this.notifyChange()},notifyChange:function(){this.$emit("change",{clusterId:this.primaryClusterId})}},template:`<div>
@@ -2372,7 +2492,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
         <option v-for="level in levels" :value="level.code">{{level.name}}</option>
     </select>
     <p class="comment">{{description}}</p>
-</div>`}),Vue.component("prior-checkbox",{props:["v-config"],data:function(){return{isPrior:this.vConfig.isPrior}},watch:{isPrior:function(e){this.vConfig.isPrior=e}},template:`<tbody>
+</div>`}),Vue.component("prior-checkbox",{props:["v-config","description"],data:function(){let e=this.description;return null==e&&(e="打开后可以覆盖父级或子级配置"),{isPrior:this.vConfig.isPrior,realDescription:e}},watch:{isPrior:function(e){this.vConfig.isPrior=e}},template:`<tbody>
 	<tr :class="{active:isPrior}">
 		<td class="title">打开独立配置</td>
 		<td>
@@ -2380,7 +2500,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				<input type="checkbox" v-model="isPrior"/>
 				<label class="red"></label>
 			</div>
-			<p class="comment"><strong v-if="isPrior">[已打开]</strong> 打开后可以覆盖父级或子级配置。</p>
+			<p class="comment"><strong v-if="isPrior">[已打开]</strong> {{realDescription}}。</p>
 		</td>
 	</tr>
 </tbody>`}),Vue.component("http-charsets-box",{props:["v-usual-charsets","v-all-charsets","v-charset-config","v-is-location","v-is-group"],data:function(){let e=this.vCharsetConfig;return{charsetConfig:e=null==e?{isPrior:!1,isOn:!1,charset:"",isUpper:!1}:e,advancedVisible:!1}},methods:{changeAdvancedVisible:function(e){this.advancedVisible=e}},template:`<div>
@@ -3872,12 +3992,12 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<option value="10">[每页]</option><option value="10" selected="selected">10条</option><option value="20">20条</option><option value="30">30条</option><option value="40">40条</option><option value="50">50条</option><option value="60">60条</option><option value="70">70条</option><option value="80">80条</option><option value="90">90条</option><option value="100">100条</option>
 </select>`}),Vue.component("second-menu",{template:' \t\t<div class="second-menu"> \t\t\t<div class="ui menu text blue small">\t\t\t\t<slot></slot>\t\t\t</div> \t\t\t<div class="ui divider"></div> \t\t</div>'}),Vue.component("loading-message",{template:`<div class="ui message loading">
         <div class="ui active inline loader small"></div>  &nbsp; <slot></slot>
-    </div>`}),Vue.component("more-options-angle",{data:function(){return{isVisible:!1}},methods:{show:function(){this.isVisible=!this.isVisible,this.$emit("change",this.isVisible)}},template:'<a href="" @click.prevent="show()"><span v-if="!isVisible">更多选项</span><span v-if="isVisible">收起选项</span><i class="icon angle" :class="{down:!isVisible, up:isVisible}"></i></a>'}),Vue.component("inner-menu-item",{props:["href","active","code"],data:function(){var e,t=this.active;return void 0===t&&(e="",t=(e=void 0!==window.TEA.ACTION.data.firstMenuItem?window.TEA.ACTION.data.firstMenuItem:e)==this.code),{vHref:null==this.href?"":this.href,vActive:t}},template:'\t\t<a :href="vHref" class="item right" style="color:#4183c4" :class="{active:vActive}">[<slot></slot>]</a> \t\t'}),Vue.component("health-check-config-box",{props:["v-health-check-config"],data:function(){let t=this.vHealthCheckConfig,i="http",s="",n="/",o="";if(null==t){t={isOn:!1,url:"",interval:{count:60,unit:"second"},statusCodes:[200],timeout:{count:10,unit:"second"},countTries:3,tryDelay:{count:100,unit:"ms"},autoDown:!0,countUp:1,countDown:3,userAgent:"",onlyBasicRequest:!0};let e=this;setTimeout(function(){e.changeURL()},500)}else{try{let e=new URL(t.url);i=e.protocol.substring(0,e.protocol.length-1);var a=(o="%24%7Bhost%7D"==(o=e.host)?"${host}":o).indexOf(":");0<a&&(o=o.substring(0,a)),s=e.port,n=e.pathname,0<e.search.length&&(n+=e.search)}catch(e){}null==t.statusCodes&&(t.statusCodes=[200]),null==t.interval&&(t.interval={count:60,unit:"second"}),null==t.timeout&&(t.timeout={count:10,unit:"second"}),null==t.tryDelay&&(t.tryDelay={count:100,unit:"ms"}),(null==t.countUp||t.countUp<1)&&(t.countUp=1),(null==t.countDown||t.countDown<1)&&(t.countDown=3)}return{healthCheck:t,advancedVisible:!1,urlProtocol:i,urlHost:o,urlPort:s,urlRequestURI:n,urlIsEditing:0==t.url.length}},watch:{urlRequestURI:function(){0<this.urlRequestURI.length&&"/"!=this.urlRequestURI[0]&&(this.urlRequestURI="/"+this.urlRequestURI),this.changeURL()},urlPort:function(e){let t=parseInt(e);isNaN(t)?this.urlPort="":this.urlPort=t.toString(),this.changeURL()},urlProtocol:function(){this.changeURL()},urlHost:function(){this.changeURL()},"healthCheck.countTries":function(e){e=parseInt(e);isNaN(e)?this.healthCheck.countTries=0:this.healthCheck.countTries=e},"healthCheck.countUp":function(e){e=parseInt(e);isNaN(e)?this.healthCheck.countUp=0:this.healthCheck.countUp=e},"healthCheck.countDown":function(e){e=parseInt(e);isNaN(e)?this.healthCheck.countDown=0:this.healthCheck.countDown=e}},methods:{showAdvanced:function(){this.advancedVisible=!this.advancedVisible},changeURL:function(){let e=this.urlHost;0==e.length&&(e="${host}"),this.healthCheck.url=this.urlProtocol+"://"+e+(0<this.urlPort.length?":"+this.urlPort:"")+this.urlRequestURI},changeStatus:function(e){this.healthCheck.statusCodes=e.$map(function(e,t){t=parseInt(t);return isNaN(t)?0:t})},editURL:function(){this.urlIsEditing=!this.urlIsEditing}},template:`<div>
+    </div>`}),Vue.component("more-options-angle",{data:function(){return{isVisible:!1}},methods:{show:function(){this.isVisible=!this.isVisible,this.$emit("change",this.isVisible)}},template:'<a href="" @click.prevent="show()"><span v-if="!isVisible">更多选项</span><span v-if="isVisible">收起选项</span><i class="icon angle" :class="{down:!isVisible, up:isVisible}"></i></a>'}),Vue.component("inner-menu-item",{props:["href","active","code"],data:function(){var e,t=this.active;return void 0===t&&(e="",t=(e=void 0!==window.TEA.ACTION.data.firstMenuItem?window.TEA.ACTION.data.firstMenuItem:e)==this.code),{vHref:null==this.href?"":this.href,vActive:t}},template:'\t\t<a :href="vHref" class="item right" style="color:#4183c4" :class="{active:vActive}">[<slot></slot>]</a> \t\t'}),Vue.component("health-check-config-box",{props:["v-health-check-config"],data:function(){let t=this.vHealthCheckConfig,i="http",s="",n="/",o="";if(null==t){t={isOn:!1,url:"",interval:{count:60,unit:"second"},statusCodes:[200],timeout:{count:10,unit:"second"},countTries:3,tryDelay:{count:100,unit:"ms"},autoDown:!0,countUp:1,countDown:3,userAgent:"",onlyBasicRequest:!0,accessLogIsOn:!0};let e=this;setTimeout(function(){e.changeURL()},500)}else{try{let e=new URL(t.url);i=e.protocol.substring(0,e.protocol.length-1);var a=(o="%24%7Bhost%7D"==(o=e.host)?"${host}":o).indexOf(":");0<a&&(o=o.substring(0,a)),s=e.port,n=e.pathname,0<e.search.length&&(n+=e.search)}catch(e){}null==t.statusCodes&&(t.statusCodes=[200]),null==t.interval&&(t.interval={count:60,unit:"second"}),null==t.timeout&&(t.timeout={count:10,unit:"second"}),null==t.tryDelay&&(t.tryDelay={count:100,unit:"ms"}),(null==t.countUp||t.countUp<1)&&(t.countUp=1),(null==t.countDown||t.countDown<1)&&(t.countDown=3)}return{healthCheck:t,advancedVisible:!1,urlProtocol:i,urlHost:o,urlPort:s,urlRequestURI:n,urlIsEditing:0==t.url.length}},watch:{urlRequestURI:function(){0<this.urlRequestURI.length&&"/"!=this.urlRequestURI[0]&&(this.urlRequestURI="/"+this.urlRequestURI),this.changeURL()},urlPort:function(e){let t=parseInt(e);isNaN(t)?this.urlPort="":this.urlPort=t.toString(),this.changeURL()},urlProtocol:function(){this.changeURL()},urlHost:function(){this.changeURL()},"healthCheck.countTries":function(e){e=parseInt(e);isNaN(e)?this.healthCheck.countTries=0:this.healthCheck.countTries=e},"healthCheck.countUp":function(e){e=parseInt(e);isNaN(e)?this.healthCheck.countUp=0:this.healthCheck.countUp=e},"healthCheck.countDown":function(e){e=parseInt(e);isNaN(e)?this.healthCheck.countDown=0:this.healthCheck.countDown=e}},methods:{showAdvanced:function(){this.advancedVisible=!this.advancedVisible},changeURL:function(){let e=this.urlHost;0==e.length&&(e="${host}"),this.healthCheck.url=this.urlProtocol+"://"+e+(0<this.urlPort.length?":"+this.urlPort:"")+this.urlRequestURI},changeStatus:function(e){this.healthCheck.statusCodes=e.$map(function(e,t){t=parseInt(t);return isNaN(t)?0:t})},editURL:function(){this.urlIsEditing=!this.urlIsEditing}},template:`<div>
 <input type="hidden" name="healthCheckJSON" :value="JSON.stringify(healthCheck)"/>
 <table class="ui table definition selectable">
 	<tbody>
 		<tr>
-			<td class="title">是否启用</td>
+			<td class="title">启用</td>
 			<td>
 				<div class="ui checkbox">
 					<input type="checkbox" value="1" v-model="healthCheck.isOn"/>
@@ -3888,7 +4008,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	</tbody>
 	<tbody v-show="healthCheck.isOn">
 		<tr>
-			<td>URL *</td>
+			<td>检测URL *</td>
 			<td>
 				<div v-if="healthCheck.url.length > 0" style="margin-bottom: 1em"><code-label>{{healthCheck.url}}</code-label> &nbsp; <a href="" @click.prevent="editURL"><span class="small">修改 <i class="icon angle" :class="{down: !urlIsEditing, up: urlIsEditing}"></i></span></a> </div>
 				<div v-show="urlIsEditing">
@@ -3906,22 +4026,25 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 							<td>域名</td>
 							<td>
 								<input type="text" v-model="urlHost"/>
-								<p class="comment">在此集群上可以访问到的一个域名。</p>
+								<p class="comment">已经绑定到此集群的一个域名；如果为空则使用节点IP作为域名。</p>
 							</td>
 						</tr>
 						<tr>
 							<td>端口</td>
 							<td>
 								<input type="text" maxlength="5" style="width:5.4em" placeholder="端口" v-model="urlPort"/>
+								<p class="comment">域名或者IP的端口，可选项，默认为80/443。</p>
 							</td>
 						</tr>
 						<tr>
 							<td>RequestURI</td>
-							<td><input type="text" v-model="urlRequestURI" placeholder="/" style="width:20em"/></td>
+							<td><input type="text" v-model="urlRequestURI" placeholder="/" style="width:20em"/>
+								<p class="comment">请求的路径，可以带参数，可选项。</p>
+							</td>
 						</tr>
 					</table>
 					<div class="ui divider"></div>
-					<p class="comment" v-if="healthCheck.url.length > 0">拼接后的URL：<code-label>{{healthCheck.url}}</code-label>，其中\${host}指的是域名。</p>
+					<p class="comment" v-if="healthCheck.url.length > 0">拼接后的检测URL：<code-label>{{healthCheck.url}}</code-label>，其中\${host}指的是域名。</p>
 				</div>
 			</td>
 		</tr>
@@ -3929,6 +4052,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<td>检测时间间隔</td>
 			<td>
 				<time-duration-box :v-value="healthCheck.interval"></time-duration-box>
+				<p class="comment">两次检查之间的间隔。</p>
 			</td>
 		</tr>
 		<tr>
@@ -3945,14 +4069,14 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<td>连续上线次数</td>
 			<td>
 				<input type="text" v-model="healthCheck.countUp" style="width:5em" maxlength="6"/>
-				<p class="comment">连续N次检查成功后自动恢复上线。</p>
+				<p class="comment">连续{{healthCheck.countUp}}次检查成功后自动恢复上线。</p>
 			</td>
 		</tr>
 		<tr v-show="healthCheck.autoDown">
 			<td>连续下线次数</td>
 			<td>
 				<input type="text" v-model="healthCheck.countDown" style="width:5em" maxlength="6"/>
-				<p class="comment">连续N次检查失败后自动下线。</p>
+				<p class="comment">连续{{healthCheck.countDown}}次检查失败后自动下线。</p>
 			</td>
 		</tr>
 	</tbody>
@@ -3998,6 +4122,13 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<td>
 				<checkbox v-model="healthCheck.onlyBasicRequest"></checkbox>
 				<p class="comment">只做基础的请求，不处理反向代理（不检查源站）、WAF等。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>记录访问日志</td>
+			<td>
+				<checkbox v-model="healthCheck.accessLogIsOn"></checkbox>
+				<p class="comment">是否记录健康检查的访问日志。</p>
 			</td>
 		</tr>
 	</tbody>
@@ -4059,7 +4190,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<div class="content">
 		<slot></slot>
 	</div>
-</div>`}),Vue.component("keyword",{props:["v-word"],data:function(){let e=this.vWord;e=null==e?"":(e=(e=(e=(e=(e=(e=(e=(e=(e=e.replace(/\)/g,"\\)")).replace(/\(/g,"\\(")).replace(/\+/g,"\\+")).replace(/\^/g,"\\^")).replace(/\$/g,"\\$")).replace(/\?/,"\\?")).replace(/\*/,"\\*")).replace(/\[/,"\\[")).replace(/{/,"\\{")).replace(/\./,"\\.");let t=this.$slots.default[0].text;if(0<e.length){let i=this,s=[],n=0;t=t.replaceAll(new RegExp("("+e+")","ig"),function(e){n++;var e='<span style="border: 1px #ccc dashed; color: #ef4d58">'+i.encodeHTML(e)+"</span>",t="$TMP__KEY__"+n.toString()+"$";return s.push([t,e]),t}),t=this.encodeHTML(t),s.forEach(function(e){t=t.replace(e[0],e[1])})}else t=this.encodeHTML(t);return{word:e,text:t}},methods:{encodeHTML:function(e){return e=(e=(e=(e=e.replace(/&/g,"&amp;")).replace(/</g,"&lt;")).replace(/>/g,"&gt;")).replace(/"/g,"&quot;")}},template:'<span><span style="display: none"><slot></slot></span><span v-html="text"></span></span>'}),Vue.component("node-log-row",{props:["v-log","v-keyword"],data:function(){return{log:this.vLog,keyword:this.vKeyword}},template:`<div>
+</div>`}),Vue.component("digit-input",{props:["value","maxlength","size","min","max","required","placeholder"],mounted:function(){let e=this;setTimeout(function(){e.check()})},data:function(){let e=this.maxlength,t=(null==e&&(e=20),this.size);return null==t&&(t=6),{realValue:this.value,realMaxLength:e,realSize:t,isValid:!0}},watch:{realValue:function(e){this.notifyChange()}},methods:{notifyChange:function(){let e=parseInt(this.realValue.toString(),10);isNaN(e)&&(e=0),this.check(),this.$emit("input",e)},check:function(){var e;null!=this.realValue&&(e=this.realValue.toString(),/^\d+$/.test(e)?(e=parseInt(e,10),isNaN(e)?this.isValid=!1:this.required?this.isValid=(null==this.min||this.min<=e)&&(null==this.max||this.max>=e):this.isValid=0==e||(null==this.min||this.min<=e)&&(null==this.max||this.max>=e)):this.isValid=!1)}},template:'<input type="text" v-model="realValue" :maxlength="realMaxLength" :size="realSize" :class="{error: !this.isValid}" :placeholder="placeholder"/>'}),Vue.component("keyword",{props:["v-word"],data:function(){let e=this.vWord;e=null==e?"":(e=(e=(e=(e=(e=(e=(e=(e=(e=e.replace(/\)/g,"\\)")).replace(/\(/g,"\\(")).replace(/\+/g,"\\+")).replace(/\^/g,"\\^")).replace(/\$/g,"\\$")).replace(/\?/,"\\?")).replace(/\*/,"\\*")).replace(/\[/,"\\[")).replace(/{/,"\\{")).replace(/\./,"\\.");let t=this.$slots.default[0].text;if(0<e.length){let i=this,s=[],n=0;t=t.replaceAll(new RegExp("("+e+")","ig"),function(e){n++;var e='<span style="border: 1px #ccc dashed; color: #ef4d58">'+i.encodeHTML(e)+"</span>",t="$TMP__KEY__"+n.toString()+"$";return s.push([t,e]),t}),t=this.encodeHTML(t),s.forEach(function(e){t=t.replace(e[0],e[1])})}else t=this.encodeHTML(t);return{word:e,text:t}},methods:{encodeHTML:function(e){return e=(e=(e=(e=e.replace(/&/g,"&amp;")).replace(/</g,"&lt;")).replace(/>/g,"&gt;")).replace(/"/g,"&quot;")}},template:'<span><span style="display: none"><slot></slot></span><span v-html="text"></span></span>'}),Vue.component("node-log-row",{props:["v-log","v-keyword"],data:function(){return{log:this.vLog,keyword:this.vKeyword}},template:`<div>
 	<pre class="log-box" style="margin: 0; padding: 0"><span :class="{red:log.level == 'error', orange:log.level == 'warning', green: log.level == 'success'}"><span v-if="!log.isToday">[{{log.createdTime}}]</span><strong v-if="log.isToday">[{{log.createdTime}}]</strong><keyword :v-word="keyword">[{{log.tag}}]{{log.description}}</keyword></span> &nbsp; <span v-if="log.count > 1" class="ui label tiny" :class="{red:log.level == 'error', orange:log.level == 'warning'}">共{{log.count}}条</span> <span v-if="log.server != null && log.server.id > 0"><a :href="'/servers/server?serverId=' + log.server.id" class="ui label tiny basic">{{log.server.name}}</a></span></pre>
 </div>`}),Vue.component("provinces-selector",{props:["v-provinces"],data:function(){let e=this.vProvinces;var t=(e=null==e?[]:e).$map(function(e,t){return t.id});return{provinces:e,provinceIds:t}},methods:{add:function(){let e=this.provinceIds.map(function(e){return e.toString()}),t=this;teaweb.popup("/ui/selectProvincesPopup?provinceIds="+e.join(","),{width:"48em",height:"23em",callback:function(e){t.provinces=e.data.provinces,t.change()}})},remove:function(e){this.provinces.$remove(e),this.change()},change:function(){this.provinceIds=this.provinces.$map(function(e,t){return t.id})}},template:`<div>
 	<input type="hidden" name="provinceIdsJSON" :value="JSON.stringify(provinceIds)"/>
@@ -4467,7 +4598,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				<select class="ui dropdown auto-width" v-model="config.type">
 					<option v-for="t in types" :value="t.code">{{t.name}}</option>
 				</select>
-				<p class="comment">修改此项配置后，需要重启节点进程才会生效。<pro-warning-label></pro-warning-label></p>
+				<p class="comment">边缘节点使用的DNS解析库。修改此项配置后，需要重启节点进程才会生效。<pro-warning-label></pro-warning-label></p>
 			</td>
 		</tr>
 	</table>
