@@ -20,7 +20,8 @@ Vue.component("health-check-config-box", {
 				countUp: 1,
 				countDown: 3,
 				userAgent: "",
-				onlyBasicRequest: true
+				onlyBasicRequest: true,
+				accessLogIsOn: true
 			}
 			let that = this
 			setTimeout(function () {
@@ -155,7 +156,7 @@ Vue.component("health-check-config-box", {
 <table class="ui table definition selectable">
 	<tbody>
 		<tr>
-			<td class="title">是否启用</td>
+			<td class="title">启用</td>
 			<td>
 				<div class="ui checkbox">
 					<input type="checkbox" value="1" v-model="healthCheck.isOn"/>
@@ -166,7 +167,7 @@ Vue.component("health-check-config-box", {
 	</tbody>
 	<tbody v-show="healthCheck.isOn">
 		<tr>
-			<td>URL *</td>
+			<td>检测URL *</td>
 			<td>
 				<div v-if="healthCheck.url.length > 0" style="margin-bottom: 1em"><code-label>{{healthCheck.url}}</code-label> &nbsp; <a href="" @click.prevent="editURL"><span class="small">修改 <i class="icon angle" :class="{down: !urlIsEditing, up: urlIsEditing}"></i></span></a> </div>
 				<div v-show="urlIsEditing">
@@ -184,22 +185,25 @@ Vue.component("health-check-config-box", {
 							<td>域名</td>
 							<td>
 								<input type="text" v-model="urlHost"/>
-								<p class="comment">在此集群上可以访问到的一个域名。</p>
+								<p class="comment">已经绑定到此集群的一个域名；如果为空则使用节点IP作为域名。</p>
 							</td>
 						</tr>
 						<tr>
 							<td>端口</td>
 							<td>
 								<input type="text" maxlength="5" style="width:5.4em" placeholder="端口" v-model="urlPort"/>
+								<p class="comment">域名或者IP的端口，可选项，默认为80/443。</p>
 							</td>
 						</tr>
 						<tr>
 							<td>RequestURI</td>
-							<td><input type="text" v-model="urlRequestURI" placeholder="/" style="width:20em"/></td>
+							<td><input type="text" v-model="urlRequestURI" placeholder="/" style="width:20em"/>
+								<p class="comment">请求的路径，可以带参数，可选项。</p>
+							</td>
 						</tr>
 					</table>
 					<div class="ui divider"></div>
-					<p class="comment" v-if="healthCheck.url.length > 0">拼接后的URL：<code-label>{{healthCheck.url}}</code-label>，其中\${host}指的是域名。</p>
+					<p class="comment" v-if="healthCheck.url.length > 0">拼接后的检测URL：<code-label>{{healthCheck.url}}</code-label>，其中\${host}指的是域名。</p>
 				</div>
 			</td>
 		</tr>
@@ -207,6 +211,7 @@ Vue.component("health-check-config-box", {
 			<td>检测时间间隔</td>
 			<td>
 				<time-duration-box :v-value="healthCheck.interval"></time-duration-box>
+				<p class="comment">两次检查之间的间隔。</p>
 			</td>
 		</tr>
 		<tr>
@@ -223,14 +228,14 @@ Vue.component("health-check-config-box", {
 			<td>连续上线次数</td>
 			<td>
 				<input type="text" v-model="healthCheck.countUp" style="width:5em" maxlength="6"/>
-				<p class="comment">连续N次检查成功后自动恢复上线。</p>
+				<p class="comment">连续{{healthCheck.countUp}}次检查成功后自动恢复上线。</p>
 			</td>
 		</tr>
 		<tr v-show="healthCheck.autoDown">
 			<td>连续下线次数</td>
 			<td>
 				<input type="text" v-model="healthCheck.countDown" style="width:5em" maxlength="6"/>
-				<p class="comment">连续N次检查失败后自动下线。</p>
+				<p class="comment">连续{{healthCheck.countDown}}次检查失败后自动下线。</p>
 			</td>
 		</tr>
 	</tbody>
@@ -276,6 +281,13 @@ Vue.component("health-check-config-box", {
 			<td>
 				<checkbox v-model="healthCheck.onlyBasicRequest"></checkbox>
 				<p class="comment">只做基础的请求，不处理反向代理（不检查源站）、WAF等。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>记录访问日志</td>
+			<td>
+				<checkbox v-model="healthCheck.accessLogIsOn"></checkbox>
+				<p class="comment">是否记录健康检查的访问日志。</p>
 			</td>
 		</tr>
 	</tbody>

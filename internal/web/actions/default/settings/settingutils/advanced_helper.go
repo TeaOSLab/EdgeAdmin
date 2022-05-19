@@ -1,5 +1,5 @@
-//go:build community
-// +build community
+//go:build !plus
+// +build !plus
 
 package settingutils
 

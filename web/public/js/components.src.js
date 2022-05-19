@@ -259,6 +259,122 @@ Vue.component("traffic-map-box-table", {
    </div>`
 })
 
+Vue.component("ddos-protection-ports-config-box", {
+	props: ["v-ports"],
+	data: function () {
+		let ports = this.vPorts
+		if (ports == null) {
+			ports = []
+		}
+		return {
+			ports: ports,
+			isAdding: false,
+			addingPort: {
+				port: "",
+				description: ""
+			}
+		}
+	},
+	methods: {
+		add: function () {
+			this.isAdding = true
+			let that = this
+			setTimeout(function () {
+				that.$refs.addingPortInput.focus()
+			})
+		},
+		confirm: function () {
+			let portString = this.addingPort.port
+			if (portString.length == 0) {
+				this.warn("请输入端口号")
+				return
+			}
+			if (!/^\d+$/.test(portString)) {
+				this.warn("请输入正确的端口号")
+				return
+			}
+			let port = parseInt(portString, 10)
+			if (port <= 0) {
+				this.warn("请输入正确的端口号")
+				return
+			}
+			if (port > 65535) {
+				this.warn("请输入正确的端口号")
+				return
+			}
+
+			let exists = false
+			this.ports.forEach(function (v) {
+				if (v.port == port) {
+					exists = true
+				}
+			})
+			if (exists) {
+				this.warn("端口号已经存在")
+				return
+			}
+
+			this.ports.push({
+				port: port,
+				description: this.addingPort.description
+			})
+			this.notifyChange()
+			this.cancel()
+		},
+		cancel: function () {
+			this.isAdding = false
+			this.addingPort = {
+				port: "",
+				description: ""
+			}
+		},
+		remove: function (index) {
+			this.ports.$remove(index)
+			this.notifyChange()
+		},
+		warn: function (message) {
+			let that = this
+			teaweb.warn(message, function () {
+				that.$refs.addingPortInput.focus()
+			})
+		},
+		notifyChange: function () {
+			this.$emit("change", this.ports)
+		}
+	},
+	template: `<div>
+	<div v-if="ports.length > 0">
+		<div class="ui label basic tiny" v-for="(portConfig, index) in ports">
+			{{portConfig.port}} <span class="grey small" v-if="portConfig.description.length > 0">（{{portConfig.description}}）</span> <a href="" @click.prevent="remove(index)" title="删除"><i class="icon remove"></i></a>
+		</div>
+		<div class="ui divider"></div>
+	</div>
+	<div v-if="isAdding">
+		<div class="ui fields inline">
+			<div class="ui field">
+				<div class="ui input left labeled">
+					<span class="ui label">端口</span>
+					<input type="text" v-model="addingPort.port" ref="addingPortInput" maxlength="5" size="5" placeholder="端口号" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+				</div>
+			</div>
+			<div class="ui field">
+				<div class="ui input left labeled">
+					<span class="ui label">备注</span>
+					<input type="text" v-model="addingPort.description" maxlength="12" size="12" placeholder="备注（可选）" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+				</div>
+			</div>
+			<div class="ui field">
+				<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button>
+				&nbsp;<a href="" @click.prevent="cancel()">取消</a>
+			</div>
+		</div>
+	</div>
+	<div v-if="!isAdding">
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	</div>
+</div>`
+})
+
 // 显示节点的多个集群
 Vue.component("node-clusters-labels", {
 	props: ["v-primary-cluster", "v-secondary-clusters", "size"],
@@ -318,6 +434,230 @@ Vue.component("cluster-selector", {
 		<option value="0">[选择集群]</option>
 		<option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
 	</select>
+</div>`
+})
+
+Vue.component("node-ddos-protection-config-box", {
+	props: ["v-ddos-protection-config", "v-default-configs", "v-is-node", "v-cluster-is-on"],
+	data: function () {
+		let config = this.vDdosProtectionConfig
+		if (config == null) {
+			config = {
+				tcp: {
+					isPrior: false,
+					isOn: false,
+					maxConnections: 0,
+					maxConnectionsPerIP: 0,
+					newConnectionsRate: 0,
+					allowIPList: [],
+					ports: []
+				}
+			}
+		}
+
+		// initialize
+		if (config.tcp == null) {
+			config.tcp = {
+				isPrior: false,
+				isOn: false,
+				maxConnections: 0,
+				maxConnectionsPerIP: 0,
+				newConnectionsRate: 0,
+				allowIPList: [],
+				ports: []
+			}
+		}
+
+
+		return {
+			config: config,
+			defaultConfigs: this.vDefaultConfigs,
+			isNode: this.vIsNode,
+
+			isAddingPort: false
+		}
+	},
+	methods: {
+		changeTCPPorts: function (ports) {
+			this.config.tcp.ports = ports
+		},
+		changeTCPAllowIPList: function (ipList) {
+			this.config.tcp.allowIPList = ipList
+		}
+	},
+	template: `<div>
+ <input type="hidden" name="ddosProtectionJSON" :value="JSON.stringify(config)"/>
+
+ <p class="comment">功能说明：此功能为<strong>试验性质</strong>，目前仅能防御简单的DDoS攻击，试验期间建议仅在被攻击时启用，仅支持已安装<code-label>nftables v0.9</code-label>以上的Linux系统。<pro-warning-label></pro-warning-label></p>
+
+ <div class="ui message" v-if="vClusterIsOn">当前节点所在集群已设置DDoS防护。</div>
+
+ <h4>TCP设置</h4>
+ <table class="ui table definition selectable">
+ 	<prior-checkbox :v-config="config.tcp" v-if="isNode"></prior-checkbox>
+ 	<tbody v-show="config.tcp.isPrior || !isNode">
+		<tr>
+			<td class="title">启用</td>
+			<td>
+				<checkbox v-model="config.tcp.isOn"></checkbox>
+			</td>
+		</tr>
+	</tbody>
+	<tbody v-show="config.tcp.isOn && (config.tcp.isPrior || !isNode)">
+		<tr>
+			<td class="title">单节点TCP最大连接数</td>
+			<td>
+				<digit-input name="tcpMaxConnections" v-model="config.tcp.maxConnections" maxlength="6" size="6" style="width: 6em"></digit-input>
+				<p class="comment">单个节点可以接受的TCP最大连接数。如果为0，则默认为{{defaultConfigs.tcpMaxConnections}}。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>单IP TCP最大连接数</td>
+			<td>
+				<digit-input name="tcpMaxConnectionsPerIP" v-model="config.tcp.maxConnectionsPerIP" maxlength="6" size="6" style="width: 6em"></digit-input>
+				<p class="comment">单个IP可以连接到节点的TCP最大连接数。如果为0，则默认为{{defaultConfigs.tcpMaxConnectionsPerIP}}；最小值为{{defaultConfigs.tcpMinConnectionsPerIP}}。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>单IP TCP新连接速率</td>
+			<td>
+				<div class="ui input right labeled">
+					<digit-input name="tcpNewConnectionsRate" v-model="config.tcp.newConnectionsRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpNewConnectionsMinRate"></digit-input>
+					<span class="ui label">个新连接/每分钟</span>
+				</div>
+				<p class="comment">单个IP可以创建TCP新连接的速率。如果为0，则默认为{{defaultConfigs.tcpNewConnectionsRate}}；最小值为{{defaultConfigs.tcpNewConnectionsMinRate}}。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>TCP端口列表</td>
+			<td>
+				<ddos-protection-ports-config-box :v-ports="config.tcp.ports" @change="changeTCPPorts"></ddos-protection-ports-config-box>
+				<p class="comment">默认为80和443两个端口。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>IP白名单</td>
+			<td>
+				<ddos-protection-ip-list-config-box :v-ip-list="config.tcp.allowIPList" @change="changeTCPAllowIPList"></ddos-protection-ip-list-config-box>
+				<p class="comment">在白名单中的IP不受当前设置的限制。</p>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<div class="margin"></div>
+</div>`
+})
+
+Vue.component("ddos-protection-ip-list-config-box", {
+	props: ["v-ip-list"],
+	data: function () {
+		let list = this.vIpList
+		if (list == null) {
+			list = []
+		}
+		return {
+			list: list,
+			isAdding: false,
+			addingIP: {
+				ip: "",
+				description: ""
+			}
+		}
+	},
+	methods: {
+		add: function () {
+			this.isAdding = true
+			let that = this
+			setTimeout(function () {
+				that.$refs.addingIPInput.focus()
+			})
+		},
+		confirm: function () {
+			let ip = this.addingIP.ip
+			if (ip.length == 0) {
+				this.warn("请输入IP")
+				return
+			}
+
+			let exists = false
+			this.list.forEach(function (v) {
+				if (v.ip == ip) {
+					exists = true
+				}
+			})
+			if (exists) {
+				this.warn("IP '" + ip + "'已经存在")
+				return
+			}
+
+			let that = this
+			Tea.Vue.$post("/ui/validateIPs")
+				.params({
+					ips: [ip]
+				})
+				.success(function () {
+					that.list.push({
+						ip: ip,
+						description: that.addingIP.description
+					})
+					that.notifyChange()
+					that.cancel()
+				})
+				.fail(function () {
+					that.warn("请输入正确的IP")
+				})
+		},
+		cancel: function () {
+			this.isAdding = false
+			this.addingIP = {
+				ip: "",
+				description: ""
+			}
+		},
+		remove: function (index) {
+			this.list.$remove(index)
+			this.notifyChange()
+		},
+		warn: function (message) {
+			let that = this
+			teaweb.warn(message, function () {
+				that.$refs.addingIPInput.focus()
+			})
+		},
+		notifyChange: function () {
+			this.$emit("change", this.list)
+		}
+	},
+	template: `<div>
+	<div v-if="list.length > 0">
+		<div class="ui label basic tiny" v-for="(ipConfig, index) in list">
+			{{ipConfig.ip}} <span class="grey small" v-if="ipConfig.description.length > 0">（{{ipConfig.description}}）</span> <a href="" @click.prevent="remove(index)" title="删除"><i class="icon remove"></i></a>
+		</div>
+		<div class="ui divider"></div>
+	</div>
+	<div v-if="isAdding">
+		<div class="ui fields inline">
+			<div class="ui field">
+				<div class="ui input left labeled">
+					<span class="ui label">IP</span>
+					<input type="text" v-model="addingIP.ip" ref="addingIPInput" maxlength="40" size="20" placeholder="IP" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+				</div>
+			</div>
+			<div class="ui field">
+				<div class="ui input left labeled">
+					<span class="ui label">备注</span>
+					<input type="text" v-model="addingIP.description" maxlength="10" size="10" placeholder="备注（可选）" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+				</div>
+			</div>
+			<div class="ui field">
+				<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button>
+				&nbsp;<a href="" @click.prevent="cancel()">取消</a>
+			</div>
+		</div>
+	</div>
+	<div v-if="!isAdding">
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	</div>
 </div>`
 })
 
@@ -7065,10 +7405,15 @@ Vue.component("firewall-event-level-options", {
 })
 
 Vue.component("prior-checkbox", {
-	props: ["v-config"],
+	props: ["v-config", "description"],
 	data: function () {
+		let description = this.description
+		if (description == null) {
+			description = "打开后可以覆盖父级或子级配置"
+		}
 		return {
-			isPrior: this.vConfig.isPrior
+			isPrior: this.vConfig.isPrior,
+			realDescription: description
 		}
 	},
 	watch: {
@@ -7084,7 +7429,7 @@ Vue.component("prior-checkbox", {
 				<input type="checkbox" v-model="isPrior"/>
 				<label class="red"></label>
 			</div>
-			<p class="comment"><strong v-if="isPrior">[已打开]</strong> 打开后可以覆盖父级或子级配置。</p>
+			<p class="comment"><strong v-if="isPrior">[已打开]</strong> {{realDescription}}。</p>
 		</td>
 	</tr>
 </tbody>`
@@ -11814,7 +12159,8 @@ Vue.component("health-check-config-box", {
 				countUp: 1,
 				countDown: 3,
 				userAgent: "",
-				onlyBasicRequest: true
+				onlyBasicRequest: true,
+				accessLogIsOn: true
 			}
 			let that = this
 			setTimeout(function () {
@@ -11949,7 +12295,7 @@ Vue.component("health-check-config-box", {
 <table class="ui table definition selectable">
 	<tbody>
 		<tr>
-			<td class="title">是否启用</td>
+			<td class="title">启用</td>
 			<td>
 				<div class="ui checkbox">
 					<input type="checkbox" value="1" v-model="healthCheck.isOn"/>
@@ -11960,7 +12306,7 @@ Vue.component("health-check-config-box", {
 	</tbody>
 	<tbody v-show="healthCheck.isOn">
 		<tr>
-			<td>URL *</td>
+			<td>检测URL *</td>
 			<td>
 				<div v-if="healthCheck.url.length > 0" style="margin-bottom: 1em"><code-label>{{healthCheck.url}}</code-label> &nbsp; <a href="" @click.prevent="editURL"><span class="small">修改 <i class="icon angle" :class="{down: !urlIsEditing, up: urlIsEditing}"></i></span></a> </div>
 				<div v-show="urlIsEditing">
@@ -11978,22 +12324,25 @@ Vue.component("health-check-config-box", {
 							<td>域名</td>
 							<td>
 								<input type="text" v-model="urlHost"/>
-								<p class="comment">在此集群上可以访问到的一个域名。</p>
+								<p class="comment">已经绑定到此集群的一个域名；如果为空则使用节点IP作为域名。</p>
 							</td>
 						</tr>
 						<tr>
 							<td>端口</td>
 							<td>
 								<input type="text" maxlength="5" style="width:5.4em" placeholder="端口" v-model="urlPort"/>
+								<p class="comment">域名或者IP的端口，可选项，默认为80/443。</p>
 							</td>
 						</tr>
 						<tr>
 							<td>RequestURI</td>
-							<td><input type="text" v-model="urlRequestURI" placeholder="/" style="width:20em"/></td>
+							<td><input type="text" v-model="urlRequestURI" placeholder="/" style="width:20em"/>
+								<p class="comment">请求的路径，可以带参数，可选项。</p>
+							</td>
 						</tr>
 					</table>
 					<div class="ui divider"></div>
-					<p class="comment" v-if="healthCheck.url.length > 0">拼接后的URL：<code-label>{{healthCheck.url}}</code-label>，其中\${host}指的是域名。</p>
+					<p class="comment" v-if="healthCheck.url.length > 0">拼接后的检测URL：<code-label>{{healthCheck.url}}</code-label>，其中\${host}指的是域名。</p>
 				</div>
 			</td>
 		</tr>
@@ -12001,6 +12350,7 @@ Vue.component("health-check-config-box", {
 			<td>检测时间间隔</td>
 			<td>
 				<time-duration-box :v-value="healthCheck.interval"></time-duration-box>
+				<p class="comment">两次检查之间的间隔。</p>
 			</td>
 		</tr>
 		<tr>
@@ -12017,14 +12367,14 @@ Vue.component("health-check-config-box", {
 			<td>连续上线次数</td>
 			<td>
 				<input type="text" v-model="healthCheck.countUp" style="width:5em" maxlength="6"/>
-				<p class="comment">连续N次检查成功后自动恢复上线。</p>
+				<p class="comment">连续{{healthCheck.countUp}}次检查成功后自动恢复上线。</p>
 			</td>
 		</tr>
 		<tr v-show="healthCheck.autoDown">
 			<td>连续下线次数</td>
 			<td>
 				<input type="text" v-model="healthCheck.countDown" style="width:5em" maxlength="6"/>
-				<p class="comment">连续N次检查失败后自动下线。</p>
+				<p class="comment">连续{{healthCheck.countDown}}次检查失败后自动下线。</p>
 			</td>
 		</tr>
 	</tbody>
@@ -12070,6 +12420,13 @@ Vue.component("health-check-config-box", {
 			<td>
 				<checkbox v-model="healthCheck.onlyBasicRequest"></checkbox>
 				<p class="comment">只做基础的请求，不处理反向代理（不检查源站）、WAF等。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>记录访问日志</td>
+			<td>
+				<checkbox v-model="healthCheck.accessLogIsOn"></checkbox>
+				<p class="comment">是否记录健康检查的访问日志。</p>
 			</td>
 		</tr>
 	</tbody>
@@ -12450,6 +12807,70 @@ Vue.component("tip-message-box", {
 		<slot></slot>
 	</div>
 </div>`
+})
+
+Vue.component("digit-input", {
+	props: ["value", "maxlength", "size", "min", "max", "required", "placeholder"],
+	mounted: function () {
+		let that = this
+		setTimeout(function () {
+			that.check()
+		})
+	},
+	data: function () {
+		let realMaxLength = this.maxlength
+		if (realMaxLength == null) {
+			realMaxLength = 20
+		}
+
+		let realSize = this.size
+		if (realSize == null) {
+			realSize = 6
+		}
+
+		return {
+			realValue: this.value,
+			realMaxLength: realMaxLength,
+			realSize: realSize,
+			isValid: true
+		}
+	},
+	watch: {
+		realValue: function (v) {
+			this.notifyChange()
+		}
+	},
+	methods: {
+		notifyChange: function () {
+			let v = parseInt(this.realValue.toString(), 10)
+			if (isNaN(v)) {
+				v = 0
+			}
+			this.check()
+			this.$emit("input", v)
+		},
+		check: function () {
+			if (this.realValue == null) {
+				return
+			}
+			let s = this.realValue.toString()
+			if (!/^\d+$/.test(s)) {
+				this.isValid = false
+				return
+			}
+			let v = parseInt(s, 10)
+			if (isNaN(v)) {
+				this.isValid = false
+			} else {
+				if (this.required) {
+					this.isValid = (this.min == null || this.min <= v) && (this.max == null || this.max >= v)
+				} else {
+					this.isValid = (v == 0 || (this.min == null || this.min <= v) && (this.max == null || this.max >= v))
+				}
+			}
+		}
+	},
+	template: `<input type="text" v-model="realValue" :maxlength="realMaxLength" :size="realSize" :class="{error: !this.isValid}" :placeholder="placeholder"/>`
 })
 
 Vue.component("keyword", {
@@ -14293,7 +14714,7 @@ Vue.component("dns-resolver-config-box", {
 				<select class="ui dropdown auto-width" v-model="config.type">
 					<option v-for="t in types" :value="t.code">{{t.name}}</option>
 				</select>
-				<p class="comment">修改此项配置后，需要重启节点进程才会生效。<pro-warning-label></pro-warning-label></p>
+				<p class="comment">边缘节点使用的DNS解析库。修改此项配置后，需要重启节点进程才会生效。<pro-warning-label></pro-warning-label></p>
 			</td>
 		</tr>
 	</table>
