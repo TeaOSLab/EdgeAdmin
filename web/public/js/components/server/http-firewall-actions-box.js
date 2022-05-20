@@ -535,7 +535,9 @@ Vue.component("http-firewall-actions-box", {
 			<span v-if="config.code == 'block' && config.options.timeout > 0">：有效期{{config.options.timeout}}秒</span>
 			
 			<!-- captcha -->
-			<span v-if="config.code == 'captcha' && config.options.life > 0">：有效期{{config.options.life}}秒</span>
+			<span v-if="config.code == 'captcha' && config.options.life > 0">：有效期{{config.options.life}}秒
+				<span v-if="config.options.maxFails > 0"> / 最多失败{{config.options.maxFails}}次</span>
+			</span>
 			
 			<!-- get 302 -->
 			<span v-if="config.code == 'get_302' && config.options.life > 0">：有效期{{config.options.life}}秒</span>

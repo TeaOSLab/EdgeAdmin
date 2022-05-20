@@ -70,6 +70,7 @@ func (this *UpdateAction) RunGet(params struct {
 		"isOn":             firewallPolicy.IsOn,
 		"mode":             firewallPolicy.Mode,
 		"blockOptions":     firewallPolicy.BlockOptions,
+		"captchaOptions":   firewallPolicy.CaptchaOptions,
 		"useLocalFirewall": firewallPolicy.UseLocalFirewall,
 		"synFloodConfig":   firewallPolicy.SYNFlood,
 		"log":              firewallPolicy.Log,
@@ -98,16 +99,17 @@ func (this *UpdateAction) RunGet(params struct {
 }
 
 func (this *UpdateAction) RunPost(params struct {
-	FirewallPolicyId int64
-	Name             string
-	GroupCodes       []string
-	BlockOptionsJSON []byte
-	Description      string
-	IsOn             bool
-	Mode             string
-	UseLocalFirewall bool
-	SynFloodJSON     []byte
-	LogJSON          []byte
+	FirewallPolicyId   int64
+	Name               string
+	GroupCodes         []string
+	BlockOptionsJSON   []byte
+	CaptchaOptionsJSON []byte
+	Description        string
+	IsOn               bool
+	Mode               string
+	UseLocalFirewall   bool
+	SynFloodJSON       []byte
+	LogJSON            []byte
 
 	Must *actions.Must
 }) {
@@ -118,11 +120,18 @@ func (this *UpdateAction) RunPost(params struct {
 		Field("name", params.Name).
 		Require("请输入策略名称")
 
-	// 校验JSON
+	// 校验拦截选项JSON
 	var blockOptions = &firewallconfigs.HTTPFirewallBlockAction{}
 	err := json.Unmarshal(params.BlockOptionsJSON, blockOptions)
 	if err != nil {
 		this.Fail("拦截动作参数校验失败：" + err.Error())
+	}
+
+	// 校验验证码选项JSON
+	var captchaOptions = &firewallconfigs.HTTPFirewallCaptchaAction{}
+	err = json.Unmarshal(params.CaptchaOptionsJSON, captchaOptions)
+	if err != nil {
+		this.Fail("验证码动作参数校验失败：" + err.Error())
 	}
 
 	_, err = this.RPC().HTTPFirewallPolicyRPC().UpdateHTTPFirewallPolicy(this.AdminContext(), &pb.UpdateHTTPFirewallPolicyRequest{
@@ -132,6 +141,7 @@ func (this *UpdateAction) RunPost(params struct {
 		Description:          params.Description,
 		FirewallGroupCodes:   params.GroupCodes,
 		BlockOptionsJSON:     params.BlockOptionsJSON,
+		CaptchaOptionsJSON:   params.CaptchaOptionsJSON,
 		Mode:                 params.Mode,
 		UseLocalFirewall:     params.UseLocalFirewall,
 		SynFloodJSON:         params.SynFloodJSON,

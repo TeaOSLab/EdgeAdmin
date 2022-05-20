@@ -38,6 +38,12 @@
 				</td>
 			</tr>
             <tr>
+                <td>验证码动作配置</td>
+                <td>
+                    <http-firewall-captcha-options :v-captcha-options="firewallPolicy.captchaOptions"></http-firewall-captcha-options>
+                </td>
+            </tr>
+            <tr>
                 <td>使用系统防火墙</td>
                 <td>
                     <checkbox name="useLocalFirewall" v-model="firewallPolicy.useLocalFirewall"></checkbox>
