@@ -1863,7 +1863,9 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<span v-if="config.code == 'block' && config.options.timeout > 0">：有效期{{config.options.timeout}}秒</span>
 			
 			<!-- captcha -->
-			<span v-if="config.code == 'captcha' && config.options.life > 0">：有效期{{config.options.life}}秒</span>
+			<span v-if="config.code == 'captcha' && config.options.life > 0">：有效期{{config.options.life}}秒
+				<span v-if="config.options.maxFails > 0"> / 最多失败{{config.options.maxFails}}次</span>
+			</span>
 			
 			<!-- get 302 -->
 			<span v-if="config.code == 'get_302' && config.options.life > 0">：有效期{{config.options.life}}秒</span>
@@ -2599,7 +2601,10 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<span v-if="accessLog.requestTime != null"> - 耗时:{{formatCost(accessLog.requestTime)}} ms </span><span v-if="accessLog.humanTime != null && accessLog.humanTime.length > 0" class="grey small">&nbsp; ({{accessLog.humanTime}})</span>
 		&nbsp; <a href="" @click.prevent="showLog" title="查看详情"><i class="icon expand"></i></a>
 	</div>
-</div>`}),Vue.component("http-access-log-config-box",{props:["v-access-log-config","v-fields","v-default-field-codes","v-is-location","v-is-group"],data:function(){let t=this,i=(setTimeout(function(){t.changeFields()},100),{isPrior:!1,isOn:!1,fields:[1,2,6,7],status1:!0,status2:!0,status3:!0,status4:!0,status5:!0,firewallOnly:!1,enableClientClosed:!1});return null!=this.vAccessLogConfig&&(i=this.vAccessLogConfig),this.vFields.forEach(function(e){null==t.vAccessLogConfig?e.isChecked=t.vDefaultFieldCodes.$contains(e.code):e.isChecked=i.fields.$contains(e.code)}),{accessLog:i,hasRequestBodyField:this.vFields.$contains(8)}},methods:{changeFields:function(){this.accessLog.fields=this.vFields.filter(function(e){return e.isChecked}).map(function(e){return e.code}),this.hasRequestBodyField=this.accessLog.fields.$contains(8)}},template:`<div>
+</div>`}),Vue.component("http-firewall-block-options-viewer",{props:["v-block-options"],data:function(){return{blockOptions:this.vBlockOptions,statusCode:this.vBlockOptions.statusCode,timeout:this.vBlockOptions.timeout}},watch:{statusCode:function(e){e=parseInt(e);isNaN(e)?this.blockOptions.statusCode=403:this.blockOptions.statusCode=e},timeout:function(e){e=parseInt(e);isNaN(e)?this.blockOptions.timeout=0:this.blockOptions.timeout=e}},methods:{edit:function(){this.isEditing=!this.isEditing}},template:`<div>
+	状态码：{{statusCode}} / 提示内容：<span v-if="blockOptions.body != null && blockOptions.body.length > 0">[{{blockOptions.body.length}}字符]</span><span v-else class="disabled">[无]</span>  / 超时时间：{{timeout}}秒
+</div>	
+`}),Vue.component("http-access-log-config-box",{props:["v-access-log-config","v-fields","v-default-field-codes","v-is-location","v-is-group"],data:function(){let t=this,i=(setTimeout(function(){t.changeFields()},100),{isPrior:!1,isOn:!1,fields:[1,2,6,7],status1:!0,status2:!0,status3:!0,status4:!0,status5:!0,firewallOnly:!1,enableClientClosed:!1});return null!=this.vAccessLogConfig&&(i=this.vAccessLogConfig),this.vFields.forEach(function(e){null==t.vAccessLogConfig?e.isChecked=t.vDefaultFieldCodes.$contains(e.code):e.isChecked=i.fields.$contains(e.code)}),{accessLog:i,hasRequestBodyField:this.vFields.$contains(8)}},methods:{changeFields:function(){this.accessLog.fields=this.vFields.filter(function(e){return e.isChecked}).map(function(e){return e.code}),this.hasRequestBodyField=this.accessLog.fields.$contains(8)}},template:`<div>
 	<input type="hidden" name="accessLogJSON" :value="JSON.stringify(accessLog)"/>
 	<table class="ui table definition selectable" :class="{'opacity-mask': this.accessLog.firewallOnly}">
 		<prior-checkbox :v-config="accessLog" v-if="vIsLocation || vIsGroup"></prior-checkbox>
@@ -2851,7 +2856,8 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp;<a href="" title="查看" @click.prevent="viewCert(cert.id)"><i class="icon expand blue"></i></a>
 		</div>
 	</div>
-</div>`}),Vue.component("reverse-proxy-box",{props:["v-reverse-proxy-ref","v-reverse-proxy-config","v-is-location","v-is-group","v-family"],data:function(){let e=this.vReverseProxyRef,t=(null==e&&(e={isPrior:!1,isOn:!1,reverseProxyId:0}),this.vReverseProxyConfig),i=(null==(t=null==t?{requestPath:"",stripPrefix:"",requestURI:"",requestHost:"",requestHostType:0,addHeaders:[],connTimeout:{count:0,unit:"second"},readTimeout:{count:0,unit:"second"},idleTimeout:{count:0,unit:"second"},maxConns:0,maxIdleConns:0,followRedirects:!1}:t).addHeaders&&(t.addHeaders=[]),null==t.connTimeout&&(t.connTimeout={count:0,unit:"second"}),null==t.readTimeout&&(t.readTimeout={count:0,unit:"second"}),null==t.idleTimeout&&(t.idleTimeout={count:0,unit:"second"}),null==t.proxyProtocol&&Vue.set(t,"proxyProtocol",{isOn:!1,version:1}),[{name:"X-Real-IP",isChecked:!1},{name:"X-Forwarded-For",isChecked:!1},{name:"X-Forwarded-By",isChecked:!1},{name:"X-Forwarded-Host",isChecked:!1},{name:"X-Forwarded-Proto",isChecked:!1}]);return i.forEach(function(e){e.isChecked=t.addHeaders.$contains(e.name)}),{reverseProxyRef:e,reverseProxyConfig:t,advancedVisible:!1,family:this.vFamily,forwardHeaders:i}},watch:{"reverseProxyConfig.requestHostType":function(e){let t=parseInt(e);isNaN(t)&&(t=0),this.reverseProxyConfig.requestHostType=t},"reverseProxyConfig.connTimeout.count":function(e){let t=parseInt(e);(isNaN(t)||t<0)&&(t=0),this.reverseProxyConfig.connTimeout.count=t},"reverseProxyConfig.readTimeout.count":function(e){let t=parseInt(e);(isNaN(t)||t<0)&&(t=0),this.reverseProxyConfig.readTimeout.count=t},"reverseProxyConfig.idleTimeout.count":function(e){let t=parseInt(e);(isNaN(t)||t<0)&&(t=0),this.reverseProxyConfig.idleTimeout.count=t},"reverseProxyConfig.maxConns":function(e){let t=parseInt(e);(isNaN(t)||t<0)&&(t=0),this.reverseProxyConfig.maxConns=t},"reverseProxyConfig.maxIdleConns":function(e){let t=parseInt(e);(isNaN(t)||t<0)&&(t=0),this.reverseProxyConfig.maxIdleConns=t},"reverseProxyConfig.proxyProtocol.version":function(e){let t=parseInt(e);isNaN(t)&&(t=1),this.reverseProxyConfig.proxyProtocol.version=t}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.reverseProxyRef.isPrior)&&this.reverseProxyRef.isOn},changeAdvancedVisible:function(e){this.advancedVisible=e},changeAddHeader:function(){this.reverseProxyConfig.addHeaders=this.forwardHeaders.filter(function(e){return e.isChecked}).map(function(e){return e.name})}},template:`<div>
+</div>`}),Vue.component("http-firewall-captcha-options-viewer",{props:["v-captcha-options"],mounted:function(){this.updateSummary()},data:function(){let e=this.vCaptchaOptions;return{options:e=null==e?{life:0,maxFails:0,failBlockTimeout:0,failBlockScopeAll:!1,uiIsOn:!1,uiTitle:"",uiPrompt:"",uiButtonTitle:"",uiShowRequestId:!1,uiCss:"",uiFooter:"",uiBody:"",cookieId:"",lang:""}:e,summary:""}},methods:{updateSummary:function(){let e=[];0<this.options.life&&e.push("有效时间"+this.options.life+"秒"),0<this.options.maxFails&&e.push("最多失败"+this.options.maxFails+"次"),0<this.options.failBlockTimeout&&e.push("失败拦截"+this.options.failBlockTimeout+"秒"),this.options.failBlockScopeAll&&e.push("全局封禁"),this.options.uiIsOn&&e.push("定制UI"),0==e.length?this.summary="默认配置":this.summary=e.join(" / ")}},template:`<div>{{summary}}</div>
+`}),Vue.component("reverse-proxy-box",{props:["v-reverse-proxy-ref","v-reverse-proxy-config","v-is-location","v-is-group","v-family"],data:function(){let e=this.vReverseProxyRef,t=(null==e&&(e={isPrior:!1,isOn:!1,reverseProxyId:0}),this.vReverseProxyConfig),i=(null==(t=null==t?{requestPath:"",stripPrefix:"",requestURI:"",requestHost:"",requestHostType:0,addHeaders:[],connTimeout:{count:0,unit:"second"},readTimeout:{count:0,unit:"second"},idleTimeout:{count:0,unit:"second"},maxConns:0,maxIdleConns:0,followRedirects:!1}:t).addHeaders&&(t.addHeaders=[]),null==t.connTimeout&&(t.connTimeout={count:0,unit:"second"}),null==t.readTimeout&&(t.readTimeout={count:0,unit:"second"}),null==t.idleTimeout&&(t.idleTimeout={count:0,unit:"second"}),null==t.proxyProtocol&&Vue.set(t,"proxyProtocol",{isOn:!1,version:1}),[{name:"X-Real-IP",isChecked:!1},{name:"X-Forwarded-For",isChecked:!1},{name:"X-Forwarded-By",isChecked:!1},{name:"X-Forwarded-Host",isChecked:!1},{name:"X-Forwarded-Proto",isChecked:!1}]);return i.forEach(function(e){e.isChecked=t.addHeaders.$contains(e.name)}),{reverseProxyRef:e,reverseProxyConfig:t,advancedVisible:!1,family:this.vFamily,forwardHeaders:i}},watch:{"reverseProxyConfig.requestHostType":function(e){let t=parseInt(e);isNaN(t)&&(t=0),this.reverseProxyConfig.requestHostType=t},"reverseProxyConfig.connTimeout.count":function(e){let t=parseInt(e);(isNaN(t)||t<0)&&(t=0),this.reverseProxyConfig.connTimeout.count=t},"reverseProxyConfig.readTimeout.count":function(e){let t=parseInt(e);(isNaN(t)||t<0)&&(t=0),this.reverseProxyConfig.readTimeout.count=t},"reverseProxyConfig.idleTimeout.count":function(e){let t=parseInt(e);(isNaN(t)||t<0)&&(t=0),this.reverseProxyConfig.idleTimeout.count=t},"reverseProxyConfig.maxConns":function(e){let t=parseInt(e);(isNaN(t)||t<0)&&(t=0),this.reverseProxyConfig.maxConns=t},"reverseProxyConfig.maxIdleConns":function(e){let t=parseInt(e);(isNaN(t)||t<0)&&(t=0),this.reverseProxyConfig.maxIdleConns=t},"reverseProxyConfig.proxyProtocol.version":function(e){let t=parseInt(e);isNaN(t)&&(t=1),this.reverseProxyConfig.proxyProtocol.version=t}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.reverseProxyRef.isPrior)&&this.reverseProxyRef.isOn},changeAdvancedVisible:function(e){this.advancedVisible=e},changeAddHeader:function(){this.reverseProxyConfig.addHeaders=this.forwardHeaders.filter(function(e){return e.isChecked}).map(function(e){return e.name})}},template:`<div>
 	<input type="hidden" name="reverseProxyRefJSON" :value="JSON.stringify(reverseProxyRef)"/>
 	<input type="hidden" name="reverseProxyJSON" :value="JSON.stringify(reverseProxyConfig)"/>
 	<table class="ui table selectable definition">
@@ -3734,7 +3740,115 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		</tbody>
 	</table>
 	<div class="margin"></div>
-</div>`}),Vue.component("firewall-syn-flood-config-box",{props:["v-syn-flood-config"],data:function(){let e=this.vSynFloodConfig;return{config:e=null==e?{isOn:!1,minAttempts:10,timeoutSeconds:600,ignoreLocal:!0}:e,isEditing:!1,minAttempts:e.minAttempts,timeoutSeconds:e.timeoutSeconds}},methods:{edit:function(){this.isEditing=!this.isEditing}},watch:{minAttempts:function(e){let t=parseInt(e);(t=isNaN(t)?10:t)<5&&(t=5),this.config.minAttempts=t},timeoutSeconds:function(e){let t=parseInt(e);(t=isNaN(t)?10:t)<60&&(t=60),this.config.timeoutSeconds=t}},template:`<div>
+</div>`}),Vue.component("http-firewall-captcha-options",{props:["v-captcha-options"],mounted:function(){this.updateSummary()},data:function(){let e=this.vCaptchaOptions;return(e=null==e?{countLetters:0,life:0,maxFails:0,failBlockTimeout:0,failBlockScopeAll:!1,uiIsOn:!1,uiTitle:"",uiPrompt:"",uiButtonTitle:"",uiShowRequestId:!1,uiCss:"",uiFooter:"",uiBody:"",cookieId:"",lang:""}:e).countLetters<=0&&(e.countLetters=6),{options:e,isEditing:!1,summary:""}},watch:{"options.countLetters":function(e){let t=parseInt(e,10);isNaN(t)||t<0?t=0:10<t&&(t=10),this.options.countLetters=t},"options.life":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.life=t,this.updateSummary()},"options.maxFails":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.maxFails=t,this.updateSummary()},"options.failBlockTimeout":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.failBlockTimeout=t,this.updateSummary()},"options.failBlockScopeAll":function(e){this.updateSummary()},"options.uiIsOn":function(e){this.updateSummary()}},methods:{edit:function(){this.isEditing=!this.isEditing},updateSummary:function(){let e=[];0<this.options.life&&e.push("有效时间"+this.options.life+"秒"),0<this.options.maxFails&&e.push("最多失败"+this.options.maxFails+"次"),0<this.options.failBlockTimeout&&e.push("失败拦截"+this.options.failBlockTimeout+"秒"),this.options.failBlockScopeAll&&e.push("全局封禁"),this.options.uiIsOn&&e.push("定制UI"),0==e.length?this.summary="默认配置":this.summary=e.join(" / ")},confirm:function(){this.isEditing=!1}},template:`<div>
+	<input type="hidden" name="captchaOptionsJSON" :value="JSON.stringify(options)"/>
+	<a href="" @click.prevent="edit">{{summary}} <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
+	<div v-show="isEditing" style="margin-top: 0.5em">
+		<table class="ui table definition selectable">
+			<tbody>
+				<tr>
+					<td class="title">有效时间</td>
+					<td>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 5em" maxlength="9" v-model="options.life" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+							<span class="ui label">秒</span>
+						</div>
+						<p class="comment">验证通过后在这个时间内不再验证，默认600秒。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>最多失败次数</td>
+					<td>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 5em" maxlength="9" v-model="options.maxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+							<span class="ui label">次</span>
+						</div>
+						<p class="comment">如果为空或者为0，表示不限制。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>失败拦截时间</td>
+					<td>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 5em" maxlength="9" v-model="options.failBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+							<span class="ui label">秒</span>
+						</div>
+						<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时间；如果为0表示不自动拦截。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>失败全局封禁</td>
+					<td>
+						<checkbox v-model="options.failBlockScopeAll"></checkbox>
+						<p class="comment">是否在失败时全局封禁，默认为只封禁对单个网站服务的访问。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>验证码中数字个数</td>
+					<td>
+						<select class="ui dropdown auto-width" v-model="options.countLetters">
+							<option v-for="i in 10" :value="i">{{i}}</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="color-border">定制UI</td>
+					<td><checkbox v-model="options.uiIsOn"></checkbox></td>
+				</tr>
+			</tbody>
+			<tbody v-show="options.uiIsOn">
+				<tr>
+					<td class="color-border">页面标题</td>
+					<td>
+						<input type="text" v-model="options.uiTitle" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="color-border">按钮标题</td>
+					<td>
+						<input type="text" v-model="options.uiButtonTitle" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<p class="comment">类似于<code-label>提交验证</code-label>。</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="color-border">显示请求ID</td>
+					<td>
+						<checkbox v-model="options.uiShowRequestId"></checkbox>
+						<p class="comment">在界面上显示请求ID，方便用户报告问题。</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="color-border">CSS样式</td>
+					<td>
+						<textarea spellcheck="false" v-model="options.uiCss" rows="2"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td class="color-border">页头提示</td>
+					<td>
+						<textarea spellcheck="false" v-model="options.uiPrompt" rows="2"></textarea>
+						<p class="comment">类似于<code-label>请输入上面的验证码</code-label>，支持HTML。</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="color-border">页尾提示</td>
+					<td>
+						<textarea spellcheck="false" v-model="options.uiFooter" rows="2"></textarea>
+						<p class="comment">支持HTML。</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="color-border">页面模板</td>
+					<td>
+						<textarea spellcheck="false" rows="2" v-model="options.uiBody"></textarea>
+						<p class="comment"><span v-if="options.uiBody.length > 0 && options.uiBody.indexOf('\${body}') < 0 " class="red">模板中必须包含\${body}表示验证码表单！</span>整个页面的模板，支持HTML，其中必须使用<code-label>\${body}</code-label>变量代表验证码表单，否则将无法正常显示验证码。</p>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+`}),Vue.component("firewall-syn-flood-config-box",{props:["v-syn-flood-config"],data:function(){let e=this.vSynFloodConfig;return{config:e=null==e?{isOn:!1,minAttempts:10,timeoutSeconds:600,ignoreLocal:!0}:e,isEditing:!1,minAttempts:e.minAttempts,timeoutSeconds:e.timeoutSeconds}},methods:{edit:function(){this.isEditing=!this.isEditing}},watch:{minAttempts:function(e){let t=parseInt(e);(t=isNaN(t)?10:t)<5&&(t=5),this.config.minAttempts=t},timeoutSeconds:function(e){let t=parseInt(e);(t=isNaN(t)?10:t)<60&&(t=60),this.config.timeoutSeconds=t}},template:`<div>
 	<input type="hidden" name="synFloodJSON" :value="JSON.stringify(config)"/>
 	<a href="" @click.prevent="edit">
 		<span v-if="config.isOn">

@@ -94,6 +94,7 @@ func (this *PolicyAction) RunGet(params struct {
 		"modeInfo":         firewallconfigs.FindFirewallMode(firewallPolicy.Mode),
 		"groups":           internalGroups,
 		"blockOptions":     firewallPolicy.BlockOptions,
+		"captchaOptions":   firewallPolicy.CaptchaOptions,
 		"useLocalFirewall": firewallPolicy.UseLocalFirewall,
 		"synFlood":         firewallPolicy.SYNFlood,
 		"log":              firewallPolicy.Log,

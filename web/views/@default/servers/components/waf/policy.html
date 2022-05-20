@@ -29,26 +29,13 @@
     <tr>
         <td>阻止动作设置</td>
         <td>
-            <span v-if="firewallPolicy.blockOptions == null" class="disabled">还没有设置。</span>
-            <div v-else>
-                <table class="ui table">
-                    <tr>
-                        <td class="title">状态码</td>
-                        <td>{{firewallPolicy.blockOptions.statusCode}}</td>
-                    </tr>
-                    <tr>
-                        <td>提示内容</td>
-                        <td>{{firewallPolicy.blockOptions.body}}</td>
-                    </tr>
-                    <tr>
-                        <td>超时时间</td>
-                        <td>
-                            <span v-if="firewallPolicy.blockOptions.timeout <= 0" class="disabled">使用默认时间。</span>
-                            <span v-else>{{firewallPolicy.blockOptions.timeout}}秒</span>
-                        </td>
-                    </tr>
-                </table>
-            </div>
+           <http-firewall-block-options-viewer :v-block-options="firewallPolicy.blockOptions"></http-firewall-block-options-viewer>
+        </td>
+    </tr>
+    <tr>
+        <td>验证码动作设置</td>
+        <td>
+            <http-firewall-captcha-options-viewer :v-captcha-options="firewallPolicy.captchaOptions"></http-firewall-captcha-options-viewer>
         </td>
     </tr>
     <tr>
