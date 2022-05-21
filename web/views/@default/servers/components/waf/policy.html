@@ -50,33 +50,7 @@
         <td>SYN Flood防御</td>
         <td>
             <span v-if="firewallPolicy.synFlood == null || !firewallPolicy.synFlood.isOn" class="disabled">未启用</span>
-            <table class="ui table selectable" v-if="firewallPolicy.synFlood != null && firewallPolicy.synFlood.isOn">
-                <tr>
-                    <td class="title">是否启用</td>
-                    <td>
-                       <span class="green">启用</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td>空连接次数</td>
-                    <td>
-                        {{firewallPolicy.synFlood.minAttempts}}次/分钟
-                    </td>
-                </tr>
-                <tr>
-                    <td>封禁时间</td>
-                    <td>
-                        {{firewallPolicy.synFlood.timeoutSeconds}}秒
-                    </td>
-                </tr>
-                <tr>
-                    <td>忽略局域网访问</td>
-                    <td>
-                        <span v-if="firewallPolicy.synFlood.ignoreLocal" class="green">Y</span>
-                        <span class="disabled" v-else>N</span>
-                    </td>
-                </tr>
-            </table>
+            <firewall-syn-flood-config-viewer v-else :v-syn-flood-config="firewallPolicy.synFlood"></firewall-syn-flood-config-viewer>
         </td>
     </tr>
     <tr>

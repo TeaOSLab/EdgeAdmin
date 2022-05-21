@@ -1721,7 +1721,12 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			</td>
 		</tr>
 	</tbody>
-</table>`}),Vue.component("domains-box",{props:["v-domains"],data:function(){let e=this.vDomains;return{domains:e=null==e?[]:e,isAdding:!1,addingDomain:""}},methods:{add:function(){this.isAdding=!0;let e=this;setTimeout(function(){e.$refs.addingDomain.focus()},100)},confirm:function(){let t=this;if(this.addingDomain=this.addingDomain.replace(/\s/g,""),0==this.addingDomain.length)teaweb.warn("请输入要添加的域名",function(){t.$refs.addingDomain.focus()});else{if("~"==this.addingDomain[0]){var e=this.addingDomain.substring(1);try{new RegExp(e)}catch(e){return void teaweb.warn("正则表达式错误："+e.message,function(){t.$refs.addingDomain.focus()})}}this.domains.push(this.addingDomain),this.cancel()}},remove:function(e){this.domains.$remove(e)},cancel:function(){this.isAdding=!1,this.addingDomain=""}},template:`<div>
+</table>`}),Vue.component("firewall-syn-flood-config-viewer",{props:["v-syn-flood-config"],data:function(){let e=this.vSynFloodConfig;return{config:e=null==e?{isOn:!1,minAttempts:10,timeoutSeconds:600,ignoreLocal:!0}:e}},template:`<div>
+	<span v-if="config.isOn">
+		已启用 / <span>空连接次数：{{config.minAttempts}}次/分钟</span> / 封禁时间：{{config.timeoutSeconds}}秒 <span v-if="config.ignoreLocal">/ 忽略局域网访问</span>
+	</span>
+	<span v-else>未启用</span>
+</div>`}),Vue.component("domains-box",{props:["v-domains"],data:function(){let e=this.vDomains;return{domains:e=null==e?[]:e,isAdding:!1,addingDomain:""}},methods:{add:function(){this.isAdding=!0;let e=this;setTimeout(function(){e.$refs.addingDomain.focus()},100)},confirm:function(){let t=this;if(this.addingDomain=this.addingDomain.replace(/\s/g,""),0==this.addingDomain.length)teaweb.warn("请输入要添加的域名",function(){t.$refs.addingDomain.focus()});else{if("~"==this.addingDomain[0]){var e=this.addingDomain.substring(1);try{new RegExp(e)}catch(e){return void teaweb.warn("正则表达式错误："+e.message,function(){t.$refs.addingDomain.focus()})}}this.domains.push(this.addingDomain),this.cancel()}},remove:function(e){this.domains.$remove(e)},cancel:function(){this.isAdding=!1,this.addingDomain=""}},template:`<div>
 	<input type="hidden" name="domainsJSON" :value="JSON.stringify(domains)"/>
 	<div v-if="domains.length > 0">
 		<span class="ui label small basic" v-for="(domain, index) in domains">
@@ -1942,7 +1947,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 						<input type="text" style="width: 5em" maxlength="9" v-model="captchaLife" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">秒</span>
 					</div>
-					<p class="comment">验证通过后在这个时间内不再验证，默认600秒。</p>
+					<p class="comment">验证通过后在这个时间内不再验证；如果为空或者为0表示默认。</p>
 				</td>
 			</tr>
 			<tr v-if="actionCode == 'captcha'">
@@ -1952,7 +1957,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 						<input type="text" style="width: 5em" maxlength="9" v-model="captchaMaxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">次</span>
 					</div>
-					<p class="comment">如果为空或者为0，表示不限制。</p>
+					<p class="comment">允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单；如果为空或者为0表示默认。</p>
 				</td>
 			</tr>
 			<tr v-if="actionCode == 'captcha'">
@@ -1962,7 +1967,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 						<input type="text" style="width: 5em" maxlength="9" v-model="captchaFailBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">秒</span>
 					</div>
-					<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时间；如果为0表示不自动拦截。</p>
+					<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时间；如果为空或者为0表示默认。</p>
 				</td>
 			</tr>
 			
@@ -2601,8 +2606,11 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<span v-if="accessLog.requestTime != null"> - 耗时:{{formatCost(accessLog.requestTime)}} ms </span><span v-if="accessLog.humanTime != null && accessLog.humanTime.length > 0" class="grey small">&nbsp; ({{accessLog.humanTime}})</span>
 		&nbsp; <a href="" @click.prevent="showLog" title="查看详情"><i class="icon expand"></i></a>
 	</div>
-</div>`}),Vue.component("http-firewall-block-options-viewer",{props:["v-block-options"],data:function(){return{blockOptions:this.vBlockOptions,statusCode:this.vBlockOptions.statusCode,timeout:this.vBlockOptions.timeout}},watch:{statusCode:function(e){e=parseInt(e);isNaN(e)?this.blockOptions.statusCode=403:this.blockOptions.statusCode=e},timeout:function(e){e=parseInt(e);isNaN(e)?this.blockOptions.timeout=0:this.blockOptions.timeout=e}},methods:{edit:function(){this.isEditing=!this.isEditing}},template:`<div>
-	状态码：{{statusCode}} / 提示内容：<span v-if="blockOptions.body != null && blockOptions.body.length > 0">[{{blockOptions.body.length}}字符]</span><span v-else class="disabled">[无]</span>  / 超时时间：{{timeout}}秒
+</div>`}),Vue.component("http-firewall-block-options-viewer",{props:["v-block-options"],data:function(){return{options:this.vBlockOptions}},template:`<div>
+	<span v-if="options == null">默认设置</span>
+	<div v-else>
+		状态码：{{options.statusCode}} / 提示内容：<span v-if="options.body != null && options.body.length > 0">[{{options.body.length}}字符]</span><span v-else class="disabled">[无]</span>  / 超时时间：{{options.timeout}}秒
+	</div>
 </div>	
 `}),Vue.component("http-access-log-config-box",{props:["v-access-log-config","v-fields","v-default-field-codes","v-is-location","v-is-group"],data:function(){let t=this,i=(setTimeout(function(){t.changeFields()},100),{isPrior:!1,isOn:!1,fields:[1,2,6,7],status1:!0,status2:!0,status3:!0,status4:!0,status5:!0,firewallOnly:!1,enableClientClosed:!1});return null!=this.vAccessLogConfig&&(i=this.vAccessLogConfig),this.vFields.forEach(function(e){null==t.vAccessLogConfig?e.isChecked=t.vDefaultFieldCodes.$contains(e.code):e.isChecked=i.fields.$contains(e.code)}),{accessLog:i,hasRequestBodyField:this.vFields.$contains(8)}},methods:{changeFields:function(){this.accessLog.fields=this.vFields.filter(function(e){return e.isChecked}).map(function(e){return e.code}),this.hasRequestBodyField=this.accessLog.fields.$contains(8)}},template:`<div>
 	<input type="hidden" name="accessLogJSON" :value="JSON.stringify(accessLog)"/>
@@ -3740,7 +3748,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		</tbody>
 	</table>
 	<div class="margin"></div>
-</div>`}),Vue.component("http-firewall-captcha-options",{props:["v-captcha-options"],mounted:function(){this.updateSummary()},data:function(){let e=this.vCaptchaOptions;return(e=null==e?{countLetters:0,life:0,maxFails:0,failBlockTimeout:0,failBlockScopeAll:!1,uiIsOn:!1,uiTitle:"",uiPrompt:"",uiButtonTitle:"",uiShowRequestId:!1,uiCss:"",uiFooter:"",uiBody:"",cookieId:"",lang:""}:e).countLetters<=0&&(e.countLetters=6),{options:e,isEditing:!1,summary:""}},watch:{"options.countLetters":function(e){let t=parseInt(e,10);isNaN(t)||t<0?t=0:10<t&&(t=10),this.options.countLetters=t},"options.life":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.life=t,this.updateSummary()},"options.maxFails":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.maxFails=t,this.updateSummary()},"options.failBlockTimeout":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.failBlockTimeout=t,this.updateSummary()},"options.failBlockScopeAll":function(e){this.updateSummary()},"options.uiIsOn":function(e){this.updateSummary()}},methods:{edit:function(){this.isEditing=!this.isEditing},updateSummary:function(){let e=[];0<this.options.life&&e.push("有效时间"+this.options.life+"秒"),0<this.options.maxFails&&e.push("最多失败"+this.options.maxFails+"次"),0<this.options.failBlockTimeout&&e.push("失败拦截"+this.options.failBlockTimeout+"秒"),this.options.failBlockScopeAll&&e.push("全局封禁"),this.options.uiIsOn&&e.push("定制UI"),0==e.length?this.summary="默认配置":this.summary=e.join(" / ")},confirm:function(){this.isEditing=!1}},template:`<div>
+</div>`}),Vue.component("http-firewall-captcha-options",{props:["v-captcha-options"],mounted:function(){this.updateSummary()},data:function(){let e=this.vCaptchaOptions;return(e=null==e?{countLetters:0,life:0,maxFails:0,failBlockTimeout:0,failBlockScopeAll:!1,uiIsOn:!1,uiTitle:"",uiPrompt:"",uiButtonTitle:"",uiShowRequestId:!0,uiCss:"",uiFooter:"",uiBody:"",cookieId:"",lang:""}:e).countLetters<=0&&(e.countLetters=6),{options:e,isEditing:!1,summary:""}},watch:{"options.countLetters":function(e){let t=parseInt(e,10);isNaN(t)||t<0?t=0:10<t&&(t=10),this.options.countLetters=t},"options.life":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.life=t,this.updateSummary()},"options.maxFails":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.maxFails=t,this.updateSummary()},"options.failBlockTimeout":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.failBlockTimeout=t,this.updateSummary()},"options.failBlockScopeAll":function(e){this.updateSummary()},"options.uiIsOn":function(e){this.updateSummary()}},methods:{edit:function(){this.isEditing=!this.isEditing},updateSummary:function(){let e=[];0<this.options.life&&e.push("有效时间"+this.options.life+"秒"),0<this.options.maxFails&&e.push("最多失败"+this.options.maxFails+"次"),0<this.options.failBlockTimeout&&e.push("失败拦截"+this.options.failBlockTimeout+"秒"),this.options.failBlockScopeAll&&e.push("全局封禁"),this.options.uiIsOn&&e.push("定制UI"),0==e.length?this.summary="默认配置":this.summary=e.join(" / ")},confirm:function(){this.isEditing=!1}},template:`<div>
 	<input type="hidden" name="captchaOptionsJSON" :value="JSON.stringify(options)"/>
 	<a href="" @click.prevent="edit">{{summary}} <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
 	<div v-show="isEditing" style="margin-top: 0.5em">
@@ -3763,7 +3771,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 							<input type="text" style="width: 5em" maxlength="9" v-model="options.maxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 							<span class="ui label">次</span>
 						</div>
-						<p class="comment">如果为空或者为0，表示不限制。</p>
+						<p class="comment">允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单。如果为空或者为0，表示不限制。</p>
 					</td>
 				</tr>
 				<tr>

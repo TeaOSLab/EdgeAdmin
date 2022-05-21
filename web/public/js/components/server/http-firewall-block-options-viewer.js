@@ -2,36 +2,14 @@ Vue.component("http-firewall-block-options-viewer", {
 	props: ["v-block-options"],
 	data: function () {
 		return {
-			blockOptions: this.vBlockOptions,
-			statusCode: this.vBlockOptions.statusCode,
-			timeout: this.vBlockOptions.timeout
-		}
-	},
-	watch: {
-		statusCode: function (v) {
-			let statusCode = parseInt(v)
-			if (isNaN(statusCode)) {
-				this.blockOptions.statusCode = 403
-			} else {
-				this.blockOptions.statusCode = statusCode
-			}
-		},
-		timeout: function (v) {
-			let timeout = parseInt(v)
-			if (isNaN(timeout)) {
-				this.blockOptions.timeout = 0
-			} else {
-				this.blockOptions.timeout = timeout
-			}
-		}
-	},
-	methods: {
-		edit: function () {
-			this.isEditing = !this.isEditing
+			options: this.vBlockOptions
 		}
 	},
 	template: `<div>
-	状态码：{{statusCode}} / 提示内容：<span v-if="blockOptions.body != null && blockOptions.body.length > 0">[{{blockOptions.body.length}}字符]</span><span v-else class="disabled">[无]</span>  / 超时时间：{{timeout}}秒
+	<span v-if="options == null">默认设置</span>
+	<div v-else>
+		状态码：{{options.statusCode}} / 提示内容：<span v-if="options.body != null && options.body.length > 0">[{{options.body.length}}字符]</span><span v-else class="disabled">[无]</span>  / 超时时间：{{options.timeout}}秒
+	</div>
 </div>	
 `
 })
