@@ -614,7 +614,7 @@ Vue.component("http-firewall-actions-box", {
 						<input type="text" style="width: 5em" maxlength="9" v-model="captchaLife" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">秒</span>
 					</div>
-					<p class="comment">验证通过后在这个时间内不再验证，默认600秒。</p>
+					<p class="comment">验证通过后在这个时间内不再验证；如果为空或者为0表示默认。</p>
 				</td>
 			</tr>
 			<tr v-if="actionCode == 'captcha'">
@@ -624,7 +624,7 @@ Vue.component("http-firewall-actions-box", {
 						<input type="text" style="width: 5em" maxlength="9" v-model="captchaMaxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">次</span>
 					</div>
-					<p class="comment">如果为空或者为0，表示不限制。</p>
+					<p class="comment">允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单；如果为空或者为0表示默认。</p>
 				</td>
 			</tr>
 			<tr v-if="actionCode == 'captcha'">
@@ -634,7 +634,7 @@ Vue.component("http-firewall-actions-box", {
 						<input type="text" style="width: 5em" maxlength="9" v-model="captchaFailBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">秒</span>
 					</div>
-					<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时间；如果为0表示不自动拦截。</p>
+					<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时间；如果为空或者为0表示默认。</p>
 				</td>
 			</tr>
 			

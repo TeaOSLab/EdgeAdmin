@@ -5432,6 +5432,30 @@ Vue.component("http-cache-stale-config", {
 </table>`
 })
 
+Vue.component("firewall-syn-flood-config-viewer", {
+	props: ["v-syn-flood-config"],
+	data: function () {
+		let config = this.vSynFloodConfig
+		if (config == null) {
+			config = {
+				isOn: false,
+				minAttempts: 10,
+				timeoutSeconds: 600,
+				ignoreLocal: true
+			}
+		}
+		return {
+			config: config
+		}
+	},
+	template: `<div>
+	<span v-if="config.isOn">
+		已启用 / <span>空连接次数：{{config.minAttempts}}次/分钟</span> / 封禁时间：{{config.timeoutSeconds}}秒 <span v-if="config.ignoreLocal">/ 忽略局域网访问</span>
+	</span>
+	<span v-else>未启用</span>
+</div>`
+})
+
 // 域名列表
 Vue.component("domains-box", {
 	props: ["v-domains"],
@@ -6300,7 +6324,7 @@ Vue.component("http-firewall-actions-box", {
 						<input type="text" style="width: 5em" maxlength="9" v-model="captchaLife" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">秒</span>
 					</div>
-					<p class="comment">验证通过后在这个时间内不再验证，默认600秒。</p>
+					<p class="comment">验证通过后在这个时间内不再验证；如果为空或者为0表示默认。</p>
 				</td>
 			</tr>
 			<tr v-if="actionCode == 'captcha'">
@@ -6310,7 +6334,7 @@ Vue.component("http-firewall-actions-box", {
 						<input type="text" style="width: 5em" maxlength="9" v-model="captchaMaxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">次</span>
 					</div>
-					<p class="comment">如果为空或者为0，表示不限制。</p>
+					<p class="comment">允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单；如果为空或者为0表示默认。</p>
 				</td>
 			</tr>
 			<tr v-if="actionCode == 'captcha'">
@@ -6320,7 +6344,7 @@ Vue.component("http-firewall-actions-box", {
 						<input type="text" style="width: 5em" maxlength="9" v-model="captchaFailBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">秒</span>
 					</div>
-					<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时间；如果为0表示不自动拦截。</p>
+					<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时间；如果为空或者为0表示默认。</p>
 				</td>
 			</tr>
 			
@@ -7657,36 +7681,14 @@ Vue.component("http-firewall-block-options-viewer", {
 	props: ["v-block-options"],
 	data: function () {
 		return {
-			blockOptions: this.vBlockOptions,
-			statusCode: this.vBlockOptions.statusCode,
-			timeout: this.vBlockOptions.timeout
-		}
-	},
-	watch: {
-		statusCode: function (v) {
-			let statusCode = parseInt(v)
-			if (isNaN(statusCode)) {
-				this.blockOptions.statusCode = 403
-			} else {
-				this.blockOptions.statusCode = statusCode
-			}
-		},
-		timeout: function (v) {
-			let timeout = parseInt(v)
-			if (isNaN(timeout)) {
-				this.blockOptions.timeout = 0
-			} else {
-				this.blockOptions.timeout = timeout
-			}
-		}
-	},
-	methods: {
-		edit: function () {
-			this.isEditing = !this.isEditing
+			options: this.vBlockOptions
 		}
 	},
 	template: `<div>
-	状态码：{{statusCode}} / 提示内容：<span v-if="blockOptions.body != null && blockOptions.body.length > 0">[{{blockOptions.body.length}}字符]</span><span v-else class="disabled">[无]</span>  / 超时时间：{{timeout}}秒
+	<span v-if="options == null">默认设置</span>
+	<div v-else>
+		状态码：{{options.statusCode}} / 提示内容：<span v-if="options.body != null && options.body.length > 0">[{{options.body.length}}字符]</span><span v-else class="disabled">[无]</span>  / 超时时间：{{options.timeout}}秒
+	</div>
 </div>	
 `
 })
@@ -10801,7 +10803,7 @@ Vue.component("http-firewall-captcha-options", {
 				uiTitle: "",
 				uiPrompt: "",
 				uiButtonTitle: "",
-				uiShowRequestId: false,
+				uiShowRequestId: true,
 				uiCss: "",
 				uiFooter: "",
 				uiBody: "",
@@ -10915,7 +10917,7 @@ Vue.component("http-firewall-captcha-options", {
 							<input type="text" style="width: 5em" maxlength="9" v-model="options.maxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 							<span class="ui label">次</span>
 						</div>
-						<p class="comment">如果为空或者为0，表示不限制。</p>
+						<p class="comment">允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单。如果为空或者为0，表示不限制。</p>
 					</td>
 				</tr>
 				<tr>
