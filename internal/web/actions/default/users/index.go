@@ -22,6 +22,17 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["keyword"] = params.Keyword
 	this.Data["isVerifying"] = params.Verifying
 
+	// 未审核的总数量
+	countVerifyingUsersResp, err := this.RPC().UserRPC().CountAllEnabledUsers(this.AdminContext(), &pb.CountAllEnabledUsersRequest{
+		IsVerifying: true,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["countVerifyingUsers"] = countVerifyingUsersResp.Count
+
+	// 当前匹配的数量
 	countResp, err := this.RPC().UserRPC().CountAllEnabledUsers(this.AdminContext(), &pb.CountAllEnabledUsersRequest{
 		Keyword:     params.Keyword,
 		IsVerifying: params.Verifying,

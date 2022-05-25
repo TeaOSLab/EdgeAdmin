@@ -34,7 +34,9 @@ func SendMessageToCluster(ctx context.Context, clusterId int64, code string, msg
 	}
 
 	// 获取所有节点
-	nodesResp, err := defaultRPCClient.NodeRPC().FindAllEnabledNodesWithNodeClusterId(ctx, &pb.FindAllEnabledNodesWithNodeClusterIdRequest{NodeClusterId: clusterId})
+	nodesResp, err := defaultRPCClient.NodeRPC().FindAllEnabledNodesWithNodeClusterId(ctx, &pb.FindAllEnabledNodesWithNodeClusterIdRequest{
+		NodeClusterId: clusterId,
+	})
 	if err != nil {
 		return results, err
 	}
