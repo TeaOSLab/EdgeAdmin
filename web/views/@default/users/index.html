@@ -2,7 +2,7 @@
 
 <first-menu>
     <menu-item href="/users" :active="!isVerifying">全部用户</menu-item>
-    <menu-item href="/users?verifying=1" :active="isVerifying" v-if="teaIsPlus">待审核<span v-if="countVerifyingUsers > 0">({{countVerifyingUsers}})</span></menu-item>
+    <menu-item href="/users?verifying=1" :active="isVerifying" v-if="teaIsPlus">待审核<span v-if="countVerifyingUsers > 0" class="red">({{countVerifyingUsers}})</span></menu-item>
     <span class="item disabled">|</span>
 	<menu-item @click.prevent="createUser">[创建用户]</menu-item>
 </first-menu>
