@@ -114,7 +114,7 @@ Vue.component("http-pages-and-shutdown-box", {
 					<prior-checkbox :v-config="shutdownConfig" v-if="vIsLocation"></prior-checkbox>
 					<tbody v-show="!vIsLocation || shutdownConfig.isPrior">
 						<tr>
-							<td class="title">是否开启</td>
+							<td class="title">开启</td>
 							<td>
 								<div class="ui checkbox">
 									<input type="checkbox" value="1" v-model="shutdownConfig.isOn" />

@@ -1,0 +1,28 @@
+{$layout}
+{$template "menu"}
+
+<form method="post" class="ui form" data-tea-action="$" data-tea-before="before" data-tea-success="success" data-tea-fail="fail" data-tea-done="done" data-tea-timeout="3600">
+    <csrf-token></csrf-token>
+    <table class="ui table definition selectable">
+        <tr>
+            <td>要预热的Key列表</td>
+            <td>
+                <textarea name="keys" rows="10" ref="focus"></textarea>
+                <p class="comment">每行一个Key。</p>
+            </td>
+        </tr>
+        <tr>
+            <td class="title">操作结果</td>
+            <td>
+                <div v-if="isRequesting">数据发送中...</div>
+                <span class="red" v-if="!isRequesting && !isOk && message.length > 0">失败：{{message}}</span>
+                <div v-if="!isRequesting && !isOk && failKeys.length > 0" class="fail-keys-box">
+                    <div v-for="failKey in failKeys">
+                        <span class="red">{{failKey.key}}: {{failKey.reason}}</span>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <submit-btn v-if="!isRequesting">提交</submit-btn>
+</form>

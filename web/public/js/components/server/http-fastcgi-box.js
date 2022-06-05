@@ -61,7 +61,7 @@ Vue.component("http-fastcgi-box", {
 		<prior-checkbox :v-config="fastcgiRef" v-if="vIsLocation"></prior-checkbox>
 		<tbody v-show="(!this.vIsLocation || this.fastcgiRef.isPrior)">
 			<tr>
-				<td class="title">是否启用配置</td>
+				<td class="title">启用配置</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="fastcgiRef.isOn"/>

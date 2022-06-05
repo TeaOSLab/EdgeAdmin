@@ -1,0 +1,48 @@
+{$layout}
+{$template "menu"}
+
+<p class="comment" v-if="tasks.length == 0">暂时还没有任务。</p>
+
+<table class="ui table selectable celled" v-if="tasks.length > 0">
+    <thead>
+        <tr>
+            <th style="width: 7em">任务编号</th>
+            <th>任务类型</th>
+            <th>Key类型</th>
+            <th>创建时间</th>
+            <th class="four wide">所属用户</th>
+            <th class="two wide">任务状态</th>
+            <th class="two op">操作</th>
+        </tr>
+    </thead>
+    <tbody v-for="task in tasks">
+        <tr>
+            <td><a :href="'/servers/components/cache/batch/task?taskId=' + task.id">{{task.id}}</a></td>
+            <td>
+                <span v-if="task.type == 'purge'">刷新</span>
+                <span v-if="task.type == 'fetch'">预热</span>
+            </td>
+            <td>
+                <span v-if="task.keyType == 'key'">URL</span>
+                <span v-if="task.keyType == 'prefix'">前缀</span>
+            </td>
+            <td>{{task.createdTime}}</td>
+            <td>
+                <span v-if="task.user != null && task.user.id > 0"><user-link :v-user="task.user"></user-link></span>
+                <span v-if="task.description.length > 0" class="grey">{{task.description}}</span>
+                <span v-else="" class="disabled">-</span>
+            </td>
+            <td>
+                <span v-if="task.isOk" class="green">已完成</span>
+                <a :href="'/servers/components/cache/batch/task?taskId=' + task.id" v-else-if="task.isDone" class="red"><span class="red">失败</span></a>
+                <span v-else-if="!task.isDone" class="grey">等待执行</span>
+            </td>
+            <td>
+                <a :href="'/servers/components/cache/batch/task?taskId=' + task.id">详情</a> &nbsp;
+                <a href="" @click.prevent="deleteTask(task.id)">删除</a>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<page-box></page-box>

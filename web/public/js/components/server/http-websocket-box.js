@@ -80,7 +80,7 @@ Vue.component("http-websocket-box", {
 		<prior-checkbox :v-config="websocketRef" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="((!vIsLocation && !vIsGroup) || websocketRef.isPrior)">
 			<tr>
-				<td class="title">是否启用配置</td>
+				<td class="title">启用配置</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="websocketRef.isOn"/>

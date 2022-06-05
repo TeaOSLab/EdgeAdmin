@@ -8,7 +8,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 )
 
-// 查找缓存策略名称并忽略错误
+// FindCachePolicyNameWithoutError 查找缓存策略名称并忽略错误
 func FindCachePolicyNameWithoutError(parent *actionutils.ParentAction, cachePolicyId int64) string {
 	policy, err := FindCachePolicy(parent, cachePolicyId)
 	if err != nil {
@@ -20,7 +20,7 @@ func FindCachePolicyNameWithoutError(parent *actionutils.ParentAction, cachePoli
 	return policy.Name
 }
 
-// 查找缓存策略配置
+// FindCachePolicy 查找缓存策略配置
 func FindCachePolicy(parent *actionutils.ParentAction, cachePolicyId int64) (*serverconfigs.HTTPCachePolicy, error) {
 	resp, err := parent.RPC().HTTPCachePolicyRPC().FindEnabledHTTPCachePolicyConfig(parent.AdminContext(), &pb.FindEnabledHTTPCachePolicyConfigRequest{HttpCachePolicyId: cachePolicyId})
 	if err != nil {
@@ -35,4 +35,21 @@ func FindCachePolicy(parent *actionutils.ParentAction, cachePolicyId int64) (*se
 		return nil, err
 	}
 	return config, nil
+}
+
+// KeyFailReason Key相关失败原因
+func KeyFailReason(reasonCode string) string {
+	switch reasonCode {
+	case "requireKey":
+		return "空的Key"
+	case "requireDomain":
+		return "找不到Key对应的域名"
+	case "requireServer":
+		return "找不到Key对应的网站服务"
+	case "requireUser":
+		return "该域名不属于当前用户"
+	case "requireClusterId":
+		return "该网站没有部署到集群"
+	}
+	return "未知错误"
 }

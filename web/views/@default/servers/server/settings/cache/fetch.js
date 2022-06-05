@@ -1,31 +1,29 @@
 Tea.context(function () {
-	if (this.clusterId == null) {
-		if (this.clusters.length > 0) {
-			this.clusterId = this.clusters[0].id
-		} else {
-			this.clusterId = 0
-		}
-	}
-
 	this.isRequesting = false
 	this.isOk = false
 	this.message = ""
-	this.results = []
+	this.failKeys = []
 
 	this.before = function () {
 		this.isRequesting = true
 		this.isOk = false
 		this.message = ""
-		this.results = []
+		this.failKeys = []
 	}
 
 	this.success = function (resp) {
 		this.isOk = true
-		this.results = resp.data.results
+
+		let f = NotifyReloadSuccess("任务提交成功")
+		f()
 	}
 
 	this.fail = function (resp) {
 		this.message = resp.message
+
+		if (resp.data.failKeys != null) {
+			this.failKeys = resp.data.failKeys
+		}
 	}
 
 	this.done = function () {

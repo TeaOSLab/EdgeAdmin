@@ -19,19 +19,19 @@
                 <tr>
                     <td class="title">操作类型</td>
                     <td>
-                        <radio name="type" :v-value="'key'" v-model="type">根据Key</radio> &nbsp;
-                        <radio name="type" :v-value="'prefix'" v-model="type">根据前缀</radio>
+                        <radio name="keyType" :v-value="'key'" v-model="keyType">根据Key</radio> &nbsp;
+                        <radio name="keyType" :v-value="'prefix'" v-model="keyType">根据前缀</radio>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <span v-if="type == 'key'">Key列表</span>
-                        <span v-if="type == 'prefix'">Key前缀列表</span>
+                        <span v-if="keyType == 'key'">Key列表</span>
+                        <span v-if="keyType == 'prefix'">Key前缀列表</span>
                     </td>
                     <td>
-                        <textarea name="keys" rows="10" ref="focus"></textarea>
-                        <p class="comment" v-if="type == 'key'">每行一个Key，比如是一个完整的URL<code-label>https://example.com/hello/world.html</code-label>。</p>
-                        <p class="comment" v-if="type == 'prefix'">每行一个Key前缀，比如是一个URL前缀<code-label>https://example.com/hello/</code-label>。</p>
+                        <textarea name="keys" rows="10" ref="keysBox"></textarea>
+                        <p class="comment" v-if="keyType == 'key'">每行一个Key，比如是一个完整的URL<code-label>https://example.com/hello/world.html</code-label>。</p>
+                        <p class="comment" v-if="keyType == 'prefix'">每行一个Key前缀，比如是一个URL前缀<code-label>https://example.com/hello/</code-label>。</p>
                     </td>
                 </tr>
                 <tr>
@@ -39,9 +39,10 @@
                     <td>
                         <div v-if="isRequesting">数据发送中...</div>
                         <span class="red" v-if="!isRequesting && !isOk && message.length > 0">失败：{{message}}</span>
-                        <div v-if="!isRequesting && isOk">
-                            <span v-if="results.length == 0" class="red">此集群下没有任何可用的节点。</span>
-                            <div class="ui label tiny" v-for="one in results" :class="{green:one.isOk, red:!one.isOk}" style="margin-bottom: 0.5em">{{one.nodeName}}：{{one.message}}</div>
+                        <div v-if="!isRequesting && !isOk && failKeys.length > 0" class="fail-keys-box">
+                            <div v-for="failKey in failKeys">
+                                <span class="red">{{failKey.key}}: {{failKey.reason}}</span>
+                            </div>
                         </div>
                     </td>
                 </tr>

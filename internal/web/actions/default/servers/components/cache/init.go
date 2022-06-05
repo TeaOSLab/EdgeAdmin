@@ -19,7 +19,7 @@ func init() {
 			Get("/policy", new(PolicyAction)).
 			GetPost("/update", new(UpdateAction)).
 			GetPost("/clean", new(CleanAction)).
-			GetPost("/preheat", new(PreheatAction)).
+			GetPost("/fetch", new(FetchAction)).
 			GetPost("/purge", new(PurgeAction)).
 			GetPost("/stat", new(StatAction)).
 			GetPost("/test", new(TestAction)).

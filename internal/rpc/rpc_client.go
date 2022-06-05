@@ -219,6 +219,14 @@ func (this *RPCClient) HTTPCachePolicyRPC() pb.HTTPCachePolicyServiceClient {
 	return pb.NewHTTPCachePolicyServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) HTTPCacheTaskRPC() pb.HTTPCacheTaskServiceClient {
+	return pb.NewHTTPCacheTaskServiceClient(this.pickConn())
+}
+
+func (this *RPCClient) HTTPCacheTaskKeyRPC() pb.HTTPCacheTaskKeyServiceClient {
+	return pb.NewHTTPCacheTaskKeyServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) HTTPFirewallPolicyRPC() pb.HTTPFirewallPolicyServiceClient {
 	return pb.NewHTTPFirewallPolicyServiceClient(this.pickConn())
 }

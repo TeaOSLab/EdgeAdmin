@@ -3,8 +3,7 @@ package cache
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/nodeutils"
-	"github.com/TeaOSLab/EdgeCommon/pkg/messageconfigs"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/cache/cacheutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/lists"
@@ -15,15 +14,15 @@ import (
 	"strings"
 )
 
-type PreheatAction struct {
+type FetchAction struct {
 	actionutils.ParentAction
 }
 
-func (this *PreheatAction) Init() {
-	this.Nav("", "", "preheat")
+func (this *FetchAction) Init() {
+	this.Nav("", "", "fetch")
 }
 
-func (this *PreheatAction) RunGet(params struct {
+func (this *FetchAction) RunGet(params struct {
 	CachePolicyId int64
 }) {
 	// 默认的集群ID
@@ -50,7 +49,7 @@ func (this *PreheatAction) RunGet(params struct {
 	this.Show()
 }
 
-func (this *PreheatAction) RunPost(params struct {
+func (this *FetchAction) RunPost(params struct {
 	CachePolicyId int64
 	ClusterId     int64
 	Keys          string
@@ -92,27 +91,38 @@ func (this *PreheatAction) RunPost(params struct {
 		realKeys = append(realKeys, key)
 	}
 
-	// 发送命令
-	msg := &messageconfigs.PreheatCacheMessage{
-		CachePolicyJSON: cachePolicyJSON,
-		Keys:            realKeys,
-	}
-	results, err := nodeutils.SendMessageToCluster(this.AdminContext(), params.ClusterId, messageconfigs.MessageCodePreheatCache, msg, 300)
+	// 校验Key
+	// 这里暂时不校验服务ID
+	validateResp, err := this.RPC().HTTPCacheTaskKeyRPC().ValidateHTTPCacheTaskKeys(this.AdminContext(), &pb.ValidateHTTPCacheTaskKeysRequest{Keys: realKeys})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 
-	isAllOk := true
-	for _, result := range results {
-		if !result.IsOK {
-			isAllOk = false
-			break
+	var failKeyMaps = []maps.Map{}
+	if len(validateResp.FailKeys) > 0 {
+		for _, key := range validateResp.FailKeys {
+			failKeyMaps = append(failKeyMaps, maps.Map{
+				"key":    key.Key,
+				"reason": cacheutils.KeyFailReason(key.ReasonCode),
+			})
 		}
 	}
+	this.Data["failKeys"] = failKeyMaps
+	if len(failKeyMaps) > 0 {
+		this.Fail("有" + types.String(len(failKeyMaps)) + "个Key无法完成操作，请删除后重试")
+	}
 
-	this.Data["isAllOk"] = isAllOk
-	this.Data["results"] = results
+	// 提交任务
+	_, err = this.RPC().HTTPCacheTaskRPC().CreateHTTPCacheTask(this.AdminContext(), &pb.CreateHTTPCacheTaskRequest{
+		Type:    "fetch",
+		KeyType: "key",
+		Keys:    realKeys,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 
 	this.Success()
 }

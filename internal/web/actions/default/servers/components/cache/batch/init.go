@@ -11,11 +11,14 @@ func init() {
 		server.
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeServer)).
 			Data("teaMenu", "servers").
-			Data("teaSubMenu", "group").
-			Prefix("/servers/groups/group/settings/cache").
+			Data("teaSubMenu", "cacheBatch").
+			Prefix("/servers/components/cache/batch").
 			GetPost("", new(IndexAction)).
-			GetPost("/purge", new(PurgeAction)).
 			GetPost("/fetch", new(FetchAction)).
+			Get("/tasks", new(TasksAction)).
+			Get("/task", new(TaskAction)).
+			Post("/deleteTask", new(DeleteTaskAction)).
+			Post("/resetTask", new(ResetTaskAction)).
 			EndAll()
 	})
 }

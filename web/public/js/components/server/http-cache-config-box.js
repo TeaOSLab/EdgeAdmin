@@ -125,7 +125,7 @@ Vue.component("http-cache-config-box", {
 				<td class="color-border">PURGE Key *</td>
 				<td>
 					<input type="text" maxlength="200" v-model="cacheConfig.purgeKey"/>
-					<p class="comment"><a href="" @click.prevent="generatePurgeKey">[随机生成]</a>。需要在PURGE方法调用时加入<code-label>Edge-Purge-Key: {{cacheConfig.purgeKey}}</code-label> Header。只能包含字符、数字、下划线。</p>
+					<p class="comment"><a href="" @click.prevent="generatePurgeKey">[随机生成]</a>。需要在PURGE方法调用时加入<code-label>X-Edge-Purge-Key: {{cacheConfig.purgeKey}}</code-label> Header。只能包含字符、数字、下划线。</p>
 				</td>
 			</tr>
 		</tbody>

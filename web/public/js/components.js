@@ -333,7 +333,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<table class="ui table definition selectable">
 		<tbody>
 			<tr>
-				<td class="title">是否启用</td>
+				<td class="title">启用</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" name="isOn" value="1" v-model="config.isOn"/>
@@ -402,7 +402,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<prior-checkbox :v-config="config" v-if="!vIsParent"></prior-checkbox>
 		<tbody v-show="vIsParent || config.isPrior">
 			<tr>
-				<td class="title">是否启用</td>
+				<td class="title">启用</td>
 				<td>
 					<checkbox name="isOn" value="1" v-model="config.isOn"></checkbox>
 				</td>
@@ -1356,7 +1356,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				<td class="color-border">PURGE Key *</td>
 				<td>
 					<input type="text" maxlength="200" v-model="cacheConfig.purgeKey"/>
-					<p class="comment"><a href="" @click.prevent="generatePurgeKey">[随机生成]</a>。需要在PURGE方法调用时加入<code-label>Edge-Purge-Key: {{cacheConfig.purgeKey}}</code-label> Header。只能包含字符、数字、下划线。</p>
+					<p class="comment"><a href="" @click.prevent="generatePurgeKey">[随机生成]</a>。需要在PURGE方法调用时加入<code-label>X-Edge-Purge-Key: {{cacheConfig.purgeKey}}</code-label> Header。只能包含字符、数字、下划线。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -1552,7 +1552,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<prior-checkbox :v-config="websocketRef" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="((!vIsLocation && !vIsGroup) || websocketRef.isPrior)">
 			<tr>
-				<td class="title">是否启用配置</td>
+				<td class="title">启用配置</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="websocketRef.isOn"/>
@@ -2356,7 +2356,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 					<prior-checkbox :v-config="shutdownConfig" v-if="vIsLocation"></prior-checkbox>
 					<tbody v-show="!vIsLocation || shutdownConfig.isPrior">
 						<tr>
-							<td class="title">是否开启</td>
+							<td class="title">开启</td>
 							<td>
 								<div class="ui checkbox">
 									<input type="checkbox" value="1" v-model="shutdownConfig.isOn" />
@@ -2407,7 +2407,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
 			<tr>
-				<td class="title">是否启用</td>
+				<td class="title">启用</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" value="1" v-model="config.isOn"/>
@@ -2516,7 +2516,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<prior-checkbox :v-config="charsetConfig" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || charsetConfig.isPrior">
 			<tr>
-				<td class="title">是否启用</td>
+				<td class="title">启用</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="charsetConfig.isOn"/>
@@ -2558,7 +2558,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<prior-checkbox :v-config="expiresTime"></prior-checkbox>
 		<tbody v-show="expiresTime.isPrior">
 			<tr>
-				<td class="title">是否启用</td>
+				<td class="title">启用</td>
 				<td><checkbox v-model="expiresTime.isOn"></checkbox>
 					<p class="comment">启用后，将会在响应的Header中添加<code-label>Expires</code-label>字段，浏览器据此会将内容缓存在客户端；同时，在管理后台执行清理缓存时，也将无法清理客户端已有的缓存。</p>
 				</td>
@@ -2872,7 +2872,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<prior-checkbox :v-config="reverseProxyRef" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || reverseProxyRef.isPrior">
 			<tr>
-				<td class="title">是否启用反向代理</td>
+				<td class="title">启用反向代理</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="reverseProxyRef.isOn"/>
@@ -3377,7 +3377,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<prior-checkbox :v-config="fastcgiRef" v-if="vIsLocation"></prior-checkbox>
 		<tbody v-show="(!this.vIsLocation || this.fastcgiRef.isPrior)">
 			<tr>
-				<td class="title">是否启用配置</td>
+				<td class="title">启用配置</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="fastcgiRef.isOn"/>
@@ -3868,7 +3868,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	
 	<table class="ui table selectable" v-show="isEditing">
 		<tr>
-			<td class="title">是否启用</td>
+			<td class="title">启用</td>
 			<td>
 				<checkbox v-model="config.isOn"></checkbox>
 				<p class="comment">启用后，WAF将会尝试自动检测并阻止SYN Flood攻击。此功能需要节点已安装并启用Firewalld。</p>
@@ -4178,7 +4178,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			</td>
 		</tr>
 		<tr>
-			<td>是否自动下线</td>
+			<td>自动下线</td>
 			<td>
 				<div class="ui checkbox">
 					<input type="checkbox" value="1" v-model="healthCheck.autoDown"/>
