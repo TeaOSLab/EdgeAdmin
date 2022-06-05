@@ -26,6 +26,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 	err := InitMenu(this.Parent())
 	if err != nil {
 		this.ErrorPage(err)
+		return
 	}
 
 	this.Show()
