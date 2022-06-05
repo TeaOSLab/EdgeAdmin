@@ -35,7 +35,8 @@ func SendMessageToCluster(ctx context.Context, clusterId int64, code string, msg
 
 	// 获取所有节点
 	nodesResp, err := defaultRPCClient.NodeRPC().FindAllEnabledNodesWithNodeClusterId(ctx, &pb.FindAllEnabledNodesWithNodeClusterIdRequest{
-		NodeClusterId: clusterId,
+		NodeClusterId:    clusterId,
+		IncludeSecondary: true,
 	})
 	if err != nil {
 		return results, err
@@ -45,10 +46,10 @@ func SendMessageToCluster(ctx context.Context, clusterId int64, code string, msg
 		return results, nil
 	}
 
-	rpcMap := map[int64]*rpc.RPCClient{} // apiNodeId => RPCClient
-	locker := &sync.Mutex{}
+	var rpcMap = map[int64]*rpc.RPCClient{} // apiNodeId => RPCClient
+	var locker = &sync.Mutex{}
 
-	wg := &sync.WaitGroup{}
+	var wg = &sync.WaitGroup{}
 	wg.Add(len(nodes))
 
 	for _, node := range nodes {
