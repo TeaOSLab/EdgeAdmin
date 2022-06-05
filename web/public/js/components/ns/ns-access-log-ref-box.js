@@ -22,7 +22,7 @@ Vue.component("ns-access-log-ref-box", {
 		<prior-checkbox :v-config="config" v-if="!vIsParent"></prior-checkbox>
 		<tbody v-show="vIsParent || config.isPrior">
 			<tr>
-				<td class="title">是否启用</td>
+				<td class="title">启用</td>
 				<td>
 					<checkbox name="isOn" value="1" v-model="config.isOn"></checkbox>
 				</td>

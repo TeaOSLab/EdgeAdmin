@@ -4,13 +4,6 @@ Tea.context(function () {
 	this.message = ""
 	this.failKeys = []
 
-	this.$delay(function () {
-		this.$refs.keysBox.focus()
-		this.$watch("keyType", function () {
-			this.$refs.keysBox.focus()
-		})
-	})
-
 	this.before = function () {
 		this.isRequesting = true
 		this.isOk = false
@@ -18,8 +11,9 @@ Tea.context(function () {
 		this.failKeys = []
 	}
 
-	this.success = function () {
+	this.success = function (resp) {
 		this.isOk = true
+
 		let f = NotifyReloadSuccess("任务提交成功")
 		f()
 	}
@@ -35,9 +29,4 @@ Tea.context(function () {
 	this.done = function () {
 		this.isRequesting = false
 	}
-
-	/**
-	 * 操作类型
-	 */
-	this.keyType = "key" // key | prefix
-})
+});

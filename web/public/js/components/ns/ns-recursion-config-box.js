@@ -98,7 +98,7 @@ Vue.component("ns-recursion-config-box", {
 	<table class="ui table definition selectable">
 		<tbody>
 			<tr>
-				<td class="title">是否启用</td>
+				<td class="title">启用</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" name="isOn" value="1" v-model="config.isOn"/>

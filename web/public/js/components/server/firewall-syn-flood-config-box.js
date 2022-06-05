@@ -56,7 +56,7 @@ Vue.component("firewall-syn-flood-config-box", {
 	
 	<table class="ui table selectable" v-show="isEditing">
 		<tr>
-			<td class="title">是否启用</td>
+			<td class="title">启用</td>
 			<td>
 				<checkbox v-model="config.isOn"></checkbox>
 				<p class="comment">启用后，WAF将会尝试自动检测并阻止SYN Flood攻击。此功能需要节点已安装并启用Firewalld。</p>

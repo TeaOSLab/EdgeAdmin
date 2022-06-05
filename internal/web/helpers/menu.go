@@ -35,9 +35,24 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnread
 					"code": "cert",
 				},
 				{
+					"name": "服务分组",
+					"url":  "/servers/groups",
+					"code": "group",
+				},
+				{
+					"name": "-",
+					"url":  "",
+					"code": "",
+				},
+				{
 					"name": "缓存策略",
 					"url":  "/servers/components/cache",
 					"code": "cache",
+				},
+				{
+					"name": "刷新预热",
+					"url":  "/servers/components/cache/batch",
+					"code": "cacheBatch",
 				},
 				{
 					"name": "-",
@@ -59,11 +74,6 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnread
 					"name": "-",
 					"url":  "",
 					"code": "",
-				},
-				{
-					"name": "服务分组",
-					"url":  "/servers/groups",
-					"code": "group",
 				},
 				{
 					"name": "统计指标",

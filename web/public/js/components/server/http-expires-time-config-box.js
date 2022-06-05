@@ -39,7 +39,7 @@ Vue.component("http-expires-time-config-box", {
 		<prior-checkbox :v-config="expiresTime"></prior-checkbox>
 		<tbody v-show="expiresTime.isPrior">
 			<tr>
-				<td class="title">是否启用</td>
+				<td class="title">启用</td>
 				<td><checkbox v-model="expiresTime.isOn"></checkbox>
 					<p class="comment">启用后，将会在响应的Header中添加<code-label>Expires</code-label>字段，浏览器据此会将内容缓存在客户端；同时，在管理后台执行清理缓存时，也将无法清理客户端已有的缓存。</p>
 				</td>

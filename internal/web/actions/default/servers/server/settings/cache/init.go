@@ -16,7 +16,7 @@ func init() {
 			GetPost("", new(IndexAction)).
 			GetPost("/createPopup", new(CreatePopupAction)).
 			GetPost("/purge", new(PurgeAction)).
-			GetPost("/preheat", new(PreheatAction)).
+			GetPost("/fetch", new(FetchAction)).
 			Post("/updateRefs", new(UpdateRefsAction)).
 			EndAll()
 	})

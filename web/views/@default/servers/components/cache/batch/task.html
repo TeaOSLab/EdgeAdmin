@@ -1,0 +1,94 @@
+{$layout}
+{$template "menu"}
+
+<second-menu>
+    <menu-item href=".tasks">所有任务</menu-item>
+    <span class="disabled item" style="padding: 0">&raquo;</span>
+    <span class="item">任务详情</span>
+</second-menu>
+
+<table class="ui table definition selectable">
+    <tr>
+        <td class="title">任务编号</td>
+        <td>{{task.id}}</td>
+    </tr>
+    <tr>
+        <td>任务类型</td>
+        <td>
+            <span v-if="task.type == 'purge'">刷新</span>
+            <span v-if="task.type == 'fetch'">预热</span>
+        </td>
+    </tr>
+    <tr>
+        <td>Key类型</td>
+        <td>
+            <span v-if="task.keyType == 'key'">URL</span>
+            <span v-if="task.keyType == 'prefix'">前缀</span>
+        </td>
+    </tr>
+    <tr>
+        <td>创建时间</td>
+        <td>
+            {{task.createdTime}}
+        </td>
+    </tr>
+    <tr>
+        <td>完成时间</td>
+        <td>
+            <span v-if="task.isDone">{{task.doneTime}}</span>
+            <span v-else class="disabled">尚未完成</span>
+        </td>
+    </tr>
+    <tr>
+        <td>所属用户</td>
+        <td>
+            <span v-if="task.user != null && task.user.id > 0"><user-link :v-user="task.user"></user-link></span>
+            <span v-else="" class="disabled">-</span>
+        </td>
+    </tr>
+    <tr>
+        <td>任务状态</td>
+        <td>
+            <span v-if="task.isOk" class="green">已完成</span>
+            <a :href="'/servers/components/cache/batch/task?taskId=' + task.id" v-else-if="task.isDone" class="red"><span class="red">失败</span></a>
+            <span v-else-if="!task.isDone" class="grey">等待执行</span>
+        </td>
+    </tr>
+    <tr>
+        <td>操作</td>
+        <td>
+            <a href="" @click.prevent="deleteTask(task.id)">[删除]</a> &nbsp; &nbsp;
+            <a href="" @click.prevent="resetTask(task.id)">[重置状态]</a>
+        </td>
+    </tr>
+</table>
+
+<h4>要操作的缓存Key</h4>
+<table class="ui table selectable celled">
+    <thead>
+        <tr>
+            <th>
+                <span v-if="task.keyType == 'key'">URL</span>
+                <span v-if="task.keyType == 'prefix'">前缀</span>
+            </th>
+            <th class="width5">状态</th>
+        </tr>
+    </thead>
+    <tbody v-for="key in task.keys">
+        <tr>
+            <td>{{key.key}}
+
+                <div v-if="key.errors.length > 0" style="margin-top: 0.5em">
+                    <a :href="'/clusters/cluster/node?nodeId=' + err.nodeId" v-for="err in key.errors" class="ui label basic tiny red">
+                        节点{{err.nodeId}}：{{err.error}}
+                    </a>
+                </div>
+            </td>
+            <td>
+                <span v-if="key.isDone && key.errors.length == 0" class="green">完成</span>
+                <span v-if="key.isDone && key.errors.length > 0" class="red">失败</span>
+                <span v-if="!key.isDone" class="grey">未执行</span>
+            </td>
+        </tr>
+    </tbody>
+</table>

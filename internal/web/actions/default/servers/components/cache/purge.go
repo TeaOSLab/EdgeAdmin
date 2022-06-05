@@ -3,8 +3,7 @@ package cache
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/nodeutils"
-	"github.com/TeaOSLab/EdgeCommon/pkg/messageconfigs"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/cache/cacheutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/lists"
@@ -53,7 +52,7 @@ func (this *PurgeAction) RunGet(params struct {
 func (this *PurgeAction) RunPost(params struct {
 	CachePolicyId int64
 	ClusterId     int64
-	Type          string
+	KeyType       string
 	Keys          string
 	Must          *actions.Must
 }) {
@@ -91,33 +90,37 @@ func (this *PurgeAction) RunPost(params struct {
 		}
 		realKeys = append(realKeys, key)
 	}
-
-	// 发送命令
-	msg := &messageconfigs.PurgeCacheMessage{
-		CachePolicyJSON: cachePolicyJSON,
-		Keys:            realKeys,
-	}
-	if params.Type == "prefix" {
-		msg.Type = messageconfigs.PurgeCacheMessageTypeDir
-	} else {
-		msg.Type = messageconfigs.PurgeCacheMessageTypeFile
-	}
-	results, err := nodeutils.SendMessageToCluster(this.AdminContext(), params.ClusterId, messageconfigs.MessageCodePurgeCache, msg, 10)
+	// 校验Key
+	validateResp, err := this.RPC().HTTPCacheTaskKeyRPC().ValidateHTTPCacheTaskKeys(this.AdminContext(), &pb.ValidateHTTPCacheTaskKeysRequest{Keys: realKeys})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 
-	isAllOk := true
-	for _, result := range results {
-		if !result.IsOK {
-			isAllOk = false
-			break
+	var failKeyMaps = []maps.Map{}
+	if len(validateResp.FailKeys) > 0 {
+		for _, key := range validateResp.FailKeys {
+			failKeyMaps = append(failKeyMaps, maps.Map{
+				"key":    key.Key,
+				"reason": cacheutils.KeyFailReason(key.ReasonCode),
+			})
 		}
 	}
+	this.Data["failKeys"] = failKeyMaps
+	if len(failKeyMaps) > 0 {
+		this.Fail("有" + types.String(len(failKeyMaps)) + "个Key无法完成操作，请删除后重试")
+	}
 
-	this.Data["isAllOk"] = isAllOk
-	this.Data["results"] = results
+	// 提交任务
+	_, err = this.RPC().HTTPCacheTaskRPC().CreateHTTPCacheTask(this.AdminContext(), &pb.CreateHTTPCacheTaskRequest{
+		Type:    "purge",
+		KeyType: params.KeyType,
+		Keys:    realKeys,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 
 	this.Success()
 }
