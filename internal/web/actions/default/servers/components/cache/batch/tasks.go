@@ -22,6 +22,7 @@ func (this *TasksAction) RunGet(params struct{}) {
 	err := InitMenu(this.Parent())
 	if err != nil {
 		this.ErrorPage(err)
+		return
 	}
 
 	// 任务数量
