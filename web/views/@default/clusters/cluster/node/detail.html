@@ -176,6 +176,7 @@
 				</div>
 			</td>
 		</tr>
+
 		<tbody v-show="node.status.isActive">
 			<tr>
 				<td>CPU用量</td>
@@ -203,6 +204,13 @@
                 <td>版本</td>
                 <td>v{{node.status.buildVersion}}
                     &nbsp; <a :href="'/clusters/cluster/upgradeRemote?clusterId=' + clusterId" v-if="shouldUpgrade"><span class="red">发现新版本v{{newVersion}} &raquo;</span></a>
+                </td>
+            </tr>
+            <tr v-if="nodeDatetime.length > 0">
+                <td>上次更新时间</td>
+                <td>
+                    {{nodeDatetime}}
+                    <p class="comment" v-if="nodeTimeDiff > 0"><span class="red">当前节点时间与API节点时间相差 {{nodeTimeDiff}} 秒，请同步节点时间。</span></p>
                 </td>
             </tr>
 		</tbody>

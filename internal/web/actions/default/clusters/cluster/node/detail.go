@@ -11,6 +11,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
+	timeutil "github.com/iwind/TeaGo/utils/time"
 	"time"
 )
 
@@ -198,6 +199,8 @@ func (this *DetailAction) RunGet(params struct {
 
 	// 运行状态
 	var status = &nodeconfigs.NodeStatus{}
+	this.Data["nodeDatetime"] = ""
+	this.Data["nodeTimeDiff"] = 0
 	if len(node.StatusJSON) > 0 {
 		err = json.Unmarshal(node.StatusJSON, &status)
 		if err != nil {
@@ -205,6 +208,19 @@ func (this *DetailAction) RunGet(params struct {
 			return
 		}
 		status.IsActive = status.IsActive && time.Now().Unix()-status.UpdatedAt <= 60 // N秒之内认为活跃
+
+		if status.Timestamp > 0 {
+			this.Data["nodeDatetime"] = timeutil.FormatTime("Y-m-d H:i:s", status.Timestamp)
+			if status.UpdatedAt > 0 {
+				var diff = status.UpdatedAt - status.Timestamp
+				if diff < 0 {
+					diff = -diff
+				}
+				this.Data["nodeTimeDiff"] = diff
+			}
+		} else if status.UpdatedAt > 0 {
+			this.Data["nodeDatetime"] = timeutil.FormatTime("Y-m-d H:i:s", status.UpdatedAt)
+		}
 	}
 
 	// 检查是否有新版本
