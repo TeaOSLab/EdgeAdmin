@@ -149,8 +149,9 @@
 					<tr>
 						<td class="title">MySQL主机地址 *</td>
 						<td>
-							<input type="text" name="host" maxlength="100" placeholder="比如 192.168.1.100" style="width:16em" ref="dbHost" v-model="localDB.host"/>
+							<input type="text" name="host" maxlength="100" placeholder="比如 192.168.1.100" style="width:16em" ref="dbHost" v-model="localDB.host" @change="checkDBIP" @input="localDB.isLocal = true"/>
                             <p class="comment" v-if="localDBHost.length > 0 && localDBHost == localDB.host"><span class="blue">已经自动填入从当前服务器发现的MySQL数据库信息。</span></p>
+                            <p class="comment" v-if="!localDB.isLocal"><span class="red">当前地址不是局域网IP，可能会严重影响系统运行性能，请优先选择局域网IP。</span></p>
 						</td>
 					</tr>
 					<tr>

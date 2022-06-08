@@ -3,6 +3,7 @@ package helpers
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
 	nodes "github.com/TeaOSLab/EdgeAdmin/internal/rpc"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/iwind/TeaGo/lists"
@@ -66,7 +67,7 @@ func checkIPWithoutCache(config *systemconfigs.SecurityConfig, ipAddr string) bo
 			return false
 		}
 	}
-	if config.AllowLocal && isLocalIP(ip) {
+	if config.AllowLocal && utils.IsLocalIP(ip) {
 		return true
 	}
 
@@ -104,19 +105,4 @@ func checkIPWithoutCache(config *systemconfigs.SecurityConfig, ipAddr string) bo
 	}
 
 	return true
-}
-
-// 判断是否为本地IP
-func isLocalIP(ip net.IP) bool {
-	if ip[0] == 127 ||
-		ip[0] == 10 ||
-		(ip[0] == 172 && ip[1]&0xf0 == 16) ||
-		(ip[0] == 192 && ip[1] == 168) {
-		return true
-	}
-
-	if ip.String() == "::1" {
-		return true
-	}
-	return false
 }

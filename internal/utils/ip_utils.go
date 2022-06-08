@@ -134,3 +134,23 @@ func NextIP(prevIP net.IP) net.IP {
 	}
 	return ip
 }
+
+// IsLocalIP 判断是否为本地IP
+// ip 是To4()或者To16()的结果
+func IsLocalIP(ip net.IP) bool {
+	if ip == nil {
+		return false
+	}
+
+	if ip[0] == 127 ||
+		ip[0] == 10 ||
+		(ip[0] == 172 && ip[1]&0xf0 == 16) ||
+		(ip[0] == 192 && ip[1] == 168) {
+		return true
+	}
+
+	if ip.String() == "::1" {
+		return true
+	}
+	return false
+}
