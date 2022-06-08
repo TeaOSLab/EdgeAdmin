@@ -14,6 +14,7 @@ func init() {
 			Post("/install", new(InstallAction)).
 			Post("/status", new(StatusAction)).
 			Post("/detectDB", new(DetectDBAction)).
+			Post("/checkLocalIP", new(CheckLocalIPAction)).
 			EndAll()
 	})
 }

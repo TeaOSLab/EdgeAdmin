@@ -57,7 +57,7 @@ Tea.context(function () {
 
 	// 数据库
 	this.dbInfo = {}
-	this.localDB = {"host": "", "port": "", "username": "", "port": ""}
+	this.localDB = {"host": "", "port": "", "username": "", "port": "", "isLocal": true}
 	this.localDBHost = ""
 	this.dbRequesting = false
 
@@ -65,7 +65,23 @@ Tea.context(function () {
 		this.$post(".detectDB")
 			.success(function (resp) {
 				this.localDB = resp.data.localDB
+				this.localDB["isLocal"] = true
 				this.localDBHost = this.localDB.host
+			})
+	}
+
+	this.checkDBIP = function () {
+		this.localDB["isLocal"] = true
+		if (this.localDB.host.length == 0) {
+			return
+		}
+		this.$post(".checkLocalIP")
+			.params({
+				host: this.localDB.host
+			})
+			.success(function (resp) {
+				this.localDB["isLocal"] = resp.data.isLocal
+				this.$forceUpdate()
 			})
 	}
 
