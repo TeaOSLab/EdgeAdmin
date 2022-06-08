@@ -1,6 +1,6 @@
 package actionutils
 
-// 菜单项
+// MenuItem 菜单项
 type MenuItem struct {
 	Id         string `json:"id"`
 	Name       string `json:"name"`

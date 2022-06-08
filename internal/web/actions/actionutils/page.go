@@ -127,7 +127,7 @@ func (this *Page) AsHTML() string {
 	return `<div class="page">` + strings.Join(result, "") + `</div>`
 }
 
-// 判断是否为最后一页
+// IsLastPage 判断是否为最后一页
 func (this *Page) IsLastPage() bool {
 	return this.Current == this.Max
 }
