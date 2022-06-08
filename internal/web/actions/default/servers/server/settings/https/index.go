@@ -82,10 +82,20 @@ func (this *IndexAction) RunPost(params struct {
 	// 记录日志
 	defer this.CreateLog(oplogs.LevelInfo, "修改服务 %d 的HTTPS设置", params.ServerId)
 
-	addresses := []*serverconfigs.NetworkAddressConfig{}
+	var addresses = []*serverconfigs.NetworkAddressConfig{}
 	err := json.Unmarshal([]byte(params.Addresses), &addresses)
 	if err != nil {
 		this.Fail("端口地址解析失败：" + err.Error())
+	}
+
+	// 如果启用HTTPS时没有填写端口，则默认为443
+	if params.IsOn && len(addresses) == 0 {
+		addresses = []*serverconfigs.NetworkAddressConfig{
+			{
+				Protocol:  serverconfigs.ProtocolHTTPS,
+				PortRange: "443",
+			},
+		}
 	}
 
 	// 检查端口地址是否正确
@@ -177,7 +187,7 @@ func (this *IndexAction) RunPost(params struct {
 	if !isOk {
 		return
 	}
-	httpsConfig := &serverconfigs.HTTPSProtocolConfig{}
+	var httpsConfig = &serverconfigs.HTTPSProtocolConfig{}
 	if len(server.HttpsJSON) > 0 {
 		err = json.Unmarshal(server.HttpsJSON, httpsConfig)
 		if err != nil {
