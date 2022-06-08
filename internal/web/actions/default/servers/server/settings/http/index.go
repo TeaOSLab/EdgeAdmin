@@ -72,10 +72,20 @@ func (this *IndexAction) RunPost(params struct {
 	// 记录日志
 	defer this.CreateLog(oplogs.LevelInfo, "修改服务 %d 的HTTP设置", params.ServerId)
 
-	addresses := []*serverconfigs.NetworkAddressConfig{}
+	var addresses = []*serverconfigs.NetworkAddressConfig{}
 	err := json.Unmarshal([]byte(params.Addresses), &addresses)
 	if err != nil {
 		this.Fail("端口地址解析失败：" + err.Error())
+	}
+
+	// 如果启用HTTP时没有填写端口，则默认为80
+	if params.IsOn && len(addresses) == 0 {
+		addresses = []*serverconfigs.NetworkAddressConfig{
+			{
+				Protocol:  serverconfigs.ProtocolHTTP,
+				PortRange: "80",
+			},
+		}
 	}
 
 	// 检查端口地址是否正确
@@ -100,7 +110,7 @@ func (this *IndexAction) RunPost(params struct {
 	if !isOk {
 		return
 	}
-	httpConfig := &serverconfigs.HTTPProtocolConfig{}
+	var httpConfig = &serverconfigs.HTTPProtocolConfig{}
 	if len(server.HttpJSON) > 0 {
 		err = json.Unmarshal(server.HttpJSON, httpConfig)
 		if err != nil {
