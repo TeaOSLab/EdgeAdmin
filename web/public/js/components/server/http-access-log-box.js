@@ -10,6 +10,16 @@ Vue.component("http-access-log-box", {
 			}
 		}
 
+		// 对TAG去重
+		if (accessLog.tags != null && accessLog.tags.length > 0) {
+			let tagMap = {}
+			accessLog.tags = accessLog.tags.$filter(function (k, tag) {
+				let b = (typeof (tagMap[tag]) == "undefined")
+				tagMap[tag] = true
+				return b
+			})
+		}
+
 		return {
 			accessLog: accessLog
 		}
