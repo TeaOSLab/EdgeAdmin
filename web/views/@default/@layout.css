@@ -258,7 +258,7 @@ p.margin {
   border-radius: 0 !important;
 }
 .main-menu .ui.menu .item.separator {
-  border-top: 1px rgba(0, 0, 0, 0.15) solid;
+  border-top: 1px rgba(0, 0, 0, 0.2) solid;
   height: 1px;
   min-height: 0;
   padding: 0;
