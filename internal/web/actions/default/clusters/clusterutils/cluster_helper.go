@@ -118,7 +118,7 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 	})
 
 	items = append(items, maps.Map{
-		"name":     "DDOS防护",
+		"name":     "DDoS防护",
 		"url":      "/clusters/cluster/settings/ddos-protection?clusterId=" + clusterId,
 		"isActive": selectedItem == "ddosProtection",
 		"isOn":     info != nil && info.HasDDoSProtection,

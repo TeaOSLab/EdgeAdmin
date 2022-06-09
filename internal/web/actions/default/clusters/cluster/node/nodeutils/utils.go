@@ -74,7 +74,7 @@ func InitNodeInfo(parentAction *actionutils.ParentAction, nodeId int64) (*pb.Nod
 			"isOn":     info.HasCacheInfo,
 		},
 		{
-			"name":     "DDOS防护",
+			"name":     "DDoS防护",
 			"url":      prefix + "/settings/ddos-protection?" + query,
 			"isActive": menuItem == "ddosProtection",
 			"isOn":     info.HasDDoSProtection,

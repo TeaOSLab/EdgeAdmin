@@ -532,7 +532,7 @@ Vue.component("node-ddos-protection-config-box", {
 			<td>TCP端口列表</td>
 			<td>
 				<ddos-protection-ports-config-box :v-ports="config.tcp.ports" @change="changeTCPPorts"></ddos-protection-ports-config-box>
-				<p class="comment">默认为80和443两个端口。</p>
+				<p class="comment">在这些端口上使用当前配置。默认为80和443两个端口。</p>
 			</td>
 		</tr>
 		<tr>
