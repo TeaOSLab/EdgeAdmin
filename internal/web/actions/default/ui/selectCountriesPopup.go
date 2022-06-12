@@ -21,14 +21,14 @@ func (this *SelectCountriesPopupAction) Init() {
 func (this *SelectCountriesPopupAction) RunGet(params struct {
 	CountryIds string
 }) {
-	selectedCountryIds := utils.SplitNumbers(params.CountryIds)
+	var selectedCountryIds = utils.SplitNumbers(params.CountryIds)
 
 	countriesResp, err := this.RPC().RegionCountryRPC().FindAllEnabledRegionCountries(this.AdminContext(), &pb.FindAllEnabledRegionCountriesRequest{})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	countryMaps := []maps.Map{}
+	var countryMaps = []maps.Map{}
 	for _, country := range countriesResp.RegionCountries {
 		countryMaps = append(countryMaps, maps.Map{
 			"id":        country.Id,
@@ -48,7 +48,7 @@ func (this *SelectCountriesPopupAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	countryMaps := []maps.Map{}
+	var countryMaps = []maps.Map{}
 	for _, countryId := range params.CountryIds {
 		countryResp, err := this.RPC().RegionCountryRPC().FindEnabledRegionCountry(this.AdminContext(), &pb.FindEnabledRegionCountryRequest{RegionCountryId: countryId})
 		if err != nil {
