@@ -266,7 +266,7 @@ Vue.component("http-cond-url-eq", {
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<input type="text" v-model="cond.value"/>
-	<p class="comment">完整的URL路径，通常以<code-label>/</code-label>开头，比如<code-label>/static/ui.js</code-label>。</p>
+	<p class="comment">完整的URL路径，通常以<code-label>/</code-label>开头，比如<code-label>/static/ui.js</code-label>，并不包含域名部分。</p>
 </div>`
 })
 
@@ -296,7 +296,7 @@ Vue.component("http-cond-url-not-eq", {
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<input type="text" v-model="cond.value"/>
-	<p class="comment">要排除的完整的URL路径，通常以<code-label>/</code-label>开头，比如<code-label>/static/ui.js</code-label>。</p>
+	<p class="comment">要排除的完整的URL路径，通常以<code-label>/</code-label>开头，比如<code-label>/static/ui.js</code-label>，并不包含域名部分。</p>
 </div>`
 })
 
