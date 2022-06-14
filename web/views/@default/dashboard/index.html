@@ -33,6 +33,13 @@
     <a href="/api">升级提醒：有 {{apiNodeUpgradeInfo.count}} 个API节点需要升级到 v{{apiNodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
 </div>
 
+<!-- 没有磁盘空间提醒 -->
+<div class="ui icon message error" v-if="!isLoading && dashboard.diskUsageWarning != null">
+    <i class="icon warning circle"></i>
+    {{dashboard.diskUsageWarning}}
+    <a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
+</div>
+
 <!-- 统计图表 -->
 <div class="ui three columns grid counter-chart" v-if="!isLoading">
     <div class="ui column">

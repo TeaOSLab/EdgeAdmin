@@ -3,14 +3,20 @@
 package dashboard
 
 import (
+	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils/sizes"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
+	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/iwind/TeaGo/types"
+	"github.com/shirou/gopsutil/v3/disk"
 	"regexp"
+	"runtime"
 )
 
 type IndexAction struct {
@@ -57,6 +63,14 @@ func (this *IndexAction) RunPost(params struct{}) {
 		this.ErrorPage(err)
 		return
 	}
+
+	// 检查当前服务器空间
+	var diskUsageWarning = ""
+	diskPath, diskUsage, diskUsagePercent, shouldWarning := this.checkDiskPartitions(90)
+	if shouldWarning {
+		diskUsageWarning = "当前服务器磁盘空间不足，请立即扩充容量，文件路径：" + diskPath + "，已使用：" + types.String(diskUsage/1024/1024/1024) + "G，已使用比例：" + fmt.Sprintf("%.2f%%", diskUsagePercent) + "，仅剩余空间：" + fmt.Sprintf("%.2f%%", 100-diskUsagePercent) + "。"
+	}
+
 	this.Data["dashboard"] = maps.Map{
 		"defaultClusterId": resp.DefaultNodeClusterId,
 
@@ -75,6 +89,8 @@ func (this *IndexAction) RunPost(params struct{}) {
 		"canGoNodes":    configloaders.AllowModule(this.AdminId(), configloaders.AdminModuleCodeNode),
 		"canGoSettings": configloaders.AllowModule(this.AdminId(), configloaders.AdminModuleCodeSetting),
 		"canGoUsers":    configloaders.AllowModule(this.AdminId(), configloaders.AdminModuleCodeUser),
+
+		"diskUsageWarning": diskUsageWarning,
 	}
 
 	// 今日流量
@@ -248,4 +264,48 @@ func (this *IndexAction) RunPost(params struct{}) {
 	}
 
 	this.Success()
+}
+
+// 检查服务器磁盘空间
+func (this *IndexAction) checkDiskPartitions(thresholdPercent float64) (path string, usage uint64, usagePercent float64, shouldWarning bool) {
+	partitions, err := disk.Partitions(false)
+	if err != nil {
+		return
+	}
+	if !lists.ContainsString([]string{"darwin", "linux", "freebsd"}, runtime.GOOS) {
+		return
+	}
+
+	var rootFS = ""
+
+	for _, p := range partitions {
+		if p.Mountpoint == "/" {
+			rootFS = p.Fstype
+			break
+		}
+	}
+
+	for _, p := range partitions {
+		if p.Mountpoint == "/boot" {
+			continue
+		}
+		if p.Fstype != rootFS {
+			continue
+		}
+		stat, _ := disk.Usage(p.Mountpoint)
+		if stat != nil {
+			if stat.Used < 2*uint64(sizes.G) {
+				continue
+			}
+			if stat.UsedPercent > thresholdPercent {
+				path = stat.Path
+				usage = stat.Used
+				usagePercent = stat.UsedPercent
+				shouldWarning = true
+				break
+			}
+		}
+	}
+
+	return
 }
