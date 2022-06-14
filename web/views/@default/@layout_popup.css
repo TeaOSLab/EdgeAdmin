@@ -88,7 +88,7 @@ p.margin {
 }
 /** 扩展UI **/
 .field.text {
-  padding: .5em;
+  padding: 0.5em;
 }
 /** 右侧主操作区 **/
 .main {
@@ -295,5 +295,16 @@ input.error {
 textarea.wide-code {
   font-family: Menlo, Monaco, "Courier New", monospace !important;
   line-height: 1.6 !important;
+}
+.combo-box .menu {
+  max-height: 17em;
+  overflow-y: auto;
+  position: absolute;
+  border: rgba(129, 177, 210, 0.81) 1px solid;
+  border-top: 0;
+  z-index: 100;
+}
+.combo-box .menu::-webkit-scrollbar {
+  width: 4px;
 }
 /*# sourceMappingURL=@layout_popup.css.map */

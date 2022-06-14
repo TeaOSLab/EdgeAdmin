@@ -4,7 +4,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 )
 
-// 下载指定的文本内容
+// DownloadAction 下载指定的文本内容
 type DownloadAction struct {
 	actionutils.ParentAction
 }

@@ -25,6 +25,10 @@ func init() {
 			Post("/hideTip", new(HideTipAction)).
 			Post("/theme", new(ThemeAction)).
 			Post("/validateIPs", new(ValidateIPsAction)).
+			Post("/providerOptions", new(ProviderOptionsAction)).
+			Post("/countryOptions", new(CountryOptionsAction)).
+			Post("/provinceOptions", new(ProvinceOptionsAction)).
+			Post("/cityOptions", new(CityOptionsAction)).
 			EndAll()
 
 		// 开发环境下总是动态加载，以便于调试
