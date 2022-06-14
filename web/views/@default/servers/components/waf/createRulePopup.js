@@ -121,4 +121,68 @@ Tea.context(function () {
 				this.regexpTestResult = resp.data.result
 			})
 	}
+
+	// isp
+	this.selectISPName = function (isp) {
+		if (isp == null) {
+			return
+		}
+
+		let ispName = isp.name
+		this.$refs.ispComboBox.clear()
+
+		if (this.rule.value.length == 0) {
+			this.rule.value = ispName
+		} else {
+			this.rule.value += "|" + ispName
+		}
+	}
+
+	// country
+	this.selectGeoCountryName = function (country) {
+		if (country == null) {
+			return
+		}
+
+		let countryName = country.name
+		this.$refs.countryComboBox.clear()
+
+		if (this.rule.value.length == 0) {
+			this.rule.value = countryName
+		} else {
+			this.rule.value += "|" + countryName
+		}
+	}
+
+	// province
+	this.selectGeoProvinceName = function (province) {
+		if (province == null) {
+			return
+		}
+
+		let provinceName = province.name
+		this.$refs.provinceComboBox.clear()
+
+		if (this.rule.value.length == 0) {
+			this.rule.value = provinceName
+		} else {
+			this.rule.value += "|" + provinceName
+		}
+	}
+
+	// city
+	this.selectGeoCityName = function (city) {
+		if (city == null) {
+			return
+		}
+
+		let cityName = city.name
+		this.$refs.cityComboBox.clear()
+
+		if (this.rule.value.length == 0) {
+			this.rule.value = cityName
+		} else {
+			this.rule.value += "|" + cityName
+		}
+	}
 })

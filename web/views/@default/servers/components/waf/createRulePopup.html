@@ -107,6 +107,29 @@
 
 					<!-- 其余数据 -->
 					<textarea rows="3" maxlength="4096" name="value" v-model="rule.value" @input="changeRuleValue" v-else></textarea>
+
+                    <!-- 特殊规则 -->
+                    <div style="margin-top: 1em">
+                        <!-- geo country name -->
+                        <div v-if="checkpoint != null && checkpoint.prefix == 'geoCountryName'" >
+                            <combo-box title="已添加" width="14em" data-url="/ui/countryOptions" data-key="countries" placeholder="点这里选择国家/地区" @change="selectGeoCountryName" ref="countryComboBox" key="combo-box-country"></combo-box>
+                        </div>
+
+                        <!-- geo province name -->
+                        <div v-if="checkpoint != null && checkpoint.prefix == 'geoProvinceName'" >
+                            <combo-box title="已添加" data-url="/ui/provinceOptions" data-key="provinces" placeholder="点这里选择省份名称" @change="selectGeoProvinceName" ref="provinceComboBox" key="combo-box-province"></combo-box>
+                        </div>
+
+                        <!-- geo city name -->
+                        <div v-if="checkpoint != null && checkpoint.prefix == 'geoCityName'" >
+                            <combo-box title="已添加" data-url="/ui/cityOptions" data-key="cities" placeholder="点这里选择城市名称" @change="selectGeoCityName" ref="cityComboBox" key="combo-box-city"></combo-box>
+                        </div>
+
+                        <!-- ISP Name -->
+                        <div v-if="checkpoint != null && checkpoint.prefix == 'ispName'" >
+                            <combo-box title="已添加" data-url="/ui/providerOptions" data-key="providers" placeholder="点这里选择ISP名称" @change="selectISPName" ref="ispComboBox" key="combo-box-isp"></combo-box>
+                        </div>
+                    </div>
 				</td>
 			</tr>
             <tr v-if="rule.operator == 'match' || rule.operator == 'not match'">

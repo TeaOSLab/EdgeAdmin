@@ -1,17 +1,47 @@
 Vue.component("combo-box", {
-	props: ["name", "title", "placeholder", "size", "v-items", "v-value"],
+	// data-url 和 data-key 成对出现
+	props: ["name", "title", "placeholder", "size", "v-items", "v-value", "data-url", "data-key", "width"],
+	mounted: function () {
+		// 从URL中获取选项数据
+		let dataUrl = this.dataUrl
+		let dataKey = this.dataKey
+		let that = this
+		if (dataUrl != null && dataUrl.length > 0 && dataKey != null) {
+			Tea.action(dataUrl)
+				.post()
+				.success(function (resp) {
+					if (resp.data != null) {
+						if (typeof (resp.data[dataKey]) == "object") {
+							let items = that.formatItems(resp.data[dataKey])
+							that.allItems = items
+							that.items = items.$copy()
+
+							if (that.vValue != null) {
+								items.forEach(function (v) {
+									if (v.value == that.vValue) {
+										that.selectedItem = v
+									}
+								})
+							}
+						}
+					}
+				})
+		}
+
+		// 设定菜单宽度
+		let inputWidth = this.$refs.searchBox.offsetWidth
+		if (inputWidth != null && inputWidth > 0) {
+			this.$refs.menu.style.width = inputWidth + "px"
+		} else if (this.styleWidth.length > 0) {
+			this.$refs.menu.style.width = this.styleWidth
+		}
+	},
 	data: function () {
 		let items = this.vItems
 		if (items == null || !(items instanceof Array)) {
 			items = []
 		}
-
-		// 自动使用ID作为值
-		items.forEach(function (v) {
-			if (v.value == null) {
-				v.value = v.id
-			}
-		})
+		items = this.formatItems(items)
 
 		// 当前选中项
 		let selectedItem = null
@@ -24,17 +54,35 @@ Vue.component("combo-box", {
 			})
 		}
 
+		let width = this.width
+		if (width == null || width.length == 0) {
+			width = "11em"
+		} else {
+			if (/\d+$/.test(width)) {
+				width += "em"
+			}
+		}
+
 		return {
-			allItems: items,
-			items: items.$copy(),
-			selectedItem: selectedItem,
+			allItems: items, // 原始的所有的items
+			items: items.$copy(), // 候选的items
+			selectedItem: selectedItem, // 选中的item
 			keyword: "",
 			visible: false,
 			hideTimer: null,
-			hoverIndex: 0
+			hoverIndex: 0,
+			styleWidth: width
 		}
 	},
 	methods: {
+		formatItems: function (items) {
+			items.forEach(function (v) {
+				if (v.value == null) {
+					v.value = v.id
+				}
+			})
+			return items
+		},
 		reset: function () {
 			this.selectedItem = null
 			this.change()
@@ -47,6 +95,11 @@ Vue.component("combo-box", {
 				}
 			})
 		},
+		clear: function () {
+			this.selectedItem = null
+			this.change()
+			this.hoverIndex = 0
+		},
 		changeKeyword: function () {
 			this.hoverIndex = 0
 			let keyword = this.keyword
@@ -55,6 +108,9 @@ Vue.component("combo-box", {
 				return
 			}
 			this.items = this.allItems.$copy().filter(function (v) {
+				if (v.fullname != null && v.fullname.length > 0 && teaweb.match(v.fullname, keyword)) {
+					return true
+				}
 				return teaweb.match(v.name, keyword)
 			})
 		},
@@ -135,10 +191,10 @@ Vue.component("combo-box", {
 			}
 		}
 	},
-	template: `<div style="display: inline; z-index: 10; background: white">
+	template: `<div style="display: inline; z-index: 10; background: white" class="combo-box">
 	<!-- 搜索框 -->
 	<div v-if="selectedItem == null">
-		<input type="text" v-model="keyword" :placeholder="placeholder" :size="size" style="width: 11em" @input="changeKeyword" @focus="show" @blur="hide" @keyup.enter="confirm()" @keypress.enter.prevent="1" ref="searchBox" @keyup.down="downItem" @keyup.up="upItem"/>
+		<input type="text" v-model="keyword" :placeholder="placeholder" :size="size" :style="{'width': styleWidth}"  @input="changeKeyword" @focus="show" @blur="hide" @keyup.enter="confirm()" @keypress.enter.prevent="1" ref="searchBox" @keyup.down="downItem" @keyup.up="upItem"/>
 	</div>
 	
 	<!-- 当前选中 -->
@@ -150,9 +206,12 @@ Vue.component("combo-box", {
 	</div>
 	
 	<!-- 菜单 -->
-	<div v-if="selectedItem == null && items.length > 0 && visible">
-		<div class="ui menu vertical small narrow-scrollbar" style="width: 11em; max-height: 17em; overflow-y: auto; position: absolute; border: rgba(129, 177, 210, 0.81) 1px solid; border-top: 0; z-index: 100">
-			<a href="" v-for="(item, index) in items" ref="itemRef" class="item" :class="{active: index == hoverIndex, blue: index == hoverIndex}" @click.prevent="selectItem(item)" style="line-height: 1.4">{{item.name}}</a>
+	<div v-show="selectedItem == null && items.length > 0 && visible">
+		<div class="ui menu vertical small narrow-scrollbar" ref="menu">
+			<a href="" v-for="(item, index) in items" ref="itemRef" class="item" :class="{active: index == hoverIndex, blue: index == hoverIndex}" @click.prevent="selectItem(item)" style="line-height: 1.4">
+				<span v-if="item.fullname != null && item.fullname.length > 0">{{item.fullname}}</span>
+				<span v-else>{{item.name}}</span>
+			</a>
 		</div>
 	</div>
 </div>`
