@@ -1,4 +1,8 @@
 Tea.context(function () {
+	this.$delay(function () {
+		this.reload()
+	})
+
 	this.deleteTask = function (taskId) {
 		teaweb.confirm("确定要删除此任务吗？", function () {
 			this.$post(".deleteTask")
@@ -19,5 +23,20 @@ Tea.context(function () {
 				})
 				.refresh()
 		})
+	}
+
+	this.reload = function () {
+		this.$post("$")
+			.params({
+				taskId: this.task.id
+			})
+			.success(function (resp) {
+				this.task = resp.data.task
+			})
+			.done(function () {
+				this.$delay(function () {
+					this.reload()
+				}, 10000)
+			})
 	}
 })

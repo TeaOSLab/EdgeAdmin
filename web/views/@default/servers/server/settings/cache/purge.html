@@ -7,31 +7,31 @@
 
     <div class="margin"></div>
     <div v-show="webConfig.cache == null || !webConfig.cache.isOn">
-        <p class="comment">没有开启缓存，不需要清理。</p>
+        <p class="comment">没有开启缓存，不需要刷新。</p>
     </div>
     <div v-show="webConfig.cache != null && webConfig.cache.isOn">
-        <p class="comment">可以在这里批量删除一组Key。</p>
+        <p class="comment">可以在这里批量刷新一组URL缓存。</p>
 
         <form method="post" class="ui form" data-tea-action="$" data-tea-before="before" data-tea-success="success" data-tea-fail="fail" data-tea-done="done" data-tea-timeout="300">
             <input type="hidden" name="serverId" :value="serverId"/>
             <input type="hidden" name="webId" :value="webId"/>
             <table class="ui table definition selectable">
                 <tr>
-                    <td class="title">操作类型</td>
+                    <td class="title">URL类型</td>
                     <td>
-                        <radio name="keyType" :v-value="'key'" v-model="keyType">根据Key</radio> &nbsp;
-                        <radio name="keyType" :v-value="'prefix'" v-model="keyType">根据前缀</radio>
+                        <radio name="keyType" :v-value="'key'" v-model="keyType">URL</radio> &nbsp;
+                        <radio name="keyType" :v-value="'prefix'" v-model="keyType">目录</radio>
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <span v-if="keyType == 'key'">Key列表</span>
-                        <span v-if="keyType == 'prefix'">Key前缀列表</span>
+                        <span v-if="keyType == 'key'">URL</span>
+                        <span v-if="keyType == 'prefix'">目录</span>
                     </td>
                     <td>
                         <textarea name="keys" rows="10" ref="keysBox"></textarea>
-                        <p class="comment" v-if="keyType == 'key'">每行一个Key，比如是一个完整的URL<code-label>https://example.com/hello/world.html</code-label>。</p>
-                        <p class="comment" v-if="keyType == 'prefix'">每行一个Key前缀，比如是一个URL前缀<code-label>https://example.com/hello/</code-label>。</p>
+                        <p class="comment" v-if="keyType == 'key'">每行一个URL，比如<code-label>https://example.com/hello/world.html</code-label>。</p>
+                        <p class="comment" v-if="keyType == 'prefix'">每行一个URL目录，比如<code-label>https://example.com/hello/</code-label>。</p>
                     </td>
                 </tr>
                 <tr>
