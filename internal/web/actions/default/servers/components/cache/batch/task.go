@@ -82,9 +82,10 @@ func (this *TaskAction) RunGet(params struct {
 		}
 
 		keyMaps = append(keyMaps, maps.Map{
-			"key":    key.Key,
-			"isDone": key.IsDone,
-			"errors": errorMaps,
+			"key":     key.Key,
+			"isDone":  key.IsDone,
+			"isDoing": key.IsDoing,
+			"errors":  errorMaps,
 		})
 	}
 
