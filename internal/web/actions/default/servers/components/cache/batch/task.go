@@ -29,14 +29,32 @@ func (this *TaskAction) RunGet(params struct {
 		return
 	}
 
-	taskResp, err := this.RPC().HTTPCacheTaskRPC().FindEnabledHTTPCacheTask(this.AdminContext(), &pb.FindEnabledHTTPCacheTaskRequest{HttpCacheTaskId: params.TaskId})
+	if !this.readTask(params.TaskId) {
+		return
+	}
+
+	this.Show()
+}
+
+func (this *TaskAction) RunPost(params struct {
+	TaskId int64
+}) {
+	if !this.readTask(params.TaskId) {
+		return
+	}
+	this.Success()
+}
+
+// 读取任务信息
+func (this *TaskAction) readTask(taskId int64) (ok bool) {
+	taskResp, err := this.RPC().HTTPCacheTaskRPC().FindEnabledHTTPCacheTask(this.AdminContext(), &pb.FindEnabledHTTPCacheTaskRequest{HttpCacheTaskId: taskId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 	var task = taskResp.HttpCacheTask
 	if task == nil {
-		this.NotFound("HTTPCacheTask", params.TaskId)
+		this.NotFound("HTTPCacheTask", taskId)
 		return
 	}
 
@@ -101,5 +119,6 @@ func (this *TaskAction) RunGet(params struct {
 		"user":        userMap,
 	}
 
-	this.Show()
+	ok = true
+	return
 }

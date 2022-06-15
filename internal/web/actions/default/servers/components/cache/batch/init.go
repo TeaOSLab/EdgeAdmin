@@ -16,7 +16,7 @@ func init() {
 			GetPost("", new(IndexAction)).
 			GetPost("/fetch", new(FetchAction)).
 			Get("/tasks", new(TasksAction)).
-			Get("/task", new(TaskAction)).
+			GetPost("/task", new(TaskAction)).
 			Post("/deleteTask", new(DeleteTaskAction)).
 			Post("/resetTask", new(ResetTaskAction)).
 			EndAll()

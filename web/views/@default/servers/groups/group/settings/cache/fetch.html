@@ -9,16 +9,16 @@
         <p class="comment">没有开启缓存，不需要清理。</p>
     </div>
     <div v-show="webConfig.cache != null && webConfig.cache.isOn">
-        <p class="comment">可以在这里批量预热一组Key。</p>
+        <p class="comment">可以在这里批量预热一组缓存URL。</p>
         <form method="post" class="ui form" data-tea-action="$" data-tea-before="before" data-tea-success="success" data-tea-fail="fail" data-tea-done="done" data-tea-timeout="3600">
             <input type="hidden" name="serverId" :value="serverId"/>
             <input type="hidden" name="webId" :value="webId"/>
             <table class="ui table definition selectable">
                 <tr>
-                    <td>Key列表</td>
+                    <td>URL列表</td>
                     <td>
                         <textarea name="keys" rows="10" ref="focus"></textarea>
-                        <p class="comment">每行一个Key。</p>
+                        <p class="comment">每行一个URL。</p>
                     </td>
                 </tr>
                 <tr>
