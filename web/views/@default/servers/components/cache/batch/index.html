@@ -19,7 +19,7 @@
                 <span v-if="keyType == 'prefix'">要刷新的URL目录列表</span>
             </td>
             <td>
-                <textarea name="keys" rows="10" ref="keysBox"></textarea>
+                <textarea name="keys" rows="20" ref="keysBox"></textarea>
                 <p class="comment" v-if="keyType == 'key'">每行一个URL，比如<code-label>https://example.com/hello/world.html</code-label>。</p>
                 <p class="comment" v-if="keyType == 'prefix'">每行一个URL目录，比如<code-label>https://example.com/hello/</code-label>。</p>
             </td>
