@@ -5,11 +5,13 @@ import (
 	"errors"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/types"
 	"net/url"
 	"regexp"
 	"strings"
@@ -77,7 +79,7 @@ func (this *AddPopupAction) RunPost(params struct {
 		Field("addr", params.Addr).
 		Require("请输入源站地址")
 
-	addr := params.Addr
+	var addr = params.Addr
 
 	// 是否是完整的地址
 	if (params.Protocol == "http" || params.Protocol == "https") && regexp.MustCompile(`^(http|https)://`).MatchString(addr) {
@@ -89,7 +91,7 @@ func (this *AddPopupAction) RunPost(params struct {
 
 	addr = strings.ReplaceAll(addr, "：", ":")
 	addr = regexp.MustCompile(`\s+`).ReplaceAllString(addr, "")
-	portIndex := strings.LastIndex(addr, ":")
+	var portIndex = strings.LastIndex(addr, ":")
 	if portIndex < 0 {
 		if params.Protocol == "http" {
 			addr += ":80"
@@ -100,10 +102,25 @@ func (this *AddPopupAction) RunPost(params struct {
 		}
 		portIndex = strings.LastIndex(addr, ":")
 	}
-	host := addr[:portIndex]
-	port := addr[portIndex+1:]
+	var host = addr[:portIndex]
+	var port = addr[portIndex+1:]
+
+	// 检查端口号
 	if port == "0" {
 		this.Fail("端口号不能为0")
+	}
+	if !configutils.HasVariables(port) {
+		// 必须是整数
+		if !regexp.MustCompile(`^\d+$`).MatchString(port) {
+			this.Fail("端口号只能为整数")
+		}
+		var portInt = types.Int(port)
+		if portInt == 0 {
+			this.Fail("端口号不能为0")
+		}
+		if portInt > 65535 {
+			this.Fail("端口号不能大于65535")
+		}
 	}
 
 	connTimeoutJSON, err := (&shared.TimeDuration{
