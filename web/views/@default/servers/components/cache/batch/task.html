@@ -87,7 +87,8 @@
             <td>
                 <span v-if="key.isDone && key.errors.length == 0" class="green">完成</span>
                 <span v-if="key.isDone && key.errors.length > 0" class="red">失败</span>
-                <span v-if="!key.isDone" class="grey">未执行</span>
+                <span v-if="!key.isDone && !key.isDoing" class="grey">未执行</span>
+                <span v-if="!key.isDone && key.isDoing" class="grey">执行中</span>
             </td>
         </tr>
     </tbody>
