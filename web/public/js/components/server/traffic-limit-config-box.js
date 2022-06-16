@@ -94,7 +94,7 @@ Vue.component("traffic-limit-config-box", {
 				<td>网页提示内容</td>
 				<td>
 					<textarea v-model="config.noticePageBody"></textarea>
-					<p class="comment"><a href="" @click.prevent="showBodyTemplate">[使用模板]</a>。当达到流量限制时网页显示的HTML内容，不填写则显示默认的提示内容。</p>
+					<p class="comment"><a href="" @click.prevent="showBodyTemplate">[使用模板]</a>。当达到流量限制时网页显示的HTML内容，不填写则显示默认的提示内容，适用于网站类服务。</p>
 				</td>
 			</tr>
 		</tbody>

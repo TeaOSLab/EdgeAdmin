@@ -417,17 +417,17 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		</tbody>
 	</table>
 	<div class="margin"></div>
-</div>`}),Vue.component("ns-route-ranges-box",{props:["v-ranges"],data:function(){let e=this.vRanges;return{ranges:e=null==e?[]:e,isAdding:!1,ipRangeFrom:"",ipRangeTo:""}},methods:{add:function(){this.isAdding=!0;let e=this;setTimeout(function(){e.$refs.ipRangeFrom.focus()},100)},remove:function(e){this.ranges.$remove(e)},cancelIPRange:function(){this.isAdding=!1,this.ipRangeFrom="",this.ipRangeTo=""},confirmIPRange:function(){let e=this;this.ipRangeFrom=this.ipRangeFrom.trim(),this.validateIP(this.ipRangeFrom)?(this.ipRangeTo=this.ipRangeTo.trim(),this.validateIP(this.ipRangeTo)?(this.ranges.push({type:"ipRange",params:{ipFrom:this.ipRangeFrom,ipTo:this.ipRangeTo}}),this.cancelIPRange()):teaweb.warn("结束IP填写错误",function(){e.$refs.ipRangeTo.focus()})):teaweb.warn("开始IP填写错误",function(){e.$refs.ipRangeFrom.focus()})},validateIP:function(e){if(!e.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/))return!1;let t=e.split("."),i=!0;return t.forEach(function(e){255<parseInt(e)&&(i=!1)}),i}},template:`<div>
+</div>`}),Vue.component("ns-route-ranges-box",{props:["v-ranges"],data:function(){let e=this.vRanges;return{ranges:e=null==e?[]:e,isAdding:!1,isAddingBatch:!1,ipRangeFrom:"",ipRangeTo:"",batchIPRange:""}},methods:{add:function(){this.isAdding=!0;let e=this;setTimeout(function(){e.$refs.ipRangeFrom.focus()},100)},remove:function(e){this.ranges.$remove(e)},cancelIPRange:function(){this.isAdding=!1,this.ipRangeFrom="",this.ipRangeTo=""},confirmIPRange:function(){let e=this;this.ipRangeFrom=this.ipRangeFrom.trim(),this.validateIP(this.ipRangeFrom)?(this.ipRangeTo=this.ipRangeTo.trim(),this.validateIP(this.ipRangeTo)?(this.ranges.push({type:"ipRange",params:{ipFrom:this.ipRangeFrom,ipTo:this.ipRangeTo}}),this.cancelIPRange()):teaweb.warn("结束IP填写错误",function(){e.$refs.ipRangeTo.focus()})):teaweb.warn("开始IP填写错误",function(){e.$refs.ipRangeFrom.focus()})},addBatch:function(){this.isAddingBatch=!0;let e=this;setTimeout(function(){e.$refs.batchIPRange.focus()},100)},cancelBatchIPRange:function(){this.isAddingBatch=!1,this.batchIPRange=""},confirmBatchIPRange:function(){let a=this,e=this.batchIPRange;if(0==e.length)teaweb.warn("请填写要加入的IP范围",function(){a.$refs.batchIPRange.focus()});else{let n=[],o="";e.split("\n").forEach(function(t){if(0!=(t=t.trim()).length){let e=(t=t.replace("，",",")).split(",");var i,s;2!=e.length?o=t:(i=e[0].trim(),s=e[1].trim(),a.validateIP(i)&&a.validateIP(s)?n.push({type:"ipRange",params:{ipFrom:i,ipTo:s}}):o=t)}}),0<o.length?teaweb.warn("'"+o+"'格式错误",function(){a.$refs.batchIPRange.focus()}):(n.forEach(function(e){a.ranges.push(e)}),this.cancelBatchIPRange())}},validateIP:function(e){if(!e.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/))return!1;let t=e.split("."),i=!0;return t.forEach(function(e){255<parseInt(e)&&(i=!1)}),i}},template:`<div>
 	<input type="hidden" name="rangesJSON" :value="JSON.stringify(ranges)"/>
 	<div v-if="ranges.length > 0">
-		<div class="ui label tiny basic" v-for="(range, index) in ranges">
+		<div class="ui label tiny basic" v-for="(range, index) in ranges" style="margin-bottom: 0.3em">
 			<span v-if="range.type == 'ipRange'">IP范围：</span>
 			{{range.params.ipFrom}} - {{range.params.ipTo}} &nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
 		</div>
 		<div class="ui divider"></div>
 	</div>
 	
-	<!-- IP 范围 -->
+	<!-- 添加单个 -->
 	<div style="margin-bottom: 1em" v-show="isAdding">
 		<div class="ui fields inline">
 			<div class="ui field">
@@ -443,8 +443,23 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			</div>
 		</div>
 	</div>
+
+	<!-- 添加多个 -->
+	<div style="margin-bottom: 1em" v-show="isAddingBatch">
+		<div class="ui field">
+			<textarea rows="5" ref="batchIPRange" v-model="batchIPRange"></textarea>	
+			<p class="comment">每行一条，格式为<code-label>开始IP,结束IP</code-label>，比如<code-label>192.168.1.100,192.168.1.200</code-label>。</p>	
+		</div>
+		<div class="ui field">
+			<button class="ui button tiny" type="button" @click.prevent="confirmBatchIPRange">确定</button> &nbsp;
+			<a href="" @click.prevent="cancelBatchIPRange" title="取消"><i class="icon remove small"></i></a>
+		</div>
+	</div>
 	
-	<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	<div v-if="!isAdding && !isAddingBatch">
+		<button class="ui button tiny" type="button" @click.prevent="add">单个添加</button> &nbsp;
+		<button class="ui button tiny" type="button" @click.prevent="addBatch">批量添加</button>
+	</div>
 </div>`}),Vue.component("ns-route-selector",{props:["v-route-code"],mounted:function(){let t=this;Tea.action("/ns/routes/options").post().success(function(e){t.routes=e.data.routes})},data:function(){let e=this.vRouteCode;return{routeCode:e=null==e?"":e,routes:[]}},template:`<div>
 	<div v-if="routes.length > 0">
 		<select class="ui dropdown" name="routeCode" v-model="routeCode">
@@ -551,7 +566,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<div v-if="!isAdding">
 		<button class="ui button small" type="button" @click.prevent="add">+</button>
 	</div>
-</div>`}),Vue.component("plan-price-config-box",{props:["v-price-type","v-monthly-price","v-seasonally-price","v-yearly-price","v-traffic-price","v-bandwidth-price","v-disable-period"],data:function(){let e=this.vPriceType,t=(null==e&&(e="bandwidth"),0),i=this.vMonthlyPrice,s=(null==i||i<=0?i="":(i=i.toString(),t=parseFloat(i),isNaN(t)&&(t=0)),0),n=this.vSeasonallyPrice,o=(null==n||n<=0?n="":(n=n.toString(),s=parseFloat(n),isNaN(s)&&(s=0)),0),a=this.vYearlyPrice,l=(null==a||a<=0?a="":(a=a.toString(),o=parseFloat(a),isNaN(o)&&(o=0)),this.vTrafficPrice),r=0,c=(null!=l?r=l.base:l={base:0},""),d=(0<r&&(c=r.toString()),this.vBandwidthPrice);return null==d?d={percentile:95,ranges:[]}:null==d.ranges&&(d.ranges=[]),{priceType:e,monthlyPrice:i,seasonallyPrice:n,yearlyPrice:a,monthlyPriceNumber:t,seasonallyPriceNumber:s,yearlyPriceNumber:o,trafficPriceBase:c,trafficPrice:l,bandwidthPrice:d,bandwidthPercentile:d.percentile}},methods:{changeBandwidthPriceRanges:function(e){this.bandwidthPrice.ranges=e}},watch:{monthlyPrice:function(e){let t=parseFloat(e);isNaN(t)&&(t=0),this.monthlyPriceNumber=t},seasonallyPrice:function(e){let t=parseFloat(e);isNaN(t)&&(t=0),this.seasonallyPriceNumber=t},yearlyPrice:function(e){let t=parseFloat(e);isNaN(t)&&(t=0),this.yearlyPriceNumber=t},trafficPriceBase:function(e){let t=parseFloat(e);isNaN(t)&&(t=0),this.trafficPrice.base=t},bandwidthPercentile:function(e){let t=parseInt(e);isNaN(t)||t<=0?t=95:100<t&&(t=100),this.bandwidthPrice.percentile=t}},template:`<div>
+</div>`}),Vue.component("plan-price-config-box",{props:["v-price-type","v-monthly-price","v-seasonally-price","v-yearly-price","v-traffic-price","v-bandwidth-price","v-disable-period"],data:function(){let e=this.vPriceType,t=(null==e&&(e="bandwidth"),0),i=this.vMonthlyPrice,s=(null==i||i<=0?i="":(i=i.toString(),t=parseFloat(i),isNaN(t)&&(t=0)),0),n=this.vSeasonallyPrice,o=(null==n||n<=0?n="":(n=n.toString(),s=parseFloat(n),isNaN(s)&&(s=0)),0),a=this.vYearlyPrice,l=(null==a||a<=0?a="":(a=a.toString(),o=parseFloat(a),isNaN(o)&&(o=0)),this.vTrafficPrice),c=0,r=(null!=l?c=l.base:l={base:0},""),d=(0<c&&(r=c.toString()),this.vBandwidthPrice);return null==d?d={percentile:95,ranges:[]}:null==d.ranges&&(d.ranges=[]),{priceType:e,monthlyPrice:i,seasonallyPrice:n,yearlyPrice:a,monthlyPriceNumber:t,seasonallyPriceNumber:s,yearlyPriceNumber:o,trafficPriceBase:r,trafficPrice:l,bandwidthPrice:d,bandwidthPercentile:d.percentile}},methods:{changeBandwidthPriceRanges:function(e){this.bandwidthPrice.ranges=e}},watch:{monthlyPrice:function(e){let t=parseFloat(e);isNaN(t)&&(t=0),this.monthlyPriceNumber=t},seasonallyPrice:function(e){let t=parseFloat(e);isNaN(t)&&(t=0),this.seasonallyPriceNumber=t},yearlyPrice:function(e){let t=parseFloat(e);isNaN(t)&&(t=0),this.yearlyPriceNumber=t},trafficPriceBase:function(e){let t=parseFloat(e);isNaN(t)&&(t=0),this.trafficPrice.base=t},bandwidthPercentile:function(e){let t=parseInt(e);isNaN(t)||t<=0?t=95:100<t&&(t=100),this.bandwidthPrice.percentile=t}},template:`<div>
 	<input type="hidden" name="priceType" :value="priceType"/>
 	<input type="hidden" name="monthlyPrice" :value="monthlyPriceNumber"/>
 	<input type="hidden" name="seasonallyPrice" :value="seasonallyPriceNumber"/>
@@ -3742,7 +3757,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				<td>网页提示内容</td>
 				<td>
 					<textarea v-model="config.noticePageBody"></textarea>
-					<p class="comment"><a href="" @click.prevent="showBodyTemplate">[使用模板]</a>。当达到流量限制时网页显示的HTML内容，不填写则显示默认的提示内容。</p>
+					<p class="comment"><a href="" @click.prevent="showBodyTemplate">[使用模板]</a>。当达到流量限制时网页显示的HTML内容，不填写则显示默认的提示内容，适用于网站类服务。</p>
 				</td>
 			</tr>
 		</tbody>

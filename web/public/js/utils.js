@@ -94,8 +94,8 @@ window.teaweb = {
 			field: element,
 			firstDay: 1,
 			minDate: new Date(year - 1, 0, 1),
-			maxDate: new Date(year + 10, 11, 31),
-			yearRange: [year - 1, year + 10],
+			maxDate: new Date(year + 20, 11, 31),
+			yearRange: [year - 1, year + 20],
 			format: "YYYY-MM-DD",
 			i18n: {
 				previousMonth: '上月',
