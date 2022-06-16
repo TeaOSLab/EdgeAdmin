@@ -1,3 +1,0 @@
-Tea.context(function () {
-
-})
