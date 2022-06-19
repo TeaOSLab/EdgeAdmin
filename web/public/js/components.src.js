@@ -8931,7 +8931,7 @@ Vue.component("http-access-log-search-box", {
 		<div class="ui field">
 			<div class="ui input left right labeled small">
 				<span class="ui label basic" style="font-weight: normal">关键词</span>
-				<input type="text" name="keyword" v-model="keyword" placeholder="路径、UserAgent等..." size="30"/>
+				<input type="text" name="keyword" v-model="keyword" placeholder="路径、UserAgent、请求ID等..." size="30"/>
 				<a class="ui label basic" :class="{disabled: keyword.length == 0}" @click.prevent="cleanKeyword"><i class="icon remove small"></i></a>
 			</div>
 		</div>
@@ -12414,7 +12414,7 @@ Vue.component("plus-label", {
 
 // 提醒设置项为专业设置
 Vue.component("pro-warning-label", {
-	template: `<span><i class="icon warning circle"></i>注意：通常不需要修改；如要修改，请在专家指导下进行。</span>`
+	template: `<span><i class="icon warning circle yellow"></i>注意：通常不需要修改；如要修改，请在专家指导下进行。</span>`
 })
 
 
@@ -12732,7 +12732,7 @@ Vue.component("health-check-config-box", {
 							<td>域名</td>
 							<td>
 								<input type="text" v-model="urlHost"/>
-								<p class="comment">已经绑定到此集群的一个域名；如果为空则使用节点IP作为域名。</p>
+								<p class="comment">已经绑定到此集群的一个域名；如果为空则使用节点IP作为域名。<span class="red" v-if="urlProtocol == 'https' && urlHost.length == 0">如果协议是https，这里必须填写一个已经设置了SSL证书的域名。</span></p>
 							</td>
 						</tr>
 						<tr>

@@ -1,7 +1,9 @@
 {$layout "layout_popup"}
 
-<h3 v-if="!isReverse">添加缓存设置</h3>
-<h3 v-if="isReverse">添加不缓存设置</h3>
+<h3 v-if="!isReverse && cacheRef == null">添加缓存设置</h3>
+<h3 v-if="!isReverse && cacheRef != null">修改缓存设置</h3>
+<h3 v-if="isReverse && cacheRef == null">添加不缓存设置</h3>
+<h3 v-if="isReverse && cacheRef != null">添加不缓存设置</h3>
 <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
     <table class="ui table definition selectable">
         <tbody is="http-cache-ref-box" :v-cache-ref="cacheRef" :v-is-reverse="isReverse"></tbody>
