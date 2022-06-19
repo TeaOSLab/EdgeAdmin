@@ -42,7 +42,7 @@
 		</div>
 		<div class="ui field">
 			<button class="ui button" type="submit">搜索</button> &nbsp;
-            <a :href="'/clusters/cluster/nodes?clusterId=' + clusterId" v-if="regionId > 0 || groupId > 0 || installState > 0 || activeState > 0 || keyword.length > 0 || level > 0">[清除条件]</a>
+            <a :href="'/clusters/cluster/nodes?clusterId=' + clusterId" v-if="regionId > 0 || groupId > 0 || groupId < 0 || installState > 0 || activeState > 0 || keyword.length > 0 || level > 0">[清除条件]</a>
 		</div>
 	</div>
 </form>
