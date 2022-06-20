@@ -10,6 +10,7 @@ func init() {
 	TeaGo.BeforeStart(func(server *TeaGo.Server) {
 		server.
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeServer)).
+			Data("teaMenu", "servers").
 			Data("teaSubMenu", "global").
 			Helper(NewHelper()).
 			Prefix("/servers/components").
