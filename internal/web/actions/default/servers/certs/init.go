@@ -15,6 +15,7 @@ func init() {
 		server.
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeServer)).
 			Helper(NewHelper()).
+			Data("teaMenu", "servers").
 			Data("teaSubMenu", "cert").
 			Prefix("/servers/certs").
 			Data("leftMenuItem", "cert").
