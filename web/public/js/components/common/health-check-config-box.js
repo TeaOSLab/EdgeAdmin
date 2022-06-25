@@ -156,12 +156,13 @@ Vue.component("health-check-config-box", {
 <table class="ui table definition selectable">
 	<tbody>
 		<tr>
-			<td class="title">启用</td>
+			<td class="title">启用健康检查</td>
 			<td>
 				<div class="ui checkbox">
 					<input type="checkbox" value="1" v-model="healthCheck.isOn"/>
 					<label></label>
 				</div>
+				<p class="comment">通过访问节点上的网站URL来确定节点是否健康。</p>
 			</td>
 		</tr>
 	</tbody>
@@ -185,7 +186,7 @@ Vue.component("health-check-config-box", {
 							<td>域名</td>
 							<td>
 								<input type="text" v-model="urlHost"/>
-								<p class="comment">已经绑定到此集群的一个域名；如果为空则使用节点IP作为域名。<span class="red" v-if="urlProtocol == 'https' && urlHost.length == 0">如果协议是https，这里必须填写一个已经设置了SSL证书的域名。</span></p>
+								<p class="comment">已经部署到当前集群的一个域名；如果为空则使用节点IP作为域名。<span class="red" v-if="urlProtocol == 'https' && urlHost.length == 0">如果协议是https，这里必须填写一个已经设置了SSL证书的域名。</span></p>
 							</td>
 						</tr>
 						<tr>
@@ -249,24 +250,28 @@ Vue.component("health-check-config-box", {
 			<td>允许的状态码</td>
 			<td>
 				<values-box :values="healthCheck.statusCodes" maxlength="3" @change="changeStatus"></values-box>
+				<p class="comment">允许检测URL返回的状态码列表。</p>
 			</td>
 		</tr>
 		<tr>
 			<td>超时时间</td>
 			<td>
 				<time-duration-box :v-value="healthCheck.timeout"></time-duration-box>
+				<p class="comment">读取检测URL超时时间。</p>
 			</td>	
 		</tr>
 		<tr>
 			<td>连续尝试次数</td>
 			<td>
 				<input type="text" v-model="healthCheck.countTries" style="width: 5em" maxlength="2"/>
+				<p class="comment">如果读取检测URL失败后需要再次尝试的次数。</p>
 			</td>
 		</tr>
 		<tr>
 			<td>每次尝试间隔</td>
 			<td>
 				<time-duration-box :v-value="healthCheck.tryDelay"></time-duration-box>
+				<p class="comment">如果读取检测URL失败后再次尝试时的间隔时间。</p>
 			</td>
 		</tr>
 		<tr>
@@ -287,7 +292,7 @@ Vue.component("health-check-config-box", {
 			<td>记录访问日志</td>
 			<td>
 				<checkbox v-model="healthCheck.accessLogIsOn"></checkbox>
-				<p class="comment">是否记录健康检查的访问日志。</p>
+				<p class="comment">记录健康检查的访问日志。</p>
 			</td>
 		</tr>
 	</tbody>
