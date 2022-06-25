@@ -59,12 +59,19 @@ Vue.component("http-access-log-box", {
 		},
 		deselect: function () {
 			this.$refs.box.parentNode.style.cssText = ""
+		},
+		mismatch: function () {
+			teaweb.warn("当前访问没有匹配到任何网站服务")
 		}
 	},
 	template: `<div style="word-break: break-all" :style="{'color': (accessLog.status >= 400) ? '#dc143c' : ''}" ref="box">
 	<div>
 		<a v-if="accessLog.node != null && accessLog.node.nodeCluster != null" :href="'/clusters/cluster/node?nodeId=' + accessLog.node.id + '&clusterId=' + accessLog.node.nodeCluster.id" title="点击查看节点详情" target="_top"><span class="grey">[{{accessLog.node.name}}<span v-if="!accessLog.node.name.endsWith('节点')">节点</span>]</span></a>
-		<a :href="'/servers/server/log?serverId=' + accessLog.serverId" title="点击到网站服务" v-if="vShowServerLink"><span class="grey">[服务]</span></a>
+		
+		<!-- 服务 -->
+		<a :href="'/servers/server/log?serverId=' + accessLog.serverId" title="点击到网站服务" v-if="vShowServerLink && accessLog.serverId > 0"><span class="grey">[服务]</span></a>
+		<span v-if="vShowServerLink && (accessLog.serverId == null || accessLog.serverId == 0)" @click.prevent="mismatch()"><span class="disabled">[服务]</span></span>
+		
 		<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey"><ip-box :v-ip="accessLog.remoteAddr">[{{accessLog.region}}]</ip-box></span> <ip-box><keyword :v-word="vKeyword">{{accessLog.remoteAddr}}</keyword></ip-box> [{{accessLog.timeLocal}}] <em>&quot;<keyword :v-word="vKeyword">{{accessLog.requestMethod}}</keyword> {{accessLog.scheme}}://<keyword :v-word="vKeyword">{{accessLog.host}}</keyword><keyword :v-word="vKeyword">{{accessLog.requestURI}}</keyword> <a :href="accessLog.scheme + '://' + accessLog.host + accessLog.requestURI" target="_blank" title="新窗口打开" class="disabled"><i class="external icon tiny"></i> </a> {{accessLog.proto}}&quot; </em> <keyword :v-word="vKeyword">{{accessLog.status}}</keyword> <code-label v-if="accessLog.attrs != null && (accessLog.attrs['cache.status'] == 'HIT' || accessLog.attrs['cache.status'] == 'STALE')">cache {{accessLog.attrs['cache.status'].toLowerCase()}}</code-label> <code-label v-if="accessLog.firewallActions != null && accessLog.firewallActions.length > 0">waf {{accessLog.firewallActions}}</code-label> <span v-if="accessLog.tags != null && accessLog.tags.length > 0">- <code-label v-for="tag in accessLog.tags" :key="tag">{{tag}}</code-label></span>
 		
 		<span  v-if="accessLog.wafInfo != null">

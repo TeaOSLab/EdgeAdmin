@@ -140,7 +140,7 @@ Vue.component("http-firewall-captcha-options", {
 							<input type="text" style="width: 5em" maxlength="9" v-model="options.failBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 							<span class="ui label">秒</span>
 						</div>
-						<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时间；如果为0表示不自动拦截。</p>
+						<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时长；如果为0表示不自动拦截。</p>
 					</td>
 				</tr>
 				<tr>

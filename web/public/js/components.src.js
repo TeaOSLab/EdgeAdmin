@@ -7738,12 +7738,19 @@ Vue.component("http-access-log-box", {
 		},
 		deselect: function () {
 			this.$refs.box.parentNode.style.cssText = ""
+		},
+		mismatch: function () {
+			teaweb.warn("当前访问没有匹配到任何网站服务")
 		}
 	},
 	template: `<div style="word-break: break-all" :style="{'color': (accessLog.status >= 400) ? '#dc143c' : ''}" ref="box">
 	<div>
 		<a v-if="accessLog.node != null && accessLog.node.nodeCluster != null" :href="'/clusters/cluster/node?nodeId=' + accessLog.node.id + '&clusterId=' + accessLog.node.nodeCluster.id" title="点击查看节点详情" target="_top"><span class="grey">[{{accessLog.node.name}}<span v-if="!accessLog.node.name.endsWith('节点')">节点</span>]</span></a>
-		<a :href="'/servers/server/log?serverId=' + accessLog.serverId" title="点击到网站服务" v-if="vShowServerLink"><span class="grey">[服务]</span></a>
+		
+		<!-- 服务 -->
+		<a :href="'/servers/server/log?serverId=' + accessLog.serverId" title="点击到网站服务" v-if="vShowServerLink && accessLog.serverId > 0"><span class="grey">[服务]</span></a>
+		<span v-if="vShowServerLink && (accessLog.serverId == null || accessLog.serverId == 0)" @click.prevent="mismatch()"><span class="disabled">[服务]</span></span>
+		
 		<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey"><ip-box :v-ip="accessLog.remoteAddr">[{{accessLog.region}}]</ip-box></span> <ip-box><keyword :v-word="vKeyword">{{accessLog.remoteAddr}}</keyword></ip-box> [{{accessLog.timeLocal}}] <em>&quot;<keyword :v-word="vKeyword">{{accessLog.requestMethod}}</keyword> {{accessLog.scheme}}://<keyword :v-word="vKeyword">{{accessLog.host}}</keyword><keyword :v-word="vKeyword">{{accessLog.requestURI}}</keyword> <a :href="accessLog.scheme + '://' + accessLog.host + accessLog.requestURI" target="_blank" title="新窗口打开" class="disabled"><i class="external icon tiny"></i> </a> {{accessLog.proto}}&quot; </em> <keyword :v-word="vKeyword">{{accessLog.status}}</keyword> <code-label v-if="accessLog.attrs != null && (accessLog.attrs['cache.status'] == 'HIT' || accessLog.attrs['cache.status'] == 'STALE')">cache {{accessLog.attrs['cache.status'].toLowerCase()}}</code-label> <code-label v-if="accessLog.firewallActions != null && accessLog.firewallActions.length > 0">waf {{accessLog.firewallActions}}</code-label> <span v-if="accessLog.tags != null && accessLog.tags.length > 0">- <code-label v-for="tag in accessLog.tags" :key="tag">{{tag}}</code-label></span>
 		
 		<span  v-if="accessLog.wafInfo != null">
@@ -11014,7 +11021,7 @@ Vue.component("http-firewall-captcha-options", {
 							<input type="text" style="width: 5em" maxlength="9" v-model="options.failBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 							<span class="ui label">秒</span>
 						</div>
-						<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时间；如果为0表示不自动拦截。</p>
+						<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时长；如果为0表示不自动拦截。</p>
 					</td>
 				</tr>
 				<tr>
@@ -12703,12 +12710,13 @@ Vue.component("health-check-config-box", {
 <table class="ui table definition selectable">
 	<tbody>
 		<tr>
-			<td class="title">启用</td>
+			<td class="title">启用健康检查</td>
 			<td>
 				<div class="ui checkbox">
 					<input type="checkbox" value="1" v-model="healthCheck.isOn"/>
 					<label></label>
 				</div>
+				<p class="comment">通过访问节点上的网站URL来确定节点是否健康。</p>
 			</td>
 		</tr>
 	</tbody>
@@ -12732,7 +12740,7 @@ Vue.component("health-check-config-box", {
 							<td>域名</td>
 							<td>
 								<input type="text" v-model="urlHost"/>
-								<p class="comment">已经绑定到此集群的一个域名；如果为空则使用节点IP作为域名。<span class="red" v-if="urlProtocol == 'https' && urlHost.length == 0">如果协议是https，这里必须填写一个已经设置了SSL证书的域名。</span></p>
+								<p class="comment">已经部署到当前集群的一个域名；如果为空则使用节点IP作为域名。<span class="red" v-if="urlProtocol == 'https' && urlHost.length == 0">如果协议是https，这里必须填写一个已经设置了SSL证书的域名。</span></p>
 							</td>
 						</tr>
 						<tr>
@@ -12796,24 +12804,28 @@ Vue.component("health-check-config-box", {
 			<td>允许的状态码</td>
 			<td>
 				<values-box :values="healthCheck.statusCodes" maxlength="3" @change="changeStatus"></values-box>
+				<p class="comment">允许检测URL返回的状态码列表。</p>
 			</td>
 		</tr>
 		<tr>
 			<td>超时时间</td>
 			<td>
 				<time-duration-box :v-value="healthCheck.timeout"></time-duration-box>
+				<p class="comment">读取检测URL超时时间。</p>
 			</td>	
 		</tr>
 		<tr>
 			<td>连续尝试次数</td>
 			<td>
 				<input type="text" v-model="healthCheck.countTries" style="width: 5em" maxlength="2"/>
+				<p class="comment">如果读取检测URL失败后需要再次尝试的次数。</p>
 			</td>
 		</tr>
 		<tr>
 			<td>每次尝试间隔</td>
 			<td>
 				<time-duration-box :v-value="healthCheck.tryDelay"></time-duration-box>
+				<p class="comment">如果读取检测URL失败后再次尝试时的间隔时间。</p>
 			</td>
 		</tr>
 		<tr>
@@ -12834,7 +12846,7 @@ Vue.component("health-check-config-box", {
 			<td>记录访问日志</td>
 			<td>
 				<checkbox v-model="healthCheck.accessLogIsOn"></checkbox>
-				<p class="comment">是否记录健康检查的访问日志。</p>
+				<p class="comment">记录健康检查的访问日志。</p>
 			</td>
 		</tr>
 	</tbody>
