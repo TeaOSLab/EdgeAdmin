@@ -98,7 +98,7 @@ func (this *AddPopupAction) RunPost(params struct {
 		} else if params.Protocol == "https" {
 			addr += ":443"
 		} else {
-			this.Fail("地址中需要带有端口")
+			this.FailField("addr", "源站地址中需要带有端口")
 		}
 		portIndex = strings.LastIndex(addr, ":")
 	}
@@ -107,19 +107,19 @@ func (this *AddPopupAction) RunPost(params struct {
 
 	// 检查端口号
 	if port == "0" {
-		this.Fail("端口号不能为0")
+		this.FailField("addr", "源站端口号不能为0")
 	}
 	if !configutils.HasVariables(port) {
 		// 必须是整数
 		if !regexp.MustCompile(`^\d+$`).MatchString(port) {
-			this.Fail("端口号只能为整数")
+			this.FailField("addr", "源站端口号只能为整数")
 		}
 		var portInt = types.Int(port)
 		if portInt == 0 {
-			this.Fail("端口号不能为0")
+			this.FailField("addr", "源站端口号不能为0")
 		}
 		if portInt > 65535 {
-			this.Fail("端口号不能大于65535")
+			this.FailField("addr", "源站端口号不能大于65535")
 		}
 	}
 

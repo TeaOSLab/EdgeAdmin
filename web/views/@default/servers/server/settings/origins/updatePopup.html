@@ -46,7 +46,7 @@
                     <ssl-certs-box :v-single-mode="true" :v-cert="origin.cert" :v-view-size="'mini'" :v-description="'可以选择连接源站使用的证书。'"></ssl-certs-box>
                 </td>
             </tr>
-            <tr v-if="isHTTP">
+            <tr v-if="isHTTP || origin.protocol == 'tls'">
                 <td>回源主机名</td>
                 <td>
                     <input type="text" name="host"  v-model="origin.host" placeholder="比如example.com" maxlength="100"/>
