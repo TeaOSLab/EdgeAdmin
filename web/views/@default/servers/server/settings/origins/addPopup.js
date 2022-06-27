@@ -6,6 +6,10 @@ Tea.context(function () {
 
 	if (this.isHTTP) {
 		this.protocol = "http"
+	} else if (this.serverType == "tcpProxy") {
+		this.protocol = "tcp"
+	} else if (this.serverType == "udpProxy") {
+		this.protocol = "udp"
 	}
 
 	this.changeProtocol = function () {
