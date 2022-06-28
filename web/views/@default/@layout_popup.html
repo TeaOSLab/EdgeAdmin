@@ -4,7 +4,11 @@
 	<title>{$.teaTitle}控制台</title>
 	<meta charset="UTF-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-	<link rel="shortcut icon" href="/images/favicon.png"/>
+    {$if eq .teaFaviconFileId 0}
+    <link rel="shortcut icon" href="/images/favicon.png"/>
+    {$else}
+    <link rel="shortcut icon" href="/ui/image/{$.teaFaviconFileId}"/>
+    {$end}
 	<link rel="stylesheet" type="text/css" href="/_/@default/@layout_popup.css" media="all"/>
 
 	<link rel="stylesheet" type="text/css" href="/css/semantic.iframe.min.css?v=bRafhK" media="all"/>
