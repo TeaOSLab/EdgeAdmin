@@ -417,48 +417,191 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		</tbody>
 	</table>
 	<div class="margin"></div>
-</div>`}),Vue.component("ns-route-ranges-box",{props:["v-ranges"],data:function(){let e=this.vRanges;return{ranges:e=null==e?[]:e,isAdding:!1,isAddingBatch:!1,ipRangeFrom:"",ipRangeTo:"",batchIPRange:""}},methods:{add:function(){this.isAdding=!0;let e=this;setTimeout(function(){e.$refs.ipRangeFrom.focus()},100)},remove:function(e){this.ranges.$remove(e)},cancelIPRange:function(){this.isAdding=!1,this.ipRangeFrom="",this.ipRangeTo=""},confirmIPRange:function(){let e=this;this.ipRangeFrom=this.ipRangeFrom.trim(),this.validateIP(this.ipRangeFrom)?(this.ipRangeTo=this.ipRangeTo.trim(),this.validateIP(this.ipRangeTo)?(this.ranges.push({type:"ipRange",params:{ipFrom:this.ipRangeFrom,ipTo:this.ipRangeTo}}),this.cancelIPRange()):teaweb.warn("结束IP填写错误",function(){e.$refs.ipRangeTo.focus()})):teaweb.warn("开始IP填写错误",function(){e.$refs.ipRangeFrom.focus()})},addBatch:function(){this.isAddingBatch=!0;let e=this;setTimeout(function(){e.$refs.batchIPRange.focus()},100)},cancelBatchIPRange:function(){this.isAddingBatch=!1,this.batchIPRange=""},confirmBatchIPRange:function(){let a=this,e=this.batchIPRange;if(0==e.length)teaweb.warn("请填写要加入的IP范围",function(){a.$refs.batchIPRange.focus()});else{let n=[],o="";e.split("\n").forEach(function(t){if(0!=(t=t.trim()).length){let e=(t=t.replace("，",",")).split(",");var i,s;2!=e.length?o=t:(i=e[0].trim(),s=e[1].trim(),a.validateIP(i)&&a.validateIP(s)?n.push({type:"ipRange",params:{ipFrom:i,ipTo:s}}):o=t)}}),0<o.length?teaweb.warn("'"+o+"'格式错误",function(){a.$refs.batchIPRange.focus()}):(n.forEach(function(e){a.ranges.push(e)}),this.cancelBatchIPRange())}},validateIP:function(e){if(!e.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/))return!1;let t=e.split("."),i=!0;return t.forEach(function(e){255<parseInt(e)&&(i=!1)}),i}},template:`<div>
+</div>`}),Vue.component("ns-route-ranges-box",{props:["v-ranges"],data:function(){let e=this.vRanges;return{ranges:e=null==e?[]:e,isAdding:!1,isAddingBatch:!1,rangeType:"ipRange",isReverse:!1,ipRangeFrom:"",ipRangeTo:"",batchIPRange:"",ipCIDR:"",batchIPCIDR:"",regions:[],regionType:"country"}},methods:{addIPRange:function(){this.isAdding=!0;let e=this;setTimeout(function(){e.$refs.ipRangeFrom.focus()},100)},addCIDR:function(){this.isAdding=!0;let e=this;setTimeout(function(){e.$refs.ipCIDR.focus()},100)},addRegions:function(){this.isAdding=!0},addRegion:function(e){this.regionType=e},remove:function(e){this.ranges.$remove(e)},cancelIPRange:function(){this.isAdding=!1,this.ipRangeFrom="",this.ipRangeTo="",this.isReverse=!1},cancelIPCIDR:function(){this.isAdding=!1,this.ipCIDR="",this.isReverse=!1},cancelRegions:function(){this.isAdding=!1,this.regions=[],this.regionType="country",this.isReverse=!1},confirmIPRange:function(){let e=this;this.ipRangeFrom=this.ipRangeFrom.trim(),this.validateIP(this.ipRangeFrom)?(this.ipRangeTo=this.ipRangeTo.trim(),this.validateIP(this.ipRangeTo)?(this.ranges.push({type:"ipRange",params:{ipFrom:this.ipRangeFrom,ipTo:this.ipRangeTo,isReverse:this.isReverse}}),this.cancelIPRange()):teaweb.warn("结束IP填写错误",function(){e.$refs.ipRangeTo.focus()})):teaweb.warn("开始IP填写错误",function(){e.$refs.ipRangeFrom.focus()})},confirmIPCIDR:function(){let e=this;0==this.ipCIDR.length?teaweb.warn("请填写CIDR",function(){e.$refs.ipCIDR.focus()}):this.validateCIDR(this.ipCIDR)?(this.ranges.push({type:"cidr",params:{cidr:this.ipCIDR,isReverse:this.isReverse}}),this.cancelIPCIDR()):teaweb.warn("请输入正确的CIDR",function(){e.$refs.ipCIDR.focus()})},confirmRegions:function(){0==this.regions.length||this.ranges.push({type:"region",params:{regions:this.regions,isReverse:this.isReverse}}),this.cancelRegions()},addBatchIPRange:function(){this.isAddingBatch=!0;let e=this;setTimeout(function(){e.$refs.batchIPRange.focus()},100)},addBatchCIDR:function(){this.isAddingBatch=!0;let e=this;setTimeout(function(){e.$refs.batchIPCIDR.focus()},100)},cancelBatchIPRange:function(){this.isAddingBatch=!1,this.batchIPRange="",this.isReverse=!1},cancelBatchIPCIDR:function(){this.isAddingBatch=!1,this.batchIPCIDR="",this.isReverse=!1},confirmBatchIPRange:function(){let a=this,e=this.batchIPRange;if(0==e.length)teaweb.warn("请填写要加入的IP范围",function(){a.$refs.batchIPRange.focus()});else{let n=[],o="";e.split("\n").forEach(function(t){if(0!=(t=t.trim()).length){let e=(t=t.replace("，",",")).split(",");var i,s;2!=e.length?o=t:(i=e[0].trim(),s=e[1].trim(),a.validateIP(i)&&a.validateIP(s)?n.push({type:"ipRange",params:{ipFrom:i,ipTo:s,isReverse:a.isReverse}}):o=t)}}),0<o.length?teaweb.warn("'"+o+"'格式错误",function(){a.$refs.batchIPRange.focus()}):(n.forEach(function(e){a.ranges.push(e)}),this.cancelBatchIPRange())}},confirmBatchIPCIDR:function(){let n=this,e=this.batchIPCIDR;if(0==e.length)teaweb.warn("请填写要加入的CIDR",function(){n.$refs.batchIPCIDR.focus()});else{let i=[],s="";e.split("\n").forEach(function(e){var t=e.trim();0!=t.length&&(n.validateCIDR(t)?i.push({type:"cidr",params:{cidr:t,isReverse:n.isReverse}}):s=e)}),0<s.length?teaweb.warn("'"+s+"'格式错误",function(){n.$refs.batchIPCIDR.focus()}):(i.forEach(function(e){n.ranges.push(e)}),this.cancelBatchIPCIDR())}},selectRegionCountry:function(e){null!=e&&(this.regions.push({type:"country",id:e.id,name:e.name}),this.$refs.regionCountryComboBox.clear())},selectRegionProvince:function(e){null!=e&&(this.regions.push({type:"province",id:e.id,name:e.name}),this.$refs.regionProvinceComboBox.clear())},selectRegionCity:function(e){null!=e&&(this.regions.push({type:"city",id:e.id,name:e.name}),this.$refs.regionCityComboBox.clear())},selectRegionProvider:function(e){null!=e&&(this.regions.push({type:"provider",id:e.id,name:e.name}),this.$refs.regionProviderComboBox.clear())},removeRegion:function(e){this.regions.$remove(e)},validateIP:function(i){if(0!=i.length){if(0<=i.indexOf(":")){let e=i.split(":");if(8<e.length)return!1;let t=!0;return e.forEach(function(e){/^[\da-fA-F]{0,4}$/.test(e)||(t=!1)}),t}if(!i.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/))return!1;let e=i.split("."),t=!0;return e.forEach(function(e){255<parseInt(e)&&(t=!1)}),t}},validateCIDR:function(e){var t=e.split("/");if(2!=t.length)return!1;var i=t[0];if(!this.validateIP(i))return!1;i=t[1];return!!/^\d{1,3}$/.test(i)&&(i=parseInt(i,10),0<=e.indexOf(":")?i<=128:i<=32)},updateRangeType:function(e){this.rangeType=e}},template:`<div>
 	<input type="hidden" name="rangesJSON" :value="JSON.stringify(ranges)"/>
 	<div v-if="ranges.length > 0">
 		<div class="ui label tiny basic" v-for="(range, index) in ranges" style="margin-bottom: 0.3em">
+			<span class="red" v-if="range.params.isReverse">[排除]</span>
 			<span v-if="range.type == 'ipRange'">IP范围：</span>
-			{{range.params.ipFrom}} - {{range.params.ipTo}} &nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+			<span v-if="range.type == 'cidr'">CIDR：</span>
+			<span v-if="range.type == 'region'">区域：</span>
+			<span v-if="range.type == 'ipRange'">{{range.params.ipFrom}} - {{range.params.ipTo}}</span>
+			<span v-if="range.type == 'cidr'">{{range.params.cidr}}</span>
+			<span v-if="range.type == 'region'"><span v-for="(region, index) in range.params.regions">{{region.name}}<span v-if="index < range.params.regions.length - 1">，</span></span></span>
+			 &nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
 		</div>
 		<div class="ui divider"></div>
 	</div>
 	
-	<!-- 添加单个 -->
-	<div style="margin-bottom: 1em" v-show="isAdding">
-		<div class="ui fields inline">
-			<div class="ui field">
-				<input type="text" placeholder="开始IP" maxlength="15" size="15" v-model="ipRangeFrom" ref="ipRangeFrom"  @keyup.enter="confirmIPRange" @keypress.enter.prevent="1"/>
-			</div>
-			<div class="ui field">-</div>
-			<div class="ui field">
-				<input type="text" placeholder="结束IP" maxlength="15" size="15" v-model="ipRangeTo" ref="ipRangeTo" @keyup.enter="confirmIPRange" @keypress.enter.prevent="1"/>
-			</div>
-			<div class="ui field">
-				<button class="ui button tiny" type="button" @click.prevent="confirmIPRange">确定</button> &nbsp;
-				<a href="" @click.prevent="cancelIPRange" title="取消"><i class="icon remove small"></i></a>
-			</div>
+	<!-- IP范围 -->
+	<div v-if="rangeType == 'ipRange'">
+		<!-- 添加单个IP范围 -->
+		<div style="margin-bottom: 1em" v-show="isAdding">
+			<table class="ui table">
+				<tr>
+					<td class="title">开始IP *</td>
+					<td>
+						<input type="text" placeholder="开始IP" maxlength="40" size="40" style="width: 15em" v-model="ipRangeFrom" ref="ipRangeFrom"  @keyup.enter="confirmIPRange" @keypress.enter.prevent="1"/>
+					</td>
+				</tr>
+				<tr>
+					<td>结束IP *</td>
+					<td>
+						<input type="text" placeholder="结束IP" maxlength="40" size="40" style="width: 15em" v-model="ipRangeTo" ref="ipRangeTo" @keyup.enter="confirmIPRange" @keypress.enter.prevent="1"/>
+					</td>
+				</tr>
+				<tr>
+					<td>排除</td>
+					<td>
+						<checkbox v-model="isReverse"></checkbox>
+						<p class="comment">选中后表示线路中排除当前条件。</p>
+					</td>
+				</tr>
+			</table>
+			<button class="ui button tiny" type="button" @click.prevent="confirmIPRange">确定</button> &nbsp;
+					<a href="" @click.prevent="cancelIPRange" title="取消"><i class="icon remove small"></i></a>
 		</div>
-	</div>
-
-	<!-- 添加多个 -->
-	<div style="margin-bottom: 1em" v-show="isAddingBatch">
-		<div class="ui field">
-			<textarea rows="5" ref="batchIPRange" v-model="batchIPRange"></textarea>	
-			<p class="comment">每行一条，格式为<code-label>开始IP,结束IP</code-label>，比如<code-label>192.168.1.100,192.168.1.200</code-label>。</p>	
-		</div>
-		<div class="ui field">
+	
+		<!-- 添加多个IP范围 -->
+		<div style="margin-bottom: 1em" v-show="isAddingBatch">
+			<table class="ui table">
+				<tr>
+					<td class="title">IP范围列表 *</td>
+					<td>
+						<textarea rows="5" ref="batchIPRange" v-model="batchIPRange"></textarea>	
+						<p class="comment">每行一条，格式为<code-label>开始IP,结束IP</code-label>，比如<code-label>192.168.1.100,192.168.1.200</code-label>。</p>	
+					</td>
+				</tr>
+				<tr>
+					<td>排除</td>
+					<td>
+						<checkbox v-model="isReverse"></checkbox>
+						<p class="comment">选中后表示线路中排除当前条件。</p>
+					</td>
+				</tr>
+			</table>
 			<button class="ui button tiny" type="button" @click.prevent="confirmBatchIPRange">确定</button> &nbsp;
-			<a href="" @click.prevent="cancelBatchIPRange" title="取消"><i class="icon remove small"></i></a>
+				<a href="" @click.prevent="cancelBatchIPRange" title="取消"><i class="icon remove small"></i></a>
+		</div>
+		
+		<div v-if="!isAdding && !isAddingBatch">
+			<button class="ui button tiny" type="button" @click.prevent="addIPRange">添加单个IP范围</button> &nbsp;
+			<button class="ui button tiny" type="button" @click.prevent="addBatchIPRange">批量添加IP范围</button>
 		</div>
 	</div>
 	
-	<div v-if="!isAdding && !isAddingBatch">
-		<button class="ui button tiny" type="button" @click.prevent="add">单个添加</button> &nbsp;
-		<button class="ui button tiny" type="button" @click.prevent="addBatch">批量添加</button>
+	<!-- CIDR -->
+	<div v-if="rangeType == 'cidr'">
+		<!-- 添加单个IP范围 -->
+		<div style="margin-bottom: 1em" v-show="isAdding">
+			<table class="ui table">
+				<tr>
+					<td class="title">CIDR *</td>
+					<td>
+						<input type="text" placeholder="IP/MASK" maxlength="40" size="40" style="width: 15em" v-model="ipCIDR" ref="ipCIDR"  @keyup.enter="confirmIPCIDR" @keypress.enter.prevent="1"/>
+						<p class="comment">类似于<code-label>192.168.2.1/24</code-label>。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>排除</td>
+					<td>
+						<checkbox v-model="isReverse"></checkbox>
+						<p class="comment">选中后表示线路中排除当前条件。</p>
+					</td>
+				</tr>
+			</table>
+			<button class="ui button tiny" type="button" @click.prevent="confirmIPCIDR">确定</button> &nbsp;
+					<a href="" @click.prevent="cancelIPCIDR" title="取消"><i class="icon remove small"></i></a>
+		</div>
+		
+		<!-- 添加多个IP范围 -->
+		<div style="margin-bottom: 1em" v-show="isAddingBatch">
+			<table class="ui table">
+				<tr>
+					<td class="title">IP范围列表 *</td>
+					<td>
+						<textarea rows="5" ref="batchIPCIDR" v-model="batchIPCIDR"></textarea>	
+						<p class="comment">每行一条，格式为<code-label>IP/MASK</code-label>，比如<code-label>192.168.2.1/24</code-label>。</p>	
+					</td>
+				</tr>
+				<tr>
+					<td>排除</td>
+					<td>
+						<checkbox v-model="isReverse"></checkbox>
+						<p class="comment">选中后表示线路中排除当前条件。</p>
+					</td>
+				</tr>
+			</table>
+			<button class="ui button tiny" type="button" @click.prevent="confirmBatchIPCIDR">确定</button> &nbsp;
+				<a href="" @click.prevent="cancelBatchIPCIDR" title="取消"><i class="icon remove small"></i></a>
+		</div>
+		
+		<div v-if="!isAdding && !isAddingBatch">
+			<button class="ui button tiny" type="button" @click.prevent="addCIDR">添加单个CIDR</button> &nbsp;
+			<button class="ui button tiny" type="button" @click.prevent="addBatchCIDR">批量添加CIDR</button>
+		</div>
+	</div>
+	
+	<!-- 区域 -->
+	<div v-if="rangeType == 'region'">
+		<!-- 添加区域 -->
+		<div v-if="isAdding">
+			<table class="ui table">
+				<tr>
+					<td>已添加</td>
+					<td>
+						<div v-for="(region, index) in regions" class="ui label small basic">
+							{{region.name}} <a href="" title="删除" @click.prevent="removeRegion(index)"><i class="icon remove small"></i></a>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">添加新<span v-if="regionType == 'country'">国家/地区</span><span v-if="regionType == 'province'">省份</span><span v-if="regionType == 'city'">城市</span><span v-if="regionType == 'provider'">ISP</span>
+					
+					 *</td>
+					<td>
+					 	<!-- region country name -->
+						<div v-if="regionType == 'country'">
+							<combo-box title="" width="14em" data-url="/ui/countryOptions" data-key="countries" placeholder="点这里选择国家/地区" @change="selectRegionCountry" ref="regionCountryComboBox" key="combo-box-country"></combo-box>
+						</div>
+			
+						<!-- region province name -->
+						<div v-if="regionType == 'province'" >
+							<combo-box title="" data-url="/ui/provinceOptions" data-key="provinces" placeholder="点这里选择省份" @change="selectRegionProvince" ref="regionProvinceComboBox" key="combo-box-province"></combo-box>
+						</div>
+			
+						<!-- region city name -->
+						<div v-if="regionType == 'city'" >
+							<combo-box title="" data-url="/ui/cityOptions" data-key="cities" placeholder="点这里选择城市" @change="selectRegionCity" ref="regionCityComboBox" key="combo-box-city"></combo-box>
+						</div>
+			
+						<!-- ISP Name -->
+						<div v-if="regionType == 'provider'" >
+							<combo-box title="" data-url="/ui/providerOptions" data-key="providers" placeholder="点这里选择ISP" @change="selectRegionProvider" ref="regionProviderComboBox" key="combo-box-isp"></combo-box>
+						</div>
+						
+						<div style="margin-top: 1em">
+							<button class="ui button tiny basic" :class="{blue: regionType == 'country'}" type="button" @click.prevent="addRegion('country')">添加国家/地区</button> &nbsp;
+							<button class="ui button tiny basic" :class="{blue: regionType == 'province'}" type="button" @click.prevent="addRegion('province')">添加省份</button> &nbsp;
+							<button class="ui button tiny basic" :class="{blue: regionType == 'city'}" type="button" @click.prevent="addRegion('city')">添加城市</button> &nbsp;
+							<button class="ui button tiny basic" :class="{blue: regionType == 'provider'}" type="button" @click.prevent="addRegion('provider')">ISP</button> &nbsp;
+						</div>
+					</td>	
+				</tr>
+				<tr>
+					<td>排除</td>
+					<td>
+						<checkbox v-model="isReverse"></checkbox>
+						<p class="comment">选中后表示线路中排除当前条件。</p>
+					</td>
+				</tr>
+			</table>
+			<button class="ui button tiny" type="button" @click.prevent="confirmRegions">确定</button> &nbsp;
+				<a href="" @click.prevent="cancelRegions" title="取消"><i class="icon remove small"></i></a>
+		</div>
+		<div v-if="!isAdding && !isAddingBatch">
+			<button class="ui button tiny" type="button" @click.prevent="addRegions">添加区域</button> &nbsp;
+		</div>	
 	</div>
 </div>`}),Vue.component("ns-route-selector",{props:["v-route-code"],mounted:function(){let t=this;Tea.action("/ns/routes/options").post().success(function(e){t.routes=e.data.routes})},data:function(){let e=this.vRouteCode;return{routeCode:e=null==e?"":e,routes:[]}},template:`<div>
 	<div v-if="routes.length > 0">
@@ -2416,7 +2559,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	</tr>
 </table>
 <div class="ui margin"></div>
-</div>`}),Vue.component("http-compression-config-box",{props:["v-compression-config","v-is-location","v-is-group"],mounted:function(){let e=this;sortLoad(function(){e.initSortableTypes()})},data:function(){let t=this.vCompressionConfig,e=(null==(t=null==t?{isPrior:!1,isOn:!1,useDefaultTypes:!0,types:["brotli","gzip","deflate"],level:5,decompressData:!1,gzipRef:null,deflateRef:null,brotliRef:null,minLength:{count:0,unit:"kb"},maxLength:{count:0,unit:"kb"},mimeTypes:["text/*","application/*","font/*"],extensions:[".js",".json",".html",".htm",".xml",".css",".woff2",".txt"],conds:null}:t).types&&(t.types=[]),null==t.mimeTypes&&(t.mimeTypes=[]),null==t.extensions&&(t.extensions=[]),[{name:"Gzip",code:"gzip",isOn:!0},{name:"Deflate",code:"deflate",isOn:!0},{name:"Brotli",code:"brotli",isOn:!0}]),i=[];return t.types.forEach(function(t){e.forEach(function(e){t==e.code&&(e.isOn=!0,i.push(e))})}),e.forEach(function(e){t.types.$contains(e.code)||(e.isOn=!1,i.push(e))}),{config:t,moreOptionsVisible:!1,allTypes:i}},watch:{"config.level":function(e){let t=parseInt(e);isNaN(t)||t<1?t=1:10<t&&(t=10),this.config.level=t}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeExtensions:function(i){i.forEach(function(e,t){0<e.length&&"."!=e[0]&&(i[t]="."+e)}),this.config.extensions=i},changeMimeTypes:function(e){this.config.mimeTypes=e},changeAdvancedVisible:function(){this.moreOptionsVisible=!this.moreOptionsVisible},changeConds:function(e){this.config.conds=e},changeType:function(){this.config.types=[];let t=this;this.allTypes.forEach(function(e){e.isOn&&t.config.types.push(e.code)})},initSortableTypes:function(){let s=document.querySelector("#compression-types-box"),n=this;Sortable.create(s,{draggable:".checkbox",handle:".icon.handle",onStart:function(){},onUpdate:function(e){let t=s.querySelectorAll(".checkbox"),i=[];t.forEach(function(e){e=e.getAttribute("data-code");i.push(e)}),n.config.types=i}})}},template:`<div>
+</div>`}),Vue.component("http-compression-config-box",{props:["v-compression-config","v-is-location","v-is-group"],mounted:function(){let e=this;sortLoad(function(){e.initSortableTypes()})},data:function(){let t=this.vCompressionConfig,e=(null==(t=null==t?{isPrior:!1,isOn:!1,useDefaultTypes:!0,types:["brotli","gzip","zstd","deflate"],level:5,decompressData:!1,gzipRef:null,deflateRef:null,brotliRef:null,minLength:{count:0,unit:"kb"},maxLength:{count:0,unit:"kb"},mimeTypes:["text/*","application/*","font/*"],extensions:[".js",".json",".html",".htm",".xml",".css",".woff2",".txt"],conds:null}:t).types&&(t.types=[]),null==t.mimeTypes&&(t.mimeTypes=[]),null==t.extensions&&(t.extensions=[]),[{name:"Gzip",code:"gzip",isOn:!0},{name:"Deflate",code:"deflate",isOn:!0},{name:"Brotli",code:"brotli",isOn:!0},{name:"ZSTD",code:"zstd",isOn:!0}]),i=[];return t.types.forEach(function(t){e.forEach(function(e){t==e.code&&(e.isOn=!0,i.push(e))})}),e.forEach(function(e){t.types.$contains(e.code)||(e.isOn=!1,i.push(e))}),{config:t,moreOptionsVisible:!1,allTypes:i}},watch:{"config.level":function(e){let t=parseInt(e);isNaN(t)||t<1?t=1:10<t&&(t=10),this.config.level=t}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeExtensions:function(i){i.forEach(function(e,t){0<e.length&&"."!=e[0]&&(i[t]="."+e)}),this.config.extensions=i},changeMimeTypes:function(e){this.config.mimeTypes=e},changeAdvancedVisible:function(){this.moreOptionsVisible=!this.moreOptionsVisible},changeConds:function(e){this.config.conds=e},changeType:function(){this.config.types=[];let t=this;this.allTypes.forEach(function(e){e.isOn&&t.config.types.push(e.code)})},initSortableTypes:function(){let s=document.querySelector("#compression-types-box"),n=this;Sortable.create(s,{draggable:".checkbox",handle:".icon.handle",onStart:function(){},onUpdate:function(e){let t=s.querySelectorAll(".checkbox"),i=[];t.forEach(function(e){e=e.getAttribute("data-code");i.push(e)}),n.config.types=i}})}},template:`<div>
 	<input type="hidden" name="compressionJSON" :value="JSON.stringify(config)"/>
 	<table class="ui table definition selectable">
 		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
@@ -2463,7 +2606,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="config.useDefaultTypes" id="compression-use-default"/>
-						<label v-if="config.useDefaultTypes" for="compression-use-default">使用默认顺序<span class="grey small">（brotli、gzip、deflate）</span></label>
+						<label v-if="config.useDefaultTypes" for="compression-use-default">使用默认顺序<span class="grey small">（brotli、gzip、 zstd、deflate）</span></label>
 						<label v-if="!config.useDefaultTypes" for="compression-use-default">使用默认顺序</label>
 					</div>
 					<div v-show="!config.useDefaultTypes">
@@ -4291,7 +4434,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<!-- 当前选中 -->
 	<div v-if="selectedItem != null">
 		<input type="hidden" :name="name" :value="selectedItem.value"/>
-		<a href="" class="ui label basic" style="line-height: 1.4; font-weight: normal; font-size: 1em" ref="selectedLabel" @click.prevent="submitForm"><span>{{title}}：{{selectedItem.name}}</span>
+		<a href="" class="ui label basic" style="line-height: 1.4; font-weight: normal; font-size: 1em" ref="selectedLabel" @click.prevent="submitForm"><span><span v-if="title != null && title.length > 0">{{title}}：</span>{{selectedItem.name}}</span>
 			<span title="清除" @click.prevent="reset"><i class="icon remove small"></i></span>
 		</a>
 	</div>
