@@ -1,6 +1,7 @@
 package servers
 
 import (
+	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
@@ -33,6 +34,10 @@ func (this *AddOriginPopupAction) RunPost(params struct {
 	Protocol string
 	Addr     string
 
+	DomainsJSON []byte
+	Host        string
+	FollowPort  bool
+
 	Must *actions.Must
 }) {
 	params.Must.
@@ -50,7 +55,7 @@ func (this *AddOriginPopupAction) RunPost(params struct {
 	}
 
 	addr = regexp.MustCompile(`\s+`).ReplaceAllString(addr, "")
-	portIndex := strings.LastIndex(addr, ":")
+	var portIndex = strings.LastIndex(addr, ":")
 	if portIndex < 0 {
 		if params.Protocol == "http" {
 			addr += ":80"
@@ -82,6 +87,21 @@ func (this *AddOriginPopupAction) RunPost(params struct {
 		}
 	}
 
+	// 专属域名
+	var domains = []string{}
+	if len(params.DomainsJSON) > 0 {
+		err := json.Unmarshal(params.DomainsJSON, &domains)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+
+		// 去除可能误加的斜杠
+		for index, domain := range domains {
+			domains[index] = strings.TrimSuffix(domain, "/")
+		}
+	}
+
 	resp, err := this.RPC().OriginRPC().CreateOrigin(this.AdminContext(), &pb.CreateOriginRequest{
 		Name: "",
 		Addr: &pb.NetworkAddress{
@@ -92,6 +112,9 @@ func (this *AddOriginPopupAction) RunPost(params struct {
 		Description: "",
 		Weight:      10,
 		IsOn:        true,
+		Domains:     domains,
+		Host:        params.Host,
+		FollowPort:  params.FollowPort,
 	})
 	if err != nil {
 		this.ErrorPage(err)

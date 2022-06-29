@@ -26,14 +26,14 @@ func (this *IndexAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	serverType := serverTypeResp.Type
+	var serverType = serverTypeResp.Type
 
 	reverseProxyResp, err := this.RPC().HTTPLocationRPC().FindAndInitHTTPLocationReverseProxyConfig(this.AdminContext(), &pb.FindAndInitHTTPLocationReverseProxyConfigRequest{LocationId: params.LocationId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	reverseProxyRef := &serverconfigs.ReverseProxyRef{}
+	var reverseProxyRef = &serverconfigs.ReverseProxyRef{}
 	err = json.Unmarshal(reverseProxyResp.ReverseProxyRefJSON, reverseProxyRef)
 	if err != nil {
 		this.ErrorPage(err)
@@ -41,7 +41,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	this.Data["reverseProxyRef"] = reverseProxyRef
 
-	reverseProxy := &serverconfigs.ReverseProxyConfig{}
+	var reverseProxy = &serverconfigs.ReverseProxyConfig{}
 	err = json.Unmarshal(reverseProxyResp.ReverseProxyJSON, reverseProxy)
 	if err != nil {
 		this.ErrorPage(err)
@@ -51,21 +51,22 @@ func (this *IndexAction) RunGet(params struct {
 
 	this.Data["serverType"] = serverType
 
-	primaryOriginMaps := []maps.Map{}
-	backupOriginMaps := []maps.Map{}
+	var primaryOriginMaps = []maps.Map{}
+	var backupOriginMaps = []maps.Map{}
 	for _, originConfig := range reverseProxy.PrimaryOrigins {
 		if len(originConfig.Domains) == 0 {
 			originConfig.Domains = []string{}
 		}
-		m := maps.Map{
-			"id":      originConfig.Id,
-			"weight":  originConfig.Weight,
-			"addr":    originConfig.Addr.Protocol.String() + "://" + originConfig.Addr.Host + ":" + originConfig.Addr.PortRange,
-			"name":    originConfig.Name,
-			"isOn":    originConfig.IsOn,
-			"domains": originConfig.Domains,
-			"hasCert": originConfig.Cert != nil,
-			"host":    originConfig.RequestHost,
+		var m = maps.Map{
+			"id":         originConfig.Id,
+			"weight":     originConfig.Weight,
+			"addr":       originConfig.Addr.Protocol.String() + "://" + originConfig.Addr.Host + ":" + originConfig.Addr.PortRange,
+			"name":       originConfig.Name,
+			"isOn":       originConfig.IsOn,
+			"domains":    originConfig.Domains,
+			"hasCert":    originConfig.Cert != nil,
+			"host":       originConfig.RequestHost,
+			"followPort": originConfig.FollowPort,
 		}
 		primaryOriginMaps = append(primaryOriginMaps, m)
 	}
@@ -73,15 +74,16 @@ func (this *IndexAction) RunGet(params struct {
 		if len(originConfig.Domains) == 0 {
 			originConfig.Domains = []string{}
 		}
-		m := maps.Map{
-			"id":      originConfig.Id,
-			"weight":  originConfig.Weight,
-			"addr":    originConfig.Addr.Protocol.String() + "://" + originConfig.Addr.Host + ":" + originConfig.Addr.PortRange,
-			"name":    originConfig.Name,
-			"isOn":    originConfig.IsOn,
-			"domains": originConfig.Domains,
-			"hasCert": originConfig.Cert != nil,
-			"host":    originConfig.RequestHost,
+		var m = maps.Map{
+			"id":         originConfig.Id,
+			"weight":     originConfig.Weight,
+			"addr":       originConfig.Addr.Protocol.String() + "://" + originConfig.Addr.Host + ":" + originConfig.Addr.PortRange,
+			"name":       originConfig.Name,
+			"isOn":       originConfig.IsOn,
+			"domains":    originConfig.Domains,
+			"hasCert":    originConfig.Cert != nil,
+			"host":       originConfig.RequestHost,
+			"followPort": originConfig.FollowPort,
 		}
 		backupOriginMaps = append(backupOriginMaps, m)
 	}
