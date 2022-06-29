@@ -110,6 +110,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		"cert":         config.Cert,
 		"domains":      config.Domains,
 		"host":         config.RequestHost,
+		"followPort":   config.FollowPort,
 	}
 
 	this.Show()
@@ -135,6 +136,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 
 	DomainsJSON []byte
 	Host        string
+	FollowPort  bool
 
 	Description string
 	IsOn        bool
@@ -274,6 +276,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		CertRefJSON:     certRefJSON,
 		Domains:         domains,
 		Host:            params.Host,
+		FollowPort:      params.FollowPort,
 	})
 	if err != nil {
 		this.ErrorPage(err)

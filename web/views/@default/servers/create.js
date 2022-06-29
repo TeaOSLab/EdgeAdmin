@@ -45,6 +45,7 @@ Tea.context(function () {
 
 	this.addOrigin = function () {
 		teaweb.popup("/servers/addOriginPopup?serverType=" + this.serverType, {
+			height: "27em",
 			callback: function (resp) {
 				this.origins.push(resp.data.origin);
 			}

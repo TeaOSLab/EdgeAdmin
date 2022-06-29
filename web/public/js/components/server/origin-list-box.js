@@ -86,10 +86,11 @@ Vue.component("origin-list-table", {
 	</thead>
 	<tr v-for="origin in vOrigins">
 		<td :class="{disabled:!origin.isOn}"><a href="" @click.prevent="updateOrigin(origin.id)">{{origin.addr}} &nbsp;<i class="icon expand small"></i></a>
-			<div style="margin-top: 0.3em" v-if="origin.name.length > 0 || origin.hasCert || (origin.host != null && origin.host.length > 0) || (origin.domains != null && origin.domains.length > 0)">
+			<div style="margin-top: 0.3em" v-if="origin.name.length > 0 || origin.hasCert || (origin.host != null && origin.host.length > 0) || origin.followPort || (origin.domains != null && origin.domains.length > 0)">
 				<tiny-basic-label v-if="origin.name.length > 0">{{origin.name}}</tiny-basic-label>
 				<tiny-basic-label v-if="origin.hasCert">证书</tiny-basic-label>
 				<tiny-basic-label v-if="origin.host != null && origin.host.length > 0">主机名: {{origin.host}}</tiny-basic-label>
+				<tiny-basic-label v-if="origin.followPort">端口跟随</tiny-basic-label>
 				<span v-if="origin.domains != null && origin.domains.length > 0"><tiny-basic-label v-for="domain in origin.domains">匹配: {{domain}}</tiny-basic-label></span>
 			</div>
 		</td>

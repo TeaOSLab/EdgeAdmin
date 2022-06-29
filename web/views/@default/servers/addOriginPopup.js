@@ -4,8 +4,14 @@ Tea.context(function () {
 
 	this.addrError = ""
 
+	// 当前服务协议
+	this.isHTTP = (this.serverType == "httpProxy" || this.serverType == "httpWeb")
 	if (this.serverType == "httpProxy") {
 		this.protocol = "http"
+	} else if (this.serverType == "tcpProxy") {
+		this.protocol = "tcp"
+	} else if (this.serverType == "udpProxy") {
+		this.protocol = "udp"
 	}
 
 	this.changeProtocol = function () {

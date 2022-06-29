@@ -29,11 +29,14 @@ Vue.component("combo-box", {
 		}
 
 		// 设定菜单宽度
-		let inputWidth = this.$refs.searchBox.offsetWidth
-		if (inputWidth != null && inputWidth > 0) {
-			this.$refs.menu.style.width = inputWidth + "px"
-		} else if (this.styleWidth.length > 0) {
-			this.$refs.menu.style.width = this.styleWidth
+		let searchBox = this.$refs.searchBox
+		if (searchBox != null) {
+			let inputWidth = searchBox.offsetWidth
+			if (inputWidth != null && inputWidth > 0) {
+				this.$refs.menu.style.width = inputWidth + "px"
+			} else if (this.styleWidth.length > 0) {
+				this.$refs.menu.style.width = this.styleWidth
+			}
 		}
 	},
 	data: function () {
