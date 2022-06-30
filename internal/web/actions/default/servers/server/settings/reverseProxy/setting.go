@@ -55,9 +55,7 @@ func (this *SettingAction) RunPost(params struct {
 }) {
 	defer this.CreateLogInfo("修改代理服务 %d 的反向代理设置", params.ServerId)
 
-	// TODO 校验配置
-
-	reverseProxyConfig := &serverconfigs.ReverseProxyConfig{}
+	var reverseProxyConfig = &serverconfigs.ReverseProxyConfig{}
 	err := json.Unmarshal(params.ReverseProxyJSON, reverseProxyConfig)
 	if err != nil {
 		this.ErrorPage(err)
@@ -118,20 +116,21 @@ func (this *SettingAction) RunPost(params struct {
 
 	// 设置反向代理相关信息
 	_, err = this.RPC().ReverseProxyRPC().UpdateReverseProxy(this.AdminContext(), &pb.UpdateReverseProxyRequest{
-		ReverseProxyId:    reverseProxyConfig.Id,
-		RequestHostType:   types.Int32(reverseProxyConfig.RequestHostType),
-		RequestHost:       reverseProxyConfig.RequestHost,
-		RequestURI:        reverseProxyConfig.RequestURI,
-		StripPrefix:       reverseProxyConfig.StripPrefix,
-		AutoFlush:         reverseProxyConfig.AutoFlush,
-		AddHeaders:        reverseProxyConfig.AddHeaders,
-		ConnTimeoutJSON:   connTimeoutJSON,
-		ReadTimeoutJSON:   readTimeoutJSON,
-		IdleTimeoutJSON:   idleTimeoutJSON,
-		MaxConns:          types.Int32(reverseProxyConfig.MaxConns),
-		MaxIdleConns:      types.Int32(reverseProxyConfig.MaxIdleConns),
-		ProxyProtocolJSON: proxyProtocolJSON,
-		FollowRedirects:   reverseProxyConfig.FollowRedirects,
+		ReverseProxyId:           reverseProxyConfig.Id,
+		RequestHostType:          types.Int32(reverseProxyConfig.RequestHostType),
+		RequestHost:              reverseProxyConfig.RequestHost,
+		RequestURI:               reverseProxyConfig.RequestURI,
+		StripPrefix:              reverseProxyConfig.StripPrefix,
+		AutoFlush:                reverseProxyConfig.AutoFlush,
+		AddHeaders:               reverseProxyConfig.AddHeaders,
+		ConnTimeoutJSON:          connTimeoutJSON,
+		ReadTimeoutJSON:          readTimeoutJSON,
+		IdleTimeoutJSON:          idleTimeoutJSON,
+		MaxConns:                 types.Int32(reverseProxyConfig.MaxConns),
+		MaxIdleConns:             types.Int32(reverseProxyConfig.MaxIdleConns),
+		ProxyProtocolJSON:        proxyProtocolJSON,
+		FollowRedirects:          reverseProxyConfig.FollowRedirects,
+		RequestHostExcludingPort: reverseProxyConfig.RequestHostExcludingPort,
 	})
 	if err != nil {
 		this.ErrorPage(err)
