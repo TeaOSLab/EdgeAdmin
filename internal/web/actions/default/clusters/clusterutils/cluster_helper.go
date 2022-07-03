@@ -22,7 +22,7 @@ func NewClusterHelper() *ClusterHelper {
 }
 
 func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext bool) {
-	action := actionPtr.Object()
+	var action = actionPtr.Object()
 	if action.Request.Method != http.MethodGet {
 		return true
 	}
@@ -57,7 +57,7 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 			return
 		}
 
-		tabbar := actionutils.NewTabbar()
+		var tabbar = actionutils.NewTabbar()
 		tabbar.Add("集群列表", "", "/clusters", "", false)
 		if teaconst.IsPlus {
 			tabbar.Add("集群看板", "", "/clusters/cluster/boards?clusterId="+clusterIdString, "board", selectedTabbar == "board")
@@ -144,6 +144,8 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 		"isOn":     info != nil && info.WebpIsOn,
 	})
 
+	items = filterMenuItems1(items, info, clusterId, selectedItem)
+
 	items = append(items, maps.Map{
 		"name": "-",
 	})
@@ -155,21 +157,7 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 		"isOn":     info != nil && info.HasMetricItems,
 	})
 
-	if teaconst.IsPlus {
-		items = append(items, maps.Map{
-			"name":     "阈值设置",
-			"url":      "/clusters/cluster/settings/thresholds?clusterId=" + clusterId,
-			"isActive": selectedItem == "threshold",
-			"isOn":     info != nil && info.HasThresholds,
-		})
-
-		items = append(items, maps.Map{
-			"name":     "消息通知",
-			"url":      "/clusters/cluster/settings/message?clusterId=" + clusterId,
-			"isActive": selectedItem == "message",
-			"isOn":     info != nil && info.HasMessageReceivers,
-		})
-	}
+	items = filterMenuItems2(items, info, clusterId, selectedItem)
 
 	items = append(items, maps.Map{
 		"name":     "-",
