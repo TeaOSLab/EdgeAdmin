@@ -118,10 +118,18 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 	})
 
 	items = append(items, maps.Map{
-		"name":     "DDoS防护",
-		"url":      "/clusters/cluster/settings/ddos-protection?clusterId=" + clusterId,
-		"isActive": selectedItem == "ddosProtection",
-		"isOn":     info != nil && info.HasDDoSProtection,
+		"name":     "WebP",
+		"url":      "/clusters/cluster/settings/webp?clusterId=" + clusterId,
+		"isActive": selectedItem == "webp",
+		"isOn":     info != nil && info.WebpIsOn,
+	})
+
+	items = filterMenuItems1(items, info, clusterId, selectedItem)
+
+	items = append(items, maps.Map{
+		"name":     "-",
+		"url":      "",
+		"isActive": false,
 	})
 
 	items = append(items, maps.Map{
@@ -137,14 +145,13 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 		"isActive": selectedItem == "dns",
 		"isOn":     cluster.DnsDomainId > 0 || len(cluster.DnsName) > 0,
 	})
-	items = append(items, maps.Map{
-		"name":     "WebP",
-		"url":      "/clusters/cluster/settings/webp?clusterId=" + clusterId,
-		"isActive": selectedItem == "webp",
-		"isOn":     info != nil && info.WebpIsOn,
-	})
 
-	items = filterMenuItems1(items, info, clusterId, selectedItem)
+	items = append(items, maps.Map{
+		"name":     "DDoS防护",
+		"url":      "/clusters/cluster/settings/ddos-protection?clusterId=" + clusterId,
+		"isActive": selectedItem == "ddosProtection",
+		"isOn":     info != nil && info.HasDDoSProtection,
+	})
 
 	items = append(items, maps.Map{
 		"name": "-",
