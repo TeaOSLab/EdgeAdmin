@@ -338,7 +338,7 @@ func (this *CreateAction) RunPost(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		reverseProxyRef := &serverconfigs.ReverseProxyRef{
+		var reverseProxyRef = &serverconfigs.ReverseProxyRef{
 			IsOn:           true,
 			ReverseProxyId: resp.ReverseProxyId,
 		}
@@ -355,7 +355,7 @@ func (this *CreateAction) RunPost(params struct {
 		var rootJSON []byte
 		var err error
 		if len(params.WebRoot) > 0 {
-			rootConfig := &serverconfigs.HTTPRootConfig{}
+			var rootConfig = &serverconfigs.HTTPRootConfig{}
 			rootConfig.IsOn = true
 			rootConfig.Dir = params.WebRoot
 			rootConfig.Indexes = []string{"index.html", "index.htm"}
@@ -375,7 +375,7 @@ func (this *CreateAction) RunPost(params struct {
 	}
 
 	// 包含条件
-	includeNodes := []maps.Map{}
+	var includeNodes = []maps.Map{}
 	includeNodesJSON, err := json.Marshal(includeNodes)
 	if err != nil {
 		this.ErrorPage(err)
@@ -383,7 +383,7 @@ func (this *CreateAction) RunPost(params struct {
 	}
 
 	// 排除条件
-	excludeNodes := []maps.Map{}
+	var excludeNodes = []maps.Map{}
 	excludeNodesJSON, err := json.Marshal(excludeNodes)
 	if err != nil {
 		this.ErrorPage(err)
@@ -396,7 +396,7 @@ func (this *CreateAction) RunPost(params struct {
 		AdminId:          this.AdminId(),
 		Type:             params.ServerType,
 		Name:             params.Name,
-		ServerNamesJON:   []byte(params.ServerNames),
+		ServerNamesJON:   params.ServerNames,
 		Description:      params.Description,
 		NodeClusterId:    clusterId,
 		IncludeNodesJSON: includeNodesJSON,

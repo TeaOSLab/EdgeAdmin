@@ -180,7 +180,7 @@ window.teaweb = {
 	bytesAxis: function (stats, countFunc) {
 		let max = Math.max.apply(this, stats.map(countFunc))
 		let divider = 1
-		let unit = ""
+		let unit = "B"
 		if (max >= Math.pow(1024, 6)) {
 			unit = "E"
 			divider = Math.pow(1024, 6)
@@ -583,7 +583,10 @@ window.teaweb = {
 				show: true,
 				trigger: "item",
 				formatter: function (args) {
-					return tooltipFunc.apply(this, [args, values])
+					if (tooltipFunc != null) {
+						return tooltipFunc.apply(this, [args, values])
+					}
+					return null
 				}
 			},
 			grid: {
