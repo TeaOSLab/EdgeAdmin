@@ -84,10 +84,13 @@ func loadUserUIConfig() (*systemconfigs.UserUIConfig, error) {
 
 func defaultUserUIConfig() *systemconfigs.UserUIConfig {
 	return &systemconfigs.UserUIConfig{
-		ProductName:        "GoEdge",
-		UserSystemName:     "GoEdge用户系统",
-		ShowOpenSourceInfo: true,
-		ShowVersion:        true,
-		ShowFinance:        true,
+		ProductName:         "GoEdge",
+		UserSystemName:      "GoEdge用户系统",
+		ShowOpenSourceInfo:  true,
+		ShowVersion:         true,
+		ShowFinance:         true,
+		BandwidthUnit:       systemconfigs.BandwidthUnitBit,
+		ShowBandwidthCharts: true,
+		ShowTrafficCharts:   true,
 	}
 }
