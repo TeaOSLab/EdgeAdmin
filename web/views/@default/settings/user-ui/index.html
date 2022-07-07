@@ -79,6 +79,27 @@
         </tr>
     </table>
 
+    <h4>数据看板</h4>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">显示流量相关数据和图表</td>
+            <td><checkbox name="showTrafficCharts" v-model="config.showTrafficCharts"></checkbox></td>
+        </tr>
+        <tr>
+            <td class="title">显示带宽相关数据和图表</td>
+            <td><checkbox name="showBandwidthCharts" v-model="config.showBandwidthCharts"></checkbox></td>
+        </tr>
+        <tr>
+            <td class="title">带宽单位</td>
+            <td>
+                <select class="ui dropdown auto-width" name="bandwidthUnit" v-model="config.bandwidthUnit">
+                    <option value="bit">比特</option>
+                    <option value="byte">字节</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+
     <h4>其他</h4>
     <table class="ui table definition selectable">
         <tr>

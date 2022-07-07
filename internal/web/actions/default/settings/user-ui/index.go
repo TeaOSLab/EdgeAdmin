@@ -48,6 +48,10 @@ func (this *IndexAction) RunPost(params struct {
 	LogoFile           *actions.File
 	TimeZone           string
 
+	ShowTrafficCharts   bool
+	ShowBandwidthCharts bool
+	BandwidthUnit       string
+
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
@@ -68,6 +72,9 @@ func (this *IndexAction) RunPost(params struct {
 	config.ShowVersion = params.ShowVersion
 	config.Version = params.Version
 	config.ShowFinance = params.ShowFinance
+	config.ShowTrafficCharts = params.ShowTrafficCharts
+	config.ShowBandwidthCharts = params.ShowBandwidthCharts
+	config.BandwidthUnit = params.BandwidthUnit
 	config.TimeZone = params.TimeZone
 
 	// 上传Favicon文件
