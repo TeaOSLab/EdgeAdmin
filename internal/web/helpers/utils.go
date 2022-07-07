@@ -9,6 +9,8 @@ import (
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/logs"
 	"net"
+	"net/http"
+	"regexp"
 	"sync"
 )
 
@@ -102,6 +104,44 @@ func checkIPWithoutCache(config *systemconfigs.SecurityConfig, ipAddr string) bo
 			}
 		}
 		return false
+	}
+
+	return true
+}
+
+// 请求检查相关正则
+var searchEngineRegex = regexp.MustCompile(`60spider|adldxbot|adsbot-google|applebot|admantx|alexa|baidu|bingbot|bingpreview|facebookexternalhit|googlebot|proximic|slurp|sogou|twitterbot|yandex`)
+var spiderRegexp = regexp.MustCompile(`python|pycurl|http-client|httpclient|apachebench|nethttp|http_request|java|perl|ruby|scrapy|php|rust|curl|wget`) // 其中增加了curl和wget
+
+// 检查请求
+func checkRequestSecurity(securityConfig *systemconfigs.SecurityConfig, req *http.Request) bool {
+	if securityConfig == nil {
+		return true
+	}
+
+	var userAgent = req.UserAgent()
+	var referer = req.Referer()
+
+	// 检查搜索引擎
+	if securityConfig.DenySearchEngines && (len(userAgent) == 0 || searchEngineRegex.MatchString(userAgent) || (len(referer) > 0 && searchEngineRegex.MatchString(referer))) {
+		return false
+	}
+
+	// 检查爬虫
+	if securityConfig.DenySpiders && (len(userAgent) == 0 || spiderRegexp.MatchString(userAgent) || (len(referer) > 0 && spiderRegexp.MatchString(referer))) {
+		return false
+	}
+
+	// 检查允许访问的域名
+	if len(securityConfig.AllowDomains) > 0 {
+		var domain = req.Host
+		realDomain, _, err := net.SplitHostPort(domain)
+		if err == nil && len(realDomain) > 0 {
+			domain = realDomain
+		}
+		if !lists.ContainsString(securityConfig.AllowDomains, domain) {
+			return false
+		}
 	}
 
 	return true

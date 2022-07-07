@@ -29,14 +29,14 @@ func (this *IndexAction) RunGet(params struct{}) {
 	}
 
 	// 国家和地区
-	countryMaps := []maps.Map{}
+	var countryMaps = []maps.Map{}
 	for _, countryId := range config.AllowCountryIds {
 		countryResp, err := this.RPC().RegionCountryRPC().FindEnabledRegionCountry(this.AdminContext(), &pb.FindEnabledRegionCountryRequest{RegionCountryId: countryId})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-		country := countryResp.RegionCountry
+		var country = countryResp.RegionCountry
 		if country != nil {
 			countryMaps = append(countryMaps, maps.Map{
 				"id":   country.Id,
@@ -47,14 +47,14 @@ func (this *IndexAction) RunGet(params struct{}) {
 	this.Data["countries"] = countryMaps
 
 	// 省份
-	provinceMaps := []maps.Map{}
+	var provinceMaps = []maps.Map{}
 	for _, provinceId := range config.AllowProvinceIds {
 		provinceResp, err := this.RPC().RegionProvinceRPC().FindEnabledRegionProvince(this.AdminContext(), &pb.FindEnabledRegionProvinceRequest{RegionProvinceId: provinceId})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-		province := provinceResp.RegionProvince
+		var province = provinceResp.RegionProvince
 		if province != nil {
 			provinceMaps = append(provinceMaps, maps.Map{
 				"id":   province.Id,
@@ -76,6 +76,11 @@ func (this *IndexAction) RunPost(params struct {
 	AllowIPs           []string
 	AllowRememberLogin bool
 
+	DenySearchEngines bool
+	DenySpiders       bool
+
+	DomainsJSON []byte
+
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
@@ -91,7 +96,7 @@ func (this *IndexAction) RunPost(params struct {
 	config.Frame = params.Frame
 
 	// 国家和地区
-	countryIds := []int64{}
+	var countryIds = []int64{}
 	if len(params.CountryIdsJSON) > 0 {
 		err = json.Unmarshal(params.CountryIdsJSON, &countryIds)
 		if err != nil {
@@ -102,7 +107,7 @@ func (this *IndexAction) RunPost(params struct {
 	config.AllowCountryIds = countryIds
 
 	// 省份
-	provinceIds := []int64{}
+	var provinceIds = []int64{}
 	if len(params.ProvinceIdsJSON) > 0 {
 		err = json.Unmarshal(params.ProvinceIdsJSON, &provinceIds)
 		if err != nil {
@@ -127,6 +132,20 @@ func (this *IndexAction) RunPost(params struct {
 
 	// 允许本地
 	config.AllowLocal = params.AllowLocal
+
+	// 禁止搜索引擎和爬虫
+	config.DenySearchEngines = params.DenySearchEngines
+	config.DenySpiders = params.DenySpiders
+
+	// 允许的域名
+	var domains = []string{}
+	if len(params.DomainsJSON) > 0 {
+		err = json.Unmarshal(params.DomainsJSON, &domains)
+		if err != nil {
+			this.Fail("解析允许访问的域名失败：" + err.Error())
+		}
+	}
+	config.AllowDomains = domains
 
 	// 允许记住登录
 	config.AllowRememberLogin = params.AllowRememberLogin
