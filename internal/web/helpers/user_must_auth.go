@@ -75,6 +75,13 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 		return false
 	}
 
+	// 检查请求
+	if !checkRequestSecurity(securityConfig, action.Request) {
+		action.ResponseWriter.WriteHeader(http.StatusForbidden)
+		return false
+	}
+
+
 	// 检查系统是否已经配置过
 	if !setup.IsConfigured() {
 		action.RedirectURL("/setup")

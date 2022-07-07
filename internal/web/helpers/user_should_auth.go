@@ -22,7 +22,7 @@ func (this *UserShouldAuth) BeforeAction(actionPtr actions.ActionWrapper, paramN
 	this.action = actionPtr.Object()
 
 	// 安全相关
-	action := this.action
+	var action = this.action
 	securityConfig, _ := configloaders.LoadSecurityConfig()
 	if securityConfig == nil {
 		action.AddHeader("X-Frame-Options", "SAMEORIGIN")
@@ -38,6 +38,12 @@ func (this *UserShouldAuth) BeforeAction(actionPtr actions.ActionWrapper, paramN
 	}
 	remoteAddr, _, _ := net.SplitHostPort(action.Request.RemoteAddr)
 	if len(remoteAddr) > 0 && remoteAddr != action.RequestRemoteIP() && !checkIP(securityConfig, remoteAddr) {
+		action.ResponseWriter.WriteHeader(http.StatusForbidden)
+		return false
+	}
+
+	// 检查请求
+	if !checkRequestSecurity(securityConfig, action.Request) {
 		action.ResponseWriter.WriteHeader(http.StatusForbidden)
 		return false
 	}
