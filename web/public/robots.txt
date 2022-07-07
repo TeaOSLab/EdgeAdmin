@@ -1,5 +1,5 @@
 #
-# robots.txt for GoEdge
+# robots.txt
 #
 
 User-agent: *
