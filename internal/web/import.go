@@ -39,6 +39,7 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/certs"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/cache"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/cache/batch"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/log"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/waf"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/groups"
