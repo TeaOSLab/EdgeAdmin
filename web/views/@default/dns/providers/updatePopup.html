@@ -130,6 +130,31 @@
             </tr>
         </tbody>
 
+        <!-- ClouDNS -->
+        <tbody v-if="provider.type == 'cloudns'">
+            <tr>
+                <td>用户认证ID<em>（auth-id）</em></td>
+                <td>
+                    <input type="text" name="paramClouDNSAuthId" maxlength="20" v-model="provider.params.authId"/>
+                    <p class="comment">和子用户认证ID二选一。可以在ClouDNS<a href="https://www.cloudns.net/api-settings/" target="_blank">API设置页面</a>添加。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>子用户认证ID<em>（sub-auth-id）</em></td>
+                <td>
+                    <input type="text" name="paramClouDNSSubAuthId" maxlength="20" v-model="provider.params.subAuthId"/>
+                    <p class="comment">和用户认证ID二选一。可以在ClouDNS<a href="https://www.cloudns.net/api-settings/" target="_blank">API设置页面</a>添加。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>认证密码 *<em>（auth-password）</em></td>
+                <td>
+                    <input type="password" name="paramClouDNSAuthPassword" maxlength="100" v-model="provider.params.authPassword"/>
+                    <p class="comment">用户或者子用户的认证密码。</p>
+                </td>
+            </tr>
+        </tbody>
+
         <!-- Edge DNS -->
         <tbody v-if="provider.type == 'localEdgeDNS'">
             <tr>

@@ -97,6 +97,22 @@
         </tr>
     </tbody>
 
+    <!-- ClouDNS -->
+    <tbody v-if="provider.type == 'cloudns'">
+        <tr v-if="provider.apiParams.authId > 0">
+            <td class="color-border">用户认证ID<em>（auth-id）</em></td>
+            <td>{{provider.apiParams.authId}}</td>
+        </tr>
+        <tr v-if="provider.apiParams.subAuthId > 0">
+            <td class="color-border">子用户认证ID<em>（sub-auth-id）</em></td>
+            <td>{{provider.apiParams.subAuthId}}</td>
+        </tr>
+        <tr>
+            <td class="color-border">认证密码<em>（auth-password）</em></td>
+            <td>{{provider.apiParams.authPassword}}</td>
+        </tr>
+    </tbody>
+
     <!-- Local EdgeDNS -->
     <tbody v-if="provider.type == 'localEdgeDNS'">
         <tr>
