@@ -113,6 +113,18 @@
         </tr>
     </tbody>
 
+    <!-- DNS.COM -->
+    <tbody v-if="provider.type == 'dnscom'">
+        <tr>
+            <td class="color-border">API Key</td>
+            <td>{{provider.apiParams.key}}</td>
+        </tr>
+        <tr>
+            <td class="color-border">API Secret</td>
+            <td>{{provider.apiParams.secret}}</td>
+        </tr>
+    </tbody>
+
     <!-- Local EdgeDNS -->
     <tbody v-if="provider.type == 'localEdgeDNS'">
         <tr>

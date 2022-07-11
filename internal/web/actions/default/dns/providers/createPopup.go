@@ -78,10 +78,6 @@ func (this *CreatePopupAction) RunPost(params struct {
 	ParamHuaweiAccessKeyId     string
 	ParamHuaweiAccessKeySecret string
 
-	// DNS.COM
-	ParamApiKey    string
-	ParamApiSecret string
-
 	// CloudFlare
 	ParamCloudFlareAPIKey string
 	ParamCloudFlareEmail  string
