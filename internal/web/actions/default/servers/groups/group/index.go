@@ -49,8 +49,8 @@ func (this *IndexAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	count := countResp.Count
-	page := this.NewPage(count)
+	var count = countResp.Count
+	var page = this.NewPage(count)
 	this.Data["page"] = page.AsHTML()
 
 	// 服务列表
@@ -64,7 +64,7 @@ func (this *IndexAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	serverMaps := []maps.Map{}
+	var serverMaps = []maps.Map{}
 	for _, server := range serversResp.Servers {
 		config := &serverconfigs.ServerConfig{}
 		err = json.Unmarshal(server.Config, config)
@@ -74,8 +74,8 @@ func (this *IndexAction) RunGet(params struct {
 		}
 
 		// 端口列表
-		portMaps := []maps.Map{}
-		if len(server.HttpJSON) > 0 && config.HTTP.IsOn {
+		var portMaps = []maps.Map{}
+		if config.HTTP != nil && config.HTTP.IsOn {
 			for _, listen := range config.HTTP.Listen {
 				portMaps = append(portMaps, maps.Map{
 					"protocol":  listen.Protocol,
@@ -125,7 +125,7 @@ func (this *IndexAction) RunGet(params struct {
 		}
 
 		// 分组
-		groupMaps := []maps.Map{}
+		var groupMaps = []maps.Map{}
 		if len(server.ServerGroups) > 0 {
 			for _, group := range server.ServerGroups {
 				groupMaps = append(groupMaps, maps.Map{
@@ -136,11 +136,11 @@ func (this *IndexAction) RunGet(params struct {
 		}
 
 		// 域名列表
-		serverNames := []*serverconfigs.ServerNameConfig{}
+		var serverNames = []*serverconfigs.ServerNameConfig{}
 		if server.IsAuditing || (server.AuditingResult != nil && !server.AuditingResult.IsOk) {
 			server.ServerNamesJSON = server.AuditingServerNamesJSON
 		}
-		auditingIsOk := true
+		var auditingIsOk = true
 		if !server.IsAuditing && server.AuditingResult != nil && !server.AuditingResult.IsOk {
 			auditingIsOk = false
 		}
@@ -151,7 +151,7 @@ func (this *IndexAction) RunGet(params struct {
 				return
 			}
 		}
-		countServerNames := 0
+		var countServerNames = 0
 		for _, serverName := range serverNames {
 			if len(serverName.SubNames) == 0 {
 				countServerNames++
