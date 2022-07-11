@@ -113,24 +113,6 @@
             </tr>
         </tbody>
 
-		<!-- DNS.COM -->
-		<tbody v-if="type == 'dnscom'">
-			<tr>
-				<td>AccessKeyId *</td>
-				<td>
-					<input type="text" name="paramApiKey" maxlength="100"/>
-					<p class="comment">登录DNS.COM控制台 -- 在"账户中心" -- "API设置"中创建和获取。</p>
-				</td>
-			</tr>
-			<tr>
-				<td>AccessKeySecret *</td>
-				<td>
-					<input type="text" name="paramApiSecret" maxlength="100"/>
-					<p class="comment">登录DNS.COM控制台 -- 在"账户中心" -- "API设置"中创建和获取。</p>
-				</td>
-			</tr>
-		</tbody>
-
         <!-- GoDaddy -->
         <tbody v-if="type == 'godaddy'">
             <tr>
@@ -169,6 +151,24 @@
                 <td>
                     <input type="password" name="paramClouDNSAuthPassword" maxlength="100"/>
                     <p class="comment">用户或者子用户的认证密码。</p>
+                </td>
+            </tr>
+        </tbody>
+
+        <!-- DNS.COM -->
+        <tbody v-if="type == 'dnscom'">
+            <tr>
+                <td>API Key *</td>
+                <td>
+                    <input type="text" name="paramDNSComKey" maxlength="100"/>
+                    <p class="comment">在DNS.COM控制台账号中心--API设置中创建和查看。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>API Secret *</td>
+                <td>
+                    <input type="text" name="paramDNSComSecret" maxlength="100"/>
+                    <p class="comment">在DNS.COM控制台账号中心--API设置中创建和查看。</p>
                 </td>
             </tr>
         </tbody>

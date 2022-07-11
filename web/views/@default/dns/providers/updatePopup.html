@@ -155,6 +155,24 @@
             </tr>
         </tbody>
 
+        <!-- DNS.COM -->
+        <tbody v-if="provider.type == 'dnscom'">
+            <tr>
+                <td>API Key *</td>
+                <td>
+                    <input type="text" name="paramDNSComKey" maxlength="100" v-model="provider.params.key"/>
+                    <p class="comment">在DNS.COM控制台账号中心--API设置中创建和查看。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>API Secret *</td>
+                <td>
+                    <input type="text" name="paramDNSComSecret" maxlength="100" v-model="provider.params.secret"/>
+                    <p class="comment">在DNS.COM控制台账号中心--API设置中创建和查看。</p>
+                </td>
+            </tr>
+        </tbody>
+
         <!-- Edge DNS -->
         <tbody v-if="provider.type == 'localEdgeDNS'">
             <tr>
