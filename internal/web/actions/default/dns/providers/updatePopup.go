@@ -158,15 +158,6 @@ func (this *UpdatePopupAction) RunPost(params struct {
 
 		apiParams["accessKeyId"] = params.ParamHuaweiAccessKeyId
 		apiParams["accessKeySecret"] = params.ParamHuaweiAccessKeySecret
-	case "dnscom":
-		params.Must.
-			Field("paramApiKey", params.ParamApiKey).
-			Require("请输入ApiKey").
-			Field("paramApiSecret", params.ParamApiSecret).
-			Require("请输入ApiSecret")
-
-		apiParams["apiKey"] = params.ParamApiKey
-		apiParams["apiSecret"] = params.ParamApiSecret
 	case "cloudFlare":
 		params.Must.
 			Field("paramCloudFlareAPIKey", params.ParamCloudFlareAPIKey).
