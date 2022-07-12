@@ -9,7 +9,6 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/settings/dns"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/settings/ssh"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/settings/system"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/settings/thresholds"
 	clusters "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/clusterutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/iwind/TeaGo"
@@ -56,7 +55,6 @@ func init() {
 			GetPost("/settings/system", new(system.IndexAction)).
 			GetPost("/settings/ssh", new(ssh.IndexAction)).
 			GetPost("/settings/ssh/test", new(ssh.TestAction)).
-			GetPost("/settings/thresholds", new(thresholds.IndexAction)).
 			GetPost("/settings/ddos-protection", new(ddosProtection.IndexAction)).
 			Post("/settings/ddos-protection/status", new(ddosProtection.StatusAction)).
 

@@ -7,10 +7,8 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/dns"
 	firewallActions "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/firewall-actions"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/health"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/message"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/metrics"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/services"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/thresholds"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/toa"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/waf"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/webp"
@@ -42,12 +40,6 @@ func init() {
 			GetPost("", new(dns.IndexAction)).
 			Post("/randomName", new(dns.RandomNameAction)).
 
-			// 消息
-			Prefix("/clusters/cluster/settings/message").
-			GetPost("", new(message.IndexAction)).
-			Get("/selectReceiverPopup", new(message.SelectReceiverPopupAction)).
-			Post("/selectedReceivers", new(message.SelectedReceiversAction)).
-
 			// TOA
 			Prefix("/clusters/cluster/settings/toa").
 			GetPost("", new(toa.IndexAction)).
@@ -63,13 +55,6 @@ func init() {
 			GetPost("/createPopup", new(firewallActions.CreatePopupAction)).
 			GetPost("/updatePopup", new(firewallActions.UpdatePopupAction)).
 			Post("/delete", new(firewallActions.DeleteAction)).
-
-			// 阈值
-			Prefix("/clusters/cluster/settings/thresholds").
-			Get("", new(thresholds.IndexAction)).
-			GetPost("/createPopup", new(thresholds.CreatePopupAction)).
-			GetPost("/updatePopup", new(thresholds.UpdatePopupAction)).
-			Post("/delete", new(thresholds.DeleteAction)).
 
 			// 指标
 			Prefix("/clusters/cluster/settings/metrics").
