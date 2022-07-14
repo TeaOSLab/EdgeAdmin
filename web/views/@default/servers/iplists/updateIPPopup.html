@@ -55,17 +55,19 @@
             </td>
         </tr>
         </tbody>
+
+        <tr>
+            <td>过期时间</td>
+            <td>
+                <datetime-input :v-name="'expiredAt'" :v-timestamp="item.expiredAt"></datetime-input>
+                <p class="comment">在加入名单某一段时间后会失效，留空表示永久有效。</p>
+            </td>
+        </tr>
+
 		<tr>
 			<td colspan="2"><more-options-indicator></more-options-indicator></td>
 		</tr>
 		<tbody v-show="moreOptionsVisible">
-			<tr>
-				<td>过期时间</td>
-				<td>
-					<datetime-input :v-name="'expiredAt'" :v-timestamp="item.expiredAt"></datetime-input>
-					<p class="comment">在加入名单某一段时间后会失效，留空表示永久有效。</p>
-				</td>
-			</tr>
 			<tr>
 				<td>备注</td>
 				<td><input type="text" name="reason" maxlength="100" v-model="item.reason"/></td>
