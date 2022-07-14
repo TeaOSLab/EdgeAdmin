@@ -47,7 +47,10 @@
                 </span>
                 <span v-else class="disabled">0</span>
             </td>
-			<td></td>
+			<td>源站地址：
+                <span v-if="accessLog.originAddress != null && accessLog.originAddress">{{accessLog.originAddress}}</span>
+                <span v-else class="disabled">未访问源站</span>
+            </td>
 		</tr>
 		<tr>
 			<td>ISO8601时间：{{accessLog.timeISO8601}}</td>
