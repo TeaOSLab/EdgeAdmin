@@ -52,6 +52,7 @@ func (this *IndexAction) RunGet(params struct {
 		this.Data["cnameRecords"] = dnsInfoResp.CnameRecords
 	}
 	this.Data["ttl"] = dnsInfoResp.Ttl
+	this.Data["cnameAsDomain"] = dnsInfoResp.CnameAsDomain
 
 	this.Show()
 }
@@ -65,6 +66,9 @@ func (this *IndexAction) RunPost(params struct {
 	ServersAutoSync bool
 	CnameRecords    []string
 	Ttl             int32
+	CnameAsDomain   bool
+
+	ConfirmResetDomain bool // 是否确认重置域名
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -72,13 +76,15 @@ func (this *IndexAction) RunPost(params struct {
 	// 创建日志
 	defer this.CreateLog(oplogs.LevelInfo, "修改集群 %d DNS设置", params.ClusterId)
 
-	if params.DnsDomainId <= 0 {
-		this.Fail("请选择集群的主域名")
-	}
+	if !params.ConfirmResetDomain {
+		if params.DnsDomainId <= 0 {
+			this.Fail("请选择集群的主域名")
+		}
 
-	params.Must.
-		Field("dnsName", params.DnsName).
-		Require("请输入DNS子域名")
+		params.Must.
+			Field("dnsName", params.DnsName).
+			Require("请输入DNS子域名")
+	}
 
 	// 检查DNS名称
 	if len(params.DnsName) > 0 {
@@ -108,6 +114,7 @@ func (this *IndexAction) RunPost(params struct {
 		ServersAutoSync: params.ServersAutoSync,
 		CnameRecords:    params.CnameRecords,
 		Ttl:             params.Ttl,
+		CnameAsDomain:   params.CnameAsDomain,
 	})
 	if err != nil {
 		this.ErrorPage(err)
