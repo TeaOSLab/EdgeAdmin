@@ -6,6 +6,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
@@ -63,13 +64,15 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 	CSRF *actionutils.CSRF
 }) {
 	// 校验IPList
-	existsResp, err := this.RPC().IPListRPC().ExistsEnabledIPList(this.AdminContext(), &pb.ExistsEnabledIPListRequest{IpListId: params.ListId})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	if !existsResp.Exists {
-		this.Fail("IP名单不存在")
+	if params.ListId != firewallconfigs.GlobalListId {
+		existsResp, err := this.RPC().IPListRPC().ExistsEnabledIPList(this.AdminContext(), &pb.ExistsEnabledIPListRequest{IpListId: params.ListId})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		if !existsResp.Exists {
+			this.Fail("IP名单不存在")
+		}
 	}
 
 	type ipData struct {

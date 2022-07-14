@@ -155,6 +155,15 @@ Vue.component("datetime-input", {
 			this.minute = this.leadingZero(date.getMinutes(), 2)
 			this.second = this.leadingZero(date.getSeconds(), 2)
 			this.change()
+		},
+		nextHours: function (hours) {
+			let date = new Date()
+			date.setTime(date.getTime() + hours * 3600 * 1000)
+			this.day = date.getFullYear() + "-" + this.leadingZero(date.getMonth() + 1, 2) + "-" + this.leadingZero(date.getDate(), 2)
+			this.hour = this.leadingZero(date.getHours(), 2)
+			this.minute = this.leadingZero(date.getMinutes(), 2)
+			this.second = this.leadingZero(date.getSeconds(), 2)
+			this.change()
 		}
 	},
 	template: `<div>
@@ -169,6 +178,6 @@ Vue.component("datetime-input", {
 		<div class="ui field">:</div>
 		<div class="ui field" :class="{error: hasSecondError}"><input type="text" v-model="second" maxlength="2" style="width:4em" placeholder="秒" @input="change"/></div>
 	</div>
-	<p class="comment">常用时间：<a href="" @click.prevent="nextDays(1)"> &nbsp;1天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(3)"> &nbsp;3天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(7)"> &nbsp;一周&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(30)"> &nbsp;30天&nbsp; </a> </p>
+	<p class="comment">常用时间：<a href="" @click.prevent="nextHours(1)"> &nbsp;1小时&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(1)"> &nbsp;1天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(3)"> &nbsp;3天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(7)"> &nbsp;1周&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(30)"> &nbsp;30天&nbsp; </a> </p>
 </div>`
 })

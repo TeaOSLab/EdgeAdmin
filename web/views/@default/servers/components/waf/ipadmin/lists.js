@@ -1,7 +1,7 @@
 Tea.context(function () {
 	this.updateItem = function (itemId) {
 		teaweb.popup(Tea.url(".updateIPPopup?firewallPolicyId=" + this.firewallPolicyId, {itemId: itemId}), {
-			height: "26em",
+			height: "30em",
 			callback: function () {
 				teaweb.success("保存成功", function () {
 					teaweb.reload()
@@ -28,7 +28,7 @@ Tea.context(function () {
 	this.createIP = function (type) {
 		let that = this
 		teaweb.popup("/servers/iplists/createIPPopup?listId=" + this.listId + '&type=' + type, {
-			height: "26em",
+			height: "30em",
 			callback: function () {
 				teaweb.success("保存成功", function () {
 					teaweb.reload()
