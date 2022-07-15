@@ -92,6 +92,7 @@ Vue.component("http-firewall-checkpoint-cc", {
 		let keys = []
 		let period = 60
 		let threshold = 1000
+		let ignoreCommonFiles = false
 
 		let options = {}
 		if (window.parent.UPDATING_RULE != null) {
@@ -113,6 +114,9 @@ Vue.component("http-firewall-checkpoint-cc", {
 		if (options.threshold != null) {
 			threshold = options.threshold
 		}
+		if (options.ignoreCommonFiles != null && typeof (options.ignoreCommonFiles) == "boolean") {
+			ignoreCommonFiles = options.ignoreCommonFiles
+		}
 
 		let that = this
 		setTimeout(function () {
@@ -123,6 +127,7 @@ Vue.component("http-firewall-checkpoint-cc", {
 			keys: keys,
 			period: period,
 			threshold: threshold,
+			ignoreCommonFiles: ignoreCommonFiles,
 			options: {},
 			value: threshold
 		}
@@ -132,6 +137,9 @@ Vue.component("http-firewall-checkpoint-cc", {
 			this.change()
 		},
 		threshold: function () {
+			this.change()
+		},
+		ignoreCommonFiles: function () {
 			this.change()
 		}
 	},
@@ -152,6 +160,11 @@ Vue.component("http-firewall-checkpoint-cc", {
 			}
 			this.value = threshold
 
+			let ignoreCommonFiles = this.ignoreCommonFiles
+			if (typeof ignoreCommonFiles != "boolean") {
+				ignoreCommonFiles = false
+			}
+
 			this.vCheckpoint.options = [
 				{
 					code: "keys",
@@ -164,6 +177,10 @@ Vue.component("http-firewall-checkpoint-cc", {
 				{
 					code: "threshold",
 					value: threshold
+				},
+				{
+					code: "ignoreCommonFiles",
+					value: ignoreCommonFiles
 				}
 			]
 		}
@@ -191,6 +208,13 @@ Vue.component("http-firewall-checkpoint-cc", {
 			<td>阈值 *</td>
 			<td>
 				<input type="text" v-model="threshold" style="width: 6em" maxlength="8"/>
+			</td>
+		</tr>
+		<tr>
+			<td>忽略常见文件</td>
+			<td>
+				<checkbox v-model="ignoreCommonFiles"></checkbox>
+				<p class="comment">忽略js、css、jpg等常见文件名。</p>
 			</td>
 		</tr>
 	</table>
