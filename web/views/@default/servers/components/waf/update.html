@@ -75,6 +75,13 @@
                         <p class="comment">选中后，表示在访问日志中记录匹配的请求内容。注意：此选项会明显增加访问日志占用空间，请谨慎开启。</p>
                     </td>
                 </tr>
+                <tr v-show="firewallPolicy.log.isOn">
+                    <td class="color-border">记录区域封禁日志</td>
+                    <td>
+                        <checkbox v-model="firewallPolicy.log.regionDenying"></checkbox>
+                        <p class="comment">选中后，表示在访问日志中记录区域封禁（地区和省份）事件。</p>
+                    </td>
+                </tr>
                 <tr>
                     <td>描述</td>
                     <td>
