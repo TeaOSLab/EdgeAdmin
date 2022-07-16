@@ -67,6 +67,13 @@
             <span v-else>默认</span>
         </td>
     </tr>
+    <tr v-show="firewallPolicy.log != null && firewallPolicy.log.isOn">
+        <td class="color-border">记录区域封禁日志</td>
+        <td>
+            <span class="green" v-if="firewallPolicy.log.regionDenying">开启</span>
+            <span v-else>不记录</span>
+        </td>
+    </tr>
     <tr>
         <td>描述</td>
         <td>
