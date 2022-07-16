@@ -61,11 +61,18 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>记录访问日志</td>
+                    <td :class="{'color-border':firewallPolicy.log.isOn}">记录访问日志</td>
                     <td>
                         <input type="hidden" name="logJSON" :value="JSON.stringify(firewallPolicy.log)"/>
                         <checkbox name="" v-model="firewallPolicy.log.isOn"></checkbox>
-                        <p class="comment">选中后，总是记录WAF相关日志，即使服务中没有开启访问日志。</p>
+                        <p class="comment">选中后，总是记录WAF相关访问日志，即使服务中没有开启访问日志。</p>
+                    </td>
+                </tr>
+                <tr v-show="firewallPolicy.log.isOn">
+                    <td class="color-border">记录请求Body</td>
+                    <td>
+                        <checkbox v-model="firewallPolicy.log.requestBody"></checkbox>
+                        <p class="comment">选中后，表示在访问日志中记录匹配的请求内容。注意：此选项会明显增加访问日志占用空间，请谨慎开启。</p>
                     </td>
                 </tr>
                 <tr>
