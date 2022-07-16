@@ -54,10 +54,17 @@
         </td>
     </tr>
     <tr>
-        <td>记录访问日志</td>
+        <td :class="{'color-border':firewallPolicy.log !=null && firewallPolicy.log.isOn}">记录访问日志</td>
         <td>
             <span v-if="firewallPolicy.log == null || !firewallPolicy.log.isOn">默认</span>
             <span v-else class="green">开启</span>
+        </td>
+    </tr>
+    <tr v-show="firewallPolicy.log != null && firewallPolicy.log.isOn">
+        <td class="color-border">记录请求Body</td>
+        <td>
+            <span class="green" v-if="firewallPolicy.log.requestBody">开启</span>
+            <span v-else>默认</span>
         </td>
     </tr>
     <tr>
