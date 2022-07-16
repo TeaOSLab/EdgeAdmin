@@ -112,6 +112,9 @@
         </tbody>
         <tbody v-if="requestBody.length > 0">
             <tr>
+                <td colspan="2">请求内容：</td>
+            </tr>
+            <tr>
                 <td colspan="2">
                     <source-code-box :type="requestContentType" width="0" height="200">{{requestBody}}</source-code-box>
                 </td>
