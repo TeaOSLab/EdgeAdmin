@@ -44,6 +44,9 @@ Vue.component("plan-bandwidth-ranges", {
 					return -1
 				}
 				if (v1.minMB == v2.minMB) {
+					if (v2.maxMB == 0 || v1.maxMB < v2.maxMB) {
+						return -1
+					}
 					return 0
 				}
 				return 1

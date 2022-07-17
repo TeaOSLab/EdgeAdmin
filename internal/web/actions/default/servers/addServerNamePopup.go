@@ -4,6 +4,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"net/url"
 	"regexp"
 	"strings"
 )
@@ -29,11 +30,25 @@ func (this *AddServerNamePopupAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	if params.Mode == "single" {
+		var serverName = params.ServerName
+
+		// 去除空格
+		serverName = regexp.MustCompile(`\s+`).ReplaceAllString(serverName, "")
+
+		// 处理URL
+		if regexp.MustCompile(`^(?i)(http|https|ftp)://`).MatchString(serverName) {
+			u, err := url.Parse(serverName)
+			if err == nil && len(u.Host) > 0 {
+				serverName = u.Host
+			}
+		}
+
 		params.Must.
-			Field("serverName", params.ServerName).
+			Field("serverName", serverName).
 			Require("请输入域名")
+
 		this.Data["serverName"] = maps.Map{
-			"name": params.ServerName,
+			"name": serverName,
 			"type": "full",
 		}
 	} else if params.Mode == "multiple" {
@@ -41,14 +56,23 @@ func (this *AddServerNamePopupAction) RunPost(params struct {
 			this.FailField("serverNames", "请输入至少域名")
 		}
 
-		serverNames := []string{}
+		var serverNames = []string{}
 		for _, line := range strings.Split(params.ServerNames, "\n") {
-			line := strings.TrimSpace(line)
-			line = regexp.MustCompile(`\s+`).ReplaceAllString(line, "")
-			if len(line) == 0 {
+			var serverName = strings.TrimSpace(line)
+			serverName = regexp.MustCompile(`\s+`).ReplaceAllString(serverName, "")
+			if len(serverName) == 0 {
 				continue
 			}
-			serverNames = append(serverNames, line)
+
+			// 处理URL
+			if regexp.MustCompile(`^(?i)(http|https|ftp)://`).MatchString(serverName) {
+				u, err := url.Parse(serverName)
+				if err == nil && len(u.Host) > 0 {
+					serverName = u.Host
+				}
+			}
+
+			serverNames = append(serverNames, serverName)
 		}
 		this.Data["serverName"] = maps.Map{
 			"name":     "",

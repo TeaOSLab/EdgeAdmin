@@ -21,13 +21,17 @@ func (this *IndexAction) Init() {
 	this.Nav("", "", "purge")
 }
 
-func (this *IndexAction) RunGet(params struct{}) {
+func (this *IndexAction) RunGet(params struct {
+	KeyType string
+}) {
 	// 初始化菜单数据
 	err := InitMenu(this.Parent())
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
+
+	this.Data["keyType"] = params.KeyType
 
 	this.Show()
 }
