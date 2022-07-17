@@ -30,7 +30,7 @@
 </div>
 <div class="ui icon message error" v-if="!isLoading && apiNodeUpgradeInfo.count > 0">
     <i class="icon warning circle"></i>
-    <a href="/api">升级提醒：有 {{apiNodeUpgradeInfo.count}} 个API节点需要升级到 v{{apiNodeUpgradeInfo.version}} 版本</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
+    <a href="/api">升级提醒：有 {{apiNodeUpgradeInfo.count}} 个API节点需要升级到 v{{apiNodeUpgradeInfo.version}} 版本；如果已经升级，请尝试重启API节点进程。</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
 </div>
 
 <!-- 没有磁盘空间提醒 -->
