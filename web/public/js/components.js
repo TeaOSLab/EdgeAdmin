@@ -655,15 +655,15 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		按{{plan.bandwidthPrice.percentile}}th带宽计费 
 		<div>
 			<div v-for="range in plan.bandwidthPrice.ranges">
-				<span class="small grey">{{range.minMB}} - <span v-if="range.maxMB > 0">{{range.maxMB}}MB</span><span v-else>&infin;</span>： {{range.pricePerMB}}元/MB</span>
+				<span class="small grey">{{range.minMB}} - <span v-if="range.maxMB > 0">{{range.maxMB}}MB</span><span v-else>&infin;</span>： <span v-if="range.totalPrice > 0">{{range.totalPrice}}元</span><span v-else="">{{range.pricePerMB}}元/MB</span></span>
 			</div>
 		</div>
 	</div>
-</div>`}),Vue.component("plan-bandwidth-ranges",{props:["v-ranges"],data:function(){let e=this.vRanges;return{ranges:e=null==e?[]:e,isAdding:!1,minMB:"",maxMB:"",pricePerMB:"",addingRange:{minMB:0,maxMB:0,pricePerMB:0,totalPrice:0}}},methods:{add:function(){this.isAdding=!this.isAdding;let e=this;setTimeout(function(){e.$refs.minMB.focus()})},cancelAdding:function(){this.isAdding=!1},confirm:function(){this.isAdding=!1,this.minMB="",this.maxMB="",this.pricePerMB="",this.ranges.push(this.addingRange),this.ranges.$sort(function(e,t){return e.minMB<t.minMB?-1:e.minMB==t.minMB?0:1}),this.change(),this.addingRange={minMB:0,maxMB:0,pricePerMB:0,totalPrice:0}},remove:function(e){this.ranges.$remove(e),this.change()},change:function(){this.$emit("change",this.ranges)}},watch:{minMB:function(e){let t=parseInt(e.toString());(isNaN(t)||t<0)&&(t=0),this.addingRange.minMB=t},maxMB:function(e){let t=parseInt(e.toString());(isNaN(t)||t<0)&&(t=0),this.addingRange.maxMB=t},pricePerMB:function(e){let t=parseFloat(e.toString());(isNaN(t)||t<0)&&(t=0),this.addingRange.pricePerMB=t}},template:`<div>
+</div>`}),Vue.component("plan-bandwidth-ranges",{props:["v-ranges"],data:function(){let e=this.vRanges;return{ranges:e=null==e?[]:e,isAdding:!1,minMB:"",maxMB:"",pricePerMB:"",totalPrice:"",addingRange:{minMB:0,maxMB:0,pricePerMB:0,totalPrice:0}}},methods:{add:function(){this.isAdding=!this.isAdding;let e=this;setTimeout(function(){e.$refs.minMB.focus()})},cancelAdding:function(){this.isAdding=!1},confirm:function(){this.isAdding=!1,this.minMB="",this.maxMB="",this.pricePerMB="",this.totalPrice="",this.ranges.push(this.addingRange),this.ranges.$sort(function(e,t){return e.minMB<t.minMB?-1:e.minMB==t.minMB?0==t.maxMB||e.maxMB<t.maxMB?-1:0:1}),this.change(),this.addingRange={minMB:0,maxMB:0,pricePerMB:0,totalPrice:0}},remove:function(e){this.ranges.$remove(e),this.change()},change:function(){this.$emit("change",this.ranges)}},watch:{minMB:function(e){let t=parseInt(e.toString());(isNaN(t)||t<0)&&(t=0),this.addingRange.minMB=t},maxMB:function(e){let t=parseInt(e.toString());(isNaN(t)||t<0)&&(t=0),this.addingRange.maxMB=t},pricePerMB:function(e){let t=parseFloat(e.toString());(isNaN(t)||t<0)&&(t=0),this.addingRange.pricePerMB=t},totalPrice:function(e){let t=parseFloat(e.toString());(isNaN(t)||t<0)&&(t=0),this.addingRange.totalPrice=t}},template:`<div>
 	<!-- 已有价格 -->
 	<div v-if="ranges.length > 0">
 		<div class="ui label basic small" v-for="(range, index) in ranges" style="margin-bottom: 0.5em">
-			{{range.minMB}}MB - <span v-if="range.maxMB > 0">{{range.maxMB}}MB</span><span v-else>&infin;</span> &nbsp;  价格：{{range.pricePerMB}}元/MB
+			{{range.minMB}}MB - <span v-if="range.maxMB > 0">{{range.maxMB}}MB</span><span v-else>&infin;</span> &nbsp;  价格：<span v-if="range.totalPrice > 0">{{range.totalPrice}}元</span><span v-else="">{{range.pricePerMB}}元/MB</span>
 			&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
 		</div>
 		<div class="ui divider"></div>
@@ -673,7 +673,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<div v-if="isAdding">
 		<table class="ui table">
 			<tr>
-				<td class="title">带宽下限</td>
+				<td class="title">带宽下限 *</td>
 				<td>
 					<div class="ui input right labeled">
 						<input type="text" placeholder="最小带宽" style="width: 7em" maxlength="10" ref="minMB" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="minMB"/>
@@ -682,7 +682,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				</td>
 			</tr>
 			<tr>
-				<td class="title">带宽上限</td>
+				<td class="title">带宽上限 *</td>
 				<td>
 					<div class="ui input right labeled">
 						<input type="text" placeholder="最大带宽" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="maxMB"/>
@@ -692,12 +692,23 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				</td>
 			</tr>
 			<tr>
+				<td>总价格</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" placeholder="总价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="totalPrice"/>
+						<span class="ui label">元/MB</span>
+					</div>
+					<p class="comment">和单位价格二选一。</p>
+				</td>
+			</tr>
+			<tr>
 				<td class="title">单位价格</td>
 				<td>
 					<div class="ui input right labeled">
 						<input type="text" placeholder="单位价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="pricePerMB"/>
 						<span class="ui label">元/MB</span>
 					</div>
+					<p class="comment">和总价格二选一。如果设置了单位价格，那么"总价格 = 单位价格 x 带宽"。</p>
 				</td>
 			</tr>
 		</table>
@@ -1550,7 +1561,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			</td>
 		</tr>
 	</table>
-</div>`}),Vue.component("http-firewall-checkpoint-cc",{props:["v-checkpoint"],data:function(){let e=[],t=60,i=1e3,s={},n=(null==(s=null!=window.parent.UPDATING_RULE?window.parent.UPDATING_RULE.checkpointOptions:s)&&(s={}),0==(e=null!=s.keys?s.keys:e).length&&(e=["${remoteAddr}","${requestPath}"]),null!=s.period&&(t=s.period),null!=s.threshold&&(i=s.threshold),this);return setTimeout(function(){n.change()},100),{keys:e,period:t,threshold:i,options:{},value:i}},watch:{period:function(){this.change()},threshold:function(){this.change()}},methods:{changeKeys:function(e){this.keys=e,this.change()},change:function(){let e=parseInt(this.period.toString()),t=((isNaN(e)||e<=0)&&(e=60),parseInt(this.threshold.toString()));(isNaN(t)||t<=0)&&(t=1e3),this.value=t,this.vCheckpoint.options=[{code:"keys",value:this.keys},{code:"period",value:e},{code:"threshold",value:t}]}},template:`<div>
+</div>`}),Vue.component("http-firewall-checkpoint-cc",{props:["v-checkpoint"],data:function(){let e=[],t=60,i=1e3,s=!1,n={},o=(null==(n=null!=window.parent.UPDATING_RULE?window.parent.UPDATING_RULE.checkpointOptions:n)&&(n={}),0==(e=null!=n.keys?n.keys:e).length&&(e=["${remoteAddr}","${requestPath}"]),null!=n.period&&(t=n.period),null!=n.threshold&&(i=n.threshold),null!=n.ignoreCommonFiles&&"boolean"==typeof n.ignoreCommonFiles&&(s=n.ignoreCommonFiles),this);return setTimeout(function(){o.change()},100),{keys:e,period:t,threshold:i,ignoreCommonFiles:s,options:{},value:i}},watch:{period:function(){this.change()},threshold:function(){this.change()},ignoreCommonFiles:function(){this.change()}},methods:{changeKeys:function(e){this.keys=e,this.change()},change:function(){let e=parseInt(this.period.toString()),t=((isNaN(e)||e<=0)&&(e=60),parseInt(this.threshold.toString())),i=((isNaN(t)||t<=0)&&(t=1e3),this.value=t,this.ignoreCommonFiles);"boolean"!=typeof i&&(i=!1),this.vCheckpoint.options=[{code:"keys",value:this.keys},{code:"period",value:e},{code:"threshold",value:t},{code:"ignoreCommonFiles",value:i}]}},template:`<div>
 	<input type="hidden" name="operator" value="gt"/>
 	<input type="hidden" name="value" :value="value"/>
 	<table class="ui table">
@@ -1573,6 +1584,13 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<td>阈值 *</td>
 			<td>
 				<input type="text" v-model="threshold" style="width: 6em" maxlength="8"/>
+			</td>
+		</tr>
+		<tr>
+			<td>忽略常见文件</td>
+			<td>
+				<checkbox v-model="ignoreCommonFiles"></checkbox>
+				<p class="comment">忽略js、css、jpg等常见文件名。</p>
 			</td>
 		</tr>
 	</table>
@@ -3059,7 +3077,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				</td>
 			</tr>
 			<tr v-show="family == null || family == 'http'">
-				<td>回源主机名不包含端口</td>
+				<td>回源主机名移除端口</td>
 				<td><checkbox v-model="reverseProxyConfig.requestHostExcludingPort"></checkbox>
 					<p class="comment">选中后表示移除回源主机名中的端口部分。</p>
 				</td>
@@ -4266,7 +4284,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<button class="ui button tiny" type="button" @click.prevent="create()">+</button> 
 		</div>
 	</div>	
-</div>`}),Vue.component("datetime-input",{props:["v-name","v-timestamp"],mounted:function(){let t=this;teaweb.datepicker(this.$refs.dayInput,function(e){t.day=e,t.hour="23",t.minute="59",t.second="59",t.change()})},data:function(){let t=this.vTimestamp,i=(null!=t?(t=parseInt(t),isNaN(t)&&(t=0)):t=0,""),s="",n="",o="";if(0<t){let e=new Date;e.setTime(1e3*t);var a=e.getFullYear().toString(),l=this.leadingZero((e.getMonth()+1).toString(),2);i=a+"-"+l+"-"+this.leadingZero(e.getDate().toString(),2),s=this.leadingZero(e.getHours().toString(),2),n=this.leadingZero(e.getMinutes().toString(),2),o=this.leadingZero(e.getSeconds().toString(),2)}return{timestamp:t,day:i,hour:s,minute:n,second:o,hasDayError:!1,hasHourError:!1,hasMinuteError:!1,hasSecondError:!1}},methods:{change:function(){let e=new Date;var t,i;/^\d{4}-\d{1,2}-\d{1,2}$/.test(this.day)?(i=this.day.split("-"),t=parseInt(i[0]),e.setFullYear(t),(t=parseInt(i[1]))<1||12<t?this.hasDayError=!0:(e.setMonth(t-1),(t=parseInt(i[2]))<1||32<t?this.hasDayError=!0:(e.setDate(t),this.hasDayError=!1,/^\d+$/.test(this.hour)?(i=parseInt(this.hour),isNaN(i)||i<0||24<=i?this.hasHourError=!0:(this.hasHourError=!1,e.setHours(i),/^\d+$/.test(this.minute)?(t=parseInt(this.minute),isNaN(t)||t<0||60<=t?this.hasMinuteError=!0:(this.hasMinuteError=!1,e.setMinutes(t),/^\d+$/.test(this.second)?(i=parseInt(this.second),isNaN(i)||i<0||60<=i?this.hasSecondError=!0:(this.hasSecondError=!1,e.setSeconds(i),this.timestamp=Math.floor(e.getTime()/1e3))):this.hasSecondError=!0)):this.hasMinuteError=!0)):this.hasHourError=!0))):this.hasDayError=!0},leadingZero:function(t,i){if(i<=(t=t.toString()).length)return t;for(let e=0;e<i-t.length;e++)t="0"+t;return t},resultTimestamp:function(){return this.timestamp},nextDays:function(e){let t=new Date;t.setTime(t.getTime()+86400*e*1e3),this.day=t.getFullYear()+"-"+this.leadingZero(t.getMonth()+1,2)+"-"+this.leadingZero(t.getDate(),2),this.hour=this.leadingZero(t.getHours(),2),this.minute=this.leadingZero(t.getMinutes(),2),this.second=this.leadingZero(t.getSeconds(),2),this.change()}},template:`<div>
+</div>`}),Vue.component("datetime-input",{props:["v-name","v-timestamp"],mounted:function(){let t=this;teaweb.datepicker(this.$refs.dayInput,function(e){t.day=e,t.hour="23",t.minute="59",t.second="59",t.change()})},data:function(){let t=this.vTimestamp,i=(null!=t?(t=parseInt(t),isNaN(t)&&(t=0)):t=0,""),s="",n="",o="";if(0<t){let e=new Date;e.setTime(1e3*t);var a=e.getFullYear().toString(),l=this.leadingZero((e.getMonth()+1).toString(),2);i=a+"-"+l+"-"+this.leadingZero(e.getDate().toString(),2),s=this.leadingZero(e.getHours().toString(),2),n=this.leadingZero(e.getMinutes().toString(),2),o=this.leadingZero(e.getSeconds().toString(),2)}return{timestamp:t,day:i,hour:s,minute:n,second:o,hasDayError:!1,hasHourError:!1,hasMinuteError:!1,hasSecondError:!1}},methods:{change:function(){let e=new Date;var t,i;/^\d{4}-\d{1,2}-\d{1,2}$/.test(this.day)?(i=this.day.split("-"),t=parseInt(i[0]),e.setFullYear(t),(t=parseInt(i[1]))<1||12<t?this.hasDayError=!0:(e.setMonth(t-1),(t=parseInt(i[2]))<1||32<t?this.hasDayError=!0:(e.setDate(t),this.hasDayError=!1,/^\d+$/.test(this.hour)?(i=parseInt(this.hour),isNaN(i)||i<0||24<=i?this.hasHourError=!0:(this.hasHourError=!1,e.setHours(i),/^\d+$/.test(this.minute)?(t=parseInt(this.minute),isNaN(t)||t<0||60<=t?this.hasMinuteError=!0:(this.hasMinuteError=!1,e.setMinutes(t),/^\d+$/.test(this.second)?(i=parseInt(this.second),isNaN(i)||i<0||60<=i?this.hasSecondError=!0:(this.hasSecondError=!1,e.setSeconds(i),this.timestamp=Math.floor(e.getTime()/1e3))):this.hasSecondError=!0)):this.hasMinuteError=!0)):this.hasHourError=!0))):this.hasDayError=!0},leadingZero:function(t,i){if(i<=(t=t.toString()).length)return t;for(let e=0;e<i-t.length;e++)t="0"+t;return t},resultTimestamp:function(){return this.timestamp},nextDays:function(e){let t=new Date;t.setTime(t.getTime()+86400*e*1e3),this.day=t.getFullYear()+"-"+this.leadingZero(t.getMonth()+1,2)+"-"+this.leadingZero(t.getDate(),2),this.hour=this.leadingZero(t.getHours(),2),this.minute=this.leadingZero(t.getMinutes(),2),this.second=this.leadingZero(t.getSeconds(),2),this.change()},nextHours:function(e){let t=new Date;t.setTime(t.getTime()+3600*e*1e3),this.day=t.getFullYear()+"-"+this.leadingZero(t.getMonth()+1,2)+"-"+this.leadingZero(t.getDate(),2),this.hour=this.leadingZero(t.getHours(),2),this.minute=this.leadingZero(t.getMinutes(),2),this.second=this.leadingZero(t.getSeconds(),2),this.change()}},template:`<div>
 	<input type="hidden" :name="vName" :value="timestamp"/>
 	<div class="ui fields inline" style="padding: 0; margin:0">
 		<div class="ui field" :class="{error: hasDayError}">
@@ -4278,7 +4296,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<div class="ui field">:</div>
 		<div class="ui field" :class="{error: hasSecondError}"><input type="text" v-model="second" maxlength="2" style="width:4em" placeholder="秒" @input="change"/></div>
 	</div>
-	<p class="comment">常用时间：<a href="" @click.prevent="nextDays(1)"> &nbsp;1天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(3)"> &nbsp;3天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(7)"> &nbsp;一周&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(30)"> &nbsp;30天&nbsp; </a> </p>
+	<p class="comment">常用时间：<a href="" @click.prevent="nextHours(1)"> &nbsp;1小时&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(1)"> &nbsp;1天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(3)"> &nbsp;3天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(7)"> &nbsp;1周&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(30)"> &nbsp;30天&nbsp; </a> </p>
 </div>`}),Vue.component("label-on",{props:["v-is-on"],template:'<div><span v-if="vIsOn" class="ui label tiny green basic">已启用</span><span v-if="!vIsOn" class="ui label tiny red basic">已停用</span></div>'}),Vue.component("code-label",{methods:{click:function(e){this.$emit("click",e)}},template:'<span class="ui label basic tiny" style="padding: 3px;margin-left:2px;margin-right:2px" @click.prevent="click"><slot></slot></span>'}),Vue.component("code-label-plain",{template:'<span class="ui label basic tiny" style="padding: 3px;margin-left:2px;margin-right:2px"><slot></slot></span>'}),Vue.component("tiny-label",{template:'<span class="ui label tiny" style="margin-bottom: 0.5em"><slot></slot></span>'}),Vue.component("tiny-basic-label",{template:'<span class="ui label tiny basic" style="margin-bottom: 0.5em"><slot></slot></span>'}),Vue.component("micro-basic-label",{template:'<span class="ui label tiny basic" style="margin-bottom: 0.5em; font-size: 0.7em; padding: 4px"><slot></slot></span>'}),Vue.component("grey-label",{props:["color"],data:function(){let e="grey";return{labelColor:e=null!=this.color&&0<this.color.length?"red":e}},template:'<span class="ui label basic tiny" :class="labelColor" style="margin-top: 0.4em; font-size: 0.7em; border: 1px solid #ddd!important; font-weight: normal;"><slot></slot></span>'}),Vue.component("optional-label",{template:'<em><span class="grey">（可选）</span></em>'}),Vue.component("plus-label",{template:'<span style="color: #B18701;">Plus专属功能。</span>'}),Vue.component("pro-warning-label",{template:'<span><i class="icon warning circle yellow"></i>注意：通常不需要修改；如要修改，请在专家指导下进行。</span>'}),Vue.component("first-menu",{props:[],template:' \t\t<div class="first-menu"> \t\t\t<div class="ui menu text blue small">\t\t\t\t<slot></slot>\t\t\t</div> \t\t\t<div class="ui divider"></div> \t\t</div>'}),Vue.component("more-options-indicator",{data:function(){return{visible:!1}},methods:{changeVisible:function(){this.visible=!this.visible,null!=Tea.Vue&&(Tea.Vue.moreOptionsVisible=this.visible),this.$emit("change",this.visible)}},template:'<a href="" style="font-weight: normal" @click.prevent="changeVisible()"><slot><span v-if="!visible">更多选项</span><span v-if="visible">收起选项</span></slot> <i class="icon angle" :class="{down:!visible, up:visible}"></i> </a>'}),Vue.component("page-size-selector",{data:function(){let t=window.location.search,i=10;if(0<t.length){let e=(t=t.substr(1)).split("&");e.forEach(function(t){t=t.split("=");if(2==t.length&&"pageSize"==t[0]){let e=t[1];e.match(/^\d+$/)&&(i=parseInt(e,10),(isNaN(i)||i<1)&&(i=10))}})}return{pageSize:i}},watch:{pageSize:function(){window.ChangePageSize(this.pageSize)}},template:`<select class="ui dropdown" style="height:34px;padding-top:0;padding-bottom:0;margin-left:1em;color:#666" v-model="pageSize">
 	<option value="10">[每页]</option><option value="10" selected="selected">10条</option><option value="20">20条</option><option value="30">30条</option><option value="40">40条</option><option value="50">50条</option><option value="60">60条</option><option value="70">70条</option><option value="80">80条</option><option value="90">90条</option><option value="100">100条</option>
 </select>`}),Vue.component("second-menu",{template:' \t\t<div class="second-menu"> \t\t\t<div class="ui menu text blue small">\t\t\t\t<slot></slot>\t\t\t</div> \t\t\t<div class="ui divider"></div> \t\t</div>'}),Vue.component("loading-message",{template:`<div class="ui message loading">

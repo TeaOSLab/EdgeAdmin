@@ -2169,7 +2169,7 @@ Vue.component("plan-price-view", {
 		按{{plan.bandwidthPrice.percentile}}th带宽计费 
 		<div>
 			<div v-for="range in plan.bandwidthPrice.ranges">
-				<span class="small grey">{{range.minMB}} - <span v-if="range.maxMB > 0">{{range.maxMB}}MB</span><span v-else>&infin;</span>： {{range.pricePerMB}}元/MB</span>
+				<span class="small grey">{{range.minMB}} - <span v-if="range.maxMB > 0">{{range.maxMB}}MB</span><span v-else>&infin;</span>： <span v-if="range.totalPrice > 0">{{range.totalPrice}}元</span><span v-else="">{{range.pricePerMB}}元/MB</span></span>
 			</div>
 		</div>
 	</div>
@@ -2190,6 +2190,7 @@ Vue.component("plan-bandwidth-ranges", {
 			minMB: "",
 			maxMB: "",
 			pricePerMB: "",
+			totalPrice: "",
 			addingRange: {
 				minMB: 0,
 				maxMB: 0,
@@ -2214,12 +2215,16 @@ Vue.component("plan-bandwidth-ranges", {
 			this.minMB = ""
 			this.maxMB = ""
 			this.pricePerMB = ""
+			this.totalPrice = ""
 			this.ranges.push(this.addingRange)
 			this.ranges.$sort(function (v1, v2) {
 				if (v1.minMB < v2.minMB) {
 					return -1
 				}
 				if (v1.minMB == v2.minMB) {
+					if (v2.maxMB == 0 || v1.maxMB < v2.maxMB) {
+						return -1
+					}
 					return 0
 				}
 				return 1
@@ -2261,13 +2266,20 @@ Vue.component("plan-bandwidth-ranges", {
 				pricePerMB = 0
 			}
 			this.addingRange.pricePerMB = pricePerMB
+		},
+		totalPrice: function (v) {
+			let totalPrice = parseFloat(v.toString())
+			if (isNaN(totalPrice) || totalPrice < 0) {
+				totalPrice = 0
+			}
+			this.addingRange.totalPrice = totalPrice
 		}
 	},
 	template: `<div>
 	<!-- 已有价格 -->
 	<div v-if="ranges.length > 0">
 		<div class="ui label basic small" v-for="(range, index) in ranges" style="margin-bottom: 0.5em">
-			{{range.minMB}}MB - <span v-if="range.maxMB > 0">{{range.maxMB}}MB</span><span v-else>&infin;</span> &nbsp;  价格：{{range.pricePerMB}}元/MB
+			{{range.minMB}}MB - <span v-if="range.maxMB > 0">{{range.maxMB}}MB</span><span v-else>&infin;</span> &nbsp;  价格：<span v-if="range.totalPrice > 0">{{range.totalPrice}}元</span><span v-else="">{{range.pricePerMB}}元/MB</span>
 			&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
 		</div>
 		<div class="ui divider"></div>
@@ -2277,7 +2289,7 @@ Vue.component("plan-bandwidth-ranges", {
 	<div v-if="isAdding">
 		<table class="ui table">
 			<tr>
-				<td class="title">带宽下限</td>
+				<td class="title">带宽下限 *</td>
 				<td>
 					<div class="ui input right labeled">
 						<input type="text" placeholder="最小带宽" style="width: 7em" maxlength="10" ref="minMB" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="minMB"/>
@@ -2286,7 +2298,7 @@ Vue.component("plan-bandwidth-ranges", {
 				</td>
 			</tr>
 			<tr>
-				<td class="title">带宽上限</td>
+				<td class="title">带宽上限 *</td>
 				<td>
 					<div class="ui input right labeled">
 						<input type="text" placeholder="最大带宽" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="maxMB"/>
@@ -2296,12 +2308,23 @@ Vue.component("plan-bandwidth-ranges", {
 				</td>
 			</tr>
 			<tr>
+				<td>总价格</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" placeholder="总价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="totalPrice"/>
+						<span class="ui label">元/MB</span>
+					</div>
+					<p class="comment">和单位价格二选一。</p>
+				</td>
+			</tr>
+			<tr>
 				<td class="title">单位价格</td>
 				<td>
 					<div class="ui input right labeled">
 						<input type="text" placeholder="单位价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="pricePerMB"/>
 						<span class="ui label">元/MB</span>
 					</div>
+					<p class="comment">和总价格二选一。如果设置了单位价格，那么"总价格 = 单位价格 x 带宽"。</p>
 				</td>
 			</tr>
 		</table>
@@ -4803,6 +4826,7 @@ Vue.component("http-firewall-checkpoint-cc", {
 		let keys = []
 		let period = 60
 		let threshold = 1000
+		let ignoreCommonFiles = false
 
 		let options = {}
 		if (window.parent.UPDATING_RULE != null) {
@@ -4824,6 +4848,9 @@ Vue.component("http-firewall-checkpoint-cc", {
 		if (options.threshold != null) {
 			threshold = options.threshold
 		}
+		if (options.ignoreCommonFiles != null && typeof (options.ignoreCommonFiles) == "boolean") {
+			ignoreCommonFiles = options.ignoreCommonFiles
+		}
 
 		let that = this
 		setTimeout(function () {
@@ -4834,6 +4861,7 @@ Vue.component("http-firewall-checkpoint-cc", {
 			keys: keys,
 			period: period,
 			threshold: threshold,
+			ignoreCommonFiles: ignoreCommonFiles,
 			options: {},
 			value: threshold
 		}
@@ -4843,6 +4871,9 @@ Vue.component("http-firewall-checkpoint-cc", {
 			this.change()
 		},
 		threshold: function () {
+			this.change()
+		},
+		ignoreCommonFiles: function () {
 			this.change()
 		}
 	},
@@ -4863,6 +4894,11 @@ Vue.component("http-firewall-checkpoint-cc", {
 			}
 			this.value = threshold
 
+			let ignoreCommonFiles = this.ignoreCommonFiles
+			if (typeof ignoreCommonFiles != "boolean") {
+				ignoreCommonFiles = false
+			}
+
 			this.vCheckpoint.options = [
 				{
 					code: "keys",
@@ -4875,6 +4911,10 @@ Vue.component("http-firewall-checkpoint-cc", {
 				{
 					code: "threshold",
 					value: threshold
+				},
+				{
+					code: "ignoreCommonFiles",
+					value: ignoreCommonFiles
 				}
 			]
 		}
@@ -4902,6 +4942,13 @@ Vue.component("http-firewall-checkpoint-cc", {
 			<td>阈值 *</td>
 			<td>
 				<input type="text" v-model="threshold" style="width: 6em" maxlength="8"/>
+			</td>
+		</tr>
+		<tr>
+			<td>忽略常见文件</td>
+			<td>
+				<checkbox v-model="ignoreCommonFiles"></checkbox>
+				<p class="comment">忽略js、css、jpg等常见文件名。</p>
 			</td>
 		</tr>
 	</table>
@@ -8919,7 +8966,7 @@ Vue.component("reverse-proxy-box", {
 				</td>
 			</tr>
 			<tr v-show="family == null || family == 'http'">
-				<td>回源主机名不包含端口</td>
+				<td>回源主机名移除端口</td>
 				<td><checkbox v-model="reverseProxyConfig.requestHostExcludingPort"></checkbox>
 					<p class="comment">选中后表示移除回源主机名中的端口部分。</p>
 				</td>
@@ -12716,6 +12763,15 @@ Vue.component("datetime-input", {
 			this.minute = this.leadingZero(date.getMinutes(), 2)
 			this.second = this.leadingZero(date.getSeconds(), 2)
 			this.change()
+		},
+		nextHours: function (hours) {
+			let date = new Date()
+			date.setTime(date.getTime() + hours * 3600 * 1000)
+			this.day = date.getFullYear() + "-" + this.leadingZero(date.getMonth() + 1, 2) + "-" + this.leadingZero(date.getDate(), 2)
+			this.hour = this.leadingZero(date.getHours(), 2)
+			this.minute = this.leadingZero(date.getMinutes(), 2)
+			this.second = this.leadingZero(date.getSeconds(), 2)
+			this.change()
 		}
 	},
 	template: `<div>
@@ -12730,7 +12786,7 @@ Vue.component("datetime-input", {
 		<div class="ui field">:</div>
 		<div class="ui field" :class="{error: hasSecondError}"><input type="text" v-model="second" maxlength="2" style="width:4em" placeholder="秒" @input="change"/></div>
 	</div>
-	<p class="comment">常用时间：<a href="" @click.prevent="nextDays(1)"> &nbsp;1天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(3)"> &nbsp;3天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(7)"> &nbsp;一周&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(30)"> &nbsp;30天&nbsp; </a> </p>
+	<p class="comment">常用时间：<a href="" @click.prevent="nextHours(1)"> &nbsp;1小时&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(1)"> &nbsp;1天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(3)"> &nbsp;3天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(7)"> &nbsp;1周&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(30)"> &nbsp;30天&nbsp; </a> </p>
 </div>`
 })
 
