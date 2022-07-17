@@ -12,6 +12,7 @@ Vue.component("plan-bandwidth-ranges", {
 			minMB: "",
 			maxMB: "",
 			pricePerMB: "",
+			totalPrice: "",
 			addingRange: {
 				minMB: 0,
 				maxMB: 0,
@@ -36,6 +37,7 @@ Vue.component("plan-bandwidth-ranges", {
 			this.minMB = ""
 			this.maxMB = ""
 			this.pricePerMB = ""
+			this.totalPrice = ""
 			this.ranges.push(this.addingRange)
 			this.ranges.$sort(function (v1, v2) {
 				if (v1.minMB < v2.minMB) {
@@ -83,13 +85,20 @@ Vue.component("plan-bandwidth-ranges", {
 				pricePerMB = 0
 			}
 			this.addingRange.pricePerMB = pricePerMB
+		},
+		totalPrice: function (v) {
+			let totalPrice = parseFloat(v.toString())
+			if (isNaN(totalPrice) || totalPrice < 0) {
+				totalPrice = 0
+			}
+			this.addingRange.totalPrice = totalPrice
 		}
 	},
 	template: `<div>
 	<!-- 已有价格 -->
 	<div v-if="ranges.length > 0">
 		<div class="ui label basic small" v-for="(range, index) in ranges" style="margin-bottom: 0.5em">
-			{{range.minMB}}MB - <span v-if="range.maxMB > 0">{{range.maxMB}}MB</span><span v-else>&infin;</span> &nbsp;  价格：{{range.pricePerMB}}元/MB
+			{{range.minMB}}MB - <span v-if="range.maxMB > 0">{{range.maxMB}}MB</span><span v-else>&infin;</span> &nbsp;  价格：<span v-if="range.totalPrice > 0">{{range.totalPrice}}元</span><span v-else="">{{range.pricePerMB}}元/MB</span>
 			&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
 		</div>
 		<div class="ui divider"></div>
@@ -99,7 +108,7 @@ Vue.component("plan-bandwidth-ranges", {
 	<div v-if="isAdding">
 		<table class="ui table">
 			<tr>
-				<td class="title">带宽下限</td>
+				<td class="title">带宽下限 *</td>
 				<td>
 					<div class="ui input right labeled">
 						<input type="text" placeholder="最小带宽" style="width: 7em" maxlength="10" ref="minMB" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="minMB"/>
@@ -108,7 +117,7 @@ Vue.component("plan-bandwidth-ranges", {
 				</td>
 			</tr>
 			<tr>
-				<td class="title">带宽上限</td>
+				<td class="title">带宽上限 *</td>
 				<td>
 					<div class="ui input right labeled">
 						<input type="text" placeholder="最大带宽" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="maxMB"/>
@@ -118,12 +127,23 @@ Vue.component("plan-bandwidth-ranges", {
 				</td>
 			</tr>
 			<tr>
+				<td>总价格</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" placeholder="总价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="totalPrice"/>
+						<span class="ui label">元/MB</span>
+					</div>
+					<p class="comment">和单位价格二选一。</p>
+				</td>
+			</tr>
+			<tr>
 				<td class="title">单位价格</td>
 				<td>
 					<div class="ui input right labeled">
 						<input type="text" placeholder="单位价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="pricePerMB"/>
 						<span class="ui label">元/MB</span>
 					</div>
+					<p class="comment">和总价格二选一。如果设置了单位价格，那么"总价格 = 单位价格 x 带宽"。</p>
 				</td>
 			</tr>
 		</table>
