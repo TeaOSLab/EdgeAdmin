@@ -46,6 +46,13 @@
 			</tr>
 			<tbody v-show="moreOptionsVisible">
                 <tr>
+                    <td>允许通过CNAME访问网站服务</td>
+                    <td>
+                        <checkbox name="cnameAsDomain" v-model="cnameAsDomain"></checkbox>
+                        <p class="comment">选中后，表示允许使用CNAME直接访问网站服务；如果取消选中，则表示CNAME只作为DNS解析记录使用。</p>
+                    </td>
+                </tr>
+                <tr>
                     <td>记录TTL</td>
                     <td>
                         <div class="ui input right labeled">
@@ -53,13 +60,6 @@
                             <span class="ui label">秒</span>
                         </div>
                         <p class="comment">每个DNS服务商或者账号的TTL限制各有不同，请注意取值范围。0表示使用默认。</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>允许通过CNAME访问网站服务</td>
-                    <td>
-                        <checkbox name="cnameAsDomain" v-model="cnameAsDomain"></checkbox>
-                        <p class="comment">选中后，表示允许使用CNAME直接访问网站服务；如果取消选中，则表示CNAME只作为DNS解析记录使用。</p>
                     </td>
                 </tr>
 				<tr>

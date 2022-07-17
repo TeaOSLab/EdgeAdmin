@@ -183,7 +183,7 @@ Vue.component("reverse-proxy-box", {
 				</td>
 			</tr>
 			<tr v-show="family == null || family == 'http'">
-				<td>回源主机名不包含端口</td>
+				<td>回源主机名移除端口</td>
 				<td><checkbox v-model="reverseProxyConfig.requestHostExcludingPort"></checkbox>
 					<p class="comment">选中后表示移除回源主机名中的端口部分。</p>
 				</td>

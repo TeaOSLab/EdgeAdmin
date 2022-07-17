@@ -133,17 +133,17 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 	})
 
 	items = append(items, maps.Map{
-		"name":     "健康检查",
-		"url":      "/clusters/cluster/settings/health?clusterId=" + clusterId,
-		"isActive": selectedItem == "health",
-		"isOn":     info != nil && info.HealthCheckIsOn,
-	})
-
-	items = append(items, maps.Map{
 		"name":     "DNS设置",
 		"url":      "/clusters/cluster/settings/dns?clusterId=" + clusterId,
 		"isActive": selectedItem == "dns",
 		"isOn":     cluster.DnsDomainId > 0 || len(cluster.DnsName) > 0,
+	})
+
+	items = append(items, maps.Map{
+		"name":     "健康检查",
+		"url":      "/clusters/cluster/settings/health?clusterId=" + clusterId,
+		"isActive": selectedItem == "health",
+		"isOn":     info != nil && info.HealthCheckIsOn,
 	})
 
 	items = append(items, maps.Map{

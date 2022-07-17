@@ -20,8 +20,10 @@ Tea.context(function () {
 
 	this.success = function () {
 		this.isOk = true
-		let f = NotifyReloadSuccess("任务提交成功")
-		f()
+		let that = this
+		teaweb.success("任务提交成功", function () {
+			window.location = window.location.pathname + "?keyType=" + that.keyType
+		})
 	}
 
 	this.fail = function (resp) {
@@ -39,5 +41,7 @@ Tea.context(function () {
 	/**
 	 * 操作类型
 	 */
-	this.keyType = "key" // key | prefix
+	if (this.keyType == null || this.keyType.length == 0) {
+		this.keyType = "key" // key | prefix
+	}
 })
