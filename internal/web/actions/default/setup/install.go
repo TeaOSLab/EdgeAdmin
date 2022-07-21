@@ -223,7 +223,8 @@ func (this *InstallAction) RunPost(params struct {
 		// 写入API节点配置，完成安装
 		apiConfig := &configs.APIConfig{
 			RPC: struct {
-				Endpoints []string `yaml:"endpoints"`
+				Endpoints     []string `yaml:"endpoints"`
+				DisableUpdate bool     `yaml:"disableUpdate"`
 			}{
 				Endpoints: []string{"http://" + configutils.QuoteIP(apiNodeMap.GetString("newHost")) + ":" + apiNodeMap.GetString("newPort")},
 			},
@@ -285,7 +286,8 @@ func (this *InstallAction) RunPost(params struct {
 		// 构造RPC
 		apiConfig := &configs.APIConfig{
 			RPC: struct {
-				Endpoints []string `yaml:"endpoints"`
+				Endpoints     []string `yaml:"endpoints"`
+				DisableUpdate bool     `yaml:"disableUpdate"`
 			}{
 				Endpoints: []string{apiNodeMap.GetString("oldProtocol") + "://" + configutils.QuoteIP(apiNodeMap.GetString("oldHost")) + ":" + apiNodeMap.GetString("oldPort")},
 			},

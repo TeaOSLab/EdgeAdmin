@@ -58,6 +58,16 @@ func (this *SyncAPINodesTask) Loop() error {
 		return nil
 	}
 
+	config, err := configs.LoadAPIConfig()
+	if err != nil {
+		return err
+	}
+
+	// 是否禁止自动升级
+	if config.RPC.DisableUpdate {
+		return nil
+	}
+
 	// 获取所有可用的节点
 	rpcClient, err := rpc.SharedRPC()
 	if err != nil {
@@ -68,7 +78,7 @@ func (this *SyncAPINodesTask) Loop() error {
 		return err
 	}
 
-	newEndpoints := []string{}
+	var newEndpoints = []string{}
 	for _, node := range resp.ApiNodes {
 		if !node.IsOn {
 			continue
@@ -77,10 +87,6 @@ func (this *SyncAPINodesTask) Loop() error {
 	}
 
 	// 和现有的对比
-	config, err := configs.LoadAPIConfig()
-	if err != nil {
-		return err
-	}
 	if this.isSame(newEndpoints, config.RPC.Endpoints) {
 		return nil
 	}
