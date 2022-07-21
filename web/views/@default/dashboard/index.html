@@ -23,14 +23,24 @@
     <a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
 </div>
 
-<!-- 升级提醒 -->
+<!-- 边缘节点升级提醒 -->
 <div class="ui icon message error" v-if="!isLoading && nodeUpgradeInfo.count > 0">
     <i class="icon warning circle"></i>
     <a href="/clusters">升级提醒：有 {{nodeUpgradeInfo.count}} 个边缘节点需要升级到 v{{nodeUpgradeInfo.version}} 版本，系统正在尝试自动升级...</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
 </div>
+
+<!-- API节点升级提醒 -->
 <div class="ui icon message error" v-if="!isLoading && apiNodeUpgradeInfo.count > 0">
     <i class="icon warning circle"></i>
     <a href="/api">升级提醒：有 {{apiNodeUpgradeInfo.count}} 个API节点需要升级到 v{{apiNodeUpgradeInfo.version}} 版本；如果已经升级，请尝试重启API节点进程。</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
+</div>
+
+<!-- 本地API节点 -->
+<div class="ui icon message error" v-if="!isLoading && localLowerVersionAPINode != null">
+    <i class="icon warning circle"></i>
+    <span v-if="localLowerVersionAPINode.runtimeVersion == localLowerVersionAPINode.fileVersion">升级提醒：发现一个正在使用的本地API节点版本需要升级，文件位置：{{localLowerVersionAPINode.exePath}}，当前版本：v{{localLowerVersionAPINode.runtimeVersion}}。</span>
+    <span v-if="localLowerVersionAPINode.runtimeVersion != localLowerVersionAPINode.fileVersion">升级提醒：发现一个正在使用的本地API节点版本文件已经更新，但需要重启后生效，文件位置：{{localLowerVersionAPINode.exePath}}。 <a href="" @click.prevent="restartAPINode" v-if="!isRestartingLocalAPINode">[帮我重启]</a><span v-if="isRestartingLocalAPINode">尝试重启中...</span></span>
+    <a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
 </div>
 
 <!-- 没有磁盘空间提醒 -->

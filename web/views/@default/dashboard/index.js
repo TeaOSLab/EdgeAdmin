@@ -3,6 +3,7 @@ Tea.context(function () {
 	this.trafficTab = "hourly"
 	this.metricCharts = []
 	this.dashboard = {}
+	this.localLowerVersionAPINode = null
 
 	this.$delay(function () {
 		this.$post("$")
@@ -192,5 +193,30 @@ Tea.context(function () {
 				break
 			}
 		}
+	}
+
+	// 重启本地API节点
+	this.isRestartingLocalAPINode = false
+	this.restartAPINode = function () {
+		if (this.isRestartingLocalAPINode) {
+			return
+		}
+		if (this.localLowerVersionAPINode == null) {
+			return
+		}
+		this.isRestartingLocalAPINode = true
+		this.localLowerVersionAPINode.isRestarting = true
+		this.$post("/dashboard/restartLocalAPINode")
+			.params({
+				"exePath": this.localLowerVersionAPINode.exePath
+			})
+			.timeout(300)
+			.success(function () {
+				teaweb.reload()
+			})
+			.done(function () {
+				this.isRestartingLocalAPINode = false
+				this.localLowerVersionAPINode.isRestarting = false
+			})
 	}
 })
