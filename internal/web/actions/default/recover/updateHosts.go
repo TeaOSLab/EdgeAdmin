@@ -36,7 +36,8 @@ func (this *UpdateHostsAction) RunPost(params struct {
 
 	client, err := rpc.NewRPCClient(&configs.APIConfig{
 		RPC: struct {
-			Endpoints []string `yaml:"endpoints"`
+			Endpoints     []string `yaml:"endpoints"`
+			DisableUpdate bool     `yaml:"disableUpdate"`
 		}{
 			Endpoints: []string{params.Protocol + "://" + configutils.QuoteIP(params.Host) + ":" + params.Port},
 		},
@@ -167,7 +168,8 @@ func (this *UpdateHostsAction) RunPost(params struct {
 	// 修改api.yaml
 	var apiConfig = &configs.APIConfig{
 		RPC: struct {
-			Endpoints []string `yaml:"endpoints"`
+			Endpoints     []string `yaml:"endpoints"`
+			DisableUpdate bool     `yaml:"disableUpdate"`
 		}{
 			Endpoints: endpoints,
 		},

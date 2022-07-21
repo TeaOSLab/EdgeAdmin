@@ -12,7 +12,8 @@ import (
 // APIConfig API配置
 type APIConfig struct {
 	RPC struct {
-		Endpoints []string `yaml:"endpoints"`
+		Endpoints     []string `yaml:"endpoints"`
+		DisableUpdate bool     `yaml:"disableUpdate"`
 	} `yaml:"rpc"`
 	NodeId string `yaml:"nodeId"`
 	Secret string `yaml:"secret"`

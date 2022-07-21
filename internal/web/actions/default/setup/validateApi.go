@@ -85,7 +85,8 @@ func (this *ValidateApiAction) RunPost(params struct {
 		Require("请输入节点secret")
 	client, err := rpc.NewRPCClient(&configs.APIConfig{
 		RPC: struct {
-			Endpoints []string `yaml:"endpoints"`
+			Endpoints     []string `yaml:"endpoints"`
+			DisableUpdate bool     `yaml:"disableUpdate"`
 		}{
 			Endpoints: []string{params.OldProtocol + "://" + configutils.QuoteIP(params.OldHost) + ":" + params.OldPort},
 		},

@@ -102,7 +102,8 @@ func SendMessageToCluster(ctx context.Context, clusterId int64, code string, msg
 
 			apiRPCClient, err := rpc.NewRPCClient(&configs.APIConfig{
 				RPC: struct {
-					Endpoints []string `yaml:"endpoints"`
+					Endpoints     []string `yaml:"endpoints"`
+					DisableUpdate bool     `yaml:"disableUpdate"`
 				}{
 					Endpoints: apiNode.AccessAddrs,
 				},
@@ -282,7 +283,8 @@ func SendMessageToNodeIds(ctx context.Context, nodeIds []int64, code string, msg
 
 			apiRPCClient, err := rpc.NewRPCClient(&configs.APIConfig{
 				RPC: struct {
-					Endpoints []string `yaml:"endpoints"`
+					Endpoints     []string `yaml:"endpoints"`
+					DisableUpdate bool     `yaml:"disableUpdate"`
 				}{
 					Endpoints: apiNode.AccessAddrs,
 				},
