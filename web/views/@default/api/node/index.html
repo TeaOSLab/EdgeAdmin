@@ -44,6 +44,24 @@
             <p class="comment">通过HTTP访问API节点的网络地址。</p>
         </td>
     </tr>
+    <tr v-if="node.statusIsValid">
+        <td>CPU用量</td>
+        <td>{{node.status.cpuUsageText}} &nbsp; <span v-if="node.status.cpuPhysicalCount > 0" class="small grey">（{{node.status.cpuPhysicalCount}}核心/{{node.status.cpuLogicalCount}}线程）</span></td>
+    </tr>
+    <tr v-if="node.statusIsValid">
+        <td>内存用量</td>
+        <td>{{node.status.memUsageText}}</td>
+    </tr>
+    <tr v-if="node.statusIsValid">
+        <td>版本</td>
+        <td>v{{node.status.buildVersion}}
+            &nbsp; <span class="red" v-if="newVersion.length > 0">需要升级到新版本v{{newVersion}}</span>
+        </td>
+    </tr>
+    <tr v-if="node.statusIsValid">
+        <td>主程序位置</td>
+        <td>{{node.status.exePath}}</td>
+    </tr>
     <tr>
         <td>主节点</td>
         <td>

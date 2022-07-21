@@ -2,11 +2,17 @@ package node
 
 import (
 	"encoding/json"
+	"fmt"
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
 	"github.com/iwind/TeaGo/maps"
+	stringutil "github.com/iwind/TeaGo/utils/string"
+	"time"
 )
 
 type IndexAction struct {
@@ -25,7 +31,7 @@ func (this *IndexAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	node := nodeResp.ApiNode
+	var node = nodeResp.ApiNode
 	if node == nil {
 		this.NotFound("apiNode", params.NodeId)
 		return
@@ -33,7 +39,7 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 监听地址
 	var hasHTTPS = false
-	httpConfig := &serverconfigs.HTTPProtocolConfig{}
+	var httpConfig = &serverconfigs.HTTPProtocolConfig{}
 	if len(node.HttpJSON) > 0 {
 		err = json.Unmarshal(node.HttpJSON, httpConfig)
 		if err != nil {
@@ -41,7 +47,7 @@ func (this *IndexAction) RunGet(params struct {
 			return
 		}
 	}
-	httpsConfig := &serverconfigs.HTTPSProtocolConfig{}
+	var httpsConfig = &serverconfigs.HTTPSProtocolConfig{}
 	if len(node.HttpsJSON) > 0 {
 		err = json.Unmarshal(node.HttpsJSON, httpsConfig)
 		if err != nil {
@@ -52,21 +58,21 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	// 监听地址
-	listens := []*serverconfigs.NetworkAddressConfig{}
+	var listens = []*serverconfigs.NetworkAddressConfig{}
 	listens = append(listens, httpConfig.Listen...)
 	listens = append(listens, httpsConfig.Listen...)
 
 	// 证书信息
-	certs := []*sslconfigs.SSLCertConfig{}
+	var certs = []*sslconfigs.SSLCertConfig{}
 	if httpsConfig.SSLPolicyRef != nil && httpsConfig.SSLPolicyRef.SSLPolicyId > 0 {
 		sslPolicyConfigResp, err := this.RPC().SSLPolicyRPC().FindEnabledSSLPolicyConfig(this.AdminContext(), &pb.FindEnabledSSLPolicyConfigRequest{SslPolicyId: httpsConfig.SSLPolicyRef.SSLPolicyId})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-		sslPolicyConfigJSON := sslPolicyConfigResp.SslPolicyJSON
+		var sslPolicyConfigJSON = sslPolicyConfigResp.SslPolicyJSON
 		if len(sslPolicyConfigJSON) > 0 {
-			sslPolicy := &sslconfigs.SSLPolicy{}
+			var sslPolicy = &sslconfigs.SSLPolicy{}
 			err = json.Unmarshal(sslPolicyConfigJSON, sslPolicy)
 			if err != nil {
 				this.ErrorPage(err)
@@ -77,7 +83,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	// 访问地址
-	accessAddrs := []*serverconfigs.NetworkAddressConfig{}
+	var accessAddrs = []*serverconfigs.NetworkAddressConfig{}
 	if len(node.AccessAddrsJSON) > 0 {
 		err = json.Unmarshal(node.AccessAddrsJSON, &accessAddrs)
 		if err != nil {
@@ -87,10 +93,10 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	// Rest地址
-	restAccessAddrs := []*serverconfigs.NetworkAddressConfig{}
+	var restAccessAddrs = []*serverconfigs.NetworkAddressConfig{}
 	if node.RestIsOn {
 		if len(node.RestHTTPJSON) > 0 {
-			httpConfig := &serverconfigs.HTTPProtocolConfig{}
+			var httpConfig = &serverconfigs.HTTPProtocolConfig{}
 			err = json.Unmarshal(node.RestHTTPJSON, httpConfig)
 			if err != nil {
 				this.ErrorPage(err)
@@ -102,7 +108,7 @@ func (this *IndexAction) RunGet(params struct {
 		}
 
 		if len(node.RestHTTPSJSON) > 0 {
-			httpsConfig := &serverconfigs.HTTPSProtocolConfig{}
+			var httpsConfig = &serverconfigs.HTTPSProtocolConfig{}
 			err = json.Unmarshal(node.RestHTTPSJSON, httpsConfig)
 			if err != nil {
 				this.ErrorPage(err)
@@ -114,6 +120,27 @@ func (this *IndexAction) RunGet(params struct {
 
 			if !hasHTTPS {
 				hasHTTPS = len(httpsConfig.Listen) > 0
+			}
+		}
+	}
+
+	// 状态
+	var status = &nodeconfigs.NodeStatus{}
+	var statusIsValid = false
+	this.Data["newVersion"] = ""
+	if len(node.StatusJSON) > 0 {
+		err = json.Unmarshal(node.StatusJSON, &status)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+
+		if status.UpdatedAt >= time.Now().Unix()-300 {
+			statusIsValid = true
+
+			// 是否为新版本
+			if stringutil.VersionCompare(status.BuildVersion, teaconst.APINodeVersion) < 0 {
+				this.Data["newVersion"] = teaconst.APINodeVersion
 			}
 		}
 	}
@@ -130,6 +157,26 @@ func (this *IndexAction) RunGet(params struct {
 		"hasHTTPS":        hasHTTPS,
 		"certs":           certs,
 		"isPrimary":       node.IsPrimary,
+		"statusIsValid":   statusIsValid,
+		"status": maps.Map{
+			"isActive":             status.IsActive,
+			"updatedAt":            status.UpdatedAt,
+			"hostname":             status.Hostname,
+			"cpuUsage":             status.CPUUsage,
+			"cpuUsageText":         fmt.Sprintf("%.2f%%", status.CPUUsage*100),
+			"memUsage":             status.MemoryUsage,
+			"memUsageText":         fmt.Sprintf("%.2f%%", status.MemoryUsage*100),
+			"connectionCount":      status.ConnectionCount,
+			"buildVersion":         status.BuildVersion,
+			"cpuPhysicalCount":     status.CPUPhysicalCount,
+			"cpuLogicalCount":      status.CPULogicalCount,
+			"load1m":               numberutils.FormatFloat2(status.Load1m),
+			"load5m":               numberutils.FormatFloat2(status.Load5m),
+			"load15m":              numberutils.FormatFloat2(status.Load15m),
+			"cacheTotalDiskSize":   numberutils.FormatBytes(status.CacheTotalDiskSize),
+			"cacheTotalMemorySize": numberutils.FormatBytes(status.CacheTotalMemorySize),
+			"exePath":              status.ExePath,
+		},
 	}
 
 	this.Show()
