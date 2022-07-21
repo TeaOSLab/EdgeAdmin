@@ -12,6 +12,7 @@ func init() {
 			Data("teaMenu", "dashboard").
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeCommon)).
 			GetPost("", new(IndexAction)).
+			Post("/restartLocalAPINode", new(RestartLocalAPINodeAction)).
 			EndAll()
 	})
 }
