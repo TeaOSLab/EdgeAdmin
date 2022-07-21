@@ -206,6 +206,10 @@
                     &nbsp; <a :href="'/clusters/cluster/upgradeRemote?clusterId=' + clusterId" v-if="shouldUpgrade"><span class="red">发现新版本v{{newVersion}} &raquo;</span></a>
                 </td>
             </tr>
+            <tr v-if="node.status.exePath != null && node.status.exePath.length > 0">
+                <td>主程序位置</td>
+                <td>{{node.status.exePath}}</td>
+            </tr>
             <tr v-if="nodeDatetime.length > 0">
                 <td>上次更新时间</td>
                 <td>

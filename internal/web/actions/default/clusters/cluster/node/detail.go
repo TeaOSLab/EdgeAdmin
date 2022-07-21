@@ -321,6 +321,7 @@ func (this *DetailAction) RunGet(params struct {
 			"load15m":              numberutils.FormatFloat2(status.Load15m),
 			"cacheTotalDiskSize":   numberutils.FormatBytes(status.CacheTotalDiskSize),
 			"cacheTotalMemorySize": numberutils.FormatBytes(status.CacheTotalMemorySize),
+			"exePath":              status.ExePath,
 		},
 
 		"group":  groupMap,
