@@ -65,7 +65,7 @@
         <td>认证二维码</td>
         <td>
             <img :src="'/admins/otpQrcode?adminId=' + admin.id"/>
-            <p class="comment">可以通过二维码快速添加OTP认证信息到App中。</p>
+            <p class="comment">可以通过二维码快速添加OTP认证信息到认证App中。</p>
         </td>
     </tr>
     <tr v-if="otp != null && otp.isOn && moreOptionsVisible">
