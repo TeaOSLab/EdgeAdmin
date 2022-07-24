@@ -29,6 +29,7 @@ func (this *OptionsAction) RunPost(params struct {
 			"id":       user.Id,
 			"fullname": user.Fullname,
 			"username": user.Username,
+			"name":     user.Fullname + "(" + user.Username + ")",
 		})
 	}
 	this.Data["users"] = userMaps
