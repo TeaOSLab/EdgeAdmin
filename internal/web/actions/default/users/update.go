@@ -44,6 +44,13 @@ func (this *UpdateAction) RunGet(params struct {
 	}
 	countAccessKeys := countAccessKeyResp.Count
 
+	// 是否有实名认证
+	hasNewIndividualIdentity, hasNewEnterpriseIdentity, identityTag, err := userutils.CheckUserIdentity(this.RPC(), this.AdminContext(), params.UserId)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
 	this.Data["user"] = maps.Map{
 		"id":              user.Id,
 		"username":        user.Username,
@@ -54,6 +61,11 @@ func (this *UpdateAction) RunGet(params struct {
 		"mobile":          user.Mobile,
 		"isOn":            user.IsOn,
 		"countAccessKeys": countAccessKeys,
+
+		// 实名认证
+		"hasNewIndividualIdentity": hasNewIndividualIdentity,
+		"hasNewEnterpriseIdentity": hasNewEnterpriseIdentity,
+		"identityTag":              identityTag,
 	}
 
 	this.Data["clusterId"] = 0
