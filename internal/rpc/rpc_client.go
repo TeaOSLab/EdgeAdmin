@@ -424,6 +424,10 @@ func (this *RPCClient) UserAccessKeyRPC() pb.UserAccessKeyServiceClient {
 	return pb.NewUserAccessKeyServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) UserIdentityRPC() pb.UserIdentityServiceClient {
+	return pb.NewUserIdentityServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) LoginRPC() pb.LoginServiceClient {
 	return pb.NewLoginServiceClient(this.pickConn())
 }

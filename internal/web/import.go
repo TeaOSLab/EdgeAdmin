@@ -3,6 +3,7 @@ package web
 import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/tasks"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/about"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/files"
 
 	// 系统用户
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/admins"

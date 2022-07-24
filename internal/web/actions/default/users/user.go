@@ -34,7 +34,7 @@ func (this *UserAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	user := userResp.User
+	var user = userResp.User
 	if user == nil {
 		this.NotFound("user", params.UserId)
 		return
@@ -69,6 +69,13 @@ func (this *UserAction) RunGet(params struct {
 		}
 	}
 
+	// 是否有实名认证
+	hasNewIndividualIdentity, hasNewEnterpriseIdentity, identityTag, err := userutils.CheckUserIdentity(this.RPC(), this.AdminContext(), params.UserId)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
 	this.Data["user"] = maps.Map{
 		"id":               user.Id,
 		"username":         user.Username,
@@ -85,6 +92,11 @@ func (this *UserAction) RunGet(params struct {
 		"isVerified":       user.IsVerified,
 		"registeredIP":     user.RegisteredIP,
 		"registeredRegion": registeredRegion,
+
+		// 实名认证
+		"hasNewIndividualIdentity": hasNewIndividualIdentity,
+		"hasNewEnterpriseIdentity": hasNewEnterpriseIdentity,
+		"identityTag":              identityTag,
 	}
 
 	this.Show()
