@@ -41,10 +41,13 @@
                 <keyword :v-word="keyword">{{user.username}}</keyword>
             </a>
             <div v-if="!user.isVerified">
-                <grey-label color="red">未审核</grey-label>
+                <a :href="'/users/user?userId=' + user.id"><grey-label color="red"><i class="icon info circle"></i>信息未审核</grey-label></a>
             </div>
             <div v-if="user.isRejected">
-                <grey-label color="red">已拒绝</grey-label>
+                <grey-label color="red"><i class="icon info circle"></i>信息已拒绝</grey-label>
+            </div>
+            <div v-if="user.identityIsSubmitted">
+                <a :href="'/users/identity?userId=' + user.id"><grey-label color="red"><i class="icon address card"></i>实名未审核</grey-label></a>
             </div>
         </td>
         <td :class="{disabled:!user.isOn}">

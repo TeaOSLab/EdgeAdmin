@@ -65,19 +65,27 @@ func (this *IndexAction) RunGet(params struct {
 			}
 		}
 
+		isSubmittedResp, err := this.RPC().UserIdentityRPC().CheckUserIdentityIsSubmitted(this.AdminContext(), &pb.CheckUserIdentityIsSubmittedRequest{UserId: user.Id})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		var identityIsSubmitted = isSubmittedResp.IsSubmitted
+
 		userMaps = append(userMaps, maps.Map{
-			"id":           user.Id,
-			"username":     user.Username,
-			"isOn":         user.IsOn,
-			"fullname":     user.Fullname,
-			"email":        user.Email,
-			"mobile":       user.Mobile,
-			"tel":          user.Tel,
-			"createdTime":  timeutil.FormatTime("Y-m-d H:i:s", user.CreatedAt),
-			"cluster":      clusterMap,
-			"registeredIP": user.RegisteredIP,
-			"isVerified":   user.IsVerified,
-			"isRejected":   user.IsRejected,
+			"id":                  user.Id,
+			"username":            user.Username,
+			"isOn":                user.IsOn,
+			"fullname":            user.Fullname,
+			"email":               user.Email,
+			"mobile":              user.Mobile,
+			"tel":                 user.Tel,
+			"createdTime":         timeutil.FormatTime("Y-m-d H:i:s", user.CreatedAt),
+			"cluster":             clusterMap,
+			"registeredIP":        user.RegisteredIP,
+			"isVerified":          user.IsVerified,
+			"isRejected":          user.IsRejected,
+			"identityIsSubmitted": identityIsSubmitted,
 		})
 	}
 	this.Data["users"] = userMaps

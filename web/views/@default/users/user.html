@@ -6,7 +6,7 @@
         <td>状态</td>
         <td>
             <span v-if="!user.isVerified" class="red">
-                未审核 &nbsp; <a href="" @click.prevent="verify">[审核]</a>
+                信息未审核 &nbsp; <a href="" @click.prevent="verify">[审核]</a>
             </span>
             <span v-else-if="user.isRejected" class="red">已拒绝
                  &nbsp; <a href="" @click.prevent="verify">[重新审核]</a>
