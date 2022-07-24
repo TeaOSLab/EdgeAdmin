@@ -26,19 +26,24 @@
                 <option v-for="group in groups" :value="group.id">{{group.name}}</option>
             </select>
         </div>
+        <div class="ui field" v-if="hasUsers">
+            <user-selector :v-user-id="userId"></user-selector>
+        </div>
         <div class="ui field">
-            <input type="text" name="keyword" style="width:10em" placeholder="关键词、域名等" v-model="keyword"/>
+            <input type="text" name="keyword" style="width:14em" placeholder="关键词、域名、端口等" v-model="keyword"/>
         </div>
         <div class="ui field">
             <button type="submit" class="ui button">搜索</button>
             &nbsp;
-            <a href="/servers" v-if="clusterId > 0 || groupId > 0 || keyword.length > 0 || hasOrder">[清除条件]</a>
+            <a href="/servers" v-if="clusterId > 0 || groupId > 0 || keyword.length > 0 || hasOrder || userId > 0">[清除条件]</a>
+        </div>
+    </div>
+    <div class="ui fields inline" style="margin-top: 1em">
+        <div class="ui field">
+            <checkbox name="checkDNS" :v-value="1" v-model="checkDNS">检查域名解析</checkbox>
         </div>
         <div class="ui field" v-if="clusterId == 0 && groupId == 0 && keyword.length == 0 && latestServers.length > 0">
             <a href="" @click.prevent="showLatest()">常用<i class="icon angle" :class="{down: !latestVisible, up: latestVisible}"></i> </a>
-        </div>
-        <div class="ui field">
-            <checkbox name="checkDNS" :v-value="1" v-model="checkDNS">检查域名解析</checkbox>
         </div>
     </div>
 </form>

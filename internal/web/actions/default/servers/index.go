@@ -27,6 +27,7 @@ func (this *IndexAction) RunGet(params struct {
 	Keyword      string
 	AuditingFlag int32
 	CheckDNS     bool
+	UserId       int64
 
 	TrafficOutOrder string
 }) {
@@ -36,6 +37,7 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["auditingFlag"] = params.AuditingFlag
 	this.Data["checkDNS"] = params.CheckDNS
 	this.Data["hasOrder"] = len(params.TrafficOutOrder) > 0
+	this.Data["userId"] = params.UserId
 
 	isSearching := params.AuditingFlag == 1 || params.ClusterId > 0 || params.GroupId > 0 || len(params.Keyword) > 0
 
@@ -76,6 +78,7 @@ func (this *IndexAction) RunGet(params struct {
 		ServerGroupId: params.GroupId,
 		Keyword:       params.Keyword,
 		AuditingFlag:  params.AuditingFlag,
+		UserId:        params.UserId,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -95,6 +98,7 @@ func (this *IndexAction) RunGet(params struct {
 		AuditingFlag:   params.AuditingFlag,
 		TrafficOutDesc: params.TrafficOutOrder == "desc",
 		TrafficOutAsc:  params.TrafficOutOrder == "asc",
+		UserId:         params.UserId,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -287,6 +291,14 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 	this.Data["countNeedFixLogs"] = countNeedFixLogsResp.Count
+
+	// 是否有用户
+	countUsersResp, err := this.RPC().UserRPC().CountAllEnabledUsers(this.AdminContext(), &pb.CountAllEnabledUsersRequest{})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["hasUsers"] = countUsersResp.Count > 0
 
 	this.Show()
 }
