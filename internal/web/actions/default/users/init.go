@@ -20,6 +20,7 @@ func init() {
 			Post("/delete", new(DeleteAction)).
 			GetPost("/features", new(FeaturesAction)).
 			GetPost("/verifyPopup", new(VerifyPopupAction)).
+			Get("/otpQrcode", new(OtpQrcodeAction)).
 
 			// AccessKeys
 			Prefix("/users/accessKeys").

@@ -6,6 +6,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/xlzd/gotp"
 )
 
 type UpdateAction struct {
@@ -30,7 +31,7 @@ func (this *UpdateAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	user := userResp.User
+	var user = userResp.User
 	if user == nil {
 		this.NotFound("user", params.UserId)
 		return
@@ -42,13 +43,19 @@ func (this *UpdateAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	countAccessKeys := countAccessKeyResp.Count
+	var countAccessKeys = countAccessKeyResp.Count
 
 	// 是否有实名认证
 	hasNewIndividualIdentity, hasNewEnterpriseIdentity, identityTag, err := userutils.CheckUserIdentity(this.RPC(), this.AdminContext(), params.UserId)
 	if err != nil {
 		this.ErrorPage(err)
 		return
+	}
+
+	// OTP认证
+	var otpLoginIsOn = false
+	if user.OtpLogin != nil {
+		otpLoginIsOn = user.OtpLogin.IsOn
 	}
 
 	this.Data["user"] = maps.Map{
@@ -66,6 +73,9 @@ func (this *UpdateAction) RunGet(params struct {
 		"hasNewIndividualIdentity": hasNewIndividualIdentity,
 		"hasNewEnterpriseIdentity": hasNewEnterpriseIdentity,
 		"identityTag":              identityTag,
+
+		// otp
+		"otpLoginIsOn": otpLoginIsOn,
 	}
 
 	this.Data["clusterId"] = 0
@@ -88,6 +98,9 @@ func (this *UpdateAction) RunPost(params struct {
 	Remark    string
 	IsOn      bool
 	ClusterId int64
+
+	// OTP
+	OtpOn bool
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -150,6 +163,51 @@ func (this *UpdateAction) RunPost(params struct {
 	if err != nil {
 		this.ErrorPage(err)
 		return
+	}
+
+	// 修改OTP
+	otpLoginResp, err := this.RPC().LoginRPC().FindEnabledLogin(this.AdminContext(), &pb.FindEnabledLoginRequest{
+		UserId: params.UserId,
+		Type:   "otp",
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	{
+		var otpLogin = otpLoginResp.Login
+		if params.OtpOn {
+			if otpLogin == nil {
+				otpLogin = &pb.Login{
+					Id:   0,
+					Type: "otp",
+					ParamsJSON: maps.Map{
+						"secret": gotp.RandomSecret(16), // TODO 改成可以设置secret长度
+					}.AsJSON(),
+					IsOn:   true,
+					UserId: params.UserId,
+				}
+			} else {
+				// 如果已经有了，就覆盖，这样可以保留既有的参数
+				otpLogin.IsOn = true
+			}
+
+			_, err = this.RPC().LoginRPC().UpdateLogin(this.AdminContext(), &pb.UpdateLoginRequest{Login: otpLogin})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+		} else {
+			_, err = this.RPC().LoginRPC().UpdateLogin(this.AdminContext(), &pb.UpdateLoginRequest{Login: &pb.Login{
+				Type:   "otp",
+				IsOn:   false,
+				UserId: params.UserId,
+			}})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+		}
 	}
 
 	this.Success()

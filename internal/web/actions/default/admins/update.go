@@ -27,14 +27,14 @@ func (this *UpdateAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	admin := adminResp.Admin
+	var admin = adminResp.Admin
 	if admin == nil {
 		this.NotFound("admin", params.AdminId)
 		return
 	}
 
 	// OTP认证
-	otpLoginIsOn := false
+	var otpLoginIsOn = false
 	if admin.OtpLogin != nil {
 		otpLoginIsOn = admin.OtpLogin.IsOn
 	}
@@ -45,7 +45,7 @@ func (this *UpdateAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	countAccessKeys := countAccessKeyResp.Count
+	var countAccessKeys = countAccessKeyResp.Count
 
 	this.Data["admin"] = maps.Map{
 		"id":              admin.Id,
@@ -59,7 +59,7 @@ func (this *UpdateAction) RunGet(params struct {
 	}
 
 	// 权限
-	moduleMaps := configloaders.AllModuleMaps()
+	var moduleMaps = configloaders.AllModuleMaps()
 	for _, m := range moduleMaps {
 		code := m.GetString("code")
 		isChecked := false
