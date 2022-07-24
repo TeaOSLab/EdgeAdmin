@@ -73,3 +73,28 @@
         </td>
     </tr>
 </table>
+
+<h3>OTP认证</h3>
+<table class="ui table definition selectable">
+    <tr>
+        <td class="title">状态</td>
+        <td>
+            <span v-if="otp != null && otp.isOn" class="green">已启用</span>
+            <span v-else class="disabled">未启用</span>
+        </td>
+    </tr>
+    <tr v-if="otp != null && otp.isOn">
+        <td colspan="2"><more-options-indicator>更多信息</more-options-indicator></td>
+    </tr>
+    <tr v-if="otp != null && otp.isOn && moreOptionsVisible">
+        <td>认证二维码</td>
+        <td>
+            <img :src="'/users/otpQrcode?userId=' + user.id"/>
+            <p class="comment">可以通过二维码快速添加OTP认证信息到App中。</p>
+        </td>
+    </tr>
+    <tr v-if="otp != null && otp.isOn && moreOptionsVisible">
+        <td>密钥</td>
+        <td>{{otp.params.secret}}</td>
+    </tr>
+</table>

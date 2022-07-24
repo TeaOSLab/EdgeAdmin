@@ -1,6 +1,7 @@
 package users
 
 import (
+	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/users/userutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -74,6 +75,21 @@ func (this *UserAction) RunGet(params struct {
 	if err != nil {
 		this.ErrorPage(err)
 		return
+	}
+
+	// OTP
+	this.Data["otp"] = nil
+	if user.OtpLogin != nil && user.OtpLogin.IsOn {
+		loginParams := maps.Map{}
+		err = json.Unmarshal(user.OtpLogin.ParamsJSON, &loginParams)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		this.Data["otp"] = maps.Map{
+			"isOn":   true,
+			"params": loginParams,
+		}
 	}
 
 	this.Data["user"] = maps.Map{

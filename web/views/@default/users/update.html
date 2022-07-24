@@ -68,6 +68,13 @@
                 </td>
             </tr>
             <tr>
+                <td>OTP认证</td>
+                <td>
+                    <checkbox name="otpOn" v-model="user.otpLoginIsOn">启用OTP</checkbox>
+                    <p class="comment">启用OTP认证后，在用户登录的时候需要同时填写OTP动态密码。</p>
+                </td>
+            </tr>
+            <tr>
                 <td>备注</td>
                 <td>
                     <textarea rows="3" name="remark" v-model="user.remark"></textarea>
