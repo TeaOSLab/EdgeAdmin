@@ -1590,7 +1590,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<td>忽略常见文件</td>
 			<td>
 				<checkbox v-model="ignoreCommonFiles"></checkbox>
-				<p class="comment">忽略js、css、jpg等常见文件名。</p>
+				<p class="comment">忽略js、css、jpg等常见在网页里被引用的文件名。</p>
 			</td>
 		</tr>
 	</table>
@@ -2323,11 +2323,8 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<button class="ui button small" type="button" @click.prevent="add">+添加认证方式</button>
 </div>
 <div class="margin"></div>
-</div>`}),Vue.component("user-selector",{mounted:function(){let t=this;Tea.action("/servers/users/options").post().success(function(e){t.users=e.data.users})},props:["v-user-id"],data:function(){let e=this.vUserId;return{users:[],userId:e=null==e?0:e}},watch:{userId:function(e){this.$emit("change",e)}},template:`<div>
-	<select class="ui dropdown auto-width" name="userId" v-model="userId">
-		<option value="0">[选择用户]</option>
-		<option v-for="user in users" :value="user.id">{{user.fullname}} ({{user.username}})</option>
-	</select>
+</div>`}),Vue.component("user-selector",{props:["v-user-id"],data:function(){let e=this.vUserId;return{users:[],userId:e=null==e?0:e}},watch:{userId:function(e){this.$emit("change",e)}},template:`<div>
+	<combo-box placeholder="选择用户" :data-url="'/servers/users/options'" :data-key="'users'" name="userId" :v-value="userId"></combo-box>
 </div>`}),Vue.component("uam-config-box",{props:["v-uam-config","v-is-location","v-is-group"],data:function(){let e=this.vUamConfig;return{config:e=null==e?{isPrior:!1,isOn:!1}:e}},template:`<div>
 <input type="hidden" name="uamJSON" :value="JSON.stringify(config)"/>
 <table class="ui table definition selectable">
