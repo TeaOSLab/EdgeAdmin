@@ -214,7 +214,7 @@ Vue.component("http-firewall-checkpoint-cc", {
 			<td>忽略常见文件</td>
 			<td>
 				<checkbox v-model="ignoreCommonFiles"></checkbox>
-				<p class="comment">忽略js、css、jpg等常见文件名。</p>
+				<p class="comment">忽略js、css、jpg等常见在网页里被引用的文件名。</p>
 			</td>
 		</tr>
 	</table>
