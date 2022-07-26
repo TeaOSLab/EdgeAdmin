@@ -4948,7 +4948,7 @@ Vue.component("http-firewall-checkpoint-cc", {
 			<td>忽略常见文件</td>
 			<td>
 				<checkbox v-model="ignoreCommonFiles"></checkbox>
-				<p class="comment">忽略js、css、jpg等常见文件名。</p>
+				<p class="comment">忽略js、css、jpg等常见在网页里被引用的文件名。</p>
 			</td>
 		</tr>
 	</table>
@@ -7073,15 +7073,6 @@ Vue.component("http-auth-config-box", {
 })
 
 Vue.component("user-selector", {
-	mounted: function () {
-		let that = this
-
-		Tea.action("/servers/users/options")
-			.post()
-			.success(function (resp) {
-				that.users = resp.data.users
-			})
-	},
 	props: ["v-user-id"],
 	data: function () {
 		let userId = this.vUserId
@@ -7099,10 +7090,7 @@ Vue.component("user-selector", {
 		}
 	},
 	template: `<div>
-	<select class="ui dropdown auto-width" name="userId" v-model="userId">
-		<option value="0">[选择用户]</option>
-		<option v-for="user in users" :value="user.id">{{user.fullname}} ({{user.username}})</option>
-	</select>
+	<combo-box placeholder="选择用户" :data-url="'/servers/users/options'" :data-key="'users'" name="userId" :v-value="userId"></combo-box>
 </div>`
 })
 
