@@ -2067,7 +2067,12 @@ Vue.component("ns-access-log-box", {
 		}
 	},
 	template: `<div class="access-log-row" :style="{'color': (!accessLog.isRecursive && (accessLog.nsRecordId == null || accessLog.nsRecordId == 0) || (accessLog.isRecursive && accessLog.recordValue != null && accessLog.recordValue.length == 0)) ? '#dc143c' : ''}" ref="box">
-	<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey">[{{accessLog.region}}]</span> <keyword :v-word="vKeyword">{{accessLog.remoteAddr}}</keyword> [{{accessLog.timeLocal}}] [{{accessLog.networking}}] <em>{{accessLog.questionType}} <keyword :v-word="vKeyword">{{accessLog.questionName}}</keyword></em> -&gt; <em>{{accessLog.recordType}} <keyword :v-word="vKeyword">{{accessLog.recordValue}}</keyword></em><!-- &nbsp; <a href="" @click.prevent="showLog" title="查看详情"><i class="icon expand"></i></a>-->
+	<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey">[{{accessLog.region}}]</span> <keyword :v-word="vKeyword">{{accessLog.remoteAddr}}</keyword> [{{accessLog.timeLocal}}] [{{accessLog.networking}}] <em>{{accessLog.questionType}} <keyword :v-word="vKeyword">{{accessLog.questionName}}</keyword></em> -&gt; 
+	
+	<span v-if="accessLog.recordType != null && accessLog.recordType.length > 0"><em>{{accessLog.recordType}} <keyword :v-word="vKeyword">{{accessLog.recordValue}}</keyword></em></span>
+	<span v-else class="disabled">&nbsp;[没有记录]</span>
+	
+	<!-- &nbsp; <a href="" @click.prevent="showLog" title="查看详情"><i class="icon expand"></i></a>-->
 	<div v-if="(accessLog.nsRoutes != null && accessLog.nsRoutes.length > 0) || accessLog.isRecursive" style="margin-top: 0.3em">
 		<span class="ui label tiny basic grey" v-for="route in accessLog.nsRoutes">线路: {{route.name}}</span>
 		<span class="ui label tiny basic grey" v-if="accessLog.isRecursive">递归DNS</span>
@@ -2104,6 +2109,33 @@ Vue.component("ns-cluster-selector", {
 		<option value="0">[选择集群]</option>
 		<option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
 	</select>
+</div>`
+})
+
+Vue.component("ns-cluster-combo-box", {
+	props: ["v-cluster-id"],
+	data: function () {
+		let that = this
+		Tea.action("/ns/clusters/options")
+			.post()
+			.success(function (resp) {
+				that.clusters = resp.data.clusters
+			})
+		return {
+			clusters: []
+		}
+	},
+	methods: {
+		change: function (item) {
+			if (item == null) {
+				this.$emit("change", 0)
+			} else {
+				this.$emit("change", item.value)
+			}
+		}
+	},
+	template: `<div v-if="clusters.length > 0" style="min-width: 10.4em">
+	<combo-box title="集群" placeholder="集群名称" :v-items="clusters" name="clusterId" :v-value="vClusterId" @change="change"></combo-box>
 </div>`
 })
 
@@ -12050,7 +12082,7 @@ Vue.component("page-box", {
 })
 
 Vue.component("network-addresses-box", {
-	props: ["v-server-type", "v-addresses", "v-protocol", "v-name", "v-from", "v-support-range"],
+	props: ["v-server-type", "v-addresses", "v-protocol", "v-name", "v-from", "v-support-range", "v-url"],
 	data: function () {
 		let addresses = this.vAddresses
 		if (addresses == null) {
@@ -12092,7 +12124,13 @@ Vue.component("network-addresses-box", {
 		addAddr: function () {
 			let that = this
 			window.UPDATING_ADDR = null
-			teaweb.popup("/servers/addPortPopup?serverType=" + this.vServerType + "&protocol=" + this.protocol + "&from=" + this.from + "&supportRange=" + (this.supportRange() ? 1 : 0), {
+
+			let url = this.vUrl
+			if (url == null) {
+				url = "/servers/addPortPopup"
+			}
+
+			teaweb.popup(url + "?serverType=" + this.vServerType + "&protocol=" + this.protocol + "&from=" + this.from + "&supportRange=" + (this.supportRange() ? 1 : 0), {
 				height: "18em",
 				callback: function (resp) {
 					var addr = resp.data.address
@@ -12123,7 +12161,13 @@ Vue.component("network-addresses-box", {
 		updateAddr: function (index, addr) {
 			let that = this
 			window.UPDATING_ADDR = addr
-			teaweb.popup("/servers/addPortPopup?serverType=" + this.vServerType + "&protocol=" + this.protocol + "&from=" + this.from + "&supportRange=" + (this.supportRange() ? 1 : 0), {
+
+			let url = this.vUrl
+			if (url == null) {
+				url = "/servers/addPortPopup"
+			}
+
+			teaweb.popup(url + "?serverType=" + this.vServerType + "&protocol=" + this.protocol + "&from=" + this.from + "&supportRange=" + (this.supportRange() ? 1 : 0), {
 				height: "18em",
 				callback: function (resp) {
 					var addr = resp.data.address
