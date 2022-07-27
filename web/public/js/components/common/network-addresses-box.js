@@ -1,5 +1,5 @@
 Vue.component("network-addresses-box", {
-	props: ["v-server-type", "v-addresses", "v-protocol", "v-name", "v-from", "v-support-range"],
+	props: ["v-server-type", "v-addresses", "v-protocol", "v-name", "v-from", "v-support-range", "v-url"],
 	data: function () {
 		let addresses = this.vAddresses
 		if (addresses == null) {
@@ -41,7 +41,13 @@ Vue.component("network-addresses-box", {
 		addAddr: function () {
 			let that = this
 			window.UPDATING_ADDR = null
-			teaweb.popup("/servers/addPortPopup?serverType=" + this.vServerType + "&protocol=" + this.protocol + "&from=" + this.from + "&supportRange=" + (this.supportRange() ? 1 : 0), {
+
+			let url = this.vUrl
+			if (url == null) {
+				url = "/servers/addPortPopup"
+			}
+
+			teaweb.popup(url + "?serverType=" + this.vServerType + "&protocol=" + this.protocol + "&from=" + this.from + "&supportRange=" + (this.supportRange() ? 1 : 0), {
 				height: "18em",
 				callback: function (resp) {
 					var addr = resp.data.address
@@ -72,7 +78,13 @@ Vue.component("network-addresses-box", {
 		updateAddr: function (index, addr) {
 			let that = this
 			window.UPDATING_ADDR = addr
-			teaweb.popup("/servers/addPortPopup?serverType=" + this.vServerType + "&protocol=" + this.protocol + "&from=" + this.from + "&supportRange=" + (this.supportRange() ? 1 : 0), {
+
+			let url = this.vUrl
+			if (url == null) {
+				url = "/servers/addPortPopup"
+			}
+
+			teaweb.popup(url + "?serverType=" + this.vServerType + "&protocol=" + this.protocol + "&from=" + this.from + "&supportRange=" + (this.supportRange() ? 1 : 0), {
 				height: "18em",
 				callback: function (resp) {
 					var addr = resp.data.address
