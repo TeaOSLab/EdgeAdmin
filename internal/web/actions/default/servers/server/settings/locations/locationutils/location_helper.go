@@ -179,6 +179,13 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.RemoteAddr != nil && locationConfig.Web.RemoteAddr.IsOn,
 	})
 
+	menuItems = append(menuItems, maps.Map{
+		"name":     "请求限制",
+		"url":      "/servers/server/settings/locations/requestLimit?serverId=" + serverIdString + "&locationId=" + locationIdString,
+		"isActive": secondMenuItem == "requestLimit",
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.RequestLimit != nil && locationConfig.Web.RequestLimit.IsOn,
+	})
+
 	return menuItems
 }
 
@@ -187,12 +194,12 @@ func (this *LocationHelper) hasHTTPHeaders(web *serverconfigs.HTTPWebConfig) boo
 	if web == nil {
 		return false
 	}
-	if web.RequestHeaderPolicyRef != nil {
+	if web.RequestHeaderPolicyRef != nil && web.RequestHeaderPolicyRef.IsPrior {
 		if web.RequestHeaderPolicyRef.IsOn && web.RequestHeaderPolicy != nil && !web.RequestHeaderPolicy.IsEmpty() {
 			return true
 		}
 	}
-	if web.ResponseHeaderPolicyRef != nil {
+	if web.ResponseHeaderPolicyRef != nil && web.ResponseHeaderPolicyRef.IsPrior {
 		if web.ResponseHeaderPolicyRef.IsOn && web.ResponseHeaderPolicy != nil && !web.ResponseHeaderPolicy.IsEmpty() {
 			return true
 		}
