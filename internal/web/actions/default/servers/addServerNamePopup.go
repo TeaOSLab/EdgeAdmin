@@ -30,7 +30,7 @@ func (this *AddServerNamePopupAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	if params.Mode == "single" {
-		var serverName = params.ServerName
+		var serverName = strings.ToLower(params.ServerName)
 
 		// 去除空格
 		serverName = regexp.MustCompile(`\s+`).ReplaceAllString(serverName, "")
@@ -71,6 +71,9 @@ func (this *AddServerNamePopupAction) RunPost(params struct {
 					serverName = u.Host
 				}
 			}
+
+			// 转成小写
+			serverName = strings.ToLower(serverName)
 
 			serverNames = append(serverNames, serverName)
 		}
