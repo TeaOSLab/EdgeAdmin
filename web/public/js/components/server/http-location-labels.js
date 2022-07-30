@@ -71,6 +71,12 @@ Vue.component("http-location-labels", {
 	<!-- 请求脚本 -->
 	<http-location-labels-label v-if="location.web != null && location.web.requestScripts != null && ((location.web.requestScripts.initGroup != null && location.web.requestScripts.initGroup.isPrior) || (location.web.requestScripts.requestGroup != null && location.web.requestScripts.requestGroup.isPrior))" :href="url('/requestScripts')">请求脚本</http-location-labels-label>
 	
+	<!-- 自定义访客IP地址 -->
+	<http-location-labels-label v-if="location.web != null && location.web.remoteAddr != null && location.web.remoteAddr.isPrior" :href="url('/remoteAddr')" :class="{disabled: !location.web.remoteAddr.isOn}">访客IP地址</http-location-labels-label>
+	
+	<!-- 请求限制 -->
+	<http-location-labels-label v-if="location.web != null && location.web.requestLimit != null && location.web.requestLimit.isPrior" :href="url('/requestLimit')" :class="{disabled: !location.web.requestLimit.isOn}">请求限制</http-location-labels-label>
+		
 	<!-- 自定义页面 -->
 	<div v-if="location.web != null && location.web.pages != null && location.web.pages.length > 0">
 		<div v-for="page in location.web.pages" :key="page.id"><http-location-labels-label :href="url('/pages')">PAGE [状态码{{page.status[0]}}] -&gt; {{page.url}}</http-location-labels-label></div>
