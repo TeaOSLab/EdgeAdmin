@@ -111,7 +111,7 @@ func (this *Page) AsHTML() string {
 	}
 
 	// 每页数
-	result = append(result, `<select class="ui dropdown" style="height:34px;padding-top:0;padding-bottom:0;margin-left:1em;color:#666" onchange="ChangePageSize(this.value)">
+	result = append(result, `<select class="ui dropdown" style="padding-top:0;padding-bottom:0;margin-left:1em;color:#666" onchange="ChangePageSize(this.value)">
 	<option value="10">[每页]</option>`+this.renderSizeOption(10)+
 		this.renderSizeOption(20)+
 		this.renderSizeOption(30)+
