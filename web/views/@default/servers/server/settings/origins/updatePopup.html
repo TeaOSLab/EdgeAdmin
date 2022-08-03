@@ -53,7 +53,7 @@
                     <p class="comment">请求源站时的Host，用于修改源站接收到的域名<span v-if="isHTTP">，自定义Host内容中支持请求变量</span>。</p>
                 </td>
             </tr>
-            <tr v-if="isHTTP">
+            <tr v-show="origin.protocol != 'udp'">
                 <td>专属域名</td>
                 <td>
                     <domains-box :v-domains="origin.domains"></domains-box>
