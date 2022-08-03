@@ -22,6 +22,7 @@ const (
 	AdminModuleCodePlan      AdminModuleCode = "plan"      // 套餐
 	AdminModuleCodeLog       AdminModuleCode = "log"       // 日志
 	AdminModuleCodeSetting   AdminModuleCode = "setting"   // 设置
+	AdminModuleCodeTicket    AdminModuleCode = "ticket"    // 工单
 	AdminModuleCodeCommon    AdminModuleCode = "common"    // 只要登录就可以访问的模块
 )
 
@@ -159,7 +160,7 @@ func UpdateAdminTheme(adminId int64, theme string) {
 
 // AllModuleMaps 所有权限列表
 func AllModuleMaps() []maps.Map {
-	m := []maps.Map{
+	var m = []maps.Map{
 		{
 			"name": "看板",
 			"code": AdminModuleCodeDashboard,
@@ -204,11 +205,24 @@ func AllModuleMaps() []maps.Map {
 			"code": AdminModuleCodeFinance,
 			"url":  "/finance",
 		},
-		{
-			"name": "套餐管理",
-			"code": AdminModuleCodePlan,
-			"url":  "/plans",
-		},
+	}...)
+
+	if teaconst.IsPlus {
+		m = append(m, []maps.Map{
+			{
+				"name": "套餐管理",
+				"code": AdminModuleCodePlan,
+				"url":  "/plans",
+			},
+			{
+				"name": "工单系统",
+				"code": AdminModuleCodeTicket,
+				"url":  "/ticket",
+			},
+		}...)
+	}
+
+	m = append(m, []maps.Map{
 		{
 			"name": "日志审计",
 			"code": AdminModuleCodeLog,

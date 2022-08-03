@@ -242,7 +242,7 @@
 
 	<!-- 完成安装 -->
 	<div v-show="step == STEP_FINISH">
-		<form method="post" class="ui form" data-tea-action=".install" data-tea-success="finishSuccess" data-tea-before="finishSubmit" data-tea-done="finishDone" data-tea-timeout="300">
+		<form method="post" class="ui form" data-tea-action=".install" data-tea-success="finishSuccess" data-tea-before="finishSubmit" data-tea-done="finishDone" data-tea-timeout="600">
 			<input type="hidden" name="apiNodeJSON" :value="JSON.stringify(apiNodeInfo)"/>
 			<input type="hidden" name="dbJSON" :value="JSON.stringify(dbInfo)"/>
 			<input type="hidden" name="adminJSON" :value="JSON.stringify(adminInfo)"/>
