@@ -16,14 +16,14 @@ func (this *OptionsAction) RunPost(params struct {
 	usersResp, err := this.RPC().UserRPC().ListEnabledUsers(this.AdminContext(), &pb.ListEnabledUsersRequest{
 		Keyword: params.Keyword,
 		Offset:  0,
-		Size:    10000, // TODO 改进 <plan-user-selector> 组件
+		Size:    100,
 	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 
-	userMaps := []maps.Map{}
+	var userMaps = []maps.Map{}
 	for _, user := range usersResp.Users {
 		userMaps = append(userMaps, maps.Map{
 			"id":       user.Id,

@@ -217,7 +217,7 @@ func AllModuleMaps() []maps.Map {
 			{
 				"name": "工单系统",
 				"code": AdminModuleCodeTicket,
-				"url":  "/ticket",
+				"url":  "/tickets",
 			},
 		}...)
 	}
