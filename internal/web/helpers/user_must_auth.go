@@ -3,8 +3,10 @@ package helpers
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
+	"github.com/TeaOSLab/EdgeAdmin/internal/events"
+	"github.com/TeaOSLab/EdgeAdmin/internal/goman"
+	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -16,6 +18,64 @@ import (
 	"reflect"
 	"strings"
 )
+
+var nodeLogsCountChanges = make(chan bool, 1)
+var ipItemsCountChanges = make(chan bool, 1)
+
+// 运行日志
+var countUnreadNodeLogs int64 = 0
+var nodeLogsType = ""
+
+// IP名单
+var countUnreadIPItems int64 = 0
+
+func init() {
+	events.On(events.EventStart, func() {
+		// 节点日志数量
+		goman.New(func() {
+			for range nodeLogsCountChanges {
+				rpcClient, err := rpc.SharedRPC()
+				if err != nil {
+					continue
+				}
+
+				countNodeLogsResp, err := rpcClient.NodeLogRPC().CountNodeLogs(rpcClient.Context(0), &pb.CountNodeLogsRequest{
+					Role:     nodeconfigs.NodeRoleNode,
+					IsUnread: true,
+				})
+				if err != nil {
+					logs.Error(err)
+				} else {
+					var countNodeLogs = countNodeLogsResp.Count
+					if countNodeLogs > 0 {
+						countUnreadNodeLogs = countNodeLogs
+						if countUnreadNodeLogs >= 100 {
+							countUnreadNodeLogs = 99
+						}
+						nodeLogsType = "unread"
+					}
+				}
+			}
+		})
+
+		// 服务数量
+		goman.New(func() {
+			for range ipItemsCountChanges {
+				rpcClient, err := rpc.SharedRPC()
+				if err != nil {
+					continue
+				}
+
+				countUnreadIPItemsResp, err := rpcClient.IPItemRPC().CountAllEnabledIPItems(rpcClient.Context(0), &pb.CountAllEnabledIPItemsRequest{Unread: true})
+				if err != nil {
+					logs.Error(err)
+				} else {
+					countUnreadIPItems = countUnreadIPItemsResp.Count
+				}
+			}
+		})
+	})
+}
 
 // 认证拦截
 type userMustAuth struct {
@@ -80,7 +140,6 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 		action.ResponseWriter.WriteHeader(http.StatusForbidden)
 		return false
 	}
-
 
 	// 检查系统是否已经配置过
 	if !setup.IsConfigured() {
@@ -178,44 +237,20 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 
 // 菜单配置
 func (this *userMustAuth) modules(actionPtr actions.ActionWrapper, adminId int64) []maps.Map {
-	// 运行日志
-	var countUnreadNodeLogs int64 = 0
-	var nodeLogsType = ""
-
-	// IP名单
-	var countUnreadIPItems int64 = 0
-
 	// 父级动作
-	parentAction, ok := actionPtr.(actionutils.ActionInterface)
-	if ok {
-		var action = actionPtr.Object()
+	var action = actionPtr.Object()
 
-		// 未读日志数
-		var mainMenu = action.Data.GetString("teaMenu")
-		if mainMenu == "clusters" {
-			countNodeLogsResp, err := parentAction.RPC().NodeLogRPC().CountNodeLogs(parentAction.AdminContext(), &pb.CountNodeLogsRequest{
-				Role:     nodeconfigs.NodeRoleNode,
-				IsUnread: true,
-			})
-			if err != nil {
-				logs.Error(err)
-			} else {
-				var countNodeLogs = countNodeLogsResp.Count
-				if countNodeLogs > 0 {
-					countUnreadNodeLogs = countNodeLogs
-					if countUnreadNodeLogs >= 100 {
-						countUnreadNodeLogs = 99
-					}
-					nodeLogsType = "unread"
-				}
-			}
-		} else if mainMenu == "servers" {
-			countUnreadIPItemsResp, err := parentAction.RPC().IPItemRPC().CountAllEnabledIPItems(parentAction.AdminContext(), &pb.CountAllEnabledIPItemsRequest{Unread: true})
-			if err != nil {
-				logs.Error(err)
-			} else {
-				countUnreadIPItems = countUnreadIPItemsResp.Count
-			}
+	// 未读日志数
+	var mainMenu = action.Data.GetString("teaMenu")
+	if mainMenu == "clusters" {
+		select {
+		case nodeLogsCountChanges <- true:
+		default:
+		}
+	} else if mainMenu == "servers" {
+		select {
+		case ipItemsCountChanges <- true:
+		default:
 		}
 	}
 
