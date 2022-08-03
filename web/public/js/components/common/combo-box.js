@@ -2,31 +2,7 @@ Vue.component("combo-box", {
 	// data-url 和 data-key 成对出现
 	props: ["name", "title", "placeholder", "size", "v-items", "v-value", "data-url", "data-key", "width"],
 	mounted: function () {
-		// 从URL中获取选项数据
-		let dataUrl = this.dataUrl
-		let dataKey = this.dataKey
-		let that = this
-		if (dataUrl != null && dataUrl.length > 0 && dataKey != null) {
-			Tea.action(dataUrl)
-				.post()
-				.success(function (resp) {
-					if (resp.data != null) {
-						if (typeof (resp.data[dataKey]) == "object") {
-							let items = that.formatItems(resp.data[dataKey])
-							that.allItems = items
-							that.items = items.$copy()
-
-							if (that.vValue != null) {
-								items.forEach(function (v) {
-									if (v.value == that.vValue) {
-										that.selectedItem = v
-									}
-								})
-							}
-						}
-					}
-				})
-		}
+		this.search("")
 
 		// 设定菜单宽度
 		let searchBox = this.$refs.searchBox
@@ -74,10 +50,54 @@ Vue.component("combo-box", {
 			visible: false,
 			hideTimer: null,
 			hoverIndex: 0,
-			styleWidth: width
+			styleWidth: width,
+
+			isInitial: true,
+			urlRequestId: 0 // 记录URL请求ID，防止并行冲突
 		}
 	},
 	methods: {
+		search: function (keyword) {
+			// 从URL中获取选项数据
+			let dataUrl = this.dataUrl
+			let dataKey = this.dataKey
+			let that = this
+
+			let requestId = Math.random()
+			this.urlRequestId = requestId
+
+			if (dataUrl != null && dataUrl.length > 0 && dataKey != null) {
+				Tea.action(dataUrl)
+					.params({
+						keyword: (keyword == null) ? "" : keyword
+					})
+					.post()
+					.success(function (resp) {
+						if (requestId != that.urlRequestId) {
+							return
+						}
+
+						if (resp.data != null) {
+							if (typeof (resp.data[dataKey]) == "object") {
+								let items = that.formatItems(resp.data[dataKey])
+								that.allItems = items
+								that.items = items.$copy()
+
+								if (that.isInitial) {
+									that.isInitial = false
+									if (that.vValue != null) {
+										items.forEach(function (v) {
+											if (v.value == that.vValue) {
+												that.selectedItem = v
+											}
+										})
+									}
+								}
+							}
+						}
+					})
+			}
+		},
 		formatItems: function (items) {
 			items.forEach(function (v) {
 				if (v.value == null) {
@@ -107,15 +127,25 @@ Vue.component("combo-box", {
 			this.hoverIndex = 0
 			let keyword = this.keyword
 			if (keyword.length == 0) {
-				this.items = this.allItems.$copy()
+				if (this.dataUrl != null && this.dataUrl.length > 0) {
+					this.search(keyword)
+				} else {
+					this.items = this.allItems.$copy()
+				}
 				return
 			}
-			this.items = this.allItems.$copy().filter(function (v) {
-				if (v.fullname != null && v.fullname.length > 0 && teaweb.match(v.fullname, keyword)) {
-					return true
-				}
-				return teaweb.match(v.name, keyword)
-			})
+
+
+			if (this.dataUrl != null && this.dataUrl.length > 0) {
+				this.search(keyword)
+			} else {
+				this.items = this.allItems.$copy().filter(function (v) {
+					if (v.fullname != null && v.fullname.length > 0 && teaweb.match(v.fullname, keyword)) {
+						return true
+					}
+					return teaweb.match(v.name, keyword)
+				})
+			}
 		},
 		selectItem: function (item) {
 			this.selectedItem = item

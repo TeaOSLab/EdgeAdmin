@@ -1,21 +1,32 @@
 Vue.component("user-selector", {
-	props: ["v-user-id"],
+	props: ["v-user-id", "data-url"],
 	data: function () {
 		let userId = this.vUserId
 		if (userId == null) {
 			userId = 0
 		}
+
+		let dataURL = this.dataUrl
+		if (dataURL == null || dataURL.length == 0) {
+			dataURL = "/servers/users/options"
+		}
+
 		return {
 			users: [],
-			userId: userId
+			userId: userId,
+			dataURL: dataURL
 		}
 	},
-	watch: {
-		userId: function (v) {
-			this.$emit("change", v)
+	methods: {
+		change: function(item) {
+			if (item != null) {
+				this.$emit("change", item.id)
+			} else {
+				this.$emit("change", 0)
+			}
 		}
 	},
 	template: `<div>
-	<combo-box placeholder="选择用户" :data-url="'/servers/users/options'" :data-key="'users'" name="userId" :v-value="userId"></combo-box>
+	<combo-box placeholder="选择用户" :data-url="dataURL" :data-key="'users'" name="userId" :v-value="userId" @change="change"></combo-box>
 </div>`
 })
