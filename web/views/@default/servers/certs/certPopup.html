@@ -30,7 +30,7 @@
 	<tr>
 		<td>域名</td>
 		<td>
-			<span class="ui label small" v-for="dnsName in info.dnsNames">{{dnsName}}</span>
+			<span class="ui label small basic" v-for="dnsName in info.dnsNames">{{dnsName}}</span>
 		</td>
 	</tr>
 	<tr>
@@ -42,7 +42,7 @@
 		<td>
 			<span class="disabled" v-if="servers.length == 0">暂时没有引用此证书的服务。</span>
 			<div v-if="servers.length > 0">
-				<a v-for="server in servers" :href="'/servers/server?serverId=' + server.id" target="_blank" class="ui label small">{{server.name}}</a>
+				<a v-for="server in servers" :href="'/servers/server/settings/https?serverId=' + server.id" target="_blank" class="ui label small basic">{{server.name}}</a>
 			</div>
 		</td>
 	</tr>
