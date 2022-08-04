@@ -4,7 +4,7 @@ import (
 	"github.com/iwind/TeaGo"
 	"github.com/iwind/TeaGo/Tea"
 	"gopkg.in/yaml.v3"
-	"io/ioutil"
+	"os"
 )
 
 var serverConfigIsChanged = false
@@ -12,7 +12,7 @@ var serverConfigIsChanged = false
 // 读取当前服务配置
 func loadServerConfig() (*TeaGo.ServerConfig, error) {
 	configFile := Tea.ConfigFile("server.yaml")
-	data, err := ioutil.ReadFile(configFile)
+	data, err := os.ReadFile(configFile)
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func writeServerConfig(serverConfig *TeaGo.ServerConfig) error {
 	if err != nil {
 		return err
 	}
-	err = ioutil.WriteFile(Tea.ConfigFile("server.yaml"), data, 0666)
+	err = os.WriteFile(Tea.ConfigFile("server.yaml"), data, 0666)
 	if err != nil {
 		return err
 	}

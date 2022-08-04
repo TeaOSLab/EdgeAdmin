@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/iwind/TeaGo/Tea"
-	"io/ioutil"
+	"os"
 )
 
 type HideTipAction struct {
@@ -23,7 +23,7 @@ func (this *HideTipAction) RunPost(params struct {
 	// 保存到文件
 	tipJSON, err := json.Marshal(tipKeyMap)
 	if err == nil {
-		_ = ioutil.WriteFile(Tea.ConfigFile(tipConfigFile), tipJSON, 0666)
+		_ = os.WriteFile(Tea.ConfigFile(tipConfigFile), tipJSON, 0666)
 	}
 
 	this.Success()

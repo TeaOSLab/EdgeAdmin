@@ -11,7 +11,6 @@ import (
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"os"
@@ -68,7 +67,7 @@ func FailPage(action actions.ActionWrapper, err error) {
 		var issuesHTML = ""
 		if isLocalAPI {
 			// 读取本地API节点的issues
-			issuesData, issuesErr := ioutil.ReadFile(Tea.Root + "/edge-api/logs/issues.log")
+			issuesData, issuesErr := os.ReadFile(Tea.Root + "/edge-api/logs/issues.log")
 			if issuesErr == nil {
 				var issueMaps = []maps.Map{}
 				issuesErr = json.Unmarshal(issuesData, &issueMaps)

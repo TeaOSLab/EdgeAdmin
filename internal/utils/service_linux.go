@@ -7,7 +7,6 @@ import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/files"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"regexp"
@@ -83,13 +82,13 @@ func (this *ServiceManager) installInitService(exePath string, args []string) er
 		return errors.New("'scripts/" + shortName + "' file not exists")
 	}
 
-	data, err := ioutil.ReadFile(scriptFile)
+	data, err := os.ReadFile(scriptFile)
 	if err != nil {
 		return err
 	}
 
 	data = regexp.MustCompile("INSTALL_DIR=.+").ReplaceAll(data, []byte("INSTALL_DIR="+Tea.Root))
-	err = ioutil.WriteFile(initServiceFile, data, 0777)
+	err = os.WriteFile(initServiceFile, data, 0777)
 	if err != nil {
 		return err
 	}
@@ -137,7 +136,7 @@ ExecReload=` + exePath + ` reload
 WantedBy=multi-user.target`
 
 	// write file
-	err := ioutil.WriteFile(systemdServiceFile, []byte(desc), 0777)
+	err := os.WriteFile(systemdServiceFile, []byte(desc), 0777)
 	if err != nil {
 		return err
 	}

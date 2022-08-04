@@ -10,8 +10,8 @@ import (
 	"github.com/iwind/TeaGo/dbs"
 	"github.com/iwind/TeaGo/maps"
 	"gopkg.in/yaml.v3"
-	"io/ioutil"
 	"net"
+	"os"
 	"regexp"
 	"strings"
 )
@@ -34,7 +34,7 @@ func (this *UpdateAction) RunGet(params struct{}) {
 	}
 
 	configFile := Tea.ConfigFile("api_db.yaml")
-	data, err := ioutil.ReadFile(configFile)
+	data, err := os.ReadFile(configFile)
 	if err != nil {
 		return
 	}
@@ -144,7 +144,7 @@ dbs:
     models:
       package: internal/web/models
 `
-	err := ioutil.WriteFile(configFile, []byte(template), 0666)
+	err := os.WriteFile(configFile, []byte(template), 0666)
 	if err != nil {
 		this.Fail("保存配置失败：" + err.Error())
 	}

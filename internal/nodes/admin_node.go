@@ -16,7 +16,6 @@ import (
 	"github.com/iwind/TeaGo/types"
 	"github.com/iwind/gosock/pkg/gosock"
 	"gopkg.in/yaml.v3"
-	"io/ioutil"
 	"log"
 	"net"
 	"os"
@@ -173,9 +172,9 @@ func (this *AdminNode) checkServer() error {
 	if os.IsNotExist(err) {
 		// 创建文件
 		templateFile := Tea.ConfigFile("server.template.yaml")
-		data, err := ioutil.ReadFile(templateFile)
+		data, err := os.ReadFile(templateFile)
 		if err == nil {
-			err = ioutil.WriteFile(configFile, data, 0666)
+			err = os.WriteFile(configFile, data, 0666)
 			if err != nil {
 				return errors.New("create config file failed: " + err.Error())
 			}
@@ -195,7 +194,7 @@ https:
   cert: ""
   key: ""
 `
-			err = ioutil.WriteFile(configFile, []byte(templateYAML), 0666)
+			err = os.WriteFile(configFile, []byte(templateYAML), 0666)
 			if err != nil {
 				return errors.New("create config file failed: " + err.Error())
 			}
@@ -210,7 +209,7 @@ https:
 // 添加端口到防火墙
 func (this *AdminNode) addPortsToFirewall() {
 	var configFile = Tea.ConfigFile("server.yaml")
-	data, err := ioutil.ReadFile(configFile)
+	data, err := os.ReadFile(configFile)
 	if err != nil {
 		return
 	}
@@ -263,9 +262,9 @@ func (this *AdminNode) startAPINode() {
 		for _, path := range paths {
 			_, err = os.Stat(path)
 			if err == nil {
-				data, err := ioutil.ReadFile(path)
+				data, err := os.ReadFile(path)
 				if err == nil {
-					err = ioutil.WriteFile(configPath, data, 0666)
+					err = os.WriteFile(configPath, data, 0666)
 					if err == nil {
 						logs.Println("[NODE]recover 'edge-api/configs/api.yaml' from '" + path + "'")
 						canStart = true
@@ -289,9 +288,9 @@ func (this *AdminNode) startAPINode() {
 		for _, path := range paths {
 			_, err = os.Stat(path)
 			if err == nil {
-				data, err := ioutil.ReadFile(path)
+				data, err := os.ReadFile(path)
 				if err == nil {
-					err = ioutil.WriteFile(dbPath, data, 0666)
+					err = os.WriteFile(dbPath, data, 0666)
 					if err == nil {
 						logs.Println("[NODE]recover 'edge-api/configs/db.yaml' from '" + path + "'")
 						break
@@ -316,12 +315,12 @@ func (this *AdminNode) startAPINode() {
 // 生成Secret
 func (this *AdminNode) genSecret() string {
 	tmpFile := os.TempDir() + "/edge-admin-secret.tmp"
-	data, err := ioutil.ReadFile(tmpFile)
+	data, err := os.ReadFile(tmpFile)
 	if err == nil && len(data) == 32 {
 		return string(data)
 	}
 	secret := rands.String(32)
-	_ = ioutil.WriteFile(tmpFile, []byte(secret), 0666)
+	_ = os.WriteFile(tmpFile, []byte(secret), 0666)
 	return secret
 }
 

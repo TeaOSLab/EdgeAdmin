@@ -8,8 +8,8 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/actions"
-	"io/ioutil"
 	"net"
+	"os"
 )
 
 type UpdateHTTPSPopupAction struct {
@@ -31,12 +31,12 @@ func (this *UpdateHTTPSPopupAction) RunGet(params struct{}) {
 	// 证书
 	certConfigs := []*sslconfigs.SSLCertConfig{}
 	if len(serverConfig.Https.Cert) > 0 && len(serverConfig.Https.Key) > 0 {
-		certData, err := ioutil.ReadFile(Tea.Root + "/" + serverConfig.Https.Cert)
+		certData, err := os.ReadFile(Tea.Root + "/" + serverConfig.Https.Cert)
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-		keyData, err := ioutil.ReadFile(Tea.Root + "/" + serverConfig.Https.Key)
+		keyData, err := os.ReadFile(Tea.Root + "/" + serverConfig.Https.Key)
 		if err != nil {
 			this.ErrorPage(err)
 			return
@@ -120,11 +120,11 @@ func (this *UpdateHTTPSPopupAction) RunPost(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		err = ioutil.WriteFile(Tea.ConfigFile("https.key.pem"), certConfig.KeyData, 0666)
+		err = os.WriteFile(Tea.ConfigFile("https.key.pem"), certConfig.KeyData, 0666)
 		if err != nil {
 			this.Fail("保存密钥失败：" + err.Error())
 		}
-		err = ioutil.WriteFile(Tea.ConfigFile("https.cert.pem"), certConfig.CertData, 0666)
+		err = os.WriteFile(Tea.ConfigFile("https.cert.pem"), certConfig.CertData, 0666)
 		if err != nil {
 			this.Fail("保存证书失败：" + err.Error())
 		}

@@ -17,7 +17,6 @@ import (
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/gosock/pkg/gosock"
 	"gopkg.in/yaml.v3"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"time"
@@ -102,7 +101,7 @@ func (this *InstallAction) RunPost(params struct {
 		if err != nil {
 			this.Fail("生成数据库配置失败：" + err.Error())
 		}
-		err = ioutil.WriteFile(apiNodeDir+"/configs/db.yaml", dbConfigData, 0666)
+		err = os.WriteFile(apiNodeDir+"/configs/db.yaml", dbConfigData, 0666)
 		if err != nil {
 			this.Fail("保存数据库配置失败：" + err.Error())
 		}
@@ -116,16 +115,16 @@ func (this *InstallAction) RunPost(params struct {
 		for _, backupDir := range backupDirs {
 			stat, err := os.Stat(backupDir)
 			if err == nil && stat.IsDir() {
-				_ = ioutil.WriteFile(backupDir+"/db.yaml", dbConfigData, 0666)
+				_ = os.WriteFile(backupDir+"/db.yaml", dbConfigData, 0666)
 			} else if err != nil && os.IsNotExist(err) {
 				err = os.Mkdir(backupDir, 0777)
 				if err == nil {
-					_ = ioutil.WriteFile(backupDir+"/db.yaml", dbConfigData, 0666)
+					_ = os.WriteFile(backupDir+"/db.yaml", dbConfigData, 0666)
 				}
 			}
 		}
 
-		err = ioutil.WriteFile(Tea.ConfigFile("/api_db.yaml"), dbConfigData, 0666)
+		err = os.WriteFile(Tea.ConfigFile("/api_db.yaml"), dbConfigData, 0666)
 		if err != nil {
 			this.Fail("保存数据库配置失败：" + err.Error())
 		}
@@ -138,11 +137,11 @@ func (this *InstallAction) RunPost(params struct {
 		for _, backupDir := range backupDirs {
 			stat, err := os.Stat(backupDir)
 			if err == nil && stat.IsDir() {
-				_ = ioutil.WriteFile(backupDir+"/api_db.yaml", dbConfigData, 0666)
+				_ = os.WriteFile(backupDir+"/api_db.yaml", dbConfigData, 0666)
 			} else if err != nil && os.IsNotExist(err) {
 				err = os.Mkdir(backupDir, 0777)
 				if err == nil {
-					_ = ioutil.WriteFile(backupDir+"/api_db.yaml", dbConfigData, 0666)
+					_ = os.WriteFile(backupDir+"/api_db.yaml", dbConfigData, 0666)
 				}
 			}
 		}
