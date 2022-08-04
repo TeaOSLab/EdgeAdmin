@@ -46,9 +46,8 @@ func init() {
 				if err != nil {
 					logs.Error(err)
 				} else {
-					var countNodeLogs = countNodeLogsResp.Count
-					if countNodeLogs > 0 {
-						countUnreadNodeLogs = countNodeLogs
+					countUnreadNodeLogs = countNodeLogsResp.Count
+					if countUnreadNodeLogs > 0 {
 						if countUnreadNodeLogs >= 100 {
 							countUnreadNodeLogs = 99
 						}
