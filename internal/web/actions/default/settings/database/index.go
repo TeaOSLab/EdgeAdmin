@@ -7,7 +7,7 @@ import (
 	"github.com/iwind/TeaGo/dbs"
 	"github.com/iwind/TeaGo/maps"
 	"gopkg.in/yaml.v3"
-	"io/ioutil"
+	"os"
 	"strings"
 )
 
@@ -23,7 +23,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 	this.Data["error"] = ""
 
 	configFile := Tea.ConfigFile("api_db.yaml")
-	data, err := ioutil.ReadFile(configFile)
+	data, err := os.ReadFile(configFile)
 	if err != nil {
 		this.Data["error"] = "read config file failed: api_db.yaml: " + err.Error()
 		this.Show()

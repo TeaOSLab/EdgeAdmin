@@ -7,7 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/iwind/TeaGo"
 	"github.com/iwind/TeaGo/Tea"
-	"io/ioutil"
+	"os"
 	"sync"
 )
 
@@ -18,7 +18,7 @@ var tipConfigFile = "tip.cache.json"
 func init() {
 	TeaGo.BeforeStart(func(server *TeaGo.Server) {
 		// 从配置文件中加载已关闭的tips
-		data, err := ioutil.ReadFile(Tea.ConfigFile(tipConfigFile))
+		data, err := os.ReadFile(Tea.ConfigFile(tipConfigFile))
 		if err == nil {
 			var m = map[string]bool{}
 			err = json.Unmarshal(data, &m)

@@ -14,7 +14,7 @@ import (
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
 	stringutil "github.com/iwind/TeaGo/utils/string"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"runtime"
 	"strings"
@@ -95,7 +95,7 @@ func (this *CheckUpdatesTask) Loop() error {
 	defer func() {
 		_ = resp.Body.Close()
 	}()
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return errors.New("read api failed: " + err.Error())
 	}

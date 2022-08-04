@@ -11,7 +11,7 @@ import (
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
 	stringutil "github.com/iwind/TeaGo/utils/string"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"runtime"
 	"strings"
@@ -70,7 +70,7 @@ func (this *IndexAction) RunPost(params struct {
 	defer func() {
 		_ = resp.Body.Close()
 	}()
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		this.Data["result"] = maps.Map{
 			"isOk":    false,

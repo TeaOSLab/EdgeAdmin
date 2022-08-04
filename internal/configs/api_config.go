@@ -4,7 +4,6 @@ import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/iwind/TeaGo/Tea"
 	"gopkg.in/yaml.v3"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -34,7 +33,7 @@ func LoadAPIConfig() (*APIConfig, error) {
 	var data []byte
 	var err error
 	for _, path := range paths {
-		data, err = ioutil.ReadFile(path)
+		data, err = os.ReadFile(path)
 		if err == nil {
 			if path == localFile {
 				isFromLocal = true
@@ -54,7 +53,7 @@ func LoadAPIConfig() (*APIConfig, error) {
 
 	if !isFromLocal {
 		// 恢复文件
-		_ = ioutil.WriteFile(localFile, data, 0666)
+		_ = os.WriteFile(localFile, data, 0666)
 	}
 
 	return config, nil
@@ -118,11 +117,11 @@ func (this *APIConfig) WriteFile(path string) error {
 		dir := homeDir + "/." + teaconst.ProcessName
 		stat, err := os.Stat(dir)
 		if err == nil && stat.IsDir() {
-			_ = ioutil.WriteFile(dir+"/"+filename, data, 0666)
+			_ = os.WriteFile(dir+"/"+filename, data, 0666)
 		} else if err != nil && os.IsNotExist(err) {
 			err = os.Mkdir(dir, 0777)
 			if err == nil {
-				_ = ioutil.WriteFile(dir+"/"+filename, data, 0666)
+				_ = os.WriteFile(dir+"/"+filename, data, 0666)
 			}
 		}
 	}
@@ -132,16 +131,16 @@ func (this *APIConfig) WriteFile(path string) error {
 		dir := "/etc/" + teaconst.ProcessName
 		stat, err := os.Stat(dir)
 		if err == nil && stat.IsDir() {
-			_ = ioutil.WriteFile(dir+"/"+filename, data, 0666)
+			_ = os.WriteFile(dir+"/"+filename, data, 0666)
 		} else if err != nil && os.IsNotExist(err) {
 			err = os.Mkdir(dir, 0777)
 			if err == nil {
-				_ = ioutil.WriteFile(dir+"/"+filename, data, 0666)
+				_ = os.WriteFile(dir+"/"+filename, data, 0666)
 			}
 		}
 	}
 
-	err = ioutil.WriteFile(path, data, 0666)
+	err = os.WriteFile(path, data, 0666)
 	if err != nil {
 		return err
 	}

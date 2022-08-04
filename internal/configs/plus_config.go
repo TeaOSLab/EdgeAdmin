@@ -5,7 +5,7 @@ package configs
 import (
 	"encoding/json"
 	"github.com/iwind/TeaGo/Tea"
-	"io/ioutil"
+	"os"
 )
 
 var plusConfigFile = "plus.cache.json"
@@ -17,7 +17,7 @@ type PlusConfig struct {
 }
 
 func ReadPlusConfig() *PlusConfig {
-	data, err := ioutil.ReadFile(Tea.ConfigFile(plusConfigFile))
+	data, err := os.ReadFile(Tea.ConfigFile(plusConfigFile))
 	if err != nil {
 		return &PlusConfig{IsPlus: false}
 	}
@@ -34,7 +34,7 @@ func WritePlusConfig(config *PlusConfig) error {
 	if err != nil {
 		return err
 	}
-	err = ioutil.WriteFile(Tea.ConfigFile(plusConfigFile), configJSON, 0777)
+	err = os.WriteFile(Tea.ConfigFile(plusConfigFile), configJSON, 0777)
 	if err != nil {
 		return err
 	}

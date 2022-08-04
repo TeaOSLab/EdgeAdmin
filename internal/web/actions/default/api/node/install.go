@@ -5,7 +5,6 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/maps"
-	"io/ioutil"
 	"os"
 )
 
@@ -46,7 +45,7 @@ func (this *InstallAction) RunGet(params struct {
 		"isNotFound": false,
 	}
 	dbConfigFile := Tea.ConfigFile("api_db.yaml")
-	data, err := ioutil.ReadFile(dbConfigFile)
+	data, err := os.ReadFile(dbConfigFile)
 	dbConfigMap["config"] = string(data)
 	if err != nil {
 		dbConfigMap["error"] = err.Error()
