@@ -68,19 +68,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 	this.Data["types"] = typeMaps
 
 	// EdgeDNS集群列表
-	nsClustersResp, err := this.RPC().NSClusterRPC().FindAllEnabledNSClusters(this.AdminContext(), &pb.FindAllEnabledNSClustersRequest{})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	nsClusterMaps := []maps.Map{}
-	for _, nsCluster := range nsClustersResp.NsClusters {
-		nsClusterMaps = append(nsClusterMaps, maps.Map{
-			"id":   nsCluster.Id,
-			"name": nsCluster.Name,
-		})
-	}
-	this.Data["nsClusters"] = nsClusterMaps
+	this.Data["nsClusters"] = []maps.Map{}
 
 	this.Show()
 }
@@ -108,9 +96,6 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	// CloudFlare
 	ParamCloudFlareAPIKey string
 	ParamCloudFlareEmail  string
-
-	// Local EdgeDNS
-	ParamLocalEdgeDNSClusterId int64
 
 	// CustomHTTP
 	ParamCustomHTTPURL    string
@@ -166,11 +151,6 @@ func (this *UpdatePopupAction) RunPost(params struct {
 			Email("请输入正确格式的邮箱地址")
 		apiParams["apiKey"] = params.ParamCloudFlareAPIKey
 		apiParams["email"] = params.ParamCloudFlareEmail
-	case "localEdgeDNS":
-		params.Must.
-			Field("ParamLocalEdgeDNSClusterId", params.ParamLocalEdgeDNSClusterId).
-			Gt(0, "请选择域名服务集群")
-		apiParams["clusterId"] = params.ParamLocalEdgeDNSClusterId
 	case "customHTTP":
 		params.Must.
 			Field("paramCustomHTTPURL", params.ParamCustomHTTPURL).
