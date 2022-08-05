@@ -320,18 +320,6 @@ func (this *RPCClient) IPListRPC() pb.IPListServiceClient {
 	return pb.NewIPListServiceClient(this.pickConn())
 }
 
-func (this *RPCClient) ReportNodeRPC() pb.ReportNodeServiceClient {
-	return pb.NewReportNodeServiceClient(this.pickConn())
-}
-
-func (this *RPCClient) ReportNodeGroupRPC() pb.ReportNodeGroupServiceClient {
-	return pb.NewReportNodeGroupServiceClient(this.pickConn())
-}
-
-func (this *RPCClient) ReportResultRPC() pb.ReportResultServiceClient {
-	return pb.NewReportResultServiceClient(this.pickConn())
-}
-
 func (this *RPCClient) IPItemRPC() pb.IPItemServiceClient {
 	return pb.NewIPItemServiceClient(this.pickConn())
 }
@@ -446,42 +434,6 @@ func (this *RPCClient) AuthorityNodeRPC() pb.AuthorityNodeServiceClient {
 
 func (this *RPCClient) LatestItemRPC() pb.LatestItemServiceClient {
 	return pb.NewLatestItemServiceClient(this.pickConn())
-}
-
-func (this *RPCClient) NSClusterRPC() pb.NSClusterServiceClient {
-	return pb.NewNSClusterServiceClient(this.pickConn())
-}
-
-func (this *RPCClient) NSNodeRPC() pb.NSNodeServiceClient {
-	return pb.NewNSNodeServiceClient(this.pickConn())
-}
-
-func (this *RPCClient) NSDomainRPC() pb.NSDomainServiceClient {
-	return pb.NewNSDomainServiceClient(this.pickConn())
-}
-
-func (this *RPCClient) NSRecordRPC() pb.NSRecordServiceClient {
-	return pb.NewNSRecordServiceClient(this.pickConn())
-}
-
-func (this *RPCClient) NSKeyRPC() pb.NSKeyServiceClient {
-	return pb.NewNSKeyServiceClient(this.pickConn())
-}
-
-func (this *RPCClient) NSRouteRPC() pb.NSRouteServiceClient {
-	return pb.NewNSRouteServiceClient(this.pickConn())
-}
-
-func (this *RPCClient) NSAccessLogRPC() pb.NSAccessLogServiceClient {
-	return pb.NewNSAccessLogServiceClient(this.pickConn())
-}
-
-func (this *RPCClient) NSRPC() pb.NSServiceClient {
-	return pb.NewNSServiceClient(this.pickConn())
-}
-
-func (this *RPCClient) NSQuestionOptionRPC() pb.NSQuestionOptionServiceClient {
-	return pb.NewNSQuestionOptionServiceClient(this.pickConn())
 }
 
 func (this *RPCClient) MetricItemRPC() pb.MetricItemServiceClient {

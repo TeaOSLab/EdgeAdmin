@@ -40,21 +40,10 @@ func (this *ProviderAction) RunGet(params struct {
 	}
 
 	// 本地EdgeDNS相关
-	var localEdgeDNSMap = maps.Map{}
-	if provider.Type == "localEdgeDNS" {
-		nsClusterId := apiParams.GetInt64("clusterId")
-		nsClusterResp, err := this.RPC().NSClusterRPC().FindEnabledNSCluster(this.AdminContext(), &pb.FindEnabledNSClusterRequest{NsClusterId: nsClusterId})
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-		nsCluster := nsClusterResp.NsCluster
-		if nsCluster != nil {
-			localEdgeDNSMap = maps.Map{
-				"id":   nsCluster.Id,
-				"name": nsCluster.Name,
-			}
-		}
+	localEdgeDNSMap, err := this.readEdgeDNS(provider, apiParams)
+	if err != nil {
+		this.ErrorPage(err)
+		return
 	}
 
 	this.Data["provider"] = maps.Map{
