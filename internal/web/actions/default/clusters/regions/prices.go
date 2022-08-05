@@ -20,7 +20,7 @@ func (this *PricesAction) Init() {
 
 func (this *PricesAction) RunGet(params struct{}) {
 	// 所有价格项目
-	itemsResp, err := this.RPC().NodePriceItemRPC().FindAllEnabledAndOnNodePriceItems(this.AdminContext(), &pb.FindAllEnabledAndOnNodePriceItemsRequest{Type: regionutils.PriceTypeTraffic})
+	itemsResp, err := this.RPC().NodePriceItemRPC().FindAllAvailableNodePriceItems(this.AdminContext(), &pb.FindAllAvailableNodePriceItemsRequest{Type: regionutils.PriceTypeTraffic})
 	if err != nil {
 		this.ErrorPage(err)
 		return
