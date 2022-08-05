@@ -282,7 +282,7 @@ func (this *NodesAction) RunGet(params struct {
 	this.Data["groups"] = groupMaps
 
 	// 所有区域
-	regionsResp, err := this.RPC().NodeRegionRPC().FindAllEnabledAndOnNodeRegions(this.AdminContext(), &pb.FindAllEnabledAndOnNodeRegionsRequest{})
+	regionsResp, err := this.RPC().NodeRegionRPC().FindAllAvailableNodeRegions(this.AdminContext(), &pb.FindAllAvailableNodeRegionsRequest{})
 	if err != nil {
 		this.ErrorPage(err)
 		return

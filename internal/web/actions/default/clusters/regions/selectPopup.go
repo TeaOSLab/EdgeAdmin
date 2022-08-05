@@ -16,7 +16,7 @@ func (this *SelectPopupAction) Init() {
 }
 
 func (this *SelectPopupAction) RunGet(params struct{}) {
-	regionsResp, err := this.RPC().NodeRegionRPC().FindAllEnabledAndOnNodeRegions(this.AdminContext(), &pb.FindAllEnabledAndOnNodeRegionsRequest{})
+	regionsResp, err := this.RPC().NodeRegionRPC().FindAllAvailableNodeRegions(this.AdminContext(), &pb.FindAllAvailableNodeRegionsRequest{})
 	if err != nil {
 		this.ErrorPage(err)
 		return
