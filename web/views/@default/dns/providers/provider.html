@@ -125,6 +125,19 @@
         </tr>
     </tbody>
 
+
+    <!-- DNS.LA -->
+    <tbody v-if="provider.type == 'dnsla'">
+        <tr>
+            <td class="color-border">API ID</td>
+            <td>{{provider.apiParams.apiId}}</td>
+        </tr>
+        <tr>
+            <td class="color-border">API密钥</td>
+            <td>{{provider.apiParams.secret}}</td>
+        </tr>
+    </tbody>
+
     <!-- Local EdgeDNS -->
     <tbody v-if="provider.type == 'localEdgeDNS'">
         <tr>

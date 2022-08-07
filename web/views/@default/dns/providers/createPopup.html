@@ -18,7 +18,7 @@
 					<option value="">[请选择]</option>
 					<option v-for="type in types" :value="type.code">{{type.name}}</option>
 				</select>
-                <p class="comment">{{typeDescription}}</p>
+                <p class="comment">{{typeDescription}} <span v-if="!teaIsPlus">购买商业版可获得更多厂商支持。</span></p>
 			</td>
 		</tr>
 		<tr>
@@ -169,6 +169,24 @@
                 <td>
                     <input type="text" name="paramDNSComSecret" maxlength="100"/>
                     <p class="comment">在DNS.COM控制台账号中心--API设置中创建和查看。</p>
+                </td>
+            </tr>
+        </tbody>
+
+        <!-- DNS.LA -->
+        <tbody v-if="type == 'dnsla'">
+            <tr>
+                <td>API ID *</td>
+                <td>
+                    <input type="text" name="paramDNSLaAPIId" maxlength="100"/>
+                    <p class="comment">在DNS.LA控制台我的账户菜单--API设置中创建和查看。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>API密钥 *</td>
+                <td>
+                    <input type="text" name="paramDNSLaSecret" maxlength="100"/>
+                    <p class="comment">在DNS.LA控制台我的账户菜单--API设置中创建和查看。</p>
                 </td>
             </tr>
         </tbody>
