@@ -21,6 +21,8 @@ Vue.component("http-cache-ref-box", {
 				conds: null,
 				allowChunkedEncoding: true,
 				allowPartialContent: false,
+				enableIfNoneMatch: false,
+				enableIfModifiedSince: false,
 				isReverse: this.vIsReverse,
 				methods: [],
 				expiresTime: {
@@ -192,5 +194,19 @@ Vue.component("http-cache-ref-box", {
 			<p class="comment">选中后，当请求的Header中含有Pragma: no-cache或Cache-Control: no-cache时，会跳过缓存直接读取源内容。</p>
 		</td>
 	</tr>	
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>允许If-None-Match回源</td>
+		<td>
+			<checkbox v-model="ref.enableIfNoneMatch"></checkbox>
+			<p class="comment">特殊情况下才需要开启，可能会降低缓存命中率。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>允许If-Modified-Since回源</td>
+		<td>
+			<checkbox v-model="ref.enableIfModifiedSince"></checkbox>
+			<p class="comment">特殊情况下才需要开启，可能会降低缓存命中率。</p>
+		</td>
+	</tr>
 </tbody>`
 })

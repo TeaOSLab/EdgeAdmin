@@ -53,6 +53,8 @@ Vue.component("http-cache-refs-box", {
 						<grey-label v-if="cacheRef.expiresTime != null && cacheRef.expiresTime.isPrior && cacheRef.expiresTime.isOn">Expires</grey-label>
 						<grey-label v-if="cacheRef.status != null && cacheRef.status.length > 0 && (cacheRef.status.length > 1 || cacheRef.status[0] != 200)">状态码：{{cacheRef.status.map(function(v) {return v.toString()}).join(", ")}}</grey-label>
 						<grey-label v-if="cacheRef.allowPartialContent">区间缓存</grey-label>
+						<grey-label v-if="cacheRef.enableIfNoneMatch">If-None-Match</grey-label>
+						<grey-label v-if="cacheRef.enableIfModifiedSince">If-Modified-Since</grey-label>
 					</td>
 					<td :class="{disabled: !cacheRef.isOn}">
 						<span v-if="cacheRef.conds.connector == 'and'">和</span>
