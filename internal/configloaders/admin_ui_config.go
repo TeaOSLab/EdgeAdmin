@@ -26,6 +26,15 @@ func LoadAdminUIConfig() (*systemconfigs.AdminUIConfig, error) {
 	return &v, nil
 }
 
+func ReloadAdminUIConfig() error {
+	locker.Lock()
+	defer locker.Unlock()
+
+	sharedAdminUIConfig = nil
+	_, err := loadAdminUIConfig()
+	return err
+}
+
 func UpdateAdminUIConfig(uiConfig *systemconfigs.AdminUIConfig) error {
 	locker.Lock()
 	defer locker.Unlock()
