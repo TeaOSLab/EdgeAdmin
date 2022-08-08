@@ -1119,6 +1119,46 @@ Vue.component("message-row", {
 </div>`
 })
 
+Vue.component("ns-domain-group-selector", {
+	props: ["v-domain-group-id"],
+	data: function () {
+		let groupId = this.vDomainGroupId
+		if (groupId == null) {
+			groupId = 0
+		}
+		return {
+			userId: 0,
+			groupId: groupId
+		}
+	},
+	methods: {
+		change: function (group) {
+			if (group != null) {
+				this.$emit("change", group.id)
+			} else {
+				this.$emit("change", 0)
+			}
+		},
+		reload: function (userId) {
+			this.userId = userId
+			this.$refs.comboBox.clear()
+			this.$refs.comboBox.setDataURL("/ns/domains/groups/options?userId=" + userId)
+			this.$refs.comboBox.reloadData()
+		}
+	},
+	template: `<div>
+	<combo-box 
+		data-url="/ns/domains/groups/options" 
+		placeholder="选择分组" 
+		data-key="groups" 
+		name="groupId"
+		:v-value="groupId" 
+		@change="change"
+		ref="comboBox">	
+	</combo-box>
+</div>`
+})
+
 // 选择多个线路
 Vue.component("ns-routes-selector", {
 	props: ["v-routes"],
@@ -2004,31 +2044,17 @@ Vue.component("ns-route-selector", {
 })
 
 Vue.component("ns-user-selector", {
-	mounted: function () {
-		let that = this
-
-		Tea.action("/ns/users/options")
-			.post()
-			.success(function (resp) {
-				that.users = resp.data.users
-			})
-	},
 	props: ["v-user-id"],
 	data: function () {
-		let userId = this.vUserId
-		if (userId == null) {
-			userId = 0
-		}
-		return {
-			users: [],
-			userId: userId
+		return {}
+	},
+	methods: {
+		change: function (userId) {
+			this.$emit("change", userId)
 		}
 	},
 	template: `<div>
-	<select class="ui dropdown auto-width" name="userId" v-model="userId">
-		<option value="0">[选择用户]</option>
-		<option v-for="user in users" :value="user.id">{{user.fullname}} ({{user.username}})</option>
-	</select>
+	<user-selector :v-user-id="vUserId" data-url="/ns/users/options" @change="change"></user-selector>
 </div>`
 })
 
@@ -2140,36 +2166,17 @@ Vue.component("ns-cluster-combo-box", {
 })
 
 Vue.component("plan-user-selector", {
-	mounted: function () {
-		let that = this
-
-		Tea.action("/plans/users/options")
-			.post()
-			.success(function (resp) {
-				that.users = resp.data.users
-			})
-	},
 	props: ["v-user-id"],
 	data: function () {
-		let userId = this.vUserId
-		if (userId == null) {
-			userId = 0
-		}
-		return {
-			users: [],
-			userId: userId
-		}
+		return {}
 	},
-	watch: {
-		userId: function (v) {
-			this.$emit("change", v)
+	methods: {
+		change: function (userId) {
+			this.$emit("change", userId)
 		}
 	},
 	template: `<div>
-	<select class="ui dropdown auto-width" name="userId" v-model="userId">
-		<option value="0">[选择用户]</option>
-		<option v-for="user in users" :value="user.id">{{user.fullname}} ({{user.username}})</option>
-	</select>
+	<user-selector :v-user-id="vUserId" data-url="/plans/users/options" @change="change"></user-selector>
 </div>`
 })
 
@@ -3420,6 +3427,8 @@ Vue.component("http-cache-refs-box", {
 						<grey-label v-if="cacheRef.expiresTime != null && cacheRef.expiresTime.isPrior && cacheRef.expiresTime.isOn">Expires</grey-label>
 						<grey-label v-if="cacheRef.status != null && cacheRef.status.length > 0 && (cacheRef.status.length > 1 || cacheRef.status[0] != 200)">状态码：{{cacheRef.status.map(function(v) {return v.toString()}).join(", ")}}</grey-label>
 						<grey-label v-if="cacheRef.allowPartialContent">区间缓存</grey-label>
+						<grey-label v-if="cacheRef.enableIfNoneMatch">If-None-Match</grey-label>
+						<grey-label v-if="cacheRef.enableIfModifiedSince">If-Modified-Since</grey-label>
 					</td>
 					<td :class="{disabled: !cacheRef.isOn}">
 						<span v-if="cacheRef.conds.connector == 'and'">和</span>
@@ -3712,6 +3721,8 @@ Vue.component("http-cache-ref-box", {
 				conds: null,
 				allowChunkedEncoding: true,
 				allowPartialContent: false,
+				enableIfNoneMatch: false,
+				enableIfModifiedSince: false,
 				isReverse: this.vIsReverse,
 				methods: [],
 				expiresTime: {
@@ -3883,6 +3894,20 @@ Vue.component("http-cache-ref-box", {
 			<p class="comment">选中后，当请求的Header中含有Pragma: no-cache或Cache-Control: no-cache时，会跳过缓存直接读取源内容。</p>
 		</td>
 	</tr>	
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>允许If-None-Match回源</td>
+		<td>
+			<checkbox v-model="ref.enableIfNoneMatch"></checkbox>
+			<p class="comment">特殊情况下才需要开启，可能会降低缓存命中率。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>允许If-Modified-Since回源</td>
+		<td>
+			<checkbox v-model="ref.enableIfModifiedSince"></checkbox>
+			<p class="comment">特殊情况下才需要开启，可能会降低缓存命中率。</p>
+		</td>
+	</tr>
 </tbody>`
 })
 
@@ -3950,7 +3975,7 @@ Vue.component("http-request-limit-config-box", {
 		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
 			<tr>
-				<td class="title">是否启用</td>
+				<td class="title">启用</td>
 				<td>
 					<checkbox v-model="config.isOn"></checkbox>
 				</td>
@@ -3961,14 +3986,14 @@ Vue.component("http-request-limit-config-box", {
 				<td>最大并发连接数</td>
 				<td>
 					<input type="text" maxlength="6" v-model="maxConns"/>
-					<p class="comment">当前服务最大并发连接数。为0表示不限制。</p>
+					<p class="comment">当前服务最大并发连接数，超出此限制则响应用户<code-label>429</code-label>代码。为0表示不限制。</p>
 				</td>
 			</tr>
 			<tr>
 				<td>单IP最大并发连接数</td>
 				<td>
 					<input type="text" maxlength="6" v-model="maxConnsPerIP"/>
-					<p class="comment">单IP最大连接数，统计单个IP总连接数时不区分服务。为0表示不限制。</p>
+					<p class="comment">单IP最大连接数，统计单个IP总连接数时不区分服务，超出此限制则响应用户<code-label>429</code-label>代码。为0表示不限制。</p>
 				</td>
 			</tr>
 			<tr>
@@ -5344,6 +5369,8 @@ Vue.component("http-cache-refs-config-box", {
 						<grey-label v-if="cacheRef.expiresTime != null && cacheRef.expiresTime.isPrior && cacheRef.expiresTime.isOn">Expires</grey-label>
 						<grey-label v-if="cacheRef.status != null && cacheRef.status.length > 0 && (cacheRef.status.length > 1 || cacheRef.status[0] != 200)">状态码：{{cacheRef.status.map(function(v) {return v.toString()}).join(", ")}}</grey-label>
 						<grey-label v-if="cacheRef.allowPartialContent">区间缓存</grey-label>
+						<grey-label v-if="cacheRef.enableIfNoneMatch">If-None-Match</grey-label>
+						<grey-label v-if="cacheRef.enableIfModifiedSince">If-Modified-Since</grey-label>
 					</td>
 					<td :class="{disabled: !cacheRef.isOn}">
 						<span v-if="cacheRef.conds.connector == 'and'">和</span>
@@ -5456,7 +5483,8 @@ Vue.component("origin-list-table", {
 		</tr>	
 	</thead>
 	<tr v-for="origin in vOrigins">
-		<td :class="{disabled:!origin.isOn}"><a href="" @click.prevent="updateOrigin(origin.id)">{{origin.addr}} &nbsp;<i class="icon expand small"></i></a>
+		<td :class="{disabled:!origin.isOn}">
+			<a href="" @click.prevent="updateOrigin(origin.id)" :class="{disabled:!origin.isOn}">{{origin.addr}} &nbsp;<i class="icon expand small"></i></a>
 			<div style="margin-top: 0.3em" v-if="origin.name.length > 0 || origin.hasCert || (origin.host != null && origin.host.length > 0) || origin.followPort || (origin.domains != null && origin.domains.length > 0)">
 				<tiny-basic-label v-if="origin.name.length > 0">{{origin.name}}</tiny-basic-label>
 				<tiny-basic-label v-if="origin.hasCert">证书</tiny-basic-label>
@@ -7105,24 +7133,35 @@ Vue.component("http-auth-config-box", {
 })
 
 Vue.component("user-selector", {
-	props: ["v-user-id"],
+	props: ["v-user-id", "data-url"],
 	data: function () {
 		let userId = this.vUserId
 		if (userId == null) {
 			userId = 0
 		}
+
+		let dataURL = this.dataUrl
+		if (dataURL == null || dataURL.length == 0) {
+			dataURL = "/servers/users/options"
+		}
+
 		return {
 			users: [],
-			userId: userId
+			userId: userId,
+			dataURL: dataURL
 		}
 	},
-	watch: {
-		userId: function (v) {
-			this.$emit("change", v)
+	methods: {
+		change: function(item) {
+			if (item != null) {
+				this.$emit("change", item.id)
+			} else {
+				this.$emit("change", 0)
+			}
 		}
 	},
 	template: `<div>
-	<combo-box placeholder="选择用户" :data-url="'/servers/users/options'" :data-key="'users'" name="userId" :v-value="userId"></combo-box>
+	<combo-box placeholder="选择用户" :data-url="dataURL" :data-key="'users'" data-search="on" name="userId" :v-value="userId" @change="change"></combo-box>
 </div>`
 })
 
@@ -8551,6 +8590,12 @@ Vue.component("http-location-labels", {
 	<!-- 请求脚本 -->
 	<http-location-labels-label v-if="location.web != null && location.web.requestScripts != null && ((location.web.requestScripts.initGroup != null && location.web.requestScripts.initGroup.isPrior) || (location.web.requestScripts.requestGroup != null && location.web.requestScripts.requestGroup.isPrior))" :href="url('/requestScripts')">请求脚本</http-location-labels-label>
 	
+	<!-- 自定义访客IP地址 -->
+	<http-location-labels-label v-if="location.web != null && location.web.remoteAddr != null && location.web.remoteAddr.isPrior" :href="url('/remoteAddr')" :class="{disabled: !location.web.remoteAddr.isOn}">访客IP地址</http-location-labels-label>
+	
+	<!-- 请求限制 -->
+	<http-location-labels-label v-if="location.web != null && location.web.requestLimit != null && location.web.requestLimit.isPrior" :href="url('/requestLimit')" :class="{disabled: !location.web.requestLimit.isOn}">请求限制</http-location-labels-label>
+		
 	<!-- 自定义页面 -->
 	<div v-if="location.web != null && location.web.pages != null && location.web.pages.length > 0">
 		<div v-for="page in location.web.pages" :key="page.id"><http-location-labels-label :href="url('/pages')">PAGE [状态码{{page.status[0]}}] -&gt; {{page.url}}</http-location-labels-label></div>
@@ -13356,32 +13401,16 @@ Vue.component("request-variables-describer", {
 
 Vue.component("combo-box", {
 	// data-url 和 data-key 成对出现
-	props: ["name", "title", "placeholder", "size", "v-items", "v-value", "data-url", "data-key", "width"],
+	props: [
+		"name", "title", "placeholder", "size", "v-items", "v-value",
+		"data-url", // 数据源URL
+		"data-key", // 数据源中数据的键名
+		"data-search", // 是否启用动态搜索，如果值为on或true，则表示启用
+		"width"
+	],
 	mounted: function () {
-		// 从URL中获取选项数据
-		let dataUrl = this.dataUrl
-		let dataKey = this.dataKey
-		let that = this
-		if (dataUrl != null && dataUrl.length > 0 && dataKey != null) {
-			Tea.action(dataUrl)
-				.post()
-				.success(function (resp) {
-					if (resp.data != null) {
-						if (typeof (resp.data[dataKey]) == "object") {
-							let items = that.formatItems(resp.data[dataKey])
-							that.allItems = items
-							that.items = items.$copy()
-
-							if (that.vValue != null) {
-								items.forEach(function (v) {
-									if (v.value == that.vValue) {
-										that.selectedItem = v
-									}
-								})
-							}
-						}
-					}
-				})
+		if (this.dataURL.length > 0) {
+			this.search("")
 		}
 
 		// 设定菜单宽度
@@ -13422,6 +13451,12 @@ Vue.component("combo-box", {
 			}
 		}
 
+		// data url
+		let dataURL = ""
+		if (typeof this.dataUrl == "string" && this.dataUrl.length > 0) {
+			dataURL = this.dataUrl
+		}
+
 		return {
 			allItems: items, // 原始的所有的items
 			items: items.$copy(), // 候选的items
@@ -13430,10 +13465,53 @@ Vue.component("combo-box", {
 			visible: false,
 			hideTimer: null,
 			hoverIndex: 0,
-			styleWidth: width
+			styleWidth: width,
+
+			isInitial: true,
+			dataURL: dataURL,
+			urlRequestId: 0 // 记录URL请求ID，防止并行冲突
 		}
 	},
 	methods: {
+		search: function (keyword) {
+			// 从URL中获取选项数据
+			let dataUrl = this.dataURL
+			let dataKey = this.dataKey
+			let that = this
+
+			let requestId = Math.random()
+			this.urlRequestId = requestId
+
+			Tea.action(dataUrl)
+				.params({
+					keyword: (keyword == null) ? "" : keyword
+				})
+				.post()
+				.success(function (resp) {
+					if (requestId != that.urlRequestId) {
+						return
+					}
+
+					if (resp.data != null) {
+						if (typeof (resp.data[dataKey]) == "object") {
+							let items = that.formatItems(resp.data[dataKey])
+							that.allItems = items
+							that.items = items.$copy()
+
+							if (that.isInitial) {
+								that.isInitial = false
+								if (that.vValue != null) {
+									items.forEach(function (v) {
+										if (v.value == that.vValue) {
+											that.selectedItem = v
+										}
+									})
+								}
+							}
+						}
+					}
+				})
+		},
 		formatItems: function (items) {
 			items.forEach(function (v) {
 				if (v.value == null) {
@@ -13460,18 +13538,30 @@ Vue.component("combo-box", {
 			this.hoverIndex = 0
 		},
 		changeKeyword: function () {
+			let shouldSearch = this.dataURL.length > 0 && (this.dataSearch == "on" || this.dataSearch == "true")
+
 			this.hoverIndex = 0
 			let keyword = this.keyword
 			if (keyword.length == 0) {
-				this.items = this.allItems.$copy()
+				if (shouldSearch) {
+					this.search(keyword)
+				} else {
+					this.items = this.allItems.$copy()
+				}
 				return
 			}
-			this.items = this.allItems.$copy().filter(function (v) {
-				if (v.fullname != null && v.fullname.length > 0 && teaweb.match(v.fullname, keyword)) {
-					return true
-				}
-				return teaweb.match(v.name, keyword)
-			})
+
+
+			if (shouldSearch) {
+				this.search(keyword)
+			} else {
+				this.items = this.allItems.$copy().filter(function (v) {
+					if (v.fullname != null && v.fullname.length > 0 && teaweb.match(v.fullname, keyword)) {
+						return true
+					}
+					return teaweb.match(v.name, keyword)
+				})
+			}
 		},
 		selectItem: function (item) {
 			this.selectedItem = item
@@ -13548,6 +13638,13 @@ Vue.component("combo-box", {
 					break
 				}
 			}
+		},
+
+		setDataURL: function (dataURL) {
+			this.dataURL = dataURL
+		},
+		reloadData: function () {
+			this.search("")
 		}
 	},
 	template: `<div style="display: inline; z-index: 10; background: white" class="combo-box">
@@ -14442,36 +14539,17 @@ Vue.component("report-node-groups-selector", {
 })
 
 Vue.component("finance-user-selector", {
-	mounted: function () {
-		let that = this
-
-		Tea.action("/finance/users/options")
-			.post()
-			.success(function (resp) {
-				that.users = resp.data.users
-			})
-	},
 	props: ["v-user-id"],
 	data: function () {
-		let userId = this.vUserId
-		if (userId == null) {
-			userId = 0
-		}
-		return {
-			users: [],
-			userId: userId
-		}
+		return {}
 	},
-	watch: {
-		userId: function (v) {
-			this.$emit("change", v)
+	methods: {
+		change: function (userId) {
+			this.$emit("change", userId)
 		}
 	},
 	template: `<div>
-	<select class="ui dropdown auto-width" name="userId" v-model="userId">
-		<option value="0">[选择用户]</option>
-		<option v-for="user in users" :value="user.id">{{user.fullname}} ({{user.username}})</option>
-	</select>
+	<user-selector :v-user-id="vUserId" data-url="/finance/users/options" @change="change"></user-selector>
 </div>`
 })
 

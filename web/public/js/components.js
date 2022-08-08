@@ -295,6 +295,16 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	</tr>
 </table>
 <div class="margin"></div>
+</div>`}),Vue.component("ns-domain-group-selector",{props:["v-domain-group-id"],data:function(){let e=this.vDomainGroupId;return{userId:0,groupId:e=null==e?0:e}},methods:{change:function(e){null!=e?this.$emit("change",e.id):this.$emit("change",0)},reload:function(e){this.userId=e,this.$refs.comboBox.clear(),this.$refs.comboBox.setDataURL("/ns/domains/groups/options?userId="+e),this.$refs.comboBox.reloadData()}},template:`<div>
+	<combo-box 
+		data-url="/ns/domains/groups/options" 
+		placeholder="选择分组" 
+		data-key="groups" 
+		name="groupId"
+		:v-value="groupId" 
+		@change="change"
+		ref="comboBox">	
+	</combo-box>
 </div>`}),Vue.component("ns-routes-selector",{props:["v-routes"],mounted:function(){let t=this;Tea.action("/ns/routes/options").post().success(function(e){t.routes=e.data.routes})},data:function(){let e=this.vRoutes;return{routeCode:"default",routes:[],isAdding:!1,routeType:"default",selectedRoutes:e=null==e?[]:e}},watch:{routeType:function(t){this.routeCode="";let i=this;this.routes.forEach(function(e){e.type==t&&0==i.routeCode.length&&(i.routeCode=e.code)})}},methods:{add:function(){this.isAdding=!0,this.routeType="default",this.routeCode="default"},cancel:function(){this.isAdding=!1},confirm:function(){if(0!=this.routeCode.length){let t=this;this.routes.forEach(function(e){e.code==t.routeCode&&t.selectedRoutes.push(e)}),this.cancel()}},remove:function(e){this.selectedRoutes.$remove(e)}},template:`<div>
 	<div>
 		<div class="ui label basic text small" v-for="(route, index) in selectedRoutes" style="margin-bottom: 0.3em">
@@ -610,11 +620,8 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<option v-for="route in routes" :value="route.code">{{route.name}}</option>
 		</select>
 	</div>
-</div>`}),Vue.component("ns-user-selector",{mounted:function(){let t=this;Tea.action("/ns/users/options").post().success(function(e){t.users=e.data.users})},props:["v-user-id"],data:function(){let e=this.vUserId;return{users:[],userId:e=null==e?0:e}},template:`<div>
-	<select class="ui dropdown auto-width" name="userId" v-model="userId">
-		<option value="0">[选择用户]</option>
-		<option v-for="user in users" :value="user.id">{{user.fullname}} ({{user.username}})</option>
-	</select>
+</div>`}),Vue.component("ns-user-selector",{props:["v-user-id"],data:function(){return{}},methods:{change:function(e){this.$emit("change",e)}},template:`<div>
+	<user-selector :v-user-id="vUserId" data-url="/ns/users/options" @change="change"></user-selector>
 </div>`}),Vue.component("ns-access-log-box",{props:["v-access-log","v-keyword"],data:function(){return{accessLog:this.vAccessLog}},methods:{showLog:function(){let e=this;var t=this.accessLog.requestId;this.$parent.$children.forEach(function(e){null!=e.deselect&&e.deselect()}),this.select(),teaweb.popup("/ns/clusters/accessLogs/viewPopup?requestId="+t,{width:"50em",height:"24em",onClose:function(){e.deselect()}})},select:function(){this.$refs.box.parentNode.style.cssText="background: rgba(0, 0, 0, 0.1)"},deselect:function(){this.$refs.box.parentNode.style.cssText=""}},template:`<div class="access-log-row" :style="{'color': (!accessLog.isRecursive && (accessLog.nsRecordId == null || accessLog.nsRecordId == 0) || (accessLog.isRecursive && accessLog.recordValue != null && accessLog.recordValue.length == 0)) ? '#dc143c' : ''}" ref="box">
 	<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey">[{{accessLog.region}}]</span> <keyword :v-word="vKeyword">{{accessLog.remoteAddr}}</keyword> [{{accessLog.timeLocal}}] [{{accessLog.networking}}] <em>{{accessLog.questionType}} <keyword :v-word="vKeyword">{{accessLog.questionName}}</keyword></em> -&gt; 
 	
@@ -636,11 +643,8 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	</select>
 </div>`}),Vue.component("ns-cluster-combo-box",{props:["v-cluster-id"],data:function(){let t=this;return Tea.action("/ns/clusters/options").post().success(function(e){t.clusters=e.data.clusters}),{clusters:[]}},methods:{change:function(e){null==e?this.$emit("change",0):this.$emit("change",e.value)}},template:`<div v-if="clusters.length > 0" style="min-width: 10.4em">
 	<combo-box title="集群" placeholder="集群名称" :v-items="clusters" name="clusterId" :v-value="vClusterId" @change="change"></combo-box>
-</div>`}),Vue.component("plan-user-selector",{mounted:function(){let t=this;Tea.action("/plans/users/options").post().success(function(e){t.users=e.data.users})},props:["v-user-id"],data:function(){let e=this.vUserId;return{users:[],userId:e=null==e?0:e}},watch:{userId:function(e){this.$emit("change",e)}},template:`<div>
-	<select class="ui dropdown auto-width" name="userId" v-model="userId">
-		<option value="0">[选择用户]</option>
-		<option v-for="user in users" :value="user.id">{{user.fullname}} ({{user.username}})</option>
-	</select>
+</div>`}),Vue.component("plan-user-selector",{props:["v-user-id"],data:function(){return{}},methods:{change:function(e){this.$emit("change",e)}},template:`<div>
+	<user-selector :v-user-id="vUserId" data-url="/plans/users/options" @change="change"></user-selector>
 </div>`}),Vue.component("plan-price-view",{props:["v-plan"],data:function(){return{plan:this.vPlan}},template:`<div>
 	 <span v-if="plan.priceType == 'period'">
 	 	按时间周期计费
@@ -1140,6 +1144,8 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 						<grey-label v-if="cacheRef.expiresTime != null && cacheRef.expiresTime.isPrior && cacheRef.expiresTime.isOn">Expires</grey-label>
 						<grey-label v-if="cacheRef.status != null && cacheRef.status.length > 0 && (cacheRef.status.length > 1 || cacheRef.status[0] != 200)">状态码：{{cacheRef.status.map(function(v) {return v.toString()}).join(", ")}}</grey-label>
 						<grey-label v-if="cacheRef.allowPartialContent">区间缓存</grey-label>
+						<grey-label v-if="cacheRef.enableIfNoneMatch">If-None-Match</grey-label>
+						<grey-label v-if="cacheRef.enableIfModifiedSince">If-Modified-Since</grey-label>
 					</td>
 					<td :class="{disabled: !cacheRef.isOn}">
 						<span v-if="cacheRef.conds.connector == 'and'">和</span>
@@ -1225,7 +1231,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<p class="comment" v-if="redirects.length > 1">所有规则匹配顺序为从上到下，可以拖动左侧的<i class="icon bars"></i>排序。</p>
 	</div>
 	<div class="margin"></div>
-</div>`}),Vue.component("http-cache-ref-box",{props:["v-cache-ref","v-is-reverse"],mounted:function(){this.$refs.variablesDescriber.update(this.ref.key)},data:function(){let e=this.vCacheRef;return null==(e=null==e?{isOn:!0,cachePolicyId:0,key:"${scheme}://${host}${requestPath}${isArgs}${args}",life:{count:2,unit:"hour"},status:[200],maxSize:{count:32,unit:"mb"},minSize:{count:0,unit:"kb"},skipCacheControlValues:["private","no-cache","no-store"],skipSetCookie:!0,enableRequestCachePragma:!1,conds:null,allowChunkedEncoding:!0,allowPartialContent:!1,isReverse:this.vIsReverse,methods:[],expiresTime:{isPrior:!1,isOn:!1,overwrite:!0,autoCalculate:!0,duration:{count:-1,unit:"hour"}}}:e).key&&(e.key=""),null==e.methods&&(e.methods=[]),null==e.life&&(e.life={count:2,unit:"hour"}),null==e.maxSize&&(e.maxSize={count:32,unit:"mb"}),null==e.minSize&&(e.minSize={count:0,unit:"kb"}),{ref:e,moreOptionsVisible:!1}},methods:{changeOptionsVisible:function(e){this.moreOptionsVisible=e},changeLife:function(e){this.ref.life=e},changeMaxSize:function(e){this.ref.maxSize=e},changeMinSize:function(e){this.ref.minSize=e},changeConds:function(e){this.ref.conds=e},changeStatusList:function(e){let t=[];e.forEach(function(e){e=parseInt(e);isNaN(e)||e<100||999<e||t.push(e)}),this.ref.status=t},changeMethods:function(e){this.ref.methods=e.map(function(e){return e.toUpperCase()})},changeKey:function(e){this.$refs.variablesDescriber.update(e)},changeExpiresTime:function(e){this.ref.expiresTime=e}},template:`<tbody>
+</div>`}),Vue.component("http-cache-ref-box",{props:["v-cache-ref","v-is-reverse"],mounted:function(){this.$refs.variablesDescriber.update(this.ref.key)},data:function(){let e=this.vCacheRef;return null==(e=null==e?{isOn:!0,cachePolicyId:0,key:"${scheme}://${host}${requestPath}${isArgs}${args}",life:{count:2,unit:"hour"},status:[200],maxSize:{count:32,unit:"mb"},minSize:{count:0,unit:"kb"},skipCacheControlValues:["private","no-cache","no-store"],skipSetCookie:!0,enableRequestCachePragma:!1,conds:null,allowChunkedEncoding:!0,allowPartialContent:!1,enableIfNoneMatch:!1,enableIfModifiedSince:!1,isReverse:this.vIsReverse,methods:[],expiresTime:{isPrior:!1,isOn:!1,overwrite:!0,autoCalculate:!0,duration:{count:-1,unit:"hour"}}}:e).key&&(e.key=""),null==e.methods&&(e.methods=[]),null==e.life&&(e.life={count:2,unit:"hour"}),null==e.maxSize&&(e.maxSize={count:32,unit:"mb"}),null==e.minSize&&(e.minSize={count:0,unit:"kb"}),{ref:e,moreOptionsVisible:!1}},methods:{changeOptionsVisible:function(e){this.moreOptionsVisible=e},changeLife:function(e){this.ref.life=e},changeMaxSize:function(e){this.ref.maxSize=e},changeMinSize:function(e){this.ref.minSize=e},changeConds:function(e){this.ref.conds=e},changeStatusList:function(e){let t=[];e.forEach(function(e){e=parseInt(e);isNaN(e)||e<100||999<e||t.push(e)}),this.ref.status=t},changeMethods:function(e){this.ref.methods=e.map(function(e){return e.toUpperCase()})},changeKey:function(e){this.$refs.variablesDescriber.update(e)},changeExpiresTime:function(e){this.ref.expiresTime=e}},template:`<tbody>
 	<tr>
 		<td class="title">匹配条件分组 *</td>
 		<td>
@@ -1325,13 +1331,27 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<p class="comment">选中后，当请求的Header中含有Pragma: no-cache或Cache-Control: no-cache时，会跳过缓存直接读取源内容。</p>
 		</td>
 	</tr>	
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>允许If-None-Match回源</td>
+		<td>
+			<checkbox v-model="ref.enableIfNoneMatch"></checkbox>
+			<p class="comment">特殊情况下才需要开启，可能会降低缓存命中率。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>允许If-Modified-Since回源</td>
+		<td>
+			<checkbox v-model="ref.enableIfModifiedSince"></checkbox>
+			<p class="comment">特殊情况下才需要开启，可能会降低缓存命中率。</p>
+		</td>
+	</tr>
 </tbody>`}),Vue.component("http-request-limit-config-box",{props:["v-request-limit-config","v-is-group","v-is-location"],data:function(){let e=this.vRequestLimitConfig;return{config:e=null==e?{isPrior:!1,isOn:!1,maxConns:0,maxConnsPerIP:0,maxBodySize:{count:-1,unit:"kb"},outBandwidthPerConn:{count:-1,unit:"kb"}}:e,maxConns:e.maxConns,maxConnsPerIP:e.maxConnsPerIP}},watch:{maxConns:function(e){e=parseInt(e,10);isNaN(e)?this.config.maxConns=0:this.config.maxConns=e<0?0:e},maxConnsPerIP:function(e){e=parseInt(e,10);isNaN(e)?this.config.maxConnsPerIP=0:this.config.maxConnsPerIP=e<0?0:e}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn}},template:`<div>
 	<input type="hidden" name="requestLimitJSON" :value="JSON.stringify(config)"/>
 	<table class="ui table selectable definition">
 		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
 			<tr>
-				<td class="title">是否启用</td>
+				<td class="title">启用</td>
 				<td>
 					<checkbox v-model="config.isOn"></checkbox>
 				</td>
@@ -1342,14 +1362,14 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				<td>最大并发连接数</td>
 				<td>
 					<input type="text" maxlength="6" v-model="maxConns"/>
-					<p class="comment">当前服务最大并发连接数。为0表示不限制。</p>
+					<p class="comment">当前服务最大并发连接数，超出此限制则响应用户<code-label>429</code-label>代码。为0表示不限制。</p>
 				</td>
 			</tr>
 			<tr>
 				<td>单IP最大并发连接数</td>
 				<td>
 					<input type="text" maxlength="6" v-model="maxConnsPerIP"/>
-					<p class="comment">单IP最大连接数，统计单个IP总连接数时不区分服务。为0表示不限制。</p>
+					<p class="comment">单IP最大连接数，统计单个IP总连接数时不区分服务，超出此限制则响应用户<code-label>429</code-label>代码。为0表示不限制。</p>
 				</td>
 			</tr>
 			<tr>
@@ -1662,6 +1682,8 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 						<grey-label v-if="cacheRef.expiresTime != null && cacheRef.expiresTime.isPrior && cacheRef.expiresTime.isOn">Expires</grey-label>
 						<grey-label v-if="cacheRef.status != null && cacheRef.status.length > 0 && (cacheRef.status.length > 1 || cacheRef.status[0] != 200)">状态码：{{cacheRef.status.map(function(v) {return v.toString()}).join(", ")}}</grey-label>
 						<grey-label v-if="cacheRef.allowPartialContent">区间缓存</grey-label>
+						<grey-label v-if="cacheRef.enableIfNoneMatch">If-None-Match</grey-label>
+						<grey-label v-if="cacheRef.enableIfModifiedSince">If-Modified-Since</grey-label>
 					</td>
 					<td :class="{disabled: !cacheRef.isOn}">
 						<span v-if="cacheRef.conds.connector == 'and'">和</span>
@@ -1703,7 +1725,8 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		</tr>	
 	</thead>
 	<tr v-for="origin in vOrigins">
-		<td :class="{disabled:!origin.isOn}"><a href="" @click.prevent="updateOrigin(origin.id)">{{origin.addr}} &nbsp;<i class="icon expand small"></i></a>
+		<td :class="{disabled:!origin.isOn}">
+			<a href="" @click.prevent="updateOrigin(origin.id)" :class="{disabled:!origin.isOn}">{{origin.addr}} &nbsp;<i class="icon expand small"></i></a>
 			<div style="margin-top: 0.3em" v-if="origin.name.length > 0 || origin.hasCert || (origin.host != null && origin.host.length > 0) || origin.followPort || (origin.domains != null && origin.domains.length > 0)">
 				<tiny-basic-label v-if="origin.name.length > 0">{{origin.name}}</tiny-basic-label>
 				<tiny-basic-label v-if="origin.hasCert">证书</tiny-basic-label>
@@ -2330,8 +2353,8 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<button class="ui button small" type="button" @click.prevent="add">+添加认证方式</button>
 </div>
 <div class="margin"></div>
-</div>`}),Vue.component("user-selector",{props:["v-user-id"],data:function(){let e=this.vUserId;return{users:[],userId:e=null==e?0:e}},watch:{userId:function(e){this.$emit("change",e)}},template:`<div>
-	<combo-box placeholder="选择用户" :data-url="'/servers/users/options'" :data-key="'users'" name="userId" :v-value="userId"></combo-box>
+</div>`}),Vue.component("user-selector",{props:["v-user-id","data-url"],data:function(){let e=this.vUserId,t=(null==e&&(e=0),this.dataUrl);return null!=t&&0!=t.length||(t="/servers/users/options"),{users:[],userId:e,dataURL:t}},methods:{change:function(e){null!=e?this.$emit("change",e.id):this.$emit("change",0)}},template:`<div>
+	<combo-box placeholder="选择用户" :data-url="dataURL" :data-key="'users'" data-search="on" name="userId" :v-value="userId" @change="change"></combo-box>
 </div>`}),Vue.component("uam-config-box",{props:["v-uam-config","v-is-location","v-is-group"],data:function(){let e=this.vUamConfig;return{config:e=null==e?{isPrior:!1,isOn:!1}:e}},template:`<div>
 <input type="hidden" name="uamJSON" :value="JSON.stringify(config)"/>
 <table class="ui table definition selectable">
@@ -2961,6 +2984,12 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<!-- 请求脚本 -->
 	<http-location-labels-label v-if="location.web != null && location.web.requestScripts != null && ((location.web.requestScripts.initGroup != null && location.web.requestScripts.initGroup.isPrior) || (location.web.requestScripts.requestGroup != null && location.web.requestScripts.requestGroup.isPrior))" :href="url('/requestScripts')">请求脚本</http-location-labels-label>
 	
+	<!-- 自定义访客IP地址 -->
+	<http-location-labels-label v-if="location.web != null && location.web.remoteAddr != null && location.web.remoteAddr.isPrior" :href="url('/remoteAddr')" :class="{disabled: !location.web.remoteAddr.isOn}">访客IP地址</http-location-labels-label>
+	
+	<!-- 请求限制 -->
+	<http-location-labels-label v-if="location.web != null && location.web.requestLimit != null && location.web.requestLimit.isPrior" :href="url('/requestLimit')" :class="{disabled: !location.web.requestLimit.isOn}">请求限制</http-location-labels-label>
+		
 	<!-- 自定义页面 -->
 	<div v-if="location.web != null && location.web.pages != null && location.web.pages.length > 0">
 		<div v-for="page in location.web.pages" :key="page.id"><http-location-labels-label :href="url('/pages')">PAGE [状态码{{page.status[0]}}] -&gt; {{page.url}}</http-location-labels-label></div>
@@ -4454,7 +4483,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 <div class="margin"></div>
 </div>`}),Vue.component("request-variables-describer",{data:function(){return{vars:[]}},methods:{update:function(e){this.vars=[];let i=this;e.replace(/\${.+?}/g,function(e){var t=i.findVar(e);if(null==t)return e;i.vars.push(t)})},findVar:function(t){let i=null;return window.REQUEST_VARIABLES.forEach(function(e){e.code==t&&(i=e)}),i}},template:`<span>
 	<span v-for="(v, index) in vars"><code-label :title="v.description">{{v.code}}</code-label> - {{v.name}}<span v-if="index < vars.length-1">；</span></span>
-</span>`}),Vue.component("combo-box",{props:["name","title","placeholder","size","v-items","v-value","data-url","data-key","width"],mounted:function(){var e=this.dataUrl;let i=this.dataKey,s=this;null!=e&&0<e.length&&null!=i&&Tea.action(e).post().success(function(t){if(null!=t.data&&"object"==typeof t.data[i]){let e=s.formatItems(t.data[i]);s.allItems=e,s.items=e.$copy(),null!=s.vValue&&e.forEach(function(e){e.value==s.vValue&&(s.selectedItem=e)})}});var e=this.$refs.searchBox;null!=e&&(null!=(e=e.offsetWidth)&&0<e?this.$refs.menu.style.width=e+"px":0<this.styleWidth.length&&(this.$refs.menu.style.width=this.styleWidth))},data:function(){let e=this.vItems,i=(null!=e&&e instanceof Array||(e=[]),e=this.formatItems(e),null);if(null!=this.vValue){let t=this;e.forEach(function(e){e.value==t.vValue&&(i=e)})}let t=this.width;return null==t||0==t.length?t="11em":/\d+$/.test(t)&&(t+="em"),{allItems:e,items:e.$copy(),selectedItem:i,keyword:"",visible:!1,hideTimer:null,hoverIndex:0,styleWidth:t}},methods:{formatItems:function(e){return e.forEach(function(e){null==e.value&&(e.value=e.id)}),e},reset:function(){this.selectedItem=null,this.change(),this.hoverIndex=0;let e=this;setTimeout(function(){e.$refs.searchBox&&e.$refs.searchBox.focus()})},clear:function(){this.selectedItem=null,this.change(),this.hoverIndex=0},changeKeyword:function(){this.hoverIndex=0;let t=this.keyword;0==t.length?this.items=this.allItems.$copy():this.items=this.allItems.$copy().filter(function(e){return!!(null!=e.fullname&&0<e.fullname.length&&teaweb.match(e.fullname,t))||teaweb.match(e.name,t)})},selectItem:function(e){this.selectedItem=e,this.change(),this.hoverIndex=0,this.keyword="",this.changeKeyword()},confirm:function(){this.items.length>this.hoverIndex&&this.selectItem(this.items[this.hoverIndex])},show:function(){this.visible=!0},hide:function(){let e=this;this.hideTimer=setTimeout(function(){e.visible=!1},500)},downItem:function(){this.hoverIndex++,this.hoverIndex>this.items.length-1&&(this.hoverIndex=0),this.focusItem()},upItem:function(){this.hoverIndex--,this.hoverIndex<0&&(this.hoverIndex=0),this.focusItem()},focusItem:function(){if(this.hoverIndex<this.items.length){this.$refs.itemRef[this.hoverIndex].focus();let e=this;setTimeout(function(){e.$refs.searchBox.focus(),null!=e.hideTimer&&(clearTimeout(e.hideTimer),e.hideTimer=null)})}},change:function(){this.$emit("change",this.selectedItem);let e=this;setTimeout(function(){null!=e.$refs.selectedLabel&&e.$refs.selectedLabel.focus()})},submitForm:function(e){if("A"==e.target.tagName){let e=this.$refs.selectedLabel.parentNode;for(;;){if(null==(e=e.parentNode)||"BODY"==e.tagName)return;if("FORM"==e.tagName){e.submit();break}}}}},template:`<div style="display: inline; z-index: 10; background: white" class="combo-box">
+</span>`}),Vue.component("combo-box",{props:["name","title","placeholder","size","v-items","v-value","data-url","data-key","data-search","width"],mounted:function(){0<this.dataURL.length&&this.search("");var e=this.$refs.searchBox;null!=e&&(null!=(e=e.offsetWidth)&&0<e?this.$refs.menu.style.width=e+"px":0<this.styleWidth.length&&(this.$refs.menu.style.width=this.styleWidth))},data:function(){let e=this.vItems,i=(null!=e&&e instanceof Array||(e=[]),e=this.formatItems(e),null);if(null!=this.vValue){let t=this;e.forEach(function(e){e.value==t.vValue&&(i=e)})}let t=this.width,s=(null==t||0==t.length?t="11em":/\d+$/.test(t)&&(t+="em"),"");return"string"==typeof this.dataUrl&&0<this.dataUrl.length&&(s=this.dataUrl),{allItems:e,items:e.$copy(),selectedItem:i,keyword:"",visible:!1,hideTimer:null,hoverIndex:0,styleWidth:t,isInitial:!0,dataURL:s,urlRequestId:0}},methods:{search:function(e){var t=this.dataURL;let i=this.dataKey,s=this,n=Math.random();this.urlRequestId=n,Tea.action(t).params({keyword:null==e?"":e}).post().success(function(t){if(n==s.urlRequestId&&null!=t.data&&"object"==typeof t.data[i]){let e=s.formatItems(t.data[i]);s.allItems=e,s.items=e.$copy(),s.isInitial&&(s.isInitial=!1,null!=s.vValue&&e.forEach(function(e){e.value==s.vValue&&(s.selectedItem=e)}))}})},formatItems:function(e){return e.forEach(function(e){null==e.value&&(e.value=e.id)}),e},reset:function(){this.selectedItem=null,this.change(),this.hoverIndex=0;let e=this;setTimeout(function(){e.$refs.searchBox&&e.$refs.searchBox.focus()})},clear:function(){this.selectedItem=null,this.change(),this.hoverIndex=0},changeKeyword:function(){var e=0<this.dataURL.length&&("on"==this.dataSearch||"true"==this.dataSearch);this.hoverIndex=0;let t=this.keyword;0==t.length?e?this.search(t):this.items=this.allItems.$copy():e?this.search(t):this.items=this.allItems.$copy().filter(function(e){return!!(null!=e.fullname&&0<e.fullname.length&&teaweb.match(e.fullname,t))||teaweb.match(e.name,t)})},selectItem:function(e){this.selectedItem=e,this.change(),this.hoverIndex=0,this.keyword="",this.changeKeyword()},confirm:function(){this.items.length>this.hoverIndex&&this.selectItem(this.items[this.hoverIndex])},show:function(){this.visible=!0},hide:function(){let e=this;this.hideTimer=setTimeout(function(){e.visible=!1},500)},downItem:function(){this.hoverIndex++,this.hoverIndex>this.items.length-1&&(this.hoverIndex=0),this.focusItem()},upItem:function(){this.hoverIndex--,this.hoverIndex<0&&(this.hoverIndex=0),this.focusItem()},focusItem:function(){if(this.hoverIndex<this.items.length){this.$refs.itemRef[this.hoverIndex].focus();let e=this;setTimeout(function(){e.$refs.searchBox.focus(),null!=e.hideTimer&&(clearTimeout(e.hideTimer),e.hideTimer=null)})}},change:function(){this.$emit("change",this.selectedItem);let e=this;setTimeout(function(){null!=e.$refs.selectedLabel&&e.$refs.selectedLabel.focus()})},submitForm:function(e){if("A"==e.target.tagName){let e=this.$refs.selectedLabel.parentNode;for(;;){if(null==(e=e.parentNode)||"BODY"==e.tagName)return;if("FORM"==e.tagName){e.submit();break}}}},setDataURL:function(e){this.dataURL=e},reloadData:function(){this.search("")}},template:`<div style="display: inline; z-index: 10; background: white" class="combo-box">
 	<!-- 搜索框 -->
 	<div v-if="selectedItem == null">
 		<input type="text" v-model="keyword" :placeholder="placeholder" :size="size" :style="{'width': styleWidth}"  @input="changeKeyword" @focus="show" @blur="hide" @keyup.enter="confirm()" @keypress.enter.prevent="1" ref="searchBox" @keyup.down="downItem" @keyup.up="upItem"/>
@@ -4574,11 +4603,8 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			</div>
 		</div>
 	</div>
-</div>`}),Vue.component("finance-user-selector",{mounted:function(){let t=this;Tea.action("/finance/users/options").post().success(function(e){t.users=e.data.users})},props:["v-user-id"],data:function(){let e=this.vUserId;return{users:[],userId:e=null==e?0:e}},watch:{userId:function(e){this.$emit("change",e)}},template:`<div>
-	<select class="ui dropdown auto-width" name="userId" v-model="userId">
-		<option value="0">[选择用户]</option>
-		<option v-for="user in users" :value="user.id">{{user.fullname}} ({{user.username}})</option>
-	</select>
+</div>`}),Vue.component("finance-user-selector",{props:["v-user-id"],data:function(){return{}},methods:{change:function(e){this.$emit("change",e)}},template:`<div>
+	<user-selector :v-user-id="vUserId" data-url="/finance/users/options" @change="change"></user-selector>
 </div>`}),Vue.component("node-login-suggest-ports",{data:function(){return{ports:[],availablePorts:[],autoSelected:!1,isLoading:!1}},methods:{reload:function(e){let t=this;this.autoSelected=!1,this.isLoading=!0,Tea.action("/clusters/cluster/suggestLoginPorts").params({host:e}).success(function(e){null!=e.data.availablePorts&&(t.availablePorts=e.data.availablePorts,0<t.availablePorts.length&&(t.autoSelectPort(t.availablePorts[0]),t.autoSelected=!0)),null!=e.data.ports&&(t.ports=e.data.ports,0<t.ports.length&&!t.autoSelected&&(t.autoSelectPort(t.ports[0]),t.autoSelected=!0))}).done(function(){t.isLoading=!1}).post()},selectPort:function(e){this.$emit("select",e)},autoSelectPort:function(e){this.$emit("auto-select",e)}},template:`<span>
 	<span v-if="isLoading">正在检查端口...</span>
 	<span v-if="availablePorts.length > 0">
