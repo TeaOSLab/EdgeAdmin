@@ -1,6 +1,6 @@
 // 选择多个线路
 Vue.component("ns-routes-selector", {
-	props: ["v-routes"],
+	props: ["v-routes", "name"],
 	mounted: function () {
 		let that = this
 		Tea.action("/ns/routes/options")
@@ -15,12 +15,18 @@ Vue.component("ns-routes-selector", {
 			selectedRoutes = []
 		}
 
+		let inputName = this.name
+		if (typeof inputName != "string" || inputName.length == 0) {
+			inputName = "routeCodes"
+		}
+
 		return {
 			routeCode: "default",
+			inputName: inputName,
 			routes: [],
 			isAdding: false,
 			routeType: "default",
-			selectedRoutes: selectedRoutes
+			selectedRoutes: selectedRoutes,
 		}
 	},
 	watch: {
@@ -39,9 +45,11 @@ Vue.component("ns-routes-selector", {
 			this.isAdding = true
 			this.routeType = "default"
 			this.routeCode = "default"
+			this.$emit("add")
 		},
 		cancel: function () {
 			this.isAdding = false
+			this.$emit("cancel")
 		},
 		confirm: function () {
 			if (this.routeCode.length == 0) {
@@ -54,17 +62,19 @@ Vue.component("ns-routes-selector", {
 					that.selectedRoutes.push(v)
 				}
 			})
+			this.$emit("change", this.selectedRoutes)
 			this.cancel()
 		},
 		remove: function (index) {
 			this.selectedRoutes.$remove(index)
+			this.$emit("change", this.selectedRoutes)
 		}
 	}
 	,
 	template: `<div>
-	<div>
+	<div v-show="selectedRoutes.length > 0">
 		<div class="ui label basic text small" v-for="(route, index) in selectedRoutes" style="margin-bottom: 0.3em">
-			<input type="hidden" name="routeCodes" :value="route.code"/>
+			<input type="hidden" :name="inputName" :value="route.code"/>
 			{{route.name}} &nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
 		</div>
 		<div class="ui divider"></div>

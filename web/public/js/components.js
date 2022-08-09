@@ -305,10 +305,10 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		@change="change"
 		ref="comboBox">	
 	</combo-box>
-</div>`}),Vue.component("ns-routes-selector",{props:["v-routes"],mounted:function(){let t=this;Tea.action("/ns/routes/options").post().success(function(e){t.routes=e.data.routes})},data:function(){let e=this.vRoutes;return{routeCode:"default",routes:[],isAdding:!1,routeType:"default",selectedRoutes:e=null==e?[]:e}},watch:{routeType:function(t){this.routeCode="";let i=this;this.routes.forEach(function(e){e.type==t&&0==i.routeCode.length&&(i.routeCode=e.code)})}},methods:{add:function(){this.isAdding=!0,this.routeType="default",this.routeCode="default"},cancel:function(){this.isAdding=!1},confirm:function(){if(0!=this.routeCode.length){let t=this;this.routes.forEach(function(e){e.code==t.routeCode&&t.selectedRoutes.push(e)}),this.cancel()}},remove:function(e){this.selectedRoutes.$remove(e)}},template:`<div>
-	<div>
+</div>`}),Vue.component("ns-routes-selector",{props:["v-routes","name"],mounted:function(){let t=this;Tea.action("/ns/routes/options").post().success(function(e){t.routes=e.data.routes})},data:function(){let e=this.vRoutes,t=(null==e&&(e=[]),this.name);return{routeCode:"default",inputName:t="string"==typeof t&&0!=t.length?t:"routeCodes",routes:[],isAdding:!1,routeType:"default",selectedRoutes:e}},watch:{routeType:function(t){this.routeCode="";let i=this;this.routes.forEach(function(e){e.type==t&&0==i.routeCode.length&&(i.routeCode=e.code)})}},methods:{add:function(){this.isAdding=!0,this.routeType="default",this.routeCode="default",this.$emit("add")},cancel:function(){this.isAdding=!1,this.$emit("cancel")},confirm:function(){if(0!=this.routeCode.length){let t=this;this.routes.forEach(function(e){e.code==t.routeCode&&t.selectedRoutes.push(e)}),this.$emit("change",this.selectedRoutes),this.cancel()}},remove:function(e){this.selectedRoutes.$remove(e),this.$emit("change",this.selectedRoutes)}},template:`<div>
+	<div v-show="selectedRoutes.length > 0">
 		<div class="ui label basic text small" v-for="(route, index) in selectedRoutes" style="margin-bottom: 0.3em">
-			<input type="hidden" name="routeCodes" :value="route.code"/>
+			<input type="hidden" :name="inputName" :value="route.code"/>
 			{{route.name}} &nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
 		</div>
 		<div class="ui divider"></div>
@@ -613,6 +613,46 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<button class="ui button tiny" type="button" @click.prevent="addRegions">添加区域</button> &nbsp;
 		</div>	
 	</div>
+</div>`}),Vue.component("ns-create-records-table",{props:["v-types"],data:function(){let e=this.vTypes;return{types:e=null==e?[]:e,records:[{name:"",type:"A",value:"",routeCodes:[],ttl:600,index:0}],lastIndex:0,isAddingRoutes:!1}},methods:{add:function(){this.records.push({name:"",type:"A",value:"",routeCodes:[],ttl:600,index:++this.lastIndex});let e=this;setTimeout(function(){e.$refs.nameInputs.$last().focus()},100)},remove:function(e){this.records.$remove(e)},addRoutes:function(){this.isAddingRoutes=!0},cancelRoutes:function(){let e=this;setTimeout(function(){e.isAddingRoutes=!1},1e3)},changeRoutes:function(e,t){e.routeCodes=null==t?[]:t.map(function(e){return e.code})}},template:`<div>
+<input type="hidden" name="recordsJSON" :value="JSON.stringify(records)"/>
+<table class="ui table selectable celled" style="max-width: 60em">
+	<thead class="full-width">
+		<tr>
+			<th style="width:10em">记录名</th>
+			<th style="width:7em">记录类型</th>
+			<th>线路</th>
+			<th v-if="!isAddingRoutes">记录值</th>
+			<th v-if="!isAddingRoutes">TTL</th>
+			<th class="one op" v-if="!isAddingRoutes">操作</th>
+		</tr>
+	</thead>
+	<tr v-for="(record, index) in records" :key="record.index">
+		<td>
+			<input type="text" style="width:10em" v-model="record.name" ref="nameInputs"/>		
+		</td>
+		<td>
+			<select class="ui dropdown auto-width" v-model="record.type">
+				<option v-for="type in types" :value="type.type">{{type.type}}</option>
+			</select>
+		</td>
+		<td>
+			<ns-routes-selector @add="addRoutes" @cancel="cancelRoutes" @change="changeRoutes(record, $event)"></ns-routes-selector>
+		</td>
+		<td v-if="!isAddingRoutes">
+		  <input type="text" style="width:10em" maxlength="512" v-model="record.value"/>
+		</td>
+		<td v-if="!isAddingRoutes">
+			<div class="ui input right labeled">
+				<input type="text" v-model="record.ttl" style="width:5em" maxlength="8"/>
+				<span class="ui label">秒</span>
+			</div>
+		</td>
+		<td v-if="!isAddingRoutes">
+			<a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove"></i></a>
+		</td>
+	</tr>
+</table>
+<button class="ui button tiny" type="button" @click.prevent="add">+</button>
 </div>`}),Vue.component("ns-route-selector",{props:["v-route-code"],mounted:function(){let t=this;Tea.action("/ns/routes/options").post().success(function(e){t.routes=e.data.routes})},data:function(){let e=this.vRouteCode;return{routeCode:e=null==e?"":e,routes:[]}},template:`<div>
 	<div v-if="routes.length > 0">
 		<select class="ui dropdown" name="routeCode" v-model="routeCode">
