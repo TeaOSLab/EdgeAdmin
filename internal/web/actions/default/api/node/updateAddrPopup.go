@@ -5,6 +5,9 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"net"
+	"net/url"
+	"regexp"
+	"strings"
 )
 
 type UpdateAddrPopupAction struct {
@@ -27,6 +30,26 @@ func (this *UpdateAddrPopupAction) RunPost(params struct {
 	params.Must.
 		Field("addr", params.Addr).
 		Require("请输入访问地址")
+
+	// 兼容URL
+	if regexp.MustCompile(`^(?i)(http|https)://`).MatchString(params.Addr) {
+		u, err := url.Parse(params.Addr)
+		if err != nil {
+			this.FailField("addr", "错误的访问地址，不需要添加http://或https://")
+		}
+		params.Addr = u.Host
+	}
+
+	// 自动添加端口
+	if !strings.Contains(params.Addr, ":") {
+		switch params.Protocol {
+		case "http":
+			params.Addr += ":80"
+		case "https":
+			params.Addr += ":443"
+		}
+	}
+
 	host, port, err := net.SplitHostPort(params.Addr)
 	if err != nil {
 		this.FailField("addr", "错误的访问地址")
