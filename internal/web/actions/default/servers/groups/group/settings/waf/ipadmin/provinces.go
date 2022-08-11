@@ -46,15 +46,15 @@ func (this *ProvincesAction) RunGet(params struct {
 		selectedProvinceIds = policyConfig.Inbound.Region.DenyProvinceIds
 	}
 
-	provincesResp, err := this.RPC().RegionProvinceRPC().FindAllEnabledRegionProvincesWithCountryId(this.AdminContext(), &pb.FindAllEnabledRegionProvincesWithCountryIdRequest{
-		CountryId: int64(ChinaCountryId),
+	provincesResp, err := this.RPC().RegionProvinceRPC().FindAllRegionProvincesWithCountryId(this.AdminContext(), &pb.FindAllRegionProvincesWithCountryIdRequest{
+		RegionCountryId: int64(ChinaCountryId),
 	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 	provinceMaps := []maps.Map{}
-	for _, province := range provincesResp.Provinces {
+	for _, province := range provincesResp.RegionProvinces {
 		provinceMaps = append(provinceMaps, maps.Map{
 			"id":        province.Id,
 			"name":      province.Name,

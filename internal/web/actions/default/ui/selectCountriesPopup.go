@@ -23,7 +23,7 @@ func (this *SelectCountriesPopupAction) RunGet(params struct {
 }) {
 	var selectedCountryIds = utils.SplitNumbers(params.CountryIds)
 
-	countriesResp, err := this.RPC().RegionCountryRPC().FindAllEnabledRegionCountries(this.AdminContext(), &pb.FindAllEnabledRegionCountriesRequest{})
+	countriesResp, err := this.RPC().RegionCountryRPC().FindAllRegionCountries(this.AdminContext(), &pb.FindAllRegionCountriesRequest{})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -50,7 +50,7 @@ func (this *SelectCountriesPopupAction) RunPost(params struct {
 }) {
 	var countryMaps = []maps.Map{}
 	for _, countryId := range params.CountryIds {
-		countryResp, err := this.RPC().RegionCountryRPC().FindEnabledRegionCountry(this.AdminContext(), &pb.FindEnabledRegionCountryRequest{RegionCountryId: countryId})
+		countryResp, err := this.RPC().RegionCountryRPC().FindRegionCountry(this.AdminContext(), &pb.FindRegionCountryRequest{RegionCountryId: countryId})
 		if err != nil {
 			this.ErrorPage(err)
 			return

@@ -13,7 +13,7 @@ type CityOptionsAction struct {
 }
 
 func (this *CityOptionsAction) RunPost(params struct{}) {
-	citiesResp, err := this.RPC().RegionCityRPC().FindAllEnabledRegionCities(this.AdminContext(), &pb.FindAllEnabledRegionCitiesRequest{
+	citiesResp, err := this.RPC().RegionCityRPC().FindAllRegionCities(this.AdminContext(), &pb.FindAllRegionCitiesRequest{
 		IncludeRegionProvince: true,
 	})
 	if err != nil {

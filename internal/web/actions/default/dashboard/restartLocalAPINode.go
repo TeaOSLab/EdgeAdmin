@@ -43,6 +43,9 @@ func (this *RestartLocalAPINodeAction) RunPost(params struct {
 		}
 	}
 
+	// 停止1秒等待命令运行完毕
+	time.Sleep(1 * time.Second)
+
 	// 检查是否已启动
 	var countTries = 120
 	for {

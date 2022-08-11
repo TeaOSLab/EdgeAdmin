@@ -1,8 +1,9 @@
+//go:build !plus
+
 package settingutils
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
-	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/iwind/TeaGo/actions"
 )
@@ -20,23 +21,19 @@ func NewHelper(tab string) *Helper {
 func (this *Helper) BeforeAction(actionPtr actions.ActionWrapper) (goNext bool) {
 	goNext = true
 
-	action := actionPtr.Object()
+	var action = actionPtr.Object()
 
 	// 左侧菜单
 	action.Data["teaMenu"] = "settings"
 
 	// 标签栏
-	tabbar := actionutils.NewTabbar()
+	var tabbar = actionutils.NewTabbar()
 	var session = action.Session()
 	var adminId = session.GetInt64("adminId")
 	if configloaders.AllowModule(adminId, configloaders.AdminModuleCodeSetting) {
 		tabbar.Add("Web服务", "", "/settings/server", "", this.tab == "server")
 		tabbar.Add("管理界面设置", "", "/settings/ui", "", this.tab == "ui")
-		if teaconst.IsPlus {
-			tabbar.Add("用户界面设置", "", "/settings/user-ui", "", this.tab == "userUI")
-		}
 		tabbar.Add("安全设置", "", "/settings/security", "", this.tab == "security")
-		//tabbar.Add("IP库", "", "/settings/ip-library", "", this.tab == "ipLibrary")
 		tabbar.Add("检查更新", "", "/settings/updates", "", this.tab == "updates")
 	}
 	tabbar.Add("个人资料", "", "/settings/profile", "", this.tab == "profile")
