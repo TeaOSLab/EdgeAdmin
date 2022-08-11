@@ -46,7 +46,7 @@ func (this *CountriesAction) RunGet(params struct {
 		selectedCountryIds = policyConfig.Inbound.Region.DenyCountryIds
 	}
 
-	countriesResp, err := this.RPC().RegionCountryRPC().FindAllEnabledRegionCountries(this.AdminContext(), &pb.FindAllEnabledRegionCountriesRequest{})
+	countriesResp, err := this.RPC().RegionCountryRPC().FindAllRegionCountries(this.AdminContext(), &pb.FindAllRegionCountriesRequest{})
 	if err != nil {
 		this.ErrorPage(err)
 		return

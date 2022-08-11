@@ -22,14 +22,14 @@ func NewAdvancedHelper(tab string) *AdvancedHelper {
 func (this *AdvancedHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext bool) {
 	goNext = true
 
-	action := actionPtr.Object()
+	var action = actionPtr.Object()
 
 	// 左侧菜单
 	action.Data["teaMenu"] = "settings"
 	action.Data["teaSubMenu"] = "advanced"
 
 	// 标签栏
-	tabbar := actionutils.NewTabbar()
+	var tabbar = actionutils.NewTabbar()
 	var session = action.Session()
 	var adminId = session.GetInt64("adminId")
 	if configloaders.AllowModule(adminId, configloaders.AdminModuleCodeSetting) {

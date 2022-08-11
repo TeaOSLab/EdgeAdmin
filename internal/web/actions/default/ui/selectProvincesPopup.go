@@ -24,7 +24,7 @@ func (this *SelectProvincesPopupAction) RunGet(params struct {
 }) {
 	var selectedProvinceIds = utils.SplitNumbers(params.ProvinceIds)
 
-	provincesResp, err := this.RPC().RegionProvinceRPC().FindAllEnabledRegionProvincesWithCountryId(this.AdminContext(), &pb.FindAllEnabledRegionProvincesWithCountryIdRequest{RegionCountryId: ChinaCountryId})
+	provincesResp, err := this.RPC().RegionProvinceRPC().FindAllRegionProvincesWithCountryId(this.AdminContext(), &pb.FindAllRegionProvincesWithCountryIdRequest{RegionCountryId: ChinaCountryId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -50,7 +50,7 @@ func (this *SelectProvincesPopupAction) RunPost(params struct {
 }) {
 	var provinceMaps = []maps.Map{}
 	for _, provinceId := range params.ProvinceIds {
-		provinceResp, err := this.RPC().RegionProvinceRPC().FindEnabledRegionProvince(this.AdminContext(), &pb.FindEnabledRegionProvinceRequest{RegionProvinceId: provinceId})
+		provinceResp, err := this.RPC().RegionProvinceRPC().FindRegionProvince(this.AdminContext(), &pb.FindRegionProvinceRequest{RegionProvinceId: provinceId})
 		if err != nil {
 			this.ErrorPage(err)
 			return

@@ -212,7 +212,9 @@ Tea.context(function () {
 			})
 			.timeout(300)
 			.success(function () {
-				teaweb.reload()
+				this.$delay(function () {
+					teaweb.reload()
+				}, 5000)
 			})
 			.done(function () {
 				this.isRestartingLocalAPINode = false

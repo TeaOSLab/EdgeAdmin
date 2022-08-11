@@ -42,7 +42,7 @@ func (this *ProvincesAction) RunGet(params struct {
 		selectedProvinceIds = policyConfig.Inbound.Region.DenyProvinceIds
 	}
 
-	provincesResp, err := this.RPC().RegionProvinceRPC().FindAllEnabledRegionProvincesWithCountryId(this.AdminContext(), &pb.FindAllEnabledRegionProvincesWithCountryIdRequest{
+	provincesResp, err := this.RPC().RegionProvinceRPC().FindAllRegionProvincesWithCountryId(this.AdminContext(), &pb.FindAllRegionProvincesWithCountryIdRequest{
 		RegionCountryId: int64(ChinaCountryId),
 	})
 	if err != nil {

@@ -31,7 +31,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 	// 国家和地区
 	var countryMaps = []maps.Map{}
 	for _, countryId := range config.AllowCountryIds {
-		countryResp, err := this.RPC().RegionCountryRPC().FindEnabledRegionCountry(this.AdminContext(), &pb.FindEnabledRegionCountryRequest{RegionCountryId: countryId})
+		countryResp, err := this.RPC().RegionCountryRPC().FindRegionCountry(this.AdminContext(), &pb.FindRegionCountryRequest{RegionCountryId: countryId})
 		if err != nil {
 			this.ErrorPage(err)
 			return
@@ -49,7 +49,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 	// 省份
 	var provinceMaps = []maps.Map{}
 	for _, provinceId := range config.AllowProvinceIds {
-		provinceResp, err := this.RPC().RegionProvinceRPC().FindEnabledRegionProvince(this.AdminContext(), &pb.FindEnabledRegionProvinceRequest{RegionProvinceId: provinceId})
+		provinceResp, err := this.RPC().RegionProvinceRPC().FindRegionProvince(this.AdminContext(), &pb.FindRegionProvinceRequest{RegionProvinceId: provinceId})
 		if err != nil {
 			this.ErrorPage(err)
 			return

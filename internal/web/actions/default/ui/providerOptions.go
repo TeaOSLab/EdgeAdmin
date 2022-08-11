@@ -13,7 +13,7 @@ type ProviderOptionsAction struct {
 }
 
 func (this *ProviderOptionsAction) RunPost(params struct{}) {
-	providersResp, err := this.RPC().RegionProviderRPC().FindAllEnabledRegionProviders(this.AdminContext(), &pb.FindAllEnabledRegionProvidersRequest{})
+	providersResp, err := this.RPC().RegionProviderRPC().FindAllRegionProviders(this.AdminContext(), &pb.FindAllRegionProvidersRequest{})
 	if err != nil {
 		this.ErrorPage(err)
 		return
