@@ -109,26 +109,38 @@ func (this *APIConfig) WriteFile(path string) error {
 		return err
 	}
 
+	err = os.WriteFile(path, data, 0666)
+	if err != nil {
+		return err
+	}
+
 	// 写入 ~/ 和 /etc/ 目录，因为是备份需要，所以不需要提示错误信息
 	// 写入 ~/.edge-admin/
-	filename := filepath.Base(path)
+	// 这个用来判断用户是否为重装，所以比较重要
+	var filename = filepath.Base(path)
 	homeDir, homeErr := os.UserHomeDir()
 	if homeErr == nil {
 		dir := homeDir + "/." + teaconst.ProcessName
 		stat, err := os.Stat(dir)
 		if err == nil && stat.IsDir() {
-			_ = os.WriteFile(dir+"/"+filename, data, 0666)
+			err = os.WriteFile(dir+"/"+filename, data, 0666)
+			if err != nil {
+				return err
+			}
 		} else if err != nil && os.IsNotExist(err) {
 			err = os.Mkdir(dir, 0777)
 			if err == nil {
-				_ = os.WriteFile(dir+"/"+filename, data, 0666)
+				err = os.WriteFile(dir+"/"+filename, data, 0666)
+				if err != nil {
+					return err
+				}
 			}
 		}
 	}
 
 	// 写入 /etc/edge-admin
 	{
-		dir := "/etc/" + teaconst.ProcessName
+		var dir = "/etc/" + teaconst.ProcessName
 		stat, err := os.Stat(dir)
 		if err == nil && stat.IsDir() {
 			_ = os.WriteFile(dir+"/"+filename, data, 0666)
@@ -138,11 +150,6 @@ func (this *APIConfig) WriteFile(path string) error {
 				_ = os.WriteFile(dir+"/"+filename, data, 0666)
 			}
 		}
-	}
-
-	err = os.WriteFile(path, data, 0666)
-	if err != nil {
-		return err
 	}
 
 	return nil
