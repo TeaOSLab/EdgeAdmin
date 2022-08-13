@@ -1,12 +1,17 @@
 Vue.component("values-box", {
-	props: ["values", "size", "maxlength", "name", "placeholder"],
+	props: ["values", "v-values", "size", "maxlength", "name", "placeholder"],
 	data: function () {
 		let values = this.values;
 		if (values == null) {
 			values = [];
 		}
+
+		if (this.vValues != null && typeof this.vValues == "object") {
+			values = this.vValues
+		}
+
 		return {
-			"vValues": values,
+			"realValues": values,
 			"isUpdating": false,
 			"isAdding": false,
 			"index": 0,
@@ -26,7 +31,7 @@ Vue.component("values-box", {
 			this.cancel()
 			this.isUpdating = true;
 			this.index = index;
-			this.value = this.vValues[index];
+			this.value = this.realValues[index];
 			var that = this;
 			setTimeout(function () {
 				that.$refs.value.focus();
@@ -38,16 +43,16 @@ Vue.component("values-box", {
 			}
 
 			if (this.isUpdating) {
-				Vue.set(this.vValues, this.index, this.value);
+				Vue.set(this.realValues, this.index, this.value);
 			} else {
-				this.vValues.push(this.value);
+				this.realValues.push(this.value);
 			}
 			this.cancel()
-			this.$emit("change", this.vValues)
+			this.$emit("change", this.realValues)
 		},
 		remove: function (index) {
-			this.vValues.$remove(index)
-			this.$emit("change", this.vValues)
+			this.realValues.$remove(index)
+			this.$emit("change", this.realValues)
 		},
 		cancel: function () {
 			this.isUpdating = false;
@@ -55,10 +60,10 @@ Vue.component("values-box", {
 			this.value = "";
 		},
 		updateAll: function (values) {
-			this.vValeus = values
+			this.realValues = values
 		},
 		addValue: function (v) {
-			this.vValues.push(v)
+			this.realValues.push(v)
 		},
 
 		startEditing: function () {
@@ -66,13 +71,13 @@ Vue.component("values-box", {
 		}
 	},
 	template: `<div>
-	<div v-show="!isEditing && vValues.length > 0">
-		<div class="ui label tiny basic" v-for="(value, index) in vValues" style="margin-top:0.4em;margin-bottom:0.4em">{{value}}</div>
+	<div v-show="!isEditing && realValues.length > 0">
+		<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">{{value}}</div>
 		<a href="" @click.prevent="startEditing" style="font-size: 0.8em; margin-left: 0.2em">[修改]</a>
 	</div>
-	<div v-show="isEditing || vValues.length == 0">
-		<div style="margin-bottom: 1em" v-if="vValues.length > 0">
-			<div class="ui label tiny basic" v-for="(value, index) in vValues" style="margin-top:0.4em;margin-bottom:0.4em">{{value}}
+	<div v-show="isEditing || realValues.length == 0">
+		<div style="margin-bottom: 1em" v-if="realValues.length > 0">
+			<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">{{value}}
 				<input type="hidden" :name="name" :value="value"/>
 				&nbsp; <a href="" @click.prevent="update(index)" title="修改"><i class="icon pencil small" ></i></a> 
 				<a href="" @click.prevent="remove(index)" title="删除"><i class="icon remove"></i></a> 
