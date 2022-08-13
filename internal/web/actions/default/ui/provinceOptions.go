@@ -13,7 +13,7 @@ type ProvinceOptionsAction struct {
 }
 
 func (this *ProvinceOptionsAction) RunPost(params struct{}) {
-	provincesResp, err := this.RPC().RegionProvinceRPC().FindAllRegionProvincesWithCountryId(this.AdminContext(), &pb.FindAllRegionProvincesWithCountryIdRequest{RegionCountryId: ChinaCountryId})
+	provincesResp, err := this.RPC().RegionProvinceRPC().FindAllRegionProvincesWithRegionCountryId(this.AdminContext(), &pb.FindAllRegionProvincesWithRegionCountryIdRequest{RegionCountryId: ChinaCountryId})
 	if err != nil {
 		this.ErrorPage(err)
 		return

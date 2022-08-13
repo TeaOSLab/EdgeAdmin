@@ -24,7 +24,7 @@ func (this *SelectProvincesPopupAction) RunGet(params struct {
 }) {
 	var selectedProvinceIds = utils.SplitNumbers(params.ProvinceIds)
 
-	provincesResp, err := this.RPC().RegionProvinceRPC().FindAllRegionProvincesWithCountryId(this.AdminContext(), &pb.FindAllRegionProvincesWithCountryIdRequest{RegionCountryId: ChinaCountryId})
+	provincesResp, err := this.RPC().RegionProvinceRPC().FindAllRegionProvincesWithRegionCountryId(this.AdminContext(), &pb.FindAllRegionProvincesWithRegionCountryIdRequest{RegionCountryId: ChinaCountryId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
