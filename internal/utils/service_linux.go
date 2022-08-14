@@ -1,4 +1,4 @@
-// +build linux
+//go:build linux
 
 package utils
 
@@ -15,7 +15,7 @@ import (
 var systemdServiceFile = "/etc/systemd/system/edge-admin.service"
 var initServiceFile = "/etc/init.d/" + teaconst.SystemdServiceName
 
-// 安装服务
+// Install 安装服务
 func (this *ServiceManager) Install(exePath string, args []string) error {
 	if os.Getgid() != 0 {
 		return errors.New("only root users can install the service")
@@ -29,7 +29,7 @@ func (this *ServiceManager) Install(exePath string, args []string) error {
 	return this.installSystemdService(systemd, exePath, args)
 }
 
-// 启动服务
+// Start 启动服务
 func (this *ServiceManager) Start() error {
 	if os.Getgid() != 0 {
 		return errors.New("only root users can start the service")
@@ -46,7 +46,7 @@ func (this *ServiceManager) Start() error {
 	return exec.Command("service", teaconst.ProcessName, "start").Start()
 }
 
-// 删除服务
+// Uninstall 删除服务
 func (this *ServiceManager) Uninstall() error {
 	if os.Getgid() != 0 {
 		return errors.New("only root users can uninstall the service")

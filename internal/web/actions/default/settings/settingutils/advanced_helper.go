@@ -1,5 +1,4 @@
 //go:build !plus
-// +build !plus
 
 package settingutils
 

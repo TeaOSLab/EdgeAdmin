@@ -348,6 +348,10 @@ func (this *RPCClient) RegionCityRPC() pb.RegionCityServiceClient {
 	return pb.NewRegionCityServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) RegionTownRPC() pb.RegionTownServiceClient {
+	return pb.NewRegionTownServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) RegionProviderRPC() pb.RegionProviderServiceClient {
 	return pb.NewRegionProviderServiceClient(this.pickConn())
 }
