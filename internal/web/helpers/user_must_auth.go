@@ -22,6 +22,22 @@ import (
 var nodeLogsCountChanges = make(chan bool, 1)
 var ipItemsCountChanges = make(chan bool, 1)
 
+func NotifyNodeLogsCountChange() {
+	select {
+	case nodeLogsCountChanges <- true:
+	default:
+
+	}
+}
+
+func NotifyIPItemsCountChanges() {
+	select {
+	case ipItemsCountChanges <- true:
+	default:
+
+	}
+}
+
 // 运行日志
 var countUnreadNodeLogs int64 = 0
 var nodeLogsType = ""
