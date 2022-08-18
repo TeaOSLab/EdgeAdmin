@@ -9,6 +9,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dashboard/dashboardutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/maps"
@@ -25,6 +26,10 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct{}) {
+	// 通知菜单数字Badge更新
+	helpers.NotifyIPItemsCountChanges()
+	helpers.NotifyNodeLogsCountChange()
+
 	if teaconst.IsPlus {
 		this.RedirectURL("/dashboard/boards")
 		return
