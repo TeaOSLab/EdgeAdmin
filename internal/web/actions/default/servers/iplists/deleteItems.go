@@ -4,6 +4,7 @@ package iplists
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/types"
 	"strings"
@@ -32,6 +33,9 @@ func (this *DeleteItemsAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
+
+	// 通知左侧菜单Badge更新
+	helpers.NotifyIPItemsCountChanges()
 
 	this.Success()
 }
