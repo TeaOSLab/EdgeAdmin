@@ -561,6 +561,7 @@ window.teaweb = {
 
 		let chartBox = document.getElementById(chartId)
 		if (chartBox == null) {
+			console.error("chart id '" + chartId + "' not found")
 			return
 		}
 		let chart = this.initChart(chartBox)
