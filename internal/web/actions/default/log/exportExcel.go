@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
-	"github.com/iwind/TeaGo/lists"
 	timeutil "github.com/iwind/TeaGo/utils/time"
 	"github.com/tealeg/xlsx/v3"
 	"strconv"
@@ -69,17 +68,13 @@ func (this *ExportExcelAction) RunGet(params struct {
 			return
 		}
 		if regionResp.IpRegion != nil {
-			pieces := []string{}
-			if len(regionResp.IpRegion.Country) > 0 {
-				pieces = append(pieces, regionResp.IpRegion.Country)
+			regionName = regionResp.IpRegion.Summary
+
+			// remove isp from regionName
+			var index = strings.LastIndex(regionName, "|")
+			if index > 0 {
+				regionName = regionName[:index]
 			}
-			if len(regionResp.IpRegion.Province) > 0 && !lists.ContainsString(pieces, regionResp.IpRegion.Province) {
-				pieces = append(pieces, regionResp.IpRegion.Province)
-			}
-			if len(regionResp.IpRegion.City) > 0 && !lists.ContainsString(pieces, regionResp.IpRegion.City) && !lists.ContainsString(pieces, strings.TrimSuffix(regionResp.IpRegion.Province, "市")) {
-				pieces = append(pieces, regionResp.IpRegion.City)
-			}
-			regionName = strings.Join(pieces, " ")
 
 			if len(regionResp.IpRegion.Isp) > 0 {
 				ispName = regionResp.IpRegion.Isp

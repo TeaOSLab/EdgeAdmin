@@ -93,8 +93,16 @@ func (this *ViewPopupAction) RunGet(params struct {
 	}
 	region := regionResp.IpRegion
 	if region != nil {
+		var regionName = region.Summary
+
+		// remove isp from regionName
+		var index = strings.LastIndex(regionName, "|")
+		if index > 0 {
+			regionName = regionName[:index]
+		}
+
 		regionMap = maps.Map{
-			"full": region.Summary,
+			"full": regionName,
 			"isp":  region.Isp,
 		}
 	}
