@@ -4,10 +4,8 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
-	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
-	"strings"
 )
 
 type IndexAction struct {
@@ -72,11 +70,7 @@ func (this *IndexAction) RunGet(params struct {
 			return
 		}
 		if regionResp.IpRegion != nil {
-			pieces := []string{regionResp.IpRegion.Summary}
-			if len(regionResp.IpRegion.Isp) > 0 && !lists.ContainsString(pieces, regionResp.IpRegion.Isp) {
-				pieces = append(pieces, "| "+regionResp.IpRegion.Isp)
-			}
-			regionName = strings.Join(pieces, " ")
+			regionName = regionResp.IpRegion.Summary
 		}
 
 		logMaps = append(logMaps, maps.Map{

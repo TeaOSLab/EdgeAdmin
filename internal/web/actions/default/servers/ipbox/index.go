@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
+	"strings"
 	"time"
 )
 
@@ -30,7 +31,14 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 	if regionResp.IpRegion != nil {
-		this.Data["regions"] = regionResp.IpRegion.Summary
+		var regionName = regionResp.IpRegion.Summary
+
+		// remove isp from regionName
+		var index = strings.LastIndex(regionName, "|")
+		if index > 0 {
+			regionName = regionName[:index]
+		}
+		this.Data["regions"] = regionName
 	} else {
 		this.Data["regions"] = ""
 	}

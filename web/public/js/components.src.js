@@ -12764,6 +12764,9 @@ Vue.component("values-box", {
 
 		startEditing: function () {
 			this.isEditing = !this.isEditing
+		},
+		allValues: function () {
+			return this.realValues
 		}
 	},
 	template: `<div>
