@@ -427,6 +427,66 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		</tbody>
 	</table>
 	<div class="margin"></div>
+</div>`}),Vue.component("ns-node-ddos-protection-config-box",{props:["v-ddos-protection-config","v-default-configs","v-is-node","v-cluster-is-on"],data:function(){let e=this.vDdosProtectionConfig;return null==(e=null==e?{tcp:{isPrior:!1,isOn:!1,maxConnections:0,maxConnectionsPerIP:0,newConnectionsRate:0,allowIPList:[],ports:[]}}:e).tcp&&(e.tcp={isPrior:!1,isOn:!1,maxConnections:0,maxConnectionsPerIP:0,newConnectionsRate:0,allowIPList:[],ports:[]}),{config:e,defaultConfigs:this.vDefaultConfigs,isNode:this.vIsNode,isAddingPort:!1}},methods:{changeTCPPorts:function(e){this.config.tcp.ports=e},changeTCPAllowIPList:function(e){this.config.tcp.allowIPList=e}},template:`<div>
+ <input type="hidden" name="ddosProtectionJSON" :value="JSON.stringify(config)"/>
+
+ <p class="comment">功能说明：此功能为<strong>试验性质</strong>，目前仅能防御简单的DDoS攻击，试验期间建议仅在被攻击时启用，仅支持已安装<code-label>nftables v0.9</code-label>以上的Linux系统。<pro-warning-label></pro-warning-label></p>
+
+ <div class="ui message" v-if="vClusterIsOn">当前节点所在集群已设置DDoS防护。</div>
+
+ <h4>TCP设置</h4>
+ <table class="ui table definition selectable">
+ 	<prior-checkbox :v-config="config.tcp" v-if="isNode"></prior-checkbox>
+ 	<tbody v-show="config.tcp.isPrior || !isNode">
+		<tr>
+			<td class="title">启用</td>
+			<td>
+				<checkbox v-model="config.tcp.isOn"></checkbox>
+			</td>
+		</tr>
+	</tbody>
+	<tbody v-show="config.tcp.isOn && (config.tcp.isPrior || !isNode)">
+		<tr>
+			<td class="title">单节点TCP最大连接数</td>
+			<td>
+				<digit-input name="tcpMaxConnections" v-model="config.tcp.maxConnections" maxlength="6" size="6" style="width: 6em"></digit-input>
+				<p class="comment">单个节点可以接受的TCP最大连接数。如果为0，则默认为{{defaultConfigs.tcpMaxConnections}}。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>单IP TCP最大连接数</td>
+			<td>
+				<digit-input name="tcpMaxConnectionsPerIP" v-model="config.tcp.maxConnectionsPerIP" maxlength="6" size="6" style="width: 6em"></digit-input>
+				<p class="comment">单个IP可以连接到节点的TCP最大连接数。如果为0，则默认为{{defaultConfigs.tcpMaxConnectionsPerIP}}；最小值为{{defaultConfigs.tcpMinConnectionsPerIP}}。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>单IP TCP新连接速率</td>
+			<td>
+				<div class="ui input right labeled">
+					<digit-input name="tcpNewConnectionsRate" v-model="config.tcp.newConnectionsRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpNewConnectionsMinRate"></digit-input>
+					<span class="ui label">个新连接/每分钟</span>
+				</div>
+				<p class="comment">单个IP可以创建TCP新连接的速率。如果为0，则默认为{{defaultConfigs.tcpNewConnectionsRate}}；最小值为{{defaultConfigs.tcpNewConnectionsMinRate}}。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>TCP端口列表</td>
+			<td>
+				<ddos-protection-ports-config-box :v-ports="config.tcp.ports" @change="changeTCPPorts"></ddos-protection-ports-config-box>
+				<p class="comment">在这些端口上使用当前配置。默认为53端口。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>IP白名单</td>
+			<td>
+				<ddos-protection-ip-list-config-box :v-ip-list="config.tcp.allowIPList" @change="changeTCPAllowIPList"></ddos-protection-ip-list-config-box>
+				<p class="comment">在白名单中的IP不受当前设置的限制。</p>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<div class="margin"></div>
 </div>`}),Vue.component("ns-route-ranges-box",{props:["v-ranges"],data:function(){let e=this.vRanges;return{ranges:e=null==e?[]:e,isAdding:!1,isAddingBatch:!1,rangeType:"ipRange",isReverse:!1,ipRangeFrom:"",ipRangeTo:"",batchIPRange:"",ipCIDR:"",batchIPCIDR:"",regions:[],regionType:"country"}},methods:{addIPRange:function(){this.isAdding=!0;let e=this;setTimeout(function(){e.$refs.ipRangeFrom.focus()},100)},addCIDR:function(){this.isAdding=!0;let e=this;setTimeout(function(){e.$refs.ipCIDR.focus()},100)},addRegions:function(){this.isAdding=!0},addRegion:function(e){this.regionType=e},remove:function(e){this.ranges.$remove(e)},cancelIPRange:function(){this.isAdding=!1,this.ipRangeFrom="",this.ipRangeTo="",this.isReverse=!1},cancelIPCIDR:function(){this.isAdding=!1,this.ipCIDR="",this.isReverse=!1},cancelRegions:function(){this.isAdding=!1,this.regions=[],this.regionType="country",this.isReverse=!1},confirmIPRange:function(){let e=this;this.ipRangeFrom=this.ipRangeFrom.trim(),this.validateIP(this.ipRangeFrom)?(this.ipRangeTo=this.ipRangeTo.trim(),this.validateIP(this.ipRangeTo)?(this.ranges.push({type:"ipRange",params:{ipFrom:this.ipRangeFrom,ipTo:this.ipRangeTo,isReverse:this.isReverse}}),this.cancelIPRange()):teaweb.warn("结束IP填写错误",function(){e.$refs.ipRangeTo.focus()})):teaweb.warn("开始IP填写错误",function(){e.$refs.ipRangeFrom.focus()})},confirmIPCIDR:function(){let e=this;0==this.ipCIDR.length?teaweb.warn("请填写CIDR",function(){e.$refs.ipCIDR.focus()}):this.validateCIDR(this.ipCIDR)?(this.ranges.push({type:"cidr",params:{cidr:this.ipCIDR,isReverse:this.isReverse}}),this.cancelIPCIDR()):teaweb.warn("请输入正确的CIDR",function(){e.$refs.ipCIDR.focus()})},confirmRegions:function(){0==this.regions.length||this.ranges.push({type:"region",params:{regions:this.regions,isReverse:this.isReverse}}),this.cancelRegions()},addBatchIPRange:function(){this.isAddingBatch=!0;let e=this;setTimeout(function(){e.$refs.batchIPRange.focus()},100)},addBatchCIDR:function(){this.isAddingBatch=!0;let e=this;setTimeout(function(){e.$refs.batchIPCIDR.focus()},100)},cancelBatchIPRange:function(){this.isAddingBatch=!1,this.batchIPRange="",this.isReverse=!1},cancelBatchIPCIDR:function(){this.isAddingBatch=!1,this.batchIPCIDR="",this.isReverse=!1},confirmBatchIPRange:function(){let a=this,e=this.batchIPRange;if(0==e.length)teaweb.warn("请填写要加入的IP范围",function(){a.$refs.batchIPRange.focus()});else{let n=[],o="";e.split("\n").forEach(function(t){if(0!=(t=t.trim()).length){let e=(t=t.replace("，",",")).split(",");var i,s;2!=e.length?o=t:(i=e[0].trim(),s=e[1].trim(),a.validateIP(i)&&a.validateIP(s)?n.push({type:"ipRange",params:{ipFrom:i,ipTo:s,isReverse:a.isReverse}}):o=t)}}),0<o.length?teaweb.warn("'"+o+"'格式错误",function(){a.$refs.batchIPRange.focus()}):(n.forEach(function(e){a.ranges.push(e)}),this.cancelBatchIPRange())}},confirmBatchIPCIDR:function(){let n=this,e=this.batchIPCIDR;if(0==e.length)teaweb.warn("请填写要加入的CIDR",function(){n.$refs.batchIPCIDR.focus()});else{let i=[],s="";e.split("\n").forEach(function(e){var t=e.trim();0!=t.length&&(n.validateCIDR(t)?i.push({type:"cidr",params:{cidr:t,isReverse:n.isReverse}}):s=e)}),0<s.length?teaweb.warn("'"+s+"'格式错误",function(){n.$refs.batchIPCIDR.focus()}):(i.forEach(function(e){n.ranges.push(e)}),this.cancelBatchIPCIDR())}},selectRegionCountry:function(e){null!=e&&(this.regions.push({type:"country",id:e.id,name:e.name}),this.$refs.regionCountryComboBox.clear())},selectRegionProvince:function(e){null!=e&&(this.regions.push({type:"province",id:e.id,name:e.name}),this.$refs.regionProvinceComboBox.clear())},selectRegionCity:function(e){null!=e&&(this.regions.push({type:"city",id:e.id,name:e.name}),this.$refs.regionCityComboBox.clear())},selectRegionProvider:function(e){null!=e&&(this.regions.push({type:"provider",id:e.id,name:e.name}),this.$refs.regionProviderComboBox.clear())},removeRegion:function(e){this.regions.$remove(e)},validateIP:function(i){if(0!=i.length){if(0<=i.indexOf(":")){let e=i.split(":");if(8<e.length)return!1;let t=!0;return e.forEach(function(e){/^[\da-fA-F]{0,4}$/.test(e)||(t=!1)}),t}if(!i.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/))return!1;let e=i.split("."),t=!0;return e.forEach(function(e){255<parseInt(e)&&(t=!1)}),t}},validateCIDR:function(e){var t=e.split("/");if(2!=t.length)return!1;var i=t[0];if(!this.validateIP(i))return!1;i=t[1];return!!/^\d{1,3}$/.test(i)&&(i=parseInt(i,10),0<=e.indexOf(":")?i<=128:i<=32)},updateRangeType:function(e){this.rangeType=e}},template:`<div>
 	<input type="hidden" name="rangesJSON" :value="JSON.stringify(ranges)"/>
 	<div v-if="ranges.length > 0">
