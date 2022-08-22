@@ -2860,7 +2860,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		状态码：{{options.statusCode}} / 提示内容：<span v-if="options.body != null && options.body.length > 0">[{{options.body.length}}字符]</span><span v-else class="disabled">[无]</span>  / 超时时间：{{options.timeout}}秒
 	</div>
 </div>	
-`}),Vue.component("http-access-log-config-box",{props:["v-access-log-config","v-fields","v-default-field-codes","v-is-location","v-is-group"],data:function(){let t=this,i=(setTimeout(function(){t.changeFields()},100),{isPrior:!1,isOn:!1,fields:[1,2,6,7],status1:!0,status2:!0,status3:!0,status4:!0,status5:!0,firewallOnly:!1,enableClientClosed:!1});return null!=this.vAccessLogConfig&&(i=this.vAccessLogConfig),this.vFields.forEach(function(e){null==t.vAccessLogConfig?e.isChecked=t.vDefaultFieldCodes.$contains(e.code):e.isChecked=i.fields.$contains(e.code)}),{accessLog:i,hasRequestBodyField:this.vFields.$contains(8)}},methods:{changeFields:function(){this.accessLog.fields=this.vFields.filter(function(e){return e.isChecked}).map(function(e){return e.code}),this.hasRequestBodyField=this.accessLog.fields.$contains(8)}},template:`<div>
+`}),Vue.component("http-access-log-config-box",{props:["v-access-log-config","v-fields","v-default-field-codes","v-is-location","v-is-group"],data:function(){let t=this,i=(setTimeout(function(){t.changeFields()},100),{isPrior:!1,isOn:!1,fields:[1,2,6,7],status1:!0,status2:!0,status3:!0,status4:!0,status5:!0,firewallOnly:!1,enableClientClosed:!1});return null!=this.vAccessLogConfig&&(i=this.vAccessLogConfig),this.vFields.forEach(function(e){null==t.vAccessLogConfig?e.isChecked=t.vDefaultFieldCodes.$contains(e.code):e.isChecked=i.fields.$contains(e.code)}),{accessLog:i,hasRequestBodyField:this.vFields.$contains(8),showAdvancedOptions:!1}},methods:{changeFields:function(){this.accessLog.fields=this.vFields.filter(function(e){return e.isChecked}).map(function(e){return e.code}),this.hasRequestBodyField=this.accessLog.fields.$contains(8)},changeAdvanced:function(e){this.showAdvancedOptions=e}},template:`<div>
 	<input type="hidden" name="accessLogJSON" :value="JSON.stringify(accessLog)"/>
 	<table class="ui table definition selectable" :class="{'opacity-mask': this.accessLog.firewallOnly}">
 		<prior-checkbox :v-config="accessLog" v-if="vIsLocation || vIsGroup"></prior-checkbox>
@@ -2875,7 +2875,12 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				</td>
 			</tr>
 		</tbody>
-		<tbody  v-show="((!vIsLocation && !vIsGroup) || accessLog.isPrior) && accessLog.isOn">
+		<tbody v-show="((!vIsLocation && !vIsGroup) || accessLog.isPrior) && accessLog.isOn">
+			<tr>
+				<td colspan="2"><more-options-indicator @change="changeAdvanced"></more-options-indicator></td>
+			</tr>
+		</tbody>
+		<tbody v-show="((!vIsLocation && !vIsGroup) || accessLog.isPrior) && accessLog.isOn && showAdvancedOptions">
 			<tr>
 				<td>基础信息</td>
 				<td><p class="comment" style="padding-top: 0">默认记录客户端IP、请求URL等基础信息。</p></td>

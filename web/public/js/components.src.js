@@ -8412,7 +8412,8 @@ Vue.component("http-access-log-config-box", {
 
 		return {
 			accessLog: accessLog,
-			hasRequestBodyField: this.vFields.$contains(8)
+			hasRequestBodyField: this.vFields.$contains(8),
+			showAdvancedOptions: false
 		}
 	},
 	methods: {
@@ -8423,6 +8424,9 @@ Vue.component("http-access-log-config-box", {
 				return v.code
 			})
 			this.hasRequestBodyField = this.accessLog.fields.$contains(8)
+		},
+		changeAdvanced: function (v) {
+			this.showAdvancedOptions = v
 		}
 	},
 	template: `<div>
@@ -8440,7 +8444,12 @@ Vue.component("http-access-log-config-box", {
 				</td>
 			</tr>
 		</tbody>
-		<tbody  v-show="((!vIsLocation && !vIsGroup) || accessLog.isPrior) && accessLog.isOn">
+		<tbody v-show="((!vIsLocation && !vIsGroup) || accessLog.isPrior) && accessLog.isOn">
+			<tr>
+				<td colspan="2"><more-options-indicator @change="changeAdvanced"></more-options-indicator></td>
+			</tr>
+		</tbody>
+		<tbody v-show="((!vIsLocation && !vIsGroup) || accessLog.isPrior) && accessLog.isOn && showAdvancedOptions">
 			<tr>
 				<td>基础信息</td>
 				<td><p class="comment" style="padding-top: 0">默认记录客户端IP、请求URL等基础信息。</p></td>
