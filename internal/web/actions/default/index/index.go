@@ -58,7 +58,7 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["isUser"] = false
 	this.Data["menu"] = "signIn"
 
-	timestamp := fmt.Sprintf("%d", time.Now().Unix())
+	var timestamp = fmt.Sprintf("%d", time.Now().Unix())
 	this.Data["token"] = stringutil.Md5(TokenSalt+timestamp) + timestamp
 	this.Data["from"] = params.From
 
@@ -111,11 +111,11 @@ func (this *IndexAction) RunPost(params struct {
 	if len(params.Token) <= 32 {
 		this.Fail("请通过登录页面登录")
 	}
-	timestampString := params.Token[32:]
+	var timestampString = params.Token[32:]
 	if stringutil.Md5(TokenSalt+timestampString) != params.Token[:32] {
 		this.FailField("refresh", "登录页面已过期，请刷新后重试")
 	}
-	timestamp := types.Int64(timestampString)
+	var timestamp = types.Int64(timestampString)
 	if timestamp < time.Now().Unix()-1800 {
 		this.FailField("refresh", "登录页面已过期，请刷新后重试")
 	}
@@ -157,7 +157,7 @@ func (this *IndexAction) RunPost(params struct {
 		return
 	}
 	if otpLoginResp.Login != nil && otpLoginResp.Login.IsOn {
-		loginParams := maps.Map{}
+		var loginParams = maps.Map{}
 		err = json.Unmarshal(otpLoginResp.Login.ParamsJSON, &loginParams)
 		if err != nil {
 			this.ErrorPage(err)
@@ -169,7 +169,7 @@ func (this *IndexAction) RunPost(params struct {
 		}
 	}
 
-	adminId := resp.AdminId
+	var adminId = resp.AdminId
 	params.Auth.StoreAdmin(adminId, params.Remember)
 
 	// 记录日志
