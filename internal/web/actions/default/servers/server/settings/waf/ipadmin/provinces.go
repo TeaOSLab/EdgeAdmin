@@ -57,7 +57,7 @@ func (this *ProvincesAction) RunGet(params struct {
 	for _, province := range provincesResp.RegionProvinces {
 		provinceMaps = append(provinceMaps, maps.Map{
 			"id":        province.Id,
-			"name":      province.Name,
+			"name":      province.DisplayName,
 			"isChecked": lists.ContainsInt64(selectedProvinceIds, province.Id),
 		})
 	}

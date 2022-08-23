@@ -25,7 +25,7 @@ func (this *ProvinceOptionsAction) RunPost(params struct{}) {
 		}
 		provinceMaps = append(provinceMaps, maps.Map{
 			"id":    province.Id,
-			"name":  province.Name,
+			"name":  province.DisplayName,
 			"codes": province.Codes,
 		})
 	}
