@@ -323,6 +323,10 @@ func (this *RPCClient) IPLibraryFileRPC() pb.IPLibraryFileServiceClient {
 	return pb.NewIPLibraryFileServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) IPLibraryArtifactRPC() pb.IPLibraryArtifactServiceClient {
+	return pb.NewIPLibraryArtifactServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) IPListRPC() pb.IPListServiceClient {
 	return pb.NewIPListServiceClient(this.pickConn())
 }

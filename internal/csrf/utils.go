@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// 生成Token
+// Generate 生成Token
 func Generate() string {
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
 
@@ -23,7 +23,7 @@ func Generate() string {
 	return token
 }
 
-// 校验Token
+// Validate 校验Token
 func Validate(token string) (b bool) {
 	if len(token) == 0 {
 		return
