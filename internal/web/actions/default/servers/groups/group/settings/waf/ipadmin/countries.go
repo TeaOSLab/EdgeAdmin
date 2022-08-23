@@ -55,7 +55,7 @@ func (this *CountriesAction) RunGet(params struct {
 	for _, country := range countriesResp.RegionCountries {
 		countryMaps = append(countryMaps, maps.Map{
 			"id":        country.Id,
-			"name":      country.Name,
+			"name":      country.DisplayName,
 			"letter":    strings.ToUpper(string(country.Pinyin[0][0])),
 			"isChecked": lists.ContainsInt64(selectedCountryIds, country.Id),
 		})

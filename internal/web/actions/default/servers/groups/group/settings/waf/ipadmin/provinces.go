@@ -46,7 +46,7 @@ func (this *ProvincesAction) RunGet(params struct {
 		selectedProvinceIds = policyConfig.Inbound.Region.DenyProvinceIds
 	}
 
-	provincesResp, err := this.RPC().RegionProvinceRPC().FindAllRegionProvincesWithCountryId(this.AdminContext(), &pb.FindAllRegionProvincesWithCountryIdRequest{
+	provincesResp, err := this.RPC().RegionProvinceRPC().FindAllRegionProvincesWithRegionCountryId(this.AdminContext(), &pb.FindAllRegionProvincesWithRegionCountryIdRequest{
 		RegionCountryId: int64(ChinaCountryId),
 	})
 	if err != nil {
@@ -57,7 +57,7 @@ func (this *ProvincesAction) RunGet(params struct {
 	for _, province := range provincesResp.RegionProvinces {
 		provinceMaps = append(provinceMaps, maps.Map{
 			"id":        province.Id,
-			"name":      province.Name,
+			"name":      province.DisplayName,
 			"isChecked": lists.ContainsInt64(selectedProvinceIds, province.Id),
 		})
 	}

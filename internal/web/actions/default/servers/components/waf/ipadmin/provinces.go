@@ -37,7 +37,7 @@ func (this *ProvincesAction) RunGet(params struct {
 		this.NotFound("firewallPolicy", params.FirewallPolicyId)
 		return
 	}
-	selectedProvinceIds := []int64{}
+	var selectedProvinceIds = []int64{}
 	if policyConfig.Inbound != nil && policyConfig.Inbound.Region != nil {
 		selectedProvinceIds = policyConfig.Inbound.Region.DenyProvinceIds
 	}
@@ -49,11 +49,11 @@ func (this *ProvincesAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	provinceMaps := []maps.Map{}
+	var provinceMaps = []maps.Map{}
 	for _, province := range provincesResp.RegionProvinces {
 		provinceMaps = append(provinceMaps, maps.Map{
 			"id":        province.Id,
-			"name":      province.Name,
+			"name":      province.DisplayName,
 			"isChecked": lists.ContainsInt64(selectedProvinceIds, province.Id),
 		})
 	}

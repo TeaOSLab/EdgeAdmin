@@ -40,7 +40,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 		if country != nil {
 			countryMaps = append(countryMaps, maps.Map{
 				"id":   country.Id,
-				"name": country.Name,
+				"name": country.DisplayName,
 			})
 		}
 	}
@@ -58,7 +58,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 		if province != nil {
 			provinceMaps = append(provinceMaps, maps.Map{
 				"id":   province.Id,
-				"name": province.Name,
+				"name": province.DisplayName,
 			})
 		}
 	}

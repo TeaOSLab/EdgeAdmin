@@ -33,7 +33,7 @@ func (this *SelectProvincesPopupAction) RunGet(params struct {
 	for _, province := range provincesResp.RegionProvinces {
 		provinceMaps = append(provinceMaps, maps.Map{
 			"id":        province.Id,
-			"name":      province.Name,
+			"name":      province.DisplayName,
 			"isChecked": lists.ContainsInt64(selectedProvinceIds, province.Id),
 		})
 	}
@@ -61,7 +61,7 @@ func (this *SelectProvincesPopupAction) RunPost(params struct {
 		}
 		provinceMaps = append(provinceMaps, maps.Map{
 			"id":   province.Id,
-			"name": province.Name,
+			"name": province.DisplayName,
 		})
 	}
 	this.Data["provinces"] = provinceMaps
