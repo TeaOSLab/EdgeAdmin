@@ -325,7 +325,7 @@ Vue.component("http-firewall-actions-box", {
 						this.captchaFailBlockTimeout = config.options.failBlockTimeout.toString()
 					}
 					break
-				case "jsCookie":
+				case "js_cookie":
 					this.jsCookieLife = ""
 					if (config.options.life != null || config.options.life > 0) {
 						this.jsCookieLife = config.options.life.toString()
