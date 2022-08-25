@@ -78,8 +78,11 @@ Vue.component("http-firewall-actions-box", {
 			captchaLife: "",
 			captchaMaxFails: "",
 			captchaFailBlockTimeout: "",
+
 			get302Life: "",
+
 			post307Life: "",
+
 			recordIPType: "black",
 			recordIPLevel: "critical",
 			recordIPTimeout: "",
@@ -97,7 +100,11 @@ Vue.component("http-firewall-actions-box", {
 			goGroup: null,
 
 			goSetId: 0,
-			goSetName: ""
+			goSetName: "",
+
+			jsCookieLife: "",
+			jsCookieMaxFails: "",
+			jsCookieFailBlockTimeout: ""
 		}
 	},
 	watch: {
@@ -195,7 +202,31 @@ Vue.component("http-firewall-actions-box", {
 			} else {
 				this.goSetName = set.name
 			}
-		}
+		},
+		jsCookieLife: function (v) {
+			v = parseInt(v)
+			if (isNaN(v)) {
+				this.actionOptions["life"] = 0
+			} else {
+				this.actionOptions["life"] = v
+			}
+		},
+		jsCookieMaxFails: function (v) {
+			v = parseInt(v)
+			if (isNaN(v)) {
+				this.actionOptions["maxFails"] = 0
+			} else {
+				this.actionOptions["maxFails"] = v
+			}
+		},
+		jsCookieFailBlockTimeout: function (v) {
+			v = parseInt(v)
+			if (isNaN(v)) {
+				this.actionOptions["failBlockTimeout"] = 0
+			} else {
+				this.actionOptions["failBlockTimeout"] = v
+			}
+		},
 	},
 	methods: {
 		add: function () {
@@ -207,10 +238,17 @@ Vue.component("http-firewall-actions-box", {
 			// 动作参数
 			this.blockTimeout = ""
 			this.blockScope = "global"
+
 			this.captchaLife = ""
 			this.captchaMaxFails = ""
 			this.captchaFailBlockTimeout = ""
+
+			this.jsCookieLife = ""
+			this.jsCookieMaxFails = ""
+			this.jsCookieFailBlockTimeout = ""
+
 			this.get302Life = ""
+
 			this.post307Life = ""
 
 			this.recordIPLevel = "critical"
@@ -285,6 +323,20 @@ Vue.component("http-firewall-actions-box", {
 					this.captchaFailBlockTimeout = ""
 					if (config.options.failBlockTimeout != null || config.options.failBlockTimeout > 0) {
 						this.captchaFailBlockTimeout = config.options.failBlockTimeout.toString()
+					}
+					break
+				case "jsCookie":
+					this.jsCookieLife = ""
+					if (config.options.life != null || config.options.life > 0) {
+						this.jsCookieLife = config.options.life.toString()
+					}
+					this.jsCookieMaxFails = ""
+					if (config.options.maxFails != null || config.options.maxFails > 0) {
+						this.jsCookieMaxFails = config.options.maxFails.toString()
+					}
+					this.jsCookieFailBlockTimeout = ""
+					if (config.options.failBlockTimeout != null || config.options.failBlockTimeout > 0) {
+						this.jsCookieFailBlockTimeout = config.options.failBlockTimeout.toString()
 					}
 					break
 				case "notify":
@@ -539,6 +591,11 @@ Vue.component("http-firewall-actions-box", {
 				<span v-if="config.options.maxFails > 0"> / 最多失败{{config.options.maxFails}}次</span>
 			</span>
 			
+			<!-- js cookie -->
+			<span v-if="config.code == 'js_cookie' && config.options.life > 0">：有效期{{config.options.life}}秒
+				<span v-if="config.options.maxFails > 0"> / 最多失败{{config.options.maxFails}}次</span>
+			</span>
+			
 			<!-- get 302 -->
 			<span v-if="config.code == 'get_302' && config.options.life > 0">：有效期{{config.options.life}}秒</span>
 			
@@ -632,6 +689,38 @@ Vue.component("http-firewall-actions-box", {
 				<td>
 					<div class="ui input right labeled">
 						<input type="text" style="width: 5em" maxlength="9" v-model="captchaFailBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">秒</span>
+					</div>
+					<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时间；如果为空或者为0表示默认。</p>
+				</td>
+			</tr>
+			
+			<!-- js cookie -->
+			<tr v-if="actionCode == 'js_cookie'">
+				<td>有效时间</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="jsCookieLife" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">秒</span>
+					</div>
+					<p class="comment">验证通过后在这个时间内不再验证；如果为空或者为0表示默认。</p>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'js_cookie'">
+				<td>最多失败次数</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="jsCookieMaxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">次</span>
+					</div>
+					<p class="comment">允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单；如果为空或者为0表示默认。</p>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'js_cookie'">
+				<td>失败拦截时间</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="jsCookieFailBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">秒</span>
 					</div>
 					<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时间；如果为空或者为0表示默认。</p>
