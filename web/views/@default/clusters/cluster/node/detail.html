@@ -91,6 +91,10 @@
             <td>级别</td>
             <td>
                 <span :class="{blue: node.levelInfo.code > 1}">{{node.levelInfo.name}}</span>
+                &nbsp; &nbsp; <span v-if="node.level > 1 && node.lnAddrs != null && node.lnAddrs.length > 0">
+                    <span v-for="lnAddr in node.lnAddrs" class="ui label tiny basic">{{lnAddr}}</span>
+                </span>
+                <p class="comment" v-if="node.level > 1 && node.lnAddrs != null && node.lnAddrs.length > 0">指定了Ln节点访问地址。</p>
             </td>
         </tr>
 		<tr>

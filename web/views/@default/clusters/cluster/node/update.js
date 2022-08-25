@@ -26,4 +26,12 @@ Tea.context(function () {
 	this.updateClusters = function () {
 		this.showClustersBox = !this.showClustersBox
 	}
+
+	/**
+	 * 级别相关
+	 */
+	this.nodeLevel = this.node.level
+	this.changeLevel = function (level) {
+		this.nodeLevel = level
+	}
 })
