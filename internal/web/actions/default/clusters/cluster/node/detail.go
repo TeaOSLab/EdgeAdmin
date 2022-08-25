@@ -25,7 +25,8 @@ func (this *DetailAction) Init() {
 }
 
 func (this *DetailAction) RunGet(params struct {
-	NodeId int64
+	NodeId    int64
+	ClusterId int64
 }) {
 	this.Data["nodeId"] = params.NodeId
 
@@ -43,13 +44,13 @@ func (this *DetailAction) RunGet(params struct {
 	// 主集群
 	var clusterMap maps.Map = nil
 	if node.NodeCluster != nil {
-		clusterId := node.NodeCluster.Id
+		var clusterId = node.NodeCluster.Id
 		clusterResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeCluster(this.AdminContext(), &pb.FindEnabledNodeClusterRequest{NodeClusterId: clusterId})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-		cluster := clusterResp.NodeCluster
+		var cluster = clusterResp.NodeCluster
 		if cluster != nil {
 			clusterMap = maps.Map{
 				"id":         cluster.Id,
@@ -68,6 +69,14 @@ func (this *DetailAction) RunGet(params struct {
 			"isOn": cluster.IsOn,
 		})
 	}
+
+	// 当前访问集群的DNS设置
+	clusterDNSInfo, err := this.RPC().NodeClusterRPC().FindEnabledNodeClusterDNS(this.AdminContext(), &pb.FindEnabledNodeClusterDNSRequest{NodeClusterId: params.ClusterId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["dnsIsExcludingLnNode"] = clusterDNSInfo != nil && !clusterDNSInfo.IncludingLnNodes && node.Level > 1
 
 	// IP地址
 	ipAddressesResp, err := this.RPC().NodeIPAddressRPC().FindAllEnabledNodeIPAddressesWithNodeId(this.AdminContext(), &pb.FindAllEnabledNodeIPAddressesWithNodeIdRequest{
