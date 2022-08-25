@@ -183,6 +183,13 @@ Vue.component("http-firewall-checkpoint-cc", {
 					value: ignoreCommonFiles
 				}
 			]
+		},
+		thresholdTooLow: function () {
+			let threshold = parseInt(this.threshold.toString())
+			if (isNaN(threshold) || threshold <= 0) {
+				threshold = 1000
+			}
+			return threshold > 0 && threshold < 5
 		}
 	},
 	template: `<div>
@@ -208,6 +215,7 @@ Vue.component("http-firewall-checkpoint-cc", {
 			<td>阈值 *</td>
 			<td>
 				<input type="text" v-model="threshold" style="width: 6em" maxlength="8"/>
+				<p class="comment" v-if="thresholdTooLow()"><span class="red">对于网站类应用来说，当前阈值设置的太低，有可能会影响用户正常访问。</span></p>
 			</td>
 		</tr>
 		<tr>
