@@ -18,6 +18,7 @@ func init() {
 			Get("", new(IndexAction)).
 			GetPost("/settings", new(SettingsAction)).
 			Post("/partitionData", new(PartitionDataAction)).
+			Post("/hasLogs", new(HasLogsAction)).
 			EndAll()
 	})
 }

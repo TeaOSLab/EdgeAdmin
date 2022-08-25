@@ -15,9 +15,9 @@
 {$template "/left_menu_with_menu"}
 <div class="right-box with-menu">
 	<first-menu>
-		<menu-item :href="path + '?serverId=' + serverId + '&day=' + day + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&hour=' + hour + '&pageSize=' + pageSize" :active="hasError == 0 && hasWAF == 0">所有日志</menu-item>
-		<menu-item :href="path + '?serverId=' + serverId + '&day=' + day + '&hasError=1' + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&hour=' + hour + '&pageSize=' + pageSize" :active="hasError > 0">错误日志</menu-item>
-        <menu-item :href="path + '?serverId=' + serverId + '&day=' + day + '&hasWAF=1' + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&hour=' + hour + '&pageSize=' + pageSize" :active="hasWAF > 0">WAF日志</menu-item>
+		<menu-item :href="path + '?' + query()" :active="hasError == 0 && hasWAF == 0">所有日志</menu-item>
+		<menu-item :href="path + '?' + query('hasError=1')" :active="hasError > 0">错误日志</menu-item>
+        <menu-item :href="path + '?' + query('hasWAF=1')" :active="hasWAF > 0">WAF日志</menu-item>
 	</first-menu>
 
     <form method="get" class="ui form small" :action="path">
@@ -38,7 +38,7 @@
     </form>
 
     <!-- 分区 -->
-    <http-access-log-partitions-box :v-day="day" :v-partition="partition"></http-access-log-partitions-box>
+    <http-access-log-partitions-box :v-day="day" :v-partition="partition" :v-query="currentQuery"></http-access-log-partitions-box>
 
 	<p class="comment" v-if="accessLogs.length == 0">暂时还没有访问日志。</p>
 
@@ -50,10 +50,10 @@
 	</table>
 
 	<div v-if="accessLogs.length > 0">
-		<a :href="path + '?serverId=' + serverId + '&requestId=' + lastRequestId + '&day=' + day + '&hasError=' + hasError + '&hasWAF=' + hasWAF + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&hour=' + hour + '&pageSize=' + pageSize + '&partition=' + partition" v-if="hasPrev">上一页</a>
+		<a :href="path + '?' + query('requestId=' + lastRequestId + '&hasError=' + hasError + '&hasWAF=' + hasWAF + '&partition=' + partition)" v-if="hasPrev">上一页</a>
 		<span v-else class="disabled">上一页</span>
 		<span class="disabled">&nbsp; | &nbsp;</span>
-		<a :href="path + '?serverId=' + serverId + '&requestId=' + nextRequestId + '&day=' + day + '&hasError=' + hasError + '&hasWAF=' + hasWAF + '&keyword=' + keyword + '&ip=' + ip + '&domain=' + domain + '&hour=' + hour + '&pageSize=' + pageSize + '&partition=' + partition" v-if="hasMore">下一页</a>
+		<a :href="path + '?' + query('requestId=' + nextRequestId + '&hasError=' + hasError + '&hasWAF=' + hasWAF + '&partition=' + partition)" v-if="hasMore">下一页</a>
 		<span v-else class="disabled">下一页</span>
         <page-size-selector></page-size-selector>
 	</div>
