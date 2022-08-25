@@ -23,36 +23,38 @@ func (this *UpdateClusterPopupAction) RunGet(params struct {
 }) {
 	this.Data["clusterId"] = params.ClusterId
 
-	dnsResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeClusterDNS(this.AdminContext(), &pb.FindEnabledNodeClusterDNSRequest{NodeClusterId: params.ClusterId})
+	dnsInfoResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeClusterDNS(this.AdminContext(), &pb.FindEnabledNodeClusterDNSRequest{NodeClusterId: params.ClusterId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	this.Data["dnsName"] = dnsResp.Name
-	this.Data["nodesAutoSync"] = dnsResp.NodesAutoSync
-	this.Data["serversAutoSync"] = dnsResp.ServersAutoSync
-	if dnsResp.Domain != nil {
-		this.Data["domainId"] = dnsResp.Domain.Id
-		this.Data["domain"] = dnsResp.Domain.Name
+	this.Data["dnsName"] = dnsInfoResp.Name
+	this.Data["nodesAutoSync"] = dnsInfoResp.NodesAutoSync
+	this.Data["serversAutoSync"] = dnsInfoResp.ServersAutoSync
+	if dnsInfoResp.Domain != nil {
+		this.Data["domainId"] = dnsInfoResp.Domain.Id
+		this.Data["domain"] = dnsInfoResp.Domain.Name
 	} else {
 		this.Data["domainId"] = 0
 		this.Data["domain"] = ""
 	}
-	if dnsResp.Provider != nil {
-		this.Data["providerType"] = dnsResp.Provider.Type
-		this.Data["providerId"] = dnsResp.Provider.Id
+	if dnsInfoResp.Provider != nil {
+		this.Data["providerType"] = dnsInfoResp.Provider.Type
+		this.Data["providerId"] = dnsInfoResp.Provider.Id
 	} else {
 		this.Data["providerType"] = ""
 		this.Data["providerId"] = 0
 	}
 
-	if len(dnsResp.CnameRecords) == 0 {
+	if len(dnsInfoResp.CnameRecords) == 0 {
 		this.Data["cnameRecords"] = []string{}
 	} else {
-		this.Data["cnameRecords"] = dnsResp.CnameRecords
+		this.Data["cnameRecords"] = dnsInfoResp.CnameRecords
 	}
 
-	this.Data["ttl"] = dnsResp.Ttl
+	this.Data["ttl"] = dnsInfoResp.Ttl
+	this.Data["cnameAsDomain"] = dnsInfoResp.CnameAsDomain
+	this.Data["includingLnNodes"] = dnsInfoResp.IncludingLnNodes
 
 	// 所有服务商
 	providerTypesResp, err := this.RPC().DNSProviderRPC().FindAllDNSProviderTypes(this.AdminContext(), &pb.FindAllDNSProviderTypesRequest{})
@@ -73,13 +75,15 @@ func (this *UpdateClusterPopupAction) RunGet(params struct {
 }
 
 func (this *UpdateClusterPopupAction) RunPost(params struct {
-	ClusterId       int64
-	DnsName         string
-	DomainId        int64
-	NodesAutoSync   bool
-	ServersAutoSync bool
-	CnameRecords    []string
-	Ttl             int32
+	ClusterId        int64
+	DnsName          string
+	DomainId         int64
+	NodesAutoSync    bool
+	ServersAutoSync  bool
+	CnameRecords     []string
+	Ttl              int32
+	CnameAsDomain    bool
+	IncludingLnNodes bool
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -108,13 +112,15 @@ func (this *UpdateClusterPopupAction) RunPost(params struct {
 	}
 
 	_, err = this.RPC().NodeClusterRPC().UpdateNodeClusterDNS(this.AdminContext(), &pb.UpdateNodeClusterDNSRequest{
-		NodeClusterId:   params.ClusterId,
-		DnsName:         params.DnsName,
-		DnsDomainId:     params.DomainId,
-		NodesAutoSync:   params.NodesAutoSync,
-		ServersAutoSync: params.ServersAutoSync,
-		CnameRecords:    params.CnameRecords,
-		Ttl:             params.Ttl,
+		NodeClusterId:    params.ClusterId,
+		DnsName:          params.DnsName,
+		DnsDomainId:      params.DomainId,
+		NodesAutoSync:    params.NodesAutoSync,
+		ServersAutoSync:  params.ServersAutoSync,
+		CnameRecords:     params.CnameRecords,
+		Ttl:              params.Ttl,
+		CnameAsDomain:    params.CnameAsDomain,
+		IncludingLnNodes: params.IncludingLnNodes,
 	})
 	if err != nil {
 		this.ErrorPage(err)

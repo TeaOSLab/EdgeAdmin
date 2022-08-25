@@ -47,27 +47,30 @@
         <tr v-if="node.records.length > 0">
             <td>DNS记录</td>
             <td>
-                <table class="ui table celled">
-                   <thead class="full-width">
-                       <tr>
-                           <th>记录名</th>
-                           <th>记录类型</th>
-                           <th>线路</th>
-                           <th>记录值</th>
-                       </tr>
-                   </thead>
+                <div :style="{opacity: dnsIsExcludingLnNode ? 0.5 : 1.0}">
+                    <table class="ui table celled">
+                       <thead class="full-width">
+                           <tr>
+                               <th>记录名</th>
+                               <th>记录类型</th>
+                               <th>线路</th>
+                               <th>记录值</th>
+                           </tr>
+                       </thead>
 
-                    <tr v-for="record in node.records">
-                        <td>{{record.name}}</td>
-                        <td>{{record.type}}</td>
-                        <td>
-                            <span v-if="record.route.length > 0">{{record.route}}</span>
-                            <span v-else class="disabled">默认</span>
-                        </td>
-                        <td>{{record.value}}</td>
-                    </tr>
-                </table>
-                <p class="comment">通过设置A记录可以将集群上的服务请求转发到不同线路的节点上。</p>
+                        <tr v-for="record in node.records">
+                            <td>{{record.name}}</td>
+                            <td>{{record.type}}</td>
+                            <td>
+                                <span v-if="record.route.length > 0">{{record.route}}</span>
+                                <span v-else class="disabled">默认</span>
+                            </td>
+                            <td>{{record.value}}</td>
+                        </tr>
+                    </table>
+                    <p class="comment" v-if="!dnsIsExcludingLnNode">通过设置A记录可以将集群上的服务请求转发到不同线路的节点上。</p>
+                </div>
+                <p class="comment" v-if="dnsIsExcludingLnNode"><span class="red">当前集群DNS已设置不解析Ln节点，所以当前节点不会加入DNS解析；如需加入，请修改"集群设置" -- "DNS设置" -- "更多选项" -- "包含Ln节点"。</span></p>
             </td>
         </tr>
         <tr>

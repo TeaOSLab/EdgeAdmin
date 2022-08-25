@@ -53,6 +53,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	this.Data["ttl"] = dnsInfoResp.Ttl
 	this.Data["cnameAsDomain"] = dnsInfoResp.CnameAsDomain
+	this.Data["includingLnNodes"] = dnsInfoResp.IncludingLnNodes
 
 	this.Show()
 }
@@ -60,13 +61,14 @@ func (this *IndexAction) RunGet(params struct {
 func (this *IndexAction) RunPost(params struct {
 	ClusterId int64
 
-	DnsDomainId     int64
-	DnsName         string
-	NodesAutoSync   bool
-	ServersAutoSync bool
-	CnameRecords    []string
-	Ttl             int32
-	CnameAsDomain   bool
+	DnsDomainId      int64
+	DnsName          string
+	NodesAutoSync    bool
+	ServersAutoSync  bool
+	CnameRecords     []string
+	Ttl              int32
+	CnameAsDomain    bool
+	IncludingLnNodes bool
 
 	ConfirmResetDomain bool // 是否确认重置域名
 
@@ -107,14 +109,15 @@ func (this *IndexAction) RunPost(params struct {
 	}
 
 	_, err := this.RPC().NodeClusterRPC().UpdateNodeClusterDNS(this.AdminContext(), &pb.UpdateNodeClusterDNSRequest{
-		NodeClusterId:   params.ClusterId,
-		DnsName:         params.DnsName,
-		DnsDomainId:     params.DnsDomainId,
-		NodesAutoSync:   params.NodesAutoSync,
-		ServersAutoSync: params.ServersAutoSync,
-		CnameRecords:    params.CnameRecords,
-		Ttl:             params.Ttl,
-		CnameAsDomain:   params.CnameAsDomain,
+		NodeClusterId:    params.ClusterId,
+		DnsName:          params.DnsName,
+		DnsDomainId:      params.DnsDomainId,
+		NodesAutoSync:    params.NodesAutoSync,
+		ServersAutoSync:  params.ServersAutoSync,
+		CnameRecords:     params.CnameRecords,
+		Ttl:              params.Ttl,
+		CnameAsDomain:    params.CnameAsDomain,
+		IncludingLnNodes: params.IncludingLnNodes,
 	})
 	if err != nil {
 		this.ErrorPage(err)
