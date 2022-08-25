@@ -35,7 +35,8 @@ func TestRPCClient_NodeRPC(t *testing.T) {
 func TestRPC_Dial_HTTP(t *testing.T) {
 	client, err := NewRPCClient(&configs.APIConfig{
 		RPC: struct {
-			Endpoints []string `yaml:"endpoints"`
+			Endpoints     []string `yaml:"endpoints"`
+			DisableUpdate bool     `yaml:"disableUpdate"`
 		}{
 			Endpoints: []string{"http://127.0.0.1:8004"},
 		},
@@ -56,7 +57,8 @@ func TestRPC_Dial_HTTP(t *testing.T) {
 func TestRPC_Dial_HTTP_2(t *testing.T) {
 	client, err := NewRPCClient(&configs.APIConfig{
 		RPC: struct {
-			Endpoints []string `yaml:"endpoints"`
+			Endpoints     []string `yaml:"endpoints"`
+			DisableUpdate bool     `yaml:"disableUpdate"`
 		}{
 			Endpoints: []string{"https://127.0.0.1:8003"},
 		},
@@ -77,7 +79,8 @@ func TestRPC_Dial_HTTP_2(t *testing.T) {
 func TestRPC_Dial_HTTPS(t *testing.T) {
 	client, err := NewRPCClient(&configs.APIConfig{
 		RPC: struct {
-			Endpoints []string `yaml:"endpoints"`
+			Endpoints     []string `yaml:"endpoints"`
+			DisableUpdate bool     `yaml:"disableUpdate"`
 		}{
 			Endpoints: []string{"https://127.0.0.1:8004"},
 		},
@@ -93,4 +96,54 @@ func TestRPC_Dial_HTTPS(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(resp.Node)
+}
+
+func BenchmarkNewRPCClient(b *testing.B) {
+	config, err := configs.LoadAPIConfig()
+	if err != nil {
+		b.Fatal(err)
+	}
+	rpc, err := NewRPCClient(config, true)
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		resp, err := rpc.AdminRPC().LoginAdmin(rpc.Context(0), &pb.LoginAdminRequest{
+			Username: "admin",
+			Password: stringutil.Md5("123456"),
+		})
+		if err != nil {
+			b.Fatal(err)
+		}
+		_ = resp
+	}
+}
+
+func BenchmarkNewRPCClient_2(b *testing.B) {
+	config, err := configs.LoadAPIConfig()
+	if err != nil {
+		b.Fatal(err)
+	}
+	rpc, err := NewRPCClient(config, true)
+	if err != nil {
+		b.Fatal(err)
+	}
+
+	var conn = rpc.AdminRPC()
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		resp, err := conn.LoginAdmin(rpc.Context(0), &pb.LoginAdminRequest{
+			Username: "admin",
+			Password: stringutil.Md5("123456"),
+		})
+		if err != nil {
+			b.Fatal(err)
+		}
+		_ = resp
+	}
 }
