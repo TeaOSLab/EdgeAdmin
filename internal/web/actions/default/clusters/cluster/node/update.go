@@ -11,6 +11,7 @@ import (
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
+	"net"
 )
 
 type UpdateAction struct {
@@ -61,7 +62,7 @@ func (this *UpdateAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	ipAddressMaps := []maps.Map{}
+	var ipAddressMaps = []maps.Map{}
 	for _, addr := range ipAddressesResp.NodeIPAddresses {
 		thresholds, err := ipaddressutils.InitNodeIPAddressThresholds(this.Parent(), addr.Id)
 		if err != nil {
@@ -109,6 +110,12 @@ func (this *UpdateAction) RunGet(params struct {
 		"level":       node.Level,
 	}
 
+	if node.LnAddrs == nil {
+		nodeMap["lnAddrs"] = []string{}
+	} else {
+		nodeMap["lnAddrs"] = node.LnAddrs
+	}
+
 	if node.NodeCluster != nil {
 		nodeMap["primaryCluster"] = maps.Map{
 			"id":   node.NodeCluster.Id,
@@ -149,6 +156,7 @@ func (this *UpdateAction) RunPost(params struct {
 	SecondaryClusterIds []byte
 	IsOn                bool
 	Level               int32
+	LnAddrs             []string
 
 	Must *actions.Must
 }) {
@@ -178,7 +186,7 @@ func (this *UpdateAction) RunPost(params struct {
 	}
 
 	// IP地址
-	ipAddresses := []maps.Map{}
+	var ipAddresses = []maps.Map{}
 	if len(params.IPAddressesJSON) > 0 {
 		err := json.Unmarshal(params.IPAddressesJSON, &ipAddresses)
 		if err != nil {
@@ -195,6 +203,27 @@ func (this *UpdateAction) RunPost(params struct {
 		this.Fail("没有权限修改节点级别：" + types.String(params.Level))
 	}
 
+	// 检查Ln节点地址
+	var lnAddrs = []string{}
+	if params.Level > 1 {
+		for _, lnAddr := range params.LnAddrs {
+			if len(lnAddr) == 0 {
+				continue
+			}
+
+			// 处理 host:port
+			host, _, err := net.SplitHostPort(lnAddr)
+			if err == nil {
+				lnAddr = host
+			}
+
+			if net.ParseIP(lnAddr) == nil {
+				this.Fail("L2级别访问地址 '" + lnAddr + "' 格式错误，请纠正后再提交")
+			}
+			lnAddrs = append(lnAddrs, lnAddr)
+		}
+	}
+
 	_, err := this.RPC().NodeRPC().UpdateNode(this.AdminContext(), &pb.UpdateNodeRequest{
 		NodeId:                  params.NodeId,
 		NodeGroupId:             params.GroupId,
@@ -204,6 +233,7 @@ func (this *UpdateAction) RunPost(params struct {
 		SecondaryNodeClusterIds: secondaryClusterIds,
 		IsOn:                    params.IsOn,
 		Level:                   params.Level,
+		LnAddrs:                 lnAddrs,
 	})
 	if err != nil {
 		this.ErrorPage(err)

@@ -48,10 +48,17 @@
                 <td colspan="2"><more-options-indicator></more-options-indicator></td>
             </tr>
             <tbody v-show="moreOptionsVisible">
-                <tr v-if="teaIsPlus && canUpdateLevel">
+                <tr v-show="teaIsPlus && canUpdateLevel">
                     <td>级别</td>
                     <td>
-                        <node-level-selector :v-node-level="node.level"></node-level-selector>
+                        <node-level-selector :v-node-level="node.level" @change="changeLevel"></node-level-selector>
+                    </td>
+                </tr>
+                <tr v-show="teaIsPlus && canUpdateLevel && nodeLevel > 1">
+                    <td>L2级别访问地址</td>
+                    <td>
+                        <values-box name="lnAddrs" :v-values="node.lnAddrs" placeholder="IP地址"></values-box>
+                        <p class="comment">如果不为空，边缘节点访问当前L2节点时将会使用这些IP地址；如果没有设置，将会使用当前节点已经填写的IP地址。</p>
                     </td>
                 </tr>
                 <tr>

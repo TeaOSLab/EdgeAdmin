@@ -22,6 +22,11 @@ Vue.component("node-level-selector", {
 			levelCode: levelCode
 		}
 	},
+	watch: {
+		levelCode: function (code) {
+			this.$emit("change", code)
+		}
+	},
 	template: `<div>
 	<select class="ui dropdown auto-width" name="level" v-model="levelCode">
 	<option v-for="level in levels" :value="level.code">{{level.name}}</option>

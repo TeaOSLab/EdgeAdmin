@@ -295,6 +295,11 @@ func (this *DetailAction) RunGet(params struct {
 		}
 	}
 
+	var lnAddrs = node.LnAddrs
+	if lnAddrs == nil {
+		lnAddrs = []string{}
+	}
+
 	this.Data["node"] = maps.Map{
 		"id":                node.Id,
 		"name":              node.Name,
@@ -312,6 +317,7 @@ func (this *DetailAction) RunGet(params struct {
 		"routes":            routeMaps,
 		"level":             node.Level,
 		"levelInfo":         nodeconfigs.FindNodeLevel(int(node.Level)),
+		"lnAddrs":           lnAddrs,
 
 		"status": maps.Map{
 			"isActive":             status.IsActive,
