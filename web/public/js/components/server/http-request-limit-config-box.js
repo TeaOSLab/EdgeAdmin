@@ -80,7 +80,7 @@ Vue.component("http-request-limit-config-box", {
 				<td>单IP最大并发连接数</td>
 				<td>
 					<input type="text" maxlength="6" v-model="maxConnsPerIP"/>
-					<p class="comment">单IP最大连接数，统计单个IP总连接数时不区分服务，超出此限制则响应用户<code-label>429</code-label>代码。为0表示不限制。</p>
+					<p class="comment">单IP最大连接数，统计单个IP总连接数时不区分服务，超出此限制则响应用户<code-label>429</code-label>代码。为0表示不限制。<span v-if="maxConnsPerIP <= 3" class="red">当前设置的并发连接数过低，可能会影响正常用户访问，建议不小于3。</span></p>
 				</td>
 			</tr>
 			<tr>
