@@ -27,6 +27,16 @@ Tea.context(function () {
 			})
 	}
 
+	this.updateNodeRead = function (nodeId) {
+		this.$post(".readLogs")
+			.params({
+				nodeId: nodeId
+			})
+			.success(function () {
+				teaweb.reload()
+			})
+	}
+
 	this.updateAllRead = function () {
 		this.$post(".readAllLogs")
 			.params({})

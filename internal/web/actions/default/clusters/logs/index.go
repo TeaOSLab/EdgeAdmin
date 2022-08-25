@@ -120,6 +120,8 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 
+	var firstUnreadNodeMap maps.Map = nil
+
 	var logs = []maps.Map{}
 	for _, log := range logsResp.NodeLogs {
 		// 节点信息
@@ -130,6 +132,13 @@ func (this *IndexAction) RunGet(params struct {
 		var node = nodeResp.Node
 		if node == nil || node.NodeCluster == nil {
 			continue
+		}
+
+		if params.Type == "unread" && firstUnreadNodeMap == nil {
+			firstUnreadNodeMap = maps.Map{
+				"id":   node.Id,
+				"name": node.Name,
+			}
 		}
 
 		// 服务信息
@@ -173,6 +182,8 @@ func (this *IndexAction) RunGet(params struct {
 		})
 	}
 	this.Data["logs"] = logs
+
+	this.Data["firstUnreadNode"] = firstUnreadNodeMap
 
 	this.Show()
 }
