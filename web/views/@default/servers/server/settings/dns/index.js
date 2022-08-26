@@ -11,4 +11,12 @@ Tea.context(function () {
 				.refresh()
 		})
 	}
+
+	this.updateCNAME = function () {
+		teaweb.popup("/servers/server/settings/dns/updateCNAMEPopup?serverId=" + this.serverId, {
+			callback: function () {
+				teaweb.successRefresh("保存成功")
+			}
+		})
+	}
 })

@@ -15,6 +15,7 @@ func init() {
 			Prefix("/servers/server/settings/dns").
 			GetPost("", new(IndexAction)).
 			Post("/regenerateCNAME", new(RegenerateCNAMEAction)).
+			GetPost("/updateCNAMEPopup", new(UpdateCNAMEPopupAction)).
 			EndAll()
 	})
 }
