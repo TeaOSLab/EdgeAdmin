@@ -79,6 +79,10 @@ func (this *IndexAction) RunPost(params struct {
 			this.FailField("tcpNewConnectionsRate", "TCP: 单IP连接速率不能小于"+types.String(nodeconfigs.DefaultTCPNewConnectionsMinRate))
 		}
 
+		if tcpConfig.DenyNewConnectionsRate > 0 && tcpConfig.DenyNewConnectionsRate < nodeconfigs.DefaultTCPDenyNewConnectionsMinRate {
+			this.FailField("tcpDenyNewConnectionsRate", "TCP: 单IP TCP新连接速率黑名单连接速率不能小于"+types.String(nodeconfigs.DefaultTCPDenyNewConnectionsMinRate))
+		}
+
 		// Port
 		for _, portConfig := range tcpConfig.Ports {
 			if portConfig.Port > 65535 {
