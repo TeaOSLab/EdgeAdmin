@@ -16,7 +16,7 @@ func (this *RegenerateCNAMEAction) RunPost(params struct {
 }) {
 	defer this.CreateLogInfo("重新生成服务 %d 的CNAME", params.ServerId)
 
-	_, err := this.RPC().ServerRPC().RegenerateServerCNAME(this.AdminContext(), &pb.RegenerateServerCNAMERequest{ServerId: params.ServerId})
+	_, err := this.RPC().ServerRPC().RegenerateServerDNSName(this.AdminContext(), &pb.RegenerateServerDNSNameRequest{ServerId: params.ServerId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
