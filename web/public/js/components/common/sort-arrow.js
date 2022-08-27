@@ -4,6 +4,7 @@ Vue.component("sort-arrow", {
 	data: function () {
 		let url = window.location.toString()
 		let order = ""
+		let iconTitle = ""
 		let newArgs = []
 		if (window.location.search != null && window.location.search.length > 0) {
 			let queryString = window.location.search.substring(1)
@@ -26,10 +27,13 @@ Vue.component("sort-arrow", {
 		}
 		if (order == "asc") {
 			newArgs.push(this.name + "=desc")
+			iconTitle = "当前正序排列"
 		} else if (order == "desc") {
 			newArgs.push(this.name + "=asc")
+			iconTitle = "当前倒序排列"
 		} else {
 			newArgs.push(this.name + "=desc")
+			iconTitle = "当前正序排列"
 		}
 
 		let qIndex = url.indexOf("?")
@@ -41,8 +45,9 @@ Vue.component("sort-arrow", {
 
 		return {
 			order: order,
-			url: url
+			url: url,
+			iconTitle: iconTitle
 		}
 	},
-	template: `<a :href="url" title="排序">&nbsp; <i class="ui icon long arrow small" :class="{down: order == 'asc', up: order == 'desc', 'down grey': order == '' || order == null}"></i></a>`
+	template: `<a :href="url" :title="iconTitle">&nbsp; <i class="ui icon long arrow small" :class="{down: order == 'asc', up: order == 'desc', 'down grey': order == '' || order == null}"></i></a>`
 })
