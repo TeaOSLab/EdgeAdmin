@@ -43,14 +43,14 @@
                 <td class="color-border">缓存文件句柄缓存</td>
                 <td>
                     <input type="text" name="fileOpenFileCacheMax" maxlength="6" value="0" style="width: 10em"/>
-                    <p class="comment">保持在内存中的缓存文件句柄的数量，提升缓存文件打开速度，建议数量不超过缓存文件数量的十分之一。</p>
+                    <p class="comment"><pro-warning-label></pro-warning-label>保持在内存中的缓存文件句柄的数量，提升缓存文件打开速度，建议数量不超过缓存文件数量的十分之一。</p>
                 </td>
             </tr>
             <tr v-show="teaIsPlus">
                 <td class="color-border">开启Sendfile</td>
                 <td>
                     <checkbox name="fileEnableSendfile"></checkbox>
-                    <p class="comment"><plus-label></plus-label>使用sendfile提升发送缓存文件的效率。</p>
+                    <p class="comment"><pro-warning-label></pro-warning-label><plus-label></plus-label>使用sendfile提升发送缓存文件的效率。</p>
                 </td>
             </tr>
 		</tbody>
