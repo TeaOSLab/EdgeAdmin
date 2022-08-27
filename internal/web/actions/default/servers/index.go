@@ -217,11 +217,8 @@ func (this *IndexAction) RunGet(params struct {
 
 		// 统计数据
 		var bandwidth = ""
-		if server.LatestServerDailyStat != nil {
-			var bytesPerSecond = server.LatestServerDailyStat.Bytes / 300
-			if bytesPerSecond > 0 {
-				bandwidth = numberutils.FormatBytes(bytesPerSecond)
-			}
+		if server.BandwidthBytes > 0 {
+			bandwidth = numberutils.FormatBytes(server.BandwidthBytes)
 		}
 
 		serverMaps = append(serverMaps, maps.Map{
