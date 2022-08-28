@@ -2,6 +2,7 @@
     <menu-item href="/users">用户列表</menu-item>
     <span class="item">|</span>
     <menu-item :href="'/users/user?userId=' + user.id" code="index">{{user.fullname}}&nbsp; <span class="small">({{user.username}})</span></menu-item>
+    <menu-item :href="'/users/user/servers?userId=' + user.id" code="server" v-if="teaIsPlus">网站服务</menu-item>
     <menu-item :href="'/users/update?userId=' + user.id" code="update">修改</menu-item>
     <menu-item :href="'/users/features?userId=' + user.id" code="feature">功能</menu-item>
     <menu-item :href="'/users/identity?userId=' + user.id" code="identity" v-if="teaIsPlus">实名认证<span v-if="user.hasNewIndividualIdentity || user.hasNewEnterpriseIdentity" class="red small">(待审核)</span><span v-if="user.identityTag != null && user.identityTag.length > 0" class="green">({{user.identityTag}})</span></menu-item>
