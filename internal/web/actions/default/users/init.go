@@ -15,6 +15,8 @@ func init() {
 			Prefix("/users").
 			Get("", new(IndexAction)).
 			GetPost("/createPopup", new(CreatePopupAction)).
+
+			// 单个用户信息
 			Get("/user", new(UserAction)).
 			GetPost("/update", new(UpdateAction)).
 			Post("/delete", new(DeleteAction)).
@@ -28,6 +30,8 @@ func init() {
 			GetPost("/createPopup", new(accesskeys.CreatePopupAction)).
 			Post("/delete", new(accesskeys.DeleteAction)).
 			Post("/updateIsOn", new(accesskeys.UpdateIsOnAction)).
+
+			//
 			EndAll()
 	})
 }
