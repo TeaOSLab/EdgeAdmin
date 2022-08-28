@@ -449,6 +449,7 @@ Vue.component("node-ddos-protection-config-box", {
 					maxConnections: 0,
 					maxConnectionsPerIP: 0,
 					newConnectionsRate: 0,
+					denyNewConnectionsRate: 0,
 					allowIPList: [],
 					ports: []
 				}
@@ -463,6 +464,7 @@ Vue.component("node-ddos-protection-config-box", {
 				maxConnections: 0,
 				maxConnectionsPerIP: 0,
 				newConnectionsRate: 0,
+				denyNewConnectionsRate: 0,
 				allowIPList: [],
 				ports: []
 			}
@@ -526,6 +528,31 @@ Vue.component("node-ddos-protection-config-box", {
 					<span class="ui label">个新连接/每分钟</span>
 				</div>
 				<p class="comment">单个IP可以创建TCP新连接的速率。如果为0，则默认为{{defaultConfigs.tcpNewConnectionsRate}}；最小值为{{defaultConfigs.tcpNewConnectionsMinRate}}。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>单IP TCP新连接速率黑名单</td>
+			<td>
+				<div class="ui fields">
+					<div class="ui field">
+						<div class="ui input right labeled">
+							<span class="ui label">超过</span>
+							<digit-input name="tcpDenyNewConnectionsRate" v-model="config.tcp.denyNewConnectionsRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpDenyNewConnectionsMinRate"></digit-input>
+							<span class="ui label">个新连接/每分钟</span>
+						</div>
+					</div>
+					<div class="ui field" style="line-height: 2.4em">
+						屏蔽
+					</div>
+					<div class="ui field">
+						<div class="ui input right labeled">
+							<digit-input name="tcpDenyNewConnectionsRateTimeout" v-model="config.tcp.denyNewConnectionsRateTimeout" maxlength="6" size="6" style="width: 5em"></digit-input>
+							<span class="ui label">秒</span>
+						</div>
+					</div>
+				</div>
+			
+				<p class="comment">单个IP可以如果在单位时间内创建的TCP连接数超过这个值，就自动加入到<code-label>nftables</code-label>黑名单中。如果为0，则默认为{{defaultConfigs.tcpDenyNewConnectionsRate}}；最小值为{{defaultConfigs.tcpDenyNewConnectionsMinRate}}；默认屏蔽{{defaultConfigs.tcpDenyNewConnectionsRateTimeout}}秒。</p>
 			</td>
 		</tr>
 		<tr>
@@ -1488,6 +1515,7 @@ Vue.component("ns-node-ddos-protection-config-box", {
 					maxConnections: 0,
 					maxConnectionsPerIP: 0,
 					newConnectionsRate: 0,
+					denyNewConnectionsRate: 0,
 					allowIPList: [],
 					ports: []
 				}
@@ -1502,6 +1530,7 @@ Vue.component("ns-node-ddos-protection-config-box", {
 				maxConnections: 0,
 				maxConnectionsPerIP: 0,
 				newConnectionsRate: 0,
+				denyNewConnectionsRate: 0,
 				allowIPList: [],
 				ports: []
 			}
@@ -1565,6 +1594,31 @@ Vue.component("ns-node-ddos-protection-config-box", {
 					<span class="ui label">个新连接/每分钟</span>
 				</div>
 				<p class="comment">单个IP可以创建TCP新连接的速率。如果为0，则默认为{{defaultConfigs.tcpNewConnectionsRate}}；最小值为{{defaultConfigs.tcpNewConnectionsMinRate}}。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>单IP TCP新连接速率黑名单</td>
+			<td>
+				<div class="ui fields">
+					<div class="ui field">
+						<div class="ui input right labeled">
+							<span class="ui label">超过</span>
+							<digit-input name="tcpDenyNewConnectionsRate" v-model="config.tcp.denyNewConnectionsRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpDenyNewConnectionsMinRate"></digit-input>
+							<span class="ui label">个新连接/每分钟</span>
+						</div>
+					</div>
+					<div class="ui field" style="line-height: 2.4em">
+						屏蔽
+					</div>
+					<div class="ui field">
+						<div class="ui input right labeled">
+							<digit-input name="tcpDenyNewConnectionsRateTimeout" v-model="config.tcp.denyNewConnectionsRateTimeout" maxlength="6" size="6" style="width: 5em"></digit-input>
+							<span class="ui label">秒</span>
+						</div>
+					</div>
+				</div>
+			
+				<p class="comment">单个IP可以如果在单位时间内创建的TCP连接数超过这个值，就自动加入到<code-label>nftables</code-label>黑名单中。如果为0，则默认为{{defaultConfigs.tcpDenyNewConnectionsRate}}；最小值为{{defaultConfigs.tcpDenyNewConnectionsMinRate}}；默认屏蔽{{defaultConfigs.tcpDenyNewConnectionsRateTimeout}}秒。</p>
 			</td>
 		</tr>
 		<tr>
@@ -4217,7 +4271,7 @@ Vue.component("http-request-limit-config-box", {
 				<td>单IP最大并发连接数</td>
 				<td>
 					<input type="text" maxlength="6" v-model="maxConnsPerIP"/>
-					<p class="comment">单IP最大连接数，统计单个IP总连接数时不区分服务，超出此限制则响应用户<code-label>429</code-label>代码。为0表示不限制。</p>
+					<p class="comment">单IP最大连接数，统计单个IP总连接数时不区分服务，超出此限制则响应用户<code-label>429</code-label>代码。为0表示不限制。<span v-if="maxConnsPerIP <= 3" class="red">当前设置的并发连接数过低，可能会影响正常用户访问，建议不小于3。</span></p>
 				</td>
 			</tr>
 			<tr>
@@ -5198,6 +5252,13 @@ Vue.component("http-firewall-checkpoint-cc", {
 					value: ignoreCommonFiles
 				}
 			]
+		},
+		thresholdTooLow: function () {
+			let threshold = parseInt(this.threshold.toString())
+			if (isNaN(threshold) || threshold <= 0) {
+				threshold = 1000
+			}
+			return threshold > 0 && threshold < 5
 		}
 	},
 	template: `<div>
@@ -5223,6 +5284,7 @@ Vue.component("http-firewall-checkpoint-cc", {
 			<td>阈值 *</td>
 			<td>
 				<input type="text" v-model="threshold" style="width: 6em" maxlength="8"/>
+				<p class="comment" v-if="thresholdTooLow()"><span class="red">对于网站类应用来说，当前阈值设置的太低，有可能会影响用户正常访问。</span></p>
 			</td>
 		</tr>
 		<tr>
@@ -5335,7 +5397,7 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 })
 
 Vue.component("http-access-log-partitions-box", {
-	props: ["v-partition", "v-day"],
+	props: ["v-partition", "v-day", "v-query"],
 	mounted: function () {
 		let that = this
 		Tea.action("/servers/logs/partitionData")
@@ -5347,12 +5409,17 @@ Vue.component("http-access-log-partitions-box", {
 				resp.data.partitions.reverse().forEach(function (v) {
 					that.partitions.push({
 						code: v,
-						isDisabled: false
+						isDisabled: false,
+						hasLogs: false
 					})
 				})
 				if (that.partitions.length > 0) {
 					if (that.vPartition == null || that.vPartition < 0) {
 						that.selectedPartition = that.partitions[0].code
+					}
+
+					if (that.partitions.length > 1) {
+						that.checkLogs()
 					}
 				}
 			})
@@ -5361,7 +5428,8 @@ Vue.component("http-access-log-partitions-box", {
 	data: function () {
 		return {
 			partitions: [],
-			selectedPartition: this.vPartition
+			selectedPartition: this.vPartition,
+			checkingPartition: 0
 		}
 	},
 	methods: {
@@ -5384,12 +5452,43 @@ Vue.component("http-access-log-partitions-box", {
 					p.isDisabled = true
 				}
 			})
+		},
+		checkLogs: function () {
+			let that = this
+			let index = this.checkingPartition
+			let params = {
+				partition: index
+			}
+			let query = this.vQuery
+			if (query == null || query.length == 0) {
+				return
+			}
+			query.split("&").forEach(function (v) {
+				let param = v.split("=")
+				params[param[0]] = decodeURIComponent(param[1])
+			})
+			Tea.action("/servers/logs/hasLogs")
+				.params(params)
+				.post()
+				.success(function (response) {
+					if (response.data.hasLogs) {
+						// 因为是倒序，所以这里需要使用总长度减去index
+						that.partitions[that.partitions.length - 1 - index].hasLogs = true
+					}
+
+					index++
+					if (index >= that.partitions.length) {
+						return
+					}
+					that.checkingPartition = index
+					that.checkLogs()
+				})
 		}
 	},
 	template: `<div v-if="partitions.length > 1">
 	<div class="ui divider" style="margin-bottom: 0"></div>
 	<div class="ui menu text small blue" style="margin-bottom: 0; margin-top: 0">
-		<a v-for="(p, index) in partitions" :href="url(p.code)" class="item" :class="{active: selectedPartition == p.code, disabled: p.isDisabled}">分表{{p.code+1}} &nbsp; &nbsp; <span class="disabled" v-if="index != partitions.length - 1">|</span></a>
+		<a v-for="(p, index) in partitions" :href="url(p.code)" class="item" :class="{active: selectedPartition == p.code, disabled: p.isDisabled}">分表{{p.code+1}} <span v-if="p.hasLogs">&nbsp; <dot></dot></span> &nbsp; &nbsp; <span class="disabled" v-if="index != partitions.length - 1">|</span></a>
 	</div>
 	<div class="ui divider" style="margin-top: 0"></div>
 </div>`
@@ -6560,8 +6659,11 @@ Vue.component("http-firewall-actions-box", {
 			captchaLife: "",
 			captchaMaxFails: "",
 			captchaFailBlockTimeout: "",
+
 			get302Life: "",
+
 			post307Life: "",
+
 			recordIPType: "black",
 			recordIPLevel: "critical",
 			recordIPTimeout: "",
@@ -6579,7 +6681,11 @@ Vue.component("http-firewall-actions-box", {
 			goGroup: null,
 
 			goSetId: 0,
-			goSetName: ""
+			goSetName: "",
+
+			jsCookieLife: "",
+			jsCookieMaxFails: "",
+			jsCookieFailBlockTimeout: ""
 		}
 	},
 	watch: {
@@ -6677,7 +6783,31 @@ Vue.component("http-firewall-actions-box", {
 			} else {
 				this.goSetName = set.name
 			}
-		}
+		},
+		jsCookieLife: function (v) {
+			v = parseInt(v)
+			if (isNaN(v)) {
+				this.actionOptions["life"] = 0
+			} else {
+				this.actionOptions["life"] = v
+			}
+		},
+		jsCookieMaxFails: function (v) {
+			v = parseInt(v)
+			if (isNaN(v)) {
+				this.actionOptions["maxFails"] = 0
+			} else {
+				this.actionOptions["maxFails"] = v
+			}
+		},
+		jsCookieFailBlockTimeout: function (v) {
+			v = parseInt(v)
+			if (isNaN(v)) {
+				this.actionOptions["failBlockTimeout"] = 0
+			} else {
+				this.actionOptions["failBlockTimeout"] = v
+			}
+		},
 	},
 	methods: {
 		add: function () {
@@ -6689,10 +6819,17 @@ Vue.component("http-firewall-actions-box", {
 			// 动作参数
 			this.blockTimeout = ""
 			this.blockScope = "global"
+
 			this.captchaLife = ""
 			this.captchaMaxFails = ""
 			this.captchaFailBlockTimeout = ""
+
+			this.jsCookieLife = ""
+			this.jsCookieMaxFails = ""
+			this.jsCookieFailBlockTimeout = ""
+
 			this.get302Life = ""
+
 			this.post307Life = ""
 
 			this.recordIPLevel = "critical"
@@ -6767,6 +6904,20 @@ Vue.component("http-firewall-actions-box", {
 					this.captchaFailBlockTimeout = ""
 					if (config.options.failBlockTimeout != null || config.options.failBlockTimeout > 0) {
 						this.captchaFailBlockTimeout = config.options.failBlockTimeout.toString()
+					}
+					break
+				case "js_cookie":
+					this.jsCookieLife = ""
+					if (config.options.life != null || config.options.life > 0) {
+						this.jsCookieLife = config.options.life.toString()
+					}
+					this.jsCookieMaxFails = ""
+					if (config.options.maxFails != null || config.options.maxFails > 0) {
+						this.jsCookieMaxFails = config.options.maxFails.toString()
+					}
+					this.jsCookieFailBlockTimeout = ""
+					if (config.options.failBlockTimeout != null || config.options.failBlockTimeout > 0) {
+						this.jsCookieFailBlockTimeout = config.options.failBlockTimeout.toString()
 					}
 					break
 				case "notify":
@@ -7021,6 +7172,11 @@ Vue.component("http-firewall-actions-box", {
 				<span v-if="config.options.maxFails > 0"> / 最多失败{{config.options.maxFails}}次</span>
 			</span>
 			
+			<!-- js cookie -->
+			<span v-if="config.code == 'js_cookie' && config.options.life > 0">：有效期{{config.options.life}}秒
+				<span v-if="config.options.maxFails > 0"> / 最多失败{{config.options.maxFails}}次</span>
+			</span>
+			
 			<!-- get 302 -->
 			<span v-if="config.code == 'get_302' && config.options.life > 0">：有效期{{config.options.life}}秒</span>
 			
@@ -7114,6 +7270,38 @@ Vue.component("http-firewall-actions-box", {
 				<td>
 					<div class="ui input right labeled">
 						<input type="text" style="width: 5em" maxlength="9" v-model="captchaFailBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">秒</span>
+					</div>
+					<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时间；如果为空或者为0表示默认。</p>
+				</td>
+			</tr>
+			
+			<!-- js cookie -->
+			<tr v-if="actionCode == 'js_cookie'">
+				<td>有效时间</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="jsCookieLife" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">秒</span>
+					</div>
+					<p class="comment">验证通过后在这个时间内不再验证；如果为空或者为0表示默认。</p>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'js_cookie'">
+				<td>最多失败次数</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="jsCookieMaxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">次</span>
+					</div>
+					<p class="comment">允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单；如果为空或者为0表示默认。</p>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'js_cookie'">
+				<td>失败拦截时间</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="jsCookieFailBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">秒</span>
 					</div>
 					<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时间；如果为空或者为0表示默认。</p>
@@ -13914,6 +14102,10 @@ Vue.component("combo-box", {
 </div>`
 })
 
+Vue.component("dot", {
+	template: '<span style="display: inline-block; padding-bottom: 3px"><i class="icon circle tiny"></i></span>'
+})
+
 Vue.component("time-duration-box", {
 	props: ["v-name", "v-value", "v-count", "v-unit"],
 	mounted: function () {
@@ -14626,6 +14818,7 @@ Vue.component("sort-arrow", {
 	data: function () {
 		let url = window.location.toString()
 		let order = ""
+		let iconTitle = ""
 		let newArgs = []
 		if (window.location.search != null && window.location.search.length > 0) {
 			let queryString = window.location.search.substring(1)
@@ -14648,10 +14841,13 @@ Vue.component("sort-arrow", {
 		}
 		if (order == "asc") {
 			newArgs.push(this.name + "=desc")
+			iconTitle = "当前正序排列"
 		} else if (order == "desc") {
 			newArgs.push(this.name + "=asc")
+			iconTitle = "当前倒序排列"
 		} else {
 			newArgs.push(this.name + "=desc")
+			iconTitle = "当前正序排列"
 		}
 
 		let qIndex = url.indexOf("?")
@@ -14663,10 +14859,11 @@ Vue.component("sort-arrow", {
 
 		return {
 			order: order,
-			url: url
+			url: url,
+			iconTitle: iconTitle
 		}
 	},
-	template: `<a :href="url" title="排序">&nbsp; <i class="ui icon long arrow small" :class="{down: order == 'asc', up: order == 'desc', 'down grey': order == '' || order == null}"></i></a>`
+	template: `<a :href="url" :title="iconTitle">&nbsp; <i class="ui icon long arrow small" :class="{down: order == 'asc', up: order == 'desc', 'down grey': order == '' || order == null}"></i></a>`
 })
 
 Vue.component("user-link", {
@@ -15745,6 +15942,11 @@ Vue.component("node-level-selector", {
 				}
 			],
 			levelCode: levelCode
+		}
+	},
+	watch: {
+		levelCode: function (code) {
+			this.$emit("change", code)
 		}
 	},
 	template: `<div>
