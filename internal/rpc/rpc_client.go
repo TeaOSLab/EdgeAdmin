@@ -126,6 +126,10 @@ func (this *RPCClient) ServerRPC() pb.ServerServiceClient {
 	return pb.NewServerServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) ServerBandwidthStatRPC() pb.ServerBandwidthStatServiceClient {
+	return pb.NewServerBandwidthStatServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) ServerClientSystemMonthlyStatRPC() pb.ServerClientSystemMonthlyStatServiceClient {
 	return pb.NewServerClientSystemMonthlyStatServiceClient(this.pickConn())
 }
