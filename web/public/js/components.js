@@ -88,7 +88,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<option value="0">[选择集群]</option>
 		<option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
 	</select>
-</div>`}),Vue.component("node-ddos-protection-config-box",{props:["v-ddos-protection-config","v-default-configs","v-is-node","v-cluster-is-on"],data:function(){let e=this.vDdosProtectionConfig;return null==(e=null==e?{tcp:{isPrior:!1,isOn:!1,maxConnections:0,maxConnectionsPerIP:0,newConnectionsRate:0,allowIPList:[],ports:[]}}:e).tcp&&(e.tcp={isPrior:!1,isOn:!1,maxConnections:0,maxConnectionsPerIP:0,newConnectionsRate:0,allowIPList:[],ports:[]}),{config:e,defaultConfigs:this.vDefaultConfigs,isNode:this.vIsNode,isAddingPort:!1}},methods:{changeTCPPorts:function(e){this.config.tcp.ports=e},changeTCPAllowIPList:function(e){this.config.tcp.allowIPList=e}},template:`<div>
+</div>`}),Vue.component("node-ddos-protection-config-box",{props:["v-ddos-protection-config","v-default-configs","v-is-node","v-cluster-is-on"],data:function(){let e=this.vDdosProtectionConfig;return null==(e=null==e?{tcp:{isPrior:!1,isOn:!1,maxConnections:0,maxConnectionsPerIP:0,newConnectionsRate:0,denyNewConnectionsRate:0,allowIPList:[],ports:[]}}:e).tcp&&(e.tcp={isPrior:!1,isOn:!1,maxConnections:0,maxConnectionsPerIP:0,newConnectionsRate:0,denyNewConnectionsRate:0,allowIPList:[],ports:[]}),{config:e,defaultConfigs:this.vDefaultConfigs,isNode:this.vIsNode,isAddingPort:!1}},methods:{changeTCPPorts:function(e){this.config.tcp.ports=e},changeTCPAllowIPList:function(e){this.config.tcp.allowIPList=e}},template:`<div>
  <input type="hidden" name="ddosProtectionJSON" :value="JSON.stringify(config)"/>
 
  <p class="comment">功能说明：此功能为<strong>试验性质</strong>，目前仅能防御简单的DDoS攻击，试验期间建议仅在被攻击时启用，仅支持已安装<code-label>nftables v0.9</code-label>以上的Linux系统。<pro-warning-label></pro-warning-label></p>
@@ -129,6 +129,31 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 					<span class="ui label">个新连接/每分钟</span>
 				</div>
 				<p class="comment">单个IP可以创建TCP新连接的速率。如果为0，则默认为{{defaultConfigs.tcpNewConnectionsRate}}；最小值为{{defaultConfigs.tcpNewConnectionsMinRate}}。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>单IP TCP新连接速率黑名单</td>
+			<td>
+				<div class="ui fields">
+					<div class="ui field">
+						<div class="ui input right labeled">
+							<span class="ui label">超过</span>
+							<digit-input name="tcpDenyNewConnectionsRate" v-model="config.tcp.denyNewConnectionsRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpDenyNewConnectionsMinRate"></digit-input>
+							<span class="ui label">个新连接/每分钟</span>
+						</div>
+					</div>
+					<div class="ui field" style="line-height: 2.4em">
+						屏蔽
+					</div>
+					<div class="ui field">
+						<div class="ui input right labeled">
+							<digit-input name="tcpDenyNewConnectionsRateTimeout" v-model="config.tcp.denyNewConnectionsRateTimeout" maxlength="6" size="6" style="width: 5em"></digit-input>
+							<span class="ui label">秒</span>
+						</div>
+					</div>
+				</div>
+			
+				<p class="comment">单个IP可以如果在单位时间内创建的TCP连接数超过这个值，就自动加入到<code-label>nftables</code-label>黑名单中。如果为0，则默认为{{defaultConfigs.tcpDenyNewConnectionsRate}}；最小值为{{defaultConfigs.tcpDenyNewConnectionsMinRate}}；默认屏蔽{{defaultConfigs.tcpDenyNewConnectionsRateTimeout}}秒。</p>
 			</td>
 		</tr>
 		<tr>
@@ -427,7 +452,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		</tbody>
 	</table>
 	<div class="margin"></div>
-</div>`}),Vue.component("ns-node-ddos-protection-config-box",{props:["v-ddos-protection-config","v-default-configs","v-is-node","v-cluster-is-on"],data:function(){let e=this.vDdosProtectionConfig;return null==(e=null==e?{tcp:{isPrior:!1,isOn:!1,maxConnections:0,maxConnectionsPerIP:0,newConnectionsRate:0,allowIPList:[],ports:[]}}:e).tcp&&(e.tcp={isPrior:!1,isOn:!1,maxConnections:0,maxConnectionsPerIP:0,newConnectionsRate:0,allowIPList:[],ports:[]}),{config:e,defaultConfigs:this.vDefaultConfigs,isNode:this.vIsNode,isAddingPort:!1}},methods:{changeTCPPorts:function(e){this.config.tcp.ports=e},changeTCPAllowIPList:function(e){this.config.tcp.allowIPList=e}},template:`<div>
+</div>`}),Vue.component("ns-node-ddos-protection-config-box",{props:["v-ddos-protection-config","v-default-configs","v-is-node","v-cluster-is-on"],data:function(){let e=this.vDdosProtectionConfig;return null==(e=null==e?{tcp:{isPrior:!1,isOn:!1,maxConnections:0,maxConnectionsPerIP:0,newConnectionsRate:0,denyNewConnectionsRate:0,allowIPList:[],ports:[]}}:e).tcp&&(e.tcp={isPrior:!1,isOn:!1,maxConnections:0,maxConnectionsPerIP:0,newConnectionsRate:0,denyNewConnectionsRate:0,allowIPList:[],ports:[]}),{config:e,defaultConfigs:this.vDefaultConfigs,isNode:this.vIsNode,isAddingPort:!1}},methods:{changeTCPPorts:function(e){this.config.tcp.ports=e},changeTCPAllowIPList:function(e){this.config.tcp.allowIPList=e}},template:`<div>
  <input type="hidden" name="ddosProtectionJSON" :value="JSON.stringify(config)"/>
 
  <p class="comment">功能说明：此功能为<strong>试验性质</strong>，目前仅能防御简单的DDoS攻击，试验期间建议仅在被攻击时启用，仅支持已安装<code-label>nftables v0.9</code-label>以上的Linux系统。<pro-warning-label></pro-warning-label></p>
@@ -468,6 +493,31 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 					<span class="ui label">个新连接/每分钟</span>
 				</div>
 				<p class="comment">单个IP可以创建TCP新连接的速率。如果为0，则默认为{{defaultConfigs.tcpNewConnectionsRate}}；最小值为{{defaultConfigs.tcpNewConnectionsMinRate}}。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>单IP TCP新连接速率黑名单</td>
+			<td>
+				<div class="ui fields">
+					<div class="ui field">
+						<div class="ui input right labeled">
+							<span class="ui label">超过</span>
+							<digit-input name="tcpDenyNewConnectionsRate" v-model="config.tcp.denyNewConnectionsRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpDenyNewConnectionsMinRate"></digit-input>
+							<span class="ui label">个新连接/每分钟</span>
+						</div>
+					</div>
+					<div class="ui field" style="line-height: 2.4em">
+						屏蔽
+					</div>
+					<div class="ui field">
+						<div class="ui input right labeled">
+							<digit-input name="tcpDenyNewConnectionsRateTimeout" v-model="config.tcp.denyNewConnectionsRateTimeout" maxlength="6" size="6" style="width: 5em"></digit-input>
+							<span class="ui label">秒</span>
+						</div>
+					</div>
+				</div>
+			
+				<p class="comment">单个IP可以如果在单位时间内创建的TCP连接数超过这个值，就自动加入到<code-label>nftables</code-label>黑名单中。如果为0，则默认为{{defaultConfigs.tcpDenyNewConnectionsRate}}；最小值为{{defaultConfigs.tcpDenyNewConnectionsMinRate}}；默认屏蔽{{defaultConfigs.tcpDenyNewConnectionsRateTimeout}}秒。</p>
 			</td>
 		</tr>
 		<tr>
@@ -1469,7 +1519,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				<td>单IP最大并发连接数</td>
 				<td>
 					<input type="text" maxlength="6" v-model="maxConnsPerIP"/>
-					<p class="comment">单IP最大连接数，统计单个IP总连接数时不区分服务，超出此限制则响应用户<code-label>429</code-label>代码。为0表示不限制。</p>
+					<p class="comment">单IP最大连接数，统计单个IP总连接数时不区分服务，超出此限制则响应用户<code-label>429</code-label>代码。为0表示不限制。<span v-if="maxConnsPerIP <= 3" class="red">当前设置的并发连接数过低，可能会影响正常用户访问，建议不小于3。</span></p>
 				</td>
 			</tr>
 			<tr>
@@ -1688,7 +1738,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			</td>
 		</tr>
 	</table>
-</div>`}),Vue.component("http-firewall-checkpoint-cc",{props:["v-checkpoint"],data:function(){let e=[],t=60,i=1e3,s=!1,n={},o=(null==(n=null!=window.parent.UPDATING_RULE?window.parent.UPDATING_RULE.checkpointOptions:n)&&(n={}),0==(e=null!=n.keys?n.keys:e).length&&(e=["${remoteAddr}","${requestPath}"]),null!=n.period&&(t=n.period),null!=n.threshold&&(i=n.threshold),null!=n.ignoreCommonFiles&&"boolean"==typeof n.ignoreCommonFiles&&(s=n.ignoreCommonFiles),this);return setTimeout(function(){o.change()},100),{keys:e,period:t,threshold:i,ignoreCommonFiles:s,options:{},value:i}},watch:{period:function(){this.change()},threshold:function(){this.change()},ignoreCommonFiles:function(){this.change()}},methods:{changeKeys:function(e){this.keys=e,this.change()},change:function(){let e=parseInt(this.period.toString()),t=((isNaN(e)||e<=0)&&(e=60),parseInt(this.threshold.toString())),i=((isNaN(t)||t<=0)&&(t=1e3),this.value=t,this.ignoreCommonFiles);"boolean"!=typeof i&&(i=!1),this.vCheckpoint.options=[{code:"keys",value:this.keys},{code:"period",value:e},{code:"threshold",value:t},{code:"ignoreCommonFiles",value:i}]}},template:`<div>
+</div>`}),Vue.component("http-firewall-checkpoint-cc",{props:["v-checkpoint"],data:function(){let e=[],t=60,i=1e3,s=!1,n={},o=(null==(n=null!=window.parent.UPDATING_RULE?window.parent.UPDATING_RULE.checkpointOptions:n)&&(n={}),0==(e=null!=n.keys?n.keys:e).length&&(e=["${remoteAddr}","${requestPath}"]),null!=n.period&&(t=n.period),null!=n.threshold&&(i=n.threshold),null!=n.ignoreCommonFiles&&"boolean"==typeof n.ignoreCommonFiles&&(s=n.ignoreCommonFiles),this);return setTimeout(function(){o.change()},100),{keys:e,period:t,threshold:i,ignoreCommonFiles:s,options:{},value:i}},watch:{period:function(){this.change()},threshold:function(){this.change()},ignoreCommonFiles:function(){this.change()}},methods:{changeKeys:function(e){this.keys=e,this.change()},change:function(){let e=parseInt(this.period.toString()),t=((isNaN(e)||e<=0)&&(e=60),parseInt(this.threshold.toString())),i=((isNaN(t)||t<=0)&&(t=1e3),this.value=t,this.ignoreCommonFiles);"boolean"!=typeof i&&(i=!1),this.vCheckpoint.options=[{code:"keys",value:this.keys},{code:"period",value:e},{code:"threshold",value:t},{code:"ignoreCommonFiles",value:i}]},thresholdTooLow:function(){let e=parseInt(this.threshold.toString());return 0<(e=isNaN(e)||e<=0?1e3:e)&&e<5}},template:`<div>
 	<input type="hidden" name="operator" value="gt"/>
 	<input type="hidden" name="value" :value="value"/>
 	<table class="ui table">
@@ -1711,6 +1761,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<td>阈值 *</td>
 			<td>
 				<input type="text" v-model="threshold" style="width: 6em" maxlength="8"/>
+				<p class="comment" v-if="thresholdTooLow()"><span class="red">对于网站类应用来说，当前阈值设置的太低，有可能会影响用户正常访问。</span></p>
 			</td>
 		</tr>
 		<tr>
@@ -1747,10 +1798,10 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			</td>
 		</tr>
 	</table>
-</div>`}),Vue.component("http-access-log-partitions-box",{props:["v-partition","v-day"],mounted:function(){let t=this;Tea.action("/servers/logs/partitionData").params({day:this.vDay}).success(function(e){t.partitions=[],e.data.partitions.reverse().forEach(function(e){t.partitions.push({code:e,isDisabled:!1})}),0<t.partitions.length&&(null==t.vPartition||t.vPartition<0)&&(t.selectedPartition=t.partitions[0].code)}).post()},data:function(){return{partitions:[],selectedPartition:this.vPartition}},methods:{url:function(e){let t=window.location.toString();return 0<(t=(t=(t=(t=t.replace(/\?partition=-?\d+/,"?")).replace(/\?requestId=-?\d+/,"?")).replace(/&partition=-?\d+/,"")).replace(/&requestId=-?\d+/,"")).indexOf("?")?t+="&partition="+e:t+="?partition="+e,t},disable:function(t){this.partitions.forEach(function(e){e.code==t&&(e.isDisabled=!0)})}},template:`<div v-if="partitions.length > 1">
+</div>`}),Vue.component("http-access-log-partitions-box",{props:["v-partition","v-day","v-query"],mounted:function(){let t=this;Tea.action("/servers/logs/partitionData").params({day:this.vDay}).success(function(e){t.partitions=[],e.data.partitions.reverse().forEach(function(e){t.partitions.push({code:e,isDisabled:!1,hasLogs:!1})}),0<t.partitions.length&&((null==t.vPartition||t.vPartition<0)&&(t.selectedPartition=t.partitions[0].code),1<t.partitions.length&&t.checkLogs())}).post()},data:function(){return{partitions:[],selectedPartition:this.vPartition,checkingPartition:0}},methods:{url:function(e){let t=window.location.toString();return 0<(t=(t=(t=(t=t.replace(/\?partition=-?\d+/,"?")).replace(/\?requestId=-?\d+/,"?")).replace(/&partition=-?\d+/,"")).replace(/&requestId=-?\d+/,"")).indexOf("?")?t+="&partition="+e:t+="?partition="+e,t},disable:function(t){this.partitions.forEach(function(e){e.code==t&&(e.isDisabled=!0)})},checkLogs:function(){let t=this,i=this.checkingPartition,s={partition:i},e=this.vQuery;null!=e&&0!=e.length&&(e.split("&").forEach(function(e){e=e.split("=");s[e[0]]=decodeURIComponent(e[1])}),Tea.action("/servers/logs/hasLogs").params(s).post().success(function(e){e.data.hasLogs&&(t.partitions[t.partitions.length-1-i].hasLogs=!0),++i>=t.partitions.length||(t.checkingPartition=i,t.checkLogs())}))}},template:`<div v-if="partitions.length > 1">
 	<div class="ui divider" style="margin-bottom: 0"></div>
 	<div class="ui menu text small blue" style="margin-bottom: 0; margin-top: 0">
-		<a v-for="(p, index) in partitions" :href="url(p.code)" class="item" :class="{active: selectedPartition == p.code, disabled: p.isDisabled}">分表{{p.code+1}} &nbsp; &nbsp; <span class="disabled" v-if="index != partitions.length - 1">|</span></a>
+		<a v-for="(p, index) in partitions" :href="url(p.code)" class="item" :class="{active: selectedPartition == p.code, disabled: p.isDisabled}">分表{{p.code+1}} <span v-if="p.hasLogs">&nbsp; <dot></dot></span> &nbsp; &nbsp; <span class="disabled" v-if="index != partitions.length - 1">|</span></a>
 	</div>
 	<div class="ui divider" style="margin-top: 0"></div>
 </div>`}),Vue.component("http-cache-refs-config-box",{props:["v-cache-refs","v-cache-config","v-cache-policy-id","v-web-id"],mounted:function(){let s=this;sortTable(function(e){let i=[];e.forEach(function(t){s.refs.forEach(function(e){e.id==t&&i.push(e)})}),s.updateRefs(i),s.change()})},data:function(){let e=this.vCacheRefs,t=(null==e&&(e=[]),0);return e.forEach(function(e){t++,e.id=t}),{refs:e,id:t}},methods:{addRef:function(e){window.UPDATING_CACHE_REF=null;let t=window.innerWidth,i=(1024<t&&(t=1024),window.innerHeight),n=(500<i&&(i=500),this);teaweb.popup("/servers/server/settings/cache/createPopup?isReverse="+(e?1:0),{width:t+"px",height:i+"px",callback:function(e){let s=e.data.cacheRef;if(null!=s.conds){if(n.id++,s.id=n.id,s.isReverse){let t=[],i=!1;n.refs.forEach(function(e){e.isReverse||i||(t.push(s),i=!0),t.push(e)}),i||t.push(s),n.updateRefs(t)}else n.refs.push(s);n.change()}}})},updateRef:function(t,e){window.UPDATING_CACHE_REF=e;let i=window.innerWidth,s=(1024<i&&(i=1024),window.innerHeight),n=(500<s&&(s=500),this);teaweb.popup("/servers/server/settings/cache/createPopup",{width:i+"px",height:s+"px",callback:function(e){e.data.cacheRef.id=n.refs[t].id,Vue.set(n.refs,t,e.data.cacheRef),n.change(),n.$refs.cacheRef[t].updateConds(e.data.cacheRef.conds),n.$refs.cacheRef[t].notifyChange()}})},disableRef:function(e){e.isOn=!1,this.change()},enableRef:function(e){e.isOn=!0,this.change()},removeRef:function(e){let t=this;teaweb.confirm("确定要删除此缓存设置吗？",function(){t.refs.$remove(e),t.change()})},updateRefs:function(e){this.refs=e,null!=this.vCacheConfig&&(this.vCacheConfig.cacheRefs=e)},timeUnitName:function(e){switch(e){case"ms":return"毫秒";case"second":return"秒";case"minute":return"分钟";case"hour":return"小时";case"day":return"天";case"week":return"周 "}return e},change:function(){this.$forceUpdate(),null!=this.vCachePolicyId&&0<this.vCachePolicyId?Tea.action("/servers/components/cache/updateRefs").params({cachePolicyId:this.vCachePolicyId,refsJSON:JSON.stringify(this.refs)}).post():null!=this.vWebId&&0<this.vWebId&&Tea.action("/servers/server/settings/cache/updateRefs").params({webId:this.vWebId,refsJSON:JSON.stringify(this.refs)}).success(function(e){e.data.isUpdated&&teaweb.successToast("保存成功")}).post()}},template:`<div>
@@ -2165,7 +2216,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 <h1>403 Forbidden</h1>
 <address>Request ID: \${requestId}.</address>
 </body>
-</html>`;return{id:t,actions:this.vActions,configs:e,isAdding:!1,editingIndex:-1,action:null,actionCode:"",actionOptions:{},ipListLevels:[],blockTimeout:"",blockScope:"global",captchaLife:"",captchaMaxFails:"",captchaFailBlockTimeout:"",get302Life:"",post307Life:"",recordIPType:"black",recordIPLevel:"critical",recordIPTimeout:"",recordIPListId:0,recordIPListName:"",tagTags:[],pageStatus:403,pageBody:i,defaultPageBody:i,goGroupName:"",goGroupId:0,goGroup:null,goSetId:0,goSetName:""}},watch:{actionCode:function(i){this.action=this.actions.$find(function(e,t){return t.code==i}),this.actionOptions={}},blockTimeout:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.timeout=0:this.actionOptions.timeout=e},blockScope:function(e){this.actionOptions.scope=e},captchaLife:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.life=0:this.actionOptions.life=e},captchaMaxFails:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.maxFails=0:this.actionOptions.maxFails=e},captchaFailBlockTimeout:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.failBlockTimeout=0:this.actionOptions.failBlockTimeout=e},get302Life:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.life=0:this.actionOptions.life=e},post307Life:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.life=0:this.actionOptions.life=e},recordIPType:function(e){this.recordIPListId=0},recordIPTimeout:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.timeout=0:this.actionOptions.timeout=e},goGroupId:function(i){var e=this.vFirewallPolicy.inbound.groups.$find(function(e,t){return t.id==i});this.goGroup=e,this.goGroupName=null==e?"":e.name,this.goSetId=0,this.goSetName=""},goSetId:function(i){var e;null!=this.goGroup&&(null==(e=this.goGroup.sets.$find(function(e,t){return t.id==i}))?(this.goSetId=0,this.goSetName=""):this.goSetName=e.name)}},methods:{add:function(){this.action=null,this.actionCode="block",this.isAdding=!0,this.actionOptions={},this.blockTimeout="",this.blockScope="global",this.captchaLife="",this.captchaMaxFails="",this.captchaFailBlockTimeout="",this.get302Life="",this.post307Life="",this.recordIPLevel="critical",this.recordIPType="black",this.recordIPTimeout="",this.recordIPListId=0,this.recordIPListName="",this.tagTags=[],this.pageStatus=403,this.pageBody=this.defaultPageBody,this.goGroupName="",this.goGroupId=0,this.goGroup=null,this.goSetId=0,this.goSetName="";let i=this;this.action=this.vActions.$find(function(e,t){return t.code==i.actionCode}),this.scroll()},remove:function(e){this.isAdding=!1,this.editingIndex=-1,this.configs.$remove(e)},update:function(e,i){if(this.isAdding&&this.editingIndex==e)this.cancel();else{switch(this.add(),this.isAdding=!0,this.editingIndex=e,this.actionCode=i.code,i.code){case"block":this.blockTimeout="",(null!=i.options.timeout||0<i.options.timeout)&&(this.blockTimeout=i.options.timeout.toString()),null!=i.options.scope&&0<i.options.scope.length?this.blockScope=i.options.scope:this.blockScope="global";break;case"allow":case"log":break;case"captcha":this.captchaLife="",(null!=i.options.life||0<i.options.life)&&(this.captchaLife=i.options.life.toString()),this.captchaMaxFails="",(null!=i.options.maxFails||0<i.options.maxFails)&&(this.captchaMaxFails=i.options.maxFails.toString()),this.captchaFailBlockTimeout="",(null!=i.options.failBlockTimeout||0<i.options.failBlockTimeout)&&(this.captchaFailBlockTimeout=i.options.failBlockTimeout.toString());break;case"notify":break;case"get_302":this.get302Life="",(null!=i.options.life||0<i.options.life)&&(this.get302Life=i.options.life.toString());break;case"post_307":this.post307Life="",(null!=i.options.life||0<i.options.life)&&(this.post307Life=i.options.life.toString());break;case"record_ip":if(null!=i.options){this.recordIPLevel=i.options.level,this.recordIPType=i.options.type,0<i.options.timeout&&(this.recordIPTimeout=i.options.timeout.toString());let e=this;setTimeout(function(){e.recordIPListId=i.options.ipListId,e.recordIPListName=i.options.ipListName})}break;case"tag":this.tagTags=[],null!=i.options.tags&&(this.tagTags=i.options.tags);break;case"page":this.pageStatus=403,this.pageBody=this.defaultPageBody,null!=i.options.status&&(this.pageStatus=i.options.status),null!=i.options.body&&(this.pageBody=i.options.body);break;case"go_group":null!=i.options&&(this.goGroupName=i.options.groupName,this.goGroupId=i.options.groupId,this.goGroup=this.vFirewallPolicy.inbound.groups.$find(function(e,t){return t.id==i.options.groupId}));break;case"go_set":if(null!=i.options){this.goGroupName=i.options.groupName,this.goGroupId=i.options.groupId,this.goGroup=this.vFirewallPolicy.inbound.groups.$find(function(e,t){return t.id==i.options.groupId});let t=this;setTimeout(function(){var e;t.goSetId=i.options.setId,null!=t.goGroup&&null!=(e=t.goGroup.sets.$find(function(e,t){return t.id==i.options.setId}))&&(t.goSetName=e.name)})}}this.scroll()}},cancel:function(){this.isAdding=!1,this.editingIndex=-1},confirm:function(){if(null!=this.action){if(null==this.actionOptions&&(this.actionOptions={}),"record_ip"==this.actionCode){let e=parseInt(this.recordIPTimeout);if(isNaN(e)&&(e=0),this.recordIPListId<=0)return;this.actionOptions={type:this.recordIPType,level:this.recordIPLevel,timeout:e,ipListId:this.recordIPListId,ipListName:this.recordIPListName}}else if("tag"==this.actionCode){if(null==this.tagTags||0==this.tagTags.length)return;this.actionOptions={tags:this.tagTags}}else if("page"==this.actionCode){let e=this.pageStatus.toString();e=e.match(/^\d{3}$/)?parseInt(e):403,this.actionOptions={status:e,body:this.pageBody}}else if("go_group"==this.actionCode){let e=this.goGroupId;if("string"==typeof e&&(e=parseInt(e),isNaN(e)&&(e=0)),e<=0)return;this.actionOptions={groupId:e.toString(),groupName:this.goGroupName}}else if("go_set"==this.actionCode){let e=this.goGroupId,t=("string"==typeof e&&(e=parseInt(e),isNaN(e)&&(e=0)),this.goSetId);if("string"==typeof t&&(t=parseInt(t),isNaN(t)&&(t=0)),t<=0)return;this.actionOptions={groupId:e.toString(),groupName:this.goGroupName,setId:t.toString(),setName:this.goSetName}}let e={};for(var t in this.actionOptions)this.actionOptions.hasOwnProperty(t)&&(e[t]=this.actionOptions[t]);-1<this.editingIndex?this.configs[this.editingIndex]={id:this.configs[this.editingIndex].id,code:this.actionCode,name:this.action.name,options:e}:this.configs.push({id:this.id++,code:this.actionCode,name:this.action.name,options:e}),this.cancel()}},removeRecordIPList:function(){this.recordIPListId=0},selectRecordIPList:function(){let t=this;teaweb.popup("/servers/iplists/selectPopup?type="+this.recordIPType,{width:"50em",height:"30em",callback:function(e){t.recordIPListId=e.data.list.id,t.recordIPListName=e.data.list.name}})},changeTags:function(e){this.tagTags=e},loadJS:function(t){if("undefined"!=typeof Sortable)t();else{let e=document.createElement("script");e.setAttribute("src","/js/sortable.min.js"),e.addEventListener("load",function(){t()}),document.head.appendChild(e)}},scroll:function(){setTimeout(function(){let e=document.getElementsByClassName("main");0<e.length&&e[0].scrollTo(0,1e3)},10)}},template:`<div>
+</html>`;return{id:t,actions:this.vActions,configs:e,isAdding:!1,editingIndex:-1,action:null,actionCode:"",actionOptions:{},ipListLevels:[],blockTimeout:"",blockScope:"global",captchaLife:"",captchaMaxFails:"",captchaFailBlockTimeout:"",get302Life:"",post307Life:"",recordIPType:"black",recordIPLevel:"critical",recordIPTimeout:"",recordIPListId:0,recordIPListName:"",tagTags:[],pageStatus:403,pageBody:i,defaultPageBody:i,goGroupName:"",goGroupId:0,goGroup:null,goSetId:0,goSetName:"",jsCookieLife:"",jsCookieMaxFails:"",jsCookieFailBlockTimeout:""}},watch:{actionCode:function(i){this.action=this.actions.$find(function(e,t){return t.code==i}),this.actionOptions={}},blockTimeout:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.timeout=0:this.actionOptions.timeout=e},blockScope:function(e){this.actionOptions.scope=e},captchaLife:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.life=0:this.actionOptions.life=e},captchaMaxFails:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.maxFails=0:this.actionOptions.maxFails=e},captchaFailBlockTimeout:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.failBlockTimeout=0:this.actionOptions.failBlockTimeout=e},get302Life:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.life=0:this.actionOptions.life=e},post307Life:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.life=0:this.actionOptions.life=e},recordIPType:function(e){this.recordIPListId=0},recordIPTimeout:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.timeout=0:this.actionOptions.timeout=e},goGroupId:function(i){var e=this.vFirewallPolicy.inbound.groups.$find(function(e,t){return t.id==i});this.goGroup=e,this.goGroupName=null==e?"":e.name,this.goSetId=0,this.goSetName=""},goSetId:function(i){var e;null!=this.goGroup&&(null==(e=this.goGroup.sets.$find(function(e,t){return t.id==i}))?(this.goSetId=0,this.goSetName=""):this.goSetName=e.name)},jsCookieLife:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.life=0:this.actionOptions.life=e},jsCookieMaxFails:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.maxFails=0:this.actionOptions.maxFails=e},jsCookieFailBlockTimeout:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.failBlockTimeout=0:this.actionOptions.failBlockTimeout=e}},methods:{add:function(){this.action=null,this.actionCode="block",this.isAdding=!0,this.actionOptions={},this.blockTimeout="",this.blockScope="global",this.captchaLife="",this.captchaMaxFails="",this.captchaFailBlockTimeout="",this.jsCookieLife="",this.jsCookieMaxFails="",this.jsCookieFailBlockTimeout="",this.get302Life="",this.post307Life="",this.recordIPLevel="critical",this.recordIPType="black",this.recordIPTimeout="",this.recordIPListId=0,this.recordIPListName="",this.tagTags=[],this.pageStatus=403,this.pageBody=this.defaultPageBody,this.goGroupName="",this.goGroupId=0,this.goGroup=null,this.goSetId=0,this.goSetName="";let i=this;this.action=this.vActions.$find(function(e,t){return t.code==i.actionCode}),this.scroll()},remove:function(e){this.isAdding=!1,this.editingIndex=-1,this.configs.$remove(e)},update:function(e,i){if(this.isAdding&&this.editingIndex==e)this.cancel();else{switch(this.add(),this.isAdding=!0,this.editingIndex=e,this.actionCode=i.code,i.code){case"block":this.blockTimeout="",(null!=i.options.timeout||0<i.options.timeout)&&(this.blockTimeout=i.options.timeout.toString()),null!=i.options.scope&&0<i.options.scope.length?this.blockScope=i.options.scope:this.blockScope="global";break;case"allow":case"log":break;case"captcha":this.captchaLife="",(null!=i.options.life||0<i.options.life)&&(this.captchaLife=i.options.life.toString()),this.captchaMaxFails="",(null!=i.options.maxFails||0<i.options.maxFails)&&(this.captchaMaxFails=i.options.maxFails.toString()),this.captchaFailBlockTimeout="",(null!=i.options.failBlockTimeout||0<i.options.failBlockTimeout)&&(this.captchaFailBlockTimeout=i.options.failBlockTimeout.toString());break;case"js_cookie":this.jsCookieLife="",(null!=i.options.life||0<i.options.life)&&(this.jsCookieLife=i.options.life.toString()),this.jsCookieMaxFails="",(null!=i.options.maxFails||0<i.options.maxFails)&&(this.jsCookieMaxFails=i.options.maxFails.toString()),this.jsCookieFailBlockTimeout="",(null!=i.options.failBlockTimeout||0<i.options.failBlockTimeout)&&(this.jsCookieFailBlockTimeout=i.options.failBlockTimeout.toString());break;case"notify":break;case"get_302":this.get302Life="",(null!=i.options.life||0<i.options.life)&&(this.get302Life=i.options.life.toString());break;case"post_307":this.post307Life="",(null!=i.options.life||0<i.options.life)&&(this.post307Life=i.options.life.toString());break;case"record_ip":if(null!=i.options){this.recordIPLevel=i.options.level,this.recordIPType=i.options.type,0<i.options.timeout&&(this.recordIPTimeout=i.options.timeout.toString());let e=this;setTimeout(function(){e.recordIPListId=i.options.ipListId,e.recordIPListName=i.options.ipListName})}break;case"tag":this.tagTags=[],null!=i.options.tags&&(this.tagTags=i.options.tags);break;case"page":this.pageStatus=403,this.pageBody=this.defaultPageBody,null!=i.options.status&&(this.pageStatus=i.options.status),null!=i.options.body&&(this.pageBody=i.options.body);break;case"go_group":null!=i.options&&(this.goGroupName=i.options.groupName,this.goGroupId=i.options.groupId,this.goGroup=this.vFirewallPolicy.inbound.groups.$find(function(e,t){return t.id==i.options.groupId}));break;case"go_set":if(null!=i.options){this.goGroupName=i.options.groupName,this.goGroupId=i.options.groupId,this.goGroup=this.vFirewallPolicy.inbound.groups.$find(function(e,t){return t.id==i.options.groupId});let t=this;setTimeout(function(){var e;t.goSetId=i.options.setId,null!=t.goGroup&&null!=(e=t.goGroup.sets.$find(function(e,t){return t.id==i.options.setId}))&&(t.goSetName=e.name)})}}this.scroll()}},cancel:function(){this.isAdding=!1,this.editingIndex=-1},confirm:function(){if(null!=this.action){if(null==this.actionOptions&&(this.actionOptions={}),"record_ip"==this.actionCode){let e=parseInt(this.recordIPTimeout);if(isNaN(e)&&(e=0),this.recordIPListId<=0)return;this.actionOptions={type:this.recordIPType,level:this.recordIPLevel,timeout:e,ipListId:this.recordIPListId,ipListName:this.recordIPListName}}else if("tag"==this.actionCode){if(null==this.tagTags||0==this.tagTags.length)return;this.actionOptions={tags:this.tagTags}}else if("page"==this.actionCode){let e=this.pageStatus.toString();e=e.match(/^\d{3}$/)?parseInt(e):403,this.actionOptions={status:e,body:this.pageBody}}else if("go_group"==this.actionCode){let e=this.goGroupId;if("string"==typeof e&&(e=parseInt(e),isNaN(e)&&(e=0)),e<=0)return;this.actionOptions={groupId:e.toString(),groupName:this.goGroupName}}else if("go_set"==this.actionCode){let e=this.goGroupId,t=("string"==typeof e&&(e=parseInt(e),isNaN(e)&&(e=0)),this.goSetId);if("string"==typeof t&&(t=parseInt(t),isNaN(t)&&(t=0)),t<=0)return;this.actionOptions={groupId:e.toString(),groupName:this.goGroupName,setId:t.toString(),setName:this.goSetName}}let e={};for(var t in this.actionOptions)this.actionOptions.hasOwnProperty(t)&&(e[t]=this.actionOptions[t]);-1<this.editingIndex?this.configs[this.editingIndex]={id:this.configs[this.editingIndex].id,code:this.actionCode,name:this.action.name,options:e}:this.configs.push({id:this.id++,code:this.actionCode,name:this.action.name,options:e}),this.cancel()}},removeRecordIPList:function(){this.recordIPListId=0},selectRecordIPList:function(){let t=this;teaweb.popup("/servers/iplists/selectPopup?type="+this.recordIPType,{width:"50em",height:"30em",callback:function(e){t.recordIPListId=e.data.list.id,t.recordIPListName=e.data.list.name}})},changeTags:function(e){this.tagTags=e},loadJS:function(t){if("undefined"!=typeof Sortable)t();else{let e=document.createElement("script");e.setAttribute("src","/js/sortable.min.js"),e.addEventListener("load",function(){t()}),document.head.appendChild(e)}},scroll:function(){setTimeout(function(){let e=document.getElementsByClassName("main");0<e.length&&e[0].scrollTo(0,1e3)},10)}},template:`<div>
 	<input type="hidden" name="actionsJSON" :value="JSON.stringify(configs)"/>
 	<div v-show="configs.length > 0" style="margin-bottom: 0.5em" id="actions-box"> 
 		<div v-for="(config, index) in configs" :data-index="index" :key="config.id" class="ui label small basic" :class="{blue: index == editingIndex}" style="margin-bottom: 0.4em">
@@ -2176,6 +2227,11 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			
 			<!-- captcha -->
 			<span v-if="config.code == 'captcha' && config.options.life > 0">：有效期{{config.options.life}}秒
+				<span v-if="config.options.maxFails > 0"> / 最多失败{{config.options.maxFails}}次</span>
+			</span>
+			
+			<!-- js cookie -->
+			<span v-if="config.code == 'js_cookie' && config.options.life > 0">：有效期{{config.options.life}}秒
 				<span v-if="config.options.maxFails > 0"> / 最多失败{{config.options.maxFails}}次</span>
 			</span>
 			
@@ -2272,6 +2328,38 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				<td>
 					<div class="ui input right labeled">
 						<input type="text" style="width: 5em" maxlength="9" v-model="captchaFailBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">秒</span>
+					</div>
+					<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时间；如果为空或者为0表示默认。</p>
+				</td>
+			</tr>
+			
+			<!-- js cookie -->
+			<tr v-if="actionCode == 'js_cookie'">
+				<td>有效时间</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="jsCookieLife" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">秒</span>
+					</div>
+					<p class="comment">验证通过后在这个时间内不再验证；如果为空或者为0表示默认。</p>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'js_cookie'">
+				<td>最多失败次数</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="jsCookieMaxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">次</span>
+					</div>
+					<p class="comment">允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单；如果为空或者为0表示默认。</p>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'js_cookie'">
+				<td>失败拦截时间</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="jsCookieFailBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">秒</span>
 					</div>
 					<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时间；如果为空或者为0表示默认。</p>
@@ -4611,7 +4699,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			</a>
 		</div>
 	</div>
-</div>`}),Vue.component("time-duration-box",{props:["v-name","v-value","v-count","v-unit"],mounted:function(){this.change()},data:function(){let e=this.vValue;return"number"!=typeof(e=null==e?{count:this.vCount,unit:this.vUnit}:e).count&&(e.count=-1),{duration:e,countString:0<=e.count?e.count.toString():""}},watch:{countString:function(e){var e=e.trim();0==e.length?this.duration.count=-1:(e=parseInt(e),isNaN(e)||(this.duration.count=e),this.change())}},methods:{change:function(){this.$emit("change",this.duration)}},template:`<div class="ui fields inline" style="padding-bottom: 0; margin-bottom: 0">
+</div>`}),Vue.component("dot",{template:'<span style="display: inline-block; padding-bottom: 3px"><i class="icon circle tiny"></i></span>'}),Vue.component("time-duration-box",{props:["v-name","v-value","v-count","v-unit"],mounted:function(){this.change()},data:function(){let e=this.vValue;return"number"!=typeof(e=null==e?{count:this.vCount,unit:this.vUnit}:e).count&&(e.count=-1),{duration:e,countString:0<=e.count?e.count.toString():""}},watch:{countString:function(e){var e=e.trim();0==e.length?this.duration.count=-1:(e=parseInt(e),isNaN(e)||(this.duration.count=e),this.change())}},methods:{change:function(){this.$emit("change",this.duration)}},template:`<div class="ui fields inline" style="padding-bottom: 0; margin-bottom: 0">
 	<input type="hidden" :name="vName" :value="JSON.stringify(duration)"/>
 	<div class="ui field">
 		<input type="text" v-model="countString" maxlength="11" size="11" @keypress.enter.prevent="1"/>
@@ -4685,7 +4773,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			</div> 
 		</div>`}),Vue.component("datepicker",{props:["v-name","v-value","v-bottom-left"],mounted:function(){let t=this;teaweb.datepicker(this.$refs.dayInput,function(e){t.day=e,t.change()},!!this.vBottomLeft)},data:function(){let e=this.vName,t=(null==e&&(e="day"),this.vValue);return null==t&&(t=""),{name:e,day:t}},methods:{change:function(){this.$emit("change",this.day)}},template:`<div style="display: inline-block">
 	<input type="text" :name="name" v-model="day" placeholder="YYYY-MM-DD" style="width:8.6em" maxlength="10" @input="change" ref="dayInput" autocomplete="off"/>
-</div>`}),Vue.component("sort-arrow",{props:["name"],data:function(){let e=window.location.toString(),n="",o=[];if(null!=window.location.search&&0<window.location.search.length){let e=window.location.search.substring(1),t=e.split("&"),s=this;t.forEach(function(e){var t,i=e.indexOf("=");0<i?(t=e.substring(0,i),i=e.substring(i+1),t==s.name?n=i:"page"!=t&&"asc"!=i&&"desc"!=i&&o.push(e)):o.push(e)})}"asc"!=n&&"desc"==n?o.push(this.name+"=asc"):o.push(this.name+"=desc");var t=e.indexOf("?");return e=0<t?e.substring(0,t)+"?"+o.join("&"):e+"?"+o.join("&"),{order:n,url:e}},template:`<a :href="url" title="排序">&nbsp; <i class="ui icon long arrow small" :class="{down: order == 'asc', up: order == 'desc', 'down grey': order == '' || order == null}"></i></a>`}),Vue.component("user-link",{props:["v-user","v-keyword"],data:function(){let e=this.vUser;return{user:e=null==e?{id:0,username:"",fullname:""}:e}},template:`<div style="display: inline-block">
+</div>`}),Vue.component("sort-arrow",{props:["name"],data:function(){let e=window.location.toString(),n="",t="",o=[];if(null!=window.location.search&&0<window.location.search.length){let e=window.location.search.substring(1),t=e.split("&"),s=this;t.forEach(function(e){var t,i=e.indexOf("=");0<i?(t=e.substring(0,i),i=e.substring(i+1),t==s.name?n=i:"page"!=t&&"asc"!=i&&"desc"!=i&&o.push(e)):o.push(e)})}t="asc"!=n&&"desc"==n?(o.push(this.name+"=asc"),"当前倒序排列"):(o.push(this.name+"=desc"),"当前正序排列");var i=e.indexOf("?");return e=0<i?e.substring(0,i)+"?"+o.join("&"):e+"?"+o.join("&"),{order:n,url:e,iconTitle:t}},template:`<a :href="url" :title="iconTitle">&nbsp; <i class="ui icon long arrow small" :class="{down: order == 'asc', up: order == 'desc', 'down grey': order == '' || order == null}"></i></a>`}),Vue.component("user-link",{props:["v-user","v-keyword"],data:function(){let e=this.vUser;return{user:e=null==e?{id:0,username:"",fullname:""}:e}},template:`<div style="display: inline-block">
 	<span v-if="user.id > 0"><keyword :v-word="vKeyword">{{user.fullname}}</keyword><span class="small grey">（<keyword :v-word="vKeyword">{{user.username}}</keyword>）</span></span>
 	<span v-else class="disabled">[已删除]</span>
 </div>`}),Vue.component("report-node-groups-selector",{props:["v-group-ids"],mounted:function(){let t=this;Tea.action("/clusters/monitors/groups/options").post().success(function(e){t.groups=e.data.groups.map(function(e){return e.isChecked=t.groupIds.$contains(e.id),e}),t.isLoaded=!0})},data:function(){var e=this.vGroupIds;return{groups:[],groupIds:e=null==e?[]:e,isLoaded:!1,allGroups:0==e.length}},methods:{check:function(e){e.isChecked=!e.isChecked,this.groupIds=[];let t=this;this.groups.forEach(function(e){e.isChecked&&t.groupIds.push(e.id)}),this.change()},change:function(){let t=this,s=[];this.groupIds.forEach(function(i){var e=t.groups.$find(function(e,t){return t.id==i});null!=e&&s.push({id:e.id,name:e.name})}),this.$emit("change",s)}},watch:{allGroups:function(e){e&&(this.groupIds=[],this.groups.forEach(function(e){e.isChecked=!1})),this.change()}},template:`<div>
@@ -4994,7 +5082,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	</div>
 </div>`}),Vue.component("node-combo-box",{props:["v-cluster-id","v-node-id"],data:function(){let t=this;return Tea.action("/clusters/nodeOptions").params({clusterId:this.vClusterId}).post().success(function(e){t.nodes=e.data.nodes}),{nodes:[]}},template:`<div v-if="nodes.length > 0">
 	<combo-box title="节点" placeholder="节点名称" :v-items="nodes" name="nodeId" :v-value="vNodeId"></combo-box>
-</div>`}),Vue.component("node-level-selector",{props:["v-node-level"],data:function(){let e=this.vNodeLevel;return{levels:[{name:"边缘节点",code:1,description:"普通的边缘节点。"},{name:"L2节点",code:2,description:"特殊的边缘节点，同时负责同组上一级节点的回源。"}],levelCode:e=null==e||e<1?1:e}},template:`<div>
+</div>`}),Vue.component("node-level-selector",{props:["v-node-level"],data:function(){let e=this.vNodeLevel;return{levels:[{name:"边缘节点",code:1,description:"普通的边缘节点。"},{name:"L2节点",code:2,description:"特殊的边缘节点，同时负责同组上一级节点的回源。"}],levelCode:e=null==e||e<1?1:e}},watch:{levelCode:function(e){this.$emit("change",e)}},template:`<div>
 	<select class="ui dropdown auto-width" name="level" v-model="levelCode">
 	<option v-for="level in levels" :value="level.code">{{level.name}}</option>
 </select>
