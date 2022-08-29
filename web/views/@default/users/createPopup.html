@@ -38,12 +38,13 @@
                 <p class="comment">用户发布的网站服务会自动部署到此集群。</p>
             </td>
         </tr>
-        <tr>
+        <tr v-show="teaIsPlus">
             <td>开通功能</td>
             <td>
                 <radio name="featuresType" value="default" :v-value="'default'">默认功能</radio>
                 &nbsp; &nbsp;
                 <radio name="featuresType" :v-value="'all'">全部功能</radio>
+                <p class="comment">用户默认开通的功能可以在<a href="/users/setting" target="_blank">[这里]</a>设置。</p>
             </td>
         </tr>
         <tr>
