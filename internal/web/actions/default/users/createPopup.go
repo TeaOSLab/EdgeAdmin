@@ -2,6 +2,7 @@ package users
 
 import (
 	"encoding/json"
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -110,46 +111,48 @@ func (this *CreatePopupAction) RunPost(params struct {
 	userId = createResp.UserId
 
 	// 功能
-	if params.FeaturesType == "default" {
-		resp, err := this.RPC().SysSettingRPC().ReadSysSetting(this.AdminContext(), &pb.ReadSysSettingRequest{Code: systemconfigs.SettingCodeUserRegisterConfig})
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-
-		var config = userconfigs.DefaultUserRegisterConfig()
-		if len(resp.ValueJSON) > 0 {
-			err = json.Unmarshal(resp.ValueJSON, config)
+	if teaconst.IsPlus {
+		if params.FeaturesType == "default" {
+			resp, err := this.RPC().SysSettingRPC().ReadSysSetting(this.AdminContext(), &pb.ReadSysSettingRequest{Code: systemconfigs.SettingCodeUserRegisterConfig})
 			if err != nil {
 				this.ErrorPage(err)
 				return
 			}
+
+			var config = userconfigs.DefaultUserRegisterConfig()
+			if len(resp.ValueJSON) > 0 {
+				err = json.Unmarshal(resp.ValueJSON, config)
+				if err != nil {
+					this.ErrorPage(err)
+					return
+				}
+				_, err = this.RPC().UserRPC().UpdateUserFeatures(this.AdminContext(), &pb.UpdateUserFeaturesRequest{
+					UserId:       userId,
+					FeatureCodes: config.Features,
+				})
+				if err != nil {
+					this.ErrorPage(err)
+					return
+				}
+			}
+		} else if params.FeaturesType == "all" {
+			featuresResp, err := this.RPC().UserRPC().FindAllUserFeatureDefinitions(this.AdminContext(), &pb.FindAllUserFeatureDefinitionsRequest{})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			var featureCodes = []string{}
+			for _, def := range featuresResp.Features {
+				featureCodes = append(featureCodes, def.Code)
+			}
 			_, err = this.RPC().UserRPC().UpdateUserFeatures(this.AdminContext(), &pb.UpdateUserFeaturesRequest{
 				UserId:       userId,
-				FeatureCodes: config.Features,
+				FeatureCodes: featureCodes,
 			})
 			if err != nil {
 				this.ErrorPage(err)
 				return
 			}
-		}
-	} else if params.FeaturesType == "all" {
-		featuresResp, err := this.RPC().UserRPC().FindAllUserFeatureDefinitions(this.AdminContext(), &pb.FindAllUserFeatureDefinitionsRequest{})
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-		var featureCodes = []string{}
-		for _, def := range featuresResp.Features {
-			featureCodes = append(featureCodes, def.Code)
-		}
-		_, err = this.RPC().UserRPC().UpdateUserFeatures(this.AdminContext(), &pb.UpdateUserFeaturesRequest{
-			UserId:       userId,
-			FeatureCodes: featureCodes,
-		})
-		if err != nil {
-			this.ErrorPage(err)
-			return
 		}
 	}
 
