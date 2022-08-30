@@ -2485,13 +2485,13 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
 	</div>
 	<p class="comment">系统总是会先执行记录日志、标签等不会修改请求的动作，再执行阻止、验证码等可能改变请求的动作。</p>
-</div>`}),Vue.component("http-auth-config-box",{props:["v-auth-config","v-is-location"],data:function(){let e=this.vAuthConfig;return null==(e=null==e?{isPrior:!1,isOn:!1}:e).policyRefs&&(e.policyRefs=[]),{authConfig:e}},methods:{isOn:function(){return(!this.vIsLocation||this.authConfig.isPrior)&&this.authConfig.isOn},add:function(){let t=this;teaweb.popup("/servers/server/settings/access/createPopup",{callback:function(e){t.authConfig.policyRefs.push(e.data.policyRef)},height:"28em"})},update:function(e,t){teaweb.popup("/servers/server/settings/access/updatePopup?policyId="+t,{callback:function(e){teaweb.success("保存成功",function(){teaweb.reload()})},height:"28em"})},remove:function(e){this.authConfig.policyRefs.$remove(e)},methodName:function(e){switch(e){case"basicAuth":return"BasicAuth";case"subRequest":return"子请求"}return""}},template:`<div>
+</div>`}),Vue.component("http-auth-config-box",{props:["v-auth-config","v-is-location"],data:function(){let e=this.vAuthConfig;return null==(e=null==e?{isPrior:!1,isOn:!1}:e).policyRefs&&(e.policyRefs=[]),{authConfig:e}},methods:{isOn:function(){return(!this.vIsLocation||this.authConfig.isPrior)&&this.authConfig.isOn},add:function(){let t=this;teaweb.popup("/servers/server/settings/access/createPopup",{callback:function(e){t.authConfig.policyRefs.push(e.data.policyRef),t.change()},height:"28em"})},update:function(e,t){teaweb.popup("/servers/server/settings/access/updatePopup?policyId="+t,{callback:function(e){teaweb.success("保存成功",function(){teaweb.reload()})},height:"28em"})},remove:function(e){this.authConfig.policyRefs.$remove(e),this.change()},methodName:function(e){switch(e){case"basicAuth":return"BasicAuth";case"subRequest":return"子请求";case"typeA":return"URL鉴权A";case"typeB":return"URL鉴权B";case"typeC":return"URL鉴权C";case"typeD":return"URL鉴权D"}return""},change:function(){let e=this;setTimeout(function(){e.$emit("change",this.authConfig)},100)}},template:`<div>
 <input type="hidden" name="authJSON" :value="JSON.stringify(authConfig)"/> 
 <table class="ui table selectable definition">
 	<prior-checkbox :v-config="authConfig" v-if="vIsLocation"></prior-checkbox>
 	<tbody v-show="!vIsLocation || authConfig.isPrior">
 		<tr>
-			<td class="title">启用认证</td>
+			<td class="title">启用鉴权</td>
 			<td>
 				<div class="ui checkbox">
 					<input type="checkbox" v-model="authConfig.isOn"/>
@@ -2502,14 +2502,14 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	</tbody>
 </table>
 <div class="margin"></div>
-<!-- 认证方式 -->
+<!-- 鉴权方式 -->
 <div v-show="isOn()">
-	<h4>认证方式</h4>
+	<h4>鉴权方式</h4>
 	<table class="ui table selectable celled" v-show="authConfig.policyRefs.length > 0">
 		<thead>
 			<tr>
 				<th class="three wide">名称</th>
-				<th class="three wide">认证方法</th>
+				<th class="three wide">鉴权方法</th>
 				<th>参数</th>
 				<th class="two wide">状态</th>
 				<th class="two op">操作</th>
@@ -2527,6 +2527,15 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 						<span v-if="ref.authPolicy.params.method.length > 0" class="grey">[{{ref.authPolicy.params.method}}]</span>
 						{{ref.authPolicy.params.url}}
 					</span>
+					<span v-if="ref.authPolicy.type == 'typeA'">{{ref.authPolicy.params.signParamName}}/有效期{{ref.authPolicy.params.life}}秒</span>
+					<span v-if="ref.authPolicy.type == 'typeB'">有效期{{ref.authPolicy.params.life}}秒</span>
+					<span v-if="ref.authPolicy.type == 'typeC'">有效期{{ref.authPolicy.params.life}}秒</span>
+					<span v-if="ref.authPolicy.type == 'typeD'">{{ref.authPolicy.params.signParamName}}/{{ref.authPolicy.params.timestampParamName}}/有效期{{ref.authPolicy.params.life}}秒</span>
+					
+					<div v-if="(ref.authPolicy.params.exts != null && ref.authPolicy.params.exts.length > 0) || (ref.authPolicy.params.domains != null && ref.authPolicy.params.domains.length > 0)">
+						<grey-label v-if="ref.authPolicy.params.exts != null" v-for="ext in ref.authPolicy.params.exts">扩展名：{{ext}}</grey-label>
+						<grey-label v-if="ref.authPolicy.params.domains != null" v-for="domain in ref.authPolicy.params.domains">域名：{{domain}}</grey-label>
+					</div>
 				</td>
 				<td>
 					<label-on :v-is-on="ref.authPolicy.isOn"></label-on>
@@ -2538,7 +2547,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			</tr>
 		</tbody>
 	</table>
-	<button class="ui button small" type="button" @click.prevent="add">+添加认证方式</button>
+	<button class="ui button small" type="button" @click.prevent="add">+添加鉴权方式</button>
 </div>
 <div class="margin"></div>
 </div>`}),Vue.component("user-selector",{props:["v-user-id","data-url"],data:function(){let e=this.vUserId,t=(null==e&&(e=0),this.dataUrl);return null!=t&&0!=t.length||(t="/servers/users/options"),{users:[],userId:e,dataURL:t}},methods:{change:function(e){null!=e?this.$emit("change",e.id):this.$emit("change",0)}},template:`<div>

@@ -16,6 +16,7 @@ func init() {
 			GetPost("", new(IndexAction)).
 			GetPost("/createPopup", new(CreatePopupAction)).
 			GetPost("/updatePopup", new(UpdatePopupAction)).
+			Post("/random", new(RandomAction)).
 			EndAll()
 	})
 }
