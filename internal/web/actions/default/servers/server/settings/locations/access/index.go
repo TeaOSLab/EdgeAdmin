@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/lists"
 )
 
 type IndexAction struct {
@@ -28,6 +29,28 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	this.Data["webId"] = webConfig.Id
+
+	// 移除不存在的鉴权方法
+	var allTypes = []string{}
+	for _, def := range serverconfigs.FindAllHTTPAuthTypes() {
+		allTypes = append(allTypes, def.Code)
+	}
+
+	if webConfig.Auth != nil {
+		var refs = webConfig.Auth.PolicyRefs
+		var realRefs = []*serverconfigs.HTTPAuthPolicyRef{}
+		for _, ref := range refs {
+			if ref.AuthPolicy == nil {
+				continue
+			}
+			if !lists.ContainsString(allTypes, ref.AuthPolicy.Type) {
+				continue
+			}
+			realRefs = append(realRefs, ref)
+		}
+		webConfig.Auth.PolicyRefs = realRefs
+	}
+
 	this.Data["authConfig"] = webConfig.Auth
 
 	this.Show()
