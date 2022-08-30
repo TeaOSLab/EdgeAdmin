@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// format address
+// FormatAddress format address
 func FormatAddress(addr string) string {
 	if strings.HasSuffix(addr, "unix:") {
 		return addr
@@ -17,7 +17,7 @@ func FormatAddress(addr string) string {
 	return addr
 }
 
-// 分割数字
+// SplitNumbers 分割数字
 func SplitNumbers(numbers string) (result []int64) {
 	if len(numbers) == 0 {
 		return

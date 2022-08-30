@@ -1,6 +1,6 @@
 {$layout "layout_popup"}
 
-<h3>创建认证方式</h3>
+<h3>创建鉴权方式</h3>
 <form class="ui form" data-tea-action="$" data-tea-success="success">
     <csrf-token></csrf-token>
 
@@ -12,15 +12,117 @@
             </td>
         </tr>
         <tr>
-            <td>认证类型 *</td>
+            <td>鉴权类型 *</td>
             <td>
                 <select class="ui dropdown auto-width" name="type" v-model="type" @change="changeType">
-                    <option value="">[认证类型]</option>
+                    <option value="">[鉴权类型]</option>
                     <option v-for="authType in authTypes" :value="authType.code">{{authType.name}}</option>
                 </select>
                 <p class="comment" v-html="authDescription"></p>
             </td>
         </tr>
+
+        <!-- TypeA -->
+        <tbody v-show="type == 'typeA'">
+            <tr>
+                <td>鉴权密钥 *</td>
+                <td>
+                    <input type="text" maxlength="40" name="typeASecret" v-model="typeASecret" autocomplete="off"/>
+                    <p class="comment">只能包含字母、数字，长度不超过40。<a href="" @click.prevent="generateTypeASecret()">[随机生成]</a></p>
+                </td>
+            </tr>
+            <tr>
+                <td>签名参数 *</td>
+                <td>
+                    <input type="text" maxlength="30" name="typeASignParamName" value="sign" v-model="typeASignParamName" @input="changeTypeASignParamName"/>
+                </td>
+            </tr>
+            <tr>
+                <td>有效时间</td>
+                <td>
+                    <div class="ui input right labeled">
+                        <input type="text" maxlength="8" name="typeALife" value="30" style="width: 7em"/>
+                        <span class="ui label">秒</span>
+                    </div>
+                    <p class="comment">链接有效时间。</p>
+                </td>
+            </tr>
+        </tbody>
+
+        <!-- TypeB -->
+        <tbody v-show="type == 'typeB'">
+            <tr>
+                <td>鉴权密钥 *</td>
+                <td>
+                    <input type="text" maxlength="40" name="typeBSecret" v-model="typeBSecret" autocomplete="off"/>
+                    <p class="comment">只能包含字母、数字，长度不超过40。<a href="" @click.prevent="generateTypeBSecret()">[随机生成]</a></p>
+                </td>
+            </tr>
+            <tr>
+                <td>有效时间</td>
+                <td>
+                    <div class="ui input right labeled">
+                        <input type="text" maxlength="8" name="typeBLife" value="30" style="width: 7em"/>
+                        <span class="ui label">秒</span>
+                    </div>
+                    <p class="comment">链接有效时间。</p>
+                </td>
+            </tr>
+        </tbody>
+
+        <!-- TypeC -->
+        <tbody v-show="type == 'typeC'">
+            <tr>
+                <td>鉴权密钥 *</td>
+                <td>
+                    <input type="text" maxlength="40" name="typeCSecret" v-model="typeCSecret" autocomplete="off"/>
+                    <p class="comment">只能包含字母、数字，长度不超过40。<a href="" @click.prevent="generateTypeCSecret()">[随机生成]</a></p>
+                </td>
+            </tr>
+            <tr>
+                <td>有效时间</td>
+                <td>
+                    <div class="ui input right labeled">
+                        <input type="text" maxlength="8" name="typeCLife" value="30" style="width: 7em"/>
+                        <span class="ui label">秒</span>
+                    </div>
+                    <p class="comment">链接有效时间。</p>
+                </td>
+            </tr>
+        </tbody>
+
+        <!-- TypeD -->
+        <tbody v-show="type == 'typeD'">
+            <tr>
+                <td>鉴权密钥 *</td>
+                <td>
+                    <input type="text" maxlength="40" name="typeDSecret" v-model="typeDSecret" autocomplete="off"/>
+                    <p class="comment">只能包含字母、数字，长度不超过40。<a href="" @click.prevent="generateTypeDSecret()">[随机生成]</a></p>
+                </td>
+            </tr>
+            <tr>
+                <td>签名参数 *</td>
+                <td>
+                    <input type="text" maxlength="30" name="typeDSignParamName" value="sign" v-model="typeDSignParamName" @input="changeTypeDSignParamName"/>
+                </td>
+            </tr>
+            <tr>
+                <td>时间戳参数 *</td>
+                <td>
+                    <input type="text" maxlength="30" name="typeDTimestampParamName" value="t" v-model="typeDTimestampParamName" @input="changeTypeDTimestampParamName"/>
+                </td>
+            </tr>
+            <tr>
+                <td>有效时间</td>
+                <td>
+                    <div class="ui input right labeled">
+                        <input type="text" maxlength="8" name="typeDLife" value="30" style="width: 7em"/>
+                        <span class="ui label">秒</span>
+                    </div>
+                    <p class="comment">链接有效时间。</p>
+                </td>
+            </tr>
+        </tbody>
 
         <!-- BasicAuth -->
         <tbody v-show="type == 'basicAuth'">
@@ -32,7 +134,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <a href="" @click.prevent="showMoreBasicAuthOptions()">更多选项<i class="ui icon angle" :class="{up: moreBasicAuthOptionsVisible, down: !moreBasicAuthOptionsVisible}"></i></a>
+                    <a href="" @click.prevent="showMoreBasicAuthOptions()">更多基本认证选项<i class="ui icon angle" :class="{up: moreBasicAuthOptionsVisible, down: !moreBasicAuthOptionsVisible}"></i></a>
                 </td>
             </tr>
             <tr v-show="moreBasicAuthOptionsVisible">
@@ -73,6 +175,25 @@
                             <option value="HEAD">HEAD</option>
                         </select>
                     </div>
+                </td>
+            </tr>
+        </tbody>
+        <tr>
+            <td colspan="2"><more-options-indicator></more-options-indicator></td>
+        </tr>
+        <tbody v-show="moreOptionsVisible">
+            <tr>
+                <td>限定文件扩展名</td>
+                <td>
+                    <values-box name="exts"></values-box>
+                    <p class="comment">如果不为空，则表示只有这些扩展名的文件才需要鉴权；扩展名需要包含点符号（.），比如<code-label>.png</code-label></p>
+                </td>
+            </tr>
+            <tr>
+                <td>限定域名</td>
+                <td>
+                    <domains-box></domains-box>
+                    <p class="comment">如果不为空，则表示只有这些域名的文件才需要鉴权。</p>
                 </td>
             </tr>
         </tbody>

@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/lists"
 )
 
 type IndexAction struct {
@@ -28,6 +29,26 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	this.Data["webId"] = webConfig.Id
+
+	// 移除不存在的鉴权方法
+	var allTypes = []string{}
+	for _, def := range serverconfigs.FindAllHTTPAuthTypes() {
+		allTypes = append(allTypes, def.Code)
+	}
+
+	var refs = webConfig.Auth.PolicyRefs
+	var realRefs = []*serverconfigs.HTTPAuthPolicyRef{}
+	for _, ref := range refs {
+		if ref.AuthPolicy == nil {
+			continue
+		}
+		if !lists.ContainsString(allTypes, ref.AuthPolicy.Type) {
+			continue
+		}
+		realRefs = append(realRefs, ref)
+	}
+	webConfig.Auth.PolicyRefs = realRefs
+
 	this.Data["authConfig"] = webConfig.Auth
 
 	this.Show()
@@ -40,7 +61,7 @@ func (this *IndexAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("修改Web %d 的认证设置", params.WebId)
+	defer this.CreateLogInfo("修改Web %d 的鉴权设置", params.WebId)
 
 	var authConfig = &serverconfigs.HTTPAuthConfig{}
 	err := json.Unmarshal(params.AuthJSON, authConfig)
@@ -53,7 +74,7 @@ func (this *IndexAction) RunPost(params struct {
 		this.Fail("配置校验失败：" + err.Error())
 	}
 
-	// 保存之前删除多于的配置信息
+	// 保存之前删除多余的配置信息
 	for _, ref := range authConfig.PolicyRefs {
 		ref.AuthPolicy = nil
 	}

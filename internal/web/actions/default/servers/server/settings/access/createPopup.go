@@ -1,13 +1,16 @@
 // Copyright 2021 Liuxiangchao iwind.liu@gmail.com. All rights reserved.
+//go:build !plus
 
 package access
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
+	"strings"
 )
 
 type CreatePopupAction struct {
@@ -37,6 +40,9 @@ func (this *CreatePopupAction) RunPost(params struct {
 	SubRequestMethod        string
 	SubRequestFollowRequest bool
 
+	Exts        []string
+	DomainsJSON []byte
+
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
@@ -44,14 +50,42 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Field("name", params.Name).
 		Require("请输入名称").
 		Field("type", params.Type).
-		Require("请输入认证类型")
+		Require("请输入鉴权类型")
 
 	var ref = &serverconfigs.HTTPAuthPolicyRef{IsOn: true}
-	var paramsJSON []byte
+
+	// 扩展名
+	var exts = utils.NewStringsStream(params.Exts).
+		Map(strings.TrimSpace, strings.ToLower).
+		Filter(utils.FilterNotEmpty).
+		Map(utils.MapAddPrefixFunc(".")).
+		Unique().
+		Result()
+
+	// 域名
+	var domains = []string{}
+	if len(params.DomainsJSON) > 0 {
+		var rawDomains = []string{}
+		err := json.Unmarshal(params.DomainsJSON, &rawDomains)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+
+		// TODO 如果用户填写了一个网址，应该分析域名并填入
+
+		domains = utils.NewStringsStream(rawDomains).
+			Map(strings.TrimSpace, strings.ToLower).
+			Filter(utils.FilterNotEmpty).
+			Unique().
+			Result()
+	}
+
+	var method serverconfigs.HTTPAuthMethodInterface
 
 	switch params.Type {
 	case serverconfigs.HTTPAuthTypeBasicAuth:
-		users := []*serverconfigs.HTTPAuthBasicMethodUser{}
+		var users = []*serverconfigs.HTTPAuthBasicMethodUser{}
 		err := json.Unmarshal(params.HttpAuthBasicAuthUsersJSON, &users)
 		if err != nil {
 			this.ErrorPage(err)
@@ -60,40 +94,39 @@ func (this *CreatePopupAction) RunPost(params struct {
 		if len(users) == 0 {
 			this.Fail("请添加至少一个用户")
 		}
-		method := &serverconfigs.HTTPAuthBasicMethod{
+		method = &serverconfigs.HTTPAuthBasicMethod{
 			Users:   users,
 			Realm:   params.BasicAuthRealm,
 			Charset: params.BasicAuthCharset,
 		}
-		methodJSON, err := json.Marshal(method)
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-
-		paramsJSON = methodJSON
 	case serverconfigs.HTTPAuthTypeSubRequest:
 		params.Must.Field("subRequestURL", params.SubRequestURL).
 			Require("请输入子请求URL")
 		if params.SubRequestFollowRequest {
 			params.SubRequestMethod = ""
 		}
-		method := &serverconfigs.HTTPAuthSubRequestMethod{
+		method = &serverconfigs.HTTPAuthSubRequestMethod{
 			URL:    params.SubRequestURL,
 			Method: params.SubRequestMethod,
 		}
-		methodJSON, err := json.Marshal(method)
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-		paramsJSON = methodJSON
 	default:
-		this.Fail("不支持的认证类型'" + params.Type + "'")
+		this.Fail("不支持的鉴权类型'" + params.Type + "'")
+	}
+
+	if method == nil {
+		this.Fail("无法找到对应的鉴权方式")
+	}
+	method.SetExts(exts)
+	method.SetDomains(domains)
+
+	paramsJSON, err := json.Marshal(method)
+	if err != nil {
+		this.ErrorPage(err)
+		return
 	}
 
 	var paramsMap map[string]interface{}
-	err := json.Unmarshal(paramsJSON, &paramsMap)
+	err = json.Unmarshal(paramsJSON, &paramsMap)
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -108,7 +141,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	defer this.CreateLogInfo("创建HTTP认证 %d", createResp.HttpAuthPolicyId)
+	defer this.CreateLogInfo("创建HTTP鉴权 %d", createResp.HttpAuthPolicyId)
 	ref.AuthPolicyId = createResp.HttpAuthPolicyId
 	ref.AuthPolicy = &serverconfigs.HTTPAuthPolicy{
 		Id:     createResp.HttpAuthPolicyId,
