@@ -4,7 +4,6 @@
 
 <div class="right-box with-menu">
     <form class="ui form" data-tea-action="$" data-tea-success="success" ref="authForm">
-        <csrf-token></csrf-token>
         <input type="hidden" name="webId" :value="webId">
         <http-auth-config-box :v-auth-config="authConfig" @change="changeMethods"></http-auth-config-box>
         <submit-btn @ref=""></submit-btn>

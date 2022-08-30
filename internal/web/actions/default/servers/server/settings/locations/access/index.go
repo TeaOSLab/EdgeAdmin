@@ -61,7 +61,6 @@ func (this *IndexAction) RunPost(params struct {
 	AuthJSON []byte
 
 	Must *actions.Must
-	CSRF *actionutils.CSRF
 }) {
 	defer this.CreateLogInfo("修改Web %d 的认证设置", params.WebId)
 
