@@ -36,18 +36,20 @@ func (this *IndexAction) RunGet(params struct {
 		allTypes = append(allTypes, def.Code)
 	}
 
-	var refs = webConfig.Auth.PolicyRefs
-	var realRefs = []*serverconfigs.HTTPAuthPolicyRef{}
-	for _, ref := range refs {
-		if ref.AuthPolicy == nil {
-			continue
+	if webConfig.Auth != nil {
+		var refs = webConfig.Auth.PolicyRefs
+		var realRefs = []*serverconfigs.HTTPAuthPolicyRef{}
+		for _, ref := range refs {
+			if ref.AuthPolicy == nil {
+				continue
+			}
+			if !lists.ContainsString(allTypes, ref.AuthPolicy.Type) {
+				continue
+			}
+			realRefs = append(realRefs, ref)
 		}
-		if !lists.ContainsString(allTypes, ref.AuthPolicy.Type) {
-			continue
-		}
-		realRefs = append(realRefs, ref)
+		webConfig.Auth.PolicyRefs = realRefs
 	}
-	webConfig.Auth.PolicyRefs = realRefs
 
 	this.Data["authConfig"] = webConfig.Auth
 
