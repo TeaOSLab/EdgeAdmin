@@ -304,7 +304,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":     serverConfig.Web != nil && serverConfig.Web.Cache != nil && serverConfig.Web.Cache.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     "访问控制",
+			"name":     "访问鉴权",
 			"url":      "/servers/server/settings/access?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "access",
 			"isOn":     serverConfig.Web != nil && serverConfig.Web.Auth != nil && serverConfig.Web.Auth.IsOn,

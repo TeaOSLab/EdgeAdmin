@@ -98,7 +98,7 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.Cache != nil && locationConfig.Web.Cache.IsPrior && locationConfig.Web.Cache.IsOn,
 	})
 	menuItems = append(menuItems, maps.Map{
-		"name":     "访问控制",
+		"name":     "访问鉴权",
 		"url":      "/servers/server/settings/locations/access?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "access",
 		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.Auth != nil && locationConfig.Web.Auth.IsPrior,
