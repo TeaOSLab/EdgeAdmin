@@ -7,9 +7,9 @@
 
     <div class="right-box tiny">
         <form class="ui form" data-tea-action="$" data-tea-success="success" ref="authForm">
-            <csrf-token></csrf-token>
             <input type="hidden" name="webId" :value="webId">
-            <http-auth-config-box :v-auth-config="authConfig" :v-is-location="true" @change="changeMethods"></http-auth-config-box>
+            <http-auth-config-box :v-auth-config="authConfig" :v-is-location="true"
+                                  @change="changeMethods"></http-auth-config-box>
             <submit-btn></submit-btn>
         </form>
     </div>
