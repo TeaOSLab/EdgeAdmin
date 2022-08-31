@@ -75,12 +75,12 @@ func (this *IndexAction) RunPost(params struct {
 			this.FailField("tcpMaxConnectionsPerIP", "TCP: 单IP TCP最大连接数不能小于"+types.String(nodeconfigs.DefaultTCPMinConnectionsPerIP))
 		}
 
-		if tcpConfig.NewConnectionsRate > 0 && tcpConfig.NewConnectionsRate < nodeconfigs.DefaultTCPNewConnectionsMinRate {
-			this.FailField("tcpNewConnectionsRate", "TCP: 单IP连接速率不能小于"+types.String(nodeconfigs.DefaultTCPNewConnectionsMinRate))
+		if tcpConfig.NewConnectionsMinutelyRate > 0 && tcpConfig.NewConnectionsMinutelyRate < nodeconfigs.DefaultTCPNewConnectionsMinMinutelyRate {
+			this.FailField("tcpNewConnectionsMinutelyRate", "TCP: 单IP连接速率不能小于"+types.String(nodeconfigs.DefaultTCPNewConnectionsMinMinutelyRate))
 		}
 
-		if tcpConfig.DenyNewConnectionsRate > 0 && tcpConfig.DenyNewConnectionsRate < nodeconfigs.DefaultTCPDenyNewConnectionsMinRate {
-			this.FailField("tcpDenyNewConnectionsRate", "TCP: 单IP TCP新连接速率黑名单连接速率不能小于"+types.String(nodeconfigs.DefaultTCPDenyNewConnectionsMinRate))
+		if tcpConfig.NewConnectionsSecondlyRate > 0 && tcpConfig.NewConnectionsSecondlyRate < nodeconfigs.DefaultTCPNewConnectionsMinSecondlyRate {
+			this.FailField("tcpNewConnectionsSecondlyRate", "TCP: 单IP连接速率不能小于"+types.String(nodeconfigs.DefaultTCPNewConnectionsMinSecondlyRate))
 		}
 
 		// Port
