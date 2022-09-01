@@ -449,7 +449,9 @@ Vue.component("node-ddos-protection-config-box", {
 					maxConnections: 0,
 					maxConnectionsPerIP: 0,
 					newConnectionsRate: 0,
-					denyNewConnectionsRate: 0,
+					newConnectionsRateBlockTimeout: 0,
+					newConnectionsSecondlyRate: 0,
+					newConnectionSecondlyRateBlockTimeout: 0,
 					allowIPList: [],
 					ports: []
 				}
@@ -464,7 +466,9 @@ Vue.component("node-ddos-protection-config-box", {
 				maxConnections: 0,
 				maxConnectionsPerIP: 0,
 				newConnectionsRate: 0,
-				denyNewConnectionsRate: 0,
+				newConnectionsRateBlockTimeout: 0,
+				newConnectionsSecondlyRate: 0,
+				newConnectionSecondlyRateBlockTimeout: 0,
 				allowIPList: [],
 				ports: []
 			}
@@ -521,23 +525,12 @@ Vue.component("node-ddos-protection-config-box", {
 			</td>
 		</tr>
 		<tr>
-			<td>单IP TCP新连接速率</td>
+			<td>单IP TCP新连接速率<em>（分钟）</em></td>
 			<td>
-				<div class="ui input right labeled">
-					<digit-input name="tcpNewConnectionsRate" v-model="config.tcp.newConnectionsRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpNewConnectionsMinRate"></digit-input>
-					<span class="ui label">个新连接/每分钟</span>
-				</div>
-				<p class="comment">单个IP可以创建TCP新连接的速率。如果为0，则默认为{{defaultConfigs.tcpNewConnectionsRate}}；最小值为{{defaultConfigs.tcpNewConnectionsMinRate}}。</p>
-			</td>
-		</tr>
-		<tr>
-			<td>单IP TCP新连接速率黑名单</td>
-			<td>
-				<div class="ui fields">
+				<div class="ui fields inline">
 					<div class="ui field">
 						<div class="ui input right labeled">
-							<span class="ui label">超过</span>
-							<digit-input name="tcpDenyNewConnectionsRate" v-model="config.tcp.denyNewConnectionsRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpDenyNewConnectionsMinRate"></digit-input>
+							<digit-input name="tcpNewConnectionsRate" v-model="config.tcp.newConnectionsRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpNewConnectionsMinRate"></digit-input>
 							<span class="ui label">个新连接/每分钟</span>
 						</div>
 					</div>
@@ -546,13 +539,37 @@ Vue.component("node-ddos-protection-config-box", {
 					</div>
 					<div class="ui field">
 						<div class="ui input right labeled">
-							<digit-input name="tcpDenyNewConnectionsRateTimeout" v-model="config.tcp.denyNewConnectionsRateTimeout" maxlength="6" size="6" style="width: 5em"></digit-input>
+							<digit-input name="tcpNewConnectionsRateBlockTimeout" v-model="config.tcp.newConnectionsRateBlockTimeout" maxlength="6" size="6" style="width: 5em"></digit-input>
 							<span class="ui label">秒</span>
 						</div>
 					</div>
 				</div>
-			
-				<p class="comment">单个IP可以如果在单位时间内创建的TCP连接数超过这个值，就自动加入到<code-label>nftables</code-label>黑名单中。如果为0，则默认为{{defaultConfigs.tcpDenyNewConnectionsRate}}；最小值为{{defaultConfigs.tcpDenyNewConnectionsMinRate}}；默认屏蔽{{defaultConfigs.tcpDenyNewConnectionsRateTimeout}}秒。</p>
+				
+				<p class="comment">单个IP每分钟可以创建TCP新连接的数量。如果为0，则默认为{{defaultConfigs.tcpNewConnectionsMinutelyRate}}；最小值为{{defaultConfigs.tcpNewConnectionsMinMinutelyRate}}。如果没有填写屏蔽时间，则只丢弃数据包。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>单IP TCP新连接速率<em>（秒钟）</em></td>
+			<td>
+				<div class="ui fields inline">
+					<div class="ui field">
+						<div class="ui input right labeled">
+							<digit-input name="tcpNewConnectionsSecondlyRate" v-model="config.tcp.newConnectionsSecondlyRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpNewConnectionsMinRate"></digit-input>
+							<span class="ui label">个新连接/每秒钟</span>
+						</div>
+					</div>
+					<div class="ui field" style="line-height: 2.4em">
+						屏蔽
+					</div>
+					<div class="ui field">
+						<div class="ui input right labeled">
+							<digit-input name="tcpNewConnectionsSecondlyRateBlockTimeout" v-model="config.tcp.newConnectionsSecondlyRateBlockTimeout" maxlength="6" size="6" style="width: 5em"></digit-input>
+							<span class="ui label">秒</span>
+						</div>
+					</div>
+				</div>
+				
+				<p class="comment">单个IP每秒钟可以创建TCP新连接的数量。如果为0，则默认为{{defaultConfigs.tcpNewConnectionsSecondlyRate}}；最小值为{{defaultConfigs.tcpNewConnectionsMinSecondlyRate}}。如果没有填写屏蔽时间，则只丢弃数据包。</p>
 			</td>
 		</tr>
 		<tr>
@@ -1515,7 +1532,9 @@ Vue.component("ns-node-ddos-protection-config-box", {
 					maxConnections: 0,
 					maxConnectionsPerIP: 0,
 					newConnectionsRate: 0,
-					denyNewConnectionsRate: 0,
+					newConnectionsRateBlockTimeout: 0,
+					newConnectionsSecondlyRate: 0,
+					newConnectionSecondlyRateBlockTimeout: 0,
 					allowIPList: [],
 					ports: []
 				}
@@ -1530,7 +1549,9 @@ Vue.component("ns-node-ddos-protection-config-box", {
 				maxConnections: 0,
 				maxConnectionsPerIP: 0,
 				newConnectionsRate: 0,
-				denyNewConnectionsRate: 0,
+				newConnectionsRateBlockTimeout: 0,
+				newConnectionsSecondlyRate: 0,
+				newConnectionSecondlyRateBlockTimeout: 0,
 				allowIPList: [],
 				ports: []
 			}
@@ -1587,23 +1608,12 @@ Vue.component("ns-node-ddos-protection-config-box", {
 			</td>
 		</tr>
 		<tr>
-			<td>单IP TCP新连接速率</td>
+			<td>单IP TCP新连接速率<em>（分钟）</em></td>
 			<td>
-				<div class="ui input right labeled">
-					<digit-input name="tcpNewConnectionsRate" v-model="config.tcp.newConnectionsRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpNewConnectionsMinRate"></digit-input>
-					<span class="ui label">个新连接/每分钟</span>
-				</div>
-				<p class="comment">单个IP可以创建TCP新连接的速率。如果为0，则默认为{{defaultConfigs.tcpNewConnectionsRate}}；最小值为{{defaultConfigs.tcpNewConnectionsMinRate}}。</p>
-			</td>
-		</tr>
-		<tr>
-			<td>单IP TCP新连接速率黑名单</td>
-			<td>
-				<div class="ui fields">
+				<div class="ui fields inline">
 					<div class="ui field">
 						<div class="ui input right labeled">
-							<span class="ui label">超过</span>
-							<digit-input name="tcpDenyNewConnectionsRate" v-model="config.tcp.denyNewConnectionsRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpDenyNewConnectionsMinRate"></digit-input>
+							<digit-input name="tcpNewConnectionsRate" v-model="config.tcp.newConnectionsRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpNewConnectionsMinRate"></digit-input>
 							<span class="ui label">个新连接/每分钟</span>
 						</div>
 					</div>
@@ -1612,13 +1622,37 @@ Vue.component("ns-node-ddos-protection-config-box", {
 					</div>
 					<div class="ui field">
 						<div class="ui input right labeled">
-							<digit-input name="tcpDenyNewConnectionsRateTimeout" v-model="config.tcp.denyNewConnectionsRateTimeout" maxlength="6" size="6" style="width: 5em"></digit-input>
+							<digit-input name="tcpNewConnectionsRateBlockTimeout" v-model="config.tcp.newConnectionsRateBlockTimeout" maxlength="6" size="6" style="width: 5em"></digit-input>
 							<span class="ui label">秒</span>
 						</div>
 					</div>
 				</div>
-			
-				<p class="comment">单个IP可以如果在单位时间内创建的TCP连接数超过这个值，就自动加入到<code-label>nftables</code-label>黑名单中。如果为0，则默认为{{defaultConfigs.tcpDenyNewConnectionsRate}}；最小值为{{defaultConfigs.tcpDenyNewConnectionsMinRate}}；默认屏蔽{{defaultConfigs.tcpDenyNewConnectionsRateTimeout}}秒。</p>
+				
+				<p class="comment">单个IP每分钟可以创建TCP新连接的数量。如果为0，则默认为{{defaultConfigs.tcpNewConnectionsMinutelyRate}}；最小值为{{defaultConfigs.tcpNewConnectionsMinMinutelyRate}}。如果没有填写屏蔽时间，则只丢弃数据包。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>单IP TCP新连接速率<em>（秒钟）</em></td>
+			<td>
+				<div class="ui fields inline">
+					<div class="ui field">
+						<div class="ui input right labeled">
+							<digit-input name="tcpNewConnectionsSecondlyRate" v-model="config.tcp.newConnectionsSecondlyRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpNewConnectionsMinRate"></digit-input>
+							<span class="ui label">个新连接/每秒钟</span>
+						</div>
+					</div>
+					<div class="ui field" style="line-height: 2.4em">
+						屏蔽
+					</div>
+					<div class="ui field">
+						<div class="ui input right labeled">
+							<digit-input name="tcpNewConnectionsSecondlyRateBlockTimeout" v-model="config.tcp.newConnectionsSecondlyRateBlockTimeout" maxlength="6" size="6" style="width: 5em"></digit-input>
+							<span class="ui label">秒</span>
+						</div>
+					</div>
+				</div>
+				
+				<p class="comment">单个IP每秒钟可以创建TCP新连接的数量。如果为0，则默认为{{defaultConfigs.tcpNewConnectionsSecondlyRate}}；最小值为{{defaultConfigs.tcpNewConnectionsMinSecondlyRate}}。如果没有填写屏蔽时间，则只丢弃数据包。</p>
 			</td>
 		</tr>
 		<tr>
