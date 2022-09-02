@@ -10,6 +10,7 @@ import (
 	"github.com/iwind/TeaGo/logs"
 	"net"
 	"net/http"
+	"net/url"
 	"regexp"
 	"sync"
 )
@@ -120,15 +121,20 @@ func checkRequestSecurity(securityConfig *systemconfigs.SecurityConfig, req *htt
 	}
 
 	var userAgent = req.UserAgent()
-	var referer = req.Referer()
+	var refererURL = req.Referer()
+	var referHost = ""
+	u, err := url.Parse(refererURL)
+	if err == nil {
+		referHost = u.Host
+	}
 
 	// 检查搜索引擎
-	if securityConfig.DenySearchEngines && (len(userAgent) == 0 || searchEngineRegex.MatchString(userAgent) || (len(referer) > 0 && searchEngineRegex.MatchString(referer))) {
+	if securityConfig.DenySearchEngines && (len(userAgent) == 0 || searchEngineRegex.MatchString(userAgent) || (len(referHost) > 0 && searchEngineRegex.MatchString(referHost))) {
 		return false
 	}
 
 	// 检查爬虫
-	if securityConfig.DenySpiders && (len(userAgent) == 0 || spiderRegexp.MatchString(userAgent) || (len(referer) > 0 && spiderRegexp.MatchString(referer))) {
+	if securityConfig.DenySpiders && (len(userAgent) == 0 || spiderRegexp.MatchString(userAgent) || (len(referHost) > 0 && spiderRegexp.MatchString(referHost))) {
 		return false
 	}
 
