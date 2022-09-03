@@ -3,6 +3,12 @@ Vue.component("http-cache-ref-box", {
 	props: ["v-cache-ref", "v-is-reverse"],
 	mounted: function () {
 		this.$refs.variablesDescriber.update(this.ref.key)
+		if (this.ref.simpleCond != null) {
+			this.changeCondType(this.ref.simpleCond.type)
+			this.condCategory = "simple"
+		} else if (this.ref.conds != null && this.ref.conds.groups != null) {
+			this.condCategory = "complex"
+		}
 	},
 	data: function () {
 		let ref = this.vCacheRef
@@ -18,7 +24,8 @@ Vue.component("http-cache-ref-box", {
 				skipCacheControlValues: ["private", "no-cache", "no-store"],
 				skipSetCookie: true,
 				enableRequestCachePragma: false,
-				conds: null,
+				conds: null, // 复杂条件
+				simpleCond: null, // 简单条件
 				allowChunkedEncoding: true,
 				allowPartialContent: false,
 				enableIfNoneMatch: false,
@@ -50,9 +57,19 @@ Vue.component("http-cache-ref-box", {
 		if (ref.minSize == null) {
 			ref.minSize = {count: 0, unit: "kb"}
 		}
+
+		let condType = "url-extension"
+		let condComponent = window.REQUEST_COND_COMPONENTS.$find(function (k, v) {
+			return v.type == "url-extension"
+		})
+
 		return {
 			ref: ref,
-			moreOptionsVisible: false
+			moreOptionsVisible: false,
+			condCategory: "simple", // 条件分类：simple|complex
+			condType: condType,
+			condComponent: condComponent,
+			components: window.REQUEST_COND_COMPONENTS
 		}
 	},
 	methods: {
@@ -70,6 +87,7 @@ Vue.component("http-cache-ref-box", {
 		},
 		changeConds: function (v) {
 			this.ref.conds = v
+			this.ref.simpleCond = null
 		},
 		changeStatusList: function (list) {
 			let result = []
@@ -92,15 +110,46 @@ Vue.component("http-cache-ref-box", {
 		},
 		changeExpiresTime: function (expiresTime) {
 			this.ref.expiresTime = expiresTime
+		},
+
+		// 切换条件类型
+		changeCondCategory: function (condCategory) {
+			this.condCategory = condCategory
+		},
+		changeCondType: function (condType) {
+			let def = this.components.$find(function (k, component) {
+				return component.type == condType
+			})
+			if (def != null) {
+				this.condComponent = def
+			}
 		}
 	},
 	template: `<tbody>
-	<tr>
+	<tr v-if="condCategory == 'simple'">
+		<td class="title color-border">条件类型 *</td>
+		<td>
+			<select class="ui dropdown auto-width" name="condType" v-model="condType" @change="changeCondType(condType)">
+				<option value="url-extension">URL扩展名</option>
+				<option value="url-prefix">URL前缀</option>
+				<option value="url-eq-index">首页</option>
+				<option value="url-eq">URL精准匹配</option>
+				<option value="url-regexp">URL正则匹配</option>
+			</select>
+			<p class="comment"><a href="" @click.prevent="changeCondCategory('complex')">切换到复杂条件 &raquo;</a></p>
+		</td>
+	</tr>
+	<tr v-if="condCategory == 'simple'">
+		<td class="color-border">{{condComponent.paramsTitle}} *</td>
+		<td>
+			<component :is="condComponent.component" :v-cond="ref.simpleCond"></component>
+		</td>
+	</tr>
+	<tr v-if="condCategory == 'complex'">
 		<td class="title">匹配条件分组 *</td>
 		<td>
 			<http-request-conds-box :v-conds="ref.conds" @change="changeConds"></http-request-conds-box>
-			
-			<input type="hidden" name="cacheRefJSON" :value="JSON.stringify(ref)"/>
+			<p class="comment"><a href="" @click.prevent="changeCondCategory('simple')">&laquo; 切换到简单条件</a></p>
 		</td>
 	</tr>
 	<tr v-show="!vIsReverse">
@@ -207,6 +256,9 @@ Vue.component("http-cache-ref-box", {
 			<checkbox v-model="ref.enableIfModifiedSince"></checkbox>
 			<p class="comment">特殊情况下才需要开启，可能会降低缓存命中率。</p>
 		</td>
+	</tr>
+	<tr v-show="false">
+		<td colspan="2"><input type="hidden" name="cacheRefJSON" :value="JSON.stringify(ref)"/></td>
 	</tr>
 </tbody>`
 })
