@@ -98,7 +98,7 @@ Vue.component("http-cache-refs-config-box", {
 					resp.data.cacheRef.id = that.refs[index].id
 					Vue.set(that.refs, index, resp.data.cacheRef)
 					that.change()
-					that.$refs.cacheRef[index].updateConds(resp.data.cacheRef.conds)
+					that.$refs.cacheRef[index].updateConds(resp.data.cacheRef.conds, resp.data.cacheRef.simpleCond)
 					that.$refs.cacheRef[index].notifyChange()
 				}
 			})
@@ -186,7 +186,10 @@ Vue.component("http-cache-refs-config-box", {
 				<tr>
 					<td style="text-align: center;"><i class="icon bars handle grey"></i> </td>
 					<td :class="{'color-border': cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
-						<http-request-conds-view :v-conds="cacheRef.conds" ref="cacheRef" :class="{disabled: !cacheRef.isOn}"></http-request-conds-view>
+						<http-request-conds-view :v-conds="cacheRef.conds" ref="cacheRef" :class="{disabled: !cacheRef.isOn}" v-if="cacheRef.conds != null && cacheRef.conds.groups != null"></http-request-conds-view>
+						<http-request-cond-view :v-cond="cacheRef.simpleCond" ref="cacheRef" v-if="cacheRef.simpleCond != null"></http-request-cond-view>
+						
+						<!-- 特殊参数 -->
 						<grey-label v-if="cacheRef.minSize != null && cacheRef.minSize.count > 0">
 							{{cacheRef.minSize.count}}{{cacheRef.minSize.unit}}
 							<span v-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">- {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</span>

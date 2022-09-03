@@ -9,6 +9,9 @@ Vue.component("http-request-conds-box", {
 				groups: []
 			}
 		}
+		if (conds.groups == null) {
+			conds.groups = []
+		}
 		return {
 			conds: conds,
 			components: window.REQUEST_COND_COMPONENTS

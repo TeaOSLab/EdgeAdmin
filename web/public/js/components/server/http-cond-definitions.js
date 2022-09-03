@@ -206,7 +206,7 @@ Vue.component("http-cond-url-prefix", {
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<input type="text" v-model="cond.value"/>
-	<p class="comment">URL前缀，有此前缀的URL都将会被匹配，通常以<code-label>/</code-label>开头，比如<code-label>/static</code-label>。</p>
+	<p class="comment">URL前缀，有此前缀的URL都将会被匹配，通常以<code-label>/</code-label>开头，比如<code-label>/static</code-label>、<code-label>/images</code-label>，不需要带域名。</p>
 </div>`
 })
 
@@ -236,7 +236,37 @@ Vue.component("http-cond-url-not-prefix", {
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<input type="text" v-model="cond.value"/>
-	<p class="comment">要排除的URL前缀，有此前缀的URL都将会被匹配，通常以<code-label>/</code-label>开头，比如<code-label>/static</code-label>。</p>
+	<p class="comment">要排除的URL前缀，有此前缀的URL都将会被匹配，通常以<code-label>/</code-label>开头，比如<code-label>/static</code-label>、<code-label>/images</code-label>，不需要带域名。</p>
+</div>`
+})
+
+// 首页
+Vue.component("http-cond-url-eq-index", {
+	props: ["v-cond"],
+	data: function () {
+		let cond = {
+			isRequest: true,
+			param: "${requestPath}",
+			operator: "eq",
+			value: "/",
+			isCaseInsensitive: false
+		}
+		if (this.vCond != null && typeof this.vCond.value == "string") {
+			cond.value = this.vCond.value
+		}
+		return {
+			cond: cond
+		}
+	},
+	methods: {
+		changeCaseInsensitive: function (isCaseInsensitive) {
+			this.cond.isCaseInsensitive = isCaseInsensitive
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value" disabled="disabled" style="background: #eee"/>
+	<p class="comment">检查URL路径是为<code-label>/</code-label>，不需要带域名。</p>
 </div>`
 })
 
@@ -266,7 +296,7 @@ Vue.component("http-cond-url-eq", {
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<input type="text" v-model="cond.value"/>
-	<p class="comment">完整的URL路径，通常以<code-label>/</code-label>开头，比如<code-label>/static/ui.js</code-label>，并不包含域名部分。</p>
+	<p class="comment">完整的URL路径，通常以<code-label>/</code-label>开头，比如<code-label>/static/ui.js</code-label>，不需要带域名。</p>
 </div>`
 })
 
@@ -296,7 +326,7 @@ Vue.component("http-cond-url-not-eq", {
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<input type="text" v-model="cond.value"/>
-	<p class="comment">要排除的完整的URL路径，通常以<code-label>/</code-label>开头，比如<code-label>/static/ui.js</code-label>，并不包含域名部分。</p>
+	<p class="comment">要排除的完整的URL路径，通常以<code-label>/</code-label>开头，比如<code-label>/static/ui.js</code-label>，不需要带域名。</p>
 </div>`
 })
 
@@ -326,7 +356,7 @@ Vue.component("http-cond-url-regexp", {
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<input type="text" v-model="cond.value"/>
-	<p class="comment">匹配URL的正则表达式，比如<code-label>^/static/(.*).js$</code-label>。</p>
+	<p class="comment">匹配URL的正则表达式，比如<code-label>^/static/(.*).js$</code-label>，不需要带域名。</p>
 </div>`
 })
 
@@ -356,7 +386,7 @@ Vue.component("http-cond-url-not-regexp", {
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<input type="text" v-model="cond.value"/>
-	<p class="comment"><strong>不要</strong>匹配URL的正则表达式，意即只要匹配成功则排除此条件，比如<code-label>^/static/(.*).js$</code-label>。</p>
+	<p class="comment"><strong>不要</strong>匹配URL的正则表达式，意即只要匹配成功则排除此条件，比如<code-label>^/static/(.*).js$</code-label>，不需要带域名。</p>
 </div>`
 })
 

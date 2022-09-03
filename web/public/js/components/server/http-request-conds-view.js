@@ -10,6 +10,9 @@ Vue.component("http-request-conds-view", {
 				groups: []
 			}
 		}
+		if (conds.groups == null) {
+			conds.groups = []
+		}
 
 		let that = this
 		conds.groups.forEach(function (group) {
@@ -43,12 +46,14 @@ Vue.component("http-request-conds-view", {
 		},
 		notifyChange: function () {
 			let that = this
-			this.initConds.groups.forEach(function (group) {
-				group.conds.forEach(function (cond) {
-					cond.typeName = that.typeName(cond)
+			if (this.initConds.groups != null) {
+				this.initConds.groups.forEach(function (group) {
+					group.conds.forEach(function (cond) {
+						cond.typeName = that.typeName(cond)
+					})
 				})
-			})
-			this.$forceUpdate()
+				this.$forceUpdate()
+			}
 		}
 	},
 	template: `<div>
