@@ -159,6 +159,7 @@ Vue.component("http-cache-ref-box", {
 				<option value="url-eq-index">首页</option>
 				<option value="url-eq">URL完整路径</option>
 				<option value="url-regexp">URL正则匹配</option>
+				<option value="params">参数匹配</option>
 			</select>
 			<p class="comment"><a href="" @click.prevent="changeCondCategory('complex')">切换到复杂条件 &raquo;</a></p>
 		</td>
