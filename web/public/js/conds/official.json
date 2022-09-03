@@ -27,7 +27,7 @@
   },
   {
     "type": "url-eq",
-    "name": "URL精准匹配",
+    "name": "URL完整路径",
     "description": "检查URL中的文件路径是否一致",
     "component": "http-cond-url-eq",
     "paramsTitle": "URL完整路径",
@@ -79,7 +79,7 @@
   },
   {
     "type": "url-not-eq",
-    "name": "排除：URL精准匹配",
+    "name": "排除：URL完整路径",
     "description": "检查URL中的文件路径是否一致",
     "component": "http-cond-url-not-eq",
     "paramsTitle": "URL完整路径",

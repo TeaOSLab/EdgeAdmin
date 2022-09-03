@@ -28,8 +28,9 @@ func (this *CreatePopupAction) RunGet(params struct {
 func (this *CreatePopupAction) RunPost(params struct {
 	CacheRefJSON []byte
 
-	CondType string
-	CondJSON []byte
+	CondType              string
+	CondJSON              []byte
+	CondIsCaseInsensitive bool
 
 	Must *actions.Must
 }) {
@@ -48,6 +49,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 			return
 		}
 		cond.Type = params.CondType
+		cond.IsCaseInsensitive = params.CondIsCaseInsensitive
 		cacheRef.SimpleCond = cond
 
 		// 将组合条件置为空
