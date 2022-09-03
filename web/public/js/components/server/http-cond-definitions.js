@@ -70,7 +70,7 @@ Vue.component("http-cond-url-extension", {
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<div v-if="extensions.length > 0">
-		<div class="ui label small" v-for="(ext, index) in extensions">{{ext}} <a href="" title="删除" @click.prevent="removeExt(index)"><i class="icon remove"></i></a></div>
+		<div class="ui label small basic" v-for="(ext, index) in extensions">{{ext}} <a href="" title="删除" @click.prevent="removeExt(index)"><i class="icon remove"></i></a></div>
 		<div class="ui divider"></div>
 	</div>
 	<div class="ui fields inline" v-if="isAdding">
@@ -78,18 +78,18 @@ Vue.component("http-cond-url-extension", {
 			<input type="text" size="6" maxlength="100" v-model="addingExt" ref="addingExt" placeholder=".xxx" @keyup.enter="confirmAdding" @keypress.enter.prevent="1" />
 		</div>
 		<div class="ui field">
-			<button class="ui button tiny" type="button" @click.prevent="confirmAdding">确认</button>
+			<button class="ui button tiny basic" type="button" @click.prevent="confirmAdding">确认</button>
 			<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove"></i></a>
 		</div> 
 	</div>
-	<div style="margin-top: 1em">
-		<button class="ui button tiny" type="button" @click.prevent="addExt()">+添加扩展名</button>
+	<div style="margin-top: 1em" v-show="!isAdding">
+		<button class="ui button tiny basic" type="button" @click.prevent="addExt()">+添加扩展名</button>
 	</div>
-	<p class="comment">扩展名需要包含点（.）符号，例如<span class="ui label tiny">.jpg</span>、<span class="ui label tiny">.png</span>之类。</p>
+	<p class="comment">扩展名需要包含点（.）符号，例如<code-label>.jpg</code-label>、<code-label>.png</code-label>之类。</p>
 </div>`
 })
 
-// URL扩展名条件
+// 排除URL扩展名条件
 Vue.component("http-cond-url-not-extension", {
 	props: ["v-cond"],
 	data: function () {
@@ -161,7 +161,7 @@ Vue.component("http-cond-url-not-extension", {
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<div v-if="extensions.length > 0">
-		<div class="ui label small" v-for="(ext, index) in extensions">{{ext}} <a href="" title="删除" @click.prevent="removeExt(index)"><i class="icon remove"></i></a></div>
+		<div class="ui label small basic" v-for="(ext, index) in extensions">{{ext}} <a href="" title="删除" @click.prevent="removeExt(index)"><i class="icon remove"></i></a></div>
 		<div class="ui divider"></div>
 	</div>
 	<div class="ui fields inline" v-if="isAdding">
@@ -169,20 +169,23 @@ Vue.component("http-cond-url-not-extension", {
 			<input type="text" size="6" maxlength="100" v-model="addingExt" ref="addingExt" placeholder=".xxx" @keyup.enter="confirmAdding" @keypress.enter.prevent="1" />
 		</div>
 		<div class="ui field">
-			<button class="ui button tiny" type="button" @click.prevent="confirmAdding">确认</button>
+			<button class="ui button tiny basic" type="button" @click.prevent="confirmAdding">确认</button>
 			<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove"></i></a>
 		</div> 
 	</div>
-	<div style="margin-top: 1em">
-		<button class="ui button tiny" type="button" @click.prevent="addExt()">+添加扩展名</button>
+	<div style="margin-top: 1em" v-show="!isAdding">
+		<button class="ui button tiny basic" type="button" @click.prevent="addExt()">+添加扩展名</button>
 	</div>
-	<p class="comment">扩展名需要包含点（.）符号，例如<span class="ui label tiny">.jpg</span>、<span class="ui label tiny">.png</span>之类。</p>
+	<p class="comment">扩展名需要包含点（.）符号，例如<code-label>.jpg</code-label>、<code-label>.png</code-label>之类。</p>
 </div>`
 })
 
 // 根据URL前缀
 Vue.component("http-cond-url-prefix", {
 	props: ["v-cond"],
+	mounted: function () {
+		this.$refs.valueInput.focus()
+	},
 	data: function () {
 		let cond = {
 			isRequest: true,
@@ -205,13 +208,16 @@ Vue.component("http-cond-url-prefix", {
 	},
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
-	<input type="text" v-model="cond.value"/>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
 	<p class="comment">URL前缀，有此前缀的URL都将会被匹配，通常以<code-label>/</code-label>开头，比如<code-label>/static</code-label>、<code-label>/images</code-label>，不需要带域名。</p>
 </div>`
 })
 
 Vue.component("http-cond-url-not-prefix", {
 	props: ["v-cond"],
+	mounted: function () {
+		this.$refs.valueInput.focus()
+	},
 	data: function () {
 		let cond = {
 			isRequest: true,
@@ -235,7 +241,7 @@ Vue.component("http-cond-url-not-prefix", {
 	},
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
-	<input type="text" v-model="cond.value"/>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
 	<p class="comment">要排除的URL前缀，有此前缀的URL都将会被匹配，通常以<code-label>/</code-label>开头，比如<code-label>/static</code-label>、<code-label>/images</code-label>，不需要带域名。</p>
 </div>`
 })
@@ -273,6 +279,9 @@ Vue.component("http-cond-url-eq-index", {
 // URL精准匹配
 Vue.component("http-cond-url-eq", {
 	props: ["v-cond"],
+	mounted: function () {
+		this.$refs.valueInput.focus()
+	},
 	data: function () {
 		let cond = {
 			isRequest: true,
@@ -295,13 +304,16 @@ Vue.component("http-cond-url-eq", {
 	},
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
-	<input type="text" v-model="cond.value"/>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
 	<p class="comment">完整的URL路径，通常以<code-label>/</code-label>开头，比如<code-label>/static/ui.js</code-label>，不需要带域名。</p>
 </div>`
 })
 
 Vue.component("http-cond-url-not-eq", {
 	props: ["v-cond"],
+	mounted: function () {
+		this.$refs.valueInput.focus()
+	},
 	data: function () {
 		let cond = {
 			isRequest: true,
@@ -325,7 +337,7 @@ Vue.component("http-cond-url-not-eq", {
 	},
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
-	<input type="text" v-model="cond.value"/>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
 	<p class="comment">要排除的完整的URL路径，通常以<code-label>/</code-label>开头，比如<code-label>/static/ui.js</code-label>，不需要带域名。</p>
 </div>`
 })
@@ -333,6 +345,9 @@ Vue.component("http-cond-url-not-eq", {
 // URL正则匹配
 Vue.component("http-cond-url-regexp", {
 	props: ["v-cond"],
+	mounted: function () {
+		this.$refs.valueInput.focus()
+	},
 	data: function () {
 		let cond = {
 			isRequest: true,
@@ -355,7 +370,7 @@ Vue.component("http-cond-url-regexp", {
 	},
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
-	<input type="text" v-model="cond.value"/>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
 	<p class="comment">匹配URL的正则表达式，比如<code-label>^/static/(.*).js$</code-label>，不需要带域名。</p>
 </div>`
 })
@@ -363,6 +378,9 @@ Vue.component("http-cond-url-regexp", {
 // 排除URL正则匹配
 Vue.component("http-cond-url-not-regexp", {
 	props: ["v-cond"],
+	mounted: function () {
+		this.$refs.valueInput.focus()
+	},
 	data: function () {
 		let cond = {
 			isRequest: true,
@@ -385,7 +403,7 @@ Vue.component("http-cond-url-not-regexp", {
 	},
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
-	<input type="text" v-model="cond.value"/>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
 	<p class="comment"><strong>不要</strong>匹配URL的正则表达式，意即只要匹配成功则排除此条件，比如<code-label>^/static/(.*).js$</code-label>，不需要带域名。</p>
 </div>`
 })
@@ -394,6 +412,9 @@ Vue.component("http-cond-url-not-regexp", {
 // User-Agent正则匹配
 Vue.component("http-cond-user-agent-regexp", {
 	props: ["v-cond"],
+	mounted: function () {
+		this.$refs.valueInput.focus()
+	},
 	data: function () {
 		let cond = {
 			isRequest: true,
@@ -416,7 +437,7 @@ Vue.component("http-cond-user-agent-regexp", {
 	},
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
-	<input type="text" v-model="cond.value"/>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
 	<p class="comment">匹配User-Agent的正则表达式，比如<code-label>Android|iPhone</code-label>。</p>
 </div>`
 })
@@ -424,6 +445,9 @@ Vue.component("http-cond-user-agent-regexp", {
 // User-Agent正则不匹配
 Vue.component("http-cond-user-agent-not-regexp", {
 	props: ["v-cond"],
+	mounted: function () {
+		this.$refs.valueInput.focus()
+	},
 	data: function () {
 		let cond = {
 			isRequest: true,
@@ -446,7 +470,7 @@ Vue.component("http-cond-user-agent-not-regexp", {
 	},
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
-	<input type="text" v-model="cond.value"/>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
 	<p class="comment">匹配User-Agent的正则表达式，比如<code-label>Android|iPhone</code-label>，如果匹配，则排除此条件。</p>
 </div>`
 })
@@ -520,12 +544,12 @@ Vue.component("http-cond-mime-type", {
 			<input type="text" size="16" maxlength="100" v-model="addingMimeType" ref="addingMimeType" placeholder="类似于image/png" @keyup.enter="confirmAdding" @keypress.enter.prevent="1" />
 		</div>
 		<div class="ui field">
-			<button class="ui button tiny" type="button" @click.prevent="confirmAdding">确认</button>
+			<button class="ui button tiny basic" type="button" @click.prevent="confirmAdding">确认</button>
 			<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove"></i></a>
 		</div> 
 	</div>
 	<div style="margin-top: 1em">
-		<button class="ui button tiny" type="button" @click.prevent="addMimeType()">+添加MimeType</button>
+		<button class="ui button tiny basic" type="button" @click.prevent="addMimeType()">+添加MimeType</button>
 	</div>
 	<p class="comment">服务器返回的内容的MimeType，比如<span class="ui label tiny">text/html</span>、<span class="ui label tiny">image/*</span>等。</p>
 </div>`

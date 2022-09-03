@@ -4,11 +4,13 @@ Vue.component("http-cache-ref-box", {
 	mounted: function () {
 		this.$refs.variablesDescriber.update(this.ref.key)
 		if (this.ref.simpleCond != null) {
-			this.changeCondType(this.ref.simpleCond.type)
+			this.condType = this.ref.simpleCond.type
+			this.changeCondType(this.ref.simpleCond.type, true)
 			this.condCategory = "simple"
 		} else if (this.ref.conds != null && this.ref.conds.groups != null) {
 			this.condCategory = "complex"
 		}
+		this.changeCondCategory(this.condCategory)
 	},
 	data: function () {
 		let ref = this.vCacheRef
@@ -66,9 +68,12 @@ Vue.component("http-cache-ref-box", {
 		return {
 			ref: ref,
 			moreOptionsVisible: false,
+
 			condCategory: "simple", // 条件分类：simple|complex
 			condType: condType,
 			condComponent: condComponent,
+			condIsCaseInsensitive: (ref.simpleCond != null) ? ref.simpleCond.isCaseInsensitive : true,
+
 			components: window.REQUEST_COND_COMPONENTS
 		}
 	},
@@ -115,8 +120,27 @@ Vue.component("http-cache-ref-box", {
 		// 切换条件类型
 		changeCondCategory: function (condCategory) {
 			this.condCategory = condCategory
+
+			// resize window
+			let dialog = window.parent.document.querySelector("*[role='dialog']")
+			switch (condCategory) {
+				case "simple":
+					dialog.style.width = "40em"
+					break
+				case "complex":
+					let width = window.parent.innerWidth
+					if (width > 1024) {
+						width = 1024
+					}
+
+					dialog.style.width = width + "px"
+					break
+			}
 		},
-		changeCondType: function (condType) {
+		changeCondType: function (condType, isInit) {
+			if (!isInit && this.ref.simpleCond != null) {
+				this.ref.simpleCond.value = null
+			}
 			let def = this.components.$find(function (k, component) {
 				return component.type == condType
 			})
@@ -129,11 +153,11 @@ Vue.component("http-cache-ref-box", {
 	<tr v-if="condCategory == 'simple'">
 		<td class="title color-border">条件类型 *</td>
 		<td>
-			<select class="ui dropdown auto-width" name="condType" v-model="condType" @change="changeCondType(condType)">
+			<select class="ui dropdown auto-width" name="condType" v-model="condType" @change="changeCondType(condType, false)">
 				<option value="url-extension">URL扩展名</option>
 				<option value="url-prefix">URL前缀</option>
 				<option value="url-eq-index">首页</option>
-				<option value="url-eq">URL精准匹配</option>
+				<option value="url-eq">URL完整路径</option>
 				<option value="url-regexp">URL正则匹配</option>
 			</select>
 			<p class="comment"><a href="" @click.prevent="changeCondCategory('complex')">切换到复杂条件 &raquo;</a></p>
@@ -143,6 +167,16 @@ Vue.component("http-cache-ref-box", {
 		<td class="color-border">{{condComponent.paramsTitle}} *</td>
 		<td>
 			<component :is="condComponent.component" :v-cond="ref.simpleCond"></component>
+		</td>
+	</tr>
+	<tr v-if="condCategory == 'simple' && condComponent.caseInsensitive">
+		<td class="color-border">不区分大小写</td>
+		<td>
+			<div class="ui checkbox">
+				<input type="checkbox" name="condIsCaseInsensitive" value="1" v-model="condIsCaseInsensitive"/>
+				<label></label>
+			</div>
+			<p class="comment">选中后表示对比时忽略参数值的大小写。</p>
 		</td>
 	</tr>
 	<tr v-if="condCategory == 'complex'">

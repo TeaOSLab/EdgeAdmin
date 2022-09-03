@@ -105,7 +105,7 @@ Vue.component("http-request-conds-box", {
 		</table>
 		
 		<div>
-			<button class="ui button tiny" type="button" @click.prevent="addGroup()">+添加分组</button>
+			<button class="ui button tiny basic" type="button" @click.prevent="addGroup()">+添加分组</button>
 		</div>
 	</div>	
 </div>`
