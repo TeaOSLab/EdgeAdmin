@@ -2956,6 +2956,9 @@ Vue.component("http-request-conds-box", {
 				groups: []
 			}
 		}
+		if (conds.groups == null) {
+			conds.groups = []
+		}
 		return {
 			conds: conds,
 			components: window.REQUEST_COND_COMPONENTS
@@ -3049,7 +3052,7 @@ Vue.component("http-request-conds-box", {
 		</table>
 		
 		<div>
-			<button class="ui button tiny" type="button" @click.prevent="addGroup()">+添加分组</button>
+			<button class="ui button tiny basic" type="button" @click.prevent="addGroup()">+添加分组</button>
 		</div>
 	</div>	
 </div>`
@@ -3729,7 +3732,10 @@ Vue.component("http-cache-refs-box", {
 				</tr>
 				<tr v-for="(cacheRef, index) in refs">
 					<td :class="{'color-border': cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
-						<http-request-conds-view :v-conds="cacheRef.conds" :class="{disabled: !cacheRef.isOn}"></http-request-conds-view>
+						<http-request-conds-view :v-conds="cacheRef.conds" :class="{disabled: !cacheRef.isOn}" v-if="cacheRef.conds != null && cacheRef.conds.groups != null"></http-request-conds-view>
+							<http-request-cond-view :v-cond="cacheRef.simpleCond" v-if="cacheRef.simpleCond != null"></http-request-cond-view>
+						
+						<!-- 特殊参数 -->
 						<grey-label v-if="cacheRef.minSize != null && cacheRef.minSize.count > 0">
 							{{cacheRef.minSize.count}}{{cacheRef.minSize.unit}}
 							<span v-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">- {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</span>
@@ -4015,6 +4021,14 @@ Vue.component("http-cache-ref-box", {
 	props: ["v-cache-ref", "v-is-reverse"],
 	mounted: function () {
 		this.$refs.variablesDescriber.update(this.ref.key)
+		if (this.ref.simpleCond != null) {
+			this.condType = this.ref.simpleCond.type
+			this.changeCondType(this.ref.simpleCond.type, true)
+			this.condCategory = "simple"
+		} else if (this.ref.conds != null && this.ref.conds.groups != null) {
+			this.condCategory = "complex"
+		}
+		this.changeCondCategory(this.condCategory)
 	},
 	data: function () {
 		let ref = this.vCacheRef
@@ -4030,7 +4044,8 @@ Vue.component("http-cache-ref-box", {
 				skipCacheControlValues: ["private", "no-cache", "no-store"],
 				skipSetCookie: true,
 				enableRequestCachePragma: false,
-				conds: null,
+				conds: null, // 复杂条件
+				simpleCond: null, // 简单条件
 				allowChunkedEncoding: true,
 				allowPartialContent: false,
 				enableIfNoneMatch: false,
@@ -4062,9 +4077,22 @@ Vue.component("http-cache-ref-box", {
 		if (ref.minSize == null) {
 			ref.minSize = {count: 0, unit: "kb"}
 		}
+
+		let condType = "url-extension"
+		let condComponent = window.REQUEST_COND_COMPONENTS.$find(function (k, v) {
+			return v.type == "url-extension"
+		})
+
 		return {
 			ref: ref,
-			moreOptionsVisible: false
+			moreOptionsVisible: false,
+
+			condCategory: "simple", // 条件分类：simple|complex
+			condType: condType,
+			condComponent: condComponent,
+			condIsCaseInsensitive: (ref.simpleCond != null) ? ref.simpleCond.isCaseInsensitive : true,
+
+			components: window.REQUEST_COND_COMPONENTS
 		}
 	},
 	methods: {
@@ -4082,6 +4110,7 @@ Vue.component("http-cache-ref-box", {
 		},
 		changeConds: function (v) {
 			this.ref.conds = v
+			this.ref.simpleCond = null
 		},
 		changeStatusList: function (list) {
 			let result = []
@@ -4104,15 +4133,76 @@ Vue.component("http-cache-ref-box", {
 		},
 		changeExpiresTime: function (expiresTime) {
 			this.ref.expiresTime = expiresTime
+		},
+
+		// 切换条件类型
+		changeCondCategory: function (condCategory) {
+			this.condCategory = condCategory
+
+			// resize window
+			let dialog = window.parent.document.querySelector("*[role='dialog']")
+			switch (condCategory) {
+				case "simple":
+					dialog.style.width = "40em"
+					break
+				case "complex":
+					let width = window.parent.innerWidth
+					if (width > 1024) {
+						width = 1024
+					}
+
+					dialog.style.width = width + "px"
+					break
+			}
+		},
+		changeCondType: function (condType, isInit) {
+			if (!isInit && this.ref.simpleCond != null) {
+				this.ref.simpleCond.value = null
+			}
+			let def = this.components.$find(function (k, component) {
+				return component.type == condType
+			})
+			if (def != null) {
+				this.condComponent = def
+			}
 		}
 	},
 	template: `<tbody>
-	<tr>
+	<tr v-if="condCategory == 'simple'">
+		<td class="title color-border">条件类型 *</td>
+		<td>
+			<select class="ui dropdown auto-width" name="condType" v-model="condType" @change="changeCondType(condType, false)">
+				<option value="url-extension">URL扩展名</option>
+				<option value="url-prefix">URL前缀</option>
+				<option value="url-eq-index">首页</option>
+				<option value="url-eq">URL完整路径</option>
+				<option value="url-regexp">URL正则匹配</option>
+				<option value="params">参数匹配</option>
+			</select>
+			<p class="comment"><a href="" @click.prevent="changeCondCategory('complex')">切换到复杂条件 &raquo;</a></p>
+		</td>
+	</tr>
+	<tr v-if="condCategory == 'simple'">
+		<td class="color-border">{{condComponent.paramsTitle}} *</td>
+		<td>
+			<component :is="condComponent.component" :v-cond="ref.simpleCond"></component>
+		</td>
+	</tr>
+	<tr v-if="condCategory == 'simple' && condComponent.caseInsensitive">
+		<td class="color-border">不区分大小写</td>
+		<td>
+			<div class="ui checkbox">
+				<input type="checkbox" name="condIsCaseInsensitive" value="1" v-model="condIsCaseInsensitive"/>
+				<label></label>
+			</div>
+			<p class="comment">选中后表示对比时忽略参数值的大小写。</p>
+		</td>
+	</tr>
+	<tr v-if="condCategory == 'complex'">
 		<td class="title">匹配条件分组 *</td>
 		<td>
 			<http-request-conds-box :v-conds="ref.conds" @change="changeConds"></http-request-conds-box>
-			
-			<input type="hidden" name="cacheRefJSON" :value="JSON.stringify(ref)"/>
+			<p class="comment"><a href="" @click.prevent="changeCondCategory('simple')">&laquo; 切换到简单条件</a></p>
 		</td>
 	</tr>
 	<tr v-show="!vIsReverse">
@@ -4219,6 +4309,9 @@ Vue.component("http-cache-ref-box", {
 			<checkbox v-model="ref.enableIfModifiedSince"></checkbox>
 			<p class="comment">特殊情况下才需要开启，可能会降低缓存命中率。</p>
 		</td>
+	</tr>
+	<tr v-show="false">
+		<td colspan="2"><input type="hidden" name="cacheRefJSON" :value="JSON.stringify(ref)"/></td>
 	</tr>
 </tbody>`
 })
@@ -4418,6 +4511,9 @@ Vue.component("http-request-conds-view", {
 				groups: []
 			}
 		}
+		if (conds.groups == null) {
+			conds.groups = []
+		}
 
 		let that = this
 		conds.groups.forEach(function (group) {
@@ -4451,12 +4547,14 @@ Vue.component("http-request-conds-view", {
 		},
 		notifyChange: function () {
 			let that = this
-			this.initConds.groups.forEach(function (group) {
-				group.conds.forEach(function (cond) {
-					cond.typeName = that.typeName(cond)
+			if (this.initConds.groups != null) {
+				this.initConds.groups.forEach(function (group) {
+					group.conds.forEach(function (cond) {
+						cond.typeName = that.typeName(cond)
+					})
 				})
-			})
-			this.$forceUpdate()
+				this.$forceUpdate()
+			}
 		}
 	},
 	template: `<div>
@@ -5565,17 +5663,12 @@ Vue.component("http-cache-refs-config-box", {
 		addRef: function (isReverse) {
 			window.UPDATING_CACHE_REF = null
 
-			let width = window.innerWidth
-			if (width > 1024) {
-				width = 1024
-			}
 			let height = window.innerHeight
 			if (height > 500) {
 				height = 500
 			}
 			let that = this
 			teaweb.popup("/servers/server/settings/cache/createPopup?isReverse=" + (isReverse ? 1 : 0), {
-				width: width + "px",
 				height: height + "px",
 				callback: function (resp) {
 					let newRef = resp.data.cacheRef
@@ -5612,23 +5705,18 @@ Vue.component("http-cache-refs-config-box", {
 		updateRef: function (index, cacheRef) {
 			window.UPDATING_CACHE_REF = cacheRef
 
-			let width = window.innerWidth
-			if (width > 1024) {
-				width = 1024
-			}
 			let height = window.innerHeight
 			if (height > 500) {
 				height = 500
 			}
 			let that = this
 			teaweb.popup("/servers/server/settings/cache/createPopup", {
-				width: width + "px",
 				height: height + "px",
 				callback: function (resp) {
 					resp.data.cacheRef.id = that.refs[index].id
 					Vue.set(that.refs, index, resp.data.cacheRef)
 					that.change()
-					that.$refs.cacheRef[index].updateConds(resp.data.cacheRef.conds)
+					that.$refs.cacheRef[index].updateConds(resp.data.cacheRef.conds, resp.data.cacheRef.simpleCond)
 					that.$refs.cacheRef[index].notifyChange()
 				}
 			})
@@ -5716,7 +5804,10 @@ Vue.component("http-cache-refs-config-box", {
 				<tr>
 					<td style="text-align: center;"><i class="icon bars handle grey"></i> </td>
 					<td :class="{'color-border': cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
-						<http-request-conds-view :v-conds="cacheRef.conds" ref="cacheRef" :class="{disabled: !cacheRef.isOn}"></http-request-conds-view>
+						<http-request-conds-view :v-conds="cacheRef.conds" ref="cacheRef" :class="{disabled: !cacheRef.isOn}" v-if="cacheRef.conds != null && cacheRef.conds.groups != null"></http-request-conds-view>
+						<http-request-cond-view :v-cond="cacheRef.simpleCond" ref="cacheRef" v-if="cacheRef.simpleCond != null"></http-request-cond-view>
+						
+						<!-- 特殊参数 -->
 						<grey-label v-if="cacheRef.minSize != null && cacheRef.minSize.count > 0">
 							{{cacheRef.minSize.count}}{{cacheRef.minSize.unit}}
 							<span v-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">- {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</span>
@@ -5747,7 +5838,7 @@ Vue.component("http-cache-refs-config-box", {
 		</table>
 		<p class="comment" v-if="refs.length > 1">所有条件匹配顺序为从上到下，可以拖动左侧的<i class="icon bars"></i>排序。服务设置的优先级比全局缓存策略设置的优先级要高。</p>
 		
-		<button class="ui button tiny" @click.prevent="addRef(false)" type="button">+添加缓存设置</button> &nbsp; &nbsp; <a href="" @click.prevent="addRef(true)">+添加不缓存设置</a>
+		<button class="ui button tiny" @click.prevent="addRef(false)" type="button">+添加缓存条件</button> &nbsp; &nbsp; <a href="" @click.prevent="addRef(true)">+添加不缓存条件</a>
 	</div>
 	<div class="margin"></div>
 </div>`
@@ -10479,6 +10570,45 @@ Vue.component("http-firewall-block-options", {
 `
 })
 
+Vue.component("http-request-cond-view", {
+	props: ["v-cond"],
+	data: function () {
+		return {
+			cond: this.vCond,
+			components: window.REQUEST_COND_COMPONENTS
+		}
+	},
+	methods: {
+		typeName: function (cond) {
+			let c = this.components.$find(function (k, v) {
+				return v.type == cond.type
+			})
+			if (c != null) {
+				return c.name;
+			}
+			return cond.param + " " + cond.operator
+		},
+		updateConds: function (conds, simpleCond) {
+			for (let k in simpleCond) {
+				if (simpleCond.hasOwnProperty(k)) {
+					this.cond[k] = simpleCond[k]
+				}
+			}
+		},
+		notifyChange: function () {
+
+		}
+	},
+	template: `<div style="margin-bottom: 0.5em">
+	<span class="ui label small basic">
+		<var v-if="cond.type.length == 0 || cond.type == 'params'" style="font-style: normal">{{cond.param}} <var>{{cond.operator}}</var></var>
+		<var v-if="cond.type.length > 0 && cond.type != 'params'" style="font-style: normal">{{typeName(cond)}}: </var>
+		{{cond.value}}
+		<sup v-if="cond.isCaseInsensitive" title="不区分大小写"><i class="icon info small"></i></sup>
+	</span>
+</div>`
+})
+
 Vue.component("http-firewall-rules-box", {
 	props: ["v-rules", "v-type"],
 	data: function () {
@@ -10793,7 +10923,7 @@ Vue.component("http-cond-url-extension", {
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<div v-if="extensions.length > 0">
-		<div class="ui label small" v-for="(ext, index) in extensions">{{ext}} <a href="" title="删除" @click.prevent="removeExt(index)"><i class="icon remove"></i></a></div>
+		<div class="ui label small basic" v-for="(ext, index) in extensions">{{ext}} <a href="" title="删除" @click.prevent="removeExt(index)"><i class="icon remove"></i></a></div>
 		<div class="ui divider"></div>
 	</div>
 	<div class="ui fields inline" v-if="isAdding">
@@ -10801,18 +10931,18 @@ Vue.component("http-cond-url-extension", {
 			<input type="text" size="6" maxlength="100" v-model="addingExt" ref="addingExt" placeholder=".xxx" @keyup.enter="confirmAdding" @keypress.enter.prevent="1" />
 		</div>
 		<div class="ui field">
-			<button class="ui button tiny" type="button" @click.prevent="confirmAdding">确认</button>
+			<button class="ui button tiny basic" type="button" @click.prevent="confirmAdding">确认</button>
 			<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove"></i></a>
 		</div> 
 	</div>
-	<div style="margin-top: 1em">
-		<button class="ui button tiny" type="button" @click.prevent="addExt()">+添加扩展名</button>
+	<div style="margin-top: 1em" v-show="!isAdding">
+		<button class="ui button tiny basic" type="button" @click.prevent="addExt()">+添加扩展名</button>
 	</div>
-	<p class="comment">扩展名需要包含点（.）符号，例如<span class="ui label tiny">.jpg</span>、<span class="ui label tiny">.png</span>之类。</p>
+	<p class="comment">扩展名需要包含点（.）符号，例如<code-label>.jpg</code-label>、<code-label>.png</code-label>之类。</p>
 </div>`
 })
 
-// URL扩展名条件
+// 排除URL扩展名条件
 Vue.component("http-cond-url-not-extension", {
 	props: ["v-cond"],
 	data: function () {
@@ -10884,7 +11014,7 @@ Vue.component("http-cond-url-not-extension", {
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<div v-if="extensions.length > 0">
-		<div class="ui label small" v-for="(ext, index) in extensions">{{ext}} <a href="" title="删除" @click.prevent="removeExt(index)"><i class="icon remove"></i></a></div>
+		<div class="ui label small basic" v-for="(ext, index) in extensions">{{ext}} <a href="" title="删除" @click.prevent="removeExt(index)"><i class="icon remove"></i></a></div>
 		<div class="ui divider"></div>
 	</div>
 	<div class="ui fields inline" v-if="isAdding">
@@ -10892,20 +11022,23 @@ Vue.component("http-cond-url-not-extension", {
 			<input type="text" size="6" maxlength="100" v-model="addingExt" ref="addingExt" placeholder=".xxx" @keyup.enter="confirmAdding" @keypress.enter.prevent="1" />
 		</div>
 		<div class="ui field">
-			<button class="ui button tiny" type="button" @click.prevent="confirmAdding">确认</button>
+			<button class="ui button tiny basic" type="button" @click.prevent="confirmAdding">确认</button>
 			<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove"></i></a>
 		</div> 
 	</div>
-	<div style="margin-top: 1em">
-		<button class="ui button tiny" type="button" @click.prevent="addExt()">+添加扩展名</button>
+	<div style="margin-top: 1em" v-show="!isAdding">
+		<button class="ui button tiny basic" type="button" @click.prevent="addExt()">+添加扩展名</button>
 	</div>
-	<p class="comment">扩展名需要包含点（.）符号，例如<span class="ui label tiny">.jpg</span>、<span class="ui label tiny">.png</span>之类。</p>
+	<p class="comment">扩展名需要包含点（.）符号，例如<code-label>.jpg</code-label>、<code-label>.png</code-label>之类。</p>
 </div>`
 })
 
 // 根据URL前缀
 Vue.component("http-cond-url-prefix", {
 	props: ["v-cond"],
+	mounted: function () {
+		this.$refs.valueInput.focus()
+	},
 	data: function () {
 		let cond = {
 			isRequest: true,
@@ -10928,13 +11061,16 @@ Vue.component("http-cond-url-prefix", {
 	},
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
-	<input type="text" v-model="cond.value"/>
-	<p class="comment">URL前缀，有此前缀的URL都将会被匹配，通常以<code-label>/</code-label>开头，比如<code-label>/static</code-label>。</p>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
+	<p class="comment">URL前缀，有此前缀的URL都将会被匹配，通常以<code-label>/</code-label>开头，比如<code-label>/static</code-label>、<code-label>/images</code-label>，不需要带域名。</p>
 </div>`
 })
 
 Vue.component("http-cond-url-not-prefix", {
 	props: ["v-cond"],
+	mounted: function () {
+		this.$refs.valueInput.focus()
+	},
 	data: function () {
 		let cond = {
 			isRequest: true,
@@ -10958,14 +11094,47 @@ Vue.component("http-cond-url-not-prefix", {
 	},
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
-	<input type="text" v-model="cond.value"/>
-	<p class="comment">要排除的URL前缀，有此前缀的URL都将会被匹配，通常以<code-label>/</code-label>开头，比如<code-label>/static</code-label>。</p>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
+	<p class="comment">要排除的URL前缀，有此前缀的URL都将会被匹配，通常以<code-label>/</code-label>开头，比如<code-label>/static</code-label>、<code-label>/images</code-label>，不需要带域名。</p>
+</div>`
+})
+
+// 首页
+Vue.component("http-cond-url-eq-index", {
+	props: ["v-cond"],
+	data: function () {
+		let cond = {
+			isRequest: true,
+			param: "${requestPath}",
+			operator: "eq",
+			value: "/",
+			isCaseInsensitive: false
+		}
+		if (this.vCond != null && typeof this.vCond.value == "string") {
+			cond.value = this.vCond.value
+		}
+		return {
+			cond: cond
+		}
+	},
+	methods: {
+		changeCaseInsensitive: function (isCaseInsensitive) {
+			this.cond.isCaseInsensitive = isCaseInsensitive
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value" disabled="disabled" style="background: #eee"/>
+	<p class="comment">检查URL路径是为<code-label>/</code-label>，不需要带域名。</p>
 </div>`
 })
 
 // URL精准匹配
 Vue.component("http-cond-url-eq", {
 	props: ["v-cond"],
+	mounted: function () {
+		this.$refs.valueInput.focus()
+	},
 	data: function () {
 		let cond = {
 			isRequest: true,
@@ -10988,13 +11157,16 @@ Vue.component("http-cond-url-eq", {
 	},
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
-	<input type="text" v-model="cond.value"/>
-	<p class="comment">完整的URL路径，通常以<code-label>/</code-label>开头，比如<code-label>/static/ui.js</code-label>，并不包含域名部分。</p>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
+	<p class="comment">完整的URL路径，通常以<code-label>/</code-label>开头，比如<code-label>/static/ui.js</code-label>，不需要带域名。</p>
 </div>`
 })
 
 Vue.component("http-cond-url-not-eq", {
 	props: ["v-cond"],
+	mounted: function () {
+		this.$refs.valueInput.focus()
+	},
 	data: function () {
 		let cond = {
 			isRequest: true,
@@ -11018,14 +11190,17 @@ Vue.component("http-cond-url-not-eq", {
 	},
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
-	<input type="text" v-model="cond.value"/>
-	<p class="comment">要排除的完整的URL路径，通常以<code-label>/</code-label>开头，比如<code-label>/static/ui.js</code-label>，并不包含域名部分。</p>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
+	<p class="comment">要排除的完整的URL路径，通常以<code-label>/</code-label>开头，比如<code-label>/static/ui.js</code-label>，不需要带域名。</p>
 </div>`
 })
 
 // URL正则匹配
 Vue.component("http-cond-url-regexp", {
 	props: ["v-cond"],
+	mounted: function () {
+		this.$refs.valueInput.focus()
+	},
 	data: function () {
 		let cond = {
 			isRequest: true,
@@ -11048,14 +11223,17 @@ Vue.component("http-cond-url-regexp", {
 	},
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
-	<input type="text" v-model="cond.value"/>
-	<p class="comment">匹配URL的正则表达式，比如<code-label>^/static/(.*).js$</code-label>。</p>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
+	<p class="comment">匹配URL的正则表达式，比如<code-label>^/static/(.*).js$</code-label>，不需要带域名。</p>
 </div>`
 })
 
 // 排除URL正则匹配
 Vue.component("http-cond-url-not-regexp", {
 	props: ["v-cond"],
+	mounted: function () {
+		this.$refs.valueInput.focus()
+	},
 	data: function () {
 		let cond = {
 			isRequest: true,
@@ -11078,8 +11256,8 @@ Vue.component("http-cond-url-not-regexp", {
 	},
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
-	<input type="text" v-model="cond.value"/>
-	<p class="comment"><strong>不要</strong>匹配URL的正则表达式，意即只要匹配成功则排除此条件，比如<code-label>^/static/(.*).js$</code-label>。</p>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
+	<p class="comment"><strong>不要</strong>匹配URL的正则表达式，意即只要匹配成功则排除此条件，比如<code-label>^/static/(.*).js$</code-label>，不需要带域名。</p>
 </div>`
 })
 
@@ -11087,6 +11265,9 @@ Vue.component("http-cond-url-not-regexp", {
 // User-Agent正则匹配
 Vue.component("http-cond-user-agent-regexp", {
 	props: ["v-cond"],
+	mounted: function () {
+		this.$refs.valueInput.focus()
+	},
 	data: function () {
 		let cond = {
 			isRequest: true,
@@ -11109,7 +11290,7 @@ Vue.component("http-cond-user-agent-regexp", {
 	},
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
-	<input type="text" v-model="cond.value"/>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
 	<p class="comment">匹配User-Agent的正则表达式，比如<code-label>Android|iPhone</code-label>。</p>
 </div>`
 })
@@ -11117,6 +11298,9 @@ Vue.component("http-cond-user-agent-regexp", {
 // User-Agent正则不匹配
 Vue.component("http-cond-user-agent-not-regexp", {
 	props: ["v-cond"],
+	mounted: function () {
+		this.$refs.valueInput.focus()
+	},
 	data: function () {
 		let cond = {
 			isRequest: true,
@@ -11139,7 +11323,7 @@ Vue.component("http-cond-user-agent-not-regexp", {
 	},
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
-	<input type="text" v-model="cond.value"/>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
 	<p class="comment">匹配User-Agent的正则表达式，比如<code-label>Android|iPhone</code-label>，如果匹配，则排除此条件。</p>
 </div>`
 })
@@ -11213,12 +11397,12 @@ Vue.component("http-cond-mime-type", {
 			<input type="text" size="16" maxlength="100" v-model="addingMimeType" ref="addingMimeType" placeholder="类似于image/png" @keyup.enter="confirmAdding" @keypress.enter.prevent="1" />
 		</div>
 		<div class="ui field">
-			<button class="ui button tiny" type="button" @click.prevent="confirmAdding">确认</button>
+			<button class="ui button tiny basic" type="button" @click.prevent="confirmAdding">确认</button>
 			<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove"></i></a>
 		</div> 
 	</div>
 	<div style="margin-top: 1em">
-		<button class="ui button tiny" type="button" @click.prevent="addMimeType()">+添加MimeType</button>
+		<button class="ui button tiny basic" type="button" @click.prevent="addMimeType()">+添加MimeType</button>
 	</div>
 	<p class="comment">服务器返回的内容的MimeType，比如<span class="ui label tiny">text/html</span>、<span class="ui label tiny">image/*</span>等。</p>
 </div>`
@@ -16325,7 +16509,7 @@ Vue.component("grant-selector", {
 </div>`
 })
 
-window.REQUEST_COND_COMPONENTS = [{"type":"url-extension","name":"URL扩展名","description":"根据URL中的文件路径扩展名进行过滤","component":"http-cond-url-extension","paramsTitle":"扩展名列表","isRequest":true,"caseInsensitive":false},{"type":"url-prefix","name":"URL前缀","description":"根据URL中的文件路径前缀进行过滤","component":"http-cond-url-prefix","paramsTitle":"URL前缀","isRequest":true,"caseInsensitive":true},{"type":"url-eq","name":"URL精准匹配","description":"检查URL中的文件路径是否一致","component":"http-cond-url-eq","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":true},{"type":"url-regexp","name":"URL正则匹配","description":"使用正则表达式检查URL中的文件路径是否一致","component":"http-cond-url-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"user-agent-regexp","name":"User-Agent正则匹配","description":"使用正则表达式检查User-Agent中是否含有某些浏览器和系统标识","component":"http-cond-user-agent-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"params","name":"参数匹配","description":"根据参数值进行匹配","component":"http-cond-params","paramsTitle":"参数配置","isRequest":true,"caseInsensitive":false},{"type":"url-not-extension","name":"排除：URL扩展名","description":"根据URL中的文件路径扩展名进行过滤","component":"http-cond-url-not-extension","paramsTitle":"扩展名列表","isRequest":true,"caseInsensitive":false},{"type":"url-not-prefix","name":"排除：URL前缀","description":"根据URL中的文件路径前缀进行过滤","component":"http-cond-url-not-prefix","paramsTitle":"URL前缀","isRequest":true,"caseInsensitive":true},{"type":"url-not-eq","name":"排除：URL精准匹配","description":"检查URL中的文件路径是否一致","component":"http-cond-url-not-eq","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":true},{"type":"url-not-regexp","name":"排除：URL正则匹配","description":"使用正则表达式检查URL中的文件路径是否一致，如果一致，则不匹配","component":"http-cond-url-not-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"user-agent-not-regexp","name":"排除：User-Agent正则匹配","description":"使用正则表达式检查User-Agent中是否含有某些浏览器和系统标识，如果含有，则不匹配","component":"http-cond-user-agent-not-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"mime-type","name":"内容MimeType","description":"根据服务器返回的内容的MimeType进行过滤。注意：当用于缓存条件时，此条件需要结合别的请求条件使用。","component":"http-cond-mime-type","paramsTitle":"MimeType列表","isRequest":false,"caseInsensitive":false}]
+window.REQUEST_COND_COMPONENTS = [{"type":"url-extension","name":"URL扩展名","description":"根据URL中的文件路径扩展名进行过滤","component":"http-cond-url-extension","paramsTitle":"扩展名列表","isRequest":true,"caseInsensitive":false},{"type":"url-eq-index","name":"首页","description":"检查URL路径是为\"/\"","component":"http-cond-url-eq-index","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":false},{"type":"url-prefix","name":"URL前缀","description":"根据URL中的文件路径前缀进行过滤","component":"http-cond-url-prefix","paramsTitle":"URL前缀","isRequest":true,"caseInsensitive":true},{"type":"url-eq","name":"URL完整路径","description":"检查URL中的文件路径是否一致","component":"http-cond-url-eq","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":true},{"type":"url-regexp","name":"URL正则匹配","description":"使用正则表达式检查URL中的文件路径是否一致","component":"http-cond-url-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"user-agent-regexp","name":"User-Agent正则匹配","description":"使用正则表达式检查User-Agent中是否含有某些浏览器和系统标识","component":"http-cond-user-agent-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"params","name":"参数匹配","description":"根据参数值进行匹配","component":"http-cond-params","paramsTitle":"参数配置","isRequest":true,"caseInsensitive":false},{"type":"url-not-extension","name":"排除：URL扩展名","description":"根据URL中的文件路径扩展名进行过滤","component":"http-cond-url-not-extension","paramsTitle":"扩展名列表","isRequest":true,"caseInsensitive":false},{"type":"url-not-prefix","name":"排除：URL前缀","description":"根据URL中的文件路径前缀进行过滤","component":"http-cond-url-not-prefix","paramsTitle":"URL前缀","isRequest":true,"caseInsensitive":true},{"type":"url-not-eq","name":"排除：URL完整路径","description":"检查URL中的文件路径是否一致","component":"http-cond-url-not-eq","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":true},{"type":"url-not-regexp","name":"排除：URL正则匹配","description":"使用正则表达式检查URL中的文件路径是否一致，如果一致，则不匹配","component":"http-cond-url-not-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"user-agent-not-regexp","name":"排除：User-Agent正则匹配","description":"使用正则表达式检查User-Agent中是否含有某些浏览器和系统标识，如果含有，则不匹配","component":"http-cond-user-agent-not-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"mime-type","name":"内容MimeType","description":"根据服务器返回的内容的MimeType进行过滤。注意：当用于缓存条件时，此条件需要结合别的请求条件使用。","component":"http-cond-mime-type","paramsTitle":"MimeType列表","isRequest":false,"caseInsensitive":false}]
 
 window.REQUEST_COND_OPERATORS = [{"description":"判断是否正则表达式匹配","name":"正则表达式匹配","op":"regexp"},{"description":"判断是否正则表达式不匹配","name":"正则表达式不匹配","op":"not regexp"},{"description":"使用字符串对比参数值是否相等于某个值","name":"字符串等于","op":"eq"},{"description":"参数值包含某个前缀","name":"字符串前缀","op":"prefix"},{"description":"参数值包含某个后缀","name":"字符串后缀","op":"suffix"},{"description":"参数值包含另外一个字符串","name":"字符串包含","op":"contains"},{"description":"参数值不包含另外一个字符串","name":"字符串不包含","op":"not contains"},{"description":"使用字符串对比参数值是否不相等于某个值","name":"字符串不等于","op":"not"},{"description":"判断参数值在某个列表中","name":"在列表中","op":"in"},{"description":"判断参数值不在某个列表中","name":"不在列表中","op":"not in"},{"description":"判断小写的扩展名（不带点）在某个列表中","name":"扩展名","op":"file ext"},{"description":"判断MimeType在某个列表中，支持类似于image/*的语法","name":"MimeType","op":"mime type"},{"description":"判断版本号在某个范围内，格式为version1,version2","name":"版本号范围","op":"version range"},{"description":"将参数转换为整数数字后进行对比","name":"整数等于","op":"eq int"},{"description":"将参数转换为可以有小数的浮点数字进行对比","name":"浮点数等于","op":"eq float"},{"description":"将参数转换为数字进行对比","name":"数字大于","op":"gt"},{"description":"将参数转换为数字进行对比","name":"数字大于等于","op":"gte"},{"description":"将参数转换为数字进行对比","name":"数字小于","op":"lt"},{"description":"将参数转换为数字进行对比","name":"数字小于等于","op":"lte"},{"description":"对整数参数值取模，除数为10，对比值为余数","name":"整数取模10","op":"mod 10"},{"description":"对整数参数值取模，除数为100，对比值为余数","name":"整数取模100","op":"mod 100"},{"description":"对整数参数值取模，对比值格式为：除数,余数，比如10,1","name":"整数取模","op":"mod"},{"description":"将参数转换为IP进行对比","name":"IP等于","op":"eq ip"},{"description":"将参数转换为IP进行对比","name":"IP大于","op":"gt ip"},{"description":"将参数转换为IP进行对比","name":"IP大于等于","op":"gte ip"},{"description":"将参数转换为IP进行对比","name":"IP小于","op":"lt ip"},{"description":"将参数转换为IP进行对比","name":"IP小于等于","op":"lte ip"},{"description":"IP在某个范围之内，范围格式可以是英文逗号分隔的ip1,ip2，或者CIDR格式的ip/bits","name":"IP范围","op":"ip range"},{"description":"对IP参数值取模，除数为10，对比值为余数","name":"IP取模10","op":"ip mod 10"},{"description":"对IP参数值取模，除数为100，对比值为余数","name":"IP取模100","op":"ip mod 100"},{"description":"对IP参数值取模，对比值格式为：除数,余数，比如10,1","name":"IP取模","op":"ip mod"},{"description":"判断参数值解析后的文件是否存在","name":"文件存在","op":"file exist"},{"description":"判断参数值解析后的文件是否不存在","name":"文件不存在","op":"file not exist"}]
 
