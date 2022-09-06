@@ -7,17 +7,20 @@ import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/gen"
 	"github.com/TeaOSLab/EdgeAdmin/internal/nodes"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web"
 	_ "github.com/iwind/TeaGo/bootstrap"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/gosock/pkg/gosock"
+	"log"
+	"time"
 )
 
 func main() {
-	app := apps.NewAppCmd().
+	var app = apps.NewAppCmd().
 		Version(teaconst.Version).
 		Product(teaconst.ProductName).
-		Usage(teaconst.ProcessName+" [-v|start|stop|restart|service|daemon|reset|recover|demo]").
+		Usage(teaconst.ProcessName+" [-v|start|stop|restart|service|daemon|reset|recover|demo|upgrade]").
 		Usage(teaconst.ProcessName+" [dev|prod]").
 		Option("-h", "show this help").
 		Option("-v", "show version").
@@ -30,7 +33,8 @@ func main() {
 		Option("recover", "enter recovery mode").
 		Option("demo", "switch to demo mode").
 		Option("dev", "switch to 'dev' mode").
-		Option("prod", "switch to 'prod' mode")
+		Option("prod", "switch to 'prod' mode").
+		Option("upgrade", "upgrade from official site")
 
 	app.On("daemon", func() {
 		nodes.NewAdminNode().Daemon()
@@ -115,8 +119,42 @@ func main() {
 			fmt.Println("switch to '" + env + "' ok")
 		}
 	})
+	app.On("upgrade", func() {
+		var manager = utils.NewUpgradeManager("admin")
+		log.Println("checking latest version ...")
+		var ticker = time.NewTicker(1 * time.Second)
+		go func() {
+			var lastProgress float32 = 0
+			var isStarted = false
+			for range ticker.C {
+				if manager.IsDownloading() {
+					if !isStarted {
+						log.Println("start downloading v" + manager.NewVersion() + " ...")
+						isStarted = true
+					}
+					var progress = manager.Progress()
+					if progress >= 0 {
+						if progress == 0 || progress == 1 || progress-lastProgress >= 0.1 {
+							lastProgress = progress
+							log.Println(fmt.Sprintf("%.2f%%", manager.Progress()*100))
+						}
+					}
+				} else {
+					break
+				}
+			}
+		}()
+		err := manager.Start()
+		if err != nil {
+			log.Println("upgrade failed: " + err.Error())
+			return
+		}
+		log.Println("finished!")
+		log.Println("restarting ...")
+		app.RunRestart()
+	})
 	app.Run(func() {
-		adminNode := nodes.NewAdminNode()
+		var adminNode = nodes.NewAdminNode()
 		adminNode.Run()
 	})
 }
