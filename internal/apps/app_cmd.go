@@ -123,7 +123,7 @@ func (this *AppCmd) On(arg string, callback func()) {
 // Run 运行
 func (this *AppCmd) Run(main func()) {
 	// 获取参数
-	args := os.Args[1:]
+	var args = os.Args[1:]
 	if len(args) > 0 {
 		switch args[0] {
 		case "-v", "version", "-version", "--version":
@@ -139,7 +139,7 @@ func (this *AppCmd) Run(main func()) {
 			this.runStop()
 			return
 		case "restart":
-			this.runRestart()
+			this.RunRestart()
 			return
 		case "status":
 			this.runStatus()
@@ -160,7 +160,7 @@ func (this *AppCmd) Run(main func()) {
 	}
 
 	// 日志
-	writer := new(LogWriter)
+	var writer = new(LogWriter)
 	writer.Init()
 	logs.SetWriter(writer)
 
@@ -210,7 +210,7 @@ func (this *AppCmd) runStop() {
 }
 
 // 重启
-func (this *AppCmd) runRestart() {
+func (this *AppCmd) RunRestart() {
 	this.runStop()
 	time.Sleep(1 * time.Second)
 	this.runStart()
