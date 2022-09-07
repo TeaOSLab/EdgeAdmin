@@ -11,6 +11,7 @@ import (
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/iwind/gosock/pkg/gosock"
 	"net"
 	"net/http"
 	"os"
@@ -18,6 +19,7 @@ import (
 	"reflect"
 	"runtime"
 	"strings"
+	"time"
 )
 
 // Fail 提示服务器错误信息
@@ -45,6 +47,25 @@ func FailPage(action actions.ActionWrapper, err error) {
 
 	var isRPCConnError bool
 	err, isRPCConnError = rpcerrors.HumanError(err, apiEndpoints, Tea.ConfigFile("api.yaml"))
+	var apiNodeIsStarting = false
+	var apiNodeProgress = ""
+	if isRPCConnError {
+		// API节点是否正在启动
+		var sock = gosock.NewTmpSock("edge-api")
+		reply, err := sock.SendTimeout(&gosock.Command{
+			Code:   "starting",
+			Params: nil,
+		}, 1*time.Second)
+		if err == nil && reply != nil {
+			var params = maps.NewMap(reply.Params)
+			if params.GetBool("isStarting") {
+				apiNodeIsStarting = true
+
+				var progressMap = params.GetMap("progress")
+				apiNodeProgress = progressMap.GetString("description")
+			}
+		}
+	}
 
 	action.Object().ResponseWriter.WriteHeader(http.StatusInternalServerError)
 	if len(action.Object().Request.Header.Get("X-Requested-With")) > 0 {
@@ -90,14 +111,25 @@ func FailPage(action actions.ActionWrapper, err error) {
 	</head>
 	<body>
 	<div style="background: #eee; border: 1px #ccc solid; padding: 10px; font-size: 12px; line-height: 1.8">
-	` + teaconst.ErrServer + `
+	`
+		if apiNodeIsStarting { // API节点正在启动
+			html += "<div class=\"red\">API节点正在启动，请耐心等待完成"
+
+			if len(apiNodeProgress) > 0 {
+				html += "：" + apiNodeProgress
+			}
+
+			html += "</div>"
+		} else {
+			html += teaconst.ErrServer + `
 		<div>可以通过查看 <strong><em>$安装目录/logs/run.log</em></strong> 日志文件查看具体的错误提示。</div>
 		<hr/>
 		<div class="red">Error: ` + err.Error() + `</div>`
 
-		if len(issuesHTML) > 0 {
-			html += `        <hr/>
+			if len(issuesHTML) > 0 {
+				html += `        <hr/>
         <div class="red">` + issuesHTML + `</div>`
+			}
 		}
 
 		action.Object().WriteString(html + `
