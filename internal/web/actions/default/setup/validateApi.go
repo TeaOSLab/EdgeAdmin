@@ -48,25 +48,25 @@ func (this *ValidateApiAction) RunPost(params struct {
 	if params.Mode == "new" {
 		params.Must.
 			Field("newPort", params.NewPort).
-			Require("请输入节点端口").
-			Match(`^\d+$`, "节点端口只能是数字").
-			MinLength(4, "请输入4位以上的数字").
-			MaxLength(5, "请输入5位以下的数字")
-		newPort := types.Int(params.NewPort)
+			Require("请输入API节点端口").
+			Match(`^\d+$`, "API节点端口只能是数字").
+			MinLength(4, "请输入4位以上的数字端口号").
+			MaxLength(5, "请输入5位以下的数字端口号")
+		var newPort = types.Int(params.NewPort)
 		if newPort < 1024 {
-			this.FailField("newPort", "端口号不能小于1024")
+			this.FailField("newPort", "API端口号不能小于1024")
 		}
 		if newPort > 65534 {
-			this.FailField("newPort", "端口号不能大于65534")
+			this.FailField("newPort", "API端口号不能大于65534")
 		}
 
 		if net.ParseIP(params.NewHost) == nil {
-			this.FailField("newHost", "请输入正确的节点主机地址")
+			this.FailField("newHost", "请输入正确的API节点主机地址")
 		}
 
 		params.Must.
 			Field("newHost", params.NewHost).
-			Require("请输入节点主机地址")
+			Require("请输入API节点主机地址")
 
 		this.Success()
 		return
