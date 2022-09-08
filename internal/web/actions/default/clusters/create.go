@@ -63,6 +63,7 @@ func (this *CreateAction) RunPost(params struct {
 	// DNS相关
 	DnsDomainId int64
 	DnsName     string
+	DnsTTL      int32
 
 	Must *actions.Must
 }) {
@@ -93,7 +94,7 @@ func (this *CreateAction) RunPost(params struct {
 	// TODO 检查DnsDomainId的有效性
 
 	// 系统服务
-	systemServices := map[string]interface{}{}
+	var systemServices = map[string]any{}
 	if params.SystemdServiceIsOn {
 		systemServices[nodeconfigs.SystemServiceTypeSystemd] = &nodeconfigs.SystemdServiceConfig{
 			IsOn: true,
@@ -111,6 +112,7 @@ func (this *CreateAction) RunPost(params struct {
 		InstallDir:           params.InstallDir,
 		DnsDomainId:          params.DnsDomainId,
 		DnsName:              params.DnsName,
+		DnsTTL:               params.DnsTTL,
 		HttpCachePolicyId:    params.CachePolicyId,
 		HttpFirewallPolicyId: params.HttpFirewallPolicyId,
 		SystemServicesJSON:   systemServicesJSON,
