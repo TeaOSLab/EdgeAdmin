@@ -191,7 +191,7 @@
             </tr>
         </tbody>
 
-        <!-- Edge DNS -->
+        <!-- EdgeDNS -->
         <tbody v-if="type == 'localEdgeDNS'">
             <tr>
                 <td>选择域名服务集群 *</td>
@@ -200,6 +200,37 @@
                         <option value="0">[选择域名服务集群]</option>
                         <option v-for="cluster in nsClusters" :value="cluster.id">{{cluster.name}}</option>
                     </select>
+                </td>
+            </tr>
+        </tbody>
+
+        <!-- EdgeDNS API -->
+        <tbody v-if="type == 'edgeDNSAPI'">
+            <tr>
+                <td>API地址 *</td>
+                <td>
+                    <input type="text" name="paramEdgeDNSAPIHost" maxlength="100"/>
+                </td>
+            </tr>
+            <tr>
+                <td>AccessKey类型 *</td>
+                <td>
+                    <select class="ui dropdown auto-width" name="paramEdgeDNSAPIRole">
+                        <option value="user">平台用户</option>
+                        <option value="admin">管理员</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>AccessKey ID *</td>
+                <td>
+                    <input type="text" name="paramEdgeDNSAPIAccessKeyId" maxlength="64"/>
+                </td>
+            </tr>
+            <tr>
+                <td>AccessKey密钥 *</td>
+                <td>
+                    <input type="text" name="paramEdgeDNSAPIAccessKeySecret" maxlength="64"/>
                 </td>
             </tr>
         </tbody>
