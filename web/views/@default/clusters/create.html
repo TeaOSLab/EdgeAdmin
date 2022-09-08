@@ -71,6 +71,16 @@
 				<p class="comment">当前集群的子域名，和主域名一起组成集群节点的子域名。</p>
 			</td>
 		</tr>
+        <tr>
+            <td>解析记录TTL</td>
+            <td>
+                <div class="ui input right labeled">
+                    <input type="text" name="dnsTTL" maxlength="6" style="width: 6em" value="0"/>
+                    <span class="ui label">秒</span>
+                </div>
+                <p class="comment">生成解析记录时使用的TTL；每个DNS服务商或者套餐、账号限制各有不同，请注意允许的取值范围。0表示使用默认。</p>
+            </td>
+        </tr>
 	</table>
 
 	<submit-btn></submit-btn>
