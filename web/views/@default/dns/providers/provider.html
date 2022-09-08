@@ -148,6 +148,29 @@
         </tr>
     </tbody>
 
+    <!-- EdgeDNS API -->
+    <tbody v-if="provider.type == 'edgeDNSAPI'">
+        <tr>
+            <td class="color-border">API地址</td>
+            <td>{{provider.apiParams.host}}</td>
+        </tr>
+        <tr>
+            <td class="color-border">AccessKey类型</td>
+            <td>
+                <span v-if="provider.apiParams.role == 'user'">平台用户</span>
+                <span v-if="provider.apiParams.role == 'admin'">管理员</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="color-border">AccessKey ID</td>
+            <td>{{provider.apiParams.accessKeyId}}</td>
+        </tr>
+        <tr>
+            <td class="color-border">AccessKey密钥</td>
+            <td>{{provider.apiParams.accessKeySecret}}</td>
+        </tr>
+    </tbody>
+
     <!-- CustomHTTP -->
     <tbody v-if="provider.type == 'customHTTP'">
         <tr>

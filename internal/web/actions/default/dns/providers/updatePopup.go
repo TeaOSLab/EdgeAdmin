@@ -100,6 +100,12 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	ParamCustomHTTPURL    string
 	ParamCustomHTTPSecret string
 
+	// EdgeDNS API
+	ParamEdgeDNSAPIHost            string
+	ParamEdgeDNSAPIRole            string
+	ParamEdgeDNSAPIAccessKeyId     string
+	ParamEdgeDNSAPIAccessKeySecret string
+
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
@@ -150,6 +156,20 @@ func (this *UpdatePopupAction) RunPost(params struct {
 			Email("请输入正确格式的邮箱地址")
 		apiParams["apiKey"] = params.ParamCloudFlareAPIKey
 		apiParams["email"] = params.ParamCloudFlareEmail
+	case "edgeDNSAPI":
+		params.Must.
+			Field("paramEdgeDNSAPIHost", params.ParamEdgeDNSAPIHost).
+			Require("请输入API地址").
+			Field("paramEdgeDNSAPIRole", params.ParamEdgeDNSAPIRole).
+			Require("请选择AccessKey类型").
+			Field("paramEdgeDNSAPIAccessKeyId", params.ParamEdgeDNSAPIAccessKeyId).
+			Require("请输入AccessKey ID").
+			Field("paramEdgeDNSAPIAccessKeySecret", params.ParamEdgeDNSAPIAccessKeySecret).
+			Require("请输入AccessKey密钥")
+		apiParams["host"] = params.ParamEdgeDNSAPIHost
+		apiParams["role"] = params.ParamEdgeDNSAPIRole
+		apiParams["accessKeyId"] = params.ParamEdgeDNSAPIAccessKeyId
+		apiParams["accessKeySecret"] = params.ParamEdgeDNSAPIAccessKeySecret
 	case "customHTTP":
 		params.Must.
 			Field("paramCustomHTTPURL", params.ParamCustomHTTPURL).
