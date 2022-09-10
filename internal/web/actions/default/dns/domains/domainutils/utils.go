@@ -17,7 +17,6 @@ func ValidateDomainFormat(domain string) bool {
 		if piece == "-" ||
 			strings.HasPrefix(piece, "-") ||
 			strings.HasSuffix(piece, "-") ||
-			//strings.Contains(piece, "--") ||
 			len(piece) > 63 ||
 			!regexp.MustCompile(`^[a-z0-9-]+$`).MatchString(piece) {
 			return false
