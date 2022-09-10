@@ -817,8 +817,8 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<option value="0">[选择集群]</option>
 		<option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
 	</select>
-</div>`}),Vue.component("ns-cluster-combo-box",{props:["v-cluster-id"],data:function(){let t=this;return Tea.action("/ns/clusters/options").post().success(function(e){t.clusters=e.data.clusters}),{clusters:[]}},methods:{change:function(e){null==e?this.$emit("change",0):this.$emit("change",e.value)}},template:`<div v-if="clusters.length > 0" style="min-width: 10.4em">
-	<combo-box title="集群" placeholder="集群名称" :v-items="clusters" name="clusterId" :v-value="vClusterId" @change="change"></combo-box>
+</div>`}),Vue.component("ns-cluster-combo-box",{props:["v-cluster-id","name"],data:function(){let t=this,e=(Tea.action("/ns/clusters/options").post().success(function(e){t.clusters=e.data.clusters}),"clusterId");return{clusters:[],inputName:e=null!=this.name&&0<this.name.length?this.name:e}},methods:{change:function(e){null==e?this.$emit("change",0):this.$emit("change",e.value)}},template:`<div v-if="clusters.length > 0" style="min-width: 10.4em">
+	<combo-box title="集群" placeholder="集群名称" :v-items="clusters" :name="inputName" :v-value="vClusterId" @change="change"></combo-box>
 </div>`}),Vue.component("plan-user-selector",{props:["v-user-id"],data:function(){return{}},methods:{change:function(e){this.$emit("change",e)}},template:`<div>
 	<user-selector :v-user-id="vUserId" data-url="/plans/users/options" @change="change"></user-selector>
 </div>`}),Vue.component("plan-price-view",{props:["v-plan"],data:function(){return{plan:this.vPlan}},template:`<div>
