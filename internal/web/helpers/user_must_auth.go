@@ -9,7 +9,10 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/userconfigs"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
 	"net"
@@ -192,7 +195,7 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 		return true
 	}
 
-	config, err := configloaders.LoadAdminUIConfig()
+	uiConfig, err := configloaders.LoadAdminUIConfig()
 	if err != nil {
 		action.WriteString(err.Error())
 		return false
@@ -203,11 +206,11 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 		return action.Data["teaTitle"].(string)
 	})
 
-	action.Data["teaShowVersion"] = config.ShowVersion
-	action.Data["teaTitle"] = config.AdminSystemName
-	action.Data["teaName"] = config.ProductName
-	action.Data["teaFaviconFileId"] = config.FaviconFileId
-	action.Data["teaLogoFileId"] = config.LogoFileId
+	action.Data["teaShowVersion"] = uiConfig.ShowVersion
+	action.Data["teaTitle"] = uiConfig.AdminSystemName
+	action.Data["teaName"] = uiConfig.ProductName
+	action.Data["teaFaviconFileId"] = uiConfig.FaviconFileId
+	action.Data["teaLogoFileId"] = uiConfig.LogoFileId
 	action.Data["teaUsername"] = configloaders.FindAdminFullname(adminId)
 	action.Data["teaTheme"] = configloaders.FindAdminTheme(adminId)
 
@@ -216,15 +219,15 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	if !action.Data.Has("teaMenu") {
 		action.Data["teaMenu"] = ""
 	}
-	action.Data["teaModules"] = this.modules(actionPtr, adminId)
+	action.Data["teaModules"] = this.modules(actionPtr, adminId, uiConfig)
 	action.Data["teaSubMenus"] = []map[string]interface{}{}
 	action.Data["teaTabbar"] = []map[string]interface{}{}
-	if len(config.Version) == 0 {
+	if len(uiConfig.Version) == 0 {
 		action.Data["teaVersion"] = teaconst.Version
 	} else {
-		action.Data["teaVersion"] = config.Version
+		action.Data["teaVersion"] = uiConfig.Version
 	}
-	action.Data["teaShowOpenSourceInfo"] = config.ShowOpenSourceInfo
+	action.Data["teaShowOpenSourceInfo"] = uiConfig.ShowOpenSourceInfo
 	action.Data["teaIsSuper"] = false
 	action.Data["teaIsPlus"] = teaconst.IsPlus
 	action.Data["teaDemoEnabled"] = teaconst.IsDemoMode
@@ -251,7 +254,7 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 }
 
 // 菜单配置
-func (this *userMustAuth) modules(actionPtr actions.ActionWrapper, adminId int64) []maps.Map {
+func (this *userMustAuth) modules(actionPtr actions.ActionWrapper, adminId int64, adminUIConfig *systemconfigs.AdminUIConfig) []maps.Map {
 	// 父级动作
 	var action = actionPtr.Object()
 
@@ -269,14 +272,27 @@ func (this *userMustAuth) modules(actionPtr actions.ActionWrapper, adminId int64
 		}
 	}
 
-	result := []maps.Map{}
+	var result = []maps.Map{}
 	for _, m := range FindAllMenuMaps(nodeLogsType, countUnreadNodeLogs, countUnreadIPItems) {
 		if m.GetString("code") == "finance" && !configloaders.ShowFinance() {
 			continue
 		}
 
-		module := m.GetString("module")
+		var module = m.GetString("module")
 		if configloaders.AllowModule(adminId, module) {
+			if module == "ns" && !adminUIConfig.ContainsModule(userconfigs.UserModuleNS) {
+				continue
+			}
+			if lists.ContainsString([]string{
+				configloaders.AdminModuleCodeNode,
+				configloaders.AdminModuleCodeDNS,
+				configloaders.AdminModuleCodePlan,
+				configloaders.AdminModuleCodeServer,
+				configloaders.AdminModuleCodeDashboard,
+			}, module) && !adminUIConfig.ContainsModule(userconfigs.UserModuleCDN) {
+				continue
+			}
+
 			result = append(result, m)
 		}
 	}
