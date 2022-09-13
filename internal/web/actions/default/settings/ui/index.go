@@ -5,6 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/userconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"io"
 )
@@ -37,6 +38,8 @@ func (this *IndexAction) RunGet(params struct{}) {
 	}
 	this.Data["timeZoneLocation"] = nodeconfigs.FindTimeZoneLocation(config.TimeZone)
 
+	this.filterConfig(config)
+
 	this.Show()
 }
 
@@ -51,6 +54,9 @@ func (this *IndexAction) RunPost(params struct {
 	LogoFile           *actions.File
 	DefaultPageSize    int
 	TimeZone           string
+
+	SupportModuleCDN bool
+	SupportModuleNS  bool
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -83,6 +89,14 @@ func (this *IndexAction) RunPost(params struct {
 		config.DefaultPageSize = params.DefaultPageSize
 	} else {
 		config.DefaultPageSize = 10
+	}
+
+	config.Modules = []userconfigs.UserModule{}
+	if params.SupportModuleCDN {
+		config.Modules = append(config.Modules, userconfigs.UserModuleCDN)
+	}
+	if params.SupportModuleNS {
+		config.Modules = append(config.Modules, userconfigs.UserModuleNS)
 	}
 
 	// 上传Favicon文件

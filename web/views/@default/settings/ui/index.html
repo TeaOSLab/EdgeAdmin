@@ -38,6 +38,14 @@
 				<p class="comment">定制自己的版本号，留空表示使用系统自带的版本号。</p>
 			</td>
 		</tr>
+        <tr v-show="teaIsPlus">
+            <td>显示模块</td>
+            <td>
+                <checkbox name="supportModuleCDN" v-model="supportModuleCDN">CDN</checkbox> &nbsp; &nbsp; &nbsp;
+                <checkbox name="supportModuleNS" v-model="supportModuleNS" v-show="nsIsVisible">智能DNS</checkbox>
+                <p class="comment">当前管理系统中可以显示的模块，不能为空。</p>
+            </td>
+        </tr>
         <tr>
             <td>是否显示财务相关功能</td>
             <td>
@@ -48,7 +56,7 @@
             <td>浏览器图标</td>
             <td>
                 <div v-if="config.faviconFileId > 0">
-                    <a :href="'/ui/image/' + config.faviconFileId" target="_blank"><img :src="'/ui/image/' + config.faviconFileId" style="width:32px;border:1px #ccc solid;"/></a>
+                    <a :href="'/ui/image/' + config.faviconFileId" target="_blank"><img alt="" :src="'/ui/image/' + config.faviconFileId" style="width:32px;border:1px #ccc solid;"/></a>
                 </div>
                 <div v-else>
                     <span class="disabled">还没有上传。</span>
