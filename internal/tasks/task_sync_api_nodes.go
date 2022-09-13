@@ -14,6 +14,7 @@ import (
 	"github.com/iwind/TeaGo/logs"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 	"net/url"
 	"sort"
 	"strings"
@@ -143,8 +144,9 @@ func (this *SyncAPINodesTask) testEndpoints(endpoints []string) bool {
 				cancel()
 			}()
 			var conn *grpc.ClientConn
+
 			if u.Scheme == "http" {
-				conn, err = grpc.DialContext(ctx, u.Host, grpc.WithInsecure(), grpc.WithBlock())
+				conn, err = grpc.DialContext(ctx, u.Host, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
 			} else if u.Scheme == "https" {
 				conn, err = grpc.DialContext(ctx, u.Host, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{
 					InsecureSkipVerify: true,
