@@ -9,14 +9,14 @@
 			<td class="title">单个域名 *</td>
 			<td>
 				<input type="text" name="serverName" ref="focus" maxlength="1024" v-model="serverName.name"/>
-                <p class="comment">请输入单个域名，域名中<strong>不要</strong>包含<code-label>http://</code-label>或<code-label>https://</code-label>。</p>
+                <p class="comment">请输入单个域名，域名中<strong>不要</strong>包含<code-label>http://</code-label>或<code-label>https://</code-label>；也可以使用泛域名，比如<code-label>*.example.com</code-label>。</p>
 			</td>
 		</tr>
 		<tr v-if="mode == 'multiple'">
 			<td class="title">多个域名 *</td>
 			<td>
 				<textarea name="serverNames" ref="serverNames" v-model="multipleServerNames"></textarea>
-				<p class="comment">每行一个域名，域名中<strong>不要</strong>包含<code-label>http://</code-label>或<code-label>https://</code-label>。</p>
+				<p class="comment">每行一个域名，域名中<strong>不要</strong>包含<code-label>http://</code-label>或<code-label>https://</code-label>；也可以使用泛域名，比如<code-label>*.example.com</code-label>。</p>
 			</td>
 		</tr>
 	</table>
