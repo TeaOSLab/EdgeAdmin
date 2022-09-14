@@ -18,7 +18,8 @@ func ValidateDomainFormat(domain string) bool {
 			strings.HasPrefix(piece, "-") ||
 			strings.HasSuffix(piece, "-") ||
 			len(piece) > 63 ||
-			!regexp.MustCompile(`^[a-z0-9-]+$`).MatchString(piece) {
+			// 我们允许大写字母、下划线，防止有些特殊场景下需要
+			!regexp.MustCompile(`^[_a-zA-Z0-9-]+$`).MatchString(piece) {
 			return false
 		}
 	}
@@ -76,7 +77,8 @@ func ValidateRecordName(name string) bool {
 			strings.HasSuffix(piece, "-") ||
 			//strings.Contains(piece, "--") ||
 			len(piece) > 63 ||
-			!regexp.MustCompile(`^[_a-z0-9-]+$`).MatchString(piece) {
+			// 我们允许大写字母、下划线，防止有些特殊场景下需要
+			!regexp.MustCompile(`^[_a-zA-Z0-9-]+$`).MatchString(piece) {
 			return false
 		}
 	}
