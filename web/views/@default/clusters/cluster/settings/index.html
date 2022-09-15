@@ -60,6 +60,24 @@
                         <p class="comment">选中后会自动尝试在边缘节点正在运行的firewalld中开放所需端口；如果有别的防火墙或者安全策略，仍然需要手工操作。</p>
                     </td>
                 </tr>
+                <tr>
+                    <td class="color-border">自动同步节点时钟</td>
+                    <td>
+                        <div class="ui fields inline">
+                            <div class="ui field">
+                                <checkbox name="clockAutoSync" v-model="cluster.clock.autoSync"></checkbox>
+                            </div>
+                        </div>
+                        <p class="comment">选中后表示尝试自动同步节点时钟。</p>
+                    </td>
+                </tr>
+                <tr v-show="cluster.clock.autoSync">
+                    <td class="color-border">NTP时钟服务器</td>
+                    <td>
+                        <input type="text" name="clockServer" v-model="cluster.clock.server" maxlength="100"/>
+                        <p class="comment">可选项。默认使用<code-label>pool.ntp.org</code-label>。</p>
+                    </td>
+                </tr>
             </tbody>
 		</table>
 		<submit-btn></submit-btn>
