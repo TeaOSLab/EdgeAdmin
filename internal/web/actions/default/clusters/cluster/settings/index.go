@@ -1,6 +1,7 @@
 package settings
 
 import (
+	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
@@ -65,6 +66,19 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	this.Data["timeZoneLocation"] = nodeconfigs.FindTimeZoneLocation(cluster.TimeZone)
 
+	// 时钟
+	var clockConfig = nodeconfigs.DefaultClockConfig()
+	if len(cluster.ClockJSON) > 0 {
+		err = json.Unmarshal(cluster.ClockJSON, clockConfig)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		if clockConfig == nil {
+			clockConfig = nodeconfigs.DefaultClockConfig()
+		}
+	}
+
 	this.Data["cluster"] = maps.Map{
 		"id":             cluster.Id,
 		"name":           cluster.Name,
@@ -72,6 +86,7 @@ func (this *IndexAction) RunGet(params struct {
 		"timeZone":       cluster.TimeZone,
 		"nodeMaxThreads": cluster.NodeMaxThreads,
 		"autoOpenPorts":  cluster.AutoOpenPorts,
+		"clock":          clockConfig,
 	}
 
 	// 默认值
@@ -91,6 +106,8 @@ func (this *IndexAction) RunPost(params struct {
 	TimeZone       string
 	NodeMaxThreads int32
 	AutoOpenPorts  bool
+	ClockAutoSync  bool
+	ClockServer    string
 
 	Must *actions.Must
 }) {
@@ -108,7 +125,22 @@ func (this *IndexAction) RunPost(params struct {
 			Lte(int64(nodeconfigs.DefaultMaxThreadsMax), "单节点最大线程数最大值不能大于"+types.String(nodeconfigs.DefaultMaxThreadsMax))
 	}
 
-	_, err := this.RPC().NodeClusterRPC().UpdateNodeCluster(this.AdminContext(), &pb.UpdateNodeClusterRequest{
+	var clockConfig = nodeconfigs.DefaultClockConfig()
+	clockConfig.AutoSync = params.ClockAutoSync
+	clockConfig.Server = params.ClockServer
+	clockConfigJSON, err := json.Marshal(clockConfig)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	err = clockConfig.Init()
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	_, err = this.RPC().NodeClusterRPC().UpdateNodeCluster(this.AdminContext(), &pb.UpdateNodeClusterRequest{
 		NodeClusterId:  params.ClusterId,
 		Name:           params.Name,
 		NodeGrantId:    params.GrantId,
@@ -116,6 +148,7 @@ func (this *IndexAction) RunPost(params struct {
 		TimeZone:       params.TimeZone,
 		NodeMaxThreads: params.NodeMaxThreads,
 		AutoOpenPorts:  params.AutoOpenPorts,
+		ClockJSON:      clockConfigJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)
