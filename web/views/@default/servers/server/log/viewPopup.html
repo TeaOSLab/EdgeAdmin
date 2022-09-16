@@ -34,7 +34,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td>状态<em>(StatusMessage)</em>：<span :class="{red:accessLog.status>=400, green:accessLog.status<400}">{{accessLog.status}} {{accessLog.statusMessage}}</span></td>
+			<td>状态<em>(StatusMessage)</em>：<span :class="{red:accessLog.status>=400, green:accessLog.status<400}">{{accessLog.status}} {{accessLog.statusMessage}} <span v-if="accessLog.originStatus >= 400 || (accessLog.originStatus > 0 && accessLog.originStatus != accessLog.status)" class="grey small">（源站{{accessLog.originStatus}}）</span></span></td>
 			<td>文件类型<em>(ContentType)</em>：
 				<span v-if="accessLog.contentType != null && accessLog.contentType.length > 0">{{accessLog.contentType}}</span>
 				<span v-else>-</span>
