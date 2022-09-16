@@ -1,0 +1,63 @@
+{$layout}
+{$template "../menu"}
+{$template "/left_menu_with_menu"}
+
+<div class="right-box with-menu">
+    <form class="ui form" data-tea-action="$" data-tea-success="success">
+        <csrf-token></csrf-token>
+        <input type="hidden" name="clusterId" :value="clusterId"/>
+
+        <h4>域名</h4>
+
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title color-border">禁止未绑定域名访问</td>
+                <td>
+                    <checkbox name="httpAllMatchDomainStrictly" v-model="config.httpAll.matchDomainStrictly"></checkbox>
+                    <p class="comment">选中后，表示禁止未绑定的域名和IP访问。</p>
+                </td>
+            </tr>
+            <tr v-show="config.httpAll.matchDomainStrictly">
+                <td class="color-border">页面提示</td>
+                <td>
+                    <textarea name="httpAllDomainMismatchActionContentHTML" v-model="httpAllDomainMismatchActionContentHTML"></textarea>
+                    <p class="comment">访问未绑定的域名时提示的文字，可以使用HTML；仅限于HTTP请求，不适于用HTTPS（HTTPS会提示证书错误）。</p>
+                </td>
+            </tr>
+            <tr v-show="config.httpAll.matchDomainStrictly">
+                <td class="color-border">允许例外的域名</td>
+                <td>
+                    <domains-box name="httpAllAllowMismatchDomainsJSON" :v-domains="config.httpAll.allowMismatchDomains"></domains-box>
+                    <p class="comment">允许这些域名不经过绑定就可以直接访问网站。</p>
+                </td>
+            </tr>
+            <tr v-show="config.httpAll.matchDomainStrictly">
+                <td class="color-border">允许使用节点IP访问</td>
+                <td>
+                    <checkbox name="httpAllAllowNodeIP" v-model="config.httpAll.allowNodeIP"></checkbox>
+                    <p class="comment">选中后，表示允许使用节点IP访问网站。</p>
+                </td>
+            </tr>
+            <tr v-show="config.httpAll.matchDomainStrictly">
+                <td class="color-border">默认域名</td>
+                <td>
+                    <input type="text" name="httpAllDefaultDomain" v-model="config.httpAll.defaultDomain"/>
+                    <p class="comment">例外域名或使用节点IP访问时使用的默认域名。</p>
+                </td>
+            </tr>
+        </table>
+
+        <h4>日志</h4>
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title">记录服务错误</td>
+                <td>
+                    <checkbox name="logRecordServerError" v-model="config.log.recordServerError"></checkbox>
+                    <p class="comment">在节点运行日志中记录网站服务相关错误，比如无法连接源站等。</p>
+                </td>
+            </tr>
+        </table>
+
+        <submit-btn></submit-btn>
+    </form>
+</div>

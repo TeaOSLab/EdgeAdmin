@@ -6,6 +6,7 @@ import (
 	ddosProtection "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/ddos-protection"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/dns"
 	firewallActions "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/firewall-actions"
+	globalServerConfig "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/global-server-config"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/health"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/metrics"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/services"
@@ -70,6 +71,10 @@ func init() {
 			Prefix("/clusters/cluster/settings/ddos-protection").
 			GetPost("", new(ddosProtection.IndexAction)).
 			GetPost("/status", new(ddosProtection.StatusAction)).
+
+			// 全局服务配置
+			Prefix("/clusters/cluster/settings/global-server-config").
+			GetPost("", new(globalServerConfig.IndexAction)).
 
 			//
 			EndAll()

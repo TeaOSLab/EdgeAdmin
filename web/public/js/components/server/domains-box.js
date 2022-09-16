@@ -1,15 +1,21 @@
 // 域名列表
 Vue.component("domains-box", {
-	props: ["v-domains"],
+	props: ["v-domains", "name"],
 	data: function () {
 		let domains = this.vDomains
 		if (domains == null) {
 			domains = []
 		}
+
+		let realName = "domainsJSON"
+		if (this.name != null && typeof this.name == "string") {
+			realName = this.name
+		}
 		return {
 			domains: domains,
 			isAdding: false,
-			addingDomain: ""
+			addingDomain: "",
+			realName: realName
 		}
 	},
 	methods: {
@@ -59,7 +65,7 @@ Vue.component("domains-box", {
 		}
 	},
 	template: `<div>
-	<input type="hidden" name="domainsJSON" :value="JSON.stringify(domains)"/>
+	<input type="hidden" :name="realName" :value="JSON.stringify(domains)"/>
 	<div v-if="domains.length > 0">
 		<span class="ui label small basic" v-for="(domain, index) in domains">
 			<span v-if="domain.length > 0 && domain[0] == '~'" class="grey" style="font-style: normal">[正则]</span>
