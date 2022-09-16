@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains/domainutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
 )
 
@@ -55,6 +56,9 @@ func (this *CreateAction) RunPost(params struct {
 	// WAF策略
 	HttpFirewallPolicyId int64
 
+	// 服务配置
+	MatchDomainStrictly bool
+
 	// SSH相关
 	GrantId            int64
 	InstallDir         string
@@ -93,6 +97,15 @@ func (this *CreateAction) RunPost(params struct {
 
 	// TODO 检查DnsDomainId的有效性
 
+	// 全局服务配置
+	var globalServerConfig = serverconfigs.DefaultGlobalServerConfig()
+	globalServerConfig.HTTPAll.MatchDomainStrictly = params.MatchDomainStrictly
+	globalServerConfigJSON, err := json.Marshal(globalServerConfig)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
 	// 系统服务
 	var systemServices = map[string]any{}
 	if params.SystemdServiceIsOn {
@@ -107,15 +120,16 @@ func (this *CreateAction) RunPost(params struct {
 	}
 
 	createResp, err := this.RPC().NodeClusterRPC().CreateNodeCluster(this.AdminContext(), &pb.CreateNodeClusterRequest{
-		Name:                 params.Name,
-		NodeGrantId:          params.GrantId,
-		InstallDir:           params.InstallDir,
-		DnsDomainId:          params.DnsDomainId,
-		DnsName:              params.DnsName,
-		DnsTTL:               params.DnsTTL,
-		HttpCachePolicyId:    params.CachePolicyId,
-		HttpFirewallPolicyId: params.HttpFirewallPolicyId,
-		SystemServicesJSON:   systemServicesJSON,
+		Name:                   params.Name,
+		NodeGrantId:            params.GrantId,
+		InstallDir:             params.InstallDir,
+		DnsDomainId:            params.DnsDomainId,
+		DnsName:                params.DnsName,
+		DnsTTL:                 params.DnsTTL,
+		HttpCachePolicyId:      params.CachePolicyId,
+		HttpFirewallPolicyId:   params.HttpFirewallPolicyId,
+		SystemServicesJSON:     systemServicesJSON,
+		GlobalServerConfigJSON: globalServerConfigJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)

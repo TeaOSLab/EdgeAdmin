@@ -98,11 +98,6 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 		"isOn":     true,
 	})
 	items = append(items, maps.Map{
-		"name":     "服务设置",
-		"url":      "/clusters/cluster/settings/global-server-config?clusterId=" + clusterId,
-		"isActive": selectedItem == "globalServerConfig",
-	})
-	items = append(items, maps.Map{
 		"name":     "缓存设置",
 		"url":      "/clusters/cluster/settings/cache?clusterId=" + clusterId,
 		"isActive": selectedItem == "cache",
@@ -156,6 +151,12 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 		"url":      "/clusters/cluster/settings/ddos-protection?clusterId=" + clusterId,
 		"isActive": selectedItem == "ddosProtection",
 		"isOn":     info != nil && info.HasDDoSProtection,
+	})
+
+	items = append(items, maps.Map{
+		"name":     "服务设置",
+		"url":      "/clusters/cluster/settings/global-server-config?clusterId=" + clusterId,
+		"isActive": selectedItem == "globalServerConfig",
 	})
 
 	items = append(items, maps.Map{

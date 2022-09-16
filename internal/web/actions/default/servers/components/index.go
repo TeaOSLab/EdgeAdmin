@@ -7,7 +7,6 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
-	"github.com/iwind/TeaGo/maps"
 )
 
 const (
@@ -65,7 +64,7 @@ func (this *IndexAction) RunPost(params struct {
 	DefaultDomain string
 }) {
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "保存代理服务全局配置")
+	defer this.CreateLog(oplogs.LevelInfo, "保存网站服务全局配置")
 
 	if len(params.GlobalConfigJSON) == 0 {
 		this.Fail("错误的配置信息，请刷新当前页面后重试")
@@ -82,27 +81,6 @@ func (this *IndexAction) RunPost(params struct {
 	for _, domain := range params.AllowMismatchDomains {
 		if len(domain) > 0 {
 			allowMismatchDomains = append(allowMismatchDomains, domain)
-		}
-	}
-	globalConfig.HTTPAll.AllowMismatchDomains = allowMismatchDomains
-
-	// 不匹配域名的动作
-	switch params.DomainMismatchAction {
-	case "close":
-		globalConfig.HTTPAll.DomainMismatchAction = &serverconfigs.DomainMismatchAction{
-			Code:    "close",
-			Options: nil,
-		}
-	case "page":
-		if params.DomainMismatchActionPageStatusCode <= 0 {
-			params.DomainMismatchActionPageStatusCode = 404
-		}
-		globalConfig.HTTPAll.DomainMismatchAction = &serverconfigs.DomainMismatchAction{
-			Code: "page",
-			Options: maps.Map{
-				"statusCode":  params.DomainMismatchActionPageStatusCode,
-				"contentHTML": params.DomainMismatchActionPageContentHTML,
-			},
 		}
 	}
 

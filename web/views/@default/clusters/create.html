@@ -23,6 +23,13 @@
                 <p class="comment">为可选项。集群中的网站服务可以自行设置是否启用此设置。</p>
             </td>
         </tr>
+        <tr>
+            <td>只允许绑定的域名访问</td>
+            <td>
+                <checkbox name="matchDomainStrictly" value="1"></checkbox>
+                <p class="comment">选中后，表示只有已经绑定（<tip-icon content="已经绑定的域名：为在网站设置--“域名”设置页中已经填入的域名。"></tip-icon>）的域名才允许访问；不选中表示访问一个不存在的域名时默认选择第一个网站。</p>
+            </td>
+        </tr>
 	</table>
 
 	<h4>节点安装选项 &nbsp;<span class="grey small">（可选）</span></h4>
@@ -31,7 +38,7 @@
 			<td class="title">默认SSH登录方式</td>
 			<td>
 				<grant-selector></grant-selector>
-				<p class="comment">当节点没有单独设置SSH登录方式时，默认使用此设置。</p>
+				<p class="comment">当前集群下节点统一的登录设置；当节点没有单独设置SSH登录方式时，默认使用此设置。</p>
 			</td>
 		</tr>
 		<tr>
@@ -42,7 +49,7 @@
 					目录。</p>
 			</td>
 		</tr>
-        <tr>
+        <tr v-show="false">
             <td>自动加入Systemd服务</td>
             <td>
                 <checkbox name="systemdServiceIsOn" checked="checked"></checkbox>
