@@ -11,54 +11,7 @@
 
     <!-- 域名相关配置 -->
     <div v-show="tab == 'domainMatch'">
-        <table class="ui table selectable definition">
-            <tr>
-                <td class="title">严格匹配域名</td>
-                <td>
-                    <checkbox name="matchDomainStrictly" v-model="globalConfig.httpAll.matchDomainStrictly"></checkbox>
-                    <p class="comment">如果选择了严格匹配域名，找不到匹配的域名时会采取对应的动作。</p>
-                </td>
-            </tr>
-            <tbody v-show="globalConfig.httpAll.matchDomainStrictly">
-                <tr>
-                    <td>默认域名</td>
-                    <td>
-                        <input type="text" name="defaultDomain" v-model="globalConfig.httpAll.defaultDomain" maxlength="100"/>
-                        <p class="comment">当找不到匹配的域名时，自动使用此域名。</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>允许不匹配的域名</td>
-                    <td>
-                        <values-box :name="'allowMismatchDomains'" :values="globalConfig.httpAll.allowMismatchDomains" :size="40" :maxlength="100" :placeholder="'域名'"></values-box>
-                        <p class="comment">允许这些域名即时不匹配也可以访问。</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="color-border">域名不匹配时的动作</td>
-                    <td>
-                        <radio name="domainMismatchAction" :v-value="'close'" v-model="domainMismatchAction">断开连接</radio>
-                        &nbsp; &nbsp;
-                        <radio name="domainMismatchAction" :v-value="'page'" v-model="domainMismatchAction">显示提示页面</radio>
-
-                        <p class="comment" v-if="domainMismatchAction == 'close'">当找不到要访问的域名时关闭客户端连接。</p>
-                        <p class="comment" v-if="domainMismatchAction == 'page'">当找不到访问的域名时显示一个提示页面。</p>
-                    </td>
-                </tr>
-                <tr v-show="domainMismatchAction == 'page'">
-                    <td class="color-border">响应代码</td>
-                    <td>
-                        <input type="text" name="domainMismatchActionPageStatusCode" v-model="domainMismatchActionPageOptions.statusCode" style="width:4em" maxlength="3"/>
-                    </td>
-                </tr>
-                <tr v-show="domainMismatchAction == 'page'">
-                    <td class="color-border">域名不匹配时显示的页面</td>
-                    <td>
-                        <textarea name="domainMismatchActionPageContentHTML" v-model="domainMismatchActionPageOptions.contentHTML" rows="15"></textarea>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <p class="comment">域名匹配相关配置已经转移到集群设置中，请到对应的集群设置中修改。</p>
     </div>
 
     <!-- 域名审核相关配置 -->
@@ -112,5 +65,5 @@
     </div>
 
     <div class="margin"></div>
-    <submit-btn>保存</submit-btn>
+    <submit-btn v-show="tab != 'domainMatch'">保存</submit-btn>
 </form>
