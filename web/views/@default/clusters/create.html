@@ -45,7 +45,7 @@
 			<td>节点安装目录</td>
 			<td>
 				<input type="text" name="installDir" maxlength="100"/>
-				<p class="comment">当节点没有单独设置安装目录时，默认使用此设置。如果集群和节点都没有设置安装目录，则使用<span class="ui label tiny">$登录用户HOME路径/edge-node</span>
+				<p class="comment">当节点没有单独设置安装目录时，默认使用此设置。如果集群和节点都没有设置安装目录，则使用<code-label>$登录用户HOME路径/edge-node</code-label>
 					目录。</p>
 			</td>
 		</tr>
@@ -54,6 +54,13 @@
             <td>
                 <checkbox name="systemdServiceIsOn" checked="checked"></checkbox>
                 <p class="comment">加入后可以利用systemd对节点进程进行管理，并可自动随开机启动。</p>
+            </td>
+        </tr>
+        <tr>
+            <td>自动安装nftables</td>
+            <td>
+                <checkbox name="autoInstallNftables" value="1"></checkbox>
+                <p class="comment">在Linux系统中自动尝试安装<code-label>nftables</code-label>用于安全防御；此功能需要联网从Ubuntu、CentOS等软件库中下载安装包。</p>
             </td>
         </tr>
 	</table>
