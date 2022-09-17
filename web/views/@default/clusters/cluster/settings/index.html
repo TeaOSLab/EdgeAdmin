@@ -78,6 +78,13 @@
                         <p class="comment">可选项。默认使用<code-label>pool.ntp.org</code-label>。</p>
                     </td>
                 </tr>
+                <tr>
+                    <td>自动远程启动</td>
+                    <td>
+                        <checkbox name="autoRemoteStart" v-model="cluster.autoRemoteStart"></checkbox>
+                        <p class="comment">当检测到节点离线时，自动尝试远程启动（前提是节点已经设置了SSH登录认证）。</p>
+                    </td>
+                </tr>
             </tbody>
 		</table>
 		<submit-btn></submit-btn>
