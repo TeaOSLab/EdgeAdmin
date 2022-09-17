@@ -60,9 +60,10 @@ func (this *CreateAction) RunPost(params struct {
 	MatchDomainStrictly bool
 
 	// SSH相关
-	GrantId            int64
-	InstallDir         string
-	SystemdServiceIsOn bool
+	GrantId             int64
+	InstallDir          string
+	SystemdServiceIsOn  bool
+	AutoInstallNftables bool
 
 	// DNS相关
 	DnsDomainId int64
@@ -130,6 +131,7 @@ func (this *CreateAction) RunPost(params struct {
 		HttpFirewallPolicyId:   params.HttpFirewallPolicyId,
 		SystemServicesJSON:     systemServicesJSON,
 		GlobalServerConfigJSON: globalServerConfigJSON,
+		AutoInstallNftables:    params.AutoInstallNftables,
 	})
 	if err != nil {
 		this.ErrorPage(err)

@@ -85,6 +85,13 @@
                         <p class="comment">当检测到节点离线时，自动尝试远程启动（前提是节点已经设置了SSH登录认证）。</p>
                     </td>
                 </tr>
+                <tr>
+                    <td>自动安装nftables</td>
+                    <td>
+                        <checkbox name="autoInstallNftables" v-model="cluster.autoInstallNftables"></checkbox>
+                        <p class="comment">在Linux系统中自动尝试安装<code-label>nftables</code-label>用于安全防御；此功能需要联网从Ubuntu、CentOS等软件库中下载安装包。</p>
+                    </td>
+                </tr>
             </tbody>
 		</table>
 		<submit-btn></submit-btn>

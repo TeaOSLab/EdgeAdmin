@@ -80,14 +80,15 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	this.Data["cluster"] = maps.Map{
-		"id":              cluster.Id,
-		"name":            cluster.Name,
-		"installDir":      cluster.InstallDir,
-		"timeZone":        cluster.TimeZone,
-		"nodeMaxThreads":  cluster.NodeMaxThreads,
-		"autoOpenPorts":   cluster.AutoOpenPorts,
-		"clock":           clockConfig,
-		"autoRemoteStart": cluster.AutoRemoteStart,
+		"id":                  cluster.Id,
+		"name":                cluster.Name,
+		"installDir":          cluster.InstallDir,
+		"timeZone":            cluster.TimeZone,
+		"nodeMaxThreads":      cluster.NodeMaxThreads,
+		"autoOpenPorts":       cluster.AutoOpenPorts,
+		"clock":               clockConfig,
+		"autoRemoteStart":     cluster.AutoRemoteStart,
+		"autoInstallNftables": cluster.AutoInstallNftables,
 	}
 
 	// 默认值
@@ -100,16 +101,17 @@ func (this *IndexAction) RunGet(params struct {
 
 // RunPost 保存设置
 func (this *IndexAction) RunPost(params struct {
-	ClusterId       int64
-	Name            string
-	GrantId         int64
-	InstallDir      string
-	TimeZone        string
-	NodeMaxThreads  int32
-	AutoOpenPorts   bool
-	ClockAutoSync   bool
-	ClockServer     string
-	AutoRemoteStart bool
+	ClusterId           int64
+	Name                string
+	GrantId             int64
+	InstallDir          string
+	TimeZone            string
+	NodeMaxThreads      int32
+	AutoOpenPorts       bool
+	ClockAutoSync       bool
+	ClockServer         string
+	AutoRemoteStart     bool
+	AutoInstallNftables bool
 
 	Must *actions.Must
 }) {
@@ -143,15 +145,16 @@ func (this *IndexAction) RunPost(params struct {
 	}
 
 	_, err = this.RPC().NodeClusterRPC().UpdateNodeCluster(this.AdminContext(), &pb.UpdateNodeClusterRequest{
-		NodeClusterId:   params.ClusterId,
-		Name:            params.Name,
-		NodeGrantId:     params.GrantId,
-		InstallDir:      params.InstallDir,
-		TimeZone:        params.TimeZone,
-		NodeMaxThreads:  params.NodeMaxThreads,
-		AutoOpenPorts:   params.AutoOpenPorts,
-		ClockJSON:       clockConfigJSON,
-		AutoRemoteStart: params.AutoRemoteStart,
+		NodeClusterId:       params.ClusterId,
+		Name:                params.Name,
+		NodeGrantId:         params.GrantId,
+		InstallDir:          params.InstallDir,
+		TimeZone:            params.TimeZone,
+		NodeMaxThreads:      params.NodeMaxThreads,
+		AutoOpenPorts:       params.AutoOpenPorts,
+		ClockJSON:           clockConfigJSON,
+		AutoRemoteStart:     params.AutoRemoteStart,
+		AutoInstallNftables: params.AutoInstallNftables,
 	})
 	if err != nil {
 		this.ErrorPage(err)
