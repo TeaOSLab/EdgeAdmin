@@ -30,7 +30,7 @@ func (this *SelectPopupAction) RunGet(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		domain := domainResp.DnsDomain
+		var domain = domainResp.DnsDomain
 		if domain != nil {
 			this.Data["domainId"] = domain.Id
 			this.Data["domainName"] = domain.Name
@@ -53,7 +53,7 @@ func (this *SelectPopupAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	providerTypeMaps := []maps.Map{}
+	var providerTypeMaps = []maps.Map{}
 	for _, providerType := range providerTypesResp.ProviderTypes {
 		providerTypeMaps = append(providerTypeMaps, maps.Map{
 			"name": providerType.Name,
@@ -73,6 +73,7 @@ func (this *SelectPopupAction) RunPost(params struct {
 }) {
 	this.Data["domainId"] = params.DomainId
 	this.Data["domainName"] = ""
+	this.Data["providerName"] = ""
 
 	if params.DomainId > 0 {
 		domainResp, err := this.RPC().DNSDomainRPC().FindEnabledDNSDomain(this.AdminContext(), &pb.FindEnabledDNSDomainRequest{DnsDomainId: params.DomainId})
@@ -82,6 +83,19 @@ func (this *SelectPopupAction) RunPost(params struct {
 		}
 		if domainResp.DnsDomain != nil {
 			this.Data["domainName"] = domainResp.DnsDomain.Name
+
+			// 服务商名称
+			var providerId = domainResp.DnsDomain.ProviderId
+			if providerId > 0 {
+				providerResp, err := this.RPC().DNSProviderRPC().FindEnabledDNSProvider(this.AdminContext(), &pb.FindEnabledDNSProviderRequest{DnsProviderId: providerId})
+				if err != nil {
+					this.ErrorPage(err)
+					return
+				}
+				if providerResp.DnsProvider != nil {
+					this.Data["providerName"] = providerResp.DnsProvider.Name
+				}
+			}
 		} else {
 			this.Data["domainId"] = 0
 		}

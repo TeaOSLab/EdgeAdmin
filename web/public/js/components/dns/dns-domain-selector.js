@@ -1,5 +1,5 @@
 Vue.component("dns-domain-selector", {
-	props: ["v-domain-id", "v-domain-name"],
+	props: ["v-domain-id", "v-domain-name", "v-provider-name"],
 	data: function () {
 		let domainId = this.vDomainId
 		if (domainId == null) {
@@ -9,9 +9,16 @@ Vue.component("dns-domain-selector", {
 		if (domainName == null) {
 			domainName = ""
 		}
+
+		let providerName = this.vProviderName
+		if (providerName == null) {
+			providerName = ""
+		}
+
 		return {
 			domainId: domainId,
-			domainName: domainName
+			domainName: domainName,
+			providerName: providerName
 		}
 	},
 	methods: {
@@ -21,6 +28,7 @@ Vue.component("dns-domain-selector", {
 				callback: function (resp) {
 					that.domainId = resp.data.domainId
 					that.domainName = resp.data.domainName
+					that.providerName = resp.data.providerName
 					that.change()
 				}
 			})
@@ -36,6 +44,7 @@ Vue.component("dns-domain-selector", {
 				callback: function (resp) {
 					that.domainId = resp.data.domainId
 					that.domainName = resp.data.domainName
+					that.providerName = resp.data.providerName
 					that.change()
 				}
 			})
@@ -51,7 +60,7 @@ Vue.component("dns-domain-selector", {
 	<input type="hidden" name="dnsDomainId" :value="domainId"/>
 	<div v-if="domainName.length > 0">
 		<span class="ui label small basic">
-			{{domainName}}
+			<span v-if="providerName != null && providerName.length > 0">{{providerName}} &raquo; </span> {{domainName}}
 			<a href="" @click.prevent="update"><i class="icon pencil small"></i></a>
 			<a href="" @click.prevent="remove()"><i class="icon remove"></i></a>
 		</span>
