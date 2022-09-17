@@ -29,6 +29,7 @@ func init() {
 			// 健康检查
 			GetPost("/health", new(health.IndexAction)).
 			GetPost("/health/runPopup", new(health.RunPopupAction)).
+			Post("/health/checkDomain", new(health.CheckDomainAction)).
 
 			// 缓存
 			GetPost("/cache", new(cache.IndexAction)).

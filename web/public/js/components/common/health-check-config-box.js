@@ -1,5 +1,5 @@
 Vue.component("health-check-config-box", {
-	props: ["v-health-check-config"],
+	props: ["v-health-check-config", "v-check-domain-url"],
 	data: function () {
 		let healthCheckConfig = this.vHealthCheckConfig
 		let urlProtocol = "http"
@@ -76,7 +76,9 @@ Vue.component("health-check-config-box", {
 			urlHost: urlHost,
 			urlPort: urlPort,
 			urlRequestURI: urlRequestURI,
-			urlIsEditing: healthCheckConfig.url.length == 0
+			urlIsEditing: healthCheckConfig.url.length == 0,
+
+			hostErr: ""
 		}
 	},
 	watch: {
@@ -100,6 +102,7 @@ Vue.component("health-check-config-box", {
 		},
 		urlHost: function () {
 			this.changeURL()
+			this.hostErr = ""
 		},
 		"healthCheck.countTries": function (v) {
 			let count = parseInt(v)
@@ -147,6 +150,24 @@ Vue.component("health-check-config-box", {
 				}
 			})
 		},
+		onChangeURLHost: function () {
+			let checkDomainURL = this.vCheckDomainUrl
+			if (checkDomainURL == null || checkDomainURL.length == 0) {
+				return
+			}
+
+			let that = this
+			Tea.action(checkDomainURL)
+				.params({host: this.urlHost})
+				.success(function (resp) {
+					if (!resp.data.isOk) {
+						that.hostErr = "在当前集群中找不到此域名，可能会影响健康检查结果。"
+					} else {
+						that.hostErr = ""
+					}
+				})
+				.post()
+		},
 		editURL: function () {
 			this.urlIsEditing = !this.urlIsEditing
 		}
@@ -185,8 +206,8 @@ Vue.component("health-check-config-box", {
 						<tr>
 							<td>域名</td>
 							<td>
-								<input type="text" v-model="urlHost"/>
-								<p class="comment">已经部署到当前集群的一个域名；如果为空则使用节点IP作为域名。<span class="red" v-if="urlProtocol == 'https' && urlHost.length == 0">如果协议是https，这里必须填写一个已经设置了SSL证书的域名。</span></p>
+								<input type="text" v-model="urlHost" @change="onChangeURLHost"/>
+								<p class="comment"><span v-if="hostErr.length > 0" class="red">{{hostErr}}</span>已经部署到当前集群的一个域名；如果为空则使用节点IP作为域名。<span class="red" v-if="urlProtocol == 'https' && urlHost.length == 0">如果协议是https，这里必须填写一个已经设置了SSL证书的域名。</span></p>
 							</td>
 						</tr>
 						<tr>
