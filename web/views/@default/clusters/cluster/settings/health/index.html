@@ -5,7 +5,7 @@
 <div class="right-box with-menu">
 	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 		<input type="hidden" name="clusterId" :value="clusterId"/>
-		<health-check-config-box :v-health-check-config="healthCheckConfig"></health-check-config-box>
+		<health-check-config-box :v-health-check-config="healthCheckConfig" :v-check-domain-url="'/clusters/cluster/settings/health/checkDomain?clusterId=' + clusterId"></health-check-config-box>
 		<submit-btn></submit-btn> &nbsp; <a href="" @click.prevent="run()" v-if="healthCheckConfig != null && healthCheckConfig.isOn">立即检查</a>
 	</form>
 </div>
