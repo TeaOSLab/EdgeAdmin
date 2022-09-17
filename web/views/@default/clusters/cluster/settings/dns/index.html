@@ -12,7 +12,7 @@
 			<tr v-if="hasDomains">
 				<td>选择主域名 *</td>
 				<td>
-					<dns-domain-selector :v-domain-id="domainId" :v-domain-name="domainName" @change="changeDomain"></dns-domain-selector>
+					<dns-domain-selector :v-domain-id="domainId" :v-domain-name="domainName" :v-provider-name="domainProvider.name" @change="changeDomain"></dns-domain-selector>
                     <p class="comment">用于生成集群节点和网站服务的DNS解析记录<span v-if="domainId > 0">，修改后将自动删除旧域名中的相关记录</span>。</p>
 				</td>
 			</tr>

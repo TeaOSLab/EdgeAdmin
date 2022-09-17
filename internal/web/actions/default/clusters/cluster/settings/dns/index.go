@@ -6,6 +6,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains/domainutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/maps"
 )
 
 type IndexAction struct {
@@ -41,10 +42,23 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["dnsName"] = dnsInfoResp.Name
 	this.Data["nodesAutoSync"] = dnsInfoResp.NodesAutoSync
 	this.Data["serversAutoSync"] = dnsInfoResp.ServersAutoSync
+
+	var domainProviderMap = maps.Map{
+		"id":   0,
+		"name": "",
+	}
 	if dnsInfoResp.Domain != nil {
 		this.Data["domainId"] = dnsInfoResp.Domain.Id
 		this.Data["domainName"] = dnsInfoResp.Domain.Name
+
+		if dnsInfoResp.Provider != nil {
+			domainProviderMap = maps.Map{
+				"id":   dnsInfoResp.Provider.Id,
+				"name": dnsInfoResp.Provider.Name,
+			}
+		}
 	}
+	this.Data["domainProvider"] = domainProviderMap
 
 	if len(dnsInfoResp.CnameRecords) == 0 {
 		this.Data["cnameRecords"] = []string{}
