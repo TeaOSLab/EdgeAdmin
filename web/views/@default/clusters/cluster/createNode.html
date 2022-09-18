@@ -140,7 +140,7 @@
 
         <!-- 手动安装 -->
         <div v-if="installMethod == 'manual'">
-            <div class="row">上传边缘节点程序到服务器并解压，然后在边缘节点安装目录下，复制<code-label>configs/api.template.yaml</code-label>为<code-label>configs/api.yaml</code-label>，然后修改文件里面的内容为以下内容：</div>
+            <div class="row">上传边缘节点程序到服务器并解压，然后在边缘节点安装目录下，复制<code-label>configs/api.template.yaml</code-label>为<code-label>configs/api.yaml</code-label>，修改文件里面的内容为以下内容：</div>
             <div class="margin"></div>
             <source-code-box id="rpc-code" type="text/yaml">rpc:
     endpoints: [ {{apiEndpoints}} ]
@@ -148,6 +148,30 @@ nodeId: "{{node.uniqueId}}"
 secret: "{{node.secret}}"</source-code-box>
             <div class="margin"></div>
             <div class="row">然后再使用<code-label>bin/edge-node start</code-label>命令启动节点。</div>
+            <div class="margin"></div>
+
+            <div v-if="installerFiles != null && installerFiles.length > 0">
+                <h4>边缘节点安装文件下载</h4>
+                <table class="ui table celled">
+                    <thead class="full-width">
+                    <tr>
+                        <th>文件名</th>
+                        <th>操作系统</th>
+                        <th>CPU架构</th>
+                        <th>版本</th>
+                    </tr>
+                    </thead>
+                    <tr v-for="installerFile in installerFiles">
+                        <td>
+                            <a :href="'/clusters/cluster/downloadInstaller?name=' + installerFile.name" target="_blank" style="font-weight: normal">{{installerFile.name}}</a>
+                        </td>
+                        <td>{{installerFile.os}}</td>
+                        <td>{{installerFile.arch}}</td>
+                        <td>v{{installerFile.version}}</td>
+                    </tr>
+                </table>
+            </div>
+
             <div>
                 <div class="ui divider"></div>
                 <a href="" @click.prevent="finish">安装完成</a>

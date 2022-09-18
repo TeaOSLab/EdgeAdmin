@@ -5,6 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/clusterutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -27,7 +28,7 @@ func (this *CreateNodeAction) Init() {
 func (this *CreateNodeAction) RunGet(params struct {
 	ClusterId int64
 }) {
-	leftMenuItems := []maps.Map{
+	var leftMenuItems = []maps.Map{
 		{
 			"name":     "单个创建",
 			"url":      "/clusters/cluster/createNode?clusterId=" + strconv.FormatInt(params.ClusterId, 10),
@@ -47,7 +48,7 @@ func (this *CreateNodeAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	dnsRouteMaps := []maps.Map{}
+	var dnsRouteMaps = []maps.Map{}
 	this.Data["dnsDomainId"] = 0
 	if clusterDNSResp.Domain != nil {
 		domainId := clusterDNSResp.Domain.Id
@@ -76,8 +77,8 @@ func (this *CreateNodeAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	apiNodes := apiNodesResp.ApiNodes
-	apiEndpoints := []string{}
+	var apiNodes = apiNodesResp.ApiNodes
+	var apiEndpoints = []string{}
 	for _, apiNode := range apiNodes {
 		if !apiNode.IsOn {
 			continue
@@ -85,6 +86,9 @@ func (this *CreateNodeAction) RunGet(params struct {
 		apiEndpoints = append(apiEndpoints, apiNode.AccessAddrs...)
 	}
 	this.Data["apiEndpoints"] = "\"" + strings.Join(apiEndpoints, "\", \"") + "\""
+
+	// 安装文件下载
+	this.Data["installerFiles"] = clusterutils.ListInstallerFiles()
 
 	this.Show()
 }

@@ -35,6 +35,7 @@ func init() {
 			GetPost("/updateNodeSSH", new(UpdateNodeSSHAction)).
 			GetPost("/installManual", new(InstallManualAction)).
 			Post("/suggestLoginPorts", new(SuggestLoginPortsAction)).
+			Get("/downloadInstaller", new(DownloadInstallerAction)).
 
 			// 节点相关
 			Prefix("/clusters/cluster/node").

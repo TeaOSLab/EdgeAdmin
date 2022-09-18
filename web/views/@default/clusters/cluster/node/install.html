@@ -23,6 +23,29 @@
 
     <h4>方法2：手动安装</h4>
     <table class="ui table definition selectable">
+        <tr v-if="installerFiles != null && installerFiles.length > 0">
+            <td>安装文件</td>
+            <td>
+                <table class="ui table celled">
+                    <thead class="full-width">
+                        <tr>
+                            <th>文件名</th>
+                            <th>操作系统</th>
+                            <th>CPU架构</th>
+                            <th>版本</th>
+                        </tr>
+                    </thead>
+                    <tr v-for="installerFile in installerFiles">
+                        <td>
+                            <a :href="'/clusters/cluster/downloadInstaller?name=' + installerFile.name" target="_blank" style="font-weight: normal">{{installerFile.name}}</a>
+                        </td>
+                        <td>{{installerFile.os}}</td>
+                        <td>{{installerFile.arch}}</td>
+                        <td>v{{installerFile.version}}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
         <tr>
             <td>配置文件<em>（configs/api.yaml）</em><br/>
             <em><download-link :v-element="'rpc-code'" :v-file="'api.yaml'">[下载]</download-link ></em></td>
@@ -37,8 +60,9 @@ secret: "{{node.secret}}"</source-code-box>
         <tr>
             <td class="title">安装目录</td>
             <td>
-                <div v-if="node.installDir.length == 0">使用集群设置<span
-                            v-if="node.cluster != null && node.cluster.installDir.length > 0">（{{node.cluster.installDir}}）</span>
+                <div v-if="node.installDir.length == 0">
+                    <span v-if="node.cluster != null && node.cluster.installDir.length > 0">建议使用集群设置（{{node.cluster.installDir}}</span>
+                    <span v-else>建议安装在 /usr/local/goedge/edge-node</span>
                 </div>
                 <span v-else>{{node.installDir}}</span>
             </td>
@@ -70,6 +94,10 @@ secret: "{{node.secret}}"</source-code-box>
                 </div>
                 <span v-else>{{node.installDir}}</span>
             </td>
+        </tr>
+        <tr v-if="exeRoot.length > 0">
+            <td>最近运行目录</td>
+            <td>{{exeRoot}}</td>
         </tr>
     </table>
 

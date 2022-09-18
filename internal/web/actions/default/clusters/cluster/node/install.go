@@ -1,12 +1,16 @@
 package node
 
 import (
+	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/nodeutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/clusterutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"path/filepath"
 	"strings"
 )
 
@@ -31,6 +35,20 @@ func (this *InstallAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
+
+	// 最近运行目录
+	var exeRoot = ""
+	if len(node.StatusJSON) > 0 {
+		var nodeStatus = &nodeconfigs.NodeStatus{}
+		err = json.Unmarshal(node.StatusJSON, nodeStatus)
+		if err == nil {
+			var exePath = nodeStatus.ExePath
+			if len(exePath) > 0 {
+				exeRoot = filepath.Dir(filepath.Dir(exePath))
+			}
+		}
+	}
+	this.Data["exeRoot"] = exeRoot
 
 	// 安装信息
 	if node.InstallStatus != nil {
@@ -70,7 +88,7 @@ func (this *InstallAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	apiNodes := apiNodesResp.ApiNodes
+	var apiNodes = apiNodesResp.ApiNodes
 	apiEndpoints := []string{}
 	for _, apiNode := range apiNodes {
 		if !apiNode.IsOn {
@@ -86,6 +104,10 @@ func (this *InstallAction) RunGet(params struct {
 	nodeMap["uniqueId"] = node.UniqueId
 	nodeMap["secret"] = node.Secret
 	nodeMap["cluster"] = clusterMap
+
+	// 安装文件
+	var installerFiles = clusterutils.ListInstallerFiles()
+	this.Data["installerFiles"] = installerFiles
 
 	this.Show()
 }
