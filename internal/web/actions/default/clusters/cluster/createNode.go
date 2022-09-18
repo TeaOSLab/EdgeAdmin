@@ -11,6 +11,8 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"net"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -122,7 +124,7 @@ func (this *CreateNodeAction) RunPost(params struct {
 	}
 
 	// IP地址
-	ipAddresses := []maps.Map{}
+	var ipAddresses = []maps.Map{}
 	if len(params.IpAddressesJSON) > 0 {
 		err := json.Unmarshal(params.IpAddressesJSON, &ipAddresses)
 		if err != nil {
@@ -131,10 +133,29 @@ func (this *CreateNodeAction) RunPost(params struct {
 		}
 	}
 	if len(ipAddresses) == 0 {
-		this.Fail("请至少输入一个IP地址")
+		// 检查Name中是否包含IP
+		var ipv4Reg = regexp.MustCompile(`\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}`)
+		var ipMatches = ipv4Reg.FindStringSubmatch(params.Name)
+		if len(ipMatches) > 0 {
+			var nodeIP = ipMatches[0]
+			if net.ParseIP(nodeIP) != nil {
+				ipAddresses = []maps.Map{
+					{
+						"ip":        nodeIP,
+						"canAccess": true,
+						"isOn":      true,
+						"isUp":      true,
+					},
+				}
+			}
+		}
+
+		if len(ipAddresses) == 0 {
+			this.Fail("请至少输入一个IP地址")
+		}
 	}
 
-	dnsRouteCodes := []string{}
+	var dnsRouteCodes = []string{}
 	if len(params.DnsRoutesJSON) > 0 {
 		err := json.Unmarshal(params.DnsRoutesJSON, &dnsRouteCodes)
 		if err != nil {
@@ -144,7 +165,7 @@ func (this *CreateNodeAction) RunPost(params struct {
 	}
 
 	// TODO 检查登录授权
-	loginInfo := &pb.NodeLogin{
+	var loginInfo = &pb.NodeLogin{
 		Id:   0,
 		Name: "SSH",
 		Type: "ssh",
@@ -169,7 +190,7 @@ func (this *CreateNodeAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	nodeId := createResp.NodeId
+	var nodeId = createResp.NodeId
 
 	// IP地址
 	var resultIPAddresses = []string{}
