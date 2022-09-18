@@ -21,7 +21,7 @@ func (this *UpdatePopupAction) Init() {
 func (this *UpdatePopupAction) RunGet(params struct {
 	DomainId int64
 }) {
-	domainResp, err := this.RPC().DNSDomainRPC().FindEnabledDNSDomain(this.AdminContext(), &pb.FindEnabledDNSDomainRequest{DnsDomainId: params.DomainId})
+	domainResp, err := this.RPC().DNSDomainRPC().FindDNSDomain(this.AdminContext(), &pb.FindDNSDomainRequest{DnsDomainId: params.DomainId})
 	if err != nil {
 		this.ErrorPage(err)
 		return

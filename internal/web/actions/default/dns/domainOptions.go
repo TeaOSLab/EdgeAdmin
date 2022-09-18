@@ -14,7 +14,7 @@ type DomainOptionsAction struct {
 func (this *DomainOptionsAction) RunPost(params struct {
 	ProviderId int64
 }) {
-	domainsResp, err := this.RPC().DNSDomainRPC().FindAllEnabledBasicDNSDomainsWithDNSProviderId(this.AdminContext(), &pb.FindAllEnabledBasicDNSDomainsWithDNSProviderIdRequest{
+	domainsResp, err := this.RPC().DNSDomainRPC().FindAllBasicDNSDomainsWithDNSProviderId(this.AdminContext(), &pb.FindAllBasicDNSDomainsWithDNSProviderIdRequest{
 		DnsProviderId: params.ProviderId,
 	})
 	if err != nil {

@@ -1,9 +1,13 @@
 Tea.context(function () {
 	this.isUpdatingDomains = false
-	this.hasDeletedDomains = this.domains.$find(function (k, v) {return v.isDeleted}) != null
+	this.hasDeletedDomains = this.domains.$find(function (k, v) {
+		return v.isDeleted
+	}) != null
 
 	this.$delay(function () {
-		this.syncDomains()
+		if (this.pageNo <= 1 && this.filter.length == 0) {
+			this.syncDomains()
+		}
 	})
 
 	this.syncDomains = function () {

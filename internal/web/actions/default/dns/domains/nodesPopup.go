@@ -19,7 +19,7 @@ func (this *NodesPopupAction) RunGet(params struct {
 	DomainId int64
 }) {
 	// 域名信息
-	domainResp, err := this.RPC().DNSDomainRPC().FindEnabledBasicDNSDomain(this.AdminContext(), &pb.FindEnabledBasicDNSDomainRequest{
+	domainResp, err := this.RPC().DNSDomainRPC().FindBasicDNSDomain(this.AdminContext(), &pb.FindBasicDNSDomainRequest{
 		DnsDomainId: params.DomainId,
 	})
 	if err != nil {

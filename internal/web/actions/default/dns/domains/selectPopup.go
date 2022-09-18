@@ -25,7 +25,7 @@ func (this *SelectPopupAction) RunGet(params struct {
 
 	// 域名信息
 	if params.DomainId > 0 {
-		domainResp, err := this.RPC().DNSDomainRPC().FindEnabledDNSDomain(this.AdminContext(), &pb.FindEnabledDNSDomainRequest{DnsDomainId: params.DomainId})
+		domainResp, err := this.RPC().DNSDomainRPC().FindDNSDomain(this.AdminContext(), &pb.FindDNSDomainRequest{DnsDomainId: params.DomainId})
 		if err != nil {
 			this.ErrorPage(err)
 			return
@@ -76,7 +76,7 @@ func (this *SelectPopupAction) RunPost(params struct {
 	this.Data["providerName"] = ""
 
 	if params.DomainId > 0 {
-		domainResp, err := this.RPC().DNSDomainRPC().FindEnabledDNSDomain(this.AdminContext(), &pb.FindEnabledDNSDomainRequest{DnsDomainId: params.DomainId})
+		domainResp, err := this.RPC().DNSDomainRPC().FindDNSDomain(this.AdminContext(), &pb.FindDNSDomainRequest{DnsDomainId: params.DomainId})
 		if err != nil {
 			this.ErrorPage(err)
 			return
