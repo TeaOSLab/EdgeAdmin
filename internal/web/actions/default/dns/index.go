@@ -47,7 +47,7 @@ func (this *IndexAction) RunGet(params struct {
 		providerTypeName := ""
 
 		if cluster.DnsDomainId > 0 {
-			domainResp, err := this.RPC().DNSDomainRPC().FindEnabledBasicDNSDomain(this.AdminContext(), &pb.FindEnabledBasicDNSDomainRequest{DnsDomainId: domainId})
+			domainResp, err := this.RPC().DNSDomainRPC().FindBasicDNSDomain(this.AdminContext(), &pb.FindBasicDNSDomainRequest{DnsDomainId: domainId})
 			if err != nil {
 				this.ErrorPage(err)
 				return

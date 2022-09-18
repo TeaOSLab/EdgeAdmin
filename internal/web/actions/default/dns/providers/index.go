@@ -65,7 +65,7 @@ func (this *IndexAction) RunGet(params struct {
 		}
 
 		// 域名
-		countDomainsResp, err := this.RPC().DNSDomainRPC().CountAllEnabledDNSDomainsWithDNSProviderId(this.AdminContext(), &pb.CountAllEnabledDNSDomainsWithDNSProviderIdRequest{
+		countDomainsResp, err := this.RPC().DNSDomainRPC().CountAllDNSDomainsWithDNSProviderId(this.AdminContext(), &pb.CountAllDNSDomainsWithDNSProviderIdRequest{
 			DnsProviderId: provider.Id,
 		})
 		if err != nil {

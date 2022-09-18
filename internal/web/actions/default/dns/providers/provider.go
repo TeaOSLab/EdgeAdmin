@@ -18,19 +18,24 @@ func (this *ProviderAction) Init() {
 
 func (this *ProviderAction) RunGet(params struct {
 	ProviderId int64
+	Page       int
+	Filter     string
 }) {
+	this.Data["pageNo"] = params.Page
+	this.Data["filter"] = params.Filter
+
 	providerResp, err := this.RPC().DNSProviderRPC().FindEnabledDNSProvider(this.AdminContext(), &pb.FindEnabledDNSProviderRequest{DnsProviderId: params.ProviderId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	provider := providerResp.DnsProvider
+	var provider = providerResp.DnsProvider
 	if provider == nil {
 		this.NotFound("dnsProvider", params.ProviderId)
 		return
 	}
 
-	apiParams := maps.Map{}
+	var apiParams = maps.Map{}
 	if len(provider.ApiParamsJSON) > 0 {
 		err = json.Unmarshal(provider.ApiParamsJSON, &apiParams)
 		if err != nil {
@@ -55,13 +60,33 @@ func (this *ProviderAction) RunGet(params struct {
 		"localEdgeDNS": localEdgeDNSMap,
 	}
 
-	// 域名
-	domainsResp, err := this.RPC().DNSDomainRPC().FindAllEnabledDNSDomainsWithDNSProviderId(this.AdminContext(), &pb.FindAllEnabledDNSDomainsWithDNSProviderIdRequest{DnsProviderId: provider.Id})
+	// 域名数量
+	countDomainsResp, err := this.RPC().DNSDomainRPC().CountAllDNSDomainsWithDNSProviderId(this.AdminContext(), &pb.CountAllDNSDomainsWithDNSProviderIdRequest{
+		DnsProviderId: params.ProviderId,
+		IsDeleted:     params.Filter == "deleted",
+		IsDown:        params.Filter == "down",
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	domainMaps := []maps.Map{}
+	var countDomains = countDomainsResp.Count
+	var page = this.NewPage(countDomains)
+	this.Data["page"] = page.AsHTML()
+
+	// 域名
+	domainsResp, err := this.RPC().DNSDomainRPC().ListBasicDNSDomainsWithDNSProviderId(this.AdminContext(), &pb.ListBasicDNSDomainsWithDNSProviderIdRequest{
+		DnsProviderId: params.ProviderId,
+		IsDeleted:     params.Filter == "deleted",
+		IsDown:        params.Filter == "down",
+		Offset:        page.Offset,
+		Size:          page.Size,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	var domainMaps = []maps.Map{}
 	for _, domain := range domainsResp.DnsDomains {
 		dataUpdatedTime := ""
 		if domain.DataUpdatedAt > 0 {
