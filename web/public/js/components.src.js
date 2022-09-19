@@ -6462,16 +6462,22 @@ Vue.component("firewall-syn-flood-config-viewer", {
 
 // 域名列表
 Vue.component("domains-box", {
-	props: ["v-domains"],
+	props: ["v-domains", "name"],
 	data: function () {
 		let domains = this.vDomains
 		if (domains == null) {
 			domains = []
 		}
+
+		let realName = "domainsJSON"
+		if (this.name != null && typeof this.name == "string") {
+			realName = this.name
+		}
 		return {
 			domains: domains,
 			isAdding: false,
-			addingDomain: ""
+			addingDomain: "",
+			realName: realName
 		}
 	},
 	methods: {
@@ -6521,7 +6527,7 @@ Vue.component("domains-box", {
 		}
 	},
 	template: `<div>
-	<input type="hidden" name="domainsJSON" :value="JSON.stringify(domains)"/>
+	<input type="hidden" :name="realName" :value="JSON.stringify(domains)"/>
 	<div v-if="domains.length > 0">
 		<span class="ui label small basic" v-for="(domain, index) in domains">
 			<span v-if="domain.length > 0 && domain[0] == '~'" class="grey" style="font-style: normal">[正则]</span>
@@ -14093,7 +14099,7 @@ Vue.component("inner-menu-item", {
 });
 
 Vue.component("health-check-config-box", {
-	props: ["v-health-check-config"],
+	props: ["v-health-check-config", "v-check-domain-url"],
 	data: function () {
 		let healthCheckConfig = this.vHealthCheckConfig
 		let urlProtocol = "http"
@@ -14170,7 +14176,9 @@ Vue.component("health-check-config-box", {
 			urlHost: urlHost,
 			urlPort: urlPort,
 			urlRequestURI: urlRequestURI,
-			urlIsEditing: healthCheckConfig.url.length == 0
+			urlIsEditing: healthCheckConfig.url.length == 0,
+
+			hostErr: ""
 		}
 	},
 	watch: {
@@ -14194,6 +14202,7 @@ Vue.component("health-check-config-box", {
 		},
 		urlHost: function () {
 			this.changeURL()
+			this.hostErr = ""
 		},
 		"healthCheck.countTries": function (v) {
 			let count = parseInt(v)
@@ -14241,6 +14250,24 @@ Vue.component("health-check-config-box", {
 				}
 			})
 		},
+		onChangeURLHost: function () {
+			let checkDomainURL = this.vCheckDomainUrl
+			if (checkDomainURL == null || checkDomainURL.length == 0) {
+				return
+			}
+
+			let that = this
+			Tea.action(checkDomainURL)
+				.params({host: this.urlHost})
+				.success(function (resp) {
+					if (!resp.data.isOk) {
+						that.hostErr = "在当前集群中找不到此域名，可能会影响健康检查结果。"
+					} else {
+						that.hostErr = ""
+					}
+				})
+				.post()
+		},
 		editURL: function () {
 			this.urlIsEditing = !this.urlIsEditing
 		}
@@ -14279,8 +14306,8 @@ Vue.component("health-check-config-box", {
 						<tr>
 							<td>域名</td>
 							<td>
-								<input type="text" v-model="urlHost"/>
-								<p class="comment">已经部署到当前集群的一个域名；如果为空则使用节点IP作为域名。<span class="red" v-if="urlProtocol == 'https' && urlHost.length == 0">如果协议是https，这里必须填写一个已经设置了SSL证书的域名。</span></p>
+								<input type="text" v-model="urlHost" @change="onChangeURLHost"/>
+								<p class="comment"><span v-if="hostErr.length > 0" class="red">{{hostErr}}</span>已经部署到当前集群的一个域名；如果为空则使用节点IP作为域名。<span class="red" v-if="urlProtocol == 'https' && urlHost.length == 0">如果协议是https，这里必须填写一个已经设置了SSL证书的域名。</span></p>
 							</td>
 						</tr>
 						<tr>
@@ -14828,7 +14855,7 @@ Vue.component("checkbox", {
 	},
 	template: `<div class="ui checkbox">
 	<input type="checkbox" :name="name" :value="elementValue" :id="elementId" @change="change" v-model="newValue"/>
-	<label :for="elementId" style="font-size: 0.85em!important;"><slot></slot></label>
+	<label :for="elementId"><slot></slot></label>
 </div>`
 })
 
@@ -16684,7 +16711,7 @@ Vue.component("dns-route-selector", {
 })
 
 Vue.component("dns-domain-selector", {
-	props: ["v-domain-id", "v-domain-name"],
+	props: ["v-domain-id", "v-domain-name", "v-provider-name"],
 	data: function () {
 		let domainId = this.vDomainId
 		if (domainId == null) {
@@ -16694,9 +16721,16 @@ Vue.component("dns-domain-selector", {
 		if (domainName == null) {
 			domainName = ""
 		}
+
+		let providerName = this.vProviderName
+		if (providerName == null) {
+			providerName = ""
+		}
+
 		return {
 			domainId: domainId,
-			domainName: domainName
+			domainName: domainName,
+			providerName: providerName
 		}
 	},
 	methods: {
@@ -16706,6 +16740,7 @@ Vue.component("dns-domain-selector", {
 				callback: function (resp) {
 					that.domainId = resp.data.domainId
 					that.domainName = resp.data.domainName
+					that.providerName = resp.data.providerName
 					that.change()
 				}
 			})
@@ -16721,6 +16756,7 @@ Vue.component("dns-domain-selector", {
 				callback: function (resp) {
 					that.domainId = resp.data.domainId
 					that.domainName = resp.data.domainName
+					that.providerName = resp.data.providerName
 					that.change()
 				}
 			})
@@ -16736,7 +16772,7 @@ Vue.component("dns-domain-selector", {
 	<input type="hidden" name="dnsDomainId" :value="domainId"/>
 	<div v-if="domainName.length > 0">
 		<span class="ui label small basic">
-			{{domainName}}
+			<span v-if="providerName != null && providerName.length > 0">{{providerName}} &raquo; </span> {{domainName}}
 			<a href="" @click.prevent="update"><i class="icon pencil small"></i></a>
 			<a href="" @click.prevent="remove()"><i class="icon remove"></i></a>
 		</span>
