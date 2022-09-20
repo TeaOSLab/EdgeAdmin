@@ -1,7 +1,0 @@
-<first-menu>
-    <menu-item href="/admins/recipients">所有接收人</menu-item>
-    <span class="item">|</span>
-    <menu-item :href="'/admins/recipients/recipient?recipientId=' + recipient.id" code="recipient">"{{recipient.admin.fullname}} &nbsp;<span class="small grey">({{recipient.instance.name}})</span>"详情</menu-item>
-    <menu-item :href="'/admins/recipients/update?recipientId=' + recipient.id" code="update">修改</menu-item>
-    <menu-item :href="'/admins/recipients/test?recipientId=' + recipient.id" code="test">测试</menu-item>
-</first-menu>
