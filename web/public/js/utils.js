@@ -909,7 +909,7 @@ window.teaweb = {
 		s = s.replace(/&/g, "&amp;")
 		s = s.replace(/</g, "&lt;")
 		s = s.replace(/>/g, "&gt;")
-		s = s.replace(/"/, "&quot;")
+		s = s.replace(/"/g, "&quot;")
 		return s
 	},
 	chartColor: function (color) {
