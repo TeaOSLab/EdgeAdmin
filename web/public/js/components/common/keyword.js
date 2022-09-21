@@ -10,11 +10,11 @@ Vue.component("keyword", {
 			word = word.replace(/\+/g, "\\+")
 			word = word.replace(/\^/g, "\\^")
 			word = word.replace(/\$/g, "\\$")
-			word = word.replace(/\?/, "\\?")
-			word = word.replace(/\*/, "\\*")
-			word = word.replace(/\[/, "\\[")
-			word = word.replace(/{/, "\\{")
-			word = word.replace(/\./, "\\.")
+			word = word.replace(/\?/g, "\\?")
+			word = word.replace(/\*/g, "\\*")
+			word = word.replace(/\[/g, "\\[")
+			word = word.replace(/{/g, "\\{")
+			word = word.replace(/\./g, "\\.")
 		}
 
 		let slot = this.$slots["default"][0]
