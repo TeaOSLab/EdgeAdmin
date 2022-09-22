@@ -41,7 +41,7 @@ Vue.component("http-location-labels", {
 	<http-location-labels-label v-if="location.web != null && configIsOn(location.web.root)" :href="url('/web')">文档根目录</http-location-labels-label>
 	
 	<!-- 反向代理 -->
-	<http-location-labels-label v-if="refIsOn(location.reverseProxyRef, location.reverseProxy)" :v-href="url('/reverseProxy')">反向代理</http-location-labels-label>
+	<http-location-labels-label v-if="refIsOn(location.reverseProxyRef, location.reverseProxy)" :v-href="url('/reverseProxy')">源站</http-location-labels-label>
 	
 	<!-- WAF -->
 	<!-- TODO -->
