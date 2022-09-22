@@ -43,10 +43,10 @@ Vue.component("http-referers-config-box", {
 	</tbody>
 	<tbody v-show="isOn()">
 		<tr>
-			<td class="title">来源域名允许为空</td>
+			<td class="title">允许直接访问网站</td>
 			<td>
 				<checkbox v-model="config.allowEmpty"></checkbox>
-				<p class="comment">允许不带来源的访问，用户第一次访问网站时来源域名通常为空。</p>
+				<p class="comment">允许用户直接访问网站，用户第一次访问网站时来源域名通常为空。</p>
 			</td>
 		</tr>
 		<tr>
@@ -60,7 +60,7 @@ Vue.component("http-referers-config-box", {
 			<td>允许的来源域名</td>
 			<td>
 				<values-box :values="config.allowDomains" @change="changeAllowDomains"></values-box>
-				<p class="comment">允许的来源域名列表，比如<code-label>example.com</code-label>、<code-label>*.example.com</code-label>。单个星号<code-label>*</code-label>表示允许所有域名。</p>
+				<p class="comment">允许的其他来源域名列表，比如<code-label>example.com</code-label>、<code-label>*.example.com</code-label>。单个星号<code-label>*</code-label>表示允许所有域名。</p>
 			</td>
 		</tr>
 	</tbody>
