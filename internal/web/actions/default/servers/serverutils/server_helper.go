@@ -310,6 +310,12 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":     serverConfig.Web != nil && serverConfig.Web.Auth != nil && serverConfig.Web.Auth.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
+			"name":     "防盗链",
+			"url":      "/servers/server/settings/referers?serverId=" + serverIdString,
+			"isActive": secondMenuItem == "referer",
+			"isOn":     serverConfig.Web != nil && serverConfig.Web.Referers != nil && serverConfig.Web.Referers.IsOn,
+		})
+		menuItems = append(menuItems, maps.Map{
 			"name":     "字符编码",
 			"url":      "/servers/server/settings/charset?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "charset",

@@ -1,0 +1,14 @@
+{$layout}
+{$template "../settings_menu"}
+{$template "/left_menu_with_menu"}
+
+<div class="right-box with-menu">
+    <form class="ui form" data-tea-action="$" data-tea-success="success">
+        <csrf-token></csrf-token>
+        <input type="hidden" name="webId" :value="webId"/>
+
+        <http-referers-config-box :v-referers-config="referersConfig"></http-referers-config-box>
+
+        <submit-btn></submit-btn>
+    </form>
+</div>
