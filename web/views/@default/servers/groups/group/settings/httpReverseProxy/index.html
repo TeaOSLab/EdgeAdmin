@@ -7,7 +7,7 @@
 
 	<div v-if="!reverseProxyRef.isPrior || !reverseProxyRef.isOn">
 		<div class="margin"></div>
-        <warning-message>当前代理服务没有开启，可以通过点击 <a :href="Tea.url('.setting', { groupId: group.id })">[更多设置]</a> 开启 。</warning-message>
+        <warning-message>当前源站没有启用，可以通过点击 <a :href="Tea.url('.setting', { groupId: group.id })">[更多设置]</a> 开启 。</warning-message>
 	</div>
 
     <div :class="{'opacity-mask': !reverseProxyRef.isPrior || !reverseProxyRef.isOn}">

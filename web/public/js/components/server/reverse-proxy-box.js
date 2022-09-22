@@ -159,7 +159,7 @@ Vue.component("reverse-proxy-box", {
 		<prior-checkbox :v-config="reverseProxyRef" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || reverseProxyRef.isPrior">
 			<tr>
-				<td class="title">启用反向代理</td>
+				<td class="title">启用源站</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="reverseProxyRef.isOn"/>
