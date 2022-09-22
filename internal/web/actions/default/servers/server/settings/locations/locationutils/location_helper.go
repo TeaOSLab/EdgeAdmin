@@ -104,6 +104,12 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.Auth != nil && locationConfig.Web.Auth.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
+		"name":     "防盗链",
+		"url":      "/servers/server/settings/locations/referers?serverId=" + serverIdString + "&locationId=" + locationIdString,
+		"isActive": secondMenuItem == "referer",
+		"isOn":     locationConfig.Web != nil && locationConfig.Web.Referers != nil && locationConfig.Web.Referers.IsPrior,
+	})
+	menuItems = append(menuItems, maps.Map{
 		"name":     "字符编码",
 		"url":      "/servers/server/settings/locations/charset?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "charset",
