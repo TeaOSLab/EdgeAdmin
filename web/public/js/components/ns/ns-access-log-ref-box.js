@@ -28,10 +28,17 @@ Vue.component("ns-access-log-ref-box", {
 				</td>
 			</tr>
 			<tr>
-				<td>记录所有访问</td>
+				<td>只记录失败查询</td>
+				<td>
+					<checkbox v-model="config.missingRecordsOnly"></checkbox>
+					<p class="comment">选中后，表示只记录查询失败的日志。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>包含未添加的域名</td>
 				<td>
 					<checkbox name="logMissingDomains" value="1" v-model="config.logMissingDomains"></checkbox>
-					<p class="comment">包括对没有在系统里创建的域名访问。</p>
+					<p class="comment">选中后，表示日志中包含对没有在系统里创建的域名访问。</p>
 				</td>
 			</tr>
 		</tbody>
