@@ -6557,6 +6557,77 @@ Vue.component("domains-box", {
 </div>`
 })
 
+Vue.component("http-referers-config-box", {
+	props: ["v-referers-config", "v-is-location", "v-is-group"],
+	data: function () {
+		let config = this.vReferersConfig
+		if (config == null) {
+			config = {
+				isPrior: false,
+				isOn: false,
+				allowEmpty: true,
+				allowSameDomain: true,
+				allowDomains: []
+			}
+		}
+		if (config.allowDomains == null) {
+			config.allowDomains = []
+		}
+		return {
+			config: config
+		}
+	},
+	methods: {
+		isOn: function () {
+			return ((!this.vIsLocation && !this.vIsGroup) || this.config.isPrior) && this.config.isOn
+		},
+		changeAllowDomains: function (domains) {
+		}
+	},
+	template: `<div>
+<input type="hidden" name="referersJSON" :value="JSON.stringify(config)"/>
+<table class="ui table selectable definition">
+	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+	<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
+		<tr>
+			<td class="title">启用</td>
+			<td>
+				<div class="ui checkbox">
+					<input type="checkbox" value="1" v-model="config.isOn"/>
+					<label></label>
+				</div>
+				<p class="comment">选中后表示开启防盗链。</p>
+			</td>
+		</tr>
+	</tbody>
+	<tbody v-show="isOn()">
+		<tr>
+			<td class="title">允许直接访问网站</td>
+			<td>
+				<checkbox v-model="config.allowEmpty"></checkbox>
+				<p class="comment">允许用户直接访问网站，用户第一次访问网站时来源域名通常为空。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>来源域名允许一致</td>
+			<td>
+				<checkbox v-model="config.allowSameDomain"></checkbox>
+				<p class="comment">允许来源域名和当前访问的域名一致，相当于在站内访问。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>允许的来源域名</td>
+			<td>
+				<values-box :values="config.allowDomains" @change="changeAllowDomains"></values-box>
+				<p class="comment">允许的其他来源域名列表，比如<code-label>example.com</code-label>、<code-label>*.example.com</code-label>。单个星号<code-label>*</code-label>表示允许所有域名。</p>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<div class="ui margin"></div>
+</div>`
+})
+
 Vue.component("http-redirect-to-https-box", {
 	props: ["v-redirect-to-https-config", "v-is-location"],
 	data: function () {
@@ -9496,7 +9567,7 @@ Vue.component("http-location-labels", {
 	<http-location-labels-label v-if="location.web != null && configIsOn(location.web.root)" :href="url('/web')">文档根目录</http-location-labels-label>
 	
 	<!-- 反向代理 -->
-	<http-location-labels-label v-if="refIsOn(location.reverseProxyRef, location.reverseProxy)" :v-href="url('/reverseProxy')">反向代理</http-location-labels-label>
+	<http-location-labels-label v-if="refIsOn(location.reverseProxyRef, location.reverseProxy)" :v-href="url('/reverseProxy')">源站</http-location-labels-label>
 	
 	<!-- WAF -->
 	<!-- TODO -->
@@ -9943,7 +10014,7 @@ Vue.component("reverse-proxy-box", {
 		<prior-checkbox :v-config="reverseProxyRef" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || reverseProxyRef.isPrior">
 			<tr>
-				<td class="title">启用反向代理</td>
+				<td class="title">启用源站</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="reverseProxyRef.isOn"/>
@@ -14990,11 +15061,11 @@ Vue.component("keyword", {
 			word = word.replace(/\+/g, "\\+")
 			word = word.replace(/\^/g, "\\^")
 			word = word.replace(/\$/g, "\\$")
-			word = word.replace(/\?/, "\\?")
-			word = word.replace(/\*/, "\\*")
-			word = word.replace(/\[/, "\\[")
-			word = word.replace(/{/, "\\{")
-			word = word.replace(/\./, "\\.")
+			word = word.replace(/\?/g, "\\?")
+			word = word.replace(/\*/g, "\\*")
+			word = word.replace(/\[/g, "\\[")
+			word = word.replace(/{/g, "\\{")
+			word = word.replace(/\./g, "\\.")
 		}
 
 		let slot = this.$slots["default"][0]

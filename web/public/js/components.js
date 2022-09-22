@@ -2176,6 +2176,47 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<div style="margin-top: 0.5em" v-if="!isAdding">
 		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
 	</div>
+</div>`}),Vue.component("http-referers-config-box",{props:["v-referers-config","v-is-location","v-is-group"],data:function(){let e=this.vReferersConfig;return null==(e=null==e?{isPrior:!1,isOn:!1,allowEmpty:!0,allowSameDomain:!0,allowDomains:[]}:e).allowDomains&&(e.allowDomains=[]),{config:e}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeAllowDomains:function(e){}},template:`<div>
+<input type="hidden" name="referersJSON" :value="JSON.stringify(config)"/>
+<table class="ui table selectable definition">
+	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+	<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
+		<tr>
+			<td class="title">启用</td>
+			<td>
+				<div class="ui checkbox">
+					<input type="checkbox" value="1" v-model="config.isOn"/>
+					<label></label>
+				</div>
+				<p class="comment">选中后表示开启防盗链。</p>
+			</td>
+		</tr>
+	</tbody>
+	<tbody v-show="isOn()">
+		<tr>
+			<td class="title">允许直接访问网站</td>
+			<td>
+				<checkbox v-model="config.allowEmpty"></checkbox>
+				<p class="comment">允许用户直接访问网站，用户第一次访问网站时来源域名通常为空。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>来源域名允许一致</td>
+			<td>
+				<checkbox v-model="config.allowSameDomain"></checkbox>
+				<p class="comment">允许来源域名和当前访问的域名一致，相当于在站内访问。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>允许的来源域名</td>
+			<td>
+				<values-box :values="config.allowDomains" @change="changeAllowDomains"></values-box>
+				<p class="comment">允许的其他来源域名列表，比如<code-label>example.com</code-label>、<code-label>*.example.com</code-label>。单个星号<code-label>*</code-label>表示允许所有域名。</p>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<div class="ui margin"></div>
 </div>`}),Vue.component("http-redirect-to-https-box",{props:["v-redirect-to-https-config","v-is-location"],data:function(){let e=this.vRedirectToHttpsConfig;return null==e?e={isPrior:!1,isOn:!1,host:"",port:0,status:0,onlyDomains:[],exceptDomains:[]}:(null==e.onlyDomains&&(e.onlyDomains=[]),null==e.exceptDomains&&(e.exceptDomains=[])),{redirectToHttpsConfig:e,portString:0<e.port?e.port.toString():"",moreOptionsVisible:!1,statusOptions:[{code:301,text:"Moved Permanently"},{code:308,text:"Permanent Redirect"},{code:302,text:"Found"},{code:303,text:"See Other"},{code:307,text:"Temporary Redirect"}]}},watch:{"redirectToHttpsConfig.status":function(){this.redirectToHttpsConfig.status=parseInt(this.redirectToHttpsConfig.status)},portString:function(e){e=parseInt(e);isNaN(e)?this.redirectToHttpsConfig.port=0:this.redirectToHttpsConfig.port=e}},methods:{changeMoreOptions:function(e){this.moreOptionsVisible=e},changeOnlyDomains:function(e){this.redirectToHttpsConfig.onlyDomains=e,this.$forceUpdate()},changeExceptDomains:function(e){this.redirectToHttpsConfig.exceptDomains=e,this.$forceUpdate()}},template:`<div>
 	<input type="hidden" name="redirectToHTTPSJSON" :value="JSON.stringify(redirectToHttpsConfig)"/>
 	
@@ -3231,7 +3272,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<http-location-labels-label v-if="location.web != null && configIsOn(location.web.root)" :href="url('/web')">文档根目录</http-location-labels-label>
 	
 	<!-- 反向代理 -->
-	<http-location-labels-label v-if="refIsOn(location.reverseProxyRef, location.reverseProxy)" :v-href="url('/reverseProxy')">反向代理</http-location-labels-label>
+	<http-location-labels-label v-if="refIsOn(location.reverseProxyRef, location.reverseProxy)" :v-href="url('/reverseProxy')">源站</http-location-labels-label>
 	
 	<!-- WAF -->
 	<!-- TODO -->
@@ -3363,7 +3404,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<prior-checkbox :v-config="reverseProxyRef" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || reverseProxyRef.isPrior">
 			<tr>
-				<td class="title">启用反向代理</td>
+				<td class="title">启用源站</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="reverseProxyRef.isOn"/>
@@ -4828,7 +4869,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<div class="content">
 		<slot></slot>
 	</div>
-</div>`}),Vue.component("digit-input",{props:["value","maxlength","size","min","max","required","placeholder"],mounted:function(){let e=this;setTimeout(function(){e.check()})},data:function(){let e=this.maxlength,t=(null==e&&(e=20),this.size);return null==t&&(t=6),{realValue:this.value,realMaxLength:e,realSize:t,isValid:!0}},watch:{realValue:function(e){this.notifyChange()}},methods:{notifyChange:function(){let e=parseInt(this.realValue.toString(),10);isNaN(e)&&(e=0),this.check(),this.$emit("input",e)},check:function(){var e;null!=this.realValue&&(e=this.realValue.toString(),/^\d+$/.test(e)?(e=parseInt(e,10),isNaN(e)?this.isValid=!1:this.required?this.isValid=(null==this.min||this.min<=e)&&(null==this.max||this.max>=e):this.isValid=0==e||(null==this.min||this.min<=e)&&(null==this.max||this.max>=e)):this.isValid=!1)}},template:'<input type="text" v-model="realValue" :maxlength="realMaxLength" :size="realSize" :class="{error: !this.isValid}" :placeholder="placeholder"/>'}),Vue.component("keyword",{props:["v-word"],data:function(){let e=this.vWord;e=null==e?"":(e=(e=(e=(e=(e=(e=(e=(e=(e=e.replace(/\)/g,"\\)")).replace(/\(/g,"\\(")).replace(/\+/g,"\\+")).replace(/\^/g,"\\^")).replace(/\$/g,"\\$")).replace(/\?/,"\\?")).replace(/\*/,"\\*")).replace(/\[/,"\\[")).replace(/{/,"\\{")).replace(/\./,"\\.");let t=this.$slots.default[0].text;if(0<e.length){let i=this,s=[],n=0;t=t.replaceAll(new RegExp("("+e+")","ig"),function(e){n++;var e='<span style="border: 1px #ccc dashed; color: #ef4d58">'+i.encodeHTML(e)+"</span>",t="$TMP__KEY__"+n.toString()+"$";return s.push([t,e]),t}),t=this.encodeHTML(t),s.forEach(function(e){t=t.replace(e[0],e[1])})}else t=this.encodeHTML(t);return{word:e,text:t}},methods:{encodeHTML:function(e){return e=(e=(e=(e=e.replace(/&/g,"&amp;")).replace(/</g,"&lt;")).replace(/>/g,"&gt;")).replace(/"/g,"&quot;")}},template:'<span><span style="display: none"><slot></slot></span><span v-html="text"></span></span>'}),Vue.component("node-log-row",{props:["v-log","v-keyword"],data:function(){return{log:this.vLog,keyword:this.vKeyword}},template:`<div>
+</div>`}),Vue.component("digit-input",{props:["value","maxlength","size","min","max","required","placeholder"],mounted:function(){let e=this;setTimeout(function(){e.check()})},data:function(){let e=this.maxlength,t=(null==e&&(e=20),this.size);return null==t&&(t=6),{realValue:this.value,realMaxLength:e,realSize:t,isValid:!0}},watch:{realValue:function(e){this.notifyChange()}},methods:{notifyChange:function(){let e=parseInt(this.realValue.toString(),10);isNaN(e)&&(e=0),this.check(),this.$emit("input",e)},check:function(){var e;null!=this.realValue&&(e=this.realValue.toString(),/^\d+$/.test(e)?(e=parseInt(e,10),isNaN(e)?this.isValid=!1:this.required?this.isValid=(null==this.min||this.min<=e)&&(null==this.max||this.max>=e):this.isValid=0==e||(null==this.min||this.min<=e)&&(null==this.max||this.max>=e)):this.isValid=!1)}},template:'<input type="text" v-model="realValue" :maxlength="realMaxLength" :size="realSize" :class="{error: !this.isValid}" :placeholder="placeholder"/>'}),Vue.component("keyword",{props:["v-word"],data:function(){let e=this.vWord;e=null==e?"":(e=(e=(e=(e=(e=(e=(e=(e=(e=e.replace(/\)/g,"\\)")).replace(/\(/g,"\\(")).replace(/\+/g,"\\+")).replace(/\^/g,"\\^")).replace(/\$/g,"\\$")).replace(/\?/g,"\\?")).replace(/\*/g,"\\*")).replace(/\[/g,"\\[")).replace(/{/g,"\\{")).replace(/\./g,"\\.");let t=this.$slots.default[0].text;if(0<e.length){let i=this,s=[],n=0;t=t.replaceAll(new RegExp("("+e+")","ig"),function(e){n++;var e='<span style="border: 1px #ccc dashed; color: #ef4d58">'+i.encodeHTML(e)+"</span>",t="$TMP__KEY__"+n.toString()+"$";return s.push([t,e]),t}),t=this.encodeHTML(t),s.forEach(function(e){t=t.replace(e[0],e[1])})}else t=this.encodeHTML(t);return{word:e,text:t}},methods:{encodeHTML:function(e){return e=(e=(e=(e=e.replace(/&/g,"&amp;")).replace(/</g,"&lt;")).replace(/>/g,"&gt;")).replace(/"/g,"&quot;")}},template:'<span><span style="display: none"><slot></slot></span><span v-html="text"></span></span>'}),Vue.component("node-log-row",{props:["v-log","v-keyword"],data:function(){return{log:this.vLog,keyword:this.vKeyword}},template:`<div>
 	<pre class="log-box" style="margin: 0; padding: 0"><span :class="{red:log.level == 'error', orange:log.level == 'warning', green: log.level == 'success'}"><span v-if="!log.isToday">[{{log.createdTime}}]</span><strong v-if="log.isToday">[{{log.createdTime}}]</strong><keyword :v-word="keyword">[{{log.tag}}]{{log.description}}</keyword></span> &nbsp; <span v-if="log.count > 1" class="ui label tiny" :class="{red:log.level == 'error', orange:log.level == 'warning'}">共{{log.count}}条</span> <span v-if="log.server != null && log.server.id > 0"><a :href="'/servers/server?serverId=' + log.server.id" class="ui label tiny basic">{{log.server.name}}</a></span></pre>
 </div>`}),Vue.component("provinces-selector",{props:["v-provinces"],data:function(){let e=this.vProvinces;var t=(e=null==e?[]:e).$map(function(e,t){return t.id});return{provinces:e,provinceIds:t}},methods:{add:function(){let e=this.provinceIds.map(function(e){return e.toString()}),t=this;teaweb.popup("/ui/selectProvincesPopup?provinceIds="+e.join(","),{width:"48em",height:"23em",callback:function(e){t.provinces=e.data.provinces,t.change()}})},remove:function(e){this.provinces.$remove(e),this.change()},change:function(){this.provinceIds=this.provinces.$map(function(e,t){return t.id})}},template:`<div>
 	<input type="hidden" name="provinceIdsJSON" :value="JSON.stringify(provinceIds)"/>
