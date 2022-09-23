@@ -9,7 +9,7 @@ import (
 func TestLoadUIConfig(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		before := time.Now()
-		config, err := LoadUIConfig()
+		config, err := LoadAdminUIConfig()
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -20,7 +20,7 @@ func TestLoadUIConfig(t *testing.T) {
 
 func TestLoadUIConfig2(t *testing.T) {
 	for i := 0; i < 10; i++ {
-		config, err := LoadUIConfig()
+		config, err := LoadAdminUIConfig()
 		if err != nil {
 			t.Fatal(err)
 		}
