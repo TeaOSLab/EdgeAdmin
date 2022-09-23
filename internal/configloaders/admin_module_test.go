@@ -6,7 +6,7 @@ import (
 )
 
 func TestLoadAdminModuleMapping(t *testing.T) {
-	m, err := LoadAdminModuleMapping()
+	m, err := loadAdminModuleMapping()
 	if err != nil {
 		t.Fatal(err)
 	}

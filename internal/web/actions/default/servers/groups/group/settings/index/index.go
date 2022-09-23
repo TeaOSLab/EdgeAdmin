@@ -24,5 +24,4 @@ func (this *IndexAction) RunGet(params struct {
 	} else {
 		this.RedirectURL("/servers/groups/group/settings/httpReverseProxy?groupId=" + types.String(params.GroupId))
 	}
-	return
 }

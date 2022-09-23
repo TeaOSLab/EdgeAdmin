@@ -26,7 +26,7 @@ func (this *CountryOptionsAction) RunPost(params struct{}) {
 		}
 
 		var letter = ""
-		if len(country.Pinyin) > 0 && len(country.Pinyin) > 0 && len(country.Pinyin[0]) > 0 {
+		if len(country.Pinyin) > 0 && len(country.Pinyin[0]) > 0 {
 			letter = strings.ToUpper(country.Pinyin[0][:1])
 		}
 

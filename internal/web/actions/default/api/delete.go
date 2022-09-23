@@ -25,6 +25,7 @@ func (this *DeleteAction) RunPost(params struct {
 	var apiNode = nodeResp.ApiNode
 	if apiNode == nil {
 		this.Success()
+		return
 	}
 	if apiNode.IsOn {
 		countResp, err := this.RPC().APINodeRPC().CountAllEnabledAndOnAPINodes(this.AdminContext(), &pb.CountAllEnabledAndOnAPINodesRequest{})

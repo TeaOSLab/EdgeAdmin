@@ -109,6 +109,10 @@ func (this *SettingAction) RunPost(params struct {
 		FollowRedirects:   reverseProxyConfig.FollowRedirects,
 		ProxyProtocolJSON: proxyProtocolJSON,
 	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 
 	this.Success()
 }

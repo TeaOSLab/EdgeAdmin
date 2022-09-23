@@ -80,9 +80,9 @@ func (this *UpdateIPPopupAction) RunPost(params struct {
 
 		var ipToLong uint64
 		if len(params.IpTo) > 0 && !utils.IsIPv4(params.IpTo) {
-			ipToLong = utils.IP2Long(params.IpTo)
 			this.Fail("请输入正确的结束IP")
 		}
+		ipToLong = utils.IP2Long(params.IpTo)
 
 		if ipFromLong > 0 && ipToLong > 0 && ipFromLong > ipToLong {
 			params.IpTo, params.IpFrom = params.IpFrom, params.IpTo

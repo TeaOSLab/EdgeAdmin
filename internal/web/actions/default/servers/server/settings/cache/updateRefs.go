@@ -41,9 +41,6 @@ func (this *UpdateRefsAction) RunPost(params struct {
 
 	// 校验配置
 	var cacheConfig = webConfig.Cache
-	if webConfig == nil {
-		this.Success()
-	}
 
 	var refs = []*serverconfigs.HTTPCacheRef{}
 	err = json.Unmarshal(params.RefsJSON, &refs)

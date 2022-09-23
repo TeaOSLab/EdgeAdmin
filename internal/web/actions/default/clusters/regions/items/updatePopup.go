@@ -48,7 +48,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("修改流量价格项目", params.ItemId)
+	defer this.CreateLogInfo("修改流量价格项目 %d", params.ItemId)
 
 	params.Must.
 		Field("name", params.Name).

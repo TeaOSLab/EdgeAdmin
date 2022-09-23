@@ -96,8 +96,12 @@ func (this *SettingAction) RunPost(params struct {
 		StripPrefix:     reverseProxyConfig.StripPrefix,
 		AutoFlush:       reverseProxyConfig.AutoFlush,
 		AddHeaders:      reverseProxyConfig.AddHeaders,
-		FollowRedirects:   reverseProxyConfig.FollowRedirects,
+		FollowRedirects: reverseProxyConfig.FollowRedirects,
 	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 
 	this.Success()
 }
