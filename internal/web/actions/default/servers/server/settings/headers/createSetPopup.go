@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
+	"strings"
 )
 
 type CreateSetPopupAction struct {
@@ -44,6 +45,8 @@ func (this *CreateSetPopupAction) RunPost(params struct {
 }) {
 	// 日志
 	defer this.CreateLog(oplogs.LevelInfo, "设置请求Header，HeaderPolicyId:%d, Name:%s, Value:%s", params.HeaderPolicyId, params.Name, params.Value)
+
+	params.Name = strings.TrimSuffix(params.Name, ":")
 
 	params.Must.
 		Field("name", params.Name).
