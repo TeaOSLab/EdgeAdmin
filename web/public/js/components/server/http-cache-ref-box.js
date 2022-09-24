@@ -29,7 +29,7 @@ Vue.component("http-cache-ref-box", {
 				conds: null, // 复杂条件
 				simpleCond: null, // 简单条件
 				allowChunkedEncoding: true,
-				allowPartialContent: false,
+				allowPartialContent: true,
 				enableIfNoneMatch: false,
 				enableIfModifiedSince: false,
 				isReverse: this.vIsReverse,
@@ -241,7 +241,7 @@ Vue.component("http-cache-ref-box", {
 		<td>支持缓存区间内容</td>
 		<td>
 			<checkbox name="allowPartialContent" value="1" v-model="ref.allowPartialContent"></checkbox>
-			<p class="comment">选中后，支持缓存源站返回的某个区间的内容，该内容通过<code-label>206 Partial Content</code-label>状态码返回。此功能目前为<code-label>试验性质</code-label>。</p>
+			<p class="comment">选中后，支持缓存源站返回的某个区间的内容，该内容通过<code-label>206 Partial Content</code-label>状态码返回。</p>
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
