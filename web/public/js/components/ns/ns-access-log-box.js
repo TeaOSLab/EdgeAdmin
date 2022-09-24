@@ -2,8 +2,25 @@ Vue.component("ns-access-log-box", {
 	props: ["v-access-log", "v-keyword"],
 	data: function () {
 		let accessLog = this.vAccessLog
+		let isFailure = false
+
+		if (accessLog.isRecursive) {
+			if (accessLog.recordValue == null || accessLog.recordValue.length == 0) {
+				isFailure = true
+			}
+		} else {
+			if (accessLog.recordType == "SOA" || accessLog.recordType == "NS") {
+				if (accessLog.recordValue == null || accessLog.recordValue.length == 0) {
+					isFailure = true
+				}
+			} else if (accessLog.nsRecordId == null || accessLog.nsRecordId == 0) {
+				isFailure = true
+			}
+		}
+
 		return {
-			accessLog: accessLog
+			accessLog: accessLog,
+			isFailure: isFailure
 		}
 	},
 	methods: {
@@ -32,7 +49,7 @@ Vue.component("ns-access-log-box", {
 			this.$refs.box.parentNode.style.cssText = ""
 		}
 	},
-	template: `<div class="access-log-row" :style="{'color': (!accessLog.isRecursive && (accessLog.nsRecordId == null || accessLog.nsRecordId == 0) || (accessLog.isRecursive && accessLog.recordValue != null && accessLog.recordValue.length == 0)) ? '#dc143c' : ''}" ref="box">
+	template: `<div class="access-log-row" :style="{'color': isFailure ? '#dc143c' : ''}" ref="box">
 	<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey">[{{accessLog.region}}]</span> <keyword :v-word="vKeyword">{{accessLog.remoteAddr}}</keyword> [{{accessLog.timeLocal}}] [{{accessLog.networking}}] <em>{{accessLog.questionType}} <keyword :v-word="vKeyword">{{accessLog.questionName}}</keyword></em> -&gt; 
 	
 	<span v-if="accessLog.recordType != null && accessLog.recordType.length > 0"><em>{{accessLog.recordType}} <keyword :v-word="vKeyword">{{accessLog.recordValue}}</keyword></em></span>
