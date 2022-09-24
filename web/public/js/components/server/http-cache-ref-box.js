@@ -67,6 +67,9 @@ Vue.component("http-cache-ref-box", {
 
 		return {
 			ref: ref,
+
+			keyIgnoreArgs: typeof ref.key == "string" && ref.key.indexOf("${args}") < 0,
+
 			moreOptionsVisible: false,
 
 			condCategory: "simple", // 条件分类：simple|complex
@@ -75,6 +78,23 @@ Vue.component("http-cache-ref-box", {
 			condIsCaseInsensitive: (ref.simpleCond != null) ? ref.simpleCond.isCaseInsensitive : true,
 
 			components: window.REQUEST_COND_COMPONENTS
+		}
+	},
+	watch: {
+		keyIgnoreArgs: function (b) {
+			if (typeof this.ref.key != "string") {
+				return
+			}
+			if (b) {
+				this.ref.key = this.ref.key.replace("${isArgs}${args}", "")
+				return;
+			}
+			if (this.ref.key.indexOf("${isArgs}") < 0) {
+				this.ref.key = this.ref.key + "${isArgs}"
+			}
+			if (this.ref.key.indexOf("${args}") < 0) {
+				this.ref.key = this.ref.key + "${args}"
+			}
 		}
 	},
 	methods: {
@@ -123,6 +143,9 @@ Vue.component("http-cache-ref-box", {
 
 			// resize window
 			let dialog = window.parent.document.querySelector("*[role='dialog']")
+			if (dialog == null) {
+				return
+			}
 			switch (condCategory) {
 				case "simple":
 					dialog.style.width = "40em"
@@ -194,10 +217,17 @@ Vue.component("http-cache-ref-box", {
 		</td>
 	</tr>
 	<tr v-show="!vIsReverse">
-		<td>缓存Key *</td>
+		<td class="color-border">缓存Key *</td>
 		<td>
 			<input type="text" v-model="ref.key" @input="changeKey(ref.key)"/>
 			<p class="comment">用来区分不同缓存内容的唯一Key。<request-variables-describer ref="variablesDescriber"></request-variables-describer>。</p>
+		</td>
+	</tr>
+	<tr v-show="!vIsReverse">
+		<td class="color-border">忽略URI参数</td>
+		<td>
+			<checkbox v-model="keyIgnoreArgs"></checkbox>
+			<p class="comment">选中后，表示缓存Key中不包含URI参数（即问号（?））后面的内容。</p>
 		</td>
 	</tr>
 	<tr v-show="!vIsReverse">
