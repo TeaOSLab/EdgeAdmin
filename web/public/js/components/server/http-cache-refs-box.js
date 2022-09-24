@@ -47,6 +47,7 @@ Vue.component("http-cache-refs-box", {
 							<http-request-cond-view :v-cond="cacheRef.simpleCond" v-if="cacheRef.simpleCond != null"></http-request-cond-view>
 						
 						<!-- 特殊参数 -->
+						<grey-label v-if="cacheRef.key != null && cacheRef.key.indexOf('\${args}') < 0">忽略URI参数</grey-label>
 						<grey-label v-if="cacheRef.minSize != null && cacheRef.minSize.count > 0">
 							{{cacheRef.minSize.count}}{{cacheRef.minSize.unit}}
 							<span v-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">- {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</span>

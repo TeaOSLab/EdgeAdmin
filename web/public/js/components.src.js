@@ -1508,10 +1508,17 @@ Vue.component("ns-access-log-ref-box", {
 				</td>
 			</tr>
 			<tr>
-				<td>记录所有访问</td>
+				<td>只记录失败查询</td>
+				<td>
+					<checkbox v-model="config.missingRecordsOnly"></checkbox>
+					<p class="comment">选中后，表示只记录查询失败的日志。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>包含未添加的域名</td>
 				<td>
 					<checkbox name="logMissingDomains" value="1" v-model="config.logMissingDomains"></checkbox>
-					<p class="comment">包括对没有在系统里创建的域名访问。</p>
+					<p class="comment">选中后，表示日志中包含对没有在系统里创建的域名访问。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -2374,8 +2381,25 @@ Vue.component("ns-access-log-box", {
 	props: ["v-access-log", "v-keyword"],
 	data: function () {
 		let accessLog = this.vAccessLog
+		let isFailure = false
+
+		if (accessLog.isRecursive) {
+			if (accessLog.recordValue == null || accessLog.recordValue.length == 0) {
+				isFailure = true
+			}
+		} else {
+			if (accessLog.recordType == "SOA" || accessLog.recordType == "NS") {
+				if (accessLog.recordValue == null || accessLog.recordValue.length == 0) {
+					isFailure = true
+				}
+			} else if (accessLog.nsRecordId == null || accessLog.nsRecordId == 0) {
+				isFailure = true
+			}
+		}
+
 		return {
-			accessLog: accessLog
+			accessLog: accessLog,
+			isFailure: isFailure
 		}
 	},
 	methods: {
@@ -2404,7 +2428,7 @@ Vue.component("ns-access-log-box", {
 			this.$refs.box.parentNode.style.cssText = ""
 		}
 	},
-	template: `<div class="access-log-row" :style="{'color': (!accessLog.isRecursive && (accessLog.nsRecordId == null || accessLog.nsRecordId == 0) || (accessLog.isRecursive && accessLog.recordValue != null && accessLog.recordValue.length == 0)) ? '#dc143c' : ''}" ref="box">
+	template: `<div class="access-log-row" :style="{'color': isFailure ? '#dc143c' : ''}" ref="box">
 	<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey">[{{accessLog.region}}]</span> <keyword :v-word="vKeyword">{{accessLog.remoteAddr}}</keyword> [{{accessLog.timeLocal}}] [{{accessLog.networking}}] <em>{{accessLog.questionType}} <keyword :v-word="vKeyword">{{accessLog.questionName}}</keyword></em> -&gt; 
 	
 	<span v-if="accessLog.recordType != null && accessLog.recordType.length > 0"><em>{{accessLog.recordType}} <keyword :v-word="vKeyword">{{accessLog.recordValue}}</keyword></em></span>
@@ -3744,6 +3768,7 @@ Vue.component("http-cache-refs-box", {
 							<http-request-cond-view :v-cond="cacheRef.simpleCond" v-if="cacheRef.simpleCond != null"></http-request-cond-view>
 						
 						<!-- 特殊参数 -->
+						<grey-label v-if="cacheRef.key != null && cacheRef.key.indexOf('\${args}') < 0">忽略URI参数</grey-label>
 						<grey-label v-if="cacheRef.minSize != null && cacheRef.minSize.count > 0">
 							{{cacheRef.minSize.count}}{{cacheRef.minSize.unit}}
 							<span v-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">- {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</span>
@@ -4055,7 +4080,7 @@ Vue.component("http-cache-ref-box", {
 				conds: null, // 复杂条件
 				simpleCond: null, // 简单条件
 				allowChunkedEncoding: true,
-				allowPartialContent: false,
+				allowPartialContent: true,
 				enableIfNoneMatch: false,
 				enableIfModifiedSince: false,
 				isReverse: this.vIsReverse,
@@ -4093,6 +4118,9 @@ Vue.component("http-cache-ref-box", {
 
 		return {
 			ref: ref,
+
+			keyIgnoreArgs: typeof ref.key == "string" && ref.key.indexOf("${args}") < 0,
+
 			moreOptionsVisible: false,
 
 			condCategory: "simple", // 条件分类：simple|complex
@@ -4101,6 +4129,23 @@ Vue.component("http-cache-ref-box", {
 			condIsCaseInsensitive: (ref.simpleCond != null) ? ref.simpleCond.isCaseInsensitive : true,
 
 			components: window.REQUEST_COND_COMPONENTS
+		}
+	},
+	watch: {
+		keyIgnoreArgs: function (b) {
+			if (typeof this.ref.key != "string") {
+				return
+			}
+			if (b) {
+				this.ref.key = this.ref.key.replace("${isArgs}${args}", "")
+				return;
+			}
+			if (this.ref.key.indexOf("${isArgs}") < 0) {
+				this.ref.key = this.ref.key + "${isArgs}"
+			}
+			if (this.ref.key.indexOf("${args}") < 0) {
+				this.ref.key = this.ref.key + "${args}"
+			}
 		}
 	},
 	methods: {
@@ -4149,6 +4194,9 @@ Vue.component("http-cache-ref-box", {
 
 			// resize window
 			let dialog = window.parent.document.querySelector("*[role='dialog']")
+			if (dialog == null) {
+				return
+			}
 			switch (condCategory) {
 				case "simple":
 					dialog.style.width = "40em"
@@ -4220,10 +4268,17 @@ Vue.component("http-cache-ref-box", {
 		</td>
 	</tr>
 	<tr v-show="!vIsReverse">
-		<td>缓存Key *</td>
+		<td class="color-border">缓存Key *</td>
 		<td>
 			<input type="text" v-model="ref.key" @input="changeKey(ref.key)"/>
 			<p class="comment">用来区分不同缓存内容的唯一Key。<request-variables-describer ref="variablesDescriber"></request-variables-describer>。</p>
+		</td>
+	</tr>
+	<tr v-show="!vIsReverse">
+		<td class="color-border">忽略URI参数</td>
+		<td>
+			<checkbox v-model="keyIgnoreArgs"></checkbox>
+			<p class="comment">选中后，表示缓存Key中不包含URI参数（即问号（?））后面的内容。</p>
 		</td>
 	</tr>
 	<tr v-show="!vIsReverse">
@@ -4267,7 +4322,7 @@ Vue.component("http-cache-ref-box", {
 		<td>支持缓存区间内容</td>
 		<td>
 			<checkbox name="allowPartialContent" value="1" v-model="ref.allowPartialContent"></checkbox>
-			<p class="comment">选中后，支持缓存源站返回的某个区间的内容，该内容通过<code-label>206 Partial Content</code-label>状态码返回。此功能目前为<code-label>试验性质</code-label>。</p>
+			<p class="comment">选中后，支持缓存源站返回的某个区间的内容，该内容通过<code-label>206 Partial Content</code-label>状态码返回。</p>
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
@@ -5816,6 +5871,7 @@ Vue.component("http-cache-refs-config-box", {
 						<http-request-cond-view :v-cond="cacheRef.simpleCond" ref="cacheRef" v-if="cacheRef.simpleCond != null"></http-request-cond-view>
 						
 						<!-- 特殊参数 -->
+						<grey-label v-if="cacheRef.key != null && cacheRef.key.indexOf('\${args}') < 0">忽略URI参数</grey-label>
 						<grey-label v-if="cacheRef.minSize != null && cacheRef.minSize.count > 0">
 							{{cacheRef.minSize.count}}{{cacheRef.minSize.unit}}
 							<span v-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">- {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</span>

@@ -456,10 +456,17 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				</td>
 			</tr>
 			<tr>
-				<td>记录所有访问</td>
+				<td>只记录失败查询</td>
+				<td>
+					<checkbox v-model="config.missingRecordsOnly"></checkbox>
+					<p class="comment">选中后，表示只记录查询失败的日志。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>包含未添加的域名</td>
 				<td>
 					<checkbox name="logMissingDomains" value="1" v-model="config.logMissingDomains"></checkbox>
-					<p class="comment">包括对没有在系统里创建的域名访问。</p>
+					<p class="comment">选中后，表示日志中包含对没有在系统里创建的域名访问。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -798,7 +805,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	</div>
 </div>`}),Vue.component("ns-user-selector",{props:["v-user-id"],data:function(){return{}},methods:{change:function(e){this.$emit("change",e)}},template:`<div>
 	<user-selector :v-user-id="vUserId" data-url="/ns/users/options" @change="change"></user-selector>
-</div>`}),Vue.component("ns-access-log-box",{props:["v-access-log","v-keyword"],data:function(){return{accessLog:this.vAccessLog}},methods:{showLog:function(){let e=this;var t=this.accessLog.requestId;this.$parent.$children.forEach(function(e){null!=e.deselect&&e.deselect()}),this.select(),teaweb.popup("/ns/clusters/accessLogs/viewPopup?requestId="+t,{width:"50em",height:"24em",onClose:function(){e.deselect()}})},select:function(){this.$refs.box.parentNode.style.cssText="background: rgba(0, 0, 0, 0.1)"},deselect:function(){this.$refs.box.parentNode.style.cssText=""}},template:`<div class="access-log-row" :style="{'color': (!accessLog.isRecursive && (accessLog.nsRecordId == null || accessLog.nsRecordId == 0) || (accessLog.isRecursive && accessLog.recordValue != null && accessLog.recordValue.length == 0)) ? '#dc143c' : ''}" ref="box">
+</div>`}),Vue.component("ns-access-log-box",{props:["v-access-log","v-keyword"],data:function(){var e=this.vAccessLog;let t=!1;return e.isRecursive||"SOA"==e.recordType||"NS"==e.recordType?null!=e.recordValue&&0!=e.recordValue.length||(t=!0):null!=e.nsRecordId&&0!=e.nsRecordId||(t=!0),{accessLog:e,isFailure:t}},methods:{showLog:function(){let e=this;var t=this.accessLog.requestId;this.$parent.$children.forEach(function(e){null!=e.deselect&&e.deselect()}),this.select(),teaweb.popup("/ns/clusters/accessLogs/viewPopup?requestId="+t,{width:"50em",height:"24em",onClose:function(){e.deselect()}})},select:function(){this.$refs.box.parentNode.style.cssText="background: rgba(0, 0, 0, 0.1)"},deselect:function(){this.$refs.box.parentNode.style.cssText=""}},template:`<div class="access-log-row" :style="{'color': isFailure ? '#dc143c' : ''}" ref="box">
 	<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey">[{{accessLog.region}}]</span> <keyword :v-word="vKeyword">{{accessLog.remoteAddr}}</keyword> [{{accessLog.timeLocal}}] [{{accessLog.networking}}] <em>{{accessLog.questionType}} <keyword :v-word="vKeyword">{{accessLog.questionName}}</keyword></em> -&gt; 
 	
 	<span v-if="accessLog.recordType != null && accessLog.recordType.length > 0"><em>{{accessLog.recordType}} <keyword :v-word="vKeyword">{{accessLog.recordValue}}</keyword></em></span>
@@ -1314,6 +1321,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 							<http-request-cond-view :v-cond="cacheRef.simpleCond" v-if="cacheRef.simpleCond != null"></http-request-cond-view>
 						
 						<!-- 特殊参数 -->
+						<grey-label v-if="cacheRef.key != null && cacheRef.key.indexOf('\${args}') < 0">忽略URI参数</grey-label>
 						<grey-label v-if="cacheRef.minSize != null && cacheRef.minSize.count > 0">
 							{{cacheRef.minSize.count}}{{cacheRef.minSize.unit}}
 							<span v-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">- {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</span>
@@ -1410,7 +1418,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<p class="comment" v-if="redirects.length > 1">所有规则匹配顺序为从上到下，可以拖动左侧的<i class="icon bars"></i>排序。</p>
 	</div>
 	<div class="margin"></div>
-</div>`}),Vue.component("http-cache-ref-box",{props:["v-cache-ref","v-is-reverse"],mounted:function(){this.$refs.variablesDescriber.update(this.ref.key),null!=this.ref.simpleCond?(this.condType=this.ref.simpleCond.type,this.changeCondType(this.ref.simpleCond.type,!0),this.condCategory="simple"):null!=this.ref.conds&&null!=this.ref.conds.groups&&(this.condCategory="complex"),this.changeCondCategory(this.condCategory)},data:function(){let e=this.vCacheRef;null==(e=null==e?{isOn:!0,cachePolicyId:0,key:"${scheme}://${host}${requestPath}${isArgs}${args}",life:{count:2,unit:"hour"},status:[200],maxSize:{count:32,unit:"mb"},minSize:{count:0,unit:"kb"},skipCacheControlValues:["private","no-cache","no-store"],skipSetCookie:!0,enableRequestCachePragma:!1,conds:null,simpleCond:null,allowChunkedEncoding:!0,allowPartialContent:!1,enableIfNoneMatch:!1,enableIfModifiedSince:!1,isReverse:this.vIsReverse,methods:[],expiresTime:{isPrior:!1,isOn:!1,overwrite:!0,autoCalculate:!0,duration:{count:-1,unit:"hour"}}}:e).key&&(e.key=""),null==e.methods&&(e.methods=[]),null==e.life&&(e.life={count:2,unit:"hour"}),null==e.maxSize&&(e.maxSize={count:32,unit:"mb"}),null==e.minSize&&(e.minSize={count:0,unit:"kb"});var t=window.REQUEST_COND_COMPONENTS.$find(function(e,t){return"url-extension"==t.type});return{ref:e,moreOptionsVisible:!1,condCategory:"simple",condType:"url-extension",condComponent:t,condIsCaseInsensitive:null==e.simpleCond||e.simpleCond.isCaseInsensitive,components:window.REQUEST_COND_COMPONENTS}},methods:{changeOptionsVisible:function(e){this.moreOptionsVisible=e},changeLife:function(e){this.ref.life=e},changeMaxSize:function(e){this.ref.maxSize=e},changeMinSize:function(e){this.ref.minSize=e},changeConds:function(e){this.ref.conds=e,this.ref.simpleCond=null},changeStatusList:function(e){let t=[];e.forEach(function(e){e=parseInt(e);isNaN(e)||e<100||999<e||t.push(e)}),this.ref.status=t},changeMethods:function(e){this.ref.methods=e.map(function(e){return e.toUpperCase()})},changeKey:function(e){this.$refs.variablesDescriber.update(e)},changeExpiresTime:function(e){this.ref.expiresTime=e},changeCondCategory:function(t){this.condCategory=t;let i=window.parent.document.querySelector("*[role='dialog']");switch(t){case"simple":i.style.width="40em";break;case"complex":let e=window.parent.innerWidth;1024<e&&(e=1024),i.style.width=e+"px"}},changeCondType:function(i,e){e||null==this.ref.simpleCond||(this.ref.simpleCond.value=null);e=this.components.$find(function(e,t){return t.type==i});null!=e&&(this.condComponent=e)}},template:`<tbody>
+</div>`}),Vue.component("http-cache-ref-box",{props:["v-cache-ref","v-is-reverse"],mounted:function(){this.$refs.variablesDescriber.update(this.ref.key),null!=this.ref.simpleCond?(this.condType=this.ref.simpleCond.type,this.changeCondType(this.ref.simpleCond.type,!0),this.condCategory="simple"):null!=this.ref.conds&&null!=this.ref.conds.groups&&(this.condCategory="complex"),this.changeCondCategory(this.condCategory)},data:function(){let e=this.vCacheRef;null==(e=null==e?{isOn:!0,cachePolicyId:0,key:"${scheme}://${host}${requestPath}${isArgs}${args}",life:{count:2,unit:"hour"},status:[200],maxSize:{count:32,unit:"mb"},minSize:{count:0,unit:"kb"},skipCacheControlValues:["private","no-cache","no-store"],skipSetCookie:!0,enableRequestCachePragma:!1,conds:null,simpleCond:null,allowChunkedEncoding:!0,allowPartialContent:!0,enableIfNoneMatch:!1,enableIfModifiedSince:!1,isReverse:this.vIsReverse,methods:[],expiresTime:{isPrior:!1,isOn:!1,overwrite:!0,autoCalculate:!0,duration:{count:-1,unit:"hour"}}}:e).key&&(e.key=""),null==e.methods&&(e.methods=[]),null==e.life&&(e.life={count:2,unit:"hour"}),null==e.maxSize&&(e.maxSize={count:32,unit:"mb"}),null==e.minSize&&(e.minSize={count:0,unit:"kb"});var t=window.REQUEST_COND_COMPONENTS.$find(function(e,t){return"url-extension"==t.type});return{ref:e,keyIgnoreArgs:"string"==typeof e.key&&e.key.indexOf("${args}")<0,moreOptionsVisible:!1,condCategory:"simple",condType:"url-extension",condComponent:t,condIsCaseInsensitive:null==e.simpleCond||e.simpleCond.isCaseInsensitive,components:window.REQUEST_COND_COMPONENTS}},watch:{keyIgnoreArgs:function(e){"string"==typeof this.ref.key&&(e?this.ref.key=this.ref.key.replace("${isArgs}${args}",""):(this.ref.key.indexOf("${isArgs}")<0&&(this.ref.key=this.ref.key+"${isArgs}"),this.ref.key.indexOf("${args}")<0&&(this.ref.key=this.ref.key+"${args}")))}},methods:{changeOptionsVisible:function(e){this.moreOptionsVisible=e},changeLife:function(e){this.ref.life=e},changeMaxSize:function(e){this.ref.maxSize=e},changeMinSize:function(e){this.ref.minSize=e},changeConds:function(e){this.ref.conds=e,this.ref.simpleCond=null},changeStatusList:function(e){let t=[];e.forEach(function(e){e=parseInt(e);isNaN(e)||e<100||999<e||t.push(e)}),this.ref.status=t},changeMethods:function(e){this.ref.methods=e.map(function(e){return e.toUpperCase()})},changeKey:function(e){this.$refs.variablesDescriber.update(e)},changeExpiresTime:function(e){this.ref.expiresTime=e},changeCondCategory:function(t){this.condCategory=t;let i=window.parent.document.querySelector("*[role='dialog']");if(null!=i)switch(t){case"simple":i.style.width="40em";break;case"complex":let e=window.parent.innerWidth;1024<e&&(e=1024),i.style.width=e+"px"}},changeCondType:function(i,e){e||null==this.ref.simpleCond||(this.ref.simpleCond.value=null);e=this.components.$find(function(e,t){return t.type==i});null!=e&&(this.condComponent=e)}},template:`<tbody>
 	<tr v-if="condCategory == 'simple'">
 		<td class="title color-border">条件类型 *</td>
 		<td>
@@ -1455,10 +1463,17 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		</td>
 	</tr>
 	<tr v-show="!vIsReverse">
-		<td>缓存Key *</td>
+		<td class="color-border">缓存Key *</td>
 		<td>
 			<input type="text" v-model="ref.key" @input="changeKey(ref.key)"/>
 			<p class="comment">用来区分不同缓存内容的唯一Key。<request-variables-describer ref="variablesDescriber"></request-variables-describer>。</p>
+		</td>
+	</tr>
+	<tr v-show="!vIsReverse">
+		<td class="color-border">忽略URI参数</td>
+		<td>
+			<checkbox v-model="keyIgnoreArgs"></checkbox>
+			<p class="comment">选中后，表示缓存Key中不包含URI参数（即问号（?））后面的内容。</p>
 		</td>
 	</tr>
 	<tr v-show="!vIsReverse">
@@ -1502,7 +1517,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<td>支持缓存区间内容</td>
 		<td>
 			<checkbox name="allowPartialContent" value="1" v-model="ref.allowPartialContent"></checkbox>
-			<p class="comment">选中后，支持缓存源站返回的某个区间的内容，该内容通过<code-label>206 Partial Content</code-label>状态码返回。此功能目前为<code-label>试验性质</code-label>。</p>
+			<p class="comment">选中后，支持缓存源站返回的某个区间的内容，该内容通过<code-label>206 Partial Content</code-label>状态码返回。</p>
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
@@ -1888,6 +1903,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 						<http-request-cond-view :v-cond="cacheRef.simpleCond" ref="cacheRef" v-if="cacheRef.simpleCond != null"></http-request-cond-view>
 						
 						<!-- 特殊参数 -->
+						<grey-label v-if="cacheRef.key != null && cacheRef.key.indexOf('\${args}') < 0">忽略URI参数</grey-label>
 						<grey-label v-if="cacheRef.minSize != null && cacheRef.minSize.count > 0">
 							{{cacheRef.minSize.count}}{{cacheRef.minSize.unit}}
 							<span v-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">- {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</span>
