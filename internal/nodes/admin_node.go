@@ -1,9 +1,9 @@
 package nodes
 
 import (
+	"errors"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
-	"github.com/TeaOSLab/EdgeAdmin/internal/errors"
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/iwind/TeaGo"
@@ -90,7 +90,7 @@ func (this *AdminNode) Run() {
 		EndAll().
 		Session(sessions.NewFileSessionManager(86400, secret), teaconst.CookieSID).
 		ReadHeaderTimeout(3 * time.Second).
-		ReadTimeout(600 * time.Second).
+		ReadTimeout(1200 * time.Second).
 		Start()
 }
 

@@ -92,6 +92,12 @@ Tea.context(function () {
 	this.dbSuccess = function (resp) {
 		this.step = this.STEP_ADMIN
 		this.dbInfo = resp.data.db
+
+		this.$delay(function () {
+			if (this.$refs.adminPasswordInput != null) {
+				this.$refs.adminPasswordInput.focus()
+			}
+		})
 	}
 
 	this.dbDone = function () {
