@@ -274,6 +274,10 @@ var.dash {
 .page a:hover {
   background: #eee;
 }
+.page select {
+  padding-top: 0.3em !important;
+  padding-bottom: 0.3em !important;
+}
 .swal2-html-container {
   overflow-x: hidden;
 }

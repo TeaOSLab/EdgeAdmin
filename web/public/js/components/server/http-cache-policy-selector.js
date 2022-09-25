@@ -22,6 +22,8 @@ Vue.component("http-cache-policy-selector", {
 		select: function () {
 			let that = this
 			teaweb.popup("/servers/components/cache/selectPopup", {
+				width: "42em",
+				height: "26em",
 				callback: function (resp) {
 					that.cachePolicy = resp.data.cachePolicy
 				}
