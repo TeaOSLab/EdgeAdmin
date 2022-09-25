@@ -158,13 +158,14 @@
 						<td>数据库连接端口 *</td>
 						<td>
 							<input type="text" name="port" maxlength="5" placeholder="比如 3306" style="width:7em" v-model="localDB.port"/>
+                            <p class="comment">MySQL默认端口为3306。</p>
 						</td>
 					</tr>
 					<tr>
 						<td>数据库名称 *</td>
 						<td>
 							<input type="text" name="database" value="edges" style="width:16em"/>
-							<p class="comment">请事先创建好此数据库，如果不存在，则会尝试自动创建。</p>
+							<p class="comment">请事先创建好此数据库，如果不存在，则会尝试自动创建。手动创建数据库语句<code-label>CREATE DATABASE `数据库名称` CHARSET utf8mb4;</code-label>。</p>
 						</td>
 					</tr>
 					<tr>
@@ -185,7 +186,7 @@
                         <td>访问日志保留天数</td>
                         <td>
                             <div class="ui input right labeled">
-                                <input type="number" name="accessLogKeepDays" style="width: 5em" maxlength="4" value="14"/>
+                                <input type="number" name="accessLogKeepDays" style="width: 5em" maxlength="4" value="7"/>
                                 <span class="ui label">天</span>
                             </div>
                             <p class="comment">网站等服务记录的访问日志保留天数，防止无限制地占用数据库空间，如果你的数据库空间比较小，请适当调小此值。</p>
@@ -220,7 +221,7 @@
 				<tr>
 					<td>登录密码 *</td>
 					<td>
-						<input type="password" name="adminPassword" maxlength="100" style="width:16em" v-model="adminPassword" v-show="!adminPasswordVisible" tabindex="2"/>
+						<input type="password" name="adminPassword" maxlength="100" style="width:16em" v-model="adminPassword" v-show="!adminPasswordVisible" tabindex="2" ref="adminPasswordInput"/>
 						<input type="text" value="" v-model="adminPassword" style="width:16em" v-show="adminPasswordVisible"/>
 						<p class="comment">只能是英文、数字和下划线的组合 <a href="" title="显示明文密码" @click.prevent="showAdminPassword"><i class="icon eye grey"></i></a>。</p>
 					</td>
@@ -242,7 +243,7 @@
 
 	<!-- 完成安装 -->
 	<div v-show="step == STEP_FINISH">
-		<form method="post" class="ui form" data-tea-action=".install" data-tea-success="finishSuccess" data-tea-before="finishSubmit" data-tea-done="finishDone" data-tea-timeout="600">
+		<form method="post" class="ui form" data-tea-action=".install" data-tea-success="finishSuccess" data-tea-before="finishSubmit" data-tea-done="finishDone" data-tea-timeout="1200">
 			<input type="hidden" name="apiNodeJSON" :value="JSON.stringify(apiNodeInfo)"/>
 			<input type="hidden" name="dbJSON" :value="JSON.stringify(dbInfo)"/>
 			<input type="hidden" name="adminJSON" :value="JSON.stringify(adminInfo)"/>

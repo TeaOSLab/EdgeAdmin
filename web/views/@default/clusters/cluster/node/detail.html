@@ -209,7 +209,7 @@
             </tr>
         </tbody>
         <tbody>
-            <tr>
+            <tr v-if="node.status.buildVersion != null && node.status.buildVersion.length > 0">
                 <td>版本</td>
                 <td>v{{node.status.buildVersion}}
                     &nbsp; <a :href="'/clusters/cluster/upgradeRemote?clusterId=' + clusterId" v-if="shouldUpgrade"><span class="red">发现新版本v{{newVersion}} &raquo;</span></a>

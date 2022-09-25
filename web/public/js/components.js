@@ -2204,7 +2204,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 	<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
 		<tr>
-			<td class="title">启用</td>
+			<td class="title">启用防盗链</td>
 			<td>
 				<div class="ui checkbox">
 					<input type="checkbox" value="1" v-model="config.isOn"/>
