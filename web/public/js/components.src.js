@@ -3763,7 +3763,7 @@ Vue.component("http-cache-refs-box", {
 					<th class="width10">缓存时间</th>
 				</tr>
 				<tr v-for="(cacheRef, index) in refs">
-					<td :class="{'color-border': cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
+					<td :class="{'color-border': cacheRef.conds != null && cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
 						<http-request-conds-view :v-conds="cacheRef.conds" :class="{disabled: !cacheRef.isOn}" v-if="cacheRef.conds != null && cacheRef.conds.groups != null"></http-request-conds-view>
 							<http-request-cond-view :v-cond="cacheRef.simpleCond" v-if="cacheRef.simpleCond != null"></http-request-cond-view>
 						
@@ -3782,8 +3782,11 @@ Vue.component("http-cache-refs-box", {
 						<grey-label v-if="cacheRef.enableIfModifiedSince">If-Modified-Since</grey-label>
 					</td>
 					<td :class="{disabled: !cacheRef.isOn}">
-						<span v-if="cacheRef.conds.connector == 'and'">和</span>
-						<span v-if="cacheRef.conds.connector == 'or'">或</span>
+						<span v-if="cacheRef.conds != null">
+							<span v-if="cacheRef.conds.connector == 'and'">和</span>
+							<span v-if="cacheRef.conds.connector == 'or'">或</span>
+						</span>
+						<span v-else>或</span>
 					</td>
 					<td :class="{disabled: !cacheRef.isOn}">
 						<span v-if="!cacheRef.isReverse">{{cacheRef.life.count}} {{timeUnitName(cacheRef.life.unit)}}</span>
@@ -5866,7 +5869,7 @@ Vue.component("http-cache-refs-config-box", {
 			<tbody v-for="(cacheRef, index) in refs" :key="cacheRef.id" :v-id="cacheRef.id">
 				<tr>
 					<td style="text-align: center;"><i class="icon bars handle grey"></i> </td>
-					<td :class="{'color-border': cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
+					<td :class="{'color-border': cacheRef.conds != null && cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
 						<http-request-conds-view :v-conds="cacheRef.conds" ref="cacheRef" :class="{disabled: !cacheRef.isOn}" v-if="cacheRef.conds != null && cacheRef.conds.groups != null"></http-request-conds-view>
 						<http-request-cond-view :v-cond="cacheRef.simpleCond" ref="cacheRef" v-if="cacheRef.simpleCond != null"></http-request-cond-view>
 						
@@ -5885,8 +5888,11 @@ Vue.component("http-cache-refs-config-box", {
 						<grey-label v-if="cacheRef.enableIfModifiedSince">If-Modified-Since</grey-label>
 					</td>
 					<td :class="{disabled: !cacheRef.isOn}">
-						<span v-if="cacheRef.conds.connector == 'and'">和</span>
-						<span v-if="cacheRef.conds.connector == 'or'">或</span>
+						<span v-if="cacheRef.conds != null">
+							<span v-if="cacheRef.conds.connector == 'and'">和</span>
+							<span v-if="cacheRef.conds.connector == 'or'">或</span>
+						</span>
+						<span v-else>或</span>
 					</td>
 					<td :class="{disabled: !cacheRef.isOn}">
 						<span v-if="!cacheRef.isReverse">{{cacheRef.life.count}} {{timeUnitName(cacheRef.life.unit)}}</span>
@@ -8205,6 +8211,8 @@ Vue.component("http-cache-policy-selector", {
 		select: function () {
 			let that = this
 			teaweb.popup("/servers/components/cache/selectPopup", {
+				width: "42em",
+				height: "26em",
 				callback: function (resp) {
 					that.cachePolicy = resp.data.cachePolicy
 				}

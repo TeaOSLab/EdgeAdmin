@@ -1316,7 +1316,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 					<th class="width10">缓存时间</th>
 				</tr>
 				<tr v-for="(cacheRef, index) in refs">
-					<td :class="{'color-border': cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
+					<td :class="{'color-border': cacheRef.conds != null && cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
 						<http-request-conds-view :v-conds="cacheRef.conds" :class="{disabled: !cacheRef.isOn}" v-if="cacheRef.conds != null && cacheRef.conds.groups != null"></http-request-conds-view>
 							<http-request-cond-view :v-cond="cacheRef.simpleCond" v-if="cacheRef.simpleCond != null"></http-request-cond-view>
 						
@@ -1335,8 +1335,11 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 						<grey-label v-if="cacheRef.enableIfModifiedSince">If-Modified-Since</grey-label>
 					</td>
 					<td :class="{disabled: !cacheRef.isOn}">
-						<span v-if="cacheRef.conds.connector == 'and'">和</span>
-						<span v-if="cacheRef.conds.connector == 'or'">或</span>
+						<span v-if="cacheRef.conds != null">
+							<span v-if="cacheRef.conds.connector == 'and'">和</span>
+							<span v-if="cacheRef.conds.connector == 'or'">或</span>
+						</span>
+						<span v-else>或</span>
 					</td>
 					<td :class="{disabled: !cacheRef.isOn}">
 						<span v-if="!cacheRef.isReverse">{{cacheRef.life.count}} {{timeUnitName(cacheRef.life.unit)}}</span>
@@ -1898,7 +1901,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<tbody v-for="(cacheRef, index) in refs" :key="cacheRef.id" :v-id="cacheRef.id">
 				<tr>
 					<td style="text-align: center;"><i class="icon bars handle grey"></i> </td>
-					<td :class="{'color-border': cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
+					<td :class="{'color-border': cacheRef.conds != null && cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
 						<http-request-conds-view :v-conds="cacheRef.conds" ref="cacheRef" :class="{disabled: !cacheRef.isOn}" v-if="cacheRef.conds != null && cacheRef.conds.groups != null"></http-request-conds-view>
 						<http-request-cond-view :v-cond="cacheRef.simpleCond" ref="cacheRef" v-if="cacheRef.simpleCond != null"></http-request-cond-view>
 						
@@ -1917,8 +1920,11 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 						<grey-label v-if="cacheRef.enableIfModifiedSince">If-Modified-Since</grey-label>
 					</td>
 					<td :class="{disabled: !cacheRef.isOn}">
-						<span v-if="cacheRef.conds.connector == 'and'">和</span>
-						<span v-if="cacheRef.conds.connector == 'or'">或</span>
+						<span v-if="cacheRef.conds != null">
+							<span v-if="cacheRef.conds.connector == 'and'">和</span>
+							<span v-if="cacheRef.conds.connector == 'or'">或</span>
+						</span>
+						<span v-else>或</span>
 					</td>
 					<td :class="{disabled: !cacheRef.isOn}">
 						<span v-if="!cacheRef.isReverse">{{cacheRef.life.count}} {{timeUnitName(cacheRef.life.unit)}}</span>
@@ -2829,7 +2835,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		</tr>
 	</table>
 	<div class="margin"></div>
-</div>`}),Vue.component("http-cache-policy-selector",{props:["v-cache-policy"],mounted:function(){let t=this;Tea.action("/servers/components/cache/count").post().success(function(e){t.count=e.data.count})},data:function(){return{count:0,cachePolicy:this.vCachePolicy}},methods:{remove:function(){this.cachePolicy=null},select:function(){let t=this;teaweb.popup("/servers/components/cache/selectPopup",{callback:function(e){t.cachePolicy=e.data.cachePolicy}})},create:function(){let t=this;teaweb.popup("/servers/components/cache/createPopup",{height:"26em",callback:function(e){t.cachePolicy=e.data.cachePolicy}})}},template:`<div>
+</div>`}),Vue.component("http-cache-policy-selector",{props:["v-cache-policy"],mounted:function(){let t=this;Tea.action("/servers/components/cache/count").post().success(function(e){t.count=e.data.count})},data:function(){return{count:0,cachePolicy:this.vCachePolicy}},methods:{remove:function(){this.cachePolicy=null},select:function(){let t=this;teaweb.popup("/servers/components/cache/selectPopup",{width:"42em",height:"26em",callback:function(e){t.cachePolicy=e.data.cachePolicy}})},create:function(){let t=this;teaweb.popup("/servers/components/cache/createPopup",{height:"26em",callback:function(e){t.cachePolicy=e.data.cachePolicy}})}},template:`<div>
 	<div v-if="cachePolicy != null" class="ui label basic">
 		<input type="hidden" name="cachePolicyId" :value="cachePolicy.id"/>
 		{{cachePolicy.name}} &nbsp; <a :href="'/servers/components/cache/policy?cachePolicyId=' + cachePolicy.id" target="_blank" title="修改"><i class="icon pencil small"></i></a>&nbsp; <a href="" @click.prevent="remove()" title="删除"><i class="icon remove small"></i></a>
