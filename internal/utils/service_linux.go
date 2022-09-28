@@ -111,7 +111,8 @@ func (this *ServiceManager) installSystemdService(systemd, exePath string, args 
 	shortName := teaconst.SystemdServiceName
 	longName := "GoEdge Admin" // TODO 将来可以修改
 
-	desc := `# Provides:          ` + shortName + `
+	desc := `### BEGIN INIT INFO
+# Provides:          ` + shortName + `
 # Required-Start:    $all
 # Required-Stop:
 # Default-Start:     2 3 4 5
