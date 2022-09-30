@@ -90,15 +90,16 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 服务列表
 	serversResp, err := this.RPC().ServerRPC().ListEnabledServersMatch(this.AdminContext(), &pb.ListEnabledServersMatchRequest{
-		Offset:         page.Offset,
-		Size:           page.Size,
-		NodeClusterId:  params.ClusterId,
-		ServerGroupId:  params.GroupId,
-		Keyword:        params.Keyword,
-		AuditingFlag:   params.AuditingFlag,
-		TrafficOutDesc: params.TrafficOutOrder == "desc",
-		TrafficOutAsc:  params.TrafficOutOrder == "asc",
-		UserId:         params.UserId,
+		Offset:            page.Offset,
+		Size:              page.Size,
+		NodeClusterId:     params.ClusterId,
+		ServerGroupId:     params.GroupId,
+		Keyword:           params.Keyword,
+		AuditingFlag:      params.AuditingFlag,
+		TrafficOutDesc:    params.TrafficOutOrder == "desc",
+		TrafficOutAsc:     params.TrafficOutOrder == "asc",
+		UserId:            params.UserId,
+		IgnoreServerNames: true,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -176,27 +177,35 @@ func (this *IndexAction) RunGet(params struct {
 		}
 
 		// 域名列表
-		var serverNames = []*serverconfigs.ServerNameConfig{}
 		if server.IsAuditing || (server.AuditingResult != nil && !server.AuditingResult.IsOk) {
 			server.ServerNamesJSON = server.AuditingServerNamesJSON
+
+			if len(config.ServerNames) == 0 {
+				// 审核中的域名
+				if len(server.ServerNamesJSON) > 0 {
+					var serverNames = []*serverconfigs.ServerNameConfig{}
+					err = json.Unmarshal(server.ServerNamesJSON, &serverNames)
+					if err != nil {
+						this.ErrorPage(err)
+						return
+					}
+					config.ServerNames = serverNames
+				}
+			}
 		}
 		var auditingIsOk = true
 		if !server.IsAuditing && server.AuditingResult != nil && !server.AuditingResult.IsOk {
 			auditingIsOk = false
 		}
-		if len(server.ServerNamesJSON) > 0 {
-			err = json.Unmarshal(server.ServerNamesJSON, &serverNames)
-			if err != nil {
-				this.ErrorPage(err)
-				return
+		var firstServerName = ""
+		for _, serverNameConfig := range config.ServerNames {
+			if len(serverNameConfig.Name) > 0 {
+				firstServerName = serverNameConfig.Name
+				break
 			}
-		}
-		var countServerNames = 0
-		for _, serverName := range serverNames {
-			if len(serverName.SubNames) == 0 {
-				countServerNames++
-			} else {
-				countServerNames += len(serverName.SubNames)
+			if len(serverNameConfig.SubNames) > 0 {
+				firstServerName = serverNameConfig.SubNames[0]
+				break
 			}
 		}
 
@@ -232,8 +241,8 @@ func (this *IndexAction) RunGet(params struct {
 			"ports":            portMaps,
 			"serverTypeName":   serverconfigs.FindServerType(server.Type).GetString("name"),
 			"groups":           groupMaps,
-			"serverNames":      serverNames,
-			"countServerNames": countServerNames,
+			"firstServerName":  firstServerName,
+			"countServerNames": server.CountServerNames,
 			"isAuditing":       server.IsAuditing,
 			"auditingIsOk":     auditingIsOk,
 			"user":             userMap,
