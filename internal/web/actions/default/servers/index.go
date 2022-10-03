@@ -3,7 +3,6 @@ package servers
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
-	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
@@ -225,9 +224,9 @@ func (this *IndexAction) RunGet(params struct {
 		}
 
 		// 统计数据
-		var bandwidth = ""
+		var bandwidthBits int64 = 0
 		if server.BandwidthBytes > 0 {
-			bandwidth = numberutils.FormatBytes(server.BandwidthBytes)
+			bandwidthBits = server.BandwidthBytes * 8
 		}
 
 		serverMaps = append(serverMaps, maps.Map{
@@ -247,7 +246,7 @@ func (this *IndexAction) RunGet(params struct {
 			"auditingIsOk":     auditingIsOk,
 			"user":             userMap,
 			"auditingTime":     auditingTime,
-			"bandwidth":        bandwidth,
+			"bandwidthBits":    bandwidthBits,
 		})
 	}
 	this.Data["servers"] = serverMaps

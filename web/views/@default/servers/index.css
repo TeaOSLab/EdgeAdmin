@@ -26,4 +26,10 @@
 .server-name-td:hover .icon.setting {
   display: inline;
 }
+.bandwidth-span var {
+  font-size: 0.8em;
+}
+.bandwidth-span var span {
+  font-size: 1.2em;
+}
 /*# sourceMappingURL=index.css.map */

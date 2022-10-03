@@ -731,6 +731,9 @@ var.olive {
 var.dash {
   border-bottom: 1px dashed grey;
 }
+var.normal {
+  font-style: normal;
+}
 /** checkbox **/
 .checkbox label a,
 .checkbox label {
