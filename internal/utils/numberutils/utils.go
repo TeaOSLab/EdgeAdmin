@@ -42,6 +42,24 @@ func FormatBytes(bytes int64) string {
 	}
 }
 
+func FormatBits(bits int64) string {
+	if bits < Pow1024(1) {
+		return FormatInt64(bits) + "Bps"
+	} else if bits < Pow1024(2) {
+		return fmt.Sprintf("%.4fKBps", float64(bits)/float64(Pow1024(1)))
+	} else if bits < Pow1024(3) {
+		return fmt.Sprintf("%.4fMBps", float64(bits)/float64(Pow1024(2)))
+	} else if bits < Pow1024(4) {
+		return fmt.Sprintf("%.4fGBps", float64(bits)/float64(Pow1024(3)))
+	} else if bits < Pow1024(5) {
+		return fmt.Sprintf("%.4fTBps", float64(bits)/float64(Pow1024(4)))
+	} else if bits < Pow1024(6) {
+		return fmt.Sprintf("%.4fPBps", float64(bits)/float64(Pow1024(5)))
+	} else {
+		return fmt.Sprintf("%.4fEBps", float64(bits)/float64(Pow1024(6)))
+	}
+}
+
 func FormatCount(count int64) string {
 	if count < 1000 {
 		return types.String(count)

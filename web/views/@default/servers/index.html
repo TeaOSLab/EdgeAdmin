@@ -63,7 +63,7 @@
 			<th>部署集群</th>
 			<th>域名</th>
 			<th>端口</th>
-            <th class="center" style="width: 8em">下行带宽<tip-icon content="最近5分钟峰值带宽，每5分钟更新一次"></tip-icon><sort-arrow name="trafficOutOrder"></sort-arrow></th>
+            <th class="center" style="width: 8em">下行带宽<tip-icon content="最近5分钟峰值带宽，每5分钟更新一次，单位：比特"></tip-icon><sort-arrow name="trafficOutOrder"></sort-arrow></th>
 			<th class="two wide center">状态</th>
 			<th class="two op">操作</th>
 		</tr>
@@ -103,7 +103,7 @@
 			</div>
 		</td>
         <td class="center">
-            <span v-if="server.bandwidth.length > 0">{{server.bandwidth}}/s</span>
+            <span v-if="server.bandwidthBits > 0" class="bandwidth-span"><bits-var :v-bits="server.bandwidthBits"></bits-var></span>
             <span class="disabled" v-else>-</span>
         </td>
 		<td class="center">

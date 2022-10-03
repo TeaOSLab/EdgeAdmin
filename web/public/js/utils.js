@@ -113,7 +113,6 @@ window.teaweb = {
 			reposition: !bottomLeft
 		})
 	},
-
 	formatBytes: function (bytes) {
 		bytes = Math.ceil(bytes);
 		if (bytes < Math.pow(1024, 1)) {
@@ -135,6 +134,28 @@ window.teaweb = {
 			return (Math.round(bytes * 100 / Math.pow(1024, 5)) / 100) + "PB";
 		}
 		return (Math.round(bytes * 100 / Math.pow(1024, 6)) / 100) + "EB";
+	},
+	formatBits: function (bits) {
+		bits = Math.ceil(bits);
+		if (bits < Math.pow(1024, 1)) {
+			return bits + "Bps";
+		}
+		if (bits < Math.pow(1024, 2)) {
+			return (Math.round(bits * 10000 / Math.pow(1024, 1)) / 10000) + "Kbps";
+		}
+		if (bits < Math.pow(1024, 3)) {
+			return (Math.round(bits * 10000 / Math.pow(1024, 2)) / 10000) + "Mbps";
+		}
+		if (bits < Math.pow(1024, 4)) {
+			return (Math.round(bits * 10000 / Math.pow(1024, 3)) / 10000) + "Gbps";
+		}
+		if (bits < Math.pow(1024, 5)) {
+			return (Math.round(bits * 10000 / Math.pow(1024, 4)) / 10000) + "Tbps";
+		}
+		if (bits < Math.pow(1024, 6)) {
+			return (Math.round(bits * 10000 / Math.pow(1024, 5)) / 10000) + "Pbps";
+		}
+		return (Math.round(bits * 10000 / Math.pow(1024, 6)) / 10000) + "Ebps";
 	},
 	formatNumber: function (x) {
 		if (x == null) {
@@ -203,6 +224,19 @@ window.teaweb = {
 		return {
 			unit: unit,
 			divider: divider
+		}
+	},
+	bitsAxis: function (stats, countFunc) {
+		let axis = this.bytesAxis(stats, countFunc)
+		let unit = axis.unit
+		if (unit == "B") {
+			unit = "Bps"
+		} else {
+			unit += "bps"
+		}
+		return {
+			unit: unit,
+			divider: axis.divider
 		}
 	},
 	countAxis: function (stats, countFunc) {
@@ -559,12 +593,22 @@ window.teaweb = {
 		let max = options.max
 		let interval = options.interval
 
+		let left = options.left
+		if (typeof left != "number") {
+			left = 0
+		}
+
+		let right = options.right
+		if (typeof right != "number") {
+			right = 0
+		}
+
 		let chartBox = document.getElementById(chartId)
 		if (chartBox == null) {
 			console.error("chart id '" + chartId + "' not found")
 			return
 		}
-		let chart = this.initChart(chartBox)
+		let chart = this.initChart(chartBox, options.cache)
 		let option = {
 			xAxis: {
 				data: values.map(xFunc),
@@ -591,9 +635,9 @@ window.teaweb = {
 				}
 			},
 			grid: {
-				left: 40,
+				left: 40 + left,
 				top: 10,
-				right: 20,
+				right: 20 + right,
 				bottom: 20
 			},
 			series: [
@@ -605,7 +649,8 @@ window.teaweb = {
 						color: this.DefaultChartColor
 					},
 					areaStyle: {},
-					smooth: true
+					smooth: true,
+					markLine: options.markLine
 				}
 			],
 			animation: true,
@@ -893,7 +938,11 @@ window.teaweb = {
 		return [40, -20]
 	},
 	chartMap: {}, // dom id => chart
-	initChart: function (dom) {
+	initChart: function (dom, cache) {
+		if (typeof(cache) != "boolean") {
+			cache = true
+		}
+
 		let domId = dom.getAttribute("id")
 		if (domId != null && domId.length > 0 && typeof (this.chartMap[domId]) == "object") {
 			return this.chartMap[domId]
@@ -902,7 +951,9 @@ window.teaweb = {
 		window.addEventListener("resize", function () {
 			instance.resize()
 		})
-		this.chartMap[domId] = instance
+		if (cache) {
+			this.chartMap[domId] = instance
+		}
 		return instance
 	},
 	encodeHTML: function (s) {
