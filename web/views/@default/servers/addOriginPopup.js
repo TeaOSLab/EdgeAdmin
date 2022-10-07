@@ -37,6 +37,8 @@ Tea.context(function () {
 		if (this.protocol == "http") {
 			if (this.addr.endsWith(":443")) {
 				this.addrError = "443通常是HTTPS协议端口，请确认源站协议选择是否正确。"
+			} else if (this.addr.endsWith(":8443")) {
+				this.addrError = "8443通常是HTTPS协议端口，请确认源站协议选择是否正确。"
 			}
 		}
 
@@ -44,6 +46,8 @@ Tea.context(function () {
 		if (this.protocol == "https") {
 			if (this.addr.endsWith(":80")) {
 				this.addrError = "80通常是HTTP协议端口，请确认源站协议选择是否正确。"
+			} else if (this.addr.endsWith(":8080")) {
+				this.addrError = "8080通常是HTTP协议端口，请确认源站协议选择是否正确。"
 			}
 		}
 	}
