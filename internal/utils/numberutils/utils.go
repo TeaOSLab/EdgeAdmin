@@ -3,7 +3,9 @@ package numberutils
 import (
 	"fmt"
 	"github.com/iwind/TeaGo/types"
+	"regexp"
 	"strconv"
+	"strings"
 )
 
 func FormatInt64(value int64) string {
@@ -28,35 +30,35 @@ func FormatBytes(bytes int64) string {
 	if bytes < Pow1024(1) {
 		return FormatInt64(bytes) + "B"
 	} else if bytes < Pow1024(2) {
-		return fmt.Sprintf("%.2fKB", float64(bytes)/float64(Pow1024(1)))
+		return TrimZeroSuffix(fmt.Sprintf("%.2fKB", float64(bytes)/float64(Pow1024(1))))
 	} else if bytes < Pow1024(3) {
-		return fmt.Sprintf("%.2fMB", float64(bytes)/float64(Pow1024(2)))
+		return TrimZeroSuffix(fmt.Sprintf("%.2fMB", float64(bytes)/float64(Pow1024(2))))
 	} else if bytes < Pow1024(4) {
-		return fmt.Sprintf("%.2fGB", float64(bytes)/float64(Pow1024(3)))
+		return TrimZeroSuffix(fmt.Sprintf("%.2fGB", float64(bytes)/float64(Pow1024(3))))
 	} else if bytes < Pow1024(5) {
-		return fmt.Sprintf("%.2fTB", float64(bytes)/float64(Pow1024(4)))
+		return TrimZeroSuffix(fmt.Sprintf("%.2fTB", float64(bytes)/float64(Pow1024(4))))
 	} else if bytes < Pow1024(6) {
-		return fmt.Sprintf("%.2fPB", float64(bytes)/float64(Pow1024(5)))
+		return TrimZeroSuffix(fmt.Sprintf("%.2fPB", float64(bytes)/float64(Pow1024(5))))
 	} else {
-		return fmt.Sprintf("%.2fEB", float64(bytes)/float64(Pow1024(6)))
+		return TrimZeroSuffix(fmt.Sprintf("%.2fEB", float64(bytes)/float64(Pow1024(6))))
 	}
 }
 
 func FormatBits(bits int64) string {
 	if bits < Pow1024(1) {
-		return FormatInt64(bits) + "Bps"
+		return FormatInt64(bits) + "bps"
 	} else if bits < Pow1024(2) {
-		return fmt.Sprintf("%.4fKBps", float64(bits)/float64(Pow1024(1)))
+		return TrimZeroSuffix(fmt.Sprintf("%.4fKbps", float64(bits)/float64(Pow1024(1))))
 	} else if bits < Pow1024(3) {
-		return fmt.Sprintf("%.4fMBps", float64(bits)/float64(Pow1024(2)))
+		return TrimZeroSuffix(fmt.Sprintf("%.4fMbps", float64(bits)/float64(Pow1024(2))))
 	} else if bits < Pow1024(4) {
-		return fmt.Sprintf("%.4fGBps", float64(bits)/float64(Pow1024(3)))
+		return TrimZeroSuffix(fmt.Sprintf("%.4fGbps", float64(bits)/float64(Pow1024(3))))
 	} else if bits < Pow1024(5) {
-		return fmt.Sprintf("%.4fTBps", float64(bits)/float64(Pow1024(4)))
+		return TrimZeroSuffix(fmt.Sprintf("%.4fTbps", float64(bits)/float64(Pow1024(4))))
 	} else if bits < Pow1024(6) {
-		return fmt.Sprintf("%.4fPBps", float64(bits)/float64(Pow1024(5)))
+		return TrimZeroSuffix(fmt.Sprintf("%.4fPbps", float64(bits)/float64(Pow1024(5))))
 	} else {
-		return fmt.Sprintf("%.4fEBps", float64(bits)/float64(Pow1024(6)))
+		return TrimZeroSuffix(fmt.Sprintf("%.4fEbps", float64(bits)/float64(Pow1024(6))))
 	}
 }
 
@@ -91,4 +93,15 @@ func FormatFloat(f interface{}, decimal int) string {
 
 func FormatFloat2(f interface{}) string {
 	return FormatFloat(f, 2)
+}
+
+var decimalReg = regexp.MustCompile(`^(\d+\.\d+)([a-zA-Z]+)?$`)
+
+// TrimZeroSuffix 去除小数数字尾部多余的0
+func TrimZeroSuffix(s string) string {
+	var matches = decimalReg.FindStringSubmatch(s)
+	if len(matches) < 3 {
+		return s
+	}
+	return strings.TrimRight(strings.TrimRight(matches[1], "0"), ".") + matches[2]
 }

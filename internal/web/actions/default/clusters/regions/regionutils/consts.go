@@ -1,5 +1,6 @@
 package regionutils
 
 const (
-	PriceTypeTraffic = "traffic"
+	PriceTypeTraffic   = "traffic"
+	PriceTypeBandwidth = "bandwidth"
 )

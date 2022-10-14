@@ -98,10 +98,6 @@ func (this *RPCClient) NodeRegionRPC() pb.NodeRegionServiceClient {
 	return pb.NewNodeRegionServiceClient(this.pickConn())
 }
 
-func (this *RPCClient) NodePriceItemRPC() pb.NodePriceItemServiceClient {
-	return pb.NewNodePriceItemServiceClient(this.pickConn())
-}
-
 func (this *RPCClient) NodeIPAddressRPC() pb.NodeIPAddressServiceClient {
 	return pb.NewNodeIPAddressServiceClient(this.pickConn())
 }
@@ -453,14 +449,6 @@ func (this *RPCClient) ServerDomainHourlyStatRPC() pb.ServerDomainHourlyStatServ
 
 func (this *RPCClient) ServerStatBoardChartRPC() pb.ServerStatBoardChartServiceClient {
 	return pb.NewServerStatBoardChartServiceClient(this.pickConn())
-}
-
-func (this *RPCClient) PlanRPC() pb.PlanServiceClient {
-	return pb.NewPlanServiceClient(this.pickConn())
-}
-
-func (this *RPCClient) UserPlanRPC() pb.UserPlanServiceClient {
-	return pb.NewUserPlanServiceClient(this.pickConn())
 }
 
 func (this *RPCClient) TrafficDailyStatRPC() pb.TrafficDailyStatServiceClient {

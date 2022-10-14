@@ -65,34 +65,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	// 套餐
-	var userPlanMap = maps.Map{"id": server.UserPlanId, "dayTo": "", "plan": maps.Map{}}
-	if server.UserPlanId > 0 {
-		userPlanResp, err := this.RPC().UserPlanRPC().FindEnabledUserPlan(this.AdminContext(), &pb.FindEnabledUserPlanRequest{UserPlanId: server.UserPlanId})
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-		var userPlan = userPlanResp.UserPlan
-		if userPlan != nil {
-			planResp, err := this.RPC().PlanRPC().FindEnabledPlan(this.AdminContext(), &pb.FindEnabledPlanRequest{PlanId: userPlan.PlanId})
-			if err != nil {
-				this.ErrorPage(err)
-				return
-			}
-			var plan = planResp.Plan
-			if plan != nil {
-				userPlanMap = maps.Map{
-					"id":    userPlan.Id,
-					"dayTo": userPlan.DayTo,
-					"plan": maps.Map{
-						"id":   plan.Id,
-						"name": plan.Name,
-					},
-				}
-			}
-		}
-	}
-	this.Data["userPlan"] = userPlanMap
+	this.initUserPlan(server)
 
 	// 集群
 	clusterId := int64(0)

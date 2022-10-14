@@ -1,8 +1,7 @@
 {$layout}
-{$template "menu"}
 
 <second-menu>
-    <menu-item @click.prevent="createRegion()">创建</menu-item>
+    <menu-item @click.prevent="createRegion()">[创建区域]</menu-item>
 </second-menu>
 
 <p class="comment" v-if="regions.length == 0">暂时还没有区域。</p>

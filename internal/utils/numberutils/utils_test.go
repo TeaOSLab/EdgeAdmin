@@ -34,3 +34,20 @@ func TestFormatFloat(t *testing.T) {
 	t.Log(numberutils.FormatFloat(100.000023, 2))
 	t.Log(numberutils.FormatFloat(100.012, 2))
 }
+
+func TestTrimZeroSuffix(t *testing.T) {
+	for _, s := range []string{
+		"1",
+		"1.0000",
+		"1.10",
+		"100",
+		"100.0000",
+		"100.0",
+		"100.0123",
+		"100.0010",
+		"100.000KB",
+		"100.010MB",
+	} {
+		t.Log(s, "=>", numberutils.TrimZeroSuffix(s))
+	}
+}
