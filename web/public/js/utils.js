@@ -138,7 +138,7 @@ window.teaweb = {
 	formatBits: function (bits) {
 		bits = Math.ceil(bits);
 		if (bits < Math.pow(1024, 1)) {
-			return bits + "Bps";
+			return bits + "bps";
 		}
 		if (bits < Math.pow(1024, 2)) {
 			return (Math.round(bits * 10000 / Math.pow(1024, 1)) / 10000) + "Kbps";
@@ -230,7 +230,7 @@ window.teaweb = {
 		let axis = this.bytesAxis(stats, countFunc)
 		let unit = axis.unit
 		if (unit == "B") {
-			unit = "Bps"
+			unit = "bps"
 		} else {
 			unit += "bps"
 		}
