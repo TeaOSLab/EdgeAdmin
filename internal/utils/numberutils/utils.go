@@ -82,6 +82,30 @@ func FormatFloat(f interface{}, decimal int) string {
 	switch x := f.(type) {
 	case float32, float64:
 		var s = fmt.Sprintf("%."+types.String(decimal)+"f", x)
+
+		// 分隔
+		var dotIndex = strings.Index(s, ".")
+		if dotIndex > 0 {
+			var d = s[:dotIndex]
+			var l = len(d)
+			if l > 3 {
+				var f2 = s[dotIndex:] // 包含点（.）
+				var pieces = l / 3
+				var commIndex = l - pieces*3
+				var d2 = ""
+				if commIndex > 0 {
+					d2 = d[:commIndex] + ", "
+				}
+				for i := 0; i < pieces; i++ {
+					d2 += d[commIndex + i*3 : commIndex + i*3+3]
+					if i != pieces-1 {
+						d2 += ", "
+					}
+				}
+				return d2 + f2
+			}
+		}
+
 		return s
 	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
 		return types.String(x)
