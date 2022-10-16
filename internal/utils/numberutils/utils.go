@@ -87,28 +87,14 @@ func FormatFloat(f interface{}, decimal int) string {
 		var dotIndex = strings.Index(s, ".")
 		if dotIndex > 0 {
 			var d = s[:dotIndex]
-			var l = len(d)
-			if l > 3 {
-				var f2 = s[dotIndex:] // 包含点（.）
-				var pieces = l / 3
-				var commIndex = l - pieces*3
-				var d2 = ""
-				if commIndex > 0 {
-					d2 = d[:commIndex] + ", "
-				}
-				for i := 0; i < pieces; i++ {
-					d2 += d[commIndex + i*3 : commIndex + i*3+3]
-					if i != pieces-1 {
-						d2 += ", "
-					}
-				}
-				return d2 + f2
-			}
+			var f2 = s[dotIndex:]
+			f2 = strings.TrimRight(strings.TrimRight(f2, "0"), ".")
+			return formatDigit(d) + f2
 		}
 
 		return s
 	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
-		return types.String(x)
+		return formatDigit(types.String(x))
 	case string:
 		return x
 	}
@@ -128,4 +114,24 @@ func TrimZeroSuffix(s string) string {
 		return s
 	}
 	return strings.TrimRight(strings.TrimRight(matches[1], "0"), ".") + matches[2]
+}
+
+func formatDigit(d string) string {
+	var l = len(d)
+	if l > 3 {
+		var pieces = l / 3
+		var commIndex = l - pieces*3
+		var d2 = ""
+		if commIndex > 0 {
+			d2 = d[:commIndex] + ", "
+		}
+		for i := 0; i < pieces; i++ {
+			d2 += d[commIndex+i*3 : commIndex+i*3+3]
+			if i != pieces-1 {
+				d2 += ", "
+			}
+		}
+		return d2
+	}
+	return d
 }
