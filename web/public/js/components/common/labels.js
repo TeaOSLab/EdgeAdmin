@@ -1,7 +1,7 @@
 // 启用状态标签
 Vue.component("label-on", {
 	props: ["v-is-on"],
-	template: '<div><span v-if="vIsOn" class="ui label tiny green basic">已启用</span><span v-if="!vIsOn" class="ui label tiny red basic">已停用</span></div>'
+	template: '<div><span v-if="vIsOn" class="green">已启用</span><span v-if="!vIsOn" class="red">已停用</span></div>'
 })
 
 // 文字代码标签
