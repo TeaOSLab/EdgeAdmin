@@ -59,7 +59,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	var providerMaps = []maps.Map{}
 	for _, provider := range providersResp.DnsProviders {
-		dataUpdatedTime := ""
+		var dataUpdatedTime = ""
 		if provider.DataUpdatedAt > 0 {
 			dataUpdatedTime = timeutil.FormatTime("Y-m-d H:i:s", provider.DataUpdatedAt)
 		}
@@ -72,7 +72,7 @@ func (this *IndexAction) RunGet(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		countDomains := countDomainsResp.Count
+		var countDomains = countDomainsResp.Count
 
 		providerMaps = append(providerMaps, maps.Map{
 			"id":              provider.Id,
