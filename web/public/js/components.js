@@ -853,67 +853,6 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			</div>
 		</div>
 	</div>
-</div>`}),Vue.component("plan-bandwidth-ranges",{props:["v-ranges"],data:function(){let e=this.vRanges;return{ranges:e=null==e?[]:e,isAdding:!1,minMB:"",maxMB:"",pricePerMB:"",totalPrice:"",addingRange:{minMB:0,maxMB:0,pricePerMB:0,totalPrice:0}}},methods:{add:function(){this.isAdding=!this.isAdding;let e=this;setTimeout(function(){e.$refs.minMB.focus()})},cancelAdding:function(){this.isAdding=!1},confirm:function(){this.isAdding=!1,this.minMB="",this.maxMB="",this.pricePerMB="",this.totalPrice="",this.ranges.push(this.addingRange),this.ranges.$sort(function(e,t){return e.minMB<t.minMB?-1:e.minMB==t.minMB?0==t.maxMB||e.maxMB<t.maxMB?-1:0:1}),this.change(),this.addingRange={minMB:0,maxMB:0,pricePerMB:0,totalPrice:0}},remove:function(e){this.ranges.$remove(e),this.change()},change:function(){this.$emit("change",this.ranges)}},watch:{minMB:function(e){let t=parseInt(e.toString());(isNaN(t)||t<0)&&(t=0),this.addingRange.minMB=t},maxMB:function(e){let t=parseInt(e.toString());(isNaN(t)||t<0)&&(t=0),this.addingRange.maxMB=t},pricePerMB:function(e){let t=parseFloat(e.toString());(isNaN(t)||t<0)&&(t=0),this.addingRange.pricePerMB=t},totalPrice:function(e){let t=parseFloat(e.toString());(isNaN(t)||t<0)&&(t=0),this.addingRange.totalPrice=t}},template:`<div>
-	<!-- 已有价格 -->
-	<div v-if="ranges.length > 0">
-		<div class="ui label basic small" v-for="(range, index) in ranges" style="margin-bottom: 0.5em">
-			{{range.minMB}}MB - <span v-if="range.maxMB > 0">{{range.maxMB}}MB</span><span v-else>&infin;</span> &nbsp;  价格：<span v-if="range.totalPrice > 0">{{range.totalPrice}}元</span><span v-else="">{{range.pricePerMB}}元/MB</span>
-			&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
-		</div>
-		<div class="ui divider"></div>
-	</div>
-	
-	<!-- 添加 -->
-	<div v-if="isAdding">
-		<table class="ui table">
-			<tr>
-				<td class="title">带宽下限 *</td>
-				<td>
-					<div class="ui input right labeled">
-						<input type="text" placeholder="最小带宽" style="width: 7em" maxlength="10" ref="minMB" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="minMB"/>
-						<span class="ui label">MB</span>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td class="title">带宽上限 *</td>
-				<td>
-					<div class="ui input right labeled">
-						<input type="text" placeholder="最大带宽" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="maxMB"/>
-						<span class="ui label">MB</span>
-					</div>
-					<p class="comment">如果填0，表示上不封顶。</p>
-				</td>
-			</tr>
-			<tr>
-				<td>总价格</td>
-				<td>
-					<div class="ui input right labeled">
-						<input type="text" placeholder="总价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="totalPrice"/>
-						<span class="ui label">元/MB</span>
-					</div>
-					<p class="comment">和单位价格二选一。</p>
-				</td>
-			</tr>
-			<tr>
-				<td class="title">单位价格</td>
-				<td>
-					<div class="ui input right labeled">
-						<input type="text" placeholder="单位价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="pricePerMB"/>
-						<span class="ui label">元/MB</span>
-					</div>
-					<p class="comment">和总价格二选一。如果设置了单位价格，那么"总价格 = 单位价格 x 带宽"。</p>
-				</td>
-			</tr>
-		</table>
-		<button class="ui button small" type="button" @click.prevent="confirm">确定</button> &nbsp;
-		<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove small"></i></a>
-	</div>
-	
-	<!-- 按钮 -->
-	<div v-if="!isAdding">
-		<button class="ui button small" type="button" @click.prevent="add">+</button>
-	</div>
 </div>`}),Vue.component("plan-price-config-box",{props:["v-price-type","v-monthly-price","v-seasonally-price","v-yearly-price","v-traffic-price","v-bandwidth-price","v-disable-period"],data:function(){let e=this.vPriceType,t=(null==e&&(e="bandwidth"),0),i=this.vMonthlyPrice,s=(null==i||i<=0?i="":(i=i.toString(),t=parseFloat(i),isNaN(t)&&(t=0)),0),n=this.vSeasonallyPrice,o=(null==n||n<=0?n="":(n=n.toString(),s=parseFloat(n),isNaN(s)&&(s=0)),0),a=this.vYearlyPrice,l=(null==a||a<=0?a="":(a=a.toString(),o=parseFloat(a),isNaN(o)&&(o=0)),this.vTrafficPrice),c=0,r=(null!=l?c=l.base:l={base:0},""),d=(0<c&&(r=c.toString()),this.vBandwidthPrice);return null==d?d={percentile:95,ranges:[]}:null==d.ranges&&(d.ranges=[]),{priceType:e,monthlyPrice:i,seasonallyPrice:n,yearlyPrice:a,monthlyPriceNumber:t,seasonallyPriceNumber:s,yearlyPriceNumber:o,trafficPriceBase:r,trafficPrice:l,bandwidthPrice:d,bandwidthPercentile:d.percentile}},methods:{changeBandwidthPriceRanges:function(e){this.bandwidthPrice.ranges=e}},watch:{monthlyPrice:function(e){let t=parseFloat(e);isNaN(t)&&(t=0),this.monthlyPriceNumber=t},seasonallyPrice:function(e){let t=parseFloat(e);isNaN(t)&&(t=0),this.seasonallyPriceNumber=t},yearlyPrice:function(e){let t=parseFloat(e);isNaN(t)&&(t=0),this.yearlyPriceNumber=t},trafficPriceBase:function(e){let t=parseFloat(e);isNaN(t)&&(t=0),this.trafficPrice.base=t},bandwidthPercentile:function(e){let t=parseInt(e);isNaN(t)||t<=0?t=95:100<t&&(t=100),this.bandwidthPrice.percentile=t}},template:`<div>
 	<input type="hidden" name="priceType" :value="priceType"/>
 	<input type="hidden" name="monthlyPrice" :value="monthlyPriceNumber"/>
@@ -994,10 +933,249 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<tr>
 				<td>带宽价格</td>
 				<td>
-					<plan-bandwidth-ranges :v-ranges="bandwidthPrice.ranges" @change="changeBandwidthPriceRanges"></plan-bandwidth-ranges>
+					<plan-bandwidth-ranges v-model="bandwidthPrice.ranges" @change="changeBandwidthPriceRanges"></plan-bandwidth-ranges>
 				</td>
 			</tr>
 		</table>
+	</div>
+</div>`}),Vue.component("plan-price-traffic-config-box",{props:["v-plan-price-traffic-config"],data:function(){let e=this.vPlanPriceTrafficConfig;return null==(e=null==e?{base:0,ranges:[],supportRegions:!1}:e).ranges&&(e.ranges=[]),{config:e,priceBase:e.base,isEditing:!1}},watch:{priceBase:function(e){e=parseFloat(e);isNaN(e)||e<0?this.config.base=0:this.config.base=e}},methods:{edit:function(){this.isEditing=!this.isEditing}},template:`<div>
+	<input type="hidden" name="trafficPriceJSON" :value="JSON.stringify(config)"/>
+	<div>
+		基础流量价格：<span v-if="config.base > 0">{{config.base}}元/GB</span><span v-else class="disabled">没有设置</span> &nbsp; | &nbsp; 
+		阶梯价格：<span v-if="config.ranges.length > 0">{{config.ranges.length}}段</span><span v-else class="disabled">没有设置</span>  &nbsp; <span v-if="config.supportRegions">| &nbsp;支持区域流量计费</span>
+		<div style="margin-top: 0.5em">
+			<a href="" @click.prevent="edit">修改 <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
+		</div>		
+	</div>
+	<div v-show="isEditing" style="margin-top: 0.5em">
+		<table class="ui table definition selectable" style="margin-top: 0">
+			<tr>
+				<td class="title">基础流量费用</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" v-model="priceBase" maxlength="10" style="width: 7em"/>
+						<span class="ui label">元/GB</span>
+					</div>
+					<p class="comment">没有定义流量阶梯价格时，使用此价格。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>流量阶梯价格</td>
+				<td>
+					<plan-traffic-ranges v-model="config.ranges"></plan-traffic-ranges>
+				</td>
+			</tr>
+			<tr>
+				<td>支持按区域流量计费</td>
+				<td>
+					<checkbox v-model="config.supportRegions"></checkbox>
+					<p class="comment">选中后，表示可以根据节点所在区域设置不同的流量价格。</p>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>`}),Vue.component("plan-bandwidth-ranges",{props:["value"],data:function(){let e=this.value;return{ranges:e=null==e?[]:e,isAdding:!1,minMB:"",minMBUnit:"mb",maxMB:"",maxMBUnit:"mb",pricePerMB:"",totalPrice:"",addingRange:{minMB:0,maxMB:0,pricePerMB:0,totalPrice:0}}},methods:{add:function(){this.isAdding=!this.isAdding;let e=this;setTimeout(function(){e.$refs.minMB.focus()})},cancelAdding:function(){this.isAdding=!1},confirm:function(){this.addingRange.minMB<0?teaweb.warn("带宽下限需要大于0"):this.addingRange.maxMB<0?teaweb.warn("带宽上限需要大于0"):this.addingRange.pricePerMB<=0?teaweb.warn("请设置单位价格或者总价格"):(this.isAdding=!1,this.minMB="",this.maxMB="",this.pricePerMB="",this.totalPrice="",this.ranges.push(this.addingRange),this.ranges.$sort(function(e,t){return e.minMB<t.minMB?-1:e.minMB==t.minMB?0==t.maxMB||e.maxMB<t.maxMB?-1:0:1}),this.change(),this.addingRange={minMB:0,maxMB:0,pricePerMB:0,totalPrice:0})},remove:function(e){this.ranges.$remove(e),this.change()},change:function(){this.$emit("change",this.ranges)},formatMB:function(e){return teaweb.formatBits(1024*e*1024)},changeMinMB:function(e){let t=parseFloat(e.toString());switch((isNaN(t)||t<0)&&(t=0),this.minMBUnit){case"gb":t*=1024;break;case"tb":t*=1048576}this.addingRange.minMB=t},changeMaxMB:function(e){let t=parseFloat(e.toString());switch((isNaN(t)||t<0)&&(t=0),this.maxMBUnit){case"gb":t*=1024;break;case"tb":t*=1048576}this.addingRange.maxMB=t}},watch:{minMB:function(e){this.changeMinMB(e)},minMBUnit:function(){this.changeMinMB(this.minMB)},maxMB:function(e){this.changeMaxMB(e)},maxMBUnit:function(){this.changeMaxMB(this.maxMB)},pricePerMB:function(e){let t=parseFloat(e.toString());(isNaN(t)||t<0)&&(t=0),this.addingRange.pricePerMB=t},totalPrice:function(e){let t=parseFloat(e.toString());(isNaN(t)||t<0)&&(t=0),this.addingRange.totalPrice=t}},template:`<div>
+	<!-- 已有价格 -->
+	<div v-if="ranges.length > 0">
+		<div class="ui label basic small" v-for="(range, index) in ranges" style="margin-bottom: 0.5em">
+			{{formatMB(range.minMB)}} - <span v-if="range.maxMB > 0">{{formatMB(range.maxMB)}}</span><span v-else>&infin;</span> &nbsp;  价格：<span v-if="range.totalPrice > 0">{{range.totalPrice}}元</span><span v-else="">{{range.pricePerMB}}元/Mbps</span>
+			&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+		</div>
+		<div class="ui divider"></div>
+	</div>
+	
+	<!-- 添加 -->
+	<div v-if="isAdding">
+		<table class="ui table">
+			<tr>
+				<td class="title">带宽下限 *</td>
+				<td>
+					<div class="ui fields inline">
+						<div class="ui field">
+							<input type="text" placeholder="最小带宽" style="width: 7em" maxlength="10" ref="minMB" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="minMB"/>
+						</div>
+						<div class="ui field">
+							<select class="ui dropdown" v-model="minMBUnit">
+								<option value="mb">Mbps</option>
+								<option value="gb">Gbps</option>
+								<option value="tb">Tbps</option>
+							</select>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">带宽上限 *</td>
+				<td>
+					<div class="ui fields inline">
+						<div class="ui field">
+							<input type="text" placeholder="最大带宽" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="maxMB"/>
+						</div>
+						<div class="ui field">
+							<select class="ui dropdown" v-model="maxMBUnit">
+								<option value="mb">Mbps</option>
+								<option value="gb">Gbps</option>
+								<option value="tb">Tbps</option>
+							</select>
+						</div>
+					</div>
+					<p class="comment">如果填0，表示上不封顶。</p>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">单位价格</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" placeholder="单位价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="pricePerMB"/>
+						<span class="ui label">元/Mbps</span>
+					</div>
+					<p class="comment">和总价格二选一。如果设置了单位价格，那么"总价格 = 单位价格 x 带宽/Mbps"。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>总价格</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" placeholder="总价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="totalPrice"/>
+						<span class="ui label">元</span>
+					</div>
+					<p class="comment">固定的总价格，和单位价格二选一。</p>
+				</td>
+			</tr>
+		</table>
+		<button class="ui button small" type="button" @click.prevent="confirm">确定</button> &nbsp;
+		<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove small"></i></a>
+	</div>
+	
+	<!-- 按钮 -->
+	<div v-if="!isAdding">
+		<button class="ui button small" type="button" @click.prevent="add">+</button>
+	</div>
+</div>`}),Vue.component("plan-price-bandwidth-config-box",{props:["v-plan-price-bandwidth-config"],data:function(){let e=this.vPlanPriceBandwidthConfig;return null==(e=null==e?{percentile:95,base:0,ranges:[],supportRegions:!1}:e).ranges&&(e.ranges=[]),{config:e,bandwidthPercentile:e.percentile,priceBase:e.base,isEditing:!1}},watch:{priceBase:function(e){e=parseFloat(e);isNaN(e)||e<0?this.config.base=0:this.config.base=e},bandwidthPercentile:function(e){e=parseInt(e);isNaN(e)||e<0?this.config.percentile=0:this.config.percentile=e}},methods:{edit:function(){this.isEditing=!this.isEditing}},template:`<div>
+<input type="hidden" name="bandwidthPriceJSON" :value="JSON.stringify(config)"/>
+<div>
+	带宽百分位：<span v-if="config.percentile > 0">{{config.percentile}}th</span><span v-else class="disabled">没有设置</span> &nbsp; | &nbsp;
+	基础带宽价格：<span v-if="config.base > 0">{{config.base}}元/Mbps</span><span v-else class="disabled">没有设置</span> &nbsp; | &nbsp; 
+	阶梯价格：<span v-if="config.ranges.length > 0">{{config.ranges.length}}段</span><span v-else class="disabled">没有设置</span>  &nbsp; <span v-if="config.supportRegions">| &nbsp;支持区域带宽计费</span>
+	<div style="margin-top: 0.5em">
+		<a href="" @click.prevent="edit">修改 <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
+	</div>		
+</div>
+<div v-show="isEditing" style="margin-top: 0.5em">
+	<table class="ui table definition selectable" style="margin-top: 0">
+		<tr>
+			<td class="title">带宽百分位 *</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" style="width: 4em" maxlength="3" v-model="bandwidthPercentile"/>
+					<span class="ui label">th</span>
+				</div>
+				<p class="comment">带宽计费位置，在1-100之间。</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="title">基础带宽费用</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" v-model="priceBase" maxlength="10" style="width: 7em"/>
+					<span class="ui label">元/Mbps</span>
+				</div>
+				<p class="comment">没有定义带宽阶梯价格时，使用此价格。</p>
+			</td>
+		</tr>	
+		<tr>
+			<td>带宽阶梯价格</td>
+			<td>
+				<plan-bandwidth-ranges v-model="config.ranges"></plan-bandwidth-ranges>
+			</td>
+		</tr>
+		<tr>
+			<td>支持按区域带宽计费</td>
+			<td>
+				<checkbox v-model="config.supportRegions"></checkbox>
+				<p class="comment">选中后，表示可以根据节点所在区域设置不同的带宽价格。</p>
+			</td>
+		</tr>
+	</table>
+</div>	
+</div>`}),Vue.component("plan-traffic-ranges",{props:["value"],data:function(){let e=this.value;return{ranges:e=null==e?[]:e,isAdding:!1,minGB:"",minGBUnit:"gb",maxGB:"",maxGBUnit:"gb",pricePerGB:"",totalPrice:"",addingRange:{minGB:0,maxGB:0,pricePerGB:0,totalPrice:0}}},methods:{add:function(){this.isAdding=!this.isAdding;let e=this;setTimeout(function(){e.$refs.minGB.focus()})},cancelAdding:function(){this.isAdding=!1},confirm:function(){this.addingRange.minGB<0?teaweb.warn("流量下限需要大于0"):this.addingRange.maxGB<0?teaweb.warn("流量上限需要大于0"):this.addingRange.pricePerGB<=0&&this.addingRange.totalPrice<=0?teaweb.warn("请设置单位价格或者总价格"):(this.isAdding=!1,this.minGB="",this.maxGB="",this.pricePerGB="",this.totalPrice="",this.ranges.push(this.addingRange),this.ranges.$sort(function(e,t){return e.minGB<t.minGB?-1:e.minGB==t.minGB?0==t.maxGB||e.maxGB<t.maxGB?-1:0:1}),this.change(),this.addingRange={minGB:0,maxGB:0,pricePerGB:0,totalPrice:0})},remove:function(e){this.ranges.$remove(e),this.change()},change:function(){this.$emit("change",this.ranges)},formatGB:function(e){return teaweb.formatBytes(1024*e*1024*1024)},changeMinGB:function(e){let t=parseFloat(e.toString());switch((isNaN(t)||t<0)&&(t=0),this.minGBUnit){case"tb":t*=1024;break;case"pb":t*=1048576;break;case"eb":t*=1073741824}this.addingRange.minGB=t},changeMaxGB:function(e){let t=parseFloat(e.toString());switch((isNaN(t)||t<0)&&(t=0),this.maxGBUnit){case"tb":t*=1024;break;case"pb":t*=1048576;break;case"eb":t*=1073741824}this.addingRange.maxGB=t}},watch:{minGB:function(e){this.changeMinGB(e)},minGBUnit:function(e){this.changeMinGB(this.minGB)},maxGB:function(e){this.changeMaxGB(e)},maxGBUnit:function(e){this.changeMaxGB(this.maxGB)},pricePerGB:function(e){let t=parseFloat(e.toString());(isNaN(t)||t<0)&&(t=0),this.addingRange.pricePerGB=t},totalPrice:function(e){let t=parseFloat(e.toString());(isNaN(t)||t<0)&&(t=0),this.addingRange.totalPrice=t}},template:`<div>
+	<!-- 已有价格 -->
+	<div v-if="ranges.length > 0">
+		<div class="ui label basic small" v-for="(range, index) in ranges" style="margin-bottom: 0.5em">
+			{{formatGB(range.minGB)}} - <span v-if="range.maxGB > 0">{{formatGB(range.maxGB)}}</span><span v-else>&infin;</span> &nbsp;  价格：<span v-if="range.totalPrice > 0">{{range.totalPrice}}元</span><span v-else="">{{range.pricePerGB}}元/GB</span>
+			&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+		</div>
+		<div class="ui divider"></div>
+	</div>
+	
+	<!-- 添加 -->
+	<div v-if="isAdding">
+		<table class="ui table">
+			<tr>
+				<td class="title">流量下限 *</td>
+				<td>
+					<div class="ui fields inline">
+						<div class="ui field">
+							<input type="text" placeholder="最小流量" style="width: 7em" maxlength="10" ref="minGB" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="minGB"/>
+						</div>
+						<div class="ui field">
+							<select class="ui dropdown" v-model="minGBUnit">
+								<option value="gb">GB</option>
+								<option value="tb">TB</option>
+								<option value="pb">PB</option>
+								<option value="eb">EB</option>
+							</select>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">流量上限 *</td>
+				<td>
+					<div class="ui fields inline">
+						<div class="ui field">
+							<input type="text" placeholder="最大流量" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="maxGB"/>
+						</div>
+						<div class="ui field">
+							<select class="ui dropdown" v-model="maxGBUnit">
+								<option value="gb">GB</option>
+								<option value="tb">TB</option>
+								<option value="pb">PB</option>
+								<option value="eb">EB</option>
+							</select>
+						</div>
+					</div>
+					<p class="comment">如果填0，表示上不封顶。</p>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">单位价格</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" placeholder="单位价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="pricePerGB"/>
+						<span class="ui label">元/GB</span>
+					</div>
+					<p class="comment">和总价格二选一。如果设置了单位价格，那么"总价格 = 单位价格 x 流量/GB"。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>总价格</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" placeholder="总价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="totalPrice"/>
+						<span class="ui label">元</span>
+					</div>
+					<p class="comment">固定的总价格，和单位价格二选一。</p>
+				</td>
+			</tr>
+		</table>
+		<button class="ui button small" type="button" @click.prevent="confirm">确定</button> &nbsp;
+		<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove small"></i></a>
+	</div>
+	
+	<!-- 按钮 -->
+	<div v-if="!isAdding">
+		<button class="ui button small" type="button" @click.prevent="add">+</button>
 	</div>
 </div>`}),Vue.component("http-stat-config-box",{props:["v-stat-config","v-is-location","v-is-group"],data:function(){let e=this.vStatConfig;return{stat:e=null==e?{isPrior:!1,isOn:!1}:e}},template:`<div>
 	<input type="hidden" name="statJSON" :value="JSON.stringify(stat)"/>
@@ -1598,7 +1776,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				<td>单IP最大并发连接数</td>
 				<td>
 					<input type="text" maxlength="6" v-model="maxConnsPerIP"/>
-					<p class="comment">单IP最大连接数，统计单个IP总连接数时不区分服务，超出此限制则响应用户<code-label>429</code-label>代码。为0表示不限制。<span v-if="maxConnsPerIP <= 3" class="red">当前设置的并发连接数过低，可能会影响正常用户访问，建议不小于3。</span></p>
+					<p class="comment">单IP最大连接数，统计单个IP总连接数时不区分服务，超出此限制则响应用户<code-label>429</code-label>代码。为0表示不限制。<span v-if="maxConnsPerIP > 0 && maxConnsPerIP <= 3" class="red">当前设置的并发连接数过低，可能会影响正常用户访问，建议不小于3。</span></p>
 				</td>
 			</tr>
 			<tr>
@@ -4681,7 +4859,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<div class="ui field" :class="{error: hasSecondError}"><input type="text" v-model="second" maxlength="2" style="width:4em" placeholder="秒" @input="change"/></div>
 	</div>
 	<p class="comment">常用时间：<a href="" @click.prevent="nextHours(1)"> &nbsp;1小时&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(1)"> &nbsp;1天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(3)"> &nbsp;3天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(7)"> &nbsp;1周&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(30)"> &nbsp;30天&nbsp; </a> </p>
-</div>`}),Vue.component("label-on",{props:["v-is-on"],template:'<div><span v-if="vIsOn" class="ui label tiny green basic">已启用</span><span v-if="!vIsOn" class="ui label tiny red basic">已停用</span></div>'}),Vue.component("code-label",{methods:{click:function(e){this.$emit("click",e)}},template:'<span class="ui label basic tiny" style="padding: 3px;margin-left:2px;margin-right:2px" @click.prevent="click"><slot></slot></span>'}),Vue.component("code-label-plain",{template:'<span class="ui label basic tiny" style="padding: 3px;margin-left:2px;margin-right:2px"><slot></slot></span>'}),Vue.component("tiny-label",{template:'<span class="ui label tiny" style="margin-bottom: 0.5em"><slot></slot></span>'}),Vue.component("tiny-basic-label",{template:'<span class="ui label tiny basic" style="margin-bottom: 0.5em"><slot></slot></span>'}),Vue.component("micro-basic-label",{template:'<span class="ui label tiny basic" style="margin-bottom: 0.5em; font-size: 0.7em; padding: 4px"><slot></slot></span>'}),Vue.component("grey-label",{props:["color"],data:function(){let e="grey";return{labelColor:e=null!=this.color&&0<this.color.length?"red":e}},template:'<span class="ui label basic tiny" :class="labelColor" style="margin-top: 0.4em; font-size: 0.7em; border: 1px solid #ddd!important; font-weight: normal;"><slot></slot></span>'}),Vue.component("optional-label",{template:'<em><span class="grey">（可选）</span></em>'}),Vue.component("plus-label",{template:'<span style="color: #B18701;">Plus专属功能。</span>'}),Vue.component("pro-warning-label",{template:'<span><i class="icon warning circle yellow"></i>注意：通常不需要修改；如要修改，请在专家指导下进行。</span>'}),Vue.component("first-menu",{props:[],template:' \t\t<div class="first-menu"> \t\t\t<div class="ui menu text blue small">\t\t\t\t<slot></slot>\t\t\t</div> \t\t\t<div class="ui divider"></div> \t\t</div>'}),Vue.component("more-options-indicator",{data:function(){return{visible:!1}},methods:{changeVisible:function(){this.visible=!this.visible,null!=Tea.Vue&&(Tea.Vue.moreOptionsVisible=this.visible),this.$emit("change",this.visible)}},template:'<a href="" style="font-weight: normal" @click.prevent="changeVisible()"><slot><span v-if="!visible">更多选项</span><span v-if="visible">收起选项</span></slot> <i class="icon angle" :class="{down:!visible, up:visible}"></i> </a>'}),Vue.component("page-size-selector",{data:function(){let t=window.location.search,i=10;if(0<t.length){let e=(t=t.substr(1)).split("&");e.forEach(function(t){t=t.split("=");if(2==t.length&&"pageSize"==t[0]){let e=t[1];e.match(/^\d+$/)&&(i=parseInt(e,10),(isNaN(i)||i<1)&&(i=10))}})}return{pageSize:i}},watch:{pageSize:function(){window.ChangePageSize(this.pageSize)}},template:`<select class="ui dropdown" style="height:34px;padding-top:0;padding-bottom:0;margin-left:1em;color:#666" v-model="pageSize">
+</div>`}),Vue.component("label-on",{props:["v-is-on"],template:'<div><span v-if="vIsOn" class="green">已启用</span><span v-if="!vIsOn" class="red">已停用</span></div>'}),Vue.component("code-label",{methods:{click:function(e){this.$emit("click",e)}},template:'<span class="ui label basic tiny" style="padding: 3px;margin-left:2px;margin-right:2px" @click.prevent="click"><slot></slot></span>'}),Vue.component("code-label-plain",{template:'<span class="ui label basic tiny" style="padding: 3px;margin-left:2px;margin-right:2px"><slot></slot></span>'}),Vue.component("tiny-label",{template:'<span class="ui label tiny" style="margin-bottom: 0.5em"><slot></slot></span>'}),Vue.component("tiny-basic-label",{template:'<span class="ui label tiny basic" style="margin-bottom: 0.5em"><slot></slot></span>'}),Vue.component("micro-basic-label",{template:'<span class="ui label tiny basic" style="margin-bottom: 0.5em; font-size: 0.7em; padding: 4px"><slot></slot></span>'}),Vue.component("grey-label",{props:["color"],data:function(){let e="grey";return{labelColor:e=null!=this.color&&0<this.color.length?"red":e}},template:'<span class="ui label basic tiny" :class="labelColor" style="margin-top: 0.4em; font-size: 0.7em; border: 1px solid #ddd!important; font-weight: normal;"><slot></slot></span>'}),Vue.component("optional-label",{template:'<em><span class="grey">（可选）</span></em>'}),Vue.component("plus-label",{template:'<span style="color: #B18701;">Plus专属功能。</span>'}),Vue.component("pro-warning-label",{template:'<span><i class="icon warning circle yellow"></i>注意：通常不需要修改；如要修改，请在专家指导下进行。</span>'}),Vue.component("first-menu",{props:[],template:' \t\t<div class="first-menu"> \t\t\t<div class="ui menu text blue small">\t\t\t\t<slot></slot>\t\t\t</div> \t\t\t<div class="ui divider"></div> \t\t</div>'}),Vue.component("more-options-indicator",{data:function(){return{visible:!1}},methods:{changeVisible:function(){this.visible=!this.visible,null!=Tea.Vue&&(Tea.Vue.moreOptionsVisible=this.visible),this.$emit("change",this.visible)}},template:'<a href="" style="font-weight: normal" @click.prevent="changeVisible()"><slot><span v-if="!visible">更多选项</span><span v-if="visible">收起选项</span></slot> <i class="icon angle" :class="{down:!visible, up:visible}"></i> </a>'}),Vue.component("page-size-selector",{data:function(){let t=window.location.search,i=10;if(0<t.length){let e=(t=t.substr(1)).split("&");e.forEach(function(t){t=t.split("=");if(2==t.length&&"pageSize"==t[0]){let e=t[1];e.match(/^\d+$/)&&(i=parseInt(e,10),(isNaN(i)||i<1)&&(i=10))}})}return{pageSize:i}},watch:{pageSize:function(){window.ChangePageSize(this.pageSize)}},template:`<select class="ui dropdown" style="height:34px;padding-top:0;padding-bottom:0;margin-left:1em;color:#666" v-model="pageSize">
 	<option value="10">[每页]</option><option value="10" selected="selected">10条</option><option value="20">20条</option><option value="30">30条</option><option value="40">40条</option><option value="50">50条</option><option value="60">60条</option><option value="70">70条</option><option value="80">80条</option><option value="90">90条</option><option value="100">100条</option>
 </select>`}),Vue.component("second-menu",{template:' \t\t<div class="second-menu"> \t\t\t<div class="ui menu text blue small">\t\t\t\t<slot></slot>\t\t\t</div> \t\t\t<div class="ui divider"></div> \t\t</div>'}),Vue.component("loading-message",{template:`<div class="ui message loading">
         <div class="ui active inline loader small"></div>  &nbsp; <slot></slot>
