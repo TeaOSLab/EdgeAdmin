@@ -2559,169 +2559,6 @@ Vue.component("plan-price-view", {
 </div>`
 })
 
-Vue.component("plan-bandwidth-ranges", {
-	props: ["v-ranges"],
-	data: function () {
-		let ranges = this.vRanges
-		if (ranges == null) {
-			ranges = []
-		}
-		return {
-			ranges: ranges,
-			isAdding: false,
-
-			minMB: "",
-			maxMB: "",
-			pricePerMB: "",
-			totalPrice: "",
-			addingRange: {
-				minMB: 0,
-				maxMB: 0,
-				pricePerMB: 0,
-				totalPrice: 0
-			}
-		}
-	},
-	methods: {
-		add: function () {
-			this.isAdding = !this.isAdding
-			let that = this
-			setTimeout(function () {
-				that.$refs.minMB.focus()
-			})
-		},
-		cancelAdding: function () {
-			this.isAdding = false
-		},
-		confirm: function () {
-			this.isAdding = false
-			this.minMB = ""
-			this.maxMB = ""
-			this.pricePerMB = ""
-			this.totalPrice = ""
-			this.ranges.push(this.addingRange)
-			this.ranges.$sort(function (v1, v2) {
-				if (v1.minMB < v2.minMB) {
-					return -1
-				}
-				if (v1.minMB == v2.minMB) {
-					if (v2.maxMB == 0 || v1.maxMB < v2.maxMB) {
-						return -1
-					}
-					return 0
-				}
-				return 1
-			})
-			this.change()
-			this.addingRange = {
-				minMB: 0,
-				maxMB: 0,
-				pricePerMB: 0,
-				totalPrice: 0
-			}
-		},
-		remove: function (index) {
-			this.ranges.$remove(index)
-			this.change()
-		},
-		change: function () {
-			this.$emit("change", this.ranges)
-		}
-	},
-	watch: {
-		minMB: function (v) {
-			let minMB = parseInt(v.toString())
-			if (isNaN(minMB) || minMB < 0) {
-				minMB = 0
-			}
-			this.addingRange.minMB = minMB
-		},
-		maxMB: function (v) {
-			let maxMB = parseInt(v.toString())
-			if (isNaN(maxMB) || maxMB < 0) {
-				maxMB = 0
-			}
-			this.addingRange.maxMB = maxMB
-		},
-		pricePerMB: function (v) {
-			let pricePerMB = parseFloat(v.toString())
-			if (isNaN(pricePerMB) || pricePerMB < 0) {
-				pricePerMB = 0
-			}
-			this.addingRange.pricePerMB = pricePerMB
-		},
-		totalPrice: function (v) {
-			let totalPrice = parseFloat(v.toString())
-			if (isNaN(totalPrice) || totalPrice < 0) {
-				totalPrice = 0
-			}
-			this.addingRange.totalPrice = totalPrice
-		}
-	},
-	template: `<div>
-	<!-- 已有价格 -->
-	<div v-if="ranges.length > 0">
-		<div class="ui label basic small" v-for="(range, index) in ranges" style="margin-bottom: 0.5em">
-			{{range.minMB}}MB - <span v-if="range.maxMB > 0">{{range.maxMB}}MB</span><span v-else>&infin;</span> &nbsp;  价格：<span v-if="range.totalPrice > 0">{{range.totalPrice}}元</span><span v-else="">{{range.pricePerMB}}元/MB</span>
-			&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
-		</div>
-		<div class="ui divider"></div>
-	</div>
-	
-	<!-- 添加 -->
-	<div v-if="isAdding">
-		<table class="ui table">
-			<tr>
-				<td class="title">带宽下限 *</td>
-				<td>
-					<div class="ui input right labeled">
-						<input type="text" placeholder="最小带宽" style="width: 7em" maxlength="10" ref="minMB" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="minMB"/>
-						<span class="ui label">MB</span>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td class="title">带宽上限 *</td>
-				<td>
-					<div class="ui input right labeled">
-						<input type="text" placeholder="最大带宽" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="maxMB"/>
-						<span class="ui label">MB</span>
-					</div>
-					<p class="comment">如果填0，表示上不封顶。</p>
-				</td>
-			</tr>
-			<tr>
-				<td>总价格</td>
-				<td>
-					<div class="ui input right labeled">
-						<input type="text" placeholder="总价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="totalPrice"/>
-						<span class="ui label">元/MB</span>
-					</div>
-					<p class="comment">和单位价格二选一。</p>
-				</td>
-			</tr>
-			<tr>
-				<td class="title">单位价格</td>
-				<td>
-					<div class="ui input right labeled">
-						<input type="text" placeholder="单位价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="pricePerMB"/>
-						<span class="ui label">元/MB</span>
-					</div>
-					<p class="comment">和总价格二选一。如果设置了单位价格，那么"总价格 = 单位价格 x 带宽"。</p>
-				</td>
-			</tr>
-		</table>
-		<button class="ui button small" type="button" @click.prevent="confirm">确定</button> &nbsp;
-		<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove small"></i></a>
-	</div>
-	
-	<!-- 按钮 -->
-	<div v-if="!isAdding">
-		<button class="ui button small" type="button" @click.prevent="add">+</button>
-	</div>
-</div>`
-})
-
 // 套餐价格配置
 Vue.component("plan-price-config-box", {
 	props: ["v-price-type", "v-monthly-price", "v-seasonally-price", "v-yearly-price", "v-traffic-price", "v-bandwidth-price", "v-disable-period"],
@@ -2935,10 +2772,645 @@ Vue.component("plan-price-config-box", {
 			<tr>
 				<td>带宽价格</td>
 				<td>
-					<plan-bandwidth-ranges :v-ranges="bandwidthPrice.ranges" @change="changeBandwidthPriceRanges"></plan-bandwidth-ranges>
+					<plan-bandwidth-ranges v-model="bandwidthPrice.ranges" @change="changeBandwidthPriceRanges"></plan-bandwidth-ranges>
 				</td>
 			</tr>
 		</table>
+	</div>
+</div>`
+})
+
+Vue.component("plan-price-traffic-config-box", {
+	props: ["v-plan-price-traffic-config"],
+	data: function () {
+		let config = this.vPlanPriceTrafficConfig
+		if (config == null) {
+			config = {
+				base: 0,
+				ranges: [],
+				supportRegions: false
+			}
+		}
+
+		if (config.ranges == null) {
+			config.ranges = []
+		}
+
+		return {
+			config: config,
+			priceBase: config.base,
+			isEditing: false
+		}
+	},
+	watch: {
+		priceBase: function (v) {
+			let f = parseFloat(v)
+			if (isNaN(f) || f < 0) {
+				this.config.base = 0
+			} else {
+				this.config.base = f
+			}
+		}
+	},
+	methods: {
+		edit: function () {
+			this.isEditing = !this.isEditing
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="trafficPriceJSON" :value="JSON.stringify(config)"/>
+	<div>
+		基础流量价格：<span v-if="config.base > 0">{{config.base}}元/GB</span><span v-else class="disabled">没有设置</span> &nbsp; | &nbsp; 
+		阶梯价格：<span v-if="config.ranges.length > 0">{{config.ranges.length}}段</span><span v-else class="disabled">没有设置</span>  &nbsp; <span v-if="config.supportRegions">| &nbsp;支持区域流量计费</span>
+		<div style="margin-top: 0.5em">
+			<a href="" @click.prevent="edit">修改 <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
+		</div>		
+	</div>
+	<div v-show="isEditing" style="margin-top: 0.5em">
+		<table class="ui table definition selectable" style="margin-top: 0">
+			<tr>
+				<td class="title">基础流量费用</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" v-model="priceBase" maxlength="10" style="width: 7em"/>
+						<span class="ui label">元/GB</span>
+					</div>
+					<p class="comment">没有定义流量阶梯价格时，使用此价格。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>流量阶梯价格</td>
+				<td>
+					<plan-traffic-ranges v-model="config.ranges"></plan-traffic-ranges>
+				</td>
+			</tr>
+			<tr>
+				<td>支持按区域流量计费</td>
+				<td>
+					<checkbox v-model="config.supportRegions"></checkbox>
+					<p class="comment">选中后，表示可以根据节点所在区域设置不同的流量价格。</p>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>`
+})
+
+Vue.component("plan-bandwidth-ranges", {
+	props: ["value"],
+	data: function () {
+		let ranges = this.value
+		if (ranges == null) {
+			ranges = []
+		}
+		return {
+			ranges: ranges,
+			isAdding: false,
+
+			minMB: "",
+			minMBUnit: "mb",
+
+			maxMB: "",
+			maxMBUnit: "mb",
+
+			pricePerMB: "",
+			totalPrice: "",
+			addingRange: {
+				minMB: 0,
+				maxMB: 0,
+				pricePerMB: 0,
+				totalPrice: 0
+			}
+		}
+	},
+	methods: {
+		add: function () {
+			this.isAdding = !this.isAdding
+			let that = this
+			setTimeout(function () {
+				that.$refs.minMB.focus()
+			})
+		},
+		cancelAdding: function () {
+			this.isAdding = false
+		},
+		confirm: function () {
+			if (this.addingRange.minMB < 0) {
+				teaweb.warn("带宽下限需要大于0")
+				return
+			}
+			if (this.addingRange.maxMB < 0) {
+				teaweb.warn("带宽上限需要大于0")
+				return
+			}
+			if (this.addingRange.pricePerMB <= 0) {
+				teaweb.warn("请设置单位价格或者总价格")
+				return
+			}
+
+			this.isAdding = false
+			this.minMB = ""
+			this.maxMB = ""
+			this.pricePerMB = ""
+			this.totalPrice = ""
+			this.ranges.push(this.addingRange)
+			this.ranges.$sort(function (v1, v2) {
+				if (v1.minMB < v2.minMB) {
+					return -1
+				}
+				if (v1.minMB == v2.minMB) {
+					if (v2.maxMB == 0 || v1.maxMB < v2.maxMB) {
+						return -1
+					}
+					return 0
+				}
+				return 1
+			})
+			this.change()
+			this.addingRange = {
+				minMB: 0,
+				maxMB: 0,
+				pricePerMB: 0,
+				totalPrice: 0
+			}
+		},
+		remove: function (index) {
+			this.ranges.$remove(index)
+			this.change()
+		},
+		change: function () {
+			this.$emit("change", this.ranges)
+		},
+		formatMB: function (mb) {
+			return teaweb.formatBits(mb * 1024 * 1024)
+		},
+		changeMinMB: function (v) {
+			let minMB = parseFloat(v.toString())
+			if (isNaN(minMB) || minMB < 0) {
+				minMB = 0
+			}
+			switch (this.minMBUnit) {
+				case "gb":
+					minMB *= 1024
+					break
+				case "tb":
+					minMB *= 1024 * 1024
+					break
+			}
+			this.addingRange.minMB = minMB
+		},
+		changeMaxMB: function (v) {
+			let maxMB = parseFloat(v.toString())
+			if (isNaN(maxMB) || maxMB < 0) {
+				maxMB = 0
+			}
+			switch (this.maxMBUnit) {
+				case "gb":
+					maxMB *= 1024
+					break
+				case "tb":
+					maxMB *= 1024 * 1024
+					break
+			}
+			this.addingRange.maxMB = maxMB
+		}
+	},
+	watch: {
+		minMB: function (v) {
+			this.changeMinMB(v)
+		},
+		minMBUnit: function () {
+			this.changeMinMB(this.minMB)
+		},
+		maxMB: function (v) {
+			this.changeMaxMB(v)
+		},
+		maxMBUnit: function () {
+			this.changeMaxMB(this.maxMB)
+		},
+		pricePerMB: function (v) {
+			let pricePerMB = parseFloat(v.toString())
+			if (isNaN(pricePerMB) || pricePerMB < 0) {
+				pricePerMB = 0
+			}
+			this.addingRange.pricePerMB = pricePerMB
+		},
+		totalPrice: function (v) {
+			let totalPrice = parseFloat(v.toString())
+			if (isNaN(totalPrice) || totalPrice < 0) {
+				totalPrice = 0
+			}
+			this.addingRange.totalPrice = totalPrice
+		}
+	},
+	template: `<div>
+	<!-- 已有价格 -->
+	<div v-if="ranges.length > 0">
+		<div class="ui label basic small" v-for="(range, index) in ranges" style="margin-bottom: 0.5em">
+			{{formatMB(range.minMB)}} - <span v-if="range.maxMB > 0">{{formatMB(range.maxMB)}}</span><span v-else>&infin;</span> &nbsp;  价格：<span v-if="range.totalPrice > 0">{{range.totalPrice}}元</span><span v-else="">{{range.pricePerMB}}元/Mbps</span>
+			&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+		</div>
+		<div class="ui divider"></div>
+	</div>
+	
+	<!-- 添加 -->
+	<div v-if="isAdding">
+		<table class="ui table">
+			<tr>
+				<td class="title">带宽下限 *</td>
+				<td>
+					<div class="ui fields inline">
+						<div class="ui field">
+							<input type="text" placeholder="最小带宽" style="width: 7em" maxlength="10" ref="minMB" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="minMB"/>
+						</div>
+						<div class="ui field">
+							<select class="ui dropdown" v-model="minMBUnit">
+								<option value="mb">Mbps</option>
+								<option value="gb">Gbps</option>
+								<option value="tb">Tbps</option>
+							</select>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">带宽上限 *</td>
+				<td>
+					<div class="ui fields inline">
+						<div class="ui field">
+							<input type="text" placeholder="最大带宽" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="maxMB"/>
+						</div>
+						<div class="ui field">
+							<select class="ui dropdown" v-model="maxMBUnit">
+								<option value="mb">Mbps</option>
+								<option value="gb">Gbps</option>
+								<option value="tb">Tbps</option>
+							</select>
+						</div>
+					</div>
+					<p class="comment">如果填0，表示上不封顶。</p>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">单位价格</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" placeholder="单位价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="pricePerMB"/>
+						<span class="ui label">元/Mbps</span>
+					</div>
+					<p class="comment">和总价格二选一。如果设置了单位价格，那么"总价格 = 单位价格 x 带宽/Mbps"。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>总价格</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" placeholder="总价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="totalPrice"/>
+						<span class="ui label">元</span>
+					</div>
+					<p class="comment">固定的总价格，和单位价格二选一。</p>
+				</td>
+			</tr>
+		</table>
+		<button class="ui button small" type="button" @click.prevent="confirm">确定</button> &nbsp;
+		<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove small"></i></a>
+	</div>
+	
+	<!-- 按钮 -->
+	<div v-if="!isAdding">
+		<button class="ui button small" type="button" @click.prevent="add">+</button>
+	</div>
+</div>`
+})
+
+Vue.component("plan-price-bandwidth-config-box", {
+	props: ["v-plan-price-bandwidth-config"],
+	data: function () {
+		let config = this.vPlanPriceBandwidthConfig
+		if (config == null) {
+			config = {
+				percentile: 95,
+				base: 0,
+				ranges: [],
+				supportRegions: false
+			}
+		}
+
+		if (config.ranges == null) {
+			config.ranges = []
+		}
+
+		return {
+			config: config,
+			bandwidthPercentile: config.percentile,
+			priceBase: config.base,
+			isEditing: false
+		}
+	},
+	watch: {
+		priceBase: function (v) {
+			let f = parseFloat(v)
+			if (isNaN(f) || f < 0) {
+				this.config.base = 0
+			} else {
+				this.config.base = f
+			}
+		},
+		bandwidthPercentile: function (v) {
+			let i = parseInt(v)
+			if (isNaN(i) || i < 0) {
+				this.config.percentile = 0
+			} else {
+				this.config.percentile = i
+			}
+		}
+	},
+	methods: {
+		edit: function () {
+			this.isEditing = !this.isEditing
+		}
+	},
+	template: `<div>
+<input type="hidden" name="bandwidthPriceJSON" :value="JSON.stringify(config)"/>
+<div>
+	带宽百分位：<span v-if="config.percentile > 0">{{config.percentile}}th</span><span v-else class="disabled">没有设置</span> &nbsp; | &nbsp;
+	基础带宽价格：<span v-if="config.base > 0">{{config.base}}元/Mbps</span><span v-else class="disabled">没有设置</span> &nbsp; | &nbsp; 
+	阶梯价格：<span v-if="config.ranges.length > 0">{{config.ranges.length}}段</span><span v-else class="disabled">没有设置</span>  &nbsp; <span v-if="config.supportRegions">| &nbsp;支持区域带宽计费</span>
+	<div style="margin-top: 0.5em">
+		<a href="" @click.prevent="edit">修改 <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
+	</div>		
+</div>
+<div v-show="isEditing" style="margin-top: 0.5em">
+	<table class="ui table definition selectable" style="margin-top: 0">
+		<tr>
+			<td class="title">带宽百分位 *</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" style="width: 4em" maxlength="3" v-model="bandwidthPercentile"/>
+					<span class="ui label">th</span>
+				</div>
+				<p class="comment">带宽计费位置，在1-100之间。</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="title">基础带宽费用</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" v-model="priceBase" maxlength="10" style="width: 7em"/>
+					<span class="ui label">元/Mbps</span>
+				</div>
+				<p class="comment">没有定义带宽阶梯价格时，使用此价格。</p>
+			</td>
+		</tr>	
+		<tr>
+			<td>带宽阶梯价格</td>
+			<td>
+				<plan-bandwidth-ranges v-model="config.ranges"></plan-bandwidth-ranges>
+			</td>
+		</tr>
+		<tr>
+			<td>支持按区域带宽计费</td>
+			<td>
+				<checkbox v-model="config.supportRegions"></checkbox>
+				<p class="comment">选中后，表示可以根据节点所在区域设置不同的带宽价格。</p>
+			</td>
+		</tr>
+	</table>
+</div>	
+</div>`
+})
+
+Vue.component("plan-traffic-ranges", {
+	props: ["value"],
+	data: function () {
+		let ranges = this.value
+		if (ranges == null) {
+			ranges = []
+		}
+		return {
+			ranges: ranges,
+			isAdding: false,
+
+			minGB: "",
+			minGBUnit: "gb",
+
+			maxGB: "",
+			maxGBUnit: "gb",
+
+			pricePerGB: "",
+			totalPrice: "",
+			addingRange: {
+				minGB: 0,
+				maxGB: 0,
+				pricePerGB: 0,
+				totalPrice: 0
+			}
+		}
+	},
+	methods: {
+		add: function () {
+			this.isAdding = !this.isAdding
+			let that = this
+			setTimeout(function () {
+				that.$refs.minGB.focus()
+			})
+		},
+		cancelAdding: function () {
+			this.isAdding = false
+		},
+		confirm: function () {
+			if (this.addingRange.minGB < 0) {
+				teaweb.warn("流量下限需要大于0")
+				return
+			}
+			if (this.addingRange.maxGB < 0) {
+				teaweb.warn("流量上限需要大于0")
+				return
+			}
+			if (this.addingRange.pricePerGB <= 0 && this.addingRange.totalPrice <= 0) {
+				teaweb.warn("请设置单位价格或者总价格")
+				return;
+			}
+
+			this.isAdding = false
+			this.minGB = ""
+			this.maxGB = ""
+			this.pricePerGB = ""
+			this.totalPrice = ""
+			this.ranges.push(this.addingRange)
+			this.ranges.$sort(function (v1, v2) {
+				if (v1.minGB < v2.minGB) {
+					return -1
+				}
+				if (v1.minGB == v2.minGB) {
+					if (v2.maxGB == 0 || v1.maxGB < v2.maxGB) {
+						return -1
+					}
+					return 0
+				}
+				return 1
+			})
+			this.change()
+			this.addingRange = {
+				minGB: 0,
+				maxGB: 0,
+				pricePerGB: 0,
+				totalPrice: 0
+			}
+		},
+		remove: function (index) {
+			this.ranges.$remove(index)
+			this.change()
+		},
+		change: function () {
+			this.$emit("change", this.ranges)
+		},
+		formatGB: function (gb) {
+			return teaweb.formatBytes(gb * 1024 * 1024 * 1024)
+		},
+		changeMinGB: function (v) {
+			let minGB = parseFloat(v.toString())
+			if (isNaN(minGB) || minGB < 0) {
+				minGB = 0
+			}
+			switch (this.minGBUnit) {
+				case "tb":
+					minGB *= 1024
+					break
+				case "pb":
+					minGB *= 1024 * 1024
+					break
+				case "eb":
+					minGB *= 1024 * 1024 * 1024
+					break
+			}
+			this.addingRange.minGB = minGB
+		},
+		changeMaxGB: function (v) {
+			let maxGB = parseFloat(v.toString())
+			if (isNaN(maxGB) || maxGB < 0) {
+				maxGB = 0
+			}
+			switch (this.maxGBUnit) {
+				case "tb":
+					maxGB *= 1024
+					break
+				case "pb":
+					maxGB *= 1024 * 1024
+					break
+				case "eb":
+					maxGB *= 1024 * 1024 * 1024
+					break
+			}
+			this.addingRange.maxGB = maxGB
+		}
+	},
+	watch: {
+		minGB: function (v) {
+			this.changeMinGB(v)
+		},
+		minGBUnit: function (v) {
+			this.changeMinGB(this.minGB)
+		},
+		maxGB: function (v) {
+			this.changeMaxGB(v)
+		},
+		maxGBUnit: function (v) {
+			this.changeMaxGB(this.maxGB)
+		},
+		pricePerGB: function (v) {
+			let pricePerGB = parseFloat(v.toString())
+			if (isNaN(pricePerGB) || pricePerGB < 0) {
+				pricePerGB = 0
+			}
+			this.addingRange.pricePerGB = pricePerGB
+		},
+		totalPrice: function (v) {
+			let totalPrice = parseFloat(v.toString())
+			if (isNaN(totalPrice) || totalPrice < 0) {
+				totalPrice = 0
+			}
+			this.addingRange.totalPrice = totalPrice
+		}
+	},
+	template: `<div>
+	<!-- 已有价格 -->
+	<div v-if="ranges.length > 0">
+		<div class="ui label basic small" v-for="(range, index) in ranges" style="margin-bottom: 0.5em">
+			{{formatGB(range.minGB)}} - <span v-if="range.maxGB > 0">{{formatGB(range.maxGB)}}</span><span v-else>&infin;</span> &nbsp;  价格：<span v-if="range.totalPrice > 0">{{range.totalPrice}}元</span><span v-else="">{{range.pricePerGB}}元/GB</span>
+			&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+		</div>
+		<div class="ui divider"></div>
+	</div>
+	
+	<!-- 添加 -->
+	<div v-if="isAdding">
+		<table class="ui table">
+			<tr>
+				<td class="title">流量下限 *</td>
+				<td>
+					<div class="ui fields inline">
+						<div class="ui field">
+							<input type="text" placeholder="最小流量" style="width: 7em" maxlength="10" ref="minGB" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="minGB"/>
+						</div>
+						<div class="ui field">
+							<select class="ui dropdown" v-model="minGBUnit">
+								<option value="gb">GB</option>
+								<option value="tb">TB</option>
+								<option value="pb">PB</option>
+								<option value="eb">EB</option>
+							</select>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">流量上限 *</td>
+				<td>
+					<div class="ui fields inline">
+						<div class="ui field">
+							<input type="text" placeholder="最大流量" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="maxGB"/>
+						</div>
+						<div class="ui field">
+							<select class="ui dropdown" v-model="maxGBUnit">
+								<option value="gb">GB</option>
+								<option value="tb">TB</option>
+								<option value="pb">PB</option>
+								<option value="eb">EB</option>
+							</select>
+						</div>
+					</div>
+					<p class="comment">如果填0，表示上不封顶。</p>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">单位价格</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" placeholder="单位价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="pricePerGB"/>
+						<span class="ui label">元/GB</span>
+					</div>
+					<p class="comment">和总价格二选一。如果设置了单位价格，那么"总价格 = 单位价格 x 流量/GB"。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>总价格</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" placeholder="总价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="totalPrice"/>
+						<span class="ui label">元</span>
+					</div>
+					<p class="comment">固定的总价格，和单位价格二选一。</p>
+				</td>
+			</tr>
+		</table>
+		<button class="ui button small" type="button" @click.prevent="confirm">确定</button> &nbsp;
+		<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove small"></i></a>
+	</div>
+	
+	<!-- 按钮 -->
+	<div v-if="!isAdding">
+		<button class="ui button small" type="button" @click.prevent="add">+</button>
 	</div>
 </div>`
 })
@@ -4464,7 +4936,7 @@ Vue.component("http-request-limit-config-box", {
 				<td>单IP最大并发连接数</td>
 				<td>
 					<input type="text" maxlength="6" v-model="maxConnsPerIP"/>
-					<p class="comment">单IP最大连接数，统计单个IP总连接数时不区分服务，超出此限制则响应用户<code-label>429</code-label>代码。为0表示不限制。<span v-if="maxConnsPerIP <= 3" class="red">当前设置的并发连接数过低，可能会影响正常用户访问，建议不小于3。</span></p>
+					<p class="comment">单IP最大连接数，统计单个IP总连接数时不区分服务，超出此限制则响应用户<code-label>429</code-label>代码。为0表示不限制。<span v-if="maxConnsPerIP > 0 && maxConnsPerIP <= 3" class="red">当前设置的并发连接数过低，可能会影响正常用户访问，建议不小于3。</span></p>
 				</td>
 			</tr>
 			<tr>
@@ -14042,7 +14514,7 @@ Vue.component("datetime-input", {
 // 启用状态标签
 Vue.component("label-on", {
 	props: ["v-is-on"],
-	template: '<div><span v-if="vIsOn" class="ui label tiny green basic">已启用</span><span v-if="!vIsOn" class="ui label tiny red basic">已停用</span></div>'
+	template: '<div><span v-if="vIsOn" class="green">已启用</span><span v-if="!vIsOn" class="red">已停用</span></div>'
 })
 
 // 文字代码标签
