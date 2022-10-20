@@ -18,7 +18,13 @@ func init() {
 			GetPost("/updatePopup", new(UpdatePopupAction)).
 			Post("/delete", new(DeleteAction)).
 			Post("/sort", new(SortAction)).
+			Get("/nodes", new(NodesAction)).
+			GetPost("/updateNodeRegionPopup", new(UpdateNodeRegionPopupAction)).
+
+			//
 			GetPost("/selectPopup", new(SelectPopupAction)).
+
+			//
 			EndAll()
 	})
 }
