@@ -22,13 +22,13 @@
         <tr>
             <td style="text-align: center;"><i class="icon bars handle grey"></i> </td>
             <td :class="{disabled: !region.isOn}">
-                <a :href="'/clusters/regions/nodes?regionId=' + region.id">{{region.name}}</a>
+                <a href="" @click.prevent="updateRegion(region.id)">{{region.name}} &nbsp; <i class="icon expand small"></i></a>
             </td>
             <td>
                 <span v-if="region.description.length > 0">{{region.description}}</span>
                 <span v-else class="disabled">-</span>
             </td>
-            <td class="center">{{region.countNodes}}</td>
+            <td class="center"><a :href="'/clusters/regions/nodes?regionId=' + region.id"><span :class="{disabled: region.countNodes == 0}">{{region.countNodes}}</span></a></td>
             <td>
                 <label-on :v-is-on="region.isOn"></label-on>
             </td>
