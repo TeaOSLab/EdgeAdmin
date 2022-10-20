@@ -1,0 +1,58 @@
+{$layout}
+{$template "menu"}
+
+<form class="ui form" method="get" action="/clusters/regions/nodes" v-show="regions.length > 0">
+    <div class="margin"></div>
+    <div class="ui fields inline">
+        <div class="ui field">
+            <select class="ui dropdown" name="regionId" v-model="regionId">
+                <option value="0">[所有区域]</option>
+                <option v-for="region in regions" :value="region.id">{{region.name}}</option>
+            </select>
+        </div>
+        <div class="ui field">
+            <button type="submit" class="ui button">搜索</button>
+            &nbsp;
+            <a href="/clusters/regions/nodes" v-if="regionId > 0">[清除条件]</a>
+        </div>
+    </div>
+</form>
+
+<div v-if="nodes.length == 0">
+    <p class="comment"><span v-if="regionId > 0">当前区域下</span>暂时还没有节点。</p>
+</div>
+
+<div v-if="nodes.length > 0">
+    <div class="margin"></div>
+    <table class="ui table selectable celled">
+        <thead>
+            <tr>
+                <th>节点</th>
+                <th style="width: 30%">集群</th>
+                <th style="width: 30%">区域</th>
+                <th class="one op">操作</th>
+            </tr>
+        </thead>
+        <tr v-for="node in nodes" v-if="node.cluster != null">
+            <td>
+                <link-icon :href="'/clusters/cluster/node/detail?clusterId=' + node.cluster.id + '&nodeId=' + node.id">{{node.name}}</link-icon>
+            </td>
+            <td>
+                <span v-if="node.cluster != null">{{node.cluster.name}}</span>
+                <span v-else class="disabled">-</span>
+            </td>
+            <td>
+                <span v-if="node.region != null">{{node.region.name}}</span>
+                <span v-else class="disabled">尚未设置</span>
+            </td>
+            <td>
+                <a href="" v-if="node.region == null" @click.prevent="updateNodeRegion(node)">设置</a>
+                <a href="" v-if="node.region != null" @click.prevent="updateNodeRegion(node)">修改</a>
+            </td>
+        </tr>
+    </table>
+
+    <p class="comment" v-if="hasNodesWithoutRegion">已经将未设置区域的节点排在了表格最前面。</p>
+
+    <page-box></page-box>
+</div>

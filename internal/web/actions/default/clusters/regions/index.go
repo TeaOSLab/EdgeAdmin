@@ -11,7 +11,7 @@ type IndexAction struct {
 }
 
 func (this *IndexAction) Init() {
-	this.Nav("", "", "region")
+	this.Nav("", "", "index")
 }
 
 func (this *IndexAction) RunGet(params struct{}) {
@@ -20,7 +20,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 		this.ErrorPage(err)
 		return
 	}
-	regionMaps := []maps.Map{}
+	var regionMaps = []maps.Map{}
 	for _, region := range regionsResp.NodeRegions {
 		countNodesResp, err := this.RPC().NodeRPC().CountAllEnabledNodesWithNodeRegionId(this.AdminContext(), &pb.CountAllEnabledNodesWithNodeRegionIdRequest{NodeRegionId: region.Id})
 		if err != nil {

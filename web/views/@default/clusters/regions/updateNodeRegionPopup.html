@@ -1,0 +1,28 @@
+{$layout "layout_popup"}
+
+<h3 v-if="region.id > 0">修改节点区域</h3>
+<h3 v-if="region == null || region.id == 0">设置节点区域</h3>
+
+<form class="ui form" data-tea-action="$" data-tea-success="success">
+    <csrf-token></csrf-token>
+
+    <input type="hidden" name="nodeId" :value="node.id"/>
+
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">节点</td>
+            <td>{{node.name}}</td>
+        </tr>
+        <tr>
+            <td>区域 *</td>
+            <td>
+                <select class="ui dropdown auto-width" name="regionId" v-model="region.id">
+                    <option value="0">[选择区域]</option>
+                    <option v-for="r in regions" :value="r.id">{{r.name}}</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <submit-btn></submit-btn>
+</form>
+
