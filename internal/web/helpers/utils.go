@@ -4,6 +4,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
 	nodes "github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/iwind/TeaGo/lists"
@@ -145,7 +146,7 @@ func checkRequestSecurity(securityConfig *systemconfigs.SecurityConfig, req *htt
 		if err == nil && len(realDomain) > 0 {
 			domain = realDomain
 		}
-		if !lists.ContainsString(securityConfig.AllowDomains, domain) {
+		if !configutils.MatchDomains(securityConfig.AllowDomains, domain) {
 			return false
 		}
 	}
