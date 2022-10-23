@@ -117,6 +117,16 @@ func TrimZeroSuffix(s string) string {
 }
 
 func formatDigit(d string) string {
+	if len(d) == 0 {
+		return d
+	}
+
+	var prefix = ""
+	if d[0] < '0' || d[0] > '9' {
+		prefix = d[:1]
+		d = d[1:]
+	}
+
 	var l = len(d)
 	if l > 3 {
 		var pieces = l / 3
@@ -131,7 +141,7 @@ func formatDigit(d string) string {
 				d2 += ", "
 			}
 		}
-		return d2
+		return prefix + d2
 	}
-	return d
+	return prefix + d
 }

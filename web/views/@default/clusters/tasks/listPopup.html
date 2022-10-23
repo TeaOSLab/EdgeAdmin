@@ -27,11 +27,12 @@
                    {{task.node.name}} &nbsp; <a :href="'/clusters/cluster/node?clusterId=' + cluster.id + '&nodeId=' + task.node.id" target="_blank"><i class="icon linkify small grey"></i></a>
                 </td>
                 <td>
-                    <span v-if="task.type == 'configChanged'">同步配置</span>
+                    <span v-if="task.type == 'configChanged' || task.type == 'globalServerConfigChanged'">同步配置</span>
                     <span v-if="task.type == 'ipItemChanged'">同步IP名单</span>
                     <span v-if="task.type == 'scriptsChanged'">同步脚本</span>
                     <span v-if="task.type == 'nodeLevelChanged'">同步L2节点</span>
                     <span v-if="task.type == 'ddosProtectionChanged'">DDoS配置</span>
+                    <span v-if="task.type == 'userServersStateChanged'">用户服务状态</span>
                 </td>
                 <td>
                     <span v-if="task.isDone" class="red">{{task.error}}</span>
