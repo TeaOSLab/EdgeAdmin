@@ -45,6 +45,8 @@ func TestFormatFloat(t *testing.T) {
 	t.Log(numberutils.FormatFloat(1234, 2))
 	t.Log(numberutils.FormatFloat(1234.00001, 4))
 	t.Log(numberutils.FormatFloat(1234.56700, 4))
+	t.Log(numberutils.FormatFloat(-1234.56700, 2))
+	t.Log(numberutils.FormatFloat(-221745.12, 2))
 }
 
 func TestTrimZeroSuffix(t *testing.T) {

@@ -133,7 +133,7 @@ Tea.context(function () {
 	this.showNodeTasks = function () {
 		teaweb.popup("/clusters/tasks/listPopup", {
 			height: "24em",
-			width: "50em"
+			width: "54em"
 		})
 	}
 
@@ -166,7 +166,7 @@ Tea.context(function () {
 	this.showDNSTasks = function () {
 		teaweb.popup("/dns/tasks/listPopup", {
 			height: "24em",
-			width: "50em"
+			width: "54em"
 		})
 	}
 });
