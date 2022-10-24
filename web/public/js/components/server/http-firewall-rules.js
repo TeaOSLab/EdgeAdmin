@@ -236,6 +236,7 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 		let allowEmpty = true
 		let allowSameDomain = true
 		let allowDomains = []
+		let denyDomains = []
 
 		let options = {}
 		if (window.parent.UPDATING_RULE != null) {
@@ -254,6 +255,9 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 		if (options.allowDomains != null && typeof (options.allowDomains) == "object") {
 			allowDomains = options.allowDomains
 		}
+		if (options.denyDomains != null && typeof (options.denyDomains) == "object") {
+			denyDomains = options.denyDomains
+		}
 
 		let that = this
 		setTimeout(function () {
@@ -264,6 +268,7 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 			allowEmpty: allowEmpty,
 			allowSameDomain: allowSameDomain,
 			allowDomains: allowDomains,
+			denyDomains: denyDomains,
 			options: {},
 			value: 0
 		}
@@ -281,6 +286,10 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 			this.allowDomains = values
 			this.change()
 		},
+		changeDenyDomains: function (values) {
+			this.denyDomains = values
+			this.change()
+		},
 		change: function () {
 			this.vCheckpoint.options = [
 				{
@@ -294,7 +303,11 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 				{
 					code: "allowDomains",
 					value: this.allowDomains
-				}
+				},
+				{
+					code: "denyDomains",
+					value: this.denyDomains
+				},
 			]
 		}
 	},
@@ -321,6 +334,13 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 			<td>
 				<values-box :values="allowDomains" @change="changeAllowDomains"></values-box>
 				<p class="comment">允许的来源域名列表，比如<code-label>example.com</code-label>、<code-label>*.example.com</code-label>。单个星号<code-label>*</code-label>表示允许所有域名。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>禁止的来源域名</td>
+			<td>
+				<values-box :values="denyDomains" @change="changeDenyDomains"></values-box>
+				<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>、<code-label>*.example.org</code-label>；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
 			</td>
 		</tr>
 	</table>

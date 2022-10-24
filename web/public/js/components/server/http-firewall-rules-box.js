@@ -48,7 +48,8 @@ Vue.component("http-firewall-rules-box", {
 				
 				<!-- refererBlock -->
 				<span v-if="rule.param == '\${refererBlock}'">
-					{{rule.checkpointOptions.allowDomains}}
+					<span v-if="rule.checkpointOptions.allowDomains != null && rule.checkpointOptions.allowDomains.length > 0">允许{{rule.checkpointOptions.allowDomains}}</span>
+					<span v-if="rule.checkpointOptions.denyDomains != null && rule.checkpointOptions.denyDomains.length > 0">禁止{{rule.checkpointOptions.denyDomains}}</span>
 				</span>
 				
 				<span v-else>
