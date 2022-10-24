@@ -22,12 +22,14 @@ func (this *UpdateNodePopupAction) Init() {
 func (this *UpdateNodePopupAction) RunGet(params struct {
 	ClusterId int64
 	NodeId    int64
+	IpAddrId  int64
 }) {
 	this.Data["nodeId"] = params.NodeId
 
 	dnsInfoResp, err := this.RPC().NodeRPC().FindEnabledNodeDNS(this.AdminContext(), &pb.FindEnabledNodeDNSRequest{
 		NodeId:        params.NodeId,
 		NodeClusterId: params.ClusterId,
+		NodeIPAddrId:  params.IpAddrId,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -39,12 +41,13 @@ func (this *UpdateNodePopupAction) RunGet(params struct {
 		return
 	}
 	this.Data["ipAddr"] = dnsInfo.IpAddr
+	this.Data["ipAddrId"] = dnsInfo.NodeIPAddressId
 	this.Data["routes"] = domainutils.ConvertRoutesToMaps(dnsInfo)
 	this.Data["domainId"] = dnsInfo.DnsDomainId
 	this.Data["domainName"] = dnsInfo.DnsDomainName
 
 	// 读取所有线路
-	allRouteMaps := []maps.Map{}
+	var allRouteMaps = []maps.Map{}
 	if dnsInfo.DnsDomainId > 0 {
 		routesResp, err := this.RPC().DNSDomainRPC().FindAllDNSDomainRoutes(this.AdminContext(), &pb.FindAllDNSDomainRoutesRequest{DnsDomainId: dnsInfo.DnsDomainId})
 		if err != nil {
@@ -75,6 +78,7 @@ func (this *UpdateNodePopupAction) RunGet(params struct {
 func (this *UpdateNodePopupAction) RunPost(params struct {
 	NodeId        int64
 	IpAddr        string
+	IpAddrId      int64
 	DomainId      int64
 	DnsRoutesJSON []byte
 
@@ -84,7 +88,7 @@ func (this *UpdateNodePopupAction) RunPost(params struct {
 	// 操作日志
 	defer this.CreateLog(oplogs.LevelInfo, "修改节点 %d 的DNS设置", params.NodeId)
 
-	routes := []string{}
+	var routes = []string{}
 	if len(params.DnsRoutesJSON) > 0 {
 		err := json.Unmarshal(params.DnsRoutesJSON, &routes)
 		if err != nil {
@@ -103,10 +107,11 @@ func (this *UpdateNodePopupAction) RunPost(params struct {
 
 	// 执行修改
 	_, err := this.RPC().NodeRPC().UpdateNodeDNS(this.AdminContext(), &pb.UpdateNodeDNSRequest{
-		NodeId:      params.NodeId,
-		IpAddr:      params.IpAddr,
-		DnsDomainId: params.DomainId,
-		Routes:      routes,
+		NodeId:          params.NodeId,
+		IpAddr:          params.IpAddr,
+		NodeIPAddressId: params.IpAddrId,
+		DnsDomainId:     params.DomainId,
+		Routes:          routes,
 	})
 	if err != nil {
 		this.ErrorPage(err)

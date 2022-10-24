@@ -10,8 +10,8 @@ Tea.context(function () {
 		})
 	}
 
-	this.updateNode = function (clusterId, nodeId) {
-		teaweb.popup("/dns/issues/updateNodePopup?clusterId=" + clusterId + "&nodeId=" + nodeId, {
+	this.updateNode = function (clusterId, nodeId, ipAddrId) {
+		teaweb.popup("/dns/issues/updateNodePopup?clusterId=" + clusterId + "&nodeId=" + nodeId + "&ipAddrId=" + (ipAddrId ? ipAddrId : 0), {
 			width: "46em",
 			height: "26em",
 			callback: function () {

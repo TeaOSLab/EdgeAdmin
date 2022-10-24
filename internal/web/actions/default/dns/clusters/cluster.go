@@ -43,7 +43,7 @@ func (this *ClusterAction) RunGet(params struct {
 	}
 	var defaultRoute = dnsResp.DefaultRoute
 	domainName := ""
-	dnsMap := maps.Map{
+	var dnsMap = maps.Map{
 		"dnsName":          dnsResp.Name,
 		"domainId":         0,
 		"domainName":       "",
@@ -76,14 +76,14 @@ func (this *ClusterAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	nodeMaps := []maps.Map{}
+	var nodeMaps = []maps.Map{}
 	for _, node := range nodesResp.Nodes {
 		if len(node.Routes) > 0 {
 			for _, route := range node.Routes {
 				// 检查是否已解析
-				isResolved := false
+				var isResolved = false
 				if cluster.DnsDomainId > 0 && len(cluster.DnsName) > 0 && len(node.IpAddr) > 0 {
-					recordType := "A"
+					var recordType = "A"
 					if utils.IsIPv6(node.IpAddr) {
 						recordType = "AAAA"
 					}
@@ -102,9 +102,10 @@ func (this *ClusterAction) RunGet(params struct {
 				}
 
 				nodeMaps = append(nodeMaps, maps.Map{
-					"id":     node.Id,
-					"name":   node.Name,
-					"ipAddr": node.IpAddr,
+					"id":       node.Id,
+					"name":     node.Name,
+					"ipAddr":   node.IpAddr,
+					"ipAddrId": node.NodeIPAddressId,
 					"route": maps.Map{
 						"name": route.Name,
 						"code": route.Code,
@@ -117,7 +118,7 @@ func (this *ClusterAction) RunGet(params struct {
 			// 默认线路
 			var isResolved = false
 			if len(defaultRoute) > 0 {
-				recordType := "A"
+				var recordType = "A"
 				if utils.IsIPv6(node.IpAddr) {
 					recordType = "AAAA"
 				}
@@ -135,9 +136,10 @@ func (this *ClusterAction) RunGet(params struct {
 				isResolved = checkResp.IsOk
 			}
 			nodeMaps = append(nodeMaps, maps.Map{
-				"id":     node.Id,
-				"name":   node.Name,
-				"ipAddr": node.IpAddr,
+				"id":       node.Id,
+				"name":     node.Name,
+				"ipAddr":   node.IpAddr,
+				"ipAddrId": node.NodeIPAddressId,
 				"route": maps.Map{
 					"name": "",
 					"code": "",
@@ -155,7 +157,7 @@ func (this *ClusterAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	serverMaps := []maps.Map{}
+	var serverMaps = []maps.Map{}
 	for _, server := range serversResp.Servers {
 		// 检查是否已解析
 		isResolved := false
@@ -198,7 +200,7 @@ func (this *ClusterAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	issueMaps := []maps.Map{}
+	var issueMaps = []maps.Map{}
 	for _, issue := range issuesResp.Issues {
 		issueMaps = append(issueMaps, maps.Map{
 			"target":      issue.Target,
@@ -218,7 +220,7 @@ func (this *ClusterAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	taskMaps := []maps.Map{}
+	var taskMaps = []maps.Map{}
 	for _, task := range resp.DnsTasks {
 		var clusterMap maps.Map = nil
 		var nodeMap maps.Map = nil
