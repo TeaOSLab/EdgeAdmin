@@ -19,8 +19,10 @@ func (this *CreateDeletePopupAction) Init() {
 
 func (this *CreateDeletePopupAction) RunGet(params struct {
 	HeaderPolicyId int64
+	Type           string
 }) {
 	this.Data["headerPolicyId"] = params.HeaderPolicyId
+	this.Data["type"] = params.Type
 
 	this.Show()
 }
