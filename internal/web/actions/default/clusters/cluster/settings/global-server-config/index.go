@@ -78,6 +78,8 @@ func (this *IndexAction) RunPost(params struct {
 	HttpAllAllowNodeIP                     bool
 	HttpAllDefaultDomain                   string
 
+	HttpAccessLogCommonRequestHeadersOnly bool
+
 	LogRecordServerError bool
 
 	Must *actions.Must
@@ -122,6 +124,8 @@ func (this *IndexAction) RunPost(params struct {
 	config.HTTPAll.AllowMismatchDomains = allowMismatchDomains
 	config.HTTPAll.AllowNodeIP = params.HttpAllAllowNodeIP
 	config.HTTPAll.DefaultDomain = params.HttpAllDefaultDomain
+
+	config.HTTPAccessLog.CommonRequestHeadersOnly = params.HttpAccessLogCommonRequestHeadersOnly
 
 	config.Log.RecordServerError = params.LogRecordServerError
 
