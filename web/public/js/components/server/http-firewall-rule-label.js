@@ -8,7 +8,6 @@ Vue.component("http-firewall-rule-label", {
 	},
 	methods: {
 		showErr: function (err) {
-
 			teaweb.popupTip("规则校验错误，请修正：<span class=\"red\">"  + teaweb.encodeHTML(err) + "</span>")
 		},
 
@@ -24,7 +23,8 @@ Vue.component("http-firewall-rule-label", {
 
 		<!-- refererBlock -->
 		<span v-if="rule.param == '\${refererBlock}'">
-			{{rule.checkpointOptions.allowDomains}}
+			<span v-if="rule.checkpointOptions.allowDomains != null && rule.checkpointOptions.allowDomains.length > 0">允许{{rule.checkpointOptions.allowDomains}}</span>
+			<span v-if="rule.checkpointOptions.denyDomains != null && rule.checkpointOptions.denyDomains.length > 0">禁止{{rule.checkpointOptions.denyDomains}}</span>
 		</span>
 
 		<span v-else>
