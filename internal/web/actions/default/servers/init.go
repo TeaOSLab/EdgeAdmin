@@ -2,6 +2,7 @@ package servers
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/headers"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/users"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/iwind/TeaGo"
@@ -26,9 +27,12 @@ func init() {
 			Get("/serverNamesPopup", new(ServerNamesPopupAction)).
 			Post("/status", new(StatusAction)).
 
-			//
+			// user
 			Post("/users/options", new(users.OptionsAction)).
 			Post("/users/plans", new(users.PlansAction)).
+
+			// header
+			Post("/headers/options", new(headers.OptionsAction)).
 
 			//
 			EndAll()

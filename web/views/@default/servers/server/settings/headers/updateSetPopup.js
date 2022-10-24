@@ -4,4 +4,8 @@ Tea.context(function () {
 	if (this.headerConfig.status != null && this.headerConfig.status.codes != null) {
 		this.statusList = this.headerConfig.status.codes
 	}
+
+	this.selectHeader = function (headerName) {
+		this.headerConfig.name = headerName
+	}
 })

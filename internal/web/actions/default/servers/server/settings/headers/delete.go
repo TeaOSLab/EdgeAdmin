@@ -8,7 +8,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 )
 
-// 删除Header
+// DeleteAction 删除Header
 type DeleteAction struct {
 	actionutils.ParentAction
 }
