@@ -21,21 +21,21 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct {
-	Ip         string
+	Keyword    string
 	GlobalOnly bool
 	Unread     bool
 	EventLevel string
 	ListType   string
 }) {
 	this.Data["type"] = ""
-	this.Data["ip"] = params.Ip
+	this.Data["keyword"] = params.Keyword
 	this.Data["globalOnly"] = params.GlobalOnly
 	this.Data["unread"] = params.Unread
 	this.Data["eventLevel"] = params.EventLevel
 	this.Data["listType"] = params.ListType
 
 	countUnreadResp, err := this.RPC().IPItemRPC().CountAllEnabledIPItems(this.AdminContext(), &pb.CountAllEnabledIPItemsRequest{
-		Ip:         params.Ip,
+		Keyword:    params.Keyword,
 		GlobalOnly: params.GlobalOnly,
 		Unread:     true,
 		EventLevel: params.EventLevel,
@@ -48,7 +48,7 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["countUnread"] = countUnreadResp.Count
 
 	countResp, err := this.RPC().IPItemRPC().CountAllEnabledIPItems(this.AdminContext(), &pb.CountAllEnabledIPItemsRequest{
-		Ip:         params.Ip,
+		Keyword:    params.Keyword,
 		GlobalOnly: params.GlobalOnly,
 		Unread:     params.Unread,
 		EventLevel: params.EventLevel,
@@ -63,7 +63,7 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["page"] = page.AsHTML()
 
 	itemsResp, err := this.RPC().IPItemRPC().ListAllEnabledIPItems(this.AdminContext(), &pb.ListAllEnabledIPItemsRequest{
-		Ip:         params.Ip,
+		Keyword:    params.Keyword,
 		GlobalOnly: params.GlobalOnly,
 		Unread:     params.Unread,
 		EventLevel: params.EventLevel,

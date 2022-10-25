@@ -5,7 +5,7 @@
 <form class="ui form" action="/servers/iplists" method="get">
     <div class="ui fields inline">
         <div class="ui field">
-            <input type="text" name="ip" placeholder="x.x.x.x" v-model="ip"/>
+            <input type="text" name="keyword" placeholder="x.x.x.x" v-model="keyword"/>
         </div>
         <div class="ui field">
             <select class="ui dropdown auto-width" name="listType" v-model="listType">
@@ -35,7 +35,7 @@
         <div class="ui field">
             <button class="ui button" type="submit">搜索</button>
             &nbsp;
-            <a href="/servers/iplists" v-if="ip.length > 0 || globalOnly || unread || eventLevel.length > 0 || listType.length > 0">[清除条件]</a>
+            <a href="/servers/iplists" v-if="keyword.length > 0 || globalOnly || unread || eventLevel.length > 0 || listType.length > 0">[清除条件]</a>
         </div>
         <div class="ui field" v-if="countUnread > 0">
             <span class="disabled">|</span>
@@ -50,6 +50,6 @@
 
 <p class="comment" v-if="items.length == 0">暂时还没有IP。</p>
 
-<ip-list-table v-if="items.length > 0" :v-items="items" @update-item="updateItem" @delete-item="deleteItem" :v-keyword="ip" :v-show-search-button="true"></ip-list-table>
+<ip-list-table v-if="items.length > 0" :v-items="items" @update-item="updateItem" @delete-item="deleteItem" :v-keyword="keyword" :v-show-search-button="true"></ip-list-table>
 
 <div class="page" v-html="page"></div>
