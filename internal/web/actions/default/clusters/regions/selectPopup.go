@@ -40,12 +40,18 @@ func (this *SelectPopupAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
+	if params.RegionId <= 0 {
+		this.Data["region"] = nil
+		this.Success()
+		return
+	}
+
 	regionResp, err := this.RPC().NodeRegionRPC().FindEnabledNodeRegion(this.AdminContext(), &pb.FindEnabledNodeRegionRequest{NodeRegionId: params.RegionId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	region := regionResp.NodeRegion
+	var region = regionResp.NodeRegion
 	if region == nil {
 		this.NotFound("nodeRegion", params.RegionId)
 		return
