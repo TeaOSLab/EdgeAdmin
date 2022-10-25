@@ -4158,7 +4158,6 @@ Vue.component("http-firewall-rule-label", {
 	},
 	methods: {
 		showErr: function (err) {
-
 			teaweb.popupTip("规则校验错误，请修正：<span class=\"red\">"  + teaweb.encodeHTML(err) + "</span>")
 		},
 
@@ -4174,7 +4173,8 @@ Vue.component("http-firewall-rule-label", {
 
 		<!-- refererBlock -->
 		<span v-if="rule.param == '\${refererBlock}'">
-			{{rule.checkpointOptions.allowDomains}}
+			<span v-if="rule.checkpointOptions.allowDomains != null && rule.checkpointOptions.allowDomains.length > 0">允许{{rule.checkpointOptions.allowDomains}}</span>
+			<span v-if="rule.checkpointOptions.denyDomains != null && rule.checkpointOptions.denyDomains.length > 0">禁止{{rule.checkpointOptions.denyDomains}}</span>
 		</span>
 
 		<span v-else>
@@ -5975,6 +5975,7 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 		let allowEmpty = true
 		let allowSameDomain = true
 		let allowDomains = []
+		let denyDomains = []
 
 		let options = {}
 		if (window.parent.UPDATING_RULE != null) {
@@ -5993,6 +5994,9 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 		if (options.allowDomains != null && typeof (options.allowDomains) == "object") {
 			allowDomains = options.allowDomains
 		}
+		if (options.denyDomains != null && typeof (options.denyDomains) == "object") {
+			denyDomains = options.denyDomains
+		}
 
 		let that = this
 		setTimeout(function () {
@@ -6003,6 +6007,7 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 			allowEmpty: allowEmpty,
 			allowSameDomain: allowSameDomain,
 			allowDomains: allowDomains,
+			denyDomains: denyDomains,
 			options: {},
 			value: 0
 		}
@@ -6020,6 +6025,10 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 			this.allowDomains = values
 			this.change()
 		},
+		changeDenyDomains: function (values) {
+			this.denyDomains = values
+			this.change()
+		},
 		change: function () {
 			this.vCheckpoint.options = [
 				{
@@ -6033,7 +6042,11 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 				{
 					code: "allowDomains",
 					value: this.allowDomains
-				}
+				},
+				{
+					code: "denyDomains",
+					value: this.denyDomains
+				},
 			]
 		}
 	},
@@ -6060,6 +6073,13 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 			<td>
 				<values-box :values="allowDomains" @change="changeAllowDomains"></values-box>
 				<p class="comment">允许的来源域名列表，比如<code-label>example.com</code-label>、<code-label>*.example.com</code-label>。单个星号<code-label>*</code-label>表示允许所有域名。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>禁止的来源域名</td>
+			<td>
+				<values-box :values="denyDomains" @change="changeDenyDomains"></values-box>
+				<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>、<code-label>*.example.org</code-label>；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
 			</td>
 		</tr>
 	</table>
@@ -7101,11 +7121,15 @@ Vue.component("http-referers-config-box", {
 				isOn: false,
 				allowEmpty: true,
 				allowSameDomain: true,
-				allowDomains: []
+				allowDomains: [],
+				denyDomains: []
 			}
 		}
 		if (config.allowDomains == null) {
 			config.allowDomains = []
+		}
+		if (config.denyDomains == null) {
+			config.denyDomains = []
 		}
 		return {
 			config: config
@@ -7116,6 +7140,8 @@ Vue.component("http-referers-config-box", {
 			return ((!this.vIsLocation && !this.vIsGroup) || this.config.isPrior) && this.config.isOn
 		},
 		changeAllowDomains: function (domains) {
+		},
+		changeDenyDomains: function (domains) {
 		}
 	},
 	template: `<div>
@@ -7154,6 +7180,13 @@ Vue.component("http-referers-config-box", {
 			<td>
 				<values-box :values="config.allowDomains" @change="changeAllowDomains"></values-box>
 				<p class="comment">允许的其他来源域名列表，比如<code-label>example.com</code-label>、<code-label>*.example.com</code-label>。单个星号<code-label>*</code-label>表示允许所有域名。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>禁止的来源域名</td>
+			<td>
+				<values-box :values="config.denyDomains" @change="changeDenyDomains"></values-box>
+				<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>、<code-label>*.example.org</code-label>；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
 			</td>
 		</tr>
 	</tbody>
@@ -11580,6 +11613,51 @@ Vue.component("http-request-cond-view", {
 </div>`
 })
 
+Vue.component("http-header-assistant", {
+	props: ["v-type", "v-value"],
+	mounted: function () {
+		let that = this
+		Tea.action("/servers/headers/options?type=" + this.vType)
+			.post()
+			.success(function (resp) {
+				that.allHeaders = resp.data.headers
+			})
+	},
+	data: function () {
+		return {
+			allHeaders: [],
+			matchedHeaders: [],
+
+			selectedHeaderName: ""
+		}
+	},
+	watch: {
+		vValue: function (v) {
+			if (v != this.selectedHeaderName) {
+				this.selectedHeaderName = ""
+			}
+
+			if (v.length == 0) {
+				this.matchedHeaders = []
+				return
+			}
+			this.matchedHeaders = this.allHeaders.filter(function (header) {
+				return teaweb.match(header, v)
+			}).slice(0, 5)
+		}
+	},
+	methods: {
+		select: function (header) {
+			this.$emit("select", header)
+			this.selectedHeaderName = header
+		}
+	},
+	template: `<span v-if="selectedHeaderName.length == 0">
+	<a href="" v-for="header in matchedHeaders" class="ui label basic tiny blue" style="font-weight: normal" @click.prevent="select(header)">{{header}}</a>
+	<span v-if="matchedHeaders.length > 0">&nbsp; &nbsp;</span>
+</span>`
+})
+
 Vue.component("http-firewall-rules-box", {
 	props: ["v-rules", "v-type"],
 	data: function () {
@@ -11630,7 +11708,8 @@ Vue.component("http-firewall-rules-box", {
 				
 				<!-- refererBlock -->
 				<span v-if="rule.param == '\${refererBlock}'">
-					{{rule.checkpointOptions.allowDomains}}
+					<span v-if="rule.checkpointOptions.allowDomains != null && rule.checkpointOptions.allowDomains.length > 0">允许{{rule.checkpointOptions.allowDomains}}</span>
+					<span v-if="rule.checkpointOptions.denyDomains != null && rule.checkpointOptions.denyDomains.length > 0">禁止{{rule.checkpointOptions.denyDomains}}</span>
 				</span>
 				
 				<span v-else>

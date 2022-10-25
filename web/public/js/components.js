@@ -1467,7 +1467,8 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 
 		<!-- refererBlock -->
 		<span v-if="rule.param == '\${refererBlock}'">
-			{{rule.checkpointOptions.allowDomains}}
+			<span v-if="rule.checkpointOptions.allowDomains != null && rule.checkpointOptions.allowDomains.length > 0">允许{{rule.checkpointOptions.allowDomains}}</span>
+			<span v-if="rule.checkpointOptions.denyDomains != null && rule.checkpointOptions.denyDomains.length > 0">禁止{{rule.checkpointOptions.denyDomains}}</span>
 		</span>
 
 		<span v-else>
@@ -2029,7 +2030,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			</td>
 		</tr>
 	</table>
-</div>`}),Vue.component("http-firewall-checkpoint-referer-block",{props:["v-checkpoint"],data:function(){let e=!0,t=!0,i=[],s={},n=("boolean"==typeof(s=null==(s=null!=window.parent.UPDATING_RULE?window.parent.UPDATING_RULE.checkpointOptions:s)?{}:s).allowEmpty&&(e=s.allowEmpty),"boolean"==typeof s.allowSameDomain&&(t=s.allowSameDomain),null!=s.allowDomains&&"object"==typeof s.allowDomains&&(i=s.allowDomains),this);return setTimeout(function(){n.change()},100),{allowEmpty:e,allowSameDomain:t,allowDomains:i,options:{},value:0}},watch:{allowEmpty:function(){this.change()},allowSameDomain:function(){this.change()}},methods:{changeAllowDomains:function(e){this.allowDomains=e,this.change()},change:function(){this.vCheckpoint.options=[{code:"allowEmpty",value:this.allowEmpty},{code:"allowSameDomain",value:this.allowSameDomain},{code:"allowDomains",value:this.allowDomains}]}},template:`<div>
+</div>`}),Vue.component("http-firewall-checkpoint-referer-block",{props:["v-checkpoint"],data:function(){let e=!0,t=!0,i=[],s=[],n={},o=("boolean"==typeof(n=null==(n=null!=window.parent.UPDATING_RULE?window.parent.UPDATING_RULE.checkpointOptions:n)?{}:n).allowEmpty&&(e=n.allowEmpty),"boolean"==typeof n.allowSameDomain&&(t=n.allowSameDomain),null!=n.allowDomains&&"object"==typeof n.allowDomains&&(i=n.allowDomains),null!=n.denyDomains&&"object"==typeof n.denyDomains&&(s=n.denyDomains),this);return setTimeout(function(){o.change()},100),{allowEmpty:e,allowSameDomain:t,allowDomains:i,denyDomains:s,options:{},value:0}},watch:{allowEmpty:function(){this.change()},allowSameDomain:function(){this.change()}},methods:{changeAllowDomains:function(e){this.allowDomains=e,this.change()},changeDenyDomains:function(e){this.denyDomains=e,this.change()},change:function(){this.vCheckpoint.options=[{code:"allowEmpty",value:this.allowEmpty},{code:"allowSameDomain",value:this.allowSameDomain},{code:"allowDomains",value:this.allowDomains},{code:"denyDomains",value:this.denyDomains}]}},template:`<div>
 	<input type="hidden" name="operator" value="eq"/>
 	<input type="hidden" name="value" :value="value"/>
 	<table class="ui table">
@@ -2052,6 +2053,13 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<td>
 				<values-box :values="allowDomains" @change="changeAllowDomains"></values-box>
 				<p class="comment">允许的来源域名列表，比如<code-label>example.com</code-label>、<code-label>*.example.com</code-label>。单个星号<code-label>*</code-label>表示允许所有域名。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>禁止的来源域名</td>
+			<td>
+				<values-box :values="denyDomains" @change="changeDenyDomains"></values-box>
+				<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>、<code-label>*.example.org</code-label>；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
 			</td>
 		</tr>
 	</table>
@@ -2376,7 +2384,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<div style="margin-top: 0.5em" v-if="!isAdding">
 		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
 	</div>
-</div>`}),Vue.component("http-referers-config-box",{props:["v-referers-config","v-is-location","v-is-group"],data:function(){let e=this.vReferersConfig;return null==(e=null==e?{isPrior:!1,isOn:!1,allowEmpty:!0,allowSameDomain:!0,allowDomains:[]}:e).allowDomains&&(e.allowDomains=[]),{config:e}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeAllowDomains:function(e){}},template:`<div>
+</div>`}),Vue.component("http-referers-config-box",{props:["v-referers-config","v-is-location","v-is-group"],data:function(){let e=this.vReferersConfig;return null==(e=null==e?{isPrior:!1,isOn:!1,allowEmpty:!0,allowSameDomain:!0,allowDomains:[],denyDomains:[]}:e).allowDomains&&(e.allowDomains=[]),null==e.denyDomains&&(e.denyDomains=[]),{config:e}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeAllowDomains:function(e){},changeDenyDomains:function(e){}},template:`<div>
 <input type="hidden" name="referersJSON" :value="JSON.stringify(config)"/>
 <table class="ui table selectable definition">
 	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
@@ -2412,6 +2420,13 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<td>
 				<values-box :values="config.allowDomains" @change="changeAllowDomains"></values-box>
 				<p class="comment">允许的其他来源域名列表，比如<code-label>example.com</code-label>、<code-label>*.example.com</code-label>。单个星号<code-label>*</code-label>表示允许所有域名。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>禁止的来源域名</td>
+			<td>
+				<values-box :values="config.denyDomains" @change="changeDenyDomains"></values-box>
+				<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>、<code-label>*.example.org</code-label>；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
 			</td>
 		</tr>
 	</tbody>
@@ -4087,7 +4102,10 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		{{cond.value}}
 		<sup v-if="cond.isCaseInsensitive" title="不区分大小写"><i class="icon info small"></i></sup>
 	</span>
-</div>`}),Vue.component("http-firewall-rules-box",{props:["v-rules","v-type"],data:function(){let e=this.vRules;return{rules:e=null==e?[]:e}},methods:{addRule:function(){window.UPDATING_RULE=null;let t=this;teaweb.popup("/servers/components/waf/createRulePopup?type="+this.vType,{callback:function(e){t.rules.push(e.data.rule)}})},updateRule:function(t,e){window.UPDATING_RULE=e;let i=this;teaweb.popup("/servers/components/waf/createRulePopup?type="+this.vType,{callback:function(e){Vue.set(i.rules,t,e.data.rule)}})},removeRule:function(e){let t=this;teaweb.confirm("确定要删除此规则吗？",function(){t.rules.$remove(e)})}},template:`<div>
+</div>`}),Vue.component("http-header-assistant",{props:["v-type","v-value"],mounted:function(){let t=this;Tea.action("/servers/headers/options?type="+this.vType).post().success(function(e){t.allHeaders=e.data.headers})},data:function(){return{allHeaders:[],matchedHeaders:[],selectedHeaderName:""}},watch:{vValue:function(t){t!=this.selectedHeaderName&&(this.selectedHeaderName=""),0==t.length?this.matchedHeaders=[]:this.matchedHeaders=this.allHeaders.filter(function(e){return teaweb.match(e,t)}).slice(0,5)}},methods:{select:function(e){this.$emit("select",e),this.selectedHeaderName=e}},template:`<span v-if="selectedHeaderName.length == 0">
+	<a href="" v-for="header in matchedHeaders" class="ui label basic tiny blue" style="font-weight: normal" @click.prevent="select(header)">{{header}}</a>
+	<span v-if="matchedHeaders.length > 0">&nbsp; &nbsp;</span>
+</span>`}),Vue.component("http-firewall-rules-box",{props:["v-rules","v-type"],data:function(){let e=this.vRules;return{rules:e=null==e?[]:e}},methods:{addRule:function(){window.UPDATING_RULE=null;let t=this;teaweb.popup("/servers/components/waf/createRulePopup?type="+this.vType,{callback:function(e){t.rules.push(e.data.rule)}})},updateRule:function(t,e){window.UPDATING_RULE=e;let i=this;teaweb.popup("/servers/components/waf/createRulePopup?type="+this.vType,{callback:function(e){Vue.set(i.rules,t,e.data.rule)}})},removeRule:function(e){let t=this;teaweb.confirm("确定要删除此规则吗？",function(){t.rules.$remove(e)})}},template:`<div>
 		<input type="hidden" name="rulesJSON" :value="JSON.stringify(rules)"/>
 		<div v-if="rules.length > 0">
 			<div v-for="(rule, index) in rules" class="ui label small basic" style="margin-bottom: 0.5em">
@@ -4100,7 +4118,8 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				
 				<!-- refererBlock -->
 				<span v-if="rule.param == '\${refererBlock}'">
-					{{rule.checkpointOptions.allowDomains}}
+					<span v-if="rule.checkpointOptions.allowDomains != null && rule.checkpointOptions.allowDomains.length > 0">允许{{rule.checkpointOptions.allowDomains}}</span>
+					<span v-if="rule.checkpointOptions.denyDomains != null && rule.checkpointOptions.denyDomains.length > 0">禁止{{rule.checkpointOptions.denyDomains}}</span>
 				</span>
 				
 				<span v-else>
