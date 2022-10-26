@@ -100,14 +100,15 @@ func (this *UpdateAction) RunGet(params struct {
 	}
 
 	var nodeMap = maps.Map{
-		"id":          node.Id,
-		"name":        node.Name,
-		"ipAddresses": ipAddressMaps,
-		"cluster":     clusterMap,
-		"isOn":        node.IsOn,
-		"group":       groupMap,
-		"region":      regionMap,
-		"level":       node.Level,
+		"id":            node.Id,
+		"name":          node.Name,
+		"ipAddresses":   ipAddressMaps,
+		"cluster":       clusterMap,
+		"isOn":          node.IsOn,
+		"group":         groupMap,
+		"region":        regionMap,
+		"level":         node.Level,
+		"enableIPLists": node.EnableIPLists,
 	}
 
 	if node.LnAddrs == nil {
@@ -157,6 +158,7 @@ func (this *UpdateAction) RunPost(params struct {
 	IsOn                bool
 	Level               int32
 	LnAddrs             []string
+	EnableIPLists       bool
 
 	Must *actions.Must
 }) {
@@ -234,6 +236,7 @@ func (this *UpdateAction) RunPost(params struct {
 		IsOn:                    params.IsOn,
 		Level:                   params.Level,
 		LnAddrs:                 lnAddrs,
+		EnableIPLists:           params.EnableIPLists,
 	})
 	if err != nil {
 		this.ErrorPage(err)
