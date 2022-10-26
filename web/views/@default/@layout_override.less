@@ -56,6 +56,10 @@ table {
 	}
 }
 
+.ui.table tbody[style*="display: none;"], .ui.table tr[style*="display: none;"], .ui.table tr>td[style*="display: none;"], .ui.table tr>th[style*="display: none;"] {
+	display: none!important;
+}
+
 // textarea
 textarea::-webkit-scrollbar {
 	width: 6px !important;
