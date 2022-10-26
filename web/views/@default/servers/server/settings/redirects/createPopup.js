@@ -3,8 +3,12 @@ Tea.context(function () {
 	if (window.parent.UPDATING_REDIRECT != null) {
 		this.isCreating = false
 		this.redirect = window.parent.UPDATING_REDIRECT
+		if (this.redirect.type == null || this.redirect.type.length == 0) {
+			this.redirect.type = "url"
+		}
 	} else {
 		this.redirect = {
+			type: "url",
 			status: 0,
 			beforeURL: "",
 			afterURL: "",
@@ -13,7 +17,17 @@ Tea.context(function () {
 			keepRequestURI: false,
 			keepArgs: true,
 			conds: null,
-			isOn: true
+			isOn: true,
+
+			domainsAll: false,
+			domainBefore: [],
+			domainAfter: "",
+			domainAfterScheme: "",
+
+			portsAll: false,
+			portsBefore: [],
+			portAfter: 0,
+			portAfterScheme: ""
 		}
 	}
 
