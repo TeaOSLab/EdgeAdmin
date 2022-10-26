@@ -50,10 +50,31 @@
         <h4>访问日志</h4>
         <table class="ui table definition selectable">
             <tr>
+                <td>记录请求Header</td>
+                <td>
+                    <checkbox name="httpAccessLogEnableRequestHeaders" v-model="config.httpAccessLog.enableRequestHeaders"></checkbox>
+                    <p class="comment">选中后，表示在访问日志中记录请求Header。</p>
+                </td>
+            </tr>
+            <tr>
                 <td class="title">只记录通用请求<br/>Header</td>
                 <td>
                     <checkbox name="httpAccessLogCommonRequestHeadersOnly" v-model="config.httpAccessLog.commonRequestHeadersOnly"></checkbox>
                     <p class="comment">选中后，表示访问日志中只记录通用的HTTP请求Header（比如<code-label>User-Agent</code-label>），其他自定义或非标准的（比如<code-label>Test-Header</code-label>）将不记录。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>记录响应Header</td>
+                <td>
+                    <checkbox name="httpAccessLogEnableResponseHeaders" v-model="config.httpAccessLog.enableResponseHeaders"></checkbox>
+                    <p class="comment">选中后，表示在访问日志中记录响应Header。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>记录Cookie</td>
+                <td>
+                    <checkbox name="httpAccessLogEnableCookies" v-model="config.httpAccessLog.enableCookies"></checkbox>
+                    <p class="comment">选中后，表示访问日志中记录Cookie内容。</p>
                 </td>
             </tr>
         </table>
