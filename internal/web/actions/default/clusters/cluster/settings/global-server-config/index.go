@@ -78,7 +78,10 @@ func (this *IndexAction) RunPost(params struct {
 	HttpAllAllowNodeIP                     bool
 	HttpAllDefaultDomain                   string
 
+	HttpAccessLogEnableRequestHeaders     bool
+	HttpAccessLogEnableResponseHeaders    bool
 	HttpAccessLogCommonRequestHeadersOnly bool
+	HttpAccessLogEnableCookies            bool
 
 	LogRecordServerError bool
 
@@ -125,7 +128,10 @@ func (this *IndexAction) RunPost(params struct {
 	config.HTTPAll.AllowNodeIP = params.HttpAllAllowNodeIP
 	config.HTTPAll.DefaultDomain = params.HttpAllDefaultDomain
 
+	config.HTTPAccessLog.EnableRequestHeaders = params.HttpAccessLogEnableRequestHeaders
+	config.HTTPAccessLog.EnableResponseHeaders = params.HttpAccessLogEnableResponseHeaders
 	config.HTTPAccessLog.CommonRequestHeadersOnly = params.HttpAccessLogCommonRequestHeadersOnly
+	config.HTTPAccessLog.EnableCookies = params.HttpAccessLogEnableCookies
 
 	config.Log.RecordServerError = params.LogRecordServerError
 
