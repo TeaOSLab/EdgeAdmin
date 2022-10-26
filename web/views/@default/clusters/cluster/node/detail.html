@@ -8,7 +8,7 @@
 			<td>{{node.name}}</td>
 		</tr>
 		<tr>
-			<td>状态</td>
+			<td>启用状态</td>
 			<td><label-on :v-is-on="node.isOn"></label-on></td>
 		</tr>
         <tr>
@@ -101,6 +101,13 @@
 			<td colspan="2"><more-options-indicator>更多选项</more-options-indicator></td>
 		</tr>
 		<tbody v-show="moreOptionsVisible">
+            <tr>
+                <td>同步IP名单</td>
+                <td>
+                    <span v-if="node.enableIPLists" class="green">Y</span>
+                    <span v-else class="disabled">N</span>
+                </td>
+            </tr>
 			<tr>
 				<td>SSH主机地址</td>
 				<td>

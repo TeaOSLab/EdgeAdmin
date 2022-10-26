@@ -62,6 +62,13 @@
                     </td>
                 </tr>
                 <tr>
+                    <td>同步IP名单</td>
+                    <td>
+                        <checkbox name="enableIPLists" v-model="node.enableIPLists"></checkbox>
+                        <p class="comment">选中后，表示启用IP名单同步，包括来自管理员、用户添加的IP名单，以及其他节点系统自动拦截的IP名单。</p>
+                    </td>
+                </tr>
+                <tr>
                     <td>启用节点</td>
                     <td>
                         <div class="ui checkbox">

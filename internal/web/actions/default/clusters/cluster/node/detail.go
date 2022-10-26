@@ -318,6 +318,7 @@ func (this *DetailAction) RunGet(params struct {
 		"level":             node.Level,
 		"levelInfo":         nodeconfigs.FindNodeLevel(int(node.Level)),
 		"lnAddrs":           lnAddrs,
+		"enableIPLists":     node.EnableIPLists,
 
 		"status": maps.Map{
 			"isActive":             status.IsActive,
