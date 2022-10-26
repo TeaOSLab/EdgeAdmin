@@ -45,7 +45,7 @@ func (this *IndexAction) RunGet(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		grant := grantResp.NodeGrant
+		var grant = grantResp.NodeGrant
 		if grant != nil {
 			grantMap = maps.Map{
 				"id":         grant.Id,
@@ -79,6 +79,16 @@ func (this *IndexAction) RunGet(params struct {
 		}
 	}
 
+	// SSH参数
+	var sshParams = nodeconfigs.DefaultSSHParams()
+	if len(cluster.SshParamsJSON) > 0 {
+		err = json.Unmarshal(cluster.SshParamsJSON, sshParams)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+
 	this.Data["cluster"] = maps.Map{
 		"id":                  cluster.Id,
 		"name":                cluster.Name,
@@ -89,6 +99,7 @@ func (this *IndexAction) RunGet(params struct {
 		"clock":               clockConfig,
 		"autoRemoteStart":     cluster.AutoRemoteStart,
 		"autoInstallNftables": cluster.AutoInstallNftables,
+		"sshParams":           sshParams,
 	}
 
 	// 默认值
@@ -104,6 +115,7 @@ func (this *IndexAction) RunPost(params struct {
 	ClusterId           int64
 	Name                string
 	GrantId             int64
+	SshParamsPort       int
 	InstallDir          string
 	TimeZone            string
 	NodeMaxThreads      int32
@@ -129,6 +141,16 @@ func (this *IndexAction) RunPost(params struct {
 			Lte(int64(nodeconfigs.DefaultMaxThreadsMax), "单节点最大线程数最大值不能大于"+types.String(nodeconfigs.DefaultMaxThreadsMax))
 	}
 
+	// ssh
+	var sshParams = nodeconfigs.DefaultSSHParams()
+	sshParams.Port = params.SshParamsPort
+	sshParamsJSON, err := json.Marshal(sshParams)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	// clock
 	var clockConfig = nodeconfigs.DefaultClockConfig()
 	clockConfig.AutoSync = params.ClockAutoSync
 	clockConfig.Server = params.ClockServer
@@ -155,6 +177,7 @@ func (this *IndexAction) RunPost(params struct {
 		ClockJSON:           clockConfigJSON,
 		AutoRemoteStart:     params.AutoRemoteStart,
 		AutoInstallNftables: params.AutoInstallNftables,
+		SshParamsJSON:       sshParamsJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)

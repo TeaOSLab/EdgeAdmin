@@ -11,12 +11,19 @@
 				<td><input type="text" name="name" maxlength="50" ref="focus" v-model="cluster.name"/></td>
 			</tr>
 			<tr>
-				<td>默认SSH登录方式</td>
+				<td>默认SSH认证</td>
 				<td>
 					<grant-selector :v-grant="grant"></grant-selector>
-					<p class="comment">当节点没有单独设置SSH登录方式时，默认使用此设置。</p>
+					<p class="comment">当节点没有单独设置SSH认证时，默认使用此设置。</p>
 				</td>
 			</tr>
+            <tr>
+                <td>默认SSH端口</td>
+                <td>
+                    <input type="text" name="sshParamsPort" v-model="cluster.sshParams.port" maxlength="5" style="width: 5em"/>
+                    <p class="comment">节点默认SSH登录端口。</p>
+                </td>
+            </tr>
 			<tr>
 				<td>节点安装目录</td>
 				<td>
