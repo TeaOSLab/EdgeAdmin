@@ -10,46 +10,129 @@
 
     <table class="ui table definition selectable">
         <tr>
-            <td class="title">跳转前URL *</td>
+            <td class="title">跳转类型</td>
             <td>
-                <input type="text" name="beforeURL" placeholder="比如 http://www.url1.com" v-model="redirect.beforeURL" ref="focus"/>
-                <p class="comment">需要填写完整的URL，包括<code-label>http://</code-label>或者<code-label>https://</code-label>，如果有非默认端口，也需要带上端口号。</p>
-            </td>
-        </tr>
-        <tr>
-            <td>匹配模式 *</td>
-            <td>
-                <select class="ui dropdown auto-width" name="mode" v-model="mode">
-                    <option value="equal">精准匹配</option>
-                    <option value="matchPrefix">匹配前缀</option>
-                    <option value="matchRegexp">正则匹配</option>
+                <select class="ui dropdown auto-width" name="type" v-model="redirect.type">
+                    <option value="url">URL跳转</option>
+                    <option value="domain">域名跳转</option>
+                    <option value="port">端口跳转</option>
                 </select>
-                <p class="comment" v-if="mode == 'equal'">精准匹配跳转前的URL，即只有访问完全一样的URL才会跳转。</p>
-                <p class="comment" v-if="mode == 'matchPrefix'">只要访问的URL头部部分包含跳转前URL，即可跳转。</p>
-                <p class="comment" v-if="mode == 'matchRegexp'">可以在跳转前URL中使用正则表达式，然后可以在跳转后URL中使用正则表达式中括号的变量，比如<code-label>${1}</code-label>、<code-label>${2}</code-label>分别表示第一个和第二个括号内的变量值。</p>
             </td>
         </tr>
-        <tr>
-            <td>跳转后URL *</td>
-            <td>
-                <input type="text" name="afterURL" placeholder="比如 https://www.url2.cn" v-model="redirect.afterURL"/>
-                <p class="comment">需要填写完整的URL，包括<code-label>http://</code-label>或者<code-label>https://</code-label>，如果有非默认端口，也需要带上端口号。</p>
-            </td>
-        </tr>
-        <tr v-if="mode == 'matchPrefix'">
-            <td>是否保留URL路径参数</td>
-            <td>
-                <checkbox name="keepRequestURI" value="1" v-model="redirect.keepRequestURI"></checkbox>
-                <p class="comment">选中后，则跳转之后，保留跳转之前的URL路径和参数。</p>
-            </td>
-        </tr>
-        <tr v-if="mode == 'equal' || mode == 'matchRegexp'">
-            <td>是否保留请求参数</td>
-            <td>
-                <checkbox name="keepArgs" value="1" v-model="redirect.keepArgs"></checkbox>
-                <p class="comment">选中后，则跳转之后，保留跳转之前的URL上的参数（即问号之后的部分）。</p>
-            </td>
-        </tr>
+
+        <!-- URL跳转 -->
+        <tbody v-show="redirect.type == 'url'">
+            <tr>
+                <td class="color-border">跳转前URL *</td>
+                <td>
+                    <input type="text" name="beforeURL" placeholder="比如 http://www.url1.com" v-model="redirect.beforeURL" ref="focus"/>
+                    <p class="comment">需要填写完整的URL，包括<code-label>http://</code-label>或者<code-label>https://</code-label>，如果有非默认端口，也需要带上端口号。</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="color-border">匹配模式 *</td>
+                <td>
+                    <select class="ui dropdown auto-width" name="mode" v-model="mode">
+                        <option value="equal">精准匹配</option>
+                        <option value="matchPrefix">匹配前缀</option>
+                        <option value="matchRegexp">正则匹配</option>
+                    </select>
+                    <p class="comment" v-if="mode == 'equal'">精准匹配跳转前的URL，即只有访问完全一样的URL才会跳转。</p>
+                    <p class="comment" v-if="mode == 'matchPrefix'">只要访问的URL头部部分包含跳转前URL，即可跳转。</p>
+                    <p class="comment" v-if="mode == 'matchRegexp'">可以在跳转前URL中使用正则表达式，然后可以在跳转后URL中使用正则表达式中括号的变量，比如<code-label>${1}</code-label>、<code-label>${2}</code-label>分别表示第一个和第二个括号内的变量值。</p>
+                </td>
+            </tr>
+            <tr>
+                <td class="color-border">跳转后URL *</td>
+                <td>
+                    <input type="text" name="afterURL" placeholder="比如 https://www.url2.cn" v-model="redirect.afterURL"/>
+                    <p class="comment">需要填写完整的URL，包括<code-label>http://</code-label>或者<code-label>https://</code-label>，如果有非默认端口，也需要带上端口号。</p>
+                </td>
+            </tr>
+            <tr v-if="mode == 'matchPrefix'">
+                <td class="color-border">是否保留URL路径参数</td>
+                <td>
+                    <checkbox name="keepRequestURI" value="1" v-model="redirect.keepRequestURI"></checkbox>
+                    <p class="comment">选中后，则跳转之后，保留跳转之前的URL路径和参数。</p>
+                </td>
+            </tr>
+            <tr v-if="mode == 'equal' || mode == 'matchRegexp'">
+                <td class="color-border">是否保留请求参数</td>
+                <td>
+                    <checkbox name="keepArgs" value="1" v-model="redirect.keepArgs"></checkbox>
+                    <p class="comment">选中后，则跳转之后，保留跳转之前的URL上的参数（即问号之后的部分）。</p>
+                </td>
+            </tr>
+        </tbody>
+
+        <!-- 域名跳转 -->
+        <tbody v-show="redirect.type == 'domain'">
+            <tr>
+                <td class="color-border">所有域名都跳转</td>
+                <td>
+                    <checkbox name="domainsAll" v-model="redirect.domainsAll"></checkbox>
+                    <p class="comment">选中后，表示所有域名都会跳转（只要跳转前后域名不同）；不选中后可以指定域名跳转。</p>
+                </td>
+            </tr>
+            <tr v-show="!redirect.domainsAll">
+                <td class="color-border">指定跳转前域名</td>
+                <td>
+                    <domains-box name="domainsBeforeJSON" :v-domains="redirect.domainsBefore"></domains-box>
+                </td>
+            </tr>
+            <tr>
+                <td class="color-border">跳转后域名 *</td>
+                <td>
+                    <input type="text" name="domainAfter" maxlength="100" v-model="redirect.domainAfter"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="color-border">跳转后协议</td>
+                <td>
+                    <select class="ui dropdown auto-width" name="domainAfterScheme" v-model="redirect.domainAfterScheme">
+                        <option value="">保持</option>
+                        <option value="https">HTTPS</option>
+                        <option value="http">HTTP</option>
+                    </select>
+                    <p class="comment">跳转后的URL的协议。</p>
+                </td>
+            </tr>
+        </tbody>
+
+        <!-- 端口跳转 -->
+        <tbody v-show="redirect.type == 'port'">
+            <tr>
+                <td class="color-border">所有端口都跳转</td>
+                <td>
+                    <checkbox name="portsAll" v-model="redirect.portsAll"></checkbox>
+                    <p class="comment">选中后，表示所有端口都会跳转（只要跳转前后端口不同）；不选中后可以指定端口跳转。</p>
+                </td>
+            </tr>
+            <tr v-show="!redirect.portsAll">
+                <td class="color-border">指定跳转前端口</td>
+                <td>
+                    <values-box placeholder="单个端口 或 端口1-端口2" name="portsBefore" :v-values="redirect.portsBefore"></values-box>
+                </td>
+            </tr>
+            <tr>
+                <td class="color-border">跳转后端口 *</td>
+                <td>
+                    <input type="text" name="portAfter" maxlength="5" v-model="redirect.portAfter" style="width: 5em"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="color-border">跳转后协议</td>
+                <td>
+                    <select class="ui dropdown auto-width" name="portAfterScheme" v-model="redirect.portAfterScheme">
+                        <option value="">保持</option>
+                        <option value="https">HTTPS</option>
+                        <option value="http">HTTP</option>
+                    </select>
+                    <p class="comment">跳转后的URL的协议。</p>
+                </td>
+            </tr>
+        </tbody>
+
         <tr>
             <td>跳转状态码</td>
             <td>
@@ -64,7 +147,7 @@
             <td><http-request-conds-box :v-conds="redirect.conds" @change="changeConds"></http-request-conds-box></td>
         </tr>
         <tr>
-            <td>是否启用</td>
+            <td>启用当前跳转</td>
             <td><checkbox name="isOn" value="1" v-model="redirect.isOn"></checkbox></td>
         </tr>
     </table>

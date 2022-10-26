@@ -6,9 +6,9 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
-	"github.com/iwind/TeaGo/maps"
 	"net/url"
 	"regexp"
+	"strings"
 )
 
 type CreatePopupAction struct {
@@ -27,6 +27,9 @@ func (this *CreatePopupAction) RunGet(params struct {
 }
 
 func (this *CreatePopupAction) RunPost(params struct {
+	Type string
+
+	// URL
 	Mode           string
 	BeforeURL      string
 	AfterURL       string
@@ -34,51 +37,129 @@ func (this *CreatePopupAction) RunPost(params struct {
 	MatchRegexp    bool
 	KeepRequestURI bool
 	KeepArgs       bool
-	Status         int
-	CondsJSON      []byte
-	IsOn           bool
+
+	// 域名
+	DomainsAll        bool
+	DomainsBeforeJSON []byte
+	DomainAfter       string
+	DomainAfterScheme string
+
+	// 端口
+	PortsAll        bool
+	PortsBefore     []string
+	PortAfter       int
+	PortAfterScheme string
+
+	Status    int
+	CondsJSON []byte
+	IsOn      bool
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	params.Must.
-		Field("beforeURL", params.BeforeURL).
-		Require("请填写跳转前的URL")
+	var config = &serverconfigs.HTTPHostRedirectConfig{}
+	config.Type = params.Type
+	config.Status = params.Status
+	config.IsOn = params.IsOn
 
-	// 校验格式
-	if params.MatchRegexp {
-		_, err := regexp.Compile(params.BeforeURL)
-		if err != nil {
-			this.Fail("跳转前URL正则表达式错误：" + err.Error())
-		}
-	} else {
-		u, err := url.Parse(params.BeforeURL)
-		if err != nil {
-			this.FailField("beforeURL", "请输入正确的跳转前URL")
-		}
-		if (u.Scheme != "http" && u.Scheme != "https") ||
-			len(u.Host) == 0 {
-			this.FailField("beforeURL", "请输入正确的跳转前URL")
+	switch params.Type {
+	case serverconfigs.HTTPHostRedirectTypeURL:
+		params.Must.
+			Field("beforeURL", params.BeforeURL).
+			Require("请填写跳转前的URL")
+
+		// 校验格式
+		if params.MatchRegexp {
+			_, err := regexp.Compile(params.BeforeURL)
+			if err != nil {
+				this.Fail("跳转前URL正则表达式错误：" + err.Error())
+			}
+		} else {
+			u, err := url.Parse(params.BeforeURL)
+			if err != nil {
+				this.FailField("beforeURL", "请输入正确的跳转前URL")
+			}
+			if (u.Scheme != "http" && u.Scheme != "https") ||
+				len(u.Host) == 0 {
+				this.FailField("beforeURL", "请输入正确的跳转前URL")
+			}
+
 		}
 
-	}
+		params.Must.
+			Field("afterURL", params.AfterURL).
+			Require("请填写跳转后URL")
 
-	params.Must.
-		Field("afterURL", params.AfterURL).
-		Require("请填写跳转后URL")
+		// 校验格式
+		if params.MatchRegexp {
+			// 正则表达式情况下不做校验
+		} else {
+			u, err := url.Parse(params.AfterURL)
+			if err != nil {
+				this.FailField("afterURL", "请输入正确的跳转后URL")
+			}
+			if (u.Scheme != "http" && u.Scheme != "https") ||
+				len(u.Host) == 0 {
+				this.FailField("afterURL", "请输入正确的跳转后URL")
+			}
+		}
 
-	// 校验格式
-	if params.MatchRegexp {
-		// 正则表达式情况下不做校验
-	} else {
-		u, err := url.Parse(params.AfterURL)
-		if err != nil {
-			this.FailField("afterURL", "请输入正确的跳转后URL")
+		config.Mode = params.Mode
+		config.BeforeURL = params.BeforeURL
+		config.AfterURL = params.AfterURL
+		config.MatchPrefix = params.MatchPrefix
+		config.MatchRegexp = params.MatchRegexp
+		config.KeepRequestURI = params.KeepRequestURI
+		config.KeepArgs = params.KeepArgs
+	case serverconfigs.HTTPHostRedirectTypeDomain:
+		config.DomainsAll = params.DomainsAll
+		var domainsBefore = []string{}
+		if len(params.DomainsBeforeJSON) > 0 {
+			err := json.Unmarshal(params.DomainsBeforeJSON, &domainsBefore)
+			if err != nil {
+				this.Fail("错误的域名格式：" + err.Error())
+				return
+			}
 		}
-		if (u.Scheme != "http" && u.Scheme != "https") ||
-			len(u.Host) == 0 {
-			this.FailField("afterURL", "请输入正确的跳转后URL")
+		config.DomainsBefore = domainsBefore
+		if !params.DomainsAll {
+			if len(domainsBefore) == 0 {
+				this.Fail("请输入跳转前域名")
+				return
+			}
 		}
+		if len(params.DomainAfter) == 0 {
+			this.FailField("domainAfter", "请输入跳转后域名")
+			return
+		}
+		config.DomainAfter = params.DomainAfter
+		config.DomainAfterScheme = params.DomainAfterScheme
+	case serverconfigs.HTTPHostRedirectTypePort:
+		config.PortsAll = params.PortsAll
+
+		config.PortsBefore = params.PortsBefore
+		var portReg = regexp.MustCompile(`^\d+$`)
+		var portRangeReg = regexp.MustCompile(`^\d+-\d+$`)
+		if !config.PortsAll {
+			for _, port := range params.PortsBefore {
+				port = strings.ReplaceAll(port, " ", "")
+				if !portReg.MatchString(port) && !portRangeReg.MatchString(port) {
+					this.Fail("端口号" + port + "填写错误（请输入单个端口号或一个端口范围）")
+					return
+				}
+			}
+			if len(params.PortsBefore) == 0 {
+				this.Fail("请输入跳转前端口")
+				return
+			}
+		}
+
+		if params.PortAfter <= 0 {
+			this.FailField("portAfter", "请输入跳转后端口")
+			return
+		}
+		config.PortAfter = params.PortAfter
+		config.PortAfterScheme = params.PortAfterScheme
 	}
 
 	params.Must.
@@ -99,19 +180,16 @@ func (this *CreatePopupAction) RunPost(params struct {
 			this.Fail("匹配条件校验失败：" + err.Error())
 		}
 	}
+	config.Conds = conds
 
-	this.Data["redirect"] = maps.Map{
-		"mode":           params.Mode,
-		"status":         params.Status,
-		"beforeURL":      params.BeforeURL,
-		"afterURL":       params.AfterURL,
-		"matchPrefix":    params.MatchPrefix,
-		"matchRegexp":    params.MatchRegexp,
-		"keepRequestURI": params.KeepRequestURI,
-		"keepArgs":       params.KeepArgs,
-		"conds":          conds,
-		"isOn":           params.IsOn,
+	// 校验配置
+	err := config.Init()
+	if err != nil {
+		this.Fail("配置校验失败：" + err.Error())
+		return
 	}
+
+	this.Data["redirect"] = config
 
 	this.Success()
 }
