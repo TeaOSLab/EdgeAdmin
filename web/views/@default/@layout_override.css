@@ -39,6 +39,12 @@ table th.width5 {
 table th.width6 {
   width: 6em;
 }
+.ui.table tbody[style*="display: none;"],
+.ui.table tr[style*="display: none;"],
+.ui.table tr > td[style*="display: none;"],
+.ui.table tr > th[style*="display: none;"] {
+  display: none!important;
+}
 textarea::-webkit-scrollbar {
   width: 6px !important;
 }
