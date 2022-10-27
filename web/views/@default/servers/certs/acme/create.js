@@ -27,8 +27,8 @@ Tea.context(function () {
 
 	this.createUser = function () {
 		let that = this
-		teaweb.popup("/servers/certs/acme/users/createPopup", {
-			height: "27em",
+		teaweb.popup("/servers/certs/acme/users/createPopup?providerCode=" + this.providerCode, {
+			height: "30em",
 			width: "44em",
 			callback: function (resp) {
 				teaweb.successToast("创建成功")
