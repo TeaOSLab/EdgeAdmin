@@ -1560,10 +1560,9 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<thead>
 				<tr>
 					<th style="width: 1em"></th>
-					<th>跳转前URL</th>
+					<th>跳转前</th>
 					<th style="width: 1em"></th>
-					<th>跳转后URL</th>
-					<th>匹配模式</th>
+					<th>跳转后</th>
 					<th>HTTP状态码</th>
 					<th class="two wide">状态</th>
 					<th class="two op">操作</th>
@@ -1573,17 +1572,47 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				<tr>
 					<td style="text-align: center;"><i class="icon bars handle grey"></i> </td>
 					<td>
-						{{redirect.beforeURL}}
+						<div v-if="redirect.type == '' || redirect.type == 'url'">
+							{{redirect.beforeURL}}
+							<div style="margin-top: 0.4em">
+								<grey-label><strong>URL跳转</strong></grey-label>
+								<grey-label v-if="redirect.matchPrefix">匹配前缀</grey-label>
+								<grey-label v-if="redirect.matchRegexp">正则匹配</grey-label>
+								<grey-label v-if="!redirect.matchPrefix && !redirect.matchRegexp">精准匹配</grey-label>
+							</div>
+						</div>
+						<div v-if="redirect.type == 'domain'">
+							<span v-if="redirect.domainsAll">所有域名</span>
+							<span v-if="!redirect.domainsAll && redirect.domainsBefore != null">
+								<span v-if="redirect.domainsBefore.length == 1">{{redirect.domainsBefore[0]}}</span>
+								<span v-if="redirect.domainsBefore.length > 1">{{redirect.domainsBefore[0]}}等{{redirect.domainsBefore.length}}个域名</span>
+							</span>
+							<div style="margin-top: 0.4em">
+								<grey-label><strong>域名跳转</strong></grey-label>
+								<grey-label v-if="redirect.domainAfterScheme != null && redirect.domainAfterScheme.length > 0">{{redirect.domainAfterScheme}}</grey-label>
+							</div>
+						</div>
+						<div v-if="redirect.type == 'port'">
+							<span v-if="redirect.portsAll">所有端口</span>
+							<span v-if="!redirect.portsAll && redirect.portsBefore != null">
+								<span v-if="redirect.portsBefore.length <= 5">{{redirect.portsBefore.join(", ")}}</span>
+								<span v-if="redirect.portsBefore.length > 5">{{redirect.portsBefore.slice(0, 5).join(", ")}}等{{redirect.portsBefore.length}}个端口</span>
+							</span>
+							<div style="margin-top: 0.4em">
+								<grey-label><strong>端口跳转</strong></grey-label>
+								<grey-label v-if="redirect.portAfterScheme != null && redirect.portAfterScheme.length > 0">{{redirect.portAfterScheme}}</grey-label>
+							</div>
+						</div>
+						
 						<div style="margin-top: 0.5em" v-if="redirect.conds != null && redirect.conds.groups != null && redirect.conds.groups.length > 0">
-							<span class="ui label text basic tiny">匹配条件</span>
+							<grey-label>匹配条件</grey-label>
 						</div>
 					</td>
 					<td nowrap="">-&gt;</td>
-					<td>{{redirect.afterURL}}</td>
 					<td>
-						<span v-if="redirect.matchPrefix">匹配前缀</span>
-						<span v-if="redirect.matchRegexp">正则匹配</span>
-						<span v-if="!redirect.matchPrefix && !redirect.matchRegexp">精准匹配</span>
+						<span v-if="redirect.type == '' || redirect.type == 'url'">{{redirect.afterURL}}</span>
+						<span v-if="redirect.type == 'domain'">{{redirect.domainAfter}}</span>
+						<span v-if="redirect.type == 'port'">{{redirect.portAfter}}</span>
 					</td>
 					<td>
 						<span v-if="redirect.status > 0">{{redirect.status}}</span>
