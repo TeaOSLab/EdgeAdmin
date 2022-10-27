@@ -1,5 +1,4 @@
 Tea.context(function () {
-	this.providerCode = ""
 	this.selectedProvider = null
 	this.accounts = []
 	this.accountId = 0
@@ -28,6 +27,10 @@ Tea.context(function () {
 			.success(function (resp) {
 				this.accounts = resp.data.accounts
 			})
+	}
+
+	if (this.providerCode.length > 0) {
+		this.changeProvider()
 	}
 
 	this.addAccount = function () {

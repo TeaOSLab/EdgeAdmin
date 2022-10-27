@@ -15,7 +15,11 @@ func (this *CreatePopupAction) Init() {
 	this.Nav("", "", "")
 }
 
-func (this *CreatePopupAction) RunGet(params struct{}) {
+func (this *CreatePopupAction) RunGet(params struct {
+	ProviderCode string
+}) {
+	this.Data["providerCode"] = params.ProviderCode
+
 	// 服务商
 	providersResp, err := this.RPC().ACMEProviderRPC().FindAllACMEProviders(this.AdminContext(), &pb.FindAllACMEProvidersRequest{})
 	if err != nil {
