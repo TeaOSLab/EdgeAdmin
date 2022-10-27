@@ -41,7 +41,7 @@ Vue.component("api-node-addresses-box", {
 	<input type="hidden" :name="vName" :value="JSON.stringify(addrs)"/>
 	<div v-if="addrs.length > 0">
 		<div>
-			<div v-for="(addr, index) in addrs" class="ui label small">
+			<div v-for="(addr, index) in addrs" class="ui label small basic">
 				{{addr.protocol}}://{{addr.host.quoteIP()}}:{{addr.portRange}}</span>
 				<a href="" title="修改" @click.prevent="updateAddr(index, addr)"><i class="icon pencil small"></i></a>
 				<a href="" title="删除" @click.prevent="removeAddr(index)"><i class="icon remove"></i></a>
