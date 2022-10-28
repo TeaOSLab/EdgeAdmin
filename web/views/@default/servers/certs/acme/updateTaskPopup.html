@@ -30,7 +30,7 @@
 		<tr>
 			<td class="title">证书域名列表 *</td>
 			<td>
-				<values-box name="domains" :values="task.domains" placeholder="域名" size="30"></values-box>
+                <domains-box name="domainsJSON" :v-domains="task.domains" :v-support-wildcard="task.authType == 'dns'"></domains-box>
 				<p class="comment">需要申请的证书中包含的域名列表<span v-if="task.authType == 'dns'">，所有域名必须是同一个顶级域名</span><span v-if="task.authType == 'http'">使用HTTP认证方式时，域名中不能含有通配符</span>。</p>
 			</td>
 		</tr>
@@ -38,7 +38,7 @@
 			<td>自动续期</td>
 			<td>
 				<checkbox name="autoRenew" v-model="task.autoRenew"></checkbox>
-				<p class="comment">在免费证书临近到期之前，是否尝试自动续期。</p>
+                <p class="comment">选中后，表示在免费证书临近到期之前尝试自动续期。</p>
 			</td>
 		</tr>
         <tr>

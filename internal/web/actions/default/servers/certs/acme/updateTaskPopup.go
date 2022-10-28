@@ -1,6 +1,7 @@
 package acme
 
 import (
+	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains/domainutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -25,7 +26,7 @@ func (this *UpdateTaskPopupAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	task := taskResp.AcmeTask
+	var task = taskResp.AcmeTask
 	if task == nil {
 		this.NotFound("acmeTask", params.TaskId)
 		return
@@ -74,7 +75,7 @@ func (this *UpdateTaskPopupAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	providerMaps := []maps.Map{}
+	var providerMaps = []maps.Map{}
 	for _, provider := range providersResp.DnsProviders {
 		providerMaps = append(providerMaps, maps.Map{
 			"id":       provider.Id,
@@ -93,7 +94,7 @@ func (this *UpdateTaskPopupAction) RunPost(params struct {
 	AcmeUserId    int64
 	DnsProviderId int64
 	DnsDomain     string
-	Domains       []string
+	DomainsJSON   []byte
 	AutoRenew     bool
 	AuthURL       string
 
@@ -123,11 +124,20 @@ func (this *UpdateTaskPopupAction) RunPost(params struct {
 		}
 	}
 
-	if len(params.Domains) == 0 {
+	var domains = []string{}
+	if len(params.DomainsJSON) > 0 {
+		err := json.Unmarshal(params.DomainsJSON, &domains)
+		if err != nil {
+			this.Fail("解析域名数据失败：" + err.Error())
+			return
+		}
+	}
+
+	if len(domains) == 0 {
 		this.Fail("请输入证书域名列表")
 	}
-	realDomains := []string{}
-	for _, domain := range params.Domains {
+	var realDomains = []string{}
+	for _, domain := range domains {
 		domain = strings.ToLower(domain)
 		if params.AuthType == "dns" {
 			if !strings.HasSuffix(domain, "."+dnsDomain) && domain != dnsDomain {
