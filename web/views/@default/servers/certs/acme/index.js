@@ -8,6 +8,7 @@ Tea.context(function () {
 
 	this.updateTask = function (taskId) {
 		teaweb.popup("/servers/certs/acme/updateTaskPopup?taskId=" + taskId, {
+			width: "45em",
 			height: "26em",
 			callback: function () {
 				teaweb.success("保存成功，如果证书域名发生了改变，请重新执行生成新证书", function () {
