@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/apps"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
@@ -9,10 +10,13 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/nodes"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web"
+	"github.com/iwind/TeaGo/Tea"
 	_ "github.com/iwind/TeaGo/bootstrap"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/gosock/pkg/gosock"
 	"log"
+	"os"
+	"os/exec"
 	"time"
 )
 
@@ -53,6 +57,20 @@ func main() {
 			fmt.Println("[ERROR]reset failed: " + err.Error())
 			return
 		}
+
+		// reset local api
+		var apiNodeExe = Tea.Root + "/edge-api/bin/edge-api"
+		_, err = os.Stat(apiNodeExe)
+		if err == nil {
+			var cmd = exec.Command(apiNodeExe, "reset")
+			var stderr = &bytes.Buffer{}
+			cmd.Stderr = stderr
+			err = cmd.Run()
+			if err != nil {
+				fmt.Println("reset api node failed: " + stderr.String())
+			}
+		}
+
 		fmt.Println("done")
 	})
 	app.On("recover", func() {
