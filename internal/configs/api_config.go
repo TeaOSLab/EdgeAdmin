@@ -61,10 +61,11 @@ func LoadAPIConfig() (*APIConfig, error) {
 
 // ResetAPIConfig 重置配置
 func ResetAPIConfig() error {
-	filename := "api.yaml"
+	var filename = "api.yaml"
 
+	// 重置 configs/api.yaml
 	{
-		configFile := Tea.ConfigFile(filename)
+		var configFile = Tea.ConfigFile(filename)
 		stat, err := os.Stat(configFile)
 		if err == nil && !stat.IsDir() {
 			err = os.Remove(configFile)
@@ -77,7 +78,7 @@ func ResetAPIConfig() error {
 	// 重置 ~/.edge-admin/api.yaml
 	homeDir, homeErr := os.UserHomeDir()
 	if homeErr == nil {
-		configFile := homeDir + "/." + teaconst.ProcessName + "/" + filename
+		var configFile = homeDir + "/." + teaconst.ProcessName + "/" + filename
 		stat, err := os.Stat(configFile)
 		if err == nil && !stat.IsDir() {
 			err = os.Remove(configFile)
@@ -89,7 +90,7 @@ func ResetAPIConfig() error {
 
 	// 重置 /etc/edge-admin/api.yaml
 	{
-		configFile := "/etc/" + teaconst.ProcessName + "/" + filename
+		var configFile = "/etc/" + teaconst.ProcessName + "/" + filename
 		stat, err := os.Stat(configFile)
 		if err == nil && !stat.IsDir() {
 			err = os.Remove(configFile)
