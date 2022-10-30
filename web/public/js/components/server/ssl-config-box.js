@@ -416,7 +416,7 @@ Vue.component("ssl-config-box", {
 			
 			<!-- HSTS -->
 			<tr v-show="vProtocol == 'https'">
-				<td :class="{'color-border':hsts.isOn}">是否开启HSTS</td>
+				<td :class="{'color-border':hsts.isOn}">开启HSTS</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" name="hstsOn" v-model="hsts.isOn" value="1"/>

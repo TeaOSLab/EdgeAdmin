@@ -30,9 +30,10 @@ func (this *SelectPopupAction) RunGet(params struct {
 	// TODO 列出常用和最新的证书供用户选择
 
 	this.Data["keyword"] = params.Keyword
+	this.Data["selectedCertIds"] = params.SelectedCertIds
 
 	// 已经选择的证书
-	selectedCertIds := []string{}
+	var selectedCertIds = []string{}
 	if len(params.SelectedCertIds) > 0 {
 		selectedCertIds = strings.Split(params.SelectedCertIds, ",")
 	}
