@@ -14636,8 +14636,6 @@ Vue.component("datetime-input", {
 	},
 	methods: {
 		change: function () {
-			let date = new Date()
-
 			// day
 			if (!/^\d{4}-\d{1,2}-\d{1,2}$/.test(this.day)) {
 				this.hasDayError = true
@@ -14645,21 +14643,18 @@ Vue.component("datetime-input", {
 			}
 			let pieces = this.day.split("-")
 			let year = parseInt(pieces[0])
-			date.setFullYear(year)
 
 			let month = parseInt(pieces[1])
 			if (month < 1 || month > 12) {
 				this.hasDayError = true
 				return
 			}
-			date.setMonth(month - 1)
 
 			let day = parseInt(pieces[2])
 			if (day < 1 || day > 32) {
 				this.hasDayError = true
 				return
 			}
-			date.setDate(day)
 
 			this.hasDayError = false
 
@@ -14678,7 +14673,6 @@ Vue.component("datetime-input", {
 				return
 			}
 			this.hasHourError = false
-			date.setHours(hour)
 
 			// minute
 			if (!/^\d+$/.test(this.minute)) {
@@ -14695,7 +14689,6 @@ Vue.component("datetime-input", {
 				return
 			}
 			this.hasMinuteError = false
-			date.setMinutes(minute)
 
 			// second
 			if (!/^\d+$/.test(this.second)) {
@@ -14712,8 +14705,8 @@ Vue.component("datetime-input", {
 				return
 			}
 			this.hasSecondError = false
-			date.setSeconds(second)
 
+			let date = new Date(year, month - 1, day, hour, minute, second)
 			this.timestamp = Math.floor(date.getTime() / 1000)
 		},
 		leadingZero: function (s, l) {
