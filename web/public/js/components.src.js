@@ -7275,7 +7275,7 @@ Vue.component("domains-box", {
 				&nbsp; <a href="" title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
 			</div>
 		</div>
-		<p class="comment" v-if="supportWildcard">支持普通域名（<code-label>example.com</code-label>）、泛域名（<code-label>*.example.com</code-label>）、域名后缀（以点号开头，如<code-label>.example.com</code-label>）和正则表达式（以波浪号开头，如<code-label>~.*.example.com</code-label>）。</p>
+		<p class="comment" v-if="supportWildcard">支持普通域名（<code-label>example.com</code-label>）、泛域名（<code-label>*.example.com</code-label>）<span v-if="vSupportWildcard == undefined">、域名后缀（以点号开头，如<code-label>.example.com</code-label>）和正则表达式（以波浪号开头，如<code-label>~.*.example.com</code-label>）</span>。</p>
 		<p class="comment" v-if="!supportWildcard">只支持普通域名（<code-label>example.com</code-label>、<code-label>www.example.com</code-label>）。</p>
 		<div class="ui divider"></div>
 	</div>
@@ -7352,14 +7352,14 @@ Vue.component("http-referers-config-box", {
 		<tr>
 			<td>允许的来源域名</td>
 			<td>
-				<values-box :values="config.allowDomains" @change="changeAllowDomains"></values-box>
+				<domains-box :v-domains="config.allowDomains" @change="changeAllowDomains">></domains-box>
 				<p class="comment">允许的其他来源域名列表，比如<code-label>example.com</code-label>、<code-label>*.example.com</code-label>。单个星号<code-label>*</code-label>表示允许所有域名。</p>
 			</td>
 		</tr>
 		<tr>
 			<td>禁止的来源域名</td>
 			<td>
-				<values-box :values="config.denyDomains" @change="changeDenyDomains"></values-box>
+				<domains-box :v-domains="config.denyDomains" @change="changeDenyDomains"></domains-box>
 				<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>、<code-label>*.example.org</code-label>；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
 			</td>
 		</tr>
@@ -13537,7 +13537,7 @@ Vue.component("firewall-syn-flood-config-box", {
 			<td class="title">启用</td>
 			<td>
 				<checkbox v-model="config.isOn"></checkbox>
-				<p class="comment">启用后，WAF将会尝试自动检测并阻止SYN Flood攻击。此功能需要节点已安装并启用Firewalld。</p>
+				<p class="comment">启用后，WAF将会尝试自动检测并阻止SYN Flood攻击。此功能需要节点已安装并启用nftables或Firewalld。</p>
 			</td>
 		</tr>
 		<tr>
