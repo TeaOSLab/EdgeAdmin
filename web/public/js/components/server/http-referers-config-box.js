@@ -65,14 +65,14 @@ Vue.component("http-referers-config-box", {
 		<tr>
 			<td>允许的来源域名</td>
 			<td>
-				<values-box :values="config.allowDomains" @change="changeAllowDomains"></values-box>
+				<domains-box :v-domains="config.allowDomains" @change="changeAllowDomains">></domains-box>
 				<p class="comment">允许的其他来源域名列表，比如<code-label>example.com</code-label>、<code-label>*.example.com</code-label>。单个星号<code-label>*</code-label>表示允许所有域名。</p>
 			</td>
 		</tr>
 		<tr>
 			<td>禁止的来源域名</td>
 			<td>
-				<values-box :values="config.denyDomains" @change="changeDenyDomains"></values-box>
+				<domains-box :v-domains="config.denyDomains" @change="changeDenyDomains"></domains-box>
 				<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>、<code-label>*.example.org</code-label>；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
 			</td>
 		</tr>
