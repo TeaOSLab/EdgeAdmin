@@ -122,6 +122,7 @@ func (this *IndexAction) RunPost(params struct {
 	AutoOpenPorts       bool
 	ClockAutoSync       bool
 	ClockServer         string
+	ClockCheckChrony    bool
 	AutoRemoteStart     bool
 	AutoInstallNftables bool
 
@@ -154,6 +155,7 @@ func (this *IndexAction) RunPost(params struct {
 	var clockConfig = nodeconfigs.DefaultClockConfig()
 	clockConfig.AutoSync = params.ClockAutoSync
 	clockConfig.Server = params.ClockServer
+	clockConfig.CheckChrony = params.ClockCheckChrony
 	clockConfigJSON, err := json.Marshal(clockConfig)
 	if err != nil {
 		this.ErrorPage(err)
