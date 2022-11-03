@@ -85,6 +85,13 @@
                         <p class="comment">可选项。默认使用<code-label>pool.ntp.org</code-label>。</p>
                     </td>
                 </tr>
+                <tr v-show="cluster.clock.autoSync">
+                    <td class="color-border">检查Chrony</td>
+                    <td>
+                        <checkbox name="clockCheckChrony" v-model="cluster.clock.checkChrony"></checkbox>
+                        <p class="comment">选中后，表示如果chrony（另一款时间同步软件）正在运行，则不重复执行时间同步。</p>
+                    </td>
+                </tr>
                 <tr>
                     <td>自动远程启动</td>
                     <td>
