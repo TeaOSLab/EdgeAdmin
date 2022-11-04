@@ -85,7 +85,6 @@ window.teaweb = {
 			return
 		}
 
-
 		if (typeof (element) == "string") {
 			element = document.getElementById(element);
 		}
@@ -112,6 +111,8 @@ window.teaweb = {
 			},
 			reposition: !bottomLeft
 		})
+
+		element.picker = picker
 	},
 	formatBytes: function (bytes) {
 		bytes = Math.ceil(bytes);

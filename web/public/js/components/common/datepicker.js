@@ -38,6 +38,13 @@ Vue.component("datepicker", {
 	watch: {
 		value: function (v) {
 			this.day = v
+
+			let picker = this.$refs.dayInput.picker
+			if (picker != null) {
+				if (v != null && /^\d+-\d+-\d+$/.test(v)) {
+					picker.setDate(v)
+				}
+			}
 		}
 	},
 	methods: {
