@@ -25,7 +25,7 @@ func init() {
 			Get("/otpQrcode", new(OtpQrcodeAction)).
 
 			// AccessKeys
-			Prefix("/users/accessKeys").
+			Prefix("/users/accesskeys").
 			Get("", new(accesskeys.IndexAction)).
 			GetPost("/createPopup", new(accesskeys.CreatePopupAction)).
 			Post("/delete", new(accesskeys.DeleteAction)).
