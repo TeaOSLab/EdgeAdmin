@@ -81,6 +81,13 @@
                 </td>
             </tr>
             <tr>
+                <td class="color-border">忽略跳转前端口</td>
+                <td>
+                    <checkbox name="domainBeforeIgnorePorts" v-model="redirect.domainBeforeIgnorePorts"></checkbox>
+                    <p class="comment">选中后，表示忽略跳转前域名端口，只要域名匹配时就跳转；如不选中，则表示只有域名和端口同时匹配时才会跳转。</p>
+                </td>
+            </tr>
+            <tr>
                 <td class="color-border">跳转后域名 *</td>
                 <td>
                     <input type="text" name="domainAfter" maxlength="100" v-model="redirect.domainAfter"/>

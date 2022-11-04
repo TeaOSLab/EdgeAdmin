@@ -21,6 +21,7 @@ Tea.context(function () {
 
 			domainsAll: false,
 			domainBefore: [],
+			domainBeforeIgnorePorts: true,
 			domainAfter: "",
 			domainAfterScheme: "",
 
