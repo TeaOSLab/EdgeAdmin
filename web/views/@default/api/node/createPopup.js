@@ -18,7 +18,7 @@ Tea.context(function () {
 
 		this.hasHTTPS = this.grpcAddrs.$any(function (k, v) {
 			return v.protocol == "https"
-		}) || (this.node.restIsOn && this.restAddrs.$any(function (k, v) {
+		}) || (this.restIsOn && this.restAddrs.$any(function (k, v) {
 			return v.protocol == "https"
 		}))
 	}

@@ -4,10 +4,12 @@ import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/lists"
 )
 
 type CreatePopupAction struct {
@@ -40,11 +42,11 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Field("name", params.Name).
 		Require("请输入API节点名称")
 
-	httpConfig := &serverconfigs.HTTPProtocolConfig{}
-	httpsConfig := &serverconfigs.HTTPSProtocolConfig{}
+	var httpConfig = &serverconfigs.HTTPProtocolConfig{}
+	var httpsConfig = &serverconfigs.HTTPSProtocolConfig{}
 
 	// 监听地址
-	listens := []*serverconfigs.NetworkAddressConfig{}
+	var listens = []*serverconfigs.NetworkAddressConfig{}
 	err := json.Unmarshal(params.ListensJSON, &listens)
 	if err != nil {
 		this.ErrorPage(err)
@@ -64,13 +66,17 @@ func (this *CreatePopupAction) RunPost(params struct {
 	}
 
 	// Rest监听地址
-	restHTTPConfig := &serverconfigs.HTTPProtocolConfig{}
-	restHTTPSConfig := &serverconfigs.HTTPSProtocolConfig{}
+	var restHTTPConfig = &serverconfigs.HTTPProtocolConfig{}
+	var restHTTPSConfig = &serverconfigs.HTTPSProtocolConfig{}
 	if params.RestIsOn {
-		restListens := []*serverconfigs.NetworkAddressConfig{}
+		var restListens = []*serverconfigs.NetworkAddressConfig{}
 		err = json.Unmarshal(params.RestListensJSON, &restListens)
 		if err != nil {
 			this.ErrorPage(err)
+			return
+		}
+		if len(restListens) == 0 {
+			this.Fail("请至少添加一个HTTP API监听端口")
 			return
 		}
 		for _, addr := range restListens {
@@ -82,10 +88,35 @@ func (this *CreatePopupAction) RunPost(params struct {
 				restHTTPSConfig.Listen = append(restHTTPSConfig.Listen, addr)
 			}
 		}
+
+		// 是否有端口冲突
+		var rpcAddresses = []string{}
+		for _, listen := range listens {
+			err := listen.Init()
+			if err != nil {
+				this.Fail("校验配置失败：" + configutils.QuoteIP(listen.Host) + ":" + listen.PortRange + ": " + err.Error())
+				return
+			}
+			rpcAddresses = append(rpcAddresses, listen.Addresses()...)
+		}
+
+		for _, listen := range restListens {
+			err := listen.Init()
+			if err != nil {
+				this.Fail("校验配置失败：" + configutils.QuoteIP(listen.Host) + ":" + listen.PortRange + ": " + err.Error())
+				return
+			}
+			for _, address := range listen.Addresses() {
+				if lists.ContainsString(rpcAddresses, address) {
+					this.Fail("HTTP API地址 '" + address + "' 和 GRPC地址冲突，请修改后提交")
+					return
+				}
+			}
+		}
 	}
 
 	// 证书
-	certIds := []int64{}
+	var certIds = []int64{}
 	if len(params.CertIdsJSON) > 0 {
 		err = json.Unmarshal(params.CertIdsJSON, &certIds)
 		if err != nil {
@@ -97,7 +128,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		this.Fail("请添加至少一个证书")
 	}
 
-	certRefs := []*sslconfigs.SSLCertRef{}
+	var certRefs = []*sslconfigs.SSLCertRef{}
 	for _, certId := range certIds {
 		certRefs = append(certRefs, &sslconfigs.SSLCertRef{
 			IsOn:   true,
@@ -131,7 +162,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	}
 
 	// 访问地址
-	accessAddrs := []*serverconfigs.NetworkAddressConfig{}
+	var accessAddrs = []*serverconfigs.NetworkAddressConfig{}
 	err = json.Unmarshal(params.AccessAddrsJSON, &accessAddrs)
 	if err != nil {
 		this.ErrorPage(err)
