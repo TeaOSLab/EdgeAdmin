@@ -39,10 +39,11 @@ func (this *CreatePopupAction) RunPost(params struct {
 	KeepArgs       bool
 
 	// 域名
-	DomainsAll        bool
-	DomainsBeforeJSON []byte
-	DomainAfter       string
-	DomainAfterScheme string
+	DomainsAll              bool
+	DomainsBeforeJSON       []byte
+	DomainBeforeIgnorePorts bool
+	DomainAfter             string
+	DomainAfterScheme       string
 
 	// 端口
 	PortsAll        bool
@@ -128,6 +129,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 				return
 			}
 		}
+		config.DomainBeforeIgnorePorts = params.DomainBeforeIgnorePorts
 		if len(params.DomainAfter) == 0 {
 			this.FailField("domainAfter", "请输入跳转后域名")
 			return
