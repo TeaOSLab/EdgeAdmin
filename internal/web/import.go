@@ -124,7 +124,6 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/ui"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/updates"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/upgrade"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/user-ui"
 
 	// 恢复
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/recover"
