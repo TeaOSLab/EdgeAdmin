@@ -1,6 +1,6 @@
 Tea.context(function () {
 	this.createAccessKey = function () {
-		teaweb.popup("/admins/accessKeys/createPopup?adminId=" + this.admin.id, {
+		teaweb.popup("/admins/accesskeys/createPopup?adminId=" + this.admin.id, {
 			callback: function () {
 				teaweb.success("保存成功", function () {
 					teaweb.reload()

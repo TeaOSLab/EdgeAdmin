@@ -22,7 +22,7 @@ func init() {
 			Post("/options", new(OptionsAction)).
 
 			// AccessKeys
-			Prefix("/admins/accessKeys").
+			Prefix("/admins/accesskeys").
 			Get("", new(accesskeys.IndexAction)).
 			GetPost("/createPopup", new(accesskeys.CreatePopupAction)).
 			Post("/delete", new(accesskeys.DeleteAction)).
