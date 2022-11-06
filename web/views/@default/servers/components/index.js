@@ -1,9 +1,9 @@
 Tea.context(function () {
-    this.tab = "domainMatch"
+    this.tab = "domainAuditing"
 
     this.$delay(function () {
         if (window.location.hash != null && window.location.hash.length > 1) {
-            this.selectTab(window.location.hash.substr(1))
+            this.selectTab(window.location.hash.substring(1))
         }
     })
 
