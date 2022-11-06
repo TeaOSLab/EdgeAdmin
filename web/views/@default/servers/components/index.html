@@ -1,18 +1,12 @@
 {$layout}
 
 <div class="ui tabular menu tiny">
-    <a href="" class="item" :class="{active: tab == 'domainMatch'}" @click.prevent="selectTab('domainMatch')">域名匹配配置</a>
     <a href="" class="item" :class="{active: tab == 'domainAuditing'}" @click.prevent="selectTab('domainAuditing')">域名审核配置</a>
     <a href="" class="item" :class="{active: tab == 'tcpPorts'}" @click.prevent="selectTab('tcpPorts')">TCP/TLS端口</a>
 </div>
 
 <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
     <input type="hidden" name="globalConfigJSON" :value="JSON.stringify(globalConfig)"/>
-
-    <!-- 域名相关配置 -->
-    <div v-show="tab == 'domainMatch'">
-        <p class="comment">域名匹配相关配置已经转移到集群设置中，请到对应的集群设置中修改。</p>
-    </div>
 
     <!-- 域名审核相关配置 -->
     <div v-show="tab == 'domainAuditing'">
