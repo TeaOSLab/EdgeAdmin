@@ -1590,6 +1590,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 							<div style="margin-top: 0.4em">
 								<grey-label><strong>域名跳转</strong></grey-label>
 								<grey-label v-if="redirect.domainAfterScheme != null && redirect.domainAfterScheme.length > 0">{{redirect.domainAfterScheme}}</grey-label>
+								<grey-label v-if="redirect.domainBeforeIgnorePorts">忽略端口</grey-label>
 							</div>
 						</div>
 						<div v-if="redirect.type == 'port'">
@@ -5180,7 +5181,7 @@ example2.com
 			<div class="ui menu text blue small">
 				<slot></slot>
 			</div> 
-		</div>`}),Vue.component("datepicker",{props:["value","v-name","name","v-value","v-bottom-left","placeholder"],mounted:function(){let t=this;teaweb.datepicker(this.$refs.dayInput,function(e){t.day=e,t.change()},!!this.vBottomLeft)},data:function(){let e=this.vName,t=(null==(e=null==e?this.name:e)&&(e="day"),this.vValue),i=(null==t&&null==(t=this.value)&&(t=""),"YYYY-MM-DD");return null!=this.placeholder&&(i=this.placeholder),{realName:e,realPlaceholder:i,day:t}},watch:{value:function(e){this.day=e}},methods:{change:function(){this.$emit("input",this.day),this.$emit("change",this.day)}},template:`<div style="display: inline-block">
+		</div>`}),Vue.component("datepicker",{props:["value","v-name","name","v-value","v-bottom-left","placeholder"],mounted:function(){let t=this;teaweb.datepicker(this.$refs.dayInput,function(e){t.day=e,t.change()},!!this.vBottomLeft)},data:function(){let e=this.vName,t=(null==(e=null==e?this.name:e)&&(e="day"),this.vValue),i=(null==t&&null==(t=this.value)&&(t=""),"YYYY-MM-DD");return null!=this.placeholder&&(i=this.placeholder),{realName:e,realPlaceholder:i,day:t}},watch:{value:function(e){this.day=e;let t=this.$refs.dayInput.picker;null!=t&&null!=e&&/^\d+-\d+-\d+$/.test(e)&&t.setDate(e)}},methods:{change:function(){this.$emit("input",this.day),this.$emit("change",this.day)}},template:`<div style="display: inline-block">
 	<input type="text" :name="realName" v-model="day" :placeholder="realPlaceholder" style="width:8.6em" maxlength="10" @input="change" ref="dayInput" autocomplete="off"/>
 </div>`}),Vue.component("sort-arrow",{props:["name"],data:function(){let e=window.location.toString(),n="",t="",o=[];if(null!=window.location.search&&0<window.location.search.length){let e=window.location.search.substring(1),t=e.split("&"),s=this;t.forEach(function(e){var t,i=e.indexOf("=");0<i?(t=e.substring(0,i),i=e.substring(i+1),t==s.name?n=i:"page"!=t&&"asc"!=i&&"desc"!=i&&o.push(e)):o.push(e)})}t="asc"!=n&&"desc"==n?(o.push(this.name+"=asc"),"当前倒序排列"):(o.push(this.name+"=desc"),"当前正序排列");var i=e.indexOf("?");return e=0<i?e.substring(0,i)+"?"+o.join("&"):e+"?"+o.join("&"),{order:n,url:e,iconTitle:t}},template:`<a :href="url" :title="iconTitle">&nbsp; <i class="ui icon long arrow small" :class="{down: order == 'asc', up: order == 'desc', 'down grey': order == '' || order == null}"></i></a>`}),Vue.component("user-link",{props:["v-user","v-keyword"],data:function(){let e=this.vUser;return{user:e=null==e?{id:0,username:"",fullname:""}:e}},template:`<div style="display: inline-block">
 	<span v-if="user.id > 0"><keyword :v-word="vKeyword">{{user.fullname}}</keyword><span class="small grey">（<keyword :v-word="vKeyword">{{user.username}}</keyword>）</span></span>

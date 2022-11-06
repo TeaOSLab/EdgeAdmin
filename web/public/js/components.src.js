@@ -4511,6 +4511,7 @@ Vue.component("http-host-redirect-box", {
 							<div style="margin-top: 0.4em">
 								<grey-label><strong>域名跳转</strong></grey-label>
 								<grey-label v-if="redirect.domainAfterScheme != null && redirect.domainAfterScheme.length > 0">{{redirect.domainAfterScheme}}</grey-label>
+								<grey-label v-if="redirect.domainBeforeIgnorePorts">忽略端口</grey-label>
 							</div>
 						</div>
 						<div v-if="redirect.type == 'port'">
@@ -16333,6 +16334,13 @@ Vue.component("datepicker", {
 	watch: {
 		value: function (v) {
 			this.day = v
+
+			let picker = this.$refs.dayInput.picker
+			if (picker != null) {
+				if (v != null && /^\d+-\d+-\d+$/.test(v)) {
+					picker.setDate(v)
+				}
+			}
 		}
 	},
 	methods: {
