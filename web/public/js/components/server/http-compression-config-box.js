@@ -153,7 +153,7 @@ Vue.component("http-compression-config-box", {
 		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
 			<tr>
-				<td class="title">启用</td>
+				<td class="title">启用内容压缩</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" value="1" v-model="config.isOn"/>
