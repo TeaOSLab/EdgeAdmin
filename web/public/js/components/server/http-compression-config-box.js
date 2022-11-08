@@ -22,7 +22,7 @@ Vue.component("http-compression-config-box", {
 				brotliRef: null,
 				minLength: {count: 0, "unit": "kb"},
 				maxLength: {count: 0, "unit": "kb"},
-				mimeTypes: ["text/*", "application/*", "font/*"],
+				mimeTypes: ["text/*", "application/javascript", "application/json", "application/atom+xml", "application/rss+xml", "application/xhtml+xml", "font/*", "image/svg+xml"],
 				extensions: [".js", ".json", ".html", ".htm", ".xml", ".css", ".woff2", ".txt"],
 				conds: null
 			}
