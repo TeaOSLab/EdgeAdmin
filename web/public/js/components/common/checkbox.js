@@ -35,7 +35,7 @@ Vue.component("checkbox", {
 			this.newValue = ""
 		},
 		isChecked: function () {
-			return this.newValue == this.elementValue
+			return (typeof (this.newValue) == "boolean" && this.newValue) || this.newValue == this.elementValue
 		}
 	},
 	watch: {
