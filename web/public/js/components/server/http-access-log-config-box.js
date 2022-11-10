@@ -58,7 +58,7 @@ Vue.component("http-access-log-config-box", {
 		<prior-checkbox :v-config="accessLog" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || accessLog.isPrior">
 			<tr>
-				<td class="title">开启访问日志</td>
+				<td class="title">启用访问日志</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="accessLog.isOn"/>

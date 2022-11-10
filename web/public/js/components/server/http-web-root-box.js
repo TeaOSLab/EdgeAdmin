@@ -47,7 +47,7 @@ Vue.component("http-web-root-box", {
 		<prior-checkbox :v-config="rootConfig" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || rootConfig.isPrior">
 			<tr>
-				<td class="title">是否开启静态资源分发</td>
+				<td class="title">启用静态资源分发</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="rootConfig.isOn"/>
