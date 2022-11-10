@@ -18,7 +18,7 @@ Vue.component("http-stat-config-box", {
 		<prior-checkbox :v-config="stat" v-if="vIsLocation || vIsGroup" ></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || stat.isPrior">
 			<tr>
-				<td class="title">是否开启统计</td>
+				<td class="title">启用统计</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="stat.isOn"/>

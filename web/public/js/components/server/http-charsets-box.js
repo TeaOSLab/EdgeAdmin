@@ -26,7 +26,7 @@ Vue.component("http-charsets-box", {
 		<prior-checkbox :v-config="charsetConfig" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || charsetConfig.isPrior">
 			<tr>
-				<td class="title">启用</td>
+				<td class="title">启用字符编码</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="charsetConfig.isOn"/>
