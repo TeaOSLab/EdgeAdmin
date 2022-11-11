@@ -1183,7 +1183,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<prior-checkbox :v-config="stat" v-if="vIsLocation || vIsGroup" ></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || stat.isPrior">
 			<tr>
-				<td class="title">是否开启统计</td>
+				<td class="title">启用统计</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="stat.isOn"/>
@@ -2212,7 +2212,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<prior-checkbox :v-config="websocketRef" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="((!vIsLocation && !vIsGroup) || websocketRef.isPrior)">
 			<tr>
-				<td class="title">启用配置</td>
+				<td class="title">启用Websocket</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="websocketRef.isOn"/>
@@ -2428,7 +2428,7 @@ example2.com
 				&nbsp; <a href="" title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
 			</div>
 		</div>
-		<p class="comment" v-if="supportWildcard">支持普通域名（<code-label>example.com</code-label>）、泛域名（<code-label>*.example.com</code-label>）<span v-if="vSupportWildcard == undefined">、域名后缀（以点号开头，如<code-label>.example.com</code-label>）和正则表达式（以波浪号开头，如<code-label>~.*.example.com</code-label>）</span>。</p>
+		<p class="comment" v-if="supportWildcard">支持普通域名（<code-label>example.com</code-label>）、泛域名（<code-label>*.example.com</code-label>）<span v-if="vSupportWildcard == undefined">、域名后缀（以点号开头，如<code-label>.example.com</code-label>）和正则表达式（以波浪号开头，如<code-label>~.*.example.com</code-label>）</span>；如果域名后有端口，请加上端口号。</p>
 		<p class="comment" v-if="!supportWildcard">只支持普通域名（<code-label>example.com</code-label>、<code-label>www.example.com</code-label>）。</p>
 		<div class="ui divider"></div>
 	</div>
@@ -3173,13 +3173,13 @@ example2.com
 	</tr>
 </table>
 <div class="ui margin"></div>
-</div>`}),Vue.component("http-compression-config-box",{props:["v-compression-config","v-is-location","v-is-group"],mounted:function(){let e=this;sortLoad(function(){e.initSortableTypes()})},data:function(){let t=this.vCompressionConfig,e=(null==(t=null==t?{isPrior:!1,isOn:!1,useDefaultTypes:!0,types:["brotli","gzip","zstd","deflate"],level:5,decompressData:!1,gzipRef:null,deflateRef:null,brotliRef:null,minLength:{count:0,unit:"kb"},maxLength:{count:0,unit:"kb"},mimeTypes:["text/*","application/*","font/*"],extensions:[".js",".json",".html",".htm",".xml",".css",".woff2",".txt"],conds:null}:t).types&&(t.types=[]),null==t.mimeTypes&&(t.mimeTypes=[]),null==t.extensions&&(t.extensions=[]),[{name:"Gzip",code:"gzip",isOn:!0},{name:"Deflate",code:"deflate",isOn:!0},{name:"Brotli",code:"brotli",isOn:!0},{name:"ZSTD",code:"zstd",isOn:!0}]),i=[];return t.types.forEach(function(t){e.forEach(function(e){t==e.code&&(e.isOn=!0,i.push(e))})}),e.forEach(function(e){t.types.$contains(e.code)||(e.isOn=!1,i.push(e))}),{config:t,moreOptionsVisible:!1,allTypes:i}},watch:{"config.level":function(e){let t=parseInt(e);isNaN(t)||t<1?t=1:10<t&&(t=10),this.config.level=t}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeExtensions:function(i){i.forEach(function(e,t){0<e.length&&"."!=e[0]&&(i[t]="."+e)}),this.config.extensions=i},changeMimeTypes:function(e){this.config.mimeTypes=e},changeAdvancedVisible:function(){this.moreOptionsVisible=!this.moreOptionsVisible},changeConds:function(e){this.config.conds=e},changeType:function(){this.config.types=[];let t=this;this.allTypes.forEach(function(e){e.isOn&&t.config.types.push(e.code)})},initSortableTypes:function(){let s=document.querySelector("#compression-types-box"),n=this;Sortable.create(s,{draggable:".checkbox",handle:".icon.handle",onStart:function(){},onUpdate:function(e){let t=s.querySelectorAll(".checkbox"),i=[];t.forEach(function(e){e=e.getAttribute("data-code");i.push(e)}),n.config.types=i}})}},template:`<div>
+</div>`}),Vue.component("http-compression-config-box",{props:["v-compression-config","v-is-location","v-is-group"],mounted:function(){let e=this;sortLoad(function(){e.initSortableTypes()})},data:function(){let t=this.vCompressionConfig,e=(null==(t=null==t?{isPrior:!1,isOn:!1,useDefaultTypes:!0,types:["brotli","gzip","zstd","deflate"],level:5,decompressData:!1,gzipRef:null,deflateRef:null,brotliRef:null,minLength:{count:0,unit:"kb"},maxLength:{count:0,unit:"kb"},mimeTypes:["text/*","application/javascript","application/json","application/atom+xml","application/rss+xml","application/xhtml+xml","font/*","image/svg+xml"],extensions:[".js",".json",".html",".htm",".xml",".css",".woff2",".txt"],conds:null}:t).types&&(t.types=[]),null==t.mimeTypes&&(t.mimeTypes=[]),null==t.extensions&&(t.extensions=[]),[{name:"Gzip",code:"gzip",isOn:!0},{name:"Deflate",code:"deflate",isOn:!0},{name:"Brotli",code:"brotli",isOn:!0},{name:"ZSTD",code:"zstd",isOn:!0}]),i=[];return t.types.forEach(function(t){e.forEach(function(e){t==e.code&&(e.isOn=!0,i.push(e))})}),e.forEach(function(e){t.types.$contains(e.code)||(e.isOn=!1,i.push(e))}),{config:t,moreOptionsVisible:!1,allTypes:i}},watch:{"config.level":function(e){let t=parseInt(e);isNaN(t)||t<1?t=1:10<t&&(t=10),this.config.level=t}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeExtensions:function(i){i.forEach(function(e,t){0<e.length&&"."!=e[0]&&(i[t]="."+e)}),this.config.extensions=i},changeMimeTypes:function(e){this.config.mimeTypes=e},changeAdvancedVisible:function(){this.moreOptionsVisible=!this.moreOptionsVisible},changeConds:function(e){this.config.conds=e},changeType:function(){this.config.types=[];let t=this;this.allTypes.forEach(function(e){e.isOn&&t.config.types.push(e.code)})},initSortableTypes:function(){let s=document.querySelector("#compression-types-box"),n=this;Sortable.create(s,{draggable:".checkbox",handle:".icon.handle",onStart:function(){},onUpdate:function(e){let t=s.querySelectorAll(".checkbox"),i=[];t.forEach(function(e){e=e.getAttribute("data-code");i.push(e)}),n.config.types=i}})}},template:`<div>
 	<input type="hidden" name="compressionJSON" :value="JSON.stringify(config)"/>
 	<table class="ui table definition selectable">
 		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
 			<tr>
-				<td class="title">启用</td>
+				<td class="title">启用内容压缩</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" value="1" v-model="config.isOn"/>
@@ -3288,7 +3288,7 @@ example2.com
 		<prior-checkbox :v-config="charsetConfig" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || charsetConfig.isPrior">
 			<tr>
-				<td class="title">启用</td>
+				<td class="title">启用字符编码</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="charsetConfig.isOn"/>
@@ -3405,7 +3405,7 @@ example2.com
 		<prior-checkbox :v-config="accessLog" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || accessLog.isPrior">
 			<tr>
-				<td class="title">开启访问日志</td>
+				<td class="title">启用访问日志</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="accessLog.isOn"/>
@@ -3919,7 +3919,7 @@ example2.com
 				<a class="ui label basic" :class="{disabled: keyword.length == 0}" @click.prevent="cleanKeyword"><i class="icon remove small"></i></a>
 			</div>
 		</div>
-		<div class="ui field"><tip-icon content="一些特殊的关键词：<br/>单个状态码：status:200<br/>状态码范围：status:500-504<br/>查询IP：ip:192.168.1.100<br/>查询URL：https://goedge.cn/docs<br/>查询路径部分：requestPath:/hello/world<br/>查询协议版本：proto:HTTP/1.1<br/>协议：scheme:http"></tip-icon></div>
+		<div class="ui field"><tip-icon content="一些特殊的关键词：<br/>单个状态码：status:200<br/>状态码范围：status:500-504<br/>查询IP：ip:192.168.1.100<br/>查询URL：https://goedge.cn/docs<br/>查询路径部分：requestPath:/hello/world<br/>查询协议版本：proto:HTTP/1.1<br/>协议：scheme:http<br/>请求方法：method:POST"></tip-icon></div>
 	</div>
 	<div class="ui fields inline" style="margin-top: 0.5em">
 		<div class="ui field">
@@ -3975,7 +3975,7 @@ example2.com
 		<prior-checkbox :v-config="rootConfig" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || rootConfig.isPrior">
 			<tr>
-				<td class="title">是否开启静态资源分发</td>
+				<td class="title">启用静态资源分发</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="rootConfig.isOn"/>
@@ -4046,7 +4046,7 @@ example2.com
 		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
 			<tr>
-				<td class="title">启用</td>
+				<td class="title">启用WebP压缩</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" value="1" v-model="config.isOn"/>
@@ -5123,7 +5123,7 @@ example2.com
 </div>`}),Vue.component("not-found-box",{props:["message"],template:`<div style="text-align: center; margin-top: 5em;">
 	<div style="font-size: 2em; margin-bottom: 1em"><i class="icon exclamation triangle large grey"></i></div>
 	<p class="comment">{{message}}<slot></slot></p>
-</div>`}),Vue.component("warning-message",{template:'<div class="ui icon message warning"><i class="icon warning circle"></i><div class="content"><slot></slot></div></div>'});let checkboxId=0,radioId=(Vue.component("checkbox",{props:["name","value","v-value","id","checked"],data:function(){checkboxId++;let e=this.id,t=(null==e&&(e="checkbox"+checkboxId),this.vValue),i=(null==t&&(t="1"),this.value);return null==i&&"checked"==this.checked&&(i=t),{elementId:e,elementValue:t,newValue:i}},methods:{change:function(){this.$emit("input",this.newValue)},check:function(){this.newValue=this.elementValue},uncheck:function(){this.newValue=""},isChecked:function(){return this.newValue==this.elementValue}},watch:{value:function(e){"boolean"==typeof e&&(this.newValue=e)}},template:`<div class="ui checkbox">
+</div>`}),Vue.component("warning-message",{template:'<div class="ui icon message warning"><i class="icon warning circle"></i><div class="content"><slot></slot></div></div>'});let checkboxId=0,radioId=(Vue.component("checkbox",{props:["name","value","v-value","id","checked"],data:function(){checkboxId++;let e=this.id,t=(null==e&&(e="checkbox"+checkboxId),this.vValue),i=(null==t&&(t="1"),this.value);return null==i&&"checked"==this.checked&&(i=t),{elementId:e,elementValue:t,newValue:i}},methods:{change:function(){this.$emit("input",this.newValue)},check:function(){this.newValue=this.elementValue},uncheck:function(){this.newValue=""},isChecked:function(){return"boolean"==typeof this.newValue&&this.newValue||this.newValue==this.elementValue}},watch:{value:function(e){"boolean"==typeof e&&(this.newValue=e)}},template:`<div class="ui checkbox">
 	<input type="checkbox" :name="name" :value="elementValue" :id="elementId" @change="change" v-model="newValue"/>
 	<label :for="elementId"><slot></slot></label>
 </div>`}),Vue.component("network-addresses-view",{props:["v-addresses"],template:`<div>
