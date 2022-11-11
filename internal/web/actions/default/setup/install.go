@@ -17,13 +17,17 @@ import (
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/gosock/pkg/gosock"
 	"gopkg.in/yaml.v3"
+	"io"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 )
 
 type InstallAction struct {
 	actionutils.ParentAction
+
+	apiSetupFinished bool
 }
 
 func (this *InstallAction) RunPost(params struct {
@@ -40,7 +44,7 @@ func (this *InstallAction) RunPost(params struct {
 
 	// API节点配置
 	currentStatusText = "正在检查API节点配置"
-	apiNodeMap := maps.Map{}
+	var apiNodeMap = maps.Map{}
 	err := json.Unmarshal(params.ApiNodeJSON, &apiNodeMap)
 	if err != nil {
 		this.Fail("API节点配置数据解析错误，请刷新页面后重新尝试安装，错误信息：" + err.Error())
@@ -48,7 +52,7 @@ func (this *InstallAction) RunPost(params struct {
 
 	// 数据库
 	currentStatusText = "正在检查数据库配置"
-	dbMap := maps.Map{}
+	var dbMap = maps.Map{}
 	err = json.Unmarshal(params.DbJSON, &dbMap)
 	if err != nil {
 		this.Fail("数据库配置数据解析错误，请刷新页面后重新尝试安装，错误信息：" + err.Error())
@@ -56,14 +60,14 @@ func (this *InstallAction) RunPost(params struct {
 
 	// 管理员
 	currentStatusText = "正在检查管理员配置"
-	adminMap := maps.Map{}
+	var adminMap = maps.Map{}
 	err = json.Unmarshal(params.AdminJSON, &adminMap)
 	if err != nil {
 		this.Fail("管理员数据解析错误，请刷新页面后重新尝试安装，错误信息：" + err.Error())
 	}
 
 	// 安装API节点
-	mode := apiNodeMap.GetString("mode")
+	var mode = apiNodeMap.GetString("mode")
 	if mode == "new" {
 		currentStatusText = "准备启动新API节点"
 
@@ -74,7 +78,7 @@ func (this *InstallAction) RunPost(params struct {
 		//    ...
 
 		// 检查环境
-		apiNodeDir := Tea.Root + "/edge-api"
+		var apiNodeDir = Tea.Root + "/edge-api"
 		for _, dir := range []string{"edge-api", "edge-api/configs", "edge-api/bin"} {
 			apiNodeDir := Tea.Root + "/" + dir
 			_, err = os.Stat(apiNodeDir)
@@ -87,7 +91,7 @@ func (this *InstallAction) RunPost(params struct {
 		}
 
 		// 保存数据库配置
-		dsn := dbMap.GetString("username") + ":" + dbMap.GetString("password") + "@tcp(" + configutils.QuoteIP(dbMap.GetString("host")) + ":" + dbMap.GetString("port") + ")/" + dbMap.GetString("database") + "?charset=utf8mb4&timeout=30s"
+		var dsn = dbMap.GetString("username") + ":" + dbMap.GetString("password") + "@tcp(" + configutils.QuoteIP(dbMap.GetString("host")) + ":" + dbMap.GetString("port") + ")/" + dbMap.GetString("database") + "?charset=utf8mb4&timeout=30s"
 		dbConfig := &dbs.Config{
 			DBs: map[string]*dbs.DBConfig{
 				"prod": {
@@ -108,7 +112,7 @@ func (this *InstallAction) RunPost(params struct {
 
 		// 生成备份文件
 		homeDir, _ := os.UserHomeDir()
-		backupDirs := []string{"/etc/edge-api"}
+		var backupDirs = []string{"/etc/edge-api"}
 		if len(homeDir) > 0 {
 			backupDirs = append(backupDirs, homeDir+"/.edge-api")
 		}
@@ -151,15 +155,21 @@ func (this *InstallAction) RunPost(params struct {
 		var resultMap = maps.Map{}
 		logs.Println("[INSTALL]setup edge-api")
 		{
-			cmd := exec.Command(apiNodeDir+"/bin/edge-api", "setup", "-api-node-protocol=http", "-api-node-host=\""+apiNodeMap.GetString("newHost")+"\"", "-api-node-port=\""+apiNodeMap.GetString("newPort")+"\"")
-			output := bytes.NewBuffer([]byte{})
+			this.apiSetupFinished = false
+			var cmd = exec.Command(apiNodeDir+"/bin/edge-api", "setup", "-api-node-protocol=http", "-api-node-host=\""+apiNodeMap.GetString("newHost")+"\"", "-api-node-port=\""+apiNodeMap.GetString("newPort")+"\"")
+			var output = bytes.NewBuffer([]byte{})
 			cmd.Stdout = output
+
+			// 试图读取执行日志
+			go this.startReadingAPIInstallLog()
+
 			err = cmd.Run()
+			this.apiSetupFinished = true
 			if err != nil {
 				this.Fail("安装失败：" + err.Error())
 			}
 
-			resultData := output.Bytes()
+			var resultData = output.Bytes()
 			err = json.Unmarshal(resultData, &resultMap)
 			if err != nil {
 				this.Fail("安装节点时返回数据错误：" + err.Error() + "(" + string(resultData) + ")")
@@ -175,7 +185,7 @@ func (this *InstallAction) RunPost(params struct {
 		// 关闭正在运行的API节点，防止冲突
 		logs.Println("[INSTALL]stop edge-api")
 		{
-			cmd := exec.Command(apiNodeDir+"/bin/edge-api", "stop")
+			var cmd = exec.Command(apiNodeDir+"/bin/edge-api", "stop")
 			_ = cmd.Run()
 		}
 
@@ -183,7 +193,7 @@ func (this *InstallAction) RunPost(params struct {
 		currentStatusText = "正在启动API节点"
 		logs.Println("[INSTALL]start edge-api")
 		{
-			cmd := exec.Command(apiNodeDir + "/bin/edge-api")
+			var cmd = exec.Command(apiNodeDir + "/bin/edge-api")
 			err = cmd.Start()
 			if err != nil {
 				this.Fail("API节点启动失败：" + err.Error())
@@ -220,7 +230,7 @@ func (this *InstallAction) RunPost(params struct {
 		}
 
 		// 写入API节点配置，完成安装
-		apiConfig := &configs.APIConfig{
+		var apiConfig = &configs.APIConfig{
 			RPC: struct {
 				Endpoints     []string `yaml:"endpoints"`
 				DisableUpdate bool     `yaml:"disableUpdate"`
@@ -283,7 +293,7 @@ func (this *InstallAction) RunPost(params struct {
 		this.Success()
 	} else if mode == "old" {
 		// 构造RPC
-		apiConfig := &configs.APIConfig{
+		var apiConfig = &configs.APIConfig{
 			RPC: struct {
 				Endpoints     []string `yaml:"endpoints"`
 				DisableUpdate bool     `yaml:"disableUpdate"`
@@ -303,7 +313,7 @@ func (this *InstallAction) RunPost(params struct {
 		}()
 
 		// 设置管理员
-		ctx := client.APIContext(0)
+		var ctx = client.APIContext(0)
 		_, err = client.AdminRPC().CreateOrUpdateAdmin(ctx, &pb.CreateOrUpdateAdminRequest{
 			Username: adminMap.GetString("username"),
 			Password: adminMap.GetString("password"),
@@ -343,4 +353,74 @@ func (this *InstallAction) RunPost(params struct {
 	} else {
 		this.Fail("错误的API节点模式：'" + mode + "'")
 	}
+}
+
+// 读取API安装时的日志，以便于显示当前正在执行的任务
+func (this *InstallAction) startReadingAPIInstallLog() {
+	var tmpDir = os.TempDir()
+	if len(tmpDir) == 0 {
+		return
+	}
+	var logFile = tmpDir + "/edge-install.log"
+
+	var logFp *os.File
+	var err error
+
+	// 尝试5秒钟
+	for i := 0; i < 10; i++ {
+		logFp, err = os.Open(logFile)
+		if err != nil {
+			time.Sleep(1 * time.Second)
+			continue
+		} else {
+			break
+		}
+	}
+	if err != nil {
+		return
+	}
+
+	if this.apiSetupFinished {
+		_ = logFp.Close()
+		return
+	}
+
+	go func() {
+		defer func() {
+			_ = logFp.Close()
+		}()
+
+		var ticker = time.NewTicker(1 * time.Second)
+		var logBuf = make([]byte, 256)
+		for range ticker.C {
+			if this.apiSetupFinished {
+				return
+			}
+
+			_, err = logFp.Seek(-256, io.SeekEnd)
+			if err != nil {
+				currentStatusText = ""
+				return
+			}
+
+			n, err := logFp.Read(logBuf)
+			if err != nil {
+				currentStatusText = ""
+				return
+			}
+
+			if n > 0 {
+				var logData = string(logBuf[:n])
+				var lines = strings.Split(logData, "\n")
+				if len(lines) >= 3 {
+					var line = strings.TrimSpace(lines[len(lines)-2])
+					if len(line) > 0 {
+						if !this.apiSetupFinished {
+							currentStatusText = "正在执行 " + line + " ..."
+						}
+					}
+				}
+			}
+		}
+	}()
 }
