@@ -3435,7 +3435,7 @@ Vue.component("http-stat-config-box", {
 		<prior-checkbox :v-config="stat" v-if="vIsLocation || vIsGroup" ></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || stat.isPrior">
 			<tr>
-				<td class="title">是否开启统计</td>
+				<td class="title">启用统计</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="stat.isOn"/>
@@ -6680,7 +6680,7 @@ Vue.component("http-websocket-box", {
 		<prior-checkbox :v-config="websocketRef" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="((!vIsLocation && !vIsGroup) || websocketRef.isPrior)">
 			<tr>
-				<td class="title">启用配置</td>
+				<td class="title">启用Websocket</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="websocketRef.isOn"/>
@@ -7276,7 +7276,7 @@ Vue.component("domains-box", {
 				&nbsp; <a href="" title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
 			</div>
 		</div>
-		<p class="comment" v-if="supportWildcard">支持普通域名（<code-label>example.com</code-label>）、泛域名（<code-label>*.example.com</code-label>）<span v-if="vSupportWildcard == undefined">、域名后缀（以点号开头，如<code-label>.example.com</code-label>）和正则表达式（以波浪号开头，如<code-label>~.*.example.com</code-label>）</span>。</p>
+		<p class="comment" v-if="supportWildcard">支持普通域名（<code-label>example.com</code-label>）、泛域名（<code-label>*.example.com</code-label>）<span v-if="vSupportWildcard == undefined">、域名后缀（以点号开头，如<code-label>.example.com</code-label>）和正则表达式（以波浪号开头，如<code-label>~.*.example.com</code-label>）</span>；如果域名后有端口，请加上端口号。</p>
 		<p class="comment" v-if="!supportWildcard">只支持普通域名（<code-label>example.com</code-label>、<code-label>www.example.com</code-label>）。</p>
 		<div class="ui divider"></div>
 	</div>
@@ -9107,7 +9107,7 @@ Vue.component("http-compression-config-box", {
 				brotliRef: null,
 				minLength: {count: 0, "unit": "kb"},
 				maxLength: {count: 0, "unit": "kb"},
-				mimeTypes: ["text/*", "application/*", "font/*"],
+				mimeTypes: ["text/*", "application/javascript", "application/json", "application/atom+xml", "application/rss+xml", "application/xhtml+xml", "font/*", "image/svg+xml"],
 				extensions: [".js", ".json", ".html", ".htm", ".xml", ".css", ".woff2", ".txt"],
 				conds: null
 			}
@@ -9238,7 +9238,7 @@ Vue.component("http-compression-config-box", {
 		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
 			<tr>
-				<td class="title">启用</td>
+				<td class="title">启用内容压缩</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" value="1" v-model="config.isOn"/>
@@ -9433,7 +9433,7 @@ Vue.component("http-charsets-box", {
 		<prior-checkbox :v-config="charsetConfig" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || charsetConfig.isPrior">
 			<tr>
-				<td class="title">启用</td>
+				<td class="title">启用字符编码</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="charsetConfig.isOn"/>
@@ -10064,7 +10064,7 @@ Vue.component("http-access-log-config-box", {
 		<prior-checkbox :v-config="accessLog" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || accessLog.isPrior">
 			<tr>
-				<td class="title">开启访问日志</td>
+				<td class="title">启用访问日志</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="accessLog.isOn"/>
@@ -11181,7 +11181,7 @@ Vue.component("http-access-log-search-box", {
 				<a class="ui label basic" :class="{disabled: keyword.length == 0}" @click.prevent="cleanKeyword"><i class="icon remove small"></i></a>
 			</div>
 		</div>
-		<div class="ui field"><tip-icon content="一些特殊的关键词：<br/>单个状态码：status:200<br/>状态码范围：status:500-504<br/>查询IP：ip:192.168.1.100<br/>查询URL：https://goedge.cn/docs<br/>查询路径部分：requestPath:/hello/world<br/>查询协议版本：proto:HTTP/1.1<br/>协议：scheme:http"></tip-icon></div>
+		<div class="ui field"><tip-icon content="一些特殊的关键词：<br/>单个状态码：status:200<br/>状态码范围：status:500-504<br/>查询IP：ip:192.168.1.100<br/>查询URL：https://goedge.cn/docs<br/>查询路径部分：requestPath:/hello/world<br/>查询协议版本：proto:HTTP/1.1<br/>协议：scheme:http<br/>请求方法：method:POST"></tip-icon></div>
 	</div>
 	<div class="ui fields inline" style="margin-top: 0.5em">
 		<div class="ui field">
@@ -11447,7 +11447,7 @@ Vue.component("http-web-root-box", {
 		<prior-checkbox :v-config="rootConfig" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || rootConfig.isPrior">
 			<tr>
-				<td class="title">是否开启静态资源分发</td>
+				<td class="title">启用静态资源分发</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="rootConfig.isOn"/>
@@ -11586,7 +11586,7 @@ Vue.component("http-webp-config-box", {
 		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
 			<tr>
-				<td class="title">启用</td>
+				<td class="title">启用WebP压缩</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" value="1" v-model="config.isOn"/>
@@ -15697,7 +15697,7 @@ Vue.component("checkbox", {
 			this.newValue = ""
 		},
 		isChecked: function () {
-			return this.newValue == this.elementValue
+			return (typeof (this.newValue) == "boolean" && this.newValue) || this.newValue == this.elementValue
 		}
 	},
 	watch: {

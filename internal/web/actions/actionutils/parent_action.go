@@ -49,7 +49,11 @@ func (this *ParentAction) ErrorText(err string) {
 }
 
 func (this *ParentAction) NotFound(name string, itemId int64) {
-	this.ErrorPage(errors.New(name + " id: '" + strconv.FormatInt(itemId, 10) + "' is not found"))
+	if itemId > 0 {
+		this.ErrorPage(errors.New(name + " id: '" + strconv.FormatInt(itemId, 10) + "' is not found"))
+	} else {
+		this.ErrorPage(errors.New(name + " is not found"))
+	}
 }
 
 func (this *ParentAction) NewPage(total int64, size ...int64) *Page {
