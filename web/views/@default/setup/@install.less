@@ -1,10 +1,11 @@
 .install-box {
 	@width: 50em;
+	@half-width: 25em;
 
 	width: @width;
 	position: fixed;
 	left: 50%;
-	margin-left: -@width/2;
+	margin-left: -@half-width;
 	top: 1em;
 	bottom: 1em;
 	overflow-y: auto;
@@ -48,7 +49,7 @@
 		left: 50%;
 		width: @width;
 		padding-right: 1em;
-		margin-left: -@width/2;
+		margin-left: -@half-width;
 		z-index: 1;
 	}
 
@@ -59,7 +60,7 @@
 	.button-group {
 		position: fixed;
 		left: 50%;
-		margin-left: -@width/2;
+		margin-left: -@half-width;
 		z-index: 1;
 		width: @width;
 		bottom: 1em;
@@ -71,8 +72,8 @@
 		.status-box {
 			position: absolute;
 			top: 3em;
-			left: 15em;
-			right: 15em;
+			left: 5em;
+			right: 5em;
 			bottom: 0;
 			text-align: center;
 			z-index: 0;

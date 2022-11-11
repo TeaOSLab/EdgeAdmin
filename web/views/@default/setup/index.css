@@ -57,8 +57,8 @@
 .install-box .button-group .status-box {
   position: absolute;
   top: 3em;
-  left: 15em;
-  right: 15em;
+  left: 5em;
+  right: 5em;
   bottom: 0;
   text-align: center;
   z-index: 0;
