@@ -1,0 +1,35 @@
+FROM alpine:edge
+LABEL maintainer="iwind.liu@gmail.com"
+ENV TZ "Asia/Shanghai"
+ENV VERSION 0.5.7
+ENV ROOT_DIR /usr/local/goedge
+ENV TAR_FILE edge-admin-linux-amd64-plus-v${VERSION}.zip
+
+RUN apk add --no-cache tzdata
+
+RUN mkdir ${ROOT_DIR};
+COPY ${TAR_FILE} ${ROOT_DIR}/
+
+RUN apk add unzip; \
+    cd ${ROOT_DIR}; \
+	unzip ${ROOT_DIR}/${TAR_FILE}; \
+    rm -f ${ROOT_DIR}/${TAR_FILE};
+
+RUN apk add mysql mysql-client; \
+	sed -e "s/\[mysqld\]/\[mysqld\]\n\ndatadir=\/var\/lib\/mysql\nport=3306\ninnodb_flush_log_at_trx_commit=2\nmax_connections=256\nmax_prepared_stmt_count=65535\nbinlog_cache_size=1M\nbinlog_stmt_cache_size=1M\nthread_cache_size=32\nbinlog_expire_logs_seconds=1209600\n\n/" /etc/my.cnf > /tmp/my.cnf; \
+    cp /tmp/my.cnf /etc/my.cnf; \
+    sed -e "s/skip-networking/#skip-networking/" /etc/my.cnf.d/mariadb-server.cnf > /tmp/mariadb-server.cnf; \
+    cp /tmp/mariadb-server.cnf /etc/my.cnf.d/mariadb-server.cnf; \
+    mysql_install_db --user=mysql
+RUN mysqld_safe --user=mysql & \
+    sleep 5; \
+    mysql -uroot -hlocalhost --execute="ALTER USER 'root'@'localhost' IDENTIFIED BY '123456';"
+
+RUN echo -e "#!/usr/bin/env sh\n\nmysqld_safe --user=mysql &\n/usr/local/goedge/edge-admin/bin/edge-admin\n" > ${ROOT_DIR}/run.sh; \
+    chmod u+x ${ROOT_DIR}/run.sh
+
+EXPOSE 7788
+EXPOSE 8001
+EXPOSE 3306
+
+ENTRYPOINT [ "/usr/local/goedge/run.sh" ]

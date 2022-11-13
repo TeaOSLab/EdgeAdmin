@@ -22,7 +22,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 			currentHost = host
 		}
 	}
-	if net.ParseIP(currentHost) != nil {
+	if net.ParseIP(currentHost) != nil && currentHost != "localhost" && currentHost != "127.0.0.1" {
 		this.Data["currentHost"] = currentHost
 	} else {
 		this.Data["currentHost"] = ""
