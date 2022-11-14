@@ -4,16 +4,17 @@ ENV TZ "Asia/Shanghai"
 ENV VERSION 0.5.7
 ENV ROOT_DIR /usr/local/goedge
 ENV TAR_FILE edge-admin-linux-amd64-plus-v${VERSION}.zip
+ENV TAR_URL "https://dl.goedge.cn/edge/v${VERSION}/edge-admin-linux-amd64-plus-v${VERSION}.zip"
 
 RUN apk add --no-cache tzdata
 
-RUN mkdir ${ROOT_DIR};
-COPY ${TAR_FILE} ${ROOT_DIR}/
-
-RUN apk add unzip; \
-    cd ${ROOT_DIR}; \
-	unzip ${ROOT_DIR}/${TAR_FILE}; \
-    rm -f ${ROOT_DIR}/${TAR_FILE};
+RUN apk add wget
+RUN mkdir ${ROOT_DIR}; \
+	cd ${ROOT_DIR}; \
+	wget ${TAR_URL} -O ${TAR_FILE}; \
+	apk add unzip; \
+	unzip ${TAR_FILE}; \
+	rm -f ${TAR_FILE}
 
 RUN apk add mysql mysql-client; \
 	sed -e "s/\[mysqld\]/\[mysqld\]\n\ndatadir=\/var\/lib\/mysql\nport=3306\ninnodb_flush_log_at_trx_commit=2\nmax_connections=256\nmax_prepared_stmt_count=65535\nbinlog_cache_size=1M\nbinlog_stmt_cache_size=1M\nthread_cache_size=32\nbinlog_expire_logs_seconds=1209600\n\n/" /etc/my.cnf > /tmp/my.cnf; \
