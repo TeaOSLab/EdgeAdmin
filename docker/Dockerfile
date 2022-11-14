@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM alpine:latest
 LABEL maintainer="iwind.liu@gmail.com"
 ENV TZ "Asia/Shanghai"
 ENV VERSION 0.5.7
