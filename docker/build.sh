@@ -2,4 +2,4 @@
 
 VERSION=latest
 
-docker build -t goedge/edge-admin:${VERSION} .
+docker build --no-cache -t goedge/edge-admin:${VERSION} .
