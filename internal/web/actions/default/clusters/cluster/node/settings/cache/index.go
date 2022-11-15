@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/nodeutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -57,9 +58,19 @@ func (this *IndexAction) RunGet(params struct {
 		}
 	}
 
+	var diskSubDirs = []*serverconfigs.CacheDir{}
+	if len(node.CacheDiskSubDirsJSON) > 0 {
+		err = json.Unmarshal(node.CacheDiskSubDirsJSON, &diskSubDirs)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+
 	var nodeMap = this.Data["node"].(maps.Map)
 	nodeMap["maxCacheDiskCapacity"] = maxCacheDiskCapacity
 	nodeMap["cacheDiskDir"] = node.CacheDiskDir
+	nodeMap["cacheDiskSubDirs"] = diskSubDirs
 	nodeMap["maxCacheMemoryCapacity"] = maxCacheMemoryCapacity
 
 	this.Show()
@@ -69,6 +80,7 @@ func (this *IndexAction) RunPost(params struct {
 	NodeId                     int64
 	MaxCacheDiskCapacityJSON   []byte
 	CacheDiskDir               string
+	CacheDiskSubDirsJSON       []byte
 	MaxCacheMemoryCapacityJSON []byte
 
 	Must *actions.Must
@@ -105,10 +117,20 @@ func (this *IndexAction) RunPost(params struct {
 		}
 	}
 
+	if len(params.CacheDiskSubDirsJSON) > 0 {
+		var cacheSubDirs = []*serverconfigs.CacheDir{}
+		err := json.Unmarshal(params.CacheDiskSubDirsJSON, &cacheSubDirs)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+
 	_, err := this.RPC().NodeRPC().UpdateNodeCache(this.AdminContext(), &pb.UpdateNodeCacheRequest{
 		NodeId:                 params.NodeId,
 		MaxCacheDiskCapacity:   pbMaxCacheDiskCapacity,
 		CacheDiskDir:           params.CacheDiskDir,
+		CacheDiskSubDirsJSON:   params.CacheDiskSubDirsJSON,
 		MaxCacheMemoryCapacity: pbMaxCacheMemoryCapacity,
 	})
 	if err != nil {

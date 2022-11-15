@@ -15,10 +15,17 @@
                 </td>
             </tr>
             <tr>
-                <td>磁盘缓存目录</td>
+                <td>磁盘缓存主目录</td>
                 <td>
                     <input type="text" name="cacheDiskDir" maxlength="500" value="" v-model="node.cacheDiskDir"/>
-                    <p class="comment">存放文件缓存的目录，通常填写绝对路径。不填则表示使用集群缓存策略中定义的目录。</p>
+                    <p class="comment">存放文件缓存的主目录，通常填写绝对路径。不填则表示使用集群缓存策略中定义的目录。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>其他磁盘缓存目录</td>
+                <td>
+                    <node-cache-disk-dirs-box name="cacheDiskSubDirsJSON" v-model="node.cacheDiskSubDirs"></node-cache-disk-dirs-box>
+                    <p class="comment">除了主目录外，可以在这里添加别的可用于缓存的目录；缓存目录有变更时（添加、删除或修改）需要手动将这些缓存目录清空。</p>
                 </td>
             </tr>
             <tr>
