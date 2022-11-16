@@ -52,6 +52,19 @@ Tea.context(function () {
 		this.checkpoint = this.checkpoints.$find(function (k, v) {
 			return v.prefix == that.rule.checkpointPrefix
 		})
+		if (this.checkpoint == null) {
+			return
+		}
+		switch (this.checkpoint.dataType) {
+			case "bool":
+				this.rule.operator = "eq"
+				break
+			case "number":
+				this.rule.operator = "eq"
+				break
+			default:
+				this.rule.operator = "match"
+		}
 	}
 
 
@@ -63,6 +76,9 @@ Tea.context(function () {
 		this.operator = this.operators.$find(function (k, v) {
 			return v.code == that.rule.operator
 		})
+		if (this.operator == null) {
+			return
+		}
 		if (!this.isUpdating) {
 			this.rule.isCaseInsensitive = (this.operator.case == "yes")
 		}
