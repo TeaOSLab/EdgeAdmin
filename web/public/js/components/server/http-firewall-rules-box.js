@@ -14,6 +14,7 @@ Vue.component("http-firewall-rules-box", {
 			window.UPDATING_RULE = null
 			let that = this
 			teaweb.popup("/servers/components/waf/createRulePopup?type=" + this.vType, {
+				height: "30em",
 				callback: function (resp) {
 					that.rules.push(resp.data.rule)
 				}
@@ -23,6 +24,7 @@ Vue.component("http-firewall-rules-box", {
 			window.UPDATING_RULE = rule
 			let that = this
 			teaweb.popup("/servers/components/waf/createRulePopup?type=" + this.vType, {
+				height: "30em",
 				callback: function (resp) {
 					Vue.set(that.rules, index, resp.data.rule)
 				}

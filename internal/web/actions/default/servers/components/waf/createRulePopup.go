@@ -32,6 +32,7 @@ func (this *CreateRulePopupAction) RunGet(params struct {
 				"params":      checkpoint.Params,
 				"options":     checkpoint.Options,
 				"isComposed":  checkpoint.IsComposed,
+				"dataType":    checkpoint.DataType,
 			})
 		}
 	}

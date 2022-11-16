@@ -35,7 +35,7 @@ Tea.context(function () {
 	this.createSet = function (groupId) {
 		teaweb.popup("/servers/components/waf/createSetPopup?firewallPolicyId=" + this.firewallPolicyId + "&groupId=" + groupId + "&type=" + this.type, {
 			width: "50em",
-			height: "30em",
+			height: "40em",
 			callback: function () {
 				teaweb.success("保存成功", function () {
 					window.location.reload()
@@ -48,7 +48,7 @@ Tea.context(function () {
 	this.updateSet = function (setId) {
 		teaweb.popup("/servers/components/waf/updateSetPopup?firewallPolicyId=" + this.firewallPolicyId + "&groupId=" + this.group.id + "&type=" + this.type + "&setId=" + setId, {
 			width: "50em",
-			height: "30em",
+			height: "40em",
 			callback: function () {
 				teaweb.success("保存成功", function () {
 					window.location.reload()
