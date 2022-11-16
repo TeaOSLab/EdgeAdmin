@@ -112,7 +112,7 @@
             <span v-else class="disabled">-</span>
         </td>
         <td class="center">
-            <span v-if="node.status.isActive && node.status.trafficOutBytes > 0">{{teaweb.formatBytes(node.status.trafficOutBytes/60)}}/s</span>
+            <span v-if="node.status.isActive && node.status.trafficOutBytes > 0">{{teaweb.formatBits(node.status.trafficOutBytes * 8/60)}}</span>
             <span v-else class="disabled">-</span>
         </td>
         <td class="center">
