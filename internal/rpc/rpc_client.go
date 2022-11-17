@@ -572,40 +572,25 @@ func (this *RPCClient) pickConn() *grpc.ClientConn {
 
 	// 检查连接状态
 	if len(this.conns) > 0 {
-		var availableConns = []*grpc.ClientConn{}
-		for _, state := range []connectivity.State{connectivity.Ready, connectivity.Idle, connectivity.Connecting} {
+		for _, state := range []connectivity.State{
+			connectivity.Ready,
+			connectivity.Idle,
+			connectivity.Connecting,
+		} {
+			var availableConns = []*grpc.ClientConn{}
 			for _, conn := range this.conns {
 				if conn.GetState() == state {
 					availableConns = append(availableConns, conn)
 				}
 			}
+
 			if len(availableConns) > 0 {
-				break
+				return this.randConn(availableConns)
 			}
 		}
-
-		if len(availableConns) > 0 {
-			return availableConns[rands.Int(0, len(availableConns)-1)]
-		}
-
-		// 关闭
-		for _, conn := range this.conns {
-			_ = conn.Close()
-		}
 	}
 
-	// 重新初始化
-	err := this.init()
-	if err != nil {
-		// 错误提示已经在构造对象时打印过，所以这里不再重复打印
-		return nil
-	}
-
-	if len(this.conns) == 0 {
-		return nil
-	}
-
-	return this.conns[rands.Int(0, len(this.conns)-1)]
+	return this.randConn(this.conns)
 }
 
 // Close 关闭
@@ -638,4 +623,15 @@ func (this *RPCClient) localIPAddrs() []string {
 		}
 	}
 	return localIPAddrs
+}
+
+func (this *RPCClient) randConn(conns []*grpc.ClientConn) *grpc.ClientConn {
+	var l = len(conns)
+	if l == 0 {
+		return nil
+	}
+	if l == 1 {
+		return conns[0]
+	}
+	return conns[rands.Int(0, l-1)]
 }
