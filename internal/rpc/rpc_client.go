@@ -576,6 +576,7 @@ func (this *RPCClient) pickConn() *grpc.ClientConn {
 			connectivity.Ready,
 			connectivity.Idle,
 			connectivity.Connecting,
+			connectivity.TransientFailure,
 		} {
 			var availableConns = []*grpc.ClientConn{}
 			for _, conn := range this.conns {
@@ -583,7 +584,6 @@ func (this *RPCClient) pickConn() *grpc.ClientConn {
 					availableConns = append(availableConns, conn)
 				}
 			}
-
 			if len(availableConns) > 0 {
 				return this.randConn(availableConns)
 			}
