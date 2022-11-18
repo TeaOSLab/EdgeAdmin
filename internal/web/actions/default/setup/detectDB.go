@@ -34,7 +34,7 @@ func (this *DetectDBAction) RunPost(params struct{}) {
 		for _, pass := range []string{"", "123456", "654321", "Aa_123456"} {
 			db, err := dbs.NewInstanceFromConfig(&dbs.DBConfig{
 				Driver: "mysql",
-				Dsn:    username + ":" + pass + "@tcp(" + configutils.QuoteIP(localHost) + ":" + localPort + ")/edges11111",
+				Dsn:    username + ":" + pass + "@tcp(" + configutils.QuoteIP(localHost) + ":" + localPort + ")/edges",
 				Prefix: "",
 			})
 			if err == nil {
