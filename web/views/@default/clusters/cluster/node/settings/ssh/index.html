@@ -31,7 +31,7 @@
             </tr>
         </table>
 
-        <div class="ui message" v-if="isTesting">正在测试是否连接 ...</div>
+        <div class="ui message" v-if="isTesting">正在测试连接 ...</div>
         <div class="ui message green" v-if="resp != null && resp.isOk">连接成功！</div>
         <div class="ui message red" v-if="resp != null && !resp.isOk">连接失败：{{resp.error}}</div>
 
