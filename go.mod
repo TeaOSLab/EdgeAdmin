@@ -3,11 +3,9 @@ module github.com/TeaOSLab/EdgeAdmin
 go 1.18
 
 replace github.com/TeaOSLab/EdgeCommon => ../EdgeCommon
-replace github.com/TeaOSLab/EdgePlus => ../EdgePlus
 
 require (
 	github.com/TeaOSLab/EdgeCommon v0.0.0-00010101000000-000000000000
-	github.com/TeaOSLab/EdgePlus v0.0.0-00010101000000-000000000000
 	github.com/cespare/xxhash v1.1.0
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/iwind/TeaGo v0.0.0-20220304043459-0dd944a5b475
