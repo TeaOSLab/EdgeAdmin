@@ -8,6 +8,7 @@ import (
 	"github.com/iwind/TeaGo/dbs"
 	"github.com/iwind/TeaGo/maps"
 	"net"
+	"os"
 	"strings"
 	"time"
 )
@@ -31,7 +32,18 @@ func (this *DetectDBAction) RunPost(params struct{}) {
 		localPort = "3306"
 
 		var username = "root"
-		for _, pass := range []string{"", "123456", "654321", "Aa_123456"} {
+		var passwords = []string{"", "123456", "654321", "Aa_123456", "111111"}
+
+		// 使用 foolish-mysql 安装的MySQL
+		localGeneratedPasswordData, err := os.ReadFile("/usr/local/mysql/generated-password.txt")
+		if err == nil {
+			var localGeneratedPassword = strings.TrimSpace(string(localGeneratedPasswordData))
+			if len(localGeneratedPassword) > 0 {
+				passwords = append(passwords, localGeneratedPassword)
+			}
+		}
+
+		for _, pass := range passwords {
 			db, err := dbs.NewInstanceFromConfig(&dbs.DBConfig{
 				Driver: "mysql",
 				Dsn:    username + ":" + pass + "@tcp(" + configutils.QuoteIP(localHost) + ":" + localPort + ")/edges",
