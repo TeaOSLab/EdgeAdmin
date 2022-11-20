@@ -71,7 +71,10 @@ func ValidateRecordName(name string) bool {
 	}
 
 	pieces := strings.Split(name, ".")
-	for _, piece := range pieces {
+	for index, piece := range pieces {
+		if index == 0 && piece == "*" {
+			continue
+		}
 		if piece == "-" ||
 			strings.HasPrefix(piece, "-") ||
 			strings.HasSuffix(piece, "-") ||
