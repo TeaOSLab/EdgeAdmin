@@ -143,13 +143,6 @@
 					</span>
 				</td>
 			</tr>
-			<tr>
-				<td>CPU线程数</td>
-				<td>
-					<span v-if="node.maxCPU > 0">{{node.maxCPU}}线程</span>
-					<span v-else class="disabled">没有限制。</span>
-				</td>
-			</tr>
             <tr>
                 <td>缓存磁盘容量</td>
                 <td>
@@ -166,6 +159,22 @@
                     <div v-else>
                         <size-capacity-view :v-value="node.maxCacheMemoryCapacity"></size-capacity-view>
                     </div>
+                </td>
+            </tr>
+            <tr>
+                <td>CPU线程数</td>
+                <td>
+                    <span v-if="node.maxCPU > 0">{{node.maxCPU}}线程</span>
+                    <span v-else class="disabled">没有限制。</span>
+                </td>
+            </tr>
+            <tr>
+                <td>API节点地址</td>
+                <td>
+                    <div v-if="node.apiNodeAddrs != null && node.apiNodeAddrs.length > 0">
+                        <span v-for="addr in node.apiNodeAddrs" class="ui label basic small">{{addr}}</span>
+                    </div>
+                    <span v-else class="disabled">使用全局设置</span>
                 </td>
             </tr>
 		</tbody>

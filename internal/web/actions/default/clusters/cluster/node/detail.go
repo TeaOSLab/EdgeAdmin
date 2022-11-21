@@ -10,6 +10,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/ipAddresses/ipaddressutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
 	"time"
@@ -300,6 +301,22 @@ func (this *DetailAction) RunGet(params struct {
 		lnAddrs = []string{}
 	}
 
+	// API节点地址
+	var apiNodeAddrStrings = []string{}
+	var apiNodeAddrs = []*serverconfigs.NetworkAddressConfig{}
+	if len(node.ApiNodeAddrsJSON) > 0 {
+		err = json.Unmarshal(node.ApiNodeAddrsJSON, &apiNodeAddrs)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		for _, addr := range apiNodeAddrs {
+			if addr.Init() == nil {
+				apiNodeAddrStrings = append(apiNodeAddrStrings, addr.FullAddresses()...)
+			}
+		}
+	}
+
 	this.Data["node"] = maps.Map{
 		"id":                node.Id,
 		"name":              node.Name,
@@ -319,6 +336,7 @@ func (this *DetailAction) RunGet(params struct {
 		"levelInfo":         nodeconfigs.FindNodeLevel(int(node.Level)),
 		"lnAddrs":           lnAddrs,
 		"enableIPLists":     node.EnableIPLists,
+		"apiNodeAddrs":      apiNodeAddrStrings,
 
 		"status": maps.Map{
 			"isActive":             status.IsActive,
