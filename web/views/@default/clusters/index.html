@@ -43,6 +43,9 @@
         <tr v-for="cluster in clusters">
             <td class="cluster-name-td">
                 <a :href="'/clusters/cluster?clusterId=' + cluster.id"><keyword :v-word="keyword">{{cluster.name}}</keyword></a>
+
+                <a :href="'/clusters/cluster/settings?clusterId=' + cluster.id" title="设置"><i class="icon setting grey"></i></a>
+
                 <div v-if="cluster.timeZone != null && cluster.timeZone.length > 0">
                     <grey-label>时区：{{cluster.timeZone}}</grey-label>
                 </div>

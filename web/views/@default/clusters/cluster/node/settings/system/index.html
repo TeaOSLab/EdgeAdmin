@@ -19,6 +19,19 @@
         <h4>DNS解析</h4>
         <dns-resolver-config-box :v-dns-resolver-config="dnsResolverConfig"></dns-resolver-config-box>
 
+        <h4>API相关</h4>
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title">API节点地址</td>
+                <td>
+                    <div style="margin-bottom: 0.5em">
+                        <api-node-addresses-box :v-name="'apiNodeAddrsJSON'" :v-addrs="apiNodeAddrs"></api-node-addresses-box>
+                    </div>
+                    <p class="comment">当前节点单独使用的API节点设置。<pro-warning-label></pro-warning-label></p>
+                </td>
+            </tr>
+        </table>
+
         <submit-btn></submit-btn>
     </form>
 </div>

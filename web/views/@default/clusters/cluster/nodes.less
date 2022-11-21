@@ -32,3 +32,21 @@ a.small {
 	font-size: 0.8em;
 	text-align: center;
 }
+
+.node-name-td {
+	position: relative;
+
+	.icon.setting {
+		display: none;
+		position: absolute;
+		right: 1em;
+		top: 50%;
+		margin-top: -1em;
+	}
+}
+
+.node-name-td:hover {
+	.icon.setting {
+		display: inline;
+	}
+}
