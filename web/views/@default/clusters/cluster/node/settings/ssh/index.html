@@ -13,7 +13,7 @@
                 <td class="title">SSH主机地址</td>
                 <td>
                     <input type="text" name="sshHost" maxlength="64" v-model="sshHost"/>
-                    <p class="comment"><span v-if="hostIsAutoFilled"><strong>已自动填充，需要保存</strong>。</span>比如192.168.1.100。</p>
+                    <p class="comment"><span v-if="hostIsAutoFilled" class="red"><strong>已自动填充</strong>，需要点击"保存"按钮后生效。</span>比如192.168.1.100。</p>
                 </td>
             </tr>
             <tr>

@@ -15,7 +15,17 @@
 .cluster-name-td .icon.opacity {
   opacity: 0.3;
 }
+.cluster-name-td .icon.setting {
+  display: none;
+  position: absolute;
+  right: 3em;
+  top: 50%;
+  margin-top: -0.7em;
+}
 .cluster-name-td:hover .icon.pin {
+  display: inline;
+}
+.cluster-name-td:hover .icon.setting {
   display: inline;
 }
 /*# sourceMappingURL=index.css.map */

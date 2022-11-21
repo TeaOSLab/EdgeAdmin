@@ -73,7 +73,10 @@
 	</tr>
 	</thead>
 	<tr v-for="node in nodes">
-        <td><a :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id">{{node.name}}<sup v-if="node.level > 1"><span class="blue"> &nbsp;L{{node.level}}</span></sup></a>
+        <td class="node-name-td"><a :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id">{{node.name}}<sup v-if="node.level > 1"><span class="blue"> &nbsp;L{{node.level}}</span></sup></a>
+
+            <a :href="'/clusters/cluster/node/update?clusterId=' + clusterId + '&nodeId=' + node.id" title="设置"><i class="icon setting grey"></i></a>
+
             <div v-if="node.region != null">
                 <grey-label>区域：{{node.region.name}}</grey-label>
             </div>

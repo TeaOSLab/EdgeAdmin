@@ -60,7 +60,7 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 		var tabbar = actionutils.NewTabbar()
 		tabbar.Add("集群列表", "", "/clusters", "", false)
 		if teaconst.IsPlus {
-			tabbar.Add("集群看板", "", "/clusters/cluster/boards?clusterId="+clusterIdString, "board", selectedTabbar == "board")
+			tabbar.Add("集群看板", "", "/clusters/cluster/boards?clusterId="+clusterIdString, "chart line area", selectedTabbar == "board")
 		}
 		tabbar.Add("集群节点", "", "/clusters/cluster/nodes?clusterId="+clusterIdString, "server", selectedTabbar == "node")
 		tabbar.Add("集群设置", "", "/clusters/cluster/settings?clusterId="+clusterIdString, "setting", selectedTabbar == "setting")

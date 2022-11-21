@@ -8,6 +8,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/nodeutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 )
@@ -50,6 +51,22 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	this.Data["dnsResolverConfig"] = dnsResolverConfig
 
+	// API相关
+	apiConfigResp, err := this.RPC().NodeRPC().FindNodeAPIConfig(this.AdminContext(), &pb.FindNodeAPIConfigRequest{NodeId: params.NodeId})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	var apiNodeAddrs = []*serverconfigs.NetworkAddressConfig{}
+	if len(apiConfigResp.ApiNodeAddrsJSON) > 0 {
+		err = json.Unmarshal(apiConfigResp.ApiNodeAddrsJSON, &apiNodeAddrs)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+	this.Data["apiNodeAddrs"] = apiNodeAddrs
+
 	this.Show()
 }
 
@@ -58,6 +75,8 @@ func (this *IndexAction) RunPost(params struct {
 	MaxCPU int32
 
 	DnsResolverJSON []byte
+
+	ApiNodeAddrsJSON []byte
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -68,6 +87,7 @@ func (this *IndexAction) RunPost(params struct {
 		this.Fail("CPU线程数不能小于0")
 	}
 
+	// 系统设置
 	_, err := this.RPC().NodeRPC().UpdateNodeSystem(this.AdminContext(), &pb.UpdateNodeSystemRequest{
 		NodeId: params.NodeId,
 		MaxCPU: params.MaxCPU,
@@ -77,6 +97,7 @@ func (this *IndexAction) RunPost(params struct {
 		return
 	}
 
+	// DNS解析设置
 	var dnsResolverConfig = nodeconfigs.DefaultDNSResolverConfig()
 	err = json.Unmarshal(params.DnsResolverJSON, dnsResolverConfig)
 	if err != nil {
@@ -92,6 +113,23 @@ func (this *IndexAction) RunPost(params struct {
 	_, err = this.RPC().NodeRPC().UpdateNodeDNSResolver(this.AdminContext(), &pb.UpdateNodeDNSResolverRequest{
 		NodeId:          params.NodeId,
 		DnsResolverJSON: params.DnsResolverJSON,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	// API节点设置
+	var apiNodeAddrs = []*serverconfigs.NetworkAddressConfig{}
+	if len(params.ApiNodeAddrsJSON) > 0 {
+		err = json.Unmarshal(params.ApiNodeAddrsJSON, &apiNodeAddrs)
+		if err != nil {
+			this.Fail("API节点地址校验错误：" + err.Error())
+		}
+	}
+	_, err = this.RPC().NodeRPC().UpdateNodeAPIConfig(this.AdminContext(), &pb.UpdateNodeAPIConfigRequest{
+		NodeId:           params.NodeId,
+		ApiNodeAddrsJSON: params.ApiNodeAddrsJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)
