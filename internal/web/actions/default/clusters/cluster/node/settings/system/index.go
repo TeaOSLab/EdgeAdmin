@@ -126,6 +126,12 @@ func (this *IndexAction) RunPost(params struct {
 		if err != nil {
 			this.Fail("API节点地址校验错误：" + err.Error())
 		}
+		for _, addr := range apiNodeAddrs {
+			err = addr.Init()
+			if err != nil {
+				this.Fail("API节点地址校验错误：" + err.Error())
+			}
+		}
 	}
 	_, err = this.RPC().NodeRPC().UpdateNodeAPIConfig(this.AdminContext(), &pb.UpdateNodeAPIConfigRequest{
 		NodeId:           params.NodeId,
