@@ -235,6 +235,23 @@
                 <td>主程序位置</td>
                 <td>{{node.status.exePath}}</td>
             </tr>
+            <tr>
+                <td>最近API连接状况</td>
+                <td>
+                    <span v-if="node.status.apiSuccessPercent > 0 && node.status.apiAvgCostSeconds > 0">
+                        <span v-if="node.status.apiSuccessPercent <= 50" class="red">连接错误异常严重（{{round(100 - node.status.apiSuccessPercent)}}%失败），请改善当前节点和API节点之间通讯</span>
+                        <span v-else-if="node.status.apiSuccessPercent <= 80" class="red">连接错误较多（{{round(100 - node.status.apiSuccessPercent)}}%失败），请改善当前节点和API节点之间通讯</span>
+                        <span v-else-if="node.status.apiSuccessPercent < 100" class="orange">有连接错误发生（{{round(100 - node.status.apiSuccessPercent)}}%失败），请改善当前节点和API节点之间通讯</span>
+                        <span v-else>
+                            <span v-if="node.status.apiAvgCostSeconds <= 1" class="green">连接良好</span>
+                            <span v-else-if="node.status.apiAvgCostSeconds <= 5" class="orange">连接基本稳定（平均{{round(node.status.apiAvgCostSeconds)}}秒）</span>
+                            <span v-else-if="node.status.apiAvgCostSeconds <= 10" class="orange">连接速度较慢（平均{{round(node.status.apiAvgCostSeconds)}}秒）</span>
+                            <span v-else class="red">连接非常慢（平均{{round(node.status.apiAvgCostSeconds)}}秒），请改善当前节点和API节点之间通讯</span>
+                        </span>
+                    </span>
+                    <span v-else class="disabled">尚未连接</span>
+                </td>
+            </tr>
             <tr v-if="nodeDatetime.length > 0">
                 <td>上次更新时间</td>
                 <td>
