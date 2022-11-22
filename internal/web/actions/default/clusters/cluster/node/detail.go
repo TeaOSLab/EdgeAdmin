@@ -356,6 +356,8 @@ func (this *DetailAction) RunGet(params struct {
 			"cacheTotalDiskSize":   numberutils.FormatBytes(status.CacheTotalDiskSize),
 			"cacheTotalMemorySize": numberutils.FormatBytes(status.CacheTotalMemorySize),
 			"exePath":              status.ExePath,
+			"apiSuccessPercent":    status.APISuccessPercent,
+			"apiAvgCostSeconds":    status.APIAvgCostSeconds,
 		},
 
 		"group":  groupMap,

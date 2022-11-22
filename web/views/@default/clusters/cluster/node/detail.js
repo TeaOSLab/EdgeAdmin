@@ -32,4 +32,8 @@ Tea.context(function () {
 				this.isStopping = false
 			})
 	}
+
+	this.round = function (f) {
+		return Math.round(f * 100) / 100
+	}
 })
