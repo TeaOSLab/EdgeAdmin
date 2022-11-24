@@ -13,9 +13,9 @@ Vue.component("ns-access-log-box", {
 				if (accessLog.recordValue == null || accessLog.recordValue.length == 0) {
 					isFailure = true
 				}
-			} else if (accessLog.nsRecordId == null || accessLog.nsRecordId == 0) {
-				isFailure = true
 			}
+
+			// 没有找到记录的不需要高亮显示，防止管理员看到红色就心理恐慌
 		}
 
 		return {
