@@ -130,11 +130,8 @@ func (this *ParentAction) RPC() *rpc.RPCClient {
 }
 
 // AdminContext 获取Context
+// 每个请求的context都必须是一个新的实例
 func (this *ParentAction) AdminContext() context.Context {
-	if this.ctx != nil {
-		return this.ctx
-	}
-
 	if this.rpcClient == nil {
 		rpcClient, err := rpc.SharedRPC()
 		if err != nil {
