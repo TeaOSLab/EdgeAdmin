@@ -5,6 +5,7 @@ Tea.context(function () {
 	this.sshPort = ""
 	this.grantId = 0
 	this.step = "info"
+	this.name = ""
 
 	this.success = function (resp) {
 		this.node = resp.data.node
@@ -169,5 +170,33 @@ Tea.context(function () {
 
 	this.createNext = function () {
 		teaweb.reload()
+	}
+
+	this.defaultIP = ""
+	this.changeName = function () {
+		if (this.validateIP(this.name)) {
+			this.defaultIP = this.name
+		} else {
+			this.defaultIP = ""
+		}
+	}
+
+	this.validateIP = function (v) {
+		// 目前只支持ipv4
+		let pieces = v.split(".")
+		if (pieces.length != 4) {
+			return false
+		}
+		for (let i = 0; i < pieces.length; i++) {
+			if (!/^\d{1,3}$/.test(pieces[i])) {
+				return false
+			}
+			let p = parseInt(pieces[i], 10)
+			if (p > 255) {
+				return false
+			}
+		}
+
+		return true
 	}
 })
