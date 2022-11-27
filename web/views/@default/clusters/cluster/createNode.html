@@ -23,14 +23,14 @@
 			<tr>
 				<td class="title">节点名称 *</td>
 				<td>
-					<input type="text" name="name" maxlength="50" ref="focus"/>
+					<input type="text" name="name" maxlength="50" ref="focus" v-model="name" @input="changeName"/>
 				</td>
 			</tr>
 			<tr>
 				<td>IP地址 *</td>
 				<td>
 					<node-ip-addresses-box></node-ip-addresses-box>
-					<p class="comment">用于访问节点和域名解析等。</p>
+                    <p class="comment">用于访问节点和域名解析等<span v-if="defaultIP.length > 0"><strong>，如果没有填写默认为{{defaultIP}}</strong></span>。</p>
 				</td>
 			</tr>
 			<tr v-if="dnsRoutes.length > 0">
