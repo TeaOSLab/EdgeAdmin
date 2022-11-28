@@ -256,7 +256,7 @@
                 <td>上次更新时间</td>
                 <td>
                     {{nodeDatetime}}
-                    <p class="comment" v-if="nodeTimeDiff > 3"><span class="red">当前节点时间与API节点时间相差 {{nodeTimeDiff}} 秒，请同步节点时间。</span></p>
+                    <p class="comment" v-if="nodeTimeDiff > 30"><span class="red">当前节点时间与API节点时间相差 {{nodeTimeDiff}} 秒，请同步节点时间。</span></p>
                 </td>
             </tr>
 		</tbody>
