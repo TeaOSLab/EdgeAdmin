@@ -80,7 +80,7 @@ Vue.component("dns-route-selector", {
 				return
 			}
 			this.searchingRoutes = this.vAllRoutes.filter(function (route) {
-				return teaweb.match(route.name, keyword) || teaweb.match(route.domainName, keyword)
+				return teaweb.match(route.name, keyword) || teaweb.match(route.code, keyword) || teaweb.match(route.domainName, keyword)
 			})
 			if (this.searchingRoutes.length > 0) {
 				this.routeCode = this.searchingRoutes[0].code + "@" + this.searchingRoutes[0].domainId
@@ -99,24 +99,25 @@ Vue.component("dns-route-selector", {
 	</div>
 	<button type="button" class="ui button small" @click.prevent="add" v-if="!isAdding">+</button>
 	<div v-if="isAdding">
-		<div class="ui fields inline">
-			<div class="ui field">
-				<select class="ui dropdown" style="width: 18em" v-model="routeCode">
-					<option value="" v-if="keyword.length == 0">[请选择]</option>
-					<option v-for="route in searchingRoutes" :value="route.code + '@' + route.domainId">{{route.name}}（{{route.domainName}}）</option>
-				</select>
-			</div>
-			<div class="ui field">
-				<input type="text" placeholder="搜索..." size="10" v-model="keyword" ref="keywordRef" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
-			</div>
-			
-			<div class="ui field">
-				<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button>
-			</div>
-			<div class="ui field">
-				<a href="" @click.prevent="cancel()"><i class="icon remove small"></i></a>
-			</div>
-		</div>
+		<table class="ui table">
+			<tr>
+				<td class="title">所有线路</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="routeCode">
+						<option value="" v-if="keyword.length == 0">[请选择]</option>
+						<option v-for="route in searchingRoutes" :value="route.code + '@' + route.domainId">{{route.name}}（{{route.code}}/{{route.domainName}}）</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>搜索</td>
+				<td>
+					<input type="text" placeholder="搜索..." size="10" style="width: 10em" v-model="keyword" ref="keywordRef" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+				</td>
+			</tr>
+		</table>
+		
+		<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button> &nbsp; <a href="" @click.prevent="cancel()"><i class="icon remove small"></i></a>
 	</div>
 </div>`
 })
