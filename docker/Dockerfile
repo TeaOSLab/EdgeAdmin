@@ -1,7 +1,7 @@
 FROM alpine:latest
 LABEL maintainer="iwind.liu@gmail.com"
 ENV TZ "Asia/Shanghai"
-ENV VERSION 0.5.8
+ENV VERSION 0.5.9
 ENV ROOT_DIR /usr/local/goedge
 ENV TAR_FILE edge-admin-linux-amd64-plus-v${VERSION}.zip
 ENV TAR_URL "https://dl.goedge.cn/edge/v${VERSION}/edge-admin-linux-amd64-plus-v${VERSION}.zip"
