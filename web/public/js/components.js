@@ -5522,7 +5522,7 @@ example2.com
 </select>
 <p class="comment" v-if="typeof(levels[levelCode - 1]) != null"><plus-label
 ></plus-label>{{levels[levelCode - 1].description}}</p>
-</div>`}),Vue.component("dns-route-selector",{props:["v-all-routes","v-routes"],data:function(){let e=this.vRoutes;return(e=null==e?[]:e).$sort(function(e,t){return e.domainId==t.domainId?e.code<t.code:e.domainId<t.domainId?1:-1}),{routes:e,routeCodes:e.$map(function(e,t){return t.code+"@"+t.domainId}),isAdding:!1,routeCode:"",keyword:"",searchingRoutes:this.vAllRoutes.$copy()}},methods:{add:function(){this.isAdding=!0,this.keyword="",this.routeCode="";let e=this;setTimeout(function(){e.$refs.keywordRef.focus()},200)},cancel:function(){this.isAdding=!1},confirm:function(){if(0!=this.routeCode.length)if(this.routeCodes.$contains(this.routeCode))teaweb.warn("已经添加过此线路，不能重复添加");else{let i=this;var e=this.vAllRoutes.$find(function(e,t){return t.code+"@"+t.domainId==i.routeCode});null!=e&&(this.routeCodes.push(this.routeCode),this.routes.push(e),this.routes.$sort(function(e,t){return e.domainId==t.domainId?e.code<t.code:e.domainId<t.domainId?1:-1}),this.routeCode="",this.isAdding=!1)}},remove:function(i){this.routeCodes.$removeValue(i.code+"@"+i.domainId),this.routes.$removeIf(function(e,t){return t.code+"@"+t.domainId==i.code+"@"+i.domainId})}},watch:{keyword:function(t){if(0==t.length)return this.searchingRoutes=this.vAllRoutes.$copy(),void(this.routeCode="");this.searchingRoutes=this.vAllRoutes.filter(function(e){return teaweb.match(e.name,t)||teaweb.match(e.domainName,t)}),0<this.searchingRoutes.length?this.routeCode=this.searchingRoutes[0].code+"@"+this.searchingRoutes[0].domainId:this.routeCode=""}},template:`<div>
+</div>`}),Vue.component("dns-route-selector",{props:["v-all-routes","v-routes"],data:function(){let e=this.vRoutes;return(e=null==e?[]:e).$sort(function(e,t){return e.domainId==t.domainId?e.code<t.code:e.domainId<t.domainId?1:-1}),{routes:e,routeCodes:e.$map(function(e,t){return t.code+"@"+t.domainId}),isAdding:!1,routeCode:"",keyword:"",searchingRoutes:this.vAllRoutes.$copy()}},methods:{add:function(){this.isAdding=!0,this.keyword="",this.routeCode="";let e=this;setTimeout(function(){e.$refs.keywordRef.focus()},200)},cancel:function(){this.isAdding=!1},confirm:function(){if(0!=this.routeCode.length)if(this.routeCodes.$contains(this.routeCode))teaweb.warn("已经添加过此线路，不能重复添加");else{let i=this;var e=this.vAllRoutes.$find(function(e,t){return t.code+"@"+t.domainId==i.routeCode});null!=e&&(this.routeCodes.push(this.routeCode),this.routes.push(e),this.routes.$sort(function(e,t){return e.domainId==t.domainId?e.code<t.code:e.domainId<t.domainId?1:-1}),this.routeCode="",this.isAdding=!1)}},remove:function(i){this.routeCodes.$removeValue(i.code+"@"+i.domainId),this.routes.$removeIf(function(e,t){return t.code+"@"+t.domainId==i.code+"@"+i.domainId})}},watch:{keyword:function(t){if(0==t.length)return this.searchingRoutes=this.vAllRoutes.$copy(),void(this.routeCode="");this.searchingRoutes=this.vAllRoutes.filter(function(e){return teaweb.match(e.name,t)||teaweb.match(e.code,t)||teaweb.match(e.domainName,t)}),0<this.searchingRoutes.length?this.routeCode=this.searchingRoutes[0].code+"@"+this.searchingRoutes[0].domainId:this.routeCode=""}},template:`<div>
 	<input type="hidden" name="dnsRoutesJSON" :value="JSON.stringify(routeCodes)"/>
 	<div v-if="routes.length > 0">
 		<tiny-basic-label v-for="route in routes" :key="route.code + '@' + route.domainId">
@@ -5532,24 +5532,25 @@ example2.com
 	</div>
 	<button type="button" class="ui button small" @click.prevent="add" v-if="!isAdding">+</button>
 	<div v-if="isAdding">
-		<div class="ui fields inline">
-			<div class="ui field">
-				<select class="ui dropdown" style="width: 18em" v-model="routeCode">
-					<option value="" v-if="keyword.length == 0">[请选择]</option>
-					<option v-for="route in searchingRoutes" :value="route.code + '@' + route.domainId">{{route.name}}（{{route.domainName}}）</option>
-				</select>
-			</div>
-			<div class="ui field">
-				<input type="text" placeholder="搜索..." size="10" v-model="keyword" ref="keywordRef" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
-			</div>
-			
-			<div class="ui field">
-				<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button>
-			</div>
-			<div class="ui field">
-				<a href="" @click.prevent="cancel()"><i class="icon remove small"></i></a>
-			</div>
-		</div>
+		<table class="ui table">
+			<tr>
+				<td class="title">所有线路</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="routeCode">
+						<option value="" v-if="keyword.length == 0">[请选择]</option>
+						<option v-for="route in searchingRoutes" :value="route.code + '@' + route.domainId">{{route.name}}（{{route.code}}/{{route.domainName}}）</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>搜索</td>
+				<td>
+					<input type="text" placeholder="搜索..." size="10" style="width: 10em" v-model="keyword" ref="keywordRef" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+				</td>
+			</tr>
+		</table>
+		
+		<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button> &nbsp; <a href="" @click.prevent="cancel()"><i class="icon remove small"></i></a>
 	</div>
 </div>`}),Vue.component("dns-domain-selector",{props:["v-domain-id","v-domain-name","v-provider-name"],data:function(){let e=this.vDomainId,t=(null==e&&(e=0),this.vDomainName),i=(null==t&&(t=""),this.vProviderName);return null==i&&(i=""),{domainId:e,domainName:t,providerName:i}},methods:{select:function(){let t=this;teaweb.popup("/dns/domains/selectPopup",{callback:function(e){t.domainId=e.data.domainId,t.domainName=e.data.domainName,t.providerName=e.data.providerName,t.change()}})},remove:function(){this.domainId=0,this.domainName="",this.change()},update:function(){let t=this;teaweb.popup("/dns/domains/selectPopup?domainId="+this.domainId,{callback:function(e){t.domainId=e.data.domainId,t.domainName=e.data.domainName,t.providerName=e.data.providerName,t.change()}})},change:function(){this.$emit("change",{id:this.domainId,name:this.domainName})}},template:`<div>
 	<input type="hidden" name="dnsDomainId" :value="domainId"/>
