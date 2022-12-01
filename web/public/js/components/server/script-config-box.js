@@ -36,7 +36,7 @@ Vue.component("script-config-box", {
 	<table class="ui table definition selectable">
 		<tbody>
 			<tr>
-				<td class="title">是否启用</td>
+				<td class="title">启用脚本设置</td>
 				<td><checkbox v-model="config.isOn"></checkbox></td>
 			</tr>
 		</tbody>
