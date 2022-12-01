@@ -63,7 +63,7 @@ Vue.component("traffic-limit-config-box", {
 	<table class="ui table selectable definition">
 		<tbody>
 			<tr>
-				<td class="title">是否启用</td>
+				<td class="title">启用流量限制</td>
 				<td>
 					<checkbox v-model="config.isOn"></checkbox>
 					<p class="comment">注意：由于流量统计是每5分钟统计一次，所以超出流量限制后，对用户的提醒也会有所延迟。</p>

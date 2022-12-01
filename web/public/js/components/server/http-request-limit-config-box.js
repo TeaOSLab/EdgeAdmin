@@ -62,7 +62,7 @@ Vue.component("http-request-limit-config-box", {
 		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
 			<tr>
-				<td class="title">启用</td>
+				<td class="title">启用请求限制</td>
 				<td>
 					<checkbox v-model="config.isOn"></checkbox>
 				</td>
