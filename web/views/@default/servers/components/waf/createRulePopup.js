@@ -27,7 +27,7 @@ Tea.context(function () {
 			this.rule.checkpointPrefix = param
 		}
 		this.$delay(function () {
-			this.changeCheckpoint()
+			this.loadCheckpoint()
 			if (this.rule.checkpointOptions != null && this.checkpoint != null && this.checkpoint.options != null) {
 				let that = this
 				this.checkpoint.options.forEach(function (option) {
@@ -43,6 +43,18 @@ Tea.context(function () {
 	 * checkpoint
 	 */
 	this.checkpoint = null
+
+	this.loadCheckpoint = function () {
+		if (this.rule.checkpointPrefix.length == 0) {
+			this.checkpoint = null
+			return
+		}
+		let that = this
+		this.checkpoint = this.checkpoints.$find(function (k, v) {
+			return v.prefix == that.rule.checkpointPrefix
+		})
+	}
+
 	this.changeCheckpoint = function () {
 		if (this.rule.checkpointPrefix.length == 0) {
 			this.checkpoint = null

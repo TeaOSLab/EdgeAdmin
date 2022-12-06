@@ -49,6 +49,10 @@ window.teaweb = {
 		}
 		return true;
 	},
+	clone: function (source) {
+		let s = JSON.stringify(source)
+		return JSON.parse(s)
+	},
 
 	loadJS: function (file, callback) {
 		let element = document.createElement("script")
@@ -940,7 +944,7 @@ window.teaweb = {
 	},
 	chartMap: {}, // dom id => chart
 	initChart: function (dom, cache) {
-		if (typeof(cache) != "boolean") {
+		if (typeof (cache) != "boolean") {
 			cache = true
 		}
 
