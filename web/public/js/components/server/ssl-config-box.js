@@ -43,6 +43,7 @@ Vue.component("ssl-config-box", {
 		}
 
 		let hsts = policy.hsts
+		let hstsMaxAgeString = "31536000"
 		if (hsts == null) {
 			hsts = {
 				isOn: false,
@@ -52,6 +53,9 @@ Vue.component("ssl-config-box", {
 				domains: []
 			}
 		}
+		if (hsts.maxAge != null) {
+			hstsMaxAgeString = hsts.maxAge.toString()
+		}
 
 		return {
 			policy: policy,
@@ -60,6 +64,7 @@ Vue.component("ssl-config-box", {
 			hsts: hsts,
 			hstsOptionsVisible: false,
 			hstsDomainAdding: false,
+			hstsMaxAgeString: hstsMaxAgeString,
 			addingHstsDomain: "",
 			hstsDomainEditingIndex: -1,
 
@@ -233,22 +238,22 @@ Vue.component("ssl-config-box", {
 
 		// 监控HSTS有效期修改
 		changeHSTSMaxAge: function () {
-			var v = this.hsts.maxAge
-			if (isNaN(v)) {
+			var v = parseInt(this.hstsMaxAgeString)
+			if (isNaN(v) || v < 0) {
+				this.hsts.maxAge = 0
 				this.hsts.days = "-"
 				return
 			}
-			this.hsts.days = parseInt(v / 86400)
-			if (isNaN(this.hsts.days)) {
-				this.hsts.days = "-"
-			} else if (this.hsts.days < 0) {
+			this.hsts.maxAge = v
+			this.hsts.days = v / 86400
+			if (this.hsts.days == 0) {
 				this.hsts.days = "-"
 			}
 		},
 
 		// 设置HSTS有效期
 		setHSTSMaxAge: function (maxAge) {
-			this.hsts.maxAge = maxAge
+			this.hstsMaxAgeString = maxAge.toString()
 			this.changeHSTSMaxAge()
 		},
 
@@ -441,7 +446,7 @@ Vue.component("ssl-config-box", {
 				<td>
 					<div class="ui fields inline">
 						<div class="ui field">
-							<input type="text" name="hstsMaxAge" v-model="hsts.maxAge" maxlength="10" size="10" @input="changeHSTSMaxAge()"/>
+							<input type="text" name="hstsMaxAge" v-model="hstsMaxAgeString" maxlength="10" size="10" @input="changeHSTSMaxAge()"/>
 						</div>
 						<div class="ui field">
 							秒
