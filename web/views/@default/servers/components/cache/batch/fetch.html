@@ -1,6 +1,9 @@
 {$layout}
 {$template "menu"}
 
+<div class="margin"></div>
+<div><span class="grey">预热缓存指的是预先从源站读取最新内容，当用户访问预热后的URL时直接从缓存中返回内容，不需要再次回源。</span></div>
+
 <form method="post" class="ui form" data-tea-action="$" data-tea-before="before" data-tea-success="success" data-tea-fail="fail" data-tea-done="done" data-tea-timeout="3600">
     <csrf-token></csrf-token>
     <table class="ui table definition selectable">
