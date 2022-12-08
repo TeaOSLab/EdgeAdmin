@@ -97,6 +97,7 @@ func (this *UserAction) RunGet(params struct {
 		"username":         user.Username,
 		"fullname":         user.Fullname,
 		"email":            user.Email,
+		"verifiedEmail":    user.VerifiedEmail,
 		"tel":              user.Tel,
 		"remark":           user.Remark,
 		"mobile":           user.Mobile,
