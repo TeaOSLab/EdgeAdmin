@@ -33,35 +33,42 @@
         <td>关联集群</td>
         <td>
             <span v-if="user.cluster != null">{{user.cluster.name}} <link-icon :href="'/clusters/cluster?clusterId=' + user.cluster.id"></link-icon></span>
-            <span v-else class="disabled">-</span>
+            <span v-else class="disabled">没有设置。</span>
         </td>
     </tr>
     <tr>
         <td>手机号</td>
         <td>
             <span v-if="user.mobile.length > 0">{{user.mobile}}</span>
-            <span v-else class="disabled">-</span>
+            <span v-else class="disabled">没有设置。</span>
         </td>
     </tr>
     <tr>
         <td>联系电话</td>
         <td>
             <span v-if="user.tel.length > 0">{{user.tel}}</span>
-            <span v-else class="disabled">-</span>
+            <span v-else class="disabled">没有设置。</span>
         </td>
     </tr>
     <tr>
-        <td>电子邮箱</td>
+        <td>常用电子邮箱</td>
         <td>
             <span v-if="user.email.length > 0">{{user.email}}</span>
-            <span v-else class="disabled">-</span>
+            <span v-else class="disabled">没有设置。</span>
+        </td>
+    </tr>
+    <tr>
+        <td>已绑定电子邮箱</td>
+        <td>
+            <span v-if="user.verifiedEmail.length > 0">{{user.verifiedEmail}}</span>
+            <span v-else class="disabled">没有设置。</span>
         </td>
     </tr>
     <tr>
         <td>备注</td>
         <td>
             <span v-if="user.remark.length > 0">{{user.remark}}</span>
-            <span v-else class="disabled">-</span>
+            <span v-else class="disabled">没有设置。</span>
         </td>
     </tr>
     <tr>
