@@ -8,6 +8,14 @@ Tea.context(function () {
 	this.isLoaded = false
 
 	this.load = function () {
+		// 如果有弹窗时，暂时不更新
+		if (teaweb.hasPopup()) {
+			this.$delay(function () {
+				this.load()
+			}, 5000)
+			return
+		}
+
 		this.$post("$")
 			.params({
 				serverId: this.serverId,
