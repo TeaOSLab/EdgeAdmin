@@ -353,6 +353,9 @@ window.teaweb = {
 	Swal: function () {
 		return this.isPopup() ? window.parent.Swal : window.Swal;
 	},
+	hasPopup: function () {
+		return document.getElementsByClassName("swal2-container").length > 0
+	},
 	success: function (message, callback) {
 		var width = "20em";
 		if (message.length > 30) {
