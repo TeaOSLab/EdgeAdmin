@@ -112,8 +112,8 @@ func checkIPWithoutCache(config *systemconfigs.SecurityConfig, ipAddr string) bo
 }
 
 // 请求检查相关正则
-var searchEngineRegex = regexp.MustCompile(`60spider|adldxbot|adsbot-google|applebot|admantx|alexa|baidu|bingbot|bingpreview|facebookexternalhit|googlebot|proximic|slurp|sogou|twitterbot|yandex`)
-var spiderRegexp = regexp.MustCompile(`python|pycurl|http-client|httpclient|apachebench|nethttp|http_request|java|perl|ruby|scrapy|php|rust|curl|wget`) // 其中增加了curl和wget
+var searchEngineRegex = regexp.MustCompile(`(?i)(60spider|adldxbot|adsbot-google|applebot|admantx|alexa|baidu|bingbot|bingpreview|facebookexternalhit|googlebot|proximic|slurp|sogou|twitterbot|yandex)`)
+var spiderRegexp = regexp.MustCompile(`(?i)(python|pycurl|http-client|httpclient|apachebench|nethttp|http_request|java|perl|ruby|scrapy|php|rust|curl|wget)`) // 其中增加了curl和wget
 
 // 检查请求
 func checkRequestSecurity(securityConfig *systemconfigs.SecurityConfig, req *http.Request) bool {
