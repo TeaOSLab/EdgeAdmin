@@ -119,14 +119,14 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnread
 			"icon":     "globe",
 			"subItems": []maps.Map{
 				{
-					"name": "问题修复",
-					"url":  "/dns/issues",
-					"code": "issue",
-				},
-				{
 					"name": "DNS服务商",
 					"url":  "/dns/providers",
 					"code": "provider",
+				},
+				{
+					"name": "问题修复",
+					"url":  "/dns/issues",
+					"code": "issue",
 				},
 			},
 		},

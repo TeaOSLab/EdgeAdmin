@@ -88,6 +88,7 @@ Vue.component("ns-routes-selector", {
 					<option value="isp">运营商</option>
 					<option value="china">中国省市</option>
 					<option value="world">全球国家地区</option>
+					<option value="agent">搜索引擎</option>
 				</select>
 			</div>
 			
