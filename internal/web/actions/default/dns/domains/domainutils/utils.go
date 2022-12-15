@@ -133,6 +133,11 @@ func ValidateRecordValue(recordType dnsconfigs.RecordType, value string) (messag
 			message = "请输入正确的邮件服务器域名"
 			return
 		}
+	case dnsconfigs.RecordTypeSRV:
+		if len(value) == 0 {
+			message = "请输入主机名"
+			return
+		}
 	case dnsconfigs.RecordTypeTXT:
 		if len(value) > 512 {
 			message = "文本长度不能超出512字节"
