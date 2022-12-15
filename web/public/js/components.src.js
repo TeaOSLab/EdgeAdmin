@@ -1293,6 +1293,7 @@ Vue.component("ns-routes-selector", {
 					<option value="isp">运营商</option>
 					<option value="china">中国省市</option>
 					<option value="world">全球国家地区</option>
+					<option value="agent">搜索引擎</option>
 				</select>
 			</div>
 			
@@ -1710,7 +1711,8 @@ Vue.component("ns-route-ranges-box", {
 
 			// region
 			regions: [],
-			regionType: "country"
+			regionType: "country",
+			regionConnector: "OR"
 		}
 	},
 	methods: {
@@ -1752,6 +1754,7 @@ Vue.component("ns-route-ranges-box", {
 			this.isAdding = false
 			this.regions = []
 			this.regionType = "country"
+			this.regionConnector = "OR"
 			this.isReverse = false
 		},
 		confirmIPRange: function () {
@@ -1815,6 +1818,7 @@ Vue.component("ns-route-ranges-box", {
 			}
 			this.ranges.push({
 				type: "region",
+				connector: this.regionConnector,
 				params: {
 					regions: this.regions,
 					isReverse: this.isReverse
@@ -2046,10 +2050,24 @@ Vue.component("ns-route-ranges-box", {
 			<span class="red" v-if="range.params.isReverse">[排除]</span>
 			<span v-if="range.type == 'ipRange'">IP范围：</span>
 			<span v-if="range.type == 'cidr'">CIDR：</span>
-			<span v-if="range.type == 'region'">区域：</span>
+			<span v-if="range.type == 'region'"></span>
 			<span v-if="range.type == 'ipRange'">{{range.params.ipFrom}} - {{range.params.ipTo}}</span>
 			<span v-if="range.type == 'cidr'">{{range.params.cidr}}</span>
-			<span v-if="range.type == 'region'"><span v-for="(region, index) in range.params.regions">{{region.name}}<span v-if="index < range.params.regions.length - 1">，</span></span></span>
+			<span v-if="range.type == 'region'">
+				<span v-for="(region, index) in range.params.regions">
+					<span v-if="region.type == 'country'">国家/地区</span>
+					<span v-if="region.type == 'province'">省份</span>
+					<span v-if="region.type == 'city'">城市</span>
+					<span v-if="region.type == 'provider'">ISP</span>
+					：{{region.name}}
+					<span v-if="index < range.params.regions.length - 1" class="grey">
+						&nbsp;
+						<span v-if="range.connector == 'OR' || range.connector == '' || range.connector == null">或</span>
+						<span v-if="range.connector == 'AND'">且</span>
+						&nbsp;
+					</span>
+				</span>
+			</span>
 			 &nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
 		</div>
 		<div class="ui divider"></div>
@@ -2172,9 +2190,21 @@ Vue.component("ns-route-ranges-box", {
 				<tr>
 					<td>已添加</td>
 					<td>
-						<div v-for="(region, index) in regions" class="ui label small basic">
-							{{region.name}} <a href="" title="删除" @click.prevent="removeRegion(index)"><i class="icon remove small"></i></a>
-						</div>
+						<span v-for="(region, index) in regions">
+							<span class="ui label small basic">
+								<span v-if="region.type == 'country'">国家/地区</span>
+								<span v-if="region.type == 'province'">省份</span>
+								<span v-if="region.type == 'city'">城市</span>
+								<span v-if="region.type == 'provider'">ISP</span>
+								：{{region.name}} <a href="" title="删除" @click.prevent="removeRegion(index)"><i class="icon remove small"></i></a>
+							</span>
+							<span v-if="index < regions.length - 1" class="grey">
+								&nbsp;
+								<span v-if="regionConnector == 'OR' || regionConnector == ''">或</span>
+								<span v-if="regionConnector == 'AND'">且</span>
+								&nbsp;
+							</span>
+						</span>
 					</td>
 				</tr>
 				<tr>
@@ -2209,6 +2239,17 @@ Vue.component("ns-route-ranges-box", {
 							<button class="ui button tiny basic" :class="{blue: regionType == 'provider'}" type="button" @click.prevent="addRegion('provider')">ISP</button> &nbsp;
 						</div>
 					</td>	
+				</tr>
+				<tr>
+					<td>区域之间关系</td>
+					<td>
+						<select class="ui dropdown auto-width" v-model="regionConnector">
+							<option value="OR">或</option>
+							<option value="AND">且</option>
+						</select>
+						<p class="comment" v-if="regionConnector == 'OR'">匹配所选任一区域即认为匹配成功。</p>
+						<p class="comment" v-if="regionConnector == 'AND'">匹配所有所选区域才认为匹配成功。</p>
+					</td>
 				</tr>
 				<tr>
 					<td>排除</td>
@@ -3607,6 +3648,7 @@ Vue.component("ssl-config-box", {
 		}
 
 		let hsts = policy.hsts
+		let hstsMaxAgeString = "31536000"
 		if (hsts == null) {
 			hsts = {
 				isOn: false,
@@ -3616,6 +3658,9 @@ Vue.component("ssl-config-box", {
 				domains: []
 			}
 		}
+		if (hsts.maxAge != null) {
+			hstsMaxAgeString = hsts.maxAge.toString()
+		}
 
 		return {
 			policy: policy,
@@ -3624,6 +3669,7 @@ Vue.component("ssl-config-box", {
 			hsts: hsts,
 			hstsOptionsVisible: false,
 			hstsDomainAdding: false,
+			hstsMaxAgeString: hstsMaxAgeString,
 			addingHstsDomain: "",
 			hstsDomainEditingIndex: -1,
 
@@ -3797,22 +3843,22 @@ Vue.component("ssl-config-box", {
 
 		// 监控HSTS有效期修改
 		changeHSTSMaxAge: function () {
-			var v = this.hsts.maxAge
-			if (isNaN(v)) {
+			var v = parseInt(this.hstsMaxAgeString)
+			if (isNaN(v) || v < 0) {
+				this.hsts.maxAge = 0
 				this.hsts.days = "-"
 				return
 			}
-			this.hsts.days = parseInt(v / 86400)
-			if (isNaN(this.hsts.days)) {
-				this.hsts.days = "-"
-			} else if (this.hsts.days < 0) {
+			this.hsts.maxAge = v
+			this.hsts.days = v / 86400
+			if (this.hsts.days == 0) {
 				this.hsts.days = "-"
 			}
 		},
 
 		// 设置HSTS有效期
 		setHSTSMaxAge: function (maxAge) {
-			this.hsts.maxAge = maxAge
+			this.hstsMaxAgeString = maxAge.toString()
 			this.changeHSTSMaxAge()
 		},
 
@@ -4005,7 +4051,7 @@ Vue.component("ssl-config-box", {
 				<td>
 					<div class="ui fields inline">
 						<div class="ui field">
-							<input type="text" name="hstsMaxAge" v-model="hsts.maxAge" maxlength="10" size="10" @input="changeHSTSMaxAge()"/>
+							<input type="text" name="hstsMaxAge" v-model="hstsMaxAgeString" maxlength="10" size="10" @input="changeHSTSMaxAge()"/>
 						</div>
 						<div class="ui field">
 							秒
@@ -4948,7 +4994,7 @@ Vue.component("http-request-limit-config-box", {
 		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
 			<tr>
-				<td class="title">启用</td>
+				<td class="title">启用请求限制</td>
 				<td>
 					<checkbox v-model="config.isOn"></checkbox>
 				</td>
@@ -10488,7 +10534,7 @@ Vue.component("script-config-box", {
 	<table class="ui table definition selectable">
 		<tbody>
 			<tr>
-				<td class="title">是否启用</td>
+				<td class="title">启用脚本设置</td>
 				<td><checkbox v-model="config.isOn"></checkbox></td>
 			</tr>
 		</tbody>
@@ -11061,7 +11107,7 @@ Vue.component("http-remote-addr-config-box", {
 		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
 			<tr>
-				<td class="title">是否启用</td>
+				<td class="title">启用访客IP设置</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" value="1" v-model="config.isOn"/>
@@ -11856,7 +11902,7 @@ Vue.component("http-firewall-rules-box", {
 			})
 		},
 		updateRule: function (index, rule) {
-			window.UPDATING_RULE = rule
+			window.UPDATING_RULE = teaweb.clone(rule)
 			let that = this
 			teaweb.popup("/servers/components/waf/createRulePopup?type=" + this.vType, {
 				height: "30em",
@@ -13219,7 +13265,7 @@ Vue.component("traffic-limit-config-box", {
 	<table class="ui table selectable definition">
 		<tbody>
 			<tr>
-				<td class="title">是否启用</td>
+				<td class="title">启用流量限制</td>
 				<td>
 					<checkbox v-model="config.isOn"></checkbox>
 					<p class="comment">注意：由于流量统计是每5分钟统计一次，所以超出流量限制后，对用户的提醒也会有所延迟。</p>
@@ -13891,6 +13937,109 @@ Vue.component("ip-box", {
 		}
 	},
 	template: `<span @click.prevent="popup()" ref="container"><slot></slot></span>`
+})
+
+Vue.component("email-sender", {
+	props: ["value", "name"],
+	data: function () {
+		let value = this.value
+		if (value == null) {
+			value = {
+				isOn: false,
+				smtpHost: "",
+				smtpPort: 0,
+				username: "",
+				password: "",
+				fromEmail: "",
+				fromName: ""
+			}
+		}
+		let smtpPortString = value.smtpPort.toString()
+		if (smtpPortString == "0") {
+			smtpPortString = ""
+		}
+
+		return {
+			config: value,
+			smtpPortString: smtpPortString
+		}
+	},
+	watch: {
+		smtpPortString: function (v) {
+			let port = parseInt(v)
+			if (!isNaN(port)) {
+				this.config.smtpPort = port
+			}
+		}
+	},
+	methods: {
+		test: function () {
+			window.TESTING_EMAIL_CONFIG = this.config
+			teaweb.popup("/users/setting/emailTest", {
+				height: "36em"
+			})
+		}
+	},
+	template: `<div>
+	<input type="hidden" :name="name" :value="JSON.stringify(config)"/>
+	<table class="ui table selectable definition">
+		<tbody>
+			<tr>
+				<td class="title">启用</td>
+				<td><checkbox v-model="config.isOn"></checkbox></td>
+			</tr>
+		</tbody>
+		<tbody v-show="config.isOn">
+			<tr>
+				<td>SMTP地址 *</td>
+				<td>
+					<input type="text" :name="name + 'SmtpHost'" v-model="config.smtpHost"/>
+					<p class="comment">SMTP主机地址，比如<code-label>smtp.qq.com</code-label>，目前仅支持TLS协议，如不清楚，请查询对应邮件服务商文档。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>SMTP端口 *</td>
+				<td>
+					<input type="text" :name="name + 'SmtpPort'" v-model="smtpPortString" style="width: 5em" maxlength="5"/>
+					<p class="comment">SMTP主机端口，比如<code-label>587</code-label>、<code-label>465</code-label>，如不清楚，请查询对应邮件服务商文档。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>用户名 *</td>
+				<td>
+					<input type="text" :name="name + 'Username'" v-model="config.username"/>
+					<p class="comment">通常为发件人邮箱地址。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>密码 *</td>
+				<td>
+					<input type="password" :name="name + 'Password'" v-model="config.password"/>
+					<p class="comment">邮箱登录密码或授权码，如不清楚，请查询对应邮件服务商文档。。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>发件人Email *</td>
+				<td>
+					<input type="text" :name="name + 'FromEmail'" v-model="config.fromEmail" maxlength="128"/>
+					<p class="comment">使用的发件人邮箱地址，通常和发件用户名一致。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>发件人名称</td>
+				<td>
+					<input type="text" :name="name + 'FromName'" v-model="config.fromName" maxlength="30"/>
+					<p class="comment">使用的发件人名称，默认使用系统设置的<a href="/settings/ui" target="_blank">产品名称</a>。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>发送测试</td>
+				<td><a href="" @click.prevent="test">[点此测试]</a></td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
+</div>`
 })
 
 Vue.component("api-node-selector", {
@@ -14845,6 +14994,7 @@ Vue.component("first-menu", {
  * 更多选项
  */
 Vue.component("more-options-indicator", {
+	props:[],
 	data: function () {
 		return {
 			visible: false
@@ -14857,6 +15007,7 @@ Vue.component("more-options-indicator", {
 				Tea.Vue.moreOptionsVisible = this.visible
 			}
 			this.$emit("change", this.visible)
+			this.$emit("input", this.visible)
 		}
 	},
 	template: '<a href="" style="font-weight: normal" @click.prevent="changeVisible()"><slot><span v-if="!visible">更多选项</span><span v-if="visible">收起选项</span></slot> <i class="icon angle" :class="{down:!visible, up:visible}"></i> </a>'
