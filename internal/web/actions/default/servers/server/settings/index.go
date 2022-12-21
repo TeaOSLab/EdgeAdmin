@@ -121,6 +121,7 @@ func (this *IndexAction) RunGet(params struct {
 // RunPost 保存
 func (this *IndexAction) RunPost(params struct {
 	ServerId       int64
+	UserId         int64
 	Name           string
 	Description    string
 	ClusterId      int64
@@ -157,15 +158,27 @@ func (this *IndexAction) RunPost(params struct {
 		return
 	}
 
-	// 修改套餐
-	if params.UserPlanId > 0 {
-		_, err = this.RPC().ServerRPC().UpdateServerUserPlan(this.AdminContext(), &pb.UpdateServerUserPlanRequest{
-			ServerId:   params.ServerId,
-			UserPlanId: params.UserPlanId,
+	// 修改用户
+	if params.UserId > 0 {
+		_, err = this.RPC().ServerRPC().UpdateServerUser(this.AdminContext(), &pb.UpdateServerUserRequest{
+			ServerId: params.ServerId,
+			UserId:   params.UserId,
 		})
 		if err != nil {
 			this.ErrorPage(err)
 			return
+		}
+	} else {
+		// 修改套餐
+		if params.UserPlanId > 0 {
+			_, err = this.RPC().ServerRPC().UpdateServerUserPlan(this.AdminContext(), &pb.UpdateServerUserPlanRequest{
+				ServerId:   params.ServerId,
+				UserPlanId: params.UserPlanId,
+			})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
 		}
 	}
 

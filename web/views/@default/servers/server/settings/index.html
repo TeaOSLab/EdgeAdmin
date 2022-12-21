@@ -10,7 +10,15 @@
                 <td>所属用户</td>
                 <td>
                     <span v-if="user != null">{{user.fullname}} <span class="small">（{{user.username}}）</span><link-icon :href="'/users/user?userId=' + user.id"></link-icon></span>
-                    <span v-else class="disabled">-</span>
+                    <div v-if="user == null">
+                        <div v-show="!userSelectorVisible">
+                            <span class="disabled">没有指定用户</span> &nbsp; <a href="" @click.prevent="showUserSelector">[指定用户]</a>
+                        </div>
+                        <div v-show="userSelectorVisible">
+                            <user-selector style="display:inline-block"></user-selector>
+                            <p class="comment"><span class="red">修改服务所属用户时需要同时保证证书、域名等信息也属于该用户，否则可能产生难以预料的结果。</span></p>
+                        </div>
+                    </div>
                 </td>
             </tr>
 			<tr>
@@ -66,7 +74,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>是否启用</td>
+					<td>启用当前服务</td>
 					<td>
 						<div class="ui checkbox">
 							<input type="checkbox" name="isOn" value="1" v-model="server.isOn"/>
