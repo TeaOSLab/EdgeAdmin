@@ -4,6 +4,12 @@ Tea.context(function () {
 	/**
 	 * 用户相关
 	 */
+	this.userSelectorVisible = false
+
+	this.showUserSelector = function () {
+		this.userSelectorVisible = !this.userSelectorVisible
+	}
+
 	this.userId = 0
 	this.plans = []
 	this.userPlanId = 0
