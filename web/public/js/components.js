@@ -1007,7 +1007,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				<td>支持按区域流量计费</td>
 				<td>
 					<checkbox v-model="config.supportRegions"></checkbox>
-					<p class="comment">选中后，表示可以根据节点所在区域设置不同的流量价格。</p>
+					<p class="comment">选中后，表示可以根据节点所在区域设置不同的流量价格；并且开启此项后才可以使用流量包。</p>
 				</td>
 			</tr>
 		</table>
