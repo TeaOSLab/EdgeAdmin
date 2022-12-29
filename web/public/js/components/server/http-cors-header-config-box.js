@@ -7,7 +7,7 @@ Vue.component("http-cors-header-config-box", {
 				isOn: false,
 				allowMethods: [],
 				allowOrigin: "",
-				allowCredentials: false,
+				allowCredentials: true,
 				exposeHeaders: [],
 				maxAge: 0,
 				requestHeaders: [],
