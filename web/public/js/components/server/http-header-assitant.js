@@ -28,7 +28,7 @@ Vue.component("http-header-assistant", {
 			}
 			this.matchedHeaders = this.allHeaders.filter(function (header) {
 				return teaweb.match(header, v)
-			}).slice(0, 5)
+			}).slice(0, 10)
 		}
 	},
 	methods: {
@@ -38,7 +38,7 @@ Vue.component("http-header-assistant", {
 		}
 	},
 	template: `<span v-if="selectedHeaderName.length == 0">
-	<a href="" v-for="header in matchedHeaders" class="ui label basic tiny blue" style="font-weight: normal" @click.prevent="select(header)">{{header}}</a>
+	<a href="" v-for="header in matchedHeaders" class="ui label basic tiny blue" style="font-weight: normal; margin-bottom: 0.3em" @click.prevent="select(header)">{{header}}</a>
 	<span v-if="matchedHeaders.length > 0">&nbsp; &nbsp;</span>
 </span>`
 })

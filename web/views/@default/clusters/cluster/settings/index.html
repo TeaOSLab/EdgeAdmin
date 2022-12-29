@@ -10,6 +10,12 @@
 				<td class="title">集群名称 *</td>
 				<td><input type="text" name="name" maxlength="50" ref="focus" v-model="cluster.name"/></td>
 			</tr>
+            <tr v-if="cluster.domainName.length > 0">
+                <td>域名</td>
+                <td>
+                    {{cluster.domainName}}<link-icon :href="'/clusters/cluster/settings/dns?clusterId=' + cluster.id"></link-icon>
+                </td>
+            </tr>
 			<tr>
 				<td>默认SSH认证</td>
 				<td>

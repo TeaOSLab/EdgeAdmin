@@ -19,12 +19,12 @@ func (this *DeleteDeletingHeaderAction) RunPost(params struct {
 	// 日志
 	defer this.CreateLog(oplogs.LevelInfo, "删除需要删除的请求Header，HeaderPolicyId:%d, HeaderName:%s", params.HeaderPolicyId, params.HeaderName)
 
-	policyConfigResp, err := this.RPC().HTTPHeaderPolicyRPC().FindEnabledHTTPHeaderPolicyConfig(this.AdminContext(), &pb.FindEnabledHTTPHeaderPolicyConfigRequest{HeaderPolicyId: params.HeaderPolicyId})
+	policyConfigResp, err := this.RPC().HTTPHeaderPolicyRPC().FindEnabledHTTPHeaderPolicyConfig(this.AdminContext(), &pb.FindEnabledHTTPHeaderPolicyConfigRequest{HttpHeaderPolicyId: params.HeaderPolicyId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	policyConfigJSON := policyConfigResp.HeaderPolicyJSON
+	policyConfigJSON := policyConfigResp.HttpHeaderPolicyJSON
 	policyConfig := &shared.HTTPHeaderPolicy{}
 	err = json.Unmarshal(policyConfigJSON, policyConfig)
 	if err != nil {
@@ -40,8 +40,8 @@ func (this *DeleteDeletingHeaderAction) RunPost(params struct {
 		headerNames = append(headerNames, h)
 	}
 	_, err = this.RPC().HTTPHeaderPolicyRPC().UpdateHTTPHeaderPolicyDeletingHeaders(this.AdminContext(), &pb.UpdateHTTPHeaderPolicyDeletingHeadersRequest{
-		HeaderPolicyId: params.HeaderPolicyId,
-		HeaderNames:    headerNames,
+		HttpHeaderPolicyId: params.HeaderPolicyId,
+		HeaderNames:        headerNames,
 	})
 	if err != nil {
 		this.ErrorPage(err)

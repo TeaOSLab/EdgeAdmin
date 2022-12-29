@@ -47,7 +47,7 @@ func (this *IndexAction) RunGet(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		headerPolicyId := createHeaderPolicyResp.HeaderPolicyId
+		var headerPolicyId = createHeaderPolicyResp.HttpHeaderPolicyId
 		ref := &shared.HTTPHeaderPolicyRef{
 			IsPrior:        false,
 			IsOn:           true,
@@ -74,7 +74,7 @@ func (this *IndexAction) RunGet(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		headerPolicyId := createHeaderPolicyResp.HeaderPolicyId
+		headerPolicyId := createHeaderPolicyResp.HttpHeaderPolicyId
 		ref := &shared.HTTPHeaderPolicyRef{
 			IsPrior:        false,
 			IsOn:           true,

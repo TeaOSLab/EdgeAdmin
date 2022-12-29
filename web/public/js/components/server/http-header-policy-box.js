@@ -54,6 +54,13 @@ Vue.component("http-header-policy-box", {
 			}
 		}
 
+		let responseCORS = {
+			isOn: false
+		}
+		if (responsePolicy.cors != null) {
+			responseCORS = responsePolicy.cors
+		}
+
 		return {
 			type: type,
 			typeName: (type == "request") ? "请求" : "响应",
@@ -62,7 +69,8 @@ Vue.component("http-header-policy-box", {
 			requestSettingHeaders: requestSettingHeaders,
 			requestDeletingHeaders: requestDeletingHeaders,
 			responseSettingHeaders: responseSettingHeaders,
-			responseDeletingHeaders: responseDeletingHeaders
+			responseDeletingHeaders: responseDeletingHeaders,
+			responseCORS: responseCORS
 		}
 	},
 	methods: {
@@ -114,6 +122,13 @@ Vue.component("http-header-policy-box", {
 						.refresh()
 				}
 			)
+		},
+		updateCORS: function (policyId) {
+			teaweb.popup("/servers/server/settings/headers/updateCORSPopup?" + this.vParams + "&headerPolicyId=" + policyId + "&type=" + this.type, {
+				callback: function () {
+					teaweb.successRefresh("保存成功")
+				}
+			})
 		}
 	},
 	template: `<div>
@@ -141,7 +156,7 @@ Vue.component("http-header-policy-box", {
         	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#request'">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
     	</div>
     	<div :class="{'opacity-mask': vHasGroupRequestConfig}">
-		<h3>设置请求Header <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)">[添加新Header]</a></h3>
+		<h4>设置请求Header <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)">[添加新Header]</a></h4>
 			<p class="comment" v-if="requestSettingHeaders.length == 0">暂时还没有Header。</p>
 			<table class="ui table selectable celled" v-if="requestSettingHeaders.length > 0">
 				<thead>
@@ -151,35 +166,39 @@ Vue.component("http-header-policy-box", {
 						<th class="two op">操作</th>
 					</tr>
 				</thead>
-				<tr v-for="header in requestSettingHeaders">
-					<td class="five wide">
-						{{header.name}}
-						<div>
-							<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
-							<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
-							<span v-if="header.domains != null && header.domains.length > 0"><grey-label v-for="domain in header.domains" :key="domain">{{domain}}</grey-label></span>
-							<grey-label v-if="header.shouldAppend">附加</grey-label>
-							<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
-							<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
-						</div>
-					</td>
-					<td>{{header.value}}</td>
-					<td><a href="" @click.prevent="updateSettingPopup(vRequestHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteHeader(vRequestHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
-				</tr>
+				<tbody v-for="header in requestSettingHeaders">
+					<tr>
+						<td class="five wide">
+							{{header.name}}
+							<div>
+								<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
+								<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
+								<span v-if="header.domains != null && header.domains.length > 0"><grey-label v-for="domain in header.domains" :key="domain">{{domain}}</grey-label></span>
+								<grey-label v-if="header.shouldAppend">附加</grey-label>
+								<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
+								<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
+							</div>
+						</td>
+						<td>{{header.value}}</td>
+						<td><a href="" @click.prevent="updateSettingPopup(vRequestHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteHeader(vRequestHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
+					</tr>
+				</tbody>
 			</table>
 			
-			<h3>删除请求Header</h3>
+			<h4>删除请求Header</h4>
 			<p class="comment">这里可以设置需要从请求中删除的Header。</p>
 			
 			<table class="ui table definition selectable">
-				<td class="title">需要删除的Header</td>
-				<td>
-					<div v-if="requestDeletingHeaders.length > 0">
-						<div class="ui label small basic" v-for="headerName in requestDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
-						<div class="ui divider" ></div>
-					</div>
-					<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vRequestHeaderPolicy.id, 'request')">+</button>
-				</td>
+				<tr>
+					<td class="title">需要删除的Header</td>
+					<td>
+						<div v-if="requestDeletingHeaders.length > 0">
+							<div class="ui label small basic" v-for="headerName in requestDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
+							<div class="ui divider" ></div>
+						</div>
+						<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vRequestHeaderPolicy.id, 'request')">+</button>
+					</td>
+				</tr>
 			</table>
 		</div>			
 	</div>
@@ -199,7 +218,7 @@ Vue.component("http-header-policy-box", {
         	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#response'">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
     	</div>
     	<div :class="{'opacity-mask': vHasGroupResponseConfig}">
-			<h3>设置响应Header <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)">[添加新Header]</a></h3>
+			<h4>设置响应Header <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)">[添加新Header]</a></h4>
 			<p class="comment" style="margin-top: 0; padding-top: 0">将会覆盖已有的同名Header。</p>
 			<p class="comment" v-if="responseSettingHeaders.length == 0">暂时还没有Header。</p>
 			<table class="ui table selectable celled" v-if="responseSettingHeaders.length > 0">
@@ -210,37 +229,52 @@ Vue.component("http-header-policy-box", {
 						<th class="two op">操作</th>
 					</tr>
 				</thead>
-				<tr v-for="header in responseSettingHeaders">
-					<td class="five wide">
-						{{header.name}}
-						<div>
-							<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
-							<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
-							<span v-if="header.domains != null && header.domains.length > 0"><grey-label v-for="domain in header.domains" :key="domain">{{domain}}</grey-label></span>
-							<grey-label v-if="header.shouldAppend">附加</grey-label>
-							<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
-							<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
-						</div>
-					</td>
-					<td>{{header.value}}</td>
-					<td><a href="" @click.prevent="updateSettingPopup(vResponseHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteHeader(vResponseHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
-				</tr>
+				<tbody v-for="header in responseSettingHeaders">
+					<tr>
+						<td class="five wide">
+							{{header.name}}
+							<div>
+								<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
+								<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
+								<span v-if="header.domains != null && header.domains.length > 0"><grey-label v-for="domain in header.domains" :key="domain">{{domain}}</grey-label></span>
+								<grey-label v-if="header.shouldAppend">附加</grey-label>
+								<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
+								<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
+							</div>
+						</td>
+						<td>{{header.value}}</td>
+						<td><a href="" @click.prevent="updateSettingPopup(vResponseHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteHeader(vResponseHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
+					</tr>
+				</tbody>
 			</table>
 			
-			<h3>删除响应Header</h3>
+			<h4>删除响应Header</h4>
 			<p class="comment">这里可以设置需要从响应中删除的Header。</p>
 			
 			<table class="ui table definition selectable">
-				<td class="title">需要删除的Header</td>
-				<td>
-					<div v-if="responseDeletingHeaders.length > 0">
-						<div class="ui label small basic" v-for="headerName in responseDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vResponseHeaderPolicy.id, headerName)"></i></a> </div>
-						<div class="ui divider" ></div>
-					</div>
-					<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vResponseHeaderPolicy.id, 'response')">+</button>
-				</td>
+				<tr>
+					<td class="title">需要删除的Header</td>
+					<td>
+						<div v-if="responseDeletingHeaders.length > 0">
+							<div class="ui label small basic" v-for="headerName in responseDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vResponseHeaderPolicy.id, headerName)"></i></a> </div>
+							<div class="ui divider" ></div>
+						</div>
+						<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vResponseHeaderPolicy.id, 'response')">+</button>
+					</td>
+				</tr>
 			</table>
-		</div>			
+			
+			<h4>CORS跨域设置</h4>
+			
+			<table class="ui table definition selectable">
+				<tr>
+					<td class="title">CORS自适应跨域</td>
+					<td>
+						<span v-if="responseCORS.isOn" class="green">已启用</span><span class="disabled" v-else="">未启用</span> &nbsp; <a href="" @click.prevent="updateCORS(vResponseHeaderPolicy.id)">[修改]</a>
+					</td>
+				</tr>
+			</table>
+		</div>		
 	</div>
 	<div class="margin"></div>
 </div>`

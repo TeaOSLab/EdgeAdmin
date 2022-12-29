@@ -89,6 +89,19 @@ func (this *IndexAction) RunGet(params struct {
 		}
 	}
 
+	// DNS信息
+	var fullDomainName = ""
+	if len(cluster.DnsName) > 0 && cluster.DnsDomainId > 0 {
+		domainResp, err := this.RPC().DNSDomainRPC().FindBasicDNSDomain(this.AdminContext(), &pb.FindBasicDNSDomainRequest{DnsDomainId: cluster.DnsDomainId})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		if domainResp.DnsDomain != nil {
+			fullDomainName = cluster.DnsName + "." + domainResp.DnsDomain.Name
+		}
+	}
+
 	this.Data["cluster"] = maps.Map{
 		"id":                  cluster.Id,
 		"name":                cluster.Name,
@@ -100,6 +113,7 @@ func (this *IndexAction) RunGet(params struct {
 		"autoRemoteStart":     cluster.AutoRemoteStart,
 		"autoInstallNftables": cluster.AutoInstallNftables,
 		"sshParams":           sshParams,
+		"domainName":          fullDomainName,
 	}
 
 	// 默认值
