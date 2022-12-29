@@ -264,7 +264,7 @@ Vue.component("http-header-policy-box", {
 				</tr>
 			</table>
 			
-			<h4>CORS跨域设置</h4>
+			<h4>其他设置</h4>
 			
 			<table class="ui table definition selectable">
 				<tr>
