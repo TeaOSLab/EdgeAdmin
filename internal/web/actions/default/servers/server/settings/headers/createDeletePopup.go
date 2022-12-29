@@ -40,13 +40,13 @@ func (this *CreateDeletePopupAction) RunPost(params struct {
 		Field("name", params.Name).
 		Require("名称不能为空")
 
-	policyConfigResp, err := this.RPC().HTTPHeaderPolicyRPC().FindEnabledHTTPHeaderPolicyConfig(this.AdminContext(), &pb.FindEnabledHTTPHeaderPolicyConfigRequest{HeaderPolicyId: params.HeaderPolicyId})
+	policyConfigResp, err := this.RPC().HTTPHeaderPolicyRPC().FindEnabledHTTPHeaderPolicyConfig(this.AdminContext(), &pb.FindEnabledHTTPHeaderPolicyConfigRequest{HttpHeaderPolicyId: params.HeaderPolicyId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 	policyConfig := &shared.HTTPHeaderPolicy{}
-	err = json.Unmarshal(policyConfigResp.HeaderPolicyJSON, policyConfig)
+	err = json.Unmarshal(policyConfigResp.HttpHeaderPolicyJSON, policyConfig)
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -55,8 +55,8 @@ func (this *CreateDeletePopupAction) RunPost(params struct {
 	deleteHeaders := policyConfig.DeleteHeaders
 	deleteHeaders = append(deleteHeaders, params.Name)
 	_, err = this.RPC().HTTPHeaderPolicyRPC().UpdateHTTPHeaderPolicyDeletingHeaders(this.AdminContext(), &pb.UpdateHTTPHeaderPolicyDeletingHeadersRequest{
-		HeaderPolicyId: params.HeaderPolicyId,
-		HeaderNames:    deleteHeaders,
+		HttpHeaderPolicyId: params.HeaderPolicyId,
+		HeaderNames:        deleteHeaders,
 	})
 	if err != nil {
 		this.ErrorPage(err)

@@ -21,14 +21,14 @@ func (this *DeleteAction) RunPost(params struct {
 	defer this.CreateLog(oplogs.LevelInfo, "删除请求Header，HeaderPolicyId:%d, HeaderId:%d", params.HeaderPolicyId, params.HeaderId)
 
 	policyConfigResp, err := this.RPC().HTTPHeaderPolicyRPC().FindEnabledHTTPHeaderPolicyConfig(this.AdminContext(), &pb.FindEnabledHTTPHeaderPolicyConfigRequest{
-		HeaderPolicyId: params.HeaderPolicyId,
+		HttpHeaderPolicyId: params.HeaderPolicyId,
 	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 	policyConfig := &shared.HTTPHeaderPolicy{}
-	err = json.Unmarshal(policyConfigResp.HeaderPolicyJSON, policyConfig)
+	err = json.Unmarshal(policyConfigResp.HttpHeaderPolicyJSON, policyConfig)
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -48,8 +48,8 @@ func (this *DeleteAction) RunPost(params struct {
 			return
 		}
 		_, err = this.RPC().HTTPHeaderPolicyRPC().UpdateHTTPHeaderPolicySettingHeaders(this.AdminContext(), &pb.UpdateHTTPHeaderPolicySettingHeadersRequest{
-			HeaderPolicyId: params.HeaderPolicyId,
-			HeadersJSON:    resultJSON,
+			HttpHeaderPolicyId: params.HeaderPolicyId,
+			HeadersJSON:        resultJSON,
 		})
 		if err != nil {
 			this.ErrorPage(err)

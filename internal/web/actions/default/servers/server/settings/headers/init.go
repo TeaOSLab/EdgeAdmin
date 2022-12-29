@@ -19,6 +19,7 @@ func init() {
 			GetPost("/createDeletePopup", new(CreateDeletePopupAction)).
 			Post("/deleteDeletingHeader", new(DeleteDeletingHeaderAction)).
 			Post("/delete", new(DeleteAction)).
+			GetPost("/updateCORSPopup", new(UpdateCORSPopupAction)).
 			EndAll()
 	})
 }

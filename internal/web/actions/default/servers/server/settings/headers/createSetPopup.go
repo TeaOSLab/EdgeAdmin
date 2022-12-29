@@ -52,13 +52,13 @@ func (this *CreateSetPopupAction) RunPost(params struct {
 		Field("name", params.Name).
 		Require("请输入Header名称")
 
-	configResp, err := this.RPC().HTTPHeaderPolicyRPC().FindEnabledHTTPHeaderPolicyConfig(this.AdminContext(), &pb.FindEnabledHTTPHeaderPolicyConfigRequest{HeaderPolicyId: params.HeaderPolicyId})
+	configResp, err := this.RPC().HTTPHeaderPolicyRPC().FindEnabledHTTPHeaderPolicyConfig(this.AdminContext(), &pb.FindEnabledHTTPHeaderPolicyConfigRequest{HttpHeaderPolicyId: params.HeaderPolicyId})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 	policyConfig := &shared.HTTPHeaderPolicy{}
-	err = json.Unmarshal(configResp.HeaderPolicyJSON, policyConfig)
+	err = json.Unmarshal(configResp.HttpHeaderPolicyJSON, policyConfig)
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -135,8 +135,8 @@ func (this *CreateSetPopupAction) RunPost(params struct {
 	}
 
 	_, err = this.RPC().HTTPHeaderPolicyRPC().UpdateHTTPHeaderPolicySettingHeaders(this.AdminContext(), &pb.UpdateHTTPHeaderPolicySettingHeadersRequest{
-		HeaderPolicyId: params.HeaderPolicyId,
-		HeadersJSON:    refsJSON,
+		HttpHeaderPolicyId: params.HeaderPolicyId,
+		HeadersJSON:        refsJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)
