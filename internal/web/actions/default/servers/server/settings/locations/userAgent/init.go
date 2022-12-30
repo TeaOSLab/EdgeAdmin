@@ -1,4 +1,4 @@
-package referers
+package useragent
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
@@ -14,8 +14,8 @@ func init() {
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeServer)).
 			Helper(locationutils.NewLocationHelper()).
 			Helper(serverutils.NewServerHelper()).
-			Data("tinyMenuItem", "referer").
-			Prefix("/servers/server/settings/locations/referers").
+			Data("tinyMenuItem", "userAgent").
+			Prefix("/servers/server/settings/locations/userAgent").
 			GetPost("", new(IndexAction)).
 			EndAll()
 	})

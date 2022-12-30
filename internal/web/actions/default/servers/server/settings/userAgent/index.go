@@ -1,6 +1,6 @@
 // Copyright 2021 Liuxiangchao iwind.liu@gmail.com. All rights reserved.
 
-package referers
+package useragent
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
@@ -16,7 +16,7 @@ type IndexAction struct {
 
 func (this *IndexAction) Init() {
 	this.Nav("", "setting", "index")
-	this.SecondMenu("referer")
+	this.SecondMenu("userAgent")
 }
 
 func (this *IndexAction) RunGet(params struct {
@@ -32,34 +32,28 @@ func (this *IndexAction) RunGet(params struct {
 
 	this.Data["webId"] = webConfig.Id
 
-	var referersConfig = webConfig.Referers
-	if referersConfig == nil {
-		referersConfig = &serverconfigs.ReferersConfig{
-			IsPrior:         false,
-			IsOn:            false,
-			AllowEmpty:      true,
-			AllowSameDomain: true,
-			AllowDomains:    nil,
-		}
+	var userAgentConfig = webConfig.UserAgent
+	if userAgentConfig == nil {
+		userAgentConfig = serverconfigs.NewUserAgentConfig()
 	}
 
-	this.Data["referersConfig"] = referersConfig
+	this.Data["userAgentConfig"] = userAgentConfig
 
 	this.Show()
 }
 
 func (this *IndexAction) RunPost(params struct {
-	WebId        int64
-	ReferersJSON []byte
+	WebId         int64
+	UserAgentJSON []byte
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("修改Web %d 防盗链设置", params.WebId)
+	defer this.CreateLogInfo("修改Web %d User-Agent设置", params.WebId)
 
-	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebReferers(this.AdminContext(), &pb.UpdateHTTPWebReferersRequest{
-		HttpWebId:    params.WebId,
-		ReferersJSON: params.ReferersJSON,
+	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebUserAgent(this.AdminContext(), &pb.UpdateHTTPWebUserAgentRequest{
+		HttpWebId:     params.WebId,
+		UserAgentJSON: params.UserAgentJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)

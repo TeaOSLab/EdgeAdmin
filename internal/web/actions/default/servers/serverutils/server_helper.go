@@ -316,6 +316,12 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":     serverConfig.Web != nil && serverConfig.Web.Referers != nil && serverConfig.Web.Referers.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
+			"name":     "UA名单",
+			"url":      "/servers/server/settings/userAgent?serverId=" + serverIdString,
+			"isActive": secondMenuItem == "userAgent",
+			"isOn":     serverConfig.Web != nil && serverConfig.Web.UserAgent != nil && serverConfig.Web.UserAgent.IsOn,
+		})
+		menuItems = append(menuItems, maps.Map{
 			"name":     "字符编码",
 			"url":      "/servers/server/settings/charset?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "charset",

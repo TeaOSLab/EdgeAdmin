@@ -1,5 +1,5 @@
 Vue.component("values-box", {
-	props: ["values", "v-values", "size", "maxlength", "name", "placeholder"],
+	props: ["values", "v-values", "size", "maxlength", "name", "placeholder", "v-allow-empty"],
 	data: function () {
 		let values = this.values;
 		if (values == null) {
@@ -39,7 +39,9 @@ Vue.component("values-box", {
 		},
 		confirm: function () {
 			if (this.value.length == 0) {
-				return
+				if (typeof(this.vAllowEmpty) != "boolean" || !this.vAllowEmpty) {
+					return
+				}
 			}
 
 			if (this.isUpdating) {
@@ -75,12 +77,17 @@ Vue.component("values-box", {
 	},
 	template: `<div>
 	<div v-show="!isEditing && realValues.length > 0">
-		<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">{{value}}</div>
+		<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">
+			<span v-if="value.length > 0">{{value}}</span>
+			<span v-if="value.length == 0" class="disabled">[空]</span>
+		</div>
 		<a href="" @click.prevent="startEditing" style="font-size: 0.8em; margin-left: 0.2em">[修改]</a>
 	</div>
 	<div v-show="isEditing || realValues.length == 0">
 		<div style="margin-bottom: 1em" v-if="realValues.length > 0">
-			<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">{{value}}
+			<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">
+				<span v-if="value.length > 0">{{value}}</span>
+				<span v-if="value.length == 0" class="disabled">[空]</span>
 				<input type="hidden" :name="name" :value="value"/>
 				&nbsp; <a href="" @click.prevent="update(index)" title="修改"><i class="icon pencil small" ></i></a> 
 				<a href="" @click.prevent="remove(index)" title="删除"><i class="icon remove"></i></a> 
