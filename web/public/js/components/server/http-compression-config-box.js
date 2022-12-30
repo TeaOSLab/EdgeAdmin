@@ -24,6 +24,7 @@ Vue.component("http-compression-config-box", {
 				maxLength: {count: 0, "unit": "kb"},
 				mimeTypes: ["text/*", "application/javascript", "application/json", "application/atom+xml", "application/rss+xml", "application/xhtml+xml", "font/*", "image/svg+xml"],
 				extensions: [".js", ".json", ".html", ".htm", ".xml", ".css", ".woff2", ".txt"],
+				exceptExtensions: [".apk", ".ipa"],
 				conds: null,
 				enablePartialContent: false
 			}
@@ -109,6 +110,14 @@ Vue.component("http-compression-config-box", {
 			})
 			this.config.extensions = values
 		},
+		changeExceptExtensions: function (values) {
+			values.forEach(function (v, k) {
+				if (v.length > 0 && v[0] != ".") {
+					values[k] = "." + v
+				}
+			})
+			this.config.exceptExtensions = values
+		},
 		changeMimeTypes: function (values) {
 			this.config.mimeTypes = values
 		},
@@ -178,6 +187,13 @@ Vue.component("http-compression-config-box", {
 				<td>
 					<values-box :values="config.extensions" @change="changeExtensions" placeholder="比如 .html"></values-box>
 					<p class="comment">含有这些扩展名的URL将会被压缩，不区分大小写。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>例外扩展名</td>
+				<td>
+					<values-box :values="config.exceptExtensions" @change="changeExceptExtensions" placeholder="比如 .html"></values-box>
+					<p class="comment">含有这些扩展名的URL将<strong>不会</strong>被压缩，不区分大小写。</p>
 				</td>
 			</tr>
 			<tr>
