@@ -1,0 +1,13 @@
+{$layout}
+{$template "../settings_menu"}
+{$template "/left_menu_with_menu"}
+
+<div class="right-box with-menu">
+    <form class="ui form" data-tea-action="$" data-tea-success="success">
+        <csrf-token></csrf-token>
+        <input type="hidden" name="webId" :value="webId"/>
+
+        <user-agent-config-box v-model="userAgentConfig"></user-agent-config-box>
+        <submit-btn></submit-btn>
+    </form>
+</div>

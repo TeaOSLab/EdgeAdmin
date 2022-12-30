@@ -1,4 +1,4 @@
-package uam
+package referers
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
