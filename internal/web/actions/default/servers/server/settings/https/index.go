@@ -31,7 +31,7 @@ func (this *IndexAction) RunGet(params struct {
 	if !isOk {
 		return
 	}
-	httpsConfig := &serverconfigs.HTTPSProtocolConfig{}
+	var httpsConfig = &serverconfigs.HTTPSProtocolConfig{}
 	if len(server.HttpsJSON) > 0 {
 		err := json.Unmarshal(server.HttpsJSON, httpsConfig)
 		if err != nil {
@@ -44,12 +44,15 @@ func (this *IndexAction) RunGet(params struct {
 
 	var sslPolicy *sslconfigs.SSLPolicy
 	if httpsConfig.SSLPolicyRef != nil && httpsConfig.SSLPolicyRef.SSLPolicyId > 0 {
-		sslPolicyConfigResp, err := this.RPC().SSLPolicyRPC().FindEnabledSSLPolicyConfig(this.AdminContext(), &pb.FindEnabledSSLPolicyConfigRequest{SslPolicyId: httpsConfig.SSLPolicyRef.SSLPolicyId})
+		sslPolicyConfigResp, err := this.RPC().SSLPolicyRPC().FindEnabledSSLPolicyConfig(this.AdminContext(), &pb.FindEnabledSSLPolicyConfigRequest{
+			SslPolicyId: httpsConfig.SSLPolicyRef.SSLPolicyId,
+			IgnoreData:  true,
+		})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-		sslPolicyConfigJSON := sslPolicyConfigResp.SslPolicyJSON
+		var sslPolicyConfigJSON = sslPolicyConfigResp.SslPolicyJSON
 		if len(sslPolicyConfigJSON) > 0 {
 			sslPolicy = &sslconfigs.SSLPolicy{}
 			err = json.Unmarshal(sslPolicyConfigJSON, sslPolicy)

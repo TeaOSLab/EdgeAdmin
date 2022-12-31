@@ -42,7 +42,10 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["clusters"] = clusterMaps
 
 	// 当前服务信息
-	serverResp, err := this.RPC().ServerRPC().FindEnabledServer(this.AdminContext(), &pb.FindEnabledServerRequest{ServerId: params.ServerId})
+	serverResp, err := this.RPC().ServerRPC().FindEnabledServer(this.AdminContext(), &pb.FindEnabledServerRequest{
+		ServerId:          params.ServerId,
+		IgnoreSSLCertData: true,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return

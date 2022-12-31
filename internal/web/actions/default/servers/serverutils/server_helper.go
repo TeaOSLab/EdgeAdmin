@@ -57,7 +57,10 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 		return
 	}
 
-	serverResp, err := rpcClient.ServerRPC().FindEnabledServer(rpcClient.Context(action.Context.GetInt64("adminId")), &pb.FindEnabledServerRequest{ServerId: serverId})
+	serverResp, err := rpcClient.ServerRPC().FindEnabledServer(rpcClient.Context(action.Context.GetInt64("adminId")), &pb.FindEnabledServerRequest{
+		ServerId:          serverId,
+		IgnoreSSLCertData: true,
+	})
 	if err != nil {
 		logs.Error(err)
 		return
