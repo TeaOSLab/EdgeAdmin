@@ -48,7 +48,10 @@ func (this *UpdateCNAMEPopupAction) RunPost(params struct {
 		this.FailField("dnsName", "CNAME中只能包含数字、英文字母")
 	}
 
-	serverResp, err := this.RPC().ServerRPC().FindEnabledServer(this.AdminContext(), &pb.FindEnabledServerRequest{ServerId: params.ServerId})
+	serverResp, err := this.RPC().ServerRPC().FindEnabledServer(this.AdminContext(), &pb.FindEnabledServerRequest{
+		ServerId:          params.ServerId,
+		IgnoreSSLCertData: true,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
