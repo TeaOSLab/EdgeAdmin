@@ -99,6 +99,7 @@ func (this *IndexAction) RunGet(params struct {
 		TrafficOutAsc:     params.TrafficOutOrder == "asc",
 		UserId:            params.UserId,
 		IgnoreServerNames: true,
+		IgnoreSSLCerts:    true,
 	})
 	if err != nil {
 		this.ErrorPage(err)

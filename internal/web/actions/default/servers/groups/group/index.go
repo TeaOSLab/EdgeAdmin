@@ -55,10 +55,11 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 服务列表
 	serversResp, err := this.RPC().ServerRPC().ListEnabledServersMatch(this.AdminContext(), &pb.ListEnabledServersMatchRequest{
-		Offset:        page.Offset,
-		Size:          page.Size,
-		ServerGroupId: params.GroupId,
-		Keyword:       params.Keyword,
+		Offset:         page.Offset,
+		Size:           page.Size,
+		ServerGroupId:  params.GroupId,
+		Keyword:        params.Keyword,
+		IgnoreSSLCerts: true,
 	})
 	if err != nil {
 		this.ErrorPage(err)
