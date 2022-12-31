@@ -21,6 +21,7 @@ Tea.context(function () {
 				that.itemDescription = v.description
 				that.itemParams = v.params
 				that.threshold.param = v.params[0].code
+				that.paramDescription = v.params[0].description
 			}
 		})
 	}
