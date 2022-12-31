@@ -11,8 +11,8 @@ import (
 // FindServer 查找服务信息
 func FindServer(p *actionutils.ParentAction, serverId int64) (*pb.Server, *serverconfigs.ServerConfig, bool) {
 	serverResp, err := p.RPC().ServerRPC().FindEnabledServer(p.AdminContext(), &pb.FindEnabledServerRequest{
-		ServerId:          serverId,
-		IgnoreSSLCertData: true,
+		ServerId:       serverId,
+		IgnoreSSLCerts: true,
 	})
 	if err != nil {
 		p.ErrorPage(err)

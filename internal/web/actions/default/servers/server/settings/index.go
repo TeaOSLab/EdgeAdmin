@@ -43,8 +43,8 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 当前服务信息
 	serverResp, err := this.RPC().ServerRPC().FindEnabledServer(this.AdminContext(), &pb.FindEnabledServerRequest{
-		ServerId:          params.ServerId,
-		IgnoreSSLCertData: true,
+		ServerId:       params.ServerId,
+		IgnoreSSLCerts: true,
 	})
 	if err != nil {
 		this.ErrorPage(err)
