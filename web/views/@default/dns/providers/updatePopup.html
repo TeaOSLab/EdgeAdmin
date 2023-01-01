@@ -92,6 +92,13 @@
                     <p class="comment">登录华为云控制台 -- 在"我的凭证 -- 访问密钥"中创建和获取。</p>
                 </td>
             </tr>
+            <tr>
+                <td>终端节点</td>
+                <td>
+                    <input type="text" name="paramHuaweiEndpoint" maxlength="100" v-model="provider.params.endpoint"/>
+                    <p class="comment">选填项。可以填写终端节点（Endpoint）区域代号或者域名，参考 <a href="https://developer.huaweicloud.com/endpoint?DNS" target="_blank">https://developer.huaweicloud.com/endpoint?DNS</a>（如果此链接生效，请到华为云开发者中心自行查找）。</p>
+                </td>
+            </tr>
         </tbody>
 
 
