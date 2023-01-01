@@ -67,6 +67,13 @@
             <td>AccessKeySecret</td>
             <td>{{provider.apiParams.accessKeySecret}}</td>
         </tr>
+        <tr>
+            <td>终端节点</td>
+            <td>
+                <span  v-if="provider.apiParams.endpoint != null && provider.apiParams.endpoint.length > 0">{{provider.apiParams.endpoint}}</span>
+                <span v-else class="disabled">默认</span>
+            </td>
+        </tr>
     </tbody>
 
     <!-- CloudFlare -->

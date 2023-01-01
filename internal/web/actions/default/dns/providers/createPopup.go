@@ -64,6 +64,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	// HuaweiDNS
 	ParamHuaweiAccessKeyId     string
 	ParamHuaweiAccessKeySecret string
+	ParamHuaweiEndpoint        string
 
 	// CloudFlare
 	ParamCloudFlareAPIKey string
@@ -119,6 +120,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 
 		apiParams["accessKeyId"] = params.ParamHuaweiAccessKeyId
 		apiParams["accessKeySecret"] = params.ParamHuaweiAccessKeySecret
+		apiParams["endpoint"] = params.ParamHuaweiEndpoint
 	case "cloudFlare":
 		params.Must.
 			Field("paramCloudFlareAPIKey", params.ParamCloudFlareAPIKey).
