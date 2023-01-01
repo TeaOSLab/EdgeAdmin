@@ -85,6 +85,9 @@ func (this *IndexAction) RunPost(params struct {
 
 	LogRecordServerError bool
 
+	PerformanceAutoWriteTimeout bool
+	PerformanceDebug            bool
+
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
@@ -124,16 +127,23 @@ func (this *IndexAction) RunPost(params struct {
 		}
 	}
 
+	// 域名
 	config.HTTPAll.AllowMismatchDomains = allowMismatchDomains
 	config.HTTPAll.AllowNodeIP = params.HttpAllAllowNodeIP
 	config.HTTPAll.DefaultDomain = params.HttpAllDefaultDomain
 
+	// 访问日志
 	config.HTTPAccessLog.EnableRequestHeaders = params.HttpAccessLogEnableRequestHeaders
 	config.HTTPAccessLog.EnableResponseHeaders = params.HttpAccessLogEnableResponseHeaders
 	config.HTTPAccessLog.CommonRequestHeadersOnly = params.HttpAccessLogCommonRequestHeadersOnly
 	config.HTTPAccessLog.EnableCookies = params.HttpAccessLogEnableCookies
 
+	// 日志
 	config.Log.RecordServerError = params.LogRecordServerError
+
+	// 性能
+	config.Performance.AutoWriteTimeout = params.PerformanceAutoWriteTimeout
+	config.Performance.Debug = params.PerformanceDebug
 
 	err = config.Init()
 	if err != nil {

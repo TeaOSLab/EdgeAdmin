@@ -90,6 +90,24 @@
             </tr>
         </table>
 
+        <h4>性能</h4>
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title">自动写数据超时</td>
+                <td>
+                    <checkbox name="performanceAutoWriteTimeout" v-model="config.performance.autoWriteTimeout"></checkbox>
+                    <p class="comment">向客户端发送数据时自动设置超时时间，如果超时，则自动视为慢连接，并关闭网络连接。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>调试模式</td>
+                <td>
+                    <checkbox name="performanceDebug" v-model="config.performance.debug"></checkbox>
+                    <p class="comment">开启调试模式后，将在某些信息中包含调试信息。</p>
+                </td>
+            </tr>
+        </table>
+
         <submit-btn></submit-btn>
     </form>
 </div>
