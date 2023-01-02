@@ -6594,6 +6594,41 @@ Vue.component("origin-list-table", {
 </table>`
 })
 
+Vue.component("http-cors-header-config-box", {
+	props: ["value"],
+	data: function () {
+		let config = this.value
+		if (config == null) {
+			config = {
+				isOn: false,
+				allowMethods: [],
+				allowOrigin: "",
+				allowCredentials: true,
+				exposeHeaders: [],
+				maxAge: 0,
+				requestHeaders: [],
+				requestMethod: ""
+			}
+		}
+
+		return {
+			config: config
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="corsJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">启用CORS自适应跨域</td>
+			<td>
+				<checkbox v-model="config.isOn"></checkbox>
+			</td>
+		</tr>
+	</table>
+	<div class="margin"></div>
+</div>`
+})
+
 Vue.component("http-firewall-policy-selector", {
 	props: ["v-http-firewall-policy"],
 	mounted: function () {
@@ -8690,6 +8725,13 @@ Vue.component("http-header-policy-box", {
 			}
 		}
 
+		let responseCORS = {
+			isOn: false
+		}
+		if (responsePolicy.cors != null) {
+			responseCORS = responsePolicy.cors
+		}
+
 		return {
 			type: type,
 			typeName: (type == "request") ? "请求" : "响应",
@@ -8698,7 +8740,8 @@ Vue.component("http-header-policy-box", {
 			requestSettingHeaders: requestSettingHeaders,
 			requestDeletingHeaders: requestDeletingHeaders,
 			responseSettingHeaders: responseSettingHeaders,
-			responseDeletingHeaders: responseDeletingHeaders
+			responseDeletingHeaders: responseDeletingHeaders,
+			responseCORS: responseCORS
 		}
 	},
 	methods: {
@@ -8750,6 +8793,13 @@ Vue.component("http-header-policy-box", {
 						.refresh()
 				}
 			)
+		},
+		updateCORS: function (policyId) {
+			teaweb.popup("/servers/server/settings/headers/updateCORSPopup?" + this.vParams + "&headerPolicyId=" + policyId + "&type=" + this.type, {
+				callback: function () {
+					teaweb.successRefresh("保存成功")
+				}
+			})
 		}
 	},
 	template: `<div>
@@ -8777,7 +8827,7 @@ Vue.component("http-header-policy-box", {
         	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#request'">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
     	</div>
     	<div :class="{'opacity-mask': vHasGroupRequestConfig}">
-		<h3>设置请求Header <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)">[添加新Header]</a></h3>
+		<h4>设置请求Header <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)">[添加新Header]</a></h4>
 			<p class="comment" v-if="requestSettingHeaders.length == 0">暂时还没有Header。</p>
 			<table class="ui table selectable celled" v-if="requestSettingHeaders.length > 0">
 				<thead>
@@ -8787,35 +8837,39 @@ Vue.component("http-header-policy-box", {
 						<th class="two op">操作</th>
 					</tr>
 				</thead>
-				<tr v-for="header in requestSettingHeaders">
-					<td class="five wide">
-						{{header.name}}
-						<div>
-							<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
-							<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
-							<span v-if="header.domains != null && header.domains.length > 0"><grey-label v-for="domain in header.domains" :key="domain">{{domain}}</grey-label></span>
-							<grey-label v-if="header.shouldAppend">附加</grey-label>
-							<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
-							<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
-						</div>
-					</td>
-					<td>{{header.value}}</td>
-					<td><a href="" @click.prevent="updateSettingPopup(vRequestHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteHeader(vRequestHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
-				</tr>
+				<tbody v-for="header in requestSettingHeaders">
+					<tr>
+						<td class="five wide">
+							{{header.name}}
+							<div>
+								<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
+								<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
+								<span v-if="header.domains != null && header.domains.length > 0"><grey-label v-for="domain in header.domains" :key="domain">{{domain}}</grey-label></span>
+								<grey-label v-if="header.shouldAppend">附加</grey-label>
+								<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
+								<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
+							</div>
+						</td>
+						<td>{{header.value}}</td>
+						<td><a href="" @click.prevent="updateSettingPopup(vRequestHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteHeader(vRequestHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
+					</tr>
+				</tbody>
 			</table>
 			
-			<h3>删除请求Header</h3>
+			<h4>删除请求Header</h4>
 			<p class="comment">这里可以设置需要从请求中删除的Header。</p>
 			
 			<table class="ui table definition selectable">
-				<td class="title">需要删除的Header</td>
-				<td>
-					<div v-if="requestDeletingHeaders.length > 0">
-						<div class="ui label small basic" v-for="headerName in requestDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
-						<div class="ui divider" ></div>
-					</div>
-					<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vRequestHeaderPolicy.id, 'request')">+</button>
-				</td>
+				<tr>
+					<td class="title">需要删除的Header</td>
+					<td>
+						<div v-if="requestDeletingHeaders.length > 0">
+							<div class="ui label small basic" v-for="headerName in requestDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
+							<div class="ui divider" ></div>
+						</div>
+						<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vRequestHeaderPolicy.id, 'request')">+</button>
+					</td>
+				</tr>
 			</table>
 		</div>			
 	</div>
@@ -8835,7 +8889,7 @@ Vue.component("http-header-policy-box", {
         	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#response'">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
     	</div>
     	<div :class="{'opacity-mask': vHasGroupResponseConfig}">
-			<h3>设置响应Header <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)">[添加新Header]</a></h3>
+			<h4>设置响应Header <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)">[添加新Header]</a></h4>
 			<p class="comment" style="margin-top: 0; padding-top: 0">将会覆盖已有的同名Header。</p>
 			<p class="comment" v-if="responseSettingHeaders.length == 0">暂时还没有Header。</p>
 			<table class="ui table selectable celled" v-if="responseSettingHeaders.length > 0">
@@ -8846,37 +8900,52 @@ Vue.component("http-header-policy-box", {
 						<th class="two op">操作</th>
 					</tr>
 				</thead>
-				<tr v-for="header in responseSettingHeaders">
-					<td class="five wide">
-						{{header.name}}
-						<div>
-							<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
-							<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
-							<span v-if="header.domains != null && header.domains.length > 0"><grey-label v-for="domain in header.domains" :key="domain">{{domain}}</grey-label></span>
-							<grey-label v-if="header.shouldAppend">附加</grey-label>
-							<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
-							<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
-						</div>
-					</td>
-					<td>{{header.value}}</td>
-					<td><a href="" @click.prevent="updateSettingPopup(vResponseHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteHeader(vResponseHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
-				</tr>
+				<tbody v-for="header in responseSettingHeaders">
+					<tr>
+						<td class="five wide">
+							{{header.name}}
+							<div>
+								<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
+								<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
+								<span v-if="header.domains != null && header.domains.length > 0"><grey-label v-for="domain in header.domains" :key="domain">{{domain}}</grey-label></span>
+								<grey-label v-if="header.shouldAppend">附加</grey-label>
+								<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
+								<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
+							</div>
+						</td>
+						<td>{{header.value}}</td>
+						<td><a href="" @click.prevent="updateSettingPopup(vResponseHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteHeader(vResponseHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
+					</tr>
+				</tbody>
 			</table>
 			
-			<h3>删除响应Header</h3>
+			<h4>删除响应Header</h4>
 			<p class="comment">这里可以设置需要从响应中删除的Header。</p>
 			
 			<table class="ui table definition selectable">
-				<td class="title">需要删除的Header</td>
-				<td>
-					<div v-if="responseDeletingHeaders.length > 0">
-						<div class="ui label small basic" v-for="headerName in responseDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vResponseHeaderPolicy.id, headerName)"></i></a> </div>
-						<div class="ui divider" ></div>
-					</div>
-					<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vResponseHeaderPolicy.id, 'response')">+</button>
-				</td>
+				<tr>
+					<td class="title">需要删除的Header</td>
+					<td>
+						<div v-if="responseDeletingHeaders.length > 0">
+							<div class="ui label small basic" v-for="headerName in responseDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vResponseHeaderPolicy.id, headerName)"></i></a> </div>
+							<div class="ui divider" ></div>
+						</div>
+						<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vResponseHeaderPolicy.id, 'response')">+</button>
+					</td>
+				</tr>
 			</table>
-		</div>			
+			
+			<h4>其他设置</h4>
+			
+			<table class="ui table definition selectable">
+				<tr>
+					<td class="title">CORS自适应跨域</td>
+					<td>
+						<span v-if="responseCORS.isOn" class="green">已启用</span><span class="disabled" v-else="">未启用</span> &nbsp; <a href="" @click.prevent="updateCORS(vResponseHeaderPolicy.id)">[修改]</a>
+					</td>
+				</tr>
+			</table>
+		</div>		
 	</div>
 	<div class="margin"></div>
 </div>`
@@ -9151,11 +9220,13 @@ Vue.component("http-compression-config-box", {
 				gzipRef: null,
 				deflateRef: null,
 				brotliRef: null,
-				minLength: {count: 0, "unit": "kb"},
-				maxLength: {count: 0, "unit": "kb"},
+				minLength: {count: 1, "unit": "kb"},
+				maxLength: {count: 32, "unit": "mb"},
 				mimeTypes: ["text/*", "application/javascript", "application/json", "application/atom+xml", "application/rss+xml", "application/xhtml+xml", "font/*", "image/svg+xml"],
 				extensions: [".js", ".json", ".html", ".htm", ".xml", ".css", ".woff2", ".txt"],
-				conds: null
+				exceptExtensions: [".apk", ".ipa"],
+				conds: null,
+				enablePartialContent: false
 			}
 		}
 
@@ -9239,6 +9310,14 @@ Vue.component("http-compression-config-box", {
 			})
 			this.config.extensions = values
 		},
+		changeExceptExtensions: function (values) {
+			values.forEach(function (v, k) {
+				if (v.length > 0 && v[0] != ".") {
+					values[k] = "." + v
+				}
+			})
+			this.config.exceptExtensions = values
+		},
 		changeMimeTypes: function (values) {
 			this.config.mimeTypes = values
 		},
@@ -9311,6 +9390,13 @@ Vue.component("http-compression-config-box", {
 				</td>
 			</tr>
 			<tr>
+				<td>例外扩展名</td>
+				<td>
+					<values-box :values="config.exceptExtensions" @change="changeExceptExtensions" placeholder="比如 .html"></values-box>
+					<p class="comment">含有这些扩展名的URL将<strong>不会</strong>被压缩，不区分大小写。</p>
+				</td>
+			</tr>
+			<tr>
 				<td>支持的MimeType</td>
 				<td>
 					<values-box :values="config.mimeTypes" @change="changeMimeTypes" placeholder="比如 text/*"></values-box>
@@ -9360,6 +9446,13 @@ Vue.component("http-compression-config-box", {
 				<td>
 					<size-capacity-box :v-name="'maxLength'" :v-value="config.maxLength" :v-unit="'mb'"></size-capacity-box>
 					<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>支持Partial<br/>Content</td>
+				<td>
+					<checkbox v-model="config.enablePartialContent"></checkbox>
+					<p class="comment">支持对分区内容（PartialContent）的压缩；除非客户端有特殊要求，一般不需要启用。</p>
 				</td>
 			</tr>
 			<tr>
@@ -11864,7 +11957,7 @@ Vue.component("http-header-assistant", {
 			}
 			this.matchedHeaders = this.allHeaders.filter(function (header) {
 				return teaweb.match(header, v)
-			}).slice(0, 5)
+			}).slice(0, 10)
 		}
 	},
 	methods: {
@@ -11874,7 +11967,7 @@ Vue.component("http-header-assistant", {
 		}
 	},
 	template: `<span v-if="selectedHeaderName.length == 0">
-	<a href="" v-for="header in matchedHeaders" class="ui label basic tiny blue" style="font-weight: normal" @click.prevent="select(header)">{{header}}</a>
+	<a href="" v-for="header in matchedHeaders" class="ui label basic tiny blue" style="font-weight: normal; margin-bottom: 0.3em" @click.prevent="select(header)">{{header}}</a>
 	<span v-if="matchedHeaders.length > 0">&nbsp; &nbsp;</span>
 </span>`
 })
@@ -13525,6 +13618,149 @@ Vue.component("http-firewall-captcha-options", {
 `
 })
 
+Vue.component("user-agent-config-box", {
+	props: ["v-is-location", "v-is-group", "value"],
+	data: function () {
+		let config = this.value
+		if (config == null) {
+			config = {
+				isPrior: false,
+				isOn: false,
+				filters: []
+			}
+		}
+		if (config.filters == null) {
+			config.filters = []
+		}
+		return {
+			config: config,
+			isAdding: false,
+			addingFilter: {
+				keywords: [],
+				action: "deny"
+			}
+		}
+	},
+	methods: {
+		isOn: function () {
+			return ((!this.vIsLocation && !this.vIsGroup) || this.config.isPrior) && this.config.isOn
+		},
+		remove: function (index) {
+			let that = this
+			teaweb.confirm("确定要删除此名单吗？", function () {
+				that.config.filters.$remove(index)
+			})
+		},
+		add: function () {
+			this.isAdding = true
+		},
+		confirm: function () {
+			if (this.addingFilter.action == "deny") {
+				this.config.filters.push(this.addingFilter)
+			} else {
+				let index = -1
+				this.config.filters.forEach(function (filter, filterIndex) {
+					if (filter.action == "allow") {
+						index = filterIndex
+					}
+				})
+
+				if (index < 0) {
+					this.config.filters.unshift(this.addingFilter)
+				} else {
+					this.config.filters.$insert(index + 1, this.addingFilter)
+				}
+			}
+
+			this.cancel()
+		},
+		cancel: function () {
+			this.isAdding = false
+			this.addingFilter = {
+				keywords: [],
+				action: "deny"
+			}
+		},
+		changeKeywords: function (keywords) {
+			this.addingFilter.keywords = keywords
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="userAgentJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable">
+		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
+			<tr>
+				<td class="title">启用UA名单</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" value="1" v-model="config.isOn"/>
+						<label></label>
+					</div>
+					<p class="comment">选中后表示开启UserAgent名单。</p>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="isOn()">
+			<tr>
+				<td>UA名单</td>
+				<td>
+					<div v-if="config.filters.length > 0">
+						<table class="ui table celled">
+							<thead class="full-width">
+								<tr>
+									<th>UA关键词</th>
+									<th class="two wide">动作</th>
+									<th class="one op">操作</th>
+								</tr>
+							</thead>
+							<tbody v-for="(filter, index) in config.filters">
+								<tr>
+									<td style="background: white">
+										<span v-for="keyword in filter.keywords" class="ui label basic tiny">
+											<span v-if="keyword.length > 0">{{keyword}}</span>
+											<span v-if="keyword.length == 0" class="disabled">[空]</span>
+										</span>
+									</td>
+									<td>
+										<span v-if="filter.action == 'allow'" class="green">允许</span><span v-if="filter.action == 'deny'" class="red">不允许</span>
+									</td>
+									<td><a href="" @click.prevent="remove(index)">删除</a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div v-if="isAdding" style="margin-top: 0.5em">
+						<table class="ui table definition">
+							<tr>
+								<td class="title">UA关键词</td>
+								<td>
+									<values-box :v-values="addingFilter.keywords" :v-allow-empty="true" @change="changeKeywords"></values-box>
+									<p class="comment">不区分大小写，比如<code-label>Chrome</code-label>；支持<code-label>*</code-label>通配符，比如<code-label>*Firefox*</code-label>；也支持空的关键词，表示空UserAgent。</p>
+								</td>
+							</tr>
+							<tr>
+								<td>动作</td>
+								<td><select class="ui dropdown auto-width" v-model="addingFilter.action">
+										<option value="deny">不允许</option>
+										<option value="allow">允许</option>
+									</select>
+								</td>
+							</tr>
+						</table>
+						<button type="button" class="ui button tiny" @click.prevent="confirm">保存</button> &nbsp; <a href="" @click.prevent="cancel" title="取消"><i class="icon remove small"></i></a>
+					</div>
+					<div v-show="!isAdding" style="margin-top: 0.5em">
+						<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
+</div>`
+})
+
 Vue.component("firewall-syn-flood-config-box", {
 	props: ["v-syn-flood-config"],
 	data: function () {
@@ -14623,7 +14859,7 @@ Vue.component("download-link", {
 })
 
 Vue.component("values-box", {
-	props: ["values", "v-values", "size", "maxlength", "name", "placeholder"],
+	props: ["values", "v-values", "size", "maxlength", "name", "placeholder", "v-allow-empty"],
 	data: function () {
 		let values = this.values;
 		if (values == null) {
@@ -14663,7 +14899,9 @@ Vue.component("values-box", {
 		},
 		confirm: function () {
 			if (this.value.length == 0) {
-				return
+				if (typeof(this.vAllowEmpty) != "boolean" || !this.vAllowEmpty) {
+					return
+				}
 			}
 
 			if (this.isUpdating) {
@@ -14699,12 +14937,17 @@ Vue.component("values-box", {
 	},
 	template: `<div>
 	<div v-show="!isEditing && realValues.length > 0">
-		<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">{{value}}</div>
+		<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">
+			<span v-if="value.length > 0">{{value}}</span>
+			<span v-if="value.length == 0" class="disabled">[空]</span>
+		</div>
 		<a href="" @click.prevent="startEditing" style="font-size: 0.8em; margin-left: 0.2em">[修改]</a>
 	</div>
 	<div v-show="isEditing || realValues.length == 0">
 		<div style="margin-bottom: 1em" v-if="realValues.length > 0">
-			<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">{{value}}
+			<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">
+				<span v-if="value.length > 0">{{value}}</span>
+				<span v-if="value.length == 0" class="disabled">[空]</span>
 				<input type="hidden" :name="name" :value="value"/>
 				&nbsp; <a href="" @click.prevent="update(index)" title="修改"><i class="icon pencil small" ></i></a> 
 				<a href="" @click.prevent="remove(index)" title="删除"><i class="icon remove"></i></a> 

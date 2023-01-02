@@ -103,7 +103,7 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/tls"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/udp"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/unix"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/useragent"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/userAgent"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/waf"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/web"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/webp"

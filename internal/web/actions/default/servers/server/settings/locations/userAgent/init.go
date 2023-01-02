@@ -1,4 +1,4 @@
-package useragent
+package userAgent
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
