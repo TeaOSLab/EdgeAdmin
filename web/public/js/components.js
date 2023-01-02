@@ -2235,7 +2235,18 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<a href="" @click.prevent="deleteOrigin(origin.id)">删除</a>
 		</td>
 	</tr>
-</table>`}),Vue.component("http-firewall-policy-selector",{props:["v-http-firewall-policy"],mounted:function(){let t=this;Tea.action("/servers/components/waf/count").post().success(function(e){t.count=e.data.count})},data:function(){return{count:0,firewallPolicy:this.vHttpFirewallPolicy}},methods:{remove:function(){this.firewallPolicy=null},select:function(){let t=this;teaweb.popup("/servers/components/waf/selectPopup",{callback:function(e){t.firewallPolicy=e.data.firewallPolicy}})},create:function(){let t=this;teaweb.popup("/servers/components/waf/createPopup",{height:"26em",callback:function(e){t.firewallPolicy=e.data.firewallPolicy}})}},template:`<div>
+</table>`}),Vue.component("http-cors-header-config-box",{props:["value"],data:function(){let e=this.value;return{config:e=null==e?{isOn:!1,allowMethods:[],allowOrigin:"",allowCredentials:!0,exposeHeaders:[],maxAge:0,requestHeaders:[],requestMethod:""}:e}},template:`<div>
+	<input type="hidden" name="corsJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">启用CORS自适应跨域</td>
+			<td>
+				<checkbox v-model="config.isOn"></checkbox>
+			</td>
+		</tr>
+	</table>
+	<div class="margin"></div>
+</div>`}),Vue.component("http-firewall-policy-selector",{props:["v-http-firewall-policy"],mounted:function(){let t=this;Tea.action("/servers/components/waf/count").post().success(function(e){t.count=e.data.count})},data:function(){return{count:0,firewallPolicy:this.vHttpFirewallPolicy}},methods:{remove:function(){this.firewallPolicy=null},select:function(){let t=this;teaweb.popup("/servers/components/waf/selectPopup",{callback:function(e){t.firewallPolicy=e.data.firewallPolicy}})},create:function(){let t=this;teaweb.popup("/servers/components/waf/createPopup",{height:"26em",callback:function(e){t.firewallPolicy=e.data.firewallPolicy}})}},template:`<div>
 	<div v-if="firewallPolicy != null" class="ui label basic">
 		<input type="hidden" name="httpFirewallPolicyId" :value="firewallPolicy.id"/>
 		{{firewallPolicy.name}} &nbsp; <a :href="'/servers/components/waf/policy?firewallPolicyId=' + firewallPolicy.id" target="_blank" title="修改"><i class="icon pencil small"></i></a>&nbsp; <a href="" @click.prevent="remove()" title="删除"><i class="icon remove small"></i></a>
@@ -2976,7 +2987,7 @@ example2.com
 	</tbody>
 </table>
 <div class="margin"></div>
-</div>`}),Vue.component("http-header-policy-box",{props:["v-request-header-policy","v-request-header-ref","v-response-header-policy","v-response-header-ref","v-params","v-is-location","v-is-group","v-has-group-request-config","v-has-group-response-config","v-group-setting-url"],data:function(){let e="response";"#request"==window.location.hash&&(e="request");let t=this.vRequestHeaderRef,i=(null==t&&(t={isPrior:!1,isOn:!0,headerPolicyId:0}),this.vResponseHeaderRef),n=(null==i&&(i={isPrior:!1,isOn:!0,headerPolicyId:0}),[]),s=[];var o=this.vRequestHeaderPolicy;null!=o&&(null!=o.setHeaders&&(n=o.setHeaders),null!=o.deleteHeaders&&(s=o.deleteHeaders));let a=[],l=[];o=this.vResponseHeaderPolicy;return null!=o&&(null!=o.setHeaders&&(a=o.setHeaders),null!=o.deleteHeaders&&(l=o.deleteHeaders)),{type:e,typeName:"request"==e?"请求":"响应",requestHeaderRef:t,responseHeaderRef:i,requestSettingHeaders:n,requestDeletingHeaders:s,responseSettingHeaders:a,responseDeletingHeaders:l}},methods:{selectType:function(e){this.type=e,window.location.hash="#"+e,window.location.reload()},addSettingHeader:function(e){teaweb.popup("/servers/server/settings/headers/createSetPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})},addDeletingHeader:function(e,t){teaweb.popup("/servers/server/settings/headers/createDeletePopup?"+this.vParams+"&headerPolicyId="+e+"&type="+t,{callback:function(){teaweb.successRefresh("保存成功")}})},updateSettingPopup:function(e,t){teaweb.popup("/servers/server/settings/headers/updateSetPopup?"+this.vParams+"&headerPolicyId="+e+"&headerId="+t+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})},deleteDeletingHeader:function(e,t){teaweb.confirm("确定要删除'"+t+"'吗？",function(){Tea.action("/servers/server/settings/headers/deleteDeletingHeader").params({headerPolicyId:e,headerName:t}).post().refresh()})},deleteHeader:function(e,t,i){teaweb.confirm("确定要删除此Header吗？",function(){this.$post("/servers/server/settings/headers/delete").params({headerPolicyId:e,type:t,headerId:i}).refresh()})}},template:`<div>
+</div>`}),Vue.component("http-header-policy-box",{props:["v-request-header-policy","v-request-header-ref","v-response-header-policy","v-response-header-ref","v-params","v-is-location","v-is-group","v-has-group-request-config","v-has-group-response-config","v-group-setting-url"],data:function(){let e="response";"#request"==window.location.hash&&(e="request");let t=this.vRequestHeaderRef,i=(null==t&&(t={isPrior:!1,isOn:!0,headerPolicyId:0}),this.vResponseHeaderRef),n=(null==i&&(i={isPrior:!1,isOn:!0,headerPolicyId:0}),[]),s=[];var o=this.vRequestHeaderPolicy;null!=o&&(null!=o.setHeaders&&(n=o.setHeaders),null!=o.deleteHeaders&&(s=o.deleteHeaders));let a=[],l=[];o=this.vResponseHeaderPolicy;null!=o&&(null!=o.setHeaders&&(a=o.setHeaders),null!=o.deleteHeaders&&(l=o.deleteHeaders));let c={isOn:!1};return null!=o.cors&&(c=o.cors),{type:e,typeName:"request"==e?"请求":"响应",requestHeaderRef:t,responseHeaderRef:i,requestSettingHeaders:n,requestDeletingHeaders:s,responseSettingHeaders:a,responseDeletingHeaders:l,responseCORS:c}},methods:{selectType:function(e){this.type=e,window.location.hash="#"+e,window.location.reload()},addSettingHeader:function(e){teaweb.popup("/servers/server/settings/headers/createSetPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})},addDeletingHeader:function(e,t){teaweb.popup("/servers/server/settings/headers/createDeletePopup?"+this.vParams+"&headerPolicyId="+e+"&type="+t,{callback:function(){teaweb.successRefresh("保存成功")}})},updateSettingPopup:function(e,t){teaweb.popup("/servers/server/settings/headers/updateSetPopup?"+this.vParams+"&headerPolicyId="+e+"&headerId="+t+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})},deleteDeletingHeader:function(e,t){teaweb.confirm("确定要删除'"+t+"'吗？",function(){Tea.action("/servers/server/settings/headers/deleteDeletingHeader").params({headerPolicyId:e,headerName:t}).post().refresh()})},deleteHeader:function(e,t,i){teaweb.confirm("确定要删除此Header吗？",function(){this.$post("/servers/server/settings/headers/delete").params({headerPolicyId:e,type:t,headerId:i}).refresh()})},updateCORS:function(e){teaweb.popup("/servers/server/settings/headers/updateCORSPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})}},template:`<div>
 	<div class="ui menu tabular small">
 		<a class="item" :class="{active:type == 'response'}" @click.prevent="selectType('response')">响应Header<span v-if="responseSettingHeaders.length > 0">({{responseSettingHeaders.length}})</span></a>
 		<a class="item" :class="{active:type == 'request'}" @click.prevent="selectType('request')">请求Header<span v-if="requestSettingHeaders.length > 0">({{requestSettingHeaders.length}})</span></a>
@@ -3001,7 +3012,7 @@ example2.com
         	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#request'">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
     	</div>
     	<div :class="{'opacity-mask': vHasGroupRequestConfig}">
-		<h3>设置请求Header <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)">[添加新Header]</a></h3>
+		<h4>设置请求Header <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)">[添加新Header]</a></h4>
 			<p class="comment" v-if="requestSettingHeaders.length == 0">暂时还没有Header。</p>
 			<table class="ui table selectable celled" v-if="requestSettingHeaders.length > 0">
 				<thead>
@@ -3011,35 +3022,39 @@ example2.com
 						<th class="two op">操作</th>
 					</tr>
 				</thead>
-				<tr v-for="header in requestSettingHeaders">
-					<td class="five wide">
-						{{header.name}}
-						<div>
-							<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
-							<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
-							<span v-if="header.domains != null && header.domains.length > 0"><grey-label v-for="domain in header.domains" :key="domain">{{domain}}</grey-label></span>
-							<grey-label v-if="header.shouldAppend">附加</grey-label>
-							<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
-							<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
-						</div>
-					</td>
-					<td>{{header.value}}</td>
-					<td><a href="" @click.prevent="updateSettingPopup(vRequestHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteHeader(vRequestHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
-				</tr>
+				<tbody v-for="header in requestSettingHeaders">
+					<tr>
+						<td class="five wide">
+							{{header.name}}
+							<div>
+								<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
+								<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
+								<span v-if="header.domains != null && header.domains.length > 0"><grey-label v-for="domain in header.domains" :key="domain">{{domain}}</grey-label></span>
+								<grey-label v-if="header.shouldAppend">附加</grey-label>
+								<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
+								<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
+							</div>
+						</td>
+						<td>{{header.value}}</td>
+						<td><a href="" @click.prevent="updateSettingPopup(vRequestHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteHeader(vRequestHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
+					</tr>
+				</tbody>
 			</table>
 			
-			<h3>删除请求Header</h3>
+			<h4>删除请求Header</h4>
 			<p class="comment">这里可以设置需要从请求中删除的Header。</p>
 			
 			<table class="ui table definition selectable">
-				<td class="title">需要删除的Header</td>
-				<td>
-					<div v-if="requestDeletingHeaders.length > 0">
-						<div class="ui label small basic" v-for="headerName in requestDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
-						<div class="ui divider" ></div>
-					</div>
-					<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vRequestHeaderPolicy.id, 'request')">+</button>
-				</td>
+				<tr>
+					<td class="title">需要删除的Header</td>
+					<td>
+						<div v-if="requestDeletingHeaders.length > 0">
+							<div class="ui label small basic" v-for="headerName in requestDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
+							<div class="ui divider" ></div>
+						</div>
+						<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vRequestHeaderPolicy.id, 'request')">+</button>
+					</td>
+				</tr>
 			</table>
 		</div>			
 	</div>
@@ -3059,7 +3074,7 @@ example2.com
         	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#response'">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
     	</div>
     	<div :class="{'opacity-mask': vHasGroupResponseConfig}">
-			<h3>设置响应Header <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)">[添加新Header]</a></h3>
+			<h4>设置响应Header <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)">[添加新Header]</a></h4>
 			<p class="comment" style="margin-top: 0; padding-top: 0">将会覆盖已有的同名Header。</p>
 			<p class="comment" v-if="responseSettingHeaders.length == 0">暂时还没有Header。</p>
 			<table class="ui table selectable celled" v-if="responseSettingHeaders.length > 0">
@@ -3070,37 +3085,52 @@ example2.com
 						<th class="two op">操作</th>
 					</tr>
 				</thead>
-				<tr v-for="header in responseSettingHeaders">
-					<td class="five wide">
-						{{header.name}}
-						<div>
-							<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
-							<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
-							<span v-if="header.domains != null && header.domains.length > 0"><grey-label v-for="domain in header.domains" :key="domain">{{domain}}</grey-label></span>
-							<grey-label v-if="header.shouldAppend">附加</grey-label>
-							<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
-							<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
-						</div>
-					</td>
-					<td>{{header.value}}</td>
-					<td><a href="" @click.prevent="updateSettingPopup(vResponseHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteHeader(vResponseHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
-				</tr>
+				<tbody v-for="header in responseSettingHeaders">
+					<tr>
+						<td class="five wide">
+							{{header.name}}
+							<div>
+								<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
+								<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
+								<span v-if="header.domains != null && header.domains.length > 0"><grey-label v-for="domain in header.domains" :key="domain">{{domain}}</grey-label></span>
+								<grey-label v-if="header.shouldAppend">附加</grey-label>
+								<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
+								<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
+							</div>
+						</td>
+						<td>{{header.value}}</td>
+						<td><a href="" @click.prevent="updateSettingPopup(vResponseHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteHeader(vResponseHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
+					</tr>
+				</tbody>
 			</table>
 			
-			<h3>删除响应Header</h3>
+			<h4>删除响应Header</h4>
 			<p class="comment">这里可以设置需要从响应中删除的Header。</p>
 			
 			<table class="ui table definition selectable">
-				<td class="title">需要删除的Header</td>
-				<td>
-					<div v-if="responseDeletingHeaders.length > 0">
-						<div class="ui label small basic" v-for="headerName in responseDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vResponseHeaderPolicy.id, headerName)"></i></a> </div>
-						<div class="ui divider" ></div>
-					</div>
-					<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vResponseHeaderPolicy.id, 'response')">+</button>
-				</td>
+				<tr>
+					<td class="title">需要删除的Header</td>
+					<td>
+						<div v-if="responseDeletingHeaders.length > 0">
+							<div class="ui label small basic" v-for="headerName in responseDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vResponseHeaderPolicy.id, headerName)"></i></a> </div>
+							<div class="ui divider" ></div>
+						</div>
+						<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vResponseHeaderPolicy.id, 'response')">+</button>
+					</td>
+				</tr>
 			</table>
-		</div>			
+			
+			<h4>其他设置</h4>
+			
+			<table class="ui table definition selectable">
+				<tr>
+					<td class="title">CORS自适应跨域</td>
+					<td>
+						<span v-if="responseCORS.isOn" class="green">已启用</span><span class="disabled" v-else="">未启用</span> &nbsp; <a href="" @click.prevent="updateCORS(vResponseHeaderPolicy.id)">[修改]</a>
+					</td>
+				</tr>
+			</table>
+		</div>		
 	</div>
 	<div class="margin"></div>
 </div>`}),Vue.component("http-common-config-box",{props:["v-common-config"],data:function(){let e=this.vCommonConfig;return{config:e=null==e?{mergeSlashes:!1}:e}},template:`<div>
@@ -3211,7 +3241,7 @@ example2.com
 	</tr>
 </table>
 <div class="ui margin"></div>
-</div>`}),Vue.component("http-compression-config-box",{props:["v-compression-config","v-is-location","v-is-group"],mounted:function(){let e=this;sortLoad(function(){e.initSortableTypes()})},data:function(){let t=this.vCompressionConfig,e=(null==(t=null==t?{isPrior:!1,isOn:!1,useDefaultTypes:!0,types:["brotli","gzip","zstd","deflate"],level:5,decompressData:!1,gzipRef:null,deflateRef:null,brotliRef:null,minLength:{count:0,unit:"kb"},maxLength:{count:0,unit:"kb"},mimeTypes:["text/*","application/javascript","application/json","application/atom+xml","application/rss+xml","application/xhtml+xml","font/*","image/svg+xml"],extensions:[".js",".json",".html",".htm",".xml",".css",".woff2",".txt"],conds:null}:t).types&&(t.types=[]),null==t.mimeTypes&&(t.mimeTypes=[]),null==t.extensions&&(t.extensions=[]),[{name:"Gzip",code:"gzip",isOn:!0},{name:"Deflate",code:"deflate",isOn:!0},{name:"Brotli",code:"brotli",isOn:!0},{name:"ZSTD",code:"zstd",isOn:!0}]),i=[];return t.types.forEach(function(t){e.forEach(function(e){t==e.code&&(e.isOn=!0,i.push(e))})}),e.forEach(function(e){t.types.$contains(e.code)||(e.isOn=!1,i.push(e))}),{config:t,moreOptionsVisible:!1,allTypes:i}},watch:{"config.level":function(e){let t=parseInt(e);isNaN(t)||t<1?t=1:10<t&&(t=10),this.config.level=t}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeExtensions:function(i){i.forEach(function(e,t){0<e.length&&"."!=e[0]&&(i[t]="."+e)}),this.config.extensions=i},changeMimeTypes:function(e){this.config.mimeTypes=e},changeAdvancedVisible:function(){this.moreOptionsVisible=!this.moreOptionsVisible},changeConds:function(e){this.config.conds=e},changeType:function(){this.config.types=[];let t=this;this.allTypes.forEach(function(e){e.isOn&&t.config.types.push(e.code)})},initSortableTypes:function(){let n=document.querySelector("#compression-types-box"),s=this;Sortable.create(n,{draggable:".checkbox",handle:".icon.handle",onStart:function(){},onUpdate:function(e){let t=n.querySelectorAll(".checkbox"),i=[];t.forEach(function(e){e=e.getAttribute("data-code");i.push(e)}),s.config.types=i}})}},template:`<div>
+</div>`}),Vue.component("http-compression-config-box",{props:["v-compression-config","v-is-location","v-is-group"],mounted:function(){let e=this;sortLoad(function(){e.initSortableTypes()})},data:function(){let t=this.vCompressionConfig,e=(null==(t=null==t?{isPrior:!1,isOn:!1,useDefaultTypes:!0,types:["brotli","gzip","zstd","deflate"],level:5,decompressData:!1,gzipRef:null,deflateRef:null,brotliRef:null,minLength:{count:1,unit:"kb"},maxLength:{count:32,unit:"mb"},mimeTypes:["text/*","application/javascript","application/json","application/atom+xml","application/rss+xml","application/xhtml+xml","font/*","image/svg+xml"],extensions:[".js",".json",".html",".htm",".xml",".css",".woff2",".txt"],exceptExtensions:[".apk",".ipa"],conds:null,enablePartialContent:!1}:t).types&&(t.types=[]),null==t.mimeTypes&&(t.mimeTypes=[]),null==t.extensions&&(t.extensions=[]),[{name:"Gzip",code:"gzip",isOn:!0},{name:"Deflate",code:"deflate",isOn:!0},{name:"Brotli",code:"brotli",isOn:!0},{name:"ZSTD",code:"zstd",isOn:!0}]),i=[];return t.types.forEach(function(t){e.forEach(function(e){t==e.code&&(e.isOn=!0,i.push(e))})}),e.forEach(function(e){t.types.$contains(e.code)||(e.isOn=!1,i.push(e))}),{config:t,moreOptionsVisible:!1,allTypes:i}},watch:{"config.level":function(e){let t=parseInt(e);isNaN(t)||t<1?t=1:10<t&&(t=10),this.config.level=t}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeExtensions:function(i){i.forEach(function(e,t){0<e.length&&"."!=e[0]&&(i[t]="."+e)}),this.config.extensions=i},changeExceptExtensions:function(i){i.forEach(function(e,t){0<e.length&&"."!=e[0]&&(i[t]="."+e)}),this.config.exceptExtensions=i},changeMimeTypes:function(e){this.config.mimeTypes=e},changeAdvancedVisible:function(){this.moreOptionsVisible=!this.moreOptionsVisible},changeConds:function(e){this.config.conds=e},changeType:function(){this.config.types=[];let t=this;this.allTypes.forEach(function(e){e.isOn&&t.config.types.push(e.code)})},initSortableTypes:function(){let n=document.querySelector("#compression-types-box"),s=this;Sortable.create(n,{draggable:".checkbox",handle:".icon.handle",onStart:function(){},onUpdate:function(e){let t=n.querySelectorAll(".checkbox"),i=[];t.forEach(function(e){e=e.getAttribute("data-code");i.push(e)}),s.config.types=i}})}},template:`<div>
 	<input type="hidden" name="compressionJSON" :value="JSON.stringify(config)"/>
 	<table class="ui table definition selectable">
 		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
@@ -3241,6 +3271,13 @@ example2.com
 				<td>
 					<values-box :values="config.extensions" @change="changeExtensions" placeholder="比如 .html"></values-box>
 					<p class="comment">含有这些扩展名的URL将会被压缩，不区分大小写。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>例外扩展名</td>
+				<td>
+					<values-box :values="config.exceptExtensions" @change="changeExceptExtensions" placeholder="比如 .html"></values-box>
+					<p class="comment">含有这些扩展名的URL将<strong>不会</strong>被压缩，不区分大小写。</p>
 				</td>
 			</tr>
 			<tr>
@@ -3293,6 +3330,13 @@ example2.com
 				<td>
 					<size-capacity-box :v-name="'maxLength'" :v-value="config.maxLength" :v-unit="'mb'"></size-capacity-box>
 					<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>支持Partial<br/>Content</td>
+				<td>
+					<checkbox v-model="config.enablePartialContent"></checkbox>
+					<p class="comment">支持对分区内容（PartialContent）的压缩；除非客户端有特殊要求，一般不需要启用。</p>
 				</td>
 			</tr>
 			<tr>
@@ -4191,8 +4235,8 @@ example2.com
 		{{cond.value}}
 		<sup v-if="cond.isCaseInsensitive" title="不区分大小写"><i class="icon info small"></i></sup>
 	</span>
-</div>`}),Vue.component("http-header-assistant",{props:["v-type","v-value"],mounted:function(){let t=this;Tea.action("/servers/headers/options?type="+this.vType).post().success(function(e){t.allHeaders=e.data.headers})},data:function(){return{allHeaders:[],matchedHeaders:[],selectedHeaderName:""}},watch:{vValue:function(t){t!=this.selectedHeaderName&&(this.selectedHeaderName=""),0==t.length?this.matchedHeaders=[]:this.matchedHeaders=this.allHeaders.filter(function(e){return teaweb.match(e,t)}).slice(0,5)}},methods:{select:function(e){this.$emit("select",e),this.selectedHeaderName=e}},template:`<span v-if="selectedHeaderName.length == 0">
-	<a href="" v-for="header in matchedHeaders" class="ui label basic tiny blue" style="font-weight: normal" @click.prevent="select(header)">{{header}}</a>
+</div>`}),Vue.component("http-header-assistant",{props:["v-type","v-value"],mounted:function(){let t=this;Tea.action("/servers/headers/options?type="+this.vType).post().success(function(e){t.allHeaders=e.data.headers})},data:function(){return{allHeaders:[],matchedHeaders:[],selectedHeaderName:""}},watch:{vValue:function(t){t!=this.selectedHeaderName&&(this.selectedHeaderName=""),0==t.length?this.matchedHeaders=[]:this.matchedHeaders=this.allHeaders.filter(function(e){return teaweb.match(e,t)}).slice(0,10)}},methods:{select:function(e){this.$emit("select",e),this.selectedHeaderName=e}},template:`<span v-if="selectedHeaderName.length == 0">
+	<a href="" v-for="header in matchedHeaders" class="ui label basic tiny blue" style="font-weight: normal; margin-bottom: 0.3em" @click.prevent="select(header)">{{header}}</a>
 	<span v-if="matchedHeaders.length > 0">&nbsp; &nbsp;</span>
 </span>`}),Vue.component("http-firewall-rules-box",{props:["v-rules","v-type"],data:function(){let e=this.vRules;return{rules:e=null==e?[]:e}},methods:{addRule:function(){window.UPDATING_RULE=null;let t=this;teaweb.popup("/servers/components/waf/createRulePopup?type="+this.vType,{height:"30em",callback:function(e){t.rules.push(e.data.rule)}})},updateRule:function(t,e){window.UPDATING_RULE=teaweb.clone(e);let i=this;teaweb.popup("/servers/components/waf/createRulePopup?type="+this.vType,{height:"30em",callback:function(e){Vue.set(i.rules,t,e.data.rule)}})},removeRule:function(e){let t=this;teaweb.confirm("确定要删除此规则吗？",function(){t.rules.$remove(e)})}},template:`<div>
 		<input type="hidden" name="rulesJSON" :value="JSON.stringify(rules)"/>
@@ -4713,7 +4757,80 @@ example2.com
 		</table>
 	</div>
 </div>
-`}),Vue.component("firewall-syn-flood-config-box",{props:["v-syn-flood-config"],data:function(){let e=this.vSynFloodConfig;return{config:e=null==e?{isOn:!1,minAttempts:10,timeoutSeconds:600,ignoreLocal:!0}:e,isEditing:!1,minAttempts:e.minAttempts,timeoutSeconds:e.timeoutSeconds}},methods:{edit:function(){this.isEditing=!this.isEditing}},watch:{minAttempts:function(e){let t=parseInt(e);(t=isNaN(t)?10:t)<5&&(t=5),this.config.minAttempts=t},timeoutSeconds:function(e){let t=parseInt(e);(t=isNaN(t)?10:t)<60&&(t=60),this.config.timeoutSeconds=t}},template:`<div>
+`}),Vue.component("user-agent-config-box",{props:["v-is-location","v-is-group","value"],data:function(){let e=this.value;return null==(e=null==e?{isPrior:!1,isOn:!1,filters:[]}:e).filters&&(e.filters=[]),{config:e,isAdding:!1,addingFilter:{keywords:[],action:"deny"}}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},remove:function(e){let t=this;teaweb.confirm("确定要删除此名单吗？",function(){t.config.filters.$remove(e)})},add:function(){this.isAdding=!0},confirm:function(){if("deny"==this.addingFilter.action)this.config.filters.push(this.addingFilter);else{let i=-1;this.config.filters.forEach(function(e,t){"allow"==e.action&&(i=t)}),i<0?this.config.filters.unshift(this.addingFilter):this.config.filters.$insert(i+1,this.addingFilter)}this.cancel()},cancel:function(){this.isAdding=!1,this.addingFilter={keywords:[],action:"deny"}},changeKeywords:function(e){this.addingFilter.keywords=e}},template:`<div>
+	<input type="hidden" name="userAgentJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable">
+		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
+			<tr>
+				<td class="title">启用UA名单</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" value="1" v-model="config.isOn"/>
+						<label></label>
+					</div>
+					<p class="comment">选中后表示开启UserAgent名单。</p>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="isOn()">
+			<tr>
+				<td>UA名单</td>
+				<td>
+					<div v-if="config.filters.length > 0">
+						<table class="ui table celled">
+							<thead class="full-width">
+								<tr>
+									<th>UA关键词</th>
+									<th class="two wide">动作</th>
+									<th class="one op">操作</th>
+								</tr>
+							</thead>
+							<tbody v-for="(filter, index) in config.filters">
+								<tr>
+									<td style="background: white">
+										<span v-for="keyword in filter.keywords" class="ui label basic tiny">
+											<span v-if="keyword.length > 0">{{keyword}}</span>
+											<span v-if="keyword.length == 0" class="disabled">[空]</span>
+										</span>
+									</td>
+									<td>
+										<span v-if="filter.action == 'allow'" class="green">允许</span><span v-if="filter.action == 'deny'" class="red">不允许</span>
+									</td>
+									<td><a href="" @click.prevent="remove(index)">删除</a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div v-if="isAdding" style="margin-top: 0.5em">
+						<table class="ui table definition">
+							<tr>
+								<td class="title">UA关键词</td>
+								<td>
+									<values-box :v-values="addingFilter.keywords" :v-allow-empty="true" @change="changeKeywords"></values-box>
+									<p class="comment">不区分大小写，比如<code-label>Chrome</code-label>；支持<code-label>*</code-label>通配符，比如<code-label>*Firefox*</code-label>；也支持空的关键词，表示空UserAgent。</p>
+								</td>
+							</tr>
+							<tr>
+								<td>动作</td>
+								<td><select class="ui dropdown auto-width" v-model="addingFilter.action">
+										<option value="deny">不允许</option>
+										<option value="allow">允许</option>
+									</select>
+								</td>
+							</tr>
+						</table>
+						<button type="button" class="ui button tiny" @click.prevent="confirm">保存</button> &nbsp; <a href="" @click.prevent="cancel" title="取消"><i class="icon remove small"></i></a>
+					</div>
+					<div v-show="!isAdding" style="margin-top: 0.5em">
+						<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
+</div>`}),Vue.component("firewall-syn-flood-config-box",{props:["v-syn-flood-config"],data:function(){let e=this.vSynFloodConfig;return{config:e=null==e?{isOn:!1,minAttempts:10,timeoutSeconds:600,ignoreLocal:!0}:e,isEditing:!1,minAttempts:e.minAttempts,timeoutSeconds:e.timeoutSeconds}},methods:{edit:function(){this.isEditing=!this.isEditing}},watch:{minAttempts:function(e){let t=parseInt(e);(t=isNaN(t)?10:t)<5&&(t=5),this.config.minAttempts=t},timeoutSeconds:function(e){let t=parseInt(e);(t=isNaN(t)?10:t)<60&&(t=60),this.config.timeoutSeconds=t}},template:`<div>
 	<input type="hidden" name="synFloodJSON" :value="JSON.stringify(config)"/>
 	<a href="" @click.prevent="edit">
 		<span v-if="config.isOn">
@@ -4981,14 +5098,19 @@ example2.com
 	<tr>
 		<td colspan="2"><a href="" @click.prevent="show()"><span v-if="!isVisible">更多选项</span><span v-if="isVisible">收起选项</span><i class="icon angle" :class="{down:!isVisible, up:isVisible}"></i></a></td>
 	</tr>
-</tbody>`}),Vue.component("download-link",{props:["v-element","v-file","v-value"],created:function(){let e=this;setTimeout(function(){e.url=e.composeURL()},1e3)},data:function(){let e=this.vFile;return{file:e=null!=e&&0!=e.length?e:"unknown-file",url:this.composeURL()}},methods:{composeURL:function(){let e="";if(null!=this.vValue)e=this.vValue;else{var t=document.getElementById(this.vElement);if(null==t)return;null==(e=t.innerText)&&(e=t.textContent)}return Tea.url("/ui/download",{file:this.file,text:e})}},template:'<a :href="url" target="_blank" style="font-weight: normal"><slot></slot></a>'}),Vue.component("values-box",{props:["values","v-values","size","maxlength","name","placeholder"],data:function(){let e=this.values;return null==e&&(e=[]),{realValues:e=null!=this.vValues&&"object"==typeof this.vValues?this.vValues:e,isUpdating:!1,isAdding:!1,index:0,value:"",isEditing:!1}},methods:{create:function(){this.isAdding=!0;var e=this;setTimeout(function(){e.$refs.value.focus()},200)},update:function(e){this.cancel(),this.isUpdating=!0,this.index=e,this.value=this.realValues[e];var t=this;setTimeout(function(){t.$refs.value.focus()},200)},confirm:function(){0!=this.value.length&&(this.isUpdating?Vue.set(this.realValues,this.index,this.value):this.realValues.push(this.value),this.cancel(),this.$emit("change",this.realValues))},remove:function(e){this.realValues.$remove(e),this.$emit("change",this.realValues)},cancel:function(){this.isUpdating=!1,this.isAdding=!1,this.value=""},updateAll:function(e){this.realValues=e},addValue:function(e){this.realValues.push(e)},startEditing:function(){this.isEditing=!this.isEditing},allValues:function(){return this.realValues}},template:`<div>
+</tbody>`}),Vue.component("download-link",{props:["v-element","v-file","v-value"],created:function(){let e=this;setTimeout(function(){e.url=e.composeURL()},1e3)},data:function(){let e=this.vFile;return{file:e=null!=e&&0!=e.length?e:"unknown-file",url:this.composeURL()}},methods:{composeURL:function(){let e="";if(null!=this.vValue)e=this.vValue;else{var t=document.getElementById(this.vElement);if(null==t)return;null==(e=t.innerText)&&(e=t.textContent)}return Tea.url("/ui/download",{file:this.file,text:e})}},template:'<a :href="url" target="_blank" style="font-weight: normal"><slot></slot></a>'}),Vue.component("values-box",{props:["values","v-values","size","maxlength","name","placeholder","v-allow-empty"],data:function(){let e=this.values;return null==e&&(e=[]),{realValues:e=null!=this.vValues&&"object"==typeof this.vValues?this.vValues:e,isUpdating:!1,isAdding:!1,index:0,value:"",isEditing:!1}},methods:{create:function(){this.isAdding=!0;var e=this;setTimeout(function(){e.$refs.value.focus()},200)},update:function(e){this.cancel(),this.isUpdating=!0,this.index=e,this.value=this.realValues[e];var t=this;setTimeout(function(){t.$refs.value.focus()},200)},confirm:function(){(0!=this.value.length||"boolean"==typeof this.vAllowEmpty&&this.vAllowEmpty)&&(this.isUpdating?Vue.set(this.realValues,this.index,this.value):this.realValues.push(this.value),this.cancel(),this.$emit("change",this.realValues))},remove:function(e){this.realValues.$remove(e),this.$emit("change",this.realValues)},cancel:function(){this.isUpdating=!1,this.isAdding=!1,this.value=""},updateAll:function(e){this.realValues=e},addValue:function(e){this.realValues.push(e)},startEditing:function(){this.isEditing=!this.isEditing},allValues:function(){return this.realValues}},template:`<div>
 	<div v-show="!isEditing && realValues.length > 0">
-		<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">{{value}}</div>
+		<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">
+			<span v-if="value.length > 0">{{value}}</span>
+			<span v-if="value.length == 0" class="disabled">[空]</span>
+		</div>
 		<a href="" @click.prevent="startEditing" style="font-size: 0.8em; margin-left: 0.2em">[修改]</a>
 	</div>
 	<div v-show="isEditing || realValues.length == 0">
 		<div style="margin-bottom: 1em" v-if="realValues.length > 0">
-			<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">{{value}}
+			<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">
+				<span v-if="value.length > 0">{{value}}</span>
+				<span v-if="value.length == 0" class="disabled">[空]</span>
 				<input type="hidden" :name="name" :value="value"/>
 				&nbsp; <a href="" @click.prevent="update(index)" title="修改"><i class="icon pencil small" ></i></a> 
 				<a href="" @click.prevent="remove(index)" title="删除"><i class="icon remove"></i></a> 
