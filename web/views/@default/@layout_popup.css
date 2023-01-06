@@ -312,4 +312,17 @@ textarea.wide-code {
 .combo-box .menu::-webkit-scrollbar {
   width: 4px;
 }
+code-label {
+  background: #fff;
+  border: 1px solid rgba(34, 36, 38, 0.15);
+  color: rgba(0, 0, 0, 0.87);
+  font-size: 0.71428571rem;
+  padding: 3px;
+  margin-left: 2px;
+  margin-right: 2px;
+  line-height: 1;
+  display: inline-block;
+  font-weight: 700;
+  vertical-align: baseline;
+}
 /*# sourceMappingURL=@layout_popup.css.map */

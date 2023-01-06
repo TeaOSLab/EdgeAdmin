@@ -744,7 +744,7 @@ Vue.component("http-cond-params", {
 				<select class="ui dropdown auto-width" v-model="operator" @change="changeOperator">
 					<option v-for="operator in operators" :value="operator.op">{{operator.name}}</option>
 				</select>
-				<p class="comment">{{operatorDescription}}</p>
+				<p class="comment" v-html="operatorDescription"></p>
 			</div>
 		</td>
 	</tr>
