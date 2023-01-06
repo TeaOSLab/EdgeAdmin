@@ -67,7 +67,7 @@ Vue.component("http-firewall-rules-box", {
 				</span>
 				
 				<span v-else>
-					<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> <span>{{operatorName(rule.operator)}}</span> {{rule.value}}
+					<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> <span :class="{dash:rule.isCaseInsensitive}" :title="rule.isCaseInsensitive ? '大小写不敏感':''">{{operatorName(rule.operator)}}</span> {{rule.value}}
 				</span>
 				
 				<!-- description -->
