@@ -8,6 +8,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/conds/condutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/actions"
@@ -120,6 +121,16 @@ func (this *ComponentsAction) RunGet(params struct{}) {
 	} else {
 		buffer.WriteString("window.IP_ADDR_THRESHOLD_ACTIONS = ")
 		buffer.Write(ipAddrThresholdActionsJSON)
+		buffer.Write([]byte{'\n', '\n'})
+	}
+
+	// WAF操作符
+	wafOperatorsJSON, err := json.Marshal(firewallconfigs.AllRuleOperators)
+	if err != nil {
+		logs.Println("ComponentsAction marshal waf rule operators failed: " + err.Error())
+	} else {
+		buffer.WriteString("window.WAF_RULE_OPERATORS = ")
+		buffer.Write(wafOperatorsJSON)
 		buffer.Write([]byte{'\n', '\n'})
 	}
 

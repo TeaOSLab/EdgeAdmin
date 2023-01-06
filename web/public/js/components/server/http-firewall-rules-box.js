@@ -35,12 +35,24 @@ Vue.component("http-firewall-rules-box", {
 			teaweb.confirm("确定要删除此规则吗？", function () {
 				that.rules.$remove(index)
 			})
+		},
+		operatorName: function (operatorCode) {
+			var operatorName = operatorCode
+			if (typeof (window.WAF_RULE_OPERATORS) != null) {
+				window.WAF_RULE_OPERATORS.forEach(function (v) {
+					if (v.code == operatorCode) {
+						operatorName = v.name
+					}
+				})
+			}
+
+			return operatorName
 		}
 	},
 	template: `<div>
 		<input type="hidden" name="rulesJSON" :value="JSON.stringify(rules)"/>
 		<div v-if="rules.length > 0">
-			<div v-for="(rule, index) in rules" class="ui label small basic" style="margin-bottom: 0.5em">
+			<div v-for="(rule, index) in rules" class="ui label small basic" style="margin-bottom: 0.5em; line-height: 1.5">
 				{{rule.name}}[{{rule.param}}] 
 				
 				<!-- cc2 -->
@@ -55,7 +67,7 @@ Vue.component("http-firewall-rules-box", {
 				</span>
 				
 				<span v-else>
-					<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> <var>{{rule.operator}}</var> {{rule.value}}
+					<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> <span>{{operatorName(rule.operator)}}</span> {{rule.value}}
 				</span>
 				
 				<!-- description -->

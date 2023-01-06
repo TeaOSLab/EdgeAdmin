@@ -10,7 +10,18 @@ Vue.component("http-firewall-rule-label", {
 		showErr: function (err) {
 			teaweb.popupTip("规则校验错误，请修正：<span class=\"red\">"  + teaweb.encodeHTML(err) + "</span>")
 		},
+		operatorName: function (operatorCode) {
+			var operatorName = operatorCode
+			if (typeof (window.WAF_RULE_OPERATORS) != null) {
+				window.WAF_RULE_OPERATORS.forEach(function (v) {
+					if (v.code == operatorCode) {
+						operatorName = v.name
+					}
+				})
+			}
 
+			return operatorName
+		}
 	},
 	template: `<div>
 	<div class="ui label tiny basic" style="line-height: 1.5">
@@ -29,7 +40,7 @@ Vue.component("http-firewall-rule-label", {
 
 		<span v-else>
 			<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> 
-		<var :class="{dash:rule.isCaseInsensitive}" :title="rule.isCaseInsensitive ? '大小写不敏感':''" v-if="!rule.isComposed">{{rule.operator}}</var> 
+		<span :class="{dash:rule.isCaseInsensitive}" :title="rule.isCaseInsensitive ? '大小写不敏感':''" v-if="!rule.isComposed">{{operatorName(rule.operator)}}</span> 
 		{{rule.value}}
 		</span>
 		
