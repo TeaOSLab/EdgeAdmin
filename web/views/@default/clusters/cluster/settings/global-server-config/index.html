@@ -93,10 +93,17 @@
         <h4>性能</h4>
         <table class="ui table definition selectable">
             <tr>
+                <td class="title">自动读数据超时</td>
+                <td>
+                    <checkbox name="performanceAutoReadTimeout" v-model="config.performance.autoReadTimeout"></checkbox>
+                    <p class="comment">从客户端读取数据时自动设置超时时间，如果超时，则自动视为慢连接，并关闭网络连接；此为专业选项，请在专家指导下进行修改。</p>
+                </td>
+            </tr>
+            <tr>
                 <td class="title">自动写数据超时</td>
                 <td>
                     <checkbox name="performanceAutoWriteTimeout" v-model="config.performance.autoWriteTimeout"></checkbox>
-                    <p class="comment">向客户端发送数据时自动设置超时时间，如果超时，则自动视为慢连接，并关闭网络连接。</p>
+                    <p class="comment">向客户端发送数据时自动设置超时时间，如果超时，则自动视为慢连接，并关闭网络连接；此为专业选项，请在专家指导下进行修改。</p>
                 </td>
             </tr>
             <tr>

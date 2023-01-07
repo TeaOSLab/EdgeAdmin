@@ -85,6 +85,7 @@ func (this *IndexAction) RunPost(params struct {
 
 	LogRecordServerError bool
 
+	PerformanceAutoReadTimeout  bool
 	PerformanceAutoWriteTimeout bool
 	PerformanceDebug            bool
 
@@ -142,6 +143,7 @@ func (this *IndexAction) RunPost(params struct {
 	config.Log.RecordServerError = params.LogRecordServerError
 
 	// 性能
+	config.Performance.AutoReadTimeout = params.PerformanceAutoReadTimeout
 	config.Performance.AutoWriteTimeout = params.PerformanceAutoWriteTimeout
 	config.Performance.Debug = params.PerformanceDebug
 
