@@ -118,6 +118,12 @@ Tea.context(function () {
 			return
 		}
 		this.$post("/clusters/tasks/check")
+			.params({
+				isDoing: this.doingNodeTasks.isDoing ? 1 : 0,
+				hasError: this.doingNodeTasks.hasError ? 1 : 0,
+				isUpdated: this.doingNodeTasks.isUpdated ? 1 : 0
+			})
+			.timeout(60)
 			.success(function (resp) {
 				this.doingNodeTasks.isDoing = resp.data.isDoing
 				this.doingNodeTasks.hasError = resp.data.hasError
@@ -151,6 +157,12 @@ Tea.context(function () {
 			return
 		}
 		this.$post("/dns/tasks/check")
+			.params({
+				isDoing: this.doingDNSTasks.isDoing ? 1 : 0,
+				hasError: this.doingDNSTasks.hasError ? 1 : 0,
+				isUpdated: this.doingDNSTasks.isUpdated ? 1 : 0
+			})
+			.timeout(60)
 			.success(function (resp) {
 				this.doingDNSTasks.isDoing = resp.data.isDoing
 				this.doingDNSTasks.hasError = resp.data.hasError
