@@ -5101,16 +5101,16 @@ example2.com
 </tbody>`}),Vue.component("download-link",{props:["v-element","v-file","v-value"],created:function(){let e=this;setTimeout(function(){e.url=e.composeURL()},1e3)},data:function(){let e=this.vFile;return{file:e=null!=e&&0!=e.length?e:"unknown-file",url:this.composeURL()}},methods:{composeURL:function(){let e="";if(null!=this.vValue)e=this.vValue;else{var t=document.getElementById(this.vElement);if(null==t)return;null==(e=t.innerText)&&(e=t.textContent)}return Tea.url("/ui/download",{file:this.file,text:e})}},template:'<a :href="url" target="_blank" style="font-weight: normal"><slot></slot></a>'}),Vue.component("values-box",{props:["values","v-values","size","maxlength","name","placeholder","v-allow-empty"],data:function(){let e=this.values;return null==e&&(e=[]),{realValues:e=null!=this.vValues&&"object"==typeof this.vValues?this.vValues:e,isUpdating:!1,isAdding:!1,index:0,value:"",isEditing:!1}},methods:{create:function(){this.isAdding=!0;var e=this;setTimeout(function(){e.$refs.value.focus()},200)},update:function(e){this.cancel(),this.isUpdating=!0,this.index=e,this.value=this.realValues[e];var t=this;setTimeout(function(){t.$refs.value.focus()},200)},confirm:function(){(0!=this.value.length||"boolean"==typeof this.vAllowEmpty&&this.vAllowEmpty)&&(this.isUpdating?Vue.set(this.realValues,this.index,this.value):this.realValues.push(this.value),this.cancel(),this.$emit("change",this.realValues))},remove:function(e){this.realValues.$remove(e),this.$emit("change",this.realValues)},cancel:function(){this.isUpdating=!1,this.isAdding=!1,this.value=""},updateAll:function(e){this.realValues=e},addValue:function(e){this.realValues.push(e)},startEditing:function(){this.isEditing=!this.isEditing},allValues:function(){return this.realValues}},template:`<div>
 	<div v-show="!isEditing && realValues.length > 0">
 		<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">
-			<span v-if="value.length > 0">{{value}}</span>
-			<span v-if="value.length == 0" class="disabled">[空]</span>
+			<span v-if="value.toString().length > 0">{{value}}</span>
+			<span v-if="value.toString().length == 0" class="disabled">[空]</span>
 		</div>
 		<a href="" @click.prevent="startEditing" style="font-size: 0.8em; margin-left: 0.2em">[修改]</a>
 	</div>
 	<div v-show="isEditing || realValues.length == 0">
 		<div style="margin-bottom: 1em" v-if="realValues.length > 0">
 			<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">
-				<span v-if="value.length > 0">{{value}}</span>
-				<span v-if="value.length == 0" class="disabled">[空]</span>
+				<span v-if="value.toString().length > 0">{{value}}</span>
+				<span v-if="value.toString().length == 0" class="disabled">[空]</span>
 				<input type="hidden" :name="name" :value="value"/>
 				&nbsp; <a href="" @click.prevent="update(index)" title="修改"><i class="icon pencil small" ></i></a> 
 				<a href="" @click.prevent="remove(index)" title="删除"><i class="icon remove"></i></a> 
