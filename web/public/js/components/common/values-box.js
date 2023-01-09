@@ -78,16 +78,16 @@ Vue.component("values-box", {
 	template: `<div>
 	<div v-show="!isEditing && realValues.length > 0">
 		<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">
-			<span v-if="value.length > 0">{{value}}</span>
-			<span v-if="value.length == 0" class="disabled">[空]</span>
+			<span v-if="value.toString().length > 0">{{value}}</span>
+			<span v-if="value.toString().length == 0" class="disabled">[空]</span>
 		</div>
 		<a href="" @click.prevent="startEditing" style="font-size: 0.8em; margin-left: 0.2em">[修改]</a>
 	</div>
 	<div v-show="isEditing || realValues.length == 0">
 		<div style="margin-bottom: 1em" v-if="realValues.length > 0">
 			<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">
-				<span v-if="value.length > 0">{{value}}</span>
-				<span v-if="value.length == 0" class="disabled">[空]</span>
+				<span v-if="value.toString().length > 0">{{value}}</span>
+				<span v-if="value.toString().length == 0" class="disabled">[空]</span>
 				<input type="hidden" :name="name" :value="value"/>
 				&nbsp; <a href="" @click.prevent="update(index)" title="修改"><i class="icon pencil small" ></i></a> 
 				<a href="" @click.prevent="remove(index)" title="删除"><i class="icon remove"></i></a> 
