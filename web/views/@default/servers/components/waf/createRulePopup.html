@@ -13,9 +13,9 @@
 				<select name="prefix" class="ui dropdown auto-width" @change="changeCheckpoint()" v-model="rule.checkpointPrefix">
 					<option value="">[选择参数]</option>
 					<optgroup label="特殊参数"></optgroup>
-					<option v-for="cp in checkpoints" v-if="cp.isComposed" :value="cp.prefix">{{cp.name}} - [ {{cp.prefix}}]</option>
+					<option v-for="cp in checkpoints" v-if="cp.isComposed" :value="cp.prefix">{{cp.name}} - [{{cp.prefix}}]</option>
 					<optgroup label="通用参数"></optgroup>
-					<option v-for="cp in checkpoints" v-if="!cp.isComposed" :value="cp.prefix">{{cp.name}} - [ {{cp.prefix}}]</option>
+					<option v-for="cp in checkpoints" v-if="!cp.isComposed" :value="cp.prefix">{{cp.name}} - [{{cp.prefix}}]</option>
 				</select>
 				<p class="comment" v-if="checkpoint != null"><span class="ui label tiny">${<em style="font-style: normal;">{{checkpoint.prefix}}</em>}</span>{{checkpoint.description}}</p>
 			</td>
