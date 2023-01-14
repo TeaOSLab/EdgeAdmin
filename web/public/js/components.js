@@ -1494,7 +1494,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<script-group-config-box :v-group="config.requestGroup" @change="changeRequestGroup" :v-is-location="vIsLocation"></script-group-config-box>
 	</div>
 	<div class="margin"></div>
-</div>`}),Vue.component("http-firewall-rule-label",{props:["v-rule"],data:function(){return{rule:this.vRule}},methods:{showErr:function(e){teaweb.popupTip('规则校验错误，请修正：<span class="red">'+teaweb.encodeHTML(e)+"</span>")},operatorName:function(t){var i=t;return null!=typeof window.WAF_RULE_OPERATORS&&window.WAF_RULE_OPERATORS.forEach(function(e){e.code==t&&(i=e.name)}),i}},template:`<div>
+</div>`}),Vue.component("http-firewall-rule-label",{props:["v-rule"],data:function(){return{rule:this.vRule}},methods:{showErr:function(e){teaweb.popupTip('规则校验错误，请修正：<span class="red">'+teaweb.encodeHTML(e)+"</span>")},operatorName:function(t){var i=t;return null!=typeof window.WAF_RULE_OPERATORS&&window.WAF_RULE_OPERATORS.forEach(function(e){e.code==t&&(i=e.name)}),i},isEmptyString:function(e){return"string"==typeof e&&0==e.length}},template:`<div>
 	<div class="ui label tiny basic" style="line-height: 1.5">
 		{{rule.name}}[{{rule.param}}] 
 
@@ -1512,7 +1512,8 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<span v-else>
 			<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> 
 		<span :class="{dash:rule.isCaseInsensitive}" :title="rule.isCaseInsensitive ? '大小写不敏感':''" v-if="!rule.isComposed">{{operatorName(rule.operator)}}</span> 
-		{{rule.value}}
+			<span v-if="!isEmptyString(rule.value)">{{rule.value}}</span>
+			<span v-else class="disabled" style="font-weight: normal" title="空字符串">[空]</span>
 		</span>
 		
 		<!-- description -->
@@ -4238,7 +4239,7 @@ example2.com
 </div>`}),Vue.component("http-header-assistant",{props:["v-type","v-value"],mounted:function(){let t=this;Tea.action("/servers/headers/options?type="+this.vType).post().success(function(e){t.allHeaders=e.data.headers})},data:function(){return{allHeaders:[],matchedHeaders:[],selectedHeaderName:""}},watch:{vValue:function(t){t!=this.selectedHeaderName&&(this.selectedHeaderName=""),0==t.length?this.matchedHeaders=[]:this.matchedHeaders=this.allHeaders.filter(function(e){return teaweb.match(e,t)}).slice(0,10)}},methods:{select:function(e){this.$emit("select",e),this.selectedHeaderName=e}},template:`<span v-if="selectedHeaderName.length == 0">
 	<a href="" v-for="header in matchedHeaders" class="ui label basic tiny blue" style="font-weight: normal; margin-bottom: 0.3em" @click.prevent="select(header)">{{header}}</a>
 	<span v-if="matchedHeaders.length > 0">&nbsp; &nbsp;</span>
-</span>`}),Vue.component("http-firewall-rules-box",{props:["v-rules","v-type"],data:function(){let e=this.vRules;return{rules:e=null==e?[]:e}},methods:{addRule:function(){window.UPDATING_RULE=null;let t=this;teaweb.popup("/servers/components/waf/createRulePopup?type="+this.vType,{height:"30em",callback:function(e){t.rules.push(e.data.rule)}})},updateRule:function(t,e){window.UPDATING_RULE=teaweb.clone(e);let i=this;teaweb.popup("/servers/components/waf/createRulePopup?type="+this.vType,{height:"30em",callback:function(e){Vue.set(i.rules,t,e.data.rule)}})},removeRule:function(e){let t=this;teaweb.confirm("确定要删除此规则吗？",function(){t.rules.$remove(e)})},operatorName:function(t){var i=t;return null!=typeof window.WAF_RULE_OPERATORS&&window.WAF_RULE_OPERATORS.forEach(function(e){e.code==t&&(i=e.name)}),i}},template:`<div>
+</span>`}),Vue.component("http-firewall-rules-box",{props:["v-rules","v-type"],data:function(){let e=this.vRules;return{rules:e=null==e?[]:e}},methods:{addRule:function(){window.UPDATING_RULE=null;let t=this;teaweb.popup("/servers/components/waf/createRulePopup?type="+this.vType,{height:"30em",callback:function(e){t.rules.push(e.data.rule)}})},updateRule:function(t,e){window.UPDATING_RULE=teaweb.clone(e);let i=this;teaweb.popup("/servers/components/waf/createRulePopup?type="+this.vType,{height:"30em",callback:function(e){Vue.set(i.rules,t,e.data.rule)}})},removeRule:function(e){let t=this;teaweb.confirm("确定要删除此规则吗？",function(){t.rules.$remove(e)})},operatorName:function(t){var i=t;return null!=typeof window.WAF_RULE_OPERATORS&&window.WAF_RULE_OPERATORS.forEach(function(e){e.code==t&&(i=e.name)}),i},isEmptyString:function(e){return"string"==typeof e&&0==e.length}},template:`<div>
 		<input type="hidden" name="rulesJSON" :value="JSON.stringify(rules)"/>
 		<div v-if="rules.length > 0">
 			<div v-for="(rule, index) in rules" class="ui label small basic" style="margin-bottom: 0.5em; line-height: 1.5">
@@ -4256,7 +4257,9 @@ example2.com
 				</span>
 				
 				<span v-else>
-					<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> <span :class="{dash:rule.isCaseInsensitive}" :title="rule.isCaseInsensitive ? '大小写不敏感':''">{{operatorName(rule.operator)}}</span> {{rule.value}}
+					<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> <span :class="{dash:rule.isCaseInsensitive}" :title="rule.isCaseInsensitive ? '大小写不敏感':''">{{operatorName(rule.operator)}}</span> 
+						<span v-if="!isEmptyString(rule.value)">{{rule.value}}</span>
+						<span v-else class="disabled" style="font-weight: normal" title="空字符串">[空]</span>
 				</span>
 				
 				<!-- description -->
