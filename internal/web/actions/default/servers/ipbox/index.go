@@ -30,6 +30,9 @@ func (this *IndexAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
+
+	this.Data["regions"] = ""
+	this.Data["isp"] = ""
 	if regionResp.IpRegion != nil {
 		var regionName = regionResp.IpRegion.Summary
 
@@ -39,10 +42,8 @@ func (this *IndexAction) RunGet(params struct {
 			regionName = regionName[:index]
 		}
 		this.Data["regions"] = regionName
-	} else {
-		this.Data["regions"] = ""
+		this.Data["isp"] = regionResp.IpRegion.Isp
 	}
-	this.Data["isp"] = regionResp.IpRegion.Isp
 
 	// IP列表
 	ipListResp, err := this.RPC().IPListRPC().FindEnabledIPListContainsIP(this.AdminContext(), &pb.FindEnabledIPListContainsIPRequest{
