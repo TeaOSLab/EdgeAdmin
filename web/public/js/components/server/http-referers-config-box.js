@@ -27,8 +27,16 @@ Vue.component("http-referers-config-box", {
 			return ((!this.vIsLocation && !this.vIsGroup) || this.config.isPrior) && this.config.isOn
 		},
 		changeAllowDomains: function (domains) {
+			if (typeof (domains) == "object") {
+				this.config.allowDomains = domains
+				this.$forceUpdate()
+			}
 		},
 		changeDenyDomains: function (domains) {
+			if (typeof (domains) == "object") {
+				this.config.denyDomains = domains
+				this.$forceUpdate()
+			}
 		}
 	},
 	template: `<div>
