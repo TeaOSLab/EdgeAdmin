@@ -43,7 +43,7 @@ Vue.component("http-firewall-rule-label", {
 
 		<span v-else>
 			<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> 
-		<span :class="{dash:rule.isCaseInsensitive}" :title="rule.isCaseInsensitive ? '大小写不敏感':''" v-if="!rule.isComposed">{{operatorName(rule.operator)}}</span> 
+		<span :class="{dash:!rule.isComposed && rule.isCaseInsensitive}" :title="(!rule.isComposed && rule.isCaseInsensitive) ? '大小写不敏感':''">{{operatorName(rule.operator)}}</span> 
 			<span v-if="!isEmptyString(rule.value)">{{rule.value}}</span>
 			<span v-else class="disabled" style="font-weight: normal" title="空字符串">[空]</span>
 		</span>
