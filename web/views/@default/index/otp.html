@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    {$if eq .faviconFileId 0}
+    <link rel="shortcut icon" href="/images/favicon.png"/>
+    {$else}
+    <link rel="shortcut icon" href="/ui/image/{$ .faviconFileId}"/>
+    {$end}
+    <title>登录{$.systemName} - 二次验证</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    {$TEA.VUE}
+    {$TEA.SEMANTIC}
+    <script type="text/javascript" src="/js/md5.min.js"></script>
+    <script type="text/javascript" src="/js/utils.js"></script>
+    <script type="text/javascript" src="/js/sweetalert2/dist/sweetalert2.all.min.js"></script>
+    <script type="text/javascript" src="/js/components.js"></script>
+</head>
+<body>
+<div>
+    {$template "/menu"}
+
+    <div class="form-box">
+        <form method="post" class="ui form" data-tea-action="$" data-tea-before="submitBefore"
+              data-tea-done="submitDone" data-tea-success="submitSuccess" autocomplete="off">
+            <input type="hidden" name="sid" :value="sid"/>
+            <input type="hidden" name="remember" :value="remember ? 1 : 0"/>
+            <div class="ui segment stacked">
+                <div class="ui header">
+                    登录{$.systemName}
+                </div>
+                <div class="ui field">
+                    为了保护你的账户安全，需要进行OTP二次身份验证。
+                </div>
+                <div class="ui field">
+                    <div class="ui left icon input">
+                        <i class="ui barcode icon"></i>
+                        <input type="text" name="otpCode" placeholder="请输入OTP动态密码" maxlength="6"/>
+                    </div>
+                </div>
+
+                <button class="ui button primary fluid" type="submit" v-if="!isSubmitting">验证</button>
+                <button class="ui button primary fluid disabled" type="submit" v-if="isSubmitting">验证中...</button>
+
+                <div class="ui field cancel-login">
+                    <a :href="'/?from=' + encodedFrom">&laquo; 取消登录</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>
