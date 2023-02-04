@@ -12,7 +12,6 @@ import (
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/rands"
-	"github.com/iwind/TeaGo/sessions"
 	"github.com/iwind/TeaGo/types"
 	"github.com/iwind/gosock/pkg/gosock"
 	"gopkg.in/yaml.v3"
@@ -85,10 +84,15 @@ func (this *AdminNode) Run() {
 	this.startAPINode()
 
 	// 启动Web服务
+	sessionManager, err := NewSessionManager()
+	if err != nil {
+		log.Fatal("start session failed: " + err.Error())
+		return
+	}
 	TeaGo.NewServer(false).
 		AccessLog(false).
 		EndAll().
-		Session(sessions.NewFileSessionManager(86400, secret), teaconst.CookieSID).
+		Session(sessionManager, teaconst.CookieSID).
 		ReadHeaderTimeout(3 * time.Second).
 		ReadTimeout(1200 * time.Second).
 		Start()

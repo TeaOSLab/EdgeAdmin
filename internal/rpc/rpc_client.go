@@ -407,6 +407,10 @@ func (this *RPCClient) LoginRPC() pb.LoginServiceClient {
 	return pb.NewLoginServiceClient(this.pickConn())
 }
 
+func (this *RPCClient) LoginSessionRPC() pb.LoginSessionServiceClient {
+	return pb.NewLoginSessionServiceClient(this.pickConn())
+}
+
 func (this *RPCClient) NodeTaskRPC() pb.NodeTaskServiceClient {
 	return pb.NewNodeTaskServiceClient(this.pickConn())
 }
