@@ -1,7 +1,6 @@
 package index
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
@@ -14,10 +13,8 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
-	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
 	stringutil "github.com/iwind/TeaGo/utils/string"
-	"github.com/xlzd/gotp"
 	"time"
 )
 
@@ -27,7 +24,8 @@ type IndexAction struct {
 
 // 首页（登录页）
 
-var TokenSalt = stringutil.Rand(32)
+// TokenKey 加密用的密钥
+var TokenKey = stringutil.Rand(32)
 
 func (this *IndexAction) RunGet(params struct {
 	From string
@@ -59,7 +57,7 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["menu"] = "signIn"
 
 	var timestamp = fmt.Sprintf("%d", time.Now().Unix())
-	this.Data["token"] = stringutil.Md5(TokenSalt+timestamp) + timestamp
+	this.Data["token"] = stringutil.Md5(TokenKey+timestamp) + timestamp
 	this.Data["from"] = params.From
 
 	uiConfig, err := configloaders.LoadAdminUIConfig()
@@ -93,9 +91,10 @@ func (this *IndexAction) RunPost(params struct {
 	Password string
 	OtpCode  string
 	Remember bool
-	Must     *actions.Must
-	Auth     *helpers.UserShouldAuth
-	CSRF     *actionutils.CSRF
+
+	Must *actions.Must
+	Auth *helpers.UserShouldAuth
+	CSRF *actionutils.CSRF
 }) {
 	params.Must.
 		Field("username", params.Username).
@@ -112,7 +111,7 @@ func (this *IndexAction) RunPost(params struct {
 		this.Fail("请通过登录页面登录")
 	}
 	var timestampString = params.Token[32:]
-	if stringutil.Md5(TokenSalt+timestampString) != params.Token[:32] {
+	if stringutil.Md5(TokenKey+timestampString) != params.Token[:32] {
 		this.FailField("refresh", "登录页面已过期，请刷新后重试")
 	}
 	var timestamp = types.Int64(timestampString)
@@ -123,6 +122,7 @@ func (this *IndexAction) RunPost(params struct {
 	rpcClient, err := rpc.SharedRPC()
 	if err != nil {
 		this.Fail("服务器出了点小问题：" + err.Error())
+		return
 	}
 	resp, err := rpcClient.AdminRPC().LoginAdmin(rpcClient.Context(0), &pb.LoginAdminRequest{
 		Username: params.Username,
@@ -136,6 +136,7 @@ func (this *IndexAction) RunPost(params struct {
 		}
 
 		actionutils.Fail(this, err)
+		return
 	}
 
 	if !resp.IsOk {
@@ -145,31 +146,37 @@ func (this *IndexAction) RunPost(params struct {
 		}
 
 		this.Fail("请输入正确的用户名密码")
+		return
 	}
+	var adminId = resp.AdminId
 
-	// 检查OTP
-	otpLoginResp, err := this.RPC().LoginRPC().FindEnabledLogin(this.AdminContext(), &pb.FindEnabledLoginRequest{
-		AdminId: resp.AdminId,
-		Type:    "otp",
-	})
+	// 检查是否支持OTP
+	checkOTPResp, err := this.RPC().AdminRPC().CheckAdminOTPWithUsername(this.AdminContext(), &pb.CheckAdminOTPWithUsernameRequest{Username: params.Username})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	if otpLoginResp.Login != nil && otpLoginResp.Login.IsOn {
-		var loginParams = maps.Map{}
-		err = json.Unmarshal(otpLoginResp.Login.ParamsJSON, &loginParams)
+	var requireOTP = checkOTPResp.RequireOTP
+	this.Data["requireOTP"] = requireOTP
+	if requireOTP {
+		this.Data["remember"] = params.Remember
+
+		var sid = this.Session().Sid
+		this.Data["sid"] = sid
+		_, err = this.RPC().LoginSessionRPC().WriteLoginSessionValue(this.AdminContext(), &pb.WriteLoginSessionValueRequest{
+			Sid:   sid + "_otp",
+			Key:   "adminId",
+			Value: types.String(adminId),
+		})
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-		secret := loginParams.GetString("secret")
-		if gotp.NewDefaultTOTP(secret).Now() != params.OtpCode {
-			this.Fail("请输入正确的OTP动态密码")
-		}
+		this.Success()
+		return
 	}
 
-	var adminId = resp.AdminId
+	// 写入SESSION
 	params.Auth.StoreAdmin(adminId, params.Remember)
 
 	// 记录日志

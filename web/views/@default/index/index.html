@@ -41,12 +41,6 @@
 						<input type="password" v-model="password" placeholder="请输入密码" maxlength="200" @input="changePassword()" ref="passwordRef"/>
 					</div>
 				</div>
-                <div class="ui field" v-show="showOTP">
-                    <div class="ui left icon input">
-                        <i class="ui barcode icon"></i>
-                        <input type="text" name="otpCode" placeholder="请输入OTP动态密码" maxlength="6"/>
-                    </div>
-                </div>
 				<div class="ui field" v-if="rememberLogin">
 					<a href="" @click.prevent="showMoreOptions()">更多选项 <i class="icon angle" :class="{down:!moreOptionsVisible, up:moreOptionsVisible}"></i> </a>
 				</div>

@@ -9,8 +9,6 @@ Tea.context(function () {
 		this.password = "123456"
 	}
 
-	this.showOTP = false
-
 	this.isSubmitting = false
 
 	this.$delay(function () {
@@ -19,13 +17,7 @@ Tea.context(function () {
 	});
 
 	this.changeUsername = function () {
-		this.$post("/checkOTP")
-			.params({
-				username: this.username
-			})
-			.success(function (resp) {
-				this.showOTP = resp.data.requireOTP
-			})
+
 	}
 
 	this.changePassword = function () {
@@ -46,7 +38,11 @@ Tea.context(function () {
 		this.isSubmitting = false;
 	};
 
-	this.submitSuccess = function () {
+	this.submitSuccess = function (resp) {
+		if (resp.data.requireOTP) {
+			window.location = "/index/otp?sid=" + resp.data.sid + "&remember=" + (resp.data.remember ? 1 : 0) + "&from=" + window.encodeURIComponent(this.from)
+			return
+		}
 		if (this.from.length == 0) {
 			window.location = "/dashboard";
 		} else {

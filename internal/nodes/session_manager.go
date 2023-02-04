@@ -8,6 +8,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/logs"
+	"strings"
 )
 
 type SessionManager struct {
@@ -30,6 +31,11 @@ func (this *SessionManager) Init(config *actions.SessionConfig) {
 }
 
 func (this *SessionManager) Read(sid string) map[string]string {
+	// 忽略OTP
+	if strings.HasSuffix(sid, "_otp") {
+		return map[string]string{}
+	}
+
 	var result = map[string]string{}
 
 	resp, err := this.rpcClient.LoginSessionRPC().FindLoginSession(this.rpcClient.Context(0), &pb.FindLoginSessionRequest{Sid: sid})
@@ -52,6 +58,11 @@ func (this *SessionManager) Read(sid string) map[string]string {
 }
 
 func (this *SessionManager) WriteItem(sid string, key string, value string) bool {
+	// 忽略OTP
+	if strings.HasSuffix(sid, "_otp") {
+		return false
+	}
+
 	_, err := this.rpcClient.LoginSessionRPC().WriteLoginSessionValue(this.rpcClient.Context(0), &pb.WriteLoginSessionValueRequest{
 		Sid:   sid,
 		Key:   key,
@@ -65,6 +76,11 @@ func (this *SessionManager) WriteItem(sid string, key string, value string) bool
 }
 
 func (this *SessionManager) Delete(sid string) bool {
+	// 忽略OTP
+	if strings.HasSuffix(sid, "_otp") {
+		return false
+	}
+
 	_, err := this.rpcClient.LoginSessionRPC().DeleteLoginSession(this.rpcClient.Context(0), &pb.DeleteLoginSessionRequest{Sid: sid})
 	if err != nil {
 		logs.Println("SESSION", "delete '"+sid+"' failed: "+err.Error())
