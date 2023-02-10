@@ -716,23 +716,22 @@ Vue.component("http-cond-params", {
 			this.cond.value = this.versionRangeMinValue + "," + this.versionRangeMaxValue
 		}
 	},
-	template: `<tbody>
+	template: `<table class="ui table definition">
+<tbody>
 	<tr>
-		<td>参数值</td>
+		<td style="width: 8em">参数值</td>
 		<td>
 			<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 			<div>
-				<div class="ui fields inline">
-					<div class="ui field">
-						<input type="text" placeholder="\${xxx}" v-model="cond.param"/>
-					</div>
-					<div class="ui field">
-						<select class="ui dropdown" style="width: 7em; color: grey" v-model="variable" @change="changeVariable">
-							<option value="">[常用参数]</option>
-							<option v-for="v in variables" :value="v.code">{{v.code}} - {{v.name}}</option>
-						</select>
-					</div>
-				</div>			
+				<div class="ui field">
+					<input type="text" placeholder="\${xxx}" v-model="cond.param"/>
+				</div>
+				<div class="ui field">
+					<select class="ui dropdown" style="width: 16em; color: grey" v-model="variable" @change="changeVariable">
+						<option value="">[常用参数]</option>
+						<option v-for="v in variables" :value="v.code">{{v.code}} - {{v.name}}</option>
+					</select>
+				</div>
 			</div>
 			<p class="comment">其中可以使用变量，类似于<code-label>\${requestPath}</code-label>，也可以是多个变量的组合。</p>
 		</td>
@@ -835,5 +834,6 @@ Vue.component("http-cond-params", {
 			<p class="comment">选中后表示对比时忽略参数值的大小写。</p>
 		</td>
 	</tr>
-</tbody>`
+</tbody>
+</table>`
 })
