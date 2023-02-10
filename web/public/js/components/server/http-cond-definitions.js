@@ -4,7 +4,7 @@ Vue.component("http-cond-url-extension", {
 	data: function () {
 		let cond = {
 			isRequest: true,
-			param: "${requestPathExtension}",
+			param: "${requestPathLowerExtension}",
 			operator: "in",
 			value: "[]"
 		}
@@ -95,7 +95,7 @@ Vue.component("http-cond-url-not-extension", {
 	data: function () {
 		let cond = {
 			isRequest: true,
-			param: "${requestPathExtension}",
+			param: "${requestPathLowerExtension}",
 			operator: "not in",
 			value: "[]"
 		}
