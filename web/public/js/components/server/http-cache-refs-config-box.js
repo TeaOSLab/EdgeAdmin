@@ -75,7 +75,7 @@ Vue.component("http-cache-refs-config-box", {
 			})
 		},
 		updateRef: function (index, cacheRef) {
-			window.UPDATING_CACHE_REF = cacheRef
+			window.UPDATING_CACHE_REF = teaweb.clone(cacheRef)
 
 			let height = window.innerHeight
 			if (height > 500) {
