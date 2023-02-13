@@ -991,7 +991,45 @@ window.teaweb = {
 		}
 		return color
 	},
-	DefaultChartColor: "#9DD3E8"
+	DefaultChartColor: "#9DD3E8",
+	validateIP: function (ip) {
+		if (typeof ip != "string") {
+			return false
+		}
+
+		if (ip.length == 0) {
+			return false
+		}
+
+		// IPv6
+		if (ip.indexOf(":") >= 0) {
+			let pieces = ip.split(":")
+			if (pieces.length > 8) {
+				return false
+			}
+			let isOk = true
+			pieces.forEach(function (piece) {
+				if (!/^[\da-fA-F]{0,4}$/.test(piece)) {
+					isOk = false
+				}
+			})
+
+			return isOk
+		}
+
+		if (!ip.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/)) {
+			return false
+		}
+		let pieces = ip.split(".")
+		let isOk = true
+		pieces.forEach(function (v) {
+			let v1 = parseInt(v)
+			if (v1 > 255) {
+				isOk = false
+			}
+		})
+		return isOk
+	}
 }
 
 String.prototype.quoteIP = function () {

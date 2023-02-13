@@ -190,7 +190,10 @@ Vue.component("http-cache-ref-box", {
 	<tr v-if="condCategory == 'simple'">
 		<td class="color-border">{{condComponent.paramsTitle}} *</td>
 		<td>
-			<component :is="condComponent.component" :v-cond="ref.simpleCond"></component>
+			<component :is="condComponent.component" :v-cond="ref.simpleCond" v-if="condComponent.type != 'params'"></component>
+			<table class="ui table" v-if="condComponent.type == 'params'">
+				<component :is="condComponent.component" :v-cond="ref.simpleCond"></component>
+			</table>
 		</td>
 	</tr>
 	<tr v-if="condCategory == 'simple' && condComponent.caseInsensitive">
