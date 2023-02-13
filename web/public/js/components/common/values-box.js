@@ -1,5 +1,5 @@
 Vue.component("values-box", {
-	props: ["values", "v-values", "size", "maxlength", "name", "placeholder", "v-allow-empty"],
+	props: ["values", "v-values", "size", "maxlength", "name", "placeholder", "v-allow-empty", "validator"],
 	data: function () {
 		let values = this.values;
 		if (values == null) {
@@ -41,6 +41,22 @@ Vue.component("values-box", {
 			if (this.value.length == 0) {
 				if (typeof(this.vAllowEmpty) != "boolean" || !this.vAllowEmpty) {
 					return
+				}
+			}
+
+			// validate
+			if (typeof(this.validator) == "function") {
+				let resp = this.validator.call(this, this.value)
+				if (typeof resp == "object") {
+					if (typeof resp.isOk == "boolean" && !resp.isOk) {
+						if (typeof resp.message == "string") {
+							let that = this
+							teaweb.warn(resp.message, function () {
+								that.$refs.value.focus();
+							})
+						}
+						return
+					}
 				}
 			}
 

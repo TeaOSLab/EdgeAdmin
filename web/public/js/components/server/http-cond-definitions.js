@@ -716,8 +716,7 @@ Vue.component("http-cond-params", {
 			this.cond.value = this.versionRangeMinValue + "," + this.versionRangeMaxValue
 		}
 	},
-	template: `<table class="ui table definition">
-<tbody>
+	template: `<tbody>
 	<tr>
 		<td style="width: 8em">参数值</td>
 		<td>
@@ -835,5 +834,5 @@ Vue.component("http-cond-params", {
 		</td>
 	</tr>
 </tbody>
-</table>`
+`
 })
