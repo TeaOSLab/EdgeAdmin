@@ -68,6 +68,7 @@ func (this *UpdateAction) RunGet(params struct {
 		"mobile":          user.Mobile,
 		"isOn":            user.IsOn,
 		"countAccessKeys": countAccessKeys,
+		"bandwidthAlgo":   user.BandwidthAlgo,
 
 		// 实名认证
 		"hasNewIndividualIdentity": hasNewIndividualIdentity,
@@ -87,17 +88,18 @@ func (this *UpdateAction) RunGet(params struct {
 }
 
 func (this *UpdateAction) RunPost(params struct {
-	UserId    int64
-	Username  string
-	Pass1     string
-	Pass2     string
-	Fullname  string
-	Mobile    string
-	Tel       string
-	Email     string
-	Remark    string
-	IsOn      bool
-	ClusterId int64
+	UserId        int64
+	Username      string
+	Pass1         string
+	Pass2         string
+	Fullname      string
+	Mobile        string
+	Tel           string
+	Email         string
+	Remark        string
+	IsOn          bool
+	ClusterId     int64
+	BandwidthAlgo string
 
 	// OTP
 	OtpOn bool
@@ -159,6 +161,7 @@ func (this *UpdateAction) RunPost(params struct {
 		Remark:        params.Remark,
 		IsOn:          params.IsOn,
 		NodeClusterId: params.ClusterId,
+		BandwidthAlgo: params.BandwidthAlgo,
 	})
 	if err != nil {
 		this.ErrorPage(err)

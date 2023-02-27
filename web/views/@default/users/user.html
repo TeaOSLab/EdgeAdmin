@@ -72,6 +72,16 @@
         </td>
     </tr>
     <tr>
+        <td>带宽算法</td>
+        <td>
+            <span v-if="user.bandwidthAlgo.length > 0">
+                <span v-if="user.bandwidthAlgo == 'secondly'">峰值带宽</span>
+                <span v-if="user.bandwidthAlgo == 'avg'">平均带宽</span>
+            </span>
+            <span v-else class="disabled">使用默认。</span>
+        </td>
+    </tr>
+    <tr>
         <td>注册IP</td>
         <td>
             <span v-if="user.registeredIP.length == 0" class="disabled">-</span>
