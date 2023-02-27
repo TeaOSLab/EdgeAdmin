@@ -109,6 +109,7 @@ func (this *UserAction) RunGet(params struct {
 		"isVerified":       user.IsVerified,
 		"registeredIP":     user.RegisteredIP,
 		"registeredRegion": registeredRegion,
+		"bandwidthAlgo":    user.BandwidthAlgo,
 
 		// 实名认证
 		"hasNewIndividualIdentity": hasNewIndividualIdentity,

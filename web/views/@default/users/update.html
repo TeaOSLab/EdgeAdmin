@@ -81,6 +81,18 @@
                 </td>
             </tr>
             <tr>
+                <td>带宽算法</td>
+                <td>
+                    <select class="ui dropdown auto-width" name="bandwidthAlgo" v-model="user.bandwidthAlgo">
+                        <option value="">[使用默认]</option>
+                        <option value="secondly">峰值带宽</option>
+                        <option value="avg">平均带宽</option>
+                    </select>
+                    <p class="comment" v-if="user.bandwidthAlgo == 'secondly'">按在计时时间段内（5分钟）最高带宽峰值计算，比如5分钟内最高的某个时间点带宽为100Mbps，那么就认为此时间段内的峰值带宽为100Mbps。</p>
+                    <p class="comment" v-if="user.bandwidthAlgo == 'avg'">按在计时时间段内（5分钟）平均带宽计算，即此时间段内的总流量除以时间段的秒数，比如5分钟（300秒）内总流量600MB，那么带宽即为<code-label>600MB * 8bit/300s = 16Mbps</code-label>；通常平均带宽算法要比峰值带宽要少很多。</p>
+                </td>
+            </tr>
+            <tr>
                 <td>启用当前用户</td>
                 <td>
                     <checkbox name="isOn" v-model="user.isOn"></checkbox>
