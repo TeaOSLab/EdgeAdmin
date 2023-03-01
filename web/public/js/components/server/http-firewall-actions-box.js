@@ -643,7 +643,7 @@ Vue.component("http-firewall-actions-box", {
 			
 			<!-- block -->
 			<tr v-if="actionCode == 'block'">
-				<td>封锁时间</td>
+				<td>封禁时长</td>
 				<td>
 					<div class="ui input right labeled">
 						<input type="text" style="width: 5em" maxlength="9" v-model="blockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
@@ -652,14 +652,14 @@ Vue.component("http-firewall-actions-box", {
 				</td>
 			</tr>
 			<tr v-if="actionCode == 'block'">
-				<td>封锁范围</td>
+				<td>封禁范围</td>
 				<td>
 					<select class="ui dropdown auto-width" v-model="blockScope">
 						<option value="service">当前服务</option>
 						<option value="global">所有服务</option>
 					</select>
-					<p class="comment" v-if="blockScope == 'service'">只封锁用户对当前网站服务的访问，其他服务不受影响。</p>
-					<p class="comment" v-if="blockScope =='global'">封锁用户对所有网站服务的访问。</p>
+					<p class="comment" v-if="blockScope == 'service'">只封禁用户对当前网站服务的访问，其他服务不受影响。</p>
+					<p class="comment" v-if="blockScope =='global'">封禁用户对所有网站服务的访问。</p>
 				</td>
 			</tr>
 			
