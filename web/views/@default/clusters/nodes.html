@@ -88,6 +88,11 @@
                     <div class="ui label tiny basic">{{addr.ip}}
                         <span class="small" v-if="addr.name.length > 0">（{{addr.name}}<span v-if="!addr.canAccess">，不可访问</span>）</span>
                         <span class="small" v-if="addr.name.length == 0 && !addr.canAccess">（不可访问）</span>
+
+                        <!-- 专属集群 -->
+                        <div v-if="addr.clusters != null && addr.clusters.length > 0" style="margin-top: 0.5em; font-weight: normal">
+                             <span class="small grey">[</span><span v-for="(cluster, index) in addr.clusters" class="small grey">{{cluster.name}}<span v-if="index < addr.clusters.length - 1">，</span></span><span class="small grey">]</span>
+                        </div>
                     </div>
                 </div>
             </div>
