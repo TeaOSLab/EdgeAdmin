@@ -12,7 +12,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td>是否可以访问</td>
+			<td>允许公开访问</td>
 			<td>
 				<div class="ui checkbox">
 					<input type="checkbox" name="canAccess" value="1" checked="checked"/>
@@ -45,6 +45,10 @@
                 <td>
                     <node-ip-address-thresholds-box></node-ip-address-thresholds-box>
                 </td>
+            </tr>
+            <tr v-show="clusters != null && clusters.length > 0">
+                <td>专属集群</td>
+                <td><node-ip-address-clusters-selector :v-clusters="clusters"></node-ip-address-clusters-selector></td>
             </tr>
         </tbody>
 	</table>

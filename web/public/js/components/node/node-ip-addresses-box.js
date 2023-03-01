@@ -1,10 +1,16 @@
 // 节点IP地址管理（标签形式）
 Vue.component("node-ip-addresses-box", {
-	props: ["v-ip-addresses", "role"],
+	props: ["v-ip-addresses", "role", "v-node-id"],
 	data: function () {
+		let nodeId = this.vNodeId
+		if (nodeId == null) {
+			nodeId = 0
+		}
+
 		return {
 			ipAddresses: (this.vIpAddresses == null) ? [] : this.vIpAddresses,
-			supportThresholds: this.role != "ns"
+			supportThresholds: this.role != "ns",
+			nodeId: nodeId
 		}
 	},
 	methods: {
@@ -13,7 +19,7 @@ Vue.component("node-ip-addresses-box", {
 			window.UPDATING_NODE_IP_ADDRESS = null
 
 			let that = this;
-			teaweb.popup("/nodes/ipAddresses/createPopup?supportThresholds=" + (this.supportThresholds ? 1 : 0), {
+			teaweb.popup("/nodes/ipAddresses/createPopup?nodeId=" + this.nodeId + "&supportThresholds=" + (this.supportThresholds ? 1 : 0), {
 				callback: function (resp) {
 					that.ipAddresses.push(resp.data.ipAddress);
 				},
@@ -24,10 +30,10 @@ Vue.component("node-ip-addresses-box", {
 
 		// 修改地址
 		updateIPAddress: function (index, address) {
-			window.UPDATING_NODE_IP_ADDRESS = address
+			window.UPDATING_NODE_IP_ADDRESS = teaweb.clone(address)
 
 			let that = this;
-			teaweb.popup("/nodes/ipAddresses/updatePopup?supportThresholds=" + (this.supportThresholds ? 1 : 0), {
+			teaweb.popup("/nodes/ipAddresses/updatePopup?nodeId=" + this.nodeId + "&supportThresholds=" + (this.supportThresholds ? 1 : 0), {
 				callback: function (resp) {
 					Vue.set(that.ipAddresses, index, resp.data.ipAddress);
 				},
@@ -58,6 +64,11 @@ Vue.component("node-ip-addresses-box", {
 				<span class="small red" v-if="!address.isUp" title="已下线">[down]</span>
 				<span class="small" v-if="address.thresholds != null && address.thresholds.length > 0">[{{address.thresholds.length}}个阈值]</span>
 				&nbsp;
+				 <span v-if="address.clusters != null && address.clusters.length > 0">
+					&nbsp; <span class="small grey">专属集群：[</span><span v-for="(cluster, index) in address.clusters" class="small grey">{{cluster.name}}<span v-if="index < address.clusters.length - 1">，</span></span><span class="small grey">]</span>
+					&nbsp;
+				</span>
+				
 				<a href="" title="修改" @click.prevent="updateIPAddress(index, address)"><i class="icon pencil small"></i></a>
 				<a href="" title="删除" @click.prevent="removeIPAddress(index)"><i class="icon remove"></i></a>
 			</div>

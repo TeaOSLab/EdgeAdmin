@@ -64,10 +64,20 @@ func (this *UpdateAction) RunGet(params struct {
 	}
 	var ipAddressMaps = []maps.Map{}
 	for _, addr := range ipAddressesResp.NodeIPAddresses {
+		// 阈值
 		thresholds, err := ipaddressutils.InitNodeIPAddressThresholds(this.Parent(), addr.Id)
 		if err != nil {
 			this.ErrorPage(err)
 			return
+		}
+
+		// 专属集群
+		var clusterMaps = []maps.Map{}
+		for _, addrCluster := range addr.NodeClusters {
+			clusterMaps = append(clusterMaps, maps.Map{
+				"id":   addrCluster.Id,
+				"name": addrCluster.Name,
+			})
 		}
 
 		ipAddressMaps = append(ipAddressMaps, maps.Map{
@@ -78,6 +88,7 @@ func (this *UpdateAction) RunGet(params struct {
 			"isOn":       addr.IsOn,
 			"isUp":       addr.IsUp,
 			"thresholds": thresholds,
+			"clusters":   clusterMaps,
 		})
 	}
 

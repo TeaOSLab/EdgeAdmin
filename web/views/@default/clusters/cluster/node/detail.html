@@ -22,7 +22,7 @@
 			<td>
 				<div v-if="node.ipAddresses.length > 0">
 					<div>
-						<div v-for="(address, index) in node.ipAddresses" class="ui label tiny basic">
+						<div v-for="(address, index) in node.ipAddresses" class="ui label small basic">
                             <span v-if="address.ip.indexOf(':') > -1" class="grey">[IPv6]</span> {{address.ip}}
                             <span class="small red" v-if="address.originIP != null && address.originIP.length > 0 && address.originIP != address.ip">（原：{{address.originIP}}）</span>
 							<span class="small grey" v-if="address.name.length > 0">（{{address.name}}<span v-if="!address.canAccess">，不可访问</span>）</span>
@@ -30,6 +30,10 @@
                             <span class="small red" v-if="!address.isOn">[off]</span>
                             <span class="small red" v-if="!address.isUp">[down]</span>
                             <span class="small" v-if="address.thresholds != null && address.thresholds.length > 0">[阈值]</span>
+
+                            <span v-if="address.clusters.length > 0">
+                                &nbsp; <span class="small grey">专属集群：[</span><span v-for="(cluster, index) in address.clusters" class="small grey">{{cluster.name}}<span v-if="index < address.clusters.length - 1">，</span></span><span class="small grey">]</span>
+                            </span>
 						</div>
 					</div>
 				</div>
@@ -51,6 +55,7 @@
                     <table class="ui table celled">
                        <thead class="full-width">
                            <tr>
+                               <th>集群</th>
                                <th>记录名</th>
                                <th>记录类型</th>
                                <th>线路</th>
@@ -59,6 +64,7 @@
                        </thead>
 
                         <tr v-for="record in node.records">
+                            <td>{{record.clusterName}}</td>
                             <td>{{record.name}}</td>
                             <td>{{record.type}}</td>
                             <td>

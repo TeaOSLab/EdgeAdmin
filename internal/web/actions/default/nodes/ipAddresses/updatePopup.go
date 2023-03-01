@@ -5,6 +5,7 @@ import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/ipAddresses/ipaddressutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -21,9 +22,18 @@ func (this *UpdatePopupAction) Init() {
 }
 
 func (this *UpdatePopupAction) RunGet(params struct {
+	NodeId            int64
 	AddressId         int64
 	SupportThresholds bool
 }) {
+	// 专属集群
+	clusterMaps, err := ipaddressutils.FindNodeClusterMapsWithNodeId(this.Parent(), params.NodeId)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["clusters"] = clusterMaps
+
 	this.Data["supportThresholds"] = params.SupportThresholds
 
 	this.Show()
@@ -37,6 +47,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	IsOn           bool
 	IsUp           bool
 	ThresholdsJSON []byte
+	ClusterIds     []int64
 
 	Must *actions.Must
 }) {
@@ -81,6 +92,14 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		_ = json.Unmarshal(params.ThresholdsJSON, &thresholds)
 	}
 
+	// 专属集群
+	// 目前只考虑CDN边缘集群
+	clusterMaps, err := ipaddressutils.FindNodeClusterMaps(this.Parent(), params.ClusterIds)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
 	this.Data["ipAddress"] = maps.Map{
 		"name":       params.Name,
 		"ip":         params.IP,
@@ -89,6 +108,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		"isOn":       params.IsOn,
 		"isUp":       isUp,
 		"thresholds": thresholds,
+		"clusters":    clusterMaps,
 	}
 
 	this.Success()
