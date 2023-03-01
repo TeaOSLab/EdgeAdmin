@@ -47,9 +47,7 @@ Vue.component("http-firewall-config-box", {
 				</td>
 			</tr>
 		</tbody>
-		<tr>
-			<td colspan="2"><more-options-indicator @change="changeOptionsVisible"></more-options-indicator></td>
-		</tr>
+		<more-options-tbody @change="changeOptionsVisible"></more-options-tbody>
 		<tbody v-show="moreOptionsVisible">
 			<tr>
 				<td>不使用全局规则</td>
