@@ -16,7 +16,7 @@ Vue.component("firewall-syn-flood-config-viewer", {
 	},
 	template: `<div>
 	<span v-if="config.isOn">
-		已启用 / <span>空连接次数：{{config.minAttempts}}次/分钟</span> / 封禁时间：{{config.timeoutSeconds}}秒 <span v-if="config.ignoreLocal">/ 忽略局域网访问</span>
+		已启用 / <span>空连接次数：{{config.minAttempts}}次/分钟</span> / 封禁时长：{{config.timeoutSeconds}}秒 <span v-if="config.ignoreLocal">/ 忽略局域网访问</span>
 	</span>
 	<span v-else>未启用</span>
 </div>`

@@ -48,7 +48,7 @@ Vue.component("firewall-syn-flood-config-box", {
 	<input type="hidden" name="synFloodJSON" :value="JSON.stringify(config)"/>
 	<a href="" @click.prevent="edit">
 		<span v-if="config.isOn">
-			已启用 / <span>空连接次数：{{config.minAttempts}}次/分钟</span> / 封禁时间：{{config.timeoutSeconds}}秒 <span v-if="config.ignoreLocal">/ 忽略局域网访问</span>
+			已启用 / <span>空连接次数：{{config.minAttempts}}次/分钟</span> / 封禁时长：{{config.timeoutSeconds}}秒 <span v-if="config.ignoreLocal">/ 忽略局域网访问</span>
 		</span>
 		<span v-else>未启用</span>
 		<i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i>
@@ -73,7 +73,7 @@ Vue.component("firewall-syn-flood-config-box", {
 			</td>
 		</tr>
 		<tr>
-			<td>封禁时间</td>
+			<td>封禁时长</td>
 			<td>
 				<div class="ui input right labeled">
 					<input type="text" v-model="timeoutSeconds" style="width: 5em" maxlength="8"/>
