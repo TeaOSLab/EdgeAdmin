@@ -73,6 +73,7 @@ Vue.component("http-firewall-actions-box", {
 
 			// 动作参数
 			blockTimeout: "",
+			blockTimeoutMax: "",
 			blockScope: "global",
 
 			captchaLife: "",
@@ -120,6 +121,14 @@ Vue.component("http-firewall-actions-box", {
 				this.actionOptions["timeout"] = 0
 			} else {
 				this.actionOptions["timeout"] = v
+			}
+		},
+		blockTimeoutMax: function (v) {
+			v = parseInt(v)
+			if (isNaN(v)) {
+				this.actionOptions["timeoutMax"] = 0
+			} else {
+				this.actionOptions["timeoutMax"] = v
 			}
 		},
 		blockScope: function (v) {
@@ -237,6 +246,7 @@ Vue.component("http-firewall-actions-box", {
 
 			// 动作参数
 			this.blockTimeout = ""
+			this.blockTimeoutMax = ""
 			this.blockScope = "global"
 
 			this.captchaLife = ""
@@ -298,8 +308,12 @@ Vue.component("http-firewall-actions-box", {
 			switch (config.code) {
 				case "block":
 					this.blockTimeout = ""
+					this.blockTimeoutMax = ""
 					if (config.options.timeout != null || config.options.timeout > 0) {
 						this.blockTimeout = config.options.timeout.toString()
+					}
+					if (config.options.timeoutMax != null || config.options.timeoutMax > 0) {
+						this.blockTimeoutMax = config.options.timeoutMax.toString()
 					}
 					if (config.options.scope != null && config.options.scope.length > 0) {
 						this.blockScope = config.options.scope
@@ -584,7 +598,7 @@ Vue.component("http-firewall-actions-box", {
 			{{config.name}} <span class="small">({{config.code.toUpperCase()}})</span> 
 			
 			<!-- block -->
-			<span v-if="config.code == 'block' && config.options.timeout > 0">：有效期{{config.options.timeout}}秒</span>
+			<span v-if="config.code == 'block' && config.options.timeout > 0">：封禁时长{{config.options.timeout}}<span v-if="config.options.timeoutMax > config.options.timeout">-{{config.options.timeoutMax}}</span>秒</span>
 			
 			<!-- captcha -->
 			<span v-if="config.code == 'captcha' && config.options.life > 0">：有效期{{config.options.life}}秒
@@ -643,6 +657,17 @@ Vue.component("http-firewall-actions-box", {
 			
 			<!-- block -->
 			<tr v-if="actionCode == 'block'">
+				<td>封禁范围</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="blockScope">
+						<option value="service">当前服务</option>
+						<option value="global">所有服务</option>
+					</select>
+					<p class="comment" v-if="blockScope == 'service'">只封禁用户对当前网站服务的访问，其他服务不受影响。</p>
+					<p class="comment" v-if="blockScope =='global'">封禁用户对所有网站服务的访问。</p>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'block'">
 				<td>封禁时长</td>
 				<td>
 					<div class="ui input right labeled">
@@ -652,14 +677,13 @@ Vue.component("http-firewall-actions-box", {
 				</td>
 			</tr>
 			<tr v-if="actionCode == 'block'">
-				<td>封禁范围</td>
+				<td>最大封禁时长</td>
 				<td>
-					<select class="ui dropdown auto-width" v-model="blockScope">
-						<option value="service">当前服务</option>
-						<option value="global">所有服务</option>
-					</select>
-					<p class="comment" v-if="blockScope == 'service'">只封禁用户对当前网站服务的访问，其他服务不受影响。</p>
-					<p class="comment" v-if="blockScope =='global'">封禁用户对所有网站服务的访问。</p>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="blockTimeoutMax" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">秒</span>
+					</div>
+					<p class="comment">选填项。如果同时填写了封禁时长和最大封禁时长，则会在两者之间随机选择一个数字作为最终的封禁时长。</p>
 				</td>
 			</tr>
 			
