@@ -144,8 +144,17 @@ func (this *NodesAction) RunGet(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		ipAddresses := []maps.Map{}
+		var ipAddresses = []maps.Map{}
 		for _, addr := range ipAddressesResp.NodeIPAddresses {
+			// 专属集群
+			var addrClusterMaps = []maps.Map{}
+			for _, addrCluster := range addr.NodeClusters {
+				addrClusterMaps = append(addrClusterMaps, maps.Map{
+					"id":   addrCluster.Id,
+					"name": addrCluster.Name,
+				})
+			}
+
 			ipAddresses = append(ipAddresses, maps.Map{
 				"id":        addr.Id,
 				"name":      addr.Name,
@@ -153,6 +162,7 @@ func (this *NodesAction) RunGet(params struct {
 				"canAccess": addr.CanAccess,
 				"isUp":      addr.IsUp,
 				"isOn":      addr.IsOn,
+				"clusters":  addrClusterMaps,
 			})
 		}
 
@@ -175,7 +185,7 @@ func (this *NodesAction) RunGet(params struct {
 		}
 
 		// DNS
-		dnsRouteNames := []string{}
+		var dnsRouteNames = []string{}
 		for _, route := range node.DnsRoutes {
 			dnsRouteNames = append(dnsRouteNames, route.Name)
 		}
