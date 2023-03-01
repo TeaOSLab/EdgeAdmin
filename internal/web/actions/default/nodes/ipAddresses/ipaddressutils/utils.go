@@ -11,14 +11,28 @@ import (
 
 // UpdateNodeIPAddresses 保存一组IP地址
 func UpdateNodeIPAddresses(parentAction *actionutils.ParentAction, nodeId int64, role nodeconfigs.NodeRole, ipAddressesJSON []byte) error {
-	addresses := []maps.Map{}
+	var addresses = []maps.Map{}
 	err := json.Unmarshal(ipAddressesJSON, &addresses)
 	if err != nil {
 		return err
 	}
 	for _, addr := range addresses {
 		var resultAddrIds = []int64{}
-		addrId := addr.GetInt64("id")
+		var addrId = addr.GetInt64("id")
+
+		// 专属集群
+		var addrClusterIds = []int64{}
+		var addrClusters = addr.GetSlice("clusters")
+		if len(addrClusters) > 0 {
+			for _, addrCluster := range addrClusters {
+				var m = maps.NewMap(addrCluster)
+				var clusterId = m.GetInt64("id")
+				if clusterId > 0 {
+					addrClusterIds = append(addrClusterIds, clusterId)
+				}
+			}
+		}
+
 		if addrId > 0 {
 			resultAddrIds = append(resultAddrIds, addrId)
 
@@ -36,6 +50,7 @@ func UpdateNodeIPAddresses(parentAction *actionutils.ParentAction, nodeId int64,
 				CanAccess:       addr.GetBool("canAccess"),
 				IsOn:            isOn,
 				IsUp:            addr.GetBool("isUp"),
+				ClusterIds:      addrClusterIds,
 			})
 			if err != nil {
 				return err
@@ -47,12 +62,13 @@ func UpdateNodeIPAddresses(parentAction *actionutils.ParentAction, nodeId int64,
 			if len(result) == 1 {
 				// 单个创建
 				createResp, err := parentAction.RPC().NodeIPAddressRPC().CreateNodeIPAddress(parentAction.AdminContext(), &pb.CreateNodeIPAddressRequest{
-					NodeId:    nodeId,
-					Role:      role,
-					Name:      addr.GetString("name"),
-					Ip:        result[0],
-					CanAccess: addr.GetBool("canAccess"),
-					IsUp:      addr.GetBool("isUp"),
+					NodeId:         nodeId,
+					Role:           role,
+					Name:           addr.GetString("name"),
+					Ip:             result[0],
+					CanAccess:      addr.GetBool("canAccess"),
+					IsUp:           addr.GetBool("isUp"),
+					NodeClusterIds: addrClusterIds,
 				})
 				if err != nil {
 					return err
@@ -62,13 +78,14 @@ func UpdateNodeIPAddresses(parentAction *actionutils.ParentAction, nodeId int64,
 			} else if len(result) > 1 {
 				// 批量创建
 				createResp, err := parentAction.RPC().NodeIPAddressRPC().CreateNodeIPAddresses(parentAction.AdminContext(), &pb.CreateNodeIPAddressesRequest{
-					NodeId:     nodeId,
-					Role:       role,
-					Name:       addr.GetString("name"),
-					IpList:     result,
-					CanAccess:  addr.GetBool("canAccess"),
-					IsUp:       addr.GetBool("isUp"),
-					GroupValue: ipStrings,
+					NodeId:         nodeId,
+					Role:           role,
+					Name:           addr.GetString("name"),
+					IpList:         result,
+					CanAccess:      addr.GetBool("canAccess"),
+					IsUp:           addr.GetBool("isUp"),
+					GroupValue:     ipStrings,
+					NodeClusterIds: addrClusterIds,
 				})
 				if err != nil {
 					return err
@@ -139,4 +156,54 @@ func InitNodeIPAddressThresholds(parentAction *actionutils.ParentAction, addrId 
 		}
 	}
 	return thresholds, nil
+}
+
+// FindNodeClusterMapsWithNodeId 根据节点读取集群信息
+func FindNodeClusterMapsWithNodeId(parentAction *actionutils.ParentAction, nodeId int64) ([]maps.Map, error) {
+	var clusterMaps = []maps.Map{}
+	if nodeId > 0 { // CDN边缘节点
+		nodeResp, err := parentAction.RPC().NodeRPC().FindEnabledNode(parentAction.AdminContext(), &pb.FindEnabledNodeRequest{NodeId: nodeId})
+		if err != nil {
+			return nil, err
+		}
+		var node = nodeResp.Node
+		if node != nil {
+			var clusters = []*pb.NodeCluster{}
+			if node.NodeCluster != nil {
+				clusters = append(clusters, nodeResp.Node.NodeCluster)
+			}
+			if len(node.SecondaryNodeClusters) > 0 {
+				clusters = append(clusters, node.SecondaryNodeClusters...)
+			}
+			for _, cluster := range clusters {
+				clusterMaps = append(clusterMaps, maps.Map{
+					"id":        cluster.Id,
+					"name":      cluster.Name,
+					"isChecked": false,
+				})
+			}
+		}
+	}
+	return clusterMaps, nil
+}
+
+// FindNodeClusterMaps 根据一组集群ID读取集群信息
+func FindNodeClusterMaps(parentAction *actionutils.ParentAction, clusterIds []int64) ([]maps.Map, error) {
+	var clusterMaps = []maps.Map{}
+	if len(clusterIds) > 0 {
+		for _, clusterId := range clusterIds {
+			clusterResp, err := parentAction.RPC().NodeClusterRPC().FindEnabledNodeCluster(parentAction.AdminContext(), &pb.FindEnabledNodeClusterRequest{NodeClusterId: clusterId})
+			if err != nil {
+				return nil, err
+			}
+			var cluster = clusterResp.NodeCluster
+			if cluster != nil {
+				clusterMaps = append(clusterMaps, maps.Map{
+					"id":   cluster.Id,
+					"name": cluster.Name,
+				})
+			}
+		}
+	}
+	return clusterMaps, nil
 }

@@ -89,7 +89,7 @@ func (this *DetailAction) RunGet(params struct {
 		return
 	}
 	var ipAddresses = ipAddressesResp.NodeIPAddresses
-	ipAddressMaps := []maps.Map{}
+	var ipAddressMaps = []maps.Map{}
 	for _, addr := range ipAddressesResp.NodeIPAddresses {
 		thresholds, err := ipaddressutils.InitNodeIPAddressThresholds(this.Parent(), addr.Id)
 		if err != nil {
@@ -103,6 +103,15 @@ func (this *DetailAction) RunGet(params struct {
 			addr.Ip = addr.BackupIP
 		}
 
+		// 专属集群
+		var addrClusterMaps = []maps.Map{}
+		for _, addrCluster := range addr.NodeClusters {
+			addrClusterMaps = append(addrClusterMaps, maps.Map{
+				"id":   addrCluster.Id,
+				"name": addrCluster.Name,
+			})
+		}
+
 		ipAddressMaps = append(ipAddressMaps, maps.Map{
 			"id":         addr.Id,
 			"name":       addr.Name,
@@ -111,6 +120,7 @@ func (this *DetailAction) RunGet(params struct {
 			"canAccess":  addr.CanAccess,
 			"isOn":       addr.IsOn,
 			"isUp":       addr.IsUp,
+			"clusters":   addrClusterMaps,
 			"thresholds": thresholds,
 		})
 	}
@@ -152,16 +162,31 @@ func (this *DetailAction) RunGet(params struct {
 			if !addr.CanAccess || !addr.IsUp || !addr.IsOn {
 				continue
 			}
+
+			// 过滤集群
+			if len(addr.NodeClusters) > 0 {
+				var inCluster = false
+				for _, addrCluster := range addr.NodeClusters {
+					if addrCluster.Id == cluster.Id {
+						inCluster = true
+					}
+				}
+				if !inCluster {
+					continue
+				}
+			}
+
 			for _, route := range dnsInfo.Routes {
 				var recordType = "A"
 				if utils.IsIPv6(addr.Ip) {
 					recordType = "AAAA"
 				}
 				recordMaps = append(recordMaps, maps.Map{
-					"name":  dnsInfo.NodeClusterDNSName + "." + domainName,
-					"type":  recordType,
-					"route": route.Name,
-					"value": addr.Ip,
+					"name":        dnsInfo.NodeClusterDNSName + "." + domainName,
+					"type":        recordType,
+					"route":       route.Name,
+					"value":       addr.Ip,
+					"clusterName": cluster.Name,
 				})
 			}
 		}
@@ -179,8 +204,8 @@ func (this *DetailAction) RunGet(params struct {
 			}
 		}
 
-		grantMap := maps.Map{}
-		grantId := loginParams.GetInt64("grantId")
+		var grantMap = maps.Map{}
+		var grantId = loginParams.GetInt64("grantId")
 		if grantId > 0 {
 			grantResp, err := this.RPC().NodeGrantRPC().FindEnabledNodeGrant(this.AdminContext(), &pb.FindEnabledNodeGrantRequest{NodeGrantId: grantId})
 			if err != nil {

@@ -68,7 +68,7 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 		actionutils.SetTabbar(action, tabbar)
 
 		// 左侧菜单
-		secondMenuItem := action.Data.GetString("secondMenuItem")
+		var secondMenuItem = action.Data.GetString("secondMenuItem")
 		switch selectedTabbar {
 		case "setting":
 			var menuItems = this.createSettingMenu(cluster, clusterInfo, secondMenuItem)
