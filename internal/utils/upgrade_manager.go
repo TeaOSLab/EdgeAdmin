@@ -109,6 +109,7 @@ func (this *UpgradeManager) Start() error {
 		if err != nil {
 			return errors.New("create url request failed: " + err.Error())
 		}
+		req.Header.Set("User-Agent", "Edge-Admin/"+teaconst.Version)
 
 		resp, err := this.client.Do(req)
 		if err != nil {
@@ -169,6 +170,7 @@ func (this *UpgradeManager) Start() error {
 		if err != nil {
 			return errors.New("create download request failed: " + err.Error())
 		}
+		req.Header.Set("User-Agent", "Edge-Admin/"+teaconst.Version)
 
 		resp, err := this.client.Do(req)
 		if err != nil {
