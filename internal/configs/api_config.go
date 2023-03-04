@@ -155,3 +155,15 @@ func (this *APIConfig) WriteFile(path string) error {
 
 	return nil
 }
+
+// Clone 克隆当前配置
+func (this *APIConfig) Clone() *APIConfig {
+	return &APIConfig{
+		RPC: struct {
+			Endpoints     []string `yaml:"endpoints"`
+			DisableUpdate bool     `yaml:"disableUpdate"`
+		}{},
+		NodeId: this.NodeId,
+		Secret: this.Secret,
+	}
+}
