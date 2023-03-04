@@ -12,18 +12,11 @@ import (
 )
 
 type SessionManager struct {
-	life      uint
-	rpcClient *rpc.RPCClient
+	life uint
 }
 
 func NewSessionManager() (*SessionManager, error) {
-	rpcClient, err := rpc.SharedRPC()
-	if err != nil {
-		return nil, err
-	}
-	return &SessionManager{
-		rpcClient: rpcClient,
-	}, nil
+	return &SessionManager{}, nil
 }
 
 func (this *SessionManager) Init(config *actions.SessionConfig) {
@@ -38,7 +31,12 @@ func (this *SessionManager) Read(sid string) map[string]string {
 
 	var result = map[string]string{}
 
-	resp, err := this.rpcClient.LoginSessionRPC().FindLoginSession(this.rpcClient.Context(0), &pb.FindLoginSessionRequest{Sid: sid})
+	rpcClient, err := rpc.SharedRPC()
+	if err != nil {
+		return map[string]string{}
+	}
+
+	resp, err := rpcClient.LoginSessionRPC().FindLoginSession(rpcClient.Context(0), &pb.FindLoginSessionRequest{Sid: sid})
 	if err != nil {
 		logs.Println("SESSION", "read '"+sid+"' failed: "+err.Error())
 		return result
@@ -63,7 +61,12 @@ func (this *SessionManager) WriteItem(sid string, key string, value string) bool
 		return false
 	}
 
-	_, err := this.rpcClient.LoginSessionRPC().WriteLoginSessionValue(this.rpcClient.Context(0), &pb.WriteLoginSessionValueRequest{
+	rpcClient, err := rpc.SharedRPC()
+	if err != nil {
+		return false
+	}
+
+	_, err = rpcClient.LoginSessionRPC().WriteLoginSessionValue(rpcClient.Context(0), &pb.WriteLoginSessionValueRequest{
 		Sid:   sid,
 		Key:   key,
 		Value: value,
@@ -81,7 +84,11 @@ func (this *SessionManager) Delete(sid string) bool {
 		return false
 	}
 
-	_, err := this.rpcClient.LoginSessionRPC().DeleteLoginSession(this.rpcClient.Context(0), &pb.DeleteLoginSessionRequest{Sid: sid})
+	rpcClient, err := rpc.SharedRPC()
+	if err != nil {
+		return false
+	}
+	_, err = rpcClient.LoginSessionRPC().DeleteLoginSession(rpcClient.Context(0), &pb.DeleteLoginSessionRequest{Sid: sid})
 	if err != nil {
 		logs.Println("SESSION", "delete '"+sid+"' failed: "+err.Error())
 	}
