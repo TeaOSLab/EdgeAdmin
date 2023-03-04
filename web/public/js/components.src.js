@@ -3177,6 +3177,7 @@ Vue.component("plan-price-bandwidth-config-box", {
 	带宽百分位：<span v-if="config.percentile > 0">{{config.percentile}}th</span><span v-else class="disabled">没有设置</span> &nbsp; | &nbsp;
 	基础带宽价格：<span v-if="config.base > 0">{{config.base}}元/Mbps</span><span v-else class="disabled">没有设置</span> &nbsp; | &nbsp; 
 	阶梯价格：<span v-if="config.ranges.length > 0">{{config.ranges.length}}段</span><span v-else class="disabled">没有设置</span>  &nbsp; <span v-if="config.supportRegions">| &nbsp;支持区域带宽计费</span>
+	<span v-if="config.bandwidthAlgo == 'avg'"> &nbsp;| &nbsp;使用平均带宽算法</span>
 	<div style="margin-top: 0.5em">
 		<a href="" @click.prevent="edit">修改 <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
 	</div>		
@@ -3214,6 +3215,17 @@ Vue.component("plan-price-bandwidth-config-box", {
 			<td>
 				<checkbox v-model="config.supportRegions"></checkbox>
 				<p class="comment">选中后，表示可以根据节点所在区域设置不同的带宽价格。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>带宽算法</td>
+			<td>
+				<select class="ui dropdown auto-width" v-model="config.bandwidthAlgo">
+                    <option value="secondly">峰值带宽</option>
+                    <option value="avg">平均带宽</option>
+                </select>
+                <p class="comment" v-if="config.bandwidthAlgo == 'secondly'">按在计时时间段内（5分钟）最高带宽峰值计算，比如5分钟内最高的某个时间点带宽为100Mbps，那么就认为此时间段内的峰值带宽为100Mbps。修改此选项会同时影响到用量统计图表。</p>
+                <p class="comment" v-if="config.bandwidthAlgo == 'avg'">按在计时时间段内（5分钟）平均带宽计算，即此时间段内的总流量除以时间段的秒数，比如5分钟（300秒）内总流量600MB，那么带宽即为<code-label>600MB * 8bit/300s = 16Mbps</code-label>；通常平均带宽算法要比峰值带宽要少很多。修改此选项会同时影响到用量统计图表。</p>
 			</td>
 		</tr>
 	</table>
@@ -4239,7 +4251,7 @@ Vue.component("http-firewall-rule-label", {
 
 		<span v-else>
 			<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> 
-		<span :class="{dash:rule.isCaseInsensitive}" :title="rule.isCaseInsensitive ? '大小写不敏感':''" v-if="!rule.isComposed">{{operatorName(rule.operator)}}</span> 
+		<span :class="{dash:!rule.isComposed && rule.isCaseInsensitive}" :title="(!rule.isComposed && rule.isCaseInsensitive) ? '大小写不敏感':''">{{operatorName(rule.operator)}}</span> 
 			<span v-if="!isEmptyString(rule.value)">{{rule.value}}</span>
 			<span v-else class="disabled" style="font-weight: normal" title="空字符串">[空]</span>
 		</span>
@@ -4807,7 +4819,10 @@ Vue.component("http-cache-ref-box", {
 	<tr v-if="condCategory == 'simple'">
 		<td class="color-border">{{condComponent.paramsTitle}} *</td>
 		<td>
-			<component :is="condComponent.component" :v-cond="ref.simpleCond"></component>
+			<component :is="condComponent.component" :v-cond="ref.simpleCond" v-if="condComponent.type != 'params'"></component>
+			<table class="ui table" v-if="condComponent.type == 'params'">
+				<component :is="condComponent.component" :v-cond="ref.simpleCond"></component>
+			</table>
 		</td>
 	</tr>
 	<tr v-if="condCategory == 'simple' && condComponent.caseInsensitive">
@@ -5217,36 +5232,54 @@ Vue.component("http-firewall-config-box", {
 			firewall = {
 				isPrior: false,
 				isOn: false,
-				firewallPolicyId: 0
+				firewallPolicyId: 0,
+				ignoreGlobalRules: false
 			}
 		}
 
 		return {
-			firewall: firewall
+			firewall: firewall,
+			moreOptionsVisible: false
+		}
+	},
+	methods: {
+		changeOptionsVisible: function (v) {
+			this.moreOptionsVisible = v
 		}
 	},
 	template: `<div>
 	<input type="hidden" name="firewallJSON" :value="JSON.stringify(firewall)"/>
+	
+	<table class="ui table selectable definition" v-show="!vIsGroup">
+		<tr>
+			<td class="title">全局WAF策略</td>
+			<td>
+				<div v-if="vFirewallPolicy != null">{{vFirewallPolicy.name}} <span v-if="vFirewallPolicy.modeInfo != null">&nbsp; <span :class="{green: vFirewallPolicy.modeInfo.code == 'defend', blue: vFirewallPolicy.modeInfo.code == 'observe', grey: vFirewallPolicy.modeInfo.code == 'bypass'}">[{{vFirewallPolicy.modeInfo.name}}]</span>&nbsp;</span> <link-icon :href="'/servers/components/waf/policy?firewallPolicyId=' + vFirewallPolicy.id"></link-icon>
+					<p class="comment">当前服务所在集群的设置。</p>
+				</div>
+				<span v-else class="red">当前集群没有设置WAF策略，当前配置无法生效。</span>
+			</td>
+		</tr>
+	</table>
+	
 	<table class="ui table selectable definition">
 		<prior-checkbox :v-config="firewall" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || firewall.isPrior">
-			<tr v-show="!vIsGroup">
-				<td>WAF策略</td>
-				<td>
-					<div v-if="vFirewallPolicy != null">{{vFirewallPolicy.name}} <span v-if="vFirewallPolicy.modeInfo != null">&nbsp; <span :class="{green: vFirewallPolicy.modeInfo.code == 'defend', blue: vFirewallPolicy.modeInfo.code == 'observe', grey: vFirewallPolicy.modeInfo.code == 'bypass'}">[{{vFirewallPolicy.modeInfo.name}}]</span>&nbsp;</span> <link-icon :href="'/servers/components/waf/policy?firewallPolicyId=' + vFirewallPolicy.id"></link-icon>
-						<p class="comment">使用当前服务所在集群的设置。</p>
-					</div>
-					<span v-else class="red">当前集群没有设置WAF策略，当前配置无法生效。</span>
-				</td>
-			</tr>
 			<tr>
 				<td class="title">启用WAF</td>
 				<td>
-					<div class="ui checkbox">
-						<input type="checkbox" v-model="firewall.isOn"/>
-						<label></label>
-					</div>
+					<checkbox v-model="firewall.isOn"></checkbox>
 					<p class="comment">启用WAF之后，各项WAF设置才会生效。</p>
+				</td>
+			</tr>
+		</tbody>
+		<more-options-tbody @change="changeOptionsVisible"></more-options-tbody>
+		<tbody v-show="moreOptionsVisible">
+			<tr>
+				<td>不使用全局规则</td>
+				<td>
+					<checkbox v-model="firewall.ignoreGlobalRules"></checkbox>
+					<p class="comment">选中后，表示<strong>不使用</strong>系统全局WAF策略中定义的规则。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -6352,7 +6385,7 @@ Vue.component("http-cache-refs-config-box", {
 			})
 		},
 		updateRef: function (index, cacheRef) {
-			window.UPDATING_CACHE_REF = cacheRef
+			window.UPDATING_CACHE_REF = teaweb.clone(cacheRef)
 
 			let height = window.innerHeight
 			if (height > 500) {
@@ -7137,7 +7170,7 @@ Vue.component("firewall-syn-flood-config-viewer", {
 	},
 	template: `<div>
 	<span v-if="config.isOn">
-		已启用 / <span>空连接次数：{{config.minAttempts}}次/分钟</span> / 封禁时间：{{config.timeoutSeconds}}秒 <span v-if="config.ignoreLocal">/ 忽略局域网访问</span>
+		已启用 / <span>空连接次数：{{config.minAttempts}}次/分钟</span> / 封禁时长：{{config.timeoutSeconds}}秒 <span v-if="config.ignoreLocal">/ 忽略局域网访问</span>
 	</span>
 	<span v-else>未启用</span>
 </div>`
@@ -7411,8 +7444,16 @@ Vue.component("http-referers-config-box", {
 			return ((!this.vIsLocation && !this.vIsGroup) || this.config.isPrior) && this.config.isOn
 		},
 		changeAllowDomains: function (domains) {
+			if (typeof (domains) == "object") {
+				this.config.allowDomains = domains
+				this.$forceUpdate()
+			}
 		},
 		changeDenyDomains: function (domains) {
+			if (typeof (domains) == "object") {
+				this.config.denyDomains = domains
+				this.$forceUpdate()
+			}
 		}
 	},
 	template: `<div>
@@ -7702,6 +7743,7 @@ Vue.component("http-firewall-actions-box", {
 
 			// 动作参数
 			blockTimeout: "",
+			blockTimeoutMax: "",
 			blockScope: "global",
 
 			captchaLife: "",
@@ -7749,6 +7791,14 @@ Vue.component("http-firewall-actions-box", {
 				this.actionOptions["timeout"] = 0
 			} else {
 				this.actionOptions["timeout"] = v
+			}
+		},
+		blockTimeoutMax: function (v) {
+			v = parseInt(v)
+			if (isNaN(v)) {
+				this.actionOptions["timeoutMax"] = 0
+			} else {
+				this.actionOptions["timeoutMax"] = v
 			}
 		},
 		blockScope: function (v) {
@@ -7866,6 +7916,7 @@ Vue.component("http-firewall-actions-box", {
 
 			// 动作参数
 			this.blockTimeout = ""
+			this.blockTimeoutMax = ""
 			this.blockScope = "global"
 
 			this.captchaLife = ""
@@ -7927,8 +7978,12 @@ Vue.component("http-firewall-actions-box", {
 			switch (config.code) {
 				case "block":
 					this.blockTimeout = ""
+					this.blockTimeoutMax = ""
 					if (config.options.timeout != null || config.options.timeout > 0) {
 						this.blockTimeout = config.options.timeout.toString()
+					}
+					if (config.options.timeoutMax != null || config.options.timeoutMax > 0) {
+						this.blockTimeoutMax = config.options.timeoutMax.toString()
 					}
 					if (config.options.scope != null && config.options.scope.length > 0) {
 						this.blockScope = config.options.scope
@@ -8213,7 +8268,7 @@ Vue.component("http-firewall-actions-box", {
 			{{config.name}} <span class="small">({{config.code.toUpperCase()}})</span> 
 			
 			<!-- block -->
-			<span v-if="config.code == 'block' && config.options.timeout > 0">：有效期{{config.options.timeout}}秒</span>
+			<span v-if="config.code == 'block' && config.options.timeout > 0">：封禁时长{{config.options.timeout}}<span v-if="config.options.timeoutMax > config.options.timeout">-{{config.options.timeoutMax}}</span>秒</span>
 			
 			<!-- captcha -->
 			<span v-if="config.code == 'captcha' && config.options.life > 0">：有效期{{config.options.life}}秒
@@ -8272,7 +8327,18 @@ Vue.component("http-firewall-actions-box", {
 			
 			<!-- block -->
 			<tr v-if="actionCode == 'block'">
-				<td>封锁时间</td>
+				<td>封禁范围</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="blockScope">
+						<option value="service">当前服务</option>
+						<option value="global">所有服务</option>
+					</select>
+					<p class="comment" v-if="blockScope == 'service'">只封禁用户对当前网站服务的访问，其他服务不受影响。</p>
+					<p class="comment" v-if="blockScope =='global'">封禁用户对所有网站服务的访问。</p>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'block'">
+				<td>封禁时长</td>
 				<td>
 					<div class="ui input right labeled">
 						<input type="text" style="width: 5em" maxlength="9" v-model="blockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
@@ -8281,14 +8347,13 @@ Vue.component("http-firewall-actions-box", {
 				</td>
 			</tr>
 			<tr v-if="actionCode == 'block'">
-				<td>封锁范围</td>
+				<td>最大封禁时长</td>
 				<td>
-					<select class="ui dropdown auto-width" v-model="blockScope">
-						<option value="service">当前服务</option>
-						<option value="global">所有服务</option>
-					</select>
-					<p class="comment" v-if="blockScope == 'service'">只封锁用户对当前网站服务的访问，其他服务不受影响。</p>
-					<p class="comment" v-if="blockScope =='global'">封锁用户对所有网站服务的访问。</p>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="blockTimeoutMax" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">秒</span>
+					</div>
+					<p class="comment">选填项。如果同时填写了封禁时长和最大封禁时长，则会在两者之间随机选择一个数字作为最终的封禁时长。</p>
 				</td>
 			</tr>
 			
@@ -10152,7 +10217,7 @@ Vue.component("http-firewall-block-options-viewer", {
 	template: `<div>
 	<span v-if="options == null">默认设置</span>
 	<div v-else>
-		状态码：{{options.statusCode}} / 提示内容：<span v-if="options.body != null && options.body.length > 0">[{{options.body.length}}字符]</span><span v-else class="disabled">[无]</span>  / 超时时间：{{options.timeout}}秒
+		状态码：{{options.statusCode}} / 提示内容：<span v-if="options.body != null && options.body.length > 0">[{{options.body.length}}字符]</span><span v-else class="disabled">[无]</span>  / 超时时间：{{options.timeout}}秒 <span v-if="options.timeoutMax > options.timeout">/ 最大封禁时长：{{options.timeoutMax}}秒</span>
 	</div>
 </div>	
 `
@@ -11846,6 +11911,7 @@ Vue.component("http-firewall-block-options", {
 			blockOptions: this.vBlockOptions,
 			statusCode: this.vBlockOptions.statusCode,
 			timeout: this.vBlockOptions.timeout,
+			timeoutMax: this.vBlockOptions.timeoutMax,
 			isEditing: false
 		}
 	},
@@ -11865,6 +11931,14 @@ Vue.component("http-firewall-block-options", {
 			} else {
 				this.blockOptions.timeout = timeout
 			}
+		},
+		timeoutMax: function (v) {
+			let timeoutMax = parseInt(v)
+			if (isNaN(timeoutMax)) {
+				this.blockOptions.timeoutMax = 0
+			} else {
+				this.blockOptions.timeoutMax = timeoutMax
+			}
 		}
 	},
 	methods: {
@@ -11874,7 +11948,9 @@ Vue.component("http-firewall-block-options", {
 	},
 	template: `<div>
 	<input type="hidden" name="blockOptionsJSON" :value="JSON.stringify(blockOptions)"/>
-	<a href="" @click.prevent="edit">状态码：{{statusCode}} / 提示内容：<span v-if="blockOptions.body != null && blockOptions.body.length > 0">[{{blockOptions.body.length}}字符]</span><span v-else class="disabled">[无]</span>  / 超时时间：{{timeout}}秒 <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
+	<a href="" @click.prevent="edit">状态码：{{statusCode}} / 提示内容：<span v-if="blockOptions.body != null && blockOptions.body.length > 0">[{{blockOptions.body.length}}字符]</span><span v-else class="disabled">[无]</span> <span v-if="timeout > 0"> / 封禁时长：{{timeout}}秒</span>
+	 <span v-if="timeoutMax > timeout"> / 最大封禁时长：{{timeoutMax}}秒</span>
+	 <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
 	<table class="ui table" v-show="isEditing">
 		<tr>
 			<td class="title">状态码</td>
@@ -11889,13 +11965,23 @@ Vue.component("http-firewall-block-options", {
 			</td>
 		</tr>
 		<tr>
-			<td>超时时间</td>
+			<td>封禁时长</td>
 			<td>
 				<div class="ui input right labeled">
 					<input type="text" v-model="timeout" style="width: 5em" maxlength="6"/>
 					<span class="ui label">秒</span>
 				</div>
-				<p class="comment">触发阻止动作时，封锁客户端IP的时间。</p>
+				<p class="comment">触发阻止动作时，封禁客户端IP的时间。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>最大封禁时长</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" v-model="timeoutMax" style="width: 5em" maxlength="6"/>
+					<span class="ui label">秒</span>
+				</div>
+				<p class="comment">如果最大封禁时长大于封禁时长（{{timeout}}秒），那么表示每次封禁的时候，将会在这两个时长数字之间随机选取一个数字作为最终的封禁时长。</p>
 			</td>
 		</tr>
 	</table>
@@ -12059,7 +12145,7 @@ Vue.component("http-firewall-rules-box", {
 				</span>
 				
 				<span v-else>
-					<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> <span :class="{dash:rule.isCaseInsensitive}" :title="rule.isCaseInsensitive ? '大小写不敏感':''">{{operatorName(rule.operator)}}</span> 
+					<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> <span :class="{dash:(!rule.isComposed && rule.isCaseInsensitive)}" :title="(!rule.isComposed && rule.isCaseInsensitive) ? '大小写不敏感':''">{{operatorName(rule.operator)}}</span> 
 						<span v-if="!isEmptyString(rule.value)">{{rule.value}}</span>
 						<span v-else class="disabled" style="font-weight: normal" title="空字符串">[空]</span>
 				</span>
@@ -12255,7 +12341,7 @@ Vue.component("http-cond-url-extension", {
 	data: function () {
 		let cond = {
 			isRequest: true,
-			param: "${requestPathExtension}",
+			param: "${requestPathLowerExtension}",
 			operator: "in",
 			value: "[]"
 		}
@@ -12346,7 +12432,7 @@ Vue.component("http-cond-url-not-extension", {
 	data: function () {
 		let cond = {
 			isRequest: true,
-			param: "${requestPathExtension}",
+			param: "${requestPathLowerExtension}",
 			operator: "not in",
 			value: "[]"
 		}
@@ -12969,21 +13055,19 @@ Vue.component("http-cond-params", {
 	},
 	template: `<tbody>
 	<tr>
-		<td>参数值</td>
+		<td style="width: 8em">参数值</td>
 		<td>
 			<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 			<div>
-				<div class="ui fields inline">
-					<div class="ui field">
-						<input type="text" placeholder="\${xxx}" v-model="cond.param"/>
-					</div>
-					<div class="ui field">
-						<select class="ui dropdown" style="width: 7em; color: grey" v-model="variable" @change="changeVariable">
-							<option value="">[常用参数]</option>
-							<option v-for="v in variables" :value="v.code">{{v.code}} - {{v.name}}</option>
-						</select>
-					</div>
-				</div>			
+				<div class="ui field">
+					<input type="text" placeholder="\${xxx}" v-model="cond.param"/>
+				</div>
+				<div class="ui field">
+					<select class="ui dropdown" style="width: 16em; color: grey" v-model="variable" @change="changeVariable">
+						<option value="">[常用参数]</option>
+						<option v-for="v in variables" :value="v.code">{{v.code}} - {{v.name}}</option>
+					</select>
+				</div>
 			</div>
 			<p class="comment">其中可以使用变量，类似于<code-label>\${requestPath}</code-label>，也可以是多个变量的组合。</p>
 		</td>
@@ -13086,7 +13170,8 @@ Vue.component("http-cond-params", {
 			<p class="comment">选中后表示对比时忽略参数值的大小写。</p>
 		</td>
 	</tr>
-</tbody>`
+</tbody>
+`
 })
 
 // 请求方法列表
@@ -13843,7 +13928,7 @@ Vue.component("firewall-syn-flood-config-box", {
 	<input type="hidden" name="synFloodJSON" :value="JSON.stringify(config)"/>
 	<a href="" @click.prevent="edit">
 		<span v-if="config.isOn">
-			已启用 / <span>空连接次数：{{config.minAttempts}}次/分钟</span> / 封禁时间：{{config.timeoutSeconds}}秒 <span v-if="config.ignoreLocal">/ 忽略局域网访问</span>
+			已启用 / <span>空连接次数：{{config.minAttempts}}次/分钟</span> / 封禁时长：{{config.timeoutSeconds}}秒 <span v-if="config.ignoreLocal">/ 忽略局域网访问</span>
 		</span>
 		<span v-else>未启用</span>
 		<i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i>
@@ -13868,7 +13953,7 @@ Vue.component("firewall-syn-flood-config-box", {
 			</td>
 		</tr>
 		<tr>
-			<td>封禁时间</td>
+			<td>封禁时长</td>
 			<td>
 				<div class="ui input right labeled">
 					<input type="text" v-model="timeoutSeconds" style="width: 5em" maxlength="8"/>
@@ -14891,7 +14976,7 @@ Vue.component("download-link", {
 })
 
 Vue.component("values-box", {
-	props: ["values", "v-values", "size", "maxlength", "name", "placeholder", "v-allow-empty"],
+	props: ["values", "v-values", "size", "maxlength", "name", "placeholder", "v-allow-empty", "validator"],
 	data: function () {
 		let values = this.values;
 		if (values == null) {
@@ -14933,6 +15018,22 @@ Vue.component("values-box", {
 			if (this.value.length == 0) {
 				if (typeof(this.vAllowEmpty) != "boolean" || !this.vAllowEmpty) {
 					return
+				}
+			}
+
+			// validate
+			if (typeof(this.validator) == "function") {
+				let resp = this.validator.call(this, this.value)
+				if (typeof resp == "object") {
+					if (typeof resp.isOk == "boolean" && !resp.isOk) {
+						if (typeof resp.message == "string") {
+							let that = this
+							teaweb.warn(resp.message, function () {
+								that.$refs.value.focus();
+							})
+						}
+						return
+					}
 				}
 			}
 
@@ -15250,6 +15351,34 @@ Vue.component("pro-warning-label", {
 	template: `<span><i class="icon warning circle yellow"></i>注意：通常不需要修改；如要修改，请在专家指导下进行。</span>`
 })
 
+
+Vue.component("js-page", {
+	props: ["v-max"],
+	data: function () {
+		let max = this.vMax
+		if (max == null) {
+			max = 0
+		}
+		return {
+			max: max,
+			page: 1
+		}
+	},
+	methods: {
+		updateMax: function (max) {
+			this.max = max
+		},
+		selectPage: function(page) {
+			this.page = page
+			this.$emit("change", page)
+		}
+	},
+	template:`<div>
+	<div class="page" v-if="max > 1">
+		<a href="" v-for="i in max" :class="{active: i == page}" @click.prevent="selectPage(i)">{{i}}</a>
+	</div>
+</div>`
+})
 
 /**
  * 一级菜单
@@ -17041,6 +17170,60 @@ Vue.component("node-cache-disk-dirs-box", {
 </div>`
 })
 
+Vue.component("node-ip-address-clusters-selector", {
+	props: ["vClusters"],
+	mounted: function () {
+		this.checkClusters()
+	},
+	data: function () {
+		let clusters = this.vClusters
+		if (clusters == null) {
+			clusters = []
+		}
+		return {
+			clusters: clusters,
+			hasCheckedCluster: false,
+			clustersVisible: false
+		}
+	},
+	methods: {
+		checkClusters: function () {
+			let that = this
+
+			let b = false
+			this.clusters.forEach(function (cluster) {
+				if (cluster.isChecked) {
+					b = true
+				}
+			})
+
+			this.hasCheckedCluster = b
+
+			return b
+		},
+		changeCluster: function (cluster) {
+			cluster.isChecked = !cluster.isChecked
+			this.checkClusters()
+		},
+		showClusters: function () {
+			this.clustersVisible = !this.clustersVisible
+		}
+	},
+	template: `<div>
+  <span v-if="!hasCheckedCluster">默认用于所有集群 &nbsp; <a href="" @click.prevent="showClusters">修改 <i class="icon angle" :class="{down: !clustersVisible, up:clustersVisible}"></i></a></span>
+	<div v-if="hasCheckedCluster">
+		<span v-for="cluster in clusters" class="ui label basic small" v-if="cluster.isChecked">{{cluster.name}}</span> &nbsp; <a href="" @click.prevent="showClusters">修改 <i class="icon angle" :class="{down: !clustersVisible, up:clustersVisible}"></i></a>
+		<p class="comment">当前IP仅在所选集群中有效。</p>
+	</div>
+	<div v-show="clustersVisible">
+		<div class="ui divider"></div>
+		<checkbox v-for="cluster in clusters" :v-value="cluster.id" :value="cluster.isChecked ? cluster.id : 0" style="margin-right: 1em" @input="changeCluster(cluster)" name="clusterIds">
+			{{cluster.name}}
+		</checkbox>
+	</div>
+</div>`
+})
+
 // 节点登录推荐端口
 Vue.component("node-login-suggest-ports", {
 	data: function () {
@@ -17143,11 +17326,17 @@ Vue.component("node-group-selector", {
 
 // 节点IP地址管理（标签形式）
 Vue.component("node-ip-addresses-box", {
-	props: ["v-ip-addresses", "role"],
+	props: ["v-ip-addresses", "role", "v-node-id"],
 	data: function () {
+		let nodeId = this.vNodeId
+		if (nodeId == null) {
+			nodeId = 0
+		}
+
 		return {
 			ipAddresses: (this.vIpAddresses == null) ? [] : this.vIpAddresses,
-			supportThresholds: this.role != "ns"
+			supportThresholds: this.role != "ns",
+			nodeId: nodeId
 		}
 	},
 	methods: {
@@ -17156,7 +17345,7 @@ Vue.component("node-ip-addresses-box", {
 			window.UPDATING_NODE_IP_ADDRESS = null
 
 			let that = this;
-			teaweb.popup("/nodes/ipAddresses/createPopup?supportThresholds=" + (this.supportThresholds ? 1 : 0), {
+			teaweb.popup("/nodes/ipAddresses/createPopup?nodeId=" + this.nodeId + "&supportThresholds=" + (this.supportThresholds ? 1 : 0), {
 				callback: function (resp) {
 					that.ipAddresses.push(resp.data.ipAddress);
 				},
@@ -17167,10 +17356,10 @@ Vue.component("node-ip-addresses-box", {
 
 		// 修改地址
 		updateIPAddress: function (index, address) {
-			window.UPDATING_NODE_IP_ADDRESS = address
+			window.UPDATING_NODE_IP_ADDRESS = teaweb.clone(address)
 
 			let that = this;
-			teaweb.popup("/nodes/ipAddresses/updatePopup?supportThresholds=" + (this.supportThresholds ? 1 : 0), {
+			teaweb.popup("/nodes/ipAddresses/updatePopup?nodeId=" + this.nodeId + "&supportThresholds=" + (this.supportThresholds ? 1 : 0), {
 				callback: function (resp) {
 					Vue.set(that.ipAddresses, index, resp.data.ipAddress);
 				},
@@ -17201,6 +17390,11 @@ Vue.component("node-ip-addresses-box", {
 				<span class="small red" v-if="!address.isUp" title="已下线">[down]</span>
 				<span class="small" v-if="address.thresholds != null && address.thresholds.length > 0">[{{address.thresholds.length}}个阈值]</span>
 				&nbsp;
+				 <span v-if="address.clusters != null && address.clusters.length > 0">
+					&nbsp; <span class="small grey">专属集群：[</span><span v-for="(cluster, index) in address.clusters" class="small grey">{{cluster.name}}<span v-if="index < address.clusters.length - 1">，</span></span><span class="small grey">]</span>
+					&nbsp;
+				</span>
+				
 				<a href="" title="修改" @click.prevent="updateIPAddress(index, address)"><i class="icon pencil small"></i></a>
 				<a href="" title="删除" @click.prevent="removeIPAddress(index)"><i class="icon remove"></i></a>
 			</div>
@@ -18249,6 +18443,183 @@ Vue.component("dns-resolver-config-box", {
 </div>`
 })
 
+Vue.component("ad-instance-objects-box", {
+	props: ["v-objects", "v-user-id"],
+	mounted: function () {
+		this.getUserServers(1)
+	},
+	data: function () {
+		let objects = this.vObjects
+		if (objects == null) {
+			objects = []
+		}
+
+		let objectCodes = []
+		objects.forEach(function (v) {
+			objectCodes.push(v.code)
+		})
+
+		return {
+			userId: this.vUserId,
+			objects: objects,
+			objectCodes: objectCodes,
+			isAdding: true,
+
+			servers: [],
+			serversIsLoading: false
+		}
+	},
+	methods: {
+		add: function () {
+			this.isAdding = true
+		},
+		cancel: function () {
+			this.isAdding = false
+		},
+		remove: function (index) {
+			let that = this
+			teaweb.confirm("确定要删除此防护对象吗？", function () {
+				that.objects.$remove(index)
+				that.notifyChange()
+			})
+		},
+		removeObjectCode: function (objectCode) {
+			let index = -1
+			this.objectCodes.forEach(function (v, k) {
+				if (objectCode == v) {
+					index = k
+				}
+			})
+			if (index >= 0) {
+				this.objects.$remove(index)
+				this.notifyChange()
+			}
+		},
+		getUserServers: function (page) {
+			if (Tea.Vue == null) {
+				let that = this
+				setTimeout(function () {
+					that.getUserServers(page)
+				}, 100)
+				return
+			}
+
+			let that = this
+			this.serversIsLoading = true
+			Tea.Vue.$post(".userServers")
+				.params({
+					userId: this.userId,
+					page: page,
+					pageSize: 5
+				})
+				.success(function (resp) {
+					that.servers = resp.data.servers
+
+					that.$refs.serverPage.updateMax(resp.data.page.max)
+					that.serversIsLoading = false
+				})
+				.error(function () {
+					that.serversIsLoading = false
+				})
+		},
+		changeServerPage: function (page) {
+			this.getUserServers(page)
+		},
+		selectServerObject: function (server) {
+			if (this.existObjectCode("server:" + server.id)) {
+				return
+			}
+
+			this.objects.push({
+				"type": "server",
+				"code": "server:" + server.id,
+
+				"id": server.id,
+				"name": server.name
+			})
+			this.notifyChange()
+		},
+		notifyChange: function () {
+			let objectCodes = []
+			this.objects.forEach(function (v) {
+				objectCodes.push(v.code)
+			})
+			this.objectCodes = objectCodes
+		},
+		existObjectCode: function (objectCode) {
+			let found = false
+			this.objects.forEach(function (v) {
+				if (v.code == objectCode) {
+					found = true
+				}
+			})
+			return found
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="objectCodesJSON" :value="JSON.stringify(objectCodes)"/>
+	
+	<!-- 已有对象 -->
+	<div>
+		<div v-if="objects.length == 0"><span class="grey">暂时还没有设置任何防护对象。</span></div>
+		<div v-if="objects.length > 0">
+			<table class="ui table">
+				<tr>
+					<td class="title">已选中防护对象</td>
+					<td>
+						<div v-for="(object, index) in objects" class="ui label basic small" style="margin-bottom: 0.5em">
+							<span v-if="object.type == 'server'">网站服务：{{object.name}}</span>
+							&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div class="margin"></div>
+	
+	<!-- 添加表单 -->
+	<div v-if="isAdding">
+		<table class="ui table celled">
+			<tr>
+				<td class="title">对象类型</td>
+				<td>网站服务</td>
+			</tr>
+			<!-- 服务列表 -->
+			<tr>
+				<td>服务列表</td>
+				<td>
+					<span v-if="serversIsLoading">加载中...</span>
+					<div v-if="!serversIsLoading && servers.length == 0">暂时还没有可选的网站服务。</div>
+					<table class="ui table" v-show="!serversIsLoading && servers.length > 0">
+						<thead class="full-width">
+							<tr>
+								<th>网站服务名称</th>
+								<th class="one op">操作</th>
+							</tr>	
+						</thead>
+						<tr v-for="server in servers">
+							<td style="background: white">{{server.name}}</td>
+							<td>
+								<a href="" @click.prevent="selectServerObject(server)" v-if="!existObjectCode('server:' + server.id)">选中</a>
+								<a href="" @click.prevent="removeObjectCode('server:' + server.id)" v-else><span class="red">取消</span></a>
+							</td>
+						</tr>
+					</table>
+					
+					<js-page ref="serverPage" @change="changeServerPage"></js-page>
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 添加按钮 -->
+	<div v-if="!isAdding">
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	</div>
+</div>`
+})
+
 Vue.component("grant-selector", {
 	props: ["v-grant", "v-node-cluster-id", "v-ns-cluster-id"],
 	data: function () {
@@ -18329,9 +18700,9 @@ window.REQUEST_COND_COMPONENTS = [{"type":"url-extension","name":"URL扩展名",
 
 window.REQUEST_COND_OPERATORS = [{"description":"判断是否正则表达式匹配","name":"正则表达式匹配","op":"regexp"},{"description":"判断是否正则表达式不匹配","name":"正则表达式不匹配","op":"not regexp"},{"description":"使用字符串对比参数值是否相等于某个值","name":"字符串等于","op":"eq"},{"description":"参数值包含某个前缀","name":"字符串前缀","op":"prefix"},{"description":"参数值包含某个后缀","name":"字符串后缀","op":"suffix"},{"description":"参数值包含另外一个字符串","name":"字符串包含","op":"contains"},{"description":"参数值不包含另外一个字符串","name":"字符串不包含","op":"not contains"},{"description":"使用字符串对比参数值是否不相等于某个值","name":"字符串不等于","op":"not"},{"description":"判断参数值在某个列表中","name":"在列表中","op":"in"},{"description":"判断参数值不在某个列表中","name":"不在列表中","op":"not in"},{"description":"判断小写的扩展名（不带点）在某个列表中","name":"扩展名","op":"file ext"},{"description":"判断MimeType在某个列表中，支持类似于image/*的语法","name":"MimeType","op":"mime type"},{"description":"判断版本号在某个范围内，格式为version1,version2","name":"版本号范围","op":"version range"},{"description":"将参数转换为整数数字后进行对比","name":"整数等于","op":"eq int"},{"description":"将参数转换为可以有小数的浮点数字进行对比","name":"浮点数等于","op":"eq float"},{"description":"将参数转换为数字进行对比","name":"数字大于","op":"gt"},{"description":"将参数转换为数字进行对比","name":"数字大于等于","op":"gte"},{"description":"将参数转换为数字进行对比","name":"数字小于","op":"lt"},{"description":"将参数转换为数字进行对比","name":"数字小于等于","op":"lte"},{"description":"对整数参数值取模，除数为10，对比值为余数","name":"整数取模10","op":"mod 10"},{"description":"对整数参数值取模，除数为100，对比值为余数","name":"整数取模100","op":"mod 100"},{"description":"对整数参数值取模，对比值格式为：除数,余数，比如10,1","name":"整数取模","op":"mod"},{"description":"将参数转换为IP进行对比","name":"IP等于","op":"eq ip"},{"description":"将参数转换为IP进行对比","name":"IP大于","op":"gt ip"},{"description":"将参数转换为IP进行对比","name":"IP大于等于","op":"gte ip"},{"description":"将参数转换为IP进行对比","name":"IP小于","op":"lt ip"},{"description":"将参数转换为IP进行对比","name":"IP小于等于","op":"lte ip"},{"description":"IP在某个范围之内，范围格式可以是英文逗号分隔的\u003ccode-label\u003e开始IP,结束IP\u003c/code-label\u003e，比如\u003ccode-label\u003e192.168.1.100,192.168.2.200\u003c/code-label\u003e，或者CIDR格式的ip/bits，比如\u003ccode-label\u003e192.168.2.1/24\u003c/code-label\u003e","name":"IP范围","op":"ip range"},{"description":"对IP参数值取模，除数为10，对比值为余数","name":"IP取模10","op":"ip mod 10"},{"description":"对IP参数值取模，除数为100，对比值为余数","name":"IP取模100","op":"ip mod 100"},{"description":"对IP参数值取模，对比值格式为：除数,余数，比如10,1","name":"IP取模","op":"ip mod"},{"description":"判断参数值解析后的文件是否存在","name":"文件存在","op":"file exist"},{"description":"判断参数值解析后的文件是否不存在","name":"文件不存在","op":"file not exist"}]
 
-window.REQUEST_VARIABLES = [{"code":"${edgeVersion}","description":"","name":"边缘节点版本"},{"code":"${remoteAddr}","description":"会依次根据X-Forwarded-For、X-Real-IP、RemoteAddr获取，适合前端有别的反向代理服务时使用，存在伪造的风险","name":"客户端地址（IP）"},{"code":"${rawRemoteAddr}","description":"返回直接连接服务的客户端原始IP地址","name":"客户端地址（IP）"},{"code":"${remotePort}","description":"","name":"客户端端口"},{"code":"${remoteUser}","description":"","name":"客户端用户名"},{"code":"${requestURI}","description":"比如/hello?name=lily","name":"请求URI"},{"code":"${requestPath}","description":"比如/hello","name":"请求路径（不包括参数）"},{"code":"${requestURL}","description":"比如https://example.com/hello?name=lily","name":"完整的请求URL"},{"code":"${requestLength}","description":"","name":"请求内容长度"},{"code":"${requestMethod}","description":"比如GET、POST","name":"请求方法"},{"code":"${requestFilename}","description":"","name":"请求文件路径"},{"code":"${scheme}","description":"","name":"请求协议，http或https"},{"code":"${proto}","description:":"类似于HTTP/1.0","name":"包含版本的HTTP请求协议"},{"code":"${timeISO8601}","description":"比如2018-07-16T23:52:24.839+08:00","name":"ISO 8601格式的时间"},{"code":"${timeLocal}","description":"比如17/Jul/2018:09:52:24 +0800","name":"本地时间"},{"code":"${msec}","description":"比如1531756823.054","name":"带有毫秒的时间"},{"code":"${timestamp}","description":"","name":"unix时间戳，单位为秒"},{"code":"${host}","description":"","name":"主机名"},{"code":"${cname}","description":"比如38b48e4f.goedge.cn","name":"当前网站的CNAME"},{"code":"${serverName}","description":"","name":"接收请求的服务器名"},{"code":"${serverPort}","description":"","name":"接收请求的服务器端口"},{"code":"${referer}","description":"","name":"请求来源URL"},{"code":"${referer.host}","description":"","name":"请求来源URL域名"},{"code":"${userAgent}","description":"","name":"客户端信息"},{"code":"${contentType}","description":"","name":"请求头部的Content-Type"},{"code":"${cookies}","description":"","name":"所有cookie组合字符串"},{"code":"${cookie.NAME}","description":"","name":"单个cookie值"},{"code":"${isArgs}","description":"如果URL有参数，则值为`?`；否则，则值为空","name":"问号（?）标记"},{"code":"${args}","description":"","name":"所有参数组合字符串"},{"code":"${arg.NAME}","description":"","name":"单个参数值"},{"code":"${headers}","description":"","name":"所有Header信息组合字符串"},{"code":"${header.NAME}","description":"","name":"单个Header值"},{"code":"${geo.country.name}","description":"","name":"国家/地区名称"},{"code":"${geo.country.id}","description":"","name":"国家/地区ID"},{"code":"${geo.province.name}","description":"目前只包含中国省份","name":"省份名称"},{"code":"${geo.province.id}","description":"目前只包含中国省份","name":"省份ID"},{"code":"${geo.city.name}","description":"目前只包含中国城市","name":"城市名称"},{"code":"${geo.city.id}","description":"目前只包含中国城市","name":"城市名称"},{"code":"${isp.name}","description":"","name":"ISP服务商名称"},{"code":"${isp.id}","description":"","name":"ISP服务商ID"},{"code":"${browser.os.name}","description":"客户端所在操作系统名称","name":"操作系统名称"},{"code":"${browser.os.version}","description":"客户端所在操作系统版本","name":"操作系统版本"},{"code":"${browser.name}","description":"客户端浏览器名称","name":"浏览器名称"},{"code":"${browser.version}","description":"客户端浏览器版本","name":"浏览器版本"},{"code":"${browser.isMobile}","description":"如果客户端是手机，则值为1，否则为0","name":"手机标识"}]
+window.REQUEST_VARIABLES = [{"code":"${edgeVersion}","description":"","name":"边缘节点版本"},{"code":"${remoteAddr}","description":"会依次根据X-Forwarded-For、X-Real-IP、RemoteAddr获取，适合前端有别的反向代理服务时使用，存在伪造的风险","name":"客户端地址（IP）"},{"code":"${rawRemoteAddr}","description":"返回直接连接服务的客户端原始IP地址","name":"客户端地址（IP）"},{"code":"${remotePort}","description":"","name":"客户端端口"},{"code":"${remoteUser}","description":"","name":"客户端用户名"},{"code":"${requestURI}","description":"比如/hello?name=lily","name":"请求URI"},{"code":"${requestPath}","description":"比如/hello","name":"请求路径（不包括参数）"},{"code":"${requestURL}","description":"比如https://example.com/hello?name=lily","name":"完整的请求URL"},{"code":"${requestLength}","description":"","name":"请求内容长度"},{"code":"${requestMethod}","description":"比如GET、POST","name":"请求方法"},{"code":"${requestFilename}","description":"","name":"请求文件路径"},{"code":"${requestPathExtension}","description":"请求路径中的文件扩展名，包括点符号，比如.html、.png","name":"请求文件扩展名"},{"code":"${requestPathLowerExtension}","description":"请求路径中的文件扩展名，其中大写字母会被自动转换为小写，包括点符号，比如.html、.png","name":"请求文件小写扩展名"},{"code":"${scheme}","description":"","name":"请求协议，http或https"},{"code":"${proto}","description:":"类似于HTTP/1.0","name":"包含版本的HTTP请求协议"},{"code":"${timeISO8601}","description":"比如2018-07-16T23:52:24.839+08:00","name":"ISO 8601格式的时间"},{"code":"${timeLocal}","description":"比如17/Jul/2018:09:52:24 +0800","name":"本地时间"},{"code":"${msec}","description":"比如1531756823.054","name":"带有毫秒的时间"},{"code":"${timestamp}","description":"","name":"unix时间戳，单位为秒"},{"code":"${host}","description":"","name":"主机名"},{"code":"${cname}","description":"比如38b48e4f.goedge.cn","name":"当前网站的CNAME"},{"code":"${serverName}","description":"","name":"接收请求的服务器名"},{"code":"${serverPort}","description":"","name":"接收请求的服务器端口"},{"code":"${referer}","description":"","name":"请求来源URL"},{"code":"${referer.host}","description":"","name":"请求来源URL域名"},{"code":"${userAgent}","description":"","name":"客户端信息"},{"code":"${contentType}","description":"","name":"请求头部的Content-Type"},{"code":"${cookies}","description":"","name":"所有cookie组合字符串"},{"code":"${cookie.NAME}","description":"","name":"单个cookie值"},{"code":"${isArgs}","description":"如果URL有参数，则值为`?`；否则，则值为空","name":"问号（?）标记"},{"code":"${args}","description":"","name":"所有参数组合字符串"},{"code":"${arg.NAME}","description":"","name":"单个参数值"},{"code":"${headers}","description":"","name":"所有Header信息组合字符串"},{"code":"${header.NAME}","description":"","name":"单个Header值"},{"code":"${geo.country.name}","description":"","name":"国家/地区名称"},{"code":"${geo.country.id}","description":"","name":"国家/地区ID"},{"code":"${geo.province.name}","description":"目前只包含中国省份","name":"省份名称"},{"code":"${geo.province.id}","description":"目前只包含中国省份","name":"省份ID"},{"code":"${geo.city.name}","description":"目前只包含中国城市","name":"城市名称"},{"code":"${geo.city.id}","description":"目前只包含中国城市","name":"城市名称"},{"code":"${isp.name}","description":"","name":"ISP服务商名称"},{"code":"${isp.id}","description":"","name":"ISP服务商ID"},{"code":"${browser.os.name}","description":"客户端所在操作系统名称","name":"操作系统名称"},{"code":"${browser.os.version}","description":"客户端所在操作系统版本","name":"操作系统版本"},{"code":"${browser.name}","description":"客户端浏览器名称","name":"浏览器名称"},{"code":"${browser.version}","description":"客户端浏览器版本","name":"浏览器版本"},{"code":"${browser.isMobile}","description":"如果客户端是手机，则值为1，否则为0","name":"手机标识"}]
 
-window.METRIC_HTTP_KEYS = [{"name":"客户端地址（IP）","code":"${remoteAddr}","description":"会依次根据X-Forwarded-For、X-Real-IP、RemoteAddr获取，适用于前端可能有别的反向代理的情形，存在被伪造的可能","icon":""},{"name":"直接客户端地址（IP）","code":"${rawRemoteAddr}","description":"返回直接连接服务的客户端原始IP地址","icon":""},{"name":"客户端用户名","code":"${remoteUser}","description":"通过基本认证填入的用户名","icon":""},{"name":"请求URI","code":"${requestURI}","description":"包含参数，比如/hello?name=lily","icon":""},{"name":"请求路径","code":"${requestPath}","description":"不包含参数，比如/hello","icon":""},{"name":"完整URL","code":"${requestURL}","description":"比如https://example.com/hello?name=lily","icon":""},{"name":"请求方法","code":"${requestMethod}","description":"比如GET、POST等","icon":""},{"name":"请求协议Scheme","code":"${scheme}","description":"http或https","icon":""},{"name":"文件扩展名","code":"${requestPathExtension}","description":"请求路径中的文件扩展名，包括点符号，比如.html、.png","icon":""},{"name":"主机名","code":"${host}","description":"通常是请求的域名","icon":""},{"name":"请求协议Proto","code":"${proto}","description":"包含版本的HTTP请求协议，类似于HTTP/1.0","icon":""},{"name":"HTTP协议","code":"${proto}","description":"包含版本的HTTP请求协议，类似于HTTP/1.0","icon":""},{"name":"URL参数值","code":"${arg.NAME}","description":"单个URL参数值","icon":""},{"name":"请求来源URL","code":"${referer}","description":"请求来源Referer URL","icon":""},{"name":"请求来源URL域名","code":"${referer.host}","description":"请求来源Referer URL域名","icon":""},{"name":"Header值","code":"${header.NAME}","description":"单个Header值，比如${header.User-Agent}","icon":""},{"name":"Cookie值","code":"${cookie.NAME}","description":"单个cookie值，比如${cookie.sid}","icon":""},{"name":"状态码","code":"${status}","description":"","icon":""},{"name":"响应的Content-Type值","code":"${response.contentType}","description":"","icon":""}]
+window.METRIC_HTTP_KEYS = [{"name":"客户端地址（IP）","code":"${remoteAddr}","description":"会依次根据X-Forwarded-For、X-Real-IP、RemoteAddr获取，适用于前端可能有别的反向代理的情形，存在被伪造的可能","icon":""},{"name":"直接客户端地址（IP）","code":"${rawRemoteAddr}","description":"返回直接连接服务的客户端原始IP地址","icon":""},{"name":"客户端用户名","code":"${remoteUser}","description":"通过基本认证填入的用户名","icon":""},{"name":"请求URI","code":"${requestURI}","description":"包含参数，比如/hello?name=lily","icon":""},{"name":"请求路径","code":"${requestPath}","description":"不包含参数，比如/hello","icon":""},{"name":"完整URL","code":"${requestURL}","description":"比如https://example.com/hello?name=lily","icon":""},{"name":"请求方法","code":"${requestMethod}","description":"比如GET、POST等","icon":""},{"name":"请求协议Scheme","code":"${scheme}","description":"http或https","icon":""},{"name":"文件扩展名","code":"${requestPathExtension}","description":"请求路径中的文件扩展名，包括点符号，比如.html、.png","icon":""},{"name":"小写文件扩展名","code":"${requestPathLowerExtension}","description":"请求路径中的文件扩展名小写形式，包括点符号，比如.html、.png","icon":""},{"name":"主机名","code":"${host}","description":"通常是请求的域名","icon":""},{"name":"请求协议Proto","code":"${proto}","description":"包含版本的HTTP请求协议，类似于HTTP/1.0","icon":""},{"name":"HTTP协议","code":"${proto}","description":"包含版本的HTTP请求协议，类似于HTTP/1.0","icon":""},{"name":"URL参数值","code":"${arg.NAME}","description":"单个URL参数值","icon":""},{"name":"请求来源URL","code":"${referer}","description":"请求来源Referer URL","icon":""},{"name":"请求来源URL域名","code":"${referer.host}","description":"请求来源Referer URL域名","icon":""},{"name":"Header值","code":"${header.NAME}","description":"单个Header值，比如${header.User-Agent}","icon":""},{"name":"Cookie值","code":"${cookie.NAME}","description":"单个cookie值，比如${cookie.sid}","icon":""},{"name":"状态码","code":"${status}","description":"","icon":""},{"name":"响应的Content-Type值","code":"${response.contentType}","description":"","icon":""}]
 
 window.IP_ADDR_THRESHOLD_ITEMS = [{"code":"nodeAvgRequests","description":"当前节点在单位时间内接收到的平均请求数。","name":"节点平均请求数","unit":"个"},{"code":"nodeAvgTrafficOut","description":"当前节点在单位时间内发送的下行流量。","name":"节点平均下行流量","unit":"M"},{"code":"nodeAvgTrafficIn","description":"当前节点在单位时间内接收的上行流量。","name":"节点平均上行流量","unit":"M"},{"code":"nodeHealthCheck","description":"当前节点健康检查结果。","name":"节点健康检查结果","unit":""},{"code":"connectivity","description":"通过区域监控得到的当前IP地址的连通性数值，取值在0和100之间。","name":"IP连通性","unit":"%"},{"code":"groupAvgRequests","description":"当前节点所在分组在单位时间内接收到的平均请求数。","name":"分组平均请求数","unit":"个"},{"code":"groupAvgTrafficOut","description":"当前节点所在分组在单位时间内发送的下行流量。","name":"分组平均下行流量","unit":"M"},{"code":"groupAvgTrafficIn","description":"当前节点所在分组在单位时间内接收的上行流量。","name":"分组平均上行流量","unit":"M"},{"code":"clusterAvgRequests","description":"当前节点所在集群在单位时间内接收到的平均请求数。","name":"集群平均请求数","unit":"个"},{"code":"clusterAvgTrafficOut","description":"当前节点所在集群在单位时间内发送的下行流量。","name":"集群平均下行流量","unit":"M"},{"code":"clusterAvgTrafficIn","description":"当前节点所在集群在单位时间内接收的上行流量。","name":"集群平均上行流量","unit":"M"}]
 
