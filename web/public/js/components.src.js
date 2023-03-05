@@ -5773,18 +5773,22 @@ Vue.component("http-cache-config-box", {
 	},
 	template: `<div>
 	<input type="hidden" name="cacheJSON" :value="JSON.stringify(cacheConfig)"/>
+	
+	<table class="ui table definition selectable" v-show="!vIsGroup">
+		<tr>
+			<td class="title">全局缓存策略</td>
+			<td>
+				<div v-if="vCachePolicy != null">{{vCachePolicy.name}} <link-icon :href="'/servers/components/cache/policy?cachePolicyId=' + vCachePolicy.id"></link-icon>
+					<p class="comment">使用当前服务所在集群的设置。</p>
+				</div>
+				<span v-else class="red">当前集群没有设置缓存策略，当前配置无法生效。</span>
+			</td>
+		</tr>
+	</table>
+	
 	<table class="ui table definition selectable">
 		<prior-checkbox :v-config="cacheConfig" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || cacheConfig.isPrior">
-			<tr v-show="!vIsGroup">
-				<td>缓存策略</td>
-				<td>
-					<div v-if="vCachePolicy != null">{{vCachePolicy.name}} <link-icon :href="'/servers/components/cache/policy?cachePolicyId=' + vCachePolicy.id"></link-icon>
-						<p class="comment">使用当前服务所在集群的设置。</p>
-					</div>
-					<span v-else class="red">当前集群没有设置缓存策略，当前配置无法生效。</span>
-				</td>
-			</tr>
 			<tr>
 				<td class="title">启用缓存</td>
 				<td>
@@ -5807,7 +5811,7 @@ Vue.component("http-cache-config-box", {
 				<td>使用默认缓存条件</td>
 				<td>	
 					<checkbox v-model="enablePolicyRefs"></checkbox>
-					<p class="comment">选中后使用系统中已经定义的默认缓存条件。</p>
+					<p class="comment">选中后使用系统全局缓存策略中已经定义的默认缓存条件。</p>
 				</td>
 			</tr>
 			<tr>

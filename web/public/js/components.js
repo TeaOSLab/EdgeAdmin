@@ -1986,18 +1986,22 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<div style="height: 14em; padding-bottom: 1em; " :id="chartId" :class="{'scroll-box': chart.type == 'table'}"></div>
 </div>`}),Vue.component("metric-board",{template:"<div><slot></slot></div>"}),Vue.component("http-cache-config-box",{props:["v-cache-config","v-is-location","v-is-group","v-cache-policy","v-web-id"],data:function(){let e=this.vCacheConfig;return null==(e=null==e?{isPrior:!1,isOn:!1,addStatusHeader:!0,addAgeHeader:!1,enableCacheControlMaxAge:!1,cacheRefs:[],purgeIsOn:!1,purgeKey:"",disablePolicyRefs:!1}:e).cacheRefs&&(e.cacheRefs=[]),{cacheConfig:e,moreOptionsVisible:!1,enablePolicyRefs:!e.disablePolicyRefs}},watch:{enablePolicyRefs:function(e){this.cacheConfig.disablePolicyRefs=!e}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.cacheConfig.isPrior)&&this.cacheConfig.isOn},isPlus:function(){return Tea.Vue.teaIsPlus},generatePurgeKey:function(){let e=Math.random().toString()+Math.random().toString(),t=e.replace(/0\./g,"").replace(/\./g,""),i="";for(let e=0;e<t.length;e++)i+=String.fromCharCode(parseInt(t.substring(e,e+1))+(Math.random()<.5?"a":"A").charCodeAt(0));this.cacheConfig.purgeKey=i},showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible},changeStale:function(e){this.cacheConfig.stale=e}},template:`<div>
 	<input type="hidden" name="cacheJSON" :value="JSON.stringify(cacheConfig)"/>
+	
+	<table class="ui table definition selectable" v-show="!vIsGroup">
+		<tr>
+			<td class="title">全局缓存策略</td>
+			<td>
+				<div v-if="vCachePolicy != null">{{vCachePolicy.name}} <link-icon :href="'/servers/components/cache/policy?cachePolicyId=' + vCachePolicy.id"></link-icon>
+					<p class="comment">使用当前服务所在集群的设置。</p>
+				</div>
+				<span v-else class="red">当前集群没有设置缓存策略，当前配置无法生效。</span>
+			</td>
+		</tr>
+	</table>
+	
 	<table class="ui table definition selectable">
 		<prior-checkbox :v-config="cacheConfig" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || cacheConfig.isPrior">
-			<tr v-show="!vIsGroup">
-				<td>缓存策略</td>
-				<td>
-					<div v-if="vCachePolicy != null">{{vCachePolicy.name}} <link-icon :href="'/servers/components/cache/policy?cachePolicyId=' + vCachePolicy.id"></link-icon>
-						<p class="comment">使用当前服务所在集群的设置。</p>
-					</div>
-					<span v-else class="red">当前集群没有设置缓存策略，当前配置无法生效。</span>
-				</td>
-			</tr>
 			<tr>
 				<td class="title">启用缓存</td>
 				<td>
@@ -2020,7 +2024,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				<td>使用默认缓存条件</td>
 				<td>	
 					<checkbox v-model="enablePolicyRefs"></checkbox>
-					<p class="comment">选中后使用系统中已经定义的默认缓存条件。</p>
+					<p class="comment">选中后使用系统全局缓存策略中已经定义的默认缓存条件。</p>
 				</td>
 			</tr>
 			<tr>
