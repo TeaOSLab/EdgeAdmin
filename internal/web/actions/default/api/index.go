@@ -3,12 +3,15 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils/apinodeutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
+	stringutil "github.com/iwind/TeaGo/utils/string"
 	timeutil "github.com/iwind/TeaGo/utils/time"
 	"time"
 )
@@ -44,7 +47,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 
 		for _, node := range nodesResp.ApiNodes {
 			// 状态
-			status := &nodeconfigs.NodeStatus{}
+			var status = &nodeconfigs.NodeStatus{}
 			if len(node.StatusJSON) > 0 {
 				err = json.Unmarshal(node.StatusJSON, &status)
 				if err != nil {
@@ -55,7 +58,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 			}
 
 			// Rest地址
-			restAccessAddrs := []string{}
+			var restAccessAddrs = []string{}
 			if node.RestIsOn {
 				if len(node.RestHTTPJSON) > 0 {
 					httpConfig := &serverconfigs.HTTPProtocolConfig{}
@@ -86,6 +89,9 @@ func (this *IndexAction) RunGet(params struct{}) {
 				}
 			}
 
+			var shouldUpgrade = status.IsActive && len(status.BuildVersion) > 0 && stringutil.VersionCompare(teaconst.APINodeVersion, status.BuildVersion) > 0
+			canUpgrade, _ := apinodeutils.CanUpgrade(status.BuildVersion, status.OS, status.Arch)
+
 			nodeMaps = append(nodeMaps, maps.Map{
 				"id":              node.Id,
 				"isOn":            node.IsOn,
@@ -94,14 +100,17 @@ func (this *IndexAction) RunGet(params struct{}) {
 				"restAccessAddrs": restAccessAddrs,
 				"isPrimary":       node.IsPrimary,
 				"status": maps.Map{
-					"isActive":     status.IsActive,
-					"updatedAt":    status.UpdatedAt,
-					"hostname":     status.Hostname,
-					"cpuUsage":     status.CPUUsage,
-					"cpuUsageText": fmt.Sprintf("%.2f%%", status.CPUUsage*100),
-					"memUsage":     status.MemoryUsage,
-					"memUsageText": fmt.Sprintf("%.2f%%", status.MemoryUsage*100),
-					"buildVersion": status.BuildVersion,
+					"isActive":      status.IsActive,
+					"updatedAt":     status.UpdatedAt,
+					"hostname":      status.Hostname,
+					"cpuUsage":      status.CPUUsage,
+					"cpuUsageText":  fmt.Sprintf("%.2f%%", status.CPUUsage*100),
+					"memUsage":      status.MemoryUsage,
+					"memUsageText":  fmt.Sprintf("%.2f%%", status.MemoryUsage*100),
+					"buildVersion":  status.BuildVersion,
+					"latestVersion": teaconst.APINodeVersion,
+					"shouldUpgrade": shouldUpgrade,
+					"canUpgrade":    shouldUpgrade && canUpgrade,
 				},
 			})
 		}

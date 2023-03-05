@@ -3,7 +3,6 @@
 package apinodeutils
 
 import (
-	"bytes"
 	"compress/gzip"
 	"crypto/md5"
 	"errors"
@@ -16,9 +15,7 @@ import (
 	stringutil "github.com/iwind/TeaGo/utils/string"
 	"io"
 	"os"
-	"os/exec"
 	"path/filepath"
-	"regexp"
 	"runtime"
 )
 
@@ -27,49 +24,31 @@ type Progress struct {
 }
 
 type Upgrader struct {
-	progress *Progress
-	apiExe   string
+	progress  *Progress
+	apiExe    string
+	apiNodeId int64
 }
 
-func NewUpgrader() *Upgrader {
+func NewUpgrader(apiNodeId int64) *Upgrader {
 	return &Upgrader{
-		apiExe:   Tea.Root + "/edge-api/bin/edge-api",
-		progress: &Progress{Percent: 0},
+		apiExe:    apiExe(),
+		progress:  &Progress{Percent: 0},
+		apiNodeId: apiNodeId,
 	}
 }
 
-func (this *Upgrader) CanUpgrade(apiVersion string) (canUpgrade bool, reason string) {
-	stat, err := os.Stat(this.apiExe)
-	if err != nil {
-		return false, "stat error: " + err.Error()
-	}
-	if stat.IsDir() {
-		return false, "is directory"
-	}
-
-	localVersion, err := this.localVersion()
-	if err != nil {
-		return false, "lookup version failed: " + err.Error()
-	}
-	if stringutil.VersionCompare(localVersion, apiVersion) <= 0 {
-		return false, "need not upgrade, local '" + localVersion + "' vs remote '" + apiVersion + "'"
-	}
-
-	return true, ""
-}
-
-func (this *Upgrader) Upgrade(apiNodeId int64) error {
+func (this *Upgrader) Upgrade() error {
 	sharedClient, err := rpc.SharedRPC()
 	if err != nil {
 		return err
 	}
-	apiNodeResp, err := sharedClient.APINodeRPC().FindEnabledAPINode(sharedClient.Context(0), &pb.FindEnabledAPINodeRequest{ApiNodeId: apiNodeId})
+	apiNodeResp, err := sharedClient.APINodeRPC().FindEnabledAPINode(sharedClient.Context(0), &pb.FindEnabledAPINodeRequest{ApiNodeId: this.apiNodeId})
 	if err != nil {
 		return err
 	}
 	var apiNode = apiNodeResp.ApiNode
 	if apiNode == nil {
-		return errors.New("could not find api node with id '" + types.String(apiNodeId) + "'")
+		return errors.New("could not find api node with id '" + types.String(this.apiNodeId) + "'")
 	}
 
 	apiConfig, err := configs.LoadAPIConfig()
@@ -93,12 +72,12 @@ func (this *Upgrader) Upgrade(apiNodeId int64) error {
 	}
 
 	// 检查本地文件版本
-	canUpgrade, reason := this.CanUpgrade(versionResp.Version)
+	canUpgrade, reason := CanUpgrade(versionResp.Version, versionResp.Os, versionResp.Arch)
 	if !canUpgrade {
 		return errors.New(reason)
 	}
 
-	localVersion, err := this.localVersion()
+	localVersion, err := localVersion()
 	if err != nil {
 		return errors.New("lookup version failed: " + err.Error())
 	}
@@ -219,23 +198,4 @@ func (this *Upgrader) Upgrade(apiNodeId int64) error {
 
 func (this *Upgrader) Progress() *Progress {
 	return this.progress
-}
-
-func (this *Upgrader) localVersion() (string, error) {
-	var cmd = exec.Command(this.apiExe, "-V")
-	var output = &bytes.Buffer{}
-	cmd.Stdout = output
-	err := cmd.Run()
-	if err != nil {
-		return "", err
-	}
-	var localVersion = output.String()
-
-	// 检查版本号
-	var reg = regexp.MustCompile(`^[\d.]+$`)
-	if !reg.MatchString(localVersion) {
-		return "", errors.New("lookup version failed: " + localVersion)
-	}
-
-	return localVersion, nil
 }
