@@ -20,6 +20,10 @@ func CanUpgrade(apiVersion string, osName string, arch string) (canUpgrade bool,
 		return false, "current api version should not be empty"
 	}
 
+	if stringutil.VersionCompare(apiVersion, "0.6.4") < 0 {
+		return false, "api node version must greater than or equal to 0.6.4"
+	}
+
 	if osName != runtime.GOOS {
 		return false, "os not match: " + osName
 	}

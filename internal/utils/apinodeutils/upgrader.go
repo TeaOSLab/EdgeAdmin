@@ -67,7 +67,7 @@ func (this *Upgrader) Upgrade() error {
 		return err
 	}
 	if !Tea.IsTesting() /** 开发环境下允许突破此限制方便测试 **/ &&
-		(stringutil.VersionCompare(versionResp.Version, "0.6.4" /** 从0.6.4开始支持 **/) <= 0 || versionResp.Os != runtime.GOOS || versionResp.Arch != runtime.GOARCH) {
+		(stringutil.VersionCompare(versionResp.Version, "0.6.4" /** 从0.6.4开始支持 **/) < 0 || versionResp.Os != runtime.GOOS || versionResp.Arch != runtime.GOARCH) {
 		return errors.New("could not upgrade api node v" + versionResp.Version + "/" + versionResp.Os + "/" + versionResp.Arch)
 	}
 
