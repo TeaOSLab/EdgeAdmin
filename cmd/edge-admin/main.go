@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"flag"
 	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/apps"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
@@ -24,7 +25,7 @@ func main() {
 	var app = apps.NewAppCmd().
 		Version(teaconst.Version).
 		Product(teaconst.ProductName).
-		Usage(teaconst.ProcessName+" [-v|start|stop|restart|service|daemon|reset|recover|demo|upgrade]").
+		Usage(teaconst.ProcessName+" [-h|-v|start|stop|restart|service|daemon|reset|recover|demo|upgrade]").
 		Usage(teaconst.ProcessName+" [dev|prod]").
 		Option("-h", "show this help").
 		Option("-v", "show version").
@@ -38,7 +39,7 @@ func main() {
 		Option("demo", "switch to demo mode").
 		Option("dev", "switch to 'dev' mode").
 		Option("prod", "switch to 'prod' mode").
-		Option("upgrade", "upgrade from official site")
+		Option("upgrade [--url=URL]", "upgrade from official site or an url")
 
 	app.On("daemon", func() {
 		nodes.NewAdminNode().Daemon()
@@ -138,7 +139,12 @@ func main() {
 		}
 	})
 	app.On("upgrade", func() {
-		var manager = utils.NewUpgradeManager("admin")
+		var downloadURL = ""
+		var flagSet = flag.NewFlagSet("", flag.ContinueOnError)
+		flagSet.StringVar(&downloadURL, "url", "", "new version download url")
+		_ = flagSet.Parse(os.Args[2:])
+
+		var manager = utils.NewUpgradeManager("admin", downloadURL)
 		log.Println("checking latest version ...")
 		var ticker = time.NewTicker(1 * time.Second)
 		go func() {

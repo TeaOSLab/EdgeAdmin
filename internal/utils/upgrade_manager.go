@@ -52,11 +52,14 @@ type UpgradeManager struct {
 	writer        *UpgradeFileWriter
 	body          io.ReadCloser
 	isCancelled   bool
+
+	downloadURL string
 }
 
-func NewUpgradeManager(component string) *UpgradeManager {
+func NewUpgradeManager(component string, downloadURL string) *UpgradeManager {
 	return &UpgradeManager{
-		component: component,
+		component:   component,
+		downloadURL: downloadURL,
 		client: &http.Client{
 			Transport: &http.Transport{
 				TLSClientConfig: &tls.Config{
@@ -96,8 +99,8 @@ func (this *UpgradeManager) Start() error {
 	}
 
 	// 检查新版本
-	var downloadURL = ""
-	{
+	var downloadURL = this.downloadURL
+	if len(downloadURL) == 0 {
 		var url = teaconst.UpdatesURL
 		var osName = runtime.GOOS
 		if Tea.IsTesting() && osName == "darwin" {
