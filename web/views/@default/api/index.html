@@ -23,7 +23,12 @@
         </thead>
         <tr v-for="node in nodes">
             <td><a :href="'/api/node?nodeId=' + node.id">{{node.name}}</a>
-                <grey-label v-if="node.isPrimary">主节点</grey-label>
+                <div v-if="node.isPrimary">
+                    <grey-label v-if="node.isPrimary">主节点</grey-label>
+                </div>
+                <div v-if="node.status != null && node.status.shouldUpgrade">
+                    <span class="red small">v{{node.status.buildVersion}} -&gt; v{{node.status.latestVersion}}<br/><a href="" v-if="node.status.canUpgrade" @click.prevent="upgradeNode(node.id)">[远程升级]</a> </span>
+                </div>
             </td>
             <td>
                 <div v-if="node.accessAddrs != null && node.accessAddrs.length > 0">

@@ -1,0 +1,35 @@
+{$layout "layout_popup"}
+
+<h3>远程升级</h3>
+
+<form class="ui form" data-tea-action="$" data-tea-success="success" data-tea-timeout="3600" data-tea-before="before" data-tea-done="done">
+    <csrf-token></csrf-token>
+    <input type="hidden" name="nodeId" :value="nodeId"/>
+
+    <table class="ui table definition selectable">
+        <tr v-show="nodeName.length > 0">
+            <td class="title">API节点</td>
+            <td>{{nodeName}}</td>
+        </tr>
+        <tr v-show="currentVersion.length > 0">
+            <td>当前版本</td>
+            <td>v{{currentVersion}}</td>
+        </tr>
+        <tr v-show="latestVersion.length > 0">
+            <td>目标版本</td>
+            <td>v{{latestVersion}}</td>
+        </tr>
+        <tr>
+            <td class="title">升级结果</td>
+            <td>
+                <span v-if="currentVersion == latestVersion" class="green">已经升级到最新版本</span>
+                <span :class="{red: !resultIsOk}" v-if="currentVersion != latestVersion">
+                    <span v-if="!isRequesting">{{result}}</span>
+                    <span v-if="isRequesting">升级中...</span>
+                </span>
+            </td>
+        </tr>
+    </table>
+
+    <submit-btn v-show="canUpgrade && !isRequesting && !isUpgrading">开始升级</submit-btn>
+</form>

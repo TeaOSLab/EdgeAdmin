@@ -24,7 +24,10 @@ func init() {
 			GetPost("/update", new(UpdateAction)).
 			Get("/install", new(InstallAction)).
 			Get("/logs", new(LogsAction)).
+			GetPost("/upgradePopup", new(UpgradePopupAction)).
+			Post("/upgradeCheck", new(UpgradeCheckAction)).
 
+			//
 			EndAll()
 	})
 }
