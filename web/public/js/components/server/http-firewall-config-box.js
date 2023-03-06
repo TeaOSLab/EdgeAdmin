@@ -13,7 +13,13 @@ Vue.component("http-firewall-config-box", {
 
 		return {
 			firewall: firewall,
-			moreOptionsVisible: false
+			moreOptionsVisible: false,
+			execGlobalRules: !firewall.ignoreGlobalRules
+		}
+	},
+	watch: {
+		execGlobalRules: function (v) {
+			this.firewall.ignoreGlobalRules = !v
 		}
 	},
 	methods: {
@@ -43,17 +49,17 @@ Vue.component("http-firewall-config-box", {
 				<td class="title">启用WAF</td>
 				<td>
 					<checkbox v-model="firewall.isOn"></checkbox>
-					<p class="comment">启用WAF之后，各项WAF设置才会生效。</p>
+					<p class="comment">选中后，表示启用当前网站服务的WAF功能。</p>
 				</td>
 			</tr>
 		</tbody>
 		<more-options-tbody @change="changeOptionsVisible"></more-options-tbody>
 		<tbody v-show="moreOptionsVisible">
 			<tr>
-				<td>不使用全局规则</td>
+				<td>启用系统全局规则</td>
 				<td>
-					<checkbox v-model="firewall.ignoreGlobalRules"></checkbox>
-					<p class="comment">选中后，表示<strong>不使用</strong>系统全局WAF策略中定义的规则。</p>
+					<checkbox v-model="execGlobalRules"></checkbox>
+					<p class="comment">选中后，表示使用系统全局WAF策略中定义的规则。</p>
 				</td>
 			</tr>
 		</tbody>
