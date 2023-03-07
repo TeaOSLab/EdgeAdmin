@@ -77,6 +77,13 @@
                     <p class="comment">选中后，表示访问日志中记录Cookie内容。</p>
                 </td>
             </tr>
+            <tr>
+                <td>记录找不到网站日志</td>
+                <td>
+                    <checkbox name="httpAccessLogEnableServerNotFound" v-model="config.httpAccessLog.enableServerNotFound"></checkbox>
+                    <p class="comment">选中后，表示如果访客访问的域名对应的网站不存在也会记录日志。</p>
+                </td>
+            </tr>
         </table>
 
         <h4>运行日志</h4>
