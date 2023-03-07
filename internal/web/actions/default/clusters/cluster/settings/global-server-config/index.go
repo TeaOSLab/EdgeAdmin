@@ -82,6 +82,7 @@ func (this *IndexAction) RunPost(params struct {
 	HttpAccessLogEnableResponseHeaders    bool
 	HttpAccessLogCommonRequestHeadersOnly bool
 	HttpAccessLogEnableCookies            bool
+	HttpAccessLogEnableServerNotFound     bool
 
 	LogRecordServerError bool
 
@@ -138,6 +139,7 @@ func (this *IndexAction) RunPost(params struct {
 	config.HTTPAccessLog.EnableResponseHeaders = params.HttpAccessLogEnableResponseHeaders
 	config.HTTPAccessLog.CommonRequestHeadersOnly = params.HttpAccessLogCommonRequestHeadersOnly
 	config.HTTPAccessLog.EnableCookies = params.HttpAccessLogEnableCookies
+	config.HTTPAccessLog.EnableServerNotFound = params.HttpAccessLogEnableServerNotFound
 
 	// 日志
 	config.Log.RecordServerError = params.LogRecordServerError
