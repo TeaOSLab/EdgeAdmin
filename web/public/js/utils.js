@@ -334,7 +334,7 @@ window.teaweb = {
 	popupTip: function (html) {
 		Swal.fire({
 			html: '<div style="line-height: 1.7;text-align: left "><i class="icon question circle"></i>' + html + "</div>",
-			width: "30em",
+			width: "34em",
 			padding: "4em",
 			showConfirmButton: false,
 			showCloseButton: true,
