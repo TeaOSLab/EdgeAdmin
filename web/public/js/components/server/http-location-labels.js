@@ -43,6 +43,12 @@ Vue.component("http-location-labels", {
 	<!-- 反向代理 -->
 	<http-location-labels-label v-if="refIsOn(location.reverseProxyRef, location.reverseProxy)" :v-href="url('/reverseProxy')">源站</http-location-labels-label>
 	
+	<!-- UAM -->
+	<http-location-labels-label v-if="location.web != null && location.web.uam != null && location.web.uam.isPrior"><span :class="{disabled: !location.web.uam.isOn, red:location.web.uam.isOn}">5秒盾</span></http-location-labels-label>
+	
+	<!-- CC -->
+	<http-location-labels-label v-if="location.web != null && location.web.cc != null && location.web.cc.isPrior"><span :class="{disabled: !location.web.cc.isOn, red:location.web.cc.isOn}">CC防护</span></http-location-labels-label>
+	
 	<!-- WAF -->
 	<!-- TODO -->
 	

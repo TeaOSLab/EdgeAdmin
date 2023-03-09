@@ -255,21 +255,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":     serverConfig.ReverseProxyRef != nil && serverConfig.ReverseProxyRef.IsOn,
 		})
 
-		if teaconst.IsPlus {
-			menuItems = append(menuItems, maps.Map{
-				"name":     "-",
-				"url":      "",
-				"isActive": false,
-			})
-
-			menuItems = append(menuItems, maps.Map{
-				"name":        "5秒盾",
-				"url":         "/servers/server/settings/uam?serverId=" + serverIdString,
-				"isActive":    secondMenuItem == "uam",
-				"isOn":        serverConfig.UAM != nil && serverConfig.UAM.IsOn,
-				"isImportant": serverConfig.UAM != nil && serverConfig.UAM.IsOn,
-			})
-		}
+		menuItems = filterMenuItems(serverConfig, menuItems, serverIdString, secondMenuItem)
 
 		menuItems = append(menuItems, maps.Map{
 			"name":     "-",
@@ -406,7 +392,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":     serverConfig.Web != nil && serverConfig.Web.RequestLimit != nil && serverConfig.Web.RequestLimit.IsOn,
 		})
 
-		menuItems = filterMenuItems(serverConfig, menuItems, serverIdString, secondMenuItem)
+		menuItems = filterMenuItems2(serverConfig, menuItems, serverIdString, secondMenuItem)
 
 		menuItems = append(menuItems, maps.Map{
 			"name":     "-",

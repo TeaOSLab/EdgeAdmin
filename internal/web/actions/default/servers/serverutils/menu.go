@@ -11,3 +11,7 @@ import (
 func filterMenuItems(serverConfig *serverconfigs.ServerConfig, menuItems []maps.Map, serverIdString string, secondMenuItem string) []maps.Map {
 	return menuItems
 }
+
+func filterMenuItems2(serverConfig *serverconfigs.ServerConfig, menuItems []maps.Map, serverIdString string, secondMenuItem string) []maps.Map {
+	return menuItems
+}
