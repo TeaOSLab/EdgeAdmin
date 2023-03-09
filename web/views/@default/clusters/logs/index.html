@@ -68,6 +68,10 @@
 
 <p class="comment" v-if="logs.length == 0">暂时还没有<span v-if="type == 'unread'">未读</span><span v-if="type == 'needFix'">需修复</span>日志。</p>
 
+<div v-if="countLogs > 0 && searchedKeyword.length > 0" class="search-keyword-label">
+    <div class="ui label basic small">正在搜索关键词"{{searchedKeyword}}"，共{{countLogs}}条记录 &nbsp; <a href="" @click.prevent="deleteLogs"><span class="small">[清除日志]</span></a> </div>
+</div>
+
 <table class="ui table selectable celled" v-if="logs.length > 0">
     <thead>
         <tr>

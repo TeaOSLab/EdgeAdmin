@@ -18,6 +18,7 @@ func init() {
 			Post("/readAllLogs", new(ReadAllLogsAction)).
 			Post("/fix", new(FixAction)).
 			Post("/fixAll", new(FixAllAction)).
+			Post("/deleteAll", new(DeleteAllAction)).
 			EndAll()
 	})
 }

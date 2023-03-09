@@ -39,6 +39,7 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["dayFrom"] = params.DayFrom
 	this.Data["dayTo"] = params.DayTo
 	this.Data["keyword"] = params.Keyword
+	this.Data["searchedKeyword"] = params.Keyword
 	this.Data["level"] = params.Level
 	this.Data["type"] = params.Type
 	this.Data["tag"] = params.Tag
@@ -97,6 +98,8 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 	var count = countResp.Count
+	this.Data["countLogs"] = count
+
 	var page = this.NewPage(count)
 	this.Data["page"] = page.AsHTML()
 
