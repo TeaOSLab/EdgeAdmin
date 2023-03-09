@@ -1,4 +1,7 @@
 <first-menu>
-	<menu-item :href="'/servers/server/settings/locations?serverId=' + serverId">所有路由规则 &raquo;</menu-item>
+	<menu-item :href="'/servers/server/settings/locations?serverId=' + serverId">&laquo; 返回服务设置</menu-item>
+    <span class="item disabled" style="padding-left:0;padding-right:0">|</span>
+    <menu-item :href="'/servers/server/settings/locations?serverId=' + serverId">路由规则</menu-item>
+    <raquo-item></raquo-item>
 	<menu-item :href="'/servers/server/settings/locations/location?serverId=' + serverId + '&locationId=' + locationId" :active="true">{{locationConfig.pattern}}</menu-item>
 </first-menu>
