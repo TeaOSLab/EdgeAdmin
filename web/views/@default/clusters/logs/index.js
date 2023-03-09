@@ -82,4 +82,23 @@ Tea.context(function () {
 				})
 		})
 	}
+
+	this.deleteLogs = function () {
+		teaweb.confirm("确定要删除当前关键词\"" + this.searchedKeyword + "\"匹配的" + this.countLogs + "个运行日志？", function () {
+			this.$post(".deleteAll")
+				.params({
+					dayFrom: this.dayFrom,
+					dayTo: this.dayTo,
+					keyword: this.keyword,
+					level: this.level,
+					type: this.type,
+					tag: this.tag,
+					clusterId: this.clusterId,
+					nodeId: this.nodeId
+				})
+				.success(function () {
+					teaweb.reload()
+				})
+		})
+	}
 })

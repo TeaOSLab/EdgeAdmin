@@ -2,4 +2,11 @@ pre.log-box {
   margin: 0;
   padding: 0;
 }
+.search-keyword-label a {
+  opacity: 1!important;
+}
+.search-keyword-label span.small {
+  font-size: 0.8em;
+  color: #4183c4 !important;
+}
 /*# sourceMappingURL=index.css.map */
