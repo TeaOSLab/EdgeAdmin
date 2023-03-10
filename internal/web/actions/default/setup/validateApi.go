@@ -10,6 +10,7 @@ import (
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
 	"net"
+	"regexp"
 	"strings"
 )
 
@@ -61,7 +62,24 @@ func (this *ValidateApiAction) RunPost(params struct {
 		}
 
 		if net.ParseIP(params.NewHost) == nil {
-			this.FailField("newHost", "请输入正确的API节点主机地址")
+			// 检查是否为域名
+			var domainReg = regexp.MustCompile(`^[\w-]+$`) // 这里暂不支持 unicode 域名
+			var digitReg = regexp.MustCompile(`^\d+$`)
+			var isIP = true
+			for _, piece := range strings.Split(params.NewHost, ".") {
+				if !domainReg.MatchString(piece) {
+					this.FailField("newHost", "请输入正确的API节点主机地址")
+					return
+				}
+				if !digitReg.MatchString(piece) {
+					isIP = false
+				}
+			}
+
+			if isIP {
+				this.FailField("newHost", "请输入正确的API节点主机地址")
+				return
+			}
 		}
 
 		params.Must.
