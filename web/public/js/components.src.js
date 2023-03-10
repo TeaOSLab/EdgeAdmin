@@ -5239,7 +5239,13 @@ Vue.component("http-firewall-config-box", {
 
 		return {
 			firewall: firewall,
-			moreOptionsVisible: false
+			moreOptionsVisible: false,
+			execGlobalRules: !firewall.ignoreGlobalRules
+		}
+	},
+	watch: {
+		execGlobalRules: function (v) {
+			this.firewall.ignoreGlobalRules = !v
 		}
 	},
 	methods: {
@@ -5269,17 +5275,17 @@ Vue.component("http-firewall-config-box", {
 				<td class="title">启用WAF</td>
 				<td>
 					<checkbox v-model="firewall.isOn"></checkbox>
-					<p class="comment">启用WAF之后，各项WAF设置才会生效。</p>
+					<p class="comment">选中后，表示启用当前网站服务的WAF功能。</p>
 				</td>
 			</tr>
 		</tbody>
 		<more-options-tbody @change="changeOptionsVisible"></more-options-tbody>
 		<tbody v-show="moreOptionsVisible">
 			<tr>
-				<td>不使用全局规则</td>
+				<td>启用系统全局规则</td>
 				<td>
-					<checkbox v-model="firewall.ignoreGlobalRules"></checkbox>
-					<p class="comment">选中后，表示<strong>不使用</strong>系统全局WAF策略中定义的规则。</p>
+					<checkbox v-model="execGlobalRules"></checkbox>
+					<p class="comment">选中后，表示使用系统全局WAF策略中定义的规则。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -5960,6 +5966,7 @@ Vue.component("http-firewall-checkpoint-cc", {
 		let period = 60
 		let threshold = 1000
 		let ignoreCommonFiles = false
+		let enableFingerprint = true
 
 		let options = {}
 		if (window.parent.UPDATING_RULE != null) {
@@ -5984,6 +5991,9 @@ Vue.component("http-firewall-checkpoint-cc", {
 		if (options.ignoreCommonFiles != null && typeof (options.ignoreCommonFiles) == "boolean") {
 			ignoreCommonFiles = options.ignoreCommonFiles
 		}
+		if (options.enableFingerprint != null && typeof (options.enableFingerprint) == "boolean") {
+			enableFingerprint = options.enableFingerprint
+		}
 
 		let that = this
 		setTimeout(function () {
@@ -5995,6 +6005,7 @@ Vue.component("http-firewall-checkpoint-cc", {
 			period: period,
 			threshold: threshold,
 			ignoreCommonFiles: ignoreCommonFiles,
+			enableFingerprint: enableFingerprint,
 			options: {},
 			value: threshold
 		}
@@ -6007,6 +6018,9 @@ Vue.component("http-firewall-checkpoint-cc", {
 			this.change()
 		},
 		ignoreCommonFiles: function () {
+			this.change()
+		},
+		enableFingerprint: function () {
 			this.change()
 		}
 	},
@@ -6032,6 +6046,11 @@ Vue.component("http-firewall-checkpoint-cc", {
 				ignoreCommonFiles = false
 			}
 
+			let enableFingerprint = this.enableFingerprint
+			if (typeof enableFingerprint != "boolean") {
+				enableFingerprint = true
+			}
+
 			this.vCheckpoint.options = [
 				{
 					code: "keys",
@@ -6048,6 +6067,10 @@ Vue.component("http-firewall-checkpoint-cc", {
 				{
 					code: "ignoreCommonFiles",
 					value: ignoreCommonFiles
+				},
+				{
+					code: "enableFingerprint",
+					value: enableFingerprint
 				}
 			]
 		},
@@ -6083,6 +6106,13 @@ Vue.component("http-firewall-checkpoint-cc", {
 			<td>
 				<input type="text" v-model="threshold" style="width: 6em" maxlength="8"/>
 				<p class="comment" v-if="thresholdTooLow()"><span class="red">对于网站类应用来说，当前阈值设置的太低，有可能会影响用户正常访问。</span></p>
+			</td>
+		</tr>
+		<tr>
+			<td>检查请求来源指纹</td>
+			<td>
+				<checkbox v-model="enableFingerprint"></checkbox>
+				<p class="comment">在接收到HTTPS请求时尝试检查请求来源的指纹，用来检测代理服务和爬虫攻击。</p>
 			</td>
 		</tr>
 		<tr>
@@ -7091,6 +7121,75 @@ Vue.component("server-name-box", {
             <input type="text" placeholder="搜索域名" ref="keywordRef" class="ui input tiny" v-model="keyword"/>
         </div>
     </div>
+</div>`
+})
+
+// UAM模式配置
+Vue.component("uam-config-box", {
+	props: ["v-uam-config", "v-is-location", "v-is-group"],
+	data: function () {
+		let config = this.vUamConfig
+		if (config == null) {
+			config = {
+				isPrior: false,
+				isOn: false,
+				onlyURLPatterns: [],
+				exceptURLPatterns: []
+			}
+		}
+		if (config.onlyURLPatterns == null) {
+			config.onlyURLPatterns = []
+		}
+		if (config.exceptURLPatterns == null) {
+			config.exceptURLPatterns = []
+		}
+		return {
+			config: config,
+			moreOptionsVisible: false
+		}
+	},
+	methods: {
+		showMoreOptions: function () {
+			this.moreOptionsVisible = !this.moreOptionsVisible
+		}
+	},
+	template: `<div>
+<input type="hidden" name="uamJSON" :value="JSON.stringify(config)"/>
+<table class="ui table definition selectable">
+	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+	<tbody v-show="((!vIsLocation && !vIsGroup) || config.isPrior)">
+		<tr>
+			<td class="title">启用5秒盾</td>
+			<td>
+				<checkbox v-model="config.isOn"></checkbox>
+				<p class="comment"><plus-label></plus-label>启用后，访问网站时，自动检查浏览器环境，阻止非正常访问。</p>
+			</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
+		</tr>
+	</tbody>
+	<tbody v-show="moreOptionsVisible">
+		<tr>
+			<td>例外URL</td>
+			<td>
+				<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
+				<p class="comment">如果填写了例外URL，表示这些URL跳过5秒盾不做处理。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>限制URL</td>
+			<td>
+				<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
+				<p class="comment">如果填写了支持URL，表示只对这些URL进行5秒盾处理；如果不填则表示支持所有的URL。</p>
+			</td>
+		</tr>	
+	</tr>
+	</tbody>
+</table>
+<div class="margin"></div>
 </div>`
 })
 
@@ -8720,39 +8819,6 @@ Vue.component("user-selector", {
 </div>`
 })
 
-// UAM模式配置
-Vue.component("uam-config-box", {
-	props: ["v-uam-config", "v-is-location", "v-is-group"],
-	data: function () {
-		let config = this.vUamConfig
-		if (config == null) {
-			config = {
-				isPrior: false,
-				isOn: false
-			}
-		}
-		return {
-			config: config
-		}
-	},
-	template: `<div>
-<input type="hidden" name="uamJSON" :value="JSON.stringify(config)"/>
-<table class="ui table definition selectable">
-	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
-	<tbody v-show="((!vIsLocation && !vIsGroup) || config.isPrior)">
-		<tr>
-			<td class="title">启用5秒盾</td>
-			<td>
-				<checkbox v-model="config.isOn"></checkbox>
-				<p class="comment"><plus-label></plus-label>启用后，访问网站时，自动检查浏览器环境，阻止非正常访问。</p>
-			</td>
-		</tr>
-	</tbody>
-</table>
-<div class="margin"></div>
-</div>`
-})
-
 Vue.component("http-header-policy-box", {
 	props: ["v-request-header-policy", "v-request-header-ref", "v-response-header-policy", "v-response-header-ref", "v-params", "v-is-location", "v-is-group", "v-has-group-request-config", "v-has-group-response-config", "v-group-setting-url"],
 	data: function () {
@@ -9548,6 +9614,75 @@ Vue.component("http-compression-config-box", {
 		</tbody>
 	</table>
 	<div class="margin"></div>
+</div>`
+})
+
+// HTTP CC防护配置
+Vue.component("http-cc-config-box", {
+	props: ["v-cc-config", "v-is-location", "v-is-group"],
+	data: function () {
+		let config = this.vCcConfig
+		if (config == null) {
+			config = {
+				isPrior: false,
+				isOn: false,
+				onlyURLPatterns: [],
+				exceptURLPatterns: []
+			}
+		}
+		if (config.onlyURLPatterns == null) {
+			config.onlyURLPatterns = []
+		}
+		if (config.exceptURLPatterns == null) {
+			config.exceptURLPatterns = []
+		}
+		return {
+			config: config,
+			moreOptionsVisible: false
+		}
+	},
+	methods: {
+		showMoreOptions: function () {
+			this.moreOptionsVisible = !this.moreOptionsVisible
+		}
+	},
+	template: `<div>
+<input type="hidden" name="ccJSON" :value="JSON.stringify(config)"/>
+<table class="ui table definition selectable">
+	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+	<tbody v-show="((!vIsLocation && !vIsGroup) || config.isPrior)">
+		<tr>
+			<td class="title">启用CC无感防护</td>
+			<td>
+				<checkbox v-model="config.isOn"></checkbox>
+				<p class="comment"><plus-label></plus-label>启用后，自动检测并拦截CC攻击，此功能不需要开启WAF功能。</p>
+			</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
+		</tr>
+	</tbody>
+	<tbody v-show="moreOptionsVisible">
+		<tr>
+			<td>例外URL</td>
+			<td>
+				<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
+				<p class="comment">如果填写了例外URL，表示这些URL跳过CC防护不做处理。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>限制URL</td>
+			<td>
+				<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
+				<p class="comment">如果填写了支持URL，表示只对这些URL进行CC防护处理；如果不填则表示支持所有的URL。</p>
+			</td>
+		</tr>	
+	</tr>
+	</tbody>
+</table>
+<div class="margin"></div>
 </div>`
 })
 
@@ -10535,6 +10670,12 @@ Vue.component("http-location-labels", {
 	
 	<!-- 反向代理 -->
 	<http-location-labels-label v-if="refIsOn(location.reverseProxyRef, location.reverseProxy)" :v-href="url('/reverseProxy')">源站</http-location-labels-label>
+	
+	<!-- UAM -->
+	<http-location-labels-label v-if="location.web != null && location.web.uam != null && location.web.uam.isPrior"><span :class="{disabled: !location.web.uam.isOn, red:location.web.uam.isOn}">5秒盾</span></http-location-labels-label>
+	
+	<!-- CC -->
+	<http-location-labels-label v-if="location.web != null && location.web.cc != null && location.web.cc.isPrior"><span :class="{disabled: !location.web.cc.isOn, red:location.web.cc.isOn}">CC防护</span></http-location-labels-label>
 	
 	<!-- WAF -->
 	<!-- TODO -->
@@ -16279,6 +16420,115 @@ Vue.component("network-addresses-view", {
 	template: `<div>
 	<div class="ui label tiny basic" v-if="vAddresses != null" v-for="addr in vAddresses">
 		{{addr.protocol}}://<span v-if="addr.host.length > 0">{{addr.host.quoteIP()}}</span><span v-else>*</span>:{{addr.portRange}}
+	</div>
+</div>`
+})
+
+Vue.component("url-patterns-box", {
+	props: ["value"],
+	data: function () {
+		let patterns = []
+		if (this.value != null) {
+			patterns = this.value
+		}
+		return {
+			patterns: patterns,
+			isAdding: false,
+
+			addingPattern: {"type": "wildcard", "pattern": ""},
+			editingIndex: -1
+		}
+	},
+	methods: {
+		add: function () {
+			this.isAdding = true
+			let that = this
+			setTimeout(function () {
+				that.$refs.patternInput.focus()
+			})
+		},
+		edit: function (index) {
+			this.isAdding = true
+			this.editingIndex = index
+			this.addingPattern = {
+				type: this.patterns[index].type,
+				pattern: this.patterns[index].pattern
+			}
+		},
+		confirm: function () {
+			let pattern = this.addingPattern.pattern.trim()
+			if (pattern.length == 0) {
+				let that = this
+				teaweb.warn("请输入URL", function () {
+					that.$refs.patternInput.focus()
+				})
+				return
+			}
+			if (this.editingIndex < 0) {
+				this.patterns.push({
+					type: this.addingPattern.type,
+					pattern: this.addingPattern.pattern
+				})
+			} else {
+				this.patterns[this.editingIndex].type = this.addingPattern.type
+				this.patterns[this.editingIndex].pattern = this.addingPattern.pattern
+			}
+			this.notifyChange()
+			this.cancel()
+		},
+		remove: function (index) {
+			this.patterns.$remove(index)
+			this.cancel()
+			this.notifyChange()
+		},
+		cancel: function () {
+			this.isAdding = false
+			this.addingPattern = {"type": "wildcard", "pattern": ""}
+			this.editingIndex = -1
+		},
+		patternTypeName: function (patternType) {
+			switch (patternType) {
+				case "wildcard":
+					return "通配符"
+				case "regexp":
+					return "正则"
+			}
+			return ""
+		},
+		notifyChange: function () {
+			this.$emit("input", this.patterns)
+		}
+	},
+	template: `<div>
+	<div v-show="patterns.length > 0">
+		<div v-for="(pattern, index) in patterns" class="ui label basic small" :class="{blue: index == editingIndex, disabled: isAdding && index != editingIndex}" style="margin-bottom: 0.8em">
+			<span class="grey" style="font-weight: normal">[{{patternTypeName(pattern.type)}}]</span> <span >{{pattern.pattern}}</span> &nbsp; 
+			<a href="" title="修改" @click.prevent="edit(index)"><i class="icon pencil tiny"></i></a> 
+			<a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+		</div>
+	</div>
+	<div v-show="isAdding" style="margin-top: 0.5em">
+		<div class="ui fields inline">
+			<div class="ui field">
+				<select class="ui dropdown auto-width" v-model="addingPattern.type">
+					<option value="wildcard">通配符</option>
+					<option value="regexp">正则表达式</option>
+				</select>
+			</div>
+			<div class="ui field">
+				<input type="text" :placeholder="(addingPattern.type == 'wildcard') ? '可以使用星号（*）通配符，不区分大小写' : '可以使用正则表达式，不区分大小写'" v-model="addingPattern.pattern" size="36" ref="patternInput" @keyup.enter="confirm()" @keypress.enter.prevent="1" spellcheck="false"/>
+			</div>
+			<div class="ui field" style="padding-left: 0">
+				<tip-icon content="通配符示例：<br/>单个路径开头：/hello/world/*<br/>单个路径结尾：*/hello/world<br/>包含某个路径：*/article/*<br/>某个域名下的所有URL：*example.com/*" v-if="addingPattern.type == 'wildcard'"></tip-icon>
+				<tip-icon content="正则表达式示例：<br/>单个路径开头：^/hello/world<br/>单个路径结尾：/hello/world$<br/>包含某个路径：/article/<br/>匹配某个数字路径：/article/(\\d+)<br/>某个域名下的所有URL：^(http|https)://example.com/" v-if="addingPattern.type == 'regexp'"></tip-icon>
+			</div>
+			<div class="ui field">
+				<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button><a href="" title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
+			</div>
+		</div>
+	</div>
+	<div v-if=!isAdding style="margin-top: 0.5em">
+		<button class="ui button tiny basic" type="button" @click.prevent="add">+</button>
 	</div>
 </div>`
 })

@@ -93,6 +93,7 @@ Vue.component("http-firewall-checkpoint-cc", {
 		let period = 60
 		let threshold = 1000
 		let ignoreCommonFiles = false
+		let enableFingerprint = true
 
 		let options = {}
 		if (window.parent.UPDATING_RULE != null) {
@@ -117,6 +118,9 @@ Vue.component("http-firewall-checkpoint-cc", {
 		if (options.ignoreCommonFiles != null && typeof (options.ignoreCommonFiles) == "boolean") {
 			ignoreCommonFiles = options.ignoreCommonFiles
 		}
+		if (options.enableFingerprint != null && typeof (options.enableFingerprint) == "boolean") {
+			enableFingerprint = options.enableFingerprint
+		}
 
 		let that = this
 		setTimeout(function () {
@@ -128,6 +132,7 @@ Vue.component("http-firewall-checkpoint-cc", {
 			period: period,
 			threshold: threshold,
 			ignoreCommonFiles: ignoreCommonFiles,
+			enableFingerprint: enableFingerprint,
 			options: {},
 			value: threshold
 		}
@@ -140,6 +145,9 @@ Vue.component("http-firewall-checkpoint-cc", {
 			this.change()
 		},
 		ignoreCommonFiles: function () {
+			this.change()
+		},
+		enableFingerprint: function () {
 			this.change()
 		}
 	},
@@ -165,6 +173,11 @@ Vue.component("http-firewall-checkpoint-cc", {
 				ignoreCommonFiles = false
 			}
 
+			let enableFingerprint = this.enableFingerprint
+			if (typeof enableFingerprint != "boolean") {
+				enableFingerprint = true
+			}
+
 			this.vCheckpoint.options = [
 				{
 					code: "keys",
@@ -181,6 +194,10 @@ Vue.component("http-firewall-checkpoint-cc", {
 				{
 					code: "ignoreCommonFiles",
 					value: ignoreCommonFiles
+				},
+				{
+					code: "enableFingerprint",
+					value: enableFingerprint
 				}
 			]
 		},
@@ -216,6 +233,13 @@ Vue.component("http-firewall-checkpoint-cc", {
 			<td>
 				<input type="text" v-model="threshold" style="width: 6em" maxlength="8"/>
 				<p class="comment" v-if="thresholdTooLow()"><span class="red">对于网站类应用来说，当前阈值设置的太低，有可能会影响用户正常访问。</span></p>
+			</td>
+		</tr>
+		<tr>
+			<td>检查请求来源指纹</td>
+			<td>
+				<checkbox v-model="enableFingerprint"></checkbox>
+				<p class="comment">在接收到HTTPS请求时尝试检查请求来源的指纹，用来检测代理服务和爬虫攻击。</p>
 			</td>
 		</tr>
 		<tr>

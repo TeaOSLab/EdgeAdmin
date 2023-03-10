@@ -1935,7 +1935,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			</div>	
 		</div>
 	</div>	
-</div>`}),Vue.component("http-firewall-config-box",{props:["v-firewall-config","v-is-location","v-is-group","v-firewall-policy"],data:function(){let e=this.vFirewallConfig;return{firewall:e=null==e?{isPrior:!1,isOn:!1,firewallPolicyId:0,ignoreGlobalRules:!1}:e,moreOptionsVisible:!1}},methods:{changeOptionsVisible:function(e){this.moreOptionsVisible=e}},template:`<div>
+</div>`}),Vue.component("http-firewall-config-box",{props:["v-firewall-config","v-is-location","v-is-group","v-firewall-policy"],data:function(){let e=this.vFirewallConfig;return{firewall:e=null==e?{isPrior:!1,isOn:!1,firewallPolicyId:0,ignoreGlobalRules:!1}:e,moreOptionsVisible:!1,execGlobalRules:!e.ignoreGlobalRules}},watch:{execGlobalRules:function(e){this.firewall.ignoreGlobalRules=!e}},methods:{changeOptionsVisible:function(e){this.moreOptionsVisible=e}},template:`<div>
 	<input type="hidden" name="firewallJSON" :value="JSON.stringify(firewall)"/>
 	
 	<table class="ui table selectable definition" v-show="!vIsGroup">
@@ -1957,17 +1957,17 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				<td class="title">启用WAF</td>
 				<td>
 					<checkbox v-model="firewall.isOn"></checkbox>
-					<p class="comment">启用WAF之后，各项WAF设置才会生效。</p>
+					<p class="comment">选中后，表示启用当前网站服务的WAF功能。</p>
 				</td>
 			</tr>
 		</tbody>
 		<more-options-tbody @change="changeOptionsVisible"></more-options-tbody>
 		<tbody v-show="moreOptionsVisible">
 			<tr>
-				<td>不使用全局规则</td>
+				<td>启用系统全局规则</td>
 				<td>
-					<checkbox v-model="firewall.ignoreGlobalRules"></checkbox>
-					<p class="comment">选中后，表示<strong>不使用</strong>系统全局WAF策略中定义的规则。</p>
+					<checkbox v-model="execGlobalRules"></checkbox>
+					<p class="comment">选中后，表示使用系统全局WAF策略中定义的规则。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -2095,7 +2095,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			</td>
 		</tr>
 	</table>
-</div>`}),Vue.component("http-firewall-checkpoint-cc",{props:["v-checkpoint"],data:function(){let e=[],t=60,i=1e3,n=!1,s={},o=(null==(s=null!=window.parent.UPDATING_RULE?window.parent.UPDATING_RULE.checkpointOptions:s)&&(s={}),0==(e=null!=s.keys?s.keys:e).length&&(e=["${remoteAddr}","${requestPath}"]),null!=s.period&&(t=s.period),null!=s.threshold&&(i=s.threshold),null!=s.ignoreCommonFiles&&"boolean"==typeof s.ignoreCommonFiles&&(n=s.ignoreCommonFiles),this);return setTimeout(function(){o.change()},100),{keys:e,period:t,threshold:i,ignoreCommonFiles:n,options:{},value:i}},watch:{period:function(){this.change()},threshold:function(){this.change()},ignoreCommonFiles:function(){this.change()}},methods:{changeKeys:function(e){this.keys=e,this.change()},change:function(){let e=parseInt(this.period.toString()),t=((isNaN(e)||e<=0)&&(e=60),parseInt(this.threshold.toString())),i=((isNaN(t)||t<=0)&&(t=1e3),this.value=t,this.ignoreCommonFiles);"boolean"!=typeof i&&(i=!1),this.vCheckpoint.options=[{code:"keys",value:this.keys},{code:"period",value:e},{code:"threshold",value:t},{code:"ignoreCommonFiles",value:i}]},thresholdTooLow:function(){let e=parseInt(this.threshold.toString());return 0<(e=isNaN(e)||e<=0?1e3:e)&&e<5}},template:`<div>
+</div>`}),Vue.component("http-firewall-checkpoint-cc",{props:["v-checkpoint"],data:function(){let e=[],t=60,i=1e3,n=!1,s=!0,o={},a=(null==(o=null!=window.parent.UPDATING_RULE?window.parent.UPDATING_RULE.checkpointOptions:o)&&(o={}),0==(e=null!=o.keys?o.keys:e).length&&(e=["${remoteAddr}","${requestPath}"]),null!=o.period&&(t=o.period),null!=o.threshold&&(i=o.threshold),null!=o.ignoreCommonFiles&&"boolean"==typeof o.ignoreCommonFiles&&(n=o.ignoreCommonFiles),null!=o.enableFingerprint&&"boolean"==typeof o.enableFingerprint&&(s=o.enableFingerprint),this);return setTimeout(function(){a.change()},100),{keys:e,period:t,threshold:i,ignoreCommonFiles:n,enableFingerprint:s,options:{},value:i}},watch:{period:function(){this.change()},threshold:function(){this.change()},ignoreCommonFiles:function(){this.change()},enableFingerprint:function(){this.change()}},methods:{changeKeys:function(e){this.keys=e,this.change()},change:function(){let e=parseInt(this.period.toString()),t=((isNaN(e)||e<=0)&&(e=60),parseInt(this.threshold.toString())),i=((isNaN(t)||t<=0)&&(t=1e3),this.value=t,this.ignoreCommonFiles),n=("boolean"!=typeof i&&(i=!1),this.enableFingerprint);"boolean"!=typeof n&&(n=!0),this.vCheckpoint.options=[{code:"keys",value:this.keys},{code:"period",value:e},{code:"threshold",value:t},{code:"ignoreCommonFiles",value:i},{code:"enableFingerprint",value:n}]},thresholdTooLow:function(){let e=parseInt(this.threshold.toString());return 0<(e=isNaN(e)||e<=0?1e3:e)&&e<5}},template:`<div>
 	<input type="hidden" name="operator" value="gt"/>
 	<input type="hidden" name="value" :value="value"/>
 	<table class="ui table">
@@ -2119,6 +2119,13 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<td>
 				<input type="text" v-model="threshold" style="width: 6em" maxlength="8"/>
 				<p class="comment" v-if="thresholdTooLow()"><span class="red">对于网站类应用来说，当前阈值设置的太低，有可能会影响用户正常访问。</span></p>
+			</td>
+		</tr>
+		<tr>
+			<td>检查请求来源指纹</td>
+			<td>
+				<checkbox v-model="enableFingerprint"></checkbox>
+				<p class="comment">在接收到HTTPS请求时尝试检查请求来源的指纹，用来检测代理服务和爬虫攻击。</p>
 			</td>
 		</tr>
 		<tr>
@@ -2431,6 +2438,43 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
             <input type="text" placeholder="搜索域名" ref="keywordRef" class="ui input tiny" v-model="keyword"/>
         </div>
     </div>
+</div>`}),Vue.component("uam-config-box",{props:["v-uam-config","v-is-location","v-is-group"],data:function(){let e=this.vUamConfig;return null==(e=null==e?{isPrior:!1,isOn:!1,onlyURLPatterns:[],exceptURLPatterns:[]}:e).onlyURLPatterns&&(e.onlyURLPatterns=[]),null==e.exceptURLPatterns&&(e.exceptURLPatterns=[]),{config:e,moreOptionsVisible:!1}},methods:{showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible}},template:`<div>
+<input type="hidden" name="uamJSON" :value="JSON.stringify(config)"/>
+<table class="ui table definition selectable">
+	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+	<tbody v-show="((!vIsLocation && !vIsGroup) || config.isPrior)">
+		<tr>
+			<td class="title">启用5秒盾</td>
+			<td>
+				<checkbox v-model="config.isOn"></checkbox>
+				<p class="comment"><plus-label></plus-label>启用后，访问网站时，自动检查浏览器环境，阻止非正常访问。</p>
+			</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
+		</tr>
+	</tbody>
+	<tbody v-show="moreOptionsVisible">
+		<tr>
+			<td>例外URL</td>
+			<td>
+				<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
+				<p class="comment">如果填写了例外URL，表示这些URL跳过5秒盾不做处理。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>限制URL</td>
+			<td>
+				<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
+				<p class="comment">如果填写了支持URL，表示只对这些URL进行5秒盾处理；如果不填则表示支持所有的URL。</p>
+			</td>
+		</tr>	
+	</tr>
+	</tbody>
+</table>
+<div class="margin"></div>
 </div>`}),Vue.component("http-cache-stale-config",{props:["v-cache-stale-config"],data:function(){let e=this.vCacheStaleConfig;return{config:e=null==e?{isPrior:!1,isOn:!1,status:[],supportStaleIfErrorHeader:!0,life:{count:1,unit:"day"}}:e}},watch:{config:{deep:!0,handler:function(){this.$emit("change",this.config)}}},methods:{},template:`<table class="ui table definition selectable">
 	<tbody>
 		<tr>
@@ -3013,21 +3057,6 @@ example2.com
 <div class="margin"></div>
 </div>`}),Vue.component("user-selector",{props:["v-user-id","data-url"],data:function(){let e=this.vUserId,t=(null==e&&(e=0),this.dataUrl);return null!=t&&0!=t.length||(t="/servers/users/options"),{users:[],userId:e,dataURL:t}},methods:{change:function(e){null!=e?this.$emit("change",e.id):this.$emit("change",0)}},template:`<div>
 	<combo-box placeholder="选择用户" :data-url="dataURL" :data-key="'users'" data-search="on" name="userId" :v-value="userId" @change="change"></combo-box>
-</div>`}),Vue.component("uam-config-box",{props:["v-uam-config","v-is-location","v-is-group"],data:function(){let e=this.vUamConfig;return{config:e=null==e?{isPrior:!1,isOn:!1}:e}},template:`<div>
-<input type="hidden" name="uamJSON" :value="JSON.stringify(config)"/>
-<table class="ui table definition selectable">
-	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
-	<tbody v-show="((!vIsLocation && !vIsGroup) || config.isPrior)">
-		<tr>
-			<td class="title">启用5秒盾</td>
-			<td>
-				<checkbox v-model="config.isOn"></checkbox>
-				<p class="comment"><plus-label></plus-label>启用后，访问网站时，自动检查浏览器环境，阻止非正常访问。</p>
-			</td>
-		</tr>
-	</tbody>
-</table>
-<div class="margin"></div>
 </div>`}),Vue.component("http-header-policy-box",{props:["v-request-header-policy","v-request-header-ref","v-response-header-policy","v-response-header-ref","v-params","v-is-location","v-is-group","v-has-group-request-config","v-has-group-response-config","v-group-setting-url"],data:function(){let e="response";"#request"==window.location.hash&&(e="request");let t=this.vRequestHeaderRef,i=(null==t&&(t={isPrior:!1,isOn:!0,headerPolicyId:0}),this.vResponseHeaderRef),n=(null==i&&(i={isPrior:!1,isOn:!0,headerPolicyId:0}),[]),s=[];var o=this.vRequestHeaderPolicy;null!=o&&(null!=o.setHeaders&&(n=o.setHeaders),null!=o.deleteHeaders&&(s=o.deleteHeaders));let a=[],l=[];o=this.vResponseHeaderPolicy;null!=o&&(null!=o.setHeaders&&(a=o.setHeaders),null!=o.deleteHeaders&&(l=o.deleteHeaders));let c={isOn:!1};return null!=o.cors&&(c=o.cors),{type:e,typeName:"request"==e?"请求":"响应",requestHeaderRef:t,responseHeaderRef:i,requestSettingHeaders:n,requestDeletingHeaders:s,responseSettingHeaders:a,responseDeletingHeaders:l,responseCORS:c}},methods:{selectType:function(e){this.type=e,window.location.hash="#"+e,window.location.reload()},addSettingHeader:function(e){teaweb.popup("/servers/server/settings/headers/createSetPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})},addDeletingHeader:function(e,t){teaweb.popup("/servers/server/settings/headers/createDeletePopup?"+this.vParams+"&headerPolicyId="+e+"&type="+t,{callback:function(){teaweb.successRefresh("保存成功")}})},updateSettingPopup:function(e,t){teaweb.popup("/servers/server/settings/headers/updateSetPopup?"+this.vParams+"&headerPolicyId="+e+"&headerId="+t+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})},deleteDeletingHeader:function(e,t){teaweb.confirm("确定要删除'"+t+"'吗？",function(){Tea.action("/servers/server/settings/headers/deleteDeletingHeader").params({headerPolicyId:e,headerName:t}).post().refresh()})},deleteHeader:function(e,t,i){teaweb.confirm("确定要删除此Header吗？",function(){this.$post("/servers/server/settings/headers/delete").params({headerPolicyId:e,type:t,headerId:i}).refresh()})},updateCORS:function(e){teaweb.popup("/servers/server/settings/headers/updateCORSPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})}},template:`<div>
 	<div class="ui menu tabular small">
 		<a class="item" :class="{active:type == 'response'}" @click.prevent="selectType('response')">响应Header<span v-if="responseSettingHeaders.length > 0">({{responseSettingHeaders.length}})</span></a>
@@ -3389,6 +3418,43 @@ example2.com
 		</tbody>
 	</table>
 	<div class="margin"></div>
+</div>`}),Vue.component("http-cc-config-box",{props:["v-cc-config","v-is-location","v-is-group"],data:function(){let e=this.vCcConfig;return null==(e=null==e?{isPrior:!1,isOn:!1,onlyURLPatterns:[],exceptURLPatterns:[]}:e).onlyURLPatterns&&(e.onlyURLPatterns=[]),null==e.exceptURLPatterns&&(e.exceptURLPatterns=[]),{config:e,moreOptionsVisible:!1}},methods:{showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible}},template:`<div>
+<input type="hidden" name="ccJSON" :value="JSON.stringify(config)"/>
+<table class="ui table definition selectable">
+	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+	<tbody v-show="((!vIsLocation && !vIsGroup) || config.isPrior)">
+		<tr>
+			<td class="title">启用CC无感防护</td>
+			<td>
+				<checkbox v-model="config.isOn"></checkbox>
+				<p class="comment"><plus-label></plus-label>启用后，自动检测并拦截CC攻击，此功能不需要开启WAF功能。</p>
+			</td>
+		</tr>
+	</tbody>
+	<tbody>
+		<tr>
+			<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
+		</tr>
+	</tbody>
+	<tbody v-show="moreOptionsVisible">
+		<tr>
+			<td>例外URL</td>
+			<td>
+				<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
+				<p class="comment">如果填写了例外URL，表示这些URL跳过CC防护不做处理。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>限制URL</td>
+			<td>
+				<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
+				<p class="comment">如果填写了支持URL，表示只对这些URL进行CC防护处理；如果不填则表示支持所有的URL。</p>
+			</td>
+		</tr>	
+	</tr>
+	</tbody>
+</table>
+<div class="margin"></div>
 </div>`}),Vue.component("firewall-event-level-options",{props:["v-value"],mounted:function(){let t=this;Tea.action("/ui/eventLevelOptions").post().success(function(e){t.levels=e.data.eventLevels,t.change()})},data:function(){let e=this.vValue;return{levels:[],description:"",level:e=null!=e&&0!=e.length?e:""}},methods:{change:function(){this.$emit("change");let i=this;var e=this.levels.$find(function(e,t){return t.code==i.level});this.description=null!=e?e.description:""}},template:`<div>
     <select class="ui dropdown auto-width" name="eventLevel" v-model="level" @change="change">
         <option v-for="level in levels" :value="level.code">{{level.name}}</option>
@@ -3662,6 +3728,12 @@ example2.com
 	
 	<!-- 反向代理 -->
 	<http-location-labels-label v-if="refIsOn(location.reverseProxyRef, location.reverseProxy)" :v-href="url('/reverseProxy')">源站</http-location-labels-label>
+	
+	<!-- UAM -->
+	<http-location-labels-label v-if="location.web != null && location.web.uam != null && location.web.uam.isPrior"><span :class="{disabled: !location.web.uam.isOn, red:location.web.uam.isOn}">5秒盾</span></http-location-labels-label>
+	
+	<!-- CC -->
+	<http-location-labels-label v-if="location.web != null && location.web.cc != null && location.web.cc.isPrior"><span :class="{disabled: !location.web.cc.isOn, red:location.web.cc.isOn}">CC防护</span></http-location-labels-label>
 	
 	<!-- WAF -->
 	<!-- TODO -->
@@ -5406,6 +5478,37 @@ example2.com
 </div>`}),Vue.component("network-addresses-view",{props:["v-addresses"],template:`<div>
 	<div class="ui label tiny basic" v-if="vAddresses != null" v-for="addr in vAddresses">
 		{{addr.protocol}}://<span v-if="addr.host.length > 0">{{addr.host.quoteIP()}}</span><span v-else>*</span>:{{addr.portRange}}
+	</div>
+</div>`}),Vue.component("url-patterns-box",{props:["value"],data:function(){let e=[];return{patterns:e=null!=this.value?this.value:e,isAdding:!1,addingPattern:{type:"wildcard",pattern:""},editingIndex:-1}},methods:{add:function(){this.isAdding=!0;let e=this;setTimeout(function(){e.$refs.patternInput.focus()})},edit:function(e){this.isAdding=!0,this.editingIndex=e,this.addingPattern={type:this.patterns[e].type,pattern:this.patterns[e].pattern}},confirm:function(){if(0==this.addingPattern.pattern.trim().length){let e=this;void teaweb.warn("请输入URL",function(){e.$refs.patternInput.focus()})}else this.editingIndex<0?this.patterns.push({type:this.addingPattern.type,pattern:this.addingPattern.pattern}):(this.patterns[this.editingIndex].type=this.addingPattern.type,this.patterns[this.editingIndex].pattern=this.addingPattern.pattern),this.notifyChange(),this.cancel()},remove:function(e){this.patterns.$remove(e),this.cancel(),this.notifyChange()},cancel:function(){this.isAdding=!1,this.addingPattern={type:"wildcard",pattern:""},this.editingIndex=-1},patternTypeName:function(e){switch(e){case"wildcard":return"通配符";case"regexp":return"正则"}return""},notifyChange:function(){this.$emit("input",this.patterns)}},template:`<div>
+	<div v-show="patterns.length > 0">
+		<div v-for="(pattern, index) in patterns" class="ui label basic small" :class="{blue: index == editingIndex, disabled: isAdding && index != editingIndex}" style="margin-bottom: 0.8em">
+			<span class="grey" style="font-weight: normal">[{{patternTypeName(pattern.type)}}]</span> <span >{{pattern.pattern}}</span> &nbsp; 
+			<a href="" title="修改" @click.prevent="edit(index)"><i class="icon pencil tiny"></i></a> 
+			<a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+		</div>
+	</div>
+	<div v-show="isAdding" style="margin-top: 0.5em">
+		<div class="ui fields inline">
+			<div class="ui field">
+				<select class="ui dropdown auto-width" v-model="addingPattern.type">
+					<option value="wildcard">通配符</option>
+					<option value="regexp">正则表达式</option>
+				</select>
+			</div>
+			<div class="ui field">
+				<input type="text" :placeholder="(addingPattern.type == 'wildcard') ? '可以使用星号（*）通配符，不区分大小写' : '可以使用正则表达式，不区分大小写'" v-model="addingPattern.pattern" size="36" ref="patternInput" @keyup.enter="confirm()" @keypress.enter.prevent="1" spellcheck="false"/>
+			</div>
+			<div class="ui field" style="padding-left: 0">
+				<tip-icon content="通配符示例：<br/>单个路径开头：/hello/world/*<br/>单个路径结尾：*/hello/world<br/>包含某个路径：*/article/*<br/>某个域名下的所有URL：*example.com/*" v-if="addingPattern.type == 'wildcard'"></tip-icon>
+				<tip-icon content="正则表达式示例：<br/>单个路径开头：^/hello/world<br/>单个路径结尾：/hello/world$<br/>包含某个路径：/article/<br/>匹配某个数字路径：/article/(\\d+)<br/>某个域名下的所有URL：^(http|https)://example.com/" v-if="addingPattern.type == 'regexp'"></tip-icon>
+			</div>
+			<div class="ui field">
+				<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button><a href="" title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
+			</div>
+		</div>
+	</div>
+	<div v-if=!isAdding style="margin-top: 0.5em">
+		<button class="ui button tiny basic" type="button" @click.prevent="add">+</button>
 	</div>
 </div>`}),Vue.component("size-capacity-view",{props:["v-default-text","v-value"],template:`<div>
 	<span v-if="vValue != null && vValue.count > 0">{{vValue.count}}{{vValue.unit.toUpperCase()}}</span>
