@@ -1,6 +1,9 @@
 package setup
 
-import "github.com/iwind/TeaGo"
+import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/setup/mysql"
+	"github.com/iwind/TeaGo"
+)
 
 func init() {
 	TeaGo.BeforeStart(func(server *TeaGo.Server) {
@@ -15,6 +18,8 @@ func init() {
 			Post("/status", new(StatusAction)).
 			Post("/detectDB", new(DetectDBAction)).
 			Post("/checkLocalIP", new(CheckLocalIPAction)).
+			GetPost("/mysql/installPopup", new(mysql.InstallPopupAction)).
+			Post("/mysql/installLogs", new(mysql.InstallLogsAction)).
 			EndAll()
 	})
 }

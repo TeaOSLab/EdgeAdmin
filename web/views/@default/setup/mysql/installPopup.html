@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="shortcut icon" href="/images/favicon.png"/>
+    <title>安装GoEdge管理系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <link rel="stylesheet" href="/_/@default/@layout_popup.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/semantic.iframe.min.css?v=bRafhK" media="all"/>
+    {$TEA.VUE}
+    <link rel="stylesheet" type="text/css" href="/_/@default/@layout_override.css" media="all"/>
+    <script type="text/javascript" src="/js/md5.min.js"></script>
+    <script type="text/javascript" src="/js/utils.js"></script>
+    <script type="text/javascript" src="/js/sweetalert2/dist/sweetalert2.all.min.js"></script>
+    <script type="text/javascript" src="/js/components.js"></script>
+</head>
+<body>
+
+<div>
+    <div class="margin"></div>
+    <h4>方法1：使用命令安装MySQL</h4>
+    <table class="ui table selectable">
+        <tr>
+            <td>可以在你要安装MySQL的服务器上运行以下命令<span class="grey">（目前仅支持Linux系统和X86架构服务器，安装后的MySQL版本是8.x.x）</span>：</td>
+        </tr>
+        <tr>
+            <td>sudo sh -c &quot;$(wget https://goedge.cn/install-mysql.sh -O -)&quot;</td>
+        </tr>
+    </table>
+
+    <h4>方法2：在本机自动安装MySQL</h4>
+    <table class="ui table selectable">
+        <tr>
+            <td colspan="2">如果你想在当前管理系统所在服务器上安装MySQL，可以点击下面的按钮自动开始尝试安装，如果安装不成功，请自行安装<span class="grey">（建议仅在小流量应用场景或测试期间使用此功能）</span>：</td>
+        </tr>
+        <tr v-show="!result.isInstalling">
+            <td colspan="2">
+                <button class="ui button small" type="button" @click.prevent="install" v-if="!result.isInstalled">尝试在本机安装</button>
+                <button class="ui button small" type="button" @click.prevent="install" v-if="result.isInstalled && !result.isOk">重新尝试安装</button>
+            </td>
+        </tr>
+        <tr v-show="result.isInstalled">
+            <td class="title">安装结果</td>
+            <td>
+                <div v-if="result.isOk" class="green result-box">
+                    <div class="row">安装成功，请使用记事本或其他工具记录下面MySQL信息，防止以后忘记：</div>
+                    <div class="row">安装目录：{{result.dir}}</div>
+                    <div class="row">用户：{{result.user}}</div>
+                    <div class="row">密码：{{result.password}}</div>
+                    <div class="button-box">
+                        <button class="ui button small" type="button" @click.prevent="finish">我已完成记录</button>
+                    </div>
+                </div>
+                <div v-if="!result.isOk" class="red">
+                    <div>
+                        安装失败：{{result.err}}
+                    </div>
+                    <div class="ui divider"></div>
+                    <div>请将以上错误信息报告给开发者，并改用其他方式安装MySQL。</div>
+                </div>
+            </td>
+        </tr>
+        <tr v-show="result.isInstalling || (result.isInstalled && !result.isOk)">
+            <td class="title">安装过程</td>
+            <td>
+                <div class="logs-box">
+                    <div v-for="log in result.logs" class="row">{{log}}</div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
