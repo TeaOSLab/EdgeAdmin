@@ -20,6 +20,8 @@ import (
 	"os"
 	"os/exec"
 	"os/signal"
+	"path/filepath"
+	"strings"
 	"syscall"
 	"time"
 )
@@ -361,6 +363,16 @@ func (this *AdminNode) listenSock() error {
 					p, err := os.FindProcess(pid)
 					if err == nil && p != nil {
 						_ = p.Kill()
+					}
+				}
+
+				// 停止当前目录下的API节点
+				var apiSock = gosock.NewTmpSock("edge-api")
+				apiReply, err := apiSock.Send(&gosock.Command{Code: "info"})
+				if err == nil {
+					adminExe, _ := os.Executable()
+					if len(adminExe) > 0 && apiReply != nil && strings.HasPrefix(maps.NewMap(apiReply.Params).GetString("path"), filepath.Dir(filepath.Dir(adminExe))) {
+						_, _ = apiSock.Send(&gosock.Command{Code: "stop"})
 					}
 				}
 

@@ -209,7 +209,7 @@ func (this *AppCmd) runStop() {
 	fmt.Println(this.product+" stopped ok, pid:", types.String(pid))
 }
 
-// 重启
+// RunRestart 重启
 func (this *AppCmd) RunRestart() {
 	this.runStop()
 	time.Sleep(1 * time.Second)
