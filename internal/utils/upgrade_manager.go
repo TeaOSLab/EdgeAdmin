@@ -108,6 +108,7 @@ func (this *UpgradeManager) Start() error {
 		}
 		url = strings.ReplaceAll(url, "${os}", osName)
 		url = strings.ReplaceAll(url, "${arch}", runtime.GOARCH)
+		url = strings.ReplaceAll(url, "${version}", teaconst.Version)
 		req, err := http.NewRequest(http.MethodGet, url, nil)
 		if err != nil {
 			return errors.New("create url request failed: " + err.Error())

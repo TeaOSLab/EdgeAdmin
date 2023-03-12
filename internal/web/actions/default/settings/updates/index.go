@@ -58,6 +58,7 @@ func (this *IndexAction) RunPost(params struct {
 	var apiURL = teaconst.UpdatesURL
 	apiURL = strings.ReplaceAll(apiURL, "${os}", runtime.GOOS)
 	apiURL = strings.ReplaceAll(apiURL, "${arch}", runtime.GOARCH)
+	apiURL = strings.ReplaceAll(apiURL, "${version}", teaconst.Version)
 	resp, err := http.Get(apiURL)
 	if err != nil {
 		this.Data["result"] = maps.Map{
