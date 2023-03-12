@@ -18,5 +18,5 @@ const (
 	CookieSID = "edgesid"
 
 	SystemdServiceName = "edge-admin"
-	UpdatesURL         = "https://goedge.cn/api/boot/versions?os=${os}&arch=${arch}"
+	UpdatesURL         = "https://goedge.cn/api/boot/versions?os=${os}&arch=${arch}&version=${version}"
 )
