@@ -21,9 +21,9 @@ type APIConfig struct {
 // LoadAPIConfig 加载API配置
 func LoadAPIConfig() (*APIConfig, error) {
 	// 候选文件
-	localFile := Tea.ConfigFile("api.yaml")
-	isFromLocal := false
-	paths := []string{localFile}
+	var localFile = Tea.ConfigFile("api.yaml")
+	var isFromLocal = false
+	var paths = []string{localFile}
 	homeDir, homeErr := os.UserHomeDir()
 	if homeErr == nil {
 		paths = append(paths, homeDir+"/."+teaconst.ProcessName+"/api.yaml")
@@ -45,7 +45,7 @@ func LoadAPIConfig() (*APIConfig, error) {
 		return nil, err
 	}
 
-	config := &APIConfig{}
+	var config = &APIConfig{}
 	err = yaml.Unmarshal(data, config)
 	if err != nil {
 		return nil, err
