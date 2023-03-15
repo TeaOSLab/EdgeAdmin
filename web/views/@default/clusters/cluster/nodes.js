@@ -1,6 +1,20 @@
 Tea.context(function () {
 	this.teaweb = teaweb
 
+	// 显示的统计项
+	this.windowWidth = window.innerWidth
+	this.miniWidth = 760
+	this.columnWidth1 = 800
+	this.columnWidth2 = 900
+	this.columnWidth3 = 1000
+	this.columnWidth4 = 1100
+	this.columnWidth5 = 1200
+
+	let that = this
+	window.addEventListener("resize", function () {
+		that.windowWidth = window.innerWidth
+	})
+
 	this.deleteNode = function (nodeId) {
 		teaweb.confirm("确定要从当前集群中删除这个节点吗？", function () {
 			this.$post("/nodes/delete")
