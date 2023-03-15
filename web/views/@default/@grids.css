@@ -1,5 +1,5 @@
 .grid.counter-chart {
-  margin-top: 1.5em !important;
+  margin-top: 1em !important;
   margin-left: 0.4em !important;
 }
 .grid.counter-chart .column {
@@ -22,14 +22,19 @@
   border-right: 1px rgba(0, 0, 0, 0.1) solid;
 }
 .grid.counter-chart h4 {
+  color: grey;
+  position: relative;
   font-size: 1em;
   text-align: left;
 }
 .grid.counter-chart h4 a {
+  position: absolute;
+  right: 0.1em;
+  font-size: 1.26em;
   display: none;
 }
 .grid.counter-chart .column:hover {
-  background: rgba(0, 0, 0, 0.1) !important;
+  background: rgba(0, 0, 0, 0.03) !important;
 }
 .grid.counter-chart .column:hover a {
   display: inline;

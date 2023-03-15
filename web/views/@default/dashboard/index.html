@@ -51,7 +51,7 @@
 </div>
 
 <!-- 统计图表 -->
-<div class="ui three columns grid counter-chart" v-if="!isLoading">
+<columns-grid v-if="!isLoading">
     <div class="ui column">
         <h4>集群<link-icon href="/clusters" v-if="dashboard.canGoNodes"></link-icon></h4>
         <div class="value"><span>{{dashboard.countNodeClusters}}</span>个</div>
@@ -85,7 +85,7 @@
         <h4>今日流量</h4>
         <div class="value"><span>{{todayTraffic}}</span>{{todayTrafficUnit}}</div>
     </div>
-</div>
+</columns-grid>
 
 <div class="ui divider" v-show="!isLoading"></div>
 
