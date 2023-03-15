@@ -90,7 +90,8 @@
             <tr>
                 <td class="color-border">跳转后域名 *</td>
                 <td>
-                    <input type="text" name="domainAfter" maxlength="100" v-model="redirect.domainAfter"/>
+                    <input type="text" name="domainAfter" maxlength="100" v-model="redirect.domainAfter" placeholder="比如example.com"/>
+                    <p class="comment">这里填写的是网址中的域名部分，不需要添加<code-label>https://</code-label>部分。</p>
                 </td>
             </tr>
             <tr>

@@ -3,6 +3,7 @@ package redirects
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains/domainutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
@@ -134,6 +135,23 @@ func (this *CreatePopupAction) RunPost(params struct {
 			this.FailField("domainAfter", "请输入跳转后域名")
 			return
 		}
+
+		// 检查用户输入的是否为域名
+		if !domainutils.ValidateDomainFormat(params.DomainAfter) {
+			// 是否为URL
+			u, err := url.Parse(params.DomainAfter)
+			if err == nil {
+				if len(u.Host) == 0 {
+					this.FailField("domainAfter", "跳转后域名输入不正确")
+					return
+				}
+				params.DomainAfter = u.Host
+			} else {
+				this.FailField("domainAfter", "跳转后域名输入不正确")
+				return
+			}
+		}
+
 		config.DomainAfter = params.DomainAfter
 		config.DomainAfterScheme = params.DomainAfterScheme
 	case serverconfigs.HTTPHostRedirectTypePort:
