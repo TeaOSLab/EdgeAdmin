@@ -33,11 +33,12 @@ func (this *NodesAction) RunGet(params struct {
 	Keyword        string
 	Level          int32
 
-	CpuOrder        string
-	MemoryOrder     string
-	TrafficInOrder  string
-	TrafficOutOrder string
-	LoadOrder       string
+	CpuOrder         string
+	MemoryOrder      string
+	TrafficInOrder   string
+	TrafficOutOrder  string
+	LoadOrder        string
+	ConnectionsOrder string
 }) {
 	this.Data["groupId"] = params.GroupId
 	this.Data["regionId"] = params.RegionId
@@ -46,7 +47,7 @@ func (this *NodesAction) RunGet(params struct {
 	this.Data["keyword"] = params.Keyword
 	this.Data["level"] = params.Level
 	this.Data["clusterId"] = params.ClusterId
-	this.Data["hasOrder"] = len(params.CpuOrder) > 0 || len(params.MemoryOrder) > 0 || len(params.TrafficInOrder) > 0 || len(params.TrafficOutOrder) > 0 || len(params.LoadOrder) > 0
+	this.Data["hasOrder"] = len(params.CpuOrder) > 0 || len(params.MemoryOrder) > 0 || len(params.TrafficInOrder) > 0 || len(params.TrafficOutOrder) > 0 || len(params.LoadOrder) > 0 || len(params.ConnectionsOrder) > 0
 
 	// 集群是否已经设置了线路
 	clusterDNSResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeClusterDNS(this.AdminContext(), &pb.FindEnabledNodeClusterDNSRequest{NodeClusterId: params.ClusterId})
@@ -114,6 +115,10 @@ func (this *NodesAction) RunGet(params struct {
 		req.LoadAsc = true
 	} else if params.LoadOrder == "desc" {
 		req.LoadDesc = true
+	} else if params.ConnectionsOrder == "asc" {
+		req.ConnectionsAsc = true
+	} else if params.ConnectionsOrder == "desc" {
+		req.ConnectionsDesc = true
 	}
 	nodesResp, err := this.RPC().NodeRPC().ListEnabledNodesMatch(this.AdminContext(), req)
 	if err != nil {
@@ -123,8 +128,8 @@ func (this *NodesAction) RunGet(params struct {
 	var nodeMaps = []maps.Map{}
 	for _, node := range nodesResp.Nodes {
 		// 状态
-		isSynced := false
-		status := &nodeconfigs.NodeStatus{}
+		var isSynced = false
+		var status = &nodeconfigs.NodeStatus{}
 		if len(node.StatusJSON) > 0 {
 			err = json.Unmarshal(node.StatusJSON, &status)
 			if err != nil {
@@ -213,16 +218,17 @@ func (this *NodesAction) RunGet(params struct {
 				"error":      node.InstallStatus.Error,
 			},
 			"status": maps.Map{
-				"isActive":        status.IsActive,
-				"updatedAt":       status.UpdatedAt,
-				"hostname":        status.Hostname,
-				"cpuUsage":        status.CPUUsage,
-				"cpuUsageText":    numberutils.FormatFloat2(status.CPUUsage * 100),
-				"memUsage":        status.MemoryUsage,
-				"memUsageText":    numberutils.FormatFloat2(status.MemoryUsage * 100),
-				"trafficInBytes":  status.TrafficInBytes,
-				"trafficOutBytes": status.TrafficOutBytes,
-				"load1m":          numberutils.FormatFloat2(status.Load1m),
+				"isActive":         status.IsActive,
+				"updatedAt":        status.UpdatedAt,
+				"hostname":         status.Hostname,
+				"cpuUsage":         status.CPUUsage,
+				"cpuUsageText":     numberutils.FormatFloat2(status.CPUUsage * 100),
+				"memUsage":         status.MemoryUsage,
+				"memUsageText":     numberutils.FormatFloat2(status.MemoryUsage * 100),
+				"trafficInBytes":   status.TrafficInBytes,
+				"trafficOutBytes":  status.TrafficOutBytes,
+				"load1m":           numberutils.FormatFloat2(status.Load1m),
+				"countConnections": status.ConnectionCount,
 			},
 			"cluster": maps.Map{
 				"id":   node.NodeCluster.Id,
