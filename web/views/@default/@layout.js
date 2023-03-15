@@ -82,7 +82,7 @@ Tea.context(function () {
 
 	this.showMessages = function () {
 		teaweb.popup("/messages", {
-			height: "24em",
+			height: "28em",
 			width: "50em"
 		})
 	}
