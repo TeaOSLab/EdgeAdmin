@@ -239,7 +239,7 @@ Vue.component("http-firewall-checkpoint-cc", {
 			<td>检查请求来源指纹</td>
 			<td>
 				<checkbox v-model="enableFingerprint"></checkbox>
-				<p class="comment">在接收到HTTPS请求时尝试检查请求来源的指纹，用来检测代理服务和爬虫攻击。</p>
+				<p class="comment">在接收到HTTPS请求时尝试检查请求来源的指纹，用来检测代理服务和爬虫攻击；如果你在网站前面放置了别的反向代理服务，请取消此选项。</p>
 			</td>
 		</tr>
 		<tr>
