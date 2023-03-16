@@ -30,7 +30,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 	helpers.NotifyIPItemsCountChanges()
 	helpers.NotifyNodeLogsCountChange()
 
-	if teaconst.IsPlus {
+	if this.checkPlus() {
 		this.RedirectURL("/dashboard/boards")
 		return
 	}
