@@ -1,3 +1,6 @@
+.table th.value-column {
+  width: 7em;
+}
 .table .label {
   margin-bottom: 0.5em;
 }
