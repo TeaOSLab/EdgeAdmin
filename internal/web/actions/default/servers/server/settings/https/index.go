@@ -10,6 +10,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
 	"regexp"
@@ -41,6 +42,27 @@ func (this *IndexAction) RunGet(params struct {
 	} else {
 		httpsConfig.IsOn = true
 	}
+
+	_ = httpsConfig.Init()
+	var httpsPorts = httpsConfig.AllPorts()
+
+	// 检查http和https端口冲突
+	var conflictingPorts = []int{}
+	if len(server.HttpJSON) > 0 {
+		var httpConfig = &serverconfigs.HTTPProtocolConfig{}
+		err := json.Unmarshal(server.HttpJSON, httpConfig)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		_ = httpConfig.Init()
+		for _, port := range httpConfig.AllPorts() {
+			if lists.ContainsInt(httpsPorts, port) {
+				conflictingPorts = append(conflictingPorts, port)
+			}
+		}
+	}
+	this.Data["conflictingPorts"] = conflictingPorts
 
 	var sslPolicy *sslconfigs.SSLPolicy
 	if httpsConfig.SSLPolicyRef != nil && httpsConfig.SSLPolicyRef.SSLPolicyId > 0 {
