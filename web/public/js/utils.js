@@ -140,27 +140,42 @@ window.teaweb = {
 		}
 		return (Math.round(bytes * 100 / Math.pow(1024, 6)) / 100) + "EB";
 	},
-	formatBits: function (bits) {
+	formatBits: function (bits, decimal) {
 		bits = Math.ceil(bits);
+		let div = 10000
+		switch (decimal) {
+			case 1:
+				div = 10
+				break
+			case 2:
+				div = 100
+				break
+			case 3:
+				div = 1000
+				break
+			case 4:
+				div = 10000
+				break
+		}
 		if (bits < Math.pow(1024, 1)) {
 			return bits + "bps";
 		}
 		if (bits < Math.pow(1024, 2)) {
-			return (Math.round(bits * 10000 / Math.pow(1024, 1)) / 10000) + "Kbps";
+			return (Math.round(bits * div / Math.pow(1024, 1)) / div) + "Kbps";
 		}
 		if (bits < Math.pow(1024, 3)) {
-			return (Math.round(bits * 10000 / Math.pow(1024, 2)) / 10000) + "Mbps";
+			return (Math.round(bits * div / Math.pow(1024, 2)) / div) + "Mbps";
 		}
 		if (bits < Math.pow(1024, 4)) {
-			return (Math.round(bits * 10000 / Math.pow(1024, 3)) / 10000) + "Gbps";
+			return (Math.round(bits * div / Math.pow(1024, 3)) / div) + "Gbps";
 		}
 		if (bits < Math.pow(1024, 5)) {
-			return (Math.round(bits * 10000 / Math.pow(1024, 4)) / 10000) + "Tbps";
+			return (Math.round(bits * div / Math.pow(1024, 4)) / div) + "Tbps";
 		}
 		if (bits < Math.pow(1024, 6)) {
-			return (Math.round(bits * 10000 / Math.pow(1024, 5)) / 10000) + "Pbps";
+			return (Math.round(bits * div / Math.pow(1024, 5)) / div) + "Pbps";
 		}
-		return (Math.round(bits * 10000 / Math.pow(1024, 6)) / 10000) + "Ebps";
+		return (Math.round(bits * div / Math.pow(1024, 6)) / div) + "Ebps";
 	},
 	formatNumber: function (x) {
 		if (x == null) {
