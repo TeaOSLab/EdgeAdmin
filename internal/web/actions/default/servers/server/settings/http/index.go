@@ -9,6 +9,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
 	"regexp"
@@ -30,7 +31,7 @@ func (this *IndexAction) RunGet(params struct {
 	if !isOk {
 		return
 	}
-	httpConfig := &serverconfigs.HTTPProtocolConfig{}
+	var httpConfig = &serverconfigs.HTTPProtocolConfig{}
 	if len(server.HttpJSON) > 0 {
 		err := json.Unmarshal(server.HttpJSON, httpConfig)
 		if err != nil {
@@ -40,6 +41,26 @@ func (this *IndexAction) RunGet(params struct {
 	} else {
 		httpConfig.IsOn = true
 	}
+	_ = httpConfig.Init()
+	var httpPorts = httpConfig.AllPorts()
+
+	// 检查http和https端口冲突
+	var conflictingPorts = []int{}
+	if len(server.HttpsJSON) > 0 {
+		var httpsConfig = &serverconfigs.HTTPSProtocolConfig{}
+		err := json.Unmarshal(server.HttpsJSON, httpsConfig)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		_ = httpsConfig.Init()
+		for _, port := range httpsConfig.AllPorts() {
+			if lists.ContainsInt(httpPorts, port) {
+				conflictingPorts = append(conflictingPorts, port)
+			}
+		}
+	}
+	this.Data["conflictingPorts"] = conflictingPorts
 
 	this.Data["serverType"] = server.Type
 	this.Data["httpConfig"] = maps.Map{

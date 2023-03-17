@@ -23,6 +23,7 @@
 					<td>
                         <span class="red" v-if="httpConfig.isOn && (httpConfig.addresses == null || httpConfig.addresses.length == 0)">还没有添加端口绑定，会导致HTTP服务无法访问。</span>
 						<network-addresses-box :v-server-type="serverType" :v-addresses="httpConfig.addresses" :v-protocol="'http'"></network-addresses-box>
+                        <p class="comment"><span v-if="conflictingPorts.length > 0" class="red">配置错误：<span v-for="(port, index) in conflictingPorts">{{port}}<span v-if="index != conflictingPorts.length - 1">、</span></span><span v-if="conflictingPorts.length > 1">等</span>端口同HTTPS设置的端口冲突，请删除HTTP或HTTPS中的相关端口。</span></p>
 					</td>
 				</tr>
 				<tr>
