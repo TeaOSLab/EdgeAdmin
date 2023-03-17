@@ -105,8 +105,8 @@ function build() {
 	find "$DIST" -name ".DS_Store" -delete
 	find "$DIST" -name ".gitignore" -delete
 	find "$DIST" -name "*.less" -delete
-	find "$DIST" -name "*.css.map" -delete
-	find "$DIST" -name "*.js.map" -delete
+	#find "$DIST" -name "*.css.map" -delete
+	#find "$DIST" -name "*.js.map" -delete
 
 	# zip
 	echo "zip files ..."
