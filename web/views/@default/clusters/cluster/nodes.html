@@ -131,7 +131,7 @@
             <span v-else class="disabled">-</span>
         </td>
         <td class="center" v-if="windowWidth < miniWidth || windowWidth > columnWidth4">
-            <span v-if="node.status.isActive && node.status.countConnections > 0">{{node.status.countConnections}}</span>
+            <span v-if="node.status.isActive && node.status.countConnections > 0">{{teaweb.formatCount(node.status.countConnections)}}</span>
             <span v-else class="disabled">-</span>
         </td>
         <td class="center" v-if="windowWidth < miniWidth || windowWidth > columnWidth5">
