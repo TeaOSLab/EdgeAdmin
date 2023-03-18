@@ -85,7 +85,7 @@ func (this *UploadPopupAction) RunPost(params struct {
 		CertData: certData,
 		KeyData:  keyData,
 	}
-	err := certConfig.Init()
+	err := certConfig.Init(nil)
 	if err != nil {
 		if params.IsCA {
 			this.Fail("证书校验错误：" + err.Error())
