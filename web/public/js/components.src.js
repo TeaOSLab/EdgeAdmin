@@ -6112,7 +6112,7 @@ Vue.component("http-firewall-checkpoint-cc", {
 			<td>检查请求来源指纹</td>
 			<td>
 				<checkbox v-model="enableFingerprint"></checkbox>
-				<p class="comment">在接收到HTTPS请求时尝试检查请求来源的指纹，用来检测代理服务和爬虫攻击。</p>
+				<p class="comment">在接收到HTTPS请求时尝试检查请求来源的指纹，用来检测代理服务和爬虫攻击；如果你在网站前面放置了别的反向代理服务，请取消此选项。</p>
 			</td>
 		</tr>
 		<tr>
@@ -9621,15 +9621,27 @@ Vue.component("http-compression-config-box", {
 Vue.component("http-cc-config-box", {
 	props: ["v-cc-config", "v-is-location", "v-is-group"],
 	data: function () {
+
+
 		let config = this.vCcConfig
 		if (config == null) {
 			config = {
 				isPrior: false,
 				isOn: false,
+				enableFingerprint: true,
+				enableGET302: true,
 				onlyURLPatterns: [],
 				exceptURLPatterns: []
 			}
 		}
+
+		if (typeof config.enableFingerprint != "boolean") {
+			config.enableFingerprint = true
+		}
+		if (typeof config.enableGET302 != "boolean") {
+			config.enableGET302 = true
+		}
+
 		if (config.onlyURLPatterns == null) {
 			config.onlyURLPatterns = []
 		}
@@ -9679,6 +9691,20 @@ Vue.component("http-cc-config-box", {
 				<p class="comment">如果填写了支持URL，表示只对这些URL进行CC防护处理；如果不填则表示支持所有的URL。</p>
 			</td>
 		</tr>	
+		<tr>
+			<td>检查请求来源指纹</td>
+			<td>
+				<checkbox v-model="config.enableFingerprint"></checkbox>
+				<p class="comment">在接收到HTTPS请求时尝试检查请求来源的指纹，用来检测代理服务和爬虫攻击；如果你在网站前面放置了别的反向代理服务，请取消此选项。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>启用GET302校验</td>
+			<td>
+				<checkbox v-model="config.enableGET302"></checkbox>
+				<p class="comment">选中后，表示自动通过GET302方法来校验客户端。</p>
+			</td>
+		</tr>
 	</tr>
 	</tbody>
 </table>
