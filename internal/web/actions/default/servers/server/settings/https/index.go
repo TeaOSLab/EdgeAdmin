@@ -43,7 +43,7 @@ func (this *IndexAction) RunGet(params struct {
 		httpsConfig.IsOn = true
 	}
 
-	_ = httpsConfig.Init()
+	_ = httpsConfig.Init(nil)
 	var httpsPorts = httpsConfig.AllPorts()
 
 	// 检查http和https端口冲突

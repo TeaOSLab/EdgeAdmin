@@ -56,14 +56,14 @@ func (this *SettingAction) RunPost(params struct {
 
 	// TODO 校验配置
 
-	reverseProxyConfig := &serverconfigs.ReverseProxyConfig{}
+	var reverseProxyConfig = &serverconfigs.ReverseProxyConfig{}
 	err := json.Unmarshal(params.ReverseProxyJSON, reverseProxyConfig)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 
-	err = reverseProxyConfig.Init()
+	err = reverseProxyConfig.Init(nil)
 	if err != nil {
 		this.Fail("配置校验失败：" + err.Error())
 	}
