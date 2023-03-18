@@ -24,6 +24,10 @@ Vue.component("link-red", {
 	methods: {
 		clickPrevent: function () {
 			emitClick(this, arguments)
+
+			if (this.vHref.length > 0) {
+				window.location = this.vHref
+			}
 		}
 	},
 	template: `<a :href="vHref" :title="title" style="border-bottom: 1px #db2828 dashed" @click.prevent="clickPrevent"><span class="red"><slot></slot></span></a>`

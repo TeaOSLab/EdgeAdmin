@@ -4,6 +4,11 @@
 
 <!-- 未安装 -->
 <div v-if="!node.isInstalled">
+    <div>
+        <span class="red">在当前节点完成安装前，相关DNS解析记录将不会生效，<link-red href="" @click.prevent="updateNodeIsInstalled(true)">已完成安装</link-red> 。</span>
+        <div class="ui divider"></div>
+    </div>
+
     <h4>方法1：通过SSH自动安装</h4>
 
     <div v-if="installStatus != null && (installStatus.isRunning || installStatus.isFinished)"
@@ -69,7 +74,8 @@ secret: "{{node.secret}}"</source-code-box>
         </tr>
     </table>
 
-    <a href="" @click.prevent="updateNodeIsInstalled(true)">[修改为已安装状态]</a>
+    <div class="ui divider"></div>
+    <a href="" @click.prevent="updateNodeIsInstalled(true)">[修改当前节点为已安装状态]</a>
 </div>
 
 <!-- 已安装 -->

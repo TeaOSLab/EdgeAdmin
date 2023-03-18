@@ -164,8 +164,11 @@
 			<link-red v-else title="点击设置" @click.prevent="updateNode(node.clusterId, node.id, node.ipAddrId)">没有设置</link-red>
 		</td>
         <td>
-            <span class="green" v-if="node.isResolved">已解析</span>
-            <span v-else class="red">未解析</span>
+            <span v-if="node.isInstalled">
+                <span class="green" v-if="node.isResolved">已解析</span>
+                <span v-else class="red">未解析</span>
+            </span>
+            <link-red :href="'/clusters/cluster/node/install?clusterId=' + cluster.id + '&nodeId=' + node.id" v-if="!node.isInstalled"><span class="red">未安装</span></link-red>
         </td>
 		<td>
 			<link-popup @click.prevent="updateNode(node.clusterId, node.id, node.ipAddrId)">修改</link-popup>

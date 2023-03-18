@@ -20,7 +20,8 @@ Tea.context(function () {
 
     // 设置节点安装状态
     this.updateNodeIsInstalled = function (isInstalled) {
-        teaweb.confirm("确定要将当前节点修改为未安装状态？", function () {
+		let msg = isInstalled ? "html:确定要将当前节点修改为<strong>已安装</strong>状态？" : "html:确定要将当前节点修改为<strong>未安装</strong>状态？"
+        teaweb.confirm(msg, function () {
             this.$post("/clusters/cluster/node/updateInstallStatus")
                 .params({
                     nodeId: this.nodeId,

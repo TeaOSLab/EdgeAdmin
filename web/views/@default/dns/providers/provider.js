@@ -127,7 +127,10 @@ Tea.context(function () {
 	}
 
 	this.viewServers = function (domainId) {
-		teaweb.popup("/dns/domains/serversPopup?domainId=" + domainId)
+		teaweb.popup("/dns/domains/serversPopup?domainId=" + domainId, {
+			width: "50em",
+			height: "30em"
+		})
 	}
 
 	this.alertDown = function () {
