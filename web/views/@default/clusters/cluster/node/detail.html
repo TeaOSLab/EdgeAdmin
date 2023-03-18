@@ -77,6 +77,7 @@
                     <p class="comment" v-if="!dnsIsExcludingLnNode">通过设置A记录可以将集群上的服务请求转发到不同线路的节点上。</p>
                 </div>
                 <p class="comment" v-if="dnsIsExcludingLnNode"><span class="red">当前集群DNS已设置不解析Ln节点，所以当前节点不会加入DNS解析；如需加入，请修改"集群设置" -- "DNS设置" -- "更多选项" -- "包含Ln节点"。</span></p>
+                <p class="comment" v-if="!node.isInstalled"><span class="red">当前节点尚未完成安装，DNS解析记录将不会生效，<a :href="'/clusters/cluster/node/install?clusterId=' + clusterId + '&nodeId=' + node.id">[点此安装]</a>。</span></p>
             </td>
         </tr>
         <tr>

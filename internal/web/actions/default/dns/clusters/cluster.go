@@ -25,7 +25,7 @@ func (this *ClusterAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	cluster := clusterResp.NodeCluster
+	var cluster = clusterResp.NodeCluster
 	if cluster == nil {
 		this.NotFound("nodeCluster", params.ClusterId)
 		return
@@ -42,7 +42,7 @@ func (this *ClusterAction) RunGet(params struct {
 		return
 	}
 	var defaultRoute = dnsResp.DefaultRoute
-	domainName := ""
+	var domainName = ""
 	var dnsMap = maps.Map{
 		"dnsName":          dnsResp.Name,
 		"domainId":         0,
@@ -70,19 +70,42 @@ func (this *ClusterAction) RunGet(params struct {
 
 	this.Data["dnsInfo"] = dnsMap
 
-	// 节点DNS解析记录
-	nodesResp, err := this.RPC().NodeRPC().FindAllEnabledNodesDNSWithNodeClusterId(this.AdminContext(), &pb.FindAllEnabledNodesDNSWithNodeClusterIdRequest{NodeClusterId: params.ClusterId})
+	// 未安装的节点
+	notInstalledNodesResp, err := this.RPC().NodeRPC().FindAllEnabledNodesDNSWithNodeClusterId(this.AdminContext(), &pb.FindAllEnabledNodesDNSWithNodeClusterIdRequest{
+		NodeClusterId: params.ClusterId,
+		IsInstalled:   false,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	var nodeMaps = []maps.Map{}
+	var allNodes = notInstalledNodesResp.Nodes
+
+	// 节点DNS解析记录
+	nodesResp, err := this.RPC().NodeRPC().FindAllEnabledNodesDNSWithNodeClusterId(this.AdminContext(), &pb.FindAllEnabledNodesDNSWithNodeClusterIdRequest{
+		NodeClusterId: params.ClusterId,
+		IsInstalled:   true,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	var installedNodeIdsMap = map[int64]bool{}
 	for _, node := range nodesResp.Nodes {
+		installedNodeIdsMap[node.Id] = true
+	}
+
+	allNodes = append(allNodes, nodesResp.Nodes...)
+
+	var nodeMaps = []maps.Map{}
+	for _, node := range allNodes {
+		var isInstalled = installedNodeIdsMap[node.Id]
+
 		if len(node.Routes) > 0 {
 			for _, route := range node.Routes {
 				// 检查是否已解析
 				var isResolved = false
-				if cluster.DnsDomainId > 0 && len(cluster.DnsName) > 0 && len(node.IpAddr) > 0 {
+				if isInstalled && cluster.DnsDomainId > 0 && len(cluster.DnsName) > 0 && len(node.IpAddr) > 0 {
 					var recordType = "A"
 					if utils.IsIPv6(node.IpAddr) {
 						recordType = "AAAA"
@@ -110,14 +133,15 @@ func (this *ClusterAction) RunGet(params struct {
 						"name": route.Name,
 						"code": route.Code,
 					},
-					"clusterId":  node.NodeClusterId,
-					"isResolved": isResolved,
+					"clusterId":   node.NodeClusterId,
+					"isResolved":  isResolved,
+					"isInstalled": isInstalled,
 				})
 			}
 		} else {
 			// 默认线路
 			var isResolved = false
-			if len(defaultRoute) > 0 {
+			if isInstalled && len(defaultRoute) > 0 {
 				var recordType = "A"
 				if utils.IsIPv6(node.IpAddr) {
 					recordType = "AAAA"
@@ -144,8 +168,9 @@ func (this *ClusterAction) RunGet(params struct {
 					"name": "",
 					"code": "",
 				},
-				"clusterId":  node.NodeClusterId,
-				"isResolved": isResolved,
+				"clusterId":   node.NodeClusterId,
+				"isResolved":  isResolved,
+				"isInstalled": isInstalled,
 			})
 		}
 	}

@@ -17,6 +17,8 @@ func (this *ServersPopupAction) Init() {
 func (this *ServersPopupAction) RunGet(params struct {
 	DomainId int64
 }) {
+	this.Data["domainId"] = params.DomainId
+
 	// 域名信息
 	domainResp, err := this.RPC().DNSDomainRPC().FindBasicDNSDomain(this.AdminContext(), &pb.FindBasicDNSDomainRequest{
 		DnsDomainId: params.DomainId,
@@ -25,7 +27,7 @@ func (this *ServersPopupAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	domain := domainResp.DnsDomain
+	var domain = domainResp.DnsDomain
 	if domain == nil {
 		this.NotFound("dnsDomain", params.DomainId)
 		return
@@ -34,7 +36,7 @@ func (this *ServersPopupAction) RunGet(params struct {
 	this.Data["domain"] = domain.Name
 
 	// 服务信息
-	clusterMaps := []maps.Map{}
+	var clusterMaps = []maps.Map{}
 	clustersResp, err := this.RPC().NodeClusterRPC().FindAllEnabledNodeClustersWithDNSDomainId(this.AdminContext(), &pb.FindAllEnabledNodeClustersWithDNSDomainIdRequest{DnsDomainId: params.DomainId})
 	if err != nil {
 		this.ErrorPage(err)
@@ -46,9 +48,9 @@ func (this *ServersPopupAction) RunGet(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		serverMaps := []maps.Map{}
+		var serverMaps = []maps.Map{}
 		for _, server := range serversResp.Servers {
-			isOk := false
+			var isOk = false
 			if len(cluster.DnsName) > 0 && len(server.DnsName) > 0 {
 				checkResp, err := this.RPC().DNSDomainRPC().ExistDNSDomainRecord(this.AdminContext(), &pb.ExistDNSDomainRecordRequest{
 					DnsDomainId: params.DomainId,

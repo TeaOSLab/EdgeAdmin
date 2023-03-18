@@ -1,7 +1,8 @@
 {$layout "layout_popup"}
 
-<h3>使用域名"{{domain}}"的节点</h3>
-<form class="ui form">
+<h3>使用域名"{{domain}}"的服务</h3>
+<form class="ui form" action="/dns/domains/serversPopup" method="get">
+    <input type="hidden" name="domainId" :value="domainId"/>
     <div class="ui fields inline">
         <div class="ui field">
             <input type="text" placeholder="关键词" v-model="keyword"/>
