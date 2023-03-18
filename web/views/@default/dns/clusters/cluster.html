@@ -168,7 +168,7 @@
                 <span class="green" v-if="node.isResolved">已解析</span>
                 <span v-else class="red">未解析</span>
             </span>
-            <link-red :href="'/clusters/cluster/node/install?clusterId=' + cluster.id + '&nodeId=' + node.id" v-if="!node.isInstalled"><span class="red">未安装</span></link-red>
+            <link-red :href="'/clusters/cluster/node/install?clusterId=' + cluster.id + '&nodeId=' + node.id" v-if="!node.isInstalled" title="节点未安装"><span class="red">未安装</span></link-red>
         </td>
 		<td>
 			<link-popup @click.prevent="updateNode(node.clusterId, node.id, node.ipAddrId)">修改</link-popup>
