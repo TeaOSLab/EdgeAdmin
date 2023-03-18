@@ -174,10 +174,13 @@ Tea.context(function () {
 
 	this.defaultIP = ""
 	this.changeName = function () {
-		if (this.validateIP(this.name)) {
-			this.defaultIP = this.name
-		} else {
-			this.defaultIP = ""
+		let matchIP = this.name.match(/(\d{1,3}\.){3}\d{1,3}/)
+		if (matchIP != null) {
+			if (this.validateIP(matchIP[0])) {
+				this.defaultIP = matchIP[0]
+			} else {
+				this.defaultIP = ""
+			}
 		}
 	}
 
