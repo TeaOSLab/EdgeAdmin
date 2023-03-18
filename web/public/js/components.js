@@ -2125,7 +2125,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<td>检查请求来源指纹</td>
 			<td>
 				<checkbox v-model="enableFingerprint"></checkbox>
-				<p class="comment">在接收到HTTPS请求时尝试检查请求来源的指纹，用来检测代理服务和爬虫攻击。</p>
+				<p class="comment">在接收到HTTPS请求时尝试检查请求来源的指纹，用来检测代理服务和爬虫攻击；如果你在网站前面放置了别的反向代理服务，请取消此选项。</p>
 			</td>
 		</tr>
 		<tr>
@@ -3418,7 +3418,7 @@ example2.com
 		</tbody>
 	</table>
 	<div class="margin"></div>
-</div>`}),Vue.component("http-cc-config-box",{props:["v-cc-config","v-is-location","v-is-group"],data:function(){let e=this.vCcConfig;return null==(e=null==e?{isPrior:!1,isOn:!1,onlyURLPatterns:[],exceptURLPatterns:[]}:e).onlyURLPatterns&&(e.onlyURLPatterns=[]),null==e.exceptURLPatterns&&(e.exceptURLPatterns=[]),{config:e,moreOptionsVisible:!1}},methods:{showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible}},template:`<div>
+</div>`}),Vue.component("http-cc-config-box",{props:["v-cc-config","v-is-location","v-is-group"],data:function(){let e=this.vCcConfig;return"boolean"!=typeof(e=null==e?{isPrior:!1,isOn:!1,enableFingerprint:!0,enableGET302:!0,onlyURLPatterns:[],exceptURLPatterns:[]}:e).enableFingerprint&&(e.enableFingerprint=!0),"boolean"!=typeof e.enableGET302&&(e.enableGET302=!0),null==e.onlyURLPatterns&&(e.onlyURLPatterns=[]),null==e.exceptURLPatterns&&(e.exceptURLPatterns=[]),{config:e,moreOptionsVisible:!1}},methods:{showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible}},template:`<div>
 <input type="hidden" name="ccJSON" :value="JSON.stringify(config)"/>
 <table class="ui table definition selectable">
 	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
@@ -3451,6 +3451,20 @@ example2.com
 				<p class="comment">如果填写了支持URL，表示只对这些URL进行CC防护处理；如果不填则表示支持所有的URL。</p>
 			</td>
 		</tr>	
+		<tr>
+			<td>检查请求来源指纹</td>
+			<td>
+				<checkbox v-model="config.enableFingerprint"></checkbox>
+				<p class="comment">在接收到HTTPS请求时尝试检查请求来源的指纹，用来检测代理服务和爬虫攻击；如果你在网站前面放置了别的反向代理服务，请取消此选项。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>启用GET302校验</td>
+			<td>
+				<checkbox v-model="config.enableGET302"></checkbox>
+				<p class="comment">选中后，表示自动通过GET302方法来校验客户端。</p>
+			</td>
+		</tr>
 	</tr>
 	</tbody>
 </table>
