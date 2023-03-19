@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"golang.org/x/crypto/ssh"
 )
 
 type CreatePopupAction struct {
@@ -50,6 +51,18 @@ func (this *CreatePopupAction) RunPost(params struct {
 		}
 		if len(params.PrivateKey) == 0 {
 			this.FailField("privateKey", "请输入RSA私钥")
+		}
+
+		// 验证私钥
+		var err error
+		if len(params.Passphrase) > 0 {
+			_, err = ssh.ParsePrivateKeyWithPassphrase([]byte(params.PrivateKey), []byte(params.Passphrase))
+		} else {
+			_, err = ssh.ParsePrivateKey([]byte(params.PrivateKey))
+		}
+		if err != nil {
+			this.Fail("私钥验证失败，请检查格式：" + err.Error())
+			return
 		}
 	default:
 		this.Fail("请选择正确的认证方式")
