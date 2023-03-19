@@ -50,7 +50,7 @@
 			<tr>
 				<td>RSA私钥 *</td>
 				<td>
-					<textarea name="privateKey" v-model="grant.privateKey" spellcheck="false"></textarea>
+					<file-textarea name="privateKey" v-model="grant.privateKey" spellcheck="false" placeholder="填入RSA私钥内容或者拖动私钥文件到当前框中"></file-textarea>
 					<p class="comment">用来生成登录SSH公钥的私钥</p>
 				</td>
 			</tr>
