@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/setup/mysql/mysqlinstallers/utils"
+	stringutil "github.com/iwind/TeaGo/utils/string"
 	timeutil "github.com/iwind/TeaGo/utils/time"
 	"io"
 	"net"
@@ -104,6 +105,29 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 				var cmd = utils.NewCmd("yum", "-y", "install", lib)
 				_ = cmd.Run()
 				time.Sleep(1 * time.Second)
+			}
+		}
+
+		// create symbolic links
+		{
+			var libFile = "/usr/lib64/libncurses.so.5"
+			_, err = os.Stat(libFile)
+			if err != nil && os.IsNotExist(err) {
+				var latestLibFile = this.findLatestVersionFile("/usr/lib64", "libncurses.so.")
+				if len(latestLibFile) > 0 {
+					_ = os.Symlink(latestLibFile, libFile)
+				}
+			}
+		}
+
+		{
+			var libFile = "/usr/lib64/libtinfo.so.5"
+			_, err = os.Stat(libFile)
+			if err != nil && os.IsNotExist(err) {
+				var latestLibFile = this.findLatestVersionFile("/usr/lib64", "libtinfo.so.")
+				if len(latestLibFile) > 0 {
+					_ = os.Symlink(latestLibFile, libFile)
+				}
 			}
 		}
 	}
@@ -609,4 +633,27 @@ func (this *MySQLInstaller) lookupUserAdd() (string, error) {
 		}
 	}
 	return "", errors.New("not found")
+}
+
+func (this *MySQLInstaller) findLatestVersionFile(dir string, prefix string) string {
+	files, err := filepath.Glob(filepath.Clean(dir + "/" + prefix + "*"))
+	if err != nil {
+		return ""
+	}
+	var resultFile = ""
+	var lastVersion = ""
+	var reg = regexp.MustCompile(`\.([\d.]+)`)
+	for _, file := range files {
+		var filename = filepath.Base(file)
+		var matches = reg.FindStringSubmatch(filename)
+		if len(matches) > 1 {
+			var version = matches[1]
+			if len(lastVersion) == 0 || stringutil.VersionCompare(lastVersion, version) < 0 {
+				lastVersion = version
+				resultFile = file
+			}
+		}
+	}
+
+	return resultFile
 }
