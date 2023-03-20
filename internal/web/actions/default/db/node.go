@@ -6,6 +6,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/db/dbnodeutils"
 	"github.com/iwind/TeaGo/maps"
+	"strings"
 )
 
 type NodeAction struct {
@@ -33,7 +34,7 @@ func (this *NodeAction) RunGet(params struct {
 		"host":        node.Host,
 		"port":        node.Port,
 		"username":    node.Username,
-		"password":    node.Password,
+		"password":    strings.Repeat("*", len(node.Password)),
 		"description": node.Description,
 	}
 
