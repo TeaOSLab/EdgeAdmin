@@ -12,6 +12,7 @@ Vue.component("file-textarea", {
 	mounted: function () {
 	},
 	methods: {
+		dragover: function () {},
 		drop: function (e) {
 			let that = this
 			e.dataTransfer.items[0].getAsFile().text().then(function (data) {
@@ -22,5 +23,5 @@ Vue.component("file-textarea", {
 			this.realValue = value
 		}
 	},
-	template: `<textarea @drop.prevent="drop" ref="textarea" v-model="realValue"></textarea>`
+	template: `<textarea @drop.prevent="drop" @dragover.prevent="dragover" ref="textarea" v-model="realValue"></textarea>`
 })
