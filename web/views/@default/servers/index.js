@@ -28,6 +28,7 @@ Tea.context(function () {
 			.params({
 				serverIds: serverIds
 			})
+			.timeout(300)
 			.success(function (resp) {
 				let status = resp.data.status
 				this.servers.forEach(function (server) {

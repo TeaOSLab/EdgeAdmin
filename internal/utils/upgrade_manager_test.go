@@ -9,7 +9,7 @@ import (
 )
 
 func TestNewUpgradeManager(t *testing.T) {
-	var manager = utils.NewUpgradeManager("admin")
+	var manager = utils.NewUpgradeManager("admin", "")
 
 	var ticker = time.NewTicker(2 * time.Second)
 	go func() {
