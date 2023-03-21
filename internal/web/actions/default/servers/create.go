@@ -36,24 +36,6 @@ func (this *CreateAction) RunGet(params struct{}) {
 	}
 	this.Data["countAuditing"] = countAuditingResp.Count
 
-	// 所有集群
-	resp, err := this.RPC().NodeClusterRPC().FindAllEnabledNodeClusters(this.AdminContext(), &pb.FindAllEnabledNodeClustersRequest{})
-	if err != nil {
-		this.ErrorPage(err)
-	}
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	clusterMaps := []maps.Map{}
-	for _, cluster := range resp.NodeClusters {
-		clusterMaps = append(clusterMaps, maps.Map{
-			"id":   cluster.Id,
-			"name": cluster.Name,
-		})
-	}
-	this.Data["clusters"] = clusterMaps
-
 	// 服务类型
 	this.Data["serverTypes"] = serverconfigs.AllServerTypes()
 
@@ -95,10 +77,6 @@ func (this *CreateAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
-	params.Must.
-		Field("name", params.Name).
-		Require("请输入服务名称")
-
 	var clusterId = params.ClusterId
 
 	// 用户
@@ -129,7 +107,7 @@ func (this *CreateAction) RunPost(params struct {
 
 	switch params.ServerType {
 	case serverconfigs.ServerTypeHTTPProxy, serverconfigs.ServerTypeHTTPWeb:
-		listen := []*serverconfigs.NetworkAddressConfig{}
+		var listen = []*serverconfigs.NetworkAddressConfig{}
 		err := json.Unmarshal([]byte(params.Addresses), &listen)
 		if err != nil {
 			this.Fail("端口地址解析失败：" + err.Error())
@@ -166,7 +144,7 @@ func (this *CreateAction) RunPost(params struct {
 			this.Fail("DEMO模式下不能创建TCP反向代理")
 		}
 
-		listen := []*serverconfigs.NetworkAddressConfig{}
+		var listen = []*serverconfigs.NetworkAddressConfig{}
 		err := json.Unmarshal([]byte(params.Addresses), &listen)
 		if err != nil {
 			this.Fail("端口地址解析失败：" + err.Error())
@@ -197,13 +175,17 @@ func (this *CreateAction) RunPost(params struct {
 				tlsConfig.AddListen(addr)
 			}
 		}
+
+		if len(params.Name) == 0 {
+			params.Name = "TCP负载均衡"
+		}
 	case serverconfigs.ServerTypeUDPProxy:
 		// 在DEMO模式下不能创建
 		if teaconst.IsDemoMode {
 			this.Fail("DEMO模式下不能创建UDP反向代理")
 		}
 
-		listen := []*serverconfigs.NetworkAddressConfig{}
+		var listen = []*serverconfigs.NetworkAddressConfig{}
 		err := json.Unmarshal([]byte(params.Addresses), &listen)
 		if err != nil {
 			this.Fail("端口地址解析失败：" + err.Error())
@@ -224,6 +206,10 @@ func (this *CreateAction) RunPost(params struct {
 				}
 				udpConfig.AddListen(addr)
 			}
+		}
+
+		if len(params.Name) == 0 {
+			params.Name = "UDP负载均衡"
 		}
 	default:
 		this.Fail("请选择正确的服务类型")
@@ -282,8 +268,13 @@ func (this *CreateAction) RunPost(params struct {
 		}
 
 		// 检查域名是否已经存在
-		allServerNames := serverconfigs.PlainServerNames(serverNames)
+		var allServerNames = serverconfigs.PlainServerNames(serverNames)
 		if len(allServerNames) > 0 {
+			// 指定默认名称
+			if len(params.Name) == 0 {
+				params.Name = allServerNames[0]
+			}
+
 			dupResp, err := this.RPC().ServerRPC().CheckServerNameDuplicationInNodeCluster(this.AdminContext(), &pb.CheckServerNameDuplicationInNodeClusterRequest{
 				ServerNames:   allServerNames,
 				NodeClusterId: clusterId,

@@ -4,138 +4,131 @@
 <div class="margin"></div>
 
 <form method="post" class="ui form" data-tea-action="$" data-tea-success="success" data-tea-fail="fail">
-    <table class="ui table selectable definition">
-		<tr>
-			<td class="title">服务名称 *</td>
-			<td>
-				<input type="text" name="name" maxlength="60" ref="focus"/>
-                <p class="comment">可以是网站用途或者域名等。</p>
-			</td>
-		</tr>
-        <tr v-show="hasUsers">
-            <td>所属用户<optional-label></optional-label></td>
-            <td>
-                <user-selector @change="changeUserId"></user-selector>
-                <p class="comment">当前服务所属平台用户。</p>
-            </td>
-        </tr>
-        <tr v-if="plans.length > 0">
-            <td>选择套餐</td>
-            <td>
-                <select class="ui dropdown auto-width" name="userPlanId">
-                    <option value="0">[选择套餐]</option>
-                    <option v-for="plan in plans" :value="plan.id">{{plan.name}}（{{plan.dayTo}}）</option>
-                </select>
-            </td>
-        </tr>
-		<tr>
-			<td>部署的集群 *</td>
-			<td>
-                <div v-if="userId == 0">
-                    <select class="ui dropdown auto-width" name="clusterId">
-                        <option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
-                    </select>
-                    <p class="comment">当前服务将会部署到所选集群的节点上。</p>
-                </div>
-                <div v-else>跟随用户设置。</div>
-			</td>
-		</tr>
+    <div class="tables-box">
+        <div class="table-box">
+            <table class="ui table selectable definition">
+                <tr v-show="hasUsers">
+                    <td>所属用户<optional-label></optional-label></td>
+                    <td>
+                        <user-selector @change="changeUserId"></user-selector>
+                        <p class="comment">当前服务所属平台用户。</p>
+                    </td>
+                </tr>
+                <tr v-if="plans.length > 0">
+                    <td>选择套餐</td>
+                    <td>
+                        <select class="ui dropdown auto-width" name="userPlanId">
+                            <option value="0">[选择套餐]</option>
+                            <option v-for="plan in plans" :value="plan.id">{{plan.name}}（{{plan.dayTo}}）</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>部署的集群 *</td>
+                    <td>
+                        <div v-if="userId == 0">
+                            <node-cluster-combo-box></node-cluster-combo-box>
+                            <p class="comment">当前服务将会部署到所选集群的节点上。</p>
+                        </div>
+                        <div v-else>跟随用户设置。</div>
+                    </td>
+                </tr>
 
-        <!-- 域名 -->
-        <tr v-if="serverType == 'httpProxy' || serverType == 'httpWeb'">
-            <td>绑定域名 *</td>
-            <td>
-                <server-name-box ref="serverNameBox"></server-name-box>
-                <p class="comment">绑定后，才能通过域名可以访问不同的服务。</p>
-            </td>
-        </tr>
+                <!-- 域名 -->
+                <tr v-if="serverType == 'httpProxy' || serverType == 'httpWeb'">
+                    <td>绑定域名 *</td>
+                    <td>
+                        <server-name-box ref="serverNameBox"></server-name-box>
+                        <p class="comment">绑定后，才能通过域名可以访问不同的服务。</p>
+                    </td>
+                </tr>
 
-		<tr>
-			<td>服务类型 *</td>
-			<td>
-				<select class="ui dropdown auto-width" name="serverType" v-model="serverType" @change="changeServerType()">
-					<option v-for="s in serverTypes" :value="s.code">{{s.name}}</option>
-				</select>
-                <p class="comment" v-for="s in serverTypes" v-if="s.code == serverType">{{s.description}}</p>
-			</td>
-		</tr>
-		<tr>
-			<td>绑定端口 *</td>
-			<td>
-				<network-addresses-box :v-server-type="serverType" :v-addresses="defaultAddresses"></network-addresses-box>
-			</td>
-		</tr>
+                <!-- 证书 -->
+                <tbody v-if="tlsProtocolName.length > 0">
+                    <tr>
+                        <td>{{tlsProtocolName.toUpperCase()}}证书</td>
+                        <td>
+                            <ssl-certs-box :v-protocol="tlsProtocolName.toLowerCase()"></ssl-certs-box>
+                        </td>
+                    </tr>
+                </tbody>
 
-        <!-- 证书 -->
-        <tbody v-if="tlsProtocolName.length > 0">
-            <tr>
-                <td>{{tlsProtocolName.toUpperCase()}}证书</td>
-                <td>
-                    <ssl-certs-box :v-protocol="tlsProtocolName.toLowerCase()"></ssl-certs-box>
-                </td>
-            </tr>
-        </tbody>
+                <!-- 源服务器地址 -->
+                <tr v-if="serverType == 'httpProxy' || serverType == 'tcpProxy' || serverType == 'udpProxy'">
+                    <td>源站地址 *</td>
+                    <td>
+                        <input type="hidden" name="origins" :value="JSON.stringify(origins)"/>
+                        <div v-if="origins.length > 0">
+                            <div v-for="(origin, index) in origins" class="ui label small basic">
+                                {{origin.addr.protocol}}://{{origin.addr.host}}:{{origin.addr.portRange}}
+                                <a href="" title="删除" @click.prevent="removeOrigin(index)"><i class="icon remove"></i></a>
+                            </div>
+                            <div class="ui divider"></div>
+                        </div>
+                        <a href="" @click.prevent="addOrigin">[添加源站地址]</a>
+                    </td>
+                </tr>
 
-		<!-- 源服务器地址 -->
-		<tr v-if="serverType == 'httpProxy' || serverType == 'tcpProxy' || serverType == 'udpProxy'">
-			<td>源站地址 *</td>
-			<td>
-				<input type="hidden" name="origins" :value="JSON.stringify(origins)"/>
-				<div v-if="origins.length > 0">
-					<div v-for="(origin, index) in origins" class="ui label small">
-                        {{origin.addr.protocol}}://{{origin.addr.host}}:{{origin.addr.portRange}}
-						<a href="" title="删除" @click.prevent="removeOrigin(index)"><i class="icon remove"></i></a>
-					</div>
-					<div class="ui divider"></div>
-				</div>
-				<a href="" @click.prevent="addOrigin">[添加源站地址]</a>
-			</td>
-		</tr>
+                <!-- Web Server -->
+                <tr v-if="serverType == 'httpWeb'">
+                    <td>Web目录</td>
+                    <td>
+                        <input type="text" name="webRoot"/>
+                    </td>
+                </tr>
 
-		<!-- Web Server -->
-		<tr v-if="serverType == 'httpWeb'">
-			<td>Web目录</td>
-			<td>
-				<input type="text" name="webRoot"/>
-			</td>
-		</tr>
+                <tr>
+                    <td>绑定端口 *</td>
+                    <td>
+                        <network-addresses-box :v-server-type="serverType" :v-addresses="defaultAddresses"></network-addresses-box>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-		<tr>
-			<td>选择分组<optional-label></optional-label></td>
-			<td>
-				<server-group-selector></server-group-selector>
-			</td>
-		</tr>
+        <div class="table-box right">
+            <h3>次要信息</h3>
+            <table class="ui table selectable definition">
+                <tr>
+                    <td class="title">服务类型</td>
+                    <td>
+                        <select class="ui dropdown auto-width" name="serverType" v-model="serverType" @change="changeServerType()">
+                            <option v-for="s in serverTypes" :value="s.code">{{s.name}}</option>
+                        </select>
+                        <p class="comment" v-for="s in serverTypes" v-if="s.code == serverType">{{s.description}}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title">服务名称</td>
+                    <td>
+                        <input type="text" name="name" maxlength="60"/>
+                        <p class="comment">可以是网站用途或者域名等。</p>
+                    </td>
+                </tr>
+                <tr v-if="serverType == 'httpProxy' || serverType == 'httpWeb'">
+                    <td>默认开启配置</td>
+                    <td>
+                        <div class="checkboxes">
+                           <checkbox checked="checked" name="accessLogIsOn">访问日志</checkbox>
+                            <checkbox checked="checked" name="websocketIsOn">Websocket</checkbox>
+                            <checkbox checked="checked" name="cacheIsOn">缓存</checkbox>
+                            <checkbox name="wafIsOn">WAF</checkbox>
+                            <checkbox name="remoteAddrIsOn">从上级代理中读取IP <tip-icon content="用来支持读取上级代理传递的X-Real-IP、X-Forwarded-For等信息。如果用户需要通过别的代理服务才能访问到这个网站服务，才需要选中。"></tip-icon> </checkbox>
+                            <checkbox checked="checked" name="statIsOn">统计 <tip-icon content="开启统计后，会统计访客区域、操作系统、浏览器等信息。"></tip-icon> </checkbox>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>选择分组<optional-label></optional-label></td>
+                    <td>
+                        <server-group-selector></server-group-selector>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="clear"></div>
+    </div>
 
-        <tr v-if="serverType == 'httpProxy' || serverType == 'httpWeb'">
-            <td>默认开启配置</td>
-            <td>
-                <checkbox checked="checked" name="accessLogIsOn">访问日志</checkbox>
-                &nbsp; &nbsp;
-                <checkbox checked="checked" name="websocketIsOn">Websocket</checkbox>
-                &nbsp; &nbsp;
-                <checkbox checked="checked" name="cacheIsOn">缓存</checkbox>
-                &nbsp; &nbsp;
-                <checkbox name="wafIsOn">WAF</checkbox>
-                &nbsp; &nbsp;
-                <checkbox name="remoteAddrIsOn">从上级代理中读取IP <tip-icon content="用来支持读取上级代理传递的X-Real-IP、X-Forwarded-For等信息。如果用户需要通过别的代理服务才能访问到这个网站服务，才需要选中。"></tip-icon> </checkbox>
-                &nbsp; &nbsp;
-                <checkbox checked="checked" name="statIsOn">统计 <tip-icon content="开启统计后，会统计访客区域、操作系统、浏览器等信息。"></tip-icon> </checkbox>
-            </td>
-        </tr>
-
-		<tr>
-			<td colspan="2"><more-options-indicator></more-options-indicator></td>
-		</tr>
-		<tbody v-show="moreOptionsVisible">
-			<tr>
-				<td>描述</td>
-				<td>
-					<textarea name="description" rows="3"></textarea>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-
+    <div class="margin clear"></div>
 	<submit-btn></submit-btn>
 </form>

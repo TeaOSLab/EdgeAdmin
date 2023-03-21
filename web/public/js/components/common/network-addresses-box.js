@@ -24,7 +24,8 @@ Vue.component("network-addresses-box", {
 			addresses: addresses,
 			protocol: protocol,
 			name: name,
-			from: from
+			from: from,
+			isEditing: false
 		}
 	},
 	watch: {
@@ -39,6 +40,8 @@ Vue.component("network-addresses-box", {
 	},
 	methods: {
 		addAddr: function () {
+			this.isEditing = true
+
 			let that = this
 			window.UPDATING_ADDR = null
 
@@ -106,17 +109,31 @@ Vue.component("network-addresses-box", {
 		},
 		supportRange: function () {
 			return this.vSupportRange || (this.vServerType == "tcpProxy" || this.vServerType == "udpProxy")
+		},
+		edit: function () {
+			this.isEditing = true
 		}
 	},
 	template: `<div>
 	<input type="hidden" :name="name" :value="JSON.stringify(addresses)"/>
-	<div v-if="addresses.length > 0">
-		<div class="ui label small basic" v-for="(addr, index) in addresses">
-			{{addr.protocol}}://<span v-if="addr.host.length > 0">{{addr.host.quoteIP()}}</span><span v-if="addr.host.length == 0">*</span>:<span v-if="addr.portRange.indexOf('-')<0">{{addr.portRange}}</span><span v-else style="font-style: italic">{{addr.portRange}}</span>
-			<a href="" @click.prevent="updateAddr(index, addr)" title="修改"><i class="icon pencil small"></i></a>
-			<a href="" @click.prevent="removeAddr(index)" title="删除"><i class="icon remove"></i></a> </div>
-		<div class="ui divider"></div>
+	<div v-show="!isEditing">
+		<div v-if="addresses.length > 0">
+			<div class="ui label small basic" v-for="(addr, index) in addresses">
+				{{addr.protocol}}://<span v-if="addr.host.length > 0">{{addr.host.quoteIP()}}</span><span v-if="addr.host.length == 0">*</span>:<span v-if="addr.portRange.indexOf('-')<0">{{addr.portRange}}</span><span v-else style="font-style: italic">{{addr.portRange}}</span>
+			</div>
+			&nbsp; &nbsp; <a href="" @click.prevent="edit" style="font-size: 0.9em">[修改]</a>
+		</div>	
 	</div>
-	<a href="" @click.prevent="addAddr()">[添加端口绑定]</a>
+	<div v-show="isEditing || addresses.length == 0">
+		<div v-if="addresses.length > 0">
+			<div class="ui label small basic" v-for="(addr, index) in addresses">
+				{{addr.protocol}}://<span v-if="addr.host.length > 0">{{addr.host.quoteIP()}}</span><span v-if="addr.host.length == 0">*</span>:<span v-if="addr.portRange.indexOf('-')<0">{{addr.portRange}}</span><span v-else style="font-style: italic">{{addr.portRange}}</span>
+				<a href="" @click.prevent="updateAddr(index, addr)" title="修改"><i class="icon pencil small"></i></a>
+				<a href="" @click.prevent="removeAddr(index)" title="删除"><i class="icon remove"></i></a> 
+			</div>
+			<div class="ui divider"></div>
+		</div>
+		<a href="" @click.prevent="addAddr()">[添加端口绑定]</a>
+	</div>
 </div>`
 })
