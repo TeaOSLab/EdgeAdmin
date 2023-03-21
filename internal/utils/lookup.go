@@ -1,26 +1,40 @@
 package utils
 
 import (
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
+	"github.com/iwind/TeaGo/logs"
 	"github.com/miekg/dns"
 )
 
-// LookupCNAME 获取CNAME
-func LookupCNAME(host string) (string, error) {
-	config, err := dns.ClientConfigFromFile("/etc/resolv.conf")
-	if err != nil {
-		return "", err
+var sharedDNSClient *dns.Client
+var sharedDNSConfig *dns.ClientConfig
+
+func init() {
+	if !teaconst.IsMain {
+		return
 	}
 
-	c := new(dns.Client)
-	m := new(dns.Msg)
+	config, err := dns.ClientConfigFromFile("/etc/resolv.conf")
+	if err != nil {
+		logs.Println("ERROR: configure dns client failed: " + err.Error())
+		return
+	}
+
+	sharedDNSConfig = config
+	sharedDNSClient = &dns.Client{}
+}
+
+// LookupCNAME 获取CNAME
+func LookupCNAME(host string) (string, error) {
+	var m = new(dns.Msg)
 
 	m.SetQuestion(host+".", dns.TypeCNAME)
 	m.RecursionDesired = true
 
 	var lastErr error
-	for _, serverAddr := range config.Servers {
-		r, _, err := c.Exchange(m, configutils.QuoteIP(serverAddr)+":"+config.Port)
+	for _, serverAddr := range sharedDNSConfig.Servers {
+		r, _, err := sharedDNSClient.Exchange(m, configutils.QuoteIP(serverAddr)+":"+sharedDNSConfig.Port)
 		if err != nil {
 			lastErr = err
 			continue
