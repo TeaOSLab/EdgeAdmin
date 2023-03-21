@@ -1,3 +1,31 @@
 .label em {
 	font-style: italic !important;
 }
+
+.checkboxes {
+	.checkbox {
+		float: left;
+		margin-bottom: 1em;
+		margin-right: 1em;
+	}
+}
+
+@media screen and (min-width: 1024px) {
+	.tables-box {
+		width: 1024px;
+
+		.table-box {
+			width: 48%;
+			float: left;
+		}
+
+		.table-box.right {
+			margin-left: 1em;
+			opacity: 0.3;
+		}
+
+		.table-box.right:hover {
+			opacity: 1.0;
+		}
+	}
+}

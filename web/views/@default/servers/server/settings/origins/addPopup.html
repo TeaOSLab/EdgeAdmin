@@ -35,6 +35,13 @@
                     源站服务器地址，通常是一个IP（或域名）加端口<span v-if="serverType == 'httpProxy'">，不需要加 http:// 或 https://</span>。</p>
 			</td>
 		</tr>
+        <tr v-if="isHTTP || protocol == 'tls'">
+            <td>回源主机名</td>
+            <td>
+                <input type="text" name="host" placeholder="比如example.com" maxlength="100"/>
+                <p class="comment">请求源站时的Host字段值，用于修改源站接收到的域名<span v-if="isHTTP">，支持请求变量</span>。</p>
+            </td>
+        </tr>
 		<tr>
 			<td colspan="2"><more-options-indicator></more-options-indicator></td>
 		</tr>
@@ -43,13 +50,6 @@
                 <td>{{protocol.toUpperCase()}}证书</td>
                 <td>
                     <ssl-certs-box :v-single-mode="true" :v-view-size="'mini'" :v-description="'可以选择连接源站使用的证书。'"></ssl-certs-box>
-                </td>
-            </tr>
-            <tr v-if="isHTTP || protocol == 'tls'">
-                <td>回源主机名</td>
-                <td>
-                    <input type="text" name="host" placeholder="比如example.com" maxlength="100"/>
-                    <p class="comment">请求源站时的Host，用于修改源站接收到的域名<span v-if="isHTTP">，自定义Host内容中支持请求变量</span>。</p>
                 </td>
             </tr>
             <tr v-show="protocol != 'udp'">
