@@ -1,3 +1,6 @@
+.tables-box .table-box {
+  margin-top: 0;
+}
 .label em {
   font-style: italic !important;
 }
@@ -10,12 +13,14 @@
   .tables-box {
     width: 1024px;
   }
-  .tables-box .table-box {
-    width: 48%;
+  .tables-box .table-box.left {
+    width: 55%;
     float: left;
   }
   .tables-box .table-box.right {
-    margin-left: 1em;
+    width: 40%;
+    float: left;
+    margin-left: 2em;
     opacity: 0.3;
   }
   .tables-box .table-box.right:hover {

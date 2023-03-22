@@ -1,11 +1,10 @@
 {$layout}
 {$template "menu"}
 
-<div class="margin"></div>
-
 <form method="post" class="ui form" data-tea-action="$" data-tea-success="success" data-tea-fail="fail">
     <div class="tables-box">
-        <div class="table-box">
+        <div class="table-box left">
+            <h3>新网站服务主要信息：</h3>
             <table class="ui table selectable definition">
                 <tr v-show="hasUsers">
                     <td>所属用户<optional-label></optional-label></td>
@@ -87,7 +86,7 @@
         </div>
 
         <div class="table-box right">
-            <h3>次要信息</h3>
+            <h3>次要信息：</h3>
             <table class="ui table selectable definition">
                 <tr>
                     <td class="title">服务类型</td>
