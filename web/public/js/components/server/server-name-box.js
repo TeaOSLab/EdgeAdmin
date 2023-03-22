@@ -28,7 +28,7 @@ Vue.component("server-name-box", {
         },
 
         updateServerName: function (index, serverName) {
-            window.UPDATING_SERVER_NAME = serverName
+            window.UPDATING_SERVER_NAME = teaweb.clone(serverName)
             let that = this
             teaweb.popup("/servers/addServerNamePopup", {
                 callback: function (resp) {
