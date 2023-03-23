@@ -48,4 +48,17 @@ Tea.context(function () {
 			}
 		})
 	}
+
+	/**
+	 * 显示和隐藏IP
+	 */
+	this.mostIPVisible = 4
+
+	this.showMoreIP = function (nodeIndex, node) {
+		if (typeof node.ipAddressesVisible != "boolean") {
+			node.ipAddressesVisible = false
+		}
+		node.ipAddressesVisible = !node.ipAddressesVisible
+		Vue.set(this.nodes, nodeIndex, node)
+	}
 })
