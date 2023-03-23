@@ -7055,7 +7055,7 @@ Vue.component("server-name-box", {
         },
 
         updateServerName: function (index, serverName) {
-            window.UPDATING_SERVER_NAME = serverName
+            window.UPDATING_SERVER_NAME = teaweb.clone(serverName)
             let that = this
             teaweb.popup("/servers/addServerNamePopup", {
                 callback: function (resp) {
@@ -14717,7 +14717,8 @@ Vue.component("network-addresses-box", {
 			addresses: addresses,
 			protocol: protocol,
 			name: name,
-			from: from
+			from: from,
+			isEditing: false
 		}
 	},
 	watch: {
@@ -14732,6 +14733,8 @@ Vue.component("network-addresses-box", {
 	},
 	methods: {
 		addAddr: function () {
+			this.isEditing = true
+
 			let that = this
 			window.UPDATING_ADDR = null
 
@@ -14799,18 +14802,32 @@ Vue.component("network-addresses-box", {
 		},
 		supportRange: function () {
 			return this.vSupportRange || (this.vServerType == "tcpProxy" || this.vServerType == "udpProxy")
+		},
+		edit: function () {
+			this.isEditing = true
 		}
 	},
 	template: `<div>
 	<input type="hidden" :name="name" :value="JSON.stringify(addresses)"/>
-	<div v-if="addresses.length > 0">
-		<div class="ui label small basic" v-for="(addr, index) in addresses">
-			{{addr.protocol}}://<span v-if="addr.host.length > 0">{{addr.host.quoteIP()}}</span><span v-if="addr.host.length == 0">*</span>:<span v-if="addr.portRange.indexOf('-')<0">{{addr.portRange}}</span><span v-else style="font-style: italic">{{addr.portRange}}</span>
-			<a href="" @click.prevent="updateAddr(index, addr)" title="修改"><i class="icon pencil small"></i></a>
-			<a href="" @click.prevent="removeAddr(index)" title="删除"><i class="icon remove"></i></a> </div>
-		<div class="ui divider"></div>
+	<div v-show="!isEditing">
+		<div v-if="addresses.length > 0">
+			<div class="ui label small basic" v-for="(addr, index) in addresses">
+				{{addr.protocol}}://<span v-if="addr.host.length > 0">{{addr.host.quoteIP()}}</span><span v-if="addr.host.length == 0">*</span>:<span v-if="addr.portRange.indexOf('-')<0">{{addr.portRange}}</span><span v-else style="font-style: italic">{{addr.portRange}}</span>
+			</div>
+			&nbsp; &nbsp; <a href="" @click.prevent="edit" style="font-size: 0.9em">[修改]</a>
+		</div>	
 	</div>
-	<a href="" @click.prevent="addAddr()">[添加端口绑定]</a>
+	<div v-show="isEditing || addresses.length == 0">
+		<div v-if="addresses.length > 0">
+			<div class="ui label small basic" v-for="(addr, index) in addresses">
+				{{addr.protocol}}://<span v-if="addr.host.length > 0">{{addr.host.quoteIP()}}</span><span v-if="addr.host.length == 0">*</span>:<span v-if="addr.portRange.indexOf('-')<0">{{addr.portRange}}</span><span v-else style="font-style: italic">{{addr.portRange}}</span>
+				<a href="" @click.prevent="updateAddr(index, addr)" title="修改"><i class="icon pencil small"></i></a>
+				<a href="" @click.prevent="removeAddr(index)" title="删除"><i class="icon remove"></i></a> 
+			</div>
+			<div class="ui divider"></div>
+		</div>
+		<a href="" @click.prevent="addAddr()">[添加端口绑定]</a>
+	</div>
 </div>`
 })
 
@@ -14977,6 +14994,10 @@ Vue.component("link-red", {
 	methods: {
 		clickPrevent: function () {
 			emitClick(this, arguments)
+
+			if (this.vHref.length > 0) {
+				window.location = this.vHref
+			}
 		}
 	},
 	template: `<a :href="vHref" :title="title" style="border-bottom: 1px #db2828 dashed" @click.prevent="clickPrevent"><span class="red"><slot></slot></span></a>`
@@ -15641,6 +15662,34 @@ Vue.component("loading-message", {
     </div>`
 })
 
+Vue.component("file-textarea", {
+	props: ["value"],
+	data: function () {
+		let value = this.value
+		if (typeof value != "string") {
+			value = ""
+		}
+		return {
+			realValue: value
+		}
+	},
+	mounted: function () {
+	},
+	methods: {
+		dragover: function () {},
+		drop: function (e) {
+			let that = this
+			e.dataTransfer.items[0].getAsFile().text().then(function (data) {
+				that.setValue(data)
+			})
+		},
+		setValue: function (value) {
+			this.realValue = value
+		}
+	},
+	template: `<textarea @drop.prevent="drop" @dragover.prevent="dragover" ref="textarea" v-model="realValue"></textarea>`
+})
+
 Vue.component("more-options-angle", {
 	data: function () {
 		return {
@@ -15655,30 +15704,6 @@ Vue.component("more-options-angle", {
 	},
 	template: `<a href="" @click.prevent="show()"><span v-if="!isVisible">更多选项</span><span v-if="isVisible">收起选项</span><i class="icon angle" :class="{down:!isVisible, up:isVisible}"></i></a>`
 })
-
-/**
- * 菜单项
- */
-Vue.component("inner-menu-item", {
-	props: ["href", "active", "code"],
-	data: function () {
-		var active = this.active;
-		if (typeof(active) =="undefined") {
-			var itemCode = "";
-			if (typeof (window.TEA.ACTION.data.firstMenuItem) != "undefined") {
-				itemCode = window.TEA.ACTION.data.firstMenuItem;
-			}
-			active = (itemCode == this.code);
-		}
-		return {
-			vHref: (this.href == null) ? "" : this.href,
-			vActive: active
-		};
-	},
-	template: '\
-		<a :href="vHref" class="item right" style="color:#4183c4" :class="{active:vActive}">[<slot></slot>]</a> \
-		'
-});
 
 Vue.component("columns-grid", {
 	props: [],
@@ -15751,6 +15776,30 @@ Vue.component("columns-grid", {
 	<slot></slot>
 </div>`
 })
+
+/**
+ * 菜单项
+ */
+Vue.component("inner-menu-item", {
+	props: ["href", "active", "code"],
+	data: function () {
+		var active = this.active;
+		if (typeof(active) =="undefined") {
+			var itemCode = "";
+			if (typeof (window.TEA.ACTION.data.firstMenuItem) != "undefined") {
+				itemCode = window.TEA.ACTION.data.firstMenuItem;
+			}
+			active = (itemCode == this.code);
+		}
+		return {
+			vHref: (this.href == null) ? "" : this.href,
+			vActive: active
+		};
+	},
+	template: '\
+		<a :href="vHref" class="item right" style="color:#4183c4" :class="{active:vActive}">[<slot></slot>]</a> \
+		'
+});
 
 Vue.component("health-check-config-box", {
 	props: ["v-health-check-config", "v-check-domain-url"],
