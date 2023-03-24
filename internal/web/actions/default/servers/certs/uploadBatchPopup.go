@@ -94,6 +94,12 @@ func (this *UploadBatchPopupAction) RunPost(params struct {
 		return
 	}
 
+	// 对比证书和私钥数量是否一致
+	if len(certDataList) != len(keyDataList) {
+		this.Fail("证书文件数量（" + types.String(len(certDataList)) + "）和私钥文件数量（" + types.String(len(keyDataList)) + "）不一致")
+		return
+	}
+
 	// 自动匹配
 	var pairs = [][2][]byte{}        // [] { cert, key }
 	var keyIndexMap = map[int]bool{} // 方便下面跳过已匹配的Key
