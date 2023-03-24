@@ -21,6 +21,9 @@ Vue.component("file-textarea", {
 		},
 		setValue: function (value) {
 			this.realValue = value
+		},
+		focus: function () {
+			this.$refs.textarea.focus()
 		}
 	},
 	template: `<textarea @drop.prevent="drop" @dragover.prevent="dragover" ref="textarea" v-model="realValue"></textarea>`
