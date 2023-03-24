@@ -25,16 +25,16 @@
 			<td><span v-if="textMode">输入证书内容</span><span v-else>选择证书文件</span> *</td>
 			<td>
 				<input type="file" name="certFile" accept="application/x-pem-file, application/pkcs10, application/x-pkcs12, application/x-x509-user-cert, application/x-x509-ca-cert, application/pkix-cert" v-if="!textMode"/>
-                <textarea class="wide-code" ref="certTextField" spellcheck="false" name="certText" placeholder="-----BEGIN CERTIFICATE-----" v-if="textMode" style="font-size: 0.7em"></textarea>
-                <p class="comment"><a href="" @click.prevent="switchTextMode">[<span v-if="!textMode">输入内容</span><span v-else>上传文件</span>]</a>。文件内容中通常含有"-----BEGIN CERTIFICATE-----"类似的信息。</p>
+                <file-textarea class="wide-code" ref="certTextField" spellcheck="false" name="certText" placeholder="-----BEGIN CERTIFICATE-----" v-if="textMode" style="font-size: 0.7em"></file-textarea>
+                <p class="comment"><a href="" @click.prevent="switchTextMode">[<span v-if="!textMode">输入内容</span><span v-else>上传文件</span>]</a>。文件内容中通常含有"-----BEGIN CERTIFICATE-----"类似的信息<span v-if="textMode">，可以直接拖动证书文件到输入框</span>。</p>
 			</td>
 		</tr>
 		<tr v-show="isCA == 0">
 			<td><span v-if="textMode">输入私钥内容</span><span v-else>选择私钥文件</span> *</td>
 			<td>
 				<input type="file" name="keyFile" accept="application/pkcs8" v-if="!textMode"/>
-                <textarea class="wide-code" spellcheck="false" name="keyText" placeholder="-----BEGIN RSA PRIVATE KEY-----" v-if="textMode" style="font-size: 0.7em"></textarea>
-				<p class="comment"><a href="" @click.prevent="switchTextMode">[<span v-if="!textMode">输入内容</span><span v-else>上传文件</span>]</a>。文件内容中通常含有"-----BEGIN RSA PRIVATE KEY-----"类似的信息。</p>
+                <file-textarea class="wide-code" spellcheck="false" name="keyText" placeholder="-----BEGIN RSA PRIVATE KEY-----" v-if="textMode" style="font-size: 0.7em"></file-textarea>
+				<p class="comment"><a href="" @click.prevent="switchTextMode">[<span v-if="!textMode">输入内容</span><span v-else>上传文件</span>]</a>。文件内容中通常含有"-----BEGIN RSA PRIVATE KEY-----"类似的信息<span v-if="textMode">，可以直接拖动私钥文件到输入框</span>。</p>
 			</td>
 		</tr>
 		<tr>
@@ -48,7 +48,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td>是否启用</td>
+				<td>启用当前证书</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" name="isOn" value="1" checked="checked"/>

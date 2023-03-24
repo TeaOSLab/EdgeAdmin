@@ -26,18 +26,20 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	certConfigJSON := certConfigResp.SslCertJSON
+	var certConfigJSON = certConfigResp.SslCertJSON
 	if len(certConfigJSON) == 0 {
 		this.NotFound("cert", params.CertId)
 		return
 	}
 
-	certConfig := &sslconfigs.SSLCertConfig{}
+	var certConfig = &sslconfigs.SSLCertConfig{}
 	err = json.Unmarshal(certConfigJSON, certConfig)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
+	certConfig.CertData = nil // cert & key 不需要在界面上显示
+	certConfig.KeyData = nil
 	this.Data["certConfig"] = certConfig
 
 	this.Show()
