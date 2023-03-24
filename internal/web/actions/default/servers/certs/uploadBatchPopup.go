@@ -24,6 +24,8 @@ func (this *UploadBatchPopupAction) Init() {
 }
 
 func (this *UploadBatchPopupAction) RunGet(params struct{}) {
+	this.Data["maxFiles"] = this.maxFiles()
+
 	this.Show()
 }
 
@@ -42,7 +44,7 @@ func (this *UploadBatchPopupAction) RunPost(params struct {
 	}
 
 	// 限制每次上传的文件数量
-	const maxFiles = 10_000
+	var maxFiles = this.maxFiles()
 	if len(files) > maxFiles {
 		this.Fail("每次上传最多不能超过" + types.String(maxFiles) + "个文件")
 		return

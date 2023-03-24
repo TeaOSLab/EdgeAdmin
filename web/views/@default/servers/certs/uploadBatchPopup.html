@@ -9,7 +9,7 @@
             <td class="title">选择要上传的证书和私钥文件 *</td>
             <td>
                 <input type="file" name="certFiles" accept="application/x-pem-file, application/pkcs10, application/x-pkcs12, application/x-x509-user-cert, application/x-x509-ca-cert, application/pkix-cert, application/pkcs8, .key, .pem" multiple="multiple"/>
-                <p class="comment">点击后在弹出的文件选择框中支持多选；不用担心文件名和顺序问题，系统会自动匹配。</p>
+                <p class="comment">点击后在弹出的文件选择框中支持多选；不用担心文件名和顺序问题，系统会自动匹配<span v-if="!teaIsPlus">；免费版本限制每次最多上传{{maxFiles}}个文件</span>。</p>
             </td>
         </tr>
         <tr>
