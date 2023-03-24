@@ -1,0 +1,25 @@
+{$layout "layout_popup"}
+
+<h3>批量上传证书</h3>
+
+<form class="ui form" data-tea-success="successUpload" data-tea-action="$" data-tea-before="before" data-tea-done="done" data-tea-timeout="600">
+    <csrf-token></csrf-token>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">选择要上传的证书和私钥文件 *</td>
+            <td>
+                <input type="file" name="certFiles" accept="application/x-pem-file, application/pkcs10, application/x-pkcs12, application/x-x509-user-cert, application/x-x509-ca-cert, application/pkix-cert, application/pkcs8, .key, .pem" multiple="multiple"/>
+                <p class="comment">点击后在弹出的文件选择框中支持多选。</p>
+            </td>
+        </tr>
+        <tr>
+            <td>所属用户</td>
+            <td>
+                <user-selector @change="changeUserId"></user-selector>
+                <p class="comment">可选项，指定证书所属的用户；指定用户后，上传的证书管理员无法在管理系统查看，只能在用户系统查看。</p>
+            </td>
+        </tr>
+    </table>
+    <submit-btn v-show="!isRequesting">上传</submit-btn>
+    <button class="ui button disabled " type="button" v-if="isRequesting">上传中...</button>
+</form>
