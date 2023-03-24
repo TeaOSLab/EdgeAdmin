@@ -11,6 +11,7 @@
 		<menu-item :href="'/servers/certs?type=30days&keyword=' + keyword" :active="type == '30days'">30天内过期({{count30Days}})</menu-item>
 		<span class="item disabled">|</span>
 		<a href="" class="item" @click.prevent="uploadCert">[上传证书]</a>
+        <a href="" class="item" @click.prevent="uploadBatch">[批量上传]</a>
 	</second-menu>
 
     <form class="ui form">

@@ -21,6 +21,7 @@ func init() {
 			Data("leftMenuItem", "cert").
 			Get("", new(IndexAction)).
 			GetPost("/uploadPopup", new(UploadPopupAction)).
+			GetPost("/uploadBatchPopup", new(UploadBatchPopupAction)).
 			Post("/delete", new(DeleteAction)).
 			GetPost("/updatePopup", new(UpdatePopupAction)).
 			Get("/certPopup", new(CertPopupAction)).
