@@ -96,4 +96,11 @@ Tea.context(function () {
 				this.plans = resp.data.plans
 			})
 	}
+
+	/**
+	 * 证书相关
+	 */
+	this.findServerNames = function () {
+		return this.$refs.serverNameBox.allServerNames()
+	}
 })

@@ -1,78 +1,100 @@
 Vue.component("server-name-box", {
-    props: ["v-server-names"],
-    data: function () {
-        let serverNames = this.vServerNames;
-        if (serverNames == null) {
-            serverNames = []
-        }
-        return {
-            serverNames: serverNames,
-            isSearching: false,
-            keyword: ""
-        }
-    },
-    methods: {
-        addServerName: function () {
-            window.UPDATING_SERVER_NAME = null
-            let that = this
-            teaweb.popup("/servers/addServerNamePopup", {
-                callback: function (resp) {
-                    var serverName = resp.data.serverName
-                    that.serverNames.push(serverName)
-                }
-            });
-        },
+	props: ["v-server-names"],
+	data: function () {
+		let serverNames = this.vServerNames;
+		if (serverNames == null) {
+			serverNames = []
+		}
+		return {
+			serverNames: serverNames,
+			isSearching: false,
+			keyword: ""
+		}
+	},
+	methods: {
+		addServerName: function () {
+			window.UPDATING_SERVER_NAME = null
+			let that = this
+			teaweb.popup("/servers/addServerNamePopup", {
+				callback: function (resp) {
+					var serverName = resp.data.serverName
+					that.serverNames.push(serverName)
+				}
+			});
+		},
 
-        removeServerName: function (index) {
-            this.serverNames.$remove(index)
-        },
+		removeServerName: function (index) {
+			this.serverNames.$remove(index)
+		},
 
-        updateServerName: function (index, serverName) {
-            window.UPDATING_SERVER_NAME = teaweb.clone(serverName)
-            let that = this
-            teaweb.popup("/servers/addServerNamePopup", {
-                callback: function (resp) {
-                    var serverName = resp.data.serverName
-                    Vue.set(that.serverNames, index, serverName)
-                }
-            });
-        },
-        showSearchBox: function () {
-            this.isSearching = !this.isSearching
-            if (this.isSearching) {
-                let that = this
-                setTimeout(function () {
-                    that.$refs.keywordRef.focus()
-                }, 200)
-            } else {
-                this.keyword = ""
-            }
-        },
-    },
-    watch: {
-        keyword: function (v) {
-            this.serverNames.forEach(function (serverName) {
-                if (v.length == 0) {
-                    serverName.isShowing = true
-                    return
-                }
-                if (serverName.subNames == null || serverName.subNames.length == 0) {
-                    if (!teaweb.match(serverName.name, v)) {
-                        serverName.isShowing = false
-                    }
-                } else {
-                    let found = false
-                    serverName.subNames.forEach(function (subName) {
-                        if (teaweb.match(subName, v)) {
-                            found = true
-                        }
-                    })
-                    serverName.isShowing = found
-                }
-            })
-        }
-    },
-    template: `<div>
+		updateServerName: function (index, serverName) {
+			window.UPDATING_SERVER_NAME = teaweb.clone(serverName)
+			let that = this
+			teaweb.popup("/servers/addServerNamePopup", {
+				callback: function (resp) {
+					var serverName = resp.data.serverName
+					Vue.set(that.serverNames, index, serverName)
+				}
+			});
+		},
+		showSearchBox: function () {
+			this.isSearching = !this.isSearching
+			if (this.isSearching) {
+				let that = this
+				setTimeout(function () {
+					that.$refs.keywordRef.focus()
+				}, 200)
+			} else {
+				this.keyword = ""
+			}
+		},
+		allServerNames: function () {
+			if (this.serverNames == null) {
+				return []
+			}
+			let result = []
+			this.serverNames.forEach(function (serverName) {
+				if (serverName.subNames != null && serverName.subNames.length > 0) {
+					serverName.subNames.forEach(function (subName) {
+						if (subName != null && subName.length > 0) {
+							if (!result.$contains(subName)) {
+								result.push(subName)
+							}
+						}
+					})
+				} else if (serverName.name != null && serverName.name.length > 0) {
+					if (!result.$contains(serverName.name)) {
+						result.push(serverName.name)
+					}
+				}
+			})
+			return result
+		}
+	},
+	watch: {
+		keyword: function (v) {
+			this.serverNames.forEach(function (serverName) {
+				if (v.length == 0) {
+					serverName.isShowing = true
+					return
+				}
+				if (serverName.subNames == null || serverName.subNames.length == 0) {
+					if (!teaweb.match(serverName.name, v)) {
+						serverName.isShowing = false
+					}
+				} else {
+					let found = false
+					serverName.subNames.forEach(function (subName) {
+						if (teaweb.match(subName, v)) {
+							found = true
+						}
+					})
+					serverName.isShowing = found
+				}
+			})
+		}
+	},
+	template: `<div>
 	<input type="hidden" name="serverNames" :value="JSON.stringify(serverNames)"/>
 	<div v-if="serverNames.length > 0">
 		<div v-for="(serverName, index) in serverNames" class="ui label small basic" :class="{hidden: serverName.isShowing === false}">

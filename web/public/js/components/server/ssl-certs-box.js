@@ -5,7 +5,8 @@ Vue.component("ssl-certs-box", {
 		"v-protocol", // 协议：https|tls
 		"v-view-size", // 弹窗尺寸：normal, mini
 		"v-single-mode", // 单证书模式
-		"v-description" // 描述文字
+		"v-description", // 描述文字
+		"v-domains" // 搜索的域名列表或者函数
 	],
 	data: function () {
 		let certs = this.vCerts
@@ -43,8 +44,8 @@ Vue.component("ssl-certs-box", {
 		// 选择证书
 		selectCert: function () {
 			let that = this
-			let width = "50em"
-			let height = "30em"
+			let width = "54em"
+			let height = "32em"
 			let viewSize = this.vViewSize
 			if (viewSize == null) {
 				viewSize = "normal"
@@ -53,11 +54,37 @@ Vue.component("ssl-certs-box", {
 				width = "35em"
 				height = "20em"
 			}
-			teaweb.popup("/servers/certs/selectPopup?viewSize=" + viewSize, {
+
+			let searchingDomains = []
+			if (this.vDomains != null) {
+				if (typeof this.vDomains == "function") {
+					let resultDomains = this.vDomains()
+					if (resultDomains != null && typeof resultDomains == "object" && (resultDomains instanceof Array)) {
+						searchingDomains = resultDomains
+					}
+				} else if (typeof this.vDomains == "object" && (this.vDomains instanceof Array)) {
+					searchingDomains = this.vDomains
+				}
+				if (searchingDomains.length > 10000) {
+					searchingDomains = searchingDomains.slice(0, 10000)
+				}
+			}
+
+			let selectedCertIds = this.certs.map(function (cert) {
+				return cert.id
+			})
+
+			teaweb.popup("/servers/certs/selectPopup?viewSize=" + viewSize + "&searchingDomains=" + window.encodeURIComponent(searchingDomains.join(",")) + "&selectedCertIds=" + selectedCertIds.join(","), {
 				width: width,
 				height: height,
 				callback: function (resp) {
-					that.certs.push(resp.data.cert)
+					if (resp.data.cert != null) {
+						that.certs.push(resp.data.cert)
+					}
+					if (resp.data.certs != null) {
+						that.certs.$pushAll(resp.data.certs)
+					}
+					that.$forceUpdate()
 				}
 			})
 		},
