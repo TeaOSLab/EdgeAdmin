@@ -14,7 +14,6 @@ Tea.context(function () {
 	// 批量上传证书
 	this.uploadBatch = function () {
 		teaweb.popup("/servers/certs/uploadBatchPopup", {
-			height: "30em",
 			callback: function () {
 				window.location.reload()
 			}

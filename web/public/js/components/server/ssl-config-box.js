@@ -107,12 +107,23 @@ Vue.component("ssl-config-box", {
 					selectedCertIds.push(cert.id.toString())
 				})
 			}
-			teaweb.popup("/servers/certs/selectPopup?selectedCertIds=" + selectedCertIds, {
+			let serverId = this.vServerId
+			if (serverId == null) {
+				serverId = 0
+			}
+			teaweb.popup("/servers/certs/selectPopup?selectedCertIds=" + selectedCertIds + "&serverId=" + serverId, {
 				width: "50em",
 				height: "30em",
 				callback: function (resp) {
-					that.policy.certRefs.push(resp.data.certRef)
-					that.policy.certs.push(resp.data.cert)
+					if (resp.data.cert != null && resp.data.certRef != null) {
+						that.policy.certRefs.push(resp.data.certRef)
+						that.policy.certs.push(resp.data.cert)
+					}
+					if (resp.data.certs != null && resp.data.certRefs != null) {
+						that.policy.certRefs.$pushAll(resp.data.certRefs)
+						that.policy.certs.$pushAll(resp.data.certs)
+					}
+					that.$forceUpdate()
 				}
 			})
 		},
@@ -312,8 +323,15 @@ Vue.component("ssl-config-box", {
 				width: "50em",
 				height: "30em",
 				callback: function (resp) {
-					that.policy.clientCARefs.push(resp.data.certRef)
-					that.policy.clientCACerts.push(resp.data.cert)
+					if (resp.data.cert != null && resp.data.certRef != null) {
+						that.policy.clientCARefs.push(resp.data.certRef)
+						that.policy.clientCACerts.push(resp.data.cert)
+					}
+					if (resp.data.certs != null && resp.data.certRefs != null) {
+						that.policy.clientCARefs.$pushAll(resp.data.certRefs)
+						that.policy.clientCACerts.$pushAll(resp.data.certs)
+					}
+					that.$forceUpdate()
 				}
 			})
 		},
@@ -525,7 +543,7 @@ Vue.component("ssl-config-box", {
 				<td>客户端认证CA证书</td>
 				<td>
 					<div v-if="policy.clientCACerts != null && policy.clientCACerts.length > 0">
-						<div class="ui label small" v-for="(cert, index) in policy.clientCACerts">
+						<div class="ui label small basic" v-for="(cert, index) in policy.clientCACerts">
 							{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp; <a href="" title="删除" @click.prevent="removeClientCACert()"><i class="icon remove"></i></a>
 						</div>
 						<div class="ui divider"></div>

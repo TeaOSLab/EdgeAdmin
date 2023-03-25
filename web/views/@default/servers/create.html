@@ -7,14 +7,14 @@
             <h3>新网站服务主要信息：</h3>
             <table class="ui table selectable definition">
                 <tr v-show="hasUsers">
-                    <td>所属用户<optional-label></optional-label></td>
+                    <td class="title">所属用户<optional-label></optional-label></td>
                     <td>
                         <user-selector @change="changeUserId"></user-selector>
                         <p class="comment">当前服务所属平台用户。</p>
                     </td>
                 </tr>
                 <tr v-if="plans.length > 0">
-                    <td>选择套餐</td>
+                    <td class="title">选择套餐</td>
                     <td>
                         <select class="ui dropdown auto-width" name="userPlanId">
                             <option value="0">[选择套餐]</option>
@@ -23,7 +23,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>部署的集群 *</td>
+                    <td class="title">部署的集群 *</td>
                     <td>
                         <div v-if="userId == 0">
                             <node-cluster-combo-box></node-cluster-combo-box>
@@ -47,7 +47,7 @@
                     <tr>
                         <td>{{tlsProtocolName.toUpperCase()}}证书</td>
                         <td>
-                            <ssl-certs-box :v-protocol="tlsProtocolName.toLowerCase()"></ssl-certs-box>
+                            <ssl-certs-box :v-protocol="tlsProtocolName.toLowerCase()" :v-domains="findServerNames"></ssl-certs-box>
                         </td>
                     </tr>
                 </tbody>
@@ -77,7 +77,7 @@
                 </tr>
 
                 <tr>
-                    <td>绑定端口 *</td>
+                    <td class="title">绑定端口 *</td>
                     <td>
                         <network-addresses-box :v-server-type="serverType" :v-addresses="defaultAddresses"></network-addresses-box>
                     </td>

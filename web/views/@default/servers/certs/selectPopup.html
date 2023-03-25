@@ -1,26 +1,48 @@
 {$layout "layout_popup"}
 
-<h3>选择证书</h3>
+<h3>选择证书 <span v-if="searchingDomains.length > 0">（当前服务域名：{{searchingDomains[0]}}<var style="font-style: normal" v-if="searchingDomains.length > 1">等{{searchingDomains.length}}个域名</var>）</span></h3>
 
 <!-- 搜索表单 -->
 <form class="ui form" action="/servers/certs/selectPopup">
     <input type="hidden" name="selectedCertIds" :value="selectedCertIds"/>
+    <input type="hidden" name="searchingType" :value="searchingType"/>
+    <input type="hidden" name="searchingDomains" :value="searchingDomains.join(',')"/>
     <div class="ui fields inline">
+        <div class="ui field">
+            <user-selector :v-user-id="userId"></user-selector>
+        </div>
         <div class="ui field">
             <input type="text" name="keyword" v-model="keyword" placeholder="域名、说明文字等" size="30"/>
         </div>
         <div class="ui field">
             <button class="ui button" type="submit">搜索</button> &nbsp;
-            <a :href="'/servers/certs/selectPopup?selectedCertIds=' + selectedCertIds" v-if="keyword.length > 0">[清除条件]</a>
+            <a :href="'/servers/certs/selectPopup?selectedCertIds=' + selectedCertIds + '&searchingType=' + searchingType + '&searchingDomains=' + encodeURL(searchingDomains.join(','))" v-if="keyword.length > 0">[清除条件]</a>
         </div>
     </div>
 </form>
 
+<!-- 选项卡 -->
+<div v-if="searchingDomains.length > 0">
+    <div class="ui divider" style="margin-bottom: 0"></div>
+    <second-menu>
+        <menu-item :active="searchingType == 'all'" :href="baseURL + '&searchingType=all'">所有证书 <span class="small">({{totalAll}})</span></menu-item>
+        <span class="disabled item">|</span>
+        <menu-item :active="searchingType == 'match'" :href="baseURL + '&searchingType=match'">域名匹配证书 <span class="small"> ({{totalMatch}})</span></menu-item>
+    </second-menu>
+</div>
+
+<!-- 全选 -->
+<div v-if="countChecked > 0">
+    <div class="margin"></div>
+    <button class="ui button small basic" type="button" @click.prevent="confirmChecked">使用选中的{{countChecked}}个证书</button>
+</div>
+
 <!-- 证书列表 -->
-<p class="comment" v-if="certs.length == 0">暂时还没有相关的证书。</p>
+<p class="comment" v-if="certs.length == 0">暂时还没有<span v-if="searchingType == 'match'">跟所添加域名匹配的</span>相关证书。</p>
 <table class="ui table selectable celled" v-if="certs.length > 0">
 	<thead>
         <tr>
+            <th style="width:1em"><checkbox @input="changeAll"></checkbox></th>
             <th>证书说明</th>
             <th>域名</th>
             <th>过期日期</th>
@@ -30,6 +52,9 @@
         </tr>
 	</thead>
 	<tr v-for="(cert, index) in certs">
+        <td>
+            <checkbox v-model="cert.isChecked" ref="certCheckboxes" @input="changeCertChecked" v-if="!certInfos[index].isSelected"></checkbox>
+        </td>
         <td>
             <a href="" @click.prevent="selectCert(cert)" v-if="!certInfos[index].isSelected"><keyword :v-word="keyword">{{cert.name}}</keyword></a>
             <span  v-if="certInfos[index].isSelected">{{cert.name}}</span>
