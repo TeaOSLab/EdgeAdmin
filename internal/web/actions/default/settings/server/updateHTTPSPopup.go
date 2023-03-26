@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	adminserverutils "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/server/admin-server-utils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
 	"github.com/iwind/TeaGo/Tea"
@@ -21,7 +22,7 @@ func (this *UpdateHTTPSPopupAction) Init() {
 }
 
 func (this *UpdateHTTPSPopupAction) RunGet(params struct{}) {
-	serverConfig, err := loadServerConfig()
+	serverConfig, err := adminserverutils.LoadServerConfig()
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -70,7 +71,7 @@ func (this *UpdateHTTPSPopupAction) RunPost(params struct {
 		this.Fail("请输入绑定地址")
 	}
 
-	serverConfig, err := loadServerConfig()
+	serverConfig, err := adminserverutils.LoadServerConfig()
 	if err != nil {
 		this.Fail("保存失败：" + err.Error())
 	}
@@ -133,7 +134,7 @@ func (this *UpdateHTTPSPopupAction) RunPost(params struct {
 		serverConfig.Https.Cert = "configs/https.cert.pem"
 	}
 
-	err = writeServerConfig(serverConfig)
+	err = adminserverutils.WriteServerConfig(serverConfig)
 	if err != nil {
 		this.Fail("保存配置失败：" + err.Error())
 	}

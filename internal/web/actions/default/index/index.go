@@ -9,12 +9,15 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	adminserverutils "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/server/admin-server-utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
+	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/types"
 	stringutil "github.com/iwind/TeaGo/utils/string"
+	"net"
 	"time"
 )
 
@@ -32,6 +35,25 @@ func (this *IndexAction) RunGet(params struct {
 
 	Auth *helpers.UserShouldAuth
 }) {
+	// 是否自动从HTTP跳转到HTTPS
+	if this.Request.TLS == nil {
+		httpsPort, _ := adminserverutils.ReadServerHTTPS()
+		if httpsPort > 0 {
+			currentHost, _, err := net.SplitHostPort(this.Request.Host)
+			if err != nil {
+				currentHost = this.Request.Host
+			}
+
+			var newHost = configutils.QuoteIP(currentHost)
+			if httpsPort != 443 /** default https port **/ {
+				newHost += ":" + types.String(httpsPort)
+			}
+
+			this.RedirectURL("https://" + newHost + this.Request.RequestURI)
+			return
+		}
+	}
+
 	// DEMO模式
 	this.Data["isDemo"] = teaconst.IsDemoMode
 
