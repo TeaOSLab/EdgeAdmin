@@ -56,5 +56,8 @@
 ## 联系我们
 有什么问题和建议都可以加入QQ群 `659832182` 或者 [Telegram群](https://t.me/+5kVCMGxQhZxiODY9) 。
 
+## 企业版
+* [GoEdge企业版](https://goedge.cn/commercial) - 功能更强大的CDN系统
+
 ## 感谢
 * 感谢 [Gitee](https://gitee.com/) 提供国内源代码托管平台
