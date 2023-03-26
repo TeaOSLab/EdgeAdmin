@@ -6,7 +6,8 @@ Vue.component("ssl-certs-box", {
 		"v-view-size", // 弹窗尺寸：normal, mini
 		"v-single-mode", // 单证书模式
 		"v-description", // 描述文字
-		"v-domains" // 搜索的域名列表或者函数
+		"v-domains", // 搜索的域名列表或者函数
+		"v-user-id" // 用户ID
 	],
 	data: function () {
 		let certs = this.vCerts
@@ -73,8 +74,12 @@ Vue.component("ssl-certs-box", {
 			let selectedCertIds = this.certs.map(function (cert) {
 				return cert.id
 			})
+			let userId = this.vUserId
+			if (userId == null) {
+				userId = 0
+			}
 
-			teaweb.popup("/servers/certs/selectPopup?viewSize=" + viewSize + "&searchingDomains=" + window.encodeURIComponent(searchingDomains.join(",")) + "&selectedCertIds=" + selectedCertIds.join(","), {
+			teaweb.popup("/servers/certs/selectPopup?viewSize=" + viewSize + "&searchingDomains=" + window.encodeURIComponent(searchingDomains.join(",")) + "&selectedCertIds=" + selectedCertIds.join(",") + "&userId=" + userId, {
 				width: width,
 				height: height,
 				callback: function (resp) {

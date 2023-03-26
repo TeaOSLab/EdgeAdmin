@@ -47,7 +47,7 @@
                     <tr>
                         <td>{{tlsProtocolName.toUpperCase()}}证书</td>
                         <td>
-                            <ssl-certs-box :v-protocol="tlsProtocolName.toLowerCase()" :v-domains="findServerNames"></ssl-certs-box>
+                            <ssl-certs-box :v-protocol="tlsProtocolName.toLowerCase()" :v-domains="findServerNames" :v-user-id="userId"></ssl-certs-box>
                         </td>
                     </tr>
                 </tbody>
