@@ -1,5 +1,9 @@
 Vue.component("ssl-config-box", {
-	props: ["v-ssl-policy", "v-protocol", "v-server-id"],
+	props: [
+		"v-ssl-policy",
+		"v-protocol",
+		"v-server-id"
+	],
 	created: function () {
 		let that = this
 		setTimeout(function () {
@@ -131,13 +135,39 @@ Vue.component("ssl-config-box", {
 		// 上传证书
 		uploadCert: function () {
 			let that = this
-			teaweb.popup("/servers/certs/uploadPopup", {
-				height: "28em",
+			let serverId = this.vServerId
+			if (typeof serverId != "number" && typeof serverId != "string") {
+				serverId = 0
+			}
+			teaweb.popup("/servers/certs/uploadPopup?serverId=" + serverId, {
+				height: "30em",
 				callback: function (resp) {
 					teaweb.success("上传成功", function () {
 						that.policy.certRefs.push(resp.data.certRef)
 						that.policy.certs.push(resp.data.cert)
 					})
+				}
+			})
+		},
+
+		// 批量上传
+		uploadBatch: function () {
+			let that = this
+			let serverId = this.vServerId
+			if (typeof serverId != "number" && typeof serverId != "string") {
+				serverId = 0
+			}
+			teaweb.popup("/servers/certs/uploadBatchPopup?serverId=" + serverId, {
+				callback: function (resp) {
+					if (resp.data.cert != null) {
+						that.policy.certRefs.push(resp.data.certRef)
+						that.policy.certs.push(resp.data.cert)
+					}
+					if (resp.data.certs != null) {
+						that.policy.certRefs.$pushAll(resp.data.certRefs)
+						that.policy.certs.$pushAll(resp.data.certs)
+					}
+					that.$forceUpdate()
 				}
 			})
 		},
@@ -387,7 +417,10 @@ Vue.component("ssl-config-box", {
 						<div class="ui divider"></div>
 					</div>
 					<button class="ui button tiny" type="button" @click.prevent="selectCert()">选择已有证书</button> &nbsp;
+					<span class="disabled">|</span> &nbsp;
 					<button class="ui button tiny" type="button" @click.prevent="uploadCert()">上传新证书</button> &nbsp;
+					<button class="ui button tiny" type="button" @click.prevent="uploadBatch()">批量上传证书</button> &nbsp;
+					<span class="disabled">|</span> &nbsp;
 					<button class="ui button tiny" type="button" @click.prevent="requestCert()" v-if="vServerId != null && vServerId > 0">申请免费证书</button>
 				</td>
 			</tr>

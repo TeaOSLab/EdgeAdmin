@@ -1,6 +1,5 @@
 Tea.context(function () {
 	this.isRequesting = false
-	this.userId = 0
 
 	this.before = function () {
 		this.isRequesting = true

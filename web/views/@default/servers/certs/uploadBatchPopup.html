@@ -15,7 +15,7 @@
         <tr>
             <td>所属用户</td>
             <td>
-                <user-selector @change="changeUserId"></user-selector>
+                <user-selector @change="changeUserId" :v-user-id="userId"></user-selector>
                 <p class="comment">可选项，指定证书所属的用户；指定用户后，上传的证书管理员无法在管理系统查看，只能在用户系统查看。</p>
             </td>
         </tr>
