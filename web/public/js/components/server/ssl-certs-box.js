@@ -97,12 +97,42 @@ Vue.component("ssl-certs-box", {
 		// 上传证书
 		uploadCert: function () {
 			let that = this
-			teaweb.popup("/servers/certs/uploadPopup", {
+			let userId = this.vUserId
+			if (typeof userId != "number" && typeof userId != "string") {
+				userId = 0
+			}
+			teaweb.popup("/servers/certs/uploadPopup?userId=" + userId, {
 				height: "28em",
 				callback: function (resp) {
 					teaweb.success("上传成功", function () {
-						that.certs.push(resp.data.cert)
+						if (resp.data.cert != null) {
+							that.certs.push(resp.data.cert)
+						}
+						if (resp.data.certs != null) {
+							that.certs.$pushAll(resp.data.certs)
+						}
+						that.$forceUpdate()
 					})
+				}
+			})
+		},
+
+		// 批量上传
+		uploadBatch: function () {
+			let that = this
+			let userId = this.vUserId
+			if (typeof userId != "number" && typeof userId != "string") {
+				userId = 0
+			}
+			teaweb.popup("/servers/certs/uploadBatchPopup?userId=" + userId, {
+				callback: function (resp) {
+					if (resp.data.cert != null) {
+						that.certs.push(resp.data.cert)
+					}
+					if (resp.data.certs != null) {
+						that.certs.$pushAll(resp.data.certs)
+					}
+					that.$forceUpdate()
 				}
 			})
 		},
@@ -132,7 +162,9 @@ Vue.component("ssl-certs-box", {
 	</div>
 	<div v-if="buttonsVisible()">
 		<button class="ui button tiny" type="button" @click.prevent="selectCert()">选择已有证书</button> &nbsp;
+		<span class="disabled">|</span> &nbsp;
 		<button class="ui button tiny" type="button" @click.prevent="uploadCert()">上传新证书</button> &nbsp;
+		<button class="ui button tiny" type="button" @click.prevent="uploadBatch()">批量上传证书</button> &nbsp;
 	</div>
 </div>`
 })

@@ -12,8 +12,15 @@
 				<p class="comment">可以简单说明证书的用途。</p>
 			</td>
 		</tr>
+        <tr>
+            <td>所属用户</td>
+            <td>
+                <user-selector :v-user-id="userId"></user-selector>
+                <p class="comment">可选项，当前证书所属用户。</p>
+            </td>
+        </tr>
 		<tr>
-			<td>证书类型</td>
+			<td>证书类型 *</td>
 			<td>
 				<select class="ui dropdown auto-width" name="isCA" v-model="isCA">
 					<option value="0">加密证书</option>

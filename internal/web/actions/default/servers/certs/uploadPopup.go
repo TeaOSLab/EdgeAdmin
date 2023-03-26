@@ -18,11 +18,30 @@ func (this *UploadPopupAction) Init() {
 	this.Nav("", "", "")
 }
 
-func (this *UploadPopupAction) RunGet(params struct{}) {
+func (this *UploadPopupAction) RunGet(params struct {
+	ServerId int64
+	UserId   int64
+}) {
+	// 读取服务用户
+	if params.ServerId > 0 {
+		serverResp, err := this.RPC().ServerRPC().FindEnabledUserServerBasic(this.AdminContext(), &pb.FindEnabledUserServerBasicRequest{ServerId: params.ServerId})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		var server = serverResp.Server
+		if server != nil {
+			params.UserId = server.UserId
+		}
+	}
+	this.Data["userId"] = params.UserId
+
 	this.Show()
 }
 
 func (this *UploadPopupAction) RunPost(params struct {
+	UserId int64
+
 	TextMode    bool
 	Name        string
 	IsCA        bool
@@ -107,6 +126,7 @@ func (this *UploadPopupAction) RunPost(params struct {
 	// 保存
 	createResp, err := this.RPC().SSLCertRPC().CreateSSLCert(this.AdminContext(), &pb.CreateSSLCertRequest{
 		IsOn:        params.IsOn,
+		UserId:      params.UserId,
 		Name:        params.Name,
 		Description: params.Description,
 		ServerName:  "",

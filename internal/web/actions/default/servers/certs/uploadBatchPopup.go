@@ -15,6 +15,7 @@ import (
 	"strings"
 )
 
+// UploadBatchPopupAction 批量上传证书
 type UploadBatchPopupAction struct {
 	actionutils.ParentAction
 }
@@ -23,7 +24,24 @@ func (this *UploadBatchPopupAction) Init() {
 	this.Nav("", "", "")
 }
 
-func (this *UploadBatchPopupAction) RunGet(params struct{}) {
+func (this *UploadBatchPopupAction) RunGet(params struct {
+	ServerId int64
+	UserId   int64
+}) {
+	// 读取服务用户
+	if params.ServerId > 0 {
+		serverResp, err := this.RPC().ServerRPC().FindEnabledUserServerBasic(this.AdminContext(), &pb.FindEnabledUserServerBasicRequest{ServerId: params.ServerId})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		var server = serverResp.Server
+		if server != nil {
+			params.UserId = server.UserId
+		}
+	}
+
+	this.Data["userId"] = params.UserId
 	this.Data["maxFiles"] = this.maxFiles()
 
 	this.Show()
@@ -128,6 +146,7 @@ func (this *UploadBatchPopupAction) RunPost(params struct {
 
 	// 组织 CertConfig
 	var pbCerts = []*pb.CreateSSLCertsRequestCert{}
+	var certConfigs = []*sslconfigs.SSLCertConfig{}
 	for _, pair := range pairs {
 		certData, keyData := pair[0], pair[1]
 
@@ -142,6 +161,8 @@ func (this *UploadBatchPopupAction) RunPost(params struct {
 			return
 		}
 
+		certConfigs = append(certConfigs, certConfig)
+
 		var certName = ""
 		if len(certConfig.DNSNames) > 0 {
 			certName = certConfig.DNSNames[0]
@@ -149,6 +170,7 @@ func (this *UploadBatchPopupAction) RunPost(params struct {
 				certName += "等" + types.String(len(certConfig.DNSNames)) + "个域名"
 			}
 		}
+		certConfig.Name = certName
 
 		pbCerts = append(pbCerts, &pb.CreateSSLCertsRequestCert{
 			IsOn:        true,
@@ -165,7 +187,7 @@ func (this *UploadBatchPopupAction) RunPost(params struct {
 		})
 	}
 
-	_, err := this.RPC().SSLCertRPC().CreateSSLCerts(this.AdminContext(), &pb.CreateSSLCertsRequest{
+	createResp, err := this.RPC().SSLCertRPC().CreateSSLCerts(this.AdminContext(), &pb.CreateSSLCertsRequest{
 		UserId:   params.UserId,
 		SSLCerts: pbCerts,
 	})
@@ -173,7 +195,31 @@ func (this *UploadBatchPopupAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
+	var certIds = createResp.SslCertIds
+	if len(certIds) != len(certConfigs) {
+		this.Fail("上传成功但API返回的证书ID数量错误，请反馈给开发者")
+		return
+	}
 
+	// 返回数据
 	this.Data["count"] = len(pbCerts)
+
+	var certRefs = []*sslconfigs.SSLCertRef{}
+	for index, cert := range certConfigs {
+		// ID
+		cert.Id = certIds[index]
+
+		// 减少不必要的数据
+		cert.CertData = nil
+		cert.KeyData = nil
+
+		certRefs = append(certRefs, &sslconfigs.SSLCertRef{
+			IsOn:   true,
+			CertId: cert.Id,
+		})
+	}
+	this.Data["certs"] = certConfigs
+	this.Data["certRefs"] = certRefs
+
 	this.Success()
 }
