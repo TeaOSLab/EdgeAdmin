@@ -31,14 +31,14 @@
                     <td class="color-border">文件目录最大容量</td>
                     <td>
                         <size-capacity-box :v-name="'capacityJSON'" :v-value="cachePolicy.capacity" :v-count="0" :v-unit="'gb'"></size-capacity-box>
-                        <p class="comment">作为二级缓存的文件目录允许缓存的最大容量，如果为0表示没有限制。</p>
+                        <p class="comment">单个节点上作为二级缓存的文件目录允许缓存的最大容量，如果为0表示没有限制。</p>
                     </td>
                 </tr>
                 <tr v-if="cachePolicy.options.memoryPolicy != null && cachePolicy.options.memoryPolicy.capacity != null">
                     <td class="color-border">内存最大容量</td>
                     <td>
                         <size-capacity-box :v-name="'fileMemoryCapacityJSON'" :v-value="cachePolicy.options.memoryPolicy.capacity" :v-count="1" :v-unit="'gb'"></size-capacity-box>
-                        <p class="comment">作为一级缓存的内存最大容量，可以作为磁盘缓冲区和存储热点缓存内容，如果为0表示不使用内存作为一级缓存。</p>
+                        <p class="comment">单个节点上作为一级缓存的内存最大容量，可以作为磁盘缓冲区和存储热点缓存内容，如果为0表示不使用内存作为一级缓存。</p>
                     </td>
                 </tr>
                 <tr v-if="cachePolicy.options.memoryPolicy == null || cachePolicy.options.memoryPolicy.capacity == null">
@@ -69,7 +69,7 @@
                     <td>缓存最大容量</td>
                     <td>
                         <size-capacity-box :v-name="'capacityJSON'" :v-value="cachePolicy.capacity" :v-count="0" :v-unit="'gb'"></size-capacity-box>
-                        <p class="comment">允许缓存的最大容量，如果为0表示没有限制。</p>
+                        <p class="comment">单个节点上允许缓存的最大容量，如果为0表示没有限制。</p>
                     </td>
                 </tr>
             </tbody>

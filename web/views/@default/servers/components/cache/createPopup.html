@@ -29,14 +29,14 @@
                 <td class="color-border">文件目录最大容量 *</td>
                 <td>
                     <size-capacity-box :v-name="'capacityJSON'" :v-count="128" :v-unit="'gb'" :key="'capacityJSON1'"></size-capacity-box>
-                    <p class="comment">作为二级缓存的文件目录允许缓存的最大容量，如果为0表示没有限制。</p>
+                    <p class="comment">单个节点上作为二级缓存的文件目录允许缓存的最大容量，如果为0表示没有限制。</p>
                 </td>
             </tr>
             <tr>
                 <td class="color-border">内存最大容量</td>
                 <td>
                    <size-capacity-box :v-name="'fileMemoryCapacityJSON'" :v-count="1" :v-unit="'gb'" :key="'fileMemoryCapacityJSON'"></size-capacity-box>
-                    <p class="comment">作为一级缓存的内存最大容量，可以作为磁盘缓冲区和存储热点缓存内容，如果为0表示不使用内存作为一级缓存。</p>
+                    <p class="comment">单个节点上作为一级缓存的内存最大容量，可以作为磁盘缓冲区和存储热点缓存内容，如果为0表示不使用内存作为一级缓存。</p>
                 </td>
             </tr>
             <tr>
@@ -60,7 +60,7 @@
                 <td>内存最大容量</td>
                 <td>
                     <size-capacity-box :key="'a'" :v-name="'capacityJSON'" :v-count="2" :v-unit="'gb'" :key="'capacityJSON2'"></size-capacity-box>
-                    <p class="comment">允许缓存的最大容量，如果为0表示没有限制。</p>
+                    <p class="comment">单个节点上允许缓存的最大容量，如果为0表示没有限制。</p>
                 </td>
             </tr>
         </tbody>
