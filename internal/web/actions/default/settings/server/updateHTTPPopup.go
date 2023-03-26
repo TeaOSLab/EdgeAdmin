@@ -3,6 +3,7 @@ package server
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	adminserverutils "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/server/admin-server-utils"
 	"github.com/iwind/TeaGo/actions"
 	"net"
 )
@@ -16,7 +17,7 @@ func (this *UpdateHTTPPopupAction) Init() {
 }
 
 func (this *UpdateHTTPPopupAction) RunGet(params struct{}) {
-	serverConfig, err := loadServerConfig()
+	serverConfig, err := adminserverutils.LoadServerConfig()
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -38,7 +39,7 @@ func (this *UpdateHTTPPopupAction) RunPost(params struct {
 		this.Fail("请输入绑定地址")
 	}
 
-	serverConfig, err := loadServerConfig()
+	serverConfig, err := adminserverutils.LoadServerConfig()
 	if err != nil {
 		this.Fail("保存失败：" + err.Error())
 	}
@@ -58,7 +59,7 @@ func (this *UpdateHTTPPopupAction) RunPost(params struct {
 	}
 	serverConfig.Http.Listen = listen
 
-	err = writeServerConfig(serverConfig)
+	err = adminserverutils.WriteServerConfig(serverConfig)
 	if err != nil {
 		this.Fail("保存失败：" + err.Error())
 	}
