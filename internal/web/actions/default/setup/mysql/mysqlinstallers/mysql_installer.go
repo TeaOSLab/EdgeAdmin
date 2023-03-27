@@ -523,6 +523,7 @@ binlog_cache_size=1M
 binlog_stmt_cache_size=1M
 thread_cache_size=32
 binlog_expire_logs_seconds=604800
+innodb_sort_buffer_size=8M
 `
 }
 
