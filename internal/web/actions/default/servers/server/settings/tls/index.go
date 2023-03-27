@@ -43,7 +43,10 @@ func (this *IndexAction) RunGet(params struct {
 	// SSL配置
 	var sslPolicy *sslconfigs.SSLPolicy
 	if tlsConfig.SSLPolicyRef != nil && tlsConfig.SSLPolicyRef.SSLPolicyId > 0 {
-		sslPolicyConfigResp, err := this.RPC().SSLPolicyRPC().FindEnabledSSLPolicyConfig(this.AdminContext(), &pb.FindEnabledSSLPolicyConfigRequest{SslPolicyId: tlsConfig.SSLPolicyRef.SSLPolicyId})
+		sslPolicyConfigResp, err := this.RPC().SSLPolicyRPC().FindEnabledSSLPolicyConfig(this.AdminContext(), &pb.FindEnabledSSLPolicyConfigRequest{
+			SslPolicyId: tlsConfig.SSLPolicyRef.SSLPolicyId,
+			IgnoreData:  true,
+		})
 		if err != nil {
 			this.ErrorPage(err)
 			return
