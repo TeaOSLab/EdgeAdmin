@@ -217,14 +217,14 @@ func (this *CreateAction) RunPost(params struct {
 
 	// 证书
 	if len(params.CertIdsJSON) > 0 {
-		certIds := []int64{}
+		var certIds = []int64{}
 		err := json.Unmarshal(params.CertIdsJSON, &certIds)
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
 		if len(certIds) > 0 {
-			certRefs := []*sslconfigs.SSLCertRef{}
+			var certRefs = []*sslconfigs.SSLCertRef{}
 			for _, certId := range certIds {
 				certRefs = append(certRefs, &sslconfigs.SSLCertRef{
 					IsOn:   true,
@@ -251,7 +251,7 @@ func (this *CreateAction) RunPost(params struct {
 				this.ErrorPage(err)
 				return
 			}
-			sslPolicyId := sslPolicyIdResp.SslPolicyId
+			var sslPolicyId = sslPolicyIdResp.SslPolicyId
 			httpsConfig.SSLPolicyRef = &sslconfigs.SSLPolicyRef{
 				IsOn:        true,
 				SSLPolicyId: sslPolicyId,
