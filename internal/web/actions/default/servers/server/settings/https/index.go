@@ -221,6 +221,7 @@ func (this *IndexAction) RunPost(params struct {
 		}
 	}
 
+	httpsConfig.SSLPolicy = nil
 	httpsConfig.SSLPolicyRef = &sslconfigs.SSLPolicyRef{
 		IsOn:        true,
 		SSLPolicyId: sslPolicyId,

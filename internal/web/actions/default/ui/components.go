@@ -34,7 +34,7 @@ func (this *ComponentsAction) RunGet(params struct{}) {
 
 	if !Tea.IsTesting() && len(componentsData) > 0 {
 		this.AddHeader("Last-Modified", "Fri, 06 Sep 2019 08:29:50 GMT")
-		this.Write(componentsData)
+		_, _ = this.Write(componentsData)
 		return
 	}
 
