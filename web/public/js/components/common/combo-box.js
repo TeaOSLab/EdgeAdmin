@@ -255,7 +255,7 @@ Vue.component("combo-box", {
 	<!-- 当前选中 -->
 	<div v-if="selectedItem != null">
 		<input type="hidden" :name="name" :value="selectedItem.value"/>
-		<span class="ui label basic" style="line-height: 1.4; font-weight: normal; font-size: 1em" ref="selectedLabel" @click.prevent="submitForm"><span><span v-if="title != null && title.length > 0">{{title}}：</span>{{selectedItem.name}}</span>
+		<span class="ui label basic" style="line-height: 1.4; font-weight: normal; font-size: 1em" ref="selectedLabel"><span><span v-if="title != null && title.length > 0">{{title}}：</span>{{selectedItem.name}}</span>
 			<a href="" title="清除" @click.prevent="reset"><i class="icon remove small"></i></a>
 		</span>
 	</div>
