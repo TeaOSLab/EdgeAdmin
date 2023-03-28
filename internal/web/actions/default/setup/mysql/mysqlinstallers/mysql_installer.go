@@ -17,6 +17,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -115,6 +116,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 			if err != nil && os.IsNotExist(err) {
 				var latestLibFile = this.findLatestVersionFile("/usr/lib64", "libncurses.so.")
 				if len(latestLibFile) > 0 {
+					this.log("link '" + latestLibFile + "' to '" + libFile + "'")
 					_ = os.Symlink(latestLibFile, libFile)
 				}
 			}
@@ -126,6 +128,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 			if err != nil && os.IsNotExist(err) {
 				var latestLibFile = this.findLatestVersionFile("/usr/lib64", "libtinfo.so.")
 				if len(latestLibFile) > 0 {
+					this.log("link '" + latestLibFile + "' to '" + libFile + "'")
 					_ = os.Symlink(latestLibFile, libFile)
 				}
 			}
@@ -510,6 +513,15 @@ func (this *MySQLInstaller) Password() string {
 
 // create my.cnf content
 func (this *MySQLInstaller) createMyCnf(baseDir string, dataDir string) string {
+	var memoryTotalG = 1
+
+	if runtime.GOOS == "linux" {
+		memoryTotalG = this.sysMemoryGB() / 2
+		if memoryTotalG <= 0 {
+			memoryTotalG = 1
+		}
+	}
+
 	return `
 [mysqld]
 port=3306
@@ -524,7 +536,7 @@ binlog_stmt_cache_size=1M
 thread_cache_size=32
 binlog_expire_logs_seconds=604800
 innodb_sort_buffer_size=8M
-`
+innodb_buffer_pool_size=` + strconv.Itoa(memoryTotalG) + "G"
 }
 
 // generate random password
@@ -657,4 +669,45 @@ func (this *MySQLInstaller) findLatestVersionFile(dir string, prefix string) str
 	}
 
 	return resultFile
+}
+
+func (this *MySQLInstaller) sysMemoryGB() int {
+	if runtime.GOOS != "linux" {
+		return 0
+	}
+	meminfoData, err := os.ReadFile("/proc/meminfo")
+	if err != nil {
+		return 0
+	}
+	for _, line := range bytes.Split(meminfoData, []byte{'\n'}) {
+		line = bytes.TrimSpace(line)
+		if bytes.Contains(line, []byte{':'}) {
+			name, value, found := bytes.Cut(line, []byte{':'})
+			if found {
+				name = bytes.TrimSpace(name)
+				if bytes.Equal(name, []byte("MemTotal")) {
+					for _, unit := range []string{"gB", "mB", "kB"} {
+						if bytes.Contains(value, []byte(unit)) {
+							value = bytes.TrimSpace(bytes.ReplaceAll(value, []byte(unit), nil))
+							valueInt, err := strconv.Atoi(string(value))
+							if err != nil {
+								return 0
+							}
+							switch unit {
+							case "gB":
+								return valueInt
+							case "mB":
+								return valueInt / 1024
+							case "kB":
+								return valueInt / 1024 / 1024
+							}
+							return 0
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return 0
 }
