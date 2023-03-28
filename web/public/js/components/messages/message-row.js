@@ -78,7 +78,7 @@ Vue.component("message-row", {
 			
 			<!-- 证书即将过期 -->
 			<div v-if="message.type == 'SSLCertExpiring'" style="margin-top: 0.8em">
-				<a href="" @click.prevent="viewCert(params.certId)" target="_top">查看证书</a> &nbsp;|&nbsp; <a :href="'/servers/certs/acme'" v-if="params != null && params.acmeTaskId > 0" target="_top">查看任务&raquo;</a>
+				<a href="" @click.prevent="viewCert(params.certId)" target="_top">查看证书</a><span v-if="params != null && params.acmeTaskId > 0"> &nbsp;|&nbsp; <a :href="'/servers/certs/acme'" target="_top">查看任务&raquo;</a></span>
 			</div>
 			
 			<!-- 证书续期成功 -->
