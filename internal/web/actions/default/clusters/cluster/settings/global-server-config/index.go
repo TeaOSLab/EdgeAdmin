@@ -78,6 +78,8 @@ func (this *IndexAction) RunPost(params struct {
 	HttpAllAllowNodeIP                     bool
 	HttpAllDefaultDomain                   string
 
+	HttpAllSupportsLowVersionHTTP bool
+
 	HttpAccessLogEnableRequestHeaders     bool
 	HttpAccessLogEnableResponseHeaders    bool
 	HttpAccessLogCommonRequestHeadersOnly bool
@@ -133,6 +135,9 @@ func (this *IndexAction) RunPost(params struct {
 	config.HTTPAll.AllowMismatchDomains = allowMismatchDomains
 	config.HTTPAll.AllowNodeIP = params.HttpAllAllowNodeIP
 	config.HTTPAll.DefaultDomain = params.HttpAllDefaultDomain
+
+	// HTTP All
+	config.HTTPAll.SupportsLowVersionHTTP = params.HttpAllSupportsLowVersionHTTP
 
 	// 访问日志
 	config.HTTPAccessLog.EnableRequestHeaders = params.HttpAccessLogEnableRequestHeaders
