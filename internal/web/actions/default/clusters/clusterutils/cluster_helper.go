@@ -157,6 +157,7 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 		"name":     "服务设置",
 		"url":      "/clusters/cluster/settings/global-server-config?clusterId=" + clusterId,
 		"isActive": selectedItem == "globalServerConfig",
+		"isOn":     true,
 	})
 
 	items = append(items, maps.Map{
