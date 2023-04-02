@@ -1139,7 +1139,7 @@ Vue.component("message-row", {
 			
 			<!-- 证书即将过期 -->
 			<div v-if="message.type == 'SSLCertExpiring'" style="margin-top: 0.8em">
-				<a href="" @click.prevent="viewCert(params.certId)" target="_top">查看证书</a> &nbsp;|&nbsp; <a :href="'/servers/certs/acme'" v-if="params != null && params.acmeTaskId > 0" target="_top">查看任务&raquo;</a>
+				<a href="" @click.prevent="viewCert(params.certId)" target="_top">查看证书</a><span v-if="params != null && params.acmeTaskId > 0"> &nbsp;|&nbsp; <a :href="'/servers/certs/acme'" target="_top">查看任务&raquo;</a></span>
 			</div>
 			
 			<!-- 证书续期成功 -->
@@ -3616,7 +3616,11 @@ Vue.component("http-request-conds-box", {
 })
 
 Vue.component("ssl-config-box", {
-	props: ["v-ssl-policy", "v-protocol", "v-server-id"],
+	props: [
+		"v-ssl-policy",
+		"v-protocol",
+		"v-server-id"
+	],
 	created: function () {
 		let that = this
 		setTimeout(function () {
@@ -3724,12 +3728,23 @@ Vue.component("ssl-config-box", {
 					selectedCertIds.push(cert.id.toString())
 				})
 			}
-			teaweb.popup("/servers/certs/selectPopup?selectedCertIds=" + selectedCertIds, {
+			let serverId = this.vServerId
+			if (serverId == null) {
+				serverId = 0
+			}
+			teaweb.popup("/servers/certs/selectPopup?selectedCertIds=" + selectedCertIds + "&serverId=" + serverId, {
 				width: "50em",
 				height: "30em",
 				callback: function (resp) {
-					that.policy.certRefs.push(resp.data.certRef)
-					that.policy.certs.push(resp.data.cert)
+					if (resp.data.cert != null && resp.data.certRef != null) {
+						that.policy.certRefs.push(resp.data.certRef)
+						that.policy.certs.push(resp.data.cert)
+					}
+					if (resp.data.certs != null && resp.data.certRefs != null) {
+						that.policy.certRefs.$pushAll(resp.data.certRefs)
+						that.policy.certs.$pushAll(resp.data.certs)
+					}
+					that.$forceUpdate()
 				}
 			})
 		},
@@ -3737,13 +3752,39 @@ Vue.component("ssl-config-box", {
 		// 上传证书
 		uploadCert: function () {
 			let that = this
-			teaweb.popup("/servers/certs/uploadPopup", {
-				height: "28em",
+			let serverId = this.vServerId
+			if (typeof serverId != "number" && typeof serverId != "string") {
+				serverId = 0
+			}
+			teaweb.popup("/servers/certs/uploadPopup?serverId=" + serverId, {
+				height: "30em",
 				callback: function (resp) {
 					teaweb.success("上传成功", function () {
 						that.policy.certRefs.push(resp.data.certRef)
 						that.policy.certs.push(resp.data.cert)
 					})
+				}
+			})
+		},
+
+		// 批量上传
+		uploadBatch: function () {
+			let that = this
+			let serverId = this.vServerId
+			if (typeof serverId != "number" && typeof serverId != "string") {
+				serverId = 0
+			}
+			teaweb.popup("/servers/certs/uploadBatchPopup?serverId=" + serverId, {
+				callback: function (resp) {
+					if (resp.data.cert != null) {
+						that.policy.certRefs.push(resp.data.certRef)
+						that.policy.certs.push(resp.data.cert)
+					}
+					if (resp.data.certs != null) {
+						that.policy.certRefs.$pushAll(resp.data.certRefs)
+						that.policy.certs.$pushAll(resp.data.certs)
+					}
+					that.$forceUpdate()
 				}
 			})
 		},
@@ -3929,8 +3970,15 @@ Vue.component("ssl-config-box", {
 				width: "50em",
 				height: "30em",
 				callback: function (resp) {
-					that.policy.clientCARefs.push(resp.data.certRef)
-					that.policy.clientCACerts.push(resp.data.cert)
+					if (resp.data.cert != null && resp.data.certRef != null) {
+						that.policy.clientCARefs.push(resp.data.certRef)
+						that.policy.clientCACerts.push(resp.data.cert)
+					}
+					if (resp.data.certs != null && resp.data.certRefs != null) {
+						that.policy.clientCARefs.$pushAll(resp.data.certRefs)
+						that.policy.clientCACerts.$pushAll(resp.data.certs)
+					}
+					that.$forceUpdate()
 				}
 			})
 		},
@@ -3986,7 +4034,10 @@ Vue.component("ssl-config-box", {
 						<div class="ui divider"></div>
 					</div>
 					<button class="ui button tiny" type="button" @click.prevent="selectCert()">选择已有证书</button> &nbsp;
+					<span class="disabled">|</span> &nbsp;
 					<button class="ui button tiny" type="button" @click.prevent="uploadCert()">上传新证书</button> &nbsp;
+					<button class="ui button tiny" type="button" @click.prevent="uploadBatch()">批量上传证书</button> &nbsp;
+					<span class="disabled">|</span> &nbsp;
 					<button class="ui button tiny" type="button" @click.prevent="requestCert()" v-if="vServerId != null && vServerId > 0">申请免费证书</button>
 				</td>
 			</tr>
@@ -4142,7 +4193,7 @@ Vue.component("ssl-config-box", {
 				<td>客户端认证CA证书</td>
 				<td>
 					<div v-if="policy.clientCACerts != null && policy.clientCACerts.length > 0">
-						<div class="ui label small" v-for="(cert, index) in policy.clientCACerts">
+						<div class="ui label small basic" v-for="(cert, index) in policy.clientCACerts">
 							{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp; <a href="" title="删除" @click.prevent="removeClientCACert()"><i class="icon remove"></i></a>
 						</div>
 						<div class="ui divider"></div>
@@ -4352,7 +4403,9 @@ Vue.component("ssl-certs-box", {
 		"v-protocol", // 协议：https|tls
 		"v-view-size", // 弹窗尺寸：normal, mini
 		"v-single-mode", // 单证书模式
-		"v-description" // 描述文字
+		"v-description", // 描述文字
+		"v-domains", // 搜索的域名列表或者函数
+		"v-user-id" // 用户ID
 	],
 	data: function () {
 		let certs = this.vCerts
@@ -4390,8 +4443,8 @@ Vue.component("ssl-certs-box", {
 		// 选择证书
 		selectCert: function () {
 			let that = this
-			let width = "50em"
-			let height = "30em"
+			let width = "54em"
+			let height = "32em"
 			let viewSize = this.vViewSize
 			if (viewSize == null) {
 				viewSize = "normal"
@@ -4400,11 +4453,41 @@ Vue.component("ssl-certs-box", {
 				width = "35em"
 				height = "20em"
 			}
-			teaweb.popup("/servers/certs/selectPopup?viewSize=" + viewSize, {
+
+			let searchingDomains = []
+			if (this.vDomains != null) {
+				if (typeof this.vDomains == "function") {
+					let resultDomains = this.vDomains()
+					if (resultDomains != null && typeof resultDomains == "object" && (resultDomains instanceof Array)) {
+						searchingDomains = resultDomains
+					}
+				} else if (typeof this.vDomains == "object" && (this.vDomains instanceof Array)) {
+					searchingDomains = this.vDomains
+				}
+				if (searchingDomains.length > 10000) {
+					searchingDomains = searchingDomains.slice(0, 10000)
+				}
+			}
+
+			let selectedCertIds = this.certs.map(function (cert) {
+				return cert.id
+			})
+			let userId = this.vUserId
+			if (userId == null) {
+				userId = 0
+			}
+
+			teaweb.popup("/servers/certs/selectPopup?viewSize=" + viewSize + "&searchingDomains=" + window.encodeURIComponent(searchingDomains.join(",")) + "&selectedCertIds=" + selectedCertIds.join(",") + "&userId=" + userId, {
 				width: width,
 				height: height,
 				callback: function (resp) {
-					that.certs.push(resp.data.cert)
+					if (resp.data.cert != null) {
+						that.certs.push(resp.data.cert)
+					}
+					if (resp.data.certs != null) {
+						that.certs.$pushAll(resp.data.certs)
+					}
+					that.$forceUpdate()
 				}
 			})
 		},
@@ -4412,12 +4495,42 @@ Vue.component("ssl-certs-box", {
 		// 上传证书
 		uploadCert: function () {
 			let that = this
-			teaweb.popup("/servers/certs/uploadPopup", {
+			let userId = this.vUserId
+			if (typeof userId != "number" && typeof userId != "string") {
+				userId = 0
+			}
+			teaweb.popup("/servers/certs/uploadPopup?userId=" + userId, {
 				height: "28em",
 				callback: function (resp) {
 					teaweb.success("上传成功", function () {
-						that.certs.push(resp.data.cert)
+						if (resp.data.cert != null) {
+							that.certs.push(resp.data.cert)
+						}
+						if (resp.data.certs != null) {
+							that.certs.$pushAll(resp.data.certs)
+						}
+						that.$forceUpdate()
 					})
+				}
+			})
+		},
+
+		// 批量上传
+		uploadBatch: function () {
+			let that = this
+			let userId = this.vUserId
+			if (typeof userId != "number" && typeof userId != "string") {
+				userId = 0
+			}
+			teaweb.popup("/servers/certs/uploadBatchPopup?userId=" + userId, {
+				callback: function (resp) {
+					if (resp.data.cert != null) {
+						that.certs.push(resp.data.cert)
+					}
+					if (resp.data.certs != null) {
+						that.certs.$pushAll(resp.data.certs)
+					}
+					that.$forceUpdate()
 				}
 			})
 		},
@@ -4447,7 +4560,9 @@ Vue.component("ssl-certs-box", {
 	</div>
 	<div v-if="buttonsVisible()">
 		<button class="ui button tiny" type="button" @click.prevent="selectCert()">选择已有证书</button> &nbsp;
+		<span class="disabled">|</span> &nbsp;
 		<button class="ui button tiny" type="button" @click.prevent="uploadCert()">上传新证书</button> &nbsp;
+		<button class="ui button tiny" type="button" @click.prevent="uploadBatch()">批量上传证书</button> &nbsp;
 	</div>
 </div>`
 })
@@ -7026,80 +7141,102 @@ Vue.component("http-rewrite-labels-label", {
 })
 
 Vue.component("server-name-box", {
-    props: ["v-server-names"],
-    data: function () {
-        let serverNames = this.vServerNames;
-        if (serverNames == null) {
-            serverNames = []
-        }
-        return {
-            serverNames: serverNames,
-            isSearching: false,
-            keyword: ""
-        }
-    },
-    methods: {
-        addServerName: function () {
-            window.UPDATING_SERVER_NAME = null
-            let that = this
-            teaweb.popup("/servers/addServerNamePopup", {
-                callback: function (resp) {
-                    var serverName = resp.data.serverName
-                    that.serverNames.push(serverName)
-                }
-            });
-        },
+	props: ["v-server-names"],
+	data: function () {
+		let serverNames = this.vServerNames;
+		if (serverNames == null) {
+			serverNames = []
+		}
+		return {
+			serverNames: serverNames,
+			isSearching: false,
+			keyword: ""
+		}
+	},
+	methods: {
+		addServerName: function () {
+			window.UPDATING_SERVER_NAME = null
+			let that = this
+			teaweb.popup("/servers/addServerNamePopup", {
+				callback: function (resp) {
+					var serverName = resp.data.serverName
+					that.serverNames.push(serverName)
+				}
+			});
+		},
 
-        removeServerName: function (index) {
-            this.serverNames.$remove(index)
-        },
+		removeServerName: function (index) {
+			this.serverNames.$remove(index)
+		},
 
-        updateServerName: function (index, serverName) {
-            window.UPDATING_SERVER_NAME = teaweb.clone(serverName)
-            let that = this
-            teaweb.popup("/servers/addServerNamePopup", {
-                callback: function (resp) {
-                    var serverName = resp.data.serverName
-                    Vue.set(that.serverNames, index, serverName)
-                }
-            });
-        },
-        showSearchBox: function () {
-            this.isSearching = !this.isSearching
-            if (this.isSearching) {
-                let that = this
-                setTimeout(function () {
-                    that.$refs.keywordRef.focus()
-                }, 200)
-            } else {
-                this.keyword = ""
-            }
-        },
-    },
-    watch: {
-        keyword: function (v) {
-            this.serverNames.forEach(function (serverName) {
-                if (v.length == 0) {
-                    serverName.isShowing = true
-                    return
-                }
-                if (serverName.subNames == null || serverName.subNames.length == 0) {
-                    if (!teaweb.match(serverName.name, v)) {
-                        serverName.isShowing = false
-                    }
-                } else {
-                    let found = false
-                    serverName.subNames.forEach(function (subName) {
-                        if (teaweb.match(subName, v)) {
-                            found = true
-                        }
-                    })
-                    serverName.isShowing = found
-                }
-            })
-        }
-    },
-    template: `<div>
+		updateServerName: function (index, serverName) {
+			window.UPDATING_SERVER_NAME = teaweb.clone(serverName)
+			let that = this
+			teaweb.popup("/servers/addServerNamePopup", {
+				callback: function (resp) {
+					var serverName = resp.data.serverName
+					Vue.set(that.serverNames, index, serverName)
+				}
+			});
+		},
+		showSearchBox: function () {
+			this.isSearching = !this.isSearching
+			if (this.isSearching) {
+				let that = this
+				setTimeout(function () {
+					that.$refs.keywordRef.focus()
+				}, 200)
+			} else {
+				this.keyword = ""
+			}
+		},
+		allServerNames: function () {
+			if (this.serverNames == null) {
+				return []
+			}
+			let result = []
+			this.serverNames.forEach(function (serverName) {
+				if (serverName.subNames != null && serverName.subNames.length > 0) {
+					serverName.subNames.forEach(function (subName) {
+						if (subName != null && subName.length > 0) {
+							if (!result.$contains(subName)) {
+								result.push(subName)
+							}
+						}
+					})
+				} else if (serverName.name != null && serverName.name.length > 0) {
+					if (!result.$contains(serverName.name)) {
+						result.push(serverName.name)
+					}
+				}
+			})
+			return result
+		}
+	},
+	watch: {
+		keyword: function (v) {
+			this.serverNames.forEach(function (serverName) {
+				if (v.length == 0) {
+					serverName.isShowing = true
+					return
+				}
+				if (serverName.subNames == null || serverName.subNames.length == 0) {
+					if (!teaweb.match(serverName.name, v)) {
+						serverName.isShowing = false
+					}
+				} else {
+					let found = false
+					serverName.subNames.forEach(function (subName) {
+						if (teaweb.match(subName, v)) {
+							found = true
+						}
+					})
+					serverName.isShowing = found
+				}
+			})
+		}
+	},
+	template: `<div>
 	<input type="hidden" name="serverNames" :value="JSON.stringify(serverNames)"/>
 	<div v-if="serverNames.length > 0">
 		<div v-for="(serverName, index) in serverNames" class="ui label small basic" :class="{hidden: serverName.isShowing === false}">
@@ -9621,8 +9758,6 @@ Vue.component("http-compression-config-box", {
 Vue.component("http-cc-config-box", {
 	props: ["v-cc-config", "v-is-location", "v-is-group"],
 	data: function () {
-
-
 		let config = this.vCcConfig
 		if (config == null) {
 			config = {
@@ -9667,7 +9802,7 @@ Vue.component("http-cc-config-box", {
 			<td class="title">启用CC无感防护</td>
 			<td>
 				<checkbox v-model="config.isOn"></checkbox>
-				<p class="comment"><plus-label></plus-label>启用后，自动检测并拦截CC攻击，此功能不需要开启WAF功能。</p>
+				<p class="comment"><plus-label></plus-label>启用后，自动检测并拦截CC攻击。</p>
 			</td>
 		</tr>
 	</tbody>
@@ -15685,6 +15820,9 @@ Vue.component("file-textarea", {
 		},
 		setValue: function (value) {
 			this.realValue = value
+		},
+		focus: function () {
+			this.$refs.textarea.focus()
 		}
 	},
 	template: `<textarea @drop.prevent="drop" @dragover.prevent="dragover" ref="textarea" v-model="realValue"></textarea>`
@@ -16417,9 +16555,9 @@ Vue.component("combo-box", {
 	<!-- 当前选中 -->
 	<div v-if="selectedItem != null">
 		<input type="hidden" :name="name" :value="selectedItem.value"/>
-		<a href="" class="ui label basic" style="line-height: 1.4; font-weight: normal; font-size: 1em" ref="selectedLabel" @click.prevent="submitForm"><span><span v-if="title != null && title.length > 0">{{title}}：</span>{{selectedItem.name}}</span>
-			<span title="清除" @click.prevent="reset"><i class="icon remove small"></i></span>
-		</a>
+		<span class="ui label basic" style="line-height: 1.4; font-weight: normal; font-size: 1em" ref="selectedLabel"><span><span v-if="title != null && title.length > 0">{{title}}：</span>{{selectedItem.name}}</span>
+			<a href="" title="清除" @click.prevent="reset"><i class="icon remove small"></i></a>
+		</span>
 	</div>
 	
 	<!-- 菜单 -->
