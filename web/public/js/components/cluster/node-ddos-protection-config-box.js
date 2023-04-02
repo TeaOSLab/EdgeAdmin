@@ -64,7 +64,7 @@ Vue.component("node-ddos-protection-config-box", {
  	<prior-checkbox :v-config="config.tcp" v-if="isNode"></prior-checkbox>
  	<tbody v-show="config.tcp.isPrior || !isNode">
 		<tr>
-			<td class="title">启用</td>
+			<td class="title">启用DDoS防护</td>
 			<td>
 				<checkbox v-model="config.tcp.isOn"></checkbox>
 			</td>
