@@ -581,8 +581,8 @@ After=network-online.target
 
 [Service]
 Type=simple
-Restart=always
-RestartSec=1s
+Restart=on-failure
+RestartSec=5s
 ExecStart=${BASE_DIR}/support-files/mysql.server start
 ExecStop=${BASE_DIR}/support-files/mysql.server stop
 ExecRestart=${BASE_DIR}/support-files/mysql.server restart
