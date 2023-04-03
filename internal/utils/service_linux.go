@@ -127,7 +127,7 @@ After=network-online.target
 
 [Service]
 Type=simple
-Restart=on-failure
+Restart=always
 RestartSec=5s
 ExecStart=` + exePath + ` daemon
 ExecStop=` + exePath + ` stop
