@@ -100,7 +100,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
  	<prior-checkbox :v-config="config.tcp" v-if="isNode"></prior-checkbox>
  	<tbody v-show="config.tcp.isPrior || !isNode">
 		<tr>
-			<td class="title">启用</td>
+			<td class="title">启用DDoS防护</td>
 			<td>
 				<checkbox v-model="config.tcp.isOn"></checkbox>
 			</td>
