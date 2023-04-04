@@ -1,7 +1,7 @@
 Tea.context(function () {
 	this.createAdmin = function () {
 		teaweb.popup("/admins/createPopup", {
-			height: "22em",
+			height: "30em",
 			callback: function () {
 				teaweb.success("保存成功", function () {
 					teaweb.reload()

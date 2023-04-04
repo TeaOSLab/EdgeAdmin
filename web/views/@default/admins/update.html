@@ -33,17 +33,17 @@
             </td>
         </tr>
         <tr>
-            <td>是否允许登录</td>
+            <td>允许登录</td>
             <td>
                 <checkbox name="canLogin" value="1" v-model="admin.canLogin"></checkbox>
-                <p class="comment">选中后才可以登录当前的管理平台。</p>
+                <p class="comment">选中后，当前管理员才可以登录当前的管理平台。</p>
             </td>
         </tr>
         <tr>
-            <td>是否为超级管理员</td>
+            <td>超级管理员</td>
             <td>
                 <checkbox name="isSuper" v-model="admin.isSuper"></checkbox>
-                <p class="comment">超级管理员自动拥有所有的管理权限。</p>
+                <p class="comment">选中后，表示当前管理员为超级管理员；超级管理员自动拥有所有的管理权限。</p>
             </td>
         </tr>
         <tr v-show="!admin.isSuper">

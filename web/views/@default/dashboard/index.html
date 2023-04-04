@@ -50,6 +50,13 @@
     <a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
 </div>
 
+<!-- 弱密码提示 -->
+<div class="ui icon message error" v-if="countWeakAdmins > 0">
+    <i class="icon warning circle"></i>
+    <a href="/admins?hasWeakPassword=1">安全提醒：有 {{countWeakAdmins}} 个管理员登录账号正在使用弱密码，请及时修改密码，避免产生安全风险。</a>
+    <a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
+</div>
+
 <!-- 统计图表 -->
 <columns-grid v-if="!isLoading">
     <div class="ui column">

@@ -4,6 +4,7 @@ Tea.context(function () {
 	this.metricCharts = []
 	this.dashboard = {}
 	this.localLowerVersionAPINode = null
+	this.countWeakAdmins = 0
 
 	this.$delay(function () {
 		this.$post("$")
