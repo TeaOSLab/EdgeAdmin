@@ -45,6 +45,7 @@ func (this *AdminAction) RunGet(params struct {
 		"isOn":            admin.IsOn,
 		"isSuper":         admin.IsSuper,
 		"canLogin":        admin.CanLogin,
+		"hasWeakPassword": admin.HasWeakPassword,
 		"countAccessKeys": countAccessKeys,
 	}
 

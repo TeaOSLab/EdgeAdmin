@@ -276,5 +276,13 @@ func (this *IndexAction) RunPost(params struct{}) {
 		}
 	}
 
+	// 弱密码提示
+	countWeakAdminsResp, err := this.RPC().AdminRPC().CountAllEnabledAdmins(this.AdminContext(), &pb.CountAllEnabledAdminsRequest{HasWeakPassword: true})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["countWeakAdmins"] = countWeakAdminsResp.Count
+
 	this.Success()
 }
