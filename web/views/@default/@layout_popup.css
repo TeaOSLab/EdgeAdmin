@@ -55,7 +55,7 @@ tbody {
 }
 p.comment,
 div.comment {
-  color: rgba(0, 0, 0, 0.4);
+  color: #959da6;
   padding-top: 0.4em;
   font-weight: normal;
   word-break: break-all;
