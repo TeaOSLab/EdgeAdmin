@@ -16,6 +16,12 @@
 			<input type="text" name="keyword" style="width:10em" v-model="keyword" placeholder="关键词"/>
 		</div>
         <div class="ui field">
+            <select class="ui dropdown" name="level" v-model="level">
+                <option value="">[级别]</option>
+                <option v-for="levelOption in levelOptions" :value="levelOption.code">{{levelOption.name}}</option>
+            </select>
+        </div>
+        <div class="ui field">
             <select class="ui dropdown auto-width" name="userType" v-model="userType">
                 <option value="">[用户类型]</option>
                 <option value="admin">管理员</option>
@@ -25,7 +31,7 @@
 		<div class="ui field">
 			<button type="submit" class="ui button">查询</button>
 		</div>
-		<div class="ui field" v-if="dayFrom.length > 0 || dayTo.length > 0 || keyword.length > 0">
+		<div class="ui field" v-if="dayFrom.length > 0 || dayTo.length > 0 || keyword.length > 0 || level.length > 0">
 			<a href="/log">[清除条件]</a>
 		</div>
 		<div class="ui field">
