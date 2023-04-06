@@ -21,6 +21,7 @@ func (this *IndexAction) RunGet(params struct {
 	DayTo    string
 	Keyword  string
 	UserType string
+	Level    string
 }) {
 	// 读取配置
 	config, err := configloaders.LoadLogConfig()
@@ -35,18 +36,36 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["keyword"] = params.Keyword
 	this.Data["userType"] = params.UserType
 
+	// 级别
+	this.Data["level"] = params.Level
+	this.Data["levelOptions"] = []maps.Map{
+		{
+			"code": "info",
+			"name": "信息",
+		},
+		{
+			"code": "warn",
+			"name": "警告",
+		},
+		{
+			"code": "error",
+			"name": "错误",
+		},
+	}
+
 	countResp, err := this.RPC().LogRPC().CountLogs(this.AdminContext(), &pb.CountLogRequest{
 		DayFrom:  params.DayFrom,
 		DayTo:    params.DayTo,
 		Keyword:  params.Keyword,
 		UserType: params.UserType,
+		Level:    params.Level,
 	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	count := countResp.Count
-	page := this.NewPage(count)
+	var count = countResp.Count
+	var page = this.NewPage(count)
 	this.Data["page"] = page.AsHTML()
 
 	logsResp, err := this.RPC().LogRPC().ListLogs(this.AdminContext(), &pb.ListLogsRequest{
@@ -56,12 +75,13 @@ func (this *IndexAction) RunGet(params struct {
 		DayTo:    params.DayTo,
 		Keyword:  params.Keyword,
 		UserType: params.UserType,
+		Level:    params.Level,
 	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	logMaps := []maps.Map{}
+	var logMaps = []maps.Map{}
 	for _, log := range logsResp.Logs {
 		regionName := ""
 		regionResp, err := this.RPC().IPLibraryRPC().LookupIPRegion(this.AdminContext(), &pb.LookupIPRegionRequest{Ip: log.Ip})

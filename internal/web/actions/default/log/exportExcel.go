@@ -23,6 +23,7 @@ func (this *ExportExcelAction) RunGet(params struct {
 	DayTo    string
 	Keyword  string
 	UserType string
+	Level    string
 }) {
 	logsResp, err := this.RPC().LogRPC().ListLogs(this.AdminContext(), &pb.ListLogsRequest{
 		Offset:   0,
@@ -31,6 +32,7 @@ func (this *ExportExcelAction) RunGet(params struct {
 		DayTo:    params.DayTo,
 		Keyword:  params.Keyword,
 		UserType: params.UserType,
+		Level:    params.Level,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -56,6 +58,7 @@ func (this *ExportExcelAction) RunGet(params struct {
 		row.AddCell().SetString("区域")
 		row.AddCell().SetString("运营商")
 		row.AddCell().SetString("页面地址")
+		row.AddCell().SetString("级别")
 	}
 
 	// 数据
@@ -95,6 +98,17 @@ func (this *ExportExcelAction) RunGet(params struct {
 		row.AddCell().SetString(regionName)
 		row.AddCell().SetString(ispName)
 		row.AddCell().SetString(log.Action)
+
+		var levelName = ""
+		switch log.Level {
+		case "info":
+			levelName = "信息"
+		case "warn", "warning":
+			levelName = "警告"
+		case "error":
+			levelName = "错误"
+		}
+		row.AddCell().SetString(levelName)
 	}
 
 	this.AddHeader("Content-Type", "application/vnd.ms-excel")
