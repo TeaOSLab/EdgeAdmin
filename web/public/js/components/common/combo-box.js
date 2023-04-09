@@ -249,7 +249,7 @@ Vue.component("combo-box", {
 	template: `<div style="display: inline; z-index: 10; background: white" class="combo-box">
 	<!-- 搜索框 -->
 	<div v-if="selectedItem == null">
-		<input type="text" v-model="keyword" :placeholder="placeholder" :size="size" :style="{'width': styleWidth}"  @input="changeKeyword" @focus="show" @blur="hide" @keyup.enter="confirm()" @keypress.enter.prevent="1" ref="searchBox" @keyup.down="downItem" @keyup.up="upItem"/>
+		<input type="text" v-model="keyword" :placeholder="placeholder" :size="size" :style="{'width': styleWidth}"  @input="changeKeyword" @focus="show" @blur="hide" @keyup.enter="confirm()" @keypress.enter.prevent="1" ref="searchBox" @keydown.down.prevent="downItem" @keydown.up.prevent="upItem"/>
 	</div>
 	
 	<!-- 当前选中 -->
