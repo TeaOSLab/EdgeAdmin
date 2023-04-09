@@ -9,6 +9,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/index/loginutils"
 	adminserverutils "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/server/admin-server-utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
@@ -102,6 +103,9 @@ func (this *IndexAction) RunGet(params struct {
 	} else {
 		this.Data["rememberLogin"] = securityConfig.AllowRememberLogin
 	}
+
+	// 删除Cookie
+	loginutils.UnsetCookie(this.Object())
 
 	this.Show()
 }
