@@ -181,7 +181,7 @@ func (this *ServerHelper) createLogMenu(secondMenuItem string, serverIdString st
 
 // 统计菜单
 func (this *ServerHelper) createStatMenu(secondMenuItem string, serverIdString string, serverConfig *serverconfigs.ServerConfig) []maps.Map {
-	menuItems := []maps.Map{}
+	var menuItems = []maps.Map{}
 	menuItems = append(menuItems, maps.Map{
 		"name":     "流量统计",
 		"url":      "/servers/server/stat?serverId=" + serverIdString,
@@ -212,7 +212,7 @@ func (this *ServerHelper) createStatMenu(secondMenuItem string, serverIdString s
 
 // 设置菜单
 func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdString string, serverConfig *serverconfigs.ServerConfig) (items []maps.Map) {
-	menuItems := []maps.Map{
+	var menuItems = []maps.Map{
 		{
 			"name":     "基本信息",
 			"url":      "/servers/server/settings?serverId=" + serverIdString,
@@ -249,10 +249,11 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOff":    serverConfig.HTTPS != nil && !serverConfig.HTTPS.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     "源站",
-			"url":      "/servers/server/settings/reverseProxy?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "reverseProxy",
-			"isOn":     serverConfig.ReverseProxyRef != nil && serverConfig.ReverseProxyRef.IsOn,
+			"name":       "源站",
+			"url":        "/servers/server/settings/reverseProxy?serverId=" + serverIdString,
+			"isActive":   secondMenuItem == "reverseProxy",
+			"isOn":       serverConfig.ReverseProxyRef != nil && serverConfig.ReverseProxyRef.IsOn,
+			"configCode": serverconfigs.ConfigCodeReverseProxy,
 		})
 
 		menuItems = filterMenuItems(serverConfig, menuItems, serverIdString, secondMenuItem)
@@ -263,10 +264,11 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isActive": false,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     "URL跳转",
-			"url":      "/servers/server/settings/redirects?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "redirects",
-			"isOn":     serverConfig.Web != nil && len(serverConfig.Web.HostRedirects) > 0,
+			"name":       "URL跳转",
+			"url":        "/servers/server/settings/redirects?serverId=" + serverIdString,
+			"isActive":   secondMenuItem == "redirects",
+			"isOn":       serverConfig.Web != nil && len(serverConfig.Web.HostRedirects) > 0,
+			"configCode": serverconfigs.ConfigCodeHostRedirects,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "路由规则",
@@ -287,58 +289,67 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":     serverConfig.Web != nil && serverConfig.Web.FirewallRef != nil && serverConfig.Web.FirewallRef.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     "缓存",
-			"url":      "/servers/server/settings/cache?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "cache",
-			"isOn":     serverConfig.Web != nil && serverConfig.Web.Cache != nil && serverConfig.Web.Cache.IsOn,
+			"name":       "缓存",
+			"url":        "/servers/server/settings/cache?serverId=" + serverIdString,
+			"isActive":   secondMenuItem == "cache",
+			"isOn":       serverConfig.Web != nil && serverConfig.Web.Cache != nil && serverConfig.Web.Cache.IsOn,
+			"configCode": serverconfigs.ConfigCodeCache,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     "访问鉴权",
-			"url":      "/servers/server/settings/access?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "access",
-			"isOn":     serverConfig.Web != nil && serverConfig.Web.Auth != nil && serverConfig.Web.Auth.IsOn,
+			"name":       "访问鉴权",
+			"url":        "/servers/server/settings/access?serverId=" + serverIdString,
+			"isActive":   secondMenuItem == "access",
+			"isOn":       serverConfig.Web != nil && serverConfig.Web.Auth != nil && serverConfig.Web.Auth.IsOn,
+			"configCode": serverconfigs.ConfigCodeAuth,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     "防盗链",
-			"url":      "/servers/server/settings/referers?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "referer",
-			"isOn":     serverConfig.Web != nil && serverConfig.Web.Referers != nil && serverConfig.Web.Referers.IsOn,
+			"name":       "防盗链",
+			"url":        "/servers/server/settings/referers?serverId=" + serverIdString,
+			"isActive":   secondMenuItem == "referer",
+			"isOn":       serverConfig.Web != nil && serverConfig.Web.Referers != nil && serverConfig.Web.Referers.IsOn,
+			"configCode": serverconfigs.ConfigCodeReferers,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     "UA名单",
-			"url":      "/servers/server/settings/userAgent?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "userAgent",
-			"isOn":     serverConfig.Web != nil && serverConfig.Web.UserAgent != nil && serverConfig.Web.UserAgent.IsOn,
+			"name":       "UA名单",
+			"url":        "/servers/server/settings/userAgent?serverId=" + serverIdString,
+			"isActive":   secondMenuItem == "userAgent",
+			"isOn":       serverConfig.Web != nil && serverConfig.Web.UserAgent != nil && serverConfig.Web.UserAgent.IsOn,
+			"configCode": serverconfigs.ConfigCodeUserAgent,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     "字符编码",
-			"url":      "/servers/server/settings/charset?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "charset",
-			"isOn":     serverConfig.Web != nil && serverConfig.Web.Charset != nil && serverConfig.Web.Charset.IsOn,
+			"name":       "字符编码",
+			"url":        "/servers/server/settings/charset?serverId=" + serverIdString,
+			"isActive":   secondMenuItem == "charset",
+			"isOn":       serverConfig.Web != nil && serverConfig.Web.Charset != nil && serverConfig.Web.Charset.IsOn,
+			"configCode": serverconfigs.ConfigCodeCharset,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     "访问日志",
-			"url":      "/servers/server/settings/accessLog?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "accessLog",
-			"isOn":     serverConfig.Web != nil && serverConfig.Web.AccessLogRef != nil && serverConfig.Web.AccessLogRef.IsOn,
+			"name":       "访问日志",
+			"url":        "/servers/server/settings/accessLog?serverId=" + serverIdString,
+			"isActive":   secondMenuItem == "accessLog",
+			"isOn":       serverConfig.Web != nil && serverConfig.Web.AccessLogRef != nil && serverConfig.Web.AccessLogRef.IsOn,
+			"configCode": serverconfigs.ConfigCodeAccessLog,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     "统计",
-			"url":      "/servers/server/settings/stat?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "stat",
-			"isOn":     serverConfig.Web != nil && serverConfig.Web.StatRef != nil && serverConfig.Web.StatRef.IsOn,
+			"name":       "统计",
+			"url":        "/servers/server/settings/stat?serverId=" + serverIdString,
+			"isActive":   secondMenuItem == "stat",
+			"isOn":       serverConfig.Web != nil && serverConfig.Web.StatRef != nil && serverConfig.Web.StatRef.IsOn,
+			"configCode": serverconfigs.ConfigCodeStat,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     "内容压缩",
-			"url":      "/servers/server/settings/compression?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "compression",
-			"isOn":     serverConfig.Web != nil && serverConfig.Web.Compression != nil && serverConfig.Web.Compression.IsOn,
+			"name":       "内容压缩",
+			"url":        "/servers/server/settings/compression?serverId=" + serverIdString,
+			"isActive":   secondMenuItem == "compression",
+			"isOn":       serverConfig.Web != nil && serverConfig.Web.Compression != nil && serverConfig.Web.Compression.IsOn,
+			"configCode": serverconfigs.ConfigCodeCompression,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     "自定义页面",
-			"url":      "/servers/server/settings/pages?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "pages",
-			"isOn":     serverConfig.Web != nil && (len(serverConfig.Web.Pages) > 0 || (serverConfig.Web.Shutdown != nil && serverConfig.Web.Shutdown.IsOn)),
+			"name":       "自定义页面",
+			"url":        "/servers/server/settings/pages?serverId=" + serverIdString,
+			"isActive":   secondMenuItem == "pages",
+			"isOn":       serverConfig.Web != nil && (len(serverConfig.Web.Pages) > 0 || (serverConfig.Web.Shutdown != nil && serverConfig.Web.Shutdown.IsOn)),
+			"configCode": serverconfigs.ConfigCodePages,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "HTTP Header",
@@ -347,23 +358,26 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":     this.hasHTTPHeaders(serverConfig.Web),
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     "Websocket",
-			"url":      "/servers/server/settings/websocket?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "websocket",
-			"isOn":     serverConfig.Web != nil && serverConfig.Web.WebsocketRef != nil && serverConfig.Web.WebsocketRef.IsOn,
+			"name":       "Websocket",
+			"url":        "/servers/server/settings/websocket?serverId=" + serverIdString,
+			"isActive":   secondMenuItem == "websocket",
+			"isOn":       serverConfig.Web != nil && serverConfig.Web.WebsocketRef != nil && serverConfig.Web.WebsocketRef.IsOn,
+			"configCode": serverconfigs.ConfigCodeWebsocket,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     "WebP",
-			"url":      "/servers/server/settings/webp?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "webp",
-			"isOn":     serverConfig.Web != nil && serverConfig.Web.WebP != nil && serverConfig.Web.WebP.IsOn,
+			"name":       "WebP",
+			"url":        "/servers/server/settings/webp?serverId=" + serverIdString,
+			"isActive":   secondMenuItem == "webp",
+			"isOn":       serverConfig.Web != nil && serverConfig.Web.WebP != nil && serverConfig.Web.WebP.IsOn,
+			"configCode": serverconfigs.ConfigCodeWebp,
 		})
 
 		menuItems = append(menuItems, maps.Map{
-			"name":     "静态分发",
-			"url":      "/servers/server/settings/web?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "web",
-			"isOn":     serverConfig.Web != nil && serverConfig.Web.Root != nil && serverConfig.Web.Root.IsOn,
+			"name":       "静态分发",
+			"url":        "/servers/server/settings/web?serverId=" + serverIdString,
+			"isActive":   secondMenuItem == "web",
+			"isOn":       serverConfig.Web != nil && serverConfig.Web.Root != nil && serverConfig.Web.Root.IsOn,
+			"configCode": serverconfigs.ConfigCodeRoot,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     "Fastcgi",
@@ -379,17 +393,19 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 		})
 
 		menuItems = append(menuItems, maps.Map{
-			"name":     "访客IP地址",
-			"url":      "/servers/server/settings/remoteAddr?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "remoteAddr",
-			"isOn":     serverConfig.Web != nil && serverConfig.Web.RemoteAddr != nil && serverConfig.Web.RemoteAddr.IsOn,
+			"name":       "访客IP地址",
+			"url":        "/servers/server/settings/remoteAddr?serverId=" + serverIdString,
+			"isActive":   secondMenuItem == "remoteAddr",
+			"isOn":       serverConfig.Web != nil && serverConfig.Web.RemoteAddr != nil && serverConfig.Web.RemoteAddr.IsOn,
+			"configCode": serverconfigs.ConfigCodeRemoteAddr,
 		})
 
 		menuItems = append(menuItems, maps.Map{
-			"name":     "请求限制",
-			"url":      "/servers/server/settings/requestLimit?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "requestLimit",
-			"isOn":     serverConfig.Web != nil && serverConfig.Web.RequestLimit != nil && serverConfig.Web.RequestLimit.IsOn,
+			"name":       "请求限制",
+			"url":        "/servers/server/settings/requestLimit?serverId=" + serverIdString,
+			"isActive":   secondMenuItem == "requestLimit",
+			"isOn":       serverConfig.Web != nil && serverConfig.Web.RequestLimit != nil && serverConfig.Web.RequestLimit.IsOn,
+			"configCode": serverconfigs.ConfigCodeRequestLimit,
 		})
 
 		menuItems = filterMenuItems2(serverConfig, menuItems, serverIdString, secondMenuItem)
