@@ -102,7 +102,7 @@ func FailPage(action actions.ActionWrapper, err error) {
 		var html = `<!DOCTYPE html>
 <html>
 	<head>
-		<title>有系统错误需要处理</title>
+		<title>正在处理...</title>
 		<meta charset="UTF-8"/>
 		<style type="text/css">
 		hr { border-top: 1px #ccc solid; }
@@ -116,7 +116,7 @@ func FailPage(action actions.ActionWrapper, err error) {
 			html += "<div class=\"red\">API节点正在启动，请耐心等待完成"
 
 			if len(apiNodeProgress) > 0 {
-				html += "：" + apiNodeProgress
+				html += "：" + apiNodeProgress + "（刷新当前页面查看最新状态）"
 			}
 
 			html += "</div>"
