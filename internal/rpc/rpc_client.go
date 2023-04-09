@@ -544,8 +544,11 @@ func (this *RPCClient) init() error {
 		}
 
 		var conn *grpc.ClientConn
-		var callOptions = grpc.WithDefaultCallOptions(grpc.MaxCallRecvMsgSize(128*1024*1024),
-			grpc.UseCompressor(gzip.Name))
+		var callOptions = grpc.WithDefaultCallOptions(
+			grpc.MaxCallRecvMsgSize(128<<20),
+			grpc.MaxCallSendMsgSize(128<<20),
+			grpc.UseCompressor(gzip.Name),
+		)
 		if u.Scheme == "http" {
 			conn, err = grpc.Dial(apiHost, grpc.WithTransportCredentials(insecure.NewCredentials()), callOptions)
 		} else if u.Scheme == "https" {
