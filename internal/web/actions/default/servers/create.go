@@ -387,7 +387,7 @@ func (this *CreateAction) RunPost(params struct {
 		AdminId:          this.AdminId(),
 		Type:             params.ServerType,
 		Name:             params.Name,
-		ServerNamesJON:   params.ServerNames,
+		ServerNamesJSON:   params.ServerNames,
 		Description:      params.Description,
 		NodeClusterId:    clusterId,
 		IncludeNodesJSON: includeNodesJSON,
