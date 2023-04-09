@@ -11723,6 +11723,27 @@ Vue.component("http-access-log-search-box", {
 </div>`
 })
 
+Vue.component("server-config-copy-link", {
+	props: ["v-server-id", "v-config-code"],
+	data: function () {
+		return {
+			serverId: this.vServerId,
+			configCode: this.vConfigCode
+		}
+	},
+	methods: {
+		copy: function () {
+			teaweb.popup("/servers/server/settings/copy?serverId=" + this.serverId + "&configCode=" + this.configCode, {
+				height: "25em",
+				callback: function () {
+					teaweb.success("复制成功")
+				}
+			})
+		}
+	},
+	template: `<a href=\"" class="item" @click.prevent="copy" style="padding-right:0"><span style="font-size: 0.8em">复制</span>&nbsp;<i class="icon copy small"></i></a>`
+})
+
 // 显示指标对象名
 Vue.component("metric-key-label", {
 	props: ["v-key"],
@@ -15054,7 +15075,7 @@ Vue.component("more-items-angle", {
 			return false
 		}
 	},
-	template: `<a href="" class="item" @click.prevent="show"><i class="icon angle" :class="{down: !visible, up: visible}"></i></a>`
+	template: `<a href="" class="item" @click.prevent="show" style="padding-right: 0"><span style="font-size: 0.8em">切换</span><i class="icon angle" :class="{down: !visible, up: visible}"></i></a>`
 })
 
 /**
