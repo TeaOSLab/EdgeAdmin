@@ -79,5 +79,5 @@ Vue.component("more-items-angle", {
 			return false
 		}
 	},
-	template: `<a href="" class="item" @click.prevent="show"><i class="icon angle" :class="{down: !visible, up: visible}"></i></a>`
+	template: `<a href="" class="item" @click.prevent="show" style="padding-right: 0"><span style="font-size: 0.8em">切换</span><i class="icon angle" :class="{down: !visible, up: visible}"></i></a>`
 })
