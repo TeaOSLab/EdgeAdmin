@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/goman"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/index/loginutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
@@ -173,8 +174,19 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 		return false
 	}
 
+	// 检查指纹
+	var clientFingerprint = session.GetString("@fingerprint")
+	if len(clientFingerprint) > 0 && clientFingerprint != loginutils.CalculateClientFingerprint(action) {
+		loginutils.UnsetCookie(action)
+		session.Delete()
+
+		this.login(action)
+		return false
+	}
+
 	// 检查用户是否存在
 	if !configloaders.CheckAdmin(adminId) {
+		loginutils.UnsetCookie(action)
 		session.Delete()
 
 		this.login(action)

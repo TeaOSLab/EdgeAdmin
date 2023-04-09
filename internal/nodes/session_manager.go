@@ -11,6 +11,7 @@ import (
 	"strings"
 )
 
+// SessionManager SESSION管理
 type SessionManager struct {
 	life uint
 }

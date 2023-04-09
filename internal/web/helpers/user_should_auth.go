@@ -4,6 +4,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/index/loginutils"
 	"github.com/iwind/TeaGo/actions"
 	"net"
 	"net/http"
@@ -53,35 +54,10 @@ func (this *UserShouldAuth) BeforeAction(actionPtr actions.ActionWrapper, paramN
 
 // StoreAdmin 存储用户名到SESSION
 func (this *UserShouldAuth) StoreAdmin(adminId int64, remember bool) {
-	// 修改sid的时间
-	if remember {
-		cookie := &http.Cookie{
-			Name:     teaconst.CookieSID,
-			Value:    this.action.Session().Sid,
-			Path:     "/",
-			MaxAge:   14 * 86400,
-			HttpOnly: true,
-		}
-		if this.action.Request.TLS != nil {
-			cookie.SameSite = http.SameSiteStrictMode
-			cookie.Secure = true
-		}
-		this.action.AddCookie(cookie)
-	} else {
-		cookie := &http.Cookie{
-			Name:     teaconst.CookieSID,
-			Value:    this.action.Session().Sid,
-			Path:     "/",
-			MaxAge:   0,
-			HttpOnly: true,
-		}
-		if this.action.Request.TLS != nil {
-			cookie.SameSite = http.SameSiteStrictMode
-			cookie.Secure = true
-		}
-		this.action.AddCookie(cookie)
-	}
-	this.action.Session().Write("adminId", numberutils.FormatInt64(adminId))
+	loginutils.SetCookie(this.action, remember)
+	var session = this.action.Session()
+	session.Write("adminId", numberutils.FormatInt64(adminId))
+	session.Write("@fingerprint", loginutils.CalculateClientFingerprint(this.action))
 }
 
 func (this *UserShouldAuth) IsUser() bool {
@@ -93,5 +69,6 @@ func (this *UserShouldAuth) AdminId() int {
 }
 
 func (this *UserShouldAuth) Logout() {
+	loginutils.UnsetCookie(this.action)
 	this.action.Session().Delete()
 }
