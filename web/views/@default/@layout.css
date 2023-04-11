@@ -146,6 +146,10 @@ body.expanded .right-box {
   display: inline;
 }
 /** 通用 **/
+* {
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  scrollbar-width: thin;
+}
 .clear {
   clear: both;
 }
@@ -582,7 +586,7 @@ body.expanded .main {
   background: black !important;
 }
 .main-menu::-webkit-scrollbar {
-  width: 2px;
+  width: 4px;
 }
 .main .tab-menu {
   margin-top: 1em !important;

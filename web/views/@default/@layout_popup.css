@@ -1,4 +1,8 @@
 /** 通用 **/
+* {
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+  scrollbar-width: thin;
+}
 .clear {
   clear: both;
 }
