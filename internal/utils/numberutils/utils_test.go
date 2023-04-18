@@ -4,6 +4,7 @@ package numberutils_test
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
+	"github.com/iwind/TeaGo/assert"
 	"testing"
 )
 
@@ -47,6 +48,24 @@ func TestFormatFloat(t *testing.T) {
 	t.Log(numberutils.FormatFloat(1234.56700, 4))
 	t.Log(numberutils.FormatFloat(-1234.56700, 2))
 	t.Log(numberutils.FormatFloat(-221745.12, 2))
+}
+
+func TestFormatFloat2(t *testing.T) {
+	t.Log(numberutils.FormatFloat2(0))
+	t.Log(numberutils.FormatFloat2(0.0))
+	t.Log(numberutils.FormatFloat2(1.23456))
+	t.Log(numberutils.FormatFloat2(1.0))
+}
+
+func TestPadFloatZero(t *testing.T) {
+	var a = assert.NewAssertion(t)
+	a.IsTrue(numberutils.PadFloatZero("1", 0) == "1")
+	a.IsTrue(numberutils.PadFloatZero("1", 2) == "1.00")
+	a.IsTrue(numberutils.PadFloatZero("1.1", 2) == "1.10")
+	a.IsTrue(numberutils.PadFloatZero("1.12", 2) == "1.12")
+	a.IsTrue(numberutils.PadFloatZero("1.123", 2) == "1.123")
+	a.IsTrue(numberutils.PadFloatZero("10000.123", 2) == "10000.123")
+	a.IsTrue(numberutils.PadFloatZero("", 2) == "0.00")
 }
 
 func TestTrimZeroSuffix(t *testing.T) {

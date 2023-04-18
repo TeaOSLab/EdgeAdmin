@@ -75,7 +75,7 @@ func FormatCount(count int64) string {
 	return fmt.Sprintf("%.1fB", float32(count)/1000/1000/1000)
 }
 
-func FormatFloat(f interface{}, decimal int) string {
+func FormatFloat(f any, decimal int) string {
 	if f == nil {
 		return ""
 	}
@@ -101,8 +101,27 @@ func FormatFloat(f interface{}, decimal int) string {
 	return ""
 }
 
-func FormatFloat2(f interface{}) string {
+func FormatFloat2(f any) string {
 	return FormatFloat(f, 2)
+}
+
+// PadFloatZero 为浮点型数字字符串填充足够的0
+func PadFloatZero(s string, countZero int) string {
+	if countZero <= 0 {
+		return s
+	}
+	if len(s) == 0 {
+		s = "0"
+	}
+	var index = strings.Index(s, ".")
+	if index < 0 {
+		return s + "." + strings.Repeat("0", countZero)
+	}
+	var decimalLen = len(s) - 1 - index
+	if decimalLen < countZero {
+		return s + strings.Repeat("0", countZero-decimalLen)
+	}
+	return s
 }
 
 var decimalReg = regexp.MustCompile(`^(\d+\.\d+)([a-zA-Z]+)?$`)

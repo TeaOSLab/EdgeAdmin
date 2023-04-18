@@ -134,7 +134,7 @@
             <span v-else class="disabled">-</span>
         </td>
         <td class="center" v-if="windowWidth < miniWidth || windowWidth > columnWidth5">
-            <span v-if="node.status.isActive && node.status.load1m > 0">{{node.status.load1m}}</span>
+            <span v-if="node.status.isActive">{{node.status.load1m}}</span>
             <span v-else class="disabled">-</span>
         </td>
         <td class="center">
