@@ -225,7 +225,7 @@ func (this *NodesAction) RunGet(params struct {
 				"memUsageText":     fmt.Sprintf("%.2f%%", status.MemoryUsage*100),
 				"trafficInBytes":   status.TrafficInBytes,
 				"trafficOutBytes":  status.TrafficOutBytes,
-				"load1m":           numberutils.FormatFloat2(status.Load1m),
+				"load1m":           numberutils.PadFloatZero(numberutils.FormatFloat2(status.Load1m), 2),
 				"countConnections": status.ConnectionCount,
 			},
 			"cluster": maps.Map{
