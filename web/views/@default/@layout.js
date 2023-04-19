@@ -117,6 +117,7 @@ Tea.context(function () {
 		if (!Tea.Vue.teaCheckNodeTasks) {
 			return
 		}
+		let isStream = false
 		this.$post("/clusters/tasks/check")
 			.params({
 				isDoing: this.doingNodeTasks.isDoing ? 1 : 0,
@@ -128,11 +129,12 @@ Tea.context(function () {
 				this.doingNodeTasks.isDoing = resp.data.isDoing
 				this.doingNodeTasks.hasError = resp.data.hasError
 				this.doingNodeTasks.isUpdated = true
+				isStream = resp.data.shouldWait
 			})
 			.done(function () {
 				this.$delay(function () {
 					this.loadNodeTasks()
-				}, 5000)
+				}, isStream ? 5000 : 30000)
 			})
 	}
 
@@ -156,6 +158,7 @@ Tea.context(function () {
 		if (!Tea.Vue.teaCheckDNSTasks) {
 			return
 		}
+		let isStream = false
 		this.$post("/dns/tasks/check")
 			.params({
 				isDoing: this.doingDNSTasks.isDoing ? 1 : 0,
@@ -167,11 +170,12 @@ Tea.context(function () {
 				this.doingDNSTasks.isDoing = resp.data.isDoing
 				this.doingDNSTasks.hasError = resp.data.hasError
 				this.doingDNSTasks.isUpdated = true
+				isStream = resp.data.isStream
 			})
 			.done(function () {
 				this.$delay(function () {
 					this.loadDNSTasks()
-				}, 3000)
+				}, isStream ? 5000 : 30000)
 			})
 	}
 

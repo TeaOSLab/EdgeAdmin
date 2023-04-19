@@ -2312,7 +2312,9 @@ window.Tea.Action = function (action, params) {
 			.then(function () {
 				// console.log("done");
 				if (typeof (_doneFn) == "function") {
-					_doneFn.call(Tea.Vue, {});
+					setTimeout(function () {
+						_doneFn.call(Tea.Vue, {});
+					})
 				}
 			});
 	};
