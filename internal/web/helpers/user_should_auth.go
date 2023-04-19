@@ -58,6 +58,7 @@ func (this *UserShouldAuth) StoreAdmin(adminId int64, remember bool) {
 	var session = this.action.Session()
 	session.Write("adminId", numberutils.FormatInt64(adminId))
 	session.Write("@fingerprint", loginutils.CalculateClientFingerprint(this.action))
+	session.Write("@ip", loginutils.RemoteIP(this.action))
 }
 
 func (this *UserShouldAuth) IsUser() bool {

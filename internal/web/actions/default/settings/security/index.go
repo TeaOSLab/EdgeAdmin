@@ -79,6 +79,9 @@ func (this *IndexAction) RunPost(params struct {
 	DenySearchEngines bool
 	DenySpiders       bool
 
+	CheckClientFingerprint bool
+	CheckClientRegion      bool
+
 	DomainsJSON []byte
 
 	Must *actions.Must
@@ -149,6 +152,10 @@ func (this *IndexAction) RunPost(params struct {
 
 	// 允许记住登录
 	config.AllowRememberLogin = params.AllowRememberLogin
+
+	// Cookie检查
+	config.CheckClientFingerprint = params.CheckClientFingerprint
+	config.CheckClientRegion = params.CheckClientRegion
 
 	err = configloaders.UpdateSecurityConfig(config)
 	if err != nil {
