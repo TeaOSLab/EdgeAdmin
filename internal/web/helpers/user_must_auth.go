@@ -175,13 +175,32 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	}
 
 	// 检查指纹
-	var clientFingerprint = session.GetString("@fingerprint")
-	if len(clientFingerprint) > 0 && clientFingerprint != loginutils.CalculateClientFingerprint(action) {
-		loginutils.UnsetCookie(action)
-		session.Delete()
+	if securityConfig != nil && securityConfig.CheckClientFingerprint {
+		var clientFingerprint = session.GetString("@fingerprint")
+		if len(clientFingerprint) > 0 && clientFingerprint != loginutils.CalculateClientFingerprint(action) {
+			loginutils.UnsetCookie(action)
+			session.Delete()
 
-		this.login(action)
-		return false
+			this.login(action)
+			return false
+		}
+	}
+
+	// 检查区域
+	if securityConfig != nil && securityConfig.CheckClientRegion {
+		var oldClientIP = session.GetString("@ip")
+		var currentClientIP = loginutils.RemoteIP(action)
+		if len(oldClientIP) > 0 && len(currentClientIP) > 0 && oldClientIP != currentClientIP {
+			var oldRegion = loginutils.LookupIPRegion(oldClientIP)
+			var newRegion = loginutils.LookupIPRegion(currentClientIP)
+			if newRegion != oldRegion {
+				loginutils.UnsetCookie(action)
+				session.Delete()
+
+				this.login(action)
+				return false
+			}
+		}
 	}
 
 	// 检查用户是否存在

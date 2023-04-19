@@ -85,6 +85,9 @@ func (this *AdminNode) Run() {
 	// 启动API节点
 	this.startAPINode()
 
+	// 启动IP库
+	this.startIPLibrary()
+
 	// 启动Web服务
 	sessionManager, err := NewSessionManager()
 	if err != nil {

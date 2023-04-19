@@ -29,7 +29,7 @@ func LoadSecurityConfig() (*systemconfigs.SecurityConfig, error) {
 		return nil, err
 	}
 
-	v := reflect.Indirect(reflect.ValueOf(config)).Interface().(systemconfigs.SecurityConfig)
+	var v = reflect.Indirect(reflect.ValueOf(config)).Interface().(systemconfigs.SecurityConfig)
 	return &v, nil
 }
 
@@ -83,7 +83,12 @@ func loadSecurityConfig() (*systemconfigs.SecurityConfig, error) {
 		return sharedSecurityConfig, nil
 	}
 
-	config := &systemconfigs.SecurityConfig{}
+	var config = &systemconfigs.SecurityConfig{
+		Frame:                  FrameSameOrigin,
+		AllowLocal:             true,
+		CheckClientFingerprint: false,
+		CheckClientRegion:      true,
+	}
 	err = json.Unmarshal(resp.ValueJSON, config)
 	if err != nil {
 		logs.Println("[SECURITY_MANAGER]" + err.Error())
@@ -100,7 +105,9 @@ func loadSecurityConfig() (*systemconfigs.SecurityConfig, error) {
 
 func defaultSecurityConfig() *systemconfigs.SecurityConfig {
 	return &systemconfigs.SecurityConfig{
-		Frame:      FrameSameOrigin,
-		AllowLocal: true,
+		Frame:                  FrameSameOrigin,
+		AllowLocal:             true,
+		CheckClientFingerprint: false,
+		CheckClientRegion:      true,
 	}
 }
