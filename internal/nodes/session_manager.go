@@ -40,6 +40,7 @@ func (this *SessionManager) Read(sid string) map[string]string {
 	resp, err := rpcClient.LoginSessionRPC().FindLoginSession(rpcClient.Context(0), &pb.FindLoginSessionRequest{Sid: sid})
 	if err != nil {
 		logs.Println("SESSION", "read '"+sid+"' failed: "+err.Error())
+		result["@error"] = err.Error()
 		return result
 	}
 
