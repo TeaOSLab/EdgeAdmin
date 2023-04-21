@@ -73,7 +73,7 @@ Vue.component("http-access-log-box", {
 			this.$refs.box.parentNode.style.cssText = ""
 		},
 		mismatch: function () {
-			teaweb.warn("当前访问没有匹配到任何网站服务")
+			teaweb.warn("当前访问没有匹配到任何网站")
 		}
 	},
 	template: `<div style="word-break: break-all" :style="{'color': (accessLog.status >= 400) ? '#dc143c' : ''}" ref="box">
@@ -81,7 +81,7 @@ Vue.component("http-access-log-box", {
 		<a v-if="accessLog.node != null && accessLog.node.nodeCluster != null" :href="'/clusters/cluster/node?nodeId=' + accessLog.node.id + '&clusterId=' + accessLog.node.nodeCluster.id" title="点击查看节点详情" target="_top"><span class="grey">[{{accessLog.node.name}}<span v-if="!accessLog.node.name.endsWith('节点')">节点</span>]</span></a>
 		
 		<!-- 服务 -->
-		<a :href="'/servers/server/log?serverId=' + accessLog.serverId" title="点击到网站服务" v-if="vShowServerLink && accessLog.serverId > 0"><span class="grey">[服务]</span></a>
+		<a :href="'/servers/server/log?serverId=' + accessLog.serverId" title="点击到网站" v-if="vShowServerLink && accessLog.serverId > 0"><span class="grey">[服务]</span></a>
 		<span v-if="vShowServerLink && (accessLog.serverId == null || accessLog.serverId == 0)" @click.prevent="mismatch()"><span class="disabled">[服务]</span></span>
 		
 		<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey"><ip-box :v-ip="accessLog.remoteAddr">[{{accessLog.region}}]</ip-box></span> 

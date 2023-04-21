@@ -19,8 +19,8 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnread
 		{
 			"code":     "servers",
 			"module":   configloaders.AdminModuleCodeServer,
-			"name":     "网站服务",
-			"subtitle": "服务列表",
+			"name":     "网站列表",
+			"subtitle": "",
 			"icon":     "clone outsize",
 			"subItems": []maps.Map{
 				{

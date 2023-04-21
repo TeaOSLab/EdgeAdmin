@@ -45,7 +45,7 @@ func KeyFailReason(reasonCode string) string {
 	case "requireDomain":
 		return "找不到Key对应的域名"
 	case "requireServer":
-		return "找不到Key对应的网站服务"
+		return "找不到Key对应的网站"
 	case "requireUser":
 		return "该域名不属于当前用户"
 	case "requireClusterId":
