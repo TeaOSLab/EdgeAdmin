@@ -49,7 +49,7 @@ Vue.component("http-firewall-config-box", {
 				<td class="title">启用WAF</td>
 				<td>
 					<checkbox v-model="firewall.isOn"></checkbox>
-					<p class="comment">选中后，表示启用当前网站服务的WAF功能。</p>
+					<p class="comment">选中后，表示启用当前网站的WAF功能。</p>
 				</td>
 			</tr>
 		</tbody>

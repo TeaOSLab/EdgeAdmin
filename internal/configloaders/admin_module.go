@@ -167,7 +167,7 @@ func AllModuleMaps() []maps.Map {
 			"url":  "/dashboard",
 		},
 		{
-			"name": "网站服务",
+			"name": "网站列表",
 			"code": AdminModuleCodeServer,
 			"url":  "/servers",
 		},

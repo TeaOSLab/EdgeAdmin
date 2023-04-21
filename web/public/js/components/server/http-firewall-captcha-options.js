@@ -147,7 +147,7 @@ Vue.component("http-firewall-captcha-options", {
 					<td>失败全局封禁</td>
 					<td>
 						<checkbox v-model="options.failBlockScopeAll"></checkbox>
-						<p class="comment">是否在失败时全局封禁，默认为只封禁对单个网站服务的访问。</p>
+						<p class="comment">是否在失败时全局封禁，默认为只封禁对单个网站的访问。</p>
 					</td>
 				</tr>
 				<tr>

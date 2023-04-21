@@ -4,7 +4,7 @@
 <form method="post" class="ui form" data-tea-action="$" data-tea-success="success" data-tea-fail="fail">
     <div class="tables-box">
         <div class="table-box left">
-            <h3>新网站服务主要信息：</h3>
+            <h3>新网站主要信息：</h3>
             <table class="ui table selectable definition">
                 <tr v-show="hasUsers">
                     <td class="title">所属用户<optional-label></optional-label></td>
@@ -112,7 +112,7 @@
                             <checkbox checked="checked" name="websocketIsOn">Websocket</checkbox>
                             <checkbox checked="checked" name="cacheIsOn">缓存</checkbox>
                             <checkbox name="wafIsOn">WAF</checkbox>
-                            <checkbox name="remoteAddrIsOn">从上级代理中读取IP <tip-icon content="用来支持读取上级代理传递的X-Real-IP、X-Forwarded-For等信息。如果用户需要通过别的代理服务才能访问到这个网站服务，才需要选中。"></tip-icon> </checkbox>
+                            <checkbox name="remoteAddrIsOn">从上级代理中读取IP <tip-icon content="用来支持读取上级代理传递的X-Real-IP、X-Forwarded-For等信息。如果用户需要通过别的代理服务才能访问到这个网站，才需要选中。"></tip-icon> </checkbox>
                             <checkbox checked="checked" name="statIsOn">统计 <tip-icon content="开启统计后，会统计访客区域、操作系统、浏览器等信息。"></tip-icon> </checkbox>
                         </div>
                     </td>

@@ -663,8 +663,8 @@ Vue.component("http-firewall-actions-box", {
 						<option value="service">当前服务</option>
 						<option value="global">所有服务</option>
 					</select>
-					<p class="comment" v-if="blockScope == 'service'">只封禁用户对当前网站服务的访问，其他服务不受影响。</p>
-					<p class="comment" v-if="blockScope =='global'">封禁用户对所有网站服务的访问。</p>
+					<p class="comment" v-if="blockScope == 'service'">只封禁用户对当前网站的访问，其他服务不受影响。</p>
+					<p class="comment" v-if="blockScope =='global'">封禁用户对所有网站的访问。</p>
 				</td>
 			</tr>
 			<tr v-if="actionCode == 'block'">
