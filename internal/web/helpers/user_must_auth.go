@@ -170,6 +170,11 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	var adminId = session.GetInt64("adminId")
 
 	if adminId <= 0 {
+		var errString = session.GetString("@error")
+		if len(errString) > 0 {
+			action.WriteString("read session failed: " + errString)
+			return false
+		}
 		this.login(action)
 		return false
 	}
