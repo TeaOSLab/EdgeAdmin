@@ -24,9 +24,12 @@ Vue.component("user-selector", {
 			} else {
 				this.$emit("change", 0)
 			}
+		},
+		clear: function () {
+			this.$refs.comboBox.clear()
 		}
 	},
 	template: `<div>
-	<combo-box placeholder="选择用户" :data-url="dataURL" :data-key="'users'" data-search="on" name="userId" :v-value="userId" @change="change"></combo-box>
+	<combo-box placeholder="选择用户" :data-url="dataURL" :data-key="'users'" data-search="on" name="userId" :v-value="userId" @change="change" ref="comboBox"></combo-box>
 </div>`
 })

@@ -34,6 +34,8 @@ func (this *SelectPopupAction) RunGet(params struct {
 	SelectedCertIds string
 	Keyword         string
 }) {
+	this.Data["searchingServerId"] = params.ServerId
+
 	// 服务相关
 	if params.ServerId > 0 {
 		serverResp, err := this.RPC().ServerRPC().FindEnabledUserServerBasic(this.AdminContext(), &pb.FindEnabledUserServerBasicRequest{ServerId: params.ServerId})
@@ -66,7 +68,8 @@ func (this *SelectPopupAction) RunGet(params struct {
 	}
 
 	// 用户相关
-	this.Data["userId"] = params.UserId
+	this.Data["userId"] = params.UserId // 可变
+	this.Data["searchingUserId"] = params.UserId
 
 	// 域名搜索相关
 	var url = this.Request.URL.Path
@@ -82,6 +85,7 @@ func (this *SelectPopupAction) RunGet(params struct {
 	if len(searchingDomains) > maxDomains {
 		searchingDomains = searchingDomains[:maxDomains]
 	}
+	this.Data["allSearchingDomains"] = params.SearchingDomains
 	this.Data["searchingDomains"] = searchingDomains
 
 	this.Data["keyword"] = params.Keyword
