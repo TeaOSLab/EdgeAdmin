@@ -3,13 +3,13 @@
 <h3>选择证书 <span v-if="searchingDomains.length > 0">（当前服务域名：{{searchingDomains[0]}}<var style="font-style: normal" v-if="searchingDomains.length > 1">等{{searchingDomains.length}}个域名</var>）</span></h3>
 
 <!-- 搜索表单 -->
-<form class="ui form" action="/servers/certs/selectPopup">
+<form class="ui form" action="/servers/certs/selectPopup" ref="searchForm">
     <input type="hidden" name="selectedCertIds" :value="selectedCertIds"/>
     <input type="hidden" name="searchingType" :value="searchingType"/>
     <input type="hidden" name="searchingDomains" :value="searchingDomains.join(',')"/>
     <div class="ui fields inline">
         <div class="ui field">
-            <user-selector :v-user-id="userId"></user-selector>
+            <user-selector :v-user-id="userId" ref="userSelector"></user-selector>
         </div>
         <div class="ui field">
             <input type="text" name="keyword" v-model="keyword" placeholder="域名、说明文字等" size="30"/>
@@ -25,6 +25,8 @@
 <div v-if="searchingDomains.length > 0">
     <div class="ui divider" style="margin-bottom: 0"></div>
     <second-menu>
+        <span class="item"><span v-if="searchingUserId > 0">当前用户</span><span v-else>未指定用户</span></span>
+        <raquo-item></raquo-item>
         <menu-item :active="searchingType == 'all'" :href="baseURL + '&searchingType=all'">所有证书 <span class="small">({{totalAll}})</span></menu-item>
         <span class="disabled item">|</span>
         <menu-item :active="searchingType == 'match'" :href="baseURL + '&searchingType=match'">域名匹配证书 <span class="small"> ({{totalMatch}})</span></menu-item>
@@ -38,7 +40,9 @@
 </div>
 
 <!-- 证书列表 -->
-<p class="comment" v-if="certs.length == 0">暂时还没有<span v-if="searchingType == 'match'">跟所添加域名匹配的</span>相关证书。</p>
+<p class="comment" v-if="certs.length == 0">
+    暂时还没有<span v-if="searchingType == 'match'">跟所添加域名匹配的</span>相关证书<span v-if="searchingUserId > 0">，<a href="" @click.prevent="searchNoneUserCerts">[尝试搜索未指定用户证书]</a></span>。
+</p>
 <table class="ui table selectable celled" v-if="certs.length > 0">
 	<thead>
         <tr>

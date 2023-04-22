@@ -74,4 +74,11 @@ Tea.context(function () {
 			}
 		})
 	}
+
+	this.searchNoneUserCerts = function () {
+		this.$refs.userSelector.clear()
+		this.$delay(function () {
+			this.$refs.searchForm.submit()
+		}, 10)
+	}
 })
