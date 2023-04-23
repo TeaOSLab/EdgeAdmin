@@ -1,7 +1,7 @@
 Tea.context(function () {
 	// 上传证书
 	this.uploadCert = function () {
-		teaweb.popup("/servers/certs/uploadPopup", {
+		teaweb.popup("/servers/certs/uploadPopup?userId=" + this.searchingUserId, {
 			height: "30em",
 			callback: function () {
 				teaweb.success("上传成功", function () {
@@ -13,7 +13,7 @@ Tea.context(function () {
 
 	// 批量上传证书
 	this.uploadBatch = function () {
-		teaweb.popup("/servers/certs/uploadBatchPopup", {
+		teaweb.popup("/servers/certs/uploadBatchPopup?userId=" + this.searchingUserId, {
 			callback: function () {
 				window.location.reload()
 			}

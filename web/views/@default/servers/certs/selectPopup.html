@@ -41,7 +41,7 @@
 
 <!-- 证书列表 -->
 <p class="comment" v-if="certs.length == 0">
-    暂时还没有<span v-if="searchingType == 'match'">跟所添加域名匹配的</span>相关证书<span v-if="searchingUserId > 0">，<a href="" @click.prevent="searchNoneUserCerts">[尝试搜索未指定用户证书]</a></span>。
+    <span v-if="searchingUserId > 0">当前用户下</span>暂时还没有<span v-if="searchingType == 'match'">跟所添加域名匹配的</span>相关证书<span v-if="searchingUserId > 0">，<a href="" @click.prevent="searchNoneUserCerts">[尝试搜索管理员上传和申请的证书]</a></span>。
 </p>
 <table class="ui table selectable celled" v-if="certs.length > 0">
 	<thead>
