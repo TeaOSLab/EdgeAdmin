@@ -5390,7 +5390,7 @@ Vue.component("http-firewall-config-box", {
 				<td class="title">启用WAF</td>
 				<td>
 					<checkbox v-model="firewall.isOn"></checkbox>
-					<p class="comment">选中后，表示启用当前网站服务的WAF功能。</p>
+					<p class="comment">选中后，表示启用当前网站的WAF功能。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -7270,6 +7270,7 @@ Vue.component("uam-config-box", {
 			config = {
 				isPrior: false,
 				isOn: false,
+				addToWhiteList: true,
 				onlyURLPatterns: [],
 				exceptURLPatterns: []
 			}
@@ -7309,6 +7310,13 @@ Vue.component("uam-config-box", {
 		</tr>
 	</tbody>
 	<tbody v-show="moreOptionsVisible">
+		<tr>
+			<td>加入IP白名单</td>
+			<td>
+				<checkbox v-model="config.addToWhiteList"></checkbox>
+				<p class="comment">选中后，表示验证通过后，将访问者IP加入到临时白名单中，此IP下次访问时不再校验5秒盾；此白名单只对5秒盾有效，不影响其他规则。此选项主要用于可能无法正常使用Cookie的网站。</p>
+			</td>
+		</tr>
 		<tr>
 			<td>例外URL</td>
 			<td>
@@ -8573,8 +8581,8 @@ Vue.component("http-firewall-actions-box", {
 						<option value="service">当前服务</option>
 						<option value="global">所有服务</option>
 					</select>
-					<p class="comment" v-if="blockScope == 'service'">只封禁用户对当前网站服务的访问，其他服务不受影响。</p>
-					<p class="comment" v-if="blockScope =='global'">封禁用户对所有网站服务的访问。</p>
+					<p class="comment" v-if="blockScope == 'service'">只封禁用户对当前网站的访问，其他服务不受影响。</p>
+					<p class="comment" v-if="blockScope =='global'">封禁用户对所有网站的访问。</p>
 				</td>
 			</tr>
 			<tr v-if="actionCode == 'block'">
@@ -8949,10 +8957,13 @@ Vue.component("user-selector", {
 			} else {
 				this.$emit("change", 0)
 			}
+		},
+		clear: function () {
+			this.$refs.comboBox.clear()
 		}
 	},
 	template: `<div>
-	<combo-box placeholder="选择用户" :data-url="dataURL" :data-key="'users'" data-search="on" name="userId" :v-value="userId" @change="change"></combo-box>
+	<combo-box placeholder="选择用户" :data-url="dataURL" :data-key="'users'" data-search="on" name="userId" :v-value="userId" @change="change" ref="comboBox"></combo-box>
 </div>`
 })
 
@@ -10138,7 +10149,7 @@ Vue.component("http-access-log-box", {
 			this.$refs.box.parentNode.style.cssText = ""
 		},
 		mismatch: function () {
-			teaweb.warn("当前访问没有匹配到任何网站服务")
+			teaweb.warn("当前访问没有匹配到任何网站")
 		}
 	},
 	template: `<div style="word-break: break-all" :style="{'color': (accessLog.status >= 400) ? '#dc143c' : ''}" ref="box">
@@ -10146,7 +10157,7 @@ Vue.component("http-access-log-box", {
 		<a v-if="accessLog.node != null && accessLog.node.nodeCluster != null" :href="'/clusters/cluster/node?nodeId=' + accessLog.node.id + '&clusterId=' + accessLog.node.nodeCluster.id" title="点击查看节点详情" target="_top"><span class="grey">[{{accessLog.node.name}}<span v-if="!accessLog.node.name.endsWith('节点')">节点</span>]</span></a>
 		
 		<!-- 服务 -->
-		<a :href="'/servers/server/log?serverId=' + accessLog.serverId" title="点击到网站服务" v-if="vShowServerLink && accessLog.serverId > 0"><span class="grey">[服务]</span></a>
+		<a :href="'/servers/server/log?serverId=' + accessLog.serverId" title="点击到网站" v-if="vShowServerLink && accessLog.serverId > 0"><span class="grey">[服务]</span></a>
 		<span v-if="vShowServerLink && (accessLog.serverId == null || accessLog.serverId == 0)" @click.prevent="mismatch()"><span class="disabled">[服务]</span></span>
 		
 		<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey"><ip-box :v-ip="accessLog.remoteAddr">[{{accessLog.region}}]</ip-box></span> 
@@ -13991,7 +14002,7 @@ Vue.component("http-firewall-captcha-options", {
 					<td>失败全局封禁</td>
 					<td>
 						<checkbox v-model="options.failBlockScopeAll"></checkbox>
-						<p class="comment">是否在失败时全局封禁，默认为只封禁对单个网站服务的访问。</p>
+						<p class="comment">是否在失败时全局封禁，默认为只封禁对单个网站的访问。</p>
 					</td>
 				</tr>
 				<tr>
@@ -19128,7 +19139,7 @@ Vue.component("ad-instance-objects-box", {
 					<td class="title">已选中防护对象</td>
 					<td>
 						<div v-for="(object, index) in objects" class="ui label basic small" style="margin-bottom: 0.5em">
-							<span v-if="object.type == 'server'">网站服务：{{object.name}}</span>
+							<span v-if="object.type == 'server'">网站：{{object.name}}</span>
 							&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
 						</div>
 					</td>
@@ -19143,18 +19154,18 @@ Vue.component("ad-instance-objects-box", {
 		<table class="ui table celled">
 			<tr>
 				<td class="title">对象类型</td>
-				<td>网站服务</td>
+				<td>网站</td>
 			</tr>
 			<!-- 服务列表 -->
 			<tr>
-				<td>服务列表</td>
+				<td>网站列表</td>
 				<td>
 					<span v-if="serversIsLoading">加载中...</span>
-					<div v-if="!serversIsLoading && servers.length == 0">暂时还没有可选的网站服务。</div>
+					<div v-if="!serversIsLoading && servers.length == 0">暂时还没有可选的网站。</div>
 					<table class="ui table" v-show="!serversIsLoading && servers.length > 0">
 						<thead class="full-width">
 							<tr>
-								<th>网站服务名称</th>
+								<th>网站名称</th>
 								<th class="one op">操作</th>
 							</tr>	
 						</thead>
