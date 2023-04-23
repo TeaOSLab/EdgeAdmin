@@ -39,7 +39,7 @@ func CanUpgrade(apiVersion string, osName string, arch string) (canUpgrade bool,
 		return false, "is directory"
 	}
 
-	localVersion, err := localVersion()
+	localVersion, err := lookupLocalVersion()
 	if err != nil {
 		return false, "lookup version failed: " + err.Error()
 	}
@@ -53,9 +53,7 @@ func CanUpgrade(apiVersion string, osName string, arch string) (canUpgrade bool,
 	return true, ""
 }
 
-
-
-func localVersion() (string, error) {
+func lookupLocalVersion() (string, error) {
 	var cmd = exec.Command(apiExe(), "-V")
 	var output = &bytes.Buffer{}
 	cmd.Stdout = output
@@ -73,7 +71,6 @@ func localVersion() (string, error) {
 
 	return localVersion, nil
 }
-
 
 func apiExe() string {
 	return Tea.Root + "/edge-api/bin/edge-api"
