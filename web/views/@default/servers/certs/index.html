@@ -3,12 +3,12 @@
 
 <div class="right-box without-tabbar">
 	<second-menu>
-		<menu-item :href="'/servers/certs?keyword=' + keyword" :active="type == ''">所有证书({{countAll}})</menu-item>
-		<menu-item :href="'/servers/certs?type=ca&keyword=' + keyword" :active="type == 'ca'">CA证书({{countCA}})</menu-item>
-		<menu-item :href="'/servers/certs?type=available&keyword=' + keyword" :active="type == 'available'">有效证书({{countAvailable}})</menu-item>
-		<menu-item :href="'/servers/certs?type=expired&keyword=' + keyword" :active="type == 'expired'">过期证书<span :class="{red: countExpired > 0}">({{countExpired}})</span></menu-item>
-		<menu-item :href="'/servers/certs?type=7days&keyword=' + keyword" :active="type == '7days'">7天内过期<span :class="{red: count7Days > 0}">({{count7Days}})</span></menu-item>
-		<menu-item :href="'/servers/certs?type=30days&keyword=' + keyword" :active="type == '30days'">30天内过期({{count30Days}})</menu-item>
+		<menu-item :href="'/servers/certs?keyword=' + keyword + '&userId=' + searchingUserId" :active="type == ''">所有证书({{countAll}})</menu-item>
+		<menu-item :href="'/servers/certs?type=ca&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == 'ca'">CA证书({{countCA}})</menu-item>
+		<menu-item :href="'/servers/certs?type=available&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == 'available'">有效证书({{countAvailable}})</menu-item>
+		<menu-item :href="'/servers/certs?type=expired&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == 'expired'">过期证书<span :class="{red: countExpired > 0}">({{countExpired}})</span></menu-item>
+		<menu-item :href="'/servers/certs?type=7days&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == '7days'">7天内过期<span :class="{red: count7Days > 0}">({{count7Days}})</span></menu-item>
+		<menu-item :href="'/servers/certs?type=30days&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == '30days'">30天内过期({{count30Days}})</menu-item>
 		<span class="item disabled">|</span>
 		<a href="" class="item" @click.prevent="uploadCert">[上传证书]</a>
         <a href="" class="item" @click.prevent="uploadBatch">[批量上传]</a>
@@ -18,17 +18,20 @@
         <input type="hidden" name="type" :value="type"/>
         <div class="ui fields inline">
             <div class="ui field">
-                <input type="text" name="keyword" placeholder="关键词" style="width:10em" v-model="keyword"/>
+                <input type="text" name="keyword" placeholder="域名、说明等关键词" style="width:12em" v-model="keyword"/>
+            </div>
+            <div class="ui field">
+                <user-selector :v-user-id="searchingUserId"></user-selector>
             </div>
             <div class="ui field">
                 <button type="submit" class="ui button">搜索</button>
                 &nbsp;
-                <a :href="Tea.url('.', { 'type':type })" v-if="keyword.length > 0">[清除条件]</a>
+                <a :href="Tea.url('.', { 'type':type })" v-if="keyword.length > 0 || searchingUserId > 0">[清除条件]</a>
             </div>
         </div>
     </form>
 
-	<p class="comment" v-if="certs.length == 0">暂时还没有相关的证书。</p>
+	<p class="comment" v-if="certs.length == 0"><span v-if="searchingUserId > 0">当前用户下</span>暂时还没有相关的证书。</p>
 	<table class="ui table selectable celled" v-if="certs.length > 0">
 		<thead>
 			<tr>
@@ -38,6 +41,7 @@
 				<th>生效日期</th>
 				<th>过期日期</th>
 				<th class="center">引用服务</th>
+                <th>所属用户</th>
 				<th class="center">状态</th>
 				<th class="three op">操作</th>
 			</tr>
@@ -62,6 +66,10 @@
 			<td>{{certInfos[index].beginDay}}</td>
 			<td>{{certInfos[index].endDay}}</td>
 			<td class="center">{{certInfos[index].countServers}}</td>
+            <td>
+                <span v-if="user != null && user.id > 0"><user-link :v-user="user"></user-link></span>
+                <span v-else class="disabled">管理员</span>
+            </td>
 			<td nowrap="" class="center">
 				<span class="ui label red tiny basic" v-if="!certInfos[index].isOn">未启用</span>
 				<span class="ui label red tiny basic" v-else-if="certInfos[index].isExpired">已过期</span>
