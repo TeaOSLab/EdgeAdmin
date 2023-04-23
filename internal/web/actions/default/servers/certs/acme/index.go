@@ -17,22 +17,48 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct {
+	UserId  int64
 	Type    string
 	Keyword string
 }) {
 	this.Data["type"] = params.Type
 	this.Data["keyword"] = params.Keyword
 
-	countAll := int64(0)
-	countAvailable := int64(0)
-	countExpired := int64(0)
-	count7Days := int64(0)
-	count30Days := int64(0)
+	// 当前用户
+	this.Data["searchingUserId"] = params.UserId
+	var userMap = maps.Map{
+		"id":       0,
+		"username": "",
+		"fullname": "",
+	}
+	if params.UserId > 0 {
+		userResp, err := this.RPC().UserRPC().FindEnabledUser(this.AdminContext(), &pb.FindEnabledUserRequest{UserId: params.UserId})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		var user = userResp.User
+		if user != nil {
+			userMap = maps.Map{
+				"id":       user.Id,
+				"username": user.Username,
+				"fullname": user.Fullname,
+			}
+		}
+	}
+	this.Data["user"] = userMap
+
+	var countAll int64
+	var countAvailable int64
+	var countExpired int64
+	var count7Days int64
+	var count30Days int64
 
 	// 计算数量
 	{
 		// all
 		resp, err := this.RPC().ACMETaskRPC().CountAllEnabledACMETasks(this.AdminContext(), &pb.CountAllEnabledACMETasksRequest{
+			UserId:  params.UserId,
 			Keyword: params.Keyword,
 		})
 		if err != nil {
@@ -43,6 +69,7 @@ func (this *IndexAction) RunGet(params struct {
 
 		// available
 		resp, err = this.RPC().ACMETaskRPC().CountAllEnabledACMETasks(this.AdminContext(), &pb.CountAllEnabledACMETasksRequest{
+			UserId:      params.UserId,
 			IsAvailable: true,
 			Keyword:     params.Keyword,
 		})
@@ -54,6 +81,7 @@ func (this *IndexAction) RunGet(params struct {
 
 		// expired
 		resp, err = this.RPC().ACMETaskRPC().CountAllEnabledACMETasks(this.AdminContext(), &pb.CountAllEnabledACMETasksRequest{
+			UserId:    params.UserId,
 			IsExpired: true,
 			Keyword:   params.Keyword,
 		})
@@ -65,6 +93,7 @@ func (this *IndexAction) RunGet(params struct {
 
 		// expire in 7 days
 		resp, err = this.RPC().ACMETaskRPC().CountAllEnabledACMETasks(this.AdminContext(), &pb.CountAllEnabledACMETasksRequest{
+			UserId:       params.UserId,
 			ExpiringDays: 7,
 			Keyword:      params.Keyword,
 		})
@@ -76,6 +105,7 @@ func (this *IndexAction) RunGet(params struct {
 
 		// expire in 30 days
 		resp, err = this.RPC().ACMETaskRPC().CountAllEnabledACMETasks(this.AdminContext(), &pb.CountAllEnabledACMETasksRequest{
+			UserId:       params.UserId,
 			ExpiringDays: 30,
 			Keyword:      params.Keyword,
 		})
@@ -100,25 +130,51 @@ func (this *IndexAction) RunGet(params struct {
 	case "":
 		page = this.NewPage(countAll)
 		tasksResp, err = this.RPC().ACMETaskRPC().ListEnabledACMETasks(this.AdminContext(), &pb.ListEnabledACMETasksRequest{
+			UserId:  params.UserId,
 			Offset:  page.Offset,
 			Size:    page.Size,
 			Keyword: params.Keyword,
 		})
 	case "available":
 		page = this.NewPage(countAvailable)
-		tasksResp, err = this.RPC().ACMETaskRPC().ListEnabledACMETasks(this.AdminContext(), &pb.ListEnabledACMETasksRequest{IsAvailable: true, Offset: page.Offset, Size: page.Size, Keyword: params.Keyword})
+		tasksResp, err = this.RPC().ACMETaskRPC().ListEnabledACMETasks(this.AdminContext(), &pb.ListEnabledACMETasksRequest{
+			UserId:      params.UserId,
+			IsAvailable: true,
+			Offset:      page.Offset,
+			Size:        page.Size,
+			Keyword:     params.Keyword,
+		})
 	case "expired":
 		page = this.NewPage(countExpired)
-		tasksResp, err = this.RPC().ACMETaskRPC().ListEnabledACMETasks(this.AdminContext(), &pb.ListEnabledACMETasksRequest{IsExpired: true, Offset: page.Offset, Size: page.Size, Keyword: params.Keyword})
+		tasksResp, err = this.RPC().ACMETaskRPC().ListEnabledACMETasks(this.AdminContext(), &pb.ListEnabledACMETasksRequest{
+			UserId:    params.UserId,
+			IsExpired: true,
+			Offset:    page.Offset,
+			Size:      page.Size,
+			Keyword:   params.Keyword,
+		})
 	case "7days":
 		page = this.NewPage(count7Days)
-		tasksResp, err = this.RPC().ACMETaskRPC().ListEnabledACMETasks(this.AdminContext(), &pb.ListEnabledACMETasksRequest{ExpiringDays: 7, Offset: page.Offset, Size: page.Size, Keyword: params.Keyword})
+		tasksResp, err = this.RPC().ACMETaskRPC().ListEnabledACMETasks(this.AdminContext(), &pb.ListEnabledACMETasksRequest{
+			UserId:       params.UserId,
+			ExpiringDays: 7,
+			Offset:       page.Offset,
+			Size:         page.Size,
+			Keyword:      params.Keyword,
+		})
 	case "30days":
 		page = this.NewPage(count30Days)
-		tasksResp, err = this.RPC().ACMETaskRPC().ListEnabledACMETasks(this.AdminContext(), &pb.ListEnabledACMETasksRequest{ExpiringDays: 30, Offset: page.Offset, Size: page.Size, Keyword: params.Keyword})
+		tasksResp, err = this.RPC().ACMETaskRPC().ListEnabledACMETasks(this.AdminContext(), &pb.ListEnabledACMETasksRequest{
+			UserId:       params.UserId,
+			ExpiringDays: 30,
+			Offset:       page.Offset,
+			Size:         page.Size,
+			Keyword:      params.Keyword,
+		})
 	default:
 		page = this.NewPage(countAll)
 		tasksResp, err = this.RPC().ACMETaskRPC().ListEnabledACMETasks(this.AdminContext(), &pb.ListEnabledACMETasksRequest{
+			UserId:  params.UserId,
 			Keyword: params.Keyword,
 			Offset:  page.Offset,
 			Size:    page.Size,
@@ -131,7 +187,7 @@ func (this *IndexAction) RunGet(params struct {
 
 	this.Data["page"] = page.AsHTML()
 
-	taskMaps := []maps.Map{}
+	var taskMaps = []maps.Map{}
 	for _, task := range tasksResp.AcmeTasks {
 		if task.AcmeUser == nil {
 			continue
