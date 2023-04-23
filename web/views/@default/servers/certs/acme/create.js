@@ -2,12 +2,30 @@ Tea.context(function () {
 	this.step = "prepare"
 
 	/**
+	 * 选择平台用户
+	 */
+	this.platformUserId = 0
+
+	this.changePlatformUser = function (platformUserId) {
+		this.platformUserId = platformUserId
+	}
+
+	/**
 	 * 准备工作
 	 */
 	this.authType = "http"
+	this.users = []
 
 	this.doPrepare = function () {
 		this.step = "user"
+
+		this.$post(".userOptions")
+			.params({
+				platformUserId: this.platformUserId
+			})
+			.success(function (resp) {
+				this.users = resp.data.users
+			})
 	}
 
 	this.prepareMoreOptionsVisible = false
@@ -17,7 +35,7 @@ Tea.context(function () {
 	}
 
 	/**
-	 * 选择用户
+	 * 选择ACME用户
 	 */
 	this.userId = 0
 
@@ -27,7 +45,7 @@ Tea.context(function () {
 
 	this.createUser = function () {
 		let that = this
-		teaweb.popup("/servers/certs/acme/users/createPopup?providerCode=" + this.providerCode, {
+		teaweb.popup("/servers/certs/acme/users/createPopup?providerCode=" + this.providerCode + "&platformUserId=" + this.platformUserId, {
 			height: "30em",
 			width: "44em",
 			callback: function (resp) {
@@ -90,6 +108,7 @@ Tea.context(function () {
 
 		this.$post("$")
 			.params({
+				platformUserId: this.platformUserId,
 				authType: this.authType,
 				acmeUserId: this.userId,
 				dnsProviderId: this.dnsProviderId,

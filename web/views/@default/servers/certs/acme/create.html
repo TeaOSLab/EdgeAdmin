@@ -26,7 +26,7 @@
 		<div v-show="step == 'prepare'">
             <table class="ui table definition selectable">
                 <tr>
-                    <td class="title">认证方式</td>
+                    <td class="title">认证方式 *</td>
                     <td>
                         <div style="margin-bottom: 1em">
                             <radio name="authType" :v-value="'http'" v-model="authType">使用HTTP认证</radio> &nbsp;
@@ -38,6 +38,13 @@
                         <div v-if="authType == 'dns'">
                             <p class="comment">我们在申请免费证书的过程中需要自动增加或修改相关域名的TXT记录，请先确保你已经在"域名解析" -- <a href="/dns/providers" target="_blank">"DNS服务商"</a> 中已经添加了对应的DNS服务商账号。</p>
                         </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>选择平台用户</td>
+                    <td>
+                        <user-selector @change="changePlatformUser"></user-selector>
+                        <p class="comment">可选项，选择证书所属用户，如果没有选择，则视为管理员所有。</p>
                     </td>
                 </tr>
 			    <tr>
@@ -74,7 +81,7 @@
                     </td>
                 </tr>
 				<tr v-if="providerCode.length > 0">
-					<td class="title">选择用户 *</td>
+					<td class="title">选择ACME用户 *</td>
 					<td>
 						<div v-if="users.length > 0">
 							<div class="ui fields inline">
@@ -89,7 +96,7 @@
 								</div>
 							</div>
 						</div>
-						<div v-else><a href="" @click.prevent="createUser">暂时还没有用户，点此创建</a></div>
+						<div v-else><a href="" @click.prevent="createUser"><span v-if="platformUserId > 0">当前平台用户下</span>暂时还没有ACME用户，点此创建</a></div>
 						<p class="comment">选择一个作为申请证书的用户。</p>
 					</td>
 				</tr>

@@ -1,9 +1,14 @@
 {$layout "layout_popup"}
 
-<h3>创建用户</h3>
+<h3>创建ACME用户</h3>
 <form method="post" class="ui form" data-tea-success="success" data-tea-action="$">
 	<csrf-token></csrf-token>
+    <input type="hidden" name="platformUserId" :value="platformUserId"/>
 	<table class="ui table definition selectable">
+        <tr v-if="platformUser != null">
+            <td>所属平台用户</td>
+            <td><user-link :v-user="platformUser"></user-link></td>
+        </tr>
 		<tr>
 			<td class="title">用户邮箱 *</td>
 			<td>

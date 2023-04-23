@@ -16,9 +16,29 @@ func (this *CreatePopupAction) Init() {
 }
 
 func (this *CreatePopupAction) RunGet(params struct {
-	ProviderCode string
+	PlatformUserId int64
+	ProviderCode   string
 }) {
+	this.Data["platformUserId"] = params.PlatformUserId
 	this.Data["providerCode"] = params.ProviderCode
+
+	// 平台用户信息
+	this.Data["platformUser"] = nil
+	if params.PlatformUserId > 0 {
+		platformUserResp, err := this.RPC().UserRPC().FindEnabledUser(this.AdminContext(), &pb.FindEnabledUserRequest{UserId: params.PlatformUserId})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		var platformUser = platformUserResp.User
+		if platformUser != nil {
+			this.Data["platformUser"] = maps.Map{
+				"id":       platformUser.Id,
+				"username": platformUser.Username,
+				"fullname": platformUser.Fullname,
+			}
+		}
+	}
 
 	// 服务商
 	providersResp, err := this.RPC().ACMEProviderRPC().FindAllACMEProviders(this.AdminContext(), &pb.FindAllACMEProvidersRequest{})
@@ -40,10 +60,11 @@ func (this *CreatePopupAction) RunGet(params struct {
 }
 
 func (this *CreatePopupAction) RunPost(params struct {
-	Email        string
-	ProviderCode string
-	AccountId    int64
-	Description  string
+	PlatformUserId int64
+	Email          string
+	ProviderCode   string
+	AccountId      int64
+	Description    string
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -85,6 +106,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	}
 
 	createResp, err := this.RPC().ACMEUserRPC().CreateACMEUser(this.AdminContext(), &pb.CreateACMEUserRequest{
+		UserId:                params.PlatformUserId,
 		Email:                 params.Email,
 		Description:           params.Description,
 		AcmeProviderCode:      params.ProviderCode,

@@ -41,6 +41,7 @@ func init() {
 			Post("/run", new(acme.RunAction)).
 			GetPost("/updateTaskPopup", new(acme.UpdateTaskPopupAction)).
 			Post("/deleteTask", new(acme.DeleteTaskAction)).
+			Post("/userOptions", new(acme.UserOptionsAction)).
 
 			// ACME用户
 			Prefix("/servers/certs/acme/users").
