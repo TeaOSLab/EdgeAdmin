@@ -1962,7 +1962,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				<td class="title">启用WAF</td>
 				<td>
 					<checkbox v-model="firewall.isOn"></checkbox>
-					<p class="comment">选中后，表示启用当前网站服务的WAF功能。</p>
+					<p class="comment">选中后，表示启用当前网站的WAF功能。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -2443,7 +2443,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
             <input type="text" placeholder="搜索域名" ref="keywordRef" class="ui input tiny" v-model="keyword"/>
         </div>
     </div>
-</div>`}),Vue.component("uam-config-box",{props:["v-uam-config","v-is-location","v-is-group"],data:function(){let e=this.vUamConfig;return null==(e=null==e?{isPrior:!1,isOn:!1,onlyURLPatterns:[],exceptURLPatterns:[]}:e).onlyURLPatterns&&(e.onlyURLPatterns=[]),null==e.exceptURLPatterns&&(e.exceptURLPatterns=[]),{config:e,moreOptionsVisible:!1}},methods:{showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible}},template:`<div>
+</div>`}),Vue.component("uam-config-box",{props:["v-uam-config","v-is-location","v-is-group"],data:function(){let e=this.vUamConfig;return null==(e=null==e?{isPrior:!1,isOn:!1,addToWhiteList:!0,onlyURLPatterns:[],exceptURLPatterns:[]}:e).onlyURLPatterns&&(e.onlyURLPatterns=[]),null==e.exceptURLPatterns&&(e.exceptURLPatterns=[]),{config:e,moreOptionsVisible:!1}},methods:{showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible}},template:`<div>
 <input type="hidden" name="uamJSON" :value="JSON.stringify(config)"/>
 <table class="ui table definition selectable">
 	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
@@ -2462,6 +2462,13 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		</tr>
 	</tbody>
 	<tbody v-show="moreOptionsVisible">
+		<tr>
+			<td>加入IP白名单</td>
+			<td>
+				<checkbox v-model="config.addToWhiteList"></checkbox>
+				<p class="comment">选中后，表示验证通过后，将访问者IP加入到临时白名单中，此IP下次访问时不再校验5秒盾；此白名单只对5秒盾有效，不影响其他规则。此选项主要用于可能无法正常使用Cookie的网站。</p>
+			</td>
+		</tr>
 		<tr>
 			<td>例外URL</td>
 			<td>
@@ -2788,8 +2795,8 @@ example2.com
 						<option value="service">当前服务</option>
 						<option value="global">所有服务</option>
 					</select>
-					<p class="comment" v-if="blockScope == 'service'">只封禁用户对当前网站服务的访问，其他服务不受影响。</p>
-					<p class="comment" v-if="blockScope =='global'">封禁用户对所有网站服务的访问。</p>
+					<p class="comment" v-if="blockScope == 'service'">只封禁用户对当前网站的访问，其他服务不受影响。</p>
+					<p class="comment" v-if="blockScope =='global'">封禁用户对所有网站的访问。</p>
 				</td>
 			</tr>
 			<tr v-if="actionCode == 'block'">
@@ -3060,8 +3067,8 @@ example2.com
 	<button class="ui button small" type="button" @click.prevent="add">+添加鉴权方式</button>
 </div>
 <div class="margin"></div>
-</div>`}),Vue.component("user-selector",{props:["v-user-id","data-url"],data:function(){let e=this.vUserId,t=(null==e&&(e=0),this.dataUrl);return null!=t&&0!=t.length||(t="/servers/users/options"),{users:[],userId:e,dataURL:t}},methods:{change:function(e){null!=e?this.$emit("change",e.id):this.$emit("change",0)}},template:`<div>
-	<combo-box placeholder="选择用户" :data-url="dataURL" :data-key="'users'" data-search="on" name="userId" :v-value="userId" @change="change"></combo-box>
+</div>`}),Vue.component("user-selector",{props:["v-user-id","data-url"],data:function(){let e=this.vUserId,t=(null==e&&(e=0),this.dataUrl);return null!=t&&0!=t.length||(t="/servers/users/options"),{users:[],userId:e,dataURL:t}},methods:{change:function(e){null!=e?this.$emit("change",e.id):this.$emit("change",0)},clear:function(){this.$refs.comboBox.clear()}},template:`<div>
+	<combo-box placeholder="选择用户" :data-url="dataURL" :data-key="'users'" data-search="on" name="userId" :v-value="userId" @change="change" ref="comboBox"></combo-box>
 </div>`}),Vue.component("http-header-policy-box",{props:["v-request-header-policy","v-request-header-ref","v-response-header-policy","v-response-header-ref","v-params","v-is-location","v-is-group","v-has-group-request-config","v-has-group-response-config","v-group-setting-url"],data:function(){let e="response";"#request"==window.location.hash&&(e="request");let t=this.vRequestHeaderRef,i=(null==t&&(t={isPrior:!1,isOn:!0,headerPolicyId:0}),this.vResponseHeaderRef),n=(null==i&&(i={isPrior:!1,isOn:!0,headerPolicyId:0}),[]),s=[];var o=this.vRequestHeaderPolicy;null!=o&&(null!=o.setHeaders&&(n=o.setHeaders),null!=o.deleteHeaders&&(s=o.deleteHeaders));let a=[],l=[];o=this.vResponseHeaderPolicy;null!=o&&(null!=o.setHeaders&&(a=o.setHeaders),null!=o.deleteHeaders&&(l=o.deleteHeaders));let c={isOn:!1};return null!=o.cors&&(c=o.cors),{type:e,typeName:"request"==e?"请求":"响应",requestHeaderRef:t,responseHeaderRef:i,requestSettingHeaders:n,requestDeletingHeaders:s,responseSettingHeaders:a,responseDeletingHeaders:l,responseCORS:c}},methods:{selectType:function(e){this.type=e,window.location.hash="#"+e,window.location.reload()},addSettingHeader:function(e){teaweb.popup("/servers/server/settings/headers/createSetPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})},addDeletingHeader:function(e,t){teaweb.popup("/servers/server/settings/headers/createDeletePopup?"+this.vParams+"&headerPolicyId="+e+"&type="+t,{callback:function(){teaweb.successRefresh("保存成功")}})},updateSettingPopup:function(e,t){teaweb.popup("/servers/server/settings/headers/updateSetPopup?"+this.vParams+"&headerPolicyId="+e+"&headerId="+t+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})},deleteDeletingHeader:function(e,t){teaweb.confirm("确定要删除'"+t+"'吗？",function(){Tea.action("/servers/server/settings/headers/deleteDeletingHeader").params({headerPolicyId:e,headerName:t}).post().refresh()})},deleteHeader:function(e,t,i){teaweb.confirm("确定要删除此Header吗？",function(){this.$post("/servers/server/settings/headers/delete").params({headerPolicyId:e,type:t,headerId:i}).refresh()})},updateCORS:function(e){teaweb.popup("/servers/server/settings/headers/updateCORSPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})}},template:`<div>
 	<div class="ui menu tabular small">
 		<a class="item" :class="{active:type == 'response'}" @click.prevent="selectType('response')">响应Header<span v-if="responseSettingHeaders.length > 0">({{responseSettingHeaders.length}})</span></a>
@@ -3565,12 +3572,12 @@ example2.com
 			</tr>
 		</tbody>
 	</table>
-</div>`}),Vue.component("http-access-log-box",{props:["v-access-log","v-keyword","v-show-server-link"],data:function(){let e=this.vAccessLog;if(null!=e.header&&null!=e.header.Upgrade&&null!=e.header.Upgrade.values&&e.header.Upgrade.values.$contains("websocket")&&("http"==e.scheme?e.scheme="ws":"https"==e.scheme&&(e.scheme="wss")),null!=e.tags&&0<e.tags.length){let n={};e.tags=e.tags.$filter(function(e,t){var i=void 0===n[t];return n[t]=!0,i})}var t;return e.unicodeHost="",null!=e.host&&e.host.startsWith("xn--")&&(t=e.host.indexOf(":"),e.unicodeHost=0<t?punycode.ToUnicode(e.host.substring(0,t)):punycode.ToUnicode(e.host)),{accessLog:e}},methods:{formatCost:function(e){if(null==e)return"0";let t=(1e3*e).toString(),i=t.split(".");return i.length<2?t:i[0]+"."+i[1].substring(0,3)},showLog:function(){let e=this;var t=this.accessLog.requestId;this.$parent.$children.forEach(function(e){null!=e.deselect&&e.deselect()}),this.select(),teaweb.popup("/servers/server/log/viewPopup?requestId="+t,{width:"50em",height:"28em",onClose:function(){e.deselect()}})},select:function(){this.$refs.box.parentNode.style.cssText="background: rgba(0, 0, 0, 0.1)"},deselect:function(){this.$refs.box.parentNode.style.cssText=""},mismatch:function(){teaweb.warn("当前访问没有匹配到任何网站服务")}},template:`<div style="word-break: break-all" :style="{'color': (accessLog.status >= 400) ? '#dc143c' : ''}" ref="box">
+</div>`}),Vue.component("http-access-log-box",{props:["v-access-log","v-keyword","v-show-server-link"],data:function(){let e=this.vAccessLog;if(null!=e.header&&null!=e.header.Upgrade&&null!=e.header.Upgrade.values&&e.header.Upgrade.values.$contains("websocket")&&("http"==e.scheme?e.scheme="ws":"https"==e.scheme&&(e.scheme="wss")),null!=e.tags&&0<e.tags.length){let n={};e.tags=e.tags.$filter(function(e,t){var i=void 0===n[t];return n[t]=!0,i})}var t;return e.unicodeHost="",null!=e.host&&e.host.startsWith("xn--")&&(t=e.host.indexOf(":"),e.unicodeHost=0<t?punycode.ToUnicode(e.host.substring(0,t)):punycode.ToUnicode(e.host)),{accessLog:e}},methods:{formatCost:function(e){if(null==e)return"0";let t=(1e3*e).toString(),i=t.split(".");return i.length<2?t:i[0]+"."+i[1].substring(0,3)},showLog:function(){let e=this;var t=this.accessLog.requestId;this.$parent.$children.forEach(function(e){null!=e.deselect&&e.deselect()}),this.select(),teaweb.popup("/servers/server/log/viewPopup?requestId="+t,{width:"50em",height:"28em",onClose:function(){e.deselect()}})},select:function(){this.$refs.box.parentNode.style.cssText="background: rgba(0, 0, 0, 0.1)"},deselect:function(){this.$refs.box.parentNode.style.cssText=""},mismatch:function(){teaweb.warn("当前访问没有匹配到任何网站")}},template:`<div style="word-break: break-all" :style="{'color': (accessLog.status >= 400) ? '#dc143c' : ''}" ref="box">
 	<div>
 		<a v-if="accessLog.node != null && accessLog.node.nodeCluster != null" :href="'/clusters/cluster/node?nodeId=' + accessLog.node.id + '&clusterId=' + accessLog.node.nodeCluster.id" title="点击查看节点详情" target="_top"><span class="grey">[{{accessLog.node.name}}<span v-if="!accessLog.node.name.endsWith('节点')">节点</span>]</span></a>
 		
 		<!-- 服务 -->
-		<a :href="'/servers/server/log?serverId=' + accessLog.serverId" title="点击到网站服务" v-if="vShowServerLink && accessLog.serverId > 0"><span class="grey">[服务]</span></a>
+		<a :href="'/servers/server/log?serverId=' + accessLog.serverId" title="点击到网站" v-if="vShowServerLink && accessLog.serverId > 0"><span class="grey">[服务]</span></a>
 		<span v-if="vShowServerLink && (accessLog.serverId == null || accessLog.serverId == 0)" @click.prevent="mismatch()"><span class="disabled">[服务]</span></span>
 		
 		<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey"><ip-box :v-ip="accessLog.remoteAddr">[{{accessLog.region}}]</ip-box></span> 
@@ -4834,7 +4841,7 @@ example2.com
 					<td>失败全局封禁</td>
 					<td>
 						<checkbox v-model="options.failBlockScopeAll"></checkbox>
-						<p class="comment">是否在失败时全局封禁，默认为只封禁对单个网站服务的访问。</p>
+						<p class="comment">是否在失败时全局封禁，默认为只封禁对单个网站的访问。</p>
 					</td>
 				</tr>
 				<tr>
@@ -6019,7 +6026,7 @@ example2.com
 					<td class="title">已选中防护对象</td>
 					<td>
 						<div v-for="(object, index) in objects" class="ui label basic small" style="margin-bottom: 0.5em">
-							<span v-if="object.type == 'server'">网站服务：{{object.name}}</span>
+							<span v-if="object.type == 'server'">网站：{{object.name}}</span>
 							&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
 						</div>
 					</td>
@@ -6034,18 +6041,18 @@ example2.com
 		<table class="ui table celled">
 			<tr>
 				<td class="title">对象类型</td>
-				<td>网站服务</td>
+				<td>网站</td>
 			</tr>
 			<!-- 服务列表 -->
 			<tr>
-				<td>服务列表</td>
+				<td>网站列表</td>
 				<td>
 					<span v-if="serversIsLoading">加载中...</span>
-					<div v-if="!serversIsLoading && servers.length == 0">暂时还没有可选的网站服务。</div>
+					<div v-if="!serversIsLoading && servers.length == 0">暂时还没有可选的网站。</div>
 					<table class="ui table" v-show="!serversIsLoading && servers.length > 0">
 						<thead class="full-width">
 							<tr>
-								<th>网站服务名称</th>
+								<th>网站名称</th>
 								<th class="one op">操作</th>
 							</tr>	
 						</thead>
