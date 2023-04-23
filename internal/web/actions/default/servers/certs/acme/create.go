@@ -18,31 +18,6 @@ func (this *CreateAction) Init() {
 }
 
 func (this *CreateAction) RunGet(params struct{}) {
-	// 获取所有可用的用户
-	usersResp, err := this.RPC().ACMEUserRPC().FindAllACMEUsers(this.AdminContext(), &pb.FindAllACMEUsersRequest{
-		AdminId: this.AdminId(),
-		UserId:  0,
-	})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	userMaps := []maps.Map{}
-	for _, user := range usersResp.AcmeUsers {
-		description := user.Description
-		if len(description) > 0 {
-			description = "（" + description + "）"
-		}
-
-		userMaps = append(userMaps, maps.Map{
-			"id":           user.Id,
-			"description":  description,
-			"email":        user.Email,
-			"providerCode": user.AcmeProviderCode,
-		})
-	}
-	this.Data["users"] = userMaps
-
 	// 证书服务商
 	providersResp, err := this.RPC().ACMEProviderRPC().FindAllACMEProviders(this.AdminContext(), &pb.FindAllACMEProvidersRequest{})
 	if err != nil {
@@ -81,14 +56,15 @@ func (this *CreateAction) RunGet(params struct{}) {
 }
 
 func (this *CreateAction) RunPost(params struct {
-	TaskId        int64
-	AuthType      string
-	AcmeUserId    int64
-	DnsProviderId int64
-	DnsDomain     string
-	Domains       []string
-	AutoRenew     bool
-	AuthURL       string
+	PlatformUserId int64
+	TaskId         int64
+	AuthType       string
+	AcmeUserId     int64
+	DnsProviderId  int64
+	DnsDomain      string
+	Domains        []string
+	AutoRenew      bool
+	AuthURL        string
 
 	Must *actions.Must
 }) {
@@ -117,7 +93,7 @@ func (this *CreateAction) RunPost(params struct {
 	if len(params.Domains) == 0 {
 		this.Fail("请输入证书域名列表")
 	}
-	realDomains := []string{}
+	var realDomains = []string{}
 	for _, domain := range params.Domains {
 		domain = strings.ToLower(domain)
 		if params.AuthType == "dns" { // DNS认证
@@ -134,6 +110,7 @@ func (this *CreateAction) RunPost(params struct {
 
 	if params.TaskId == 0 {
 		createResp, err := this.RPC().ACMETaskRPC().CreateACMETask(this.AdminContext(), &pb.CreateACMETaskRequest{
+			UserId:        params.PlatformUserId,
 			AuthType:      params.AuthType,
 			AcmeUserId:    params.AcmeUserId,
 			DnsProviderId: params.DnsProviderId,
