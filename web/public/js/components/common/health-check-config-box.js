@@ -1,5 +1,5 @@
 Vue.component("health-check-config-box", {
-	props: ["v-health-check-config", "v-check-domain-url"],
+	props: ["v-health-check-config", "v-check-domain-url", "v-is-plus"],
 	data: function () {
 		let healthCheckConfig = this.vHealthCheckConfig
 		let urlProtocol = "http"
@@ -69,6 +69,7 @@ Vue.component("health-check-config-box", {
 				healthCheckConfig.countDown = 3
 			}
 		}
+
 		return {
 			healthCheck: healthCheckConfig,
 			advancedVisible: false,
@@ -237,13 +238,13 @@ Vue.component("health-check-config-box", {
 			</td>
 		</tr>
 		<tr>
-			<td>自动下线</td>
+			<td>自动下线<span v-if="vIsPlus">IP</span></td>
 			<td>
 				<div class="ui checkbox">
 					<input type="checkbox" value="1" v-model="healthCheck.autoDown"/>
 					<label></label>
 				</div>
-				<p class="comment">选中后系统会根据健康检查的结果自动标记节点的上线/下线状态，并可能自动同步DNS设置。</p>
+				<p class="comment">选中后系统会根据健康检查的结果自动标记<span v-if="vIsPlus">节点IP</span><span v-else>节点</span>的上线/下线状态，并可能自动同步DNS设置。<span v-if="!vIsPlus">注意：免费版的只能整体上下线整个节点，商业版的可以下线单个IP。</span></p>
 			</td>
 		</tr>
 		<tr v-show="healthCheck.autoDown">
