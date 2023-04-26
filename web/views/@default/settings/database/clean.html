@@ -3,11 +3,15 @@
 
 <div class="ui message" v-if="isLoading">正在加载中...</div>
 
-<table class="ui table selectable">
+<div class="ui message small warning" v-if="tables.length > 0">
+    <p>请确认数据表用途后再执行相关操作。</p>
+</div>
+
+<table class="ui table selectable" v-if="tables.length > 0">
     <thead>
         <tr>
-            <th>表名</th>
-            <th>占用空间</th>
+            <th>数据表名<sort-arrow name="orderTable"></sort-arrow></th>
+            <th>占用空间<sort-arrow name="orderSize"></sort-arrow></th>
             <th>用途</th>
             <th class="two op">操作</th>
         </tr>

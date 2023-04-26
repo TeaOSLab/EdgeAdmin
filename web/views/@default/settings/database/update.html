@@ -1,6 +1,10 @@
 {$layout}
 {$template "menu"}
 
+<div class="ui message small warning">
+    <p>这里只能修改配置模板文件里的配置信息，并不能直接修改数据库的用户名、密码等信息。</p>
+</div>
+
 <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 	<table class="ui table selectable definition">
 		<tr>
@@ -38,7 +42,3 @@
 	</table>
 	<submit-btn></submit-btn>
 </form>
-
-<div class="ui message small warning">
-	<p>修改数据库配置后需要重新配置API节点。</p>
-</div>

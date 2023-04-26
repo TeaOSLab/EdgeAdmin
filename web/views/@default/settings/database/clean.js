@@ -9,6 +9,10 @@ Tea.context(function () {
     this.reload = function () {
         this.isLoading = true
         this.$post("$")
+			.params({
+				orderTable: this.orderTable,
+				orderSize: this.orderSize
+			})
             .success(function (resp) {
                 this.tables = resp.data.tables;
             })
