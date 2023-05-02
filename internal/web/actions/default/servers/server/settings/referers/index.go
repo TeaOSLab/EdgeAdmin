@@ -40,6 +40,7 @@ func (this *IndexAction) RunGet(params struct {
 			AllowEmpty:      true,
 			AllowSameDomain: true,
 			AllowDomains:    nil,
+			CheckOrigin:     true,
 		}
 	}
 

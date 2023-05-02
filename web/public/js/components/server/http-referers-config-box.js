@@ -9,7 +9,8 @@ Vue.component("http-referers-config-box", {
 				allowEmpty: true,
 				allowSameDomain: true,
 				allowDomains: [],
-				denyDomains: []
+				denyDomains: [],
+				checkOrigin: true
 			}
 		}
 		if (config.allowDomains == null) {
@@ -82,6 +83,13 @@ Vue.component("http-referers-config-box", {
 			<td>
 				<domains-box :v-domains="config.denyDomains" @change="changeDenyDomains"></domains-box>
 				<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>、<code-label>*.example.org</code-label>；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>同时检查Origin</td>
+			<td>
+				<checkbox v-model="config.checkOrigin"></checkbox>
+				<p class="comment">如果请求没有指定Referer Header，则尝试检查Origin Header，多用于跨站调用。</p>
 			</td>
 		</tr>
 	</tbody>
