@@ -32,7 +32,7 @@ Vue.component("http-firewall-rule-label", {
 
 		<!-- cc2 -->
 		<span v-if="rule.param == '\${cc2}'">
-			{{rule.checkpointOptions.period}}秒/{{rule.checkpointOptions.threshold}}请求
+			{{rule.checkpointOptions.period}}秒内请求数
 		</span>
 
 		<!-- refererBlock -->
