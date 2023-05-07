@@ -50,8 +50,11 @@ func (this *IndexAction) RunGet(params struct {
 				newHost += ":" + types.String(httpsPort)
 			}
 
-			this.RedirectURL("https://" + newHost + this.Request.RequestURI)
-			return
+			// 如果没有前端反向代理，则跳转
+			if len(this.Request.Header.Get("X-Forwarded-For")) == 0 && len(this.Request.Header.Get("X-Real-Ip")) == 0 {
+				this.RedirectURL("https://" + newHost + this.Request.RequestURI)
+				return
+			}
 		}
 	}
 
