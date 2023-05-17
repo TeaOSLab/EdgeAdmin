@@ -136,6 +136,8 @@ func (this *ClusterAction) RunGet(params struct {
 					"clusterId":   node.NodeClusterId,
 					"isResolved":  isResolved,
 					"isInstalled": isInstalled,
+					"isBackup":    node.IsBackupForCluster || node.IsBackupForGroup,
+					"isOffline":   node.IsOffline,
 				})
 			}
 		} else {
@@ -171,6 +173,8 @@ func (this *ClusterAction) RunGet(params struct {
 				"clusterId":   node.NodeClusterId,
 				"isResolved":  isResolved,
 				"isInstalled": isInstalled,
+				"isBackup":    node.IsBackupForCluster || node.IsBackupForGroup,
+				"isOffline":   node.IsOffline,
 			})
 		}
 	}

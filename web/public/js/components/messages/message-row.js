@@ -95,6 +95,16 @@ Vue.component("message-row", {
 			<div v-if="message.type == 'serverNamesRequireAuditing'" style="margin-top: 0.8em">
 				<a :href="'/servers/server/settings/serverNames?serverId=' + params.serverId" target="_top">去审核</a></a>
 			</div>
+
+			<!-- 节点调度 -->
+			<div v-if="message.type == 'NodeSchedule'" style="margin-top: 0.8em">
+				<a :href="'/clusters/cluster/node/settings/schedule?clusterId=' + message.cluster.id + '&nodeId=' + message.node.id" target="_top">查看调度状态 &raquo;</a>
+			</div>
+			
+			<!-- 节点租期结束 -->
+			<div v-if="message.type == 'NodeOfflineDay'" style="margin-top: 0.8em">
+				<a :href="'/clusters/cluster/node/detail?clusterId=' + message.cluster.id + '&nodeId=' + message.node.id" target="_top">查看详情 &raquo;</a>
+			</div>
 		</td>
 	</tr>
 </table>

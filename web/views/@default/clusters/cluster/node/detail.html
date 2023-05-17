@@ -17,6 +17,21 @@
                 <node-clusters-labels :v-primary-cluster="node.cluster" :v-secondary-clusters="node.secondaryClusters"></node-clusters-labels>
             </td>
         </tr>
+        <tr v-show="node.isBackupForCluster || node.isBackupForGroup">
+            <td>备用节点</td>
+            <td>
+                <span class="ui label basic small" v-if="node.isBackupForCluster">集群备用节点</span>
+                <span class="ui label basic small" v-if="node.isBackupForGroup">分组备用节点</span>
+                &nbsp; <a :href="'/clusters/cluster/node/settings/schedule?clusterId=' + clusterId + '&nodeId=' + node.id" style="font-size: 0.8em">[修改]</a>
+            </td>
+        </tr>
+        <tr v-show="node.offlineDay.length > 0">
+            <td>租期结束日期</td>
+            <td>
+                {{node.offlineDay.substring(0, 4)}}-{{node.offlineDay.substring(4, 6)}}-{{node.offlineDay.substring(6, 8)}} &nbsp; <a :href="'/clusters/cluster/node/settings/schedule?clusterId=' + clusterId + '&nodeId=' + node.id" style="font-size: 0.8em">[修改]</a>
+                <p class="comment" v-if="node.isOffline"><span class="red">已到期</span></p>
+            </td>
+        </tr>
 		<tr>
 			<td>IP地址</td>
 			<td>
@@ -60,6 +75,7 @@
                                <th>记录类型</th>
                                <th>线路</th>
                                <th>记录值</th>
+                               <th>状态</th>
                            </tr>
                        </thead>
 
@@ -72,6 +88,11 @@
                                 <span v-else class="disabled">默认</span>
                             </td>
                             <td>{{record.value}}</td>
+                            <td>
+                                <span v-if="record.isBackup" class="red">备用节点</span>
+                                <span v-else-if="record.isOffline" class="red">已下线</span>
+                                <span v-else>正常</span>
+                            </td>
                         </tr>
                     </table>
                     <p class="comment" v-if="!dnsIsExcludingLnNode">通过设置A记录可以将集群上的服务请求转发到不同线路的节点上。</p>

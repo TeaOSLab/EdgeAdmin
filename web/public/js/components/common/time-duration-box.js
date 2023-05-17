@@ -1,5 +1,5 @@
 Vue.component("time-duration-box", {
-	props: ["v-name", "v-value", "v-count", "v-unit"],
+	props: ["name", "v-name", "v-value", "v-count", "v-unit"],
 	mounted: function () {
 		this.change()
 	},
@@ -14,9 +14,18 @@ Vue.component("time-duration-box", {
 		if (typeof (v["count"]) != "number") {
 			v["count"] = -1
 		}
+
+		let realName = ""
+		if (typeof this.name == "string" && this.name.length > 0) {
+			realName = this.name
+		} else if (typeof this.vName == "string" && this.vName.length > 0) {
+			realName = this.vName
+		}
+
 		return {
 			duration: v,
-			countString: (v.count >= 0) ? v.count.toString() : ""
+			countString: (v.count >= 0) ? v.count.toString() : "",
+			realName: realName
 		}
 	},
 	watch: {
@@ -39,7 +48,7 @@ Vue.component("time-duration-box", {
 		}
 	},
 	template: `<div class="ui fields inline" style="padding-bottom: 0; margin-bottom: 0">
-	<input type="hidden" :name="vName" :value="JSON.stringify(duration)"/>
+	<input type="hidden" :name="realName" :value="JSON.stringify(duration)"/>
 	<div class="ui field">
 		<input type="text" v-model="countString" maxlength="11" size="11" @keypress.enter.prevent="1"/>
 	</div>
