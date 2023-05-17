@@ -54,7 +54,7 @@
 * [管理平台](https://github.com/TeaOSLab/EdgeAdmin)
 
 ## 联系我们
-有什么问题和建议都可以加入QQ群 `659832182` 或者 [Telegram群](https://t.me/+5kVCMGxQhZxiODY9) 。
+有什么问题和建议都可以加入 [Telegram群](https://t.me/+5kVCMGxQhZxiODY9) 
 
 ## 企业版
 * [GoEdge企业版](https://goedge.cn/commercial) - 功能更强大的CDN系统
