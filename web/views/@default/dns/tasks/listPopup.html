@@ -15,7 +15,7 @@
         </thead>
         <tr v-for="task in tasks">
             <td nowrap="">
-                <span v-if="(task.type == 'clusterChange' || task.type == 'clusterRemoveDomain') && task.cluster != null">{{task.cluster.name}}
+                <span v-if="(task.type == 'clusterChange' || task.type == 'clusterNodesChange' || task.type == 'clusterRemoveDomain') && task.cluster != null">{{task.cluster.name}}
                     <link-icon :href="'/dns/clusters/cluster?clusterId=' + task.cluster.id" target="_top"></link-icon>
                 </span>
                 <span v-if="task.type == 'nodeChange'">{{task.node.name}}</span>
@@ -23,7 +23,7 @@
                 <span v-if="task.type == 'domainChange'">{{task.domain.name}}</span>
             </td>
             <td nowrap="">
-                <span v-if="task.type == 'clusterChange' || task.type == 'clusterRemoveDomain'">集群</span>
+                <span v-if="task.type == 'clusterChange' || task.type == 'clusterNodesChange' || task.type == 'clusterRemoveDomain'">集群</span>
                 <span v-if="task.type == 'nodeChange'">节点</span>
                 <span v-if="task.type == 'serverChange'">服务</span>
                 <span v-if="task.type == 'domainChange'">域名</span>
