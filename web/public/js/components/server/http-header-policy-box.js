@@ -242,6 +242,11 @@ Vue.component("http-header-policy-box", {
 								<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
 								<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
 							</div>
+							
+							<!-- CORS -->
+							<div v-if="header.name == 'Access-Control-Allow-Origin' && header.value == '*'">
+								<span class="red small">建议使用当前页面下方的"CORS自适应跨域"功能代替Access-Control-*-*相关Header。</span>
+							</div>
 						</td>
 						<td>{{header.value}}</td>
 						<td><a href="" @click.prevent="updateSettingPopup(vResponseHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteHeader(vResponseHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
