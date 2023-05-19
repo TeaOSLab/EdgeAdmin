@@ -76,6 +76,11 @@
 	<tr v-for="(node, nodeIndex) in nodes">
         <td class="node-name-td"><a :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id">{{node.name}}<sup v-if="node.level > 1"><span class="blue"> &nbsp;L{{node.level}}</span></sup></a>
 
+            <a :href="'/clusters/cluster/node/settings/schedule?clusterId=' + node.cluster.id + '&nodeId=' + node.id">
+                <sup v-if="node.isBackup"><span class="blue"> &nbsp;备用</span></sup>
+                <sup v-if="node.offlineDay != null && node.offlineDay.length > 0"><span class="blue"> &nbsp;到{{node.offlineDay.substring(0, 4)}}-{{node.offlineDay.substring(4, 6)}}-{{node.offlineDay.substring(6, 8)}}</span></sup>
+            </a>
+
             <a :href="'/clusters/cluster/node/update?clusterId=' + clusterId + '&nodeId=' + node.id" title="设置"><i class="icon setting grey"></i></a>
 
             <div v-if="node.region != null">

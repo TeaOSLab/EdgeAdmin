@@ -209,6 +209,8 @@ func (this *NodesAction) RunGet(params struct {
 			"isInstalled": node.IsInstalled,
 			"isOn":        node.IsOn,
 			"isUp":        node.IsUp,
+			"isBackup":    node.IsBackupForCluster || node.IsBackupForGroup,
+			"offlineDay":  node.OfflineDay,
 			"installStatus": maps.Map{
 				"isRunning":  node.InstallStatus.IsRunning,
 				"isFinished": node.InstallStatus.IsFinished,
