@@ -18,6 +18,8 @@ func init() {
 			GetPost("/updateSetPopup", new(UpdateSetPopupAction)).
 			GetPost("/createDeletePopup", new(CreateDeletePopupAction)).
 			Post("/deleteDeletingHeader", new(DeleteDeletingHeaderAction)).
+			GetPost("/createNonStandardPopup", new(CreateNonStandardPopupAction)).
+			Post("/deleteNonStandardHeader", new(DeleteNonStandardHeaderAction)).
 			Post("/delete", new(DeleteAction)).
 			GetPost("/updateCORSPopup", new(UpdateCORSPopupAction)).
 			EndAll()

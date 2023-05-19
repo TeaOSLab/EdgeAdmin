@@ -8,16 +8,16 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 )
 
-type DeleteDeletingHeaderAction struct {
+type DeleteNonStandardHeaderAction struct {
 	actionutils.ParentAction
 }
 
-func (this *DeleteDeletingHeaderAction) RunPost(params struct {
+func (this *DeleteNonStandardHeaderAction) RunPost(params struct {
 	HeaderPolicyId int64
 	HeaderName     string
 }) {
 	// 日志
-	defer this.CreateLog(oplogs.LevelInfo, "删除需要删除的Header，HeaderPolicyId:%d, HeaderName:%s", params.HeaderPolicyId, params.HeaderName)
+	defer this.CreateLog(oplogs.LevelInfo, "删除需要非标的Header，HeaderPolicyId:%d, HeaderName:%s", params.HeaderPolicyId, params.HeaderName)
 
 	policyConfigResp, err := this.RPC().HTTPHeaderPolicyRPC().FindEnabledHTTPHeaderPolicyConfig(this.AdminContext(), &pb.FindEnabledHTTPHeaderPolicyConfigRequest{HttpHeaderPolicyId: params.HeaderPolicyId})
 	if err != nil {
@@ -33,13 +33,13 @@ func (this *DeleteDeletingHeaderAction) RunPost(params struct {
 	}
 
 	var headerNames = []string{}
-	for _, h := range policyConfig.DeleteHeaders {
+	for _, h := range policyConfig.NonStandardHeaders {
 		if h == params.HeaderName {
 			continue
 		}
 		headerNames = append(headerNames, h)
 	}
-	_, err = this.RPC().HTTPHeaderPolicyRPC().UpdateHTTPHeaderPolicyDeletingHeaders(this.AdminContext(), &pb.UpdateHTTPHeaderPolicyDeletingHeadersRequest{
+	_, err = this.RPC().HTTPHeaderPolicyRPC().UpdateHTTPHeaderPolicyNonStandardHeaders(this.AdminContext(), &pb.UpdateHTTPHeaderPolicyNonStandardHeadersRequest{
 		HttpHeaderPolicyId: params.HeaderPolicyId,
 		HeaderNames:        headerNames,
 	})
