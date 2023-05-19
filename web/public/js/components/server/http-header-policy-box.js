@@ -157,7 +157,7 @@ Vue.component("http-header-policy-box", {
         	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#request'">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
     	</div>
     	<div :class="{'opacity-mask': vHasGroupRequestConfig}">
-		<h4>设置请求Header <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)">[添加新Header]</a></h4>
+		<h4>设置请求Header &nbsp; <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)" style="font-size: 0.8em">[添加新Header]</a></h4>
 			<p class="comment" v-if="requestSettingHeaders.length == 0">暂时还没有Header。</p>
 			<table class="ui table selectable celled" v-if="requestSettingHeaders.length > 0">
 				<thead>
@@ -219,7 +219,7 @@ Vue.component("http-header-policy-box", {
         	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#response'">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
     	</div>
     	<div :class="{'opacity-mask': vHasGroupResponseConfig}">
-			<h4>设置响应Header <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)">[添加新Header]</a></h4>
+			<h4>设置响应Header &nbsp; <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)" style="font-size: 0.8em">[添加新Header]</a></h4>
 			<p class="comment" style="margin-top: 0; padding-top: 0">将会覆盖已有的同名Header。</p>
 			<p class="comment" v-if="responseSettingHeaders.length == 0">暂时还没有Header。</p>
 			<table class="ui table selectable celled" v-if="responseSettingHeaders.length > 0">
