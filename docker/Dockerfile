@@ -1,5 +1,5 @@
 FROM alpine:latest
-LABEL maintainer="iwind.liu@gmail.com"
+LABEL maintainer="goedge.cdn@gmail.com"
 ENV TZ "Asia/Shanghai"
 ENV VERSION 1.0.4
 ENV ROOT_DIR /usr/local/goedge
