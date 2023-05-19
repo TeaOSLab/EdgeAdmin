@@ -9,15 +9,15 @@ import (
 	"github.com/iwind/TeaGo/actions"
 )
 
-type CreateDeletePopupAction struct {
+type CreateNonStandardPopupAction struct {
 	actionutils.ParentAction
 }
 
-func (this *CreateDeletePopupAction) Init() {
+func (this *CreateNonStandardPopupAction) Init() {
 	this.Nav("", "", "")
 }
 
-func (this *CreateDeletePopupAction) RunGet(params struct {
+func (this *CreateNonStandardPopupAction) RunGet(params struct {
 	HeaderPolicyId int64
 	Type           string
 }) {
@@ -27,14 +27,14 @@ func (this *CreateDeletePopupAction) RunGet(params struct {
 	this.Show()
 }
 
-func (this *CreateDeletePopupAction) RunPost(params struct {
+func (this *CreateNonStandardPopupAction) RunPost(params struct {
 	HeaderPolicyId int64
 	Name           string
 
 	Must *actions.Must
 }) {
 	// 日志
-	defer this.CreateLog(oplogs.LevelInfo, "添加删除的Header HeaderPolicyId: %d, Name: %s", params.HeaderPolicyId, params.Name)
+	defer this.CreateLog(oplogs.LevelInfo, "添加非标的Header HeaderPolicyId: %d, Name: %s", params.HeaderPolicyId, params.Name)
 
 	params.Must.
 		Field("name", params.Name).
@@ -52,11 +52,11 @@ func (this *CreateDeletePopupAction) RunPost(params struct {
 		return
 	}
 
-	var deleteHeaders = policyConfig.DeleteHeaders
-	deleteHeaders = append(deleteHeaders, params.Name)
-	_, err = this.RPC().HTTPHeaderPolicyRPC().UpdateHTTPHeaderPolicyDeletingHeaders(this.AdminContext(), &pb.UpdateHTTPHeaderPolicyDeletingHeadersRequest{
+	var nonStandardHeaders = policyConfig.NonStandardHeaders
+	nonStandardHeaders = append(nonStandardHeaders, params.Name)
+	_, err = this.RPC().HTTPHeaderPolicyRPC().UpdateHTTPHeaderPolicyNonStandardHeaders(this.AdminContext(), &pb.UpdateHTTPHeaderPolicyNonStandardHeadersRequest{
 		HttpHeaderPolicyId: params.HeaderPolicyId,
-		HeaderNames:        deleteHeaders,
+		HeaderNames:        nonStandardHeaders,
 	})
 	if err != nil {
 		this.ErrorPage(err)

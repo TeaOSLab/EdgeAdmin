@@ -29,6 +29,7 @@ Vue.component("http-header-policy-box", {
 		// 请求相关
 		let requestSettingHeaders = []
 		let requestDeletingHeaders = []
+		let requestNonStandardHeaders = []
 
 		let requestPolicy = this.vRequestHeaderPolicy
 		if (requestPolicy != null) {
@@ -38,11 +39,15 @@ Vue.component("http-header-policy-box", {
 			if (requestPolicy.deleteHeaders != null) {
 				requestDeletingHeaders = requestPolicy.deleteHeaders
 			}
+			if (requestPolicy.nonStandardHeaders != null) {
+				requestNonStandardHeaders = requestPolicy.nonStandardHeaders
+			}
 		}
 
 		// 响应相关
 		let responseSettingHeaders = []
 		let responseDeletingHeaders = []
+		let responseNonStandardHeaders = []
 
 		let responsePolicy = this.vResponseHeaderPolicy
 		if (responsePolicy != null) {
@@ -51,6 +56,9 @@ Vue.component("http-header-policy-box", {
 			}
 			if (responsePolicy.deleteHeaders != null) {
 				responseDeletingHeaders = responsePolicy.deleteHeaders
+			}
+			if (responsePolicy.nonStandardHeaders != null) {
+				responseNonStandardHeaders = responsePolicy.nonStandardHeaders
 			}
 		}
 
@@ -64,12 +72,16 @@ Vue.component("http-header-policy-box", {
 		return {
 			type: type,
 			typeName: (type == "request") ? "请求" : "响应",
+
 			requestHeaderRef: requestHeaderRef,
 			responseHeaderRef: responseHeaderRef,
 			requestSettingHeaders: requestSettingHeaders,
 			requestDeletingHeaders: requestDeletingHeaders,
+			requestNonStandardHeaders: requestNonStandardHeaders,
+
 			responseSettingHeaders: responseSettingHeaders,
 			responseDeletingHeaders: responseDeletingHeaders,
+			responseNonStandardHeaders: responseNonStandardHeaders,
 			responseCORS: responseCORS
 		}
 	},
@@ -93,8 +105,15 @@ Vue.component("http-header-policy-box", {
 				}
 			})
 		},
+		addNonStandardHeader: function (policyId, type) {
+			teaweb.popup("/servers/server/settings/headers/createNonStandardPopup?" + this.vParams + "&headerPolicyId=" + policyId + "&type=" + type, {
+				callback: function () {
+					teaweb.successRefresh("保存成功")
+				}
+			})
+		},
 		updateSettingPopup: function (policyId, headerId) {
-			teaweb.popup("/servers/server/settings/headers/updateSetPopup?" + this.vParams + "&headerPolicyId=" + policyId + "&headerId=" + headerId+ "&type=" + this.type, {
+			teaweb.popup("/servers/server/settings/headers/updateSetPopup?" + this.vParams + "&headerPolicyId=" + policyId + "&headerId=" + headerId + "&type=" + this.type, {
 				callback: function () {
 					teaweb.successRefresh("保存成功")
 				}
@@ -103,6 +122,17 @@ Vue.component("http-header-policy-box", {
 		deleteDeletingHeader: function (policyId, headerName) {
 			teaweb.confirm("确定要删除'" + headerName + "'吗？", function () {
 				Tea.action("/servers/server/settings/headers/deleteDeletingHeader")
+					.params({
+						headerPolicyId: policyId,
+						headerName: headerName
+					})
+					.post()
+					.refresh()
+			})
+		},
+		deleteNonStandardHeader: function (policyId, headerName) {
+			teaweb.confirm("确定要删除'" + headerName + "'吗？", function () {
+				Tea.action("/servers/server/settings/headers/deleteNonStandardHeader")
 					.params({
 						headerPolicyId: policyId,
 						headerName: headerName
@@ -186,20 +216,31 @@ Vue.component("http-header-policy-box", {
 				</tbody>
 			</table>
 			
-			<h4>删除请求Header</h4>
-			<p class="comment">这里可以设置需要从请求中删除的Header。</p>
+			<h4>其他设置</h4>
 			
 			<table class="ui table definition selectable">
-				<tr>
-					<td class="title">需要删除的Header</td>
-					<td>
-						<div v-if="requestDeletingHeaders.length > 0">
-							<div class="ui label small basic" v-for="headerName in requestDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
-							<div class="ui divider" ></div>
-						</div>
-						<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vRequestHeaderPolicy.id, 'request')">+</button>
-					</td>
-				</tr>
+				<tbody>
+					<tr>
+						<td class="title">删除Header <tip-icon content="可以通过此功能删除转发到源站的请求报文中不需要的Header"></tip-icon></td>
+						<td>
+							<div v-if="requestDeletingHeaders.length > 0">
+								<div class="ui label small basic" v-for="headerName in requestDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
+								<div class="ui divider" ></div>
+							</div>
+							<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vRequestHeaderPolicy.id, 'request')">+</button>
+						</td>
+					</tr>
+					<tr>
+						<td class="title">非标Header <tip-icon content="可以通过此功能设置转发到源站的请求报文中非标准的Header，比如hello_world"></tip-icon></td>
+						<td>
+							<div v-if="requestNonStandardHeaders.length > 0">
+								<div class="ui label small basic" v-for="headerName in requestNonStandardHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteNonStandardHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
+								<div class="ui divider" ></div>
+							</div>
+							<button class="ui button small" type="button" @click.prevent="addNonStandardHeader(vRequestHeaderPolicy.id, 'request')">+</button>
+						</td>
+					</tr>
+				</tbody>
 			</table>
 		</div>			
 	</div>
@@ -254,32 +295,38 @@ Vue.component("http-header-policy-box", {
 				</tbody>
 			</table>
 			
-			<h4>删除响应Header</h4>
-			<p class="comment">这里可以设置需要从响应中删除的Header。</p>
-			
-			<table class="ui table definition selectable">
-				<tr>
-					<td class="title">需要删除的Header</td>
-					<td>
-						<div v-if="responseDeletingHeaders.length > 0">
-							<div class="ui label small basic" v-for="headerName in responseDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vResponseHeaderPolicy.id, headerName)"></i></a> </div>
-							<div class="ui divider" ></div>
-						</div>
-						<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vResponseHeaderPolicy.id, 'response')">+</button>
-					</td>
-				</tr>
-			</table>
-			
 			<h4>其他设置</h4>
 			
 			<table class="ui table definition selectable">
-				<tr>
-					<td class="title">CORS自适应跨域</td>
-					<td>
-						<span v-if="responseCORS.isOn" class="green">已启用</span><span class="disabled" v-else="">未启用</span> &nbsp; <a href="" @click.prevent="updateCORS(vResponseHeaderPolicy.id)">[修改]</a>
-						<p class="comment"><span v-if="!responseCORS.isOn">启用后，服务器可以</span><span v-else>服务器会</span>自动生成<code-label>Access-Control-*-*</code-label>相关的Header。</p>
-					</td>
-				</tr>
+				<tbody>
+					<tr>
+						<td class="title">删除Header <tip-icon content="可以通过此功能删除响应报文中不需要的Header"></tip-icon></td>
+						<td>
+							<div v-if="responseDeletingHeaders.length > 0">
+								<div class="ui label small basic" v-for="headerName in responseDeletingHeaders">{{headerName}} &nbsp; <a href=""><i class="icon remove small" title="删除" @click.prevent="deleteDeletingHeader(vResponseHeaderPolicy.id, headerName)"></i></a></div>
+								<div class="ui divider" ></div>
+							</div>
+							<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vResponseHeaderPolicy.id, 'response')">+</button>
+						</td>
+					</tr>
+					<tr>
+						<td>非标Header <tip-icon content="可以通过此功能设置响应报文中非标准的Header，比如hello_world"></tip-icon></td>
+						<td>
+							<div v-if="responseNonStandardHeaders.length > 0">
+								<div class="ui label small basic" v-for="headerName in responseNonStandardHeaders">{{headerName}} &nbsp; <a href=""><i class="icon remove small" title="删除" @click.prevent="deleteNonStandardHeader(vResponseHeaderPolicy.id, headerName)"></i></a></div>
+								<div class="ui divider" ></div>
+							</div>
+							<button class="ui button small" type="button" @click.prevent="addNonStandardHeader(vResponseHeaderPolicy.id, 'response')">+</button>
+						</td>
+					</tr>
+					<tr>
+						<td class="title">CORS自适应跨域</td>
+						<td>
+							<span v-if="responseCORS.isOn" class="green">已启用</span><span class="disabled" v-else="">未启用</span> &nbsp; <a href="" @click.prevent="updateCORS(vResponseHeaderPolicy.id)">[修改]</a>
+							<p class="comment"><span v-if="!responseCORS.isOn">启用后，服务器可以</span><span v-else>服务器会</span>自动生成<code-label>Access-Control-*-*</code-label>相关的Header。</p>
+						</td>
+					</tr>
+				</tbody>
 			</table>
 		</div>		
 	</div>
