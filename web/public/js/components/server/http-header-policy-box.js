@@ -272,6 +272,7 @@ Vue.component("http-header-policy-box", {
 					<td class="title">CORS自适应跨域</td>
 					<td>
 						<span v-if="responseCORS.isOn" class="green">已启用</span><span class="disabled" v-else="">未启用</span> &nbsp; <a href="" @click.prevent="updateCORS(vResponseHeaderPolicy.id)">[修改]</a>
+						<p class="comment"><span v-if="!responseCORS.isOn">启用后，服务器可以</span><span v-else>服务器会</span>自动生成<code-label>Access-Control-*-*</code-label>相关的Header。</p>
 					</td>
 				</tr>
 			</table>
