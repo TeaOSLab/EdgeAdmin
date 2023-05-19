@@ -49,7 +49,7 @@ func (this *UpdateCORSPopupAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	var config = &shared.HTTPCORSHeaderConfig{}
+	var config = shared.NewHTTPCORSHeaderConfig()
 	err := json.Unmarshal(params.CorsJSON, config)
 	if err != nil {
 		this.Fail("配置校验失败：" + err.Error())

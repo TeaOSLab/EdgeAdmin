@@ -125,6 +125,7 @@ Vue.component("http-header-policy-box", {
 		},
 		updateCORS: function (policyId) {
 			teaweb.popup("/servers/server/settings/headers/updateCORSPopup?" + this.vParams + "&headerPolicyId=" + policyId + "&type=" + this.type, {
+				height: "30em",
 				callback: function () {
 					teaweb.successRefresh("保存成功")
 				}
