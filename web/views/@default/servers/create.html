@@ -89,7 +89,7 @@
             <h3>次要信息：</h3>
             <table class="ui table selectable definition">
                 <tr>
-                    <td class="title">服务类型</td>
+                    <td class="title">网站类型</td>
                     <td>
                         <select class="ui dropdown auto-width" name="serverType" v-model="serverType" @change="changeServerType()">
                             <option v-for="s in serverTypes" :value="s.code">{{s.name}}</option>
@@ -98,7 +98,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="title">服务名称</td>
+                    <td class="title">网站名称</td>
                     <td>
                         <input type="text" name="name" maxlength="60"/>
                         <p class="comment">可以是网站用途或者域名等。</p>
