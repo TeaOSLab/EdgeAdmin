@@ -67,7 +67,19 @@ Vue.component("origin-list-box", {
 Vue.component("origin-list-table", {
 	props: ["v-origins", "v-origin-type"],
 	data: function () {
-		return {}
+		let hasMatchedDomains = false
+		let origins = this.vOrigins
+		if (origins != null && origins.length > 0) {
+			origins.forEach(function (origin) {
+				if (origin.domains != null && origin.domains.length > 0) {
+					hasMatchedDomains = true
+				}
+			})
+		}
+
+		return {
+			hasMatchedDomains: hasMatchedDomains
+		}
 	},
 	methods: {
 		deleteOrigin: function (originId) {
@@ -90,12 +102,14 @@ Vue.component("origin-list-table", {
 	<tr v-for="origin in vOrigins">
 		<td :class="{disabled:!origin.isOn}">
 			<a href="" @click.prevent="updateOrigin(origin.id)" :class="{disabled:!origin.isOn}">{{origin.addr}} &nbsp;<i class="icon expand small"></i></a>
-			<div style="margin-top: 0.3em" v-if="origin.name.length > 0 || origin.hasCert || (origin.host != null && origin.host.length > 0) || origin.followPort || (origin.domains != null && origin.domains.length > 0)">
+			<div style="margin-top: 0.3em">
 				<tiny-basic-label v-if="origin.name.length > 0">{{origin.name}}</tiny-basic-label>
 				<tiny-basic-label v-if="origin.hasCert">证书</tiny-basic-label>
 				<tiny-basic-label v-if="origin.host != null && origin.host.length > 0">主机名: {{origin.host}}</tiny-basic-label>
 				<tiny-basic-label v-if="origin.followPort">端口跟随</tiny-basic-label>
+
 				<span v-if="origin.domains != null && origin.domains.length > 0"><tiny-basic-label v-for="domain in origin.domains">匹配: {{domain}}</tiny-basic-label></span>
+				<span v-else-if="hasMatchedDomains"><tiny-basic-label>匹配: 所有域名</tiny-basic-label></span>
 			</div>
 		</td>
 		<td :class="{disabled:!origin.isOn}">{{origin.weight}}</td>
