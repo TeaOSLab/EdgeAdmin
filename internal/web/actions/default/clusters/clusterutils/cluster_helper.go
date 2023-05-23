@@ -98,13 +98,13 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 		"isOn":     true,
 	})
 	items = append(items, maps.Map{
-		"name":     "缓存设置",
+		"name":     "缓存策略",
 		"url":      "/clusters/cluster/settings/cache?clusterId=" + clusterId,
 		"isActive": selectedItem == "cache",
 		"isOn":     cluster.HttpCachePolicyId > 0,
 	})
 	items = append(items, maps.Map{
-		"name":     "WAF设置",
+		"name":     "WAF策略",
 		"url":      "/clusters/cluster/settings/waf?clusterId=" + clusterId,
 		"isActive": selectedItem == "waf",
 		"isOn":     cluster.HttpFirewallPolicyId > 0,
