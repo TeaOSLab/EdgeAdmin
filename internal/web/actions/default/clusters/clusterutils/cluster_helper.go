@@ -97,6 +97,31 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 		"isActive": selectedItem == "basic",
 		"isOn":     true,
 	})
+
+	items = append(items, maps.Map{
+		"name":     "DNS设置",
+		"url":      "/clusters/cluster/settings/dns?clusterId=" + clusterId,
+		"isActive": selectedItem == "dns",
+		"isOn":     cluster.DnsDomainId > 0 || len(cluster.DnsName) > 0,
+	})
+	items = append(items, maps.Map{
+		"name":     "健康检查",
+		"url":      "/clusters/cluster/settings/health?clusterId=" + clusterId,
+		"isActive": selectedItem == "health",
+		"isOn":     info != nil && info.HealthCheckIsOn,
+	})
+
+	items = append(items, maps.Map{
+		"name": "-",
+	})
+
+	items = append(items, maps.Map{
+		"name":     "网站设置",
+		"url":      "/clusters/cluster/settings/global-server-config?clusterId=" + clusterId,
+		"isActive": selectedItem == "globalServerConfig",
+		"isOn":     true,
+	})
+
 	items = append(items, maps.Map{
 		"name":     "缓存策略",
 		"url":      "/clusters/cluster/settings/cache?clusterId=" + clusterId,
@@ -130,27 +155,6 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 		"name":     "-",
 		"url":      "",
 		"isActive": false,
-	})
-
-	items = append(items, maps.Map{
-		"name":     "DNS设置",
-		"url":      "/clusters/cluster/settings/dns?clusterId=" + clusterId,
-		"isActive": selectedItem == "dns",
-		"isOn":     cluster.DnsDomainId > 0 || len(cluster.DnsName) > 0,
-	})
-
-	items = append(items, maps.Map{
-		"name":     "网站设置",
-		"url":      "/clusters/cluster/settings/global-server-config?clusterId=" + clusterId,
-		"isActive": selectedItem == "globalServerConfig",
-		"isOn":     true,
-	})
-
-	items = append(items, maps.Map{
-		"name":     "健康检查",
-		"url":      "/clusters/cluster/settings/health?clusterId=" + clusterId,
-		"isActive": selectedItem == "health",
-		"isOn":     info != nil && info.HealthCheckIsOn,
 	})
 
 	items = append(items, maps.Map{
