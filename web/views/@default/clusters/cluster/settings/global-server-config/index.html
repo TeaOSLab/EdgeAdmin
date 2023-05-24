@@ -131,6 +131,13 @@
                     <p class="comment">选中后，表示支持HTTP/1.0、HTTP/0.9等低于HTTP/1.1版本的HTTP协议。低版本HTTP协议不支持分段传输内容，且无法保持连接，对系统性能有严重的负面影响。建议只有在你的用户正在使用非常老旧的设备时才启用此选项。</p>
                 </td>
             </tr>
+            <tr>
+                <td>自动匹配证书</td>
+                <td>
+                    <checkbox name="httpAllMatchCertFromAllServers" v-model="config.httpAll.matchCertFromAllServers"></checkbox>
+                    <p class="comment">选中后，表示找不到证书时自动查找其他网站设置的证书。此功能仅仅为了兼容以往系统版本，可能会导致用户访问的网站混乱，所以请不要轻易启用。</p>
+                </td>
+            </tr>
         </table>
 
         <submit-btn></submit-btn>
