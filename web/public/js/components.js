@@ -329,6 +329,16 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<div v-if="message.type == 'serverNamesRequireAuditing'" style="margin-top: 0.8em">
 				<a :href="'/servers/server/settings/serverNames?serverId=' + params.serverId" target="_top">去审核</a></a>
 			</div>
+
+			<!-- 节点调度 -->
+			<div v-if="message.type == 'NodeSchedule'" style="margin-top: 0.8em">
+				<a :href="'/clusters/cluster/node/settings/schedule?clusterId=' + message.cluster.id + '&nodeId=' + message.node.id" target="_top">查看调度状态 &raquo;</a>
+			</div>
+			
+			<!-- 节点租期结束 -->
+			<div v-if="message.type == 'NodeOfflineDay'" style="margin-top: 0.8em">
+				<a :href="'/clusters/cluster/node/detail?clusterId=' + message.cluster.id + '&nodeId=' + message.node.id" target="_top">查看详情 &raquo;</a>
+			</div>
 		</td>
 	</tr>
 </table>
@@ -468,6 +478,58 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				<td>
 					<checkbox name="logMissingDomains" value="1" v-model="config.logMissingDomains"></checkbox>
 					<p class="comment">选中后，表示日志中包含对没有在系统里创建的域名访问。</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
+</div>`}),Vue.component("ns-records-health-check-config-box",{props:["value"],data:function(){let e=this.value;return{config:e=null==e?{isOn:!1,port:80,timeoutSeconds:5,countUp:1,countDown:3}:e,portString:e.port.toString(),timeoutSecondsString:e.timeoutSeconds.toString(),countUpString:e.countUp.toString(),countDownString:e.countDown.toString()}},watch:{portString:function(e){e=parseInt(e.toString());isNaN(e)||65535<e||e<1?this.config.port=80:this.config.port=e},timeoutSecondsString:function(e){e=parseInt(e.toString());isNaN(e)||1e3<e||e<1?this.config.timeoutSeconds=5:this.config.timeoutSeconds=e},countUpString:function(e){e=parseInt(e.toString());isNaN(e)||1e3<e||e<1?this.config.countUp=1:this.config.countUp=e},countDownString:function(e){e=parseInt(e.toString());isNaN(e)||1e3<e||e<1?this.config.countDown=3:this.config.countDown=e}},template:`<div>
+	<input type="hidden" name="recordsHealthCheckJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable">
+		<tbody>
+			<tr>
+				<td class="title">启用健康检查</td>
+				<td>
+					<checkbox v-model="config.isOn"></checkbox>
+					<p class="comment">选中后，表示启用当前域名下A/AAAA记录的健康检查；启用此设置后，你仍需设置单个A/AAAA记录的健康检查。</p>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="config.isOn">
+			<tr>
+				<td>默认检测端口</td>
+				<td>
+					<input type="text" v-model="portString" maxlength="5" style="width: 5em"/>
+					<p class="comment">通过尝试连接A/AAAA记录中的IP加此端口来确定当前记录是否健康。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>默认超时时间</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 4em" v-model="timeoutSecondsString" maxlength="3"/>
+						<span class="ui label">秒</span>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>默认连续上线次数</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 4em" v-model="countUpString" maxlength="3"/>
+						<span class="ui label">次</span>
+					</div>
+					<p class="comment">连续检测<span v-if="config.countUp > 0">{{config.countUp}}</span><span v-else>N</span>次成功后，认为当前记录是在线的。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>默认连续下线次数</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 4em" v-model="countDownString" maxlength="3"/>
+						<span class="ui label">次</span>
+					</div>
+					<p class="comment">连续检测<span v-if="config.countDown > 0">{{config.countDown}}</span><span v-else>N</span>次失败后，认为当前记录是离线的。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -794,6 +856,93 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<button class="ui button tiny" type="button" @click.prevent="addRegions">添加区域</button> &nbsp;
 		</div>	
 	</div>
+</div>`}),Vue.component("ns-record-health-check-config-box",{props:["value","v-parent-config"],data:function(){let e=this.value;null==e&&(e={isOn:!1,port:0,timeoutSeconds:0,countUp:0,countDown:0});var t=this.vParentConfig;return{config:e,portString:e.port.toString(),timeoutSecondsString:e.timeoutSeconds.toString(),countUpString:e.countUp.toString(),countDownString:e.countDown.toString(),portIsEditing:0<e.port,timeoutSecondsIsEditing:0<e.timeoutSeconds,countUpIsEditing:0<e.countUp,countDownIsEditing:0<e.countDown,parentConfig:t}},watch:{portString:function(e){e=parseInt(e.toString());isNaN(e)||65535<e||e<1?this.config.port=0:this.config.port=e},timeoutSecondsString:function(e){e=parseInt(e.toString());isNaN(e)||1e3<e||e<1?this.config.timeoutSeconds=0:this.config.timeoutSeconds=e},countUpString:function(e){e=parseInt(e.toString());isNaN(e)||1e3<e||e<1?this.config.countUp=0:this.config.countUp=e},countDownString:function(e){e=parseInt(e.toString());isNaN(e)||1e3<e||e<1?this.config.countDown=0:this.config.countDown=e}},template:`<div>
+	<input type="hidden" name="recordHealthCheckJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable">
+		<tbody>
+			<tr>
+				<td class="title">启用当前记录健康检查</td>
+				<td>
+					<checkbox v-model="config.isOn"></checkbox>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="config.isOn">
+			<tr>
+				<td>检测端口</td>
+				<td>
+					<span v-if="!portIsEditing" class="grey">
+						默认{{parentConfig.port}}
+						&nbsp; <a href="" @click.prevent="portIsEditing = true; portString = parentConfig.port">[修改]</a>
+					</span>
+					<div v-show="portIsEditing">
+						<div style="margin-bottom: 0.5em">
+							<a href="" @click.prevent="portIsEditing = false; portString = '0'">[使用默认]</a>
+						</div>
+						<input type="text" v-model="portString" maxlength="5" style="width: 5em"/>
+						<p class="comment">通过尝试连接A/AAAA记录中的IP加此端口来确定当前记录是否健康。</p>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>超时时间</td>
+				<td>
+					<span v-if="!timeoutSecondsIsEditing" class="grey">
+						默认{{parentConfig.timeoutSeconds}}秒
+						&nbsp; <a href="" @click.prevent="timeoutSecondsIsEditing = true; timeoutSecondsString = parentConfig.timeoutSeconds">[修改]</a>
+					</span>
+					<div v-show="timeoutSecondsIsEditing">
+						<div style="margin-bottom: 0.5em">
+							<a href="" @click.prevent="timeoutSecondsIsEditing = false; timeoutSecondsString = '0'">[使用默认]</a>
+						</div>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 4em" v-model="timeoutSecondsString" maxlength="3"/>
+							<span class="ui label">秒</span>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>默认连续上线次数</td>
+				<td>
+					<span v-if="!countUpIsEditing" class="grey">
+						默认{{parentConfig.countUp}}次
+						&nbsp; <a href="" @click.prevent="countUpIsEditing = true; countUpString = parentConfig.countUp">[修改]</a>
+					</span>
+					<div v-show="countUpIsEditing">
+						<div style="margin-bottom: 0.5em">
+							<a href="" @click.prevent="countUpIsEditing = false; countUpString = '0'">[使用默认]</a>
+						</div>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 4em" v-model="countUpString" maxlength="3"/>
+							<span class="ui label">次</span>
+						</div>
+						<p class="comment">连续检测<span v-if="config.countUp > 0">{{config.countUp}}</span><span v-else>N</span>次成功后，认为当前记录是在线的。</p>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>默认连续下线次数</td>
+				<td>
+					<span v-if="!countDownIsEditing" class="grey">
+						默认{{parentConfig.countDown}}次
+						&nbsp; <a href="" @click.prevent="countDownIsEditing = true; countDownString = parentConfig.countDown">[修改]</a>
+					</span>
+					<div v-show="countDownIsEditing">
+						<div style="margin-bottom: 0.5em">
+							<a href="" @click.prevent="countDownIsEditing = false; countDownString = '0'">[使用默认]</a>
+						</div>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 4em" v-model="countDownString" maxlength="3"/>
+							<span class="ui label">次</span>
+						</div>
+						<p class="comment">连续检测<span v-if="config.countDown > 0">{{config.countDown}}</span><span v-else>N</span>次失败后，认为当前记录是离线的。</p>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
 </div>`}),Vue.component("ns-create-records-table",{props:["v-types"],data:function(){let e=this.vTypes;return{types:e=null==e?[]:e,records:[{name:"",type:"A",value:"",routeCodes:[],ttl:600,index:0}],lastIndex:0,isAddingRoutes:!1}},methods:{add:function(){this.records.push({name:"",type:"A",value:"",routeCodes:[],ttl:600,index:++this.lastIndex});let e=this;setTimeout(function(){e.$refs.nameInputs.$last().focus()},100)},remove:function(e){this.records.$remove(e)},addRoutes:function(){this.isAddingRoutes=!0},cancelRoutes:function(){let e=this;setTimeout(function(){e.isAddingRoutes=!1},1e3)},changeRoutes:function(e,t){e.routeCodes=null==t?[]:t.map(function(e){return e.code})}},template:`<div>
 <input type="hidden" name="recordsJSON" :value="JSON.stringify(records)"/>
 <table class="ui table selectable celled" style="max-width: 60em">
@@ -1515,7 +1664,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 
 		<!-- cc2 -->
 		<span v-if="rule.param == '\${cc2}'">
-			{{rule.checkpointOptions.period}}秒/{{rule.checkpointOptions.threshold}}请求
+			{{rule.checkpointOptions.period}}秒内请求数
 		</span>
 
 		<!-- refererBlock -->
@@ -2141,7 +2290,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			</td>
 		</tr>
 	</table>
-</div>`}),Vue.component("http-firewall-checkpoint-referer-block",{props:["v-checkpoint"],data:function(){let e=!0,t=!0,i=[],n=[],s={},o=("boolean"==typeof(s=null==(s=null!=window.parent.UPDATING_RULE?window.parent.UPDATING_RULE.checkpointOptions:s)?{}:s).allowEmpty&&(e=s.allowEmpty),"boolean"==typeof s.allowSameDomain&&(t=s.allowSameDomain),null!=s.allowDomains&&"object"==typeof s.allowDomains&&(i=s.allowDomains),null!=s.denyDomains&&"object"==typeof s.denyDomains&&(n=s.denyDomains),this);return setTimeout(function(){o.change()},100),{allowEmpty:e,allowSameDomain:t,allowDomains:i,denyDomains:n,options:{},value:0}},watch:{allowEmpty:function(){this.change()},allowSameDomain:function(){this.change()}},methods:{changeAllowDomains:function(e){this.allowDomains=e,this.change()},changeDenyDomains:function(e){this.denyDomains=e,this.change()},change:function(){this.vCheckpoint.options=[{code:"allowEmpty",value:this.allowEmpty},{code:"allowSameDomain",value:this.allowSameDomain},{code:"allowDomains",value:this.allowDomains},{code:"denyDomains",value:this.denyDomains}]}},template:`<div>
+</div>`}),Vue.component("http-firewall-checkpoint-referer-block",{props:["v-checkpoint"],data:function(){let e=!0,t=!0,i=[],n=[],s=!0,o={},a=("boolean"==typeof(o=null==(o=null!=window.parent.UPDATING_RULE?window.parent.UPDATING_RULE.checkpointOptions:o)?{}:o).allowEmpty&&(e=o.allowEmpty),"boolean"==typeof o.allowSameDomain&&(t=o.allowSameDomain),null!=o.allowDomains&&"object"==typeof o.allowDomains&&(i=o.allowDomains),null!=o.denyDomains&&"object"==typeof o.denyDomains&&(n=o.denyDomains),"boolean"==typeof o.checkOrigin&&(s=o.checkOrigin),this);return setTimeout(function(){a.change()},100),{allowEmpty:e,allowSameDomain:t,allowDomains:i,denyDomains:n,checkOrigin:s,options:{},value:0}},watch:{allowEmpty:function(){this.change()},allowSameDomain:function(){this.change()},checkOrigin:function(){this.change()}},methods:{changeAllowDomains:function(e){this.allowDomains=e,this.change()},changeDenyDomains:function(e){this.denyDomains=e,this.change()},change:function(){this.vCheckpoint.options=[{code:"allowEmpty",value:this.allowEmpty},{code:"allowSameDomain",value:this.allowSameDomain},{code:"allowDomains",value:this.allowDomains},{code:"denyDomains",value:this.denyDomains},{code:"checkOrigin",value:this.checkOrigin}]}},template:`<div>
 	<input type="hidden" name="operator" value="eq"/>
 	<input type="hidden" name="value" :value="value"/>
 	<table class="ui table">
@@ -2171,6 +2320,13 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<td>
 				<values-box :values="denyDomains" @change="changeDenyDomains"></values-box>
 				<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>、<code-label>*.example.org</code-label>；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>同时检查Origin</td>
+			<td>
+				<checkbox v-model="checkOrigin"></checkbox>
+				<p class="comment">如果请求没有指定Referer Header，则尝试检查Origin Header，多用于跨站调用。</p>
 			</td>
 		</tr>
 	</table>
@@ -2248,7 +2404,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<h3>备用源站 <a href="" @click.prevent="createBackupOrigin()">[添加备用源站]</a></h3>
 	<p class="comment" v-if="backupOrigins.length == 0" :v-origins="primaryOrigins">暂时还没有备用源站。</p>
 	<origin-list-table v-if="backupOrigins.length > 0" :v-origins="backupOrigins" :v-origin-type="'backup'" @deleteOrigin="deleteOrigin" @updateOrigin="updateOrigin"></origin-list-table>
-</div>`}),Vue.component("origin-list-table",{props:["v-origins","v-origin-type"],data:function(){return{}},methods:{deleteOrigin:function(e){this.$emit("deleteOrigin",e,this.vOriginType)},updateOrigin:function(e){this.$emit("updateOrigin",e,this.vOriginType)}},template:`
+</div>`}),Vue.component("origin-list-table",{props:["v-origins","v-origin-type"],data:function(){let t=!1,e=this.vOrigins;return null!=e&&0<e.length&&e.forEach(function(e){null!=e.domains&&0<e.domains.length&&(t=!0)}),{hasMatchedDomains:t}},methods:{deleteOrigin:function(e){this.$emit("deleteOrigin",e,this.vOriginType)},updateOrigin:function(e){this.$emit("updateOrigin",e,this.vOriginType)}},template:`
 <table class="ui table selectable">
 	<thead>
 		<tr>
@@ -2261,12 +2417,14 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<tr v-for="origin in vOrigins">
 		<td :class="{disabled:!origin.isOn}">
 			<a href="" @click.prevent="updateOrigin(origin.id)" :class="{disabled:!origin.isOn}">{{origin.addr}} &nbsp;<i class="icon expand small"></i></a>
-			<div style="margin-top: 0.3em" v-if="origin.name.length > 0 || origin.hasCert || (origin.host != null && origin.host.length > 0) || origin.followPort || (origin.domains != null && origin.domains.length > 0)">
+			<div style="margin-top: 0.3em">
 				<tiny-basic-label v-if="origin.name.length > 0">{{origin.name}}</tiny-basic-label>
 				<tiny-basic-label v-if="origin.hasCert">证书</tiny-basic-label>
 				<tiny-basic-label v-if="origin.host != null && origin.host.length > 0">主机名: {{origin.host}}</tiny-basic-label>
 				<tiny-basic-label v-if="origin.followPort">端口跟随</tiny-basic-label>
+
 				<span v-if="origin.domains != null && origin.domains.length > 0"><tiny-basic-label v-for="domain in origin.domains">匹配: {{domain}}</tiny-basic-label></span>
+				<span v-else-if="hasMatchedDomains"><tiny-basic-label>匹配: 所有域名</tiny-basic-label></span>
 			</div>
 		</td>
 		<td :class="{disabled:!origin.isOn}">{{origin.weight}}</td>
@@ -2278,15 +2436,63 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<a href="" @click.prevent="deleteOrigin(origin.id)">删除</a>
 		</td>
 	</tr>
-</table>`}),Vue.component("http-cors-header-config-box",{props:["value"],data:function(){let e=this.value;return{config:e=null==e?{isOn:!1,allowMethods:[],allowOrigin:"",allowCredentials:!0,exposeHeaders:[],maxAge:0,requestHeaders:[],requestMethod:""}:e}},template:`<div>
+</table>`}),Vue.component("http-cors-header-config-box",{props:["value"],data:function(){let e=this.value,t=(null==(e=null==e?{isOn:!1,allowMethods:[],allowOrigin:"",allowCredentials:!0,exposeHeaders:[],maxAge:0,requestHeaders:[],requestMethod:"",optionsMethodOnly:!1}:e).allowMethods&&(e.allowMethods=[]),null==e.exposeHeaders&&(e.exposeHeaders=[]),e.maxAge.toString());return"0"==t&&(t=""),{config:e,maxAgeSecondsString:t,moreOptionsVisible:!1}},watch:{maxAgeSecondsString:function(e){let t=parseInt(e);isNaN(t)&&(t=0),this.config.maxAge=t}},methods:{changeMoreOptions:function(e){this.moreOptionsVisible=e},addDefaultAllowMethods:function(){let t=this;["PUT","GET","POST","DELETE","HEAD","OPTIONS","PATCH"].forEach(function(e){t.config.allowMethods.$contains(e)||t.config.allowMethods.push(e)})}},template:`<div>
 	<input type="hidden" name="corsJSON" :value="JSON.stringify(config)"/>
 	<table class="ui table definition selectable">
-		<tr>
-			<td class="title">启用CORS自适应跨域</td>
-			<td>
-				<checkbox v-model="config.isOn"></checkbox>
-			</td>
-		</tr>
+		<tbody>
+			<tr>
+				<td class="title">启用CORS自适应跨域</td>
+				<td>
+					<checkbox v-model="config.isOn"></checkbox>
+					<p class="comment">启用后，自动在响应Header中增加对应的<code-label>Access-Control-*</code-label>相关内容。</p>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="config.isOn">
+			<tr>
+				<td colspan="2"><more-options-indicator @change="changeMoreOptions"></more-options-indicator></td>
+			</tr>
+		</tbody>
+		<tbody v-show="config.isOn && moreOptionsVisible">
+			<tr>
+				<td>允许的请求方法列表</td>
+				<td>
+					<http-methods-box :v-methods="config.allowMethods"></http-methods-box>
+					<p class="comment"><a href="" @click.prevent="addDefaultAllowMethods">[添加默认]</a>。<code-label>Access-Control-Allow-Methods</code-label>值设置。所访问资源允许使用的方法列表，不设置则表示默认为<code-label>PUT</code-label>、<code-label>GET</code-label>、<code-label>POST</code-label>、<code-label>DELETE</code-label>、<code-label>HEAD</code-label>、<code-label>OPTIONS</code-label>、<code-label>PATCH</code-label>。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>预检结果缓存时间</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 6em" maxlength="6" v-model="maxAgeSecondsString"/>
+						<span class="ui label">秒</span>
+					</div>
+					<p class="comment"><code-label>Access-Control-Max-Age</code-label>值设置。预检结果缓存时间，0或者不填表示使用浏览器默认设置。注意每个浏览器有不同的缓存时间上限。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>允许服务器暴露的Header</td>
+				<td>
+					<values-box :v-values="config.exposeHeaders"></values-box>
+					<p class="comment"><code-label>Access-Control-Expose-Headers</code-label>值设置。允许服务器暴露的Header，请注意Header的大小写。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>实际请求方法</td>
+				<td>
+					<input type="text" v-model="config.requestMethod"/>
+					<p class="comment"><code-label>Access-Control-Request-Method</code-label>值设置。实际请求服务器时使用的方法，比如<code-label>POST</code-label>。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>仅OPTIONS有效</td>
+				<td>
+					<checkbox v-model="config.optionsMethodOnly"></checkbox>
+					<p class="comment">选中后，表示当前CORS设置仅在OPTIONS方法请求时有效。</p>
+				</td>
+			</tr>
+		</tbody>
 	</table>
 	<div class="margin"></div>
 </div>`}),Vue.component("http-firewall-policy-selector",{props:["v-http-firewall-policy"],mounted:function(){let t=this;Tea.action("/servers/components/waf/count").post().success(function(e){t.count=e.data.count})},data:function(){return{count:0,firewallPolicy:this.vHttpFirewallPolicy}},methods:{remove:function(){this.firewallPolicy=null},select:function(){let t=this;teaweb.popup("/servers/components/waf/selectPopup",{callback:function(e){t.firewallPolicy=e.data.firewallPolicy}})},create:function(){let t=this;teaweb.popup("/servers/components/waf/createPopup",{height:"26em",callback:function(e){t.firewallPolicy=e.data.firewallPolicy}})}},template:`<div>
@@ -2571,7 +2777,7 @@ example2.com
 	<div style="margin-top: 0.5em" v-if="!isAdding">
 		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
 	</div>
-</div>`}),Vue.component("http-referers-config-box",{props:["v-referers-config","v-is-location","v-is-group"],data:function(){let e=this.vReferersConfig;return null==(e=null==e?{isPrior:!1,isOn:!1,allowEmpty:!0,allowSameDomain:!0,allowDomains:[],denyDomains:[]}:e).allowDomains&&(e.allowDomains=[]),null==e.denyDomains&&(e.denyDomains=[]),{config:e}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeAllowDomains:function(e){"object"==typeof e&&(this.config.allowDomains=e,this.$forceUpdate())},changeDenyDomains:function(e){"object"==typeof e&&(this.config.denyDomains=e,this.$forceUpdate())}},template:`<div>
+</div>`}),Vue.component("http-referers-config-box",{props:["v-referers-config","v-is-location","v-is-group"],data:function(){let e=this.vReferersConfig;return null==(e=null==e?{isPrior:!1,isOn:!1,allowEmpty:!0,allowSameDomain:!0,allowDomains:[],denyDomains:[],checkOrigin:!0}:e).allowDomains&&(e.allowDomains=[]),null==e.denyDomains&&(e.denyDomains=[]),{config:e}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeAllowDomains:function(e){"object"==typeof e&&(this.config.allowDomains=e,this.$forceUpdate())},changeDenyDomains:function(e){"object"==typeof e&&(this.config.denyDomains=e,this.$forceUpdate())}},template:`<div>
 <input type="hidden" name="referersJSON" :value="JSON.stringify(config)"/>
 <table class="ui table selectable definition">
 	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
@@ -2614,6 +2820,13 @@ example2.com
 			<td>
 				<domains-box :v-domains="config.denyDomains" @change="changeDenyDomains"></domains-box>
 				<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>、<code-label>*.example.org</code-label>；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>同时检查Origin</td>
+			<td>
+				<checkbox v-model="config.checkOrigin"></checkbox>
+				<p class="comment">如果请求没有指定Referer Header，则尝试检查Origin Header，多用于跨站调用。</p>
 			</td>
 		</tr>
 	</tbody>
@@ -3069,7 +3282,7 @@ example2.com
 <div class="margin"></div>
 </div>`}),Vue.component("user-selector",{props:["v-user-id","data-url"],data:function(){let e=this.vUserId,t=(null==e&&(e=0),this.dataUrl);return null!=t&&0!=t.length||(t="/servers/users/options"),{users:[],userId:e,dataURL:t}},methods:{change:function(e){null!=e?this.$emit("change",e.id):this.$emit("change",0)},clear:function(){this.$refs.comboBox.clear()}},template:`<div>
 	<combo-box placeholder="选择用户" :data-url="dataURL" :data-key="'users'" data-search="on" name="userId" :v-value="userId" @change="change" ref="comboBox"></combo-box>
-</div>`}),Vue.component("http-header-policy-box",{props:["v-request-header-policy","v-request-header-ref","v-response-header-policy","v-response-header-ref","v-params","v-is-location","v-is-group","v-has-group-request-config","v-has-group-response-config","v-group-setting-url"],data:function(){let e="response";"#request"==window.location.hash&&(e="request");let t=this.vRequestHeaderRef,i=(null==t&&(t={isPrior:!1,isOn:!0,headerPolicyId:0}),this.vResponseHeaderRef),n=(null==i&&(i={isPrior:!1,isOn:!0,headerPolicyId:0}),[]),s=[];var o=this.vRequestHeaderPolicy;null!=o&&(null!=o.setHeaders&&(n=o.setHeaders),null!=o.deleteHeaders&&(s=o.deleteHeaders));let a=[],l=[];o=this.vResponseHeaderPolicy;null!=o&&(null!=o.setHeaders&&(a=o.setHeaders),null!=o.deleteHeaders&&(l=o.deleteHeaders));let c={isOn:!1};return null!=o.cors&&(c=o.cors),{type:e,typeName:"request"==e?"请求":"响应",requestHeaderRef:t,responseHeaderRef:i,requestSettingHeaders:n,requestDeletingHeaders:s,responseSettingHeaders:a,responseDeletingHeaders:l,responseCORS:c}},methods:{selectType:function(e){this.type=e,window.location.hash="#"+e,window.location.reload()},addSettingHeader:function(e){teaweb.popup("/servers/server/settings/headers/createSetPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})},addDeletingHeader:function(e,t){teaweb.popup("/servers/server/settings/headers/createDeletePopup?"+this.vParams+"&headerPolicyId="+e+"&type="+t,{callback:function(){teaweb.successRefresh("保存成功")}})},updateSettingPopup:function(e,t){teaweb.popup("/servers/server/settings/headers/updateSetPopup?"+this.vParams+"&headerPolicyId="+e+"&headerId="+t+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})},deleteDeletingHeader:function(e,t){teaweb.confirm("确定要删除'"+t+"'吗？",function(){Tea.action("/servers/server/settings/headers/deleteDeletingHeader").params({headerPolicyId:e,headerName:t}).post().refresh()})},deleteHeader:function(e,t,i){teaweb.confirm("确定要删除此Header吗？",function(){this.$post("/servers/server/settings/headers/delete").params({headerPolicyId:e,type:t,headerId:i}).refresh()})},updateCORS:function(e){teaweb.popup("/servers/server/settings/headers/updateCORSPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})}},template:`<div>
+</div>`}),Vue.component("http-header-policy-box",{props:["v-request-header-policy","v-request-header-ref","v-response-header-policy","v-response-header-ref","v-params","v-is-location","v-is-group","v-has-group-request-config","v-has-group-response-config","v-group-setting-url"],data:function(){let e="response";"#request"==window.location.hash&&(e="request");let t=this.vRequestHeaderRef,i=(null==t&&(t={isPrior:!1,isOn:!0,headerPolicyId:0}),this.vResponseHeaderRef),n=(null==i&&(i={isPrior:!1,isOn:!0,headerPolicyId:0}),[]),s=[],o=[];var a=this.vRequestHeaderPolicy;null!=a&&(null!=a.setHeaders&&(n=a.setHeaders),null!=a.deleteHeaders&&(s=a.deleteHeaders),null!=a.nonStandardHeaders&&(o=a.nonStandardHeaders));let l=[],c=[],r=[];a=this.vResponseHeaderPolicy;null!=a&&(null!=a.setHeaders&&(l=a.setHeaders),null!=a.deleteHeaders&&(c=a.deleteHeaders),null!=a.nonStandardHeaders&&(r=a.nonStandardHeaders));let d={isOn:!1};return null!=a.cors&&(d=a.cors),{type:e,typeName:"request"==e?"请求":"响应",requestHeaderRef:t,responseHeaderRef:i,requestSettingHeaders:n,requestDeletingHeaders:s,requestNonStandardHeaders:o,responseSettingHeaders:l,responseDeletingHeaders:c,responseNonStandardHeaders:r,responseCORS:d}},methods:{selectType:function(e){this.type=e,window.location.hash="#"+e,window.location.reload()},addSettingHeader:function(e){teaweb.popup("/servers/server/settings/headers/createSetPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})},addDeletingHeader:function(e,t){teaweb.popup("/servers/server/settings/headers/createDeletePopup?"+this.vParams+"&headerPolicyId="+e+"&type="+t,{callback:function(){teaweb.successRefresh("保存成功")}})},addNonStandardHeader:function(e,t){teaweb.popup("/servers/server/settings/headers/createNonStandardPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+t,{callback:function(){teaweb.successRefresh("保存成功")}})},updateSettingPopup:function(e,t){teaweb.popup("/servers/server/settings/headers/updateSetPopup?"+this.vParams+"&headerPolicyId="+e+"&headerId="+t+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})},deleteDeletingHeader:function(e,t){teaweb.confirm("确定要删除'"+t+"'吗？",function(){Tea.action("/servers/server/settings/headers/deleteDeletingHeader").params({headerPolicyId:e,headerName:t}).post().refresh()})},deleteNonStandardHeader:function(e,t){teaweb.confirm("确定要删除'"+t+"'吗？",function(){Tea.action("/servers/server/settings/headers/deleteNonStandardHeader").params({headerPolicyId:e,headerName:t}).post().refresh()})},deleteHeader:function(e,t,i){teaweb.confirm("确定要删除此Header吗？",function(){this.$post("/servers/server/settings/headers/delete").params({headerPolicyId:e,type:t,headerId:i}).refresh()})},updateCORS:function(e){teaweb.popup("/servers/server/settings/headers/updateCORSPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+this.type,{height:"30em",callback:function(){teaweb.successRefresh("保存成功")}})}},template:`<div>
 	<div class="ui menu tabular small">
 		<a class="item" :class="{active:type == 'response'}" @click.prevent="selectType('response')">响应Header<span v-if="responseSettingHeaders.length > 0">({{responseSettingHeaders.length}})</span></a>
 		<a class="item" :class="{active:type == 'request'}" @click.prevent="selectType('request')">请求Header<span v-if="requestSettingHeaders.length > 0">({{requestSettingHeaders.length}})</span></a>
@@ -3094,7 +3307,7 @@ example2.com
         	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#request'">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
     	</div>
     	<div :class="{'opacity-mask': vHasGroupRequestConfig}">
-		<h4>设置请求Header <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)">[添加新Header]</a></h4>
+		<h4>设置请求Header &nbsp; <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)" style="font-size: 0.8em">[添加新Header]</a></h4>
 			<p class="comment" v-if="requestSettingHeaders.length == 0">暂时还没有Header。</p>
 			<table class="ui table selectable celled" v-if="requestSettingHeaders.length > 0">
 				<thead>
@@ -3123,20 +3336,31 @@ example2.com
 				</tbody>
 			</table>
 			
-			<h4>删除请求Header</h4>
-			<p class="comment">这里可以设置需要从请求中删除的Header。</p>
+			<h4>其他设置</h4>
 			
 			<table class="ui table definition selectable">
-				<tr>
-					<td class="title">需要删除的Header</td>
-					<td>
-						<div v-if="requestDeletingHeaders.length > 0">
-							<div class="ui label small basic" v-for="headerName in requestDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
-							<div class="ui divider" ></div>
-						</div>
-						<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vRequestHeaderPolicy.id, 'request')">+</button>
-					</td>
-				</tr>
+				<tbody>
+					<tr>
+						<td class="title">删除Header <tip-icon content="可以通过此功能删除转发到源站的请求报文中不需要的Header"></tip-icon></td>
+						<td>
+							<div v-if="requestDeletingHeaders.length > 0">
+								<div class="ui label small basic" v-for="headerName in requestDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
+								<div class="ui divider" ></div>
+							</div>
+							<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vRequestHeaderPolicy.id, 'request')">+</button>
+						</td>
+					</tr>
+					<tr>
+						<td class="title">非标Header <tip-icon content="可以通过此功能设置转发到源站的请求报文中非标准的Header，比如hello_world"></tip-icon></td>
+						<td>
+							<div v-if="requestNonStandardHeaders.length > 0">
+								<div class="ui label small basic" v-for="headerName in requestNonStandardHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteNonStandardHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
+								<div class="ui divider" ></div>
+							</div>
+							<button class="ui button small" type="button" @click.prevent="addNonStandardHeader(vRequestHeaderPolicy.id, 'request')">+</button>
+						</td>
+					</tr>
+				</tbody>
 			</table>
 		</div>			
 	</div>
@@ -3156,7 +3380,7 @@ example2.com
         	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#response'">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
     	</div>
     	<div :class="{'opacity-mask': vHasGroupResponseConfig}">
-			<h4>设置响应Header <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)">[添加新Header]</a></h4>
+			<h4>设置响应Header &nbsp; <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)" style="font-size: 0.8em">[添加新Header]</a></h4>
 			<p class="comment" style="margin-top: 0; padding-top: 0">将会覆盖已有的同名Header。</p>
 			<p class="comment" v-if="responseSettingHeaders.length == 0">暂时还没有Header。</p>
 			<table class="ui table selectable celled" v-if="responseSettingHeaders.length > 0">
@@ -3179,6 +3403,11 @@ example2.com
 								<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
 								<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
 							</div>
+							
+							<!-- CORS -->
+							<div v-if="header.name == 'Access-Control-Allow-Origin' && header.value == '*'">
+								<span class="red small">建议使用当前页面下方的"CORS自适应跨域"功能代替Access-Control-*-*相关Header。</span>
+							</div>
 						</td>
 						<td>{{header.value}}</td>
 						<td><a href="" @click.prevent="updateSettingPopup(vResponseHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteHeader(vResponseHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
@@ -3186,31 +3415,38 @@ example2.com
 				</tbody>
 			</table>
 			
-			<h4>删除响应Header</h4>
-			<p class="comment">这里可以设置需要从响应中删除的Header。</p>
-			
-			<table class="ui table definition selectable">
-				<tr>
-					<td class="title">需要删除的Header</td>
-					<td>
-						<div v-if="responseDeletingHeaders.length > 0">
-							<div class="ui label small basic" v-for="headerName in responseDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vResponseHeaderPolicy.id, headerName)"></i></a> </div>
-							<div class="ui divider" ></div>
-						</div>
-						<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vResponseHeaderPolicy.id, 'response')">+</button>
-					</td>
-				</tr>
-			</table>
-			
 			<h4>其他设置</h4>
 			
 			<table class="ui table definition selectable">
-				<tr>
-					<td class="title">CORS自适应跨域</td>
-					<td>
-						<span v-if="responseCORS.isOn" class="green">已启用</span><span class="disabled" v-else="">未启用</span> &nbsp; <a href="" @click.prevent="updateCORS(vResponseHeaderPolicy.id)">[修改]</a>
-					</td>
-				</tr>
+				<tbody>
+					<tr>
+						<td class="title">删除Header <tip-icon content="可以通过此功能删除响应报文中不需要的Header"></tip-icon></td>
+						<td>
+							<div v-if="responseDeletingHeaders.length > 0">
+								<div class="ui label small basic" v-for="headerName in responseDeletingHeaders">{{headerName}} &nbsp; <a href=""><i class="icon remove small" title="删除" @click.prevent="deleteDeletingHeader(vResponseHeaderPolicy.id, headerName)"></i></a></div>
+								<div class="ui divider" ></div>
+							</div>
+							<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vResponseHeaderPolicy.id, 'response')">+</button>
+						</td>
+					</tr>
+					<tr>
+						<td>非标Header <tip-icon content="可以通过此功能设置响应报文中非标准的Header，比如hello_world"></tip-icon></td>
+						<td>
+							<div v-if="responseNonStandardHeaders.length > 0">
+								<div class="ui label small basic" v-for="headerName in responseNonStandardHeaders">{{headerName}} &nbsp; <a href=""><i class="icon remove small" title="删除" @click.prevent="deleteNonStandardHeader(vResponseHeaderPolicy.id, headerName)"></i></a></div>
+								<div class="ui divider" ></div>
+							</div>
+							<button class="ui button small" type="button" @click.prevent="addNonStandardHeader(vResponseHeaderPolicy.id, 'response')">+</button>
+						</td>
+					</tr>
+					<tr>
+						<td class="title">CORS自适应跨域</td>
+						<td>
+							<span v-if="responseCORS.isOn" class="green">已启用</span><span class="disabled" v-else="">未启用</span> &nbsp; <a href="" @click.prevent="updateCORS(vResponseHeaderPolicy.id)">[修改]</a>
+							<p class="comment"><span v-if="!responseCORS.isOn">启用后，服务器可以</span><span v-else>服务器会</span>自动生成<code-label>Access-Control-*-*</code-label>相关的Header。</p>
+						</td>
+					</tr>
+				</tbody>
 			</table>
 		</div>		
 	</div>
@@ -3608,7 +3844,7 @@ example2.com
 		<span v-if="accessLog.requestTime != null"> - 耗时:{{formatCost(accessLog.requestTime)}} ms </span><span v-if="accessLog.humanTime != null && accessLog.humanTime.length > 0" class="grey small">&nbsp; ({{accessLog.humanTime}})</span>
 		&nbsp; <a href="" @click.prevent="showLog" title="查看详情"><i class="icon expand"></i></a>
 	</div>
-</div>`});var punycode=new function(){this.utf16={decode:function(e){for(var t,i,n=[],s=0,o=e.length;s<o;){if(55296==(63488&(t=e.charCodeAt(s++)))){if(i=e.charCodeAt(s++),55296!=(64512&t)||56320!=(64512&i))throw new RangeError("UTF-16(decode): Illegal UTF-16 sequence");t=((1023&t)<<10)+(1023&i)+65536}n.push(t)}return n},encode:function(e){for(var t,i=[],n=0,s=e.length;n<s;){if(55296==(63488&(t=e[n++])))throw new RangeError("UTF-16(encode): Illegal UTF-16 value");65535<t&&(t-=65536,i.push(String.fromCharCode(t>>>10&1023|55296)),t=56320|1023&t),i.push(String.fromCharCode(t))}return i.join("")}};var b=2147483647;function y(e,t){return e+22+75*(e<26)-((0!=t)<<5)}function x(e,t,i){var n;for(e=i?Math.floor(e/700):e>>1,e+=Math.floor(e/t),n=0;455<e;n+=36)e=Math.floor(e/35);return Math.floor(n+36*e/(e+38))}this.decode=function(e,t){var i,n,s,o,a,l,c,r,d=[],p=[],u=e.length,h=128,m=0,v=72,f=e.lastIndexOf("-");for(f<0&&(f=0),n=0;n<f;++n){if(t&&(p[d.length]=e.charCodeAt(n)-65<26),128<=e.charCodeAt(n))throw new RangeError("Illegal input >= 0x80");d.push(e.charCodeAt(n))}for(s=0<f?f+1:0;s<u;){for(o=m,a=1,l=36;;l+=36){if(u<=s)throw RangeError("punycode_bad_input(1)");if(36<=(r=(r=e.charCodeAt(s++))-48<10?r-22:r-65<26?r-65:r-97<26?r-97:36))throw RangeError("punycode_bad_input(2)");if(r>Math.floor((b-m)/a))throw RangeError("punycode_overflow(1)");if(m+=r*a,r<(r=l<=v?1:v+26<=l?26:l-v))break;if(a>Math.floor(b/(36-r)))throw RangeError("punycode_overflow(2)");a*=36-r}if(v=x(m-o,i=d.length+1,0===o),Math.floor(m/i)>b-h)throw RangeError("punycode_overflow(3)");h+=Math.floor(m/i),m%=i,t&&p.splice(m,0,e.charCodeAt(s-1)-65<26),d.splice(m,0,h),m++}if(t)for(m=0,c=d.length;m<c;m++)p[m]&&(d[m]=String.fromCharCode(d[m]).toUpperCase().charCodeAt(0));return this.utf16.encode(d)},this.encode=function(e,t){t&&(r=this.utf16.decode(e));var i,n,s,o,a,l,c,r,d=(e=this.utf16.decode(e.toLowerCase())).length;if(t)for(g=0;g<d;g++)r[g]=e[g]!=r[g];for(var p,u,h=[],m=128,v=0,f=72,g=0;g<d;++g)e[g]<128&&h.push(String.fromCharCode(r?(p=e[g],u=r[g],(p-=(p-97<26)<<5)+((!u&&p-65<26)<<5)):e[g]));for(i=n=h.length,0<n&&h.push("-");i<d;){for(s=b,g=0;g<d;++g)m<=(c=e[g])&&c<s&&(s=c);if(s-m>Math.floor((b-v)/(i+1)))throw RangeError("punycode_overflow (1)");for(v+=(s-m)*(i+1),m=s,g=0;g<d;++g){if((c=e[g])<m&&++v>b)return Error("punycode_overflow(2)");if(c==m){for(o=v,a=36;!(o<(l=a<=f?1:f+26<=a?26:a-f));a+=36)h.push(String.fromCharCode(y(l+(o-l)%(36-l),0))),o=Math.floor((o-l)/(36-l));h.push(String.fromCharCode(y(o,t&&r[g]?1:0))),f=x(v,i+1,i==n),v=0,++i}}++v,++m}return h.join("")},this.ToASCII=function(e){for(var t=e.split("."),i=[],n=0;n<t.length;++n){var s=t[n];i.push(s.match(/[^A-Za-z0-9-]/)?"xn--"+punycode.encode(s):s)}return i.join(".")},this.ToUnicode=function(e){for(var t=e.split("."),i=[],n=0;n<t.length;++n){var s=t[n];i.push(s.match(/^xn--/)?punycode.decode(s.slice(4)):s)}return i.join(".")}};function sortTable(s){let e=document.createElement("script");e.setAttribute("src","/js/sortable.min.js"),e.addEventListener("load",function(){let n=document.querySelector("#sortable-table");null!=n&&Sortable.create(n,{draggable:"tbody",handle:".icon.handle",onStart:function(){},onUpdate:function(e){let t=n.querySelectorAll("tbody"),i=[];t.forEach(function(e){i.push(parseInt(e.getAttribute("v-id")))}),s(i)}})}),document.head.appendChild(e)}function sortLoad(e){let t=document.createElement("script");t.setAttribute("src","/js/sortable.min.js"),t.addEventListener("load",function(){"function"==typeof e&&e()}),document.head.appendChild(t)}function emitClick(e,arguments){let t=["click"];for(let e=0;e<arguments.length;e++)t.push(arguments[e]);e.$emit.apply(e,t)}Vue.component("http-firewall-block-options-viewer",{props:["v-block-options"],data:function(){return{options:this.vBlockOptions}},template:`<div>
+</div>`});var punycode=new function(){this.utf16={decode:function(e){for(var t,i,n=[],s=0,o=e.length;s<o;){if(55296==(63488&(t=e.charCodeAt(s++)))){if(i=e.charCodeAt(s++),55296!=(64512&t)||56320!=(64512&i))throw new RangeError("UTF-16(decode): Illegal UTF-16 sequence");t=((1023&t)<<10)+(1023&i)+65536}n.push(t)}return n},encode:function(e){for(var t,i=[],n=0,s=e.length;n<s;){if(55296==(63488&(t=e[n++])))throw new RangeError("UTF-16(encode): Illegal UTF-16 value");65535<t&&(t-=65536,i.push(String.fromCharCode(t>>>10&1023|55296)),t=56320|1023&t),i.push(String.fromCharCode(t))}return i.join("")}};var b=2147483647;function y(e,t){return e+22+75*(e<26)-((0!=t)<<5)}function x(e,t,i){var n;for(e=i?Math.floor(e/700):e>>1,e+=Math.floor(e/t),n=0;455<e;n+=36)e=Math.floor(e/35);return Math.floor(n+36*e/(e+38))}this.decode=function(e,t){var i,n,s,o,a,l,c,r,d=[],p=[],u=e.length,h=128,v=0,m=72,f=e.lastIndexOf("-");for(f<0&&(f=0),n=0;n<f;++n){if(t&&(p[d.length]=e.charCodeAt(n)-65<26),128<=e.charCodeAt(n))throw new RangeError("Illegal input >= 0x80");d.push(e.charCodeAt(n))}for(s=0<f?f+1:0;s<u;){for(o=v,a=1,l=36;;l+=36){if(u<=s)throw RangeError("punycode_bad_input(1)");if(36<=(r=(r=e.charCodeAt(s++))-48<10?r-22:r-65<26?r-65:r-97<26?r-97:36))throw RangeError("punycode_bad_input(2)");if(r>Math.floor((b-v)/a))throw RangeError("punycode_overflow(1)");if(v+=r*a,r<(r=l<=m?1:m+26<=l?26:l-m))break;if(a>Math.floor(b/(36-r)))throw RangeError("punycode_overflow(2)");a*=36-r}if(m=x(v-o,i=d.length+1,0===o),Math.floor(v/i)>b-h)throw RangeError("punycode_overflow(3)");h+=Math.floor(v/i),v%=i,t&&p.splice(v,0,e.charCodeAt(s-1)-65<26),d.splice(v,0,h),v++}if(t)for(v=0,c=d.length;v<c;v++)p[v]&&(d[v]=String.fromCharCode(d[v]).toUpperCase().charCodeAt(0));return this.utf16.encode(d)},this.encode=function(e,t){t&&(r=this.utf16.decode(e));var i,n,s,o,a,l,c,r,d=(e=this.utf16.decode(e.toLowerCase())).length;if(t)for(g=0;g<d;g++)r[g]=e[g]!=r[g];for(var p,u,h=[],v=128,m=0,f=72,g=0;g<d;++g)e[g]<128&&h.push(String.fromCharCode(r?(p=e[g],u=r[g],(p-=(p-97<26)<<5)+((!u&&p-65<26)<<5)):e[g]));for(i=n=h.length,0<n&&h.push("-");i<d;){for(s=b,g=0;g<d;++g)v<=(c=e[g])&&c<s&&(s=c);if(s-v>Math.floor((b-m)/(i+1)))throw RangeError("punycode_overflow (1)");for(m+=(s-v)*(i+1),v=s,g=0;g<d;++g){if((c=e[g])<v&&++m>b)return Error("punycode_overflow(2)");if(c==v){for(o=m,a=36;!(o<(l=a<=f?1:f+26<=a?26:a-f));a+=36)h.push(String.fromCharCode(y(l+(o-l)%(36-l),0))),o=Math.floor((o-l)/(36-l));h.push(String.fromCharCode(y(o,t&&r[g]?1:0))),f=x(m,i+1,i==n),m=0,++i}}++m,++v}return h.join("")},this.ToASCII=function(e){for(var t=e.split("."),i=[],n=0;n<t.length;++n){var s=t[n];i.push(s.match(/[^A-Za-z0-9-]/)?"xn--"+punycode.encode(s):s)}return i.join(".")},this.ToUnicode=function(e){for(var t=e.split("."),i=[],n=0;n<t.length;++n){var s=t[n];i.push(s.match(/^xn--/)?punycode.decode(s.slice(4)):s)}return i.join(".")}};function sortTable(s){let e=document.createElement("script");e.setAttribute("src","/js/sortable.min.js"),e.addEventListener("load",function(){let n=document.querySelector("#sortable-table");null!=n&&Sortable.create(n,{draggable:"tbody",handle:".icon.handle",onStart:function(){},onUpdate:function(e){let t=n.querySelectorAll("tbody"),i=[];t.forEach(function(e){i.push(parseInt(e.getAttribute("v-id")))}),s(i)}})}),document.head.appendChild(e)}function sortLoad(e){let t=document.createElement("script");t.setAttribute("src","/js/sortable.min.js"),t.addEventListener("load",function(){"function"==typeof e&&e()}),document.head.appendChild(t)}function emitClick(e,arguments){let t=["click"];for(let e=0;e<arguments.length;e++)t.push(arguments[e]);e.$emit.apply(e,t)}Vue.component("http-firewall-block-options-viewer",{props:["v-block-options"],data:function(){return{options:this.vBlockOptions}},template:`<div>
 	<span v-if="options == null">默认设置</span>
 	<div v-else>
 		状态码：{{options.statusCode}} / 提示内容：<span v-if="options.body != null && options.body.length > 0">[{{options.body.length}}字符]</span><span v-else class="disabled">[无]</span>  / 超时时间：{{options.timeout}}秒 <span v-if="options.timeoutMax > options.timeout">/ 最大封禁时长：{{options.timeoutMax}}秒</span>
@@ -4397,7 +4633,7 @@ example2.com
 				
 				<!-- cc2 -->
 				<span v-if="rule.param == '\${cc2}'">
-					{{rule.checkpointOptions.period}}秒/{{rule.checkpointOptions.threshold}}请求
+					{{rule.checkpointOptions.period}}秒内请求数
 				</span>	
 				
 				<!-- refererBlock -->
@@ -4982,6 +5218,26 @@ example2.com
 		</tbody>
 	</table>
 	<div class="margin"></div>
+</div>`}),Vue.component("http-pages-box",{props:["v-pages"],data:function(){let e=[];return{pages:e=null!=this.vPages?this.vPages:e}},methods:{addPage:function(){let t=this;teaweb.popup("/servers/server/settings/pages/createPopup",{height:"26em",callback:function(e){t.pages.push(e.data.page)}})},updatePage:function(t,e){let i=this;teaweb.popup("/servers/server/settings/pages/updatePopup?pageId="+e,{height:"26em",callback:function(e){Vue.set(i.pages,t,e.data.page)}})},removePage:function(e){let t=this;teaweb.confirm("确定要移除此页面吗？",function(){t.pages.$remove(e)})}},template:`<div>
+<input type="hidden" name="pagesJSON" :value="JSON.stringify(pages)"/>
+<table class="ui table selectable definition">
+	<tr>
+		<td class="title">自定义页面</td>
+		<td>
+			<div v-if="pages.length > 0">
+				<div class="ui label small basic" v-for="(page,index) in pages">
+					{{page.status}} -&gt; <span v-if="page.bodyType == 'url'">{{page.url}}</span><span v-if="page.bodyType == 'html'">[HTML内容]</span> <a href="" title="修改" @click.prevent="updatePage(index, page.id)"><i class="icon pencil small"></i></a> <a href="" title="删除" @click.prevent="removePage(index)"><i class="icon remove"></i></a>
+				</div>
+				<div class="ui divider"></div>
+			</div>
+			<div>
+				<button class="ui button small" type="button" @click.prevent="addPage()">+</button>
+			</div>
+			<p class="comment">根据响应状态码返回一些自定义页面，比如404，500等错误页面。</p>
+		</td>
+	</tr>
+</table>
+<div class="ui margin"></div>
 </div>`}),Vue.component("firewall-syn-flood-config-box",{props:["v-syn-flood-config"],data:function(){let e=this.vSynFloodConfig;return{config:e=null==e?{isOn:!1,minAttempts:10,timeoutSeconds:600,ignoreLocal:!0}:e,isEditing:!1,minAttempts:e.minAttempts,timeoutSeconds:e.timeoutSeconds}},methods:{edit:function(){this.isEditing=!this.isEditing}},watch:{minAttempts:function(e){let t=parseInt(e);(t=isNaN(t)?10:t)<5&&(t=5),this.config.minAttempts=t},timeoutSeconds:function(e){let t=parseInt(e);(t=isNaN(t)?10:t)<60&&(t=60),this.config.timeoutSeconds=t}},template:`<div>
 	<input type="hidden" name="synFloodJSON" :value="JSON.stringify(config)"/>
 	<a href="" @click.prevent="edit">
@@ -5321,7 +5577,7 @@ example2.com
         <div class="ui active inline loader small"></div>  &nbsp; <slot></slot>
     </div>`}),Vue.component("file-textarea",{props:["value"],data:function(){let e=this.value;return{realValue:e="string"!=typeof e?"":e}},mounted:function(){},methods:{dragover:function(){},drop:function(e){let t=this;e.dataTransfer.items[0].getAsFile().text().then(function(e){t.setValue(e)})},setValue:function(e){this.realValue=e},focus:function(){this.$refs.textarea.focus()}},template:'<textarea @drop.prevent="drop" @dragover.prevent="dragover" ref="textarea" v-model="realValue"></textarea>'}),Vue.component("more-options-angle",{data:function(){return{isVisible:!1}},methods:{show:function(){this.isVisible=!this.isVisible,this.$emit("change",this.isVisible)}},template:'<a href="" @click.prevent="show()"><span v-if="!isVisible">更多选项</span><span v-if="isVisible">收起选项</span><i class="icon angle" :class="{down:!isVisible, up:isVisible}"></i></a>'}),Vue.component("columns-grid",{props:[],mounted:function(){this.columns=this.calculateColumns();let e=this;window.addEventListener("resize",function(){e.columns=e.calculateColumns()})},data:function(){return{columns:"four"}},methods:{calculateColumns:function(){var e=window.innerWidth;let i=Math.floor(e/250);0==i&&(i=1);var n=this.$el.getElementsByClassName("column");if(0!=n.length){e=n.length;i>e&&(i=e);for(let t=0;t<n.length;t++){let e=n[t];e.className=e.className.replace("with-border",""),t%i!=i-1&&t!=n.length-1||(e.className+=" with-border")}switch(i){case 1:return"one";case 2:return"two";case 3:return"three";case 4:return"four";case 5:return"five";case 6:return"six";case 7:return"seven";case 8:return"eight";case 9:return"nine";default:return"ten"}}}},template:`<div :class="'ui ' + columns + ' columns grid counter-chart'">
 	<slot></slot>
-</div>`}),Vue.component("inner-menu-item",{props:["href","active","code"],data:function(){var e,t=this.active;return void 0===t&&(e="",t=(e=void 0!==window.TEA.ACTION.data.firstMenuItem?window.TEA.ACTION.data.firstMenuItem:e)==this.code),{vHref:null==this.href?"":this.href,vActive:t}},template:'\t\t<a :href="vHref" class="item right" style="color:#4183c4" :class="{active:vActive}">[<slot></slot>]</a> \t\t'}),Vue.component("health-check-config-box",{props:["v-health-check-config","v-check-domain-url"],data:function(){let t=this.vHealthCheckConfig,i="http",n="",s="/",o="";if(null==t){t={isOn:!1,url:"",interval:{count:60,unit:"second"},statusCodes:[200],timeout:{count:10,unit:"second"},countTries:3,tryDelay:{count:100,unit:"ms"},autoDown:!0,countUp:1,countDown:3,userAgent:"",onlyBasicRequest:!0,accessLogIsOn:!0};let e=this;setTimeout(function(){e.changeURL()},500)}else{try{let e=new URL(t.url);i=e.protocol.substring(0,e.protocol.length-1);var a=(o="%24%7Bhost%7D"==(o=e.host)?"${host}":o).indexOf(":");0<a&&(o=o.substring(0,a)),n=e.port,s=e.pathname,0<e.search.length&&(s+=e.search)}catch(e){}null==t.statusCodes&&(t.statusCodes=[200]),null==t.interval&&(t.interval={count:60,unit:"second"}),null==t.timeout&&(t.timeout={count:10,unit:"second"}),null==t.tryDelay&&(t.tryDelay={count:100,unit:"ms"}),(null==t.countUp||t.countUp<1)&&(t.countUp=1),(null==t.countDown||t.countDown<1)&&(t.countDown=3)}return{healthCheck:t,advancedVisible:!1,urlProtocol:i,urlHost:o,urlPort:n,urlRequestURI:s,urlIsEditing:0==t.url.length,hostErr:""}},watch:{urlRequestURI:function(){0<this.urlRequestURI.length&&"/"!=this.urlRequestURI[0]&&(this.urlRequestURI="/"+this.urlRequestURI),this.changeURL()},urlPort:function(e){let t=parseInt(e);isNaN(t)?this.urlPort="":this.urlPort=t.toString(),this.changeURL()},urlProtocol:function(){this.changeURL()},urlHost:function(){this.changeURL(),this.hostErr=""},"healthCheck.countTries":function(e){e=parseInt(e);isNaN(e)?this.healthCheck.countTries=0:this.healthCheck.countTries=e},"healthCheck.countUp":function(e){e=parseInt(e);isNaN(e)?this.healthCheck.countUp=0:this.healthCheck.countUp=e},"healthCheck.countDown":function(e){e=parseInt(e);isNaN(e)?this.healthCheck.countDown=0:this.healthCheck.countDown=e}},methods:{showAdvanced:function(){this.advancedVisible=!this.advancedVisible},changeURL:function(){let e=this.urlHost;0==e.length&&(e="${host}"),this.healthCheck.url=this.urlProtocol+"://"+e+(0<this.urlPort.length?":"+this.urlPort:"")+this.urlRequestURI},changeStatus:function(e){this.healthCheck.statusCodes=e.$map(function(e,t){t=parseInt(t);return isNaN(t)?0:t})},onChangeURLHost:function(){var e=this.vCheckDomainUrl;if(null!=e&&0!=e.length){let t=this;Tea.action(e).params({host:this.urlHost}).success(function(e){e.data.isOk?t.hostErr="":t.hostErr="在当前集群中找不到此域名，可能会影响健康检查结果。"}).post()}},editURL:function(){this.urlIsEditing=!this.urlIsEditing}},template:`<div>
+</div>`}),Vue.component("inner-menu-item",{props:["href","active","code"],data:function(){var e,t=this.active;return void 0===t&&(e="",t=(e=void 0!==window.TEA.ACTION.data.firstMenuItem?window.TEA.ACTION.data.firstMenuItem:e)==this.code),{vHref:null==this.href?"":this.href,vActive:t}},template:'\t\t<a :href="vHref" class="item right" style="color:#4183c4" :class="{active:vActive}">[<slot></slot>]</a> \t\t'}),Vue.component("health-check-config-box",{props:["v-health-check-config","v-check-domain-url","v-is-plus"],data:function(){let t=this.vHealthCheckConfig,i="http",n="",s="/",o="";if(null==t){t={isOn:!1,url:"",interval:{count:60,unit:"second"},statusCodes:[200],timeout:{count:10,unit:"second"},countTries:3,tryDelay:{count:100,unit:"ms"},autoDown:!0,countUp:1,countDown:3,userAgent:"",onlyBasicRequest:!0,accessLogIsOn:!0};let e=this;setTimeout(function(){e.changeURL()},500)}else{try{let e=new URL(t.url);i=e.protocol.substring(0,e.protocol.length-1);var a=(o="%24%7Bhost%7D"==(o=e.host)?"${host}":o).indexOf(":");0<a&&(o=o.substring(0,a)),n=e.port,s=e.pathname,0<e.search.length&&(s+=e.search)}catch(e){}null==t.statusCodes&&(t.statusCodes=[200]),null==t.interval&&(t.interval={count:60,unit:"second"}),null==t.timeout&&(t.timeout={count:10,unit:"second"}),null==t.tryDelay&&(t.tryDelay={count:100,unit:"ms"}),(null==t.countUp||t.countUp<1)&&(t.countUp=1),(null==t.countDown||t.countDown<1)&&(t.countDown=3)}return{healthCheck:t,advancedVisible:!1,urlProtocol:i,urlHost:o,urlPort:n,urlRequestURI:s,urlIsEditing:0==t.url.length,hostErr:""}},watch:{urlRequestURI:function(){0<this.urlRequestURI.length&&"/"!=this.urlRequestURI[0]&&(this.urlRequestURI="/"+this.urlRequestURI),this.changeURL()},urlPort:function(e){let t=parseInt(e);isNaN(t)?this.urlPort="":this.urlPort=t.toString(),this.changeURL()},urlProtocol:function(){this.changeURL()},urlHost:function(){this.changeURL(),this.hostErr=""},"healthCheck.countTries":function(e){e=parseInt(e);isNaN(e)?this.healthCheck.countTries=0:this.healthCheck.countTries=e},"healthCheck.countUp":function(e){e=parseInt(e);isNaN(e)?this.healthCheck.countUp=0:this.healthCheck.countUp=e},"healthCheck.countDown":function(e){e=parseInt(e);isNaN(e)?this.healthCheck.countDown=0:this.healthCheck.countDown=e}},methods:{showAdvanced:function(){this.advancedVisible=!this.advancedVisible},changeURL:function(){let e=this.urlHost;0==e.length&&(e="${host}"),this.healthCheck.url=this.urlProtocol+"://"+e+(0<this.urlPort.length?":"+this.urlPort:"")+this.urlRequestURI},changeStatus:function(e){this.healthCheck.statusCodes=e.$map(function(e,t){t=parseInt(t);return isNaN(t)?0:t})},onChangeURLHost:function(){var e=this.vCheckDomainUrl;if(null!=e&&0!=e.length){let t=this;Tea.action(e).params({host:this.urlHost}).success(function(e){e.data.isOk?t.hostErr="":t.hostErr="在当前集群中找不到此域名，可能会影响健康检查结果。"}).post()}},editURL:function(){this.urlIsEditing=!this.urlIsEditing}},template:`<div>
 <input type="hidden" name="healthCheckJSON" :value="JSON.stringify(healthCheck)"/>
 <table class="ui table definition selectable">
 	<tbody>
@@ -5386,13 +5642,13 @@ example2.com
 			</td>
 		</tr>
 		<tr>
-			<td>自动下线</td>
+			<td>自动下线<span v-if="vIsPlus">IP</span></td>
 			<td>
 				<div class="ui checkbox">
 					<input type="checkbox" value="1" v-model="healthCheck.autoDown"/>
 					<label></label>
 				</div>
-				<p class="comment">选中后系统会根据健康检查的结果自动标记节点的上线/下线状态，并可能自动同步DNS设置。</p>
+				<p class="comment">选中后系统会根据健康检查的结果自动标记<span v-if="vIsPlus">节点IP</span><span v-else>节点</span>的上线/下线状态，并可能自动同步DNS设置。<span v-if="!vIsPlus">注意：免费版的只能整体上下线整个节点，商业版的可以下线单个IP。</span></p>
 			</td>
 		</tr>
 		<tr v-show="healthCheck.autoDown">
@@ -5493,8 +5749,8 @@ example2.com
 			</a>
 		</div>
 	</div>
-</div>`}),Vue.component("dot",{template:'<span style="display: inline-block; padding-bottom: 3px"><i class="icon circle tiny"></i></span>'}),Vue.component("time-duration-box",{props:["v-name","v-value","v-count","v-unit"],mounted:function(){this.change()},data:function(){let e=this.vValue;return"number"!=typeof(e=null==e?{count:this.vCount,unit:this.vUnit}:e).count&&(e.count=-1),{duration:e,countString:0<=e.count?e.count.toString():""}},watch:{countString:function(e){var e=e.trim();0==e.length?this.duration.count=-1:(e=parseInt(e),isNaN(e)||(this.duration.count=e),this.change())}},methods:{change:function(){this.$emit("change",this.duration)}},template:`<div class="ui fields inline" style="padding-bottom: 0; margin-bottom: 0">
-	<input type="hidden" :name="vName" :value="JSON.stringify(duration)"/>
+</div>`}),Vue.component("dot",{template:'<span style="display: inline-block; padding-bottom: 3px"><i class="icon circle tiny"></i></span>'}),Vue.component("time-duration-box",{props:["name","v-name","v-value","v-count","v-unit"],mounted:function(){this.change()},data:function(){let e=this.vValue,t=("number"!=typeof(e=null==e?{count:this.vCount,unit:this.vUnit}:e).count&&(e.count=-1),"");return"string"==typeof this.name&&0<this.name.length?t=this.name:"string"==typeof this.vName&&0<this.vName.length&&(t=this.vName),{duration:e,countString:0<=e.count?e.count.toString():"",realName:t}},watch:{countString:function(e){var e=e.trim();0==e.length?this.duration.count=-1:(e=parseInt(e),isNaN(e)||(this.duration.count=e),this.change())}},methods:{change:function(){this.$emit("change",this.duration)}},template:`<div class="ui fields inline" style="padding-bottom: 0; margin-bottom: 0">
+	<input type="hidden" :name="realName" :value="JSON.stringify(duration)"/>
 	<div class="ui field">
 		<input type="text" v-model="countString" maxlength="11" size="11" @keypress.enter.prevent="1"/>
 	</div>
@@ -5707,6 +5963,126 @@ example2.com
 	</div>
 	<div>
 		<button class="ui button small" type="button" @click.prevent="addIPAddress()">+</button>
+	</div>
+</div>`}),Vue.component("node-schedule-conds-box",{props:["value","v-params","v-operators"],mounted:function(){this.formatConds(this.condsConfig.conds),this.$forceUpdate()},data:function(){let e=this.value,t=(null==(e=null==e?{conds:[],connector:"and"}:e).conds&&(e.conds=[]),{}),i=(this.vParams.forEach(function(e){t[e.code]=e}),{});return this.vOperators.forEach(function(e){i[e.code]=e.name}),{condsConfig:e,params:this.vParams,paramMap:t,operatorMap:i,operator:"",isAdding:!1,paramCode:"",param:null,valueBandwidth:{count:100,unit:"mb"},valueTraffic:{count:1,unit:"gb"},valueCPU:80,valueMemory:90,valueLoad:20}},watch:{paramCode:function(i){0==i.length?this.param=null:this.param=this.params.$find(function(e,t){return t.code==i}),this.$emit("changeparam",this.param)}},methods:{add:function(){this.isAdding=!0},confirm:function(){if(null==this.param)teaweb.warn("请选择参数");else if(null!=this.param.operators&&0<this.param.operators.length&&0==this.operator.length)teaweb.warn("请选择操作符");else{null!=this.param.operators&&0!=this.param.operators.length||(this.operator="");let n=null;switch(this.param.valueType){case"bandwidth":{if(0==this.valueBandwidth.unit.length)return void teaweb.warn("请选择带宽单位");let e=parseInt(this.valueBandwidth.count.toString());(e=isNaN(e)?0:e)<0&&(e=0),n={count:e,unit:this.valueBandwidth.unit}}break;case"traffic":{if(0==this.valueTraffic.unit.length)return void teaweb.warn("请选择带宽单位");let e=parseInt(this.valueTraffic.count.toString());(e=isNaN(e)?0:e)<0&&(e=0),n={count:e,unit:this.valueTraffic.unit}}break;case"cpu":let e=parseInt(this.valueCPU.toString());100<(e=(e=isNaN(e)?0:e)<0?0:e)&&(e=100),n=e;break;case"memory":let t=parseInt(this.valueMemory.toString());100<(t=(t=isNaN(t)?0:t)<0?0:t)&&(t=100),n=t;break;case"load":let i=parseInt(this.valueLoad.toString());(i=isNaN(i)?0:i)<0&&(i=0),n=i}this.condsConfig.conds.push({param:this.param.code,operator:this.operator,value:n}),this.formatConds(this.condsConfig.conds),this.cancel()}},cancel:function(){this.isAdding=!1,this.paramCode="",this.param=null},remove:function(e){this.condsConfig.conds.$remove(e)},formatConds:function(e){let t=this;e.forEach(function(e){switch(t.paramMap[e.param].valueType){case"bandwidth":return void(e.valueFormat=e.value.count+e.value.unit[0].toUpperCase()+e.value.unit.substring(1)+"ps");case"traffic":return void(e.valueFormat=e.value.count+e.value.unit.toUpperCase());case"cpu":case"memory":return void(e.valueFormat=e.value+"%");case"load":return void(e.valueFormat=e.value)}})}},template:`<div>
+	<input type="hidden" name="condsJSON" :value="JSON.stringify(this.condsConfig)"/>
+	
+	<!-- 已有条件 -->
+	<div v-if="condsConfig.conds.length > 0" style="margin-bottom: 1em">
+		<span v-for="(cond, index) in condsConfig.conds">
+			<span class="ui label basic small">
+				<span>{{paramMap[cond.param].name}} 
+					<span v-if="paramMap[cond.param].operators != null && paramMap[cond.param].operators.length > 0"><span class="grey">{{operatorMap[cond.operator]}}</span> {{cond.valueFormat}}</span> 
+					&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+				</span>
+			</span>
+			<span v-if="index < condsConfig.conds.length - 1"> &nbsp;<span v-if="condsConfig.connector == 'and'">且</span><span v-else>或</span>&nbsp; </span>
+		</span>
+	</div>
+	
+	<div v-if="isAdding">
+		<table class="ui table">
+			<tbody>
+				<tr>
+					<td class="title">参数</td>
+					<td>
+						<select class="ui dropdown auto-width" v-model="paramCode">
+							<option value="">[选择参数]</option>
+							<option v-for="paramOption in params" :value="paramOption.code">{{paramOption.name}}</option>
+						</select>
+						<p class="comment" v-if="param != null">{{param.description}}</p>
+					</td>
+				</tr>
+				<tr v-if="param != null && param.operators != null && param.operators.length > 0">
+					<td>操作符</td>
+					<td>
+						<select class="ui dropdown auto-width" v-if="param != null" v-model="operator">
+							<option value="">[选择操作符]</option>
+							<option v-for="operator in param.operators" :value="operator">{{operatorMap[operator]}}</option>
+						</select>
+					</td>
+				</tr>
+				<tr v-if="param != null && param.operators != null && param.operators.length > 0">
+					<td>{{param.valueName}}</td>
+					<td>
+						<!-- 带宽 -->
+						<div v-if="param.valueType == 'bandwidth'">
+							<div class="ui fields inline">
+								<div class="ui field">
+									<input type="text" maxlength="10" size="6" v-model="valueBandwidth.count" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+								</div>
+								<div class="ui field">
+									<select class="ui dropdown auto-width" v-model="valueBandwidth.unit">
+										<option value="gb">Gbps</option>
+										<option value="mb">Mbps</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						
+						<!-- 流量 -->
+						<div v-if="param.valueType == 'traffic'">
+							<div class="ui fields inline">
+								<div class="ui field">
+									<input type="text" maxlength="10" size="6" v-model="valueTraffic.count" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+								</div>
+								<div class="ui field">
+									<select class="ui dropdown auto-width" v-model="valueTraffic.unit">
+										<option value="mb">MB</option>
+										<option value="gb">GB</option>
+										<option value="tb">TB</option>
+										<option value="pb">PB</option>
+										<option value="eb">EB</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						
+						<!-- cpu -->
+						<div v-if="param.valueType == 'cpu'">
+							<div class="ui input right labeled">
+								<input type="text" v-model="valueCPU" maxlength="3" size="3" style="width: 4em" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+								<span class="ui label">%</span>
+							</div>
+						</div>
+						
+						<!-- memory -->
+						<div v-if="param.valueType == 'memory'">
+							<div class="ui input right labeled">
+								<input type="text" v-model="valueMemory" maxlength="3" size="3" style="width: 4em" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+								<span class="ui label">%</span>
+							</div>
+						</div>
+						
+						<!-- load -->
+						<div v-if="param.valueType == 'load'">
+							<input type="text" v-model="valueLoad" maxlength="6" size="6" style="width: 6em" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<button class="ui button small" type="button" @click.prevent="confirm">确定</button> &nbsp; <a href="" @click.prevent="cancel">取消</a>
+	</div>
+	
+	<div v-if="!isAdding">
+		<button class="ui button small" type="button" @click.prevent="add">+</button>
+	</div>
+</div>`}),Vue.component("node-schedule-action-box",{props:["value","v-actions"],data:function(){let e=this.value;return null==e&&(e={code:"",params:{}}),{actions:this.vActions,currentAction:null,actionConfig:e}},watch:{"actionConfig.code":function(i){0==i.length?this.currentAction=null:this.currentAction=this.actions.$find(function(e,t){return t.code==i}),this.actionConfig.params={}}},template:`<div>
+	<input type="hidden" name="actionJSON" :value="JSON.stringify(actionConfig)"/>
+	<div>
+		<div>
+			<select class="ui dropdown auto-width" v-model="actionConfig.code">
+				<option value="">[选择动作]</option>
+				<option v-for="action in actions" :value="action.code">{{action.name}}</option>
+			</select>
+		</div>
+		<p class="comment" v-if="currentAction != null">{{currentAction.description}}</p>
+		
+		<div v-if="actionConfig.code == 'webHook'">
+			<input type="text" placeholder="https://..." v-model="actionConfig.params.url"/>
+			<p class="comment">接收通知的URL。</p>
+		</div>
 	</div>
 </div>`}),Vue.component("node-ip-address-thresholds-view",{props:["v-thresholds"],data:function(){let e=this.vThresholds;return null==e?e=[]:e.forEach(function(e){null==e.items&&(e.items=[]),null==e.actions&&(e.actions=[])}),{thresholds:e,allItems:window.IP_ADDR_THRESHOLD_ITEMS,allOperators:[{name:"小于等于",code:"lte"},{name:"大于",code:"gt"},{name:"不等于",code:"neq"},{name:"小于",code:"lt"},{name:"大于等于",code:"gte"}],allActions:window.IP_ADDR_THRESHOLD_ACTIONS}},methods:{itemName:function(t){let i="";return this.allItems.forEach(function(e){e.code==t&&(i=e.name)}),i},itemUnitName:function(t){let i="";return this.allItems.forEach(function(e){e.code==t&&(i=e.unit)}),i},itemDurationUnitName:function(e){switch(e){case"minute":return"分钟";case"second":return"秒";case"hour":return"小时";case"day":return"天"}return e},itemOperatorName:function(t){let i="";return this.allOperators.forEach(function(e){e.code==t&&(i=e.name)}),i},actionName:function(t){let i="";return this.allActions.forEach(function(e){e.code==t&&(i=e.name)}),i}},template:`<div>
 	<!-- 已有条件 -->
@@ -5958,6 +6334,15 @@ example2.com
 </select>
 <p class="comment" v-if="typeof(levels[levelCode - 1]) != null"><plus-label
 ></plus-label>{{levels[levelCode - 1].description}}</p>
+</div>`}),Vue.component("node-schedule-conds-viewer",{props:["value","v-params","v-operators"],mounted:function(){this.formatConds(this.condsConfig.conds),this.$forceUpdate()},data:function(){let t={},i=(this.vParams.forEach(function(e){t[e.code]=e}),{});return this.vOperators.forEach(function(e){i[e.code]=e.name}),{condsConfig:this.value,paramMap:t,operatorMap:i}},methods:{formatConds:function(e){let t=this;e.forEach(function(e){switch(t.paramMap[e.param].valueType){case"bandwidth":return void(e.valueFormat=e.value.count+e.value.unit[0].toUpperCase()+e.value.unit.substring(1)+"ps");case"traffic":return void(e.valueFormat=e.value.count+e.value.unit.toUpperCase());case"cpu":case"memory":return void(e.valueFormat=e.value+"%");case"load":return void(e.valueFormat=e.value)}})}},template:`<div>
+	<span v-for="(cond, index) in condsConfig.conds">
+		<span class="ui label basic small">
+			<span>{{paramMap[cond.param].name}} 
+				<span v-if="paramMap[cond.param].operators != null && paramMap[cond.param].operators.length > 0"><span class="grey">{{operatorMap[cond.operator]}}</span> {{cond.valueFormat}}</span> 
+			</span>
+		</span>
+		<span v-if="index < condsConfig.conds.length - 1"> &nbsp;<span v-if="condsConfig.connector == 'and'">且</span><span v-else>或</span>&nbsp; </span>
+	</span>
 </div>`}),Vue.component("dns-route-selector",{props:["v-all-routes","v-routes"],data:function(){let e=this.vRoutes;return(e=null==e?[]:e).$sort(function(e,t){return e.domainId==t.domainId?e.code<t.code:e.domainId<t.domainId?1:-1}),{routes:e,routeCodes:e.$map(function(e,t){return t.code+"@"+t.domainId}),isAdding:!1,routeCode:"",keyword:"",searchingRoutes:this.vAllRoutes.$copy()}},methods:{add:function(){this.isAdding=!0,this.keyword="",this.routeCode="";let e=this;setTimeout(function(){e.$refs.keywordRef.focus()},200)},cancel:function(){this.isAdding=!1},confirm:function(){if(0!=this.routeCode.length)if(this.routeCodes.$contains(this.routeCode))teaweb.warn("已经添加过此线路，不能重复添加");else{let i=this;var e=this.vAllRoutes.$find(function(e,t){return t.code+"@"+t.domainId==i.routeCode});null!=e&&(this.routeCodes.push(this.routeCode),this.routes.push(e),this.routes.$sort(function(e,t){return e.domainId==t.domainId?e.code<t.code:e.domainId<t.domainId?1:-1}),this.routeCode="",this.isAdding=!1)}},remove:function(i){this.routeCodes.$removeValue(i.code+"@"+i.domainId),this.routes.$removeIf(function(e,t){return t.code+"@"+t.domainId==i.code+"@"+i.domainId})}},watch:{keyword:function(t){if(0==t.length)return this.searchingRoutes=this.vAllRoutes.$copy(),void(this.routeCode="");this.searchingRoutes=this.vAllRoutes.filter(function(e){return teaweb.match(e.name,t)||teaweb.match(e.code,t)||teaweb.match(e.domainName,t)}),0<this.searchingRoutes.length?this.routeCode=this.searchingRoutes[0].code+"@"+this.searchingRoutes[0].domainId:this.routeCode=""}},template:`<div>
 	<input type="hidden" name="dnsRoutesJSON" :value="JSON.stringify(routeCodes)"/>
 	<div v-if="routes.length > 0">
