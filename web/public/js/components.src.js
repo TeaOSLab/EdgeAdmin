@@ -1156,6 +1156,16 @@ Vue.component("message-row", {
 			<div v-if="message.type == 'serverNamesRequireAuditing'" style="margin-top: 0.8em">
 				<a :href="'/servers/server/settings/serverNames?serverId=' + params.serverId" target="_top">去审核</a></a>
 			</div>
+
+			<!-- 节点调度 -->
+			<div v-if="message.type == 'NodeSchedule'" style="margin-top: 0.8em">
+				<a :href="'/clusters/cluster/node/settings/schedule?clusterId=' + message.cluster.id + '&nodeId=' + message.node.id" target="_top">查看调度状态 &raquo;</a>
+			</div>
+			
+			<!-- 节点租期结束 -->
+			<div v-if="message.type == 'NodeOfflineDay'" style="margin-top: 0.8em">
+				<a :href="'/clusters/cluster/node/detail?clusterId=' + message.cluster.id + '&nodeId=' + message.node.id" target="_top">查看详情 &raquo;</a>
+			</div>
 		</td>
 	</tr>
 </table>
@@ -1520,6 +1530,116 @@ Vue.component("ns-access-log-ref-box", {
 				<td>
 					<checkbox name="logMissingDomains" value="1" v-model="config.logMissingDomains"></checkbox>
 					<p class="comment">选中后，表示日志中包含对没有在系统里创建的域名访问。</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
+</div>`
+})
+
+Vue.component("ns-records-health-check-config-box", {
+	props:["value"],
+	data: function () {
+		let config = this.value
+		if (config == null) {
+			config = {
+				isOn: false,
+				port: 80,
+				timeoutSeconds: 5,
+				countUp: 1,
+				countDown: 3
+			}
+		}
+		return {
+			config: config,
+			portString: config.port.toString(),
+			timeoutSecondsString: config.timeoutSeconds.toString(),
+			countUpString: config.countUp.toString(),
+			countDownString: config.countDown.toString()
+		}
+	},
+	watch: {
+		portString: function (value) {
+			let port = parseInt(value.toString())
+			if (isNaN(port) || port > 65535 || port < 1) {
+				this.config.port = 80
+			} else {
+				this.config.port = port
+			}
+		},
+		timeoutSecondsString: function (value) {
+			let timeoutSeconds = parseInt(value.toString())
+			if (isNaN(timeoutSeconds) || timeoutSeconds > 1000 || timeoutSeconds < 1) {
+				this.config.timeoutSeconds = 5
+			} else {
+				this.config.timeoutSeconds = timeoutSeconds
+			}
+		},
+		countUpString: function (value) {
+			let countUp = parseInt(value.toString())
+			if (isNaN(countUp) || countUp > 1000 || countUp < 1) {
+				this.config.countUp = 1
+			} else {
+				this.config.countUp = countUp
+			}
+		},
+		countDownString: function (value) {
+			let countDown = parseInt(value.toString())
+			if (isNaN(countDown) || countDown > 1000 || countDown < 1) {
+				this.config.countDown = 3
+			} else {
+				this.config.countDown = countDown
+			}
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="recordsHealthCheckJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable">
+		<tbody>
+			<tr>
+				<td class="title">启用健康检查</td>
+				<td>
+					<checkbox v-model="config.isOn"></checkbox>
+					<p class="comment">选中后，表示启用当前域名下A/AAAA记录的健康检查；启用此设置后，你仍需设置单个A/AAAA记录的健康检查。</p>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="config.isOn">
+			<tr>
+				<td>默认检测端口</td>
+				<td>
+					<input type="text" v-model="portString" maxlength="5" style="width: 5em"/>
+					<p class="comment">通过尝试连接A/AAAA记录中的IP加此端口来确定当前记录是否健康。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>默认超时时间</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 4em" v-model="timeoutSecondsString" maxlength="3"/>
+						<span class="ui label">秒</span>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>默认连续上线次数</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 4em" v-model="countUpString" maxlength="3"/>
+						<span class="ui label">次</span>
+					</div>
+					<p class="comment">连续检测<span v-if="config.countUp > 0">{{config.countUp}}</span><span v-else>N</span>次成功后，认为当前记录是在线的。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>默认连续下线次数</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 4em" v-model="countDownString" maxlength="3"/>
+						<span class="ui label">次</span>
+					</div>
+					<p class="comment">连续检测<span v-if="config.countDown > 0">{{config.countDown}}</span><span v-else>N</span>次失败后，认为当前记录是离线的。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -2266,6 +2386,161 @@ Vue.component("ns-route-ranges-box", {
 			<button class="ui button tiny" type="button" @click.prevent="addRegions">添加区域</button> &nbsp;
 		</div>	
 	</div>
+</div>`
+})
+
+Vue.component("ns-record-health-check-config-box", {
+	props:["value", "v-parent-config"],
+	data: function () {
+		let config = this.value
+		if (config == null) {
+			config = {
+				isOn: false,
+				port: 0,
+				timeoutSeconds: 0,
+				countUp: 0,
+				countDown: 0
+			}
+		}
+
+		let parentConfig = this.vParentConfig
+
+		return {
+			config: config,
+			portString: config.port.toString(),
+			timeoutSecondsString: config.timeoutSeconds.toString(),
+			countUpString: config.countUp.toString(),
+			countDownString: config.countDown.toString(),
+
+			portIsEditing: config.port > 0,
+			timeoutSecondsIsEditing: config.timeoutSeconds > 0,
+			countUpIsEditing: config.countUp > 0,
+			countDownIsEditing: config.countDown > 0,
+
+			parentConfig: parentConfig
+		}
+	},
+	watch: {
+		portString: function (value) {
+			let port = parseInt(value.toString())
+			if (isNaN(port) || port > 65535 || port < 1) {
+				this.config.port = 0
+			} else {
+				this.config.port = port
+			}
+		},
+		timeoutSecondsString: function (value) {
+			let timeoutSeconds = parseInt(value.toString())
+			if (isNaN(timeoutSeconds) || timeoutSeconds > 1000 || timeoutSeconds < 1) {
+				this.config.timeoutSeconds = 0
+			} else {
+				this.config.timeoutSeconds = timeoutSeconds
+			}
+		},
+		countUpString: function (value) {
+			let countUp = parseInt(value.toString())
+			if (isNaN(countUp) || countUp > 1000 || countUp < 1) {
+				this.config.countUp = 0
+			} else {
+				this.config.countUp = countUp
+			}
+		},
+		countDownString: function (value) {
+			let countDown = parseInt(value.toString())
+			if (isNaN(countDown) || countDown > 1000 || countDown < 1) {
+				this.config.countDown = 0
+			} else {
+				this.config.countDown = countDown
+			}
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="recordHealthCheckJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable">
+		<tbody>
+			<tr>
+				<td class="title">启用当前记录健康检查</td>
+				<td>
+					<checkbox v-model="config.isOn"></checkbox>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="config.isOn">
+			<tr>
+				<td>检测端口</td>
+				<td>
+					<span v-if="!portIsEditing" class="grey">
+						默认{{parentConfig.port}}
+						&nbsp; <a href="" @click.prevent="portIsEditing = true; portString = parentConfig.port">[修改]</a>
+					</span>
+					<div v-show="portIsEditing">
+						<div style="margin-bottom: 0.5em">
+							<a href="" @click.prevent="portIsEditing = false; portString = '0'">[使用默认]</a>
+						</div>
+						<input type="text" v-model="portString" maxlength="5" style="width: 5em"/>
+						<p class="comment">通过尝试连接A/AAAA记录中的IP加此端口来确定当前记录是否健康。</p>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>超时时间</td>
+				<td>
+					<span v-if="!timeoutSecondsIsEditing" class="grey">
+						默认{{parentConfig.timeoutSeconds}}秒
+						&nbsp; <a href="" @click.prevent="timeoutSecondsIsEditing = true; timeoutSecondsString = parentConfig.timeoutSeconds">[修改]</a>
+					</span>
+					<div v-show="timeoutSecondsIsEditing">
+						<div style="margin-bottom: 0.5em">
+							<a href="" @click.prevent="timeoutSecondsIsEditing = false; timeoutSecondsString = '0'">[使用默认]</a>
+						</div>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 4em" v-model="timeoutSecondsString" maxlength="3"/>
+							<span class="ui label">秒</span>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>默认连续上线次数</td>
+				<td>
+					<span v-if="!countUpIsEditing" class="grey">
+						默认{{parentConfig.countUp}}次
+						&nbsp; <a href="" @click.prevent="countUpIsEditing = true; countUpString = parentConfig.countUp">[修改]</a>
+					</span>
+					<div v-show="countUpIsEditing">
+						<div style="margin-bottom: 0.5em">
+							<a href="" @click.prevent="countUpIsEditing = false; countUpString = '0'">[使用默认]</a>
+						</div>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 4em" v-model="countUpString" maxlength="3"/>
+							<span class="ui label">次</span>
+						</div>
+						<p class="comment">连续检测<span v-if="config.countUp > 0">{{config.countUp}}</span><span v-else>N</span>次成功后，认为当前记录是在线的。</p>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>默认连续下线次数</td>
+				<td>
+					<span v-if="!countDownIsEditing" class="grey">
+						默认{{parentConfig.countDown}}次
+						&nbsp; <a href="" @click.prevent="countDownIsEditing = true; countDownString = parentConfig.countDown">[修改]</a>
+					</span>
+					<div v-show="countDownIsEditing">
+						<div style="margin-bottom: 0.5em">
+							<a href="" @click.prevent="countDownIsEditing = false; countDownString = '0'">[使用默认]</a>
+						</div>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 4em" v-model="countDownString" maxlength="3"/>
+							<span class="ui label">次</span>
+						</div>
+						<p class="comment">连续检测<span v-if="config.countDown > 0">{{config.countDown}}</span><span v-else>N</span>次失败后，认为当前记录是离线的。</p>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -4291,7 +4566,7 @@ Vue.component("http-firewall-rule-label", {
 
 		<!-- cc2 -->
 		<span v-if="rule.param == '\${cc2}'">
-			{{rule.checkpointOptions.period}}秒/{{rule.checkpointOptions.threshold}}请求
+			{{rule.checkpointOptions.period}}秒内请求数
 		</span>
 
 		<!-- refererBlock -->
@@ -6249,6 +6524,7 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 		let allowSameDomain = true
 		let allowDomains = []
 		let denyDomains = []
+		let checkOrigin = true
 
 		let options = {}
 		if (window.parent.UPDATING_RULE != null) {
@@ -6270,6 +6546,9 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 		if (options.denyDomains != null && typeof (options.denyDomains) == "object") {
 			denyDomains = options.denyDomains
 		}
+		if (typeof options.checkOrigin == "boolean") {
+			checkOrigin = options.checkOrigin
+		}
 
 		let that = this
 		setTimeout(function () {
@@ -6281,6 +6560,7 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 			allowSameDomain: allowSameDomain,
 			allowDomains: allowDomains,
 			denyDomains: denyDomains,
+			checkOrigin: checkOrigin,
 			options: {},
 			value: 0
 		}
@@ -6290,6 +6570,9 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 			this.change()
 		},
 		allowSameDomain: function () {
+			this.change()
+		},
+		checkOrigin: function () {
 			this.change()
 		}
 	},
@@ -6320,6 +6603,10 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 					code: "denyDomains",
 					value: this.denyDomains
 				},
+				{
+					code: "checkOrigin",
+					value: this.checkOrigin
+				}
 			]
 		}
 	},
@@ -6353,6 +6640,13 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 			<td>
 				<values-box :values="denyDomains" @change="changeDenyDomains"></values-box>
 				<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>、<code-label>*.example.org</code-label>；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>同时检查Origin</td>
+			<td>
+				<checkbox v-model="checkOrigin"></checkbox>
+				<p class="comment">如果请求没有指定Referer Header，则尝试检查Origin Header，多用于跨站调用。</p>
 			</td>
 		</tr>
 	</table>
@@ -6748,7 +7042,19 @@ Vue.component("origin-list-box", {
 Vue.component("origin-list-table", {
 	props: ["v-origins", "v-origin-type"],
 	data: function () {
-		return {}
+		let hasMatchedDomains = false
+		let origins = this.vOrigins
+		if (origins != null && origins.length > 0) {
+			origins.forEach(function (origin) {
+				if (origin.domains != null && origin.domains.length > 0) {
+					hasMatchedDomains = true
+				}
+			})
+		}
+
+		return {
+			hasMatchedDomains: hasMatchedDomains
+		}
 	},
 	methods: {
 		deleteOrigin: function (originId) {
@@ -6771,12 +7077,14 @@ Vue.component("origin-list-table", {
 	<tr v-for="origin in vOrigins">
 		<td :class="{disabled:!origin.isOn}">
 			<a href="" @click.prevent="updateOrigin(origin.id)" :class="{disabled:!origin.isOn}">{{origin.addr}} &nbsp;<i class="icon expand small"></i></a>
-			<div style="margin-top: 0.3em" v-if="origin.name.length > 0 || origin.hasCert || (origin.host != null && origin.host.length > 0) || origin.followPort || (origin.domains != null && origin.domains.length > 0)">
+			<div style="margin-top: 0.3em">
 				<tiny-basic-label v-if="origin.name.length > 0">{{origin.name}}</tiny-basic-label>
 				<tiny-basic-label v-if="origin.hasCert">证书</tiny-basic-label>
 				<tiny-basic-label v-if="origin.host != null && origin.host.length > 0">主机名: {{origin.host}}</tiny-basic-label>
 				<tiny-basic-label v-if="origin.followPort">端口跟随</tiny-basic-label>
+
 				<span v-if="origin.domains != null && origin.domains.length > 0"><tiny-basic-label v-for="domain in origin.domains">匹配: {{domain}}</tiny-basic-label></span>
+				<span v-else-if="hasMatchedDomains"><tiny-basic-label>匹配: 所有域名</tiny-basic-label></span>
 			</div>
 		</td>
 		<td :class="{disabled:!origin.isOn}">{{origin.weight}}</td>
@@ -6804,23 +7112,110 @@ Vue.component("http-cors-header-config-box", {
 				exposeHeaders: [],
 				maxAge: 0,
 				requestHeaders: [],
-				requestMethod: ""
+				requestMethod: "",
+				optionsMethodOnly: false
 			}
+		}
+		if (config.allowMethods == null) {
+			config.allowMethods = []
+		}
+		if (config.exposeHeaders == null) {
+			config.exposeHeaders = []
+		}
+
+		let maxAgeSecondsString = config.maxAge.toString()
+		if (maxAgeSecondsString == "0") {
+			maxAgeSecondsString = ""
 		}
 
 		return {
-			config: config
+			config: config,
+
+			maxAgeSecondsString: maxAgeSecondsString,
+
+			moreOptionsVisible: false
+		}
+	},
+	watch: {
+		maxAgeSecondsString: function (v) {
+			let seconds = parseInt(v)
+			if (isNaN(seconds)) {
+				seconds = 0
+			}
+			this.config.maxAge = seconds
+		}
+	},
+	methods: {
+		changeMoreOptions: function (visible) {
+			this.moreOptionsVisible = visible
+		},
+		addDefaultAllowMethods: function () {
+			let that = this
+			let defaultMethods = ["PUT", "GET", "POST", "DELETE", "HEAD", "OPTIONS", "PATCH"]
+			defaultMethods.forEach(function (method) {
+				if (!that.config.allowMethods.$contains(method)) {
+					that.config.allowMethods.push(method)
+				}
+			})
 		}
 	},
 	template: `<div>
 	<input type="hidden" name="corsJSON" :value="JSON.stringify(config)"/>
 	<table class="ui table definition selectable">
-		<tr>
-			<td class="title">启用CORS自适应跨域</td>
-			<td>
-				<checkbox v-model="config.isOn"></checkbox>
-			</td>
-		</tr>
+		<tbody>
+			<tr>
+				<td class="title">启用CORS自适应跨域</td>
+				<td>
+					<checkbox v-model="config.isOn"></checkbox>
+					<p class="comment">启用后，自动在响应Header中增加对应的<code-label>Access-Control-*</code-label>相关内容。</p>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="config.isOn">
+			<tr>
+				<td colspan="2"><more-options-indicator @change="changeMoreOptions"></more-options-indicator></td>
+			</tr>
+		</tbody>
+		<tbody v-show="config.isOn && moreOptionsVisible">
+			<tr>
+				<td>允许的请求方法列表</td>
+				<td>
+					<http-methods-box :v-methods="config.allowMethods"></http-methods-box>
+					<p class="comment"><a href="" @click.prevent="addDefaultAllowMethods">[添加默认]</a>。<code-label>Access-Control-Allow-Methods</code-label>值设置。所访问资源允许使用的方法列表，不设置则表示默认为<code-label>PUT</code-label>、<code-label>GET</code-label>、<code-label>POST</code-label>、<code-label>DELETE</code-label>、<code-label>HEAD</code-label>、<code-label>OPTIONS</code-label>、<code-label>PATCH</code-label>。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>预检结果缓存时间</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 6em" maxlength="6" v-model="maxAgeSecondsString"/>
+						<span class="ui label">秒</span>
+					</div>
+					<p class="comment"><code-label>Access-Control-Max-Age</code-label>值设置。预检结果缓存时间，0或者不填表示使用浏览器默认设置。注意每个浏览器有不同的缓存时间上限。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>允许服务器暴露的Header</td>
+				<td>
+					<values-box :v-values="config.exposeHeaders"></values-box>
+					<p class="comment"><code-label>Access-Control-Expose-Headers</code-label>值设置。允许服务器暴露的Header，请注意Header的大小写。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>实际请求方法</td>
+				<td>
+					<input type="text" v-model="config.requestMethod"/>
+					<p class="comment"><code-label>Access-Control-Request-Method</code-label>值设置。实际请求服务器时使用的方法，比如<code-label>POST</code-label>。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>仅OPTIONS有效</td>
+				<td>
+					<checkbox v-model="config.optionsMethodOnly"></checkbox>
+					<p class="comment">选中后，表示当前CORS设置仅在OPTIONS方法请求时有效。</p>
+				</td>
+			</tr>
+		</tbody>
 	</table>
 	<div class="margin"></div>
 </div>`
@@ -7674,7 +8069,8 @@ Vue.component("http-referers-config-box", {
 				allowEmpty: true,
 				allowSameDomain: true,
 				allowDomains: [],
-				denyDomains: []
+				denyDomains: [],
+				checkOrigin: true
 			}
 		}
 		if (config.allowDomains == null) {
@@ -7747,6 +8143,13 @@ Vue.component("http-referers-config-box", {
 			<td>
 				<domains-box :v-domains="config.denyDomains" @change="changeDenyDomains"></domains-box>
 				<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>、<code-label>*.example.org</code-label>；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>同时检查Origin</td>
+			<td>
+				<checkbox v-model="config.checkOrigin"></checkbox>
+				<p class="comment">如果请求没有指定Referer Header，则尝试检查Origin Header，多用于跨站调用。</p>
 			</td>
 		</tr>
 	</tbody>
@@ -8998,6 +9401,7 @@ Vue.component("http-header-policy-box", {
 		// 请求相关
 		let requestSettingHeaders = []
 		let requestDeletingHeaders = []
+		let requestNonStandardHeaders = []
 
 		let requestPolicy = this.vRequestHeaderPolicy
 		if (requestPolicy != null) {
@@ -9007,11 +9411,15 @@ Vue.component("http-header-policy-box", {
 			if (requestPolicy.deleteHeaders != null) {
 				requestDeletingHeaders = requestPolicy.deleteHeaders
 			}
+			if (requestPolicy.nonStandardHeaders != null) {
+				requestNonStandardHeaders = requestPolicy.nonStandardHeaders
+			}
 		}
 
 		// 响应相关
 		let responseSettingHeaders = []
 		let responseDeletingHeaders = []
+		let responseNonStandardHeaders = []
 
 		let responsePolicy = this.vResponseHeaderPolicy
 		if (responsePolicy != null) {
@@ -9020,6 +9428,9 @@ Vue.component("http-header-policy-box", {
 			}
 			if (responsePolicy.deleteHeaders != null) {
 				responseDeletingHeaders = responsePolicy.deleteHeaders
+			}
+			if (responsePolicy.nonStandardHeaders != null) {
+				responseNonStandardHeaders = responsePolicy.nonStandardHeaders
 			}
 		}
 
@@ -9033,12 +9444,16 @@ Vue.component("http-header-policy-box", {
 		return {
 			type: type,
 			typeName: (type == "request") ? "请求" : "响应",
+
 			requestHeaderRef: requestHeaderRef,
 			responseHeaderRef: responseHeaderRef,
 			requestSettingHeaders: requestSettingHeaders,
 			requestDeletingHeaders: requestDeletingHeaders,
+			requestNonStandardHeaders: requestNonStandardHeaders,
+
 			responseSettingHeaders: responseSettingHeaders,
 			responseDeletingHeaders: responseDeletingHeaders,
+			responseNonStandardHeaders: responseNonStandardHeaders,
 			responseCORS: responseCORS
 		}
 	},
@@ -9062,8 +9477,15 @@ Vue.component("http-header-policy-box", {
 				}
 			})
 		},
+		addNonStandardHeader: function (policyId, type) {
+			teaweb.popup("/servers/server/settings/headers/createNonStandardPopup?" + this.vParams + "&headerPolicyId=" + policyId + "&type=" + type, {
+				callback: function () {
+					teaweb.successRefresh("保存成功")
+				}
+			})
+		},
 		updateSettingPopup: function (policyId, headerId) {
-			teaweb.popup("/servers/server/settings/headers/updateSetPopup?" + this.vParams + "&headerPolicyId=" + policyId + "&headerId=" + headerId+ "&type=" + this.type, {
+			teaweb.popup("/servers/server/settings/headers/updateSetPopup?" + this.vParams + "&headerPolicyId=" + policyId + "&headerId=" + headerId + "&type=" + this.type, {
 				callback: function () {
 					teaweb.successRefresh("保存成功")
 				}
@@ -9072,6 +9494,17 @@ Vue.component("http-header-policy-box", {
 		deleteDeletingHeader: function (policyId, headerName) {
 			teaweb.confirm("确定要删除'" + headerName + "'吗？", function () {
 				Tea.action("/servers/server/settings/headers/deleteDeletingHeader")
+					.params({
+						headerPolicyId: policyId,
+						headerName: headerName
+					})
+					.post()
+					.refresh()
+			})
+		},
+		deleteNonStandardHeader: function (policyId, headerName) {
+			teaweb.confirm("确定要删除'" + headerName + "'吗？", function () {
+				Tea.action("/servers/server/settings/headers/deleteNonStandardHeader")
 					.params({
 						headerPolicyId: policyId,
 						headerName: headerName
@@ -9094,6 +9527,7 @@ Vue.component("http-header-policy-box", {
 		},
 		updateCORS: function (policyId) {
 			teaweb.popup("/servers/server/settings/headers/updateCORSPopup?" + this.vParams + "&headerPolicyId=" + policyId + "&type=" + this.type, {
+				height: "30em",
 				callback: function () {
 					teaweb.successRefresh("保存成功")
 				}
@@ -9125,7 +9559,7 @@ Vue.component("http-header-policy-box", {
         	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#request'">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
     	</div>
     	<div :class="{'opacity-mask': vHasGroupRequestConfig}">
-		<h4>设置请求Header <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)">[添加新Header]</a></h4>
+		<h4>设置请求Header &nbsp; <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)" style="font-size: 0.8em">[添加新Header]</a></h4>
 			<p class="comment" v-if="requestSettingHeaders.length == 0">暂时还没有Header。</p>
 			<table class="ui table selectable celled" v-if="requestSettingHeaders.length > 0">
 				<thead>
@@ -9154,20 +9588,31 @@ Vue.component("http-header-policy-box", {
 				</tbody>
 			</table>
 			
-			<h4>删除请求Header</h4>
-			<p class="comment">这里可以设置需要从请求中删除的Header。</p>
+			<h4>其他设置</h4>
 			
 			<table class="ui table definition selectable">
-				<tr>
-					<td class="title">需要删除的Header</td>
-					<td>
-						<div v-if="requestDeletingHeaders.length > 0">
-							<div class="ui label small basic" v-for="headerName in requestDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
-							<div class="ui divider" ></div>
-						</div>
-						<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vRequestHeaderPolicy.id, 'request')">+</button>
-					</td>
-				</tr>
+				<tbody>
+					<tr>
+						<td class="title">删除Header <tip-icon content="可以通过此功能删除转发到源站的请求报文中不需要的Header"></tip-icon></td>
+						<td>
+							<div v-if="requestDeletingHeaders.length > 0">
+								<div class="ui label small basic" v-for="headerName in requestDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
+								<div class="ui divider" ></div>
+							</div>
+							<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vRequestHeaderPolicy.id, 'request')">+</button>
+						</td>
+					</tr>
+					<tr>
+						<td class="title">非标Header <tip-icon content="可以通过此功能设置转发到源站的请求报文中非标准的Header，比如hello_world"></tip-icon></td>
+						<td>
+							<div v-if="requestNonStandardHeaders.length > 0">
+								<div class="ui label small basic" v-for="headerName in requestNonStandardHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteNonStandardHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
+								<div class="ui divider" ></div>
+							</div>
+							<button class="ui button small" type="button" @click.prevent="addNonStandardHeader(vRequestHeaderPolicy.id, 'request')">+</button>
+						</td>
+					</tr>
+				</tbody>
 			</table>
 		</div>			
 	</div>
@@ -9187,7 +9632,7 @@ Vue.component("http-header-policy-box", {
         	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#response'">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
     	</div>
     	<div :class="{'opacity-mask': vHasGroupResponseConfig}">
-			<h4>设置响应Header <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)">[添加新Header]</a></h4>
+			<h4>设置响应Header &nbsp; <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)" style="font-size: 0.8em">[添加新Header]</a></h4>
 			<p class="comment" style="margin-top: 0; padding-top: 0">将会覆盖已有的同名Header。</p>
 			<p class="comment" v-if="responseSettingHeaders.length == 0">暂时还没有Header。</p>
 			<table class="ui table selectable celled" v-if="responseSettingHeaders.length > 0">
@@ -9210,6 +9655,11 @@ Vue.component("http-header-policy-box", {
 								<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
 								<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
 							</div>
+							
+							<!-- CORS -->
+							<div v-if="header.name == 'Access-Control-Allow-Origin' && header.value == '*'">
+								<span class="red small">建议使用当前页面下方的"CORS自适应跨域"功能代替Access-Control-*-*相关Header。</span>
+							</div>
 						</td>
 						<td>{{header.value}}</td>
 						<td><a href="" @click.prevent="updateSettingPopup(vResponseHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteHeader(vResponseHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
@@ -9217,31 +9667,38 @@ Vue.component("http-header-policy-box", {
 				</tbody>
 			</table>
 			
-			<h4>删除响应Header</h4>
-			<p class="comment">这里可以设置需要从响应中删除的Header。</p>
-			
-			<table class="ui table definition selectable">
-				<tr>
-					<td class="title">需要删除的Header</td>
-					<td>
-						<div v-if="responseDeletingHeaders.length > 0">
-							<div class="ui label small basic" v-for="headerName in responseDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vResponseHeaderPolicy.id, headerName)"></i></a> </div>
-							<div class="ui divider" ></div>
-						</div>
-						<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vResponseHeaderPolicy.id, 'response')">+</button>
-					</td>
-				</tr>
-			</table>
-			
 			<h4>其他设置</h4>
 			
 			<table class="ui table definition selectable">
-				<tr>
-					<td class="title">CORS自适应跨域</td>
-					<td>
-						<span v-if="responseCORS.isOn" class="green">已启用</span><span class="disabled" v-else="">未启用</span> &nbsp; <a href="" @click.prevent="updateCORS(vResponseHeaderPolicy.id)">[修改]</a>
-					</td>
-				</tr>
+				<tbody>
+					<tr>
+						<td class="title">删除Header <tip-icon content="可以通过此功能删除响应报文中不需要的Header"></tip-icon></td>
+						<td>
+							<div v-if="responseDeletingHeaders.length > 0">
+								<div class="ui label small basic" v-for="headerName in responseDeletingHeaders">{{headerName}} &nbsp; <a href=""><i class="icon remove small" title="删除" @click.prevent="deleteDeletingHeader(vResponseHeaderPolicy.id, headerName)"></i></a></div>
+								<div class="ui divider" ></div>
+							</div>
+							<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vResponseHeaderPolicy.id, 'response')">+</button>
+						</td>
+					</tr>
+					<tr>
+						<td>非标Header <tip-icon content="可以通过此功能设置响应报文中非标准的Header，比如hello_world"></tip-icon></td>
+						<td>
+							<div v-if="responseNonStandardHeaders.length > 0">
+								<div class="ui label small basic" v-for="headerName in responseNonStandardHeaders">{{headerName}} &nbsp; <a href=""><i class="icon remove small" title="删除" @click.prevent="deleteNonStandardHeader(vResponseHeaderPolicy.id, headerName)"></i></a></div>
+								<div class="ui divider" ></div>
+							</div>
+							<button class="ui button small" type="button" @click.prevent="addNonStandardHeader(vResponseHeaderPolicy.id, 'response')">+</button>
+						</td>
+					</tr>
+					<tr>
+						<td class="title">CORS自适应跨域</td>
+						<td>
+							<span v-if="responseCORS.isOn" class="green">已启用</span><span class="disabled" v-else="">未启用</span> &nbsp; <a href="" @click.prevent="updateCORS(vResponseHeaderPolicy.id)">[修改]</a>
+							<p class="comment"><span v-if="!responseCORS.isOn">启用后，服务器可以</span><span v-else>服务器会</span>自动生成<code-label>Access-Control-*-*</code-label>相关的Header。</p>
+						</td>
+					</tr>
+				</tbody>
 			</table>
 		</div>		
 	</div>
@@ -12473,7 +12930,7 @@ Vue.component("http-firewall-rules-box", {
 				
 				<!-- cc2 -->
 				<span v-if="rule.param == '\${cc2}'">
-					{{rule.checkpointOptions.period}}秒/{{rule.checkpointOptions.threshold}}请求
+					{{rule.checkpointOptions.period}}秒内请求数
 				</span>	
 				
 				<!-- refererBlock -->
@@ -14213,6 +14670,67 @@ Vue.component("user-agent-config-box", {
 		</tbody>
 	</table>
 	<div class="margin"></div>
+</div>`
+})
+
+Vue.component("http-pages-box", {
+	props: ["v-pages"],
+	data: function () {
+		let pages = []
+		if (this.vPages != null) {
+			pages = this.vPages
+		}
+
+		return {
+			pages: pages
+		}
+	},
+	methods: {
+		addPage: function () {
+			let that = this
+			teaweb.popup("/servers/server/settings/pages/createPopup", {
+				height: "26em",
+				callback: function (resp) {
+					that.pages.push(resp.data.page)
+				}
+			})
+		},
+		updatePage: function (pageIndex, pageId) {
+			let that = this
+			teaweb.popup("/servers/server/settings/pages/updatePopup?pageId=" + pageId, {
+				height: "26em",
+				callback: function (resp) {
+					Vue.set(that.pages, pageIndex, resp.data.page)
+				}
+			})
+		},
+		removePage: function (pageIndex) {
+			let that = this
+			teaweb.confirm("确定要移除此页面吗？", function () {
+				that.pages.$remove(pageIndex)
+			})
+		}
+	},
+	template: `<div>
+<input type="hidden" name="pagesJSON" :value="JSON.stringify(pages)"/>
+<table class="ui table selectable definition">
+	<tr>
+		<td class="title">自定义页面</td>
+		<td>
+			<div v-if="pages.length > 0">
+				<div class="ui label small basic" v-for="(page,index) in pages">
+					{{page.status}} -&gt; <span v-if="page.bodyType == 'url'">{{page.url}}</span><span v-if="page.bodyType == 'html'">[HTML内容]</span> <a href="" title="修改" @click.prevent="updatePage(index, page.id)"><i class="icon pencil small"></i></a> <a href="" title="删除" @click.prevent="removePage(index)"><i class="icon remove"></i></a>
+				</div>
+				<div class="ui divider"></div>
+			</div>
+			<div>
+				<button class="ui button small" type="button" @click.prevent="addPage()">+</button>
+			</div>
+			<p class="comment">根据响应状态码返回一些自定义页面，比如404，500等错误页面。</p>
+		</td>
+	</tr>
+</table>
+<div class="ui margin"></div>
 </div>`
 })
 
@@ -15972,7 +16490,7 @@ Vue.component("inner-menu-item", {
 });
 
 Vue.component("health-check-config-box", {
-	props: ["v-health-check-config", "v-check-domain-url"],
+	props: ["v-health-check-config", "v-check-domain-url", "v-is-plus"],
 	data: function () {
 		let healthCheckConfig = this.vHealthCheckConfig
 		let urlProtocol = "http"
@@ -16042,6 +16560,7 @@ Vue.component("health-check-config-box", {
 				healthCheckConfig.countDown = 3
 			}
 		}
+
 		return {
 			healthCheck: healthCheckConfig,
 			advancedVisible: false,
@@ -16210,13 +16729,13 @@ Vue.component("health-check-config-box", {
 			</td>
 		</tr>
 		<tr>
-			<td>自动下线</td>
+			<td>自动下线<span v-if="vIsPlus">IP</span></td>
 			<td>
 				<div class="ui checkbox">
 					<input type="checkbox" value="1" v-model="healthCheck.autoDown"/>
 					<label></label>
 				</div>
-				<p class="comment">选中后系统会根据健康检查的结果自动标记节点的上线/下线状态，并可能自动同步DNS设置。</p>
+				<p class="comment">选中后系统会根据健康检查的结果自动标记<span v-if="vIsPlus">节点IP</span><span v-else>节点</span>的上线/下线状态，并可能自动同步DNS设置。<span v-if="!vIsPlus">注意：免费版的只能整体上下线整个节点，商业版的可以下线单个IP。</span></p>
 			</td>
 		</tr>
 		<tr v-show="healthCheck.autoDown">
@@ -16609,7 +17128,7 @@ Vue.component("dot", {
 })
 
 Vue.component("time-duration-box", {
-	props: ["v-name", "v-value", "v-count", "v-unit"],
+	props: ["name", "v-name", "v-value", "v-count", "v-unit"],
 	mounted: function () {
 		this.change()
 	},
@@ -16624,9 +17143,18 @@ Vue.component("time-duration-box", {
 		if (typeof (v["count"]) != "number") {
 			v["count"] = -1
 		}
+
+		let realName = ""
+		if (typeof this.name == "string" && this.name.length > 0) {
+			realName = this.name
+		} else if (typeof this.vName == "string" && this.vName.length > 0) {
+			realName = this.vName
+		}
+
 		return {
 			duration: v,
-			countString: (v.count >= 0) ? v.count.toString() : ""
+			countString: (v.count >= 0) ? v.count.toString() : "",
+			realName: realName
 		}
 	},
 	watch: {
@@ -16649,7 +17177,7 @@ Vue.component("time-duration-box", {
 		}
 	},
 	template: `<div class="ui fields inline" style="padding-bottom: 0; margin-bottom: 0">
-	<input type="hidden" :name="vName" :value="JSON.stringify(duration)"/>
+	<input type="hidden" :name="realName" :value="JSON.stringify(duration)"/>
 	<div class="ui field">
 		<input type="text" v-model="countString" maxlength="11" size="11" @keypress.enter.prevent="1"/>
 	</div>
@@ -17978,6 +18506,359 @@ Vue.component("node-ip-addresses-box", {
 </div>`
 })
 
+Vue.component("node-schedule-conds-box", {
+	props: ["value", "v-params", "v-operators"],
+	mounted: function () {
+		this.formatConds(this.condsConfig.conds)
+		this.$forceUpdate()
+	},
+	data: function () {
+		let condsConfig = this.value
+		if (condsConfig == null) {
+			condsConfig = {
+				conds: [],
+				connector: "and"
+			}
+		}
+		if (condsConfig.conds == null) {
+			condsConfig.conds = []
+		}
+
+		let paramMap = {}
+		this.vParams.forEach(function (param) {
+			paramMap[param.code] = param
+		})
+
+		let operatorMap = {}
+		this.vOperators.forEach(function (operator) {
+			operatorMap[operator.code] = operator.name
+		})
+
+		return {
+			condsConfig: condsConfig,
+			params: this.vParams,
+			paramMap: paramMap,
+			operatorMap: operatorMap,
+			operator: "",
+
+			isAdding: false,
+
+			paramCode: "",
+			param: null,
+
+			valueBandwidth: {
+				count: 100,
+				unit: "mb"
+			},
+			valueTraffic: {
+				count: 1,
+				unit: "gb"
+			},
+			valueCPU: 80,
+			valueMemory: 90,
+			valueLoad: 20
+		}
+	},
+	watch: {
+		paramCode: function (code) {
+			if (code.length == 0) {
+				this.param = null
+			} else {
+				this.param = this.params.$find(function (k, v) {
+					return v.code == code
+				})
+			}
+			this.$emit("changeparam", this.param)
+		}
+	},
+	methods: {
+		add: function () {
+			this.isAdding = true
+		},
+		confirm: function () {
+			if (this.param == null) {
+				teaweb.warn("请选择参数")
+				return
+			}
+			if (this.param.operators != null && this.param.operators.length > 0 && this.operator.length == 0) {
+				teaweb.warn("请选择操作符")
+				return
+			}
+			if (this.param.operators == null || this.param.operators.length == 0) {
+				this.operator = ""
+			}
+
+			let value = null
+			switch (this.param.valueType) {
+				case "bandwidth": {
+					if (this.valueBandwidth.unit.length == 0) {
+						teaweb.warn("请选择带宽单位")
+						return
+					}
+					let count = parseInt(this.valueBandwidth.count.toString())
+					if (isNaN(count)) {
+						count = 0
+					}
+					if (count < 0) {
+						count = 0
+					}
+					value = {
+						count: count,
+						unit: this.valueBandwidth.unit
+					}
+				}
+					break
+				case "traffic": {
+					if (this.valueTraffic.unit.length == 0) {
+						teaweb.warn("请选择带宽单位")
+						return
+					}
+					let count = parseInt(this.valueTraffic.count.toString())
+					if (isNaN(count)) {
+						count = 0
+					}
+					if (count < 0) {
+						count = 0
+					}
+					value = {
+						count: count,
+						unit: this.valueTraffic.unit
+					}
+				}
+					break
+				case "cpu":
+					let cpu = parseInt(this.valueCPU.toString())
+					if (isNaN(cpu)) {
+						cpu = 0
+					}
+					if (cpu < 0) {
+						cpu = 0
+					}
+					if (cpu > 100) {
+						cpu = 100
+					}
+					value = cpu
+					break
+				case "memory":
+					let memory = parseInt(this.valueMemory.toString())
+					if (isNaN(memory)) {
+						memory = 0
+					}
+					if (memory < 0) {
+						memory = 0
+					}
+					if (memory > 100) {
+						memory = 100
+					}
+					value = memory
+					break
+				case "load":
+					let load = parseInt(this.valueLoad.toString())
+					if (isNaN(load)) {
+						load = 0
+					}
+					if (load < 0) {
+						load = 0
+					}
+					value = load
+					break
+			}
+
+			this.condsConfig.conds.push({
+				param: this.param.code,
+				operator: this.operator,
+				value: value
+			})
+			this.formatConds(this.condsConfig.conds)
+
+			this.cancel()
+		},
+		cancel: function () {
+			this.isAdding = false
+			this.paramCode = ""
+			this.param = null
+		},
+		remove: function (index) {
+			this.condsConfig.conds.$remove(index)
+		},
+		formatConds: function (conds) {
+			let that = this
+			conds.forEach(function (cond) {
+				switch (that.paramMap[cond.param].valueType) {
+					case "bandwidth":
+						cond.valueFormat = cond.value.count + cond.value.unit[0].toUpperCase() + cond.value.unit.substring(1) + "ps"
+						return
+					case "traffic":
+						cond.valueFormat = cond.value.count + cond.value.unit.toUpperCase()
+						return
+					case "cpu":
+						cond.valueFormat = cond.value + "%"
+						return
+					case "memory":
+						cond.valueFormat = cond.value + "%"
+						return
+					case "load":
+						cond.valueFormat = cond.value
+						return
+				}
+			})
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="condsJSON" :value="JSON.stringify(this.condsConfig)"/>
+	
+	<!-- 已有条件 -->
+	<div v-if="condsConfig.conds.length > 0" style="margin-bottom: 1em">
+		<span v-for="(cond, index) in condsConfig.conds">
+			<span class="ui label basic small">
+				<span>{{paramMap[cond.param].name}} 
+					<span v-if="paramMap[cond.param].operators != null && paramMap[cond.param].operators.length > 0"><span class="grey">{{operatorMap[cond.operator]}}</span> {{cond.valueFormat}}</span> 
+					&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+				</span>
+			</span>
+			<span v-if="index < condsConfig.conds.length - 1"> &nbsp;<span v-if="condsConfig.connector == 'and'">且</span><span v-else>或</span>&nbsp; </span>
+		</span>
+	</div>
+	
+	<div v-if="isAdding">
+		<table class="ui table">
+			<tbody>
+				<tr>
+					<td class="title">参数</td>
+					<td>
+						<select class="ui dropdown auto-width" v-model="paramCode">
+							<option value="">[选择参数]</option>
+							<option v-for="paramOption in params" :value="paramOption.code">{{paramOption.name}}</option>
+						</select>
+						<p class="comment" v-if="param != null">{{param.description}}</p>
+					</td>
+				</tr>
+				<tr v-if="param != null && param.operators != null && param.operators.length > 0">
+					<td>操作符</td>
+					<td>
+						<select class="ui dropdown auto-width" v-if="param != null" v-model="operator">
+							<option value="">[选择操作符]</option>
+							<option v-for="operator in param.operators" :value="operator">{{operatorMap[operator]}}</option>
+						</select>
+					</td>
+				</tr>
+				<tr v-if="param != null && param.operators != null && param.operators.length > 0">
+					<td>{{param.valueName}}</td>
+					<td>
+						<!-- 带宽 -->
+						<div v-if="param.valueType == 'bandwidth'">
+							<div class="ui fields inline">
+								<div class="ui field">
+									<input type="text" maxlength="10" size="6" v-model="valueBandwidth.count" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+								</div>
+								<div class="ui field">
+									<select class="ui dropdown auto-width" v-model="valueBandwidth.unit">
+										<option value="gb">Gbps</option>
+										<option value="mb">Mbps</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						
+						<!-- 流量 -->
+						<div v-if="param.valueType == 'traffic'">
+							<div class="ui fields inline">
+								<div class="ui field">
+									<input type="text" maxlength="10" size="6" v-model="valueTraffic.count" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+								</div>
+								<div class="ui field">
+									<select class="ui dropdown auto-width" v-model="valueTraffic.unit">
+										<option value="mb">MB</option>
+										<option value="gb">GB</option>
+										<option value="tb">TB</option>
+										<option value="pb">PB</option>
+										<option value="eb">EB</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						
+						<!-- cpu -->
+						<div v-if="param.valueType == 'cpu'">
+							<div class="ui input right labeled">
+								<input type="text" v-model="valueCPU" maxlength="3" size="3" style="width: 4em" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+								<span class="ui label">%</span>
+							</div>
+						</div>
+						
+						<!-- memory -->
+						<div v-if="param.valueType == 'memory'">
+							<div class="ui input right labeled">
+								<input type="text" v-model="valueMemory" maxlength="3" size="3" style="width: 4em" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+								<span class="ui label">%</span>
+							</div>
+						</div>
+						
+						<!-- load -->
+						<div v-if="param.valueType == 'load'">
+							<input type="text" v-model="valueLoad" maxlength="6" size="6" style="width: 6em" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<button class="ui button small" type="button" @click.prevent="confirm">确定</button> &nbsp; <a href="" @click.prevent="cancel">取消</a>
+	</div>
+	
+	<div v-if="!isAdding">
+		<button class="ui button small" type="button" @click.prevent="add">+</button>
+	</div>
+</div>`
+})
+
+Vue.component("node-schedule-action-box", {
+	props: ["value", "v-actions"],
+	data: function () {
+		let actionConfig = this.value
+		if (actionConfig == null) {
+			actionConfig = {
+				code: "",
+				params: {}
+			}
+		}
+
+		return {
+			actions: this.vActions,
+			currentAction: null,
+			actionConfig: actionConfig
+		}
+	},
+	watch: {
+		"actionConfig.code": function (actionCode) {
+			if (actionCode.length == 0) {
+				this.currentAction = null
+			} else {
+				this.currentAction = this.actions.$find(function (k, v) {
+					return v.code == actionCode
+				})
+			}
+			this.actionConfig.params = {}
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="actionJSON" :value="JSON.stringify(actionConfig)"/>
+	<div>
+		<div>
+			<select class="ui dropdown auto-width" v-model="actionConfig.code">
+				<option value="">[选择动作]</option>
+				<option v-for="action in actions" :value="action.code">{{action.name}}</option>
+			</select>
+		</div>
+		<p class="comment" v-if="currentAction != null">{{currentAction.description}}</p>
+		
+		<div v-if="actionConfig.code == 'webHook'">
+			<input type="text" placeholder="https://..." v-model="actionConfig.params.url"/>
+			<p class="comment">接收通知的URL。</p>
+		</div>
+	</div>
+</div>`
+})
+
 // 节点IP阈值
 Vue.component("node-ip-address-thresholds-view", {
 	props: ["v-thresholds"],
@@ -18770,6 +19651,65 @@ Vue.component("node-level-selector", {
 </select>
 <p class="comment" v-if="typeof(levels[levelCode - 1]) != null"><plus-label
 ></plus-label>{{levels[levelCode - 1].description}}</p>
+</div>`
+})
+
+Vue.component("node-schedule-conds-viewer", {
+	props: ["value", "v-params", "v-operators"],
+	mounted: function () {
+		this.formatConds(this.condsConfig.conds)
+		this.$forceUpdate()
+	},
+	data: function () {
+		let paramMap = {}
+		this.vParams.forEach(function (param) {
+			paramMap[param.code] = param
+		})
+
+		let operatorMap = {}
+		this.vOperators.forEach(function (operator) {
+			operatorMap[operator.code] = operator.name
+		})
+
+		return {
+			condsConfig: this.value,
+			paramMap: paramMap,
+			operatorMap: operatorMap
+		}
+	},
+	methods: {
+		formatConds: function (conds) {
+			let that = this
+			conds.forEach(function (cond) {
+				switch (that.paramMap[cond.param].valueType) {
+					case "bandwidth":
+						cond.valueFormat = cond.value.count + cond.value.unit[0].toUpperCase() + cond.value.unit.substring(1) + "ps"
+						return
+					case "traffic":
+						cond.valueFormat = cond.value.count + cond.value.unit.toUpperCase()
+						return
+					case "cpu":
+						cond.valueFormat = cond.value + "%"
+						return
+					case "memory":
+						cond.valueFormat = cond.value + "%"
+						return
+					case "load":
+						cond.valueFormat = cond.value
+						return
+				}
+			})
+		}
+	},
+	template: `<div>
+	<span v-for="(cond, index) in condsConfig.conds">
+		<span class="ui label basic small">
+			<span>{{paramMap[cond.param].name}} 
+				<span v-if="paramMap[cond.param].operators != null && paramMap[cond.param].operators.length > 0"><span class="grey">{{operatorMap[cond.operator]}}</span> {{cond.valueFormat}}</span> 
+			</span>
+		</span>
+		<span v-if="index < condsConfig.conds.length - 1"> &nbsp;<span v-if="condsConfig.connector == 'and'">且</span><span v-else>或</span>&nbsp; </span>
+	</span>
 </div>`
 })
 
