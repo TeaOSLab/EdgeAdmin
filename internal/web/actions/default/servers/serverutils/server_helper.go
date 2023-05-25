@@ -109,7 +109,7 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 	var tabbar = actionutils.NewTabbar()
 	tabbar.Add("", "", "/servers", "left arrow", false)
 	if len(serverConfig.Name) > 0 {
-		var item = tabbar.Add(serverConfig.Name, "", "/servers/server?serverId="+serverIdString, "", true)
+		var item = tabbar.Add(serverConfig.Name, "", "/servers/server?serverId="+serverIdString, "angle right", true)
 		item["isTitle"] = true
 	}
 
