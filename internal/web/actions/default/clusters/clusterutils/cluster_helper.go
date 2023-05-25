@@ -60,7 +60,7 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 		var tabbar = actionutils.NewTabbar()
 		tabbar.Add("", "", "/clusters", "arrow left", false)
 		{
-			var item = tabbar.Add(cluster.Name, "", "/clusters/cluster?clusterId="+clusterIdString, "", true)
+			var item = tabbar.Add(cluster.Name, "", "/clusters/cluster?clusterId="+clusterIdString, "angle right", true)
 			item["isTitle"] = true
 		}
 		if teaconst.IsPlus {
