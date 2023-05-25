@@ -607,8 +607,19 @@ body.expanded .main {
 .main .tab-menu .item .icon {
   margin-left: 0.6em;
 }
-.main .tab-menu .item.active {
+.main .tab-menu .item.active.title {
   background: #f8f8f9 !important;
+  font-weight: normal !important;
+  margin-right: 1em !important;
+}
+.main .tab-menu .item.active:not(.title) {
+  font-weight: normal !important;
+  border: none;
+  border-radius: 0 !important;
+  color: #2185d0 !important;
+}
+.main .tab-menu .item.active.blue {
+  font-weight: bold !important;
 }
 .main .tab-menu::-webkit-scrollbar {
   height: 4px;
