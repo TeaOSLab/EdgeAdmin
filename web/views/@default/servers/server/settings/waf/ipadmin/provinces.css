@@ -5,5 +5,6 @@
 }
 .province-list .item .checkbox label {
   font-size: 12px !important;
+  cursor: pointer !important;
 }
 /*# sourceMappingURL=provinces.css.map */

@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/maps"
@@ -41,7 +42,7 @@ func (this *ProvincesAction) RunGet(params struct {
 		this.NotFound("firewallPolicy", params.FirewallPolicyId)
 		return
 	}
-	selectedProvinceIds := []int64{}
+	var selectedProvinceIds = []int64{}
 	if policyConfig.Inbound != nil && policyConfig.Inbound.Region != nil {
 		selectedProvinceIds = policyConfig.Inbound.Region.DenyProvinceIds
 	}
@@ -53,7 +54,7 @@ func (this *ProvincesAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	provinceMaps := []maps.Map{}
+	var provinceMaps = []maps.Map{}
 	for _, province := range provincesResp.RegionProvinces {
 		provinceMaps = append(provinceMaps, maps.Map{
 			"id":        province.Id,
@@ -62,6 +63,18 @@ func (this *ProvincesAction) RunGet(params struct {
 		})
 	}
 	this.Data["provinces"] = provinceMaps
+
+	// except & only URL Patterns
+	this.Data["exceptURLPatterns"] = []*shared.URLPattern{}
+	this.Data["onlyURLPatterns"] = []*shared.URLPattern{}
+	if policyConfig.Inbound != nil && policyConfig.Inbound.Region != nil {
+		if len(policyConfig.Inbound.Region.ProvinceExceptURLPatterns) > 0 {
+			this.Data["exceptURLPatterns"] = policyConfig.Inbound.Region.ProvinceExceptURLPatterns
+		}
+		if len(policyConfig.Inbound.Region.ProvinceOnlyURLPatterns) > 0 {
+			this.Data["onlyURLPatterns"] = policyConfig.Inbound.Region.ProvinceOnlyURLPatterns
+		}
+	}
 
 	// WAF是否启用
 	webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithServerId(this.AdminContext(), params.ServerId)
@@ -77,6 +90,9 @@ func (this *ProvincesAction) RunGet(params struct {
 func (this *ProvincesAction) RunPost(params struct {
 	FirewallPolicyId int64
 	ProvinceIds      []int64
+
+	ExceptURLPatternsJSON []byte
+	OnlyURLPatternsJSON   []byte
 
 	Must *actions.Must
 }) {
@@ -102,6 +118,34 @@ func (this *ProvincesAction) RunPost(params struct {
 		}
 	}
 	policyConfig.Inbound.Region.DenyProvinceIds = params.ProvinceIds
+
+	// 例外URL
+	var exceptURLPatterns = []*shared.URLPattern{}
+	if len(params.ExceptURLPatternsJSON) > 0 {
+		err = json.Unmarshal(params.ExceptURLPatternsJSON, &exceptURLPatterns)
+		if err != nil {
+			this.Fail("校验例外URL参数失败：" + err.Error())
+			return
+		}
+	}
+	policyConfig.Inbound.Region.ProvinceExceptURLPatterns = exceptURLPatterns
+
+	// 限制URL
+	var onlyURLPatterns = []*shared.URLPattern{}
+	if len(params.OnlyURLPatternsJSON) > 0 {
+		err = json.Unmarshal(params.OnlyURLPatternsJSON, &onlyURLPatterns)
+		if err != nil {
+			this.Fail("校验限制URL参数失败：" + err.Error())
+			return
+		}
+	}
+	policyConfig.Inbound.Region.ProvinceOnlyURLPatterns = onlyURLPatterns
+
+	err = policyConfig.Init()
+	if err != nil {
+		this.Fail("配置校验失败：" + err.Error())
+		return
+	}
 
 	inboundJSON, err := json.Marshal(policyConfig.Inbound)
 	if err != nil {

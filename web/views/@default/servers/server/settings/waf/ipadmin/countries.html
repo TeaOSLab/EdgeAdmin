@@ -12,6 +12,8 @@
 
 	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 		<input type="hidden" name="firewallPolicyId" :value="firewallPolicyId"/>
+        <input type="hidden" name="exceptURLPatternsJSON" :value="JSON.stringify(exceptURLPatterns)"/>
+        <input type="hidden" name="onlyURLPatternsJSON" :value="JSON.stringify(onlyURLPatterns)"/>
 		<table class="ui table selectable definition">
 			<tr>
 				<td class="title">已封禁</td>
@@ -24,9 +26,9 @@
 				</td>
 			</tr>
 			<tr>
-				<td>选择封禁区域</td>
+				<td>选择封禁区域 *</td>
 				<td>
-					<more-options-indicator>选择区域</more-options-indicator>
+					<more-options-indicator><span v-if="!moreOptionsVisible">选择区域</span><span v-else>完成选择</span></more-options-indicator>
 
 					<div class="ui menu tabular tiny region-letter-group" v-show="moreOptionsVisible">
 						<a href="" v-for="group in letterGroups" class="item" :class="{active: group == selectedGroup}" @click.prevent="selectGroup(group)">{{group}}</a>
@@ -53,6 +55,14 @@
 					</div>
 				</td>
 			</tr>
+            <tr>
+                <td>例外URL &nbsp;<tip-icon content="对这些URL将不做任何限制。"></tip-icon></td>
+                <td><url-patterns-box v-model="exceptURLPatterns"></url-patterns-box></td>
+            </tr>
+            <tr>
+                <td>限制URL &nbsp;<tip-icon content="只对这些URL做限制。"></tip-icon></td>
+                <td><url-patterns-box v-model="onlyURLPatterns"></url-patterns-box></td>
+            </tr>
 		</table>
 		<submit-btn></submit-btn>
 	</form>
