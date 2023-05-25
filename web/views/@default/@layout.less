@@ -600,8 +600,21 @@ body.expanded .main {
 			}
 		}
 
-		.item.active {
+		.item.active.title {
 			background: #f8f8f9 !important;
+			font-weight: normal !important;
+			margin-right: 1em !important;
+		}
+
+		.item.active:not(.title) {
+			font-weight: normal !important;
+			border: none;
+			border-radius: 0 !important;
+			color: #2185d0 !important;
+		}
+
+		.item.active.blue {
+			font-weight: bold !important;
 		}
 	}
 

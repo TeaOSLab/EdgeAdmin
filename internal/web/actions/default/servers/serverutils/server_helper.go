@@ -107,7 +107,11 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 	// TABBAR
 	selectedTabbar, _ := action.Data["mainTab"]
 	var tabbar = actionutils.NewTabbar()
-	tabbar.Add("网站列表", "", "/servers", "left arrow", false)
+	tabbar.Add("", "", "/servers", "left arrow", false)
+	if len(serverConfig.Name) > 0 {
+		var item = tabbar.Add(serverConfig.Name, "", "/servers/server?serverId="+serverIdString, "", true)
+		item["isTitle"] = true
+	}
 
 	if teaconst.IsPlus {
 		tabbar.Add("看板", "", "/servers/server/boards?serverId="+serverIdString, "dashboard", selectedTabbar == "board")

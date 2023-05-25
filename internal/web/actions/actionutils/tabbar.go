@@ -26,6 +26,7 @@ func (this *Tabbar) Add(name string, subName string, url string, icon string, ac
 		"icon":    icon,
 		"active":  active,
 		"right":   false,
+		"isTitle": false,
 	}
 	this.items = append(this.items, m)
 	return m

@@ -58,7 +58,11 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 		}
 
 		var tabbar = actionutils.NewTabbar()
-		tabbar.Add("集群列表", "", "/clusters", "left arrow", false)
+		tabbar.Add("", "", "/clusters", "arrow left", false)
+		{
+			var item = tabbar.Add(cluster.Name, "", "/clusters/cluster?clusterId="+clusterIdString, "", true)
+			item["isTitle"] = true
+		}
 		if teaconst.IsPlus {
 			tabbar.Add("集群看板", "", "/clusters/cluster/boards?clusterId="+clusterIdString, "chart line area", selectedTabbar == "board")
 		}
