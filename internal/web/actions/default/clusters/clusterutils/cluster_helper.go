@@ -64,11 +64,11 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 			item["isTitle"] = true
 		}
 		if teaconst.IsPlus {
-			tabbar.Add("集群看板", "", "/clusters/cluster/boards?clusterId="+clusterIdString, "chart line area", selectedTabbar == "board")
+			tabbar.Add("看板", "", "/clusters/cluster/boards?clusterId="+clusterIdString, "chart line area", selectedTabbar == "board")
 		}
-		tabbar.Add("集群节点", "", "/clusters/cluster/nodes?clusterId="+clusterIdString, "server", selectedTabbar == "node")
-		tabbar.Add("集群设置", "", "/clusters/cluster/settings?clusterId="+clusterIdString, "setting", selectedTabbar == "setting")
-		tabbar.Add("删除集群", "", "/clusters/cluster/delete?clusterId="+clusterIdString, "trash", selectedTabbar == "delete")
+		tabbar.Add("节点", "", "/clusters/cluster/nodes?clusterId="+clusterIdString, "server", selectedTabbar == "node")
+		tabbar.Add("设置", "", "/clusters/cluster/settings?clusterId="+clusterIdString, "setting", selectedTabbar == "setting")
+		tabbar.Add("删除", "", "/clusters/cluster/delete?clusterId="+clusterIdString, "trash", selectedTabbar == "delete")
 		actionutils.SetTabbar(action, tabbar)
 
 		// 左侧菜单
