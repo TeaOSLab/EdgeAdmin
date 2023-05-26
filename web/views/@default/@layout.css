@@ -589,7 +589,7 @@ body.expanded .main {
   width: 4px;
 }
 .main .tab-menu {
-  margin-top: 1em !important;
+  margin-top: 0.5em !important;
   margin-bottom: 0 !important;
   overflow-x: auto;
   overflow-y: hidden;
@@ -617,6 +617,13 @@ body.expanded .main {
   border: none;
   border-radius: 0 !important;
   color: #2185d0 !important;
+}
+.main .tab-menu .item.active:not(.title) .bottom-indicator {
+  border-bottom: 1px #2185d0 solid;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 1px;
 }
 .main .tab-menu .item.active.blue {
   font-weight: bold !important;
