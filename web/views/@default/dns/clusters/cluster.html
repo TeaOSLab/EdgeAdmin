@@ -77,7 +77,7 @@
             <td>
                 <span v-if="task.type == 'clusterChange' || task.type == 'clusterNodesChange'">集群</span>
                 <span v-if="task.type == 'nodeChange'">节点</span>
-                <span v-if="task.type == 'serverChange'">服务</span>
+                <span v-if="task.type == 'serverChange'">网站</span>
                 <span v-if="task.type == 'domainChange'">域名</span>
             </td>
             <td style="word-break: break-word; width: 26em">
@@ -186,7 +186,7 @@
 <table class="ui table selectable celled" v-if="servers.length > 0">
 	<thead>
 		<tr>
-			<th>服务</th>
+			<th>网站</th>
 			<th>子域名</th>
 			<th>记录类型</th>
 			<th>记录值</th>
