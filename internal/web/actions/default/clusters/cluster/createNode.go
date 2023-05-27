@@ -30,6 +30,11 @@ func (this *CreateNodeAction) Init() {
 func (this *CreateNodeAction) RunGet(params struct {
 	ClusterId int64
 }) {
+	if params.ClusterId <= 0 {
+		this.RedirectURL("/clusters")
+		return
+	}
+
 	var leftMenuItems = []maps.Map{
 		{
 			"name":     "单个创建",

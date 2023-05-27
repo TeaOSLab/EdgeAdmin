@@ -16,6 +16,7 @@ func init() {
 			Prefix("/clusters").
 			Get("", new(IndexAction)).
 			GetPost("/create", new(CreateAction)).
+			GetPost("/createNode", new(CreateNodeAction)).
 			Post("/pin", new(PinAction)).
 			Get("/nodes", new(NodesAction)).
 
