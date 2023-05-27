@@ -589,7 +589,7 @@ body.expanded .main {
   width: 4px;
 }
 .main .tab-menu {
-  margin-top: 0.5em !important;
+  margin-top: 0 !important;
   margin-bottom: 0 !important;
   overflow-x: auto;
   overflow-y: hidden;

@@ -122,6 +122,21 @@ Tea.context(function () {
 		}
 	}
 
+	this.convertValueLine = function () {
+		let value = this.rule.value
+		if (value != null && value.length > 0) {
+			let lines = value.split(/\n/)
+			let resultLines = []
+			lines.forEach(function (line) {
+				line = line.trim()
+				if (line.length > 0) {
+					resultLines.push(line)
+				}
+			})
+			this.rule.value = resultLines.join("|")
+		}
+	}
+
 	/**
 	 * 正则测试
 	 */
