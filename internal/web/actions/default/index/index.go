@@ -13,14 +13,18 @@ import (
 	adminserverutils "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/server/admin-server-utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/iplibrary"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/types"
 	stringutil "github.com/iwind/TeaGo/utils/string"
 	"net"
 	"time"
 )
+
+const regionDenyMessage = "当前软件系统暂时不为你所在的区域提供服务。"
 
 type IndexAction struct {
 	actionutils.ParentAction
@@ -36,6 +40,11 @@ func (this *IndexAction) RunGet(params struct {
 
 	Auth *helpers.UserShouldAuth
 }) {
+	if !this.checkRegion() {
+		this.WriteString(regionDenyMessage)
+		return
+	}
+
 	// 是否自动从HTTP跳转到HTTPS
 	if this.Request.TLS == nil {
 		httpsPort, _ := adminserverutils.ReadServerHTTPS()
@@ -125,6 +134,11 @@ func (this *IndexAction) RunPost(params struct {
 	Auth *helpers.UserShouldAuth
 	CSRF *actionutils.CSRF
 }) {
+	if !this.checkRegion() {
+		this.Fail(regionDenyMessage)
+		return
+	}
+
 	params.Must.
 		Field("username", params.Username).
 		Require("请输入用户名").
@@ -215,4 +229,14 @@ func (this *IndexAction) RunPost(params struct {
 	}
 
 	this.Success()
+}
+
+// 检查登录区域
+func (this *IndexAction) checkRegion() bool {
+	var ip = this.RequestRemoteIP()
+	var result = iplibrary.LookupIP(ip)
+	if result != nil && result.IsOk() && result.CountryId() > 0 && lists.ContainsInt64([]int64{10}, result.CountryId()) {
+		return false
+	}
+	return true
 }
