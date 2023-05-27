@@ -61,7 +61,13 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 		var isInCluster = nodeId <= 0
 
 		var tabbar = actionutils.NewTabbar()
-		tabbar.Add("", "", "/clusters", "arrow left", false)
+		{
+			var url = "/clusters"
+			if !isInCluster {
+				url = "/clusters/cluster/nodes?clusterId=" + clusterIdString
+			}
+			tabbar.Add("", "", url, "arrow left", false)
+		}
 		{
 			var url = "/clusters/cluster?clusterId=" + clusterIdString
 			if !isInCluster {
