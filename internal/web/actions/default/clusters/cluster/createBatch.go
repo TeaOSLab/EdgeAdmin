@@ -39,6 +39,17 @@ func (this *CreateBatchAction) RunGet(params struct {
 	}
 	this.Data["leftMenuItems"] = leftMenuItems
 
+	// 限额
+	maxNodes, leftNodes, err := this.findNodesQuota()
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["quota"] = maps.Map{
+		"maxNodes":  maxNodes,
+		"leftNodes": leftNodes,
+	}
+
 	this.Show()
 }
 

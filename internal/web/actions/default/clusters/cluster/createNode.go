@@ -92,6 +92,17 @@ func (this *CreateNodeAction) RunGet(params struct {
 	// 安装文件下载
 	this.Data["installerFiles"] = clusterutils.ListInstallerFiles()
 
+	// 限额
+	maxNodes, leftNodes, err := this.findNodesQuota()
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["quota"] = maps.Map{
+		"maxNodes":  maxNodes,
+		"leftNodes": leftNodes,
+	}
+
 	this.Show()
 }
 
