@@ -19,6 +19,9 @@
     <!-- 填写信息 -->
 	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success" v-show="step == 'info'">
 		<input type="hidden" name="clusterId" :value="clusterId"/>
+
+        <div v-if="quota.maxNodes > 0 && quota.leftNodes >= 0"><span style="color: #959da6">当前授权最多节点数：{{quota.maxNodes}}个，剩余节点数：{{quota.leftNodes}}个。</span></div>
+
 		<table class="ui table definition selectable">
 			<tr>
 				<td class="title">节点名称 *</td>

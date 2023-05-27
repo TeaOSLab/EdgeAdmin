@@ -6,7 +6,10 @@
 	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 		<csrf-token></csrf-token>
 		<input type="hidden" name="clusterId" :value="clusterId"/>
-		<table class="ui table definition selectable">
+
+        <div v-if="quota.maxNodes > 0 && quota.leftNodes >= 0"><span style="color: #959da6">当前授权最多支持节点数：{{quota.maxNodes}}个，剩余节点数：{{quota.leftNodes}}个。</span></div>
+
+        <table class="ui table definition selectable">
 			<tr>
 				<td class="title">节点IP列表</td>
 				<td>
