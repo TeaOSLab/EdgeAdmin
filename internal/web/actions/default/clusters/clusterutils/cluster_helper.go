@@ -29,9 +29,9 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 
 	action.Data["teaMenu"] = "clusters"
 
-	selectedTabbar := action.Data.GetString("mainTab")
-	clusterId := action.ParamInt64("clusterId")
-	clusterIdString := strconv.FormatInt(clusterId, 10)
+	var selectedTabbar = action.Data.GetString("mainTab")
+	var clusterId = action.ParamInt64("clusterId")
+	var clusterIdString = strconv.FormatInt(clusterId, 10)
 	action.Data["clusterId"] = clusterId
 
 	if clusterId > 0 {
@@ -57,18 +57,39 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 			return
 		}
 
+		var nodeId = action.ParamInt64("nodeId")
+		var isInCluster = nodeId <= 0
+
 		var tabbar = actionutils.NewTabbar()
 		tabbar.Add("", "", "/clusters", "arrow left", false)
 		{
-			var item = tabbar.Add(cluster.Name, "", "/clusters/cluster?clusterId="+clusterIdString, "angle right", true)
-			item["isTitle"] = true
+			var url = "/clusters/cluster?clusterId=" + clusterIdString
+			if !isInCluster {
+				url = "/clusters/cluster/nodes?clusterId=" + clusterIdString
+			}
+
+			var item = tabbar.Add(cluster.Name, "", url, "angle right", true)
+			item.IsTitle = true
 		}
 		if teaconst.IsPlus {
-			tabbar.Add("看板", "", "/clusters/cluster/boards?clusterId="+clusterIdString, "chart line area", selectedTabbar == "board")
+			{
+				var item = tabbar.Add("集群看板", "", "/clusters/cluster/boards?clusterId="+clusterIdString, "chart line area", selectedTabbar == "board")
+				item.IsDisabled = !isInCluster
+			}
 		}
-		tabbar.Add("节点", "", "/clusters/cluster/nodes?clusterId="+clusterIdString, "server", selectedTabbar == "node")
-		tabbar.Add("设置", "", "/clusters/cluster/settings?clusterId="+clusterIdString, "setting", selectedTabbar == "setting")
-		tabbar.Add("删除", "", "/clusters/cluster/delete?clusterId="+clusterIdString, "trash", selectedTabbar == "delete")
+		{
+			var item = tabbar.Add("节点列表", "", "/clusters/cluster/nodes?clusterId="+clusterIdString, "server", selectedTabbar == "node")
+			item.IsDisabled = !isInCluster
+		}
+
+		{
+			var item = tabbar.Add("集群设置", "", "/clusters/cluster/settings?clusterId="+clusterIdString, "setting", selectedTabbar == "setting")
+			item.IsDisabled = !isInCluster
+		}
+		{
+			var item = tabbar.Add("删除集群", "", "/clusters/cluster/delete?clusterId="+clusterIdString, "trash", selectedTabbar == "delete")
+			item.IsDisabled = !isInCluster
+		}
 		actionutils.SetTabbar(action, tabbar)
 
 		// 左侧菜单
