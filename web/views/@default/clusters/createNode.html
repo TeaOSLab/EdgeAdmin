@@ -1,0 +1,14 @@
+{$layout}
+{$template "menu"}
+
+<div class="margin"></div>
+<form class="ui form">
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">选择所属集群 *</td>
+            <td><node-cluster-combo-box @change="changeCluster"></node-cluster-combo-box></td>
+        </tr>
+    </table>
+
+    <button type="button" class="ui button primary" :class="{disabled: clusterId <= 0}" @click.prevent="goNext">下一步 <i class="icon right arrow"></i></button>
+</form>
