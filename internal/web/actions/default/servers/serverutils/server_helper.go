@@ -110,7 +110,7 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 	tabbar.Add("", "", "/servers", "left arrow", false)
 	if len(serverConfig.Name) > 0 {
 		var item = tabbar.Add(serverConfig.Name, "", "/servers/server?serverId="+serverIdString, "angle right", true)
-		item["isTitle"] = true
+		item.IsTitle = true
 	}
 
 	if teaconst.IsPlus {
