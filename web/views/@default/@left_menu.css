@@ -58,7 +58,7 @@
   top: 3em;
 }
 .left-box.with-menu {
-  top: 10em;
+  top: 9em;
 }
 .left-box.without-menu {
   top: 6em;
@@ -93,7 +93,7 @@ body.expanded .right-box {
   top: 3em;
 }
 .right-box.with-menu {
-  top: 10em;
+  top: 9em;
 }
 .right-box.without-menu {
   top: 6em;

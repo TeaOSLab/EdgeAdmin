@@ -58,7 +58,7 @@
   top: 3em;
 }
 .left-box.with-menu {
-  top: 10em;
+  top: 9em;
 }
 .left-box.without-menu {
   top: 6em;
@@ -93,7 +93,7 @@ body.expanded .right-box {
   top: 3em;
 }
 .right-box.with-menu {
-  top: 10em;
+  top: 9em;
 }
 .right-box.without-menu {
   top: 6em;
@@ -608,9 +608,9 @@ body.expanded .main {
   margin-left: 0.6em;
 }
 .main .tab-menu .item.active.title {
-  background: #f8f8f9 !important;
   font-weight: normal !important;
   margin-right: 1em !important;
+  border-radius: 0 !important;
 }
 .main .tab-menu .item.active:not(.title) {
   font-weight: normal !important;
