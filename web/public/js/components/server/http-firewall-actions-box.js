@@ -96,6 +96,9 @@ Vue.component("http-firewall-actions-box", {
 			pageBody: defaultPageBody,
 			defaultPageBody: defaultPageBody,
 
+			redirectStatus: 307,
+			redirectURL: "",
+
 			goGroupName: "",
 			goGroupId: 0,
 			goGroup: null,
@@ -272,6 +275,9 @@ Vue.component("http-firewall-actions-box", {
 			this.pageStatus = 403
 			this.pageBody = this.defaultPageBody
 
+			this.redirectStatus = 307
+			this.redirectURL = ""
+
 			this.goGroupName = ""
 			this.goGroupId = 0
 			this.goGroup = null
@@ -398,7 +404,16 @@ Vue.component("http-firewall-actions-box", {
 					if (config.options.body != null) {
 						this.pageBody = config.options.body
 					}
-
+					break
+				case "redirect":
+					this.redirectStatus = 307
+					this.redirectURL = ""
+					if (config.options.status != null) {
+						this.redirectStatus = config.options.status
+					}
+					if (config.options.url != null) {
+						this.redirectURL = config.options.url
+					}
 					break
 				case "go_group":
 					if (config.options != null) {
@@ -484,6 +499,23 @@ Vue.component("http-firewall-actions-box", {
 				this.actionOptions = {
 					status: pageStatus,
 					body: this.pageBody
+				}
+			} else if (this.actionCode == "redirect") {
+				let redirectStatus = this.redirectStatus.toString()
+				if (!redirectStatus.match(/^\d{3}$/)) {
+					redirectStatus = 307
+				} else {
+					redirectStatus = parseInt(redirectStatus)
+				}
+
+				if (this.redirectURL.length == 0) {
+					teaweb.warn("请输入跳转到URL")
+					return
+				}
+
+				this.actionOptions = {
+					status: redirectStatus,
+					url: this.redirectURL
 				}
 			} else if (this.actionCode == "go_group") { // go_group
 				let groupId = this.goGroupId
@@ -829,6 +861,18 @@ Vue.component("http-firewall-actions-box", {
 				<td>网页内容</td>
 				<td>
 					<textarea v-model="pageBody"></textarea>
+				</td>
+			</tr>
+			
+			<!-- redirect -->
+			<tr v-if="actionCode == 'redirect'">
+				<td>状态码 *</td>
+				<td><input type="text" style="width: 4em" maxlength="3" v-model="redirectStatus"/></td>
+			</tr>
+			<tr v-if="actionCode == 'redirect'">
+				<td>跳转到URL</td>
+				<td>
+					<input type="text" v-model="redirectURL"/>
 				</td>
 			</tr>
 			
