@@ -1,6 +1,6 @@
 {$layout "layout_popup"}
 
-<h3>选择证书 <span v-if="searchingDomains.length > 0">（当前服务域名：{{searchingDomains[0]}}<var style="font-style: normal" v-if="searchingDomains.length > 1">等{{searchingDomains.length}}个域名</var>）</span></h3>
+<h3>选择证书 <span v-if="searchingDomains.length > 0">（当前网站域名：{{searchingDomains[0]}}<var style="font-style: normal" v-if="searchingDomains.length > 1">等{{searchingDomains.length}}个域名</var>）</span></h3>
 
 <!-- 搜索表单 -->
 <form class="ui form" action="/servers/certs/selectPopup" ref="searchForm">
