@@ -52,26 +52,32 @@
   opacity: 0.1;
 }
 .left-box.tiny {
-  top: 10.5em;
+  top: 10em;
 }
 .left-box.without-tabbar {
   top: 3em;
 }
 .left-box.with-menu {
-  top: 9em;
+  top: 8.7em;
 }
 .left-box.without-menu {
   top: 6em;
 }
 .right-box {
   position: fixed;
-  top: 7.5em;
+  top: 7em;
   bottom: 1.3em;
   right: 0;
   left: 18em;
   padding-right: 2em;
   padding-bottom: 2em;
   overflow-y: auto;
+}
+.right-box h4:first-child {
+  margin-top: 1em;
+}
+.right-box > .comment:first-child {
+  margin-top: 0.5em;
 }
 @media screen and (max-width: 512px) {
   .right-box {
@@ -83,7 +89,7 @@ body.expanded .right-box {
   left: 10em;
 }
 .right-box.tiny {
-  top: 10.4em;
+  top: 10em;
   left: 26.5em;
 }
 .right-box::-webkit-scrollbar {
@@ -93,7 +99,7 @@ body.expanded .right-box {
   top: 3em;
 }
 .right-box.with-menu {
-  top: 9em;
+  top: 8.6em;
 }
 .right-box.without-menu {
   top: 6em;
@@ -589,13 +595,13 @@ body.expanded .main {
   width: 4px;
 }
 .main .tab-menu {
-  margin-top: 0 !important;
+  margin-top: 0.3em !important;
   margin-bottom: 0 !important;
   overflow-x: auto;
   overflow-y: hidden;
 }
 .main .tab-menu .item {
-  padding: 1em !important;
+  padding: 0 1em !important;
 }
 .main .tab-menu .item var {
   font-style: normal;
