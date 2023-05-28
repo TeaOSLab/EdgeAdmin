@@ -108,7 +108,15 @@ Vue.component("http-firewall-actions-box", {
 
 			jsCookieLife: "",
 			jsCookieMaxFails: "",
-			jsCookieFailBlockTimeout: ""
+			jsCookieFailBlockTimeout: "",
+
+			statusOptions: [
+				{"code": 301, "text": "Moved Permanently"},
+				{"code": 308, "text": "Permanent Redirect"},
+				{"code": 302, "text": "Found"},
+				{"code": 303, "text": "See Other"},
+				{"code": 307, "text": "Temporary Redirect"}
+			]
 		}
 	},
 	watch: {
@@ -657,6 +665,9 @@ Vue.component("http-firewall-actions-box", {
 			<!-- page -->
 			<span v-if="config.code == 'page'">：[{{config.options.status}}]</span>
 			
+			<!-- redirect -->
+			<span v-if="config.code == 'redirect'">：{{config.options.url}}</span>
+			
 			<!-- go_group -->
 			<span v-if="config.code == 'go_group'">：{{config.options.groupName}}</span>
 			
@@ -867,7 +878,11 @@ Vue.component("http-firewall-actions-box", {
 			<!-- redirect -->
 			<tr v-if="actionCode == 'redirect'">
 				<td>状态码 *</td>
-				<td><input type="text" style="width: 4em" maxlength="3" v-model="redirectStatus"/></td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="redirectStatus">
+						<option v-for="status in statusOptions" :value="status.code">{{status.code}} {{status.text}}</option>
+					</select>
+				</td>
 			</tr>
 			<tr v-if="actionCode == 'redirect'">
 				<td>跳转到URL</td>
