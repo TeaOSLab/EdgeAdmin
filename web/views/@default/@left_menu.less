@@ -72,7 +72,7 @@
 }
 
 .left-box.tiny {
-	top: 10.5em;
+	top: 10em;
 }
 
 .left-box.without-tabbar {
@@ -80,7 +80,7 @@
 }
 
 .left-box.with-menu {
-	top: 9em;
+	top: 8.7em;
 }
 
 .left-box.without-menu {
@@ -89,13 +89,21 @@
 
 .right-box {
 	position: fixed;
-	top: 7.5em;
+	top: 7em;
 	bottom: 1.3em;
 	right: 0;
 	left: 18em;
 	padding-right: 2em;
 	padding-bottom: 2em;
 	overflow-y: auto;
+
+	h4:first-child {
+		margin-top: 1em;
+	}
+}
+
+.right-box > .comment:first-child {
+	margin-top: 0.5em;
 }
 
 @media screen and (max-width: 512px) {
@@ -110,7 +118,7 @@ body.expanded .right-box {
 }
 
 .right-box.tiny {
-	top: 10.4em;
+	top: 10em;
 	left: 26.5em;
 }
 
@@ -123,7 +131,7 @@ body.expanded .right-box {
 }
 
 .right-box.with-menu {
-	top: 9em;
+	top: 8.6em;
 }
 
 .right-box.without-menu {

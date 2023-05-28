@@ -3,7 +3,9 @@
 {$template "/left_menu_with_menu"}
 
 <div class="right-box with-menu">
-	<tip-icon content="TCP Option Address(TOA)可以在TCP选项中传递客户端IP，多用在TCP负载均衡的源站需要获取客户端真实IP的场景。<br/><br/>注意：HTTP协议通常不需要此设置。<br/><br/>如需修改配置，请在专业人士指导下操作。"></tip-icon>
+    <first-menu>
+        <menu-item><tip-icon content="TCP Option Address(TOA)可以在TCP选项中传递客户端IP，多用在TCP负载均衡的源站需要获取客户端真实IP的场景。<br/><br/>注意：HTTP协议通常不需要此设置。<br/><br/>如需修改配置，请在专业人士指导下操作。"></tip-icon></menu-item>
+    </first-menu>
 	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 		<input type="hidden" name="clusterId" :value="clusterId"/>
 		<csrf-token></csrf-token>
