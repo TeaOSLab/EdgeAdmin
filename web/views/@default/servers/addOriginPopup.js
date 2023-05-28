@@ -4,7 +4,7 @@ Tea.context(function () {
 
 	this.addrError = ""
 
-	// 当前服务协议
+	// 当前网站协议
 	this.isHTTP = (this.serverType == "httpProxy" || this.serverType == "httpWeb")
 	if (this.serverType == "httpProxy") {
 		this.protocol = "http"
