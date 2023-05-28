@@ -618,6 +618,10 @@ body.expanded .main {
   margin-right: 1em !important;
   border-radius: 0 !important;
 }
+.main .tab-menu .item:hover {
+  background: #f8f8f9 !important;
+  border-width: 1px;
+}
 .main .tab-menu .item.active:not(.title) {
   font-weight: normal !important;
   border: none;
