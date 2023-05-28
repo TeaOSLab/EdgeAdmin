@@ -2,27 +2,32 @@
 
 <h3>健康检查</h3>
 
-<span class="red" v-if="isRequesting">正在执行中，请等待执行完毕...</span>
-<span class="red" v-if="!isRequesting && errorString.length > 0">{{errorString}}</span>
+<div v-show="!hasServers">
+    <span class="red">当前集群尚未部署网站，无法进行健康检查；请至少部署至少一个网站后再试。</span>
+</div>
+<div v-show="hasServers">
+    <span class="red" v-if="isRequesting">正在执行中，请等待执行完毕...</span>
+    <span class="red" v-if="!isRequesting && errorString.length > 0">{{errorString}}</span>
 
-<form method="post" class="ui form" v-if="!isRequesting && errorString.length == 0">
-	<p>成功节点：<span class="green">{{countSuccess}}</span> &nbsp; 失败节点：<span class="red">{{countFail}}</span></p>
-	<table class="ui table selectable celled" v-if="results.length > 0">
-		<thead>
-			<tr>
-				<th>节点</th>
-				<th>结果</th>
-				<th nowrap="">耗时</th>
-			</tr>
-		</thead>
-		<tr v-for="result in results">
-			<td>{{result.node.name}}<span class="small" v-if="result.nodeAddr != null && result.nodeAddr.length > 0">（{{result.nodeAddr}}）</span></td>
-			<td>
-				<span v-if="!result.isOk" class="red">失败：{{result.error}}</span>
-				<span v-else class="green">成功</span>
-			</td>
-			<td>{{result.costMs}}ms</td>
-		</tr>
-	</table>
-	<button class="ui button primary" type="button" @click.prevent="success">完成</button>
-</form>
+    <form method="post" class="ui form" v-if="!isRequesting && errorString.length == 0">
+        <p>成功节点：<span class="green">{{countSuccess}}</span> &nbsp; 失败节点：<span class="red">{{countFail}}</span></p>
+        <table class="ui table selectable celled" v-if="results.length > 0">
+            <thead>
+                <tr>
+                    <th>节点</th>
+                    <th>结果</th>
+                    <th nowrap="">耗时</th>
+                </tr>
+            </thead>
+            <tr v-for="result in results">
+                <td>{{result.node.name}}<span class="small" v-if="result.nodeAddr != null && result.nodeAddr.length > 0">（{{result.nodeAddr}}）</span></td>
+                <td>
+                    <span v-if="!result.isOk" class="red">失败：{{result.error}}</span>
+                    <span v-else class="green">成功</span>
+                </td>
+                <td>{{result.costMs}}ms</td>
+            </tr>
+        </table>
+        <button class="ui button primary" type="button" @click.prevent="success">完成</button>
+    </form>
+</div>

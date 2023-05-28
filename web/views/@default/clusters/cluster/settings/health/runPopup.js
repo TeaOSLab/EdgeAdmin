@@ -8,7 +8,9 @@ Tea.context(function () {
 	this.errorString = ""
 
 	this.$delay(function () {
-		this.run()
+		if (this.hasServers) {
+			this.run()
+		}
 	})
 
 	this.run = function () {
