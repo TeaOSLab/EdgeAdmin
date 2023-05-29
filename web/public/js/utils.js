@@ -610,12 +610,12 @@ window.teaweb = {
 		let name = options.name
 		let values = options.values
 		let xFunc = options.x
+		let xColorFunc = options.xColor
 		let tooltipFunc = options.tooltip
 		let axis = options.axis
 		let valueFunc = options.value
 		let max = options.max
 		let interval = options.interval
-
 		let left = options.left
 		if (typeof left != "number") {
 			left = 0
@@ -636,7 +636,10 @@ window.teaweb = {
 			xAxis: {
 				data: values.map(xFunc),
 				axisLabel: {
-					interval: interval
+					interval: interval,
+					textStyle: {
+						color: xColorFunc
+					}
 				}
 			},
 			yAxis: {
