@@ -6,6 +6,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/serverutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
@@ -85,11 +86,34 @@ func (this *IndexAction) RunGet(params struct {
 		}
 	}
 
+	// 当前集群是否支持HTTP/3
+	// TODO 检查当前服务所属用户是否支持HTTP/3
+	if server.NodeCluster == nil {
+		this.ErrorPage(errors.New("no node cluster for the server"))
+		return
+	}
+	http3PolicyResp, err := this.RPC().NodeClusterRPC().FindNodeClusterHTTP3Policy(this.AdminContext(), &pb.FindNodeClusterHTTP3PolicyRequest{NodeClusterId: server.NodeCluster.Id})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	var supportsHTTP3 = false
+	if len(http3PolicyResp.Http3PolicyJSON) > 0 {
+		var http3Policy = nodeconfigs.NewHTTP3Policy()
+		err = json.Unmarshal(http3PolicyResp.Http3PolicyJSON, http3Policy)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		supportsHTTP3 = http3Policy.IsOn
+	}
+
 	this.Data["serverType"] = server.Type
 	this.Data["httpsConfig"] = maps.Map{
-		"isOn":      httpsConfig.IsOn,
-		"addresses": httpsConfig.Listen,
-		"sslPolicy": sslPolicy,
+		"isOn":          httpsConfig.IsOn,
+		"addresses":     httpsConfig.Listen,
+		"sslPolicy":     sslPolicy,
+		"supportsHTTP3": supportsHTTP3,
 	}
 
 	this.Show()
@@ -175,6 +199,7 @@ func (this *IndexAction) RunPost(params struct {
 			_, err := this.RPC().SSLPolicyRPC().UpdateSSLPolicy(this.AdminContext(), &pb.UpdateSSLPolicyRequest{
 				SslPolicyId:       sslPolicyId,
 				Http2Enabled:      sslPolicy.HTTP2Enabled,
+				Http3Enabled:      sslPolicy.HTTP3Enabled,
 				MinVersion:        sslPolicy.MinVersion,
 				SslCertsJSON:      certsJSON,
 				HstsJSON:          hstsJSON,
@@ -191,6 +216,7 @@ func (this *IndexAction) RunPost(params struct {
 		} else {
 			resp, err := this.RPC().SSLPolicyRPC().CreateSSLPolicy(this.AdminContext(), &pb.CreateSSLPolicyRequest{
 				Http2Enabled:      sslPolicy.HTTP2Enabled,
+				Http3Enabled:      sslPolicy.HTTP3Enabled,
 				MinVersion:        sslPolicy.MinVersion,
 				SslCertsJSON:      certsJSON,
 				HstsJSON:          hstsJSON,

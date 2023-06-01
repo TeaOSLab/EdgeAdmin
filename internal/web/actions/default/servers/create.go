@@ -238,7 +238,8 @@ func (this *CreateAction) RunPost(params struct {
 			}
 
 			sslPolicyIdResp, err := this.RPC().SSLPolicyRPC().CreateSSLPolicy(this.AdminContext(), &pb.CreateSSLPolicyRequest{
-				Http2Enabled:      false,     // 默认值
+				Http2Enabled:      false, // 默认值
+				Http3Enabled:      false,
 				MinVersion:        "TLS 1.1", // 默认值
 				SslCertsJSON:      certRefsJSON,
 				HstsJSON:          nil,
@@ -387,7 +388,7 @@ func (this *CreateAction) RunPost(params struct {
 		AdminId:          this.AdminId(),
 		Type:             params.ServerType,
 		Name:             params.Name,
-		ServerNamesJSON:   params.ServerNames,
+		ServerNamesJSON:  params.ServerNames,
 		Description:      params.Description,
 		NodeClusterId:    clusterId,
 		IncludeNodesJSON: includeNodesJSON,

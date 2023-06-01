@@ -36,7 +36,7 @@
 		</table>
 
 		<!-- SSL配置 -->
-		<ssl-config-box :v-ssl-policy="httpsConfig.sslPolicy" :v-protocol="'https'" v-show="httpsConfig.isOn" :v-server-id="serverId"></ssl-config-box>
+		<ssl-config-box :v-ssl-policy="httpsConfig.sslPolicy" :v-protocol="'https'" v-show="httpsConfig.isOn" :v-server-id="serverId" :v-support-http3="httpsConfig.supportsHTTP3"></ssl-config-box>
 
 		<submit-btn></submit-btn>
 	</form>

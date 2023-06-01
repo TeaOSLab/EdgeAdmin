@@ -128,6 +128,7 @@ func (this *IndexAction) RunPost(params struct {
 			_, err := this.RPC().SSLPolicyRPC().UpdateSSLPolicy(this.AdminContext(), &pb.UpdateSSLPolicyRequest{
 				SslPolicyId:       sslPolicyId,
 				Http2Enabled:      sslPolicy.HTTP2Enabled,
+				Http3Enabled:      sslPolicy.HTTP3Enabled,
 				MinVersion:        sslPolicy.MinVersion,
 				SslCertsJSON:      certsJSON,
 				HstsJSON:          hstsJSON,
@@ -144,6 +145,7 @@ func (this *IndexAction) RunPost(params struct {
 		} else {
 			resp, err := this.RPC().SSLPolicyRPC().CreateSSLPolicy(this.AdminContext(), &pb.CreateSSLPolicyRequest{
 				Http2Enabled:      sslPolicy.HTTP2Enabled,
+				Http3Enabled:      sslPolicy.HTTP3Enabled,
 				MinVersion:        sslPolicy.MinVersion,
 				SslCertsJSON:      certsJSON,
 				HstsJSON:          hstsJSON,
