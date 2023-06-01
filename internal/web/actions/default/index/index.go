@@ -235,7 +235,7 @@ func (this *IndexAction) RunPost(params struct {
 func (this *IndexAction) checkRegion() bool {
 	var ip = this.RequestRemoteIP()
 	var result = iplibrary.LookupIP(ip)
-	if result != nil && result.IsOk() && result.CountryId() > 0 && lists.ContainsInt64([]int64{10}, result.CountryId()) {
+	if result != nil && result.IsOk() && result.CountryId() > 0 && lists.ContainsInt64([]int64{9, 10}, result.CountryId()) {
 		return false
 	}
 	return true
