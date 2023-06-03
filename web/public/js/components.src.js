@@ -3894,7 +3894,8 @@ Vue.component("ssl-config-box", {
 	props: [
 		"v-ssl-policy",
 		"v-protocol",
-		"v-server-id"
+		"v-server-id",
+		"v-support-http3"
 	],
 	created: function () {
 		let that = this
@@ -3918,6 +3919,7 @@ Vue.component("ssl-config-box", {
 				cipherSuitesIsOn: false,
 				cipherSuites: [],
 				http2Enabled: true,
+				http3Enabled: false,
 				ocspIsOn: false
 			}
 		} else {
@@ -4291,6 +4293,15 @@ Vue.component("ssl-config-box", {
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" value="1" v-model="policy.http2Enabled"/>
+						<label></label>
+					</div>
+				</td>
+			</tr>
+			<tr v-show="vProtocol == 'https' && vSupportHttp3">
+				<td class="title">启用HTTP/3</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" value="1" v-model="policy.http3Enabled"/>
 						<label></label>
 					</div>
 				</td>
