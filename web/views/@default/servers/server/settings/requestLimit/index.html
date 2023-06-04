@@ -5,7 +5,7 @@
 <div class="right-box with-menu">
     <div v-if="hasGroupConfig">
         <div class="margin"></div>
-        <warning-message>由于已经在当前<a :href="groupSettingURL">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
+        <warning-message>由于已经在当前<a :href="groupSettingURL">网站分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
     </div>
     <div :class="{'opacity-mask': hasGroupConfig}">
         <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">

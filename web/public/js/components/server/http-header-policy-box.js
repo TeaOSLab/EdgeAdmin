@@ -184,7 +184,7 @@ Vue.component("http-header-policy-box", {
 	<div v-if="((!vIsLocation && !vIsGroup) || requestHeaderRef.isPrior) && type == 'request'">
 		<div v-if="vHasGroupRequestConfig">
         	<div class="margin"></div>
-        	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#request'">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
+        	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#request'">网站分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
     	</div>
     	<div :class="{'opacity-mask': vHasGroupRequestConfig}">
 		<h4>设置请求Header &nbsp; <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)" style="font-size: 0.8em">[添加新Header]</a></h4>
@@ -257,7 +257,7 @@ Vue.component("http-header-policy-box", {
 	<div v-if="((!vIsLocation && !vIsGroup) || responseHeaderRef.isPrior) && type == 'response'">
 		<div v-if="vHasGroupResponseConfig">
         	<div class="margin"></div>
-        	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#response'">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
+        	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#response'">网站分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
     	</div>
     	<div :class="{'opacity-mask': vHasGroupResponseConfig}">
 			<h4>设置响应Header &nbsp; <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)" style="font-size: 0.8em">[添加新Header]</a></h4>

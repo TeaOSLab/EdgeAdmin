@@ -42,7 +42,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "创建服务分组 %d", createResp.ServerGroupId)
+	defer this.CreateLog(oplogs.LevelInfo, "创建网站分组 %d", createResp.ServerGroupId)
 
 	this.Success()
 }
