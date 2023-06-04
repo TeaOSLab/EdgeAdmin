@@ -41,7 +41,7 @@ func (this *UpdateAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改代理服务分组 %d", params.GroupId)
+	defer this.CreateLog(oplogs.LevelInfo, "修改网站分组 %d", params.GroupId)
 
 	params.Must.
 		Field("name", params.Name).

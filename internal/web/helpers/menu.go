@@ -34,7 +34,7 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnread
 					"code": "cert",
 				},
 				{
-					"name": "服务分组",
+					"name": "网站分组",
 					"url":  "/servers/groups",
 					"code": "group",
 				},
