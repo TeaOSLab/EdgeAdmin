@@ -77,6 +77,7 @@ func (this *IndexAction) RunPost(params struct {
 	HttpAllAllowMismatchDomainsJSON        []byte
 	HttpAllAllowNodeIP                     bool
 	HttpAllDefaultDomain                   string
+	HttpAllForceLnRequest                  bool
 
 	HttpAllSupportsLowVersionHTTP  bool
 	HttpAllMatchCertFromAllServers bool
@@ -140,6 +141,7 @@ func (this *IndexAction) RunPost(params struct {
 	// HTTP All
 	config.HTTPAll.SupportsLowVersionHTTP = params.HttpAllSupportsLowVersionHTTP
 	config.HTTPAll.MatchCertFromAllServers = params.HttpAllMatchCertFromAllServers
+	config.HTTPAll.ForceLnRequest = params.HttpAllForceLnRequest
 
 	// 访问日志
 	config.HTTPAccessLog.EnableRequestHeaders = params.HttpAccessLogEnableRequestHeaders
