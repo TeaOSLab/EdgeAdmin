@@ -64,6 +64,7 @@ p { color: grey; }
 </body>
 </html>`
 	}
+
 	this.Data["httpAllDomainMismatchActionContentHTML"] = httpAllDomainMismatchActionContentHTML
 
 	this.Show()
@@ -77,6 +78,8 @@ func (this *IndexAction) RunPost(params struct {
 	HttpAllAllowMismatchDomainsJSON        []byte
 	HttpAllAllowNodeIP                     bool
 	HttpAllDefaultDomain                   string
+	HttpAllNodeIPPageHTML                  string
+	HttpAllNodeIPShowPage                  bool
 	HttpAllForceLnRequest                  bool
 
 	HttpAllSupportsLowVersionHTTP  bool
@@ -137,6 +140,8 @@ func (this *IndexAction) RunPost(params struct {
 	config.HTTPAll.AllowMismatchDomains = allowMismatchDomains
 	config.HTTPAll.AllowNodeIP = params.HttpAllAllowNodeIP
 	config.HTTPAll.DefaultDomain = params.HttpAllDefaultDomain
+	config.HTTPAll.NodeIPShowPage = params.HttpAllNodeIPShowPage
+	config.HTTPAll.NodeIPPageHTML = params.HttpAllNodeIPPageHTML
 
 	// HTTP All
 	config.HTTPAll.SupportsLowVersionHTTP = params.HttpAllSupportsLowVersionHTTP
