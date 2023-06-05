@@ -1,0 +1,8 @@
+<first-menu>
+	<menu-item href="/settings/api">节点列表</menu-item>
+	<span class="item">|</span>
+	<menu-item :href="'/settings/api/node?nodeId=' + node.id" code="index">"{{node.name}}"详情</menu-item>
+    <menu-item :href="'/settings/api/node/logs?nodeId=' + node.id" code="log">运行日志</menu-item>
+	<menu-item :href="'/settings/api/node/install?nodeId=' + node.id" code="install">安装节点</menu-item>
+	<menu-item :href="'/settings/api/node/update?nodeId=' + node.id" code="update">修改节点</menu-item>
+</first-menu>

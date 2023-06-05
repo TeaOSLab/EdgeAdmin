@@ -33,7 +33,7 @@ func (this *AdvancedHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNex
 	var adminId = session.GetInt64("adminId")
 	if configloaders.AllowModule(adminId, configloaders.AdminModuleCodeSetting) {
 		tabbar.Add("数据库", "", "/settings/database", "", this.tab == "database")
-		tabbar.Add("API节点", "", "/api", "", this.tab == "apiNodes")
+		tabbar.Add("API节点", "", "/settings/api", "", this.tab == "apiNodes")
 		tabbar.Add("日志数据库", "", "/db", "", this.tab == "dbNodes")
 		tabbar.Add("迁移", "", "/settings/transfer", "", this.tab == "transfer")
 

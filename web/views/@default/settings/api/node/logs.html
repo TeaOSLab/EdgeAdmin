@@ -3,7 +3,7 @@
 {$template "/datepicker"}
 
 <div class="margin"></div>
-<form method="get" action="/api/node/logs" class="ui form" autocomplete="off">
+<form method="get" action="/settings/api/node/logs" class="ui form" autocomplete="off">
     <input type="hidden" name="nodeId" :value="nodeId"/>
     <div class="ui fields inline">
         <div class="ui field">
@@ -28,7 +28,7 @@
             <button type="submit" class="ui button">查询</button>
         </div>
         <div class="ui field" v-if="dayFrom.length > 0 || dayTo.length > 0 || keyword.length > 0 || level.length > 0">
-            <a :href="'/api/node/logs?nodeId=' + nodeId">[清除条件]</a>
+            <a :href="'/settings/api/node/logs?nodeId=' + nodeId">[清除条件]</a>
         </div>
     </div>
 </form>

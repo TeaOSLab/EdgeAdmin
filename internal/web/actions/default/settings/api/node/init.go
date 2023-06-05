@@ -12,7 +12,7 @@ func init() {
 		server.
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeSetting)).
 			Helper(settingutils.NewAdvancedHelper("apiNodes")).
-			Prefix("/api/node").
+			Prefix("/settings/api/node").
 
 			// 这里不受Helper的约束
 			GetPost("/createAddrPopup", new(CreateAddrPopupAction)).

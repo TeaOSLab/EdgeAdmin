@@ -1,7 +1,7 @@
 {$layout}
 
 <div class="margin"></div>
-<form method="get" action="/api/methodStats" class="ui form">
+<form method="get" action="/settings/api/methodStats" class="ui form">
     <div class="ui fields inline">
         <div class="ui field">
             <input type="text" name="method" v-model="method" placeholder="方法"/>
@@ -21,7 +21,7 @@
         <div class="ui field">
             <button class="ui button" type="submit">搜索</button>
             &nbsp;
-            <a href="/api/methodStats" v-if="method.length > 0 || tag.length > 0 || order.length > 0">清除条件</a>
+            <a href="/settings/api/methodStats" v-if="method.length > 0 || tag.length > 0 || order.length > 0">清除条件</a>
         </div>
     </div>
 </form>

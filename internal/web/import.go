@@ -9,8 +9,8 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/admins"
 
 	// API节点
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/api"
-	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/api/node"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/api"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/api/node"
 
 	// 节点集群
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters"

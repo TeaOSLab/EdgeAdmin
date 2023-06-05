@@ -13,7 +13,7 @@ Vue.component("api-node-addresses-box", {
 		// 添加IP地址
 		addAddr: function () {
 			let that = this;
-			teaweb.popup("/api/node/createAddrPopup", {
+			teaweb.popup("/settings/api/node/createAddrPopup", {
 				height: "16em",
 				callback: function (resp) {
 					that.addrs.push(resp.data.addr);
@@ -25,7 +25,7 @@ Vue.component("api-node-addresses-box", {
 		updateAddr: function (index, addr) {
 			let that = this;
 			window.UPDATING_ADDR = addr
-			teaweb.popup("/api/node/updateAddrPopup?addressId=", {
+			teaweb.popup("/settings/api/node/updateAddrPopup?addressId=", {
 				callback: function (resp) {
 					Vue.set(that.addrs, index, resp.data.addr);
 				}

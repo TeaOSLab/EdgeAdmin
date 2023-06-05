@@ -2,7 +2,7 @@
 
 <first-menu>
 	<a href="" class="item" @click.prevent="createNode()">[添加节点]</a>
-    <a href="/api/methodStats" class="item" v-if="hasMethodStats">用时统计</a>
+    <a href="/settings/api/methodStats" class="item" v-if="hasMethodStats">用时统计</a>
 </first-menu>
 
 <p class="comment" v-if="nodes.length == 0">暂时还没有节点。</p>
@@ -22,7 +22,7 @@
             </tr>
         </thead>
         <tr v-for="node in nodes">
-            <td><a :href="'/api/node?nodeId=' + node.id">{{node.name}}</a>
+            <td><a :href="'/settings/api/node?nodeId=' + node.id">{{node.name}}</a>
                 <div v-if="node.isPrimary">
                     <grey-label v-if="node.isPrimary">主节点</grey-label>
                 </div>
@@ -67,7 +67,7 @@
                 <span v-else-if="node.status.updatedAt == 0" class="red">未连接</span>
             </td>
             <td>
-                <a :href="'/api/node?nodeId=' + node.id">详情</a> &nbsp;
+                <a :href="'/settings/api/node?nodeId=' + node.id">详情</a> &nbsp;
                 <a href="" @click.prevent="deleteNode(node.id)">删除</a>
             </td>
         </tr>

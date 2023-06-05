@@ -89,7 +89,7 @@ Tea.context(function () {
                         return
                     case "RPC_TEST_FAILED":
                         teaweb.confirm("html:要安装的节点到API服务之间的RPC通讯测试失败，具体错误：" + errMsg + "，<br/>现在修改API信息？", function () {
-                            window.location = "/api"
+                            window.location = "/settings/api"
                         })
                         return
                     default:
