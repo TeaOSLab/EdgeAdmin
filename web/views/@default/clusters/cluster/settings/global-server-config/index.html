@@ -18,9 +18,9 @@
                 </td>
             </tr>
             <tr v-show="config.httpAll.matchDomainStrictly">
-                <td class="color-border">页面提示</td>
+                <td class="color-border">未绑定域名页面提示</td>
                 <td>
-                    <textarea name="httpAllDomainMismatchActionContentHTML" v-model="httpAllDomainMismatchActionContentHTML"></textarea>
+                    <textarea rows="3" name="httpAllDomainMismatchActionContentHTML" v-model="httpAllDomainMismatchActionContentHTML"></textarea>
                     <p class="comment">访问未绑定的域名时提示的文字，可以使用HTML；仅限于HTTP请求，不适于用HTTPS（HTTPS会提示证书错误）。</p>
                 </td>
             </tr>
@@ -32,6 +32,14 @@
                 </td>
             </tr>
             <tr v-show="config.httpAll.matchDomainStrictly">
+                <td class="color-border">默认域名</td>
+                <td>
+                    <input type="text" name="httpAllDefaultDomain" v-model="config.httpAll.defaultDomain"/>
+                    <p class="comment">例外域名或使用节点IP访问时使用的默认域名。</p>
+                </td>
+            </tr>
+
+            <tr v-show="config.httpAll.matchDomainStrictly">
                 <td class="color-border">允许使用节点IP访问</td>
                 <td>
                     <checkbox name="httpAllAllowNodeIP" v-model="config.httpAll.allowNodeIP"></checkbox>
@@ -39,10 +47,17 @@
                 </td>
             </tr>
             <tr v-show="config.httpAll.matchDomainStrictly">
-                <td class="color-border">默认域名</td>
+                <td class="color-border">访问节点IP显示自定义内容</td>
                 <td>
-                    <input type="text" name="httpAllDefaultDomain" v-model="config.httpAll.defaultDomain"/>
-                    <p class="comment">例外域名或使用节点IP访问时使用的默认域名。</p>
+                    <checkbox name="httpAllNodeIPShowPage" v-model="config.httpAll.nodeIPShowPage"></checkbox>
+                    <p class="comment">选中后，表示用户访问节点IP时显示自定义内容。</p>
+                </td>
+            </tr>
+            <tr v-show="config.httpAll.matchDomainStrictly && config.httpAll.nodeIPShowPage">
+                <td class="color-border">访问节点IP自定义内容</td>
+                <td>
+                    <textarea name="httpAllNodeIPPageHTML" v-model="config.httpAll.nodeIPPageHTML" rows="3" placeholder="访问节点IP时要显示的自定义内容"></textarea>
+                    <p class="comment">访问节点IP时要显示的自定义内容，支持HTML。</p>
                 </td>
             </tr>
         </table>
