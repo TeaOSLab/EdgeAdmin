@@ -32,7 +32,7 @@
 <!-- API节点升级提醒 -->
 <div class="ui icon message error" v-if="!isLoading && apiNodeUpgradeInfo.count > 0">
     <i class="icon warning circle"></i>
-    <a href="/api">升级提醒：有 {{apiNodeUpgradeInfo.count}} 个API节点需要升级到 v{{apiNodeUpgradeInfo.version}} 版本；如果已经升级，请尝试重启API节点进程。</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
+    <a href="/settings/api">升级提醒：有 {{apiNodeUpgradeInfo.count}} 个API节点需要升级到 v{{apiNodeUpgradeInfo.version}} 版本；如果已经升级，请尝试重启API节点进程。</a><a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
 </div>
 
 <!-- 本地API节点 -->
@@ -72,9 +72,9 @@
     </div>
 
     <div class="ui column with-border">
-        <h4>API节点<link-icon href="/api" v-if="dashboard.canGoSettings"></link-icon></h4>
+        <h4>API节点<link-icon href="/settings/api" v-if="dashboard.canGoSettings"></link-icon></h4>
         <div class="value"><span>{{dashboard.countAPINodes}}</span>个
-            <span style="font-size: 1em" v-if="dashboard.countOfflineAPINodes > 0">/ <a href="/api" v-if="dashboard.canGoSettings"><span class="red" style="font-size: 1em">{{dashboard.countOfflineAPINodes}}离线</span></a><span class="red" style="font-size: 1em" v-else>{{dashboard.countOfflineAPINodes}}离线</span></span>
+            <span style="font-size: 1em" v-if="dashboard.countOfflineAPINodes > 0">/ <a href="/settings/api" v-if="dashboard.canGoSettings"><span class="red" style="font-size: 1em">{{dashboard.countOfflineAPINodes}}离线</span></a><span class="red" style="font-size: 1em" v-else>{{dashboard.countOfflineAPINodes}}离线</span></span>
         </div>
     </div>
 
