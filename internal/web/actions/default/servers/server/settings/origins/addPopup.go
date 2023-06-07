@@ -47,6 +47,9 @@ func (this *AddPopupAction) RunGet(params struct {
 	// 是否为HTTP
 	this.Data["isHTTP"] = serverType == "httpProxy" || serverType == "httpWeb"
 
+	// OSS
+	this.getOSSHook()
+
 	this.Show()
 }
 
@@ -76,103 +79,141 @@ func (this *AddPopupAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
-	params.Must.
-		Field("addr", params.Addr).
-		Require("请输入源站地址")
-
-	var addr = params.Addr
-
-	// 是否是完整的地址
-	if (params.Protocol == "http" || params.Protocol == "https") && regexp.MustCompile(`^(http|https)://`).MatchString(addr) {
-		u, err := url.Parse(addr)
-		if err == nil {
-			addr = u.Host
-		}
-	}
-
-	addr = strings.ReplaceAll(addr, "：", ":")
-	addr = regexp.MustCompile(`\s+`).ReplaceAllString(addr, "")
-	var portIndex = strings.LastIndex(addr, ":")
-	if portIndex < 0 {
-		if params.Protocol == "http" {
-			addr += ":80"
-		} else if params.Protocol == "https" {
-			addr += ":443"
-		} else {
-			this.FailField("addr", "源站地址中需要带有端口")
-		}
-		portIndex = strings.LastIndex(addr, ":")
-	}
-	var host = addr[:portIndex]
-	var port = addr[portIndex+1:]
-
-	// 检查端口号
-	if port == "0" {
-		this.FailField("addr", "源站端口号不能为0")
-	}
-	if !configutils.HasVariables(port) {
-		// 必须是整数
-		if !regexp.MustCompile(`^\d+$`).MatchString(port) {
-			this.FailField("addr", "源站端口号只能为整数")
-		}
-		var portInt = types.Int(port)
-		if portInt == 0 {
-			this.FailField("addr", "源站端口号不能为0")
-		}
-		if portInt > 65535 {
-			this.FailField("addr", "源站端口号不能大于65535")
-		}
-	}
-
-	connTimeoutJSON, err := (&shared.TimeDuration{
-		Count: int64(params.ConnTimeout),
-		Unit:  shared.TimeDurationUnitSecond,
-	}).AsJSON()
+	ossConfig, goNext, err := this.postOSSHook(params.Protocol)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-
-	readTimeoutJSON, err := (&shared.TimeDuration{
-		Count: int64(params.ReadTimeout),
-		Unit:  shared.TimeDurationUnitSecond,
-	}).AsJSON()
-	if err != nil {
-		this.ErrorPage(err)
+	if !goNext {
 		return
 	}
 
-	idleTimeoutJSON, err := (&shared.TimeDuration{
-		Count: int64(params.IdleTimeout),
-		Unit:  shared.TimeDurationUnitSecond,
-	}).AsJSON()
-	if err != nil {
-		this.ErrorPage(err)
-		return
+	// 初始化
+	var pbAddr = &pb.NetworkAddress{
+		Protocol: params.Protocol,
 	}
+	var connTimeoutJSON []byte
+	var readTimeoutJSON []byte
+	var idleTimeoutJSON []byte
+	var certRefJSON []byte
 
-	// 证书
-	var certIds = []int64{}
-	if len(params.CertIdsJSON) > 0 {
-		err = json.Unmarshal(params.CertIdsJSON, &certIds)
+	var ossJSON []byte = nil
+	if ossConfig != nil { // OSS
+		ossJSON, err = json.Marshal(ossConfig)
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
-	}
-	var certRefJSON []byte
-	if len(certIds) > 0 {
-		var certId = certIds[0]
-		if certId > 0 {
-			var certRef = &sslconfigs.SSLCertRef{
-				IsOn:   true,
-				CertId: certId,
+		err = ossConfig.Init()
+		if err != nil {
+			this.Fail("校验OSS配置时出错：" + err.Error())
+			return
+		}
+	} else { // 普通源站
+		params.Must.
+			Field("addr", params.Addr).
+			Require("请输入源站地址")
+
+		var addr = params.Addr
+
+		// 是否是完整的地址
+		if (params.Protocol == "http" || params.Protocol == "https") && regexp.MustCompile(`^(http|https)://`).MatchString(addr) {
+			u, err := url.Parse(addr)
+			if err == nil {
+				addr = u.Host
 			}
-			certRefJSON, err = json.Marshal(certRef)
+		}
+
+		addr = strings.ReplaceAll(addr, "：", ":")
+		addr = regexp.MustCompile(`\s+`).ReplaceAllString(addr, "")
+		var portIndex = strings.LastIndex(addr, ":")
+		if portIndex < 0 {
+			if params.Protocol == "http" {
+				addr += ":80"
+			} else if params.Protocol == "https" {
+				addr += ":443"
+			} else {
+				this.FailField("addr", "源站地址中需要带有端口")
+			}
+			portIndex = strings.LastIndex(addr, ":")
+		}
+		var host = addr[:portIndex]
+		var port = addr[portIndex+1:]
+
+		// 检查端口号
+		if port == "0" {
+			this.FailField("addr", "源站端口号不能为0")
+		}
+		if !configutils.HasVariables(port) {
+			// 必须是整数
+			if !regexp.MustCompile(`^\d+$`).MatchString(port) {
+				this.FailField("addr", "源站端口号只能为整数")
+			}
+			var portInt = types.Int(port)
+			if portInt == 0 {
+				this.FailField("addr", "源站端口号不能为0")
+			}
+			if portInt > 65535 {
+				this.FailField("addr", "源站端口号不能大于65535")
+			}
+		}
+
+		connTimeoutJSON, err = (&shared.TimeDuration{
+			Count: int64(params.ConnTimeout),
+			Unit:  shared.TimeDurationUnitSecond,
+		}).AsJSON()
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+
+		readTimeoutJSON, err = (&shared.TimeDuration{
+			Count: int64(params.ReadTimeout),
+			Unit:  shared.TimeDurationUnitSecond,
+		}).AsJSON()
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+
+		idleTimeoutJSON, err = (&shared.TimeDuration{
+			Count: int64(params.IdleTimeout),
+			Unit:  shared.TimeDurationUnitSecond,
+		}).AsJSON()
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+
+		// 证书
+		var certIds = []int64{}
+		if len(params.CertIdsJSON) > 0 {
+			err = json.Unmarshal(params.CertIdsJSON, &certIds)
 			if err != nil {
 				this.ErrorPage(err)
 				return
 			}
+		}
+
+		if len(certIds) > 0 {
+			var certId = certIds[0]
+			if certId > 0 {
+				var certRef = &sslconfigs.SSLCertRef{
+					IsOn:   true,
+					CertId: certId,
+				}
+				certRefJSON, err = json.Marshal(certRef)
+				if err != nil {
+					this.ErrorPage(err)
+					return
+				}
+			}
+		}
+
+		pbAddr = &pb.NetworkAddress{
+			Protocol:  params.Protocol,
+			Host:      host,
+			PortRange: port,
 		}
 	}
 
@@ -192,12 +233,9 @@ func (this *AddPopupAction) RunPost(params struct {
 	}
 
 	createResp, err := this.RPC().OriginRPC().CreateOrigin(this.AdminContext(), &pb.CreateOriginRequest{
-		Name: params.Name,
-		Addr: &pb.NetworkAddress{
-			Protocol:  params.Protocol,
-			Host:      host,
-			PortRange: port,
-		},
+		Name:            params.Name,
+		Addr:            pbAddr,
+		OssJSON:         ossJSON,
 		Description:     params.Description,
 		Weight:          params.Weight,
 		IsOn:            params.IsOn,

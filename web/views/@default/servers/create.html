@@ -59,7 +59,8 @@
                         <input type="hidden" name="origins" :value="JSON.stringify(origins)"/>
                         <div v-if="origins.length > 0">
                             <div v-for="(origin, index) in origins" class="ui label small basic">
-                                {{origin.addr.protocol}}://{{origin.addr.host}}:{{origin.addr.portRange}}
+                                <span v-if="origin.addrSummary != null && origin.addrSummary.length > 0">{{origin.addrSummary}}</span>
+                                <span v-else>{{origin.addr.protocol}}://{{origin.addr.host}}:{{origin.addr.portRange}}</span>
                                 <a href="" title="删除" @click.prevent="removeOrigin(index)"><i class="icon remove"></i></a>
                             </div>
                             <div class="ui divider"></div>

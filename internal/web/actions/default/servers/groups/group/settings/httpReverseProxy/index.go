@@ -59,7 +59,8 @@ func (this *IndexAction) RunGet(params struct {
 		var m = maps.Map{
 			"id":         originConfig.Id,
 			"weight":     originConfig.Weight,
-			"addr":       originConfig.Addr.Protocol.String() + "://" + originConfig.Addr.Host + ":" + originConfig.Addr.PortRange,
+			"addr":       originConfig.AddrSummary(),
+			"isOSS":      originConfig.IsOSS(),
 			"name":       originConfig.Name,
 			"isOn":       originConfig.IsOn,
 			"domains":    originConfig.Domains,
@@ -76,7 +77,8 @@ func (this *IndexAction) RunGet(params struct {
 		var m = maps.Map{
 			"id":         originConfig.Id,
 			"weight":     originConfig.Weight,
-			"addr":       originConfig.Addr.Protocol.String() + "://" + originConfig.Addr.Host + ":" + originConfig.Addr.PortRange,
+			"addr":       originConfig.AddrSummary(),
+			"isOSS":      originConfig.IsOSS(),
 			"name":       originConfig.Name,
 			"isOn":       originConfig.IsOn,
 			"domains":    originConfig.Domains,
