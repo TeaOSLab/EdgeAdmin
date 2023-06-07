@@ -8,6 +8,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
 	"net/url"
 	"regexp"
@@ -27,6 +28,8 @@ func (this *AddOriginPopupAction) RunGet(params struct {
 }) {
 	this.Data["serverType"] = params.ServerType
 
+	this.getOSSHook()
+
 	this.Show()
 }
 
@@ -40,50 +43,93 @@ func (this *AddOriginPopupAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
-	params.Must.
-		Field("addr", params.Addr).
-		Require("请输入源站地址")
-
-	var addr = params.Addr
-
-	// 是否是完整的地址
-	if (params.Protocol == "http" || params.Protocol == "https") && regexp.MustCompile(`^(http|https)://`).MatchString(addr) {
-		u, err := url.Parse(addr)
-		if err == nil {
-			addr = u.Host
-		}
+	ossConfig, goNext, err := this.postOSSHook(params.Protocol)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	if !goNext {
+		return
 	}
 
-	addr = regexp.MustCompile(`\s+`).ReplaceAllString(addr, "")
-	var portIndex = strings.LastIndex(addr, ":")
-	if portIndex < 0 {
-		if params.Protocol == "http" {
-			addr += ":80"
-		} else if params.Protocol == "https" {
-			addr += ":443"
-		} else {
-			this.Fail("地址中需要带有端口")
-		}
-		portIndex = strings.LastIndex(addr, ":")
+	// 初始化
+	var pbAddr = &pb.NetworkAddress{
+		Protocol: params.Protocol,
 	}
-	var host = addr[:portIndex]
-	var port = addr[portIndex+1:]
+	var addrConfig = &serverconfigs.NetworkAddressConfig{
+		Protocol: serverconfigs.Protocol(params.Protocol),
+	}
+	var ossJSON []byte
 
-	// 检查端口号
-	if port == "0" {
-		this.Fail("端口号不能为0")
-	}
-	if !configutils.HasVariables(port) {
-		// 必须是整数
-		if !regexp.MustCompile(`^\d+$`).MatchString(port) {
-			this.Fail("端口号只能为整数")
+	if ossConfig != nil { // OSS
+		ossJSON, err = json.Marshal(ossConfig)
+		if err != nil {
+			this.ErrorPage(err)
+			return
 		}
-		var portInt = types.Int(port)
-		if portInt == 0 {
+		err = ossConfig.Init()
+		if err != nil {
+			this.Fail("校验OSS配置时出错：" + err.Error())
+			return
+		}
+	} else { // 普通源站
+		params.Must.
+			Field("addr", params.Addr).
+			Require("请输入源站地址")
+
+		var addr = params.Addr
+
+		// 是否是完整的地址
+		if (params.Protocol == "http" || params.Protocol == "https") && regexp.MustCompile(`^(http|https)://`).MatchString(addr) {
+			u, err := url.Parse(addr)
+			if err == nil {
+				addr = u.Host
+			}
+		}
+
+		addr = regexp.MustCompile(`\s+`).ReplaceAllString(addr, "")
+		var portIndex = strings.LastIndex(addr, ":")
+		if portIndex < 0 {
+			if params.Protocol == "http" {
+				addr += ":80"
+			} else if params.Protocol == "https" {
+				addr += ":443"
+			} else {
+				this.Fail("地址中需要带有端口")
+			}
+			portIndex = strings.LastIndex(addr, ":")
+		}
+		var host = addr[:portIndex]
+		var port = addr[portIndex+1:]
+
+		// 检查端口号
+		if port == "0" {
 			this.Fail("端口号不能为0")
 		}
-		if portInt > 65535 {
-			this.Fail("端口号不能大于65535")
+		if !configutils.HasVariables(port) {
+			// 必须是整数
+			if !regexp.MustCompile(`^\d+$`).MatchString(port) {
+				this.Fail("端口号只能为整数")
+			}
+			var portInt = types.Int(port)
+			if portInt == 0 {
+				this.Fail("端口号不能为0")
+			}
+			if portInt > 65535 {
+				this.Fail("端口号不能大于65535")
+			}
+		}
+
+		pbAddr = &pb.NetworkAddress{
+			Protocol:  params.Protocol,
+			Host:      host,
+			PortRange: port,
+		}
+
+		addrConfig = &serverconfigs.NetworkAddressConfig{
+			Protocol:  serverconfigs.Protocol(params.Protocol),
+			Host:      host,
+			PortRange: port,
 		}
 	}
 
@@ -103,12 +149,9 @@ func (this *AddOriginPopupAction) RunPost(params struct {
 	}
 
 	resp, err := this.RPC().OriginRPC().CreateOrigin(this.AdminContext(), &pb.CreateOriginRequest{
-		Name: "",
-		Addr: &pb.NetworkAddress{
-			Protocol:  params.Protocol,
-			Host:      host,
-			PortRange: port,
-		},
+		Name:        "",
+		Addr:        pbAddr,
+		OssJSON:     ossJSON,
 		Description: "",
 		Weight:      10,
 		IsOn:        true,
@@ -124,14 +167,16 @@ func (this *AddOriginPopupAction) RunPost(params struct {
 	var origin = &serverconfigs.OriginConfig{
 		Id:   resp.OriginId,
 		IsOn: true,
-		Addr: &serverconfigs.NetworkAddressConfig{
-			Protocol:  serverconfigs.Protocol(params.Protocol),
-			Host:      host,
-			PortRange: port,
-		},
+		Addr: addrConfig,
+		OSS:  ossConfig,
 	}
 
-	this.Data["origin"] = origin
+	this.Data["origin"] = maps.Map{
+		"id":          resp.OriginId,
+		"isOn":        true,
+		"addr":        addrConfig,
+		"addrSummary": origin.AddrSummary(),
+	}
 
 	// 创建日志
 	defer this.CreateLog(oplogs.LevelInfo, "创建源站 %d", resp.OriginId)

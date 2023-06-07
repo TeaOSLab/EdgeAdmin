@@ -1,6 +1,7 @@
 Tea.context(function () {
 	this.addr = ""
 	this.protocol = ""
+	this.isOSS = false
 
 	this.addrError = ""
 
@@ -13,6 +14,8 @@ Tea.context(function () {
 	}
 
 	this.changeProtocol = function () {
+		this.isOSS = this.protocol.startsWith("oss:")
+
 		this.checkPort()
 	}
 

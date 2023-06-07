@@ -7,12 +7,16 @@
 	<input type="hidden" name="originType" :value="originType"/>
 	<table class="ui table selectable definition">
 		<tr>
-			<td>源站协议</td>
+			<td class="title">源站协议</td>
 			<td>
 				<!-- HTTP -->
 				<select class="ui dropdown auto-width" name="protocol" v-model="protocol" v-if="serverType == 'httpProxy' || serverType == 'httpWeb'" @change="changeProtocol">
 					<option value="http">HTTP</option>
 					<option value="https">HTTPS</option>
+
+                    <!-- 对象存储 -->
+                    <optgroup label="对象存储" v-if="ossTypes.length > 0"></optgroup>
+                    <option v-for="ossType in ossTypes" :value="ossType.code">{{ossType.name}}</option>
 				</select>
 
 				<!-- TCP -->
@@ -27,7 +31,9 @@
                 </select>
 			</td>
 		</tr>
-		<tr>
+
+        <!-- 普通源站 -->
+		<tr v-show="!isOSS">
 			<td class="title">源站地址 *</td>
 			<td>
 				<input type="text" name="addr" ref="focus" v-model="addr" @input="changeAddr"/>
@@ -35,13 +41,47 @@
                     源站服务器地址，通常是一个IP（或域名）加端口<span v-if="serverType == 'httpProxy'">，不需要加 http:// 或 https://</span>。</p>
 			</td>
 		</tr>
-        <tr v-if="isHTTP || protocol == 'tls'">
+        <tr v-if="(isHTTP || protocol == 'tls') && !isOSS">
             <td>回源主机名</td>
             <td>
                 <input type="text" name="host" placeholder="比如example.com" maxlength="100"/>
                 <p class="comment">请求源站时的Host字段值，用于设置访问源站的站点域名<span v-if="isHTTP">，支持请求变量</span>。</p>
             </td>
         </tr>
+
+        <!-- OSS -->
+        <!-- 腾讯云COS -->
+        <tbody v-if="protocol == 'oss:tencentCOS'">
+            <tr>
+                <td>密钥ID *<br/><em>(Secret Id)</em></td>
+                <td>
+                    <input type="text" name="tencentCOSSecretId" maxlength="100"/>
+                    <p class="comment">访问存储桶需要的密钥ID。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>密钥Key *<br/><em>(Secret Key)</em></td>
+                <td>
+                    <input type="text" name="tencentCOSSecretKey" maxlength="100"/>
+                    <p class="comment">访问存储桶需要的密钥Key。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>存储桶名称 *</td>
+                <td>
+                    <input type="text" name="tencentCOSBucketName" maxlength="100"/>
+                    <p class="comment">存储桶名称，类似于<code-label>example-12345678</code-label>。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>所属区域代号 *</td>
+                <td>
+                    <input type="text" name="tencentCOSRegion" maxlength="100"/>
+                    <p class="comment">COS服务所属区域代号，类似于<code-label>ap-beijing</code-label>。</p>
+                </td>
+            </tr>
+        </tbody>
+
 		<tr>
 			<td colspan="2"><more-options-indicator></more-options-indicator></td>
 		</tr>
@@ -59,7 +99,7 @@
                     <p class="comment">默认不需要填写，表示支持所有域名。如果填写了专属域名，表示这些源站只会在所列的专属域名被访问时才生效。</p>
                 </td>
             </tr>
-            <tr>
+            <tr v-show="!isOSS">
                 <td>端口跟随</td>
                 <td>
                     <checkbox name="followPort"></checkbox>
@@ -80,7 +120,7 @@
 					<p class="comment">给当前源站起一个容易识别的名称。</p>
 				</td>
 			</tr>
-            <tr>
+            <tr v-show="!isOSS">
                 <td>连接失败超时时间</td>
                 <td>
                     <div class="ui fields inline">
@@ -94,7 +134,7 @@
                     <p class="comment">连接源站失败的最大超时时间，0表示不限制。</p>
                 </td>
             </tr>
-            <tr v-if="isHTTP">
+            <tr v-if="isHTTP && !isOSS">
                 <td>读取超时时间</td>
                 <td>
                     <div class="ui fields inline">
@@ -108,7 +148,7 @@
                     <p class="comment">读取内容时的最大超时时间，0表示不限制。</p>
                 </td>
             </tr>
-            <tr v-if="isHTTP">
+            <tr v-if="isHTTP && !isOSS">
                 <td>最大并发连接数</td>
                 <td>
                     <div class="ui fields inline">
@@ -119,7 +159,7 @@
                     <p class="comment">源站可以接受到的最大并发连接数，0表示使用系统默认。</p>
                 </td>
             </tr>
-            <tr v-if="isHTTP">
+            <tr v-if="isHTTP && !isOSS">
                 <td>最大空闲连接数</td>
                 <td>
                     <div class="ui fields inline">
@@ -130,7 +170,7 @@
                     <p class="comment">当没有请求时，源站保持等待的最大空闲连接数量，0表示使用系统默认。</p>
                 </td>
             </tr>
-            <tr v-if="isHTTP">
+            <tr v-if="isHTTP && !isOSS">
                 <td>最大空闲超时时间</td>
                 <td>
                     <div class="ui fields inline">
@@ -151,7 +191,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td>是否启用</td>
+				<td>启用当前源站</td>
 				<td>
 					<checkbox name="isOn" :value="true"></checkbox>
 				</td>

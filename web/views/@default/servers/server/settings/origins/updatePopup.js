@@ -1,11 +1,22 @@
 Tea.context(function () {
 	this.addrError = ""
+	this.isOSS = this.origin != null && this.origin.protocol != null && this.origin.protocol.startsWith("oss:")
+
+	// 预先设置oss选项
+	if (!this.isOSS) {
+		this.origin.oss = {
+			type: "",
+			options: {}
+		}
+	}
 
 	this.$delay(function () {
 		this.checkPort()
 	})
 
 	this.changeProtocol = function () {
+		this.isOSS = this.origin.protocol.startsWith("oss:")
+
 		this.checkPort()
 	}
 

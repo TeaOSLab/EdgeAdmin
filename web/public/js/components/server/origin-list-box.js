@@ -103,6 +103,7 @@ Vue.component("origin-list-table", {
 		<td :class="{disabled:!origin.isOn}">
 			<a href="" @click.prevent="updateOrigin(origin.id)" :class="{disabled:!origin.isOn}">{{origin.addr}} &nbsp;<i class="icon expand small"></i></a>
 			<div style="margin-top: 0.3em">
+				<tiny-basic-label v-if="origin.isOSS"><i class="icon hdd outline"></i>对象存储</tiny-basic-label>
 				<tiny-basic-label v-if="origin.name.length > 0">{{origin.name}}</tiny-basic-label>
 				<tiny-basic-label v-if="origin.hasCert">证书</tiny-basic-label>
 				<tiny-basic-label v-if="origin.host != null && origin.host.length > 0">主机名: {{origin.host}}</tiny-basic-label>
