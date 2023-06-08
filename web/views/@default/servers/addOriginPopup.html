@@ -47,37 +47,7 @@
         </tr>
 
         <!-- OSS -->
-        <!-- 腾讯云COS -->
-        <tbody v-if="protocol == 'oss:tencentCOS'">
-            <tr>
-                <td>密钥ID *<br/><em>(Secret Id)</em></td>
-                <td>
-                    <input type="text" name="tencentCOSSecretId" maxlength="100"/>
-                    <p class="comment">访问存储桶需要的密钥ID。</p>
-                </td>
-            </tr>
-            <tr>
-                <td>密钥Key *<br/><em>(Secret Key)</em></td>
-                <td>
-                    <input type="text" name="tencentCOSSecretKey" maxlength="100"/>
-                    <p class="comment">访问存储桶需要的密钥Key。</p>
-                </td>
-            </tr>
-            <tr>
-                <td>存储桶名称 *</td>
-                <td>
-                    <input type="text" name="tencentCOSBucketName" maxlength="100"/>
-                    <p class="comment">存储桶名称，类似于<code-label>example-12345678</code-label>。</p>
-                </td>
-            </tr>
-            <tr>
-                <td>所属区域代号 *</td>
-                <td>
-                    <input type="text" name="tencentCOSRegion" maxlength="100"/>
-                    <p class="comment">COS服务所属区域代号，类似于<code-label>ap-beijing</code-label>。</p>
-                </td>
-            </tr>
-        </tbody>
+        {$ .ossForm}
 
         <tr>
             <td colspan="2"><more-options-indicator></more-options-indicator></td>
