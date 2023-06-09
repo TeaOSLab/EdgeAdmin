@@ -99,28 +99,30 @@ Vue.component("origin-list-table", {
 			<th class="two op">操作</th>
 		</tr>	
 	</thead>
-	<tr v-for="origin in vOrigins">
-		<td :class="{disabled:!origin.isOn}">
-			<a href="" @click.prevent="updateOrigin(origin.id)" :class="{disabled:!origin.isOn}">{{origin.addr}} &nbsp;<i class="icon expand small"></i></a>
-			<div style="margin-top: 0.3em">
-				<tiny-basic-label v-if="origin.isOSS"><i class="icon hdd outline"></i>对象存储</tiny-basic-label>
-				<tiny-basic-label v-if="origin.name.length > 0">{{origin.name}}</tiny-basic-label>
-				<tiny-basic-label v-if="origin.hasCert">证书</tiny-basic-label>
-				<tiny-basic-label v-if="origin.host != null && origin.host.length > 0">主机名: {{origin.host}}</tiny-basic-label>
-				<tiny-basic-label v-if="origin.followPort">端口跟随</tiny-basic-label>
-
-				<span v-if="origin.domains != null && origin.domains.length > 0"><tiny-basic-label v-for="domain in origin.domains">匹配: {{domain}}</tiny-basic-label></span>
-				<span v-else-if="hasMatchedDomains"><tiny-basic-label>匹配: 所有域名</tiny-basic-label></span>
-			</div>
-		</td>
-		<td :class="{disabled:!origin.isOn}">{{origin.weight}}</td>
-		<td>
-			<label-on :v-is-on="origin.isOn"></label-on>
-		</td>
-		<td>
-			<a href="" @click.prevent="updateOrigin(origin.id)">修改</a> &nbsp;
-			<a href="" @click.prevent="deleteOrigin(origin.id)">删除</a>
-		</td>
-	</tr>
+	<tbody>
+		<tr v-for="origin in vOrigins">
+			<td :class="{disabled:!origin.isOn}">
+				<a href="" @click.prevent="updateOrigin(origin.id)" :class="{disabled:!origin.isOn}">{{origin.addr}} &nbsp;<i class="icon expand small"></i></a>
+				<div style="margin-top: 0.3em">
+					<tiny-basic-label v-if="origin.isOSS"><i class="icon hdd outline"></i>对象存储</tiny-basic-label>
+					<tiny-basic-label v-if="origin.name.length > 0">{{origin.name}}</tiny-basic-label>
+					<tiny-basic-label v-if="origin.hasCert">证书</tiny-basic-label>
+					<tiny-basic-label v-if="origin.host != null && origin.host.length > 0">主机名: {{origin.host}}</tiny-basic-label>
+					<tiny-basic-label v-if="origin.followPort">端口跟随</tiny-basic-label>
+	
+					<span v-if="origin.domains != null && origin.domains.length > 0"><tiny-basic-label v-for="domain in origin.domains">匹配: {{domain}}</tiny-basic-label></span>
+					<span v-else-if="hasMatchedDomains"><tiny-basic-label>匹配: 所有域名</tiny-basic-label></span>
+				</div>
+			</td>
+			<td :class="{disabled:!origin.isOn}">{{origin.weight}}</td>
+			<td>
+				<label-on :v-is-on="origin.isOn"></label-on>
+			</td>
+			<td>
+				<a href="" @click.prevent="updateOrigin(origin.id)">修改</a> &nbsp;
+				<a href="" @click.prevent="deleteOrigin(origin.id)">删除</a>
+			</td>
+		</tr>
+	</tbody>
 </table>`
 })
