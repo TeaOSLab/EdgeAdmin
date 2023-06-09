@@ -1047,6 +1047,20 @@ window.teaweb = {
 			}
 		})
 		return isOk
+	},
+	playAlert: function () {
+		let audioBox = document.createElement("AUDIO")
+		audioBox.setAttribute("control", "")
+		audioBox.setAttribute("autoplay", "")
+		audioBox.innerHTML = "<source src=\"/audios/alert.ogg\" type=\"audio/ogg\"/>";
+		document.body.appendChild(audioBox);
+		audioBox.play().then(function () {
+			setTimeout(function () {
+				document.body.removeChild(audioBox);
+			}, 2000);
+		}).catch(function (e) {
+			console.log(e.message);
+		})
 	}
 }
 
