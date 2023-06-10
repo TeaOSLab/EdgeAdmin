@@ -24,10 +24,19 @@ import (
 
 // Fail 提示服务器错误信息
 func Fail(action actions.ActionWrapper, err error) {
-	if err != nil {
-		logs.Println("[" + reflect.TypeOf(action).String() + "]" + findStack(err.Error()))
+	if err == nil {
+		err = errors.New("unknown error")
 	}
-	action.Object().Fail(teaconst.ErrServer + "（" + err.Error() + "）")
+
+	logs.Println("[" + reflect.TypeOf(action).String() + "]" + findStack(err.Error()))
+
+	_, _, isLocalAPI, issuesHTML := parseAPIErr(action, err)
+	if isLocalAPI && len(issuesHTML) > 0 {
+		action.Object().Fail(teaconst.ErrServer + "（" + err.Error() + "；最近一次错误提示：" + issuesHTML + "）")
+	} else {
+		action.Object().Fail(teaconst.ErrServer + "（" + err.Error() + "）")
+	}
+
 }
 
 // FailPage 提示页面错误信息
@@ -38,67 +47,11 @@ func FailPage(action actions.ActionWrapper, err error) {
 
 	logs.Println("[" + reflect.TypeOf(action).String() + "]" + findStack(err.Error()))
 
-	// 当前API终端地址
-	var apiEndpoints = []string{}
-	apiConfig, apiConfigErr := configs.LoadAPIConfig()
-	if apiConfigErr == nil && apiConfig != nil {
-		apiEndpoints = append(apiEndpoints, apiConfig.RPC.Endpoints...)
-	}
-
-	var isRPCConnError bool
-	err, isRPCConnError = rpcerrors.HumanError(err, apiEndpoints, Tea.ConfigFile("api.yaml"))
-	var apiNodeIsStarting = false
-	var apiNodeProgress = ""
-	if isRPCConnError {
-		// API节点是否正在启动
-		var sock = gosock.NewTmpSock("edge-api")
-		reply, err := sock.SendTimeout(&gosock.Command{
-			Code:   "starting",
-			Params: nil,
-		}, 1*time.Second)
-		if err == nil && reply != nil {
-			var params = maps.NewMap(reply.Params)
-			if params.GetBool("isStarting") {
-				apiNodeIsStarting = true
-
-				var progressMap = params.GetMap("progress")
-				apiNodeProgress = progressMap.GetString("description")
-			}
-		}
-	}
-
 	action.Object().ResponseWriter.WriteHeader(http.StatusInternalServerError)
 	if len(action.Object().Request.Header.Get("X-Requested-With")) > 0 {
 		action.Object().WriteString(teaconst.ErrServer)
 	} else {
-		// 本地的一些错误提示
-		var isLocalAPI = false
-		if isRPCConnError {
-			host, _, hostErr := net.SplitHostPort(action.Object().Request.Host)
-			if hostErr == nil {
-				for _, endpoint := range apiEndpoints {
-					if strings.HasPrefix(endpoint, "http://"+host) || strings.HasPrefix(endpoint, "https://"+host) || strings.HasPrefix(endpoint, host) {
-						isLocalAPI = true
-						break
-					}
-				}
-			}
-		}
-
-		var issuesHTML = ""
-		if isLocalAPI {
-			// 读取本地API节点的issues
-			issuesData, issuesErr := os.ReadFile(Tea.Root + "/edge-api/logs/issues.log")
-			if issuesErr == nil {
-				var issueMaps = []maps.Map{}
-				issuesErr = json.Unmarshal(issuesData, &issueMaps)
-				if issuesErr == nil && len(issueMaps) > 0 {
-					var issueMap = issueMaps[0]
-					issuesHTML = "本地API节点启动错误：" + issueMap.GetString("message") + "，处理建议：" + issueMap.GetString("suggestion")
-				}
-			}
-		}
-
+		apiNodeIsStarting, apiNodeProgress, _, issuesHTML := parseAPIErr(action, err)
 		var html = `<!DOCTYPE html>
 <html>
 	<head>
@@ -186,4 +139,62 @@ func findStack(err string) string {
 	}
 
 	return err
+}
+
+// 分析API节点的错误信息
+func parseAPIErr(action actions.ActionWrapper, err error) (apiNodeIsStarting bool, apiNodeProgress string, isLocalAPI bool, issuesHTML string) {
+	// 当前API终端地址
+	var apiEndpoints = []string{}
+	apiConfig, apiConfigErr := configs.LoadAPIConfig()
+	if apiConfigErr == nil && apiConfig != nil {
+		apiEndpoints = append(apiEndpoints, apiConfig.RPC.Endpoints...)
+	}
+
+	var isRPCConnError bool
+	err, isRPCConnError = rpcerrors.HumanError(err, apiEndpoints, Tea.ConfigFile("api.yaml"))
+	if isRPCConnError {
+		// API节点是否正在启动
+		var sock = gosock.NewTmpSock("edge-api")
+		reply, err := sock.SendTimeout(&gosock.Command{
+			Code:   "starting",
+			Params: nil,
+		}, 1*time.Second)
+		if err == nil && reply != nil {
+			var params = maps.NewMap(reply.Params)
+			if params.GetBool("isStarting") {
+				apiNodeIsStarting = true
+
+				var progressMap = params.GetMap("progress")
+				apiNodeProgress = progressMap.GetString("description")
+			}
+		}
+	}
+
+	// 本地的一些错误提示
+	if isRPCConnError {
+		host, _, hostErr := net.SplitHostPort(action.Object().Request.Host)
+		if hostErr == nil {
+			for _, endpoint := range apiEndpoints {
+				if strings.HasPrefix(endpoint, "http://"+host) || strings.HasPrefix(endpoint, "https://"+host) || strings.HasPrefix(endpoint, host) {
+					isLocalAPI = true
+					break
+				}
+			}
+		}
+	}
+
+	if isLocalAPI {
+		// 读取本地API节点的issues
+		issuesData, issuesErr := os.ReadFile(Tea.Root + "/edge-api/logs/issues.log")
+		if issuesErr == nil {
+			var issueMaps = []maps.Map{}
+			issuesErr = json.Unmarshal(issuesData, &issueMaps)
+			if issuesErr == nil && len(issueMaps) > 0 {
+				var issueMap = issueMaps[0]
+				issuesHTML = "本地API节点启动错误：" + issueMap.GetString("message") + "，处理建议：" + issueMap.GetString("suggestion")
+			}
+		}
+	}
+
+	return
 }
