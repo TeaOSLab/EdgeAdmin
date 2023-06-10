@@ -1,7 +1,7 @@
 [
   {
     "type": "url-extension",
-    "name": "URL扩展名",
+    "name": "文件扩展名",
     "description": "根据URL中的文件路径扩展名进行过滤",
     "component": "http-cond-url-extension",
     "paramsTitle": "扩展名列表",
@@ -12,6 +12,15 @@
     "name": "首页",
     "description": "检查URL路径是为\"/\"",
     "component": "http-cond-url-eq-index",
+    "paramsTitle": "URL完整路径",
+    "isRequest": true,
+    "caseInsensitive": false
+  },
+  {
+    "type": "url-all",
+    "name": "全站",
+    "description": "全站所有URL",
+    "component": "http-cond-url-all",
     "paramsTitle": "URL完整路径",
     "isRequest": true,
     "caseInsensitive": false

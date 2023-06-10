@@ -276,6 +276,36 @@ Vue.component("http-cond-url-eq-index", {
 </div>`
 })
 
+// 全站
+Vue.component("http-cond-url-all", {
+	props: ["v-cond"],
+	data: function () {
+		let cond = {
+			isRequest: true,
+			param: "${requestPath}",
+			operator: "prefix",
+			value: "/",
+			isCaseInsensitive: false
+		}
+		if (this.vCond != null && typeof this.vCond.value == "string") {
+			cond.value = this.vCond.value
+		}
+		return {
+			cond: cond
+		}
+	},
+	methods: {
+		changeCaseInsensitive: function (isCaseInsensitive) {
+			this.cond.isCaseInsensitive = isCaseInsensitive
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value" disabled="disabled" style="background: #eee"/>
+	<p class="comment">支持全站所有URL。</p>
+</div>`
+})
+
 // URL精准匹配
 Vue.component("http-cond-url-eq", {
 	props: ["v-cond"],
