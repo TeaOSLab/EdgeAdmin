@@ -80,12 +80,14 @@ func (this *IndexAction) RunPost(params struct {
 			config.RPC.Endpoints = []string{endpoint}
 			client, err := rpc.NewRPCClient(config, false)
 			if err != nil {
-				this.Fail("无法连接到API节点地址'" + endpoint + "'：" + err.Error())
+				actionutils.Fail(this, err)
+				return
 			}
 			_, err = client.APINodeRPC().FindCurrentAPINodeVersion(client.Context(0), &pb.FindCurrentAPINodeVersionRequest{})
 			if err != nil {
 				_ = client.Close()
-				this.Fail("无法连接到API节点地址'" + endpoint + "'：" + err.Error())
+				actionutils.Fail(this, err)
+				return
 			}
 			_ = client.Close()
 
