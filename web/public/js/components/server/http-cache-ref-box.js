@@ -174,7 +174,7 @@ Vue.component("http-cache-ref-box", {
 	},
 	template: `<tbody>
 	<tr v-if="condCategory == 'simple'">
-		<td class="title color-border">条件类型 *</td>
+		<td class="title">条件类型 *</td>
 		<td>
 			<select class="ui dropdown auto-width" name="condType" v-model="condType" @change="changeCondType(condType, false)">
 				<option value="url-extension">文件扩展名</option>
@@ -189,7 +189,7 @@ Vue.component("http-cache-ref-box", {
 		</td>
 	</tr>
 	<tr v-if="condCategory == 'simple'">
-		<td class="color-border">{{condComponent.paramsTitle}} *</td>
+		<td>{{condComponent.paramsTitle}} *</td>
 		<td>
 			<component :is="condComponent.component" :v-cond="ref.simpleCond" v-if="condComponent.type != 'params'"></component>
 			<table class="ui table" v-if="condComponent.type == 'params'">
@@ -198,7 +198,7 @@ Vue.component("http-cache-ref-box", {
 		</td>
 	</tr>
 	<tr v-if="condCategory == 'simple' && condComponent.caseInsensitive">
-		<td class="color-border">不区分大小写</td>
+		<td>不区分大小写</td>
 		<td>
 			<div class="ui checkbox">
 				<input type="checkbox" name="condIsCaseInsensitive" value="1" v-model="condIsCaseInsensitive"/>
@@ -221,17 +221,17 @@ Vue.component("http-cache-ref-box", {
 		</td>
 	</tr>
 	<tr v-show="!vIsReverse">
-		<td class="color-border">缓存Key *</td>
-		<td>
-			<input type="text" v-model="ref.key" @input="changeKey(ref.key)"/>
-			<p class="comment">用来区分不同缓存内容的唯一Key。<request-variables-describer ref="variablesDescriber"></request-variables-describer>。</p>
-		</td>
-	</tr>
-	<tr v-show="!vIsReverse">
-		<td class="color-border">忽略URI参数</td>
+		<td>忽略URI参数</td>
 		<td>
 			<checkbox v-model="keyIgnoreArgs"></checkbox>
 			<p class="comment">选中后，表示缓存Key中不包含URI参数（即问号（?））后面的内容。</p>
+		</td>
+	</tr>
+	<tr v-show="!vIsReverse">
+		<td>缓存Key *</td>
+		<td>
+			<input type="text" v-model="ref.key" @input="changeKey(ref.key)"/>
+			<p class="comment">用来区分不同缓存内容的唯一Key。<request-variables-describer ref="variablesDescriber"></request-variables-describer>。</p>
 		</td>
 	</tr>
 	<tr v-show="!vIsReverse">
