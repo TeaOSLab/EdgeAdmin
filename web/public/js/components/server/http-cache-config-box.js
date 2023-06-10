@@ -141,8 +141,8 @@ Vue.component("http-cache-config-box", {
 	</div>
 	
 	<div v-show="isOn()" style="margin-top: 1em">
-		<h4>缓存条件</h4>
-		<http-cache-refs-config-box :v-cache-config="cacheConfig" :v-cache-refs="cacheConfig.cacheRefs" :v-web-id="vWebId"></http-cache-refs-config-box>
+		<h4>缓存条件 &nbsp; <a href="" style="font-size: 0.8em" @click.prevent="$refs.cacheRefsConfigBoxRef.addRef(false)">[添加]</a> </h4>
+		<http-cache-refs-config-box ref="cacheRefsConfigBoxRef" :v-cache-config="cacheConfig" :v-cache-refs="cacheConfig.cacheRefs" :v-web-id="vWebId"></http-cache-refs-config-box>
 	</div>
 	<div class="margin"></div>
 </div>`
