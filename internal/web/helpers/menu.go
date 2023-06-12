@@ -90,9 +90,14 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnread
 			"code":     "clusters",
 			"module":   configloaders.AdminModuleCodeNode,
 			"name":     "边缘节点",
-			"subtitle": "集群列表",
+			"subtitle": "",
 			"icon":     "cloud",
 			"subItems": []maps.Map{
+				{
+					"name": "集群列表",
+					"url":  "/clusters",
+					"code": "cluster",
+				},
 				{
 					"name":  "运行日志",
 					"url":   "/clusters/logs?type=" + nodeLogsType,
@@ -100,14 +105,14 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnread
 					"badge": countUnreadNodeLogs,
 				},
 				{
-					"name": "SSH认证",
-					"url":  "/clusters/grants",
-					"code": "grant",
-				},
-				{
 					"name": "区域设置",
 					"url":  "/clusters/regions",
 					"code": "region",
+				},
+				{
+					"name": "SSH认证",
+					"url":  "/clusters/grants",
+					"code": "grant",
 				},
 			},
 		},
@@ -115,9 +120,14 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnread
 			"code":     "dns",
 			"module":   configloaders.AdminModuleCodeDNS,
 			"name":     "域名解析",
-			"subtitle": "集群列表",
+			"subtitle": "",
 			"icon":     "globe",
 			"subItems": []maps.Map{
+				{
+					"name": "集群列表",
+					"url":  "/dns",
+					"code": "cluster",
+				},
 				{
 					"name": "DNS服务商",
 					"url":  "/dns/providers",
@@ -140,7 +150,7 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnread
 			"code":     "admins",
 			"module":   configloaders.AdminModuleCodeAdmin,
 			"name":     "系统用户",
-			"subtitle": "用户列表",
+			"subtitle": "",
 			"icon":     "user secret",
 		},
 		{
@@ -153,9 +163,14 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnread
 			"code":     "settings",
 			"module":   configloaders.AdminModuleCodeSetting,
 			"name":     "系统设置",
-			"subtitle": "基本设置",
+			"subtitle": "",
 			"icon":     "setting",
 			"subItems": []maps.Map{
+				{
+					"name": "基础设置",
+					"url":  "/settings",
+					"code": "basic",
+				},
 				{
 					"name": "高级设置",
 					"url":  "/settings/advanced",

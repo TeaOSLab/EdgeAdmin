@@ -13,6 +13,7 @@ func init() {
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeNode)).
 			Helper(clusterutils.NewClustersHelper()).
 			Data("teaMenu", "clusters").
+			Data("teaSubMenu", "cluster").
 			Prefix("/clusters").
 			Get("", new(IndexAction)).
 			GetPost("/create", new(CreateAction)).
