@@ -5204,12 +5204,13 @@ Vue.component("http-cache-ref-box", {
 	},
 	template: `<tbody>
 	<tr v-if="condCategory == 'simple'">
-		<td class="title color-border">条件类型 *</td>
+		<td class="title">条件类型 *</td>
 		<td>
 			<select class="ui dropdown auto-width" name="condType" v-model="condType" @change="changeCondType(condType, false)">
-				<option value="url-extension">URL扩展名</option>
+				<option value="url-extension">文件扩展名</option>
 				<option value="url-prefix">URL前缀</option>
 				<option value="url-eq-index">首页</option>
+				<option value="url-all">全站</option>
 				<option value="url-eq">URL完整路径</option>
 				<option value="url-regexp">URL正则匹配</option>
 				<option value="params">参数匹配</option>
@@ -5218,7 +5219,7 @@ Vue.component("http-cache-ref-box", {
 		</td>
 	</tr>
 	<tr v-if="condCategory == 'simple'">
-		<td class="color-border">{{condComponent.paramsTitle}} *</td>
+		<td>{{condComponent.paramsTitle}} *</td>
 		<td>
 			<component :is="condComponent.component" :v-cond="ref.simpleCond" v-if="condComponent.type != 'params'"></component>
 			<table class="ui table" v-if="condComponent.type == 'params'">
@@ -5227,7 +5228,7 @@ Vue.component("http-cache-ref-box", {
 		</td>
 	</tr>
 	<tr v-if="condCategory == 'simple' && condComponent.caseInsensitive">
-		<td class="color-border">不区分大小写</td>
+		<td>不区分大小写</td>
 		<td>
 			<div class="ui checkbox">
 				<input type="checkbox" name="condIsCaseInsensitive" value="1" v-model="condIsCaseInsensitive"/>
@@ -5250,17 +5251,17 @@ Vue.component("http-cache-ref-box", {
 		</td>
 	</tr>
 	<tr v-show="!vIsReverse">
-		<td class="color-border">缓存Key *</td>
-		<td>
-			<input type="text" v-model="ref.key" @input="changeKey(ref.key)"/>
-			<p class="comment">用来区分不同缓存内容的唯一Key。<request-variables-describer ref="variablesDescriber"></request-variables-describer>。</p>
-		</td>
-	</tr>
-	<tr v-show="!vIsReverse">
-		<td class="color-border">忽略URI参数</td>
+		<td>忽略URI参数</td>
 		<td>
 			<checkbox v-model="keyIgnoreArgs"></checkbox>
 			<p class="comment">选中后，表示缓存Key中不包含URI参数（即问号（?））后面的内容。</p>
+		</td>
+	</tr>
+	<tr v-show="!vIsReverse">
+		<td>缓存Key *</td>
+		<td>
+			<input type="text" v-model="ref.key" @input="changeKey(ref.key)"/>
+			<p class="comment">用来区分不同缓存内容的唯一Key。<request-variables-describer ref="variablesDescriber"></request-variables-describer>。</p>
 		</td>
 	</tr>
 	<tr v-show="!vIsReverse">
@@ -6265,8 +6266,8 @@ Vue.component("http-cache-config-box", {
 	</div>
 	
 	<div v-show="isOn()" style="margin-top: 1em">
-		<h4>缓存条件</h4>
-		<http-cache-refs-config-box :v-cache-config="cacheConfig" :v-cache-refs="cacheConfig.cacheRefs" :v-web-id="vWebId"></http-cache-refs-config-box>
+		<h4>缓存条件 &nbsp; <a href="" style="font-size: 0.8em" @click.prevent="$refs.cacheRefsConfigBoxRef.addRef(false)">[添加]</a> </h4>
+		<http-cache-refs-config-box ref="cacheRefsConfigBoxRef" :v-cache-config="cacheConfig" :v-cache-refs="cacheConfig.cacheRefs" :v-web-id="vWebId"></http-cache-refs-config-box>
 	</div>
 	<div class="margin"></div>
 </div>`
@@ -6978,7 +6979,7 @@ Vue.component("http-cache-refs-config-box", {
 		</table>
 		<p class="comment" v-if="refs.length > 1">所有条件匹配顺序为从上到下，可以拖动左侧的<i class="icon bars"></i>排序。服务设置的优先级比全局缓存策略设置的优先级要高。</p>
 		
-		<button class="ui button tiny" @click.prevent="addRef(false)" type="button">+添加缓存条件</button> &nbsp; &nbsp; <a href="" @click.prevent="addRef(true)">+添加不缓存条件</a>
+		<button class="ui button tiny" @click.prevent="addRef(false)" type="button">+添加缓存条件</button> &nbsp; &nbsp; <a href="" @click.prevent="addRef(true)" style="font-size: 0.8em">+添加不缓存条件</a>
 	</div>
 	<div class="margin"></div>
 </div>`
@@ -7085,28 +7086,31 @@ Vue.component("origin-list-table", {
 			<th class="two op">操作</th>
 		</tr>	
 	</thead>
-	<tr v-for="origin in vOrigins">
-		<td :class="{disabled:!origin.isOn}">
-			<a href="" @click.prevent="updateOrigin(origin.id)" :class="{disabled:!origin.isOn}">{{origin.addr}} &nbsp;<i class="icon expand small"></i></a>
-			<div style="margin-top: 0.3em">
-				<tiny-basic-label v-if="origin.name.length > 0">{{origin.name}}</tiny-basic-label>
-				<tiny-basic-label v-if="origin.hasCert">证书</tiny-basic-label>
-				<tiny-basic-label v-if="origin.host != null && origin.host.length > 0">主机名: {{origin.host}}</tiny-basic-label>
-				<tiny-basic-label v-if="origin.followPort">端口跟随</tiny-basic-label>
-
-				<span v-if="origin.domains != null && origin.domains.length > 0"><tiny-basic-label v-for="domain in origin.domains">匹配: {{domain}}</tiny-basic-label></span>
-				<span v-else-if="hasMatchedDomains"><tiny-basic-label>匹配: 所有域名</tiny-basic-label></span>
-			</div>
-		</td>
-		<td :class="{disabled:!origin.isOn}">{{origin.weight}}</td>
-		<td>
-			<label-on :v-is-on="origin.isOn"></label-on>
-		</td>
-		<td>
-			<a href="" @click.prevent="updateOrigin(origin.id)">修改</a> &nbsp;
-			<a href="" @click.prevent="deleteOrigin(origin.id)">删除</a>
-		</td>
-	</tr>
+	<tbody>
+		<tr v-for="origin in vOrigins">
+			<td :class="{disabled:!origin.isOn}">
+				<a href="" @click.prevent="updateOrigin(origin.id)" :class="{disabled:!origin.isOn}">{{origin.addr}} &nbsp;<i class="icon expand small"></i></a>
+				<div style="margin-top: 0.3em">
+					<tiny-basic-label v-if="origin.isOSS"><i class="icon hdd outline"></i>对象存储</tiny-basic-label>
+					<tiny-basic-label v-if="origin.name.length > 0">{{origin.name}}</tiny-basic-label>
+					<tiny-basic-label v-if="origin.hasCert">证书</tiny-basic-label>
+					<tiny-basic-label v-if="origin.host != null && origin.host.length > 0">主机名: {{origin.host}}</tiny-basic-label>
+					<tiny-basic-label v-if="origin.followPort">端口跟随</tiny-basic-label>
+	
+					<span v-if="origin.domains != null && origin.domains.length > 0"><tiny-basic-label v-for="domain in origin.domains">匹配: {{domain}}</tiny-basic-label></span>
+					<span v-else-if="hasMatchedDomains"><tiny-basic-label>匹配: 所有域名</tiny-basic-label></span>
+				</div>
+			</td>
+			<td :class="{disabled:!origin.isOn}">{{origin.weight}}</td>
+			<td>
+				<label-on :v-is-on="origin.isOn"></label-on>
+			</td>
+			<td>
+				<a href="" @click.prevent="updateOrigin(origin.id)">修改</a> &nbsp;
+				<a href="" @click.prevent="deleteOrigin(origin.id)">删除</a>
+			</td>
+		</tr>
+	</tbody>
 </table>`
 })
 
@@ -9626,7 +9630,7 @@ Vue.component("http-header-policy-box", {
 	<div v-if="((!vIsLocation && !vIsGroup) || requestHeaderRef.isPrior) && type == 'request'">
 		<div v-if="vHasGroupRequestConfig">
         	<div class="margin"></div>
-        	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#request'">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
+        	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#request'">网站分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
     	</div>
     	<div :class="{'opacity-mask': vHasGroupRequestConfig}">
 		<h4>设置请求Header &nbsp; <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)" style="font-size: 0.8em">[添加新Header]</a></h4>
@@ -9699,7 +9703,7 @@ Vue.component("http-header-policy-box", {
 	<div v-if="((!vIsLocation && !vIsGroup) || responseHeaderRef.isPrior) && type == 'response'">
 		<div v-if="vHasGroupResponseConfig">
         	<div class="margin"></div>
-        	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#response'">服务分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
+        	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#response'">网站分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
     	</div>
     	<div :class="{'opacity-mask': vHasGroupResponseConfig}">
 			<h4>设置响应Header &nbsp; <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)" style="font-size: 0.8em">[添加新Header]</a></h4>
@@ -13478,6 +13482,36 @@ Vue.component("http-cond-url-eq-index", {
 </div>`
 })
 
+// 全站
+Vue.component("http-cond-url-all", {
+	props: ["v-cond"],
+	data: function () {
+		let cond = {
+			isRequest: true,
+			param: "${requestPath}",
+			operator: "prefix",
+			value: "/",
+			isCaseInsensitive: false
+		}
+		if (this.vCond != null && typeof this.vCond.value == "string") {
+			cond.value = this.vCond.value
+		}
+		return {
+			cond: cond
+		}
+	},
+	methods: {
+		changeCaseInsensitive: function (isCaseInsensitive) {
+			this.cond.isCaseInsensitive = isCaseInsensitive
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value" disabled="disabled" style="background: #eee"/>
+	<p class="comment">支持全站所有URL。</p>
+</div>`
+})
+
 // URL精准匹配
 Vue.component("http-cond-url-eq", {
 	props: ["v-cond"],
@@ -15346,7 +15380,7 @@ Vue.component("api-node-addresses-box", {
 		// 添加IP地址
 		addAddr: function () {
 			let that = this;
-			teaweb.popup("/api/node/createAddrPopup", {
+			teaweb.popup("/settings/api/node/createAddrPopup", {
 				height: "16em",
 				callback: function (resp) {
 					that.addrs.push(resp.data.addr);
@@ -15358,7 +15392,7 @@ Vue.component("api-node-addresses-box", {
 		updateAddr: function (index, addr) {
 			let that = this;
 			window.UPDATING_ADDR = addr
-			teaweb.popup("/api/node/updateAddrPopup?addressId=", {
+			teaweb.popup("/settings/api/node/updateAddrPopup?addressId=", {
 				callback: function (resp) {
 					Vue.set(that.addrs, index, resp.data.addr);
 				}
@@ -18626,7 +18660,8 @@ Vue.component("node-schedule-conds-box", {
 			},
 			valueCPU: 80,
 			valueMemory: 90,
-			valueLoad: 20
+			valueLoad: 20,
+			valueRate: 0
 		}
 	},
 	watch: {
@@ -18732,6 +18767,16 @@ Vue.component("node-schedule-conds-box", {
 					}
 					value = load
 					break
+				case "rate":
+					let rate = parseInt(this.valueRate.toString())
+					if (isNaN(rate)) {
+						rate = 0
+					}
+					if (rate < 0) {
+						rate = 0
+					}
+					value = rate
+					break
 			}
 
 			this.condsConfig.conds.push({
@@ -18769,6 +18814,9 @@ Vue.component("node-schedule-conds-box", {
 						return
 					case "load":
 						cond.valueFormat = cond.value
+						return
+					case "rate":
+						cond.valueFormat = cond.value + "/秒"
 						return
 				}
 			})
@@ -18866,7 +18914,15 @@ Vue.component("node-schedule-conds-box", {
 						
 						<!-- load -->
 						<div v-if="param.valueType == 'load'">
-							<input type="text" v-model="valueLoad" maxlength="6" size="6" style="width: 6em" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+							<input type="text" v-model="valueLoad" maxlength="3" size="3" style="width: 4em" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+						</div>
+						
+						<!-- rate -->
+						<div v-if="param.valueType == 'rate'">
+							<div class="ui input right labeled">
+								<input type="text" v-model="valueRate" maxlength="8" size="8" style="width: 8em" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+								<span class="ui label">/秒</span>
+							</div>
 						</div>
 					</td>
 				</tr>
@@ -19767,6 +19823,9 @@ Vue.component("node-schedule-conds-viewer", {
 					case "load":
 						cond.valueFormat = cond.value
 						return
+					case "rate":
+						cond.valueFormat = cond.value + "/秒"
+						return
 				}
 			})
 		}
@@ -20024,6 +20083,90 @@ Vue.component("dns-resolver-config-box", {
 </div>`
 })
 
+Vue.component("dns-resolvers-config-box", {
+	props: ["value", "name"],
+	data: function () {
+		let resolvers = this.value
+		if (resolvers == null) {
+			resolvers = []
+		}
+
+		let name = this.name
+		if (name == null || name.length == 0) {
+			name = "dnsResolversJSON"
+		}
+
+		return {
+			formName: name,
+			resolvers: resolvers,
+
+			host: "",
+
+			isAdding: false
+		}
+	},
+	methods: {
+		add: function () {
+			this.isAdding = true
+			let that = this
+			setTimeout(function () {
+				that.$refs.hostRef.focus()
+			})
+		},
+		confirm: function () {
+			let host = this.host.trim()
+			if (host.length == 0) {
+				let that = this
+				setTimeout(function () {
+					that.$refs.hostRef.focus()
+				})
+				return
+			}
+			this.resolvers.push({
+				host: host,
+				port: 0, // TODO
+				protocol: "" // TODO
+			})
+			this.cancel()
+		},
+		cancel: function () {
+			this.isAdding = false
+			this.host = ""
+			this.port = 0
+			this.protocol = ""
+		},
+		remove: function (index) {
+			this.resolvers.$remove(index)
+		}
+	},
+	template: `<div>
+	<input type="hidden" :name="formName" :value="JSON.stringify(resolvers)"/>
+	<div v-if="resolvers.length > 0">
+		<div v-for="(resolver, index) in resolvers" class="ui label basic small">
+			<span v-if="resolver.protocol.length > 0">{{resolver.protocol}}</span>{{resolver.host}}<span v-if="resolver.port > 0">:{{resolver.port}}</span>
+			&nbsp;
+			<a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+		</div>
+	</div>
+	
+	<div v-if="isAdding" style="margin-top: 1em">
+		<div class="ui fields inline">
+			<div class="ui field">
+				<input type="text" placeholder="x.x.x.x" @keyup.enter="confirm" @keypress.enter.prevent="1" ref="hostRef" v-model="host"/>
+			</div>
+			<div class="ui field">
+				<button class="ui button tiny" type="button" @click.prevent="confirm">确认</button>
+				&nbsp; <a href="" @click.prevent="cancel" title="取消"><i class="icon remove small"></i></a>
+			</div>
+		</div>
+	</div>
+	
+	<div v-if="!isAdding" style="margin-top: 1em">
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	</div>
+</div>`
+})
+
 Vue.component("ad-instance-objects-box", {
 	props: ["v-objects", "v-user-id"],
 	mounted: function () {
@@ -20277,7 +20420,7 @@ Vue.component("grant-selector", {
 </div>`
 })
 
-window.REQUEST_COND_COMPONENTS = [{"type":"url-extension","name":"URL扩展名","description":"根据URL中的文件路径扩展名进行过滤","component":"http-cond-url-extension","paramsTitle":"扩展名列表","isRequest":true,"caseInsensitive":false},{"type":"url-eq-index","name":"首页","description":"检查URL路径是为\"/\"","component":"http-cond-url-eq-index","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":false},{"type":"url-prefix","name":"URL前缀","description":"根据URL中的文件路径前缀进行过滤","component":"http-cond-url-prefix","paramsTitle":"URL前缀","isRequest":true,"caseInsensitive":true},{"type":"url-eq","name":"URL完整路径","description":"检查URL中的文件路径是否一致","component":"http-cond-url-eq","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":true},{"type":"url-regexp","name":"URL正则匹配","description":"使用正则表达式检查URL中的文件路径是否一致","component":"http-cond-url-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"user-agent-regexp","name":"User-Agent正则匹配","description":"使用正则表达式检查User-Agent中是否含有某些浏览器和系统标识","component":"http-cond-user-agent-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"params","name":"参数匹配","description":"根据参数值进行匹配","component":"http-cond-params","paramsTitle":"参数配置","isRequest":true,"caseInsensitive":false},{"type":"url-not-extension","name":"排除：URL扩展名","description":"根据URL中的文件路径扩展名进行过滤","component":"http-cond-url-not-extension","paramsTitle":"扩展名列表","isRequest":true,"caseInsensitive":false},{"type":"url-not-prefix","name":"排除：URL前缀","description":"根据URL中的文件路径前缀进行过滤","component":"http-cond-url-not-prefix","paramsTitle":"URL前缀","isRequest":true,"caseInsensitive":true},{"type":"url-not-eq","name":"排除：URL完整路径","description":"检查URL中的文件路径是否一致","component":"http-cond-url-not-eq","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":true},{"type":"url-not-regexp","name":"排除：URL正则匹配","description":"使用正则表达式检查URL中的文件路径是否一致，如果一致，则不匹配","component":"http-cond-url-not-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"user-agent-not-regexp","name":"排除：User-Agent正则匹配","description":"使用正则表达式检查User-Agent中是否含有某些浏览器和系统标识，如果含有，则不匹配","component":"http-cond-user-agent-not-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"mime-type","name":"内容MimeType","description":"根据服务器返回的内容的MimeType进行过滤。注意：当用于缓存条件时，此条件需要结合别的请求条件使用。","component":"http-cond-mime-type","paramsTitle":"MimeType列表","isRequest":false,"caseInsensitive":false}]
+window.REQUEST_COND_COMPONENTS = [{"type":"url-extension","name":"文件扩展名","description":"根据URL中的文件路径扩展名进行过滤","component":"http-cond-url-extension","paramsTitle":"扩展名列表","isRequest":true,"caseInsensitive":false},{"type":"url-eq-index","name":"首页","description":"检查URL路径是为\"/\"","component":"http-cond-url-eq-index","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":false},{"type":"url-all","name":"全站","description":"全站所有URL","component":"http-cond-url-all","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":false},{"type":"url-prefix","name":"URL前缀","description":"根据URL中的文件路径前缀进行过滤","component":"http-cond-url-prefix","paramsTitle":"URL前缀","isRequest":true,"caseInsensitive":true},{"type":"url-eq","name":"URL完整路径","description":"检查URL中的文件路径是否一致","component":"http-cond-url-eq","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":true},{"type":"url-regexp","name":"URL正则匹配","description":"使用正则表达式检查URL中的文件路径是否一致","component":"http-cond-url-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"user-agent-regexp","name":"User-Agent正则匹配","description":"使用正则表达式检查User-Agent中是否含有某些浏览器和系统标识","component":"http-cond-user-agent-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"params","name":"参数匹配","description":"根据参数值进行匹配","component":"http-cond-params","paramsTitle":"参数配置","isRequest":true,"caseInsensitive":false},{"type":"url-not-extension","name":"排除：URL扩展名","description":"根据URL中的文件路径扩展名进行过滤","component":"http-cond-url-not-extension","paramsTitle":"扩展名列表","isRequest":true,"caseInsensitive":false},{"type":"url-not-prefix","name":"排除：URL前缀","description":"根据URL中的文件路径前缀进行过滤","component":"http-cond-url-not-prefix","paramsTitle":"URL前缀","isRequest":true,"caseInsensitive":true},{"type":"url-not-eq","name":"排除：URL完整路径","description":"检查URL中的文件路径是否一致","component":"http-cond-url-not-eq","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":true},{"type":"url-not-regexp","name":"排除：URL正则匹配","description":"使用正则表达式检查URL中的文件路径是否一致，如果一致，则不匹配","component":"http-cond-url-not-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"user-agent-not-regexp","name":"排除：User-Agent正则匹配","description":"使用正则表达式检查User-Agent中是否含有某些浏览器和系统标识，如果含有，则不匹配","component":"http-cond-user-agent-not-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"mime-type","name":"内容MimeType","description":"根据服务器返回的内容的MimeType进行过滤。注意：当用于缓存条件时，此条件需要结合别的请求条件使用。","component":"http-cond-mime-type","paramsTitle":"MimeType列表","isRequest":false,"caseInsensitive":false}]
 
 window.REQUEST_COND_OPERATORS = [{"description":"判断是否正则表达式匹配","name":"正则表达式匹配","op":"regexp"},{"description":"判断是否正则表达式不匹配","name":"正则表达式不匹配","op":"not regexp"},{"description":"使用字符串对比参数值是否相等于某个值","name":"字符串等于","op":"eq"},{"description":"参数值包含某个前缀","name":"字符串前缀","op":"prefix"},{"description":"参数值包含某个后缀","name":"字符串后缀","op":"suffix"},{"description":"参数值包含另外一个字符串","name":"字符串包含","op":"contains"},{"description":"参数值不包含另外一个字符串","name":"字符串不包含","op":"not contains"},{"description":"使用字符串对比参数值是否不相等于某个值","name":"字符串不等于","op":"not"},{"description":"判断参数值在某个列表中","name":"在列表中","op":"in"},{"description":"判断参数值不在某个列表中","name":"不在列表中","op":"not in"},{"description":"判断小写的扩展名（不带点）在某个列表中","name":"扩展名","op":"file ext"},{"description":"判断MimeType在某个列表中，支持类似于image/*的语法","name":"MimeType","op":"mime type"},{"description":"判断版本号在某个范围内，格式为version1,version2","name":"版本号范围","op":"version range"},{"description":"将参数转换为整数数字后进行对比","name":"整数等于","op":"eq int"},{"description":"将参数转换为可以有小数的浮点数字进行对比","name":"浮点数等于","op":"eq float"},{"description":"将参数转换为数字进行对比","name":"数字大于","op":"gt"},{"description":"将参数转换为数字进行对比","name":"数字大于等于","op":"gte"},{"description":"将参数转换为数字进行对比","name":"数字小于","op":"lt"},{"description":"将参数转换为数字进行对比","name":"数字小于等于","op":"lte"},{"description":"对整数参数值取模，除数为10，对比值为余数","name":"整数取模10","op":"mod 10"},{"description":"对整数参数值取模，除数为100，对比值为余数","name":"整数取模100","op":"mod 100"},{"description":"对整数参数值取模，对比值格式为：除数,余数，比如10,1","name":"整数取模","op":"mod"},{"description":"将参数转换为IP进行对比","name":"IP等于","op":"eq ip"},{"description":"将参数转换为IP进行对比","name":"IP大于","op":"gt ip"},{"description":"将参数转换为IP进行对比","name":"IP大于等于","op":"gte ip"},{"description":"将参数转换为IP进行对比","name":"IP小于","op":"lt ip"},{"description":"将参数转换为IP进行对比","name":"IP小于等于","op":"lte ip"},{"description":"IP在某个范围之内，范围格式可以是英文逗号分隔的\u003ccode-label\u003e开始IP,结束IP\u003c/code-label\u003e，比如\u003ccode-label\u003e192.168.1.100,192.168.2.200\u003c/code-label\u003e，或者CIDR格式的ip/bits，比如\u003ccode-label\u003e192.168.2.1/24\u003c/code-label\u003e","name":"IP范围","op":"ip range"},{"description":"对IP参数值取模，除数为10，对比值为余数","name":"IP取模10","op":"ip mod 10"},{"description":"对IP参数值取模，除数为100，对比值为余数","name":"IP取模100","op":"ip mod 100"},{"description":"对IP参数值取模，对比值格式为：除数,余数，比如10,1","name":"IP取模","op":"ip mod"},{"description":"判断参数值解析后的文件是否存在","name":"文件存在","op":"file exist"},{"description":"判断参数值解析后的文件是否不存在","name":"文件不存在","op":"file not exist"}]
 
