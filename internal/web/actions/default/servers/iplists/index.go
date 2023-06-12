@@ -21,6 +21,7 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct {
+	Ip         string
 	Keyword    string
 	GlobalOnly bool
 	Unread     bool
@@ -40,6 +41,7 @@ func (this *IndexAction) RunGet(params struct {
 		Unread:     true,
 		EventLevel: params.EventLevel,
 		ListType:   params.ListType,
+		Ip:         params.Ip,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -53,6 +55,7 @@ func (this *IndexAction) RunGet(params struct {
 		Unread:     params.Unread,
 		EventLevel: params.EventLevel,
 		ListType:   params.ListType,
+		Ip:         params.Ip,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -68,6 +71,7 @@ func (this *IndexAction) RunGet(params struct {
 		Unread:     params.Unread,
 		EventLevel: params.EventLevel,
 		ListType:   params.ListType,
+		Ip:         params.Ip,
 		Offset:     page.Offset,
 		Size:       page.Size,
 	})
