@@ -99,7 +99,7 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnread
 					"code": "cluster",
 				},
 				{
-					"name":  "运行日志",
+					"name":  "节点日志",
 					"url":   "/clusters/logs?type=" + nodeLogsType,
 					"code":  "log",
 					"badge": countUnreadNodeLogs,
@@ -110,7 +110,7 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnread
 					"code": "region",
 				},
 				{
-					"name": "SSH认证",
+					"name": "节点SSH",
 					"url":  "/clusters/grants",
 					"code": "grant",
 				},
