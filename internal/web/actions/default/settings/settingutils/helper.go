@@ -25,6 +25,7 @@ func (this *Helper) BeforeAction(actionPtr actions.ActionWrapper) (goNext bool) 
 
 	// 左侧菜单
 	action.Data["teaMenu"] = "settings"
+	action.Data["teaSubMenu"] = "basic"
 
 	// 标签栏
 	var tabbar = actionutils.NewTabbar()

@@ -24,6 +24,7 @@ func init() {
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeNode)).
 			Helper(clusters.NewClusterHelper()).
 			Prefix("/clusters/cluster/settings").
+			Data("teaSubMenu", "cluster").
 			GetPost("", new(IndexAction)).
 
 			// 健康检查

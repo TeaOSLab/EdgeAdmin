@@ -16,6 +16,7 @@ func init() {
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeDNS)).
 			Helper(new(Helper)).
 			Prefix("/dns").
+			Data("teaSubMenu", "cluster").
 			Get("", new(IndexAction)).
 			GetPost("/updateClusterPopup", new(UpdateClusterPopupAction)).
 			Post("/providerOptions", new(ProviderOptionsAction)).
