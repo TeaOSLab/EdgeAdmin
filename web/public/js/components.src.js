@@ -12858,6 +12858,64 @@ Vue.component("http-firewall-block-options", {
 `
 })
 
+Vue.component("http-oss-bucket-params", {
+	props: ["v-oss-config", "v-params", "name"],
+	data: function () {
+		let params = this.vParams
+		if (params == null) {
+			params = []
+		}
+
+		let ossConfig = this.vOssConfig
+		if (ossConfig == null) {
+			ossConfig = {
+				bucketParam: "input",
+				bucketName: "",
+				bucketArgName: ""
+			}
+		} else {
+			// 兼容以往
+			if (ossConfig.bucketParam != null && ossConfig.bucketParam.length == 0) {
+				ossConfig.bucketParam = "input"
+			}
+			if (ossConfig.options != null && ossConfig.options.bucketName != null && ossConfig.options.bucketName.length > 0) {
+				ossConfig.bucketName = ossConfig.options.bucketName
+			}
+		}
+
+		return {
+			params: params,
+			ossConfig: ossConfig
+		}
+	},
+	template: `<tbody>
+	<tr>
+		<td>{{name}}名称获取方式 *</td>
+		<td>
+			<select class="ui dropdown auto-width" name="bucketParam" v-model="ossConfig.bucketParam">
+				<option v-for="param in params" :value="param.code" v-if="param.example.length == 0">{{param.name.replace("\${optionName}", name)}}</option>
+				<option v-for="param in params" :value="param.code" v-if="param.example.length > 0">{{param.name}} - {{param.example}}</option>
+			</select>
+			<p class="comment" v-for="param in params" v-if="param.code == ossConfig.bucketParam">{{param.description.replace("\${optionName}", name)}}</p>
+		</td>
+	</tr>
+    <tr v-if="ossConfig.bucketParam == 'input'">
+        <td>{{name}}名称 *</td>
+        <td>
+            <input type="text" name="bucketName" maxlength="100" v-model="ossConfig.bucketName"/>
+            <p class="comment">{{name}}名称，类似于<code-label>bucket-12345678</code-label>。</p>
+        </td>
+    </tr>
+    <tr v-if="ossConfig.bucketParam == 'arg'">
+    	<td>{{name}}参数名称 *</td>
+        <td>
+            <input type="text" name="bucketArgName" maxlength="100" v-model="ossConfig.bucketArgName"/>
+            <p class="comment">{{name}}参数名称，比如<code-label>?myBucketName=BUCKET-NAME</code-label>中的<code-label>myBucketName</code-label>。</p>
+        </td>
+	</tr>
+</tbody>`
+})
+
 Vue.component("http-request-cond-view", {
 	props: ["v-cond"],
 	data: function () {
