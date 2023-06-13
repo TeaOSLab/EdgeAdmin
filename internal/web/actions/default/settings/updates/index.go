@@ -4,12 +4,12 @@ package updates
 
 import (
 	"encoding/json"
+	"fmt"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/iwind/TeaGo/maps"
-	"github.com/iwind/TeaGo/types"
 	stringutil "github.com/iwind/TeaGo/utils/string"
 	"io"
 	"net/http"
@@ -25,8 +25,18 @@ func (this *IndexAction) Init() {
 	this.Nav("", "updates", "")
 }
 
-func (this *IndexAction) RunGet(params struct{}) {
+func (this *IndexAction) RunGet(params struct {
+	DoCheck bool
+}) {
 	this.Data["version"] = teaconst.Version
+	this.Data["doCheck"] = params.DoCheck
+
+	// 是否正在升级
+	this.Data["isUpgrading"] = isUpgrading
+	this.Data["upgradeProgress"] = fmt.Sprintf("%.2f", upgradeProgress * 100)
+	if isUpgrading {
+		this.Data["doCheck"] = false
+	}
 
 	valueResp, err := this.RPC().SysSettingRPC().ReadSysSetting(this.AdminContext(), &pb.ReadSysSettingRequest{Code: systemconfigs.SettingCodeCheckUpdates})
 	if err != nil {
@@ -34,7 +44,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 		return
 	}
 	var valueJSON = valueResp.ValueJSON
-	var config = &systemconfigs.CheckUpdatesConfig{AutoCheck: false}
+	var config = systemconfigs.NewCheckUpdatesConfig()
 	if len(valueJSON) > 0 {
 		err = json.Unmarshal(valueJSON, config)
 		if err != nil {
@@ -49,6 +59,21 @@ func (this *IndexAction) RunGet(params struct{}) {
 
 func (this *IndexAction) RunPost(params struct {
 }) {
+	valueResp, err := this.RPC().SysSettingRPC().ReadSysSetting(this.AdminContext(), &pb.ReadSysSettingRequest{Code: systemconfigs.SettingCodeCheckUpdates})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	var valueJSON = valueResp.ValueJSON
+	var config = systemconfigs.NewCheckUpdatesConfig()
+	if len(valueJSON) > 0 {
+		err = json.Unmarshal(valueJSON, config)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+
 	type Response struct {
 		Code    int         `json:"code"`
 		Message string      `json:"message"`
@@ -66,6 +91,7 @@ func (this *IndexAction) RunPost(params struct {
 			"message": "读取更新信息失败：" + err.Error(),
 		}
 		this.Success()
+		return
 	}
 
 	defer func() {
@@ -78,6 +104,7 @@ func (this *IndexAction) RunPost(params struct {
 			"message": "读取更新信息失败：" + err.Error(),
 		}
 		this.Success()
+		return
 	}
 
 	var apiResponse = &Response{}
@@ -88,6 +115,7 @@ func (this *IndexAction) RunPost(params struct {
 			"message": "解析更新信息失败：" + err.Error(),
 		}
 		this.Success()
+		return
 	}
 
 	if apiResponse.Code != 200 {
@@ -96,6 +124,7 @@ func (this *IndexAction) RunPost(params struct {
 			"message": "解析更新信息失败：" + apiResponse.Message,
 		}
 		this.Success()
+		return
 	}
 
 	var m = maps.NewMap(apiResponse.Data)
@@ -107,19 +136,30 @@ func (this *IndexAction) RunPost(params struct {
 			if vMap.GetString("code") == "admin" {
 				var latestVersion = vMap.GetString("version")
 				if stringutil.VersionCompare(teaconst.Version, latestVersion) < 0 {
+					// 是否已忽略
+					if len(config.IgnoredVersion) > 0 && stringutil.VersionCompare(config.IgnoredVersion, latestVersion) >= 0 {
+						continue
+					}
+
 					this.Data["result"] = maps.Map{
-						"isOk":    true,
-						"message": "有最新的版本v" + types.String(latestVersion) + "可以更新",
-						"hasNew":  true,
-						"dlURL":   dlHost + vMap.GetString("url"),
+						"isOk":        true,
+						"version":     latestVersion,
+						"message":     "有最新的版本 v" + latestVersion + " 可以更新",
+						"hasNew":      true,
+						"dlURL":       dlHost + vMap.GetString("url"),
+						"day":         vMap.GetString("day"),
+						"description": vMap.GetString("description"),
+						"docURL":      vMap.GetString("docURL"),
 					}
 					this.Success()
+					return
 				} else {
 					this.Data["result"] = maps.Map{
 						"isOk":    true,
 						"message": "你已安装最新版本，无需更新",
 					}
 					this.Success()
+					return
 				}
 			}
 		}
@@ -127,7 +167,7 @@ func (this *IndexAction) RunPost(params struct {
 
 	this.Data["result"] = maps.Map{
 		"isOk":    false,
-		"message": "找不到更新信息",
+		"message": "没有发现更新的版本",
 	}
 
 	this.Success()

@@ -119,7 +119,7 @@ func (this *CheckUpdatesTask) Loop() error {
 			var vMap = maps.NewMap(version)
 			if vMap.GetString("code") == "admin" {
 				var latestVersion = vMap.GetString("version")
-				if stringutil.VersionCompare(teaconst.Version, latestVersion) < 0 {
+				if stringutil.VersionCompare(teaconst.Version, latestVersion) < 0 && (len(config.IgnoredVersion) == 0 || stringutil.VersionCompare(latestVersion, config.IgnoredVersion) > 0) {
 					teaconst.NewVersionCode = latestVersion
 					teaconst.NewVersionDownloadURL = dlHost + vMap.GetString("url")
 					return nil

@@ -1,25 +1,21 @@
-// Copyright 2021 Liuxiangchao iwind.liu@gmail.com. All rights reserved.
+// Copyright 2023 GoEdge CDN goedge.cdn@gmail.com. All rights reserved. Official site: https://goedge.cn .
 
 package updates
 
 import (
 	"encoding/json"
-	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 )
 
-type UpdateAction struct {
+type ResetIgnoredVersionAction struct {
 	actionutils.ParentAction
 }
 
-func (this *UpdateAction) RunPost(params struct {
-	AutoCheck bool
-}) {
-	defer this.CreateLogInfo("修改检查更新设置")
+func (this *ResetIgnoredVersionAction) RunPost(params struct{}) {
+	defer this.CreateLogInfo("重置忽略升级版本")
 
-	// 读取当前设置
 	valueResp, err := this.RPC().SysSettingRPC().ReadSysSetting(this.AdminContext(), &pb.ReadSysSettingRequest{Code: systemconfigs.SettingCodeCheckUpdates})
 	if err != nil {
 		this.ErrorPage(err)
@@ -34,16 +30,13 @@ func (this *UpdateAction) RunPost(params struct {
 			return
 		}
 	}
-
-	config.AutoCheck = params.AutoCheck
-
+	config.IgnoredVersion = ""
 	configJSON, err := json.Marshal(config)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 
-	// 修改设置
 	_, err = this.RPC().SysSettingRPC().UpdateSysSetting(this.AdminContext(), &pb.UpdateSysSettingRequest{
 		Code:      systemconfigs.SettingCodeCheckUpdates,
 		ValueJSON: configJSON,
@@ -51,12 +44,6 @@ func (this *UpdateAction) RunPost(params struct {
 	if err != nil {
 		this.ErrorPage(err)
 		return
-	}
-
-	// 重置状态
-	if !config.AutoCheck {
-		teaconst.NewVersionCode = ""
-		teaconst.NewVersionDownloadURL = ""
 	}
 
 	this.Success()

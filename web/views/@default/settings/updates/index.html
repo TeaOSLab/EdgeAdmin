@@ -1,32 +1,68 @@
 {$layout}
 
 <div class="ui margin"></div>
-<form class="ui form">
-    <table class="ui table definition selectable">
-        <tr>
-            <td class="title">当前已安装版本</td>
-            <td>v{{version}}</td>
-        </tr>
-        <tr>
-            <td>自动检查</td>
-            <td>
-                <checkbox v-model="config.autoCheck" @input="changeAutoCheck"></checkbox>
-                <p class="comment">选中后系统将定时检查是否有新版本更新。</p>
-            </td>
-        </tr>
-        <tr v-if="isStarted">
-            <td>最新版本</td>
-            <td>
-                <div v-if="isChecking">
-                    <span class="blue">正在连接服务器检查更新...</span>
-                </div>
-                <div v-if="!isChecking">
-                    <span class="green" v-if="result.isOk">{{result.message}}<span v-if="result.hasNew">：<br/><a :href="result.dlURL">下载地址：{{result.dlURL}}</a> </span></span>
-                    <span class="red" v-if="!result.isOk">{{result.message}}</span>
-                </div>
-            </td>
-        </tr>
-    </table>
 
-    <button class="ui button primary" type="button"  @click.prevent="start">开始检查</button>
-</form>
+<div v-show="isUpgrading">
+    <p class="ui message warning">正在下载升级到新版本，请耐心等待 {{upgradeProgress}}%...</p>
+</div>
+
+<div v-show="!isUpgrading">
+    <form class="ui form">
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title">当前已安装版本</td>
+                <td>v{{version}}</td>
+            </tr>
+            <tr v-if="config.ignoredVersion.length > 0">
+                <td>已忽略版本</td>
+                <td>
+                    v{{config.ignoredVersion}} &nbsp; <a href="" style="font-size: 0.8em" @click.prevent="resetIgnoredVersion()">[重置]</a>
+                </td>
+            </tr>
+            <tr>
+                <td>自动检查</td>
+                <td>
+                    <checkbox v-model="config.autoCheck" @input="changeAutoCheck"></checkbox>
+                    <p class="comment">选中后系统将定时检查是否有新版本更新。</p>
+                </td>
+            </tr>
+            <tr v-if="isStarted">
+                <td>最新版本</td>
+                <td>
+                    <div v-if="isChecking">
+                        <span class="blue">正在连接服务器检查更新...</span>
+                    </div>
+                    <div v-if="!isChecking">
+                        <div class="version-box" v-if="result.isOk">
+                            <span class="green">{{result.message}}
+                                <span v-if="result.hasNew">：<br/><a :href="result.dlURL">下载地址：{{result.dlURL}}</a> </span>
+                            </span>
+                            <div v-if="result.hasNew">
+                                <div class="ui divider"></div>
+
+                                <!-- 操作按钮 -->
+                                <button class="ui button tiny" type="button" @click.prevent="install(result.dlURL)">安装此版本</button>
+                                &nbsp; &nbsp;
+                                <button class="ui button tiny basic" type="button" @click.prevent="ignoreVersion(result.version)">忽略此版本</button>
+                                <div class="ui divider"></div>
+
+                                <div v-if="result.day != null && result.day.length > 0">发布日期：{{result.day}}</div>
+                                <div v-if="result.description != null && result.description.length > 0">
+                                    版本介绍：<pre>{{result.description}}</pre>
+                                    <div v-if="result.docURL != null && result.docURL.length > 0">
+                                        <div class="ui divider"></div>
+                                        <div>完整变更说明：<a :href="result.docURL" target="_blank">{{result.docURL}}</a> </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="red" v-if="!result.isOk">{{result.message}}</span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <button class="ui button primary" type="button"  @click.prevent="start" v-show="!isChecking">开始检查</button>
+        <button class="ui button disabled" type="button" v-show="isChecking">正在检查...</button>
+    </form>
+</div>
