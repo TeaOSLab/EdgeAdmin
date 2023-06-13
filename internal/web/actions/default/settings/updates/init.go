@@ -15,6 +15,9 @@ func init() {
 			Prefix("/settings/updates").
 			GetPost("", new(IndexAction)).
 			Post("/update", new(UpdateAction)).
+			Post("/ignoreVersion", new(IgnoreVersionAction)).
+			Post("/resetIgnoredVersion", new(ResetIgnoredVersionAction)).
+			GetPost("/upgrade", new(UpgradeAction)).
 			EndAll()
 	})
 }
