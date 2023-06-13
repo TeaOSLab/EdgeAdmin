@@ -10,6 +10,7 @@ import (
 
 func (this *UpdatePopupAction) getOSSHook() {
 	this.Data["ossTypes"] = []maps.Map{}
+	this.Data["ossBucketParams"] = []maps.Map{}
 	this.Data["ossForm"] = ""
 }
 
