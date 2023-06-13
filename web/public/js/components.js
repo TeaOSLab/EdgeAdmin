@@ -4647,7 +4647,32 @@ example2.com
 		</tr>
 	</table>
 </div>	
-`}),Vue.component("http-request-cond-view",{props:["v-cond"],data:function(){return{cond:this.vCond,components:window.REQUEST_COND_COMPONENTS}},methods:{typeName:function(i){var e=this.components.$find(function(e,t){return t.type==i.type});return null!=e?e.name:i.param+" "+i.operator},updateConds:function(e,t){for(var i in t)t.hasOwnProperty(i)&&(this.cond[i]=t[i])},notifyChange:function(){}},template:`<div style="margin-bottom: 0.5em">
+`}),Vue.component("http-oss-bucket-params",{props:["v-oss-config","v-params","name"],data:function(){let e=this.vParams,t=(null==e&&(e=[]),this.vOssConfig);return null==t?t={bucketParam:"input",bucketName:"",bucketArgName:""}:(null!=t.bucketParam&&0==t.bucketParam.length&&(t.bucketParam="input"),null!=t.options&&null!=t.options.bucketName&&0<t.options.bucketName.length&&(t.bucketName=t.options.bucketName)),{params:e,ossConfig:t}},template:`<tbody>
+	<tr>
+		<td>{{name}}名称获取方式 *</td>
+		<td>
+			<select class="ui dropdown auto-width" name="bucketParam" v-model="ossConfig.bucketParam">
+				<option v-for="param in params" :value="param.code" v-if="param.example.length == 0">{{param.name.replace("\${optionName}", name)}}</option>
+				<option v-for="param in params" :value="param.code" v-if="param.example.length > 0">{{param.name}} - {{param.example}}</option>
+			</select>
+			<p class="comment" v-for="param in params" v-if="param.code == ossConfig.bucketParam">{{param.description.replace("\${optionName}", name)}}</p>
+		</td>
+	</tr>
+    <tr v-if="ossConfig.bucketParam == 'input'">
+        <td>{{name}}名称 *</td>
+        <td>
+            <input type="text" name="bucketName" maxlength="100" v-model="ossConfig.bucketName"/>
+            <p class="comment">{{name}}名称，类似于<code-label>bucket-12345678</code-label>。</p>
+        </td>
+    </tr>
+    <tr v-if="ossConfig.bucketParam == 'arg'">
+    	<td>{{name}}参数名称 *</td>
+        <td>
+            <input type="text" name="bucketArgName" maxlength="100" v-model="ossConfig.bucketArgName"/>
+            <p class="comment">{{name}}参数名称，比如<code-label>?myBucketName=BUCKET-NAME</code-label>中的<code-label>myBucketName</code-label>。</p>
+        </td>
+	</tr>
+</tbody>`}),Vue.component("http-request-cond-view",{props:["v-cond"],data:function(){return{cond:this.vCond,components:window.REQUEST_COND_COMPONENTS}},methods:{typeName:function(i){var e=this.components.$find(function(e,t){return t.type==i.type});return null!=e?e.name:i.param+" "+i.operator},updateConds:function(e,t){for(var i in t)t.hasOwnProperty(i)&&(this.cond[i]=t[i])},notifyChange:function(){}},template:`<div style="margin-bottom: 0.5em">
 	<span class="ui label small basic">
 		<var v-if="cond.type.length == 0 || cond.type == 'params'" style="font-style: normal">{{cond.param}} <var>{{cond.operator}}</var></var>
 		<var v-if="cond.type.length > 0 && cond.type != 'params'" style="font-style: normal">{{typeName(cond)}}: </var>
