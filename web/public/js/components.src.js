@@ -5060,6 +5060,7 @@ Vue.component("http-cache-ref-box", {
 				simpleCond: null, // 简单条件
 				allowChunkedEncoding: true,
 				allowPartialContent: true,
+				forcePartialContent: false,
 				enableIfNoneMatch: false,
 				enableIfModifiedSince: false,
 				isReverse: this.vIsReverse,
@@ -5306,6 +5307,13 @@ Vue.component("http-cache-ref-box", {
 		<td>
 			<checkbox name="allowPartialContent" value="1" v-model="ref.allowPartialContent"></checkbox>
 			<p class="comment">选中后，支持缓存源站返回的某个区间的内容，该内容通过<code-label>206 Partial Content</code-label>状态码返回。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse && ref.allowPartialContent">
+		<td>强制返回区间内容</td>
+		<td>
+			<checkbox name="forcePartialContent" value="1" v-model="ref.forcePartialContent"></checkbox>
+			<p class="comment">选中后，表示无论客户端是否发送<code-label>Range</code-label>报头，都会优先尝试返回已缓存的区间内容；如果你的应用有不支持区间内容的客户端（比如有些下载软件不支持<code-label>206 Partial Content</code-label>），请务必关闭此功能。</p>
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
