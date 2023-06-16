@@ -53,6 +53,15 @@
     "caseInsensitive": true
   },
   {
+    "type": "url-wildcard-match",
+    "name": "URL通配符",
+    "description": "使用通配符检查URL中的文件路径是否一致",
+    "component": "http-cond-url-wildcard-match",
+    "paramsTitle": "通配符",
+    "isRequest": true,
+    "caseInsensitive": true
+  },
+  {
     "type": "user-agent-regexp",
     "name": "User-Agent正则匹配",
     "description": "使用正则表达式检查User-Agent中是否含有某些浏览器和系统标识",

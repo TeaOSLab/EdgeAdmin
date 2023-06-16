@@ -438,6 +438,38 @@ Vue.component("http-cond-url-not-regexp", {
 </div>`
 })
 
+// URL通配符
+Vue.component("http-cond-url-wildcard-match", {
+	props: ["v-cond"],
+	mounted: function () {
+		this.$refs.valueInput.focus()
+	},
+	data: function () {
+		let cond = {
+			isRequest: true,
+			param: "${requestPath}",
+			operator: "wildcard match",
+			value: "",
+			isCaseInsensitive: false
+		}
+		if (this.vCond != null && typeof this.vCond.value == "string") {
+			cond.value = this.vCond.value
+		}
+		return {
+			cond: cond
+		}
+	},
+	methods: {
+		changeCaseInsensitive: function (isCaseInsensitive) {
+			this.cond.isCaseInsensitive = isCaseInsensitive
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
+	<p class="comment">匹配URL的通配符，用星号（<code-label>*</code-label>）表示任意字符，比如（<code-label>/images/*.png</code-label>、<code-label>/static/*</code-label>，不需要带域名。</p>
+</div>`
+})
 
 // User-Agent正则匹配
 Vue.component("http-cond-user-agent-regexp", {
