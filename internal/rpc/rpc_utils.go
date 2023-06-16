@@ -51,3 +51,19 @@ func IsConnError(err error) bool {
 
 	return false
 }
+
+// IsUnimplementedError 检查是否为未实现错误
+func IsUnimplementedError(err error) bool {
+	if err == nil {
+		return false
+	}
+
+	statusErr, ok := status.FromError(err)
+	if ok {
+		if statusErr.Code() == codes.Unimplemented {
+			return true
+		}
+	}
+
+	return false
+}
