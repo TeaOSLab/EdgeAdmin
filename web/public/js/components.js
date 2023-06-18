@@ -2570,13 +2570,13 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<more-options-tbody @change="changeAdvancedVisible" v-show="isOn()"></more-options-tbody>
 		<tbody v-show="isOn() && advancedVisible">
 			<tr>
-				<td class="color-border">是否传递请求来源域</td>
+				<td class="color-border">传递请求来源域</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="websocketConfig.requestSameOrigin"/>
 						<label></label>
 					</div>
-					<p class="comment">选中表示把接收到的请求中的<span class="ui label tiny">Origin</span>字段传递到源站。</p>
+					<p class="comment">选中后，表示把接收到的请求中的<code-label>Origin</code-label>字段传递到源站。</p>
 				</td>
 			</tr>
 		</tbody>
