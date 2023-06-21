@@ -369,14 +369,14 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 			<td>允许的来源域名</td>
 			<td>
 				<values-box :values="allowDomains" @change="changeAllowDomains"></values-box>
-				<p class="comment">允许的来源域名列表，比如<code-label>example.com</code-label>、<code-label>*.example.com</code-label>。单个星号<code-label>*</code-label>表示允许所有域名。</p>
+				<p class="comment">允许的来源域名列表，比如<code-label>example.com</code-label>（顶级域名)、<code-label>*.example.com</code-label>（example.com的所有二级域名）。单个星号<code-label>*</code-label>表示允许所有域名。</p>
 			</td>
 		</tr>
 		<tr>
 			<td>禁止的来源域名</td>
 			<td>
 				<values-box :values="denyDomains" @change="changeDenyDomains"></values-box>
-				<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>、<code-label>*.example.org</code-label>；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
+				<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>（顶级域名）、<code-label>*.example.org</code-label>（example.org的所有二级域名）；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
 			</td>
 		</tr>
 		<tr>
