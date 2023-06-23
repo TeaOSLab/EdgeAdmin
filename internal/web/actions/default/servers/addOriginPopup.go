@@ -37,9 +37,10 @@ func (this *AddOriginPopupAction) RunPost(params struct {
 	Protocol string
 	Addr     string
 
-	DomainsJSON []byte
-	Host        string
-	FollowPort  bool
+	DomainsJSON  []byte
+	Host         string
+	FollowPort   bool
+	Http2Enabled bool
 
 	Must *actions.Must
 }) {
@@ -149,15 +150,16 @@ func (this *AddOriginPopupAction) RunPost(params struct {
 	}
 
 	resp, err := this.RPC().OriginRPC().CreateOrigin(this.AdminContext(), &pb.CreateOriginRequest{
-		Name:        "",
-		Addr:        pbAddr,
-		OssJSON:     ossJSON,
-		Description: "",
-		Weight:      10,
-		IsOn:        true,
-		Domains:     domains,
-		Host:        params.Host,
-		FollowPort:  params.FollowPort,
+		Name:         "",
+		Addr:         pbAddr,
+		OssJSON:      ossJSON,
+		Description:  "",
+		Weight:       10,
+		IsOn:         true,
+		Domains:      domains,
+		Host:         params.Host,
+		FollowPort:   params.FollowPort,
+		Http2Enabled: params.Http2Enabled,
 	})
 	if err != nil {
 		this.ErrorPage(err)
