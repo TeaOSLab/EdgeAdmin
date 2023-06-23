@@ -109,6 +109,7 @@ Vue.component("origin-list-table", {
 					<tiny-basic-label v-if="origin.hasCert">证书</tiny-basic-label>
 					<tiny-basic-label v-if="origin.host != null && origin.host.length > 0">主机名: {{origin.host}}</tiny-basic-label>
 					<tiny-basic-label v-if="origin.followPort">端口跟随</tiny-basic-label>
+					<tiny-basic-label v-if="origin.addr != null && origin.addr.startsWith('https://') && origin.http2Enabled">HTTP/2</tiny-basic-label>
 	
 					<span v-if="origin.domains != null && origin.domains.length > 0"><tiny-basic-label v-for="domain in origin.domains">匹配: {{domain}}</tiny-basic-label></span>
 					<span v-else-if="hasMatchedDomains"><tiny-basic-label>匹配: 所有域名</tiny-basic-label></span>

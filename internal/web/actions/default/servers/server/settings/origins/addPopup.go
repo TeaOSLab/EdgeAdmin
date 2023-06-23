@@ -70,9 +70,10 @@ func (this *AddPopupAction) RunPost(params struct {
 
 	CertIdsJSON []byte
 
-	DomainsJSON []byte
-	Host        string
-	FollowPort  bool
+	DomainsJSON  []byte
+	Host         string
+	FollowPort   bool
+	Http2Enabled bool
 
 	Description string
 	IsOn        bool
@@ -248,6 +249,7 @@ func (this *AddPopupAction) RunPost(params struct {
 		Domains:         domains,
 		Host:            params.Host,
 		FollowPort:      params.FollowPort,
+		Http2Enabled:    params.Http2Enabled,
 	})
 	if err != nil {
 		this.ErrorPage(err)

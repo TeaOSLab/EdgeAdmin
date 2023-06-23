@@ -77,6 +77,13 @@
                     <p class="comment">选中后表示源站的端口保持和用户访问的服务端口保持一致；此时的源站地址中的端口号可以任意填写。</p>
                 </td>
             </tr>
+            <tr v-show="!isOSS && origin.protocol == 'https'">
+                <td>支持HTTP/2</td>
+                <td>
+                    <checkbox name="http2Enabled" v-model="origin.http2Enabled"></checkbox>
+                    <p class="comment">选中后，表示源站支持HTTP/2协议。</p>
+                </td>
+            </tr>
             <tr>
                 <td>权重</td>
                 <td>

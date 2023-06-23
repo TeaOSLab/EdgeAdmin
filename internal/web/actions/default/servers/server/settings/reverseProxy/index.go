@@ -85,16 +85,17 @@ func (this *IndexAction) RunGet(params struct {
 			originConfig.Domains = []string{}
 		}
 		var m = maps.Map{
-			"id":         originConfig.Id,
-			"weight":     originConfig.Weight,
-			"addr":       originConfig.AddrSummary(),
-			"isOSS":      originConfig.IsOSS(),
-			"name":       originConfig.Name,
-			"isOn":       originConfig.IsOn,
-			"domains":    originConfig.Domains,
-			"hasCert":    originConfig.Cert != nil,
-			"host":       originConfig.RequestHost,
-			"followPort": originConfig.FollowPort,
+			"id":           originConfig.Id,
+			"weight":       originConfig.Weight,
+			"addr":         originConfig.AddrSummary(),
+			"isOSS":        originConfig.IsOSS(),
+			"name":         originConfig.Name,
+			"isOn":         originConfig.IsOn,
+			"domains":      originConfig.Domains,
+			"hasCert":      originConfig.Cert != nil,
+			"host":         originConfig.RequestHost,
+			"followPort":   originConfig.FollowPort,
+			"http2Enabled": originConfig.HTTP2Enabled,
 		}
 		primaryOriginMaps = append(primaryOriginMaps, m)
 	}
@@ -103,16 +104,17 @@ func (this *IndexAction) RunGet(params struct {
 			originConfig.Domains = []string{}
 		}
 		var m = maps.Map{
-			"id":         originConfig.Id,
-			"weight":     originConfig.Weight,
-			"addr":       originConfig.AddrSummary(),
-			"isOSS":      originConfig.IsOSS(),
-			"name":       originConfig.Name,
-			"isOn":       originConfig.IsOn,
-			"domains":    originConfig.Domains,
-			"hasCert":    originConfig.Cert != nil,
-			"host":       originConfig.RequestHost,
-			"followPort": originConfig.FollowPort,
+			"id":           originConfig.Id,
+			"weight":       originConfig.Weight,
+			"addr":         originConfig.AddrSummary(),
+			"isOSS":        originConfig.IsOSS(),
+			"name":         originConfig.Name,
+			"isOn":         originConfig.IsOn,
+			"domains":      originConfig.Domains,
+			"hasCert":      originConfig.Cert != nil,
+			"host":         originConfig.RequestHost,
+			"followPort":   originConfig.FollowPort,
+			"http2Enabled": originConfig.HTTP2Enabled,
 		}
 		backupOriginMaps = append(backupOriginMaps, m)
 	}
