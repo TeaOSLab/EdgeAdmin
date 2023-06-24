@@ -183,6 +183,13 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 	items = filterMenuItems1(items, info, clusterId, selectedItem)
 
 	items = append(items, maps.Map{
+		"name":     "统计指标",
+		"url":      "/clusters/cluster/settings/metrics?clusterId=" + clusterId,
+		"isActive": selectedItem == "metric",
+		"isOn":     info != nil && info.HasMetricItems,
+	})
+
+	items = append(items, maps.Map{
 		"name":     "-",
 		"url":      "",
 		"isActive": false,
@@ -195,38 +202,7 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 		"isOn":     info != nil && info.HasDDoSProtection,
 	})
 
-	items = append(items, maps.Map{
-		"name": "-",
-	})
-
-	items = append(items, maps.Map{
-		"name":     "统计指标",
-		"url":      "/clusters/cluster/settings/metrics?clusterId=" + clusterId,
-		"isActive": selectedItem == "metric",
-		"isOn":     info != nil && info.HasMetricItems,
-	})
-
 	items = filterMenuItems2(items, info, clusterId, selectedItem)
 
-	items = append(items, maps.Map{
-		"name":     "-",
-		"url":      "",
-		"isActive": false,
-	})
-
-	items = append(items, maps.Map{
-		"name":     "系统服务",
-		"url":      "/clusters/cluster/settings/services?clusterId=" + clusterId,
-		"isActive": selectedItem == "service",
-		"isOn":     info != nil && info.HasSystemServices,
-	})
-	{
-		items = append(items, maps.Map{
-			"name":     "TOA设置",
-			"url":      "/clusters/cluster/settings/toa?clusterId=" + clusterId,
-			"isActive": selectedItem == "toa",
-			"isOn":     info != nil && info.IsTOAEnabled,
-		})
-	}
 	return
 }
