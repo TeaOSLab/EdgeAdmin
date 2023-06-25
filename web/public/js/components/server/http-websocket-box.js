@@ -106,8 +106,8 @@ Vue.component("http-websocket-box", {
 				<td class="color-border">允许的来源域列表<em>（Origin）</em></td>
 				<td>
 					<div v-if="websocketConfig.allowedOrigins.length > 0">
-						<div class="ui label tiny" v-for="(origin, index) in websocketConfig.allowedOrigins">
-							{{origin}} <a href="" title="删除" @click.prevent="removeOrigin(index)"><i class="icon remove"></i></a>
+						<div class="ui label small basic" v-for="(origin, index) in websocketConfig.allowedOrigins">
+							{{origin}} <a href="" title="删除" @click.prevent="removeOrigin(index)"><i class="icon remove small"></i></a>
 						</div>
 						<div class="ui divider"></div>
 					</div>
