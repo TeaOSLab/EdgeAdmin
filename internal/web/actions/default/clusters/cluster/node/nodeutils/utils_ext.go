@@ -8,6 +8,6 @@ import (
 	"github.com/iwind/TeaGo/maps"
 )
 
-func filterMenuItems(menuItems []maps.Map, menuItem string, prefix string, query string, info *pb.FindEnabledNodeConfigInfoResponse) []maps.Map {
+func filterMenuItems(menuItems []maps.Map, menuItem string, prefix string, query string, info *pb.FindEnabledNodeConfigInfoResponse, langCode string) []maps.Map {
 	return menuItems
 }

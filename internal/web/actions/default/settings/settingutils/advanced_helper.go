@@ -5,10 +5,14 @@ package settingutils
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/iwind/TeaGo/actions"
 )
 
 type AdvancedHelper struct {
+	helpers.LangHelper
+
 	tab string
 }
 
@@ -32,12 +36,12 @@ func (this *AdvancedHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNex
 	var session = action.Session()
 	var adminId = session.GetInt64("adminId")
 	if configloaders.AllowModule(adminId, configloaders.AdminModuleCodeSetting) {
-		tabbar.Add("数据库", "", "/settings/database", "", this.tab == "database")
-		tabbar.Add("API节点", "", "/settings/api", "", this.tab == "apiNodes")
-		tabbar.Add("日志数据库", "", "/db", "", this.tab == "dbNodes")
-		tabbar.Add("迁移", "", "/settings/transfer", "", this.tab == "transfer")
+		tabbar.Add(this.Lang(actionPtr, codes.AdminSettingsTabTransfer), "", "/settings/database", "", this.tab == "database")
+		tabbar.Add(this.Lang(actionPtr, codes.AdminSettingsTabAPINodes), "", "/settings/api", "", this.tab == "apiNodes")
+		tabbar.Add(this.Lang(actionPtr, codes.AdminSettingsTabAccessLogDatabases), "", "/db", "", this.tab == "dbNodes")
+		tabbar.Add(this.Lang(actionPtr, codes.AdminSettingsTabTransfer), "", "/settings/transfer", "", this.tab == "transfer")
 
-		//tabbar.Add("备份", "", "/settings/backup", "", this.tab == "backup")
+		//tabbar.Add(codes.AdminSettingsTabBackup, "", "/settings/backup", "", this.tab == "backup")
 	}
 	actionutils.SetTabbar(actionPtr, tabbar)
 

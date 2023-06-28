@@ -21,7 +21,7 @@ func (this *InstallRemoteAction) Init() {
 func (this *InstallRemoteAction) RunGet(params struct {
 	ClusterId int64
 }) {
-	this.Data["leftMenuItems"] = LeftMenuItemsForInstall(this.AdminContext(), params.ClusterId, "install")
+	this.Data["leftMenuItems"] = LeftMenuItemsForInstall(this.AdminContext(), params.ClusterId, "install", this.LangCode())
 
 	nodesResp, err := this.RPC().NodeRPC().FindAllNotInstalledNodesWithNodeClusterId(this.AdminContext(), &pb.FindAllNotInstalledNodesWithNodeClusterIdRequest{NodeClusterId: params.ClusterId})
 	if err != nil {

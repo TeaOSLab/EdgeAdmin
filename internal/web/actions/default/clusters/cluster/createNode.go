@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/clusterutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -37,12 +38,12 @@ func (this *CreateNodeAction) RunGet(params struct {
 
 	var leftMenuItems = []maps.Map{
 		{
-			"name":     "单个创建",
+			"name":     this.Lang(codes.AdminNodeMenuCreateSingleNode),
 			"url":      "/clusters/cluster/createNode?clusterId=" + strconv.FormatInt(params.ClusterId, 10),
 			"isActive": true,
 		},
 		{
-			"name":     "批量创建",
+			"name":     this.Lang(codes.AdminNodeMenuCreateMultipleNodes),
 			"url":      "/clusters/cluster/createBatch?clusterId=" + strconv.FormatInt(params.ClusterId, 10),
 			"isActive": false,
 		},

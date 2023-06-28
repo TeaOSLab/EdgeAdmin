@@ -150,11 +150,23 @@ func (this *ParentAction) ViewData() maps.Map {
 	return this.Data
 }
 
-func (this *ParentAction) Lang() string {
+func (this *ParentAction) LangCode() string {
 	var lang = configloaders.FindAdminLang(this.AdminId())
 	if len(lang) > 0 {
 		// TODO check language still exists
 		return lang
 	}
 	return langs.ParseLangFromAction(this)
+}
+
+func (this *ParentAction) Lang(messageCode langs.MessageCode, args ...any) string {
+	return langs.Message(this.LangCode(), messageCode, args...)
+}
+
+func (this *ParentAction) FailLang(messageCode langs.MessageCode, args ...any) {
+	this.Fail(langs.Message(this.LangCode(), messageCode, args...))
+}
+
+func (this *ParentAction) FailFieldLang(field string, messageCode langs.MessageCode, args ...any) {
+	this.FailField(field, langs.Message(this.LangCode(), messageCode, args...))
 }

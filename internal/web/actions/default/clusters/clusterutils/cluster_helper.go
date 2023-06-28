@@ -4,6 +4,8 @@ import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -15,6 +17,7 @@ import (
 
 // ClusterHelper 单个集群的帮助
 type ClusterHelper struct {
+	helpers.LangHelper
 }
 
 func NewClusterHelper() *ClusterHelper {
@@ -79,21 +82,21 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 		}
 		if teaconst.IsPlus {
 			{
-				var item = tabbar.Add("集群看板", "", "/clusters/cluster/boards?clusterId="+clusterIdString, "chart line area", selectedTabbar == "board")
+				var item = tabbar.Add(this.Lang(actionPtr, codes.AdminClusterMenuTabClusterDashboard), "", "/clusters/cluster/boards?clusterId="+clusterIdString, "chart line area", selectedTabbar == "board")
 				item.IsDisabled = !isInCluster
 			}
 		}
 		{
-			var item = tabbar.Add("节点列表", "", "/clusters/cluster/nodes?clusterId="+clusterIdString, "server", selectedTabbar == "node")
+			var item = tabbar.Add(this.Lang(actionPtr, codes.AdminClusterMenuTabClusterNodes), "", "/clusters/cluster/nodes?clusterId="+clusterIdString, "server", selectedTabbar == "node")
 			item.IsDisabled = !isInCluster
 		}
 
 		{
-			var item = tabbar.Add("集群设置", "", "/clusters/cluster/settings?clusterId="+clusterIdString, "setting", selectedTabbar == "setting")
+			var item = tabbar.Add(this.Lang(actionPtr, codes.AdminClusterMenuTabClusterSettings), "", "/clusters/cluster/settings?clusterId="+clusterIdString, "setting", selectedTabbar == "setting")
 			item.IsDisabled = !isInCluster
 		}
 		{
-			var item = tabbar.Add("删除集群", "", "/clusters/cluster/delete?clusterId="+clusterIdString, "trash", selectedTabbar == "delete")
+			var item = tabbar.Add(this.Lang(actionPtr, codes.AdminClusterMenuTabClusterDelete), "", "/clusters/cluster/delete?clusterId="+clusterIdString, "trash", selectedTabbar == "delete")
 			item.IsDisabled = !isInCluster
 		}
 		actionutils.SetTabbar(action, tabbar)
@@ -102,7 +105,7 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 		var secondMenuItem = action.Data.GetString("secondMenuItem")
 		switch selectedTabbar {
 		case "setting":
-			var menuItems = this.createSettingMenu(cluster, clusterInfo, secondMenuItem)
+			var menuItems = this.createSettingMenu(cluster, clusterInfo, secondMenuItem, actionPtr)
 			action.Data["leftMenuItems"] = menuItems
 
 			// 当前菜单
@@ -120,23 +123,23 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 }
 
 // 设置菜单
-func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.FindEnabledNodeClusterConfigInfoResponse, selectedItem string) (items []maps.Map) {
+func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.FindEnabledNodeClusterConfigInfoResponse, selectedItem string, actionPtr actions.ActionWrapper) (items []maps.Map) {
 	clusterId := numberutils.FormatInt64(cluster.Id)
 	items = append(items, maps.Map{
-		"name":     "基础设置",
+		"name":     this.Lang(actionPtr, codes.AdminClusterMenuSettingBasic),
 		"url":      "/clusters/cluster/settings?clusterId=" + clusterId,
 		"isActive": selectedItem == "basic",
 		"isOn":     true,
 	})
 
 	items = append(items, maps.Map{
-		"name":     "DNS设置",
+		"name":     this.Lang(actionPtr, codes.AdminClusterMenuSettingDNS),
 		"url":      "/clusters/cluster/settings/dns?clusterId=" + clusterId,
 		"isActive": selectedItem == "dns",
 		"isOn":     cluster.DnsDomainId > 0 || len(cluster.DnsName) > 0,
 	})
 	items = append(items, maps.Map{
-		"name":     "健康检查",
+		"name":     this.Lang(actionPtr, codes.AdminClusterMenuSettingHealthCheck),
 		"url":      "/clusters/cluster/settings/health?clusterId=" + clusterId,
 		"isActive": selectedItem == "health",
 		"isOn":     info != nil && info.HealthCheckIsOn,
@@ -147,43 +150,43 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 	})
 
 	items = append(items, maps.Map{
-		"name":     "网站设置",
+		"name":     this.Lang(actionPtr, codes.AdminClusterMenuSettingServiceGlobal),
 		"url":      "/clusters/cluster/settings/global-server-config?clusterId=" + clusterId,
 		"isActive": selectedItem == "globalServerConfig",
 		"isOn":     true,
 	})
 
 	items = append(items, maps.Map{
-		"name":     "缓存策略",
+		"name":     this.Lang(actionPtr, codes.AdminClusterMenuSettingCachePolicy),
 		"url":      "/clusters/cluster/settings/cache?clusterId=" + clusterId,
 		"isActive": selectedItem == "cache",
 		"isOn":     cluster.HttpCachePolicyId > 0,
 	})
 	items = append(items, maps.Map{
-		"name":     "WAF策略",
+		"name":     this.Lang(actionPtr, codes.AdminClusterMenuSettingWAFPolicy),
 		"url":      "/clusters/cluster/settings/waf?clusterId=" + clusterId,
 		"isActive": selectedItem == "waf",
 		"isOn":     cluster.HttpFirewallPolicyId > 0,
 	})
 
 	items = append(items, maps.Map{
-		"name":     "WAF动作",
+		"name":     this.Lang(actionPtr, codes.AdminClusterMenuSettingWAFActions),
 		"url":      "/clusters/cluster/settings/firewall-actions?clusterId=" + clusterId,
 		"isActive": selectedItem == "firewallAction",
 		"isOn":     info != nil && info.HasFirewallActions,
 	})
 
 	items = append(items, maps.Map{
-		"name":     "WebP",
+		"name":     this.Lang(actionPtr, codes.AdminClusterMenuSettingWebP),
 		"url":      "/clusters/cluster/settings/webp?clusterId=" + clusterId,
 		"isActive": selectedItem == "webp",
 		"isOn":     info != nil && info.WebpIsOn,
 	})
 
-	items = filterMenuItems1(items, info, clusterId, selectedItem)
+	items = this.filterMenuItems1(items, info, clusterId, selectedItem, actionPtr)
 
 	items = append(items, maps.Map{
-		"name":     "统计指标",
+		"name":     this.Lang(actionPtr, codes.AdminClusterMenuSettingMetrics),
 		"url":      "/clusters/cluster/settings/metrics?clusterId=" + clusterId,
 		"isActive": selectedItem == "metric",
 		"isOn":     info != nil && info.HasMetricItems,
@@ -196,13 +199,13 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 	})
 
 	items = append(items, maps.Map{
-		"name":     "DDoS防护",
+		"name":     this.Lang(actionPtr, codes.AdminClusterMenuSettingDDoSProtection),
 		"url":      "/clusters/cluster/settings/ddos-protection?clusterId=" + clusterId,
 		"isActive": selectedItem == "ddosProtection",
 		"isOn":     info != nil && info.HasDDoSProtection,
 	})
 
-	items = filterMenuItems2(items, info, clusterId, selectedItem)
+	items = this.filterMenuItems2(items, info, clusterId, selectedItem, actionPtr)
 
 	return
 }

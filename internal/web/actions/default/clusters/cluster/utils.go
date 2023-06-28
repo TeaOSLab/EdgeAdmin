@@ -4,13 +4,14 @@ import (
 	"context"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
-	"strconv"
 )
 
 // LeftMenuItemsForInstall 安装升级相关的左侧菜单
-func LeftMenuItemsForInstall(ctx context.Context, clusterId int64, selectedItem string) []maps.Map {
+func LeftMenuItemsForInstall(ctx context.Context, clusterId int64, selectedItem string, langCode string) []maps.Map {
 	rpcClient, _ := rpc.SharedRPC()
 	countNotInstalled := int64(0)
 	countUpgrade := int64(0)
@@ -31,22 +32,22 @@ func LeftMenuItemsForInstall(ctx context.Context, clusterId int64, selectedItem 
 
 	return []maps.Map{
 		{
-			"name":     "手动安装",
+			"name":     langs.Message(langCode, codes.AdminNodeMenuInstallManually),
 			"url":      "/clusters/cluster/installManual?clusterId=" + numberutils.FormatInt64(clusterId),
 			"isActive": selectedItem == "manual",
 		},
 		{
-			"name":     "自动注册",
+			"name":     langs.Message(langCode, codes.AdminNodeMenuInstallAutoRegister),
 			"url":      "/clusters/cluster/installNodes?clusterId=" + numberutils.FormatInt64(clusterId),
 			"isActive": selectedItem == "register",
 		},
 		{
-			"name":     "远程安装(" + strconv.FormatInt(countNotInstalled, 10) + ")",
+			"name":     langs.Message(langCode, codes.AdminNodeMenuInstallRemote, countNotInstalled),
 			"url":      "/clusters/cluster/installRemote?clusterId=" + numberutils.FormatInt64(clusterId),
 			"isActive": selectedItem == "install",
 		},
 		{
-			"name":     "远程升级(" + strconv.FormatInt(countUpgrade, 10) + ")",
+			"name":     langs.Message(langCode, codes.AdminNodeMenuInstallRemoteUpgrade, countUpgrade),
 			"url":      "/clusters/cluster/upgradeRemote?clusterId=" + numberutils.FormatInt64(clusterId),
 			"isActive": selectedItem == "upgrade",
 		},

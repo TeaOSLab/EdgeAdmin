@@ -5,10 +5,14 @@ package settingutils
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/iwind/TeaGo/actions"
 )
 
 type Helper struct {
+	helpers.LangHelper
+
 	tab string
 }
 
@@ -32,13 +36,13 @@ func (this *Helper) BeforeAction(actionPtr actions.ActionWrapper) (goNext bool) 
 	var session = action.Session()
 	var adminId = session.GetInt64("adminId")
 	if configloaders.AllowModule(adminId, configloaders.AdminModuleCodeSetting) {
-		tabbar.Add("Web服务", "", "/settings/server", "", this.tab == "server")
-		tabbar.Add("管理界面设置", "", "/settings/ui", "", this.tab == "ui")
-		tabbar.Add("安全设置", "", "/settings/security", "", this.tab == "security")
-		tabbar.Add("检查更新", "", "/settings/updates", "", this.tab == "updates")
+		tabbar.Add(this.Lang(actionPtr, codes.AdminSettingsTabAdminServer), "", "/settings/server", "", this.tab == "server")
+		tabbar.Add(this.Lang(actionPtr, codes.AdminSettingsTabAdminUI), "", "/settings/ui", "", this.tab == "ui")
+		tabbar.Add(this.Lang(actionPtr, codes.AdminSettingsTabAdminSecuritySettings), "", "/settings/security", "", this.tab == "security")
+		tabbar.Add(this.Lang(actionPtr, codes.AdminSettingsTabUpdates), "", "/settings/updates", "", this.tab == "updates")
 	}
-	tabbar.Add("个人资料", "", "/settings/profile", "", this.tab == "profile")
-	tabbar.Add("登录设置", "", "/settings/login", "", this.tab == "login")
+	tabbar.Add(this.Lang(actionPtr, codes.AdminSettingsTabProfile), "", "/settings/profile", "", this.tab == "profile")
+	tabbar.Add(this.Lang(actionPtr, codes.AdminSettingsTabLogin), "", "/settings/login", "", this.tab == "login")
 	actionutils.SetTabbar(actionPtr, tabbar)
 
 	return
