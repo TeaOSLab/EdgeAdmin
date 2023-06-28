@@ -19,7 +19,7 @@ func (this *CreatePopupAction) Init() {
 }
 
 func (this *CreatePopupAction) RunGet(params struct{}) {
-	this.Data["methods"] = grantutils.AllGrantMethods()
+	this.Data["methods"] = grantutils.AllGrantMethods(this.LangCode())
 
 	this.Show()
 }
@@ -88,7 +88,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		"id":         createResp.NodeGrantId,
 		"name":       params.Name,
 		"method":     params.Method,
-		"methodName": grantutils.FindGrantMethodName(params.Method),
+		"methodName": grantutils.FindGrantMethodName(params.Method, this.LangCode()),
 		"username":   params.Username,
 	}
 

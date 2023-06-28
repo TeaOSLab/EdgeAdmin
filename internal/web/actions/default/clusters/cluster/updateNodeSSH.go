@@ -87,7 +87,7 @@ func (this *UpdateNodeSSHAction) RunGet(params struct {
 			"id":         grantResp.NodeGrant.Id,
 			"name":       grantResp.NodeGrant.Name,
 			"method":     grantResp.NodeGrant.Method,
-			"methodName": grantutils.FindGrantMethodName(grantResp.NodeGrant.Method),
+			"methodName": grantutils.FindGrantMethodName(grantResp.NodeGrant.Method, this.LangCode()),
 		}
 	}
 	this.Data["grant"] = grantMap

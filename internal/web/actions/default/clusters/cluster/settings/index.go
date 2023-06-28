@@ -51,7 +51,7 @@ func (this *IndexAction) RunGet(params struct {
 				"id":         grant.Id,
 				"name":       grant.Name,
 				"method":     grant.Method,
-				"methodName": grantutils.FindGrantMethodName(grant.Method),
+				"methodName": grantutils.FindGrantMethodName(grant.Method, this.LangCode()),
 			}
 		}
 	}

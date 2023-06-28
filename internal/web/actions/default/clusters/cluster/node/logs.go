@@ -34,7 +34,7 @@ func (this *LogsAction) RunGet(params struct {
 		return
 	}
 
-	this.Data["tags"] = nodelogutils.FindNodeCommonTags()
+	this.Data["tags"] = nodelogutils.FindNodeCommonTags(this.LangCode())
 
 	this.Data["nodeId"] = params.NodeId
 	this.Data["dayFrom"] = params.DayFrom

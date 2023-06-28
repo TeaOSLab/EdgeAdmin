@@ -21,7 +21,7 @@ func (this *UpdateAction) Init() {
 func (this *UpdateAction) RunGet(params struct {
 	GrantId int64
 }) {
-	this.Data["methods"] = grantutils.AllGrantMethods()
+	this.Data["methods"] = grantutils.AllGrantMethods(this.LangCode())
 
 	grantResp, err := this.RPC().NodeGrantRPC().FindEnabledNodeGrant(this.AdminContext(), &pb.FindEnabledNodeGrantRequest{NodeGrantId: params.GrantId})
 	if err != nil {
@@ -40,7 +40,7 @@ func (this *UpdateAction) RunGet(params struct {
 		"id":          grant.Id,
 		"name":        grant.Name,
 		"method":      grant.Method,
-		"methodName":  grantutils.FindGrantMethodName(grant.Method),
+		"methodName":  grantutils.FindGrantMethodName(grant.Method, this.LangCode()),
 		"username":    grant.Username,
 		"password":    grant.Password,
 		"privateKey":  grant.PrivateKey,

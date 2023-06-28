@@ -3,6 +3,7 @@ package log
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
@@ -41,15 +42,15 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["levelOptions"] = []maps.Map{
 		{
 			"code": "info",
-			"name": "信息",
+			"name": this.Lang(codes.AdminLevelInfo),
 		},
 		{
 			"code": "warn",
-			"name": "警告",
+			"name": this.Lang(codes.AdminLevelWarn),
 		},
 		{
 			"code": "error",
-			"name": "错误",
+			"name": this.Lang(codes.AdminLevelError),
 		},
 	}
 

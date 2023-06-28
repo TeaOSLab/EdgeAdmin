@@ -1,24 +1,28 @@
 package grantutils
 
-import "github.com/iwind/TeaGo/maps"
+import (
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
+	"github.com/iwind/TeaGo/maps"
+)
 
-// 所有的认证类型
-func AllGrantMethods() []maps.Map {
+// AllGrantMethods 所有的认证类型
+func AllGrantMethods(langCode langs.LangCode) []maps.Map {
 	return []maps.Map{
 		{
-			"name":  "用户名+密码",
+			"name":  langs.Message(langCode, codes.AdminNodeGrantMethodUserPassword),
 			"value": "user",
 		},
 		{
-			"name":  "私钥",
+			"name":  langs.Message(langCode, codes.AdminNodeGrantMethodPrivateKey),
 			"value": "privateKey",
 		},
 	}
 }
 
-// 获得对应的认证类型名称
-func FindGrantMethodName(method string) string {
-	for _, m := range AllGrantMethods() {
+// FindGrantMethodName 获得对应的认证类型名称
+func FindGrantMethodName(method string, langCode langs.LangCode) string {
+	for _, m := range AllGrantMethods(langCode) {
 		if m.GetString("value") == method {
 			return m.GetString("name")
 		}

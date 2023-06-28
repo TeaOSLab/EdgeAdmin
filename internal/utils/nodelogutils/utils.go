@@ -4,22 +4,24 @@
 package nodelogutils
 
 import (
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/iwind/TeaGo/maps"
 )
 
 // FindCommonTags 查找常用的标签
-func FindNodeCommonTags() []maps.Map {
+func FindNodeCommonTags(langCode langs.LangCode) []maps.Map {
 	return []maps.Map{
 		{
-			"name": "端口监听",
+			"name": langs.Message(langCode, codes.AdminLogTagListener),
 			"code": "LISTENER",
 		},
 		{
-			"name": "WAF",
+			"name": langs.Message(langCode, codes.AdminLogTagWAF),
 			"code": "WAF",
 		},
 		{
-			"name": "访问日志",
+			"name": langs.Message(langCode, codes.AdminLogTagAccessLog),
 			"code": "ACCESS_LOG",
 		},
 	}

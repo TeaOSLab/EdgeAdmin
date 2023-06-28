@@ -36,7 +36,7 @@ func (this *GrantAction) RunGet(params struct {
 		"id":          grant.Id,
 		"name":        grant.Name,
 		"method":      grant.Method,
-		"methodName":  grantutils.FindGrantMethodName(grant.Method),
+		"methodName":  grantutils.FindGrantMethodName(grant.Method, this.LangCode()),
 		"username":    grant.Username,
 		"password":    strings.Repeat("*", len(grant.Password)),
 		"privateKey":  grant.PrivateKey,

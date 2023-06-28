@@ -18,7 +18,7 @@ func (this *CreateAction) Init() {
 }
 
 func (this *CreateAction) RunGet(params struct{}) {
-	this.Data["methods"] = grantutils.AllGrantMethods()
+	this.Data["methods"] = grantutils.AllGrantMethods(this.LangCode())
 
 	this.Show()
 }

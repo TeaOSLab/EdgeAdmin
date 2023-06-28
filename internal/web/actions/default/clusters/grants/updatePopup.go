@@ -21,7 +21,7 @@ func (this *UpdatePopupAction) Init() {
 func (this *UpdatePopupAction) RunGet(params struct {
 	GrantId int64
 }) {
-	this.Data["methods"] = grantutils.AllGrantMethods()
+	this.Data["methods"] = grantutils.AllGrantMethods(this.LangCode())
 
 	grantResp, err := this.RPC().NodeGrantRPC().FindEnabledNodeGrant(this.AdminContext(), &pb.FindEnabledNodeGrantRequest{NodeGrantId: params.GrantId})
 	if err != nil {
@@ -123,7 +123,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		"id":         params.GrantId,
 		"name":       params.Name,
 		"method":     params.Method,
-		"methodName": grantutils.FindGrantMethodName(params.Method),
+		"methodName": grantutils.FindGrantMethodName(params.Method, this.LangCode()),
 		"username":   params.Username,
 	}
 

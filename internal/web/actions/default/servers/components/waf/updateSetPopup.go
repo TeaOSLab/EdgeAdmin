@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
@@ -45,14 +46,14 @@ func (this *UpdateSetPopupAction) RunGet(params struct {
 	// 一些配置
 	this.Data["connectors"] = []maps.Map{
 		{
-			"name":        "和(AND)",
+			"name":        this.Lang(codes.AdminWAFConnectorAnd),
 			"value":       firewallconfigs.HTTPFirewallRuleConnectorAnd,
-			"description": "所有规则都满足才视为匹配",
+			"description": this.Lang(codes.AdminWAFConnectorAndDescription),
 		},
 		{
-			"name":        "或(OR)",
+			"name":        this.Lang(codes.AdminWAFConnectorOr),
 			"value":       firewallconfigs.HTTPFirewallRuleConnectorOr,
-			"description": "任一规则满足了就视为匹配",
+			"description": this.Lang(codes.AdminWAFConnectorOrDescription),
 		},
 	}
 

@@ -59,7 +59,7 @@ func (this *IndexAction) RunGet(params struct {
 					"id":         grantResp.NodeGrant.Id,
 					"name":       grantResp.NodeGrant.Name,
 					"method":     grantResp.NodeGrant.Method,
-					"methodName": grantutils.FindGrantMethodName(grantResp.NodeGrant.Method),
+					"methodName": grantutils.FindGrantMethodName(grantResp.NodeGrant.Method, this.LangCode()),
 					"username":   grantResp.NodeGrant.Username,
 				}
 			}

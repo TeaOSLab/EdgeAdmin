@@ -54,7 +54,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	// 常见标签
-	this.Data["tags"] = nodelogutils.FindNodeCommonTags()
+	this.Data["tags"] = nodelogutils.FindNodeCommonTags(this.LangCode())
 
 	// 未读数量
 	countUnreadResp, err := this.RPC().NodeLogRPC().CountNodeLogs(this.AdminContext(), &pb.CountNodeLogsRequest{
