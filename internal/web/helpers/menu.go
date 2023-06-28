@@ -5,36 +5,38 @@ package helpers
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/iwind/TeaGo/maps"
 )
 
-func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnreadIPItems int64) []maps.Map {
+func FindAllMenuMaps(langCode string, nodeLogsType string, countUnreadNodeLogs int64, countUnreadIPItems int64) []maps.Map {
 	return []maps.Map{
 		{
 			"code":   "dashboard",
 			"module": configloaders.AdminModuleCodeDashboard,
-			"name":   "数据看板",
+			"name":   langs.Message(langCode, codes.AdminMenuDashboard),
 			"icon":   "dashboard",
 		},
 		{
 			"code":     "servers",
 			"module":   configloaders.AdminModuleCodeServer,
-			"name":     "网站列表",
+			"name":     langs.Message(langCode, codes.AdminMenuServers),
 			"subtitle": "",
 			"icon":     "clone outsize",
 			"subItems": []maps.Map{
 				{
-					"name": "访问日志",
+					"name": langs.Message(langCode, codes.AdminMenuServerAccessLogs),
 					"url":  "/servers/logs",
 					"code": "log",
 				},
 				{
-					"name": "证书管理",
+					"name": langs.Message(langCode, codes.AdminMenuServerCerts),
 					"url":  "/servers/certs",
 					"code": "cert",
 				},
 				{
-					"name": "网站分组",
+					"name": langs.Message(langCode, codes.AdminMenuServerGroups),
 					"url":  "/servers/groups",
 					"code": "group",
 				},
@@ -44,12 +46,12 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnread
 					"code": "",
 				},
 				{
-					"name": "缓存策略",
+					"name": langs.Message(langCode, codes.AdminMenuServerCachePolicies),
 					"url":  "/servers/components/cache",
 					"code": "cache",
 				},
 				{
-					"name": "刷新预热",
+					"name": langs.Message(langCode, codes.AdminMenuServerPurgeFetchCaches),
 					"url":  "/servers/components/cache/batch",
 					"code": "cacheBatch",
 				},
@@ -59,12 +61,12 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnread
 					"code": "",
 				},
 				{
-					"name": "WAF策略",
+					"name": langs.Message(langCode, codes.AdminMenuServerWAFPolicies),
 					"url":  "/servers/components/waf",
 					"code": "waf",
 				},
 				{
-					"name":  "IP名单",
+					"name":  langs.Message(langCode, codes.AdminMenuServerIPLists),
 					"url":   "/servers/iplists",
 					"code":  "iplist",
 					"badge": countUnreadIPItems,
@@ -75,12 +77,12 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnread
 					"code": "",
 				},
 				{
-					"name": "统计指标",
+					"name": langs.Message(langCode, codes.AdminMenuServerMetrics),
 					"url":  "/servers/metrics",
 					"code": "metric",
 				},
 				{
-					"name": "通用设置",
+					"name": langs.Message(langCode, codes.AdminMenuServerGlobalSettings),
 					"url":  "/servers/components",
 					"code": "global",
 				},
@@ -89,28 +91,28 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnread
 		{
 			"code":     "clusters",
 			"module":   configloaders.AdminModuleCodeNode,
-			"name":     "边缘节点",
+			"name":     langs.Message(langCode, codes.AdminMenuNodes),
 			"subtitle": "",
 			"icon":     "cloud",
 			"subItems": []maps.Map{
 				{
-					"name": "集群列表",
+					"name": langs.Message(langCode, codes.AdminMenuNodeClusters),
 					"url":  "/clusters",
 					"code": "cluster",
 				},
 				{
-					"name":  "节点日志",
+					"name":  langs.Message(langCode, codes.AdminMenuNodeLogs),
 					"url":   "/clusters/logs?type=" + nodeLogsType,
 					"code":  "log",
 					"badge": countUnreadNodeLogs,
 				},
 				{
-					"name": "区域设置",
+					"name": langs.Message(langCode, codes.AdminMenuNodeRegions),
 					"url":  "/clusters/regions",
 					"code": "region",
 				},
 				{
-					"name": "节点SSH",
+					"name": langs.Message(langCode, codes.AdminMenuNodeSSHGrants),
 					"url":  "/clusters/grants",
 					"code": "grant",
 				},
@@ -119,22 +121,22 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnread
 		{
 			"code":     "dns",
 			"module":   configloaders.AdminModuleCodeDNS,
-			"name":     "域名解析",
+			"name":     langs.Message(langCode, codes.AdminMenuDNS),
 			"subtitle": "",
 			"icon":     "globe",
 			"subItems": []maps.Map{
 				{
-					"name": "集群列表",
+					"name": langs.Message(langCode, codes.AdminMenuDNSClusters),
 					"url":  "/dns",
 					"code": "cluster",
 				},
 				{
-					"name": "DNS服务商",
+					"name": langs.Message(langCode, codes.AdminMenuDNSProviders),
 					"url":  "/dns/providers",
 					"code": "provider",
 				},
 				{
-					"name": "问题修复",
+					"name": langs.Message(langCode, codes.AdminMenuDNSIssues),
 					"url":  "/dns/issues",
 					"code": "issue",
 				},
@@ -143,36 +145,36 @@ func FindAllMenuMaps(nodeLogsType string, countUnreadNodeLogs int64, countUnread
 		{
 			"code":   "users",
 			"module": configloaders.AdminModuleCodeUser,
-			"name":   "平台用户",
+			"name":   langs.Message(langCode, codes.AdminMenuUsers),
 			"icon":   "users",
 		},
 		{
 			"code":     "admins",
 			"module":   configloaders.AdminModuleCodeAdmin,
-			"name":     "系统用户",
+			"name":     langs.Message(langCode, codes.AdminMenuAdmins),
 			"subtitle": "",
 			"icon":     "user secret",
 		},
 		{
 			"code":   "log",
 			"module": configloaders.AdminModuleCodeLog,
-			"name":   "日志审计",
+			"name":   langs.Message(langCode, codes.AdminMenuLogs),
 			"icon":   "history",
 		},
 		{
 			"code":     "settings",
 			"module":   configloaders.AdminModuleCodeSetting,
-			"name":     "系统设置",
+			"name":     langs.Message(langCode, codes.AdminMenuSettings),
 			"subtitle": "",
 			"icon":     "setting",
 			"subItems": []maps.Map{
 				{
-					"name": "基础设置",
+					"name": langs.Message(langCode, codes.AdminMenuSettingBasicSettings),
 					"url":  "/settings",
 					"code": "basic",
 				},
 				{
-					"name": "高级设置",
+					"name": langs.Message(langCode, codes.AdminMenuSettingAdvancedSettings),
 					"url":  "/settings/advanced",
 					"code": "advanced",
 				},

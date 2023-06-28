@@ -59,7 +59,7 @@ func (this *UpdateAction) RunGet(params struct {
 	}
 
 	// 权限
-	var moduleMaps = configloaders.AllModuleMaps()
+	var moduleMaps = configloaders.AllModuleMaps(this.Lang())
 	for _, m := range moduleMaps {
 		code := m.GetString("code")
 		isChecked := false

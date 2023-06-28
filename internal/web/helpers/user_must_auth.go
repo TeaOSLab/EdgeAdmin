@@ -8,6 +8,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/index/loginutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
@@ -119,7 +120,7 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	if teaconst.IsDemoMode {
 		if action.Request.Method == http.MethodPost {
 			var actionName = action.Spec.ClassName[strings.LastIndex(action.Spec.ClassName, ".")+1:]
-			var denyPrefixes = []string{"Update", "Create", "Delete", "Truncate", "Clean", "Clear", "Reset", "Add", "Remove", "Sync"}
+			var denyPrefixes = []string{"Update", "Create", "Delete", "Truncate", "Clean", "Clear", "Reset", "Add", "Remove", "Sync", "Run", "Exec"}
 			for _, prefix := range denyPrefixes {
 				if strings.HasPrefix(actionName, prefix) {
 					action.Fail(teaconst.ErrorDemoOperation)
@@ -255,7 +256,16 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	if !action.Data.Has("teaMenu") {
 		action.Data["teaMenu"] = ""
 	}
-	action.Data["teaModules"] = this.modules(actionPtr, adminId, uiConfig)
+
+	// 语言
+	// Language
+	var lang = configloaders.FindAdminLang(adminId)
+	if len(lang) == 0 {
+		lang = langs.ParseLangFromAction(action)
+	}
+	action.Data["teaLang"] = lang
+
+	action.Data["teaModules"] = this.modules(lang, actionPtr, adminId, uiConfig)
 	action.Data["teaSubMenus"] = []map[string]interface{}{}
 	action.Data["teaTabbar"] = []map[string]interface{}{}
 	if len(uiConfig.Version) == 0 {
@@ -290,7 +300,7 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 }
 
 // 菜单配置
-func (this *userMustAuth) modules(actionPtr actions.ActionWrapper, adminId int64, adminUIConfig *systemconfigs.AdminUIConfig) []maps.Map {
+func (this *userMustAuth) modules(langCode string, actionPtr actions.ActionWrapper, adminId int64, adminUIConfig *systemconfigs.AdminUIConfig) []maps.Map {
 	// 父级动作
 	var action = actionPtr.Object()
 
@@ -309,7 +319,7 @@ func (this *userMustAuth) modules(actionPtr actions.ActionWrapper, adminId int64
 	}
 
 	var result = []maps.Map{}
-	for _, m := range FindAllMenuMaps(nodeLogsType, countUnreadNodeLogs, countUnreadIPItems) {
+	for _, m := range FindAllMenuMaps(langCode, nodeLogsType, countUnreadNodeLogs, countUnreadIPItems) {
 		if m.GetString("code") == "finance" && !configloaders.ShowFinance() {
 			continue
 		}
