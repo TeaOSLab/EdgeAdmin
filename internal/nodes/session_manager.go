@@ -5,10 +5,12 @@ package nodes
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
+	"github.com/TeaOSLab/EdgeAdmin/internal/ttlcache"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/logs"
 	"strings"
+	"time"
 )
 
 // SessionManager SESSION管理
@@ -32,6 +34,15 @@ func (this *SessionManager) Read(sid string) map[string]string {
 
 	var result = map[string]string{}
 
+	var cacheKey = "SESSION@" + sid
+	var item = ttlcache.DefaultCache.Read(cacheKey)
+	if item != nil && item.Value != nil {
+		itemMap, ok := item.Value.(map[string]string)
+		if ok {
+			return itemMap
+		}
+	}
+
 	rpcClient, err := rpc.SharedRPC()
 	if err != nil {
 		return map[string]string{}
@@ -53,6 +64,9 @@ func (this *SessionManager) Read(sid string) map[string]string {
 	if err != nil {
 		logs.Println("SESSION", "decode '"+sid+"' values failed: "+err.Error())
 	}
+
+	// Write to cache
+	ttlcache.DefaultCache.Write(cacheKey, result, time.Now().Unix()+300 /** must not be too long **/)
 
 	return result
 }

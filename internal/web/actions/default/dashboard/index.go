@@ -39,7 +39,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 	module, ok := configloaders.FindFirstAdminModule(this.AdminId())
 	if ok {
 		if module != "dashboard" {
-			for _, m := range configloaders.AllModuleMaps(this.Lang()) {
+			for _, m := range configloaders.AllModuleMaps(this.LangCode()) {
 				if m.GetString("code") == module {
 					this.RedirectURL(m.GetString("url"))
 					return

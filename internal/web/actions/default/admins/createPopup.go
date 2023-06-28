@@ -20,7 +20,7 @@ func (this *CreatePopupAction) Init() {
 }
 
 func (this *CreatePopupAction) RunGet(params struct{}) {
-	this.Data["modules"] = configloaders.AllModuleMaps(this.Lang())
+	this.Data["modules"] = configloaders.AllModuleMaps(this.LangCode())
 	this.Show()
 }
 

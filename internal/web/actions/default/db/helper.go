@@ -2,11 +2,14 @@ package db
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/iwind/TeaGo/actions"
 	"net/http"
 )
 
 type Helper struct {
+	helpers.LangHelper
 }
 
 func (this *Helper) BeforeAction(action *actions.ActionObject) {
@@ -18,7 +21,7 @@ func (this *Helper) BeforeAction(action *actions.ActionObject) {
 
 	selectedTabbar, _ := action.Data["mainTab"]
 
-	tabbar := actionutils.NewTabbar()
-	tabbar.Add("数据库节点", "", "/db", "", selectedTabbar == "db")
+	var tabbar = actionutils.NewTabbar()
+	tabbar.Add(this.Lang(action, codes.AdminDBNodeTabNodes), "", "/db", "", selectedTabbar == "db")
 	actionutils.SetTabbar(action, tabbar)
 }

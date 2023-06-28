@@ -51,7 +51,7 @@ func (this *AdminAction) RunGet(params struct {
 
 	// 权限
 	moduleMaps := []maps.Map{}
-	for _, m := range configloaders.AllModuleMaps(this.Lang()) {
+	for _, m := range configloaders.AllModuleMaps(this.LangCode()) {
 		code := m.GetString("code")
 		isChecked := false
 		for _, module := range admin.Modules {

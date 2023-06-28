@@ -5,6 +5,7 @@ package nodeutils
 import (
 	"errors"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
@@ -57,24 +58,24 @@ func InitNodeInfo(parentAction *actionutils.ParentAction, nodeId int64) (*pb.Nod
 
 	var menuItems = []maps.Map{
 		{
-			"name":     "基础设置",
+			"name":     parentAction.Lang(codes.AdminNodeMenuSettingBasic),
 			"url":      prefix + "/update?" + query,
 			"isActive": menuItem == "basic",
 		},
 		{
-			"name":     "DNS设置",
+			"name":     parentAction.Lang(codes.AdminNodeMenuSettingDNS),
 			"url":      prefix + "/settings/dns?" + query,
 			"isActive": menuItem == "dns",
 			"isOn":     info.HasDNSInfo,
 		},
 		{
-			"name":     "缓存设置",
+			"name":     parentAction.Lang(codes.AdminNodeMenuSettingCache),
 			"url":      prefix + "/settings/cache?" + query,
 			"isActive": menuItem == "cache",
 			"isOn":     info.HasCacheInfo,
 		},
 		{
-			"name":     "DDoS防护",
+			"name":     parentAction.Lang(codes.AdminNodeMenuSettingDDoSProtection),
 			"url":      prefix + "/settings/ddos-protection?" + query,
 			"isActive": menuItem == "ddosProtection",
 			"isOn":     info.HasDDoSProtection,
@@ -84,16 +85,16 @@ func InitNodeInfo(parentAction *actionutils.ParentAction, nodeId int64) (*pb.Nod
 			"url":  "",
 		},
 	}
-	menuItems = filterMenuItems(menuItems, menuItem, prefix, query, info)
+	menuItems = filterMenuItems(menuItems, menuItem, prefix, query, info, parentAction.LangCode())
 	menuItems = append(menuItems, []maps.Map{
 		{
-			"name":     "SSH设置",
+			"name":     parentAction.Lang(codes.AdminNodeMenuSettingSSH),
 			"url":      prefix + "/settings/ssh?" + query,
 			"isActive": menuItem == "ssh",
 			"isOn":     info.HasSSH,
 		},
 		{
-			"name":     "系统设置",
+			"name":     parentAction.Lang(codes.AdminNodeMenuSettingSystem),
 			"url":      prefix + "/settings/system?" + query,
 			"isActive": menuItem == "system",
 			"isOn":     info.HasSystemSettings,

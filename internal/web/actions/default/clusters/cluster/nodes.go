@@ -6,6 +6,7 @@ import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/logs"
@@ -290,7 +291,7 @@ func (this *NodesAction) RunGet(params struct {
 			groupMaps = append([]maps.Map{
 				{
 					"id":         -1,
-					"name":       "[未分组](" + types.String(countUngroupNodes) + ")",
+					"name":       "[" + this.Lang(codes.AdminNodeUngroupedLabel)+ "](" + types.String(countUngroupNodes) + ")",
 					"countNodes": countUngroupNodes,
 				},
 			}, groupMaps...)
