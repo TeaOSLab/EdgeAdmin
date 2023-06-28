@@ -5,6 +5,7 @@ package servergrouputils
 import (
 	"errors"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
@@ -37,39 +38,39 @@ func InitGroup(parent *actionutils.ParentAction, groupId int64, menuItem string)
 		var urlPrefix = "/servers/groups/group/settings"
 		var leftMenuItems = []maps.Map{
 			{
-				"name":     "HTTP代理",
+				"name":     parent.Lang(codes.AdminServerMenuSettingHTTPProxy),
 				"url":      urlPrefix + "/httpReverseProxy?groupId=" + types.String(groupId),
 				"isActive": menuItem == "httpReverseProxy",
 				"isOn":     configInfoResp.HasHTTPReverseProxy,
 			},
 			{
-				"name":     "TCP代理",
+				"name":     parent.Lang(codes.AdminServerMenuSettingTCPProxy),
 				"url":      urlPrefix + "/tcpReverseProxy?groupId=" + types.String(groupId),
 				"isActive": menuItem == "tcpReverseProxy",
 				"isOn":     configInfoResp.HasTCPReverseProxy,
 			},
 			{
-				"name":     "UDP代理",
+				"name":     parent.Lang(codes.AdminServerMenuSettingUDPProxy),
 				"url":      urlPrefix + "/udpReverseProxy?groupId=" + types.String(groupId),
 				"isActive": menuItem == "udpReverseProxy",
 				"isOn":     configInfoResp.HasUDPReverseProxy,
 			},
 		}
 
-		leftMenuItems = filterMenuItems(leftMenuItems, groupId, urlPrefix, menuItem, configInfoResp)
+		leftMenuItems = filterMenuItems(leftMenuItems, groupId, urlPrefix, menuItem, configInfoResp, parent)
 
 		leftMenuItems = append(leftMenuItems, maps.Map{
 			"name": "-",
 			"url":  "",
 		})
 		leftMenuItems = append(leftMenuItems, maps.Map{
-			"name":     "访客IP地址",
+			"name":     parent.Lang(codes.AdminServerMenuSettingClientIP),
 			"url":      urlPrefix + "/remoteAddr?groupId=" + types.String(groupId),
 			"isActive": menuItem == "remoteAddr",
 			"isOn":     configInfoResp.HasRemoteAddrConfig,
 		})
 
-		leftMenuItems = filterMenuItems2(leftMenuItems, groupId, urlPrefix, menuItem, configInfoResp)
+		leftMenuItems = filterMenuItems2(leftMenuItems, groupId, urlPrefix, menuItem, configInfoResp, parent)
 
 		parent.Data["leftMenuItems"] = leftMenuItems
 	}

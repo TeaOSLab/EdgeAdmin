@@ -2,6 +2,8 @@ package certs
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -10,14 +12,15 @@ import (
 )
 
 type Helper struct {
+	helpers.LangHelper
 }
 
 func NewHelper() *Helper {
 	return &Helper{}
 }
 
-func (this *Helper) BeforeAction(actionWrapper actions.ActionWrapper) {
-	var action = actionWrapper.Object()
+func (this *Helper) BeforeAction(actionPtr actions.ActionWrapper) {
+	var action = actionPtr.Object()
 	if action.Request.Method != http.MethodGet {
 		return
 	}
@@ -25,7 +28,7 @@ func (this *Helper) BeforeAction(actionWrapper actions.ActionWrapper) {
 	action.Data["teaMenu"] = "servers"
 
 	var countOCSP int64 = 0
-	parentAction, ok := actionWrapper.(actionutils.ActionInterface)
+	parentAction, ok := actionPtr.(actionutils.ActionInterface)
 	if ok {
 		countOCSPResp, err := parentAction.RPC().SSLCertRPC().CountAllSSLCertsWithOCSPError(parentAction.AdminContext(), &pb.CountAllSSLCertsWithOCSPErrorRequest{})
 		if err == nil {
@@ -33,19 +36,19 @@ func (this *Helper) BeforeAction(actionWrapper actions.ActionWrapper) {
 		}
 	}
 
-	var ocspMenuName = "OCSP日志"
+	var ocspMenuName = this.Lang(actionPtr, codes.AdminCertMenuOCSP)
 	if countOCSP > 0 {
 		ocspMenuName += "(" + types.String(countOCSP) + ")"
 	}
 
 	var menu = []maps.Map{
 		{
-			"name":     "证书",
+			"name":     this.Lang(actionPtr, codes.AdminCertMenuCerts),
 			"url":      "/servers/certs",
 			"isActive": action.Data.GetString("leftMenuItem") == "cert",
 		},
 		{
-			"name":     "申请证书",
+			"name":     this.Lang(actionPtr, codes.AdminCertMenuApply),
 			"url":      "/servers/certs/acme",
 			"isActive": action.Data.GetString("leftMenuItem") == "acme",
 		},

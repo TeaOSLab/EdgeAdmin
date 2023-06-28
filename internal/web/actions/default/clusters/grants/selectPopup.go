@@ -33,7 +33,7 @@ func (this *SelectPopupAction) RunGet(params struct {
 			"id":          grant.Id,
 			"name":        grant.Name,
 			"method":      grant.Method,
-			"methodName":  grantutils.FindGrantMethodName(grant.Method),
+			"methodName":  grantutils.FindGrantMethodName(grant.Method, this.LangCode()),
 			"username":    grant.Username,
 			"description": grant.Description,
 		})
@@ -55,7 +55,7 @@ func (this *SelectPopupAction) RunGet(params struct {
 			"id":          grant.Id,
 			"name":        grant.Name,
 			"method":      grant.Method,
-			"methodName":  grantutils.FindGrantMethodName(grant.Method),
+			"methodName":  grantutils.FindGrantMethodName(grant.Method, this.LangCode()),
 			"username":    grant.Username,
 			"description": grant.Description,
 		})
@@ -92,7 +92,7 @@ func (this *SelectPopupAction) RunPost(params struct {
 		"id":         grant.Id,
 		"name":       grant.Name,
 		"method":     grant.Method,
-		"methodName": grantutils.FindGrantMethodName(grant.Method),
+		"methodName": grantutils.FindGrantMethodName(grant.Method, this.LangCode()),
 	}
 
 	this.Success()

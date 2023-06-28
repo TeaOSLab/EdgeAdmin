@@ -62,7 +62,7 @@ func (this *IndexAction) RunGet(params struct {
 			"name": grant.Name,
 			"method": maps.Map{
 				"type": grant.Method,
-				"name": grantutils.FindGrantMethodName(grant.Method),
+				"name": grantutils.FindGrantMethodName(grant.Method, this.LangCode()),
 			},
 			"username":      grant.Username,
 			"countClusters": countClusters,
