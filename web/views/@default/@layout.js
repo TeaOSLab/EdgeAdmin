@@ -185,6 +185,16 @@ Tea.context(function () {
 			width: "54em"
 		})
 	}
+
+	this.LANG = function (code) {
+		if (window.LANG_MESSAGES != null) {
+			let message = window.LANG_MESSAGES[code]
+			if (typeof message == "string") {
+				return message
+			}
+		}
+		return "{{ LANG('" + code + "') }}"
+	}
 });
 
 window.NotifySuccess = function (message, url, params) {

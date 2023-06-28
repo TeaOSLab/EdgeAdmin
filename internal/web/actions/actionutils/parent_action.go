@@ -8,6 +8,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/logs"
@@ -147,4 +148,13 @@ func (this *ParentAction) AdminContext() context.Context {
 // ViewData 视图里可以使用的数据
 func (this *ParentAction) ViewData() maps.Map {
 	return this.Data
+}
+
+func (this *ParentAction) Lang() string {
+	var lang = configloaders.FindAdminLang(this.AdminId())
+	if len(lang) > 0 {
+		// TODO check language still exists
+		return lang
+	}
+	return langs.ParseLangFromAction(this)
 }

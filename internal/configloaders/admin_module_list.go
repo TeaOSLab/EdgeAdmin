@@ -7,6 +7,7 @@ type AdminModuleList struct {
 	Modules  []*systemconfigs.AdminModule
 	Fullname string
 	Theme    string
+	Lang     string
 }
 
 func (this *AdminModuleList) Allow(module string) bool {

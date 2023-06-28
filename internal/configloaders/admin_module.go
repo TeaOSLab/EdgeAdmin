@@ -3,6 +3,8 @@ package configloaders
 import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/iwind/TeaGo/maps"
@@ -47,6 +49,7 @@ func loadAdminModuleMapping() (map[int64]*AdminModuleList, error) {
 			IsSuper:  m.IsSuper,
 			Fullname: m.Fullname,
 			Theme:    m.Theme,
+			Lang:     m.Lang,
 		}
 
 		for _, pbModule := range m.Modules {
@@ -158,50 +161,63 @@ func UpdateAdminTheme(adminId int64, theme string) {
 	}
 }
 
+// FindAdminLang 查找某个管理员选择的语言
+func FindAdminLang(adminId int64) string {
+	locker.Lock()
+	defer locker.Unlock()
+
+	list, ok := sharedAdminModuleMapping[adminId]
+	if ok {
+		return list.Lang
+	}
+	return ""
+}
+
+
 // AllModuleMaps 所有权限列表
-func AllModuleMaps() []maps.Map {
+func AllModuleMaps(langCode string) []maps.Map {
 	var m = []maps.Map{
 		{
-			"name": "看板",
+			"name": langs.Message(langCode, codes.AdminMenuDashboard),
 			"code": AdminModuleCodeDashboard,
 			"url":  "/dashboard",
 		},
 		{
-			"name": "网站列表",
+			"name": langs.Message(langCode, codes.AdminMenuServers),
 			"code": AdminModuleCodeServer,
 			"url":  "/servers",
 		},
 		{
-			"name": "边缘节点",
+			"name": langs.Message(langCode, codes.AdminMenuNodes),
 			"code": AdminModuleCodeNode,
 			"url":  "/clusters",
 		},
 		{
-			"name": "域名解析",
+			"name": langs.Message(langCode, codes.AdminMenuDNS),
 			"code": AdminModuleCodeDNS,
 			"url":  "/dns",
 		},
 	}
 	if teaconst.IsPlus {
 		m = append(m, maps.Map{
-			"name": "智能DNS",
+			"name": langs.Message(langCode, codes.AdminMenuNS),
 			"code": AdminModuleCodeNS,
 			"url":  "/ns",
 		})
 	}
 	m = append(m, []maps.Map{
 		{
-			"name": "平台用户",
+			"name": langs.Message(langCode, codes.AdminMenuUsers),
 			"code": AdminModuleCodeUser,
 			"url":  "/users",
 		},
 		{
-			"name": "系统用户",
+			"name": langs.Message(langCode, codes.AdminMenuAdmins),
 			"code": AdminModuleCodeAdmin,
 			"url":  "/admins",
 		},
 		{
-			"name": "财务管理",
+			"name": langs.Message(langCode, codes.AdminMenuFinance),
 			"code": AdminModuleCodeFinance,
 			"url":  "/finance",
 		},
@@ -210,12 +226,12 @@ func AllModuleMaps() []maps.Map {
 	if teaconst.IsPlus {
 		m = append(m, []maps.Map{
 			{
-				"name": "套餐管理",
+				"name": langs.Message(langCode, codes.AdminMenuPlans),
 				"code": AdminModuleCodePlan,
 				"url":  "/plans",
 			},
 			{
-				"name": "工单系统",
+				"name": langs.Message(langCode, codes.AdminMenuTickets),
 				"code": AdminModuleCodeTicket,
 				"url":  "/tickets",
 			},
@@ -224,12 +240,12 @@ func AllModuleMaps() []maps.Map {
 
 	m = append(m, []maps.Map{
 		{
-			"name": "日志审计",
+			"name": langs.Message(langCode, codes.AdminMenuLogs),
 			"code": AdminModuleCodeLog,
 			"url":  "/log",
 		},
 		{
-			"name": "系统设置",
+			"name": langs.Message(langCode, codes.AdminMenuSettings),
 			"code": AdminModuleCodeSetting,
 			"url":  "/settings",
 		},
