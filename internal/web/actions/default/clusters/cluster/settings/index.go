@@ -2,9 +2,9 @@ package settings
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -143,7 +143,7 @@ func (this *IndexAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改集群基础设置 %d", params.ClusterId)
+	defer this.CreateLogInfo(codes.NodeCluster_LogUpdateClusterBasicSettings, params.ClusterId)
 
 	params.Must.
 		Field("name", params.Name).

@@ -3,6 +3,7 @@ package firewallActions
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -80,7 +81,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("修改WAF动作 %d", params.ActionId)
+	defer this.CreateLogInfo(codes.WAFAction_LogUpdateWAFAction, params.ActionId)
 
 	params.Must.
 		Field("name", params.Name).

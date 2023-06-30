@@ -4,6 +4,7 @@ package users
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 )
@@ -28,7 +29,7 @@ func (this *VerifyPopupAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("审核用户：%d 结果：%s", params.UserId, params.Result)
+	defer this.CreateLogInfo(codes.User_LogVerifyUser, params.UserId, params.Result)
 
 	if params.Result == "pass" {
 		params.RejectReason = ""

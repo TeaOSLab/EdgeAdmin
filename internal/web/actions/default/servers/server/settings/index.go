@@ -2,8 +2,8 @@ package settings
 
 import (
 	"errors"
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -136,7 +136,7 @@ func (this *IndexAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	// 记录日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改代理服务 %d 基本信息", params.ServerId)
+	defer this.CreateLogInfo(codes.Server_LogUpdateServerBasic, params.ServerId)
 
 	params.Must.
 		Field("name", params.Name).

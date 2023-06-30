@@ -1,8 +1,7 @@
 package waf
 
-import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -15,7 +14,7 @@ func (this *UpdateSetOnAction) RunPost(params struct {
 	IsOn  bool
 }) {
 	// 日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改WAF规则集 %d 开启状态", params.SetId)
+	defer this.CreateLogInfo(codes.WAFRuleSet_LogUpdateRuleSetIsOn, params.SetId)
 
 	_, err := this.RPC().HTTPFirewallRuleSetRPC().UpdateHTTPFirewallRuleSetIsOn(this.AdminContext(), &pb.UpdateHTTPFirewallRuleSetIsOnRequest{
 		FirewallRuleSetId: params.SetId,

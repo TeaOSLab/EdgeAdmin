@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 )
@@ -17,7 +18,7 @@ type UpdateAction struct {
 func (this *UpdateAction) RunPost(params struct {
 	AutoCheck bool
 }) {
-	defer this.CreateLogInfo("修改检查更新设置")
+	defer this.CreateLogInfo(codes.AdminUpdate_LogUpdateCheckSettings)
 
 	// 读取当前设置
 	valueResp, err := this.RPC().SysSettingRPC().ReadSysSetting(this.AdminContext(), &pb.ReadSysSettingRequest{Code: systemconfigs.SettingCodeCheckUpdates})

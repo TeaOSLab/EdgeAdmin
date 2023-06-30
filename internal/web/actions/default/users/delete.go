@@ -2,6 +2,7 @@ package users
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -12,7 +13,7 @@ type DeleteAction struct {
 func (this *DeleteAction) RunPost(params struct {
 	UserId int64
 }) {
-	defer this.CreateLogInfo("删除用户 %d", params.UserId)
+	defer this.CreateLogInfo(codes.User_LogDeleteUser, params.UserId)
 
 	// TODO 检查用户是否有未完成的业务
 

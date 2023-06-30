@@ -3,6 +3,7 @@ package admins
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -13,7 +14,7 @@ type DeleteAction struct {
 func (this *DeleteAction) RunPost(params struct {
 	AdminId int64
 }) {
-	defer this.CreateLogInfo("删除系统用户 %d", params.AdminId)
+	defer this.CreateLogInfo(codes.Admin_LogDeleteAdmin, params.AdminId)
 
 	_, err := this.RPC().AdminRPC().DeleteAdmin(this.AdminContext(), &pb.DeleteAdminRequest{AdminId: params.AdminId})
 	if err != nil {

@@ -2,8 +2,8 @@ package cache
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
@@ -71,7 +71,7 @@ func (this *UpdateAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改缓存策略：%d", params.CachePolicyId)
+	defer this.CreateLogInfo(codes.ServerCachePolicy_LogUpdateCachePolicy, params.CachePolicyId)
 
 	params.Must.
 		Field("name", params.Name).

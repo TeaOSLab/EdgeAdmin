@@ -4,6 +4,7 @@ package ipbox
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"strings"
 	"time"
@@ -21,7 +22,7 @@ func (this *AddIPAction) RunPost(params struct {
 	var itemId int64 = 0
 
 	defer func() {
-		this.CreateLogInfo("在名单 %d 中创建IP %d", params.ListId, itemId)
+		this.CreateLogInfo(codes.IPItem_LogCreateIPItem, params.ListId, itemId)
 	}()
 
 	var ipType = "ipv4"

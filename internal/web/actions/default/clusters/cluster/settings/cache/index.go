@@ -2,6 +2,7 @@ package cache
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -57,7 +58,7 @@ func (this *IndexAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("设置集群 %d 的缓存策略为 %d", params.ClusterId, params.CachePolicyId)
+	defer this.CreateLogInfo(codes.ServerCache_LogUpdateClusterCachePolicy, params.ClusterId, params.CachePolicyId)
 
 	if params.CachePolicyId <= 0 {
 		this.Fail("请选择缓存策略")

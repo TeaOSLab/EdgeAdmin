@@ -1,8 +1,7 @@
 package api
 
-import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -14,7 +13,7 @@ func (this *DeleteAction) RunPost(params struct {
 	NodeId int64
 }) {
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "删除API节点 %d", params.NodeId)
+	defer this.CreateLogInfo(codes.APINode_LogDeleteAPINode, params.NodeId)
 
 	// 检查是否是唯一的节点
 	nodeResp, err := this.RPC().APINodeRPC().FindEnabledAPINode(this.AdminContext(), &pb.FindEnabledAPINodeRequest{ApiNodeId: params.NodeId})

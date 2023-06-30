@@ -5,6 +5,7 @@ package logs
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -14,7 +15,7 @@ type FixAllAction struct {
 
 func (this *FixAllAction) RunPost(params struct {
 }) {
-	defer this.CreateLogInfo("设置所有日志为已修复")
+	defer this.CreateLogInfo(codes.NodeLog_LogFixAllLogs)
 
 	_, err := this.RPC().NodeLogRPC().FixAllNodeLogs(this.AdminContext(), &pb.FixAllNodeLogsRequest{})
 	if err != nil {

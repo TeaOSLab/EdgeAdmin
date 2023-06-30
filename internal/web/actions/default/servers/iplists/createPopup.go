@@ -4,6 +4,7 @@ package iplists
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -36,7 +37,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 }) {
 	var listId int64 = 0
 	defer func() {
-		defer this.CreateLogInfo("创建IP名单 %d", listId)
+		defer this.CreateLogInfo(codes.IPList_LogCreateIPList, listId)
 	}()
 
 	params.Must.

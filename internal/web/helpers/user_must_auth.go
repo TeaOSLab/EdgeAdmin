@@ -168,7 +168,7 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	}
 
 	var session = action.Session()
-	var adminId = session.GetInt64("adminId")
+	var adminId = session.GetInt64(teaconst.SessionAdminId)
 
 	if adminId <= 0 {
 		var errString = session.GetString("@error")

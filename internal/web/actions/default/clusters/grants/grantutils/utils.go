@@ -10,11 +10,11 @@ import (
 func AllGrantMethods(langCode langs.LangCode) []maps.Map {
 	return []maps.Map{
 		{
-			"name":  langs.Message(langCode, codes.AdminNodeGrantMethodUserPassword),
+			"name":  langs.Message(langCode, codes.NodeGrant_MethodUserPassword),
 			"value": "user",
 		},
 		{
-			"name":  langs.Message(langCode, codes.AdminNodeGrantMethodPrivateKey),
+			"name":  langs.Message(langCode, codes.NodeGrant_MethodPrivateKey),
 			"value": "privateKey",
 		},
 	}

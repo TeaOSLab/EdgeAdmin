@@ -5,6 +5,7 @@ package iplists
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
@@ -18,7 +19,7 @@ func (this *UnbindHTTPFirewallAction) RunPost(params struct {
 	HttpFirewallPolicyId int64
 	ListId               int64
 }) {
-	defer this.CreateLogInfo("接触绑定IP名单 %d WAF策略 %d", params.ListId, params.HttpFirewallPolicyId)
+	defer this.CreateLogInfo(codes.IPList_LogUnbindIPListWAFPolicy, params.ListId, params.HttpFirewallPolicyId)
 
 	// List类型
 	listResp, err := this.RPC().IPListRPC().FindEnabledIPList(this.AdminContext(), &pb.FindEnabledIPListRequest{IpListId: params.ListId})

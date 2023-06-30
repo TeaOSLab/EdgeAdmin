@@ -2,9 +2,9 @@ package issues
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains/domainutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -86,7 +86,7 @@ func (this *UpdateNodePopupAction) RunPost(params struct {
 	CSRF *actionutils.CSRF
 }) {
 	// 操作日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改节点 %d 的DNS设置", params.NodeId)
+	defer this.CreateLogInfo(codes.DNS_LogUpdateNodeDNS, params.NodeId)
 
 	var routes = []string{}
 	if len(params.DnsRoutesJSON) > 0 {

@@ -2,6 +2,7 @@ package regions
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -49,7 +50,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("修改节点区域 %d", params.RegionId)
+	defer this.CreateLogInfo(codes.NodeRegion_LogUpdateNodeRegion, params.RegionId)
 
 	params.Must.
 		Field("name", params.Name).

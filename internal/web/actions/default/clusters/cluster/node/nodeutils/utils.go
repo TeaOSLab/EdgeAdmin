@@ -58,24 +58,24 @@ func InitNodeInfo(parentAction *actionutils.ParentAction, nodeId int64) (*pb.Nod
 
 	var menuItems = []maps.Map{
 		{
-			"name":     parentAction.Lang(codes.AdminNodeMenuSettingBasic),
+			"name":     parentAction.Lang(codes.NodeMenu_SettingBasic),
 			"url":      prefix + "/update?" + query,
 			"isActive": menuItem == "basic",
 		},
 		{
-			"name":     parentAction.Lang(codes.AdminNodeMenuSettingDNS),
+			"name":     parentAction.Lang(codes.NodeMenu_SettingDNS),
 			"url":      prefix + "/settings/dns?" + query,
 			"isActive": menuItem == "dns",
 			"isOn":     info.HasDNSInfo,
 		},
 		{
-			"name":     parentAction.Lang(codes.AdminNodeMenuSettingCache),
+			"name":     parentAction.Lang(codes.NodeMenu_SettingCache),
 			"url":      prefix + "/settings/cache?" + query,
 			"isActive": menuItem == "cache",
 			"isOn":     info.HasCacheInfo,
 		},
 		{
-			"name":     parentAction.Lang(codes.AdminNodeMenuSettingDDoSProtection),
+			"name":     parentAction.Lang(codes.NodeMenu_SettingDDoSProtection),
 			"url":      prefix + "/settings/ddos-protection?" + query,
 			"isActive": menuItem == "ddosProtection",
 			"isOn":     info.HasDDoSProtection,
@@ -88,13 +88,13 @@ func InitNodeInfo(parentAction *actionutils.ParentAction, nodeId int64) (*pb.Nod
 	menuItems = filterMenuItems(menuItems, menuItem, prefix, query, info, parentAction.LangCode())
 	menuItems = append(menuItems, []maps.Map{
 		{
-			"name":     parentAction.Lang(codes.AdminNodeMenuSettingSSH),
+			"name":     parentAction.Lang(codes.NodeMenu_SettingSSH),
 			"url":      prefix + "/settings/ssh?" + query,
 			"isActive": menuItem == "ssh",
 			"isOn":     info.HasSSH,
 		},
 		{
-			"name":     parentAction.Lang(codes.AdminNodeMenuSettingSystem),
+			"name":     parentAction.Lang(codes.NodeMenu_SettingSystem),
 			"url":      prefix + "/settings/system?" + query,
 			"isActive": menuItem == "system",
 			"isOn":     info.HasSystemSettings,

@@ -3,6 +3,7 @@ package waf
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -27,7 +28,7 @@ func (this *ImportAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("从文件中导入规则到WAF策略 %d", params.FirewallPolicyId)
+	defer this.CreateLogInfo(codes.WAFPolicy_LogImportWAFPolicy, params.FirewallPolicyId)
 
 	if params.File == nil {
 		this.Fail("请上传要导入的文件")

@@ -5,6 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 )
@@ -71,7 +72,7 @@ func (this *CleanAction) RunPost(params struct {
 
 	switch params.Type {
 	case "all":
-		defer this.CreateLogInfo("清除全部日志")
+		defer this.CreateLogInfo(codes.Log_LogCleanAllLogs)
 
 		_, err := this.RPC().LogRPC().CleanLogsPermanently(this.AdminContext(), &pb.CleanLogsPermanentlyRequest{
 			Days:     0,
@@ -82,7 +83,7 @@ func (this *CleanAction) RunPost(params struct {
 			return
 		}
 	case "days":
-		defer this.CreateLogInfo("清除 %d 以前的日志", params.Days)
+		defer this.CreateLogInfo(codes.Log_LogCleanLogsDaysBefore, params.Days)
 
 		_, err := this.RPC().LogRPC().CleanLogsPermanently(this.AdminContext(), &pb.CleanLogsPermanentlyRequest{
 			Days:     params.Days,

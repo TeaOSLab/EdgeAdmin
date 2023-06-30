@@ -3,6 +3,7 @@ package database
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -42,7 +43,7 @@ func (this *CleanSettingAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("修改数据库自动清理设置")
+	defer this.CreateLogInfo(codes.Database_LogUpdateCleanDays)
 
 	days := params.Days
 	if days < 0 {

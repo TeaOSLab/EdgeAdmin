@@ -3,6 +3,7 @@ package rewrite
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -16,7 +17,7 @@ func (this *DeleteAction) RunPost(params struct {
 	WebId         int64
 	RewriteRuleId int64
 }) {
-	defer this.CreateLogInfo("从Web %d 中删除重写规则 %d", params.WebId, params.RewriteRuleId)
+	defer this.CreateLogInfo(codes.HTTPRewriteRule_LogDeleteRewriteRule, params.WebId, params.RewriteRuleId)
 
 	webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithId(this.AdminContext(), params.WebId)
 	if err != nil {

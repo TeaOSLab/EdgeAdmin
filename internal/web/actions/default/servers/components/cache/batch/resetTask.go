@@ -4,6 +4,7 @@ package cache
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -14,7 +15,7 @@ type ResetTaskAction struct {
 func (this *ResetTaskAction) RunPost(params struct {
 	TaskId int64
 }) {
-	this.CreateLogInfo("重置缓存任务 %d 状态", params.TaskId)
+	this.CreateLogInfo(codes.HTTPCacheTask_LogResetHTTPCacheTask, params.TaskId)
 
 	_, err := this.RPC().HTTPCacheTaskRPC().ResetHTTPCacheTask(this.AdminContext(), &pb.ResetHTTPCacheTaskRequest{HttpCacheTaskId: params.TaskId})
 	if err != nil {

@@ -3,6 +3,8 @@ package configloaders
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
@@ -107,8 +109,8 @@ func loadAdminUIConfig() (*systemconfigs.AdminUIConfig, error) {
 
 func defaultAdminUIConfig() *systemconfigs.AdminUIConfig {
 	return &systemconfigs.AdminUIConfig{
-		ProductName:        "GoEdge",
-		AdminSystemName:    "GoEdge管理员系统",
+		ProductName:        langs.DefaultMessage(codes.AdminUI_DefaultProductName),
+		AdminSystemName:    langs.DefaultMessage(codes.AdminUI_DefaultSystemName),
 		ShowOpenSourceInfo: true,
 		ShowVersion:        true,
 		ShowFinance:        true,

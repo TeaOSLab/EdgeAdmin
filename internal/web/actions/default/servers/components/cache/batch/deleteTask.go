@@ -4,6 +4,7 @@ package cache
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -14,7 +15,7 @@ type DeleteTaskAction struct {
 func (this *DeleteTaskAction) RunPost(params struct {
 	TaskId int64
 }) {
-	defer this.CreateLogInfo("删除缓存任务 %d", params.TaskId)
+	defer this.CreateLogInfo(codes.HTTPCacheTask_LogDeleteHTTPCacheTask, params.TaskId)
 
 	_, err := this.RPC().HTTPCacheTaskRPC().DeleteHTTPCacheTask(this.AdminContext(), &pb.DeleteHTTPCacheTaskRequest{
 		HttpCacheTaskId: params.TaskId,

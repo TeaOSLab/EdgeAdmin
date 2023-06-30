@@ -4,6 +4,7 @@ package accounts
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -56,7 +57,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 }) {
 	var accountId int64
 	defer func() {
-		this.CreateLogInfo("创建ACME服务商账号 %d", accountId)
+		this.CreateLogInfo(codes.ACMEProviderAccount_LogCreateACMEProviderAccount, accountId)
 	}()
 
 	params.Must.

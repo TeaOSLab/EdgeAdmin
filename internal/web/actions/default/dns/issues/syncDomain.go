@@ -1,8 +1,7 @@
 package issues
 
-import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -14,7 +13,7 @@ func (this *SyncDomainAction) RunPost(params struct {
 	DomainId int64
 }) {
 	// 记录日志
-	defer this.CreateLog(oplogs.LevelInfo, "同步DNS域名数据 %d", params.DomainId)
+	defer this.CreateLogInfo(codes.DNS_LogSyncDomain, params.DomainId)
 
 	// 执行同步
 	resp, err := this.RPC().DNSDomainRPC().SyncDNSDomainData(this.AdminContext(), &pb.SyncDNSDomainDataRequest{DnsDomainId: params.DomainId})

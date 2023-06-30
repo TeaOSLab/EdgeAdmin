@@ -5,6 +5,7 @@ package metrics
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -88,6 +89,6 @@ func (this *CreatePopupAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	defer this.CreateLogInfo("创建统计指标 %d", createResp.MetricItemId)
+	defer this.CreateLogInfo(codes.MetricItem_LogCreateMetricItem, createResp.MetricItemId)
 	this.Success()
 }

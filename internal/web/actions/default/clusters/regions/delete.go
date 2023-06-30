@@ -2,6 +2,7 @@ package regions
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -12,7 +13,7 @@ type DeleteAction struct {
 func (this *DeleteAction) RunPost(params struct {
 	RegionId int64
 }) {
-	defer this.CreateLogInfo("删除节点区域 %d", params.RegionId)
+	defer this.CreateLogInfo(codes.NodeRegion_LogDeleteNodeRegion, params.RegionId)
 
 	// 检查有无在使用
 	countResp, err := this.RPC().NodeRPC().CountAllEnabledNodesWithNodeRegionId(this.AdminContext(), &pb.CountAllEnabledNodesWithNodeRegionIdRequest{NodeRegionId: params.RegionId})

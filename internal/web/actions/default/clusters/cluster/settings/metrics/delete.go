@@ -4,6 +4,7 @@ package metrics
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -15,7 +16,7 @@ func (this *DeleteAction) RunPost(params struct {
 	ClusterId int64
 	ItemId    int64
 }) {
-	defer this.CreateLogInfo("从集群 %d 中移除指标 %d", params.ClusterId, params.ItemId)
+	defer this.CreateLogInfo(codes.MetricItem_LogDeleteMetricItemFromCluster, params.ClusterId, params.ItemId)
 
 	_, err := this.RPC().NodeClusterMetricItemRPC().DisableNodeClusterMetricItem(this.AdminContext(), &pb.DisableNodeClusterMetricItemRequest{
 		NodeClusterId: params.ClusterId,

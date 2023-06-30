@@ -1,9 +1,9 @@
 package domains
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains/domainutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"strings"
@@ -54,7 +54,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		return
 	}
 
-	defer this.CreateLog(oplogs.LevelInfo, "添加管理域名到DNS服务商 %d", createResp.DnsDomainId)
+	defer this.CreateLogInfo(codes.DNS_LogCreateDomain, createResp.DnsDomainId)
 
 	this.Success()
 }

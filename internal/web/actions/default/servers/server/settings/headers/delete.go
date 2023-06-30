@@ -2,8 +2,8 @@ package headers
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 )
@@ -18,7 +18,7 @@ func (this *DeleteAction) RunPost(params struct {
 	Type           string
 	HeaderId       int64
 }) {
-	defer this.CreateLog(oplogs.LevelInfo, "删除请求Header，HeaderPolicyId:%d, HeaderId:%d", params.HeaderPolicyId, params.HeaderId)
+	defer this.CreateLogInfo(codes.ServerHTTPHeader_LogDeleteHeader, params.HeaderPolicyId, params.HeaderId)
 
 	policyConfigResp, err := this.RPC().HTTPHeaderPolicyRPC().FindEnabledHTTPHeaderPolicyConfig(this.AdminContext(), &pb.FindEnabledHTTPHeaderPolicyConfigRequest{
 		HttpHeaderPolicyId: params.HeaderPolicyId,

@@ -1,8 +1,8 @@
 package db
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -14,7 +14,7 @@ func (this *DeleteAction) RunPost(params struct {
 	NodeId int64
 }) {
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "删除数据库节点 %d", params.NodeId)
+	defer this.CreateLogInfo(codes.DBNode_LogDeleteDBNode, params.NodeId)
 
 	_, err := this.RPC().DBNodeRPC().DeleteDBNode(this.AdminContext(), &pb.DeleteDBNodeRequest{DbNodeId: params.NodeId})
 	if err != nil {

@@ -4,6 +4,7 @@ package metrics
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -86,7 +87,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
-	defer this.CreateLogInfo("添加指标 %d 到集群 %d", params.ItemId, params.ClusterId)
+	defer this.CreateLogInfo(codes.MetricItem_LogAddMetricItemToCluster, params.ItemId, params.ClusterId)
 
 	_, err := this.RPC().NodeClusterMetricItemRPC().EnableNodeClusterMetricItem(this.AdminContext(), &pb.EnableNodeClusterMetricItemRequest{
 		NodeClusterId: params.ClusterId,

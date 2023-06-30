@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
@@ -27,7 +28,7 @@ func (this *ExportDataAction) RunGet(params struct {
 	ListId int64
 	Format string
 }) {
-	defer this.CreateLogInfo("导出IP名单 %d", params.ListId)
+	defer this.CreateLogInfo(codes.IPList_LogExportIPList, params.ListId)
 
 	var err error
 	var ext = ""

@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 )
@@ -17,7 +18,7 @@ type IgnoreVersionAction struct {
 func (this *IgnoreVersionAction) RunPost(params struct {
 	Version string
 }) {
-	defer this.CreateLogInfo("忽略升级版本 %s", params.Version)
+	defer this.CreateLogInfo(codes.AdminUpdate_LogIgnoreVersion, params.Version)
 
 	if len(params.Version) == 0 {
 		this.Fail("请输入要忽略的版本号")

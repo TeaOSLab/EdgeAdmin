@@ -32,22 +32,22 @@ func LeftMenuItemsForInstall(ctx context.Context, clusterId int64, selectedItem 
 
 	return []maps.Map{
 		{
-			"name":     langs.Message(langCode, codes.AdminNodeMenuInstallManually),
+			"name":     langs.Message(langCode, codes.NodeMenu_InstallManually),
 			"url":      "/clusters/cluster/installManual?clusterId=" + numberutils.FormatInt64(clusterId),
 			"isActive": selectedItem == "manual",
 		},
 		{
-			"name":     langs.Message(langCode, codes.AdminNodeMenuInstallAutoRegister),
+			"name":     langs.Message(langCode, codes.NodeMenu_InstallAutoRegister),
 			"url":      "/clusters/cluster/installNodes?clusterId=" + numberutils.FormatInt64(clusterId),
 			"isActive": selectedItem == "register",
 		},
 		{
-			"name":     langs.Message(langCode, codes.AdminNodeMenuInstallRemote, countNotInstalled),
+			"name":     langs.Message(langCode, codes.NodeMenu_InstallRemote, countNotInstalled),
 			"url":      "/clusters/cluster/installRemote?clusterId=" + numberutils.FormatInt64(clusterId),
 			"isActive": selectedItem == "install",
 		},
 		{
-			"name":     langs.Message(langCode, codes.AdminNodeMenuInstallRemoteUpgrade, countUpgrade),
+			"name":     langs.Message(langCode, codes.NodeMenu_InstallRemoteUpgrade, countUpgrade),
 			"url":      "/clusters/cluster/upgradeRemote?clusterId=" + numberutils.FormatInt64(clusterId),
 			"isActive": selectedItem == "upgrade",
 		},

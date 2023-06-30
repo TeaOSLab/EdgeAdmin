@@ -60,7 +60,7 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 		return
 	}
 
-	serverResp, err := rpcClient.ServerRPC().FindEnabledServer(rpcClient.Context(action.Context.GetInt64("adminId")), &pb.FindEnabledServerRequest{
+	serverResp, err := rpcClient.ServerRPC().FindEnabledServer(rpcClient.Context(action.Context.GetInt64(teaconst.SessionAdminId)), &pb.FindEnabledServerRequest{
 		ServerId:       serverId,
 		IgnoreSSLCerts: true,
 	})
@@ -117,16 +117,16 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 	}
 
 	if teaconst.IsPlus {
-		tabbar.Add(this.Lang(action, codes.AdminServerTabDashboard), "", "/servers/server/boards?serverId="+serverIdString, "dashboard", selectedTabbar == "board")
+		tabbar.Add(this.Lang(action, codes.Server_TabDashboard), "", "/servers/server/boards?serverId="+serverIdString, "dashboard", selectedTabbar == "board")
 	}
 	if family == "http" {
-		tabbar.Add(this.Lang(action, codes.AdminServerTabStat), "", "/servers/server/stat?serverId="+serverIdString, "chart area", selectedTabbar == "stat")
+		tabbar.Add(this.Lang(action, codes.Server_TabStat), "", "/servers/server/stat?serverId="+serverIdString, "chart area", selectedTabbar == "stat")
 	}
 	if family == "http" {
-		tabbar.Add(this.Lang(action, codes.AdminServerTabAccessLogs), "", "/servers/server/log?serverId="+serverIdString, "history", selectedTabbar == "log")
+		tabbar.Add(this.Lang(action, codes.Server_TabAccessLogs), "", "/servers/server/log?serverId="+serverIdString, "history", selectedTabbar == "log")
 	}
-	tabbar.Add(this.Lang(action, codes.AdminServerTabSettings), "", "/servers/server/settings?serverId="+serverIdString, "setting", selectedTabbar == "setting")
-	tabbar.Add(this.Lang(action, codes.AdminServerTabDelete), "", "/servers/server/delete?serverId="+serverIdString, "trash", selectedTabbar == "delete")
+	tabbar.Add(this.Lang(action, codes.Server_TabSettings), "", "/servers/server/settings?serverId="+serverIdString, "setting", selectedTabbar == "setting")
+	tabbar.Add(this.Lang(action, codes.Server_TabDelete), "", "/servers/server/delete?serverId="+serverIdString, "trash", selectedTabbar == "delete")
 
 	actionutils.SetTabbar(action, tabbar)
 
@@ -159,7 +159,7 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 func (this *ServerHelper) createBoardMenu(secondMenuItem string, serverIdString string, serverConfig *serverconfigs.ServerConfig, actionPtr actions.ActionWrapper) []maps.Map {
 	menuItems := []maps.Map{}
 	menuItems = append(menuItems, maps.Map{
-		"name":     this.Lang(actionPtr, codes.AdminServerMenuDashboard),
+		"name":     this.Lang(actionPtr, codes.Server_MenuDashboard),
 		"url":      "/servers/server/board?serverId=" + serverIdString,
 		"isActive": secondMenuItem == "index",
 	})
@@ -170,17 +170,17 @@ func (this *ServerHelper) createBoardMenu(secondMenuItem string, serverIdString 
 func (this *ServerHelper) createLogMenu(secondMenuItem string, serverIdString string, serverConfig *serverconfigs.ServerConfig, actionPtr actions.ActionWrapper) []maps.Map {
 	menuItems := []maps.Map{}
 	menuItems = append(menuItems, maps.Map{
-		"name":     this.Lang(actionPtr, codes.AdminServerMenuAccesslogRealtime),
+		"name":     this.Lang(actionPtr, codes.Server_MenuAccesslogRealtime),
 		"url":      "/servers/server/log?serverId=" + serverIdString,
 		"isActive": secondMenuItem == "index",
 	})
 	menuItems = append(menuItems, maps.Map{
-		"name":     this.Lang(actionPtr, codes.AdminServerMenuAccesslogToday),
+		"name":     this.Lang(actionPtr, codes.Server_MenuAccesslogToday),
 		"url":      "/servers/server/log/today?serverId=" + serverIdString,
 		"isActive": secondMenuItem == "today",
 	})
 	menuItems = append(menuItems, maps.Map{
-		"name":     this.Lang(actionPtr, codes.AdminServerMenuAccesslogHistory),
+		"name":     this.Lang(actionPtr, codes.Server_MenuAccesslogHistory),
 		"url":      "/servers/server/log/history?serverId=" + serverIdString,
 		"isActive": secondMenuItem == "history",
 	})
@@ -191,27 +191,27 @@ func (this *ServerHelper) createLogMenu(secondMenuItem string, serverIdString st
 func (this *ServerHelper) createStatMenu(secondMenuItem string, serverIdString string, serverConfig *serverconfigs.ServerConfig, actionPtr actions.ActionWrapper) []maps.Map {
 	var menuItems = []maps.Map{}
 	menuItems = append(menuItems, maps.Map{
-		"name":     this.Lang(actionPtr, codes.AdminServerMenuStatTraffic),
+		"name":     this.Lang(actionPtr, codes.Server_MenuStatTraffic),
 		"url":      "/servers/server/stat?serverId=" + serverIdString,
 		"isActive": secondMenuItem == "index",
 	})
 	menuItems = append(menuItems, maps.Map{
-		"name":     this.Lang(actionPtr, codes.AdminServerMenuStatRegions),
+		"name":     this.Lang(actionPtr, codes.Server_MenuStatRegions),
 		"url":      "/servers/server/stat/regions?serverId=" + serverIdString,
 		"isActive": secondMenuItem == "region",
 	})
 	menuItems = append(menuItems, maps.Map{
-		"name":     this.Lang(actionPtr, codes.AdminServerMenuStatProviders),
+		"name":     this.Lang(actionPtr, codes.Server_MenuStatProviders),
 		"url":      "/servers/server/stat/providers?serverId=" + serverIdString,
 		"isActive": secondMenuItem == "provider",
 	})
 	menuItems = append(menuItems, maps.Map{
-		"name":     this.Lang(actionPtr, codes.AdminServerMenuStatClients),
+		"name":     this.Lang(actionPtr, codes.Server_MenuStatClients),
 		"url":      "/servers/server/stat/clients?serverId=" + serverIdString,
 		"isActive": secondMenuItem == "client",
 	})
 	menuItems = append(menuItems, maps.Map{
-		"name":     this.Lang(actionPtr, codes.AdminServerMenuStatWAF),
+		"name":     this.Lang(actionPtr, codes.Server_MenuStatWAF),
 		"url":      "/servers/server/stat/waf?serverId=" + serverIdString,
 		"isActive": secondMenuItem == "waf",
 	})
@@ -222,13 +222,13 @@ func (this *ServerHelper) createStatMenu(secondMenuItem string, serverIdString s
 func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdString string, serverConfig *serverconfigs.ServerConfig, actionPtr actions.ActionWrapper) (items []maps.Map) {
 	var menuItems = []maps.Map{
 		{
-			"name":     this.Lang(actionPtr, codes.AdminServerMenuSettingBasic),
+			"name":     this.Lang(actionPtr, codes.Server_MenuSettingBasic),
 			"url":      "/servers/server/settings?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "basic",
 			"isOff":    !serverConfig.IsOn,
 		},
 		{
-			"name":     this.Lang(actionPtr, codes.AdminServerMenuSettingDNS),
+			"name":     this.Lang(actionPtr, codes.Server_MenuSettingDNS),
 			"url":      "/servers/server/settings/dns?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "dns",
 		},
@@ -237,27 +237,27 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 	// HTTP
 	if serverConfig.IsHTTPFamily() {
 		menuItems = append(menuItems, maps.Map{
-			"name":     this.Lang(actionPtr, codes.AdminServerMenuSettingDomains),
+			"name":     this.Lang(actionPtr, codes.Server_MenuSettingDomains),
 			"url":      "/servers/server/settings/serverNames?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "serverName",
 			"isOn":     len(serverConfig.ServerNames) > 0,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     this.Lang(actionPtr, codes.AdminServerMenuSettingHTTP),
+			"name":     this.Lang(actionPtr, codes.Server_MenuSettingHTTP),
 			"url":      "/servers/server/settings/http?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "http",
 			"isOn":     (serverConfig.HTTP != nil && serverConfig.HTTP.IsOn && len(serverConfig.HTTP.Listen) > 0) || (serverConfig.Web != nil && serverConfig.Web.RedirectToHttps != nil && serverConfig.Web.RedirectToHttps.IsOn),
 			"isOff":    serverConfig.HTTP != nil && !serverConfig.HTTP.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     this.Lang(actionPtr, codes.AdminServerMenuSettingHTTPS),
+			"name":     this.Lang(actionPtr, codes.Server_MenuSettingHTTPS),
 			"url":      "/servers/server/settings/https?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "https",
 			"isOn":     serverConfig.HTTPS != nil && serverConfig.HTTPS.IsOn && len(serverConfig.HTTPS.Listen) > 0,
 			"isOff":    serverConfig.HTTPS != nil && !serverConfig.HTTPS.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":       this.Lang(actionPtr, codes.AdminServerMenuSettingOrigins),
+			"name":       this.Lang(actionPtr, codes.Server_MenuSettingOrigins),
 			"url":        "/servers/server/settings/reverseProxy?serverId=" + serverIdString,
 			"isActive":   secondMenuItem == "reverseProxy",
 			"isOn":       serverConfig.ReverseProxyRef != nil && serverConfig.ReverseProxyRef.IsOn,
@@ -272,108 +272,108 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isActive": false,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":       this.Lang(actionPtr, codes.AdminServerMenuSettingRedirects),
+			"name":       this.Lang(actionPtr, codes.Server_MenuSettingRedirects),
 			"url":        "/servers/server/settings/redirects?serverId=" + serverIdString,
 			"isActive":   secondMenuItem == "redirects",
 			"isOn":       serverConfig.Web != nil && len(serverConfig.Web.HostRedirects) > 0,
 			"configCode": serverconfigs.ConfigCodeHostRedirects,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     this.Lang(actionPtr, codes.AdminServerMenuSettingLocations),
+			"name":     this.Lang(actionPtr, codes.Server_MenuSettingLocations),
 			"url":      "/servers/server/settings/locations?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "locations",
 			"isOn":     serverConfig.Web != nil && len(serverConfig.Web.Locations) > 0,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     this.Lang(actionPtr, codes.AdminServerMenuSettingRewriteRules),
+			"name":     this.Lang(actionPtr, codes.Server_MenuSettingRewriteRules),
 			"url":      "/servers/server/settings/rewrite?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "rewrite",
 			"isOn":     serverConfig.Web != nil && len(serverConfig.Web.RewriteRefs) > 0,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     this.Lang(actionPtr, codes.AdminServerMenuSettingWAF),
+			"name":     this.Lang(actionPtr, codes.Server_MenuSettingWAF),
 			"url":      "/servers/server/settings/waf?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "waf",
 			"isOn":     serverConfig.Web != nil && serverConfig.Web.FirewallRef != nil && serverConfig.Web.FirewallRef.IsOn,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":       this.Lang(actionPtr, codes.AdminServerMenuSettingCache),
+			"name":       this.Lang(actionPtr, codes.Server_MenuSettingCache),
 			"url":        "/servers/server/settings/cache?serverId=" + serverIdString,
 			"isActive":   secondMenuItem == "cache",
 			"isOn":       serverConfig.Web != nil && serverConfig.Web.Cache != nil && serverConfig.Web.Cache.IsOn,
 			"configCode": serverconfigs.ConfigCodeCache,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":       this.Lang(actionPtr, codes.AdminServerMenuSettingAuth),
+			"name":       this.Lang(actionPtr, codes.Server_MenuSettingAuth),
 			"url":        "/servers/server/settings/access?serverId=" + serverIdString,
 			"isActive":   secondMenuItem == "access",
 			"isOn":       serverConfig.Web != nil && serverConfig.Web.Auth != nil && serverConfig.Web.Auth.IsOn,
 			"configCode": serverconfigs.ConfigCodeAuth,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":       this.Lang(actionPtr, codes.AdminServerMenuSettingReferers),
+			"name":       this.Lang(actionPtr, codes.Server_MenuSettingReferers),
 			"url":        "/servers/server/settings/referers?serverId=" + serverIdString,
 			"isActive":   secondMenuItem == "referer",
 			"isOn":       serverConfig.Web != nil && serverConfig.Web.Referers != nil && serverConfig.Web.Referers.IsOn,
 			"configCode": serverconfigs.ConfigCodeReferers,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":       this.Lang(actionPtr, codes.AdminServerMenuSettingUserAgents),
+			"name":       this.Lang(actionPtr, codes.Server_MenuSettingUserAgents),
 			"url":        "/servers/server/settings/userAgent?serverId=" + serverIdString,
 			"isActive":   secondMenuItem == "userAgent",
 			"isOn":       serverConfig.Web != nil && serverConfig.Web.UserAgent != nil && serverConfig.Web.UserAgent.IsOn,
 			"configCode": serverconfigs.ConfigCodeUserAgent,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":       this.Lang(actionPtr, codes.AdminServerMenuSettingCharset),
+			"name":       this.Lang(actionPtr, codes.Server_MenuSettingCharset),
 			"url":        "/servers/server/settings/charset?serverId=" + serverIdString,
 			"isActive":   secondMenuItem == "charset",
 			"isOn":       serverConfig.Web != nil && serverConfig.Web.Charset != nil && serverConfig.Web.Charset.IsOn,
 			"configCode": serverconfigs.ConfigCodeCharset,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":       this.Lang(actionPtr, codes.AdminServerMenuSettingAccessLog),
+			"name":       this.Lang(actionPtr, codes.Server_MenuSettingAccessLog),
 			"url":        "/servers/server/settings/accessLog?serverId=" + serverIdString,
 			"isActive":   secondMenuItem == "accessLog",
 			"isOn":       serverConfig.Web != nil && serverConfig.Web.AccessLogRef != nil && serverConfig.Web.AccessLogRef.IsOn,
 			"configCode": serverconfigs.ConfigCodeAccessLog,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":       this.Lang(actionPtr, codes.AdminServerMenuSettingStat),
+			"name":       this.Lang(actionPtr, codes.Server_MenuSettingStat),
 			"url":        "/servers/server/settings/stat?serverId=" + serverIdString,
 			"isActive":   secondMenuItem == "stat",
 			"isOn":       serverConfig.Web != nil && serverConfig.Web.StatRef != nil && serverConfig.Web.StatRef.IsOn,
 			"configCode": serverconfigs.ConfigCodeStat,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":       this.Lang(actionPtr, codes.AdminServerMenuSettingCompress),
+			"name":       this.Lang(actionPtr, codes.Server_MenuSettingCompress),
 			"url":        "/servers/server/settings/compression?serverId=" + serverIdString,
 			"isActive":   secondMenuItem == "compression",
 			"isOn":       serverConfig.Web != nil && serverConfig.Web.Compression != nil && serverConfig.Web.Compression.IsOn,
 			"configCode": serverconfigs.ConfigCodeCompression,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":       this.Lang(actionPtr, codes.AdminServerMenuSettingPages),
+			"name":       this.Lang(actionPtr, codes.Server_MenuSettingPages),
 			"url":        "/servers/server/settings/pages?serverId=" + serverIdString,
 			"isActive":   secondMenuItem == "pages",
 			"isOn":       serverConfig.Web != nil && (len(serverConfig.Web.Pages) > 0 || (serverConfig.Web.Shutdown != nil && serverConfig.Web.Shutdown.IsOn)),
 			"configCode": serverconfigs.ConfigCodePages,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     this.Lang(actionPtr, codes.AdminServerMenuSettingHTTPHeaders),
+			"name":     this.Lang(actionPtr, codes.Server_MenuSettingHTTPHeaders),
 			"url":      "/servers/server/settings/headers?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "header",
 			"isOn":     this.hasHTTPHeaders(serverConfig.Web),
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":       this.Lang(actionPtr, codes.AdminServerMenuSettingWebsocket),
+			"name":       this.Lang(actionPtr, codes.Server_MenuSettingWebsocket),
 			"url":        "/servers/server/settings/websocket?serverId=" + serverIdString,
 			"isActive":   secondMenuItem == "websocket",
 			"isOn":       serverConfig.Web != nil && serverConfig.Web.WebsocketRef != nil && serverConfig.Web.WebsocketRef.IsOn,
 			"configCode": serverconfigs.ConfigCodeWebsocket,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":       this.Lang(actionPtr, codes.AdminServerMenuSettingWebP),
+			"name":       this.Lang(actionPtr, codes.Server_MenuSettingWebP),
 			"url":        "/servers/server/settings/webp?serverId=" + serverIdString,
 			"isActive":   secondMenuItem == "webp",
 			"isOn":       serverConfig.Web != nil && serverConfig.Web.WebP != nil && serverConfig.Web.WebP.IsOn,
@@ -381,14 +381,14 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 		})
 
 		menuItems = append(menuItems, maps.Map{
-			"name":       this.Lang(actionPtr, codes.AdminServerMenuSettingRoot),
+			"name":       this.Lang(actionPtr, codes.Server_MenuSettingRoot),
 			"url":        "/servers/server/settings/web?serverId=" + serverIdString,
 			"isActive":   secondMenuItem == "web",
 			"isOn":       serverConfig.Web != nil && serverConfig.Web.Root != nil && serverConfig.Web.Root.IsOn,
 			"configCode": serverconfigs.ConfigCodeRoot,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     this.Lang(actionPtr, codes.AdminServerMenuSettingFastcgi),
+			"name":     this.Lang(actionPtr, codes.Server_MenuSettingFastcgi),
 			"url":      "/servers/server/settings/fastcgi?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "fastcgi",
 			"isOn":     serverConfig.Web != nil && serverConfig.Web.FastcgiRef != nil && serverConfig.Web.FastcgiRef.IsOn,
@@ -401,7 +401,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 		})
 
 		menuItems = append(menuItems, maps.Map{
-			"name":       this.Lang(actionPtr, codes.AdminServerMenuSettingClientIP),
+			"name":       this.Lang(actionPtr, codes.Server_MenuSettingClientIP),
 			"url":        "/servers/server/settings/remoteAddr?serverId=" + serverIdString,
 			"isActive":   secondMenuItem == "remoteAddr",
 			"isOn":       serverConfig.Web != nil && serverConfig.Web.RemoteAddr != nil && serverConfig.Web.RemoteAddr.IsOn,
@@ -409,7 +409,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 		})
 
 		menuItems = append(menuItems, maps.Map{
-			"name":       this.Lang(actionPtr, codes.AdminServerMenuSettingRequestLimit),
+			"name":       this.Lang(actionPtr, codes.Server_MenuSettingRequestLimit),
 			"url":        "/servers/server/settings/requestLimit?serverId=" + serverIdString,
 			"isActive":   secondMenuItem == "requestLimit",
 			"isOn":       serverConfig.Web != nil && serverConfig.Web.RequestLimit != nil && serverConfig.Web.RequestLimit.IsOn,
@@ -425,46 +425,46 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 		})
 
 		menuItems = append(menuItems, maps.Map{
-			"name":     this.Lang(actionPtr, codes.AdminServerMenuSettingOthers),
+			"name":     this.Lang(actionPtr, codes.Server_MenuSettingOthers),
 			"url":      "/servers/server/settings/common?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "common",
 			"isOn":     serverConfig.Web != nil && serverConfig.Web.MergeSlashes,
 		})
 	} else if serverConfig.IsTCPFamily() {
 		menuItems = append(menuItems, maps.Map{
-			"name":     this.Lang(actionPtr, codes.AdminServerMenuSettingTCP),
+			"name":     this.Lang(actionPtr, codes.Server_MenuSettingTCP),
 			"url":      "/servers/server/settings/tcp?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "tcp",
 			"isOn":     serverConfig.TCP != nil && serverConfig.TCP.IsOn && len(serverConfig.TCP.Listen) > 0,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     this.Lang(actionPtr, codes.AdminServerMenuSettingTLS),
+			"name":     this.Lang(actionPtr, codes.Server_MenuSettingTLS),
 			"url":      "/servers/server/settings/tls?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "tls",
 			"isOn":     serverConfig.TLS != nil && serverConfig.TLS.IsOn && len(serverConfig.TLS.Listen) > 0,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     this.Lang(actionPtr, codes.AdminServerMenuSettingOrigins),
+			"name":     this.Lang(actionPtr, codes.Server_MenuSettingOrigins),
 			"url":      "/servers/server/settings/reverseProxy?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "reverseProxy",
 			"isOn":     serverConfig.ReverseProxyRef != nil && serverConfig.ReverseProxyRef.IsOn,
 		})
 	} else if serverConfig.IsUnixFamily() {
 		menuItems = append(menuItems, maps.Map{
-			"name":     this.Lang(actionPtr, codes.AdminServerMenuSettingUnix),
+			"name":     this.Lang(actionPtr, codes.Server_MenuSettingUnix),
 			"url":      "/servers/server/settings/unix?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "unix",
 			"isOn":     serverConfig.Unix != nil && serverConfig.Unix.IsOn && len(serverConfig.Unix.Listen) > 0,
 		})
 	} else if serverConfig.IsUDPFamily() {
 		menuItems = append(menuItems, maps.Map{
-			"name":     this.Lang(actionPtr, codes.AdminServerMenuSettingUDP),
+			"name":     this.Lang(actionPtr, codes.Server_MenuSettingUDP),
 			"url":      "/servers/server/settings/udp?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "udp",
 			"isOn":     serverConfig.UDP != nil && serverConfig.UDP.IsOn && len(serverConfig.UDP.Listen) > 0,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     this.Lang(actionPtr, codes.AdminServerMenuSettingOrigins),
+			"name":     this.Lang(actionPtr, codes.Server_MenuSettingOrigins),
 			"url":      "/servers/server/settings/reverseProxy?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "reverseProxy",
 			"isOn":     serverConfig.ReverseProxyRef != nil && serverConfig.ReverseProxyRef.IsOn,
@@ -478,7 +478,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 func (this *ServerHelper) createDeleteMenu(secondMenuItem string, serverIdString string, serverConfig *serverconfigs.ServerConfig, actionPtr actions.ActionWrapper) []maps.Map {
 	menuItems := []maps.Map{}
 	menuItems = append(menuItems, maps.Map{
-		"name":     this.Lang(actionPtr, codes.AdminServerMenuSettingDelete),
+		"name":     this.Lang(actionPtr, codes.Server_MenuSettingDelete),
 		"url":      "/servers/server/delete?serverId=" + serverIdString,
 		"isActive": secondMenuItem == "index",
 	})

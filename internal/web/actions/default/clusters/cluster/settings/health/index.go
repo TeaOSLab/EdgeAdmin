@@ -2,8 +2,8 @@ package health
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -46,7 +46,7 @@ func (this *IndexAction) RunPost(params struct {
 	Must            *actions.Must
 }) {
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改集群健康检查设置 %d", params.ClusterId)
+	defer this.CreateLogInfo(codes.NodeCluster_LogUpdateClusterHealthCheck, params.ClusterId)
 
 	config := &serverconfigs.HealthCheckConfig{}
 	err := json.Unmarshal(params.HealthCheckJSON, config)

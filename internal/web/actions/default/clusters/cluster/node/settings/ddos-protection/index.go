@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/nodeutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/ddosconfigs"
@@ -81,7 +82,7 @@ func (this *IndexAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("修改节点 %d 的DDOS防护设置", params.NodeId)
+	defer this.CreateLogInfo(codes.DDoSProtection_LogUpdateNodeDDoSProtection, params.NodeId)
 
 	var ddosProtectionConfig = &ddosconfigs.ProtectionConfig{}
 	err := json.Unmarshal(params.DdosProtectionJSON, ddosProtectionConfig)

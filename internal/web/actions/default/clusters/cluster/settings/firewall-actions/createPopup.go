@@ -3,6 +3,7 @@ package firewallActions
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -51,7 +52,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("创建集群 %d 的WAF动作", params.ClusterId)
+	defer this.CreateLogInfo(codes.WAFAction_LogCreateWAFAction, params.ClusterId)
 
 	params.Must.
 		Field("name", params.Name).

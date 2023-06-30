@@ -36,19 +36,19 @@ func (this *Helper) BeforeAction(actionPtr actions.ActionWrapper) {
 		}
 	}
 
-	var ocspMenuName = this.Lang(actionPtr, codes.AdminCertMenuOCSP)
+	var ocspMenuName = this.Lang(actionPtr, codes.SSLCert_MenuOCSP)
 	if countOCSP > 0 {
 		ocspMenuName += "(" + types.String(countOCSP) + ")"
 	}
 
 	var menu = []maps.Map{
 		{
-			"name":     this.Lang(actionPtr, codes.AdminCertMenuCerts),
+			"name":     this.Lang(actionPtr, codes.SSLCert_MenuCerts),
 			"url":      "/servers/certs",
 			"isActive": action.Data.GetString("leftMenuItem") == "cert",
 		},
 		{
-			"name":     this.Lang(actionPtr, codes.AdminCertMenuApply),
+			"name":     this.Lang(actionPtr, codes.SSLCert_MenuApply),
 			"url":      "/servers/certs/acme",
 			"isActive": action.Data.GetString("leftMenuItem") == "acme",
 		},

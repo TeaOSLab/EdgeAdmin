@@ -1,8 +1,8 @@
 package node
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -20,7 +20,7 @@ func (this *StopAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "远程停止节点 %d", params.NodeId)
+	defer this.CreateLogInfo(codes.Node_LogStopNodeRemotely, params.NodeId)
 
 	if resp.IsOk {
 		this.Success()

@@ -15,28 +15,28 @@ func FindAllMenuMaps(langCode string, nodeLogsType string, countUnreadNodeLogs i
 		{
 			"code":   "dashboard",
 			"module": configloaders.AdminModuleCodeDashboard,
-			"name":   langs.Message(langCode, codes.AdminMenuDashboard),
+			"name":   langs.Message(langCode, codes.AdminMenu_Dashboard),
 			"icon":   "dashboard",
 		},
 		{
 			"code":     "servers",
 			"module":   configloaders.AdminModuleCodeServer,
-			"name":     langs.Message(langCode, codes.AdminMenuServers),
+			"name":     langs.Message(langCode, codes.AdminMenu_Servers),
 			"subtitle": "",
 			"icon":     "clone outsize",
 			"subItems": []maps.Map{
 				{
-					"name": langs.Message(langCode, codes.AdminMenuServerAccessLogs),
+					"name": langs.Message(langCode, codes.AdminMenu_ServerAccessLogs),
 					"url":  "/servers/logs",
 					"code": "log",
 				},
 				{
-					"name": langs.Message(langCode, codes.AdminMenuServerCerts),
+					"name": langs.Message(langCode, codes.AdminMenu_ServerCerts),
 					"url":  "/servers/certs",
 					"code": "cert",
 				},
 				{
-					"name": langs.Message(langCode, codes.AdminMenuServerGroups),
+					"name": langs.Message(langCode, codes.AdminMenu_ServerGroups),
 					"url":  "/servers/groups",
 					"code": "group",
 				},
@@ -46,12 +46,12 @@ func FindAllMenuMaps(langCode string, nodeLogsType string, countUnreadNodeLogs i
 					"code": "",
 				},
 				{
-					"name": langs.Message(langCode, codes.AdminMenuServerCachePolicies),
+					"name": langs.Message(langCode, codes.AdminMenu_ServerCachePolicies),
 					"url":  "/servers/components/cache",
 					"code": "cache",
 				},
 				{
-					"name": langs.Message(langCode, codes.AdminMenuServerPurgeFetchCaches),
+					"name": langs.Message(langCode, codes.AdminMenu_ServerPurgeFetchCaches),
 					"url":  "/servers/components/cache/batch",
 					"code": "cacheBatch",
 				},
@@ -61,12 +61,12 @@ func FindAllMenuMaps(langCode string, nodeLogsType string, countUnreadNodeLogs i
 					"code": "",
 				},
 				{
-					"name": langs.Message(langCode, codes.AdminMenuServerWAFPolicies),
+					"name": langs.Message(langCode, codes.AdminMenu_ServerWAFPolicies),
 					"url":  "/servers/components/waf",
 					"code": "waf",
 				},
 				{
-					"name":  langs.Message(langCode, codes.AdminMenuServerIPLists),
+					"name":  langs.Message(langCode, codes.AdminMenu_ServerIPLists),
 					"url":   "/servers/iplists",
 					"code":  "iplist",
 					"badge": countUnreadIPItems,
@@ -77,12 +77,12 @@ func FindAllMenuMaps(langCode string, nodeLogsType string, countUnreadNodeLogs i
 					"code": "",
 				},
 				{
-					"name": langs.Message(langCode, codes.AdminMenuServerMetrics),
+					"name": langs.Message(langCode, codes.AdminMenu_ServerMetrics),
 					"url":  "/servers/metrics",
 					"code": "metric",
 				},
 				{
-					"name": langs.Message(langCode, codes.AdminMenuServerGlobalSettings),
+					"name": langs.Message(langCode, codes.AdminMenu_ServerGlobalSettings),
 					"url":  "/servers/components",
 					"code": "global",
 				},
@@ -91,28 +91,28 @@ func FindAllMenuMaps(langCode string, nodeLogsType string, countUnreadNodeLogs i
 		{
 			"code":     "clusters",
 			"module":   configloaders.AdminModuleCodeNode,
-			"name":     langs.Message(langCode, codes.AdminMenuNodes),
+			"name":     langs.Message(langCode, codes.AdminMenu_Nodes),
 			"subtitle": "",
 			"icon":     "cloud",
 			"subItems": []maps.Map{
 				{
-					"name": langs.Message(langCode, codes.AdminMenuNodeClusters),
+					"name": langs.Message(langCode, codes.AdminMenu_NodeClusters),
 					"url":  "/clusters",
 					"code": "cluster",
 				},
 				{
-					"name":  langs.Message(langCode, codes.AdminMenuNodeLogs),
+					"name":  langs.Message(langCode, codes.AdminMenu_NodeLogs),
 					"url":   "/clusters/logs?type=" + nodeLogsType,
 					"code":  "log",
 					"badge": countUnreadNodeLogs,
 				},
 				{
-					"name": langs.Message(langCode, codes.AdminMenuNodeRegions),
+					"name": langs.Message(langCode, codes.AdminMenu_NodeRegions),
 					"url":  "/clusters/regions",
 					"code": "region",
 				},
 				{
-					"name": langs.Message(langCode, codes.AdminMenuNodeSSHGrants),
+					"name": langs.Message(langCode, codes.AdminMenu_NodeSSHGrants),
 					"url":  "/clusters/grants",
 					"code": "grant",
 				},
@@ -121,22 +121,22 @@ func FindAllMenuMaps(langCode string, nodeLogsType string, countUnreadNodeLogs i
 		{
 			"code":     "dns",
 			"module":   configloaders.AdminModuleCodeDNS,
-			"name":     langs.Message(langCode, codes.AdminMenuDNS),
+			"name":     langs.Message(langCode, codes.AdminMenu_DNS),
 			"subtitle": "",
 			"icon":     "globe",
 			"subItems": []maps.Map{
 				{
-					"name": langs.Message(langCode, codes.AdminMenuDNSClusters),
+					"name": langs.Message(langCode, codes.AdminMenu_DNSClusters),
 					"url":  "/dns",
 					"code": "cluster",
 				},
 				{
-					"name": langs.Message(langCode, codes.AdminMenuDNSProviders),
+					"name": langs.Message(langCode, codes.AdminMenu_DNSProviders),
 					"url":  "/dns/providers",
 					"code": "provider",
 				},
 				{
-					"name": langs.Message(langCode, codes.AdminMenuDNSIssues),
+					"name": langs.Message(langCode, codes.AdminMenu_DNSIssues),
 					"url":  "/dns/issues",
 					"code": "issue",
 				},
@@ -145,36 +145,36 @@ func FindAllMenuMaps(langCode string, nodeLogsType string, countUnreadNodeLogs i
 		{
 			"code":   "users",
 			"module": configloaders.AdminModuleCodeUser,
-			"name":   langs.Message(langCode, codes.AdminMenuUsers),
+			"name":   langs.Message(langCode, codes.AdminMenu_Users),
 			"icon":   "users",
 		},
 		{
 			"code":     "admins",
 			"module":   configloaders.AdminModuleCodeAdmin,
-			"name":     langs.Message(langCode, codes.AdminMenuAdmins),
+			"name":     langs.Message(langCode, codes.AdminMenu_Admins),
 			"subtitle": "",
 			"icon":     "user secret",
 		},
 		{
 			"code":   "log",
 			"module": configloaders.AdminModuleCodeLog,
-			"name":   langs.Message(langCode, codes.AdminMenuLogs),
+			"name":   langs.Message(langCode, codes.AdminMenu_Logs),
 			"icon":   "history",
 		},
 		{
 			"code":     "settings",
 			"module":   configloaders.AdminModuleCodeSetting,
-			"name":     langs.Message(langCode, codes.AdminMenuSettings),
+			"name":     langs.Message(langCode, codes.AdminMenu_Settings),
 			"subtitle": "",
 			"icon":     "setting",
 			"subItems": []maps.Map{
 				{
-					"name": langs.Message(langCode, codes.AdminMenuSettingBasicSettings),
+					"name": langs.Message(langCode, codes.AdminMenu_SettingBasicSettings),
 					"url":  "/settings",
 					"code": "basic",
 				},
 				{
-					"name": langs.Message(langCode, codes.AdminMenuSettingAdvancedSettings),
+					"name": langs.Message(langCode, codes.AdminMenu_SettingAdvancedSettings),
 					"url":  "/settings/advanced",
 					"code": "advanced",
 				},

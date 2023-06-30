@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/nodeutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -132,7 +133,7 @@ func (this *IndexAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("修改节点 %d SSH登录信息", params.NodeId)
+	defer this.CreateLogInfo(codes.NodeSSH_LogUpdateNodeSSH, params.NodeId)
 
 	// 检查IP地址
 	if regexp.MustCompile(`^\d+\.\d+\.\d+\.\d+$`).MatchString(params.SshHost) && net.ParseIP(params.SshHost) == nil {

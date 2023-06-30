@@ -5,10 +5,12 @@ import (
 	"errors"
 	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/logs"
@@ -36,7 +38,7 @@ func (this *ParentAction) ErrorPage(err error) {
 	}
 
 	// 日志
-	this.CreateLog(oplogs.LevelError, "系统发生错误：%s", err.Error())
+	this.CreateLog(oplogs.LevelError, codes.AdminCommon_LogSystemError, err.Error())
 
 	if this.Request.Method == http.MethodGet {
 		FailPage(this, err)
@@ -90,11 +92,12 @@ func (this *ParentAction) TinyMenu(menuItem string) {
 }
 
 func (this *ParentAction) AdminId() int64 {
-	return this.Context.GetInt64("adminId")
+	return this.Context.GetInt64(teaconst.SessionAdminId)
 }
 
-func (this *ParentAction) CreateLog(level string, description string, args ...interface{}) {
-	desc := fmt.Sprintf(description, args...)
+func (this *ParentAction) CreateLog(level string, messageCode langs.MessageCode, args ...any) {
+	var description = messageCode.For(this.LangCode())
+	var desc = fmt.Sprintf(description, args...)
 	if level == oplogs.LevelInfo {
 		if this.Code != 200 {
 			level = oplogs.LevelWarn
@@ -103,14 +106,14 @@ func (this *ParentAction) CreateLog(level string, description string, args ...in
 			}
 		}
 	}
-	err := dao.SharedLogDAO.CreateAdminLog(this.AdminContext(), level, this.Request.URL.Path, desc, this.RequestRemoteIP())
+	err := dao.SharedLogDAO.CreateAdminLog(this.AdminContext(), level, this.Request.URL.Path, desc, this.RequestRemoteIP(), messageCode, args)
 	if err != nil {
 		utils.PrintError(err)
 	}
 }
 
-func (this *ParentAction) CreateLogInfo(description string, args ...interface{}) {
-	this.CreateLog(oplogs.LevelInfo, description, args...)
+func (this *ParentAction) CreateLogInfo(messageCode langs.MessageCode, args ...any) {
+	this.CreateLog(oplogs.LevelInfo, messageCode, args...)
 }
 
 // RPC 获取RPC
@@ -151,12 +154,7 @@ func (this *ParentAction) ViewData() maps.Map {
 }
 
 func (this *ParentAction) LangCode() string {
-	var lang = configloaders.FindAdminLang(this.AdminId())
-	if len(lang) > 0 {
-		// TODO check language still exists
-		return lang
-	}
-	return langs.ParseLangFromAction(this)
+	return configloaders.FindAdminLangForAction(this)
 }
 
 func (this *ParentAction) Lang(messageCode langs.MessageCode, args ...any) string {

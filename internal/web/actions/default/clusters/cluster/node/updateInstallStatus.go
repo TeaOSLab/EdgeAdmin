@@ -1,8 +1,8 @@
 package node
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -15,7 +15,7 @@ func (this *UpdateInstallStatusAction) RunPost(params struct {
 	IsInstalled bool
 }) {
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改节点安装状态 %d", params.NodeId)
+	defer this.CreateLogInfo(codes.Node_LogUpdateNodeInstallationStatus, params.NodeId)
 
 	_, err := this.RPC().NodeRPC().UpdateNodeIsInstalled(this.AdminContext(), &pb.UpdateNodeIsInstalledRequest{
 		NodeId:      params.NodeId,

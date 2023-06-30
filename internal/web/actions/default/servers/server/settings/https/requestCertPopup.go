@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains/domainutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
@@ -113,7 +114,7 @@ func (this *RequestCertPopupAction) RunPost(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		defer this.CreateLogInfo("创建ACME用户 %d", createUserResp.AcmeUserId)
+		defer this.CreateLogInfo(codes.ACMEUser_LogCreateACMEUser, createUserResp.AcmeUserId)
 		acmeUserId = createUserResp.AcmeUserId
 
 		this.Data["acmeUser"] = maps.Map{
@@ -139,7 +140,7 @@ func (this *RequestCertPopupAction) RunPost(params struct {
 
 	taskId := createTaskResp.AcmeTaskId
 
-	defer this.CreateLogInfo("自动申请证书，任务 %d", taskId)
+	defer this.CreateLogInfo(codes.ACMETask_LogRunACMETask, taskId)
 
 	runResp, err := this.RPC().ACMETaskRPC().RunACMETask(this.AdminContext(), &pb.RunACMETaskRequest{AcmeTaskId: taskId})
 	if err != nil {

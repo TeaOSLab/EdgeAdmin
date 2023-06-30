@@ -1,8 +1,7 @@
 package waf
 
-import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
@@ -98,7 +97,7 @@ func (this *CreateGroupPopupAction) RunPost(params struct {
 	}
 
 	// 日志
-	defer this.CreateLog(oplogs.LevelInfo, "创建规则分组 %d，名称：%s", groupId, params.Name)
+	defer this.CreateLogInfo(codes.WAFRuleGroup_LogCreateRuleGroup, groupId, params.Name)
 
 	this.Success()
 }

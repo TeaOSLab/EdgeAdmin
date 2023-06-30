@@ -5,6 +5,7 @@ package iplists
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -13,7 +14,7 @@ type ReadAllAction struct {
 }
 
 func (this *ReadAllAction) RunPost(params struct{}) {
-	defer this.CreateLogInfo("将IP名单置为已读")
+	defer this.CreateLogInfo(codes.IPItem_LogReadAllIPItems)
 
 	_, err := this.RPC().IPItemRPC().UpdateIPItemsRead(this.AdminContext(), &pb.UpdateIPItemsReadRequest{})
 	if err != nil {

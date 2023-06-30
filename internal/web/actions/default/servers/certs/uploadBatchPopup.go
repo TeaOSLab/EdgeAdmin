@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"crypto/tls"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -53,7 +54,7 @@ func (this *UploadBatchPopupAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("批量上传证书")
+	defer this.CreateLogInfo(codes.SSLCert_LogUploadSSLCertBatch)
 
 	var files = this.Request.MultipartForm.File["certFiles"]
 	if len(files) == 0 {

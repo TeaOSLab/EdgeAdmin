@@ -2,8 +2,8 @@ package serverNames
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -88,7 +88,7 @@ func (this *IndexAction) RunPost(params struct {
 	CSRF        *actionutils.CSRF
 }) {
 	// 记录日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改代理服务 %d 域名", params.ServerId)
+	defer this.CreateLogInfo(codes.Server_ServerNamesLogUpdateServerNames, params.ServerId)
 
 	serverNames := []*serverconfigs.ServerNameConfig{}
 	err := json.Unmarshal([]byte(params.ServerNames), &serverNames)

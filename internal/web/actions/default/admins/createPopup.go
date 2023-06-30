@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -114,7 +115,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		}
 	}
 
-	defer this.CreateLogInfo("创建系统用户 %d", createResp.AdminId)
+	defer this.CreateLogInfo(codes.Admin_LogCreateAdmin, createResp.AdminId)
 
 	// 通知更改
 	err = configloaders.NotifyAdminModuleMappingChange()

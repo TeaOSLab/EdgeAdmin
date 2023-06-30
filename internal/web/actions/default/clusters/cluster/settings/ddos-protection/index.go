@@ -5,6 +5,7 @@ package ddosProtection
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/ddosconfigs"
@@ -54,7 +55,7 @@ func (this *IndexAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("修改集群 %d 的DDOS防护设置", params.ClusterId)
+	defer this.CreateLogInfo(codes.DDoSProtection_LogUpdateClusterDDoSProtection, params.ClusterId)
 
 	var ddosProtectionConfig = &ddosconfigs.ProtectionConfig{}
 	err := json.Unmarshal(params.DdosProtectionJSON, ddosProtectionConfig)

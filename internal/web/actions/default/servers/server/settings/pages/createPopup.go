@@ -2,8 +2,8 @@ package pages
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
@@ -80,7 +80,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	this.Data["page"] = pageConfig
 
 	// 日志
-	defer this.CreateLog(oplogs.LevelInfo, "创建自定义页面 %d", pageId)
+	defer this.CreateLogInfo(codes.ServerPage_LogCreatePage, pageId)
 
 	this.Success()
 }

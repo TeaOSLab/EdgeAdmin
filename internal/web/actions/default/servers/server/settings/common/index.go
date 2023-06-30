@@ -4,6 +4,7 @@ package common
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -46,7 +47,7 @@ func (this *IndexAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("修改服务Web %d 设置的其他设置", params.WebId)
+	defer this.CreateLogInfo(codes.ServerCommon_LogUpdateCommonSettings, params.WebId)
 
 	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebCommon(this.AdminContext(), &pb.UpdateHTTPWebCommonRequest{
 		HttpWebId:    params.WebId,

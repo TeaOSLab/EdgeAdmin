@@ -4,6 +4,7 @@ package accounts
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -66,7 +67,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("修改ACME服务商账号 %d", params.AccountId)
+	defer this.CreateLogInfo(codes.ACMEProviderAccount_LogUpdateACMEProviderAccount, params.AccountId)
 
 	params.Must.
 		Field("name", params.Name).

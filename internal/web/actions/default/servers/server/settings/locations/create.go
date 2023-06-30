@@ -3,6 +3,7 @@ package locations
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -55,7 +56,7 @@ func (this *CreateAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
-	defer this.CreateLogInfo("创建路由规则：%s", params.Pattern)
+	defer this.CreateLogInfo(codes.HTTPLocation_LogCreateHTTPLocation, params.Pattern)
 
 	params.Must.
 		Field("pattern", params.Pattern).

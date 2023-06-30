@@ -2,7 +2,6 @@ package cluster
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/clusterutils"
@@ -38,12 +37,12 @@ func (this *CreateNodeAction) RunGet(params struct {
 
 	var leftMenuItems = []maps.Map{
 		{
-			"name":     this.Lang(codes.AdminNodeMenuCreateSingleNode),
+			"name":     this.Lang(codes.NodeMenu_CreateSingleNode),
 			"url":      "/clusters/cluster/createNode?clusterId=" + strconv.FormatInt(params.ClusterId, 10),
 			"isActive": true,
 		},
 		{
-			"name":     this.Lang(codes.AdminNodeMenuCreateMultipleNodes),
+			"name":     this.Lang(codes.NodeMenu_CreateMultipleNodes),
 			"url":      "/clusters/cluster/createBatch?clusterId=" + strconv.FormatInt(params.ClusterId, 10),
 			"isActive": false,
 		},
@@ -294,7 +293,7 @@ func (this *CreateNodeAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "创建节点 %d", nodeId)
+	defer this.CreateLogInfo(codes.Node_LogCreateNode, nodeId)
 
 	// 响应数据
 	this.Data["nodeId"] = nodeId

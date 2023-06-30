@@ -1,8 +1,7 @@
 package waf
 
-import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -14,7 +13,7 @@ func (this *DeleteAction) RunPost(params struct {
 	FirewallPolicyId int64
 }) {
 	// 日志
-	defer this.CreateLog(oplogs.LevelInfo, "删除WAF策略 %d", params.FirewallPolicyId)
+	defer this.CreateLogInfo(codes.WAFPolicy_LogDeleteWAFPolicy, params.FirewallPolicyId)
 
 	countResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClustersWithHTTPFirewallPolicyId(this.AdminContext(), &pb.CountAllEnabledNodeClustersWithHTTPFirewallPolicyIdRequest{HttpFirewallPolicyId: params.FirewallPolicyId})
 	if err != nil {

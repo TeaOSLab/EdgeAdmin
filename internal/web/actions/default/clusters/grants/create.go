@@ -1,9 +1,9 @@
 package grants
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"golang.org/x/crypto/ssh"
@@ -84,7 +84,7 @@ func (this *CreateAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "创建SSH认证 %d", createResp.NodeGrantId)
+	defer this.CreateLogInfo(codes.NodeGrant_LogCreateSSHGrant, createResp.NodeGrantId)
 
 	this.Success()
 }

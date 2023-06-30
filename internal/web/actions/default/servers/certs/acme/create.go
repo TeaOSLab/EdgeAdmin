@@ -3,6 +3,7 @@ package acme
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains/domainutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -124,7 +125,7 @@ func (this *CreateAction) RunPost(params struct {
 			return
 		}
 		params.TaskId = createResp.AcmeTaskId
-		defer this.CreateLogInfo("创建证书申请任务 %d", createResp.AcmeTaskId)
+		defer this.CreateLogInfo(codes.ACMETask_LogCreateACMETask, createResp.AcmeTaskId)
 	} else {
 		_, err := this.RPC().ACMETaskRPC().UpdateACMETask(this.AdminContext(), &pb.UpdateACMETaskRequest{
 			AcmeTaskId:    params.TaskId,
@@ -140,7 +141,7 @@ func (this *CreateAction) RunPost(params struct {
 			return
 		}
 
-		defer this.CreateLogInfo("修改证书申请任务 %d", params.TaskId)
+		defer this.CreateLogInfo(codes.ACMETask_LogUpdateACMETask, params.TaskId)
 	}
 
 	this.Data["taskId"] = params.TaskId

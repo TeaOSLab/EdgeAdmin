@@ -1,8 +1,8 @@
 package cluster
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -40,7 +40,7 @@ func (this *DeleteAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "删除集群 %d", params.ClusterId)
+	defer this.CreateLogInfo(codes.NodeCluster_LogDeleteCluster, params.ClusterId)
 
 	this.Success()
 }

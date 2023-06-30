@@ -5,6 +5,7 @@ package waf
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
@@ -17,7 +18,7 @@ type UpgradeTemplateAction struct {
 func (this *UpgradeTemplateAction) RunPost(params struct {
 	PolicyId int64
 }) {
-	defer this.CreateLogInfo("升级WAF %d 内置规则", params.PolicyId)
+	defer this.CreateLogInfo(codes.WAFPolicy_LogUpgradeWAFPolicy, params.PolicyId)
 
 	policy, err := dao.SharedHTTPFirewallPolicyDAO.FindEnabledHTTPFirewallPolicyConfig(this.AdminContext(), params.PolicyId)
 	if err != nil {

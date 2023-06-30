@@ -5,8 +5,8 @@ package cache
 import (
 	"encoding/json"
 	"errors"
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 )
@@ -20,7 +20,7 @@ func (this *UpdateRefsAction) RunPost(params struct {
 	RefsJSON []byte
 }) {
 	// 日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改Web %d 的缓存设置", params.WebId)
+	defer this.CreateLogInfo(codes.ServerCache_LogUpdateCacheSettings, params.WebId)
 
 	this.Data["isUpdated"] = false
 

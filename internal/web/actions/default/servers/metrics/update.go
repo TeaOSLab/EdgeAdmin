@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/metrics/metricutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -91,6 +92,6 @@ func (this *UpdateAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	defer this.CreateLogInfo("修改统计指标 %d", params.ItemId)
+	defer this.CreateLogInfo(codes.MetricItem_LogUpdateMetricItem, params.ItemId)
 	this.Success()
 }

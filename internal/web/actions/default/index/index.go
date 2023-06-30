@@ -14,6 +14,8 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/iplibrary"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -173,7 +175,7 @@ func (this *IndexAction) RunPost(params struct {
 	})
 
 	if err != nil {
-		err = dao.SharedLogDAO.CreateAdminLog(rpcClient.Context(0), oplogs.LevelError, this.Request.URL.Path, "登录时发生系统错误："+err.Error(), this.RequestRemoteIP())
+		err = dao.SharedLogDAO.CreateAdminLog(rpcClient.Context(0), oplogs.LevelError, this.Request.URL.Path, langs.DefaultMessage(codes.AdminLogin_LogSystemError, err.Error()), this.RequestRemoteIP(), codes.AdminLogin_LogSystemError, []any{err.Error()})
 		if err != nil {
 			utils.PrintError(err)
 		}
@@ -183,7 +185,7 @@ func (this *IndexAction) RunPost(params struct {
 	}
 
 	if !resp.IsOk {
-		err = dao.SharedLogDAO.CreateAdminLog(rpcClient.Context(0), oplogs.LevelWarn, this.Request.URL.Path, "登录失败，用户名："+params.Username, this.RequestRemoteIP())
+		err = dao.SharedLogDAO.CreateAdminLog(rpcClient.Context(0), oplogs.LevelWarn, this.Request.URL.Path, langs.DefaultMessage(codes.AdminLogin_LogFailed, params.Username), this.RequestRemoteIP(), codes.AdminLogin_LogFailed, []any{params.Username})
 		if err != nil {
 			utils.PrintError(err)
 		}
@@ -223,7 +225,7 @@ func (this *IndexAction) RunPost(params struct {
 	params.Auth.StoreAdmin(adminId, params.Remember)
 
 	// 记录日志
-	err = dao.SharedLogDAO.CreateAdminLog(rpcClient.Context(adminId), oplogs.LevelInfo, this.Request.URL.Path, "成功登录系统，用户名："+params.Username, this.RequestRemoteIP())
+	err = dao.SharedLogDAO.CreateAdminLog(rpcClient.Context(adminId), oplogs.LevelInfo, this.Request.URL.Path, langs.DefaultMessage(codes.AdminLogin_LogSuccess, params.Username), this.RequestRemoteIP(), codes.AdminLogin_LogSuccess, []any{params.Username})
 	if err != nil {
 		utils.PrintError(err)
 	}

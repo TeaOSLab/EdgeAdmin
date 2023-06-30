@@ -3,6 +3,7 @@ package webp
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
@@ -51,7 +52,7 @@ func (this *IndexAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("修改集群 %d 的WebP设置", params.ClusterId)
+	defer this.CreateLogInfo(codes.ServerWebP_LogUpdateClusterWebPPolicy, params.ClusterId)
 
 	var config = &nodeconfigs.WebPImagePolicy{
 		IsOn:         params.IsOn,

@@ -5,6 +5,7 @@ package iplists
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/types"
 	"strings"
@@ -26,7 +27,7 @@ func (this *DeleteItemsAction) RunPost(params struct {
 		itemIdStrings = append(itemIdStrings, types.String(itemId))
 	}
 
-	defer this.CreateLogInfo("批量删除IP名单中的IP：" + strings.Join(itemIdStrings, ", "))
+	defer this.CreateLogInfo(codes.IPList_LogDeleteIPBatch, strings.Join(itemIdStrings, ", "))
 
 	_, err := this.RPC().IPItemRPC().DeleteIPItems(this.AdminContext(), &pb.DeleteIPItemsRequest{IpItemIds: params.ItemIds})
 	if err != nil {

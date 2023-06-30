@@ -2,6 +2,7 @@ package serverNames
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -17,7 +18,7 @@ func (this *AuditAction) RunPost(params struct {
 
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("提交服务 %d 域名审核", params.ServerId)
+	defer this.CreateLogInfo(codes.Server_LogSubmitAuditingServer, params.ServerId)
 
 	if !params.AuditingOK && len(params.AuditingReason) == 0 {
 		this.FailField("auditingReason", "请输入审核不通过原因")
