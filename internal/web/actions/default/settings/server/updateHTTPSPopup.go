@@ -5,6 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	adminserverutils "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/server/admin-server-utils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
 	"github.com/iwind/TeaGo/Tea"
@@ -65,7 +66,7 @@ func (this *UpdateHTTPSPopupAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
-	defer this.CreateLogInfo("修改管理界面的HTTPS设置")
+	defer this.CreateLogInfo(codes.AdminServer_LogUpdateServerHTTPSSettings)
 
 	if len(params.Listens) == 0 {
 		this.Fail("请输入绑定地址")

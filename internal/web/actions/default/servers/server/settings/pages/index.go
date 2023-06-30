@@ -1,8 +1,7 @@
 package pages
 
-import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -52,7 +51,7 @@ func (this *IndexAction) RunPost(params struct {
 	Must         *actions.Must
 }) {
 	// 日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改Web %d 的设置", params.WebId)
+	defer this.CreateLogInfo(codes.ServerPage_LogUpdatePages, params.WebId)
 
 	// TODO 检查配置
 

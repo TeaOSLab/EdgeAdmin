@@ -5,6 +5,7 @@ package cache
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/cache/cacheutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/lists"
@@ -43,7 +44,7 @@ func (this *IndexAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("批量刷新缓存Key")
+	defer this.CreateLogInfo(codes.HTTPCacheTask_LogCreateHTTPCacheTaskPurge)
 
 	if len(params.Keys) == 0 {
 		this.Fail("请输入要刷新的Key列表")

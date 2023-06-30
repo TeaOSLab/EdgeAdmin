@@ -1,10 +1,9 @@
 package iplists
 
-import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
+import (	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -256,7 +255,7 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 		}
 
 		// 日志
-		defer this.CreateLog(oplogs.LevelInfo, "在IP名单中批量添加IP %d", params.ListId)
+		defer this.CreateLogInfo(codes.IPList_LogCreateIPItemsBatch, params.ListId)
 	} else {
 		createResp, err := this.RPC().IPItemRPC().CreateIPItem(this.AdminContext(), &pb.CreateIPItemRequest{
 			IpListId:   params.ListId,
@@ -274,7 +273,7 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 		itemId := createResp.IpItemId
 
 		// 日志
-		defer this.CreateLog(oplogs.LevelInfo, "在IP名单 %d 中添加IP %d", params.ListId, itemId)
+		defer this.CreateLogInfo(codes.IPItem_LogCreateIPItem, params.ListId, itemId)
 	}
 
 	this.Success()

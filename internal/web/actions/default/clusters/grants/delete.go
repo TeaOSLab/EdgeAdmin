@@ -1,8 +1,7 @@
 package grants
 
-import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -14,7 +13,7 @@ func (this *DeleteAction) RunPost(params struct {
 	GrantId int64
 }) {
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "删除SSH认证 %d", params.GrantId)
+	defer this.CreateLogInfo(codes.NodeGrant_LogDeleteSSHGrant, params.GrantId)
 
 	// 检查是否有别的集群或节点正在使用
 	countResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClustersWithNodeGrantId(this.AdminContext(), &pb.CountAllEnabledNodeClustersWithNodeGrantIdRequest{

@@ -5,6 +5,7 @@ package fastcgi
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
@@ -52,7 +53,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("修改Fastcgi %d", params.FastcgiId)
+	defer this.CreateLogInfo(codes.HTTPFastcgi_LogUpdateHTTPFastcgi, params.FastcgiId)
 
 	params.Must.
 		Field("address", params.Address).

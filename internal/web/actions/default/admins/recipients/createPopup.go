@@ -3,6 +3,7 @@ package recipients
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"regexp"
@@ -75,7 +76,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		return
 	}
 
-	defer this.CreateLogInfo("创建媒介接收人 %d", resp.MessageRecipientId)
+	defer this.CreateLogInfo(codes.MessageRecipient_LogCreateMessageRecipient, resp.MessageRecipientId)
 
 	this.Success()
 }

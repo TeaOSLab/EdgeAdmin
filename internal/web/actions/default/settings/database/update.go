@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/go-sql-driver/mysql"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/actions"
@@ -99,7 +100,7 @@ func (this *UpdateAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
-	defer this.CreateLogInfo("修改API节点数据库设置")
+	defer this.CreateLogInfo(codes.Database_LogUpdateAPINodeDatabaseConfig)
 
 	params.Must.
 		Field("host", params.Host).

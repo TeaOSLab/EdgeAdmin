@@ -2,9 +2,9 @@ package origins
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
@@ -333,7 +333,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	}
 
 	// 日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改反向代理服务 %d 的源站 %d", params.ReverseProxyId, params.OriginId)
+	defer this.CreateLogInfo(codes.ServerOrigin_LogUpdateOrigin, params.OriginId)
 
 	this.Success()
 }

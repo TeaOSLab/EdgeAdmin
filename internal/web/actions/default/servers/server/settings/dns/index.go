@@ -2,6 +2,7 @@ package dns
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 )
@@ -41,7 +42,7 @@ func (this *IndexAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("修改服务 %d 的DNS设置", params.ServerId)
+	defer this.CreateLogInfo(codes.ServerDNS_LogUpdateDNSSettings, params.ServerId)
 
 	_, err := this.RPC().ServerRPC().UpdateServerDNS(this.AdminContext(), &pb.UpdateServerDNSRequest{
 		ServerId:     params.ServerId,

@@ -3,6 +3,7 @@ package instances
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/monitorconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -260,7 +261,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		return
 	}
 
-	defer this.CreateLogInfo("创建消息媒介 %d", resp.MessageMediaInstanceId)
+	defer this.CreateLogInfo(codes.MessageMediaInstance_LogCreateMessageMediaInstance, resp.MessageMediaInstanceId)
 
 	this.Success()
 }

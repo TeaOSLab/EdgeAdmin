@@ -2,6 +2,7 @@ package users
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -126,7 +127,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	}
 
 	// 日志
-	defer this.CreateLogInfo("创建ACME用户 %d", createResp.AcmeUserId)
+	defer this.CreateLogInfo(codes.ACMEUser_LogCreateACMEUser, createResp.AcmeUserId)
 
 	this.Success()
 }

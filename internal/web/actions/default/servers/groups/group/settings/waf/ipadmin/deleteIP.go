@@ -1,8 +1,7 @@
 package ipadmin
 
-import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -15,7 +14,7 @@ func (this *DeleteIPAction) RunPost(params struct {
 	ItemId           int64
 }) {
 	// 日志
-	defer this.CreateLog(oplogs.LevelInfo, "从WAF策略 %d 名单中删除IP %d", params.FirewallPolicyId, params.ItemId)
+	defer this.CreateLogInfo(codes.WAF_LogDeleteIPFromWAFPolicy, params.FirewallPolicyId, params.ItemId)
 
 	// TODO 判断权限
 

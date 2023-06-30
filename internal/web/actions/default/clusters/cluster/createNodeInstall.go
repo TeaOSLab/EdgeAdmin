@@ -4,6 +4,7 @@ package cluster
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -21,7 +22,7 @@ func (this *CreateNodeInstallAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
-	defer this.CreateLogInfo("安装节点 %d", params.NodeId)
+	defer this.CreateLogInfo(codes.NodeSSH_LogUpdateNodeSSH, params.NodeId)
 
 	params.Must.
 		Field("sshHost2", params.SshHost).

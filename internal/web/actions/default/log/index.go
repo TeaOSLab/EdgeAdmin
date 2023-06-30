@@ -42,15 +42,15 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["levelOptions"] = []maps.Map{
 		{
 			"code": "info",
-			"name": this.Lang(codes.AdminLevelInfo),
+			"name": this.Lang(codes.Level_Info),
 		},
 		{
 			"code": "warn",
-			"name": this.Lang(codes.AdminLevelWarn),
+			"name": this.Lang(codes.Level_Warn),
 		},
 		{
 			"code": "error",
-			"name": this.Lang(codes.AdminLevelError),
+			"name": this.Lang(codes.Level_Error),
 		},
 	}
 

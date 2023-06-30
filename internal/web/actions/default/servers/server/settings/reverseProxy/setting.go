@@ -3,6 +3,7 @@ package reverseProxy
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
@@ -53,7 +54,7 @@ func (this *SettingAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
-	defer this.CreateLogInfo("修改代理服务 %d 的反向代理设置", params.ServerId)
+	defer this.CreateLogInfo(codes.ServerReverseProxy_LogUpdateServerReverseProxySettings, params.ServerId)
 
 	var reverseProxyConfig = &serverconfigs.ReverseProxyConfig{}
 	err := json.Unmarshal(params.ReverseProxyJSON, reverseProxyConfig)

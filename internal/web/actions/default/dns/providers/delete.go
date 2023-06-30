@@ -1,9 +1,8 @@
 package providers
 
-import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
+import (	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -17,7 +16,7 @@ func (this *DeleteAction) RunPost(params struct {
 	// TODO 检查权限
 
 	// 记录日志
-	defer this.CreateLog(oplogs.LevelInfo, "删除DNS服务商 %d", params.ProviderId)
+	defer this.CreateLogInfo(codes.DNSProvider_LogDeleteDNSProvider, params.ProviderId)
 
 	// 检查是否被集群使用
 	countClustersResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClustersWithDNSProviderId(this.AdminContext(), &pb.CountAllEnabledNodeClustersWithDNSProviderIdRequest{DnsProviderId: params.ProviderId})

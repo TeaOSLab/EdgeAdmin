@@ -1,9 +1,9 @@
 package cache
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/cache/cacheutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/lists"
@@ -57,7 +57,7 @@ func (this *FetchAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "预热缓存，缓存策略：%d", params.CachePolicyId)
+	defer this.CreateLogInfo(codes.ServerCachePolicy_LogFetchCaches, params.CachePolicyId)
 
 	// 记录clusterId
 	this.AddCookie(&http.Cookie{

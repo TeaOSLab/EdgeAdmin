@@ -42,14 +42,14 @@ func (this *CreateSetPopupAction) RunGet(params struct {
 	// 一些配置
 	this.Data["connectors"] = []maps.Map{
 		{
-			"name":        this.Lang(codes.AdminWAFConnectorAnd),
+			"name":        this.Lang(codes.WAF_ConnectorAnd),
 			"value":       firewallconfigs.HTTPFirewallRuleConnectorAnd,
-			"description": this.Lang(codes.AdminWAFConnectorAndDescription),
+			"description": this.Lang(codes.WAF_ConnectorAndDescription),
 		},
 		{
-			"name":        this.Lang(codes.AdminWAFConnectorOr),
+			"name":        this.Lang(codes.WAF_ConnectorOr),
 			"value":       firewallconfigs.HTTPFirewallRuleConnectorOr,
-			"description": this.Lang(codes.AdminWAFConnectorOrDescription),
+			"description": this.Lang(codes.WAF_ConnectorOrDescription),
 		},
 	}
 

@@ -4,6 +4,7 @@ package charts
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -40,7 +41,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 }) {
 	var chartId int64
 	defer func() {
-		this.CreateLogInfo("创建指标图表 %d", chartId)
+		this.CreateLogInfo(codes.MetricChart_LogCreateMetricChart, chartId)
 	}()
 
 	params.Must.

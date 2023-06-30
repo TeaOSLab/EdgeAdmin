@@ -2,10 +2,9 @@
 
 package cache
 
-import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/cache/cacheutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -49,7 +48,7 @@ func (this *PurgeAction) RunPost(params struct {
 }) {
 
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "删除服务 %d 缓存", params.ServerId)
+	defer this.CreateLogInfo(codes.ServerCache_LogPurgeCaches, params.ServerId)
 
 	webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithId(this.AdminContext(), params.WebId)
 	if err != nil {

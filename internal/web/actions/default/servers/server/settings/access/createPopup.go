@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -141,7 +142,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	defer this.CreateLogInfo("创建HTTP鉴权 %d", createResp.HttpAuthPolicyId)
+	defer this.CreateLogInfo(codes.HTTPAuthPolicy_LogCreateHTTPAuthPolicy, createResp.HttpAuthPolicyId)
 	ref.AuthPolicyId = createResp.HttpAuthPolicyId
 	ref.AuthPolicy = &serverconfigs.HTTPAuthPolicy{
 		Id:     createResp.HttpAuthPolicyId,

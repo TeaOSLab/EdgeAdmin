@@ -1,8 +1,7 @@
 package waf
 
-import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -64,7 +63,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	}
 
 	// 日志
-	defer this.CreateLog(oplogs.LevelInfo, "创建WAF策略 %d", createResp.HttpFirewallPolicyId)
+	defer this.CreateLogInfo(codes.WAFPolicy_LogCreateWAFPolicy, createResp.HttpFirewallPolicyId)
 
 	this.Success()
 }

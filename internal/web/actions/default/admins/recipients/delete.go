@@ -2,6 +2,7 @@ package recipients
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -12,7 +13,7 @@ type DeleteAction struct {
 func (this *DeleteAction) RunPost(params struct {
 	RecipientId int64
 }) {
-	defer this.CreateLogInfo("删除媒介接收人 %d", params.RecipientId)
+	defer this.CreateLogInfo(codes.MessageRecipient_LogDeleteMessageRecipient, params.RecipientId)
 
 	_, err := this.RPC().MessageRecipientRPC().DeleteMessageRecipient(this.AdminContext(), &pb.DeleteMessageRecipientRequest{MessageRecipientId: params.RecipientId})
 	if err != nil {

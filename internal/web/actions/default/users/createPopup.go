@@ -5,6 +5,7 @@ import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/userconfigs"
@@ -46,7 +47,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	var userId int64
 
 	defer func() {
-		this.CreateLogInfo("创建用户 %d", userId)
+		this.CreateLogInfo(codes.User_LogCreateUser, userId)
 	}()
 
 	params.Must.

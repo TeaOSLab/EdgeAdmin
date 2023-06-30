@@ -3,6 +3,7 @@ package login
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -42,7 +43,7 @@ func (this *IndexAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
-	defer this.CreateLogInfo("修改登录设置")
+	defer this.CreateLogInfo(codes.AdminLogin_LogUpdateLogin)
 
 	params.Must.
 		Field("username", params.Username).

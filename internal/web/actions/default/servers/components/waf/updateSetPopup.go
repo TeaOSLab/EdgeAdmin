@@ -2,7 +2,6 @@ package waf
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
@@ -27,7 +26,7 @@ func (this *UpdateSetPopupAction) RunGet(params struct {
 	SetId            int64
 }) {
 	// 日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改WAF规则集 %d 基本信息", params.SetId)
+	defer this.CreateLogInfo(codes.WAFRuleSet_LogUpdateRuleSet, params.SetId)
 
 	this.Data["groupId"] = params.GroupId
 	this.Data["type"] = params.Type
@@ -46,14 +45,14 @@ func (this *UpdateSetPopupAction) RunGet(params struct {
 	// 一些配置
 	this.Data["connectors"] = []maps.Map{
 		{
-			"name":        this.Lang(codes.AdminWAFConnectorAnd),
+			"name":        this.Lang(codes.WAF_ConnectorAnd),
 			"value":       firewallconfigs.HTTPFirewallRuleConnectorAnd,
-			"description": this.Lang(codes.AdminWAFConnectorAndDescription),
+			"description": this.Lang(codes.WAF_ConnectorAndDescription),
 		},
 		{
-			"name":        this.Lang(codes.AdminWAFConnectorOr),
+			"name":        this.Lang(codes.WAF_ConnectorOr),
 			"value":       firewallconfigs.HTTPFirewallRuleConnectorOr,
-			"description": this.Lang(codes.AdminWAFConnectorOrDescription),
+			"description": this.Lang(codes.WAF_ConnectorOrDescription),
 		},
 	}
 

@@ -3,6 +3,7 @@ package database
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -40,7 +41,7 @@ func (this *IndexAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
-	defer this.CreateLogInfo("修改个人资料")
+	defer this.CreateLogInfo(codes.AdminProfile_LogUpdateProfile)
 
 	params.Must.
 		Field("fullname", params.Fullname).

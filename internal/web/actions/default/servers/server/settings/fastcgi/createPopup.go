@@ -5,6 +5,7 @@ package fastcgi
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
@@ -37,11 +38,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 }) {
 	var fastcgiId = int64(0)
 	defer func() {
-		if fastcgiId > 0 {
-			this.CreateLogInfo("创建Fastcgi %d", fastcgiId)
-		} else {
-			this.CreateLogInfo("创建Fastcgi")
-		}
+		this.CreateLogInfo(codes.HTTPFastcgi_LogCreateHTTPFastcgi, fastcgiId)
 	}()
 
 	params.Must.

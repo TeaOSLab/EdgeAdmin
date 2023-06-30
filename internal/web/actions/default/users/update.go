@@ -3,6 +3,7 @@ package users
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/users/userutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -107,7 +108,7 @@ func (this *UpdateAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("修改用户 %d", params.UserId)
+	defer this.CreateLogInfo(codes.User_LogUpdateUser, params.UserId)
 
 	params.Must.
 		Field("username", params.Username).

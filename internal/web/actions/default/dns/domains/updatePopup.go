@@ -1,9 +1,8 @@
 package domains
 
-import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains/domainutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -52,7 +51,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	// TODO 检查DomainId
 
 	// 记录日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改DNS服务商域名 %d", params.DomainId)
+	defer this.CreateLogInfo(codes.DNS_LogUpdateDomain, params.DomainId)
 
 	params.Must.
 		Field("name", params.Name).

@@ -1,9 +1,8 @@
 package cache
 
-import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/nodeutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/messageconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"net/http"
@@ -61,7 +60,7 @@ func (this *TestWriteAction) RunPost(params struct {
 	this.Data["results"] = results
 
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "测试写入，缓存策略：%d", params.CachePolicyId)
+	defer this.CreateLogInfo(codes.ServerCachePolicy_LogTestWriting, params.CachePolicyId)
 
 	this.Success()
 }

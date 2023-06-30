@@ -1,9 +1,8 @@
 package domains
 
-import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
+import (	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -15,7 +14,7 @@ func (this *DeleteAction) RunPost(params struct {
 	DomainId int64
 }) {
 	// 记录日志
-	defer this.CreateLog(oplogs.LevelInfo, "从DNS服务商中删除域名 %d", params.DomainId)
+	defer this.CreateLogInfo(codes.DNS_LogDeleteDomain, params.DomainId)
 
 	// 检查是否正在使用
 	countResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClustersWithDNSDomainId(this.AdminContext(), &pb.CountAllEnabledNodeClustersWithDNSDomainIdRequest{DnsDomainId: params.DomainId})

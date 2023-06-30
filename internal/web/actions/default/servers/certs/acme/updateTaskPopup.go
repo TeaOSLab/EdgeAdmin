@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains/domainutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -101,7 +102,7 @@ func (this *UpdateTaskPopupAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("修改证书申请任务 %d", params.TaskId)
+	defer this.CreateLogInfo(codes.ACMETask_LogUpdateACMETask, params.TaskId)
 
 	if params.AuthType != "dns" && params.AuthType != "http" {
 		this.Fail("无法识别的认证方式'" + params.AuthType + "'")

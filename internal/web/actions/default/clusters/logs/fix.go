@@ -5,6 +5,7 @@ package logs
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/types"
 	"strings"
@@ -22,7 +23,7 @@ func (this *FixAction) RunPost(params struct {
 		logIdStrings = append(logIdStrings, types.String(logId))
 	}
 
-	defer this.CreateLogInfo("设置日志 %s 为已修复", strings.Join(logIdStrings, ", "))
+	defer this.CreateLogInfo(codes.NodeLog_LogFixNodeLogs, strings.Join(logIdStrings, ", "))
 
 	_, err := this.RPC().NodeLogRPC().FixNodeLogs(this.AdminContext(), &pb.FixNodeLogsRequest{NodeLogIds: params.LogIds})
 	if err != nil {

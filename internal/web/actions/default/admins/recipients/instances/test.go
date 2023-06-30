@@ -3,6 +3,7 @@ package instances
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -81,7 +82,7 @@ func (this *TestAction) RunPost(params struct {
 	}
 	this.Data["taskId"] = resp.MessageTaskId
 
-	defer this.CreateLogInfo("创建媒介测试任务 %d", resp.MessageTaskId)
+	defer this.CreateLogInfo(codes.MessageTask_LogCreateTestingMessageTask, resp.MessageTaskId)
 
 	this.Success()
 }

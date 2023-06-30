@@ -3,6 +3,7 @@ package services
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -52,7 +53,7 @@ func (this *IndexAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("修改集群 %d 的系统服务设置", params.ClusterId)
+	defer this.CreateLogInfo(codes.NodeSystemd_LogUpdateClusterSystemdSettings, params.ClusterId)
 
 	serviceParams := &nodeconfigs.SystemdServiceConfig{
 		IsOn: params.SystemdIsOn,

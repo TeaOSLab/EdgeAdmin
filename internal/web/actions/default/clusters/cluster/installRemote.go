@@ -2,8 +2,8 @@ package cluster
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -80,7 +80,7 @@ func (this *InstallRemoteAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "远程安装节点 %d", params.NodeId)
+	defer this.CreateLogInfo(codes.Node_LogInstallNodeRemotely, params.NodeId)
 
 	this.Success()
 }

@@ -2,8 +2,8 @@ package pages
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
@@ -55,7 +55,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	// 日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改自定义页面 %d", params.PageId)
+	defer this.CreateLogInfo(codes.ServerPage_LogUpdatePage, params.PageId)
 
 	params.Must.
 		Field("status", params.Status).

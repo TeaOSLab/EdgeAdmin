@@ -2,9 +2,9 @@ package http
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/serverutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -91,7 +91,7 @@ func (this *IndexAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	// 记录日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改服务 %d 的HTTP设置", params.ServerId)
+	defer this.CreateLogInfo(codes.ServerHTTP_LogUpdateHTTPSettings, params.ServerId)
 
 	var addresses = []*serverconfigs.NetworkAddressConfig{}
 	err := json.Unmarshal([]byte(params.Addresses), &addresses)

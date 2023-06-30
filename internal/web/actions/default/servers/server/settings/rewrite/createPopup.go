@@ -3,6 +3,7 @@ package rewrite
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -117,7 +118,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	}
 
 	// 日志
-	defer this.CreateLogInfo("在Web %d 中创建重写规则 %d", params.WebId, createResp.RewriteRuleId)
+	defer this.CreateLogInfo(codes.HTTPRewriteRule_LogCreateRewriteRule, params.WebId, createResp.RewriteRuleId)
 
 	this.Success()
 }

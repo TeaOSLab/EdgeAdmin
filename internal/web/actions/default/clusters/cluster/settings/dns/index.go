@@ -1,9 +1,9 @@
 package dns
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains/domainutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -90,7 +90,7 @@ func (this *IndexAction) RunPost(params struct {
 	CSRF *actionutils.CSRF
 }) {
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改集群 %d DNS设置", params.ClusterId)
+	defer this.CreateLogInfo(codes.DNS_LogUpdateClusterDNS, params.ClusterId)
 
 	if !params.ConfirmResetDomain {
 		if params.DnsDomainId <= 0 {

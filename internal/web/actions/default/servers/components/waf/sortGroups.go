@@ -1,8 +1,7 @@
 package waf
 
-import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
@@ -18,7 +17,7 @@ func (this *SortGroupsAction) RunPost(params struct {
 	GroupIds         []int64
 }) {
 	// 日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改WAF策略 %d 中的规则分组中的排序", params.FirewallPolicyId)
+	defer this.CreateLogInfo(codes.WAFRuleGroup_LogSortRuleGroups, params.FirewallPolicyId)
 
 	firewallPolicy, err := dao.SharedHTTPFirewallPolicyDAO.FindEnabledHTTPFirewallPolicyConfig(this.AdminContext(), params.FirewallPolicyId)
 	if err != nil {

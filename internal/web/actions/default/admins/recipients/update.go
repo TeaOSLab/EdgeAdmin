@@ -3,6 +3,7 @@ package recipients
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -101,7 +102,7 @@ func (this *UpdateAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("修改媒介接收人 %d", params.RecipientId)
+	defer this.CreateLogInfo(codes.MessageRecipient_LogUpdateMessageRecipient, params.RecipientId)
 
 	params.Must.
 		Field("adminId", params.AdminId).

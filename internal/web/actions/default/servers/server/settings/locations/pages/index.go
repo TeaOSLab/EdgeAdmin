@@ -2,6 +2,7 @@ package pages
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -36,7 +37,7 @@ func (this *IndexAction) RunPost(params struct {
 	ShutdownJSON string
 	Must         *actions.Must
 }) {
-	defer this.CreateLogInfo("修改Web %d 的自定义页面设置", params.WebId)
+	defer this.CreateLogInfo(codes.ServerPage_LogUpdatePages, params.WebId)
 
 	// TODO 检查配置
 

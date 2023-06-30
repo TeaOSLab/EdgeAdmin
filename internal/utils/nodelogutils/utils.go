@@ -13,15 +13,15 @@ import (
 func FindNodeCommonTags(langCode langs.LangCode) []maps.Map {
 	return []maps.Map{
 		{
-			"name": langs.Message(langCode, codes.AdminLogTagListener),
+			"name": langs.Message(langCode, codes.Log_TagListener),
 			"code": "LISTENER",
 		},
 		{
-			"name": langs.Message(langCode, codes.AdminLogTagWAF),
+			"name": langs.Message(langCode, codes.Log_TagWAF),
 			"code": "WAF",
 		},
 		{
-			"name": langs.Message(langCode, codes.AdminLogTagAccessLog),
+			"name": langs.Message(langCode, codes.Log_TagAccessLog),
 			"code": "ACCESS_LOG",
 		},
 	}

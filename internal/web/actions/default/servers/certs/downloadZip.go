@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
 	"strconv"
@@ -20,7 +21,7 @@ func (this *DownloadZipAction) Init() {
 func (this *DownloadZipAction) RunGet(params struct {
 	CertId int64
 }) {
-	defer this.CreateLogInfo("下载SSL证书压缩包 %d", params.CertId)
+	defer this.CreateLogInfo(codes.SSLCert_LogDownloadSSLCertZip, params.CertId)
 
 	certResp, err := this.RPC().SSLCertRPC().FindEnabledSSLCertConfig(this.AdminContext(), &pb.FindEnabledSSLCertConfigRequest{SslCertId: params.CertId})
 	if err != nil {

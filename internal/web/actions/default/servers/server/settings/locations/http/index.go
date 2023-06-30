@@ -2,6 +2,7 @@ package http
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -35,7 +36,7 @@ func (this *IndexAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
-	defer this.CreateLogInfo("修改Web %d 的通用设置", params.WebId)
+	defer this.CreateLogInfo(codes.ServerRedirect_LogUpdateRedirects, params.WebId)
 
 	// 设置跳转到HTTPS
 	// TODO 校验设置

@@ -13,6 +13,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -145,7 +146,7 @@ func (this *OtpAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	err = dao.SharedLogDAO.CreateAdminLog(rpcClient.Context(adminId), oplogs.LevelInfo, this.Request.URL.Path, "成功通过OTP验证登录系统", this.RequestRemoteIP())
+	err = dao.SharedLogDAO.CreateAdminLog(rpcClient.Context(adminId), oplogs.LevelInfo, this.Request.URL.Path, this.Lang(codes.AdminLogin_LogOtpVerifiedSuccess), this.RequestRemoteIP(), codes.AdminLogin_LogOtpVerifiedSuccess, nil)
 	if err != nil {
 		utils.PrintError(err)
 	}

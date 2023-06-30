@@ -5,8 +5,8 @@
 package providers
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -166,7 +166,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		return
 	}
 
-	defer this.CreateLog(oplogs.LevelInfo, "创建DNS服务商 %d", createResp.DnsProviderId)
+	defer this.CreateLogInfo(codes.DNSProvider_LogCreateDNSProvider, createResp.DnsProviderId)
 
 	this.Success()
 }

@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
-	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	rpcerrors "github.com/TeaOSLab/EdgeCommon/pkg/rpc/errors"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/actions"
@@ -23,35 +24,42 @@ import (
 )
 
 // Fail 提示服务器错误信息
-func Fail(action actions.ActionWrapper, err error) {
+func Fail(actionPtr actions.ActionWrapper, err error) {
 	if err == nil {
 		err = errors.New("unknown error")
 	}
 
-	logs.Println("[" + reflect.TypeOf(action).String() + "]" + findStack(err.Error()))
+	var langCode = configloaders.FindAdminLangForAction(actionPtr)
+	var serverErrString = codes.AdminCommon_ServerError.For(langCode)
 
-	_, _, isLocalAPI, issuesHTML := parseAPIErr(action, err)
+	logs.Println("[" + reflect.TypeOf(actionPtr).String() + "]" + findStack(err.Error()))
+
+	_, _, isLocalAPI, issuesHTML := parseAPIErr(actionPtr, err)
 	if isLocalAPI && len(issuesHTML) > 0 {
-		action.Object().Fail(teaconst.ErrServer + "（" + err.Error() + "；最近一次错误提示：" + issuesHTML + "）")
+		actionPtr.Object().Fail(serverErrString + "（" + err.Error() + "；最近一次错误提示：" + issuesHTML + "）")
 	} else {
-		action.Object().Fail(teaconst.ErrServer + "（" + err.Error() + "）")
+		actionPtr.Object().Fail(serverErrString + "（" + err.Error() + "）")
 	}
 
 }
 
 // FailPage 提示页面错误信息
-func FailPage(action actions.ActionWrapper, err error) {
+func FailPage(actionPtr actions.ActionWrapper, err error) {
 	if err == nil {
 		err = errors.New("unknown error")
 	}
 
-	logs.Println("[" + reflect.TypeOf(action).String() + "]" + findStack(err.Error()))
+	var langCode = configloaders.FindAdminLangForAction(actionPtr)
+	var serverErrString = codes.AdminCommon_ServerError.For(langCode)
 
-	action.Object().ResponseWriter.WriteHeader(http.StatusInternalServerError)
-	if len(action.Object().Request.Header.Get("X-Requested-With")) > 0 {
-		action.Object().WriteString(teaconst.ErrServer)
+	logs.Println("[" + reflect.TypeOf(actionPtr).String() + "]" + findStack(err.Error()))
+
+	actionPtr.Object().ResponseWriter.WriteHeader(http.StatusInternalServerError)
+
+	if len(actionPtr.Object().Request.Header.Get("X-Requested-With")) > 0 {
+		actionPtr.Object().WriteString(serverErrString)
 	} else {
-		apiNodeIsStarting, apiNodeProgress, _, issuesHTML := parseAPIErr(action, err)
+		apiNodeIsStarting, apiNodeProgress, _, issuesHTML := parseAPIErr(actionPtr, err)
 		var html = `<!DOCTYPE html>
 <html>
 	<head>
@@ -74,7 +82,7 @@ func FailPage(action actions.ActionWrapper, err error) {
 
 			html += "</div>"
 		} else {
-			html += teaconst.ErrServer + `
+			html += serverErrString + `
 		<div>可以通过查看 <strong><em>$安装目录/logs/run.log</em></strong> 日志文件查看具体的错误提示。</div>
 		<hr/>
 		<div class="red">Error: ` + err.Error() + `</div>`
@@ -85,7 +93,7 @@ func FailPage(action actions.ActionWrapper, err error) {
 			}
 		}
 
-		action.Object().WriteString(html + `
+		actionPtr.Object().WriteString(html + `
 		</div>
 	</body>
 </html>`)

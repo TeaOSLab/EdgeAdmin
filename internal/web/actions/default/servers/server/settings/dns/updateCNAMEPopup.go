@@ -4,6 +4,7 @@ package dns
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/types"
 	"regexp"
@@ -33,7 +34,7 @@ func (this *UpdateCNAMEPopupAction) RunPost(params struct {
 	ServerId int64
 	DnsName  string
 }) {
-	defer this.CreateLogInfo("修改服务 %d CNAME为 %s", params.ServerId, params.DnsName)
+	defer this.CreateLogInfo(codes.ServerDNS_LogUpdateDNSName, params.ServerId, params.DnsName)
 
 	var dnsName = strings.ToLower(params.DnsName)
 	if len(dnsName) == 0 {

@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
+	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 )
 
@@ -173,51 +174,68 @@ func FindAdminLang(adminId int64) string {
 	return ""
 }
 
+func FindAdminLangForAction(actionPtr actions.ActionWrapper) (langCode langs.LangCode) {
+	locker.Lock()
+	defer locker.Unlock()
+
+	var adminId = actionPtr.Object().Session().GetInt64(teaconst.SessionAdminId)
+	list, ok := sharedAdminModuleMapping[adminId]
+	var result = ""
+	if ok {
+		result = list.Lang
+	}
+
+	if len(result) == 0 {
+		result = langs.ParseLangFromAction(actionPtr)
+	}
+
+	return result
+}
 
 // AllModuleMaps 所有权限列表
 func AllModuleMaps(langCode string) []maps.Map {
 	var m = []maps.Map{
 		{
-			"name": langs.Message(langCode, codes.AdminMenuDashboard),
+			"name": langs.Message(langCode, codes.AdminMenu_Dashboard),
 			"code": AdminModuleCodeDashboard,
 			"url":  "/dashboard",
 		},
 		{
-			"name": langs.Message(langCode, codes.AdminMenuServers),
+			"name": langs.Message(langCode, codes.AdminMenu_Servers),
 			"code": AdminModuleCodeServer,
 			"url":  "/servers",
 		},
 		{
-			"name": langs.Message(langCode, codes.AdminMenuNodes),
+			"name": langs.Message(langCode, codes.AdminMenu_Nodes),
 			"code": AdminModuleCodeNode,
 			"url":  "/clusters",
 		},
 		{
-			"name": langs.Message(langCode, codes.AdminMenuDNS),
+			"name": langs.Message(langCode, codes.AdminMenu_DNS),
 			"code": AdminModuleCodeDNS,
 			"url":  "/dns",
 		},
 	}
 	if teaconst.IsPlus {
 		m = append(m, maps.Map{
-			"name": langs.Message(langCode, codes.AdminMenuNS),
+			"name": langs.Message(langCode, codes.AdminMenu_NS),
 			"code": AdminModuleCodeNS,
 			"url":  "/ns",
 		})
 	}
 	m = append(m, []maps.Map{
 		{
-			"name": langs.Message(langCode, codes.AdminMenuUsers),
+			"name": langs.Message(langCode, codes.AdminMenu_Users),
 			"code": AdminModuleCodeUser,
 			"url":  "/users",
 		},
 		{
-			"name": langs.Message(langCode, codes.AdminMenuAdmins),
+			"name": langs.Message(langCode, codes.AdminMenu_Admins),
 			"code": AdminModuleCodeAdmin,
 			"url":  "/admins",
 		},
 		{
-			"name": langs.Message(langCode, codes.AdminMenuFinance),
+			"name": langs.Message(langCode, codes.AdminMenu_Finance),
 			"code": AdminModuleCodeFinance,
 			"url":  "/finance",
 		},
@@ -226,12 +244,12 @@ func AllModuleMaps(langCode string) []maps.Map {
 	if teaconst.IsPlus {
 		m = append(m, []maps.Map{
 			{
-				"name": langs.Message(langCode, codes.AdminMenuPlans),
+				"name": langs.Message(langCode, codes.AdminMenu_Plans),
 				"code": AdminModuleCodePlan,
 				"url":  "/plans",
 			},
 			{
-				"name": langs.Message(langCode, codes.AdminMenuTickets),
+				"name": langs.Message(langCode, codes.AdminMenu_Tickets),
 				"code": AdminModuleCodeTicket,
 				"url":  "/tickets",
 			},
@@ -240,12 +258,12 @@ func AllModuleMaps(langCode string) []maps.Map {
 
 	m = append(m, []maps.Map{
 		{
-			"name": langs.Message(langCode, codes.AdminMenuLogs),
+			"name": langs.Message(langCode, codes.AdminMenu_Logs),
 			"code": AdminModuleCodeLog,
 			"url":  "/log",
 		},
 		{
-			"name": langs.Message(langCode, codes.AdminMenuSettings),
+			"name": langs.Message(langCode, codes.AdminMenu_Settings),
 			"code": AdminModuleCodeSetting,
 			"url":  "/settings",
 		},

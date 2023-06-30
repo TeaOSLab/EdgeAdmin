@@ -38,19 +38,19 @@ func InitGroup(parent *actionutils.ParentAction, groupId int64, menuItem string)
 		var urlPrefix = "/servers/groups/group/settings"
 		var leftMenuItems = []maps.Map{
 			{
-				"name":     parent.Lang(codes.AdminServerMenuSettingHTTPProxy),
+				"name":     parent.Lang(codes.Server_MenuSettingHTTPProxy),
 				"url":      urlPrefix + "/httpReverseProxy?groupId=" + types.String(groupId),
 				"isActive": menuItem == "httpReverseProxy",
 				"isOn":     configInfoResp.HasHTTPReverseProxy,
 			},
 			{
-				"name":     parent.Lang(codes.AdminServerMenuSettingTCPProxy),
+				"name":     parent.Lang(codes.Server_MenuSettingTCPProxy),
 				"url":      urlPrefix + "/tcpReverseProxy?groupId=" + types.String(groupId),
 				"isActive": menuItem == "tcpReverseProxy",
 				"isOn":     configInfoResp.HasTCPReverseProxy,
 			},
 			{
-				"name":     parent.Lang(codes.AdminServerMenuSettingUDPProxy),
+				"name":     parent.Lang(codes.Server_MenuSettingUDPProxy),
 				"url":      urlPrefix + "/udpReverseProxy?groupId=" + types.String(groupId),
 				"isActive": menuItem == "udpReverseProxy",
 				"isOn":     configInfoResp.HasUDPReverseProxy,
@@ -64,7 +64,7 @@ func InitGroup(parent *actionutils.ParentAction, groupId int64, menuItem string)
 			"url":  "",
 		})
 		leftMenuItems = append(leftMenuItems, maps.Map{
-			"name":     parent.Lang(codes.AdminServerMenuSettingClientIP),
+			"name":     parent.Lang(codes.Server_MenuSettingClientIP),
 			"url":      urlPrefix + "/remoteAddr?groupId=" + types.String(groupId),
 			"isActive": menuItem == "remoteAddr",
 			"isOn":     configInfoResp.HasRemoteAddrConfig,

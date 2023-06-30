@@ -1,8 +1,7 @@
 package waf
 
-import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
@@ -16,7 +15,7 @@ func (this *DeleteGroupAction) RunPost(params struct {
 	GroupId          int64
 }) {
 	// 日志
-	defer this.CreateLog(oplogs.LevelInfo, "删除WAF策略 %d 的规则分组 %d", params.FirewallPolicyId, params.GroupId)
+	defer this.CreateLogInfo(codes.WAFRuleGroup_LogDeleteRuleGroup, params.FirewallPolicyId, params.GroupId)
 
 	firewallPolicy, err := dao.SharedHTTPFirewallPolicyDAO.FindEnabledHTTPFirewallPolicyConfig(this.AdminContext(), params.FirewallPolicyId)
 	if err != nil {

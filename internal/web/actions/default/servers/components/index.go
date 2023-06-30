@@ -2,8 +2,8 @@ package components
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
@@ -64,7 +64,7 @@ func (this *IndexAction) RunPost(params struct {
 	DefaultDomain string
 }) {
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "保存网站全局配置")
+	defer this.CreateLogInfo(codes.Server_LogUpdateGlobalSettings)
 
 	if len(params.GlobalConfigJSON) == 0 {
 		this.Fail("错误的配置信息，请刷新当前页面后重试")

@@ -82,21 +82,21 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 		}
 		if teaconst.IsPlus {
 			{
-				var item = tabbar.Add(this.Lang(actionPtr, codes.AdminClusterMenuTabClusterDashboard), "", "/clusters/cluster/boards?clusterId="+clusterIdString, "chart line area", selectedTabbar == "board")
+				var item = tabbar.Add(this.Lang(actionPtr, codes.NodeClusterMenu_TabClusterDashboard), "", "/clusters/cluster/boards?clusterId="+clusterIdString, "chart line area", selectedTabbar == "board")
 				item.IsDisabled = !isInCluster
 			}
 		}
 		{
-			var item = tabbar.Add(this.Lang(actionPtr, codes.AdminClusterMenuTabClusterNodes), "", "/clusters/cluster/nodes?clusterId="+clusterIdString, "server", selectedTabbar == "node")
+			var item = tabbar.Add(this.Lang(actionPtr, codes.NodeClusterMenu_TabClusterNodes), "", "/clusters/cluster/nodes?clusterId="+clusterIdString, "server", selectedTabbar == "node")
 			item.IsDisabled = !isInCluster
 		}
 
 		{
-			var item = tabbar.Add(this.Lang(actionPtr, codes.AdminClusterMenuTabClusterSettings), "", "/clusters/cluster/settings?clusterId="+clusterIdString, "setting", selectedTabbar == "setting")
+			var item = tabbar.Add(this.Lang(actionPtr, codes.NodeClusterMenu_TabClusterSettings), "", "/clusters/cluster/settings?clusterId="+clusterIdString, "setting", selectedTabbar == "setting")
 			item.IsDisabled = !isInCluster
 		}
 		{
-			var item = tabbar.Add(this.Lang(actionPtr, codes.AdminClusterMenuTabClusterDelete), "", "/clusters/cluster/delete?clusterId="+clusterIdString, "trash", selectedTabbar == "delete")
+			var item = tabbar.Add(this.Lang(actionPtr, codes.NodeClusterMenu_TabClusterDelete), "", "/clusters/cluster/delete?clusterId="+clusterIdString, "trash", selectedTabbar == "delete")
 			item.IsDisabled = !isInCluster
 		}
 		actionutils.SetTabbar(action, tabbar)
@@ -126,20 +126,20 @@ func (this *ClusterHelper) BeforeAction(actionPtr actions.ActionWrapper) (goNext
 func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.FindEnabledNodeClusterConfigInfoResponse, selectedItem string, actionPtr actions.ActionWrapper) (items []maps.Map) {
 	clusterId := numberutils.FormatInt64(cluster.Id)
 	items = append(items, maps.Map{
-		"name":     this.Lang(actionPtr, codes.AdminClusterMenuSettingBasic),
+		"name":     this.Lang(actionPtr, codes.NodeClusterMenu_SettingBasic),
 		"url":      "/clusters/cluster/settings?clusterId=" + clusterId,
 		"isActive": selectedItem == "basic",
 		"isOn":     true,
 	})
 
 	items = append(items, maps.Map{
-		"name":     this.Lang(actionPtr, codes.AdminClusterMenuSettingDNS),
+		"name":     this.Lang(actionPtr, codes.NodeClusterMenu_SettingDNS),
 		"url":      "/clusters/cluster/settings/dns?clusterId=" + clusterId,
 		"isActive": selectedItem == "dns",
 		"isOn":     cluster.DnsDomainId > 0 || len(cluster.DnsName) > 0,
 	})
 	items = append(items, maps.Map{
-		"name":     this.Lang(actionPtr, codes.AdminClusterMenuSettingHealthCheck),
+		"name":     this.Lang(actionPtr, codes.NodeClusterMenu_SettingHealthCheck),
 		"url":      "/clusters/cluster/settings/health?clusterId=" + clusterId,
 		"isActive": selectedItem == "health",
 		"isOn":     info != nil && info.HealthCheckIsOn,
@@ -150,34 +150,34 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 	})
 
 	items = append(items, maps.Map{
-		"name":     this.Lang(actionPtr, codes.AdminClusterMenuSettingServiceGlobal),
+		"name":     this.Lang(actionPtr, codes.NodeClusterMenu_SettingServiceGlobal),
 		"url":      "/clusters/cluster/settings/global-server-config?clusterId=" + clusterId,
 		"isActive": selectedItem == "globalServerConfig",
 		"isOn":     true,
 	})
 
 	items = append(items, maps.Map{
-		"name":     this.Lang(actionPtr, codes.AdminClusterMenuSettingCachePolicy),
+		"name":     this.Lang(actionPtr, codes.NodeClusterMenu_SettingCachePolicy),
 		"url":      "/clusters/cluster/settings/cache?clusterId=" + clusterId,
 		"isActive": selectedItem == "cache",
 		"isOn":     cluster.HttpCachePolicyId > 0,
 	})
 	items = append(items, maps.Map{
-		"name":     this.Lang(actionPtr, codes.AdminClusterMenuSettingWAFPolicy),
+		"name":     this.Lang(actionPtr, codes.NodeClusterMenu_SettingWAFPolicy),
 		"url":      "/clusters/cluster/settings/waf?clusterId=" + clusterId,
 		"isActive": selectedItem == "waf",
 		"isOn":     cluster.HttpFirewallPolicyId > 0,
 	})
 
 	items = append(items, maps.Map{
-		"name":     this.Lang(actionPtr, codes.AdminClusterMenuSettingWAFActions),
+		"name":     this.Lang(actionPtr, codes.NodeClusterMenu_SettingWAFActions),
 		"url":      "/clusters/cluster/settings/firewall-actions?clusterId=" + clusterId,
 		"isActive": selectedItem == "firewallAction",
 		"isOn":     info != nil && info.HasFirewallActions,
 	})
 
 	items = append(items, maps.Map{
-		"name":     this.Lang(actionPtr, codes.AdminClusterMenuSettingWebP),
+		"name":     this.Lang(actionPtr, codes.NodeClusterMenu_SettingWebP),
 		"url":      "/clusters/cluster/settings/webp?clusterId=" + clusterId,
 		"isActive": selectedItem == "webp",
 		"isOn":     info != nil && info.WebpIsOn,
@@ -186,7 +186,7 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 	items = this.filterMenuItems1(items, info, clusterId, selectedItem, actionPtr)
 
 	items = append(items, maps.Map{
-		"name":     this.Lang(actionPtr, codes.AdminClusterMenuSettingMetrics),
+		"name":     this.Lang(actionPtr, codes.NodeClusterMenu_SettingMetrics),
 		"url":      "/clusters/cluster/settings/metrics?clusterId=" + clusterId,
 		"isActive": selectedItem == "metric",
 		"isOn":     info != nil && info.HasMetricItems,
@@ -199,7 +199,7 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 	})
 
 	items = append(items, maps.Map{
-		"name":     this.Lang(actionPtr, codes.AdminClusterMenuSettingDDoSProtection),
+		"name":     this.Lang(actionPtr, codes.NodeClusterMenu_SettingDDoSProtection),
 		"url":      "/clusters/cluster/settings/ddos-protection?clusterId=" + clusterId,
 		"isActive": selectedItem == "ddosProtection",
 		"isOn":     info != nil && info.HasDDoSProtection,

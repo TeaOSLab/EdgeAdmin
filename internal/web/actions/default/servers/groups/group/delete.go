@@ -1,8 +1,7 @@
 package group
 
-import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -14,7 +13,7 @@ func (this *DeleteAction) RunPost(params struct {
 	GroupId int64
 }) {
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "删除代理网站分组 %d", params.GroupId)
+	defer this.CreateLogInfo(codes.ServerGroup_LogDeleteServerGroup, params.GroupId)
 
 	// 检查是否正在使用
 	countResp, err := this.RPC().ServerRPC().CountAllEnabledServersWithServerGroupId(this.AdminContext(), &pb.CountAllEnabledServersWithServerGroupIdRequest{ServerGroupId: params.GroupId})

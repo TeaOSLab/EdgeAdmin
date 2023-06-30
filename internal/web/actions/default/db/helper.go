@@ -22,6 +22,6 @@ func (this *Helper) BeforeAction(action *actions.ActionObject) {
 	selectedTabbar, _ := action.Data["mainTab"]
 
 	var tabbar = actionutils.NewTabbar()
-	tabbar.Add(this.Lang(action, codes.AdminDBNodeTabNodes), "", "/db", "", selectedTabbar == "db")
+	tabbar.Add(this.Lang(action, codes.DBNode_TabNodes), "", "/db", "", selectedTabbar == "db")
 	actionutils.SetTabbar(action, tabbar)
 }

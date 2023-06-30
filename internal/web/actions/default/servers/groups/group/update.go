@@ -1,9 +1,8 @@
 package group
 
-import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/groups/group/servergrouputils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -41,7 +40,7 @@ func (this *UpdateAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "修改网站分组 %d", params.GroupId)
+	defer this.CreateLogInfo(codes.ServerGroup_LogUpdateServerGroup, params.GroupId)
 
 	params.Must.
 		Field("name", params.Name).

@@ -1,8 +1,8 @@
 package groups
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -48,7 +48,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	}
 
 	// 创建日志
-	defer this.CreateLog(oplogs.LevelInfo, "创建节点分组 %d", createResp.NodeGroupId)
+	defer this.CreateLogInfo(codes.NodeGroup_LogCreateNodeGroup, createResp.NodeGroupId)
 
 	this.Success()
 }

@@ -1,8 +1,7 @@
 package clusters
 
-import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
@@ -14,7 +13,7 @@ func (this *SyncAction) RunPost(params struct {
 	ClusterId int64
 }) {
 	// 记录日志
-	defer this.CreateLog(oplogs.LevelInfo, "同步集群 %d 的DNS设置", params.ClusterId)
+	defer this.CreateLogInfo(codes.DNS_LogSyncCluster, params.ClusterId)
 
 	dnsInfoResp, err := this.RPC().NodeClusterRPC().FindEnabledNodeClusterDNS(this.AdminContext(), &pb.FindEnabledNodeClusterDNSRequest{NodeClusterId: params.ClusterId})
 	if err != nil {

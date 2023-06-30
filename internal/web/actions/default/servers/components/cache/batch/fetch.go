@@ -5,6 +5,7 @@ package cache
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/cache/cacheutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/lists"
@@ -38,7 +39,7 @@ func (this *FetchAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("批量预热缓存Key")
+	defer this.CreateLogInfo(codes.HTTPCacheTask_LogCreateHTTPCacheTaskFetch)
 
 	if len(params.Keys) == 0 {
 		this.Fail("请输入要预热的Key列表")

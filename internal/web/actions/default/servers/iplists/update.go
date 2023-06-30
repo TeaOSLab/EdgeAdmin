@@ -4,6 +4,7 @@ package iplists
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 )
@@ -37,7 +38,7 @@ func (this *UpdateAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("修改IP名单 %d", params.ListId)
+	defer this.CreateLogInfo(codes.IPList_LogUpdateIPList, params.ListId)
 
 	params.Must.
 		Field("name", params.Name).

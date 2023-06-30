@@ -4,6 +4,7 @@ package regions
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -82,7 +83,7 @@ func (this *UpdateNodeRegionPopupAction) RunPost(params struct {
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
-	defer this.CreateLogInfo("修改节点 %d 区域到 %d", params.RegionId)
+	defer this.CreateLogInfo(codes.NodeRegion_LogMoveNodeBetweenRegions, params.RegionId)
 
 	_, err := this.RPC().NodeRPC().UpdateNodeRegionInfo(this.AdminContext(), &pb.UpdateNodeRegionInfoRequest{
 		NodeId:       params.NodeId,

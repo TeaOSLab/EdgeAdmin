@@ -5,6 +5,7 @@ package updates
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 )
@@ -14,7 +15,7 @@ type ResetIgnoredVersionAction struct {
 }
 
 func (this *ResetIgnoredVersionAction) RunPost(params struct{}) {
-	defer this.CreateLogInfo("重置忽略升级版本")
+	defer this.CreateLogInfo(codes.AdminUpdate_LogResetIgnoreVersion)
 
 	valueResp, err := this.RPC().SysSettingRPC().ReadSysSetting(this.AdminContext(), &pb.ReadSysSettingRequest{Code: systemconfigs.SettingCodeCheckUpdates})
 	if err != nil {

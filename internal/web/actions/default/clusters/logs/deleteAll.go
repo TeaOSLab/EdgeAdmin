@@ -5,6 +5,7 @@ package logs
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
@@ -23,7 +24,7 @@ func (this *DeleteAllAction) RunPost(params struct {
 	ClusterId int64
 	NodeId    int64
 }) {
-	defer this.CreateLogInfo("批量删除节点运行日志")
+	defer this.CreateLogInfo(codes.NodeLog_LogDeleteNodeLogsBatch)
 
 	// 目前仅允许通过关键词删除，防止误删
 	if len(params.Keyword) == 0 {

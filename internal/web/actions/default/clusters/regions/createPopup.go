@@ -2,6 +2,7 @@ package regions
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
@@ -46,7 +47,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	}
 
 	// 日志
-	defer this.CreateLogInfo("创建节点区域 %d", createResp.NodeRegionId)
+	defer this.CreateLogInfo(codes.NodeRegion_LogCreateNodeRegion, createResp.NodeRegionId)
 
 	this.Success()
 }
