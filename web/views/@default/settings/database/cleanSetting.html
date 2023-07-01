@@ -4,18 +4,172 @@
 <form class="ui form" data-tea-success="success" data-tea-action="$">
     <csrf-token></csrf-token>
 
-    <h4 style="margin-top: 0">服务访问日志</h4>
+    <h4 style="margin-top: 0">网站访问日志</h4>
     <table class="ui table definition selectable">
         <tr>
-            <td class="title">保存天数 *</td>
+            <td class="title">数据保存天数 *</td>
             <td>
                 <div class="ui input right labeled">
-                    <input type="text" name="days" v-model="config.days" style="width:6em" maxlength="6"/>
+                    <input type="text" name="serverAccessLogCleanDays" v-model="config.serverAccessLog.clean.days" style="width:6em" maxlength="6"/>
                     <span class="ui label">天</span>
                 </div>
                 <p class="comment">天数包括当天。如果填0表示不自动清理。此设置也会同时作用于日志数据库。</p>
             </td>
         </tr>
     </table>
+
+    <div>
+        <a href=""><more-options-indicator>更多设置</more-options-indicator></a>
+        <div class="margin"></div>
+    </div>
+
+    <div v-show="moreOptionsVisible">
+        <div class="ui divider"></div>
+
+        <h4 style="margin-top: 0">网站带宽统计</h4>
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title">数据保存天数 *</td>
+                <td>
+                    <div class="ui input right labeled">
+                        <input type="text" name="serverBandwidthStatCleanDays" v-model="config.serverBandwidthStat.clean.days" style="width:6em" maxlength="6"/>
+                        <span class="ui label">天</span>
+                    </div>
+                    <p class="comment"><pro-warning-label></pro-warning-label></p>
+                </td>
+            </tr>
+        </table>
+
+        <h4 style="margin-top: 0">用户带宽统计</h4>
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title">数据保存天数 *</td>
+                <td>
+                    <div class="ui input right labeled">
+                        <input type="text" name="userBandwidthStatCleanDays" v-model="config.userBandwidthStat.clean.days" style="width:6em" maxlength="6"/>
+                        <span class="ui label">天</span>
+                    </div>
+                    <p class="comment"><pro-warning-label></pro-warning-label></p>
+                </td>
+            </tr>
+        </table>
+
+        <h4 style="margin-top: 0">网站流量统计</h4>
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title">数据保存天数 *</td>
+                <td>
+                    <div class="ui input right labeled">
+                        <input type="text" name="serverDailyStatCleanDays" v-model="config.serverDailyStat.clean.days" style="width:6em" maxlength="6"/>
+                        <span class="ui label">天</span>
+                    </div>
+                    <p class="comment"><pro-warning-label></pro-warning-label></p>
+                </td>
+            </tr>
+        </table>
+
+        <div class="ui divider"></div>
+
+        <h4 style="margin-top: 0">网站按小时域名统计</h4>
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title">数据保存天数 *</td>
+                <td>
+                    <div class="ui input right labeled">
+                        <input type="text" name="serverDomainHourlyStatCleanDays" v-model="config.serverDomainHourlyStat.clean.days" style="width:6em" maxlength="6"/>
+                        <span class="ui label">天</span>
+                    </div>
+                    <p class="comment"><pro-warning-label></pro-warning-label></p>
+                </td>
+            </tr>
+        </table>
+
+        <h4 style="margin-top: 0">系统整体按天流量统计</h4>
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title">数据保存天数 *</td>
+                <td>
+                    <div class="ui input right labeled">
+                        <input type="text" name="trafficDailyStatCleanDays" v-model="config.trafficDailyStat.clean.days" style="width:6em" maxlength="6"/>
+                        <span class="ui label">天</span>
+                    </div>
+                    <p class="comment"><pro-warning-label></pro-warning-label></p>
+                </td>
+            </tr>
+        </table>
+
+        <h4 style="margin-top: 0">系统整体按小时流量统计</h4>
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title">数据保存天数 *</td>
+                <td>
+                    <div class="ui input right labeled">
+                        <input type="text" name="trafficHourlyStatCleanDays" v-model="config.trafficHourlyStat.clean.days" style="width:6em" maxlength="6"/>
+                        <span class="ui label">天</span>
+                    </div>
+                    <p class="comment"><pro-warning-label></pro-warning-label></p>
+                </td>
+            </tr>
+        </table>
+
+        <h4 style="margin-top: 0">集群按天流量统计</h4>
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title">数据保存天数 *</td>
+                <td>
+                    <div class="ui input right labeled">
+                        <input type="text" name="nodeClusterTrafficDailyStatCleanDays" v-model="config.nodeClusterTrafficDailyStat.clean.days" style="width:6em" maxlength="6"/>
+                        <span class="ui label">天</span>
+                    </div>
+                    <p class="comment"><pro-warning-label></pro-warning-label></p>
+                </td>
+            </tr>
+        </table>
+
+        <h4 style="margin-top: 0">节点按天流量统计</h4>
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title">数据保存天数 *</td>
+                <td>
+                    <div class="ui input right labeled">
+                        <input type="text" name="nodeTrafficDailyStatCleanDays" v-model="config.nodeTrafficDailyStat.clean.days" style="width:6em" maxlength="6"/>
+                        <span class="ui label">天</span>
+                    </div>
+                    <p class="comment"><pro-warning-label></pro-warning-label></p>
+                </td>
+            </tr>
+        </table>
+
+        <h4 style="margin-top: 0">节点按小时流量统计</h4>
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title">数据保存天数 *</td>
+                <td>
+                    <div class="ui input right labeled">
+                        <input type="text" name="nodeTrafficHourlyStatCleanDays" v-model="config.nodeTrafficHourlyStat.clean.days" style="width:6em" maxlength="6"/>
+                        <span class="ui label">天</span>
+                    </div>
+                    <p class="comment"><pro-warning-label></pro-warning-label></p>
+                </td>
+            </tr>
+        </table>
+
+        <h4 style="margin-top: 0">缓存任务</h4>
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title">数据保存天数 *</td>
+                <td>
+                    <div class="ui input right labeled">
+                        <input type="text" name="httpCacheTaskCleanDays" v-model="config.httpCacheTask.clean.days" style="width:6em" maxlength="6"/>
+                        <span class="ui label">天</span>
+                    </div>
+                    <p class="comment"><pro-warning-label></pro-warning-label></p>
+                </td>
+            </tr>
+        </table>
+
+        <div class="margin"></div>
+    </div>
+
     <submit-btn></submit-btn>
 </form>

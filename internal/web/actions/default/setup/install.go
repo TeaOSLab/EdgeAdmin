@@ -268,7 +268,7 @@ func (this *InstallAction) RunPost(params struct {
 		currentStatusText = "正在配置访问日志保留天数"
 		var accessLogKeepDays = dbMap.GetInt("accessLogKeepDays")
 		if accessLogKeepDays > 0 {
-			var config = &systemconfigs.DatabaseConfig{}
+			var config = systemconfigs.NewDatabaseConfig()
 			config.ServerAccessLog.Clean.Days = accessLogKeepDays
 			configJSON, err := json.Marshal(config)
 			if err != nil {
@@ -325,7 +325,7 @@ func (this *InstallAction) RunPost(params struct {
 		// 设置访问日志保留天数
 		var accessLogKeepDays = dbMap.GetInt("accessLogKeepDays")
 		if accessLogKeepDays > 0 {
-			var config = &systemconfigs.DatabaseConfig{}
+			var config = systemconfigs.NewDatabaseConfig()
 			config.ServerAccessLog.Clean.Days = accessLogKeepDays
 			configJSON, err := json.Marshal(config)
 			if err != nil {
