@@ -24,7 +24,7 @@ func (this *CleanSettingAction) RunGet(params struct{}) {
 		this.ErrorPage(err)
 		return
 	}
-	var config = &systemconfigs.DatabaseConfig{}
+	var config = systemconfigs.NewDatabaseConfig()
 	if len(configResp.ValueJSON) > 0 {
 		err = json.Unmarshal(configResp.ValueJSON, config)
 		if err != nil {
@@ -32,23 +32,28 @@ func (this *CleanSettingAction) RunGet(params struct{}) {
 			return
 		}
 	}
-	this.Data["config"] = config.ServerAccessLog.Clean
+	this.Data["config"] = config
 
 	this.Show()
 }
 
 func (this *CleanSettingAction) RunPost(params struct {
-	Days int
+	ServerAccessLogCleanDays             int
+	ServerBandwidthStatCleanDays         int
+	UserBandwidthStatCleanDays           int
+	ServerDailyStatCleanDays             int
+	ServerDomainHourlyStatCleanDays      int
+	TrafficDailyStatCleanDays            int
+	TrafficHourlyStatCleanDays           int
+	NodeClusterTrafficDailyStatCleanDays int
+	NodeTrafficDailyStatCleanDays        int
+	NodeTrafficHourlyStatCleanDays       int
+	HttpCacheTaskCleanDays               int
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
 	defer this.CreateLogInfo(codes.Database_LogUpdateCleanDays)
-
-	days := params.Days
-	if days < 0 {
-		days = 0
-	}
 
 	// 读取设置
 	configResp, err := this.RPC().SysSettingRPC().ReadSysSetting(this.AdminContext(), &pb.ReadSysSettingRequest{Code: systemconfigs.SettingCodeDatabaseConfigSetting})
@@ -56,7 +61,7 @@ func (this *CleanSettingAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	var config = &systemconfigs.DatabaseConfig{}
+	var config = systemconfigs.NewDatabaseConfig()
 	if len(configResp.ValueJSON) > 0 {
 		err = json.Unmarshal(configResp.ValueJSON, config)
 		if err != nil {
@@ -64,7 +69,62 @@ func (this *CleanSettingAction) RunPost(params struct {
 			return
 		}
 	}
-	config.ServerAccessLog.Clean.Days = days
+
+	if params.ServerAccessLogCleanDays < 0 {
+		params.ServerAccessLogCleanDays = 0
+	}
+	config.ServerAccessLog.Clean.Days = params.ServerAccessLogCleanDays
+
+	if params.ServerBandwidthStatCleanDays < 0 {
+		params.ServerBandwidthStatCleanDays = 0
+	}
+	config.ServerBandwidthStat.Clean.Days = params.ServerBandwidthStatCleanDays
+
+	if params.UserBandwidthStatCleanDays < 0 {
+		params.UserBandwidthStatCleanDays = 0
+	}
+	config.UserBandwidthStat.Clean.Days = params.UserBandwidthStatCleanDays
+
+	if params.ServerDailyStatCleanDays < 0 {
+		params.ServerDailyStatCleanDays = 0
+	}
+	config.ServerDailyStat.Clean.Days = params.ServerDailyStatCleanDays
+
+	if params.ServerDomainHourlyStatCleanDays < 0 {
+		params.ServerDomainHourlyStatCleanDays = 0
+	}
+	config.ServerDomainHourlyStat.Clean.Days = params.ServerDomainHourlyStatCleanDays
+
+	if params.TrafficDailyStatCleanDays < 0 {
+		params.TrafficDailyStatCleanDays = 0
+	}
+	config.TrafficDailyStat.Clean.Days = params.TrafficDailyStatCleanDays
+
+	if params.TrafficHourlyStatCleanDays < 0 {
+		params.TrafficHourlyStatCleanDays = 0
+	}
+	config.TrafficHourlyStat.Clean.Days = params.TrafficHourlyStatCleanDays
+
+	if params.NodeClusterTrafficDailyStatCleanDays < 0 {
+		params.NodeClusterTrafficDailyStatCleanDays = 0
+	}
+	config.NodeClusterTrafficDailyStat.Clean.Days = params.NodeClusterTrafficDailyStatCleanDays
+
+	if params.NodeTrafficDailyStatCleanDays < 0 {
+		params.NodeTrafficDailyStatCleanDays = 0
+	}
+	config.NodeTrafficDailyStat.Clean.Days = params.NodeTrafficDailyStatCleanDays
+
+	if params.NodeTrafficHourlyStatCleanDays < 0 {
+		params.NodeTrafficHourlyStatCleanDays = 0
+	}
+	config.NodeTrafficHourlyStat.Clean.Days = params.NodeTrafficHourlyStatCleanDays
+
+	if params.HttpCacheTaskCleanDays < 0 {
+		params.HttpCacheTaskCleanDays = 0
+	}
+	config.HTTPCacheTask.Clean.Days = params.HttpCacheTaskCleanDays
+
 	configJSON, err := json.Marshal(config)
 	if err != nil {
 		this.ErrorPage(err)
