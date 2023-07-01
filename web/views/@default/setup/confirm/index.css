@@ -66,4 +66,7 @@
 .install-box::-webkit-scrollbar {
   width: 4px;
 }
+.label span {
+  color: #999 !important;
+}
 /*# sourceMappingURL=index.css.map */
