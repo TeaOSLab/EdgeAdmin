@@ -22,7 +22,7 @@
         <table class="ui table definition selectable">
             <tbody v-for="(endpoint, index) in endpoints">
                 <tr>
-                    <td class="title">API节点地址<span v-if="endpoints.length > 1">{{index+1}}</span> *</td>
+                    <td class="title">新的API节点地址<span v-if="endpoints.length > 1">{{index+1}}</span> *</td>
                     <td>
                         <input type="text" name="endpoints" v-model="endpoints[index]"/>
                     </td>
@@ -30,17 +30,17 @@
             </tbody>
             <tbody>
                 <tr>
-                    <td>NodeId *</td>
+                    <td>管理系统NodeId *</td>
                     <td>
-                        <input type="text" name="nodeId" v-model="nodeId" maxlength="100"/>
-                        <p class="comment">可以在安装时的系统目录下<code-label>configs/api.yaml</code-label>文件中找到。</p>
+                        <input type="text" name="nodeId" v-model="nodeId" maxlength="64"/>
+                        <p class="comment">可以在安装时的管理系统目录下<code-label><span>edge-admin/</span>configs/api.yaml</code-label>文件中找到，通常不需要修改。</p>
                     </td>
                 </tr>
                 <tr>
-                    <td>Secret *</td>
+                    <td>管理系统Secret *</td>
                     <td>
-                        <input type="text" name="secret" v-model="secret" maxlength="100"/>
-                        <p class="comment">可以在安装时的系统目录下<code-label>configs/api.yaml</code-label>文件中找到。</p>
+                        <input type="text" name="secret" v-model="secret" maxlength="64"/>
+                        <p class="comment">可以在安装时的管理系统目录下<code-label><span>edge-admin/</span>configs/api.yaml</code-label>文件中找到，通常不需要修改。</p>
                     </td>
                 </tr>
             </tbody>

@@ -10,6 +10,7 @@ import (
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/actions"
 	"net/url"
+	"strings"
 )
 
 type IndexAction struct {
@@ -80,13 +81,23 @@ func (this *IndexAction) RunPost(params struct {
 			config.RPC.Endpoints = []string{endpoint}
 			client, err := rpc.NewRPCClient(config, false)
 			if err != nil {
-				actionutils.Fail(this, err)
+				this.Fail("尝试配置RPC发生错误：" + err.Error())
 				return
 			}
-			_, err = client.APINodeRPC().FindCurrentAPINodeVersion(client.Context(0), &pb.FindCurrentAPINodeVersionRequest{})
+			resp, err := client.APINodeRPC().FindCurrentAPINodeVersion(client.Context(0), &pb.FindCurrentAPINodeVersionRequest{})
 			if err != nil {
 				_ = client.Close()
-				actionutils.Fail(this, err)
+
+				if strings.Contains(err.Error(), "wrong token role") {
+					this.Fail("你输入的NodeId和Secret为其他节点的配置信息，不是管理系统的配置信息，所以无法使用；请从管理系统的配置目录下找到管理系统的配置信息并填入。如果你不知道如何查找，请刷新当前页面，使用默认填写的NodeId和Secret提交。")
+				} else {
+					this.Fail("无法连接你填入的API节点地址，请检查协议、IP和端口是否正确，错误信息：" + err.Error())
+				}
+				return
+			}
+
+			if resp != nil && resp.Role != "admin" {
+				this.Fail("你输入的NodeId和Secret为API节点的配置信息，不是管理系统的配置信息，所以无法使用；请从管理系统的配置目录下找到管理系统的配置信息并填入")
 				return
 			}
 			_ = client.Close()

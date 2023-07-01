@@ -4,7 +4,7 @@
 	width: @width;
 	position: fixed;
 	left: 50%;
-	margin-left: -@width/2;
+	margin-left: -(@width/2);
 	top: 1em;
 	bottom: 1em;
 	overflow-y: auto;
@@ -48,7 +48,7 @@
 		left: 50%;
 		width: @width;
 		padding-right: 1em;
-		margin-left: -@width/2;
+		margin-left: -(@width/2);
 		z-index: 1;
 	}
 
@@ -59,7 +59,7 @@
 	.button-group {
 		position: fixed;
 		left: 50%;
-		margin-left: -@width/2;
+		margin-left: -(@width/2);
 		z-index: 1;
 		width: @width;
 		bottom: 1em;
@@ -82,4 +82,10 @@
 
 .install-box::-webkit-scrollbar {
 	width: 4px;
+}
+
+.label {
+	span {
+		color: #999!important;
+	}
 }
