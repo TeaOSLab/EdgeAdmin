@@ -65,7 +65,7 @@ Tea.context(function () {
     }
 
     this.deleteBatch = function () {
-        var taskIds = []
+        let taskIds = []
         this.clusters.forEach(function (cluster) {
             cluster.tasks.forEach(function (task) {
                 if (task.isChecked) {
@@ -85,4 +85,14 @@ Tea.context(function () {
                 })
         })
     }
+
+	this.deleteAllTasks = function () {
+		let that = this
+		teaweb.confirm("确定要清空所有的任务吗？", function () {
+			that.$post(".deleteAll")
+				.success(function () {
+					teaweb.reload()
+				})
+		})
+	}
 })

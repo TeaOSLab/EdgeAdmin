@@ -27,4 +27,14 @@ Tea.context(function () {
                 })
         })
     }
+
+	this.deleteAllTasks = function () {
+		let that = this
+		teaweb.confirm("确定要清空所有的任务吗？", function () {
+			that.$post(".deleteAll")
+				.success(function () {
+					teaweb.reload()
+				})
+		})
+	}
 })
