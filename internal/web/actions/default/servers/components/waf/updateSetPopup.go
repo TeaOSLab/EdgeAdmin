@@ -56,7 +56,7 @@ func (this *UpdateSetPopupAction) RunGet(params struct {
 		},
 	}
 
-	actionMaps := []maps.Map{}
+	var actionMaps = []maps.Map{}
 	for _, action := range firewallconfigs.AllActions {
 		actionMaps = append(actionMaps, maps.Map{
 			"name":        action.Name,
@@ -119,7 +119,7 @@ func (this *UpdateSetPopupAction) RunPost(params struct {
 	if len(params.RulesJSON) == 0 {
 		this.Fail("请添加至少一个规则")
 	}
-	rules := []*firewallconfigs.HTTPFirewallRule{}
+	var rules = []*firewallconfigs.HTTPFirewallRule{}
 	err = json.Unmarshal(params.RulesJSON, &rules)
 	if err != nil {
 		this.ErrorPage(err)
