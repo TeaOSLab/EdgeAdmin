@@ -125,6 +125,7 @@ func (this *IndexAction) RunPost(params struct {
 	config.NodeId = params.NodeId
 	config.Secret = params.Secret
 	config.RPC.Endpoints = endpoints
+	config.RPC.DisableUpdate = true
 	err = config.WriteFile(Tea.ConfigFile("api.yaml"))
 	if err != nil {
 		this.Fail("配置保存失败：" + err.Error())
