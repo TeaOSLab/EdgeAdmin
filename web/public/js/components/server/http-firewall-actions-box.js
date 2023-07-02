@@ -1,6 +1,6 @@
 // 动作选择
 Vue.component("http-firewall-actions-box", {
-	props: ["v-actions", "v-firewall-policy", "v-action-configs"],
+	props: ["v-actions", "v-firewall-policy", "v-action-configs", "v-group-type"],
 	mounted: function () {
 		let that = this
 		Tea.action("/servers/iplists/levelOptions")
@@ -35,6 +35,13 @@ Vue.component("http-firewall-actions-box", {
 		}
 		if (this.vFirewallPolicy.inbound.groups == null) {
 			this.vFirewallPolicy.inbound.groups = []
+		}
+
+		if (this.vFirewallPolicy.outbound == null) {
+			this.vFirewallPolicy.outbound = {}
+		}
+		if (this.vFirewallPolicy.outbound.groups == null) {
+			this.vFirewallPolicy.outbound.groups = []
 		}
 
 		let id = 0
@@ -202,7 +209,16 @@ Vue.component("http-firewall-actions-box", {
 			})
 			this.goGroup = group
 			if (group == null) {
-				this.goGroupName = ""
+				// search outbound groups
+				group = this.vFirewallPolicy.outbound.groups.$find(function (k, v) {
+					return v.id == groupId
+				})
+				if (group == null) {
+					this.goGroupName = ""
+				} else {
+					this.goGroup = group
+					this.goGroupName = group.name
+				}
 			} else {
 				this.goGroupName = group.name
 			}
@@ -677,8 +693,8 @@ Vue.component("http-firewall-actions-box", {
 			<!-- 范围 -->
 			<span v-if="config.options.scope != null && config.options.scope.length > 0" class="small grey">
 				&nbsp; 
-				<span v-if="config.options.scope == 'global'">[所有服务]</span>
-				<span v-if="config.options.scope == 'service'">[当前服务]</span>
+				<span v-if="config.options.scope == 'global'">[所有网站]</span>
+				<span v-if="config.options.scope == 'service'">[当前网站]</span>
 			</span>
 			
 			<!-- 操作按钮 -->
@@ -703,8 +719,8 @@ Vue.component("http-firewall-actions-box", {
 				<td>封禁范围</td>
 				<td>
 					<select class="ui dropdown auto-width" v-model="blockScope">
-						<option value="service">当前服务</option>
-						<option value="global">所有服务</option>
+						<option value="service">当前网站</option>
+						<option value="global">所有网站</option>
 					</select>
 					<p class="comment" v-if="blockScope == 'service'">只封禁用户对当前网站的访问，其他服务不受影响。</p>
 					<p class="comment" v-if="blockScope =='global'">封禁用户对所有网站的访问。</p>
@@ -897,7 +913,8 @@ Vue.component("http-firewall-actions-box", {
 				<td>
 					<select class="ui dropdown auto-width" v-model="goGroupId">
 						<option value="0">[选择分组]</option>
-						<option v-for="group in vFirewallPolicy.inbound.groups" :value="group.id">{{group.name}}</option>
+						<option v-if="vFirewallPolicy.inbound != null && vFirewallPolicy.inbound.groups != null" v-for="group in vFirewallPolicy.inbound.groups" :value="group.id">入站：{{group.name}}</option>
+						<option v-if="vGroupType == 'outbound' && vFirewallPolicy.outbound != null && vFirewallPolicy.outbound.groups != null" v-for="group in vFirewallPolicy.outbound.groups" :value="group.id">出站：{{group.name}}</option>
 					</select>
 				</td>
 			</tr>
@@ -908,7 +925,8 @@ Vue.component("http-firewall-actions-box", {
 				<td>
 					<select class="ui dropdown auto-width" v-model="goGroupId">
 						<option value="0">[选择分组]</option>
-						<option v-for="group in vFirewallPolicy.inbound.groups" :value="group.id">{{group.name}}</option>
+						<option v-if="vFirewallPolicy.inbound != null && vFirewallPolicy.inbound.groups != null" v-for="group in vFirewallPolicy.inbound.groups" :value="group.id">入站：{{group.name}}</option>
+						<option v-if="vGroupType == 'outbound' && vFirewallPolicy.outbound != null && vFirewallPolicy.outbound.groups != null" v-for="group in vFirewallPolicy.outbound.groups" :value="group.id">出站：{{group.name}}</option>
 					</select>
 				</td>
 			</tr>

@@ -17,7 +17,7 @@
 				<http-firewall-rules-box :v-rules="rules" :v-type="type"></http-firewall-rules-box>
 			</td>
 		</tr>
-		<tr>
+		<tr v-show="rules.length > 1">
 			<td>规则之间的关系 *</td>
 			<td>
 				<select class="ui dropdown" name="connector" style="width:10em" @change="changeConnector()" v-model="selectedConnector">
@@ -29,7 +29,7 @@
         <tr>
             <td>执行动作 *</td>
             <td>
-                <http-firewall-actions-box :v-actions="actions" :v-firewall-policy="firewallPolicy"></http-firewall-actions-box>
+                <http-firewall-actions-box :v-actions="actions" :v-firewall-policy="firewallPolicy"  :v-group-type="type"></http-firewall-actions-box>
             </td>
         </tr>
         <tr>
