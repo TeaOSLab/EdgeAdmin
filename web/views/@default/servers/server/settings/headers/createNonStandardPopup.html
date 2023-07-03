@@ -1,11 +1,11 @@
 {$layout "layout_popup"}
 
-<h3>添加非标Header</h3>
+<h3>添加非标报头</h3>
 <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 	<input type="hidden" name="headerPolicyId" :value="headerPolicyId"/>
 	<table class="ui table definition selectable">
 		<tr>
-			<td class="title">名称<em>（Name）</em></td>
+			<td class="title">报头名称<em>（Name）</em></td>
 			<td>
 				<input type="text" name="name" maxlength="100" ref="focus" v-model="headerName"/>
                 <p class="comment">比如<code-label>hello_world</code-label>。</p>

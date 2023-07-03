@@ -1,14 +1,14 @@
 {$layout "layout_popup"}
-<h3>设置Header</h3>
+<h3>设置报头</h3>
 
 <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 	<input type="hidden" name="headerPolicyId" :value="headerPolicyId"/>
 	<table class="ui table definition selectable">
 		<tr>
-			<td class="title">名称<em>（Name）</em> *</td>
+			<td class="title">报头名称<em>（Name）</em> *</td>
 			<td>
 				<input type="text" name="name" value="" maxlength="200" placeholder="类似于Server、Content-Type之类" ref="focus" v-model="headerName" autocomplete="off"/>
-                <p class="comment"><http-header-assistant :v-type="type" :v-value="headerName" @select="selectHeader"></http-header-assistant>请注意名称的大小写，如无特殊需求，Header名称的格式通常为<code-label>Xxx</code-label>或者<code-label>Xxx-Yyy</code-label>。</p>
+                <p class="comment"><http-header-assistant :v-type="type" :v-value="headerName" @select="selectHeader"></http-header-assistant>请注意报头名称的大小写，如无特殊需求，报头名称的格式通常为<code-label>Xxx</code-label>或者<code-label>Xxx-Yyy</code-label>。</p>
 			</td>
 		</tr>
 		<tr>
@@ -41,21 +41,21 @@
                 <td>只附加不替换</td>
                 <td>
                     <checkbox name="shouldAppend"></checkbox>
-                    <p class="comment">选中后表示如果已经存在同名的Header，则只会附加在原有的Header之后，不会覆盖。</p>
+                    <p class="comment">选中后表示如果已经存在同名的报头，则只会附加在原有的报头之后，不会覆盖。</p>
                 </td>
             </tr>
             <tr v-show="type == 'response'">
                 <td>不在跳转时启用</td>
                 <td>
                     <checkbox name="disableRedirect"></checkbox>
-                    <p class="comment">选中后表示在30X跳转时不启用当前Header。</p>
+                    <p class="comment">选中后表示在30X跳转时不启用当前报头。</p>
                 </td>
             </tr>
             <tr>
                 <td class="color-border">启用内容替换</td>
                 <td>
                     <checkbox name="shouldReplace" v-model="shouldReplace"></checkbox>
-                    <p class="comment">可以替换原有Header中的内容。</p>
+                    <p class="comment">可以替换原有报头中的内容。</p>
                 </td>
             </tr>
             <tr v-show="shouldReplace">
