@@ -66,7 +66,7 @@ Vue.component("http-cors-header-config-box", {
 				<td class="title">启用CORS自适应跨域</td>
 				<td>
 					<checkbox v-model="config.isOn"></checkbox>
-					<p class="comment">启用后，自动在响应Header中增加对应的<code-label>Access-Control-*</code-label>相关内容。</p>
+					<p class="comment">启用后，自动在响应报头中增加对应的<code-label>Access-Control-*</code-label>相关内容。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -94,10 +94,10 @@ Vue.component("http-cors-header-config-box", {
 				</td>
 			</tr>
 			<tr>
-				<td>允许服务器暴露的Header</td>
+				<td>允许服务器暴露的报头</td>
 				<td>
 					<values-box :v-values="config.exposeHeaders"></values-box>
-					<p class="comment"><code-label>Access-Control-Expose-Headers</code-label>值设置。允许服务器暴露的Header，请注意Header的大小写。</p>
+					<p class="comment"><code-label>Access-Control-Expose-Headers</code-label>值设置。允许服务器暴露的报头，请注意报头的大小写。</p>
 				</td>
 			</tr>
 			<tr>
