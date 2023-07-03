@@ -200,7 +200,7 @@ Vue.component("http-header-policy-box", {
 				<tbody v-for="header in requestSettingHeaders">
 					<tr>
 						<td class="five wide">
-							{{header.name}}
+							<a href="" @click.prevent="updateSettingPopup(vRequestHeaderPolicy.id, header.id)">{{header.name}} <i class="icon expand small"></i></a>
 							<div>
 								<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
 								<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
@@ -274,7 +274,7 @@ Vue.component("http-header-policy-box", {
 				<tbody v-for="header in responseSettingHeaders">
 					<tr>
 						<td class="five wide">
-							{{header.name}}
+							<a href="" @click.prevent="updateSettingPopup(vResponseHeaderPolicy.id, header.id)">{{header.name}} <i class="icon expand small"></i></a>
 							<div>
 								<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
 								<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
