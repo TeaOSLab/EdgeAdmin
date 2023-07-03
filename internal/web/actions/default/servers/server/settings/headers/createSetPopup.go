@@ -29,6 +29,8 @@ func (this *CreateSetPopupAction) RunGet(params struct {
 }
 
 func (this *CreateSetPopupAction) RunPost(params struct {
+	Type string
+
 	HeaderPolicyId int64
 	Name           string
 	Value          string
@@ -44,7 +46,11 @@ func (this *CreateSetPopupAction) RunPost(params struct {
 	Must *actions.Must
 }) {
 	// 日志
-	defer this.CreateLogInfo(codes.ServerHTTPHeader_LogCreateSettingHeader, params.HeaderPolicyId, params.Name, params.Value)
+	if params.Type == "request" {
+		defer this.CreateLogInfo(codes.ServerHTTPHeader_LogCreateSettingRequestHeader, params.HeaderPolicyId, params.Name, params.Value)
+	} else {
+		defer this.CreateLogInfo(codes.ServerHTTPHeader_LogCreateSettingResponseHeader, params.HeaderPolicyId, params.Name, params.Value)
+	}
 
 	params.Name = strings.TrimSuffix(params.Name, ":")
 

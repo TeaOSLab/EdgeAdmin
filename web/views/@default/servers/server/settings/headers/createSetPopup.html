@@ -1,8 +1,10 @@
 {$layout "layout_popup"}
-<h3>设置报头</h3>
+<h3 v-if="type == 'request'">添加自定义请求报头</h3>
+<h3 v-if="type == 'response'">添加自定义响应报头</h3>
 
 <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 	<input type="hidden" name="headerPolicyId" :value="headerPolicyId"/>
+    <input type="hidden" name="type" :value="type"/>
 	<table class="ui table definition selectable">
 		<tr>
 			<td class="title">报头名称<em>（Name）</em> *</td>
