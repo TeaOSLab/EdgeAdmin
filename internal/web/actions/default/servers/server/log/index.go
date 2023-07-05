@@ -1,7 +1,6 @@
 package log
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/lists"
@@ -10,7 +9,7 @@ import (
 )
 
 type IndexAction struct {
-	actionutils.ParentAction
+	BaseAction
 }
 
 func (this *IndexAction) Init() {
@@ -35,6 +34,11 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["path"] = this.Request.URL.Path
 	this.Data["clusterId"] = params.ClusterId
 	this.Data["nodeId"] = params.NodeId
+
+	// 检查集群全局设置
+	if !this.initClusterAccessLogConfig(params.ServerId) {
+		return
+	}
 
 	// 记录最近使用
 	_, err := this.RPC().LatestItemRPC().IncreaseLatestItem(this.AdminContext(), &pb.IncreaseLatestItemRequest{
@@ -83,7 +87,7 @@ func (this *IndexAction) RunPost(params struct {
 
 	var ipList = []string{}
 	var wafMaps = []maps.Map{}
-	
+
 	var accessLogs = accessLogsResp.HttpAccessLogs
 	if len(accessLogs) == 0 {
 		accessLogs = []*pb.HTTPAccessLog{}

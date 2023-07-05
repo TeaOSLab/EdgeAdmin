@@ -1,7 +1,6 @@
 package log
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/maps"
@@ -9,7 +8,7 @@ import (
 )
 
 type TodayAction struct {
-	actionutils.ParentAction
+	BaseAction
 }
 
 func (this *TodayAction) Init() {
@@ -49,6 +48,11 @@ func (this *TodayAction) RunGet(params struct {
 	this.Data["nodeId"] = params.NodeId
 	this.Data["partition"] = params.Partition
 	this.Data["day"] = timeutil.Format("Ymd")
+
+	// 检查集群全局设置
+	if !this.initClusterAccessLogConfig(params.ServerId) {
+		return
+	}
 
 	resp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{
 		Partition:         params.Partition,
