@@ -99,7 +99,7 @@ func (this *CreateAction) RunPost(params struct {
 	// TODO 检查DnsDomainId的有效性
 
 	// 全局服务配置
-	var globalServerConfig = serverconfigs.DefaultGlobalServerConfig()
+	var globalServerConfig = serverconfigs.NewGlobalServerConfig()
 	globalServerConfig.HTTPAll.MatchDomainStrictly = params.MatchDomainStrictly
 	globalServerConfigJSON, err := json.Marshal(globalServerConfig)
 	if err != nil {

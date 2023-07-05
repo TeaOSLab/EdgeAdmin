@@ -31,7 +31,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	var configJSON = configResp.GlobalServerConfigJSON
-	var config = serverconfigs.DefaultGlobalServerConfig()
+	var config = serverconfigs.NewGlobalServerConfig()
 	if len(configJSON) > 0 {
 		err = json.Unmarshal(configJSON, config)
 		if err != nil {
@@ -86,6 +86,7 @@ func (this *IndexAction) RunPost(params struct {
 	HttpAllSupportsLowVersionHTTP  bool
 	HttpAllMatchCertFromAllServers bool
 
+	HttpAccessLogIsOn                     bool
 	HttpAccessLogEnableRequestHeaders     bool
 	HttpAccessLogEnableResponseHeaders    bool
 	HttpAccessLogCommonRequestHeadersOnly bool
@@ -110,7 +111,7 @@ func (this *IndexAction) RunPost(params struct {
 	}
 
 	var configJSON = configResp.GlobalServerConfigJSON
-	var config = serverconfigs.DefaultGlobalServerConfig()
+	var config = serverconfigs.NewGlobalServerConfig()
 	if len(configJSON) > 0 {
 		err = json.Unmarshal(configJSON, config)
 		if err != nil {
@@ -150,6 +151,7 @@ func (this *IndexAction) RunPost(params struct {
 	config.HTTPAll.ForceLnRequest = params.HttpAllForceLnRequest
 
 	// 访问日志
+	config.HTTPAccessLog.IsOn = params.HttpAccessLogIsOn
 	config.HTTPAccessLog.EnableRequestHeaders = params.HttpAccessLogEnableRequestHeaders
 	config.HTTPAccessLog.EnableResponseHeaders = params.HttpAccessLogEnableResponseHeaders
 	config.HTTPAccessLog.CommonRequestHeadersOnly = params.HttpAccessLogCommonRequestHeadersOnly
