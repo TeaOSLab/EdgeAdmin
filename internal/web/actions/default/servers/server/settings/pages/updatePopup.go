@@ -70,6 +70,11 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		params.Must.
 			Field("body", params.Body).
 			Require("请输入要显示的HTML内容")
+
+		if len(params.Body) > 32*1024 {
+			this.FailField("body", "自定义页面内容不能超过32K")
+			return
+		}
 	}
 
 	_, err := this.RPC().HTTPPageRPC().UpdateHTTPPage(this.AdminContext(), &pb.UpdateHTTPPageRequest{
@@ -92,12 +97,18 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		return
 	}
 
-	pageConfig := &serverconfigs.HTTPPageConfig{}
+	var pageConfig = &serverconfigs.HTTPPageConfig{}
 	err = json.Unmarshal(configResp.PageJSON, pageConfig)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
+	err = pageConfig.Init()
+	if err != nil {
+		this.Fail("配置校验失败：" + err.Error())
+		return
+	}
+
 	this.Data["page"] = pageConfig
 
 	this.Success()

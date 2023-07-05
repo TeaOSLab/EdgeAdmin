@@ -50,6 +50,11 @@ func (this *CreatePopupAction) RunPost(params struct {
 		params.Must.
 			Field("body", params.Body).
 			Require("请输入要显示的HTML内容")
+
+		if len(params.Body) > 32*1024 {
+			this.FailField("body", "自定义页面内容不能超过32K")
+			return
+		}
 	}
 
 	createResp, err := this.RPC().HTTPPageRPC().CreateHTTPPage(this.AdminContext(), &pb.CreateHTTPPageRequest{
@@ -63,7 +68,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	pageId := createResp.HttpPageId
+	var pageId = createResp.HttpPageId
 
 	configResp, err := this.RPC().HTTPPageRPC().FindEnabledHTTPPageConfig(this.AdminContext(), &pb.FindEnabledHTTPPageConfigRequest{HttpPageId: pageId})
 	if err != nil {
@@ -71,12 +76,18 @@ func (this *CreatePopupAction) RunPost(params struct {
 		return
 	}
 
-	pageConfig := &serverconfigs.HTTPPageConfig{}
+	var pageConfig = &serverconfigs.HTTPPageConfig{}
 	err = json.Unmarshal(configResp.PageJSON, pageConfig)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
+	err = pageConfig.Init()
+	if err != nil {
+		this.Fail("配置校验失败：" + err.Error())
+		return
+	}
+
 	this.Data["page"] = pageConfig
 
 	// 日志
