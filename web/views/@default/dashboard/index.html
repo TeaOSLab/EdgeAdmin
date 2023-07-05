@@ -46,7 +46,7 @@
 <!-- 没有磁盘空间提醒 -->
 <div class="ui icon message error" v-if="!isLoading && dashboard.diskUsageWarning != null && dashboard.diskUsageWarning.length > 0">
     <i class="icon warning circle"></i>
-    {{dashboard.diskUsageWarning}}
+    <span v-html="dashboard.diskUsageWarning" style="line-height: 1.8"></span>
     <a href="" title="关闭" @click.prevent="closeMessage"><i class="ui icon remove small"></i></a>
 </div>
 

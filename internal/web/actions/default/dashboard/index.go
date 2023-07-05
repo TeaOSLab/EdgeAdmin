@@ -3,17 +3,16 @@
 package dashboard
 
 import (
-	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dashboard/dashboardutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
+	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/maps"
-	"github.com/iwind/TeaGo/types"
 	"regexp"
 )
 
@@ -70,7 +69,7 @@ func (this *IndexAction) RunPost(params struct{}) {
 	var diskUsageWarning = ""
 	diskPath, diskUsage, diskUsagePercent, shouldWarning := dashboardutils.CheckDiskPartitions(90)
 	if shouldWarning {
-		diskUsageWarning = "当前服务器磁盘空间不足，请立即扩充容量，文件路径：" + diskPath + "，已使用：" + types.String(diskUsage/1024/1024/1024) + "G，已使用比例：" + fmt.Sprintf("%.2f%%", diskUsagePercent) + "，仅剩余空间：" + fmt.Sprintf("%.2f%%", 100-diskUsagePercent) + "。"
+		diskUsageWarning = codes.AdminDashboard_DiskUsageWarning.For(this.LangCode(), diskPath, diskUsage/(1<<30), diskUsagePercent, 100-diskUsagePercent)
 	}
 
 	this.Data["dashboard"] = maps.Map{
