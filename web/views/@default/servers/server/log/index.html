@@ -12,6 +12,12 @@
 
 {$template "/left_menu_with_menu"}
 <div class="right-box with-menu">
+    <!-- 集群设置提醒 -->
+    <div v-if="!clusterAccessLogIsOn">
+        <div class="margin"></div>
+        <warning-message>当前集群已经设置不允许网站记录访问日志，可以在"集群设置" -- "网站设置"中修改此选项。</warning-message>
+    </div>
+
     <form method="get" class="ui form small" :action="path" autocomplete="off">
         <input type="hidden" name="serverId" :value="serverId"/>
         <http-access-log-search-box :v-ip="ip" :v-domain="domain" :v-keyword="keyword"  :v-cluster-id="clusterId" :v-node-id="nodeId"></http-access-log-search-box>

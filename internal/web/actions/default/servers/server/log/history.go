@@ -1,7 +1,6 @@
 package log
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/maps"
@@ -11,7 +10,7 @@ import (
 )
 
 type HistoryAction struct {
-	actionutils.ParentAction
+	BaseAction
 }
 
 func (this *HistoryAction) Init() {
@@ -55,6 +54,11 @@ func (this *HistoryAction) RunGet(params struct {
 	this.Data["clusterId"] = params.ClusterId
 	this.Data["nodeId"] = params.NodeId
 	this.Data["partition"] = params.Partition
+
+	// 检查集群全局设置
+	if !this.initClusterAccessLogConfig(params.ServerId) {
+		return
+	}
 
 	var day = params.Day
 	var ipList = []string{}
