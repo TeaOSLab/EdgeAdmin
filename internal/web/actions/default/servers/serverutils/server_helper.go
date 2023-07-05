@@ -303,6 +303,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":       serverConfig.Web != nil && serverConfig.Web.Cache != nil && serverConfig.Web.Cache.IsOn,
 			"configCode": serverconfigs.ConfigCodeCache,
 		})
+
 		menuItems = append(menuItems, maps.Map{
 			"name":       this.Lang(actionPtr, codes.Server_MenuSettingAuth),
 			"url":        "/servers/server/settings/access?serverId=" + serverIdString,
@@ -310,6 +311,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":       serverConfig.Web != nil && serverConfig.Web.Auth != nil && serverConfig.Web.Auth.IsOn,
 			"configCode": serverconfigs.ConfigCodeAuth,
 		})
+
 		menuItems = append(menuItems, maps.Map{
 			"name":       this.Lang(actionPtr, codes.Server_MenuSettingReferers),
 			"url":        "/servers/server/settings/referers?serverId=" + serverIdString,
@@ -324,13 +326,7 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":       serverConfig.Web != nil && serverConfig.Web.UserAgent != nil && serverConfig.Web.UserAgent.IsOn,
 			"configCode": serverconfigs.ConfigCodeUserAgent,
 		})
-		menuItems = append(menuItems, maps.Map{
-			"name":       this.Lang(actionPtr, codes.Server_MenuSettingCharset),
-			"url":        "/servers/server/settings/charset?serverId=" + serverIdString,
-			"isActive":   secondMenuItem == "charset",
-			"isOn":       serverConfig.Web != nil && serverConfig.Web.Charset != nil && serverConfig.Web.Charset.IsOn,
-			"configCode": serverconfigs.ConfigCodeCharset,
-		})
+
 		menuItems = append(menuItems, maps.Map{
 			"name":       this.Lang(actionPtr, codes.Server_MenuSettingAccessLog),
 			"url":        "/servers/server/settings/accessLog?serverId=" + serverIdString,
@@ -338,13 +334,8 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":       serverConfig.Web != nil && serverConfig.Web.AccessLogRef != nil && serverConfig.Web.AccessLogRef.IsOn,
 			"configCode": serverconfigs.ConfigCodeAccessLog,
 		})
-		menuItems = append(menuItems, maps.Map{
-			"name":       this.Lang(actionPtr, codes.Server_MenuSettingStat),
-			"url":        "/servers/server/settings/stat?serverId=" + serverIdString,
-			"isActive":   secondMenuItem == "stat",
-			"isOn":       serverConfig.Web != nil && serverConfig.Web.StatRef != nil && serverConfig.Web.StatRef.IsOn,
-			"configCode": serverconfigs.ConfigCodeStat,
-		})
+
+
 		menuItems = append(menuItems, maps.Map{
 			"name":       this.Lang(actionPtr, codes.Server_MenuSettingCompress),
 			"url":        "/servers/server/settings/compression?serverId=" + serverIdString,
@@ -380,6 +371,20 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"configCode": serverconfigs.ConfigCodeWebp,
 		})
 
+		menuItems = append(menuItems, maps.Map{
+			"name":       this.Lang(actionPtr, codes.Server_MenuSettingStat),
+			"url":        "/servers/server/settings/stat?serverId=" + serverIdString,
+			"isActive":   secondMenuItem == "stat",
+			"isOn":       serverConfig.Web != nil && serverConfig.Web.StatRef != nil && serverConfig.Web.StatRef.IsOn,
+			"configCode": serverconfigs.ConfigCodeStat,
+		})
+		menuItems = append(menuItems, maps.Map{
+			"name":       this.Lang(actionPtr, codes.Server_MenuSettingCharset),
+			"url":        "/servers/server/settings/charset?serverId=" + serverIdString,
+			"isActive":   secondMenuItem == "charset",
+			"isOn":       serverConfig.Web != nil && serverConfig.Web.Charset != nil && serverConfig.Web.Charset.IsOn,
+			"configCode": serverconfigs.ConfigCodeCharset,
+		})
 		menuItems = append(menuItems, maps.Map{
 			"name":       this.Lang(actionPtr, codes.Server_MenuSettingRoot),
 			"url":        "/servers/server/settings/web?serverId=" + serverIdString,

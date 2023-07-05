@@ -119,22 +119,10 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"isOn":     locationConfig.Web != nil && locationConfig.Web.UserAgent != nil && locationConfig.Web.UserAgent.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
-		"name":     this.Lang(actionPtr, codes.Server_MenuSettingCharset),
-		"url":      "/servers/server/settings/locations/charset?serverId=" + serverIdString + "&locationId=" + locationIdString,
-		"isActive": secondMenuItem == "charset",
-		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.Charset != nil && locationConfig.Web.Charset.IsPrior,
-	})
-	menuItems = append(menuItems, maps.Map{
 		"name":     this.Lang(actionPtr, codes.Server_MenuSettingAccessLog),
 		"url":      "/servers/server/settings/locations/accessLog?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "accessLog",
 		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.AccessLogRef != nil && locationConfig.Web.AccessLogRef.IsPrior,
-	})
-	menuItems = append(menuItems, maps.Map{
-		"name":     this.Lang(actionPtr, codes.Server_MenuSettingStat),
-		"url":      "/servers/server/settings/locations/stat?serverId=" + serverIdString + "&locationId=" + locationIdString,
-		"isActive": secondMenuItem == "stat",
-		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.StatRef != nil && locationConfig.Web.StatRef.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     this.Lang(actionPtr, codes.Server_MenuSettingCompress),
@@ -165,6 +153,18 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"url":      "/servers/server/settings/locations/webp?serverId=" + serverIdString + "&locationId=" + locationIdString,
 		"isActive": secondMenuItem == "webp",
 		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.WebP != nil && locationConfig.Web.WebP.IsPrior,
+	})
+	menuItems = append(menuItems, maps.Map{
+		"name":     this.Lang(actionPtr, codes.Server_MenuSettingStat),
+		"url":      "/servers/server/settings/locations/stat?serverId=" + serverIdString + "&locationId=" + locationIdString,
+		"isActive": secondMenuItem == "stat",
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.StatRef != nil && locationConfig.Web.StatRef.IsPrior,
+	})
+	menuItems = append(menuItems, maps.Map{
+		"name":     this.Lang(actionPtr, codes.Server_MenuSettingCharset),
+		"url":      "/servers/server/settings/locations/charset?serverId=" + serverIdString + "&locationId=" + locationIdString,
+		"isActive": secondMenuItem == "charset",
+		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.Charset != nil && locationConfig.Web.Charset.IsPrior,
 	})
 	menuItems = append(menuItems, maps.Map{
 		"name":     this.Lang(actionPtr, codes.Server_MenuSettingRoot),
