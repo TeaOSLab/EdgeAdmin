@@ -335,9 +335,8 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"configCode": serverconfigs.ConfigCodeAccessLog,
 		})
 
-
 		menuItems = append(menuItems, maps.Map{
-			"name":       this.Lang(actionPtr, codes.Server_MenuSettingCompress),
+			"name":       this.Lang(actionPtr, codes.Server_MenuSettingCompression),
 			"url":        "/servers/server/settings/compression?serverId=" + serverIdString,
 			"isActive":   secondMenuItem == "compression",
 			"isOn":       serverConfig.Web != nil && serverConfig.Web.Compression != nil && serverConfig.Web.Compression.IsOn,
