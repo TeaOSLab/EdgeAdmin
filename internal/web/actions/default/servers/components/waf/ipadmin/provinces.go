@@ -7,12 +7,11 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/regionconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/maps"
 )
-
-const ChinaCountryId = 1
 
 type ProvincesAction struct {
 	actionutils.ParentAction
@@ -43,7 +42,7 @@ func (this *ProvincesAction) RunGet(params struct {
 	}
 
 	provincesResp, err := this.RPC().RegionProvinceRPC().FindAllRegionProvincesWithRegionCountryId(this.AdminContext(), &pb.FindAllRegionProvincesWithRegionCountryIdRequest{
-		RegionCountryId: int64(ChinaCountryId),
+		RegionCountryId: regionconfigs.RegionChinaId,
 	})
 	if err != nil {
 		this.ErrorPage(err)

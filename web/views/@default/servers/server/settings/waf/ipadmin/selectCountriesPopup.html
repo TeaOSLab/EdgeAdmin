@@ -1,0 +1,59 @@
+{$layout "layout_popup"}
+
+<h3 v-show="type == 'allow'">选择允许的区域</h3>
+<h3 v-show="type == 'deny'">选择封禁的区域</h3>
+<form class="ui form">
+    <div class="ui menu tabular tiny region-letter-group attached">
+        <a href="" v-for="group in letterGroups" class="item" :class="{active: group.code == selectedGroup, disabled: group.countMatched == 0}" @click.prevent="selectGroup(group)">{{group.code}}<span v-if="group.count > 0" class="count">&nbsp;({{group.count}})</span></a>
+        <div class="item right">
+            <div class="ui checkbox" @click.prevent="checkAll">
+                <input type="checkbox" v-model="isCheckingAll"/>
+                <label>全选</label>
+            </div>
+        </div>
+    </div>
+    <div class="country-groups ui segment attached">
+        <div v-for="group in letterGroups">
+            <div v-if="group.code == commonGroupName && group.code == selectedGroup">
+                <div class="country-group">
+                    <div class="country-list">
+                        <div class="item" v-for="country in letterCountries[commonGroupName]">
+                            <div class="ui checkbox" @click.prevent="selectCountry(country)">
+                                <input type="checkbox" v-model="country.isChecked"/>
+                                <label><span :class="{blue: country.isMatched}">{{country.name}}</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+            <div v-else>
+                <div v-for="letter in group.code" v-if="letterCountries[letter] != null && group.code == selectedGroup" class="country-group">
+                    <h4>{{letter}}</h4>
+                    <div class="country-list">
+                        <div class="item" v-for="country in letterCountries[letter]">
+                            <div class="ui checkbox" @click.prevent="selectCountry(country)">
+                                <input type="checkbox" v-model="country.isChecked"/>
+                                <label><span :class="{blue: country.isMatched}">{{country.name}}</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="margin"></div>
+    <div class="ui menu text basic">
+        <div class="item">
+            <button class="ui button primary" @click.prevent="submit">确定</button>
+        </div>
+        <div class="item right" v-show="!searchBoxVisible">
+            <a href="" @click.prevent="showSearchBox"><i class="icon search"></i></a>
+        </div>
+        <div class="item right" v-show="searchBoxVisible">
+            <search-box placeholder="关键词" ref="searchBox" @change="changeKeyword"></search-box>
+        </div>
+    </div>
+</form>

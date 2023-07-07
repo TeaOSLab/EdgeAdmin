@@ -42,9 +42,11 @@ func (this *CountriesAction) RunGet(params struct {
 		this.NotFound("firewallPolicy", params.FirewallPolicyId)
 		return
 	}
-	var selectedCountryIds = []int64{}
+	var deniedCountryIds = []int64{}
+	var allowedCountryIds = []int64{}
 	if policyConfig.Inbound != nil && policyConfig.Inbound.Region != nil {
-		selectedCountryIds = policyConfig.Inbound.Region.DenyCountryIds
+		deniedCountryIds = policyConfig.Inbound.Region.DenyCountryIds
+		allowedCountryIds = policyConfig.Inbound.Region.AllowCountryIds
 	}
 
 	countriesResp, err := this.RPC().RegionCountryRPC().FindAllRegionCountries(this.AdminContext(), &pb.FindAllRegionCountriesRequest{})
@@ -52,16 +54,23 @@ func (this *CountriesAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	var countryMaps = []maps.Map{}
+	var deniesCountryMaps = []maps.Map{}
+	var allowedCountryMaps = []maps.Map{}
 	for _, country := range countriesResp.RegionCountries {
-		countryMaps = append(countryMaps, maps.Map{
-			"id":        country.Id,
-			"name":      country.DisplayName,
-			"letter":    strings.ToUpper(string(country.Pinyin[0][0])),
-			"isChecked": lists.ContainsInt64(selectedCountryIds, country.Id),
-		})
+		var countryMap = maps.Map{
+			"id":     country.Id,
+			"name":   country.DisplayName,
+			"letter": strings.ToUpper(string(country.Pinyin[0][0])),
+		}
+		if lists.ContainsInt64(deniedCountryIds, country.Id) {
+			deniesCountryMaps = append(deniesCountryMaps, countryMap)
+		}
+		if lists.ContainsInt64(allowedCountryIds, country.Id) {
+			allowedCountryMaps = append(allowedCountryMaps, countryMap)
+		}
 	}
-	this.Data["countries"] = countryMaps
+	this.Data["deniedCountries"] = deniesCountryMaps
+	this.Data["allowedCountries"] = allowedCountryMaps
 
 	// except & only URL Patterns
 	this.Data["exceptURLPatterns"] = []*shared.URLPattern{}
@@ -88,7 +97,8 @@ func (this *CountriesAction) RunGet(params struct {
 
 func (this *CountriesAction) RunPost(params struct {
 	FirewallPolicyId int64
-	CountryIds       []int64
+	DenyCountryIds   []int64
+	AllowCountryIds  []int64
 
 	ExceptURLPatternsJSON []byte
 	OnlyURLPatternsJSON   []byte
@@ -97,6 +107,8 @@ func (this *CountriesAction) RunPost(params struct {
 }) {
 	// 日志
 	defer this.CreateLogInfo(codes.WAF_LogUpdateForbiddenCountries, params.FirewallPolicyId)
+
+	// TODO validate denied and allowed countries
 
 	policyConfig, err := dao.SharedHTTPFirewallPolicyDAO.FindEnabledHTTPFirewallPolicyConfig(this.AdminContext(), params.FirewallPolicyId)
 	if err != nil {
@@ -116,7 +128,8 @@ func (this *CountriesAction) RunPost(params struct {
 			IsOn: true,
 		}
 	}
-	policyConfig.Inbound.Region.DenyCountryIds = params.CountryIds
+	policyConfig.Inbound.Region.DenyCountryIds = params.DenyCountryIds
+	policyConfig.Inbound.Region.AllowCountryIds = params.AllowCountryIds
 
 	// 例外URL
 	var exceptURLPatterns = []*shared.URLPattern{}

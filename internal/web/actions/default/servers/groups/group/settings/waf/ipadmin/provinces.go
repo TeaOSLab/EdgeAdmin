@@ -12,8 +12,6 @@ import (
 	"github.com/iwind/TeaGo/maps"
 )
 
-const ChinaCountryId = 1
-
 type ProvincesAction struct {
 	actionutils.ParentAction
 }
