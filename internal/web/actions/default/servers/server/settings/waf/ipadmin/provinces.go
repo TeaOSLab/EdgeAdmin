@@ -41,6 +41,7 @@ func (this *ProvincesAction) RunGet(params struct {
 		this.NotFound("firewallPolicy", params.FirewallPolicyId)
 		return
 	}
+
 	var deniedProvinceIds = []int64{}
 	var allowedProvinceIds = []int64{}
 	if policyConfig.Inbound != nil && policyConfig.Inbound.Region != nil {

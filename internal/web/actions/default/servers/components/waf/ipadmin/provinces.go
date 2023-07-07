@@ -8,6 +8,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/regionconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/maps"
@@ -36,9 +37,12 @@ func (this *ProvincesAction) RunGet(params struct {
 		this.NotFound("firewallPolicy", params.FirewallPolicyId)
 		return
 	}
-	var selectedProvinceIds = []int64{}
+
+	var deniedProvinceIds = []int64{}
+	var allowedProvinceIds = []int64{}
 	if policyConfig.Inbound != nil && policyConfig.Inbound.Region != nil {
-		selectedProvinceIds = policyConfig.Inbound.Region.DenyProvinceIds
+		deniedProvinceIds = policyConfig.Inbound.Region.DenyProvinceIds
+		allowedProvinceIds = policyConfig.Inbound.Region.AllowProvinceIds
 	}
 
 	provincesResp, err := this.RPC().RegionProvinceRPC().FindAllRegionProvincesWithRegionCountryId(this.AdminContext(), &pb.FindAllRegionProvincesWithRegionCountryIdRequest{
@@ -48,22 +52,45 @@ func (this *ProvincesAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	var provinceMaps = []maps.Map{}
+	var deniedProvinceMaps = []maps.Map{}
+	var allowedProvinceMaps = []maps.Map{}
 	for _, province := range provincesResp.RegionProvinces {
-		provinceMaps = append(provinceMaps, maps.Map{
-			"id":        province.Id,
-			"name":      province.DisplayName,
-			"isChecked": lists.ContainsInt64(selectedProvinceIds, province.Id),
-		})
+		var provinceMap = maps.Map{
+			"id":   province.Id,
+			"name": province.DisplayName,
+		}
+		if lists.ContainsInt64(deniedProvinceIds, province.Id) {
+			deniedProvinceMaps = append(deniedProvinceMaps, provinceMap)
+		}
+		if lists.ContainsInt64(allowedProvinceIds, province.Id) {
+			allowedProvinceMaps = append(allowedProvinceMaps, provinceMap)
+		}
 	}
-	this.Data["provinces"] = provinceMaps
+	this.Data["deniedProvinces"] = deniedProvinceMaps
+	this.Data["allowedProvinces"] = allowedProvinceMaps
+
+	// except & only URL Patterns
+	this.Data["exceptURLPatterns"] = []*shared.URLPattern{}
+	this.Data["onlyURLPatterns"] = []*shared.URLPattern{}
+	if policyConfig.Inbound != nil && policyConfig.Inbound.Region != nil {
+		if len(policyConfig.Inbound.Region.ProvinceExceptURLPatterns) > 0 {
+			this.Data["exceptURLPatterns"] = policyConfig.Inbound.Region.ProvinceExceptURLPatterns
+		}
+		if len(policyConfig.Inbound.Region.ProvinceOnlyURLPatterns) > 0 {
+			this.Data["onlyURLPatterns"] = policyConfig.Inbound.Region.ProvinceOnlyURLPatterns
+		}
+	}
 
 	this.Show()
 }
 
 func (this *ProvincesAction) RunPost(params struct {
 	FirewallPolicyId int64
-	ProvinceIds      []int64
+	DenyProvinceIds  []int64
+	AllowProvinceIds []int64
+
+	ExceptURLPatternsJSON []byte
+	OnlyURLPatternsJSON   []byte
 
 	Must *actions.Must
 }) {
@@ -88,7 +115,30 @@ func (this *ProvincesAction) RunPost(params struct {
 			IsOn: true,
 		}
 	}
-	policyConfig.Inbound.Region.DenyProvinceIds = params.ProvinceIds
+	policyConfig.Inbound.Region.DenyProvinceIds = params.DenyProvinceIds
+	policyConfig.Inbound.Region.AllowProvinceIds = params.AllowProvinceIds
+
+	// 例外URL
+	var exceptURLPatterns = []*shared.URLPattern{}
+	if len(params.ExceptURLPatternsJSON) > 0 {
+		err = json.Unmarshal(params.ExceptURLPatternsJSON, &exceptURLPatterns)
+		if err != nil {
+			this.Fail("校验例外URL参数失败：" + err.Error())
+			return
+		}
+	}
+	policyConfig.Inbound.Region.ProvinceExceptURLPatterns = exceptURLPatterns
+
+	// 限制URL
+	var onlyURLPatterns = []*shared.URLPattern{}
+	if len(params.OnlyURLPatternsJSON) > 0 {
+		err = json.Unmarshal(params.OnlyURLPatternsJSON, &onlyURLPatterns)
+		if err != nil {
+			this.Fail("校验限制URL参数失败：" + err.Error())
+			return
+		}
+	}
+	policyConfig.Inbound.Region.ProvinceOnlyURLPatterns = onlyURLPatterns
 
 	inboundJSON, err := json.Marshal(policyConfig.Inbound)
 	if err != nil {

@@ -11,42 +11,35 @@
 
 	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 		<input type="hidden" name="firewallPolicyId" :value="firewallPolicyId"/>
+        <input type="hidden" name="exceptURLPatternsJSON" :value="JSON.stringify(exceptURLPatterns)"/>
+        <input type="hidden" name="onlyURLPatternsJSON" :value="JSON.stringify(onlyURLPatterns)"/>
 		<table class="ui table selectable definition">
-			<tr>
-				<td class="title">已封禁</td>
-				<td>
-					<span v-if="countSelectedProvinces == 0" class="disabled">暂时没有选择封禁省份。</span>
-					<div class="ui label tiny basic" v-for="province in provinces" v-if="province.isChecked" style="margin-bottom: 0.5em">
-						<input type="hidden" name="provinceIds" :value="province.id"/>
-						{{province.name}} <a href="" @click.prevent="deselectProvince(province)" title="取消封禁"><i class="icon remove"></i></a>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td>选择封禁区域</td>
-				<td>
-
-					<first-menu>
-						<menu-item><more-options-indicator>选择省份/自治区</more-options-indicator></menu-item>
-						<div class="item right" v-show="moreOptionsVisible">
-							<div class="ui checkbox" @click.prevent="checkAll">
-								<input type="checkbox" v-model="isCheckingAll"/>
-								<label>全选</label>
-							</div>
-						</div>
-					</first-menu>
-
-					<div class="province-list" v-show="moreOptionsVisible" style="margin-top:0.5em">
-						<div class="item" v-for="province in provinces">
-							<div class="ui checkbox" @click.prevent="selectProvince(province)">
-								<input type="checkbox" v-model="province.isChecked"/>
-								<label>{{province.name}}</label>
-							</div>
-						</div>
-					</div>
-					<div class="clear"></div>
-				</td>
-			</tr>
+            <tr>
+                <td class="title">仅允许的省份</td>
+                <td>
+                    <http-firewall-province-selector :v-provinces="allowedProvinces" :v-type="'allow'" @change="changeAllowedProvinces"></http-firewall-province-selector>
+                </td>
+            </tr>
+            <tr>
+                <td class="title">仅封禁的省份</td>
+                <td>
+                    <p class="comment" v-if="allowedProvinces.length > 0">由于你已设置"仅允许的省份"，所以不需要再设置封禁省份。</p>
+                    <http-firewall-province-selector :v-provinces="deniedProvinces" :v-type="'deny'" v-show="allowedProvinces.length == 0"></http-firewall-province-selector>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"><more-options-indicator></more-options-indicator></td>
+            </tr>
+            <tbody v-show="moreOptionsVisible">
+                <tr>
+                    <td>例外URL &nbsp;<tip-icon content="对这些URL将不做任何限制。"></tip-icon></td>
+                    <td><url-patterns-box v-model="exceptURLPatterns"></url-patterns-box></td>
+                </tr>
+                <tr>
+                    <td>限制URL &nbsp;<tip-icon content="只对这些URL做限制。"></tip-icon></td>
+                    <td><url-patterns-box v-model="onlyURLPatterns"></url-patterns-box></td>
+                </tr>
+            </tbody>
 		</table>
 		<submit-btn></submit-btn>
 	</form>

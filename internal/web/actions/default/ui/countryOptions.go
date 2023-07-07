@@ -5,6 +5,8 @@ package ui
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/regionconfigs"
+	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/maps"
 	"strings"
 )
@@ -21,6 +23,10 @@ func (this *CountryOptionsAction) RunPost(params struct{}) {
 	}
 	var countryMaps = []maps.Map{}
 	for _, country := range countriesResp.RegionCountries {
+		if lists.ContainsInt64(regionconfigs.FindAllGreaterChinaSubRegionIds(), country.Id) {
+			continue
+		}
+
 		if country.Codes == nil {
 			country.Codes = []string{}
 		}
