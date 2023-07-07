@@ -6,7 +6,7 @@
 			<td class="title">响应状态码 *</td>
 			<td>
 				<input type="text" name="status" size="3" placeholder="状态码" maxlength="3" style="width:5.2em" ref="focus"/>
-				<p class="comment">比如404，或者50x。</p>
+                <p class="comment">匹配的响应状态码，比如404，或者50x。</p>
 			</td>
 		</tr>
         <tr>
@@ -18,14 +18,14 @@
             </td>
         </tr>
 		<tr v-show="bodyType == 'url'">
-			<td>URL *</td>
+			<td>显示页面URL *</td>
 			<td>
-				<input type="text" name="url" maxlength="500" placeholder="页面文件路径或者完整的URL"/>
-				<p class="comment">页面文件是相对于节点安装目录的页面文件比如web/pages/40x.html，或者一个完整的URL。</p>
+				<input type="text" name="url" maxlength="500" placeholder="类似于 https://example.com/page.html"/>
+                <p class="comment">将从此URL中读取内容。</p>
 			</td>
 		</tr>
         <tr v-show="bodyType == 'html'">
-            <td>HTML *</td>
+            <td>显示页面HTML *</td>
             <td>
                 <textarea name="body" ref="htmlBody"></textarea>
                 <p class="comment"><a href="" @click.prevent="addHTMLTemplate">[使用模板]</a>。填写页面的HTML内容，支持请求变量。</p>

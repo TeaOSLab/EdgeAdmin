@@ -114,18 +114,19 @@ Vue.component("http-pages-and-shutdown-box", {
 					<prior-checkbox :v-config="shutdownConfig" v-if="vIsLocation"></prior-checkbox>
 					<tbody v-show="!vIsLocation || shutdownConfig.isPrior">
 						<tr>
-							<td class="title">开启</td>
+							<td class="title">临时关闭网站</td>
 							<td>
 								<div class="ui checkbox">
 									<input type="checkbox" value="1" v-model="shutdownConfig.isOn" />
 									<label></label>
 								</div>
+								<p class="comment">选中后，表示临时关闭当前网站，并显示自定义内容。</p>
 							</td>
 						</tr>
 					</tbody>
 					<tbody v-show="(!vIsLocation || shutdownConfig.isPrior) && shutdownConfig.isOn">
 						<tr>
-							<td>内容类型 *</td>
+							<td>显示内容类型 *</td>
 							<td>
 								<select class="ui dropdown auto-width" v-model="shutdownConfig.bodyType">
 									<option value="url">读取URL</option>
@@ -134,14 +135,14 @@ Vue.component("http-pages-and-shutdown-box", {
 							</td>
 						</tr>
 						<tr v-show="shutdownConfig.bodyType == 'url'">
-							<td class="title">页面URL *</td>
+							<td class="title">显示页面URL *</td>
 							<td>
-								<input type="text" v-model="shutdownConfig.url" placeholder="页面文件路径或一个完整URL"/>
-								<p class="comment">页面文件是相对于节点安装目录的页面文件比如pages/40x.html，或者一个完整的URL。</p>
+								<input type="text" v-model="shutdownConfig.url" placeholder="类似于 https://example.com/page.html"/>
+								<p class="comment">将从此URL中读取内容。</p>
 							</td>
 						</tr>
 						<tr v-show="shutdownConfig.bodyType == 'html'">
-							<td>HTML *</td>
+							<td>显示页面HTML *</td>
 							<td>
 								<textarea name="body" ref="shutdownHTMLBody" v-model="shutdownConfig.body"></textarea>
 								<p class="comment"><a href="" @click.prevent="addShutdownHTMLTemplate">[使用模板]</a>。填写页面的HTML内容，支持请求变量。</p>

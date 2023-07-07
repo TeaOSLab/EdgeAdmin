@@ -65,7 +65,8 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	case shared.BodyTypeURL:
 		params.Must.
 			Field("url", params.URL).
-			Require("请输入要显示的URL")
+			Require("请输入要显示的URL").
+			Match(	`^(?i)(http|https)://`, "请输入正确的URL")
 	case shared.BodyTypeHTML:
 		params.Must.
 			Field("body", params.Body).
