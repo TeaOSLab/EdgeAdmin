@@ -32,4 +32,7 @@
 .bandwidth-span var span {
   font-size: 1.2em;
 }
+.table th.value-column {
+  width: 8em;
+}
 /*# sourceMappingURL=index.css.map */
