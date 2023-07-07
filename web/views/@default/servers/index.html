@@ -63,7 +63,9 @@
 			<th>部署集群</th>
 			<th>域名</th>
 			<th>端口</th>
-            <th class="center" style="width: 8em">下行带宽<tip-icon content="最近5分钟峰值带宽，每5分钟更新一次"></tip-icon><sort-arrow name="trafficOutOrder"></sort-arrow></th>
+            <th class="value-column center">下行带宽<tip-icon content="最近5分钟峰值带宽，每5分钟更新一次"></tip-icon><sort-arrow name="trafficOutOrder"></sort-arrow></th>
+            <th class="value-column center" v-if="windowWidth < miniWidth || windowWidth > columnWidth4">QPS<tip-icon content="最近5分钟平均QPS，每5分钟更新一次"></tip-icon><sort-arrow name="requestsOrder"></sort-arrow></th>
+            <th class="value-column center" v-if="windowWidth < miniWidth || windowWidth > columnWidth5">攻击QPS<tip-icon content="最近5分钟平均攻击QPS，每5分钟更新一次"></tip-icon><sort-arrow name="attackRequestsOrder"></sort-arrow></th>
 			<th class="two wide center">状态</th>
 			<th class="two op">操作</th>
 		</tr>
@@ -105,6 +107,14 @@
         <td class="center">
             <span v-if="server.bandwidthBits > 0" class="bandwidth-span"><bits-var :v-bits="server.bandwidthBits"></bits-var></span>
             <span class="disabled" v-else>-</span>
+        </td>
+        <td class="center"  v-if="windowWidth < miniWidth || windowWidth > columnWidth4">
+            <span v-if="server.qps != '0'">{{server.qps}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+        <td class="center" v-if="windowWidth < miniWidth || windowWidth > columnWidth5">
+            <span v-if="server.attackQPS != '0'">{{server.attackQPS}}</span>
+            <span v-else class="disabled">-</span>
         </td>
 		<td class="center">
             <div v-if="!checkDNS">

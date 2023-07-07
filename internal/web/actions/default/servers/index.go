@@ -3,6 +3,7 @@ package servers
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
@@ -28,7 +29,9 @@ func (this *IndexAction) RunGet(params struct {
 	CheckDNS     bool
 	UserId       int64
 
-	TrafficOutOrder string
+	TrafficOutOrder     string
+	RequestsOrder       string
+	AttackRequestsOrder string
 }) {
 	this.Data["clusterId"] = params.ClusterId
 	this.Data["groupId"] = params.GroupId
@@ -38,7 +41,7 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["hasOrder"] = len(params.TrafficOutOrder) > 0
 	this.Data["userId"] = params.UserId
 
-	isSearching := params.AuditingFlag == 1 || params.ClusterId > 0 || params.GroupId > 0 || len(params.Keyword) > 0
+	var isSearching = params.AuditingFlag == 1 || params.ClusterId > 0 || params.GroupId > 0 || len(params.Keyword) > 0
 
 	if params.AuditingFlag > 0 {
 		this.Data["firstMenuItem"] = "auditing"
@@ -89,17 +92,21 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 服务列表
 	serversResp, err := this.RPC().ServerRPC().ListEnabledServersMatch(this.AdminContext(), &pb.ListEnabledServersMatchRequest{
-		Offset:            page.Offset,
-		Size:              page.Size,
-		NodeClusterId:     params.ClusterId,
-		ServerGroupId:     params.GroupId,
-		Keyword:           params.Keyword,
-		AuditingFlag:      params.AuditingFlag,
-		TrafficOutDesc:    params.TrafficOutOrder == "desc",
-		TrafficOutAsc:     params.TrafficOutOrder == "asc",
-		UserId:            params.UserId,
-		IgnoreServerNames: true,
-		IgnoreSSLCerts:    true,
+		Offset:             page.Offset,
+		Size:               page.Size,
+		NodeClusterId:      params.ClusterId,
+		ServerGroupId:      params.GroupId,
+		Keyword:            params.Keyword,
+		AuditingFlag:       params.AuditingFlag,
+		TrafficOutDesc:     params.TrafficOutOrder == "desc",
+		TrafficOutAsc:      params.TrafficOutOrder == "asc",
+		RequestsAsc:        params.RequestsOrder == "asc",
+		RequestsDesc:       params.RequestsOrder == "desc",
+		AttackRequestsAsc:  params.AttackRequestsOrder == "asc",
+		AttackRequestsDesc: params.AttackRequestsOrder == "desc",
+		UserId:             params.UserId,
+		IgnoreServerNames:  true,
+		IgnoreSSLCerts:     true,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -248,6 +255,8 @@ func (this *IndexAction) RunGet(params struct {
 			"user":             userMap,
 			"auditingTime":     auditingTime,
 			"bandwidthBits":    bandwidthBits,
+			"qps":              numberutils.FormatCount(server.CountRequests / 300),       /** 5 minutes **/
+			"attackQPS":        numberutils.FormatCount(server.CountAttackRequests / 300), /** 5 minutes **/
 		})
 	}
 	this.Data["servers"] = serverMaps

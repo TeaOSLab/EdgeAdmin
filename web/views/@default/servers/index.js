@@ -1,4 +1,12 @@
 Tea.context(function () {
+	this.windowWidth = window.innerWidth
+	this.miniWidth = 760
+	this.columnWidth1 = 800
+	this.columnWidth2 = 900
+	this.columnWidth3 = 1000
+	this.columnWidth4 = 1100
+	this.columnWidth5 = 1200
+
 	this.servers.forEach(function (v) {
 		v["status"] = {
 			isOk: false,
