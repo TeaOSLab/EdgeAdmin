@@ -36,7 +36,6 @@ func (this *CreatePopupAction) RunPost(params struct {
 
 	CapacityJSON         []byte
 	MaxSizeJSON          []byte
-	MaxKeys              int64
 	SyncCompressionCache bool
 
 	Description string
@@ -97,7 +96,6 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Name:                 params.Name,
 		Description:          params.Description,
 		CapacityJSON:         params.CapacityJSON,
-		MaxKeys:              params.MaxKeys,
 		MaxSizeJSON:          params.MaxSizeJSON,
 		Type:                 params.Type,
 		OptionsJSON:          optionsJSON,
