@@ -73,14 +73,6 @@
             </td>
         </tr>
         <tr>
-            <td>容纳Key数量</td>
-            <td>
-                <span v-if="cachePolicy.maxKeys > 0">{{cachePolicy.maxKeys}}</span>
-                <span v-else>不限</span>
-                <p class="comment">可以容纳多少数量的Key，0表示不限制。</p>
-            </td>
-        </tr>
-        <tr>
             <td>同步写入压缩缓存</td>
             <td>
                 <span v-if="cachePolicy.syncCompressionCache" class="green">Y</span>
