@@ -27,10 +27,10 @@
             </td>
         </tr>
         <tr>
-            <td class="color-border">文件目录最大容量</td>
+            <td class="color-border">缓存硬盘最大容量</td>
             <td>
                 <size-capacity-view :v-value="cachePolicy.capacity" :v-default-text="'不限'"></size-capacity-view>
-                <p class="comment">作为二级缓存的文件目录允许缓存的最大容量，如果为0表示没有限制。</p>
+                <p class="comment">单个节点上缓存目录所在硬盘允许的最大容量，如果为0表示没有限制。</p>
             </td>
         </tr>
         <tr v-if="cachePolicy.options.memoryPolicy != null && cachePolicy.options.memoryPolicy.capacity != null && cachePolicy.options.memoryPolicy.capacity.count > 0">
