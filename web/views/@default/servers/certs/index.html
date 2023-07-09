@@ -31,6 +31,11 @@
         </div>
     </form>
 
+    <div v-if="searchingUserId == 0">
+        <div class="ui divider"></div>
+        <p class="comment" style="padding-top: 0">默认只显示管理员所属的证书，用户所属证书请在上面表单中选择对应用户后搜索。</p>
+    </div>
+
 	<p class="comment" v-if="certs.length == 0"><span v-if="searchingUserId > 0">当前用户下</span>暂时还没有相关的证书。</p>
 	<table class="ui table selectable celled" v-if="certs.length > 0">
 		<thead>
