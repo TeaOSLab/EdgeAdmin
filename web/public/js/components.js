@@ -2330,14 +2330,14 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<td>允许的来源域名</td>
 			<td>
 				<values-box :values="allowDomains" @change="changeAllowDomains"></values-box>
-				<p class="comment">允许的来源域名列表，比如<code-label>example.com</code-label>、<code-label>*.example.com</code-label>。单个星号<code-label>*</code-label>表示允许所有域名。</p>
+				<p class="comment">允许的来源域名列表，比如<code-label>example.com</code-label>（顶级域名)、<code-label>*.example.com</code-label>（example.com的所有二级域名）。单个星号<code-label>*</code-label>表示允许所有域名。</p>
 			</td>
 		</tr>
 		<tr>
 			<td>禁止的来源域名</td>
 			<td>
 				<values-box :values="denyDomains" @change="changeDenyDomains"></values-box>
-				<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>、<code-label>*.example.org</code-label>；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
+				<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>（顶级域名）、<code-label>*.example.org</code-label>（example.org的所有二级域名）；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
 			</td>
 		</tr>
 		<tr>
@@ -2442,6 +2442,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 					<tiny-basic-label v-if="origin.hasCert">证书</tiny-basic-label>
 					<tiny-basic-label v-if="origin.host != null && origin.host.length > 0">主机名: {{origin.host}}</tiny-basic-label>
 					<tiny-basic-label v-if="origin.followPort">端口跟随</tiny-basic-label>
+					<tiny-basic-label v-if="origin.addr != null && origin.addr.startsWith('https://') && origin.http2Enabled">HTTP/2</tiny-basic-label>
 	
 					<span v-if="origin.domains != null && origin.domains.length > 0"><tiny-basic-label v-for="domain in origin.domains">匹配: {{domain}}</tiny-basic-label></span>
 					<span v-else-if="hasMatchedDomains"><tiny-basic-label>匹配: 所有域名</tiny-basic-label></span>
@@ -2465,7 +2466,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				<td class="title">启用CORS自适应跨域</td>
 				<td>
 					<checkbox v-model="config.isOn"></checkbox>
-					<p class="comment">启用后，自动在响应Header中增加对应的<code-label>Access-Control-*</code-label>相关内容。</p>
+					<p class="comment">启用后，自动在响应报头中增加对应的<code-label>Access-Control-*</code-label>相关内容。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -2493,10 +2494,10 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				</td>
 			</tr>
 			<tr>
-				<td>允许服务器暴露的Header</td>
+				<td>允许服务器暴露的报头</td>
 				<td>
 					<values-box :v-values="config.exposeHeaders"></values-box>
-					<p class="comment"><code-label>Access-Control-Expose-Headers</code-label>值设置。允许服务器暴露的Header，请注意Header的大小写。</p>
+					<p class="comment"><code-label>Access-Control-Expose-Headers</code-label>值设置。允许服务器暴露的报头，请注意报头的大小写。</p>
 				</td>
 			</tr>
 			<tr>
@@ -2557,8 +2558,8 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				<td class="color-border">允许的来源域列表<em>（Origin）</em></td>
 				<td>
 					<div v-if="websocketConfig.allowedOrigins.length > 0">
-						<div class="ui label tiny" v-for="(origin, index) in websocketConfig.allowedOrigins">
-							{{origin}} <a href="" title="删除" @click.prevent="removeOrigin(index)"><i class="icon remove"></i></a>
+						<div class="ui label small basic" v-for="(origin, index) in websocketConfig.allowedOrigins">
+							{{origin}} <a href="" title="删除" @click.prevent="removeOrigin(index)"><i class="icon remove small"></i></a>
 						</div>
 						<div class="ui divider"></div>
 					</div>
@@ -2798,6 +2799,16 @@ example2.com
 	<div style="margin-top: 0.5em" v-if="!isAdding">
 		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
 	</div>
+</div>`}),Vue.component("http-firewall-province-selector",{props:["v-type","v-provinces"],data:function(){let e=this.vProvinces;return null==e&&(e=[]),{listType:this.vType,provinces:e}},methods:{addProvince:function(){let e=this.provinces.map(function(e){return e.id}),t=this;teaweb.popup("/servers/server/settings/waf/ipadmin/selectProvincesPopup?type="+this.listType+"&selectedProvinceIds="+e.join(","),{width:"50em",height:"26em",callback:function(e){t.provinces=e.data.selectedProvinces,t.$forceUpdate(),t.notifyChange()}})},removeProvince:function(e){this.provinces.$remove(e),this.notifyChange()},resetProvinces:function(){this.provinces=[],this.notifyChange()},notifyChange:function(){this.$emit("change",{provinces:this.provinces})}},template:`<div>
+	<span v-if="provinces.length == 0" class="disabled">暂时没有选择<span v-if="listType =='allow'">允许</span><span v-else>封禁</span>的省份。</span>
+	<div v-show="provinces.length > 0">
+		<div class="ui label tiny basic" v-for="(province, index) in provinces" style="margin-bottom: 0.5em">
+			<input type="hidden" :name="listType + 'ProvinceIds'" :value="province.id"/>
+			{{province.name}} <a href="" @click.prevent="removeProvince(index)" title="删除"><i class="icon remove"></i></a>
+		</div>
+	</div>
+	<div class="ui divider"></div>
+	<button type="button" class="ui button tiny" @click.prevent="addProvince">修改</button> &nbsp; <button type="button" class="ui button tiny" v-show="provinces.length > 0" @click.prevent="resetProvinces">清空</button>
 </div>`}),Vue.component("http-referers-config-box",{props:["v-referers-config","v-is-location","v-is-group"],data:function(){let e=this.vReferersConfig;return null==(e=null==e?{isPrior:!1,isOn:!1,allowEmpty:!0,allowSameDomain:!0,allowDomains:[],denyDomains:[],checkOrigin:!0}:e).allowDomains&&(e.allowDomains=[]),null==e.denyDomains&&(e.denyDomains=[]),{config:e}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeAllowDomains:function(e){"object"==typeof e&&(this.config.allowDomains=e,this.$forceUpdate())},changeDenyDomains:function(e){"object"==typeof e&&(this.config.denyDomains=e,this.$forceUpdate())}},template:`<div>
 <input type="hidden" name="referersJSON" :value="JSON.stringify(config)"/>
 <table class="ui table selectable definition">
@@ -2950,14 +2961,14 @@ example2.com
 		</table>
 	</div>
 	<div class="margin"></div>
-</div>`}),Vue.component("http-firewall-actions-box",{props:["v-actions","v-firewall-policy","v-action-configs"],mounted:function(){let o=this;Tea.action("/servers/iplists/levelOptions").success(function(e){o.ipListLevels=e.data.levels}).post(),this.loadJS(function(){let s=document.getElementById("actions-box");Sortable.create(s,{draggable:".label",handle:".icon.handle",onStart:function(){o.cancel()},onUpdate:function(e){let t=s.getElementsByClassName("label"),i=[];for(let e=0;e<t.length;e++){var n=parseInt(t[e].getAttribute("data-index"));i.push(o.configs[n])}o.configs=i}})})},data:function(){null==this.vFirewallPolicy.inbound&&(this.vFirewallPolicy.inbound={}),null==this.vFirewallPolicy.inbound.groups&&(this.vFirewallPolicy.inbound.groups=[]);let t=0,e=[];null!=this.vActionConfigs&&(e=this.vActionConfigs).forEach(function(e){e.id=t++});var i=`<!DOCTYPE html>
+</div>`}),Vue.component("http-firewall-actions-box",{props:["v-actions","v-firewall-policy","v-action-configs","v-group-type"],mounted:function(){let o=this;Tea.action("/servers/iplists/levelOptions").success(function(e){o.ipListLevels=e.data.levels}).post(),this.loadJS(function(){let s=document.getElementById("actions-box");Sortable.create(s,{draggable:".label",handle:".icon.handle",onStart:function(){o.cancel()},onUpdate:function(e){let t=s.getElementsByClassName("label"),i=[];for(let e=0;e<t.length;e++){var n=parseInt(t[e].getAttribute("data-index"));i.push(o.configs[n])}o.configs=i}})})},data:function(){null==this.vFirewallPolicy.inbound&&(this.vFirewallPolicy.inbound={}),null==this.vFirewallPolicy.inbound.groups&&(this.vFirewallPolicy.inbound.groups=[]),null==this.vFirewallPolicy.outbound&&(this.vFirewallPolicy.outbound={}),null==this.vFirewallPolicy.outbound.groups&&(this.vFirewallPolicy.outbound.groups=[]);let t=0,e=[];null!=this.vActionConfigs&&(e=this.vActionConfigs).forEach(function(e){e.id=t++});var i=`<!DOCTYPE html>
 <html>
 <title>403 Forbidden</title>
 <body>
 <h1>403 Forbidden</h1>
 <address>Request ID: \${requestId}.</address>
 </body>
-</html>`;return{id:t,actions:this.vActions,configs:e,isAdding:!1,editingIndex:-1,action:null,actionCode:"",actionOptions:{},ipListLevels:[],blockTimeout:"",blockTimeoutMax:"",blockScope:"global",captchaLife:"",captchaMaxFails:"",captchaFailBlockTimeout:"",get302Life:"",post307Life:"",recordIPType:"black",recordIPLevel:"critical",recordIPTimeout:"",recordIPListId:0,recordIPListName:"",tagTags:[],pageStatus:403,pageBody:i,defaultPageBody:i,redirectStatus:307,redirectURL:"",goGroupName:"",goGroupId:0,goGroup:null,goSetId:0,goSetName:"",jsCookieLife:"",jsCookieMaxFails:"",jsCookieFailBlockTimeout:"",statusOptions:[{code:301,text:"Moved Permanently"},{code:308,text:"Permanent Redirect"},{code:302,text:"Found"},{code:303,text:"See Other"},{code:307,text:"Temporary Redirect"}]}},watch:{actionCode:function(i){this.action=this.actions.$find(function(e,t){return t.code==i}),this.actionOptions={}},blockTimeout:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.timeout=0:this.actionOptions.timeout=e},blockTimeoutMax:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.timeoutMax=0:this.actionOptions.timeoutMax=e},blockScope:function(e){this.actionOptions.scope=e},captchaLife:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.life=0:this.actionOptions.life=e},captchaMaxFails:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.maxFails=0:this.actionOptions.maxFails=e},captchaFailBlockTimeout:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.failBlockTimeout=0:this.actionOptions.failBlockTimeout=e},get302Life:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.life=0:this.actionOptions.life=e},post307Life:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.life=0:this.actionOptions.life=e},recordIPType:function(e){this.recordIPListId=0},recordIPTimeout:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.timeout=0:this.actionOptions.timeout=e},goGroupId:function(i){var e=this.vFirewallPolicy.inbound.groups.$find(function(e,t){return t.id==i});this.goGroup=e,this.goGroupName=null==e?"":e.name,this.goSetId=0,this.goSetName=""},goSetId:function(i){var e;null!=this.goGroup&&(null==(e=this.goGroup.sets.$find(function(e,t){return t.id==i}))?(this.goSetId=0,this.goSetName=""):this.goSetName=e.name)},jsCookieLife:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.life=0:this.actionOptions.life=e},jsCookieMaxFails:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.maxFails=0:this.actionOptions.maxFails=e},jsCookieFailBlockTimeout:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.failBlockTimeout=0:this.actionOptions.failBlockTimeout=e}},methods:{add:function(){this.action=null,this.actionCode="block",this.isAdding=!0,this.actionOptions={},this.blockTimeout="",this.blockTimeoutMax="",this.blockScope="global",this.captchaLife="",this.captchaMaxFails="",this.captchaFailBlockTimeout="",this.jsCookieLife="",this.jsCookieMaxFails="",this.jsCookieFailBlockTimeout="",this.get302Life="",this.post307Life="",this.recordIPLevel="critical",this.recordIPType="black",this.recordIPTimeout="",this.recordIPListId=0,this.recordIPListName="",this.tagTags=[],this.pageStatus=403,this.pageBody=this.defaultPageBody,this.redirectStatus=307,this.redirectURL="",this.goGroupName="",this.goGroupId=0,this.goGroup=null,this.goSetId=0,this.goSetName="";let i=this;this.action=this.vActions.$find(function(e,t){return t.code==i.actionCode}),this.scroll()},remove:function(e){this.isAdding=!1,this.editingIndex=-1,this.configs.$remove(e)},update:function(e,i){if(this.isAdding&&this.editingIndex==e)this.cancel();else{switch(this.add(),this.isAdding=!0,this.editingIndex=e,this.actionCode=i.code,i.code){case"block":this.blockTimeout="",this.blockTimeoutMax="",(null!=i.options.timeout||0<i.options.timeout)&&(this.blockTimeout=i.options.timeout.toString()),(null!=i.options.timeoutMax||0<i.options.timeoutMax)&&(this.blockTimeoutMax=i.options.timeoutMax.toString()),null!=i.options.scope&&0<i.options.scope.length?this.blockScope=i.options.scope:this.blockScope="global";break;case"allow":case"log":break;case"captcha":this.captchaLife="",(null!=i.options.life||0<i.options.life)&&(this.captchaLife=i.options.life.toString()),this.captchaMaxFails="",(null!=i.options.maxFails||0<i.options.maxFails)&&(this.captchaMaxFails=i.options.maxFails.toString()),this.captchaFailBlockTimeout="",(null!=i.options.failBlockTimeout||0<i.options.failBlockTimeout)&&(this.captchaFailBlockTimeout=i.options.failBlockTimeout.toString());break;case"js_cookie":this.jsCookieLife="",(null!=i.options.life||0<i.options.life)&&(this.jsCookieLife=i.options.life.toString()),this.jsCookieMaxFails="",(null!=i.options.maxFails||0<i.options.maxFails)&&(this.jsCookieMaxFails=i.options.maxFails.toString()),this.jsCookieFailBlockTimeout="",(null!=i.options.failBlockTimeout||0<i.options.failBlockTimeout)&&(this.jsCookieFailBlockTimeout=i.options.failBlockTimeout.toString());break;case"notify":break;case"get_302":this.get302Life="",(null!=i.options.life||0<i.options.life)&&(this.get302Life=i.options.life.toString());break;case"post_307":this.post307Life="",(null!=i.options.life||0<i.options.life)&&(this.post307Life=i.options.life.toString());break;case"record_ip":if(null!=i.options){this.recordIPLevel=i.options.level,this.recordIPType=i.options.type,0<i.options.timeout&&(this.recordIPTimeout=i.options.timeout.toString());let e=this;setTimeout(function(){e.recordIPListId=i.options.ipListId,e.recordIPListName=i.options.ipListName})}break;case"tag":this.tagTags=[],null!=i.options.tags&&(this.tagTags=i.options.tags);break;case"page":this.pageStatus=403,this.pageBody=this.defaultPageBody,null!=i.options.status&&(this.pageStatus=i.options.status),null!=i.options.body&&(this.pageBody=i.options.body);break;case"redirect":this.redirectStatus=307,this.redirectURL="",null!=i.options.status&&(this.redirectStatus=i.options.status),null!=i.options.url&&(this.redirectURL=i.options.url);break;case"go_group":null!=i.options&&(this.goGroupName=i.options.groupName,this.goGroupId=i.options.groupId,this.goGroup=this.vFirewallPolicy.inbound.groups.$find(function(e,t){return t.id==i.options.groupId}));break;case"go_set":if(null!=i.options){this.goGroupName=i.options.groupName,this.goGroupId=i.options.groupId,this.goGroup=this.vFirewallPolicy.inbound.groups.$find(function(e,t){return t.id==i.options.groupId});let t=this;setTimeout(function(){var e;t.goSetId=i.options.setId,null!=t.goGroup&&null!=(e=t.goGroup.sets.$find(function(e,t){return t.id==i.options.setId}))&&(t.goSetName=e.name)})}}this.scroll()}},cancel:function(){this.isAdding=!1,this.editingIndex=-1},confirm:function(){if(null!=this.action){if(null==this.actionOptions&&(this.actionOptions={}),"record_ip"==this.actionCode){let e=parseInt(this.recordIPTimeout);if(isNaN(e)&&(e=0),this.recordIPListId<=0)return;this.actionOptions={type:this.recordIPType,level:this.recordIPLevel,timeout:e,ipListId:this.recordIPListId,ipListName:this.recordIPListName}}else if("tag"==this.actionCode){if(null==this.tagTags||0==this.tagTags.length)return;this.actionOptions={tags:this.tagTags}}else if("page"==this.actionCode){let e=this.pageStatus.toString();e=e.match(/^\d{3}$/)?parseInt(e):403,this.actionOptions={status:e,body:this.pageBody}}else if("redirect"==this.actionCode){let e=this.redirectStatus.toString();if(e=e.match(/^\d{3}$/)?parseInt(e):307,0==this.redirectURL.length)return void teaweb.warn("请输入跳转到URL");this.actionOptions={status:e,url:this.redirectURL}}else if("go_group"==this.actionCode){let e=this.goGroupId;if("string"==typeof e&&(e=parseInt(e),isNaN(e)&&(e=0)),e<=0)return;this.actionOptions={groupId:e.toString(),groupName:this.goGroupName}}else if("go_set"==this.actionCode){let e=this.goGroupId,t=("string"==typeof e&&(e=parseInt(e),isNaN(e)&&(e=0)),this.goSetId);if("string"==typeof t&&(t=parseInt(t),isNaN(t)&&(t=0)),t<=0)return;this.actionOptions={groupId:e.toString(),groupName:this.goGroupName,setId:t.toString(),setName:this.goSetName}}let e={};for(var t in this.actionOptions)this.actionOptions.hasOwnProperty(t)&&(e[t]=this.actionOptions[t]);-1<this.editingIndex?this.configs[this.editingIndex]={id:this.configs[this.editingIndex].id,code:this.actionCode,name:this.action.name,options:e}:this.configs.push({id:this.id++,code:this.actionCode,name:this.action.name,options:e}),this.cancel()}},removeRecordIPList:function(){this.recordIPListId=0},selectRecordIPList:function(){let t=this;teaweb.popup("/servers/iplists/selectPopup?type="+this.recordIPType,{width:"50em",height:"30em",callback:function(e){t.recordIPListId=e.data.list.id,t.recordIPListName=e.data.list.name}})},changeTags:function(e){this.tagTags=e},loadJS:function(t){if("undefined"!=typeof Sortable)t();else{let e=document.createElement("script");e.setAttribute("src","/js/sortable.min.js"),e.addEventListener("load",function(){t()}),document.head.appendChild(e)}},scroll:function(){setTimeout(function(){let e=document.getElementsByClassName("main");0<e.length&&e[0].scrollTo(0,1e3)},10)}},template:`<div>
+</html>`;return{id:t,actions:this.vActions,configs:e,isAdding:!1,editingIndex:-1,action:null,actionCode:"",actionOptions:{},ipListLevels:[],blockTimeout:"",blockTimeoutMax:"",blockScope:"global",captchaLife:"",captchaMaxFails:"",captchaFailBlockTimeout:"",get302Life:"",post307Life:"",recordIPType:"black",recordIPLevel:"critical",recordIPTimeout:"",recordIPListId:0,recordIPListName:"",tagTags:[],pageStatus:403,pageBody:i,defaultPageBody:i,redirectStatus:307,redirectURL:"",goGroupName:"",goGroupId:0,goGroup:null,goSetId:0,goSetName:"",jsCookieLife:"",jsCookieMaxFails:"",jsCookieFailBlockTimeout:"",statusOptions:[{code:301,text:"Moved Permanently"},{code:308,text:"Permanent Redirect"},{code:302,text:"Found"},{code:303,text:"See Other"},{code:307,text:"Temporary Redirect"}]}},watch:{actionCode:function(i){this.action=this.actions.$find(function(e,t){return t.code==i}),this.actionOptions={}},blockTimeout:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.timeout=0:this.actionOptions.timeout=e},blockTimeoutMax:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.timeoutMax=0:this.actionOptions.timeoutMax=e},blockScope:function(e){this.actionOptions.scope=e},captchaLife:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.life=0:this.actionOptions.life=e},captchaMaxFails:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.maxFails=0:this.actionOptions.maxFails=e},captchaFailBlockTimeout:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.failBlockTimeout=0:this.actionOptions.failBlockTimeout=e},get302Life:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.life=0:this.actionOptions.life=e},post307Life:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.life=0:this.actionOptions.life=e},recordIPType:function(e){this.recordIPListId=0},recordIPTimeout:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.timeout=0:this.actionOptions.timeout=e},goGroupId:function(i){let e=this.vFirewallPolicy.inbound.groups.$find(function(e,t){return t.id==i});null==(this.goGroup=e)?null==(e=this.vFirewallPolicy.outbound.groups.$find(function(e,t){return t.id==i}))?this.goGroupName="":(this.goGroup=e,this.goGroupName=e.name):this.goGroupName=e.name,this.goSetId=0,this.goSetName=""},goSetId:function(i){var e;null!=this.goGroup&&(null==(e=this.goGroup.sets.$find(function(e,t){return t.id==i}))?(this.goSetId=0,this.goSetName=""):this.goSetName=e.name)},jsCookieLife:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.life=0:this.actionOptions.life=e},jsCookieMaxFails:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.maxFails=0:this.actionOptions.maxFails=e},jsCookieFailBlockTimeout:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.failBlockTimeout=0:this.actionOptions.failBlockTimeout=e}},methods:{add:function(){this.action=null,this.actionCode="block",this.isAdding=!0,this.actionOptions={},this.blockTimeout="",this.blockTimeoutMax="",this.blockScope="global",this.captchaLife="",this.captchaMaxFails="",this.captchaFailBlockTimeout="",this.jsCookieLife="",this.jsCookieMaxFails="",this.jsCookieFailBlockTimeout="",this.get302Life="",this.post307Life="",this.recordIPLevel="critical",this.recordIPType="black",this.recordIPTimeout="",this.recordIPListId=0,this.recordIPListName="",this.tagTags=[],this.pageStatus=403,this.pageBody=this.defaultPageBody,this.redirectStatus=307,this.redirectURL="",this.goGroupName="",this.goGroupId=0,this.goGroup=null,this.goSetId=0,this.goSetName="";let i=this;this.action=this.vActions.$find(function(e,t){return t.code==i.actionCode}),this.scroll()},remove:function(e){this.isAdding=!1,this.editingIndex=-1,this.configs.$remove(e)},update:function(e,i){if(this.isAdding&&this.editingIndex==e)this.cancel();else{switch(this.add(),this.isAdding=!0,this.editingIndex=e,this.actionCode=i.code,i.code){case"block":this.blockTimeout="",this.blockTimeoutMax="",(null!=i.options.timeout||0<i.options.timeout)&&(this.blockTimeout=i.options.timeout.toString()),(null!=i.options.timeoutMax||0<i.options.timeoutMax)&&(this.blockTimeoutMax=i.options.timeoutMax.toString()),null!=i.options.scope&&0<i.options.scope.length?this.blockScope=i.options.scope:this.blockScope="global";break;case"allow":case"log":break;case"captcha":this.captchaLife="",(null!=i.options.life||0<i.options.life)&&(this.captchaLife=i.options.life.toString()),this.captchaMaxFails="",(null!=i.options.maxFails||0<i.options.maxFails)&&(this.captchaMaxFails=i.options.maxFails.toString()),this.captchaFailBlockTimeout="",(null!=i.options.failBlockTimeout||0<i.options.failBlockTimeout)&&(this.captchaFailBlockTimeout=i.options.failBlockTimeout.toString());break;case"js_cookie":this.jsCookieLife="",(null!=i.options.life||0<i.options.life)&&(this.jsCookieLife=i.options.life.toString()),this.jsCookieMaxFails="",(null!=i.options.maxFails||0<i.options.maxFails)&&(this.jsCookieMaxFails=i.options.maxFails.toString()),this.jsCookieFailBlockTimeout="",(null!=i.options.failBlockTimeout||0<i.options.failBlockTimeout)&&(this.jsCookieFailBlockTimeout=i.options.failBlockTimeout.toString());break;case"notify":break;case"get_302":this.get302Life="",(null!=i.options.life||0<i.options.life)&&(this.get302Life=i.options.life.toString());break;case"post_307":this.post307Life="",(null!=i.options.life||0<i.options.life)&&(this.post307Life=i.options.life.toString());break;case"record_ip":if(null!=i.options){this.recordIPLevel=i.options.level,this.recordIPType=i.options.type,0<i.options.timeout&&(this.recordIPTimeout=i.options.timeout.toString());let e=this;setTimeout(function(){e.recordIPListId=i.options.ipListId,e.recordIPListName=i.options.ipListName})}break;case"tag":this.tagTags=[],null!=i.options.tags&&(this.tagTags=i.options.tags);break;case"page":this.pageStatus=403,this.pageBody=this.defaultPageBody,null!=i.options.status&&(this.pageStatus=i.options.status),null!=i.options.body&&(this.pageBody=i.options.body);break;case"redirect":this.redirectStatus=307,this.redirectURL="",null!=i.options.status&&(this.redirectStatus=i.options.status),null!=i.options.url&&(this.redirectURL=i.options.url);break;case"go_group":null!=i.options&&(this.goGroupName=i.options.groupName,this.goGroupId=i.options.groupId,this.goGroup=this.vFirewallPolicy.inbound.groups.$find(function(e,t){return t.id==i.options.groupId}));break;case"go_set":if(null!=i.options){this.goGroupName=i.options.groupName,this.goGroupId=i.options.groupId,this.goGroup=this.vFirewallPolicy.inbound.groups.$find(function(e,t){return t.id==i.options.groupId});let t=this;setTimeout(function(){var e;t.goSetId=i.options.setId,null!=t.goGroup&&null!=(e=t.goGroup.sets.$find(function(e,t){return t.id==i.options.setId}))&&(t.goSetName=e.name)})}}this.scroll()}},cancel:function(){this.isAdding=!1,this.editingIndex=-1},confirm:function(){if(null!=this.action){if(null==this.actionOptions&&(this.actionOptions={}),"record_ip"==this.actionCode){let e=parseInt(this.recordIPTimeout);if(isNaN(e)&&(e=0),this.recordIPListId<=0)return;this.actionOptions={type:this.recordIPType,level:this.recordIPLevel,timeout:e,ipListId:this.recordIPListId,ipListName:this.recordIPListName}}else if("tag"==this.actionCode){if(null==this.tagTags||0==this.tagTags.length)return;this.actionOptions={tags:this.tagTags}}else if("page"==this.actionCode){let e=this.pageStatus.toString();e=e.match(/^\d{3}$/)?parseInt(e):403,this.actionOptions={status:e,body:this.pageBody}}else if("redirect"==this.actionCode){let e=this.redirectStatus.toString();if(e=e.match(/^\d{3}$/)?parseInt(e):307,0==this.redirectURL.length)return void teaweb.warn("请输入跳转到URL");this.actionOptions={status:e,url:this.redirectURL}}else if("go_group"==this.actionCode){let e=this.goGroupId;if("string"==typeof e&&(e=parseInt(e),isNaN(e)&&(e=0)),e<=0)return;this.actionOptions={groupId:e.toString(),groupName:this.goGroupName}}else if("go_set"==this.actionCode){let e=this.goGroupId,t=("string"==typeof e&&(e=parseInt(e),isNaN(e)&&(e=0)),this.goSetId);if("string"==typeof t&&(t=parseInt(t),isNaN(t)&&(t=0)),t<=0)return;this.actionOptions={groupId:e.toString(),groupName:this.goGroupName,setId:t.toString(),setName:this.goSetName}}let e={};for(var t in this.actionOptions)this.actionOptions.hasOwnProperty(t)&&(e[t]=this.actionOptions[t]);-1<this.editingIndex?this.configs[this.editingIndex]={id:this.configs[this.editingIndex].id,code:this.actionCode,name:this.action.name,options:e}:this.configs.push({id:this.id++,code:this.actionCode,name:this.action.name,options:e}),this.cancel()}},removeRecordIPList:function(){this.recordIPListId=0},selectRecordIPList:function(){let t=this;teaweb.popup("/servers/iplists/selectPopup?type="+this.recordIPType,{width:"50em",height:"30em",callback:function(e){t.recordIPListId=e.data.list.id,t.recordIPListName=e.data.list.name}})},changeTags:function(e){this.tagTags=e},loadJS:function(t){if("undefined"!=typeof Sortable)t();else{let e=document.createElement("script");e.setAttribute("src","/js/sortable.min.js"),e.addEventListener("load",function(){t()}),document.head.appendChild(e)}},scroll:function(){setTimeout(function(){let e=document.getElementsByClassName("main");0<e.length&&e[0].scrollTo(0,1e3)},10)}},template:`<div>
 	<input type="hidden" name="actionsJSON" :value="JSON.stringify(configs)"/>
 	<div v-show="configs.length > 0" style="margin-bottom: 0.5em" id="actions-box"> 
 		<div v-for="(config, index) in configs" :data-index="index" :key="config.id" class="ui label small basic" :class="{blue: index == editingIndex}" style="margin-bottom: 0.4em">
@@ -3003,8 +3014,8 @@ example2.com
 			<!-- 范围 -->
 			<span v-if="config.options.scope != null && config.options.scope.length > 0" class="small grey">
 				&nbsp; 
-				<span v-if="config.options.scope == 'global'">[所有服务]</span>
-				<span v-if="config.options.scope == 'service'">[当前服务]</span>
+				<span v-if="config.options.scope == 'global'">[所有网站]</span>
+				<span v-if="config.options.scope == 'service'">[当前网站]</span>
 			</span>
 			
 			<!-- 操作按钮 -->
@@ -3029,8 +3040,8 @@ example2.com
 				<td>封禁范围</td>
 				<td>
 					<select class="ui dropdown auto-width" v-model="blockScope">
-						<option value="service">当前服务</option>
-						<option value="global">所有服务</option>
+						<option value="service">当前网站</option>
+						<option value="global">所有网站</option>
 					</select>
 					<p class="comment" v-if="blockScope == 'service'">只封禁用户对当前网站的访问，其他服务不受影响。</p>
 					<p class="comment" v-if="blockScope =='global'">封禁用户对所有网站的访问。</p>
@@ -3223,7 +3234,8 @@ example2.com
 				<td>
 					<select class="ui dropdown auto-width" v-model="goGroupId">
 						<option value="0">[选择分组]</option>
-						<option v-for="group in vFirewallPolicy.inbound.groups" :value="group.id">{{group.name}}</option>
+						<option v-if="vFirewallPolicy.inbound != null && vFirewallPolicy.inbound.groups != null" v-for="group in vFirewallPolicy.inbound.groups" :value="group.id">入站：{{group.name}}</option>
+						<option v-if="vGroupType == 'outbound' && vFirewallPolicy.outbound != null && vFirewallPolicy.outbound.groups != null" v-for="group in vFirewallPolicy.outbound.groups" :value="group.id">出站：{{group.name}}</option>
 					</select>
 				</td>
 			</tr>
@@ -3234,7 +3246,8 @@ example2.com
 				<td>
 					<select class="ui dropdown auto-width" v-model="goGroupId">
 						<option value="0">[选择分组]</option>
-						<option v-for="group in vFirewallPolicy.inbound.groups" :value="group.id">{{group.name}}</option>
+						<option v-if="vFirewallPolicy.inbound != null && vFirewallPolicy.inbound.groups != null" v-for="group in vFirewallPolicy.inbound.groups" :value="group.id">入站：{{group.name}}</option>
+						<option v-if="vGroupType == 'outbound' && vFirewallPolicy.outbound != null && vFirewallPolicy.outbound.groups != null" v-for="group in vFirewallPolicy.outbound.groups" :value="group.id">出站：{{group.name}}</option>
 					</select>
 				</td>
 			</tr>
@@ -3322,10 +3335,10 @@ example2.com
 <div class="margin"></div>
 </div>`}),Vue.component("user-selector",{props:["v-user-id","data-url"],data:function(){let e=this.vUserId,t=(null==e&&(e=0),this.dataUrl);return null!=t&&0!=t.length||(t="/servers/users/options"),{users:[],userId:e,dataURL:t}},methods:{change:function(e){null!=e?this.$emit("change",e.id):this.$emit("change",0)},clear:function(){this.$refs.comboBox.clear()}},template:`<div>
 	<combo-box placeholder="选择用户" :data-url="dataURL" :data-key="'users'" data-search="on" name="userId" :v-value="userId" @change="change" ref="comboBox"></combo-box>
-</div>`}),Vue.component("http-header-policy-box",{props:["v-request-header-policy","v-request-header-ref","v-response-header-policy","v-response-header-ref","v-params","v-is-location","v-is-group","v-has-group-request-config","v-has-group-response-config","v-group-setting-url"],data:function(){let e="response";"#request"==window.location.hash&&(e="request");let t=this.vRequestHeaderRef,i=(null==t&&(t={isPrior:!1,isOn:!0,headerPolicyId:0}),this.vResponseHeaderRef),n=(null==i&&(i={isPrior:!1,isOn:!0,headerPolicyId:0}),[]),s=[],o=[];var a=this.vRequestHeaderPolicy;null!=a&&(null!=a.setHeaders&&(n=a.setHeaders),null!=a.deleteHeaders&&(s=a.deleteHeaders),null!=a.nonStandardHeaders&&(o=a.nonStandardHeaders));let l=[],c=[],r=[];a=this.vResponseHeaderPolicy;null!=a&&(null!=a.setHeaders&&(l=a.setHeaders),null!=a.deleteHeaders&&(c=a.deleteHeaders),null!=a.nonStandardHeaders&&(r=a.nonStandardHeaders));let d={isOn:!1};return null!=a.cors&&(d=a.cors),{type:e,typeName:"request"==e?"请求":"响应",requestHeaderRef:t,responseHeaderRef:i,requestSettingHeaders:n,requestDeletingHeaders:s,requestNonStandardHeaders:o,responseSettingHeaders:l,responseDeletingHeaders:c,responseNonStandardHeaders:r,responseCORS:d}},methods:{selectType:function(e){this.type=e,window.location.hash="#"+e,window.location.reload()},addSettingHeader:function(e){teaweb.popup("/servers/server/settings/headers/createSetPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})},addDeletingHeader:function(e,t){teaweb.popup("/servers/server/settings/headers/createDeletePopup?"+this.vParams+"&headerPolicyId="+e+"&type="+t,{callback:function(){teaweb.successRefresh("保存成功")}})},addNonStandardHeader:function(e,t){teaweb.popup("/servers/server/settings/headers/createNonStandardPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+t,{callback:function(){teaweb.successRefresh("保存成功")}})},updateSettingPopup:function(e,t){teaweb.popup("/servers/server/settings/headers/updateSetPopup?"+this.vParams+"&headerPolicyId="+e+"&headerId="+t+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})},deleteDeletingHeader:function(e,t){teaweb.confirm("确定要删除'"+t+"'吗？",function(){Tea.action("/servers/server/settings/headers/deleteDeletingHeader").params({headerPolicyId:e,headerName:t}).post().refresh()})},deleteNonStandardHeader:function(e,t){teaweb.confirm("确定要删除'"+t+"'吗？",function(){Tea.action("/servers/server/settings/headers/deleteNonStandardHeader").params({headerPolicyId:e,headerName:t}).post().refresh()})},deleteHeader:function(e,t,i){teaweb.confirm("确定要删除此Header吗？",function(){this.$post("/servers/server/settings/headers/delete").params({headerPolicyId:e,type:t,headerId:i}).refresh()})},updateCORS:function(e){teaweb.popup("/servers/server/settings/headers/updateCORSPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+this.type,{height:"30em",callback:function(){teaweb.successRefresh("保存成功")}})}},template:`<div>
+</div>`}),Vue.component("http-header-policy-box",{props:["v-request-header-policy","v-request-header-ref","v-response-header-policy","v-response-header-ref","v-params","v-is-location","v-is-group","v-has-group-request-config","v-has-group-response-config","v-group-setting-url"],data:function(){let e="response";"#request"==window.location.hash&&(e="request");let t=this.vRequestHeaderRef,i=(null==t&&(t={isPrior:!1,isOn:!0,headerPolicyId:0}),this.vResponseHeaderRef),n=(null==i&&(i={isPrior:!1,isOn:!0,headerPolicyId:0}),[]),s=[],o=[];var a=this.vRequestHeaderPolicy;null!=a&&(null!=a.setHeaders&&(n=a.setHeaders),null!=a.deleteHeaders&&(s=a.deleteHeaders),null!=a.nonStandardHeaders&&(o=a.nonStandardHeaders));let l=[],c=[],r=[];a=this.vResponseHeaderPolicy;null!=a&&(null!=a.setHeaders&&(l=a.setHeaders),null!=a.deleteHeaders&&(c=a.deleteHeaders),null!=a.nonStandardHeaders&&(r=a.nonStandardHeaders));let d={isOn:!1};return null!=a.cors&&(d=a.cors),{type:e,typeName:"request"==e?"请求":"响应",requestHeaderRef:t,responseHeaderRef:i,requestSettingHeaders:n,requestDeletingHeaders:s,requestNonStandardHeaders:o,responseSettingHeaders:l,responseDeletingHeaders:c,responseNonStandardHeaders:r,responseCORS:d}},methods:{selectType:function(e){this.type=e,window.location.hash="#"+e,window.location.reload()},addSettingHeader:function(e){teaweb.popup("/servers/server/settings/headers/createSetPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})},addDeletingHeader:function(e,t){teaweb.popup("/servers/server/settings/headers/createDeletePopup?"+this.vParams+"&headerPolicyId="+e+"&type="+t,{callback:function(){teaweb.successRefresh("保存成功")}})},addNonStandardHeader:function(e,t){teaweb.popup("/servers/server/settings/headers/createNonStandardPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+t,{callback:function(){teaweb.successRefresh("保存成功")}})},updateSettingPopup:function(e,t){teaweb.popup("/servers/server/settings/headers/updateSetPopup?"+this.vParams+"&headerPolicyId="+e+"&headerId="+t+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})},deleteDeletingHeader:function(e,t){teaweb.confirm("确定要删除'"+t+"'吗？",function(){Tea.action("/servers/server/settings/headers/deleteDeletingHeader").params({headerPolicyId:e,headerName:t}).post().refresh()})},deleteNonStandardHeader:function(e,t){teaweb.confirm("确定要删除'"+t+"'吗？",function(){Tea.action("/servers/server/settings/headers/deleteNonStandardHeader").params({headerPolicyId:e,headerName:t}).post().refresh()})},deleteHeader:function(e,t,i){teaweb.confirm("确定要删除此报头吗？",function(){this.$post("/servers/server/settings/headers/delete").params({headerPolicyId:e,type:t,headerId:i}).refresh()})},updateCORS:function(e){teaweb.popup("/servers/server/settings/headers/updateCORSPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+this.type,{height:"30em",callback:function(){teaweb.successRefresh("保存成功")}})}},template:`<div>
 	<div class="ui menu tabular small">
-		<a class="item" :class="{active:type == 'response'}" @click.prevent="selectType('response')">响应Header<span v-if="responseSettingHeaders.length > 0">({{responseSettingHeaders.length}})</span></a>
-		<a class="item" :class="{active:type == 'request'}" @click.prevent="selectType('request')">请求Header<span v-if="requestSettingHeaders.length > 0">({{requestSettingHeaders.length}})</span></a>
+		<a class="item" :class="{active:type == 'response'}" @click.prevent="selectType('response')">响应报头<span v-if="responseSettingHeaders.length > 0">({{responseSettingHeaders.length}})</span></a>
+		<a class="item" :class="{active:type == 'request'}" @click.prevent="selectType('request')">请求报头<span v-if="requestSettingHeaders.length > 0">({{requestSettingHeaders.length}})</span></a>
 	</div>
 	
 	<div class="margin"></div>
@@ -3347,8 +3360,8 @@ example2.com
         	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#request'">网站分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
     	</div>
     	<div :class="{'opacity-mask': vHasGroupRequestConfig}">
-		<h4>设置请求Header &nbsp; <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)" style="font-size: 0.8em">[添加新Header]</a></h4>
-			<p class="comment" v-if="requestSettingHeaders.length == 0">暂时还没有Header。</p>
+		<h4>设置请求报头 &nbsp; <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)" style="font-size: 0.8em">[添加新报头]</a></h4>
+			<p class="comment" v-if="requestSettingHeaders.length == 0">暂时还没有自定义报头。</p>
 			<table class="ui table selectable celled" v-if="requestSettingHeaders.length > 0">
 				<thead>
 					<tr>
@@ -3360,7 +3373,7 @@ example2.com
 				<tbody v-for="header in requestSettingHeaders">
 					<tr>
 						<td class="five wide">
-							{{header.name}}
+							<a href="" @click.prevent="updateSettingPopup(vRequestHeaderPolicy.id, header.id)">{{header.name}} <i class="icon expand small"></i></a>
 							<div>
 								<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
 								<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
@@ -3381,7 +3394,7 @@ example2.com
 			<table class="ui table definition selectable">
 				<tbody>
 					<tr>
-						<td class="title">删除Header <tip-icon content="可以通过此功能删除转发到源站的请求报文中不需要的Header"></tip-icon></td>
+						<td class="title">删除报头 <tip-icon content="可以通过此功能删除转发到源站的请求报文中不需要的报头"></tip-icon></td>
 						<td>
 							<div v-if="requestDeletingHeaders.length > 0">
 								<div class="ui label small basic" v-for="headerName in requestDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
@@ -3391,7 +3404,7 @@ example2.com
 						</td>
 					</tr>
 					<tr>
-						<td class="title">非标Header <tip-icon content="可以通过此功能设置转发到源站的请求报文中非标准的Header，比如hello_world"></tip-icon></td>
+						<td class="title">非标报头 <tip-icon content="可以通过此功能设置转发到源站的请求报文中非标准的报头，比如hello_world"></tip-icon></td>
 						<td>
 							<div v-if="requestNonStandardHeaders.length > 0">
 								<div class="ui label small basic" v-for="headerName in requestNonStandardHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteNonStandardHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
@@ -3420,9 +3433,9 @@ example2.com
         	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#response'">网站分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
     	</div>
     	<div :class="{'opacity-mask': vHasGroupResponseConfig}">
-			<h4>设置响应Header &nbsp; <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)" style="font-size: 0.8em">[添加新Header]</a></h4>
-			<p class="comment" style="margin-top: 0; padding-top: 0">将会覆盖已有的同名Header。</p>
-			<p class="comment" v-if="responseSettingHeaders.length == 0">暂时还没有Header。</p>
+			<h4>设置响应报头 &nbsp; <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)" style="font-size: 0.8em">[添加新报头]</a></h4>
+			<p class="comment" style="margin-top: 0; padding-top: 0">将会覆盖已有的同名报头。</p>
+			<p class="comment" v-if="responseSettingHeaders.length == 0">暂时还没有自定义报头。</p>
 			<table class="ui table selectable celled" v-if="responseSettingHeaders.length > 0">
 				<thead>
 					<tr>
@@ -3434,7 +3447,7 @@ example2.com
 				<tbody v-for="header in responseSettingHeaders">
 					<tr>
 						<td class="five wide">
-							{{header.name}}
+							<a href="" @click.prevent="updateSettingPopup(vResponseHeaderPolicy.id, header.id)">{{header.name}} <i class="icon expand small"></i></a>
 							<div>
 								<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
 								<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
@@ -3446,7 +3459,7 @@ example2.com
 							
 							<!-- CORS -->
 							<div v-if="header.name == 'Access-Control-Allow-Origin' && header.value == '*'">
-								<span class="red small">建议使用当前页面下方的"CORS自适应跨域"功能代替Access-Control-*-*相关Header。</span>
+								<span class="red small">建议使用当前页面下方的"CORS自适应跨域"功能代替Access-Control-*-*相关报头。</span>
 							</div>
 						</td>
 						<td>{{header.value}}</td>
@@ -3460,7 +3473,7 @@ example2.com
 			<table class="ui table definition selectable">
 				<tbody>
 					<tr>
-						<td class="title">删除Header <tip-icon content="可以通过此功能删除响应报文中不需要的Header"></tip-icon></td>
+						<td class="title">删除报头 <tip-icon content="可以通过此功能删除响应报文中不需要的报头"></tip-icon></td>
 						<td>
 							<div v-if="responseDeletingHeaders.length > 0">
 								<div class="ui label small basic" v-for="headerName in responseDeletingHeaders">{{headerName}} &nbsp; <a href=""><i class="icon remove small" title="删除" @click.prevent="deleteDeletingHeader(vResponseHeaderPolicy.id, headerName)"></i></a></div>
@@ -3470,7 +3483,7 @@ example2.com
 						</td>
 					</tr>
 					<tr>
-						<td>非标Header <tip-icon content="可以通过此功能设置响应报文中非标准的Header，比如hello_world"></tip-icon></td>
+						<td>非标报头 <tip-icon content="可以通过此功能设置响应报文中非标准的报头，比如hello_world"></tip-icon></td>
 						<td>
 							<div v-if="responseNonStandardHeaders.length > 0">
 								<div class="ui label small basic" v-for="headerName in responseNonStandardHeaders">{{headerName}} &nbsp; <a href=""><i class="icon remove small" title="删除" @click.prevent="deleteNonStandardHeader(vResponseHeaderPolicy.id, headerName)"></i></a></div>
@@ -3483,7 +3496,7 @@ example2.com
 						<td class="title">CORS自适应跨域</td>
 						<td>
 							<span v-if="responseCORS.isOn" class="green">已启用</span><span class="disabled" v-else="">未启用</span> &nbsp; <a href="" @click.prevent="updateCORS(vResponseHeaderPolicy.id)">[修改]</a>
-							<p class="comment"><span v-if="!responseCORS.isOn">启用后，服务器可以</span><span v-else>服务器会</span>自动生成<code-label>Access-Control-*-*</code-label>相关的Header。</p>
+							<p class="comment"><span v-if="!responseCORS.isOn">启用后，服务器可以</span><span v-else>服务器会</span>自动生成<code-label>Access-Control-*-*</code-label>相关的报头。</p>
 						</td>
 					</tr>
 				</tbody>
@@ -3554,18 +3567,19 @@ example2.com
 					<prior-checkbox :v-config="shutdownConfig" v-if="vIsLocation"></prior-checkbox>
 					<tbody v-show="!vIsLocation || shutdownConfig.isPrior">
 						<tr>
-							<td class="title">开启</td>
+							<td class="title">临时关闭网站</td>
 							<td>
 								<div class="ui checkbox">
 									<input type="checkbox" value="1" v-model="shutdownConfig.isOn" />
 									<label></label>
 								</div>
+								<p class="comment">选中后，表示临时关闭当前网站，并显示自定义内容。</p>
 							</td>
 						</tr>
 					</tbody>
 					<tbody v-show="(!vIsLocation || shutdownConfig.isPrior) && shutdownConfig.isOn">
 						<tr>
-							<td>内容类型 *</td>
+							<td>显示内容类型 *</td>
 							<td>
 								<select class="ui dropdown auto-width" v-model="shutdownConfig.bodyType">
 									<option value="url">读取URL</option>
@@ -3574,14 +3588,14 @@ example2.com
 							</td>
 						</tr>
 						<tr v-show="shutdownConfig.bodyType == 'url'">
-							<td class="title">页面URL *</td>
+							<td class="title">显示页面URL *</td>
 							<td>
-								<input type="text" v-model="shutdownConfig.url" placeholder="页面文件路径或一个完整URL"/>
-								<p class="comment">页面文件是相对于节点安装目录的页面文件比如pages/40x.html，或者一个完整的URL。</p>
+								<input type="text" v-model="shutdownConfig.url" placeholder="类似于 https://example.com/page.html"/>
+								<p class="comment">将从此URL中读取内容。</p>
 							</td>
 						</tr>
 						<tr v-show="shutdownConfig.bodyType == 'html'">
-							<td>HTML *</td>
+							<td>显示页面HTML *</td>
 							<td>
 								<textarea name="body" ref="shutdownHTMLBody" v-model="shutdownConfig.body"></textarea>
 								<p class="comment"><a href="" @click.prevent="addShutdownHTMLTemplate">[使用模板]</a>。填写页面的HTML内容，支持请求变量。</p>
@@ -3884,7 +3898,7 @@ example2.com
 		<span v-if="accessLog.requestTime != null"> - 耗时:{{formatCost(accessLog.requestTime)}} ms </span><span v-if="accessLog.humanTime != null && accessLog.humanTime.length > 0" class="grey small">&nbsp; ({{accessLog.humanTime}})</span>
 		&nbsp; <a href="" @click.prevent="showLog" title="查看详情"><i class="icon expand"></i></a>
 	</div>
-</div>`});var punycode=new function(){this.utf16={decode:function(e){for(var t,i,n=[],s=0,o=e.length;s<o;){if(55296==(63488&(t=e.charCodeAt(s++)))){if(i=e.charCodeAt(s++),55296!=(64512&t)||56320!=(64512&i))throw new RangeError("UTF-16(decode): Illegal UTF-16 sequence");t=((1023&t)<<10)+(1023&i)+65536}n.push(t)}return n},encode:function(e){for(var t,i=[],n=0,s=e.length;n<s;){if(55296==(63488&(t=e[n++])))throw new RangeError("UTF-16(encode): Illegal UTF-16 value");65535<t&&(t-=65536,i.push(String.fromCharCode(t>>>10&1023|55296)),t=56320|1023&t),i.push(String.fromCharCode(t))}return i.join("")}};var b=2147483647;function y(e,t){return e+22+75*(e<26)-((0!=t)<<5)}function x(e,t,i){var n;for(e=i?Math.floor(e/700):e>>1,e+=Math.floor(e/t),n=0;455<e;n+=36)e=Math.floor(e/35);return Math.floor(n+36*e/(e+38))}this.decode=function(e,t){var i,n,s,o,a,l,c,r,d=[],p=[],u=e.length,h=128,v=0,m=72,f=e.lastIndexOf("-");for(f<0&&(f=0),n=0;n<f;++n){if(t&&(p[d.length]=e.charCodeAt(n)-65<26),128<=e.charCodeAt(n))throw new RangeError("Illegal input >= 0x80");d.push(e.charCodeAt(n))}for(s=0<f?f+1:0;s<u;){for(o=v,a=1,l=36;;l+=36){if(u<=s)throw RangeError("punycode_bad_input(1)");if(36<=(r=(r=e.charCodeAt(s++))-48<10?r-22:r-65<26?r-65:r-97<26?r-97:36))throw RangeError("punycode_bad_input(2)");if(r>Math.floor((b-v)/a))throw RangeError("punycode_overflow(1)");if(v+=r*a,r<(r=l<=m?1:m+26<=l?26:l-m))break;if(a>Math.floor(b/(36-r)))throw RangeError("punycode_overflow(2)");a*=36-r}if(m=x(v-o,i=d.length+1,0===o),Math.floor(v/i)>b-h)throw RangeError("punycode_overflow(3)");h+=Math.floor(v/i),v%=i,t&&p.splice(v,0,e.charCodeAt(s-1)-65<26),d.splice(v,0,h),v++}if(t)for(v=0,c=d.length;v<c;v++)p[v]&&(d[v]=String.fromCharCode(d[v]).toUpperCase().charCodeAt(0));return this.utf16.encode(d)},this.encode=function(e,t){t&&(r=this.utf16.decode(e));var i,n,s,o,a,l,c,r,d=(e=this.utf16.decode(e.toLowerCase())).length;if(t)for(g=0;g<d;g++)r[g]=e[g]!=r[g];for(var p,u,h=[],v=128,m=0,f=72,g=0;g<d;++g)e[g]<128&&h.push(String.fromCharCode(r?(p=e[g],u=r[g],(p-=(p-97<26)<<5)+((!u&&p-65<26)<<5)):e[g]));for(i=n=h.length,0<n&&h.push("-");i<d;){for(s=b,g=0;g<d;++g)v<=(c=e[g])&&c<s&&(s=c);if(s-v>Math.floor((b-m)/(i+1)))throw RangeError("punycode_overflow (1)");for(m+=(s-v)*(i+1),v=s,g=0;g<d;++g){if((c=e[g])<v&&++m>b)return Error("punycode_overflow(2)");if(c==v){for(o=m,a=36;!(o<(l=a<=f?1:f+26<=a?26:a-f));a+=36)h.push(String.fromCharCode(y(l+(o-l)%(36-l),0))),o=Math.floor((o-l)/(36-l));h.push(String.fromCharCode(y(o,t&&r[g]?1:0))),f=x(m,i+1,i==n),m=0,++i}}++m,++v}return h.join("")},this.ToASCII=function(e){for(var t=e.split("."),i=[],n=0;n<t.length;++n){var s=t[n];i.push(s.match(/[^A-Za-z0-9-]/)?"xn--"+punycode.encode(s):s)}return i.join(".")},this.ToUnicode=function(e){for(var t=e.split("."),i=[],n=0;n<t.length;++n){var s=t[n];i.push(s.match(/^xn--/)?punycode.decode(s.slice(4)):s)}return i.join(".")}};function sortTable(s){let e=document.createElement("script");e.setAttribute("src","/js/sortable.min.js"),e.addEventListener("load",function(){let n=document.querySelector("#sortable-table");null!=n&&Sortable.create(n,{draggable:"tbody",handle:".icon.handle",onStart:function(){},onUpdate:function(e){let t=n.querySelectorAll("tbody"),i=[];t.forEach(function(e){i.push(parseInt(e.getAttribute("v-id")))}),s(i)}})}),document.head.appendChild(e)}function sortLoad(e){let t=document.createElement("script");t.setAttribute("src","/js/sortable.min.js"),t.addEventListener("load",function(){"function"==typeof e&&e()}),document.head.appendChild(t)}function emitClick(e,arguments){let t=["click"];for(let e=0;e<arguments.length;e++)t.push(arguments[e]);e.$emit.apply(e,t)}Vue.component("http-firewall-block-options-viewer",{props:["v-block-options"],data:function(){return{options:this.vBlockOptions}},template:`<div>
+</div>`});var punycode=new function(){this.utf16={decode:function(e){for(var t,i,n=[],s=0,o=e.length;s<o;){if(55296==(63488&(t=e.charCodeAt(s++)))){if(i=e.charCodeAt(s++),55296!=(64512&t)||56320!=(64512&i))throw new RangeError("UTF-16(decode): Illegal UTF-16 sequence");t=((1023&t)<<10)+(1023&i)+65536}n.push(t)}return n},encode:function(e){for(var t,i=[],n=0,s=e.length;n<s;){if(55296==(63488&(t=e[n++])))throw new RangeError("UTF-16(encode): Illegal UTF-16 value");65535<t&&(t-=65536,i.push(String.fromCharCode(t>>>10&1023|55296)),t=56320|1023&t),i.push(String.fromCharCode(t))}return i.join("")}};var b=2147483647;function y(e,t){return e+22+75*(e<26)-((0!=t)<<5)}function w(e,t,i){var n;for(e=i?Math.floor(e/700):e>>1,e+=Math.floor(e/t),n=0;455<e;n+=36)e=Math.floor(e/35);return Math.floor(n+36*e/(e+38))}this.decode=function(e,t){var i,n,s,o,a,l,c,r,d=[],p=[],u=e.length,h=128,v=0,m=72,f=e.lastIndexOf("-");for(f<0&&(f=0),n=0;n<f;++n){if(t&&(p[d.length]=e.charCodeAt(n)-65<26),128<=e.charCodeAt(n))throw new RangeError("Illegal input >= 0x80");d.push(e.charCodeAt(n))}for(s=0<f?f+1:0;s<u;){for(o=v,a=1,l=36;;l+=36){if(u<=s)throw RangeError("punycode_bad_input(1)");if(36<=(r=(r=e.charCodeAt(s++))-48<10?r-22:r-65<26?r-65:r-97<26?r-97:36))throw RangeError("punycode_bad_input(2)");if(r>Math.floor((b-v)/a))throw RangeError("punycode_overflow(1)");if(v+=r*a,r<(r=l<=m?1:m+26<=l?26:l-m))break;if(a>Math.floor(b/(36-r)))throw RangeError("punycode_overflow(2)");a*=36-r}if(m=w(v-o,i=d.length+1,0===o),Math.floor(v/i)>b-h)throw RangeError("punycode_overflow(3)");h+=Math.floor(v/i),v%=i,t&&p.splice(v,0,e.charCodeAt(s-1)-65<26),d.splice(v,0,h),v++}if(t)for(v=0,c=d.length;v<c;v++)p[v]&&(d[v]=String.fromCharCode(d[v]).toUpperCase().charCodeAt(0));return this.utf16.encode(d)},this.encode=function(e,t){t&&(r=this.utf16.decode(e));var i,n,s,o,a,l,c,r,d=(e=this.utf16.decode(e.toLowerCase())).length;if(t)for(g=0;g<d;g++)r[g]=e[g]!=r[g];for(var p,u,h=[],v=128,m=0,f=72,g=0;g<d;++g)e[g]<128&&h.push(String.fromCharCode(r?(p=e[g],u=r[g],(p-=(p-97<26)<<5)+((!u&&p-65<26)<<5)):e[g]));for(i=n=h.length,0<n&&h.push("-");i<d;){for(s=b,g=0;g<d;++g)v<=(c=e[g])&&c<s&&(s=c);if(s-v>Math.floor((b-m)/(i+1)))throw RangeError("punycode_overflow (1)");for(m+=(s-v)*(i+1),v=s,g=0;g<d;++g){if((c=e[g])<v&&++m>b)return Error("punycode_overflow(2)");if(c==v){for(o=m,a=36;!(o<(l=a<=f?1:f+26<=a?26:a-f));a+=36)h.push(String.fromCharCode(y(l+(o-l)%(36-l),0))),o=Math.floor((o-l)/(36-l));h.push(String.fromCharCode(y(o,t&&r[g]?1:0))),f=w(m,i+1,i==n),m=0,++i}}++m,++v}return h.join("")},this.ToASCII=function(e){for(var t=e.split("."),i=[],n=0;n<t.length;++n){var s=t[n];i.push(s.match(/[^A-Za-z0-9-]/)?"xn--"+punycode.encode(s):s)}return i.join(".")},this.ToUnicode=function(e){for(var t=e.split("."),i=[],n=0;n<t.length;++n){var s=t[n];i.push(s.match(/^xn--/)?punycode.decode(s.slice(4)):s)}return i.join(".")}};function sortTable(s){let e=document.createElement("script");e.setAttribute("src","/js/sortable.min.js"),e.addEventListener("load",function(){let n=document.querySelector("#sortable-table");null!=n&&Sortable.create(n,{draggable:"tbody",handle:".icon.handle",onStart:function(){},onUpdate:function(e){let t=n.querySelectorAll("tbody"),i=[];t.forEach(function(e){i.push(parseInt(e.getAttribute("v-id")))}),s(i)}})}),document.head.appendChild(e)}function sortLoad(e){let t=document.createElement("script");t.setAttribute("src","/js/sortable.min.js"),t.addEventListener("load",function(){"function"==typeof e&&e()}),document.head.appendChild(t)}function emitClick(e,arguments){let t=["click"];for(let e=0;e<arguments.length;e++)t.push(arguments[e]);e.$emit.apply(e,t)}Vue.component("http-firewall-block-options-viewer",{props:["v-block-options"],data:function(){return{options:this.vBlockOptions}},template:`<div>
 	<span v-if="options == null">默认设置</span>
 	<div v-else>
 		状态码：{{options.statusCode}} / 提示内容：<span v-if="options.body != null && options.body.length > 0">[{{options.body.length}}字符]</span><span v-else class="disabled">[无]</span>  / 超时时间：{{options.timeout}}秒 <span v-if="options.timeoutMax > options.timeout">/ 最大封禁时长：{{options.timeoutMax}}秒</span>
@@ -5355,6 +5369,16 @@ example2.com
 			</td>
 		</tr>
 	</table>
+</div>`}),Vue.component("http-firewall-region-selector",{props:["v-type","v-countries"],data:function(){let e=this.vCountries;return null==e&&(e=[]),{listType:this.vType,countries:e}},methods:{addCountry:function(){let e=this.countries.map(function(e){return e.id}),t=this;teaweb.popup("/servers/server/settings/waf/ipadmin/selectCountriesPopup?type="+this.listType+"&selectedCountryIds="+e.join(","),{width:"52em",height:"30em",callback:function(e){t.countries=e.data.selectedCountries,t.$forceUpdate(),t.notifyChange()}})},removeCountry:function(e){this.countries.$remove(e),this.notifyChange()},resetCountries:function(){this.countries=[],this.notifyChange()},notifyChange:function(){this.$emit("change",{countries:this.countries})}},template:`<div>
+	<span v-if="countries.length == 0" class="disabled">暂时没有选择<span v-if="listType =='allow'">允许</span><span v-else>封禁</span>的区域。</span>
+	<div v-show="countries.length > 0">
+		<div class="ui label tiny basic" v-for="(country, index) in countries" style="margin-bottom: 0.5em">
+			<input type="hidden" :name="listType + 'CountryIds'" :value="country.id"/>
+			({{country.letter}}){{country.name}} <a href="" @click.prevent="removeCountry(index)" title="删除"><i class="icon remove"></i></a>
+		</div>
+	</div>
+	<div class="ui divider"></div>
+	<button type="button" class="ui button tiny" @click.prevent="addCountry">修改</button> &nbsp; <button type="button" class="ui button tiny" v-show="countries.length > 0" @click.prevent="resetCountries">清空</button>
 </div>`}),Vue.component("admin-selector",{props:["v-admin-id"],mounted:function(){let t=this;Tea.action("/admins/options").post().success(function(e){t.admins=e.data.admins})},data:function(){let e=this.vAdminId;return{admins:[],adminId:e=null==e?0:e}},template:`<div>
     <select class="ui dropdown auto-width" name="adminId" v-model="adminId">
         <option value="0">[选择系统用户]</option>
@@ -5821,6 +5845,11 @@ example2.com
 				<span v-else>{{item.name}}</span>
 			</a>
 		</div>
+	</div>
+</div>`}),Vue.component("search-box",{props:["placeholder","width"],data:function(){let e=this.width;return{realWidth:e=null==e?"10em":e,realValue:""}},methods:{onInput:function(){this.$emit("input",{value:this.realValue}),this.$emit("change",{value:this.realValue})},clearValue:function(){this.realValue="",this.focus(),this.onInput()},focus:function(){this.$refs.valueRef.focus()}},template:`<div>
+	<div class="ui input small" :class="{'right labeled': realValue.length > 0}">
+		<input type="text" :placeholder="placeholder" :style="{width: realWidth}" @input="onInput" v-model="realValue" ref="valueRef"/>
+		<a href="" class="ui label blue" v-if="realValue.length > 0" @click.prevent="clearValue" style="padding-right: 0"><i class="icon remove"></i></a>
 	</div>
 </div>`}),Vue.component("dot",{template:'<span style="display: inline-block; padding-bottom: 3px"><i class="icon circle tiny"></i></span>'}),Vue.component("time-duration-box",{props:["name","v-name","v-value","v-count","v-unit"],mounted:function(){this.change()},data:function(){let e=this.vValue,t=("number"!=typeof(e=null==e?{count:this.vCount,unit:this.vUnit}:e).count&&(e.count=-1),"");return"string"==typeof this.name&&0<this.name.length?t=this.name:"string"==typeof this.vName&&0<this.vName.length&&(t=this.vName),{duration:e,countString:0<=e.count?e.count.toString():"",realName:t}},watch:{countString:function(e){var e=e.trim();0==e.length?this.duration.count=-1:(e=parseInt(e),isNaN(e)||(this.duration.count=e),this.change())}},methods:{change:function(){this.$emit("change",this.duration)}},template:`<div class="ui fields inline" style="padding-bottom: 0; margin-bottom: 0">
 	<input type="hidden" :name="realName" :value="JSON.stringify(duration)"/>

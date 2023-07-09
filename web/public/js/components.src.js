@@ -6653,14 +6653,14 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 			<td>允许的来源域名</td>
 			<td>
 				<values-box :values="allowDomains" @change="changeAllowDomains"></values-box>
-				<p class="comment">允许的来源域名列表，比如<code-label>example.com</code-label>、<code-label>*.example.com</code-label>。单个星号<code-label>*</code-label>表示允许所有域名。</p>
+				<p class="comment">允许的来源域名列表，比如<code-label>example.com</code-label>（顶级域名)、<code-label>*.example.com</code-label>（example.com的所有二级域名）。单个星号<code-label>*</code-label>表示允许所有域名。</p>
 			</td>
 		</tr>
 		<tr>
 			<td>禁止的来源域名</td>
 			<td>
 				<values-box :values="denyDomains" @change="changeDenyDomains"></values-box>
-				<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>、<code-label>*.example.org</code-label>；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
+				<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>（顶级域名）、<code-label>*.example.org</code-label>（example.org的所有二级域名）；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
 			</td>
 		</tr>
 		<tr>
@@ -7105,6 +7105,7 @@ Vue.component("origin-list-table", {
 					<tiny-basic-label v-if="origin.hasCert">证书</tiny-basic-label>
 					<tiny-basic-label v-if="origin.host != null && origin.host.length > 0">主机名: {{origin.host}}</tiny-basic-label>
 					<tiny-basic-label v-if="origin.followPort">端口跟随</tiny-basic-label>
+					<tiny-basic-label v-if="origin.addr != null && origin.addr.startsWith('https://') && origin.http2Enabled">HTTP/2</tiny-basic-label>
 	
 					<span v-if="origin.domains != null && origin.domains.length > 0"><tiny-basic-label v-for="domain in origin.domains">匹配: {{domain}}</tiny-basic-label></span>
 					<span v-else-if="hasMatchedDomains"><tiny-basic-label>匹配: 所有域名</tiny-basic-label></span>
@@ -7191,7 +7192,7 @@ Vue.component("http-cors-header-config-box", {
 				<td class="title">启用CORS自适应跨域</td>
 				<td>
 					<checkbox v-model="config.isOn"></checkbox>
-					<p class="comment">启用后，自动在响应Header中增加对应的<code-label>Access-Control-*</code-label>相关内容。</p>
+					<p class="comment">启用后，自动在响应报头中增加对应的<code-label>Access-Control-*</code-label>相关内容。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -7219,10 +7220,10 @@ Vue.component("http-cors-header-config-box", {
 				</td>
 			</tr>
 			<tr>
-				<td>允许服务器暴露的Header</td>
+				<td>允许服务器暴露的报头</td>
 				<td>
 					<values-box :v-values="config.exposeHeaders"></values-box>
-					<p class="comment"><code-label>Access-Control-Expose-Headers</code-label>值设置。允许服务器暴露的Header，请注意Header的大小写。</p>
+					<p class="comment"><code-label>Access-Control-Expose-Headers</code-label>值设置。允许服务器暴露的报头，请注意报头的大小写。</p>
 				</td>
 			</tr>
 			<tr>
@@ -7403,8 +7404,8 @@ Vue.component("http-websocket-box", {
 				<td class="color-border">允许的来源域列表<em>（Origin）</em></td>
 				<td>
 					<div v-if="websocketConfig.allowedOrigins.length > 0">
-						<div class="ui label tiny" v-for="(origin, index) in websocketConfig.allowedOrigins">
-							{{origin}} <a href="" title="删除" @click.prevent="removeOrigin(index)"><i class="icon remove"></i></a>
+						<div class="ui label small basic" v-for="(origin, index) in websocketConfig.allowedOrigins">
+							{{origin}} <a href="" title="删除" @click.prevent="removeOrigin(index)"><i class="icon remove small"></i></a>
 						</div>
 						<div class="ui divider"></div>
 					</div>
@@ -8082,6 +8083,62 @@ Vue.component("domains-box", {
 </div>`
 })
 
+Vue.component("http-firewall-province-selector", {
+	props: ["v-type", "v-provinces"],
+	data: function () {
+		let provinces = this.vProvinces
+		if (provinces == null) {
+			provinces = []
+		}
+
+		return {
+			listType: this.vType,
+			provinces: provinces
+		}
+	},
+	methods: {
+		addProvince: function () {
+			let selectedProvinceIds = this.provinces.map(function (province) {
+				return province.id
+			})
+			let that = this
+			teaweb.popup("/servers/server/settings/waf/ipadmin/selectProvincesPopup?type=" + this.listType + "&selectedProvinceIds=" + selectedProvinceIds.join(","), {
+				width: "50em",
+				height: "26em",
+				callback: function (resp) {
+					that.provinces = resp.data.selectedProvinces
+					that.$forceUpdate()
+					that.notifyChange()
+				}
+			})
+		},
+		removeProvince: function (index) {
+			this.provinces.$remove(index)
+			this.notifyChange()
+		},
+		resetProvinces: function () {
+			this.provinces = []
+			this.notifyChange()
+		},
+		notifyChange: function () {
+			this.$emit("change", {
+				"provinces": this.provinces
+			})
+		}
+	},
+	template: `<div>
+	<span v-if="provinces.length == 0" class="disabled">暂时没有选择<span v-if="listType =='allow'">允许</span><span v-else>封禁</span>的省份。</span>
+	<div v-show="provinces.length > 0">
+		<div class="ui label tiny basic" v-for="(province, index) in provinces" style="margin-bottom: 0.5em">
+			<input type="hidden" :name="listType + 'ProvinceIds'" :value="province.id"/>
+			{{province.name}} <a href="" @click.prevent="removeProvince(index)" title="删除"><i class="icon remove"></i></a>
+		</div>
+	</div>
+	<div class="ui divider"></div>
+	<button type="button" class="ui button tiny" @click.prevent="addProvince">修改</button> &nbsp; <button type="button" class="ui button tiny" v-show="provinces.length > 0" @click.prevent="resetProvinces">清空</button>
+</div>`
+})
+
 Vue.component("http-referers-config-box", {
 	props: ["v-referers-config", "v-is-location", "v-is-group"],
 	data: function () {
@@ -8345,7 +8402,7 @@ Vue.component("http-redirect-to-https-box", {
 
 // 动作选择
 Vue.component("http-firewall-actions-box", {
-	props: ["v-actions", "v-firewall-policy", "v-action-configs"],
+	props: ["v-actions", "v-firewall-policy", "v-action-configs", "v-group-type"],
 	mounted: function () {
 		let that = this
 		Tea.action("/servers/iplists/levelOptions")
@@ -8380,6 +8437,13 @@ Vue.component("http-firewall-actions-box", {
 		}
 		if (this.vFirewallPolicy.inbound.groups == null) {
 			this.vFirewallPolicy.inbound.groups = []
+		}
+
+		if (this.vFirewallPolicy.outbound == null) {
+			this.vFirewallPolicy.outbound = {}
+		}
+		if (this.vFirewallPolicy.outbound.groups == null) {
+			this.vFirewallPolicy.outbound.groups = []
 		}
 
 		let id = 0
@@ -8547,7 +8611,16 @@ Vue.component("http-firewall-actions-box", {
 			})
 			this.goGroup = group
 			if (group == null) {
-				this.goGroupName = ""
+				// search outbound groups
+				group = this.vFirewallPolicy.outbound.groups.$find(function (k, v) {
+					return v.id == groupId
+				})
+				if (group == null) {
+					this.goGroupName = ""
+				} else {
+					this.goGroup = group
+					this.goGroupName = group.name
+				}
 			} else {
 				this.goGroupName = group.name
 			}
@@ -9022,8 +9095,8 @@ Vue.component("http-firewall-actions-box", {
 			<!-- 范围 -->
 			<span v-if="config.options.scope != null && config.options.scope.length > 0" class="small grey">
 				&nbsp; 
-				<span v-if="config.options.scope == 'global'">[所有服务]</span>
-				<span v-if="config.options.scope == 'service'">[当前服务]</span>
+				<span v-if="config.options.scope == 'global'">[所有网站]</span>
+				<span v-if="config.options.scope == 'service'">[当前网站]</span>
 			</span>
 			
 			<!-- 操作按钮 -->
@@ -9048,8 +9121,8 @@ Vue.component("http-firewall-actions-box", {
 				<td>封禁范围</td>
 				<td>
 					<select class="ui dropdown auto-width" v-model="blockScope">
-						<option value="service">当前服务</option>
-						<option value="global">所有服务</option>
+						<option value="service">当前网站</option>
+						<option value="global">所有网站</option>
 					</select>
 					<p class="comment" v-if="blockScope == 'service'">只封禁用户对当前网站的访问，其他服务不受影响。</p>
 					<p class="comment" v-if="blockScope =='global'">封禁用户对所有网站的访问。</p>
@@ -9242,7 +9315,8 @@ Vue.component("http-firewall-actions-box", {
 				<td>
 					<select class="ui dropdown auto-width" v-model="goGroupId">
 						<option value="0">[选择分组]</option>
-						<option v-for="group in vFirewallPolicy.inbound.groups" :value="group.id">{{group.name}}</option>
+						<option v-if="vFirewallPolicy.inbound != null && vFirewallPolicy.inbound.groups != null" v-for="group in vFirewallPolicy.inbound.groups" :value="group.id">入站：{{group.name}}</option>
+						<option v-if="vGroupType == 'outbound' && vFirewallPolicy.outbound != null && vFirewallPolicy.outbound.groups != null" v-for="group in vFirewallPolicy.outbound.groups" :value="group.id">出站：{{group.name}}</option>
 					</select>
 				</td>
 			</tr>
@@ -9253,7 +9327,8 @@ Vue.component("http-firewall-actions-box", {
 				<td>
 					<select class="ui dropdown auto-width" v-model="goGroupId">
 						<option value="0">[选择分组]</option>
-						<option v-for="group in vFirewallPolicy.inbound.groups" :value="group.id">{{group.name}}</option>
+						<option v-if="vFirewallPolicy.inbound != null && vFirewallPolicy.inbound.groups != null" v-for="group in vFirewallPolicy.inbound.groups" :value="group.id">入站：{{group.name}}</option>
+						<option v-if="vGroupType == 'outbound' && vFirewallPolicy.outbound != null && vFirewallPolicy.outbound.groups != null" v-for="group in vFirewallPolicy.outbound.groups" :value="group.id">出站：{{group.name}}</option>
 					</select>
 				</td>
 			</tr>
@@ -9597,7 +9672,7 @@ Vue.component("http-header-policy-box", {
 			})
 		},
 		deleteHeader: function (policyId, type, headerId) {
-			teaweb.confirm("确定要删除此Header吗？", function () {
+			teaweb.confirm("确定要删除此报头吗？", function () {
 					this.$post("/servers/server/settings/headers/delete")
 						.params({
 							headerPolicyId: policyId,
@@ -9619,8 +9694,8 @@ Vue.component("http-header-policy-box", {
 	},
 	template: `<div>
 	<div class="ui menu tabular small">
-		<a class="item" :class="{active:type == 'response'}" @click.prevent="selectType('response')">响应Header<span v-if="responseSettingHeaders.length > 0">({{responseSettingHeaders.length}})</span></a>
-		<a class="item" :class="{active:type == 'request'}" @click.prevent="selectType('request')">请求Header<span v-if="requestSettingHeaders.length > 0">({{requestSettingHeaders.length}})</span></a>
+		<a class="item" :class="{active:type == 'response'}" @click.prevent="selectType('response')">响应报头<span v-if="responseSettingHeaders.length > 0">({{responseSettingHeaders.length}})</span></a>
+		<a class="item" :class="{active:type == 'request'}" @click.prevent="selectType('request')">请求报头<span v-if="requestSettingHeaders.length > 0">({{requestSettingHeaders.length}})</span></a>
 	</div>
 	
 	<div class="margin"></div>
@@ -9642,8 +9717,8 @@ Vue.component("http-header-policy-box", {
         	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#request'">网站分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
     	</div>
     	<div :class="{'opacity-mask': vHasGroupRequestConfig}">
-		<h4>设置请求Header &nbsp; <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)" style="font-size: 0.8em">[添加新Header]</a></h4>
-			<p class="comment" v-if="requestSettingHeaders.length == 0">暂时还没有Header。</p>
+		<h4>设置请求报头 &nbsp; <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)" style="font-size: 0.8em">[添加新报头]</a></h4>
+			<p class="comment" v-if="requestSettingHeaders.length == 0">暂时还没有自定义报头。</p>
 			<table class="ui table selectable celled" v-if="requestSettingHeaders.length > 0">
 				<thead>
 					<tr>
@@ -9655,7 +9730,7 @@ Vue.component("http-header-policy-box", {
 				<tbody v-for="header in requestSettingHeaders">
 					<tr>
 						<td class="five wide">
-							{{header.name}}
+							<a href="" @click.prevent="updateSettingPopup(vRequestHeaderPolicy.id, header.id)">{{header.name}} <i class="icon expand small"></i></a>
 							<div>
 								<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
 								<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
@@ -9676,7 +9751,7 @@ Vue.component("http-header-policy-box", {
 			<table class="ui table definition selectable">
 				<tbody>
 					<tr>
-						<td class="title">删除Header <tip-icon content="可以通过此功能删除转发到源站的请求报文中不需要的Header"></tip-icon></td>
+						<td class="title">删除报头 <tip-icon content="可以通过此功能删除转发到源站的请求报文中不需要的报头"></tip-icon></td>
 						<td>
 							<div v-if="requestDeletingHeaders.length > 0">
 								<div class="ui label small basic" v-for="headerName in requestDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
@@ -9686,7 +9761,7 @@ Vue.component("http-header-policy-box", {
 						</td>
 					</tr>
 					<tr>
-						<td class="title">非标Header <tip-icon content="可以通过此功能设置转发到源站的请求报文中非标准的Header，比如hello_world"></tip-icon></td>
+						<td class="title">非标报头 <tip-icon content="可以通过此功能设置转发到源站的请求报文中非标准的报头，比如hello_world"></tip-icon></td>
 						<td>
 							<div v-if="requestNonStandardHeaders.length > 0">
 								<div class="ui label small basic" v-for="headerName in requestNonStandardHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteNonStandardHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
@@ -9715,9 +9790,9 @@ Vue.component("http-header-policy-box", {
         	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#response'">网站分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
     	</div>
     	<div :class="{'opacity-mask': vHasGroupResponseConfig}">
-			<h4>设置响应Header &nbsp; <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)" style="font-size: 0.8em">[添加新Header]</a></h4>
-			<p class="comment" style="margin-top: 0; padding-top: 0">将会覆盖已有的同名Header。</p>
-			<p class="comment" v-if="responseSettingHeaders.length == 0">暂时还没有Header。</p>
+			<h4>设置响应报头 &nbsp; <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)" style="font-size: 0.8em">[添加新报头]</a></h4>
+			<p class="comment" style="margin-top: 0; padding-top: 0">将会覆盖已有的同名报头。</p>
+			<p class="comment" v-if="responseSettingHeaders.length == 0">暂时还没有自定义报头。</p>
 			<table class="ui table selectable celled" v-if="responseSettingHeaders.length > 0">
 				<thead>
 					<tr>
@@ -9729,7 +9804,7 @@ Vue.component("http-header-policy-box", {
 				<tbody v-for="header in responseSettingHeaders">
 					<tr>
 						<td class="five wide">
-							{{header.name}}
+							<a href="" @click.prevent="updateSettingPopup(vResponseHeaderPolicy.id, header.id)">{{header.name}} <i class="icon expand small"></i></a>
 							<div>
 								<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
 								<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
@@ -9741,7 +9816,7 @@ Vue.component("http-header-policy-box", {
 							
 							<!-- CORS -->
 							<div v-if="header.name == 'Access-Control-Allow-Origin' && header.value == '*'">
-								<span class="red small">建议使用当前页面下方的"CORS自适应跨域"功能代替Access-Control-*-*相关Header。</span>
+								<span class="red small">建议使用当前页面下方的"CORS自适应跨域"功能代替Access-Control-*-*相关报头。</span>
 							</div>
 						</td>
 						<td>{{header.value}}</td>
@@ -9755,7 +9830,7 @@ Vue.component("http-header-policy-box", {
 			<table class="ui table definition selectable">
 				<tbody>
 					<tr>
-						<td class="title">删除Header <tip-icon content="可以通过此功能删除响应报文中不需要的Header"></tip-icon></td>
+						<td class="title">删除报头 <tip-icon content="可以通过此功能删除响应报文中不需要的报头"></tip-icon></td>
 						<td>
 							<div v-if="responseDeletingHeaders.length > 0">
 								<div class="ui label small basic" v-for="headerName in responseDeletingHeaders">{{headerName}} &nbsp; <a href=""><i class="icon remove small" title="删除" @click.prevent="deleteDeletingHeader(vResponseHeaderPolicy.id, headerName)"></i></a></div>
@@ -9765,7 +9840,7 @@ Vue.component("http-header-policy-box", {
 						</td>
 					</tr>
 					<tr>
-						<td>非标Header <tip-icon content="可以通过此功能设置响应报文中非标准的Header，比如hello_world"></tip-icon></td>
+						<td>非标报头 <tip-icon content="可以通过此功能设置响应报文中非标准的报头，比如hello_world"></tip-icon></td>
 						<td>
 							<div v-if="responseNonStandardHeaders.length > 0">
 								<div class="ui label small basic" v-for="headerName in responseNonStandardHeaders">{{headerName}} &nbsp; <a href=""><i class="icon remove small" title="删除" @click.prevent="deleteNonStandardHeader(vResponseHeaderPolicy.id, headerName)"></i></a></div>
@@ -9778,7 +9853,7 @@ Vue.component("http-header-policy-box", {
 						<td class="title">CORS自适应跨域</td>
 						<td>
 							<span v-if="responseCORS.isOn" class="green">已启用</span><span class="disabled" v-else="">未启用</span> &nbsp; <a href="" @click.prevent="updateCORS(vResponseHeaderPolicy.id)">[修改]</a>
-							<p class="comment"><span v-if="!responseCORS.isOn">启用后，服务器可以</span><span v-else>服务器会</span>自动生成<code-label>Access-Control-*-*</code-label>相关的Header。</p>
+							<p class="comment"><span v-if="!responseCORS.isOn">启用后，服务器可以</span><span v-else>服务器会</span>自动生成<code-label>Access-Control-*-*</code-label>相关的报头。</p>
 						</td>
 					</tr>
 				</tbody>
@@ -9988,18 +10063,19 @@ Vue.component("http-pages-and-shutdown-box", {
 					<prior-checkbox :v-config="shutdownConfig" v-if="vIsLocation"></prior-checkbox>
 					<tbody v-show="!vIsLocation || shutdownConfig.isPrior">
 						<tr>
-							<td class="title">开启</td>
+							<td class="title">临时关闭网站</td>
 							<td>
 								<div class="ui checkbox">
 									<input type="checkbox" value="1" v-model="shutdownConfig.isOn" />
 									<label></label>
 								</div>
+								<p class="comment">选中后，表示临时关闭当前网站，并显示自定义内容。</p>
 							</td>
 						</tr>
 					</tbody>
 					<tbody v-show="(!vIsLocation || shutdownConfig.isPrior) && shutdownConfig.isOn">
 						<tr>
-							<td>内容类型 *</td>
+							<td>显示内容类型 *</td>
 							<td>
 								<select class="ui dropdown auto-width" v-model="shutdownConfig.bodyType">
 									<option value="url">读取URL</option>
@@ -10008,14 +10084,14 @@ Vue.component("http-pages-and-shutdown-box", {
 							</td>
 						</tr>
 						<tr v-show="shutdownConfig.bodyType == 'url'">
-							<td class="title">页面URL *</td>
+							<td class="title">显示页面URL *</td>
 							<td>
-								<input type="text" v-model="shutdownConfig.url" placeholder="页面文件路径或一个完整URL"/>
-								<p class="comment">页面文件是相对于节点安装目录的页面文件比如pages/40x.html，或者一个完整的URL。</p>
+								<input type="text" v-model="shutdownConfig.url" placeholder="类似于 https://example.com/page.html"/>
+								<p class="comment">将从此URL中读取内容。</p>
 							</td>
 						</tr>
 						<tr v-show="shutdownConfig.bodyType == 'html'">
-							<td>HTML *</td>
+							<td>显示页面HTML *</td>
 							<td>
 								<textarea name="body" ref="shutdownHTMLBody" v-model="shutdownConfig.body"></textarea>
 								<p class="comment"><a href="" @click.prevent="addShutdownHTMLTemplate">[使用模板]</a>。填写页面的HTML内容，支持请求变量。</p>
@@ -15030,6 +15106,62 @@ Vue.component("firewall-syn-flood-config-box", {
 </div>`
 })
 
+Vue.component("http-firewall-region-selector", {
+	props: ["v-type", "v-countries"],
+	data: function () {
+		let countries = this.vCountries
+		if (countries == null) {
+			countries = []
+		}
+
+		return {
+			listType: this.vType,
+			countries: countries
+		}
+	},
+	methods: {
+		addCountry: function () {
+			let selectedCountryIds = this.countries.map(function (country) {
+				return country.id
+			})
+			let that = this
+			teaweb.popup("/servers/server/settings/waf/ipadmin/selectCountriesPopup?type=" + this.listType + "&selectedCountryIds=" + selectedCountryIds.join(","), {
+				width: "52em",
+				height: "30em",
+				callback: function (resp) {
+					that.countries = resp.data.selectedCountries
+					that.$forceUpdate()
+					that.notifyChange()
+				}
+			})
+		},
+		removeCountry: function (index) {
+			this.countries.$remove(index)
+			this.notifyChange()
+		},
+		resetCountries: function () {
+			this.countries = []
+			this.notifyChange()
+		},
+		notifyChange: function () {
+			this.$emit("change", {
+				"countries": this.countries
+			})
+		}
+	},
+	template: `<div>
+	<span v-if="countries.length == 0" class="disabled">暂时没有选择<span v-if="listType =='allow'">允许</span><span v-else>封禁</span>的区域。</span>
+	<div v-show="countries.length > 0">
+		<div class="ui label tiny basic" v-for="(country, index) in countries" style="margin-bottom: 0.5em">
+			<input type="hidden" :name="listType + 'CountryIds'" :value="country.id"/>
+			({{country.letter}}){{country.name}} <a href="" @click.prevent="removeCountry(index)" title="删除"><i class="icon remove"></i></a>
+		</div>
+	</div>
+	<div class="ui divider"></div>
+	<button type="button" class="ui button tiny" @click.prevent="addCountry">修改</button> &nbsp; <button type="button" class="ui button tiny" v-show="countries.length > 0" @click.prevent="resetCountries">清空</button>
+</div>`
+})
+
 // TODO 支持关键词搜索
 // TODO 改成弹窗选择
 Vue.component("admin-selector", {
@@ -17322,6 +17454,40 @@ Vue.component("combo-box", {
 				<span v-else>{{item.name}}</span>
 			</a>
 		</div>
+	</div>
+</div>`
+})
+
+Vue.component("search-box", {
+	props: ["placeholder", "width"],
+	data: function () {
+		let width = this.width
+		if (width == null) {
+			width = "10em"
+		}
+		return {
+			realWidth: width,
+			realValue: ""
+		}
+	},
+	methods: {
+		onInput: function () {
+			this.$emit("input", { value: this.realValue})
+			this.$emit("change", { value: this.realValue})
+		},
+		clearValue: function () {
+			this.realValue = ""
+			this.focus()
+			this.onInput()
+		},
+		focus: function () {
+			this.$refs.valueRef.focus()
+		}
+	},
+	template: `<div>
+	<div class="ui input small" :class="{'right labeled': realValue.length > 0}">
+		<input type="text" :placeholder="placeholder" :style="{width: realWidth}" @input="onInput" v-model="realValue" ref="valueRef"/>
+		<a href="" class="ui label blue" v-if="realValue.length > 0" @click.prevent="clearValue" style="padding-right: 0"><i class="icon remove"></i></a>
 	</div>
 </div>`
 })
