@@ -79,17 +79,8 @@ Vue.component("http-webp-config-box", {
 				</td>
 			</tr>
 		</tbody>
-		<tbody v-show="isOn()">
-			<tr>
-				<td>图片质量</td>
-				<td>
-					<div class="ui input right labeled">
-						<input type="text" v-model="quality" style="width: 5em" maxlength="4"/>
-						<span class="ui label">%</span>
-					</div>
-					<p class="comment">取值在0到100之间，数值越大生成的图像越清晰，同时文件尺寸也会越大。</p>
-				</td>
-			</tr>
+		<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
+		<tbody v-show="isOn() && moreOptionsVisible">
 			<tr>
 				<td>支持的扩展名</td>
 				<td>
@@ -104,11 +95,18 @@ Vue.component("http-webp-config-box", {
 					<p class="comment">响应的Content-Type里包含这些MimeType的内容将会被转成WebP。</p>
 				</td>
 			</tr>
-		</tbody>
-		<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
-		<tbody v-show="isOn() && moreOptionsVisible">
-				<tr>
-					<td>内容最小长度</td>
+			<tr>
+				<td>图片质量</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" v-model="quality" style="width: 5em" maxlength="4"/>
+						<span class="ui label">%</span>
+					</div>
+					<p class="comment">取值在0到100之间，数值越大生成的图像越清晰，同时文件尺寸也会越大。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>内容最小长度</td>
 				<td>
 					<size-capacity-box :v-name="'minLength'" :v-value="config.minLength" :v-unit="'kb'"></size-capacity-box>
 					<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
