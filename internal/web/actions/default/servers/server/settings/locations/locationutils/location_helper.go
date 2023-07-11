@@ -130,6 +130,9 @@ func (this *LocationHelper) createMenus(serverIdString string, locationIdString 
 		"isActive": secondMenuItem == "compression",
 		"isOn":     locationConfig != nil && locationConfig.Web != nil && locationConfig.Web.Compression != nil && locationConfig.Web.Compression.IsPrior,
 	})
+
+	menuItems = this.filterMenuItems3(locationConfig, menuItems, serverIdString, locationIdString, secondMenuItem, actionPtr)
+
 	menuItems = append(menuItems, maps.Map{
 		"name":     this.Lang(actionPtr, codes.Server_MenuSettingPages),
 		"url":      "/servers/server/settings/locations/pages?serverId=" + serverIdString + "&locationId=" + locationIdString,

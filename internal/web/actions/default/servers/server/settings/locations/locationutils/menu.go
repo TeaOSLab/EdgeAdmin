@@ -16,3 +16,7 @@ func (this *LocationHelper) filterMenuItems1(locationConfig *serverconfigs.HTTPL
 func (this *LocationHelper) filterMenuItems2(locationConfig *serverconfigs.HTTPLocationConfig, menuItems []maps.Map, serverIdString string, locationIdString string, secondMenuItem string, actionPtr actions.ActionWrapper) []maps.Map {
 	return menuItems
 }
+
+func (this *LocationHelper) filterMenuItems3(locationConfig *serverconfigs.HTTPLocationConfig, menuItems []maps.Map, serverIdString string, locationIdString string, secondMenuItem string, actionPtr actions.ActionWrapper) []maps.Map {
+	return menuItems
+}

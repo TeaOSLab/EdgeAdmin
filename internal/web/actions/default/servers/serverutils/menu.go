@@ -16,3 +16,7 @@ func (this *ServerHelper) filterMenuItems(serverConfig *serverconfigs.ServerConf
 func (this *ServerHelper) filterMenuItems2(serverConfig *serverconfigs.ServerConfig, menuItems []maps.Map, serverIdString string, secondMenuItem string, actionPtr actions.ActionWrapper) []maps.Map {
 	return menuItems
 }
+
+func (this *ServerHelper) filterMenuItems3(serverConfig *serverconfigs.ServerConfig, menuItems []maps.Map, serverIdString string, secondMenuItem string, actionPtr actions.ActionWrapper) []maps.Map {
+	return menuItems
+}
