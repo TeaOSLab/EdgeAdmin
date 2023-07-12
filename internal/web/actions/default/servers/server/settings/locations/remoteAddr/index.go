@@ -9,6 +9,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
+	"strings"
 )
 
 type IndexAction struct {
@@ -47,9 +48,22 @@ func (this *IndexAction) RunPost(params struct {
 		this.Fail("参数校验失败：" + err.Error())
 	}
 
+	remoteAddrConfig.Value = strings.TrimSpace(remoteAddrConfig.Value)
+	err = remoteAddrConfig.Init()
+	if err != nil {
+		this.Fail("配置校验失败：" + err.Error())
+		return
+	}
+
+	remoteAddrJSON, err := json.Marshal(remoteAddrConfig)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
 	_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebRemoteAddr(this.AdminContext(), &pb.UpdateHTTPWebRemoteAddrRequest{
 		HttpWebId:      params.WebId,
-		RemoteAddrJSON: params.RemoteAddrJSON,
+		RemoteAddrJSON: remoteAddrJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)
