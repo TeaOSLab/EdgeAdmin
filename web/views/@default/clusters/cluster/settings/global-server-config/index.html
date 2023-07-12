@@ -147,7 +147,14 @@
         <h4>其他</h4>
         <table class="ui table definition selectable">
             <tr>
-                <td class="title">支持低版本HTTP</td>
+                <td class="title">服务器旗标</td>
+                <td>
+                    <input type="text" name="httpAllServerName" v-model="config.httpAll.serverName" maxlength="60"/>
+                    <p class="comment">服务器旗标会以<code-label>Server: 旗标</code-label>的形式出现在响应报头中。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>支持低版本HTTP</td>
                 <td>
                     <checkbox name="httpAllSupportsLowVersionHTTP" v-model="config.httpAll.supportsLowVersionHTTP"></checkbox>
                     <p class="comment">选中后，表示支持HTTP/1.0、HTTP/0.9等低于HTTP/1.1版本的HTTP协议。低版本HTTP协议不支持分段传输内容，且无法保持连接，对系统性能有严重的负面影响。建议只有在你的用户正在使用非常老旧的设备时才启用此选项。</p>
