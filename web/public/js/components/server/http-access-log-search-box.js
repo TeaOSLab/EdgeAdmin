@@ -71,7 +71,7 @@ Vue.component("http-access-log-search-box", {
 		<div class="ui field">
 			<div class="ui input left right labeled small" >
 				<span class="ui label basic" style="font-weight: normal">域名</span>
-				<input type="text" name="domain" placeholder="xxx.com" size="15" v-model="domain"/>
+				<input type="text" name="domain" placeholder="example.com" size="15" v-model="domain"/>
 				<a class="ui label basic" :class="{disabled: domain.length == 0}" @click.prevent="cleanDomain"><i class="icon remove small"></i></a>
 			</div>
 		</div>
