@@ -54,11 +54,18 @@ Vue.component("http-cond-url-extension", {
 			if (this.addingExt.length == 0) {
 				return
 			}
-			if (this.addingExt[0] != ".") {
-				this.addingExt = "." + this.addingExt
-			}
-			this.addingExt = this.addingExt.replace(/\s+/g, "").toLowerCase()
-			this.extensions.push(this.addingExt)
+
+			let that = this
+			this.addingExt.split(/[,;，；|]/).forEach(function (ext) {
+				ext = ext.trim()
+				if (ext.length > 0) {
+					if (ext[0] != ".") {
+						ext = "." + ext
+					}
+					ext = ext.replace(/\s+/g, "").toLowerCase()
+					that.extensions.push(ext)
+				}
+			})
 
 			// 清除状态
 			this.cancelAdding()
@@ -70,12 +77,12 @@ Vue.component("http-cond-url-extension", {
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<div v-if="extensions.length > 0">
-		<div class="ui label small basic" v-for="(ext, index) in extensions">{{ext}} <a href="" title="删除" @click.prevent="removeExt(index)"><i class="icon remove"></i></a></div>
+		<div class="ui label small basic" v-for="(ext, index) in extensions">{{ext}} <a href="" title="删除" @click.prevent="removeExt(index)"><i class="icon remove small"></i></a></div>
 		<div class="ui divider"></div>
 	</div>
 	<div class="ui fields inline" v-if="isAdding">
 		<div class="ui field">
-			<input type="text" size="6" maxlength="100" v-model="addingExt" ref="addingExt" placeholder=".xxx" @keyup.enter="confirmAdding" @keypress.enter.prevent="1" />
+			<input type="text" size="20" maxlength="100" v-model="addingExt" ref="addingExt" placeholder=".xxx, .yyy" @keyup.enter="confirmAdding" @keypress.enter.prevent="1" />
 		</div>
 		<div class="ui field">
 			<button class="ui button tiny basic" type="button" @click.prevent="confirmAdding">确认</button>
@@ -85,7 +92,7 @@ Vue.component("http-cond-url-extension", {
 	<div style="margin-top: 1em" v-show="!isAdding">
 		<button class="ui button tiny basic" type="button" @click.prevent="addExt()">+添加扩展名</button>
 	</div>
-	<p class="comment">扩展名需要包含点（.）符号，例如<code-label>.jpg</code-label>、<code-label>.png</code-label>之类。</p>
+	<p class="comment">扩展名需要包含点（.）符号，例如<code-label>.jpg</code-label>、<code-label>.png</code-label>之类；多个扩展名用逗号分割。</p>
 </div>`
 })
 
