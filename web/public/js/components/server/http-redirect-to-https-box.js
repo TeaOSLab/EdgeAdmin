@@ -142,14 +142,14 @@ Vue.component("http-redirect-to-https-box", {
 			<tr>
 				<td>允许的域名</td>
 				<td>
-					<values-box :values="redirectToHttpsConfig.onlyDomains" @change="changeOnlyDomains"></values-box>
+					<domains-box :v-domains="redirectToHttpsConfig.onlyDomains" @change="changeOnlyDomains"></domains-box>
 					<p class="comment">如果填写了允许的域名，那么只有这些域名可以自动跳转。</p>
 				</td>
 			</tr>
 			<tr>
 				<td>排除的域名</td>
 				<td>
-					<values-box :values="redirectToHttpsConfig.exceptDomains" @change="changeExceptDomains"></values-box>
+					<domains-box :v-domains="redirectToHttpsConfig.exceptDomains" @change="changeExceptDomains"></domains-box>
 					<p class="comment">如果填写了排除的域名，那么这些域名将不跳转。</p>
 				</td>
 			</tr>
