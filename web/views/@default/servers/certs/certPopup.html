@@ -38,9 +38,9 @@
 		<td>{{info.beginTime}} - {{info.endTime}}</td>
 	</tr>
 	<tr>
-		<td>引用服务</td>
+		<td>引用网站</td>
 		<td>
-			<span class="disabled" v-if="servers.length == 0">暂时没有引用此证书的服务。</span>
+			<span class="disabled" v-if="servers.length == 0">暂时没有引用此证书的网站。</span>
 			<div v-if="servers.length > 0">
 				<a v-for="server in servers" :href="'/servers/server/settings/https?serverId=' + server.id" target="_blank" class="ui label small basic">{{server.name}}</a>
 			</div>
