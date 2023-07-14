@@ -44,10 +44,13 @@ func (this *CountriesAction) RunGet(params struct {
 	}
 	var deniedCountryIds = []int64{}
 	var allowedCountryIds = []int64{}
+	var countryHTML = ""
 	if policyConfig.Inbound != nil && policyConfig.Inbound.Region != nil {
 		deniedCountryIds = policyConfig.Inbound.Region.DenyCountryIds
 		allowedCountryIds = policyConfig.Inbound.Region.AllowCountryIds
+		countryHTML = policyConfig.Inbound.Region.CountryHTML
 	}
+	this.Data["countryHTML"] = countryHTML
 
 	countriesResp, err := this.RPC().RegionCountryRPC().FindAllRegionCountries(this.AdminContext(), &pb.FindAllRegionCountriesRequest{})
 	if err != nil {
@@ -97,11 +100,14 @@ func (this *CountriesAction) RunGet(params struct {
 
 func (this *CountriesAction) RunPost(params struct {
 	FirewallPolicyId int64
-	DenyCountryIds   []int64
-	AllowCountryIds  []int64
+
+	DenyCountryIds  []int64
+	AllowCountryIds []int64
 
 	ExceptURLPatternsJSON []byte
 	OnlyURLPatternsJSON   []byte
+
+	CountryHTML string
 
 	Must *actions.Must
 }) {
@@ -152,6 +158,13 @@ func (this *CountriesAction) RunPost(params struct {
 		}
 	}
 	policyConfig.Inbound.Region.CountryOnlyURLPatterns = onlyURLPatterns
+
+	policyConfig.Inbound.Region.CountryHTML = params.CountryHTML
+
+	if len(params.CountryHTML) > 32<<10 {
+		this.Fail("提示内容长度不能超出32K")
+		return
+	}
 
 	err = policyConfig.Init()
 	if err != nil {

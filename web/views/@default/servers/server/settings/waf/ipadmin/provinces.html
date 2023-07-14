@@ -40,6 +40,13 @@
                     <td>限制URL &nbsp;<tip-icon content="只对这些URL做限制。"></tip-icon></td>
                     <td><url-patterns-box v-model="onlyURLPatterns"></url-patterns-box></td>
                 </tr>
+                <tr>
+                    <td>提示内容</td>
+                    <td>
+                        <textarea v-model="provinceHTML" name="provinceHTML" rows="3"></textarea>
+                        <p class="comment">当客户端所在省份被封禁时提示页面的HTML内容；不填则表示使用默认的提示内容。</p>
+                    </td>
+                </tr>
             </tbody>
 		</table>
 		<submit-btn></submit-btn>
