@@ -2,6 +2,7 @@ package access
 
 import (
 	"encoding/json"
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
@@ -33,7 +34,7 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 移除不存在的鉴权方法
 	var allTypes = []string{}
-	for _, def := range serverconfigs.FindAllHTTPAuthTypes() {
+	for _, def := range serverconfigs.FindAllHTTPAuthTypes(teaconst.Role) {
 		allTypes = append(allTypes, def.Code)
 	}
 
