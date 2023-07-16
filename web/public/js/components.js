@@ -2525,6 +2525,44 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<div v-if="firewallPolicy == null">
 		<span v-if="count > 0"><a href="" @click.prevent="select">[选择已有策略]</a> &nbsp; &nbsp; </span><a href="" @click.prevent="create">[创建新策略]</a>
 	</div>
+</div>`}),Vue.component("http-optimization-config-box",{props:["v-optimization-config","v-is-location","v-is-group"],data:function(){return{config:this.vOptimizationConfig,moreOptionsVisible:!1}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn}},template:`<div>
+	<input type="hidden" name="optimizationJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable">
+		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
+			<tr>
+				<td class="title">HTML优化</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" value="1" v-model="config.html.isOn"/>
+						<label></label>
+					</div>
+					<p class="comment">可以自动优化HTML中包含的空白、注释、空标签等。只有文件可以缓存时才会被优化。</p>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">Javascript优化</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" value="1" v-model="config.javascript.isOn"/>
+						<label></label>
+					</div>
+					<p class="comment">可以自动缩短Javascript中变量、函数名称等。只有文件可以缓存时才会被优化。</p>
+				</td>
+			</tr>
+				<tr>
+				<td class="title">CSS优化</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" value="1" v-model="config.css.isOn"/>
+						<label></label>
+					</div>
+					<p class="comment">可以自动去除CSS中包含的空白。只有文件可以缓存时才会被优化。</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
 </div>`}),Vue.component("http-websocket-box",{props:["v-websocket-ref","v-websocket-config","v-is-location","v-is-group"],data:function(){let e=this.vWebsocketRef,t=(null==e&&(e={isPrior:!1,isOn:!1,websocketId:0}),this.vWebsocketConfig);return null==t?t={id:0,isOn:!1,handshakeTimeout:{count:30,unit:"second"},allowAllOrigins:!0,allowedOrigins:[],requestSameOrigin:!0,requestOrigin:""}:(null==t.handshakeTimeout&&(t.handshakeTimeout={count:30,unit:"second"}),null==t.allowedOrigins&&(t.allowedOrigins=[])),{websocketRef:e,websocketConfig:t,handshakeTimeoutCountString:t.handshakeTimeout.count.toString(),advancedVisible:!1}},watch:{handshakeTimeoutCountString:function(e){e=parseInt(e);!isNaN(e)&&0<=e?this.websocketConfig.handshakeTimeout.count=e:this.websocketConfig.handshakeTimeout.count=0}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.websocketRef.isPrior)&&this.websocketRef.isOn},changeAdvancedVisible:function(e){this.advancedVisible=e},createOrigin:function(){let t=this;teaweb.popup("/servers/server/settings/websocket/createOrigin",{height:"12.5em",callback:function(e){t.websocketConfig.allowedOrigins.push(e.data.origin)}})},removeOrigin:function(e){this.websocketConfig.allowedOrigins.$remove(e)}},template:`<div>
 	<input type="hidden" name="websocketRefJSON" :value="JSON.stringify(websocketRef)"/>
 	<input type="hidden" name="websocketJSON" :value="JSON.stringify(websocketConfig)"/>
@@ -2671,7 +2709,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
             <input type="text" placeholder="搜索域名" ref="keywordRef" class="ui input tiny" v-model="keyword"/>
         </div>
     </div>
-</div>`}),Vue.component("uam-config-box",{props:["v-uam-config","v-is-location","v-is-group"],data:function(){let e=this.vUamConfig;return null==(e=null==e?{isPrior:!1,isOn:!1,addToWhiteList:!0,onlyURLPatterns:[],exceptURLPatterns:[]}:e).onlyURLPatterns&&(e.onlyURLPatterns=[]),null==e.exceptURLPatterns&&(e.exceptURLPatterns=[]),{config:e,moreOptionsVisible:!1}},methods:{showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible}},template:`<div>
+</div>`}),Vue.component("uam-config-box",{props:["v-uam-config","v-is-location","v-is-group"],data:function(){let e=this.vUamConfig;return null==(e=null==e?{isPrior:!1,isOn:!1,addToWhiteList:!0,onlyURLPatterns:[],exceptURLPatterns:[],minQPSPerIP:0}:e).onlyURLPatterns&&(e.onlyURLPatterns=[]),null==e.exceptURLPatterns&&(e.exceptURLPatterns=[]),{config:e,moreOptionsVisible:!1,minQPSPerIP:e.minQPSPerIP}},watch:{minQPSPerIP:function(e){let t=parseInt(e.toString());(isNaN(t)||t<0)&&(t=0),this.config.minQPSPerIP=t}},methods:{showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible}},template:`<div>
 <input type="hidden" name="uamJSON" :value="JSON.stringify(config)"/>
 <table class="ui table definition selectable">
 	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
@@ -2684,12 +2722,22 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			</td>
 		</tr>
 	</tbody>
-	<tbody>
+	<tbody v-show="config.isOn">
 		<tr>
 			<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
 		</tr>
 	</tbody>
-	<tbody v-show="moreOptionsVisible">
+	<tbody v-show="moreOptionsVisible && config.isOn">
+		<tr>
+			<td>单IP最低QPS</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" name="minQPSPerIP" maxlength="6" style="width: 6em" v-model="minQPSPerIP"/>
+					<span class="ui label">请求数/秒</span>
+				</div>
+				<p class="comment">当某个IP在1分钟内平均QPS达到此值时，才会触发5秒盾；如果设置为0，表示任何访问都会触发。</p>
+			</td>
+		</tr>
 		<tr>
 			<td>加入IP白名单</td>
 			<td>
@@ -2947,14 +2995,14 @@ example2.com
 			<tr>
 				<td>允许的域名</td>
 				<td>
-					<values-box :values="redirectToHttpsConfig.onlyDomains" @change="changeOnlyDomains"></values-box>
+					<domains-box :v-domains="redirectToHttpsConfig.onlyDomains" @change="changeOnlyDomains"></domains-box>
 					<p class="comment">如果填写了允许的域名，那么只有这些域名可以自动跳转。</p>
 				</td>
 			</tr>
 			<tr>
 				<td>排除的域名</td>
 				<td>
-					<values-box :values="redirectToHttpsConfig.exceptDomains" @change="changeExceptDomains"></values-box>
+					<domains-box :v-domains="redirectToHttpsConfig.exceptDomains" @change="changeExceptDomains"></domains-box>
 					<p class="comment">如果填写了排除的域名，那么这些域名将不跳转。</p>
 				</td>
 			</tr>
@@ -3720,7 +3768,7 @@ example2.com
 		</tbody>
 	</table>
 	<div class="margin"></div>
-</div>`}),Vue.component("http-cc-config-box",{props:["v-cc-config","v-is-location","v-is-group"],data:function(){let e=this.vCcConfig;return"boolean"!=typeof(e=null==e?{isPrior:!1,isOn:!1,enableFingerprint:!0,enableGET302:!0,onlyURLPatterns:[],exceptURLPatterns:[]}:e).enableFingerprint&&(e.enableFingerprint=!0),"boolean"!=typeof e.enableGET302&&(e.enableGET302=!0),null==e.onlyURLPatterns&&(e.onlyURLPatterns=[]),null==e.exceptURLPatterns&&(e.exceptURLPatterns=[]),{config:e,moreOptionsVisible:!1}},methods:{showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible}},template:`<div>
+</div>`}),Vue.component("http-cc-config-box",{props:["v-cc-config","v-is-location","v-is-group"],data:function(){let e=this.vCcConfig;return"boolean"!=typeof(e=null==e?{isPrior:!1,isOn:!1,enableFingerprint:!0,enableGET302:!0,onlyURLPatterns:[],exceptURLPatterns:[]}:e).enableFingerprint&&(e.enableFingerprint=!0),"boolean"!=typeof e.enableGET302&&(e.enableGET302=!0),null==e.onlyURLPatterns&&(e.onlyURLPatterns=[]),null==e.exceptURLPatterns&&(e.exceptURLPatterns=[]),{config:e,moreOptionsVisible:!1,minQPSPerIP:e.minQPSPerIP}},watch:{minQPSPerIP:function(e){let t=parseInt(e.toString());(isNaN(t)||t<0)&&(t=0),this.config.minQPSPerIP=t}},methods:{showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible}},template:`<div>
 <input type="hidden" name="ccJSON" :value="JSON.stringify(config)"/>
 <table class="ui table definition selectable">
 	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
@@ -3733,12 +3781,22 @@ example2.com
 			</td>
 		</tr>
 	</tbody>
-	<tbody>
+	<tbody v-show="config.isOn">
 		<tr>
 			<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
 		</tr>
 	</tbody>
-	<tbody v-show="moreOptionsVisible">
+	<tbody v-show="moreOptionsVisible && config.isOn">
+		<tr>
+			<td>单IP最低QPS</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" name="minQPSPerIP" maxlength="6" style="width: 6em" v-model="minQPSPerIP"/>
+					<span class="ui label">请求数/秒</span>
+				</div>
+				<p class="comment">当某个IP在1分钟内平均QPS达到此值时，才会触发CC防护；如果设置为0，表示任何访问都会触发。</p>
+			</td>
+		</tr>
 		<tr>
 			<td>例外URL</td>
 			<td>
@@ -4419,7 +4477,7 @@ example2.com
 		<div class="ui field">
 			<div class="ui input left right labeled small" >
 				<span class="ui label basic" style="font-weight: normal">域名</span>
-				<input type="text" name="domain" placeholder="xxx.com" size="15" v-model="domain"/>
+				<input type="text" name="domain" placeholder="example.com" size="15" v-model="domain"/>
 				<a class="ui label basic" :class="{disabled: domain.length == 0}" @click.prevent="cleanDomain"><i class="icon remove small"></i></a>
 			</div>
 		</div>
@@ -4444,7 +4502,7 @@ example2.com
 			<button class="ui button small" type="submit">搜索日志</button>
 		</div>
 	</div>
-</div>`}),Vue.component("server-config-copy-link",{props:["v-server-id","v-config-code"],data:function(){return{serverId:this.vServerId,configCode:this.vConfigCode}},methods:{copy:function(){teaweb.popup("/servers/server/settings/copy?serverId="+this.serverId+"&configCode="+this.configCode,{height:"25em",callback:function(){teaweb.success("复制成功")}})}},template:'<a href="" class="item" @click.prevent="copy" style="padding-right:0"><span style="font-size: 0.8em">复制</span>&nbsp;<i class="icon copy small"></i></a>'}),Vue.component("metric-key-label",{props:["v-key"],data:function(){return{keyDefs:window.METRIC_HTTP_KEYS}},methods:{keyName:function(i){let n=this,s="";var e=this.keyDefs.$find(function(e,t){return t.code==i||(i.startsWith("${arg.")&&t.code.startsWith("${arg.")?(s=n.getSubKey("arg.",i),!0):i.startsWith("${header.")&&t.code.startsWith("${header.")?(s=n.getSubKey("header.",i),!0):!(!i.startsWith("${cookie.")||!t.code.startsWith("${cookie."))&&(s=n.getSubKey("cookie.",i),!0))});return null!=e?0<s.length?e.name+": "+s:e.name:i},getSubKey:function(e,t){var i=t.indexOf(e="${"+e);return 0<=i?(t=t.substring(i+e.length)).substring(0,t.length-1):""}},template:`<div class="ui label basic small">
+</div>`}),Vue.component("server-config-copy-link",{props:["v-server-id","v-config-code"],data:function(){return{serverId:this.vServerId,configCode:this.vConfigCode}},methods:{copy:function(){teaweb.popup("/servers/server/settings/copy?serverId="+this.serverId+"&configCode="+this.configCode,{height:"25em",callback:function(){teaweb.success("批量复制成功")}})}},template:'<a href="" class="item" @click.prevent="copy" style="padding-right:0"><span style="font-size: 0.8em">批量</span>&nbsp;<i class="icon copy small"></i></a>'}),Vue.component("metric-key-label",{props:["v-key"],data:function(){return{keyDefs:window.METRIC_HTTP_KEYS}},methods:{keyName:function(i){let n=this,s="";var e=this.keyDefs.$find(function(e,t){return t.code==i||(i.startsWith("${arg.")&&t.code.startsWith("${arg.")?(s=n.getSubKey("arg.",i),!0):i.startsWith("${header.")&&t.code.startsWith("${header.")?(s=n.getSubKey("header.",i),!0):!(!i.startsWith("${cookie.")||!t.code.startsWith("${cookie."))&&(s=n.getSubKey("cookie.",i),!0))});return null!=e?0<s.length?e.name+": "+s:e.name:i},getSubKey:function(e,t){var i=t.indexOf(e="${"+e);return 0<=i?(t=t.substring(i+e.length)).substring(0,t.length-1):""}},template:`<div class="ui label basic small">
 	{{keyName(this.vKey)}}
 </div>`}),Vue.component("metric-keys-config-box",{props:["v-keys"],data:function(){let e=this.vKeys;return{keys:e=null==e?[]:e,isAdding:!1,key:"",subKey:"",keyDescription:"",keyDefs:window.METRIC_HTTP_KEYS}},watch:{keys:function(){this.$emit("change",this.keys)}},methods:{cancel:function(){this.key="",this.subKey="",this.keyDescription="",this.isAdding=!1},confirm:function(){if(0!=this.key.length){if(0<this.key.indexOf(".NAME")){if(0==this.subKey.length)return void teaweb.warn("请输入参数值");this.key=this.key.replace(".NAME","."+this.subKey)}this.keys.push(this.key),this.cancel()}},add:function(){this.isAdding=!0;let e=this;setTimeout(function(){null!=e.$refs.key&&e.$refs.key.focus()},100)},remove:function(e){this.keys.$remove(e)},changeKey:function(){if(0!=this.key.length){let i=this;var e=this.keyDefs.$find(function(e,t){return t.code==i.key});null!=e&&(this.keyDescription=e.description)}},keyName:function(i){let n=this,s="";var e=this.keyDefs.$find(function(e,t){return t.code==i||(i.startsWith("${arg.")&&t.code.startsWith("${arg.")?(s=n.getSubKey("arg.",i),!0):i.startsWith("${header.")&&t.code.startsWith("${header.")?(s=n.getSubKey("header.",i),!0):!(!i.startsWith("${cookie.")||!t.code.startsWith("${cookie."))&&(s=n.getSubKey("cookie.",i),!0))});return null!=e?0<s.length?e.name+": "+s:e.name:i},getSubKey:function(e,t){var i=t.indexOf(e="${"+e);return 0<=i?(t=t.substring(i+e.length)).substring(0,t.length-1):""}},template:`<div>
 	<input type="hidden" name="keysJSON" :value="JSON.stringify(keys)"/>
@@ -4567,17 +4625,8 @@ example2.com
 				</td>
 			</tr>
 		</tbody>
-		<tbody v-show="isOn()">
-			<tr>
-				<td>图片质量</td>
-				<td>
-					<div class="ui input right labeled">
-						<input type="text" v-model="quality" style="width: 5em" maxlength="4"/>
-						<span class="ui label">%</span>
-					</div>
-					<p class="comment">取值在0到100之间，数值越大生成的图像越清晰，同时文件尺寸也会越大。</p>
-				</td>
-			</tr>
+		<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
+		<tbody v-show="isOn() && moreOptionsVisible">
 			<tr>
 				<td>支持的扩展名</td>
 				<td>
@@ -4592,11 +4641,18 @@ example2.com
 					<p class="comment">响应的Content-Type里包含这些MimeType的内容将会被转成WebP。</p>
 				</td>
 			</tr>
-		</tbody>
-		<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
-		<tbody v-show="isOn() && moreOptionsVisible">
-				<tr>
-					<td>内容最小长度</td>
+			<tr>
+				<td>图片质量</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" v-model="quality" style="width: 5em" maxlength="4"/>
+						<span class="ui label">%</span>
+					</div>
+					<p class="comment">取值在0到100之间，数值越大生成的图像越清晰，同时文件尺寸也会越大。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>内容最小长度</td>
 				<td>
 					<size-capacity-box :v-name="'minLength'" :v-value="config.minLength" :v-unit="'kb'"></size-capacity-box>
 					<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
@@ -4792,15 +4848,15 @@ example2.com
 	<div style="margin-top: 0.5em" v-if="!isAdding">
 		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
 	</div>
-</div>`}),Vue.component("http-cond-url-extension",{props:["v-cond"],data:function(){let e={isRequest:!0,param:"${requestPathLowerExtension}",operator:"in",value:"[]"},t=(null!=this.vCond&&this.vCond.param==e.param&&(e.value=this.vCond.value),[]);try{t=JSON.parse(e.value)}catch(e){}return{cond:e,extensions:t,isAdding:!1,addingExt:""}},watch:{extensions:function(){this.cond.value=JSON.stringify(this.extensions)}},methods:{addExt:function(){if(this.isAdding=!this.isAdding,this.isAdding){let e=this;setTimeout(function(){e.$refs.addingExt.focus()},100)}},cancelAdding:function(){this.isAdding=!1,this.addingExt=""},confirmAdding:function(){0!=this.addingExt.length&&("."!=this.addingExt[0]&&(this.addingExt="."+this.addingExt),this.addingExt=this.addingExt.replace(/\s+/g,"").toLowerCase(),this.extensions.push(this.addingExt),this.cancelAdding())},removeExt:function(e){this.extensions.$remove(e)}},template:`<div>
+</div>`}),Vue.component("http-cond-url-extension",{props:["v-cond"],data:function(){let e={isRequest:!0,param:"${requestPathLowerExtension}",operator:"in",value:"[]"},t=(null!=this.vCond&&this.vCond.param==e.param&&(e.value=this.vCond.value),[]);try{t=JSON.parse(e.value)}catch(e){}return{cond:e,extensions:t,isAdding:!1,addingExt:""}},watch:{extensions:function(){this.cond.value=JSON.stringify(this.extensions)}},methods:{addExt:function(){if(this.isAdding=!this.isAdding,this.isAdding){let e=this;setTimeout(function(){e.$refs.addingExt.focus()},100)}},cancelAdding:function(){this.isAdding=!1,this.addingExt=""},confirmAdding:function(){if(0!=this.addingExt.length){let t=this;this.addingExt.split(/[,;，；|]/).forEach(function(e){0<(e=e.trim()).length&&(e=(e="."!=e[0]?"."+e:e).replace(/\s+/g,"").toLowerCase(),t.extensions.push(e))}),this.cancelAdding()}},removeExt:function(e){this.extensions.$remove(e)}},template:`<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<div v-if="extensions.length > 0">
-		<div class="ui label small basic" v-for="(ext, index) in extensions">{{ext}} <a href="" title="删除" @click.prevent="removeExt(index)"><i class="icon remove"></i></a></div>
+		<div class="ui label small basic" v-for="(ext, index) in extensions">{{ext}} <a href="" title="删除" @click.prevent="removeExt(index)"><i class="icon remove small"></i></a></div>
 		<div class="ui divider"></div>
 	</div>
 	<div class="ui fields inline" v-if="isAdding">
 		<div class="ui field">
-			<input type="text" size="6" maxlength="100" v-model="addingExt" ref="addingExt" placeholder=".xxx" @keyup.enter="confirmAdding" @keypress.enter.prevent="1" />
+			<input type="text" size="20" maxlength="100" v-model="addingExt" ref="addingExt" placeholder=".xxx, .yyy" @keyup.enter="confirmAdding" @keypress.enter.prevent="1" />
 		</div>
 		<div class="ui field">
 			<button class="ui button tiny basic" type="button" @click.prevent="confirmAdding">确认</button>
@@ -4810,7 +4866,7 @@ example2.com
 	<div style="margin-top: 1em" v-show="!isAdding">
 		<button class="ui button tiny basic" type="button" @click.prevent="addExt()">+添加扩展名</button>
 	</div>
-	<p class="comment">扩展名需要包含点（.）符号，例如<code-label>.jpg</code-label>、<code-label>.png</code-label>之类。</p>
+	<p class="comment">扩展名需要包含点（.）符号，例如<code-label>.jpg</code-label>、<code-label>.png</code-label>之类；多个扩展名用逗号分割。</p>
 </div>`}),Vue.component("http-cond-url-not-extension",{props:["v-cond"],data:function(){let e={isRequest:!0,param:"${requestPathLowerExtension}",operator:"not in",value:"[]"},t=(null!=this.vCond&&this.vCond.param==e.param&&(e.value=this.vCond.value),[]);try{t=JSON.parse(e.value)}catch(e){}return{cond:e,extensions:t,isAdding:!1,addingExt:""}},watch:{extensions:function(){this.cond.value=JSON.stringify(this.extensions)}},methods:{addExt:function(){if(this.isAdding=!this.isAdding,this.isAdding){let e=this;setTimeout(function(){e.$refs.addingExt.focus()},100)}},cancelAdding:function(){this.isAdding=!1,this.addingExt=""},confirmAdding:function(){0!=this.addingExt.length&&("."!=this.addingExt[0]&&(this.addingExt="."+this.addingExt),this.addingExt=this.addingExt.replace(/\s+/g,"").toLowerCase(),this.extensions.push(this.addingExt),this.cancelAdding())},removeExt:function(e){this.extensions.$remove(e)}},template:`<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<div v-if="extensions.length > 0">

@@ -7296,6 +7296,63 @@ Vue.component("http-firewall-policy-selector", {
 </div>`
 })
 
+// 压缩配置
+Vue.component("http-optimization-config-box", {
+	props: ["v-optimization-config", "v-is-location", "v-is-group"],
+	data: function () {
+		let config = this.vOptimizationConfig
+
+		return {
+			config: config,
+			moreOptionsVisible: false
+		}
+	},
+	methods: {
+		isOn: function () {
+			return ((!this.vIsLocation && !this.vIsGroup) || this.config.isPrior) && this.config.isOn
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="optimizationJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable">
+		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
+			<tr>
+				<td class="title">HTML优化</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" value="1" v-model="config.html.isOn"/>
+						<label></label>
+					</div>
+					<p class="comment">可以自动优化HTML中包含的空白、注释、空标签等。只有文件可以缓存时才会被优化。</p>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">Javascript优化</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" value="1" v-model="config.javascript.isOn"/>
+						<label></label>
+					</div>
+					<p class="comment">可以自动缩短Javascript中变量、函数名称等。只有文件可以缓存时才会被优化。</p>
+				</td>
+			</tr>
+				<tr>
+				<td class="title">CSS优化</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" value="1" v-model="config.css.isOn"/>
+						<label></label>
+					</div>
+					<p class="comment">可以自动去除CSS中包含的空白。只有文件可以缓存时才会被优化。</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
+</div>`
+})
+
 Vue.component("http-websocket-box", {
 	props: ["v-websocket-ref", "v-websocket-config", "v-is-location", "v-is-group"],
 	data: function () {
@@ -7692,7 +7749,8 @@ Vue.component("uam-config-box", {
 				isOn: false,
 				addToWhiteList: true,
 				onlyURLPatterns: [],
-				exceptURLPatterns: []
+				exceptURLPatterns: [],
+				minQPSPerIP: 0
 			}
 		}
 		if (config.onlyURLPatterns == null) {
@@ -7703,7 +7761,17 @@ Vue.component("uam-config-box", {
 		}
 		return {
 			config: config,
-			moreOptionsVisible: false
+			moreOptionsVisible: false,
+			minQPSPerIP: config.minQPSPerIP
+		}
+	},
+	watch: {
+		minQPSPerIP: function (v) {
+			let qps = parseInt(v.toString())
+			if (isNaN(qps) || qps < 0) {
+				qps = 0
+			}
+			this.config.minQPSPerIP = qps
 		}
 	},
 	methods: {
@@ -7724,12 +7792,22 @@ Vue.component("uam-config-box", {
 			</td>
 		</tr>
 	</tbody>
-	<tbody>
+	<tbody v-show="config.isOn">
 		<tr>
 			<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
 		</tr>
 	</tbody>
-	<tbody v-show="moreOptionsVisible">
+	<tbody v-show="moreOptionsVisible && config.isOn">
+		<tr>
+			<td>单IP最低QPS</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" name="minQPSPerIP" maxlength="6" style="width: 6em" v-model="minQPSPerIP"/>
+					<span class="ui label">请求数/秒</span>
+				</div>
+				<p class="comment">当某个IP在1分钟内平均QPS达到此值时，才会触发5秒盾；如果设置为0，表示任何访问都会触发。</p>
+			</td>
+		</tr>
 		<tr>
 			<td>加入IP白名单</td>
 			<td>
@@ -8383,14 +8461,14 @@ Vue.component("http-redirect-to-https-box", {
 			<tr>
 				<td>允许的域名</td>
 				<td>
-					<values-box :values="redirectToHttpsConfig.onlyDomains" @change="changeOnlyDomains"></values-box>
+					<domains-box :v-domains="redirectToHttpsConfig.onlyDomains" @change="changeOnlyDomains"></domains-box>
 					<p class="comment">如果填写了允许的域名，那么只有这些域名可以自动跳转。</p>
 				</td>
 			</tr>
 			<tr>
 				<td>排除的域名</td>
 				<td>
-					<values-box :values="redirectToHttpsConfig.exceptDomains" @change="changeExceptDomains"></values-box>
+					<domains-box :v-domains="redirectToHttpsConfig.exceptDomains" @change="changeExceptDomains"></domains-box>
 					<p class="comment">如果填写了排除的域名，那么这些域名将不跳转。</p>
 				</td>
 			</tr>
@@ -10412,7 +10490,17 @@ Vue.component("http-cc-config-box", {
 		}
 		return {
 			config: config,
-			moreOptionsVisible: false
+			moreOptionsVisible: false,
+			minQPSPerIP: config.minQPSPerIP
+		}
+	},
+	watch: {
+		minQPSPerIP: function (v) {
+			let qps = parseInt(v.toString())
+			if (isNaN(qps) || qps < 0) {
+				qps = 0
+			}
+			this.config.minQPSPerIP = qps
 		}
 	},
 	methods: {
@@ -10433,12 +10521,22 @@ Vue.component("http-cc-config-box", {
 			</td>
 		</tr>
 	</tbody>
-	<tbody>
+	<tbody v-show="config.isOn">
 		<tr>
 			<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
 		</tr>
 	</tbody>
-	<tbody v-show="moreOptionsVisible">
+	<tbody v-show="moreOptionsVisible && config.isOn">
+		<tr>
+			<td>单IP最低QPS</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" name="minQPSPerIP" maxlength="6" style="width: 6em" v-model="minQPSPerIP"/>
+					<span class="ui label">请求数/秒</span>
+				</div>
+				<p class="comment">当某个IP在1分钟内平均QPS达到此值时，才会触发CC防护；如果设置为0，表示任何访问都会触发。</p>
+			</td>
+		</tr>
 		<tr>
 			<td>例外URL</td>
 			<td>
@@ -12322,7 +12420,7 @@ Vue.component("http-access-log-search-box", {
 		<div class="ui field">
 			<div class="ui input left right labeled small" >
 				<span class="ui label basic" style="font-weight: normal">域名</span>
-				<input type="text" name="domain" placeholder="xxx.com" size="15" v-model="domain"/>
+				<input type="text" name="domain" placeholder="example.com" size="15" v-model="domain"/>
 				<a class="ui label basic" :class="{disabled: domain.length == 0}" @click.prevent="cleanDomain"><i class="icon remove small"></i></a>
 			</div>
 		</div>
@@ -12363,12 +12461,12 @@ Vue.component("server-config-copy-link", {
 			teaweb.popup("/servers/server/settings/copy?serverId=" + this.serverId + "&configCode=" + this.configCode, {
 				height: "25em",
 				callback: function () {
-					teaweb.success("复制成功")
+					teaweb.success("批量复制成功")
 				}
 			})
 		}
 	},
-	template: `<a href=\"" class="item" @click.prevent="copy" style="padding-right:0"><span style="font-size: 0.8em">复制</span>&nbsp;<i class="icon copy small"></i></a>`
+	template: `<a href=\"" class="item" @click.prevent="copy" style="padding-right:0"><span style="font-size: 0.8em">批量</span>&nbsp;<i class="icon copy small"></i></a>`
 })
 
 // 显示指标对象名
@@ -12769,17 +12867,8 @@ Vue.component("http-webp-config-box", {
 				</td>
 			</tr>
 		</tbody>
-		<tbody v-show="isOn()">
-			<tr>
-				<td>图片质量</td>
-				<td>
-					<div class="ui input right labeled">
-						<input type="text" v-model="quality" style="width: 5em" maxlength="4"/>
-						<span class="ui label">%</span>
-					</div>
-					<p class="comment">取值在0到100之间，数值越大生成的图像越清晰，同时文件尺寸也会越大。</p>
-				</td>
-			</tr>
+		<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
+		<tbody v-show="isOn() && moreOptionsVisible">
 			<tr>
 				<td>支持的扩展名</td>
 				<td>
@@ -12794,11 +12883,18 @@ Vue.component("http-webp-config-box", {
 					<p class="comment">响应的Content-Type里包含这些MimeType的内容将会被转成WebP。</p>
 				</td>
 			</tr>
-		</tbody>
-		<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
-		<tbody v-show="isOn() && moreOptionsVisible">
-				<tr>
-					<td>内容最小长度</td>
+			<tr>
+				<td>图片质量</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" v-model="quality" style="width: 5em" maxlength="4"/>
+						<span class="ui label">%</span>
+					</div>
+					<p class="comment">取值在0到100之间，数值越大生成的图像越清晰，同时文件尺寸也会越大。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>内容最小长度</td>
 				<td>
 					<size-capacity-box :v-name="'minLength'" :v-value="config.minLength" :v-unit="'kb'"></size-capacity-box>
 					<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
@@ -13403,11 +13499,18 @@ Vue.component("http-cond-url-extension", {
 			if (this.addingExt.length == 0) {
 				return
 			}
-			if (this.addingExt[0] != ".") {
-				this.addingExt = "." + this.addingExt
-			}
-			this.addingExt = this.addingExt.replace(/\s+/g, "").toLowerCase()
-			this.extensions.push(this.addingExt)
+
+			let that = this
+			this.addingExt.split(/[,;，；|]/).forEach(function (ext) {
+				ext = ext.trim()
+				if (ext.length > 0) {
+					if (ext[0] != ".") {
+						ext = "." + ext
+					}
+					ext = ext.replace(/\s+/g, "").toLowerCase()
+					that.extensions.push(ext)
+				}
+			})
 
 			// 清除状态
 			this.cancelAdding()
@@ -13419,12 +13522,12 @@ Vue.component("http-cond-url-extension", {
 	template: `<div>
 	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
 	<div v-if="extensions.length > 0">
-		<div class="ui label small basic" v-for="(ext, index) in extensions">{{ext}} <a href="" title="删除" @click.prevent="removeExt(index)"><i class="icon remove"></i></a></div>
+		<div class="ui label small basic" v-for="(ext, index) in extensions">{{ext}} <a href="" title="删除" @click.prevent="removeExt(index)"><i class="icon remove small"></i></a></div>
 		<div class="ui divider"></div>
 	</div>
 	<div class="ui fields inline" v-if="isAdding">
 		<div class="ui field">
-			<input type="text" size="6" maxlength="100" v-model="addingExt" ref="addingExt" placeholder=".xxx" @keyup.enter="confirmAdding" @keypress.enter.prevent="1" />
+			<input type="text" size="20" maxlength="100" v-model="addingExt" ref="addingExt" placeholder=".xxx, .yyy" @keyup.enter="confirmAdding" @keypress.enter.prevent="1" />
 		</div>
 		<div class="ui field">
 			<button class="ui button tiny basic" type="button" @click.prevent="confirmAdding">确认</button>
@@ -13434,7 +13537,7 @@ Vue.component("http-cond-url-extension", {
 	<div style="margin-top: 1em" v-show="!isAdding">
 		<button class="ui button tiny basic" type="button" @click.prevent="addExt()">+添加扩展名</button>
 	</div>
-	<p class="comment">扩展名需要包含点（.）符号，例如<code-label>.jpg</code-label>、<code-label>.png</code-label>之类。</p>
+	<p class="comment">扩展名需要包含点（.）符号，例如<code-label>.jpg</code-label>、<code-label>.png</code-label>之类；多个扩展名用逗号分割。</p>
 </div>`
 })
 
