@@ -28,7 +28,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	this.Data["webId"] = webConfig.Id
 
-	locationMaps := []maps.Map{}
+	var locationMaps = []maps.Map{}
 	if webConfig.Locations != nil {
 		for _, location := range webConfig.Locations {
 			err := location.ExtractPattern()
@@ -46,7 +46,7 @@ func (this *IndexAction) RunGet(params struct {
 				this.ErrorPage(err)
 				return
 			}
-			pieces := strings.Split(location.Pattern, " ")
+			var pieces = strings.Split(location.Pattern, " ")
 			if len(pieces) == 2 {
 				m["pattern"] = pieces[1]
 				m["patternTypeName"] = serverconfigs.FindLocationPatternTypeName(location.PatternType())

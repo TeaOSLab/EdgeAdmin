@@ -2,9 +2,12 @@ package locationutils
 
 import (
 	"encoding/json"
+	"errors"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
+	"github.com/iwind/TeaGo/types"
 )
 
 // FindLocationConfig 查找路由规则配置
@@ -12,6 +15,11 @@ func FindLocationConfig(parentAction *actionutils.ParentAction, locationId int64
 	locationConfigResp, err := parentAction.RPC().HTTPLocationRPC().FindEnabledHTTPLocationConfig(parentAction.AdminContext(), &pb.FindEnabledHTTPLocationConfigRequest{LocationId: locationId})
 	if err != nil {
 		parentAction.ErrorPage(err)
+		return
+	}
+
+	if utils.JSONIsNull(locationConfigResp.LocationJSON) {
+		parentAction.ErrorPage(errors.New("location '" + types.String(locationId) + "' not found"))
 		return
 	}
 

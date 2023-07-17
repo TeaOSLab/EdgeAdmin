@@ -20,13 +20,13 @@ func NewLocationHelper() *LocationHelper {
 }
 
 func (this *LocationHelper) BeforeAction(actionPtr actions.ActionWrapper) {
-	action := actionPtr.Object()
+	var action = actionPtr.Object()
 	if action.Request.Method != http.MethodGet {
 		return
 	}
 
-	serverIdString := action.ParamString("serverId")
-	locationIdString := action.ParamString("locationId")
+	var serverIdString = action.ParamString("serverId")
+	var locationIdString = action.ParamString("locationId")
 
 	action.Data["leftMenuItemIsDisabled"] = true
 	action.Data["mainMenu"] = "server"
@@ -39,7 +39,7 @@ func (this *LocationHelper) BeforeAction(actionPtr actions.ActionWrapper) {
 	if parentActionValue.IsValid() {
 		parentAction, isOk := parentActionValue.Interface().(actionutils.ParentAction)
 		if isOk {
-			locationId := action.ParamInt64("locationId")
+			var locationId = action.ParamInt64("locationId")
 			locationConfig, isOk := FindLocationConfig(&parentAction, locationId)
 			if !isOk {
 				return
