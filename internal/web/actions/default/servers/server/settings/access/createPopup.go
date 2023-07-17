@@ -5,6 +5,7 @@ package access
 
 import (
 	"encoding/json"
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
@@ -23,7 +24,7 @@ func (this *CreatePopupAction) Init() {
 }
 
 func (this *CreatePopupAction) RunGet(params struct{}) {
-	this.Data["authTypes"] = serverconfigs.FindAllHTTPAuthTypes()
+	this.Data["authTypes"] = serverconfigs.FindAllHTTPAuthTypes(teaconst.Role)
 	this.Show()
 }
 

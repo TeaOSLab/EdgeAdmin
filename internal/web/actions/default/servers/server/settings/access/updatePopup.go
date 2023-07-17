@@ -5,6 +5,7 @@ package access
 
 import (
 	"encoding/json"
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
@@ -26,7 +27,7 @@ func (this *UpdatePopupAction) Init() {
 func (this *UpdatePopupAction) RunGet(params struct {
 	PolicyId int64
 }) {
-	this.Data["authTypes"] = serverconfigs.FindAllHTTPAuthTypes()
+	this.Data["authTypes"] = serverconfigs.FindAllHTTPAuthTypes(teaconst.Role)
 
 	policyResp, err := this.RPC().HTTPAuthPolicyRPC().FindEnabledHTTPAuthPolicy(this.AdminContext(), &pb.FindEnabledHTTPAuthPolicyRequest{HttpAuthPolicyId: params.PolicyId})
 	if err != nil {
