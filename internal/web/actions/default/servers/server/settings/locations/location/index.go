@@ -23,7 +23,12 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	LocationId int64
 }) {
-	locationConfig := this.Data.Get("locationConfig").(*serverconfigs.HTTPLocationConfig)
+	var location = this.Data.Get("locationConfig")
+	if location == nil {
+		this.NotFound("location", params.LocationId)
+		return
+	}
+	var locationConfig = location.(*serverconfigs.HTTPLocationConfig)
 
 	this.Data["patternTypes"] = serverconfigs.AllLocationPatternTypes()
 
