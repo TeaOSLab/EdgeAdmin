@@ -12676,7 +12676,7 @@ Vue.component("http-web-root-box", {
 		if (rootConfig == null) {
 			rootConfig = {
 				isPrior: false,
-				isOn: true,
+				isOn: false,
 				dir: "",
 				indexes: [],
 				stripPrefix: "",
