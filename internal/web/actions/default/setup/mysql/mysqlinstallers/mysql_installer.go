@@ -408,14 +408,14 @@ func (this *MySQLInstaller) Download() (path string, err error) {
 
 	// check latest version
 	this.log("checking mysql latest version ...")
-	var latestVersion = "8.0.31" // 默认版本
+	var latestVersion = "8.1.0" // default version
 	{
 		req, err := http.NewRequest(http.MethodGet, "https://dev.mysql.com/downloads/mysql/", nil)
 		if err != nil {
 			return "", err
 		}
 
-		req.Header.Set("User-Agent", "curl/7.61.1")
+		req.Header.Set("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/78.0.3904.108 Chrome/78.0.3904.108 Safari/537.36")
 		resp, err := client.Do(req)
 		if err != nil {
 			return "", errors.New("check latest version failed: " + err.Error())
@@ -430,7 +430,7 @@ func (this *MySQLInstaller) Download() (path string, err error) {
 				return "", errors.New("read latest version failed: " + err.Error())
 			}
 
-			var reg = regexp.MustCompile(`<h1>MySQL Community Server ([\d.]+) </h1>`)
+			var reg = regexp.MustCompile(`<h1>MySQL Community Server ([\d.]+) `)
 			var matches = reg.FindSubmatch(data)
 			if len(matches) > 0 {
 				latestVersion = string(matches[1])
@@ -441,9 +441,10 @@ func (this *MySQLInstaller) Download() (path string, err error) {
 
 	// download
 	this.log("start downloading ...")
-	var downloadURL = "https://cdn.mysql.com/Downloads/MySQL-8.0/mysql-" + latestVersion + "-linux-glibc2.17-x86_64-minimal.tar.xz"
+	var downloadURL = "https://cdn.mysql.com/Downloads/MySQL-8.1/mysql-" + latestVersion + "-linux-glibc2.17-x86_64-minimal.tar.xz"
 
 	{
+		this.log("downloading url '" + downloadURL + "' ...")
 		req, err := http.NewRequest(http.MethodGet, downloadURL, nil)
 		if err != nil {
 			return "", err
