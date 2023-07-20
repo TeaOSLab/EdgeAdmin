@@ -59,7 +59,7 @@ func (this *CheckUpdatesTask) Loop() error {
 		return err
 	}
 	var valueJSON = valueResp.ValueJSON
-	var config = &systemconfigs.CheckUpdatesConfig{AutoCheck: false}
+	var config = systemconfigs.NewCheckUpdatesConfig()
 	if len(valueJSON) > 0 {
 		err = json.Unmarshal(valueJSON, config)
 		if err != nil {

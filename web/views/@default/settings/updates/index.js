@@ -33,6 +33,9 @@ Tea.context(function () {
 			.params({
 				autoCheck: this.config.autoCheck ? 1 : 0
 			})
+			.success(function () {
+				teaweb.successToast("已保存")
+			})
 	}
 
 	this.ignoreVersion = function (version) {
