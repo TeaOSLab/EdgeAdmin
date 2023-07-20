@@ -47,8 +47,12 @@
             </td>
         </tr>
         <tr v-if="cachePolicy.options.openFileCache != null && cachePolicy.options.openFileCache.isOn && cachePolicy.options.openFileCache.max > 0">
-            <td>缓存文件句柄缓存</td>
+            <td class="color-border">缓存文件句柄缓存</td>
             <td>{{cachePolicy.options.openFileCache.max}}</td>
+        </tr>
+        <tr v-if="cachePolicy.options.enableSendfile">
+            <td class="color-border">开启Sendfile</td>
+            <td><span v-if="cachePolicy.options.enableSendfile" class="green">Y</span><span v-else class="disabled">N</span></td>
         </tr>
     </tbody>
 
