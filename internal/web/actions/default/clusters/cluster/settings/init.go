@@ -10,7 +10,6 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/health"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/metrics"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/services"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/toa"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/waf"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/settings/webp"
 	clusters "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/clusterutils"
@@ -42,10 +41,6 @@ func init() {
 			Prefix("/clusters/cluster/settings/dns").
 			GetPost("", new(dns.IndexAction)).
 			Post("/randomName", new(dns.RandomNameAction)).
-
-			// TOA
-			Prefix("/clusters/cluster/settings/toa").
-			GetPost("", new(toa.IndexAction)).
 
 			// 系统服务设置
 			Prefix("/clusters/cluster/settings/services").
