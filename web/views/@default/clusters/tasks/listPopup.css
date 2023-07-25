@@ -3,4 +3,7 @@ h3 span {
   color: grey;
   font-size: 0.6em !important;
 }
+table td {
+  word-break: break-all;
+}
 /*# sourceMappingURL=listPopup.css.map */

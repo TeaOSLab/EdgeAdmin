@@ -24,10 +24,10 @@
                     <checkbox v-model="task.isChecked" @input="checkTask"></checkbox>
                 </td>
                 <td>{{cluster.name}}</td>
-                <td>
+                <td nowrap="">
                    {{task.node.name}} &nbsp; <a :href="'/clusters/cluster/node?clusterId=' + cluster.id + '&nodeId=' + task.node.id" target="_blank"><i class="icon linkify small grey"></i></a>
                 </td>
-                <td>
+                <td nowrap="">
                     <span v-if="task.type == 'configChanged' || task.type == 'globalServerConfigChanged'">同步配置</span>
                     <span v-if="task.type == 'ipItemChanged'">同步IP名单</span>
                     <span v-if="task.type == 'scriptsChanged'">同步脚本</span>
@@ -39,7 +39,7 @@
                     <span v-if="task.isDone" class="red">{{task.error}}</span>
                     <span v-else>正在同步...</span>
                 </td>
-                <td>{{task.updatedTime}}</td>
+                <td nowrap="">{{task.updatedTime}}</td>
                 <td>
                     <a href="" title="删除" class="remove-btn" @click.prevent="deleteTask(task.id)"><i class="icon remove small grey"></i></a>
                 </td>
