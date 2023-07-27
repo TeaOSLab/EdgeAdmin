@@ -18,6 +18,13 @@
                 </td>
             </tr>
             <tr v-show="config.httpAll.matchDomainStrictly">
+                <td class="color-border">提示页面状态码</td>
+                <td>
+                    <input type="text" name="httpAllDomainMismatchActionStatusCode" v-model="httpAllDomainMismatchActionStatusCode" style="width: 4em" maxlength="3"/>
+                    <p class="comment">默认404。</p>
+                </td>
+            </tr>
+            <tr v-show="config.httpAll.matchDomainStrictly">
                 <td class="color-border">未绑定域名页面提示</td>
                 <td>
                     <textarea rows="3" name="httpAllDomainMismatchActionContentHTML" v-model="httpAllDomainMismatchActionContentHTML"></textarea>
@@ -35,7 +42,7 @@
                 <td class="color-border">默认域名</td>
                 <td>
                     <input type="text" name="httpAllDefaultDomain" v-model="config.httpAll.defaultDomain"/>
-                    <p class="comment">例外域名或使用节点IP访问时使用的默认域名。</p>
+                    <p class="comment">例外域名或使用节点IP访问时使用的默认域名；如果指定的域名在集群里已经绑定到某个网站，则相当于直接访问该网站。</p>
                 </td>
             </tr>
 

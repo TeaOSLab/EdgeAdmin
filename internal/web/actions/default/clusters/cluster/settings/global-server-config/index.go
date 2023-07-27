@@ -10,6 +10,8 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/iwind/TeaGo/types"
+	"regexp"
 )
 
 type IndexAction struct {
@@ -42,8 +44,13 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["config"] = config
 
 	var httpAllDomainMismatchActionContentHTML = ""
-	if config.HTTPAll.DomainMismatchAction != nil {
+	var httpAllDomainMismatchActionStatusCode = "404"
+	if config.HTTPAll.DomainMismatchAction != nil && config.HTTPAll.DomainMismatchAction.Options != nil {
 		httpAllDomainMismatchActionContentHTML = config.HTTPAll.DomainMismatchAction.Options.GetString("contentHTML")
+		var statusCode = config.HTTPAll.DomainMismatchAction.Options.GetInt("statusCode")
+		if statusCode > 0 {
+			httpAllDomainMismatchActionStatusCode = types.String(statusCode)
+		}
 	} else {
 		httpAllDomainMismatchActionContentHTML = `<!DOCTYPE html>
 <html lang="en">
@@ -67,6 +74,7 @@ p { color: grey; }
 	}
 
 	this.Data["httpAllDomainMismatchActionContentHTML"] = httpAllDomainMismatchActionContentHTML
+	this.Data["httpAllDomainMismatchActionStatusCode"] = httpAllDomainMismatchActionStatusCode
 
 	this.Show()
 }
@@ -76,6 +84,7 @@ func (this *IndexAction) RunPost(params struct {
 
 	HttpAllMatchDomainStrictly             bool
 	HttpAllDomainMismatchActionContentHTML string
+	HttpAllDomainMismatchActionStatusCode  string
 	HttpAllAllowMismatchDomainsJSON        []byte
 	HttpAllAllowNodeIP                     bool
 	HttpAllDefaultDomain                   string
@@ -121,11 +130,18 @@ func (this *IndexAction) RunPost(params struct {
 		}
 	}
 
+	var domainMisMatchStatusCodeString = params.HttpAllDomainMismatchActionStatusCode
+	if !regexp.MustCompile(`^\d{3}$`).MatchString(domainMisMatchStatusCodeString) {
+		this.FailField("httpAllDomainMismatchActionContentStatusCode", "请输入正确的状态码")
+		return
+	}
+	var domainMisMatchStatusCode = types.Int(domainMisMatchStatusCodeString)
+
 	config.HTTPAll.MatchDomainStrictly = params.HttpAllMatchDomainStrictly
 	config.HTTPAll.DomainMismatchAction = &serverconfigs.DomainMismatchAction{
 		Code: serverconfigs.DomainMismatchActionPage,
 		Options: maps.Map{
-			"statusCode":  404,
+			"statusCode":  domainMisMatchStatusCode,
 			"contentHTML": params.HttpAllDomainMismatchActionContentHTML,
 		},
 	}
