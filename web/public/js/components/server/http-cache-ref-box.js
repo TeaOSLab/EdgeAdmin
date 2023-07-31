@@ -268,7 +268,7 @@ Vue.component("http-cache-ref-box", {
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
-		<td>支持分片内容</td>
+		<td>支持分段内容</td>
 		<td>
 			<checkbox name="allowChunkedEncoding" value="1" v-model="ref.allowChunkedEncoding"></checkbox>
 			<p class="comment">选中后，Gzip等压缩后的Chunked内容可以直接缓存，无需检查内容长度。</p>

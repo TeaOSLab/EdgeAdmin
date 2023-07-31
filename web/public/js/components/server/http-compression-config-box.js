@@ -252,7 +252,7 @@ Vue.component("http-compression-config-box", {
 				<td>支持Partial<br/>Content</td>
 				<td>
 					<checkbox v-model="config.enablePartialContent"></checkbox>
-					<p class="comment">支持对分区内容（PartialContent）的压缩；除非客户端有特殊要求，一般不需要启用。</p>
+					<p class="comment">支持对分片内容（PartialContent）的压缩；除非客户端有特殊要求，一般不需要启用。</p>
 				</td>
 			</tr>
 			<tr>
