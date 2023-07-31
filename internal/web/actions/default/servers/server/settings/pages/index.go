@@ -105,7 +105,7 @@ func (this *IndexAction) RunPost(params struct {
 				return
 			}
 
-			if !urlReg.MatchString(shutdownConfig.URL) {
+			if shutdownConfig.IsOn /** 只有启用的时候才校验 **/ && !urlReg.MatchString(shutdownConfig.URL) {
 				this.Fail("临时关闭页面中 '" + shutdownConfig.URL + "' 不是一个正确的URL，请进行修改")
 				return
 			}
