@@ -150,7 +150,7 @@ Vue.component("http-cache-ref-box", {
 			}
 			switch (condCategory) {
 				case "simple":
-					dialog.style.width = "40em"
+					dialog.style.width = "45em"
 					break
 				case "complex":
 					let width = window.parent.innerWidth
@@ -268,24 +268,24 @@ Vue.component("http-cache-ref-box", {
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
-		<td>支持分段内容</td>
-		<td>
-			<checkbox name="allowChunkedEncoding" value="1" v-model="ref.allowChunkedEncoding"></checkbox>
-			<p class="comment">选中后，Gzip等压缩后的Chunked内容可以直接缓存，无需检查内容长度。</p>
-		</td>
-	</tr>
-	<tr v-show="moreOptionsVisible && !vIsReverse">
 		<td>支持缓存分片内容</td>
 		<td>
 			<checkbox name="allowPartialContent" value="1" v-model="ref.allowPartialContent"></checkbox>
 			<p class="comment">选中后，支持缓存源站返回的某个分片的内容，该内容通过<code-label>206 Partial Content</code-label>状态码返回。</p>
 		</td>
 	</tr>
-	<tr v-show="moreOptionsVisible && !vIsReverse && ref.allowPartialContent">
+	<tr v-show="moreOptionsVisible && !vIsReverse && ref.allowPartialContent && !ref.alwaysForwardRangeReques">
 		<td>强制返回分片内容</td>
 		<td>
 			<checkbox name="forcePartialContent" value="1" v-model="ref.forcePartialContent"></checkbox>
 			<p class="comment">选中后，表示无论客户端是否发送<code-label>Range</code-label>报头，都会优先尝试返回已缓存的分片内容；如果你的应用有不支持分片内容的客户端（比如有些下载软件不支持<code-label>206 Partial Content</code-label>），请务必关闭此功能。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>强制Range回源</td>
+		<td>
+			<checkbox v-model="ref.alwaysForwardRangeRequest"></checkbox>
+			<p class="comment">选中后，表示把所有包含Range报头的请求都转发到源站，而不是尝试从缓存中读取。</p>
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
@@ -341,6 +341,13 @@ Vue.component("http-cache-ref-box", {
 		<td>
 			<checkbox v-model="ref.enableReadingOriginAsync"></checkbox>
 			<p class="comment">试验功能。允许客户端中断连接后，仍然继续尝试从源站读取内容并缓存。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>支持分段内容</td>
+		<td>
+			<checkbox name="allowChunkedEncoding" value="1" v-model="ref.allowChunkedEncoding"></checkbox>
+			<p class="comment">选中后，Gzip等压缩后的Chunked内容可以直接缓存，无需检查内容长度。</p>
 		</td>
 	</tr>
 	<tr v-show="false">
