@@ -38,8 +38,7 @@ Vue.component("http-cache-refs-box", {
 			<thead>
 				<tr>
 					<th>缓存条件</th>
-					<th class="two wide">分组关系</th>
-					<th class="width10">缓存时间</th>
+					<th class="width6">缓存时间</th>
 				</tr>
 				<tr v-for="(cacheRef, index) in refs">
 					<td :class="{'color-border': cacheRef.conds != null && cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
@@ -59,13 +58,7 @@ Vue.component("http-cache-refs-box", {
 						<grey-label v-if="cacheRef.allowPartialContent">区间缓存</grey-label>
 						<grey-label v-if="cacheRef.enableIfNoneMatch">If-None-Match</grey-label>
 						<grey-label v-if="cacheRef.enableIfModifiedSince">If-Modified-Since</grey-label>
-					</td>
-					<td :class="{disabled: !cacheRef.isOn}">
-						<span v-if="cacheRef.conds != null">
-							<span v-if="cacheRef.conds.connector == 'and'">和</span>
-							<span v-if="cacheRef.conds.connector == 'or'">或</span>
-						</span>
-						<span v-else>或</span>
+						<grey-label v-if="cacheRef.enableReadingOriginAsync">支持异步</grey-label>
 					</td>
 					<td :class="{disabled: !cacheRef.isOn}">
 						<span v-if="!cacheRef.isReverse">{{cacheRef.life.count}} {{timeUnitName(cacheRef.life.unit)}}</span>

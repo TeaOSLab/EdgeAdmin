@@ -33,6 +33,7 @@ Vue.component("http-cache-ref-box", {
 				forcePartialContent: false,
 				enableIfNoneMatch: false,
 				enableIfModifiedSince: false,
+				enableReadingOriginAsync: false,
 				isReverse: this.vIsReverse,
 				methods: [],
 				expiresTime: {
@@ -333,6 +334,13 @@ Vue.component("http-cache-ref-box", {
 		<td>
 			<checkbox v-model="ref.enableIfModifiedSince"></checkbox>
 			<p class="comment">特殊情况下才需要开启，可能会降低缓存命中率。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>允许异步读取源站</td>
+		<td>
+			<checkbox v-model="ref.enableReadingOriginAsync"></checkbox>
+			<p class="comment">试验功能。允许客户端中断连接后，仍然继续尝试从源站读取内容并缓存。</p>
 		</td>
 	</tr>
 	<tr v-show="false">
