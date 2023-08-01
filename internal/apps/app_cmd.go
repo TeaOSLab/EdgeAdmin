@@ -1,6 +1,7 @@
 package apps
 
 import (
+	"errors"
 	"fmt"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/iwind/TeaGo/logs"
@@ -9,8 +10,10 @@ import (
 	"github.com/iwind/gosock/pkg/gosock"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -186,12 +189,15 @@ func (this *AppCmd) runStart() {
 		return
 	}
 
-	cmd := exec.Command(os.Args[0])
+	var cmd = exec.Command(this.exe())
 	err := cmd.Start()
 	if err != nil {
 		fmt.Println(this.product+"  start failed:", err.Error())
 		return
 	}
+
+	// create symbolic links
+	_ = this.createSymLinks()
 
 	fmt.Println(this.product+" started ok, pid:", cmd.Process.Pid)
 }
@@ -238,4 +244,59 @@ func (this *AppCmd) getPID() int {
 		return 0
 	}
 	return maps.NewMap(reply.Params).GetInt("pid")
+}
+
+func (this *AppCmd) exe() string {
+	var exe, _ = os.Executable()
+	if len(exe) == 0 {
+		exe = os.Args[0]
+	}
+	return exe
+}
+
+// 创建软链接
+func (this *AppCmd) createSymLinks() error {
+	if runtime.GOOS != "linux" {
+		return nil
+	}
+
+	var exe, _ = os.Executable()
+	if len(exe) == 0 {
+		return nil
+	}
+
+	var errorList = []string{}
+
+	// bin
+	{
+		var target = "/usr/bin/" + teaconst.ProcessName
+		old, _ := filepath.EvalSymlinks(target)
+		if old != exe {
+			_ = os.Remove(target)
+			err := os.Symlink(exe, target)
+			if err != nil {
+				errorList = append(errorList, err.Error())
+			}
+		}
+	}
+
+	// log
+	{
+		var realPath = filepath.Dir(filepath.Dir(exe)) + "/logs/run.log"
+		var target = "/var/log/" + teaconst.ProcessName + ".log"
+		old, _ := filepath.EvalSymlinks(target)
+		if old != realPath {
+			_ = os.Remove(target)
+			err := os.Symlink(realPath, target)
+			if err != nil {
+				errorList = append(errorList, err.Error())
+			}
+		}
+	}
+
+	if len(errorList) > 0 {
+		return errors.New(strings.Join(errorList, "\n"))
+	}
+
+	return nil
 }
