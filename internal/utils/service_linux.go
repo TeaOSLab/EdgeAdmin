@@ -59,10 +59,10 @@ func (this *ServiceManager) Uninstall() error {
 		}
 
 		// disable service
-		exec.Command(systemd, "disable", teaconst.SystemdServiceName+".service").Start()
+		_ = exec.Command(systemd, "disable", teaconst.SystemdServiceName+".service").Start()
 
 		// reload
-		exec.Command(systemd, "daemon-reload")
+		_ = exec.Command(systemd, "daemon-reload").Start()
 
 		return files.NewFile(systemdServiceFile).Delete()
 	}
@@ -143,10 +143,10 @@ WantedBy=multi-user.target`
 	}
 
 	// stop current systemd service if running
-	exec.Command(systemd, "stop", shortName+".service")
+	_ = exec.Command(systemd, "stop", shortName+".service").Start()
 
 	// reload
-	exec.Command(systemd, "daemon-reload")
+	_ = exec.Command(systemd, "daemon-reload").Start()
 
 	// enable
 	cmd := exec.Command(systemd, "enable", shortName+".service")
