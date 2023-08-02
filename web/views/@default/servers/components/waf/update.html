@@ -1,103 +1,114 @@
 {$layout}
 
-	{$template "waf_menu"}
+{$template "waf_menu"}
 
-	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
-		<input type="hidden" name="firewallPolicyId" :value="firewallPolicyId"/>
-		<table class="ui table definition selectable">
-			<tr>
-				<td class="title">策略名称 *</td>
-				<td>
-					<input type="text" name="name" maxlength="100" ref="focus" v-model="firewallPolicy.name"/>
-					<p class="comment">给策略起一个容易识别的名字。</p>
-				</td>
-			</tr>
+<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
+    <input type="hidden" name="firewallPolicyId" :value="firewallPolicyId"/>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">策略名称 *</td>
+            <td>
+                <input type="text" name="name" maxlength="100" ref="focus" v-model="firewallPolicy.name"/>
+                <p class="comment">给策略起一个容易识别的名字。</p>
+            </td>
+        </tr>
+        <tr>
+            <td>当前模式</td>
+            <td>
+                <select class="ui dropdown auto-width" name="mode" v-model="firewallPolicy.mode">
+                    <option v-for="mode in modes" :value="mode.code">{{mode.name}}</option>
+                </select>
+                <p class="comment" v-for="mode in modes" v-if="mode.code == firewallPolicy.mode">{{mode.description}}</p>
+            </td>
+        </tr>
+        <tr>
+            <td>启用预置的规则</td>
+            <td>
+                <div class="ui checkbox" v-for="group in groups" style="width:10em;margin-bottom:0.5em">
+                    <input type="checkbox" name="groupCodes" :value="group.code" :id="'group-checkbox-' + group.code" v-model="group.isOn"/>
+                    <label :for="'group-checkbox-' + group.code">{{group.name}}</label>
+                </div>
+                <p class="comment">可以启用一些我们预置的规则组。</p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2"><more-options-indicator></more-options-indicator></td>
+        </tr>
+        <tbody v-show="moreOptionsVisible">
             <tr>
-                <td>当前模式</td>
+                <td>阻止动作配置</td>
                 <td>
-                    <select class="ui dropdown auto-width" name="mode" v-model="firewallPolicy.mode">
-                        <option v-for="mode in modes" :value="mode.code">{{mode.name}}</option>
-                    </select>
-                    <p class="comment" v-for="mode in modes" v-if="mode.code == firewallPolicy.mode">{{mode.description}}</p>
+                    <http-firewall-block-options :v-block-options="firewallPolicy.blockOptions"></http-firewall-block-options>
                 </td>
             </tr>
-			<tr>
-				<td>启用预置的规则</td>
-				<td>
-					<div class="ui checkbox" v-for="group in groups" style="width:10em;margin-bottom:0.5em">
-						<input type="checkbox" name="groupCodes" :value="group.code" :id="'group-checkbox-' + group.code" v-model="group.isOn"/>
-						<label :for="'group-checkbox-' + group.code">{{group.name}}</label>
-					</div>
-					<p class="comment">可以启用一些我们预置的规则组。</p>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="2"><more-options-indicator></more-options-indicator></td>
-			</tr>
-			<tbody v-show="moreOptionsVisible">
-                <tr>
-                    <td>阻止动作配置</td>
-                    <td>
-                        <http-firewall-block-options :v-block-options="firewallPolicy.blockOptions"></http-firewall-block-options>
-                    </td>
-                </tr>
-                <tr>
-                    <td>验证码动作配置</td>
-                    <td>
-                        <http-firewall-captcha-options :v-captcha-options="firewallPolicy.captchaOptions"></http-firewall-captcha-options>
-                    </td>
-                </tr>
-                <tr>
-                    <td>使用系统防火墙</td>
-                    <td>
-                        <checkbox name="useLocalFirewall" v-model="firewallPolicy.useLocalFirewall"></checkbox>
-                        <p class="comment">开启后，可以在合适的时候自动使用系统自带防火墙进行防御。</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>SYN Flood防御</td>
-                    <td>
-                        <firewall-syn-flood-config-box :v-syn-flood-config="firewallPolicy.synFloodConfig"></firewall-syn-flood-config-box>
-                    </td>
-                </tr>
-                <tr>
-                    <td :class="{'color-border':firewallPolicy.log.isOn}">记录访问日志</td>
-                    <td>
-                        <input type="hidden" name="logJSON" :value="JSON.stringify(firewallPolicy.log)"/>
-                        <checkbox name="" v-model="firewallPolicy.log.isOn"></checkbox>
-                        <p class="comment">选中后，总是记录WAF相关访问日志，即使服务中没有开启访问日志。</p>
-                    </td>
-                </tr>
-                <tr v-show="firewallPolicy.log.isOn">
-                    <td class="color-border">记录请求Body</td>
-                    <td>
-                        <checkbox v-model="firewallPolicy.log.requestBody"></checkbox>
-                        <p class="comment">选中后，表示在访问日志中记录匹配的请求内容。注意：此选项会明显增加访问日志占用空间，请谨慎开启。</p>
-                    </td>
-                </tr>
-                <tr v-show="firewallPolicy.log.isOn">
-                    <td class="color-border">记录区域封禁日志</td>
-                    <td>
-                        <checkbox v-model="firewallPolicy.log.regionDenying"></checkbox>
-                        <p class="comment">选中后，表示在访问日志中记录区域封禁（地区和省份）事件。</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>描述</td>
-                    <td>
-                        <textarea name="description" rows="3" v-model="firewallPolicy.description"></textarea>
-                    </td>
-                </tr>
-                <tr>
-                    <td>是否启用</td>
-                    <td>
-                        <div class="ui checkbox">
-                            <input type="checkbox" name="isOn" value="1" v-model="firewallPolicy.isOn"/>
-                            <label></label>
-                        </div>
-                    </td>
-                </tr>
-			</tbody>
-		</table>
-		<submit-btn></submit-btn>
-	</form>
+            <tr>
+                <td>验证码动作配置</td>
+                <td>
+                    <http-firewall-captcha-options :v-captcha-options="firewallPolicy.captchaOptions"></http-firewall-captcha-options>
+                </td>
+            </tr>
+            <tr>
+                <td>使用系统防火墙</td>
+                <td>
+                    <checkbox name="useLocalFirewall" v-model="firewallPolicy.useLocalFirewall"></checkbox>
+                    <p class="comment">开启后，可以在合适的时候自动使用系统自带防火墙进行防御。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>SYN Flood防御</td>
+                <td>
+                    <firewall-syn-flood-config-box :v-syn-flood-config="firewallPolicy.synFloodConfig"></firewall-syn-flood-config-box>
+                </td>
+            </tr>
+            <tr>
+                <td :class="{'color-border':firewallPolicy.log.isOn}">记录访问日志</td>
+                <td>
+                    <input type="hidden" name="logJSON" :value="JSON.stringify(firewallPolicy.log)"/>
+                    <checkbox name="" v-model="firewallPolicy.log.isOn"></checkbox>
+                    <p class="comment">选中后，总是记录WAF相关访问日志，即使服务中没有开启访问日志。</p>
+                </td>
+            </tr>
+            <tr v-show="firewallPolicy.log.isOn">
+                <td class="color-border">记录请求Body</td>
+                <td>
+                    <checkbox v-model="firewallPolicy.log.requestBody"></checkbox>
+                    <p class="comment">选中后，表示在访问日志中记录匹配的请求内容。注意：此选项会明显增加访问日志占用空间，请谨慎开启。</p>
+                </td>
+            </tr>
+            <tr v-show="firewallPolicy.log.isOn">
+                <td class="color-border">记录区域封禁日志</td>
+                <td>
+                    <checkbox v-model="firewallPolicy.log.regionDenying"></checkbox>
+                    <p class="comment">选中后，表示在访问日志中记录区域封禁（地区和省份）事件。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>最多检查内容尺寸</td>
+                <td>
+                    <input type="hidden" name="maxRequestBodySize" v-model="maxRequestBodySize"/>
+                    <div class="ui input right labeled">
+                        <input type="text" style="width: 10em" maxlength="10" v-model="firewallPolicy.maxRequestBodySize" @input="changeMaxRequestBodySize(firewallPolicy.maxRequestBodySize)"/>
+                        <span class="ui label">字节</span>
+                    </div>
+                    <p class="comment"><span v-if="maxRequestBodySize > 0">当前：{{maxRequestBodySizeFormat}}。</span>WAF能够分析的最大文件内容尺寸，0表示默认，默认为1MB；此值越大，对应使用的系统内存越多，除非特殊情况，否则请谨慎修改。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>描述</td>
+                <td>
+                    <textarea name="description" rows="3" v-model="firewallPolicy.description"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>启用当前策略</td>
+                <td>
+                    <div class="ui checkbox">
+                        <input type="checkbox" name="isOn" value="1" v-model="firewallPolicy.isOn"/>
+                        <label></label>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <submit-btn></submit-btn>
+</form>

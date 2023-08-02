@@ -1,6 +1,7 @@
 package waf
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -86,18 +87,20 @@ func (this *PolicyAction) RunGet(params struct {
 	}
 
 	this.Data["firewallPolicy"] = maps.Map{
-		"id":               firewallPolicy.Id,
-		"name":             firewallPolicy.Name,
-		"isOn":             firewallPolicy.IsOn,
-		"description":      firewallPolicy.Description,
-		"mode":             firewallPolicy.Mode,
-		"modeInfo":         firewallconfigs.FindFirewallMode(firewallPolicy.Mode),
-		"groups":           internalGroups,
-		"blockOptions":     firewallPolicy.BlockOptions,
-		"captchaOptions":   firewallPolicy.CaptchaOptions,
-		"useLocalFirewall": firewallPolicy.UseLocalFirewall,
-		"synFlood":         firewallPolicy.SYNFlood,
-		"log":              firewallPolicy.Log,
+		"id":                       firewallPolicy.Id,
+		"name":                     firewallPolicy.Name,
+		"isOn":                     firewallPolicy.IsOn,
+		"description":              firewallPolicy.Description,
+		"mode":                     firewallPolicy.Mode,
+		"modeInfo":                 firewallconfigs.FindFirewallMode(firewallPolicy.Mode),
+		"groups":                   internalGroups,
+		"blockOptions":             firewallPolicy.BlockOptions,
+		"captchaOptions":           firewallPolicy.CaptchaOptions,
+		"useLocalFirewall":         firewallPolicy.UseLocalFirewall,
+		"synFlood":                 firewallPolicy.SYNFlood,
+		"log":                      firewallPolicy.Log,
+		"maxRequestBodySize":       firewallPolicy.MaxRequestBodySize,
+		"maxRequestBodySizeFormat": numberutils.FormatBytes(firewallPolicy.MaxRequestBodySize),
 	}
 
 	// 正在使用此策略的集群
