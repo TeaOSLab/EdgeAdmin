@@ -9,6 +9,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/iwind/TeaGo/types"
 	"net/http"
 )
 
@@ -64,16 +65,17 @@ func (this *UpdateAction) RunGet(params struct {
 	}
 
 	this.Data["firewallPolicy"] = maps.Map{
-		"id":               firewallPolicy.Id,
-		"name":             firewallPolicy.Name,
-		"description":      firewallPolicy.Description,
-		"isOn":             firewallPolicy.IsOn,
-		"mode":             firewallPolicy.Mode,
-		"blockOptions":     firewallPolicy.BlockOptions,
-		"captchaOptions":   firewallPolicy.CaptchaOptions,
-		"useLocalFirewall": firewallPolicy.UseLocalFirewall,
-		"synFloodConfig":   firewallPolicy.SYNFlood,
-		"log":              firewallPolicy.Log,
+		"id":                 firewallPolicy.Id,
+		"name":               firewallPolicy.Name,
+		"description":        firewallPolicy.Description,
+		"isOn":               firewallPolicy.IsOn,
+		"mode":               firewallPolicy.Mode,
+		"blockOptions":       firewallPolicy.BlockOptions,
+		"captchaOptions":     firewallPolicy.CaptchaOptions,
+		"useLocalFirewall":   firewallPolicy.UseLocalFirewall,
+		"synFloodConfig":     firewallPolicy.SYNFlood,
+		"log":                firewallPolicy.Log,
+		"maxRequestBodySize": types.String(firewallPolicy.MaxRequestBodySize),
 	}
 
 	// 预置分组
@@ -110,6 +112,7 @@ func (this *UpdateAction) RunPost(params struct {
 	UseLocalFirewall   bool
 	SynFloodJSON       []byte
 	LogJSON            []byte
+	MaxRequestBodySize int64
 
 	Must *actions.Must
 }) {
@@ -134,6 +137,11 @@ func (this *UpdateAction) RunPost(params struct {
 		this.Fail("验证码动作参数校验失败：" + err.Error())
 	}
 
+	// 最大内容尺寸
+	if params.MaxRequestBodySize < 0 {
+		params.MaxRequestBodySize = 0
+	}
+
 	_, err = this.RPC().HTTPFirewallPolicyRPC().UpdateHTTPFirewallPolicy(this.AdminContext(), &pb.UpdateHTTPFirewallPolicyRequest{
 		HttpFirewallPolicyId: params.FirewallPolicyId,
 		IsOn:                 params.IsOn,
@@ -146,6 +154,7 @@ func (this *UpdateAction) RunPost(params struct {
 		UseLocalFirewall:     params.UseLocalFirewall,
 		SynFloodJSON:         params.SynFloodJSON,
 		LogJSON:              params.LogJSON,
+		MaxRequestBodySize:   params.MaxRequestBodySize,
 	})
 	if err != nil {
 		this.ErrorPage(err)

@@ -75,6 +75,13 @@
         </td>
     </tr>
     <tr>
+        <td>最多检查内容尺寸</td>
+        <td>
+            <span v-if="firewallPolicy.maxRequestBodySize == 0" class="disabled">使用默认</span>
+            <span v-else>{{firewallPolicy.maxRequestBodySizeFormat}}</span>
+        </td>
+    </tr>
+    <tr>
         <td>描述</td>
         <td>
             <span v-if="firewallPolicy.description.length > 0">{{firewallPolicy.description}}</span>
