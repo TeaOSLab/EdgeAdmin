@@ -29,7 +29,7 @@
                 <td class="color-border">缓存硬盘最大容量 *</td>
                 <td>
                     <size-capacity-box :v-name="'capacityJSON'" :v-count="128" :v-unit="'gb'" :key="'capacityJSON1'"></size-capacity-box>
-                    <p class="comment">单个节点上缓存目录所在硬盘允许的最大容量，如果为0表示没有限制。</p>
+                    <p class="comment">缓存所在磁盘的最大用量，超出此用量后，将会自动尝试清理旧数据，如果为0表示没有限制。</p>
                 </td>
             </tr>
             <tr>
