@@ -389,6 +389,7 @@ func (this *DetailAction) RunGet(params struct {
 			"exePath":              status.ExePath,
 			"apiSuccessPercent":    status.APISuccessPercent,
 			"apiAvgCostSeconds":    status.APIAvgCostSeconds,
+			"diskWritingSpeedMB":   status.DiskWritingSpeedMB,
 		},
 
 		"group":  groupMap,

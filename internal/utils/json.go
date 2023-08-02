@@ -24,7 +24,7 @@ func JSONClone(v interface{}) (interface{}, error) {
 	return nv, nil
 }
 
-// 判断JSON数据是否为null
+// JSONIsNull 判断JSON数据是否为null
 func JSONIsNull(jsonData []byte) bool {
 	return len(jsonData) == 0 || bytes.Equal(jsonData, []byte("null"))
 }
