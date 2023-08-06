@@ -61,6 +61,7 @@ func (this *UpdateAction) RunPost(params struct {
 	CapacityJSON         []byte
 	MaxSizeJSON          []byte
 	SyncCompressionCache bool
+	FetchTimeoutJSON     []byte
 
 	Description string
 	IsOn        bool
@@ -122,7 +123,7 @@ func (this *UpdateAction) RunPost(params struct {
 	}
 
 	// 校验缓存条件
-	refs := []*serverconfigs.HTTPCacheRef{}
+	var refs = []*serverconfigs.HTTPCacheRef{}
 	if len(params.RefsJSON) > 0 {
 		err = json.Unmarshal(params.RefsJSON, &refs)
 		if err != nil {
@@ -146,6 +147,7 @@ func (this *UpdateAction) RunPost(params struct {
 		Type:                 params.Type,
 		OptionsJSON:          optionsJSON,
 		SyncCompressionCache: params.SyncCompressionCache,
+		FetchTimeoutJSON:     params.FetchTimeoutJSON,
 	})
 	if err != nil {
 		this.ErrorPage(err)

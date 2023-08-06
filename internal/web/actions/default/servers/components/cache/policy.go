@@ -26,6 +26,12 @@ func (this *PolicyAction) RunGet(params struct {
 	}
 	this.Data["cachePolicy"] = cachePolicy
 
+	// 预热超时时间
+	this.Data["fetchTimeoutString"] = ""
+	if cachePolicy.FetchTimeout != nil && cachePolicy.FetchTimeout.Count > 0 {
+		this.Data["fetchTimeoutString"] = cachePolicy.FetchTimeout.Description()
+	}
+
 	this.Data["typeName"] = serverconfigs.FindCachePolicyStorageName(cachePolicy.Type)
 
 	// 正在使用此策略的集群
@@ -34,7 +40,7 @@ func (this *PolicyAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	clusterMaps := []maps.Map{}
+	var clusterMaps = []maps.Map{}
 	for _, cluster := range clustersResp.NodeClusters {
 		clusterMaps = append(clusterMaps, maps.Map{
 			"id":   cluster.Id,
