@@ -227,11 +227,6 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isActive": secondMenuItem == "basic",
 			"isOff":    !serverConfig.IsOn,
 		},
-		{
-			"name":     this.Lang(actionPtr, codes.Server_MenuSettingDNS),
-			"url":      "/servers/server/settings/dns?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "dns",
-		},
 	}
 
 	// HTTP
@@ -241,6 +236,11 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"url":      "/servers/server/settings/serverNames?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "serverName",
 			"isOn":     len(serverConfig.ServerNames) > 0,
+		})
+		menuItems = append(menuItems, maps.Map{
+			"name":     this.Lang(actionPtr, codes.Server_MenuSettingDNS),
+			"url":      "/servers/server/settings/dns?serverId=" + serverIdString,
+			"isActive": secondMenuItem == "dns",
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     this.Lang(actionPtr, codes.Server_MenuSettingHTTP),
@@ -439,6 +439,11 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 		})
 	} else if serverConfig.IsTCPFamily() {
 		menuItems = append(menuItems, maps.Map{
+			"name":     this.Lang(actionPtr, codes.Server_MenuSettingDNS),
+			"url":      "/servers/server/settings/dns?serverId=" + serverIdString,
+			"isActive": secondMenuItem == "dns",
+		})
+		menuItems = append(menuItems, maps.Map{
 			"name":     this.Lang(actionPtr, codes.Server_MenuSettingTCP),
 			"url":      "/servers/server/settings/tcp?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "tcp",
@@ -458,12 +463,22 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 		})
 	} else if serverConfig.IsUnixFamily() {
 		menuItems = append(menuItems, maps.Map{
+			"name":     this.Lang(actionPtr, codes.Server_MenuSettingDNS),
+			"url":      "/servers/server/settings/dns?serverId=" + serverIdString,
+			"isActive": secondMenuItem == "dns",
+		})
+		menuItems = append(menuItems, maps.Map{
 			"name":     this.Lang(actionPtr, codes.Server_MenuSettingUnix),
 			"url":      "/servers/server/settings/unix?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "unix",
 			"isOn":     serverConfig.Unix != nil && serverConfig.Unix.IsOn && len(serverConfig.Unix.Listen) > 0,
 		})
 	} else if serverConfig.IsUDPFamily() {
+		menuItems = append(menuItems, maps.Map{
+			"name":     this.Lang(actionPtr, codes.Server_MenuSettingDNS),
+			"url":      "/servers/server/settings/dns?serverId=" + serverIdString,
+			"isActive": secondMenuItem == "dns",
+		})
 		menuItems = append(menuItems, maps.Map{
 			"name":     this.Lang(actionPtr, codes.Server_MenuSettingUDP),
 			"url":      "/servers/server/settings/udp?serverId=" + serverIdString,
