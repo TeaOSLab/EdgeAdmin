@@ -2,6 +2,7 @@ package cache
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -38,6 +39,18 @@ func (this *UpdateAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
+
+	// fix min free size
+	if cachePolicy.Type == serverconfigs.CachePolicyStorageFile && cachePolicy.Options != nil {
+		_, ok := cachePolicy.Options["minFreeSize"]
+		if !ok {
+			cachePolicy.Options["minFreeSize"] = &shared.SizeCapacity{
+				Count: 0,
+				Unit:  shared.SizeCapacityUnitGB,
+			}
+		}
+	}
+
 	this.Data["cachePolicy"] = cachePolicy
 
 	// 其他选项
@@ -57,6 +70,7 @@ func (this *UpdateAction) RunPost(params struct {
 	FileMemoryCapacityJSON []byte
 	FileOpenFileCacheMax   int
 	FileEnableSendfile     bool
+	FileMinFreeSizeJSON    []byte
 
 	CapacityJSON         []byte
 	MaxSizeJSON          []byte
@@ -85,7 +99,7 @@ func (this *UpdateAction) RunPost(params struct {
 			Field("fileDir", params.FileDir).
 			Require("请输入缓存目录")
 
-		memoryCapacity := &shared.SizeCapacity{}
+		var memoryCapacity = &shared.SizeCapacity{}
 		if len(params.FileMemoryCapacityJSON) > 0 {
 			err := json.Unmarshal(params.FileMemoryCapacityJSON, memoryCapacity)
 			if err != nil {
@@ -102,6 +116,19 @@ func (this *UpdateAction) RunPost(params struct {
 			}
 		}
 
+		var minFreeSize = &shared.SizeCapacity{}
+		var minFreeSizeJSON = params.FileMinFreeSizeJSON
+		if !utils.JSONIsNull(minFreeSizeJSON) {
+			_, err := utils.JSONDecodeConfig(minFreeSizeJSON, minFreeSize)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			if minFreeSize.Count < 0 {
+				minFreeSize.Count = 0
+			}
+		}
+
 		options = &serverconfigs.HTTPFileCacheStorage{
 			Dir: params.FileDir,
 			MemoryPolicy: &serverconfigs.HTTPCachePolicy{
@@ -109,6 +136,7 @@ func (this *UpdateAction) RunPost(params struct {
 			},
 			OpenFileCache:  openFileCacheConfig,
 			EnableSendfile: params.FileEnableSendfile,
+			MinFreeSize:    minFreeSize,
 		}
 	case serverconfigs.CachePolicyStorageMemory:
 		options = &serverconfigs.HTTPMemoryCacheStorage{}
