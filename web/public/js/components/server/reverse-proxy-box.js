@@ -225,7 +225,7 @@ Vue.component("reverse-proxy-box", {
 				</td>
 			</tr>
 			<tr v-if="family == null || family == 'http'">
-				<td>是否自动刷新缓存区<em>（AutoFlush）</em></td>
+				<td>自动刷新缓存区<em>（AutoFlush）</em></td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="reverseProxyConfig.autoFlush"/>
