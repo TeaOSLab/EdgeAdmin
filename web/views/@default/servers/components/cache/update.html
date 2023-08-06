@@ -28,7 +28,7 @@
 					</td>
 				</tr>
                 <tr>
-                    <td class="color-border">缓存硬盘最大容量</td>
+                    <td class="color-border">缓存磁盘最大用量</td>
                     <td>
                         <size-capacity-box :v-name="'capacityJSON'" :v-value="cachePolicy.capacity" :v-count="0" :v-unit="'gb'"></size-capacity-box>
                         <p class="comment">缓存所在磁盘的最大用量，超出此用量后，将会自动尝试清理旧数据，如果为0表示没有限制。</p>
@@ -71,6 +71,13 @@
 			</tr>
             <tbody v-show="moreOptionsVisible && policyType == 'file'">
                 <tr>
+                    <td class="color-border">缓存磁盘最小空余空间</td>
+                    <td>
+                        <size-capacity-box :v-name="'fileMinFreeSizeJSON'" :v-value="cachePolicy.options.minFreeSize" :key="'minFreeSizeJSON'"></size-capacity-box>
+                        <p class="comment">缓存磁盘保留的最小空余空间，如果为0表示使用默认（目前默认保留5GB）。</p>
+                    </td>
+                </tr>
+                <tr>
                     <td class="color-border">缓存文件句柄缓存</td>
                     <td>
                         <input type="text" name="fileOpenFileCacheMax" v-model="fileOpenFileCacheMax" maxlength="6" value="0" style="width: 10em"/>
@@ -90,7 +97,7 @@
                     <td>同步写入压缩缓存</td>
                     <td>
                         <checkbox name="syncCompressionCache" v-model="cachePolicy.syncCompressionCache"></checkbox>
-                        <p class="comment">选中后，在压缩设置开启的情况下，在缓存源站内容的同时，也会同步写入压缩缓存；不选中，表示在源站内容缓存后，下一次调用才会缓存压缩内容，防止同一时间内硬盘IO负载过高。</p>
+                        <p class="comment">选中后，在压缩设置开启的情况下，在缓存源站内容的同时，也会同步写入压缩缓存；不选中，表示在源站内容缓存后，下一次调用才会缓存压缩内容，防止同一时间内磁盘IO负载过高。</p>
                     </td>
                 </tr>
                 <tr>

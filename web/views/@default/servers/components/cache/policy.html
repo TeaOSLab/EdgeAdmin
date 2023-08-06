@@ -27,10 +27,10 @@
             </td>
         </tr>
         <tr>
-            <td class="color-border">缓存硬盘最大容量</td>
+            <td class="color-border">缓存磁盘最大用量</td>
             <td>
                 <size-capacity-view :v-value="cachePolicy.capacity" :v-default-text="'不限'"></size-capacity-view>
-                <p class="comment">单个节点上缓存目录所在硬盘允许的最大容量，如果为0表示没有限制。</p>
+                <p class="comment">单个节点上缓存目录所在磁盘允许的最大容量，如果为0表示没有限制。</p>
             </td>
         </tr>
         <tr v-if="cachePolicy.options.memoryPolicy != null && cachePolicy.options.memoryPolicy.capacity != null && cachePolicy.options.memoryPolicy.capacity.count > 0">
@@ -53,6 +53,10 @@
         <tr v-if="cachePolicy.options.enableSendfile">
             <td class="color-border">开启Sendfile</td>
             <td><span v-if="cachePolicy.options.enableSendfile" class="green">Y</span><span v-else class="disabled">N</span></td>
+        </tr>
+        <tr v-if="cachePolicy.options.minFreeSize != null && cachePolicy.options.minFreeSize.count > 0">
+            <td class="color-border">缓存磁盘最小空余空间</td>
+            <td><size-capacity-view :v-value="cachePolicy.options.minFreeSize"></size-capacity-view></td>
         </tr>
     </tbody>
 

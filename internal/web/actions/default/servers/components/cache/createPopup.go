@@ -2,6 +2,7 @@ package cache
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -34,10 +35,11 @@ func (this *CreatePopupAction) RunPost(params struct {
 	FileMemoryCapacityJSON []byte
 	FileOpenFileCacheMax   int
 	FileEnableSendfile     bool
+	FileMinFreeSizeJSON    []byte
 
 	CapacityJSON         []byte
 	MaxSizeJSON          []byte
-	FetchTimeoutJSON            []byte
+	FetchTimeoutJSON     []byte
 	SyncCompressionCache bool
 
 	Description string
@@ -50,14 +52,14 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Require("请输入策略名称")
 
 	// 校验选项
-	var options interface{}
+	var options any
 	switch params.Type {
 	case serverconfigs.CachePolicyStorageFile:
 		params.Must.
 			Field("fileDir", params.FileDir).
 			Require("请输入缓存目录")
 
-		memoryCapacity := &shared.SizeCapacity{}
+		var memoryCapacity = &shared.SizeCapacity{}
 		if len(params.FileMemoryCapacityJSON) > 0 {
 			err := json.Unmarshal(params.FileMemoryCapacityJSON, memoryCapacity)
 			if err != nil {
@@ -74,6 +76,19 @@ func (this *CreatePopupAction) RunPost(params struct {
 			}
 		}
 
+		var minFreeSize = &shared.SizeCapacity{}
+		var minFreeSizeJSON = params.FileMinFreeSizeJSON
+		if !utils.JSONIsNull(minFreeSizeJSON) {
+			_, err := utils.JSONDecodeConfig(minFreeSizeJSON, minFreeSize)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			if minFreeSize.Count < 0 {
+				minFreeSize.Count = 0
+			}
+		}
+
 		options = &serverconfigs.HTTPFileCacheStorage{
 			Dir: params.FileDir,
 			MemoryPolicy: &serverconfigs.HTTPCachePolicy{
@@ -81,6 +96,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 			},
 			OpenFileCache:  openFileCacheConfig,
 			EnableSendfile: params.FileEnableSendfile,
+			MinFreeSize:    minFreeSize,
 		}
 	case serverconfigs.CachePolicyStorageMemory:
 		options = &serverconfigs.HTTPMemoryCacheStorage{}
@@ -99,7 +115,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Description:          params.Description,
 		CapacityJSON:         params.CapacityJSON,
 		MaxSizeJSON:          params.MaxSizeJSON,
-		FetchTimeoutJSON: params.FetchTimeoutJSON,
+		FetchTimeoutJSON:     params.FetchTimeoutJSON,
 		Type:                 params.Type,
 		OptionsJSON:          optionsJSON,
 		SyncCompressionCache: params.SyncCompressionCache,
