@@ -14,7 +14,7 @@
 				<td>
                     <div v-if="hasDomains">
                         <dns-domain-selector :v-domain-id="domainId" :v-domain-name="domainName" :v-provider-name="domainProvider.name" @change="changeDomain"></dns-domain-selector>
-                        <p class="comment">用于生成集群节点和网站的DNS解析记录<span v-if="domainId > 0">，修改后将自动删除旧域名中的相关记录</span>。</p>
+                        <p class="comment">用于生成集群节点和网站的CNAME和DNS解析记录<span v-if="domainId > 0">，修改后将自动删除旧域名中的相关记录</span>。</p>
                     </div>
                     <div v-else>
                         没有可用的域名，请在 <a href="/dns/providers" target="_blank">[域名解析]</a> 中添加。

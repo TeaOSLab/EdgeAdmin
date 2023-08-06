@@ -12,6 +12,7 @@
                 <td>
                     <span id="cname-text">{{dnsName}}.<span v-if="dnsDomain.length > 0">{{dnsDomain}}</span><span v-else>根域名</span></span> &nbsp; <copy-to-clipboard :v-target="'cname-text'"></copy-to-clipboard> &nbsp;<a href="" @click.prevent="regenerateCNAME()" style="font-size: 0.8em">[重新生成]</a> &nbsp; <a href="" @click.prevent="updateCNAME()" style="font-size: 0.8em">[手动修改]</a>
                     <p class="comment">你需要为你的每个<a :href="'/servers/server/settings/serverNames?serverId=' + serverId">网站域名</a>设置一个CNAME解析，值为上面内容。</p>
+                    <p v-if="dnsDomain.length == 0"><span class="red">你尚未为当前网站所在集群指定CNAME根域名，可以在 <a :href="'/clusters/cluster/settings/dns?clusterId=' + server.clusterId" target="_blank">[这里]</a> 修改。</span></p>
                 </td>
             </tr>
             <tr>
