@@ -21,6 +21,7 @@ func (this *CreatePopupAction) Init() {
 
 func (this *CreatePopupAction) RunGet(params struct{}) {
 	this.Data["types"] = serverconfigs.AllCachePolicyStorageTypes
+
 	this.Show()
 }
 
@@ -36,6 +37,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 
 	CapacityJSON         []byte
 	MaxSizeJSON          []byte
+	FetchTimeoutJSON            []byte
 	SyncCompressionCache bool
 
 	Description string
@@ -97,6 +99,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Description:          params.Description,
 		CapacityJSON:         params.CapacityJSON,
 		MaxSizeJSON:          params.MaxSizeJSON,
+		FetchTimeoutJSON: params.FetchTimeoutJSON,
 		Type:                 params.Type,
 		OptionsJSON:          optionsJSON,
 		SyncCompressionCache: params.SyncCompressionCache,

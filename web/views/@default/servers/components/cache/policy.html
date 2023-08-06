@@ -84,6 +84,10 @@
             </td>
         </tr>
         <tr>
+            <td>预热超时时间</td>
+            <td><span v-if="fetchTimeoutString.length > 0">{{fetchTimeoutString}}</span><span v-else class="disabled">使用默认</span></td>
+        </tr>
+        <tr>
             <td>描述</td>
             <td>
                 <span v-if="cachePolicy.description.length > 0">{{cachePolicy.description}}</span>
