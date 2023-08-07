@@ -28,12 +28,18 @@ Vue.component("http-cache-config-box", {
 			cacheConfig: cacheConfig,
 			moreOptionsVisible: false,
 			enablePolicyRefs: !cacheConfig.disablePolicyRefs,
-			maxBytes: maxBytes
+			maxBytes: maxBytes,
+
+			searchBoxVisible: false,
+			searchKeyword: ""
 		}
 	},
 	watch: {
 		enablePolicyRefs: function (v) {
 			this.cacheConfig.disablePolicyRefs = !v
+		},
+		searchKeyword: function (v) {
+			this.$refs.cacheRefsConfigBoxRef.search(v)
 		}
 	},
 	methods: {
@@ -58,6 +64,18 @@ Vue.component("http-cache-config-box", {
 		},
 		changeStale: function (stale) {
 			this.cacheConfig.stale = stale
+		},
+
+		showSearchBox: function () {
+			this.searchBoxVisible = !this.searchBoxVisible
+			if (this.searchBoxVisible) {
+				let that = this
+				setTimeout(function () {
+					that.$refs.searchBox.focus()
+				})
+			} else {
+				this.searchKeyword = ""
+			}
 		}
 	},
 	template: `<div>
@@ -147,7 +165,12 @@ Vue.component("http-cache-config-box", {
 	</div>
 	
 	<div v-show="isOn()" style="margin-top: 1em">
-		<h4>缓存条件 &nbsp; <a href="" style="font-size: 0.8em" @click.prevent="$refs.cacheRefsConfigBoxRef.addRef(false)">[添加]</a> </h4>
+		<h4 style="position: relative">缓存条件 &nbsp; <a href="" style="font-size: 0.8em" @click.prevent="$refs.cacheRefsConfigBoxRef.addRef(false)">[添加]</a> &nbsp; <a href="" style="font-size: 0.8em" @click.prevent="showSearchBox" v-show="!searchBoxVisible">[搜索]</a> 
+			<div class="ui input small right labeled" style="position: absolute; top: -0.6em" v-show="searchBoxVisible">
+				<input type="text" placeholder="搜索..." ref="searchBox"  @keypress.enter.prevent="1" @keydown.esc="showSearchBox" v-model="searchKeyword" />
+				<a href="" class="ui label blue" @click.prevent="showSearchBox"><i class="icon remove small"></i></a>
+			</div>
+		</h4>
 		<http-cache-refs-config-box ref="cacheRefsConfigBoxRef" :v-cache-config="cacheConfig" :v-cache-refs="cacheConfig.cacheRefs" :v-web-id="vWebId" :v-max-bytes="maxBytes"></http-cache-refs-config-box>
 	</div>
 	<div class="margin"></div>
