@@ -42,7 +42,7 @@ Vue.component("http-cache-policy-selector", {
 	template: `<div>
 	<div v-if="cachePolicy != null" class="ui label basic">
 		<input type="hidden" name="cachePolicyId" :value="cachePolicy.id"/>
-		{{cachePolicy.name}} &nbsp; <a :href="'/servers/components/cache/policy?cachePolicyId=' + cachePolicy.id" target="_blank" title="修改"><i class="icon pencil small"></i></a>&nbsp; <a href="" @click.prevent="remove()" title="删除"><i class="icon remove small"></i></a>
+		{{cachePolicy.name}} &nbsp; <a :href="'/servers/components/cache/update?cachePolicyId=' + cachePolicy.id" target="_blank" title="修改"><i class="icon pencil small"></i></a>&nbsp; <a href="" @click.prevent="remove()" title="删除"><i class="icon remove small"></i></a>
 	</div>
 	<div v-if="cachePolicy == null">
 		<span v-if="count > 0"><a href="" @click.prevent="select">[选择已有策略]</a> &nbsp; &nbsp; </span><a href="" @click.prevent="create">[创建新策略]</a>
