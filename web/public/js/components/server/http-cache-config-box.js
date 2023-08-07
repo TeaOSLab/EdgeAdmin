@@ -166,8 +166,8 @@ Vue.component("http-cache-config-box", {
 	
 	<div v-show="isOn()" style="margin-top: 1em">
 		<h4 style="position: relative">缓存条件 &nbsp; <a href="" style="font-size: 0.8em" @click.prevent="$refs.cacheRefsConfigBoxRef.addRef(false)">[添加]</a> &nbsp; <a href="" style="font-size: 0.8em" @click.prevent="showSearchBox" v-show="!searchBoxVisible">[搜索]</a> 
-			<div class="ui input small right labeled" style="position: absolute; top: -0.6em" v-show="searchBoxVisible">
-				<input type="text" placeholder="搜索..." ref="searchBox"  @keypress.enter.prevent="1" @keydown.esc="showSearchBox" v-model="searchKeyword" />
+			<div class="ui input small right labeled" style="position: absolute; top: -0.4em; margin-left: 0.5em; zoom: 0.9" v-show="searchBoxVisible">
+				<input type="text" placeholder="搜索..." ref="searchBox"  @keypress.enter.prevent="1" @keydown.esc="showSearchBox" v-model="searchKeyword" size="20"/>
 				<a href="" class="ui label blue" @click.prevent="showSearchBox"><i class="icon remove small"></i></a>
 			</div>
 		</h4>
