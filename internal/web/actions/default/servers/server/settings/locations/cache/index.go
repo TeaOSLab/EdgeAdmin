@@ -2,11 +2,13 @@ package cache
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 )
@@ -38,10 +40,20 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 	if cachePolicy != nil {
+		var maxBytes = &shared.SizeCapacity{}
+		if !utils.JSONIsNull(cachePolicy.MaxBytesJSON) {
+			err = json.Unmarshal(cachePolicy.MaxBytesJSON, maxBytes)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+		}
+
 		this.Data["cachePolicy"] = maps.Map{
-			"id":   cachePolicy.Id,
-			"name": cachePolicy.Name,
-			"isOn": cachePolicy.IsOn,
+			"id":       cachePolicy.Id,
+			"name":     cachePolicy.Name,
+			"isOn":     cachePolicy.IsOn,
+			"maxBytes": maxBytes,
 		}
 	} else {
 		this.Data["cachePolicy"] = nil

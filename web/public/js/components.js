@@ -1040,7 +1040,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			</div>
 		</div>
 	</div>
-</div>`}),Vue.component("plan-price-config-box",{props:["v-price-type","v-monthly-price","v-seasonally-price","v-yearly-price","v-traffic-price","v-bandwidth-price","v-disable-period"],data:function(){let e=this.vPriceType,t=(null==e&&(e="bandwidth"),0),i=this.vMonthlyPrice,n=(null==i||i<=0?i="":(i=i.toString(),t=parseFloat(i),isNaN(t)&&(t=0)),0),s=this.vSeasonallyPrice,o=(null==s||s<=0?s="":(s=s.toString(),n=parseFloat(s),isNaN(n)&&(n=0)),0),a=this.vYearlyPrice,l=(null==a||a<=0?a="":(a=a.toString(),o=parseFloat(a),isNaN(o)&&(o=0)),this.vTrafficPrice),c=0,r=(null!=l?c=l.base:l={base:0},""),d=(0<c&&(r=c.toString()),this.vBandwidthPrice);return null==d?d={percentile:95,ranges:[]}:null==d.ranges&&(d.ranges=[]),{priceType:e,monthlyPrice:i,seasonallyPrice:s,yearlyPrice:a,monthlyPriceNumber:t,seasonallyPriceNumber:n,yearlyPriceNumber:o,trafficPriceBase:r,trafficPrice:l,bandwidthPrice:d,bandwidthPercentile:d.percentile}},methods:{changeBandwidthPriceRanges:function(e){this.bandwidthPrice.ranges=e}},watch:{monthlyPrice:function(e){let t=parseFloat(e);isNaN(t)&&(t=0),this.monthlyPriceNumber=t},seasonallyPrice:function(e){let t=parseFloat(e);isNaN(t)&&(t=0),this.seasonallyPriceNumber=t},yearlyPrice:function(e){let t=parseFloat(e);isNaN(t)&&(t=0),this.yearlyPriceNumber=t},trafficPriceBase:function(e){let t=parseFloat(e);isNaN(t)&&(t=0),this.trafficPrice.base=t},bandwidthPercentile:function(e){let t=parseInt(e);isNaN(t)||t<=0?t=95:100<t&&(t=100),this.bandwidthPrice.percentile=t}},template:`<div>
+</div>`}),Vue.component("plan-price-config-box",{props:["v-price-type","v-monthly-price","v-seasonally-price","v-yearly-price","v-traffic-price","v-bandwidth-price","v-disable-period"],data:function(){let e=this.vPriceType,t=(null==e&&(e="bandwidth"),0),i=this.vMonthlyPrice,n=(null==i||i<=0?i="":(i=i.toString(),t=parseFloat(i),isNaN(t)&&(t=0)),0),s=this.vSeasonallyPrice,o=(null==s||s<=0?s="":(s=s.toString(),n=parseFloat(s),isNaN(n)&&(n=0)),0),a=this.vYearlyPrice,l=(null==a||a<=0?a="":(a=a.toString(),o=parseFloat(a),isNaN(o)&&(o=0)),this.vTrafficPrice),r=0,c=(null!=l?r=l.base:l={base:0},""),d=(0<r&&(c=r.toString()),this.vBandwidthPrice);return null==d?d={percentile:95,ranges:[]}:null==d.ranges&&(d.ranges=[]),{priceType:e,monthlyPrice:i,seasonallyPrice:s,yearlyPrice:a,monthlyPriceNumber:t,seasonallyPriceNumber:n,yearlyPriceNumber:o,trafficPriceBase:c,trafficPrice:l,bandwidthPrice:d,bandwidthPercentile:d.percentile}},methods:{changeBandwidthPriceRanges:function(e){this.bandwidthPrice.ranges=e}},watch:{monthlyPrice:function(e){let t=parseFloat(e);isNaN(t)&&(t=0),this.monthlyPriceNumber=t},seasonallyPrice:function(e){let t=parseFloat(e);isNaN(t)&&(t=0),this.seasonallyPriceNumber=t},yearlyPrice:function(e){let t=parseFloat(e);isNaN(t)&&(t=0),this.yearlyPriceNumber=t},trafficPriceBase:function(e){let t=parseFloat(e);isNaN(t)&&(t=0),this.trafficPrice.base=t},bandwidthPercentile:function(e){let t=parseInt(e);isNaN(t)||t<=0?t=95:100<t&&(t=100),this.bandwidthPrice.percentile=t}},template:`<div>
 	<input type="hidden" name="priceType" :value="priceType"/>
 	<input type="hidden" name="monthlyPrice" :value="monthlyPriceNumber"/>
 	<input type="hidden" name="seasonallyPrice" :value="seasonallyPriceNumber"/>
@@ -1703,8 +1703,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<thead>
 				<tr>
 					<th>缓存条件</th>
-					<th class="two wide">分组关系</th>
-					<th class="width10">缓存时间</th>
+					<th class="width6">缓存时间</th>
 				</tr>
 				<tr v-for="(cacheRef, index) in refs">
 					<td :class="{'color-border': cacheRef.conds != null && cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
@@ -1721,16 +1720,11 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 						<grey-label v-if="cacheRef.methods != null && cacheRef.methods.length > 0">{{cacheRef.methods.join(", ")}}</grey-label>
 						<grey-label v-if="cacheRef.expiresTime != null && cacheRef.expiresTime.isPrior && cacheRef.expiresTime.isOn">Expires</grey-label>
 						<grey-label v-if="cacheRef.status != null && cacheRef.status.length > 0 && (cacheRef.status.length > 1 || cacheRef.status[0] != 200)">状态码：{{cacheRef.status.map(function(v) {return v.toString()}).join(", ")}}</grey-label>
-						<grey-label v-if="cacheRef.allowPartialContent">区间缓存</grey-label>
+						<grey-label v-if="cacheRef.allowPartialContent">分片缓存</grey-label>
+						<grey-label v-if="cacheRef.alwaysForwardRangeRequest">Range回源</grey-label>
 						<grey-label v-if="cacheRef.enableIfNoneMatch">If-None-Match</grey-label>
 						<grey-label v-if="cacheRef.enableIfModifiedSince">If-Modified-Since</grey-label>
-					</td>
-					<td :class="{disabled: !cacheRef.isOn}">
-						<span v-if="cacheRef.conds != null">
-							<span v-if="cacheRef.conds.connector == 'and'">和</span>
-							<span v-if="cacheRef.conds.connector == 'or'">或</span>
-						</span>
-						<span v-else>或</span>
+						<grey-label v-if="cacheRef.enableReadingOriginAsync">支持异步</grey-label>
 					</td>
 					<td :class="{disabled: !cacheRef.isOn}">
 						<span v-if="!cacheRef.isReverse">{{cacheRef.life.count}} {{timeUnitName(cacheRef.life.unit)}}</span>
@@ -1844,7 +1838,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<p class="comment" v-if="redirects.length > 1">所有规则匹配顺序为从上到下，可以拖动左侧的<i class="icon bars"></i>排序。</p>
 	</div>
 	<div class="margin"></div>
-</div>`}),Vue.component("http-cache-ref-box",{props:["v-cache-ref","v-is-reverse"],mounted:function(){this.$refs.variablesDescriber.update(this.ref.key),null!=this.ref.simpleCond?(this.condType=this.ref.simpleCond.type,this.changeCondType(this.ref.simpleCond.type,!0),this.condCategory="simple"):null!=this.ref.conds&&null!=this.ref.conds.groups&&(this.condCategory="complex"),this.changeCondCategory(this.condCategory)},data:function(){let e=this.vCacheRef;null==(e=null==e?{isOn:!0,cachePolicyId:0,key:"${scheme}://${host}${requestPath}${isArgs}${args}",life:{count:2,unit:"hour"},status:[200],maxSize:{count:32,unit:"mb"},minSize:{count:0,unit:"kb"},skipCacheControlValues:["private","no-cache","no-store"],skipSetCookie:!0,enableRequestCachePragma:!1,conds:null,simpleCond:null,allowChunkedEncoding:!0,allowPartialContent:!0,forcePartialContent:!1,enableIfNoneMatch:!1,enableIfModifiedSince:!1,isReverse:this.vIsReverse,methods:[],expiresTime:{isPrior:!1,isOn:!1,overwrite:!0,autoCalculate:!0,duration:{count:-1,unit:"hour"}}}:e).key&&(e.key=""),null==e.methods&&(e.methods=[]),null==e.life&&(e.life={count:2,unit:"hour"}),null==e.maxSize&&(e.maxSize={count:32,unit:"mb"}),null==e.minSize&&(e.minSize={count:0,unit:"kb"});var t=window.REQUEST_COND_COMPONENTS.$find(function(e,t){return"url-extension"==t.type});return{ref:e,keyIgnoreArgs:"string"==typeof e.key&&e.key.indexOf("${args}")<0,moreOptionsVisible:!1,condCategory:"simple",condType:"url-extension",condComponent:t,condIsCaseInsensitive:null==e.simpleCond||e.simpleCond.isCaseInsensitive,components:window.REQUEST_COND_COMPONENTS}},watch:{keyIgnoreArgs:function(e){"string"==typeof this.ref.key&&(e?this.ref.key=this.ref.key.replace("${isArgs}${args}",""):(this.ref.key.indexOf("${isArgs}")<0&&(this.ref.key=this.ref.key+"${isArgs}"),this.ref.key.indexOf("${args}")<0&&(this.ref.key=this.ref.key+"${args}")))}},methods:{changeOptionsVisible:function(e){this.moreOptionsVisible=e},changeLife:function(e){this.ref.life=e},changeMaxSize:function(e){this.ref.maxSize=e},changeMinSize:function(e){this.ref.minSize=e},changeConds:function(e){this.ref.conds=e,this.ref.simpleCond=null},changeStatusList:function(e){let t=[];e.forEach(function(e){e=parseInt(e);isNaN(e)||e<100||999<e||t.push(e)}),this.ref.status=t},changeMethods:function(e){this.ref.methods=e.map(function(e){return e.toUpperCase()})},changeKey:function(e){this.$refs.variablesDescriber.update(e)},changeExpiresTime:function(e){this.ref.expiresTime=e},changeCondCategory:function(t){this.condCategory=t;let i=window.parent.document.querySelector("*[role='dialog']");if(null!=i)switch(t){case"simple":i.style.width="40em";break;case"complex":let e=window.parent.innerWidth;1024<e&&(e=1024),i.style.width=e+"px"}},changeCondType:function(i,e){e||null==this.ref.simpleCond||(this.ref.simpleCond.value=null);e=this.components.$find(function(e,t){return t.type==i});null!=e&&(this.condComponent=e)}},template:`<tbody>
+</div>`}),Vue.component("http-cache-ref-box",{props:["v-cache-ref","v-is-reverse"],mounted:function(){this.$refs.variablesDescriber.update(this.ref.key),null!=this.ref.simpleCond?(this.condType=this.ref.simpleCond.type,this.changeCondType(this.ref.simpleCond.type,!0),this.condCategory="simple"):null!=this.ref.conds&&null!=this.ref.conds.groups&&(this.condCategory="complex"),this.changeCondCategory(this.condCategory)},data:function(){let e=this.vCacheRef;null==(e=null==e?{isOn:!0,cachePolicyId:0,key:"${scheme}://${host}${requestPath}${isArgs}${args}",life:{count:2,unit:"hour"},status:[200],maxSize:{count:32,unit:"mb"},minSize:{count:0,unit:"kb"},skipCacheControlValues:["private","no-cache","no-store"],skipSetCookie:!0,enableRequestCachePragma:!1,conds:null,simpleCond:null,allowChunkedEncoding:!0,allowPartialContent:!0,forcePartialContent:!1,enableIfNoneMatch:!1,enableIfModifiedSince:!1,enableReadingOriginAsync:!1,isReverse:this.vIsReverse,methods:[],expiresTime:{isPrior:!1,isOn:!1,overwrite:!0,autoCalculate:!0,duration:{count:-1,unit:"hour"}}}:e).key&&(e.key=""),null==e.methods&&(e.methods=[]),null==e.life&&(e.life={count:2,unit:"hour"}),null==e.maxSize&&(e.maxSize={count:32,unit:"mb"}),null==e.minSize&&(e.minSize={count:0,unit:"kb"});var t=window.REQUEST_COND_COMPONENTS.$find(function(e,t){return"url-extension"==t.type});return{ref:e,keyIgnoreArgs:"string"==typeof e.key&&e.key.indexOf("${args}")<0,moreOptionsVisible:!1,condCategory:"simple",condType:"url-extension",condComponent:t,condIsCaseInsensitive:null==e.simpleCond||e.simpleCond.isCaseInsensitive,components:window.REQUEST_COND_COMPONENTS}},watch:{keyIgnoreArgs:function(e){"string"==typeof this.ref.key&&(e?this.ref.key=this.ref.key.replace("${isArgs}${args}",""):(this.ref.key.indexOf("${isArgs}")<0&&(this.ref.key=this.ref.key+"${isArgs}"),this.ref.key.indexOf("${args}")<0&&(this.ref.key=this.ref.key+"${args}")))}},methods:{changeOptionsVisible:function(e){this.moreOptionsVisible=e},changeLife:function(e){this.ref.life=e},changeMaxSize:function(e){this.ref.maxSize=e},changeMinSize:function(e){this.ref.minSize=e},changeConds:function(e){this.ref.conds=e,this.ref.simpleCond=null},changeStatusList:function(e){let t=[];e.forEach(function(e){e=parseInt(e);isNaN(e)||e<100||999<e||t.push(e)}),this.ref.status=t},changeMethods:function(e){this.ref.methods=e.map(function(e){return e.toUpperCase()})},changeKey:function(e){this.$refs.variablesDescriber.update(e)},changeExpiresTime:function(e){this.ref.expiresTime=e},changeCondCategory:function(t){this.condCategory=t;let i=window.parent.document.querySelector("*[role='dialog']");if(null!=i)switch(t){case"simple":i.style.width="45em";break;case"complex":let e=window.parent.innerWidth;1024<e&&(e=1024),i.style.width=e+"px"}},changeCondType:function(i,e){e||null==this.ref.simpleCond||(this.ref.simpleCond.value=null);e=this.components.$find(function(e,t){return t.type==i});null!=e&&(this.condComponent=e)}},template:`<tbody>
 	<tr v-if="condCategory == 'simple'">
 		<td class="title">条件类型 *</td>
 		<td>
@@ -1938,24 +1932,24 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
-		<td>支持分片内容</td>
+		<td>支持缓存分片内容</td>
 		<td>
-			<checkbox name="allowChunkedEncoding" value="1" v-model="ref.allowChunkedEncoding"></checkbox>
-			<p class="comment">选中后，Gzip等压缩后的Chunked内容可以直接缓存，无需检查内容长度。</p>
+			<checkbox name="allowPartialContent" value="1" v-model="ref.allowPartialContent"></checkbox>
+			<p class="comment">选中后，支持缓存源站返回的某个分片的内容，该内容通过<code-label>206 Partial Content</code-label>状态码返回。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse && ref.allowPartialContent && !ref.alwaysForwardRangeReques">
+		<td>强制返回分片内容</td>
+		<td>
+			<checkbox name="forcePartialContent" value="1" v-model="ref.forcePartialContent"></checkbox>
+			<p class="comment">选中后，表示无论客户端是否发送<code-label>Range</code-label>报头，都会优先尝试返回已缓存的分片内容；如果你的应用有不支持分片内容的客户端（比如有些下载软件不支持<code-label>206 Partial Content</code-label>），请务必关闭此功能。</p>
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
-		<td>支持缓存区间内容</td>
+		<td>强制Range回源</td>
 		<td>
-			<checkbox name="allowPartialContent" value="1" v-model="ref.allowPartialContent"></checkbox>
-			<p class="comment">选中后，支持缓存源站返回的某个区间的内容，该内容通过<code-label>206 Partial Content</code-label>状态码返回。</p>
-		</td>
-	</tr>
-	<tr v-show="moreOptionsVisible && !vIsReverse && ref.allowPartialContent">
-		<td>强制返回区间内容</td>
-		<td>
-			<checkbox name="forcePartialContent" value="1" v-model="ref.forcePartialContent"></checkbox>
-			<p class="comment">选中后，表示无论客户端是否发送<code-label>Range</code-label>报头，都会优先尝试返回已缓存的区间内容；如果你的应用有不支持区间内容的客户端（比如有些下载软件不支持<code-label>206 Partial Content</code-label>），请务必关闭此功能。</p>
+			<checkbox v-model="ref.alwaysForwardRangeRequest"></checkbox>
+			<p class="comment">选中后，表示把所有包含Range报头的请求都转发到源站，而不是尝试从缓存中读取。</p>
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
@@ -2004,6 +1998,20 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<td>
 			<checkbox v-model="ref.enableIfModifiedSince"></checkbox>
 			<p class="comment">特殊情况下才需要开启，可能会降低缓存命中率。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>允许异步读取源站</td>
+		<td>
+			<checkbox v-model="ref.enableReadingOriginAsync"></checkbox>
+			<p class="comment">试验功能。允许客户端中断连接后，仍然继续尝试从源站读取内容并缓存。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>支持分段内容</td>
+		<td>
+			<checkbox name="allowChunkedEncoding" value="1" v-model="ref.allowChunkedEncoding"></checkbox>
+			<p class="comment">选中后，Gzip等压缩后的Chunked内容可以直接缓存，无需检查内容长度。</p>
 		</td>
 	</tr>
 	<tr v-show="false">
@@ -2115,7 +2123,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<td class="title">全局WAF策略</td>
 			<td>
 				<div v-if="vFirewallPolicy != null">{{vFirewallPolicy.name}} <span v-if="vFirewallPolicy.modeInfo != null">&nbsp; <span :class="{green: vFirewallPolicy.modeInfo.code == 'defend', blue: vFirewallPolicy.modeInfo.code == 'observe', grey: vFirewallPolicy.modeInfo.code == 'bypass'}">[{{vFirewallPolicy.modeInfo.name}}]</span>&nbsp;</span> <link-icon :href="'/servers/components/waf/policy?firewallPolicyId=' + vFirewallPolicy.id"></link-icon>
-					<p class="comment">当前服务所在集群的设置。</p>
+					<p class="comment">当前网站所在集群的设置。</p>
 				</div>
 				<span v-else class="red">当前集群没有设置WAF策略，当前配置无法生效。</span>
 			</td>
@@ -2156,7 +2164,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<h4>{{chart.name}} <span>（{{valueTypeName}}）</span></h4>
 	<div class="ui divider"></div>
 	<div style="height: 14em; padding-bottom: 1em; " :id="chartId" :class="{'scroll-box': chart.type == 'table'}"></div>
-</div>`}),Vue.component("metric-board",{template:"<div><slot></slot></div>"}),Vue.component("http-cache-config-box",{props:["v-cache-config","v-is-location","v-is-group","v-cache-policy","v-web-id"],data:function(){let e=this.vCacheConfig;return null==(e=null==e?{isPrior:!1,isOn:!1,addStatusHeader:!0,addAgeHeader:!1,enableCacheControlMaxAge:!1,cacheRefs:[],purgeIsOn:!1,purgeKey:"",disablePolicyRefs:!1}:e).cacheRefs&&(e.cacheRefs=[]),{cacheConfig:e,moreOptionsVisible:!1,enablePolicyRefs:!e.disablePolicyRefs}},watch:{enablePolicyRefs:function(e){this.cacheConfig.disablePolicyRefs=!e}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.cacheConfig.isPrior)&&this.cacheConfig.isOn},isPlus:function(){return Tea.Vue.teaIsPlus},generatePurgeKey:function(){let e=Math.random().toString()+Math.random().toString(),t=e.replace(/0\./g,"").replace(/\./g,""),i="";for(let e=0;e<t.length;e++)i+=String.fromCharCode(parseInt(t.substring(e,e+1))+(Math.random()<.5?"a":"A").charCodeAt(0));this.cacheConfig.purgeKey=i},showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible},changeStale:function(e){this.cacheConfig.stale=e}},template:`<div>
+</div>`}),Vue.component("metric-board",{template:"<div><slot></slot></div>"}),Vue.component("http-cache-config-box",{props:["v-cache-config","v-is-location","v-is-group","v-cache-policy","v-web-id"],data:function(){let e=this.vCacheConfig;null==(e=null==e?{isPrior:!1,isOn:!1,addStatusHeader:!0,addAgeHeader:!1,enableCacheControlMaxAge:!1,cacheRefs:[],purgeIsOn:!1,purgeKey:"",disablePolicyRefs:!1}:e).cacheRefs&&(e.cacheRefs=[]);var t=null;return null!=this.vCachePolicy&&null!=this.vCachePolicy.maxBytes&&(t=this.vCachePolicy.maxBytes),{cacheConfig:e,moreOptionsVisible:!1,enablePolicyRefs:!e.disablePolicyRefs,maxBytes:t}},watch:{enablePolicyRefs:function(e){this.cacheConfig.disablePolicyRefs=!e}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.cacheConfig.isPrior)&&this.cacheConfig.isOn},isPlus:function(){return Tea.Vue.teaIsPlus},generatePurgeKey:function(){let e=Math.random().toString()+Math.random().toString(),t=e.replace(/0\./g,"").replace(/\./g,""),i="";for(let e=0;e<t.length;e++)i+=String.fromCharCode(parseInt(t.substring(e,e+1))+(Math.random()<.5?"a":"A").charCodeAt(0));this.cacheConfig.purgeKey=i},showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible},changeStale:function(e){this.cacheConfig.stale=e}},template:`<div>
 	<input type="hidden" name="cacheJSON" :value="JSON.stringify(cacheConfig)"/>
 	
 	<table class="ui table definition selectable" v-show="!vIsGroup">
@@ -2164,7 +2172,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<td class="title">全局缓存策略</td>
 			<td>
 				<div v-if="vCachePolicy != null">{{vCachePolicy.name}} <link-icon :href="'/servers/components/cache/policy?cachePolicyId=' + vCachePolicy.id"></link-icon>
-					<p class="comment">使用当前服务所在集群的设置。</p>
+					<p class="comment">使用当前网站所在集群的设置。</p>
 				</div>
 				<span v-else class="red">当前集群没有设置缓存策略，当前配置无法生效。</span>
 			</td>
@@ -2244,7 +2252,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	
 	<div v-show="isOn()" style="margin-top: 1em">
 		<h4>缓存条件 &nbsp; <a href="" style="font-size: 0.8em" @click.prevent="$refs.cacheRefsConfigBoxRef.addRef(false)">[添加]</a> </h4>
-		<http-cache-refs-config-box ref="cacheRefsConfigBoxRef" :v-cache-config="cacheConfig" :v-cache-refs="cacheConfig.cacheRefs" :v-web-id="vWebId"></http-cache-refs-config-box>
+		<http-cache-refs-config-box ref="cacheRefsConfigBoxRef" :v-cache-config="cacheConfig" :v-cache-refs="cacheConfig.cacheRefs" :v-web-id="vWebId" :v-max-bytes="maxBytes"></http-cache-refs-config-box>
 	</div>
 	<div class="margin"></div>
 </div>`});let defaultGeneralHeaders=["Cache-Control","Connection","Date","Pragma","Trailer","Transfer-Encoding","Upgrade","Via","Warning"];Vue.component("http-cond-general-header-length",{props:["v-checkpoint"],data:function(){let e=null,t=null;var i;null!=window.parent.UPDATING_RULE&&(null!=(i=window.parent.UPDATING_RULE.checkpointOptions).headers&&Array.$isArray(i.headers)&&(e=i.headers),null!=i.length&&(t=i.length)),null==e&&(e=defaultGeneralHeaders),null==t&&(t=128);let n=this;return setTimeout(function(){n.change()},100),{headers:e,length:t}},watch:{length:function(e){let t=parseInt(e);(t=isNaN(t)?0:t)<0&&(t=0),this.length=t,this.change()}},methods:{change:function(){this.vCheckpoint.options=[{code:"headers",value:this.headers},{code:"length",value:this.length}]}},template:`<div>
@@ -2354,7 +2362,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<a v-for="(p, index) in partitions" :href="url(p.code)" class="item" :class="{active: selectedPartition == p.code, disabled: p.isDisabled}">分表{{p.code+1}} <span v-if="p.hasLogs">&nbsp; <dot></dot></span> &nbsp; &nbsp; <span class="disabled" v-if="index != partitions.length - 1">|</span></a>
 	</div>
 	<div class="ui divider" style="margin-top: 0"></div>
-</div>`}),Vue.component("http-cache-refs-config-box",{props:["v-cache-refs","v-cache-config","v-cache-policy-id","v-web-id"],mounted:function(){let n=this;sortTable(function(e){let i=[];e.forEach(function(t){n.refs.forEach(function(e){e.id==t&&i.push(e)})}),n.updateRefs(i),n.change()})},data:function(){let e=this.vCacheRefs,t=(null==e&&(e=[]),0);return e.forEach(function(e){t++,e.id=t}),{refs:e,id:t}},methods:{addRef:function(e){window.UPDATING_CACHE_REF=null;let t=window.innerHeight,s=(500<t&&(t=500),this);teaweb.popup("/servers/server/settings/cache/createPopup?isReverse="+(e?1:0),{height:t+"px",callback:function(e){let n=e.data.cacheRef;if(null!=n.conds){if(s.id++,n.id=s.id,n.isReverse){let t=[],i=!1;s.refs.forEach(function(e){e.isReverse||i||(t.push(n),i=!0),t.push(e)}),i||t.push(n),s.updateRefs(t)}else s.refs.push(n);s.change()}}})},updateRef:function(t,e){window.UPDATING_CACHE_REF=teaweb.clone(e);let i=window.innerHeight,n=(500<i&&(i=500),this);teaweb.popup("/servers/server/settings/cache/createPopup",{height:i+"px",callback:function(e){e.data.cacheRef.id=n.refs[t].id,Vue.set(n.refs,t,e.data.cacheRef),n.change(),n.$refs.cacheRef[t].updateConds(e.data.cacheRef.conds,e.data.cacheRef.simpleCond),n.$refs.cacheRef[t].notifyChange()}})},disableRef:function(e){e.isOn=!1,this.change()},enableRef:function(e){e.isOn=!0,this.change()},removeRef:function(e){let t=this;teaweb.confirm("确定要删除此缓存设置吗？",function(){t.refs.$remove(e),t.change()})},updateRefs:function(e){this.refs=e,null!=this.vCacheConfig&&(this.vCacheConfig.cacheRefs=e)},timeUnitName:function(e){switch(e){case"ms":return"毫秒";case"second":return"秒";case"minute":return"分钟";case"hour":return"小时";case"day":return"天";case"week":return"周 "}return e},change:function(){this.$forceUpdate(),null!=this.vCachePolicyId&&0<this.vCachePolicyId?Tea.action("/servers/components/cache/updateRefs").params({cachePolicyId:this.vCachePolicyId,refsJSON:JSON.stringify(this.refs)}).post():null!=this.vWebId&&0<this.vWebId&&Tea.action("/servers/server/settings/cache/updateRefs").params({webId:this.vWebId,refsJSON:JSON.stringify(this.refs)}).success(function(e){e.data.isUpdated&&teaweb.successToast("保存成功")}).post()}},template:`<div>
+</div>`}),Vue.component("http-cache-refs-config-box",{props:["v-cache-refs","v-cache-config","v-cache-policy-id","v-web-id","v-max-bytes"],mounted:function(){let n=this;sortTable(function(e){let i=[];e.forEach(function(t){n.refs.forEach(function(e){e.id==t&&i.push(e)})}),n.updateRefs(i),n.change()})},data:function(){let e=this.vCacheRefs,t=(null==e&&(e=[]),this.vMaxBytes),i=0;return e.forEach(function(e){i++,e.id=i,null!=e.maxSize&&null!=t&&0<teaweb.compareSizeCapacity(e.maxSize,t)&&(e.overMaxSize=t)}),{refs:e,id:i}},methods:{addRef:function(e){window.UPDATING_CACHE_REF=null;let t=window.innerHeight,s=(500<t&&(t=500),this);teaweb.popup("/servers/server/settings/cache/createPopup?isReverse="+(e?1:0),{height:t+"px",callback:function(e){let n=e.data.cacheRef;if(null!=n.conds){if(s.id++,n.id=s.id,n.isReverse){let t=[],i=!1;s.refs.forEach(function(e){e.isReverse||i||(t.push(n),i=!0),t.push(e)}),i||t.push(n),s.updateRefs(t)}else s.refs.push(n);s.change()}}})},updateRef:function(t,e){window.UPDATING_CACHE_REF=teaweb.clone(e);let i=window.innerHeight,n=(500<i&&(i=500),this);teaweb.popup("/servers/server/settings/cache/createPopup",{height:i+"px",callback:function(e){e.data.cacheRef.id=n.refs[t].id,Vue.set(n.refs,t,e.data.cacheRef),n.change(),n.$refs.cacheRef[t].updateConds(e.data.cacheRef.conds,e.data.cacheRef.simpleCond),n.$refs.cacheRef[t].notifyChange()}})},disableRef:function(e){e.isOn=!1,this.change()},enableRef:function(e){e.isOn=!0,this.change()},removeRef:function(e){let t=this;teaweb.confirm("确定要删除此缓存设置吗？",function(){t.refs.$remove(e),t.change()})},updateRefs:function(e){this.refs=e,null!=this.vCacheConfig&&(this.vCacheConfig.cacheRefs=e)},timeUnitName:function(e){switch(e){case"ms":return"毫秒";case"second":return"秒";case"minute":return"分钟";case"hour":return"小时";case"day":return"天";case"week":return"周 "}return e},change:function(){this.$forceUpdate(),null!=this.vCachePolicyId&&0<this.vCachePolicyId?Tea.action("/servers/components/cache/updateRefs").params({cachePolicyId:this.vCachePolicyId,refsJSON:JSON.stringify(this.refs)}).post():null!=this.vWebId&&0<this.vWebId&&Tea.action("/servers/server/settings/cache/updateRefs").params({webId:this.vWebId,refsJSON:JSON.stringify(this.refs)}).success(function(e){e.data.isUpdated&&teaweb.successToast("保存成功")}).post()}},template:`<div>
 	<input type="hidden" name="refsJSON" :value="JSON.stringify(refs)"/>
 	
 	<div>
@@ -2364,8 +2372,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				<tr>
 					<th style="width:1em"></th>
 					<th>缓存条件</th>
-					<th class="two wide">分组关系</th>
-					<th class="width10">缓存时间</th>
+					<th style="width: 7em">缓存时间</th>
 					<th class="three op">操作</th>
 				</tr>
 			</thead>	
@@ -2378,24 +2385,23 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 						
 						<!-- 特殊参数 -->
 						<grey-label v-if="cacheRef.key != null && cacheRef.key.indexOf('\${args}') < 0">忽略URI参数</grey-label>
+						
 						<grey-label v-if="cacheRef.minSize != null && cacheRef.minSize.count > 0">
 							{{cacheRef.minSize.count}}{{cacheRef.minSize.unit}}
-							<span v-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">- {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</span>
+							<span v-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">- {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit.toUpperCase()}}</span>
 						</grey-label>
-						<grey-label v-else-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">0 - {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</grey-label>
+						<grey-label v-else-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">0 - {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit.toUpperCase()}}</grey-label>
+						
+						<grey-label v-if="cacheRef.overMaxSize != null"><span class="red">系统限制{{cacheRef.overMaxSize.count}}{{cacheRef.overMaxSize.unit.toUpperCase()}}</span> </grey-label>
+						
 						<grey-label v-if="cacheRef.methods != null && cacheRef.methods.length > 0">{{cacheRef.methods.join(", ")}}</grey-label>
 						<grey-label v-if="cacheRef.expiresTime != null && cacheRef.expiresTime.isPrior && cacheRef.expiresTime.isOn">Expires</grey-label>
 						<grey-label v-if="cacheRef.status != null && cacheRef.status.length > 0 && (cacheRef.status.length > 1 || cacheRef.status[0] != 200)">状态码：{{cacheRef.status.map(function(v) {return v.toString()}).join(", ")}}</grey-label>
-						<grey-label v-if="cacheRef.allowPartialContent">区间缓存</grey-label>
+						<grey-label v-if="cacheRef.allowPartialContent">分片缓存</grey-label>
+						<grey-label v-if="cacheRef.alwaysForwardRangeRequest">Range回源</grey-label>
 						<grey-label v-if="cacheRef.enableIfNoneMatch">If-None-Match</grey-label>
 						<grey-label v-if="cacheRef.enableIfModifiedSince">If-Modified-Since</grey-label>
-					</td>
-					<td :class="{disabled: !cacheRef.isOn}">
-						<span v-if="cacheRef.conds != null">
-							<span v-if="cacheRef.conds.connector == 'and'">和</span>
-							<span v-if="cacheRef.conds.connector == 'or'">或</span>
-						</span>
-						<span v-else>或</span>
+						<grey-label v-if="cacheRef.enableReadingOriginAsync">支持异步</grey-label>
 					</td>
 					<td :class="{disabled: !cacheRef.isOn}">
 						<span v-if="!cacheRef.isReverse">{{cacheRef.life.count}} {{timeUnitName(cacheRef.life.unit)}}</span>
@@ -3383,7 +3389,7 @@ example2.com
 <div class="margin"></div>
 </div>`}),Vue.component("user-selector",{props:["v-user-id","data-url"],data:function(){let e=this.vUserId,t=(null==e&&(e=0),this.dataUrl);return null!=t&&0!=t.length||(t="/servers/users/options"),{users:[],userId:e,dataURL:t}},methods:{change:function(e){null!=e?this.$emit("change",e.id):this.$emit("change",0)},clear:function(){this.$refs.comboBox.clear()}},template:`<div>
 	<combo-box placeholder="选择用户" :data-url="dataURL" :data-key="'users'" data-search="on" name="userId" :v-value="userId" @change="change" ref="comboBox"></combo-box>
-</div>`}),Vue.component("http-header-policy-box",{props:["v-request-header-policy","v-request-header-ref","v-response-header-policy","v-response-header-ref","v-params","v-is-location","v-is-group","v-has-group-request-config","v-has-group-response-config","v-group-setting-url"],data:function(){let e="response";"#request"==window.location.hash&&(e="request");let t=this.vRequestHeaderRef,i=(null==t&&(t={isPrior:!1,isOn:!0,headerPolicyId:0}),this.vResponseHeaderRef),n=(null==i&&(i={isPrior:!1,isOn:!0,headerPolicyId:0}),[]),s=[],o=[];var a=this.vRequestHeaderPolicy;null!=a&&(null!=a.setHeaders&&(n=a.setHeaders),null!=a.deleteHeaders&&(s=a.deleteHeaders),null!=a.nonStandardHeaders&&(o=a.nonStandardHeaders));let l=[],c=[],r=[];a=this.vResponseHeaderPolicy;null!=a&&(null!=a.setHeaders&&(l=a.setHeaders),null!=a.deleteHeaders&&(c=a.deleteHeaders),null!=a.nonStandardHeaders&&(r=a.nonStandardHeaders));let d={isOn:!1};return null!=a.cors&&(d=a.cors),{type:e,typeName:"request"==e?"请求":"响应",requestHeaderRef:t,responseHeaderRef:i,requestSettingHeaders:n,requestDeletingHeaders:s,requestNonStandardHeaders:o,responseSettingHeaders:l,responseDeletingHeaders:c,responseNonStandardHeaders:r,responseCORS:d}},methods:{selectType:function(e){this.type=e,window.location.hash="#"+e,window.location.reload()},addSettingHeader:function(e){teaweb.popup("/servers/server/settings/headers/createSetPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})},addDeletingHeader:function(e,t){teaweb.popup("/servers/server/settings/headers/createDeletePopup?"+this.vParams+"&headerPolicyId="+e+"&type="+t,{callback:function(){teaweb.successRefresh("保存成功")}})},addNonStandardHeader:function(e,t){teaweb.popup("/servers/server/settings/headers/createNonStandardPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+t,{callback:function(){teaweb.successRefresh("保存成功")}})},updateSettingPopup:function(e,t){teaweb.popup("/servers/server/settings/headers/updateSetPopup?"+this.vParams+"&headerPolicyId="+e+"&headerId="+t+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})},deleteDeletingHeader:function(e,t){teaweb.confirm("确定要删除'"+t+"'吗？",function(){Tea.action("/servers/server/settings/headers/deleteDeletingHeader").params({headerPolicyId:e,headerName:t}).post().refresh()})},deleteNonStandardHeader:function(e,t){teaweb.confirm("确定要删除'"+t+"'吗？",function(){Tea.action("/servers/server/settings/headers/deleteNonStandardHeader").params({headerPolicyId:e,headerName:t}).post().refresh()})},deleteHeader:function(e,t,i){teaweb.confirm("确定要删除此报头吗？",function(){this.$post("/servers/server/settings/headers/delete").params({headerPolicyId:e,type:t,headerId:i}).refresh()})},updateCORS:function(e){teaweb.popup("/servers/server/settings/headers/updateCORSPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+this.type,{height:"30em",callback:function(){teaweb.successRefresh("保存成功")}})}},template:`<div>
+</div>`}),Vue.component("http-header-policy-box",{props:["v-request-header-policy","v-request-header-ref","v-response-header-policy","v-response-header-ref","v-params","v-is-location","v-is-group","v-has-group-request-config","v-has-group-response-config","v-group-setting-url"],data:function(){let e="response";"#request"==window.location.hash&&(e="request");let t=this.vRequestHeaderRef,i=(null==t&&(t={isPrior:!1,isOn:!0,headerPolicyId:0}),this.vResponseHeaderRef),n=(null==i&&(i={isPrior:!1,isOn:!0,headerPolicyId:0}),[]),s=[],o=[];var a=this.vRequestHeaderPolicy;null!=a&&(null!=a.setHeaders&&(n=a.setHeaders),null!=a.deleteHeaders&&(s=a.deleteHeaders),null!=a.nonStandardHeaders&&(o=a.nonStandardHeaders));let l=[],r=[],c=[];a=this.vResponseHeaderPolicy;null!=a&&(null!=a.setHeaders&&(l=a.setHeaders),null!=a.deleteHeaders&&(r=a.deleteHeaders),null!=a.nonStandardHeaders&&(c=a.nonStandardHeaders));let d={isOn:!1};return null!=a.cors&&(d=a.cors),{type:e,typeName:"request"==e?"请求":"响应",requestHeaderRef:t,responseHeaderRef:i,requestSettingHeaders:n,requestDeletingHeaders:s,requestNonStandardHeaders:o,responseSettingHeaders:l,responseDeletingHeaders:r,responseNonStandardHeaders:c,responseCORS:d}},methods:{selectType:function(e){this.type=e,window.location.hash="#"+e,window.location.reload()},addSettingHeader:function(e){teaweb.popup("/servers/server/settings/headers/createSetPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})},addDeletingHeader:function(e,t){teaweb.popup("/servers/server/settings/headers/createDeletePopup?"+this.vParams+"&headerPolicyId="+e+"&type="+t,{callback:function(){teaweb.successRefresh("保存成功")}})},addNonStandardHeader:function(e,t){teaweb.popup("/servers/server/settings/headers/createNonStandardPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+t,{callback:function(){teaweb.successRefresh("保存成功")}})},updateSettingPopup:function(e,t){teaweb.popup("/servers/server/settings/headers/updateSetPopup?"+this.vParams+"&headerPolicyId="+e+"&headerId="+t+"&type="+this.type,{callback:function(){teaweb.successRefresh("保存成功")}})},deleteDeletingHeader:function(e,t){teaweb.confirm("确定要删除'"+t+"'吗？",function(){Tea.action("/servers/server/settings/headers/deleteDeletingHeader").params({headerPolicyId:e,headerName:t}).post().refresh()})},deleteNonStandardHeader:function(e,t){teaweb.confirm("确定要删除'"+t+"'吗？",function(){Tea.action("/servers/server/settings/headers/deleteNonStandardHeader").params({headerPolicyId:e,headerName:t}).post().refresh()})},deleteHeader:function(e,t,i){teaweb.confirm("确定要删除此报头吗？",function(){this.$post("/servers/server/settings/headers/delete").params({headerPolicyId:e,type:t,headerId:i}).refresh()})},updateCORS:function(e){teaweb.popup("/servers/server/settings/headers/updateCORSPopup?"+this.vParams+"&headerPolicyId="+e+"&type="+this.type,{height:"30em",callback:function(){teaweb.successRefresh("保存成功")}})}},template:`<div>
 	<div class="ui menu tabular small">
 		<a class="item" :class="{active:type == 'response'}" @click.prevent="selectType('response')">响应报头<span v-if="responseSettingHeaders.length > 0">({{responseSettingHeaders.length}})</span></a>
 		<a class="item" :class="{active:type == 'request'}" @click.prevent="selectType('request')">请求报头<span v-if="requestSettingHeaders.length > 0">({{requestSettingHeaders.length}})</span></a>
@@ -3756,7 +3762,7 @@ example2.com
 				<td>支持Partial<br/>Content</td>
 				<td>
 					<checkbox v-model="config.enablePartialContent"></checkbox>
-					<p class="comment">支持对分区内容（PartialContent）的压缩；除非客户端有特殊要求，一般不需要启用。</p>
+					<p class="comment">支持对分片内容（PartialContent）的压缩；除非客户端有特殊要求，一般不需要启用。</p>
 				</td>
 			</tr>
 			<tr>
@@ -3768,7 +3774,7 @@ example2.com
 		</tbody>
 	</table>
 	<div class="margin"></div>
-</div>`}),Vue.component("http-cc-config-box",{props:["v-cc-config","v-is-location","v-is-group"],data:function(){let e=this.vCcConfig;return"boolean"!=typeof(e=null==e?{isPrior:!1,isOn:!1,enableFingerprint:!0,enableGET302:!0,onlyURLPatterns:[],exceptURLPatterns:[]}:e).enableFingerprint&&(e.enableFingerprint=!0),"boolean"!=typeof e.enableGET302&&(e.enableGET302=!0),null==e.onlyURLPatterns&&(e.onlyURLPatterns=[]),null==e.exceptURLPatterns&&(e.exceptURLPatterns=[]),{config:e,moreOptionsVisible:!1,minQPSPerIP:e.minQPSPerIP}},watch:{minQPSPerIP:function(e){let t=parseInt(e.toString());(isNaN(t)||t<0)&&(t=0),this.config.minQPSPerIP=t}},methods:{showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible}},template:`<div>
+</div>`}),Vue.component("http-cc-config-box",{props:["v-cc-config","v-is-location","v-is-group"],data:function(){let e=this.vCcConfig;return null!=(e=null==e?{isPrior:!1,isOn:!1,enableFingerprint:!0,enableGET302:!0,onlyURLPatterns:[],exceptURLPatterns:[],useDefaultThresholds:!0}:e).thresholds&&0!=e.thresholds.length||(e.thresholds=[{maxRequests:0},{maxRequests:0},{maxRequests:0}]),"boolean"!=typeof e.enableFingerprint&&(e.enableFingerprint=!0),"boolean"!=typeof e.enableGET302&&(e.enableGET302=!0),null==e.onlyURLPatterns&&(e.onlyURLPatterns=[]),null==e.exceptURLPatterns&&(e.exceptURLPatterns=[]),{config:e,moreOptionsVisible:!1,minQPSPerIP:e.minQPSPerIP,useCustomThresholds:!e.useDefaultThresholds,thresholdMaxRequests0:this.maxRequestsStringAtThresholdIndex(e,0),thresholdMaxRequests1:this.maxRequestsStringAtThresholdIndex(e,1),thresholdMaxRequests2:this.maxRequestsStringAtThresholdIndex(e,2)}},watch:{minQPSPerIP:function(e){let t=parseInt(e.toString());(isNaN(t)||t<0)&&(t=0),this.config.minQPSPerIP=t},thresholdMaxRequests0:function(e){this.setThresholdMaxRequests(0,e)},thresholdMaxRequests1:function(e){this.setThresholdMaxRequests(1,e)},thresholdMaxRequests2:function(e){this.setThresholdMaxRequests(2,e)},useCustomThresholds:function(e){this.config.useDefaultThresholds=!e}},methods:{maxRequestsStringAtThresholdIndex:function(t,i){if(null==t.thresholds)return"";if(i<t.thresholds.length){let e=t.thresholds[i].maxRequests.toString();return e="0"==e?"":e}return""},setThresholdMaxRequests:function(e,t){let i=parseInt(t);(isNaN(i)||i<0)&&(i=0),e<this.config.thresholds.length&&(this.config.thresholds[e].maxRequests=i)},showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible}},template:`<div>
 <input type="hidden" name="ccJSON" :value="JSON.stringify(config)"/>
 <table class="ui table definition selectable">
 	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
@@ -3823,6 +3829,39 @@ example2.com
 			<td>
 				<checkbox v-model="config.enableGET302"></checkbox>
 				<p class="comment">选中后，表示自动通过GET302方法来校验客户端。</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="color-border">使用自定义阈值</td>
+			<td>
+				<checkbox v-model="useCustomThresholds"></checkbox>
+			</td>
+		</tr>
+		<tr v-show="!config.useDefaultThresholds">
+			<td class="color-border">自定义阈值设置</td>
+			<td>
+				<div>
+					<div class="ui input left right labeled">
+						<span class="ui label basic">单IP每5秒最多</span>
+						<input type="text" style="width: 6em" maxlength="6" v-model="thresholdMaxRequests0"/>
+						<span class="ui label basic">请求</span>
+					</div>
+				</div>
+					
+				<div style="margin-top: 1em">
+					<div class="ui input left right labeled">
+						<span class="ui label basic">单IP每60秒</span>
+						<input type="text" style="width: 6em" maxlength="6" v-model="thresholdMaxRequests1"/>
+						<span class="ui label basic">请求</span>
+					</div>
+				</div>
+				<div style="margin-top: 1em">
+					<div class="ui input left right labeled">
+						<span class="ui label basic">单IP每300秒</span>
+						<input type="text" style="width: 6em" maxlength="6" v-model="thresholdMaxRequests2"/>
+						<span class="ui label basic">请求</span>
+					</div>
+				</div>
 			</td>
 		</tr>
 	</tr>
@@ -3956,7 +3995,7 @@ example2.com
 		<span v-if="accessLog.requestTime != null"> - 耗时:{{formatCost(accessLog.requestTime)}} ms </span><span v-if="accessLog.humanTime != null && accessLog.humanTime.length > 0" class="grey small">&nbsp; ({{accessLog.humanTime}})</span>
 		&nbsp; <a href="" @click.prevent="showLog" title="查看详情"><i class="icon expand"></i></a>
 	</div>
-</div>`});var punycode=new function(){this.utf16={decode:function(e){for(var t,i,n=[],s=0,o=e.length;s<o;){if(55296==(63488&(t=e.charCodeAt(s++)))){if(i=e.charCodeAt(s++),55296!=(64512&t)||56320!=(64512&i))throw new RangeError("UTF-16(decode): Illegal UTF-16 sequence");t=((1023&t)<<10)+(1023&i)+65536}n.push(t)}return n},encode:function(e){for(var t,i=[],n=0,s=e.length;n<s;){if(55296==(63488&(t=e[n++])))throw new RangeError("UTF-16(encode): Illegal UTF-16 value");65535<t&&(t-=65536,i.push(String.fromCharCode(t>>>10&1023|55296)),t=56320|1023&t),i.push(String.fromCharCode(t))}return i.join("")}};var b=2147483647;function y(e,t){return e+22+75*(e<26)-((0!=t)<<5)}function w(e,t,i){var n;for(e=i?Math.floor(e/700):e>>1,e+=Math.floor(e/t),n=0;455<e;n+=36)e=Math.floor(e/35);return Math.floor(n+36*e/(e+38))}this.decode=function(e,t){var i,n,s,o,a,l,c,r,d=[],p=[],u=e.length,h=128,v=0,m=72,f=e.lastIndexOf("-");for(f<0&&(f=0),n=0;n<f;++n){if(t&&(p[d.length]=e.charCodeAt(n)-65<26),128<=e.charCodeAt(n))throw new RangeError("Illegal input >= 0x80");d.push(e.charCodeAt(n))}for(s=0<f?f+1:0;s<u;){for(o=v,a=1,l=36;;l+=36){if(u<=s)throw RangeError("punycode_bad_input(1)");if(36<=(r=(r=e.charCodeAt(s++))-48<10?r-22:r-65<26?r-65:r-97<26?r-97:36))throw RangeError("punycode_bad_input(2)");if(r>Math.floor((b-v)/a))throw RangeError("punycode_overflow(1)");if(v+=r*a,r<(r=l<=m?1:m+26<=l?26:l-m))break;if(a>Math.floor(b/(36-r)))throw RangeError("punycode_overflow(2)");a*=36-r}if(m=w(v-o,i=d.length+1,0===o),Math.floor(v/i)>b-h)throw RangeError("punycode_overflow(3)");h+=Math.floor(v/i),v%=i,t&&p.splice(v,0,e.charCodeAt(s-1)-65<26),d.splice(v,0,h),v++}if(t)for(v=0,c=d.length;v<c;v++)p[v]&&(d[v]=String.fromCharCode(d[v]).toUpperCase().charCodeAt(0));return this.utf16.encode(d)},this.encode=function(e,t){t&&(r=this.utf16.decode(e));var i,n,s,o,a,l,c,r,d=(e=this.utf16.decode(e.toLowerCase())).length;if(t)for(g=0;g<d;g++)r[g]=e[g]!=r[g];for(var p,u,h=[],v=128,m=0,f=72,g=0;g<d;++g)e[g]<128&&h.push(String.fromCharCode(r?(p=e[g],u=r[g],(p-=(p-97<26)<<5)+((!u&&p-65<26)<<5)):e[g]));for(i=n=h.length,0<n&&h.push("-");i<d;){for(s=b,g=0;g<d;++g)v<=(c=e[g])&&c<s&&(s=c);if(s-v>Math.floor((b-m)/(i+1)))throw RangeError("punycode_overflow (1)");for(m+=(s-v)*(i+1),v=s,g=0;g<d;++g){if((c=e[g])<v&&++m>b)return Error("punycode_overflow(2)");if(c==v){for(o=m,a=36;!(o<(l=a<=f?1:f+26<=a?26:a-f));a+=36)h.push(String.fromCharCode(y(l+(o-l)%(36-l),0))),o=Math.floor((o-l)/(36-l));h.push(String.fromCharCode(y(o,t&&r[g]?1:0))),f=w(m,i+1,i==n),m=0,++i}}++m,++v}return h.join("")},this.ToASCII=function(e){for(var t=e.split("."),i=[],n=0;n<t.length;++n){var s=t[n];i.push(s.match(/[^A-Za-z0-9-]/)?"xn--"+punycode.encode(s):s)}return i.join(".")},this.ToUnicode=function(e){for(var t=e.split("."),i=[],n=0;n<t.length;++n){var s=t[n];i.push(s.match(/^xn--/)?punycode.decode(s.slice(4)):s)}return i.join(".")}};function sortTable(s){let e=document.createElement("script");e.setAttribute("src","/js/sortable.min.js"),e.addEventListener("load",function(){let n=document.querySelector("#sortable-table");null!=n&&Sortable.create(n,{draggable:"tbody",handle:".icon.handle",onStart:function(){},onUpdate:function(e){let t=n.querySelectorAll("tbody"),i=[];t.forEach(function(e){i.push(parseInt(e.getAttribute("v-id")))}),s(i)}})}),document.head.appendChild(e)}function sortLoad(e){let t=document.createElement("script");t.setAttribute("src","/js/sortable.min.js"),t.addEventListener("load",function(){"function"==typeof e&&e()}),document.head.appendChild(t)}function emitClick(e,arguments){let t=["click"];for(let e=0;e<arguments.length;e++)t.push(arguments[e]);e.$emit.apply(e,t)}Vue.component("http-firewall-block-options-viewer",{props:["v-block-options"],data:function(){return{options:this.vBlockOptions}},template:`<div>
+</div>`});var punycode=new function(){this.utf16={decode:function(e){for(var t,i,n=[],s=0,o=e.length;s<o;){if(55296==(63488&(t=e.charCodeAt(s++)))){if(i=e.charCodeAt(s++),55296!=(64512&t)||56320!=(64512&i))throw new RangeError("UTF-16(decode): Illegal UTF-16 sequence");t=((1023&t)<<10)+(1023&i)+65536}n.push(t)}return n},encode:function(e){for(var t,i=[],n=0,s=e.length;n<s;){if(55296==(63488&(t=e[n++])))throw new RangeError("UTF-16(encode): Illegal UTF-16 value");65535<t&&(t-=65536,i.push(String.fromCharCode(t>>>10&1023|55296)),t=56320|1023&t),i.push(String.fromCharCode(t))}return i.join("")}};var b=2147483647;function y(e,t){return e+22+75*(e<26)-((0!=t)<<5)}function x(e,t,i){var n;for(e=i?Math.floor(e/700):e>>1,e+=Math.floor(e/t),n=0;455<e;n+=36)e=Math.floor(e/35);return Math.floor(n+36*e/(e+38))}this.decode=function(e,t){var i,n,s,o,a,l,r,c,d=[],p=[],u=e.length,h=128,v=0,m=72,f=e.lastIndexOf("-");for(f<0&&(f=0),n=0;n<f;++n){if(t&&(p[d.length]=e.charCodeAt(n)-65<26),128<=e.charCodeAt(n))throw new RangeError("Illegal input >= 0x80");d.push(e.charCodeAt(n))}for(s=0<f?f+1:0;s<u;){for(o=v,a=1,l=36;;l+=36){if(u<=s)throw RangeError("punycode_bad_input(1)");if(36<=(c=(c=e.charCodeAt(s++))-48<10?c-22:c-65<26?c-65:c-97<26?c-97:36))throw RangeError("punycode_bad_input(2)");if(c>Math.floor((b-v)/a))throw RangeError("punycode_overflow(1)");if(v+=c*a,c<(c=l<=m?1:m+26<=l?26:l-m))break;if(a>Math.floor(b/(36-c)))throw RangeError("punycode_overflow(2)");a*=36-c}if(m=x(v-o,i=d.length+1,0===o),Math.floor(v/i)>b-h)throw RangeError("punycode_overflow(3)");h+=Math.floor(v/i),v%=i,t&&p.splice(v,0,e.charCodeAt(s-1)-65<26),d.splice(v,0,h),v++}if(t)for(v=0,r=d.length;v<r;v++)p[v]&&(d[v]=String.fromCharCode(d[v]).toUpperCase().charCodeAt(0));return this.utf16.encode(d)},this.encode=function(e,t){t&&(c=this.utf16.decode(e));var i,n,s,o,a,l,r,c,d=(e=this.utf16.decode(e.toLowerCase())).length;if(t)for(g=0;g<d;g++)c[g]=e[g]!=c[g];for(var p,u,h=[],v=128,m=0,f=72,g=0;g<d;++g)e[g]<128&&h.push(String.fromCharCode(c?(p=e[g],u=c[g],(p-=(p-97<26)<<5)+((!u&&p-65<26)<<5)):e[g]));for(i=n=h.length,0<n&&h.push("-");i<d;){for(s=b,g=0;g<d;++g)v<=(r=e[g])&&r<s&&(s=r);if(s-v>Math.floor((b-m)/(i+1)))throw RangeError("punycode_overflow (1)");for(m+=(s-v)*(i+1),v=s,g=0;g<d;++g){if((r=e[g])<v&&++m>b)return Error("punycode_overflow(2)");if(r==v){for(o=m,a=36;!(o<(l=a<=f?1:f+26<=a?26:a-f));a+=36)h.push(String.fromCharCode(y(l+(o-l)%(36-l),0))),o=Math.floor((o-l)/(36-l));h.push(String.fromCharCode(y(o,t&&c[g]?1:0))),f=x(m,i+1,i==n),m=0,++i}}++m,++v}return h.join("")},this.ToASCII=function(e){for(var t=e.split("."),i=[],n=0;n<t.length;++n){var s=t[n];i.push(s.match(/[^A-Za-z0-9-]/)?"xn--"+punycode.encode(s):s)}return i.join(".")},this.ToUnicode=function(e){for(var t=e.split("."),i=[],n=0;n<t.length;++n){var s=t[n];i.push(s.match(/^xn--/)?punycode.decode(s.slice(4)):s)}return i.join(".")}};function sortTable(s){let e=document.createElement("script");e.setAttribute("src","/js/sortable.min.js"),e.addEventListener("load",function(){let n=document.querySelector("#sortable-table");null!=n&&Sortable.create(n,{draggable:"tbody",handle:".icon.handle",onStart:function(){},onUpdate:function(e){let t=n.querySelectorAll("tbody"),i=[];t.forEach(function(e){i.push(parseInt(e.getAttribute("v-id")))}),s(i)}})}),document.head.appendChild(e)}function sortLoad(e){let t=document.createElement("script");t.setAttribute("src","/js/sortable.min.js"),t.addEventListener("load",function(){"function"==typeof e&&e()}),document.head.appendChild(t)}function emitClick(e,arguments){let t=["click"];for(let e=0;e<arguments.length;e++)t.push(arguments[e]);e.$emit.apply(e,t)}Vue.component("http-firewall-block-options-viewer",{props:["v-block-options"],data:function(){return{options:this.vBlockOptions}},template:`<div>
 	<span v-if="options == null">默认设置</span>
 	<div v-else>
 		状态码：{{options.statusCode}} / 提示内容：<span v-if="options.body != null && options.body.length > 0">[{{options.body.length}}字符]</span><span v-else class="disabled">[无]</span>  / 超时时间：{{options.timeout}}秒 <span v-if="options.timeoutMax > options.timeout">/ 最大封禁时长：{{options.timeoutMax}}秒</span>
@@ -4305,7 +4344,7 @@ example2.com
 				</td>
 			</tr>
 			<tr v-if="family == null || family == 'http'">
-				<td>是否自动刷新缓存区<em>（AutoFlush）</em></td>
+				<td>自动刷新缓存区<em>（AutoFlush）</em></td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="reverseProxyConfig.autoFlush"/>

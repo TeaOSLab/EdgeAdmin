@@ -57,9 +57,11 @@ function build() {
 	if [ "$(which uglifyjs)" ]; then
     	echo "compress to component.js ..."
     	uglifyjs --compress --mangle -- "${JS_ROOT}"/components.src.js > "${JS_ROOT}"/components.js
+    	uglifyjs --compress --mangle -- "${JS_ROOT}"/utils.js > "${JS_ROOT}"/utils.min.js
     else
     	echo "copy to component.js ..."
     	cp "${JS_ROOT}"/components.src.js "${JS_ROOT}"/components.js
+    	cp "${JS_ROOT}"/utils.js "${JS_ROOT}"/utils.min.js
     fi
 
 	# create dir & copy files

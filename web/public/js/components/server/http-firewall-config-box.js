@@ -35,7 +35,7 @@ Vue.component("http-firewall-config-box", {
 			<td class="title">全局WAF策略</td>
 			<td>
 				<div v-if="vFirewallPolicy != null">{{vFirewallPolicy.name}} <span v-if="vFirewallPolicy.modeInfo != null">&nbsp; <span :class="{green: vFirewallPolicy.modeInfo.code == 'defend', blue: vFirewallPolicy.modeInfo.code == 'observe', grey: vFirewallPolicy.modeInfo.code == 'bypass'}">[{{vFirewallPolicy.modeInfo.name}}]</span>&nbsp;</span> <link-icon :href="'/servers/components/waf/policy?firewallPolicyId=' + vFirewallPolicy.id"></link-icon>
-					<p class="comment">当前服务所在集群的设置。</p>
+					<p class="comment">当前网站所在集群的设置。</p>
 				</div>
 				<span v-else class="red">当前集群没有设置WAF策略，当前配置无法生效。</span>
 			</td>
