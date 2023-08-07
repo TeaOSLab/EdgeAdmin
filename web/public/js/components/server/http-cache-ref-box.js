@@ -21,7 +21,7 @@ Vue.component("http-cache-ref-box", {
 				key: "${scheme}://${host}${requestPath}${isArgs}${args}",
 				life: {count: 2, unit: "hour"},
 				status: [200],
-				maxSize: {count: 32, unit: "mb"},
+				maxSize: {count: 128, unit: "mb"},
 				minSize: {count: 0, unit: "kb"},
 				skipCacheControlValues: ["private", "no-cache", "no-store"],
 				skipSetCookie: true,
