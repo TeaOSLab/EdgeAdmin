@@ -1,5 +1,5 @@
 Vue.component("http-cache-refs-config-box", {
-	props: ["v-cache-refs", "v-cache-config", "v-cache-policy-id", "v-web-id"],
+	props: ["v-cache-refs", "v-cache-config", "v-cache-policy-id", "v-web-id", "v-max-bytes"],
 	mounted: function () {
 		let that = this
 		sortTable(function (ids) {
@@ -21,10 +21,17 @@ Vue.component("http-cache-refs-config-box", {
 			refs = []
 		}
 
+		let maxBytes = this.vMaxBytes
+
 		let id = 0
 		refs.forEach(function (ref) {
 			id++
 			ref.id = id
+
+			// check max size
+			if (ref.maxSize != null && maxBytes != null && maxBytes.count > 0 && teaweb.compareSizeCapacity(ref.maxSize, maxBytes) > 0) {
+				ref.overMaxSize = maxBytes
+			}
 		})
 		return {
 			refs: refs,
@@ -180,11 +187,15 @@ Vue.component("http-cache-refs-config-box", {
 						
 						<!-- 特殊参数 -->
 						<grey-label v-if="cacheRef.key != null && cacheRef.key.indexOf('\${args}') < 0">忽略URI参数</grey-label>
+						
 						<grey-label v-if="cacheRef.minSize != null && cacheRef.minSize.count > 0">
 							{{cacheRef.minSize.count}}{{cacheRef.minSize.unit}}
-							<span v-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">- {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</span>
+							<span v-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">- {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit.toUpperCase()}}</span>
 						</grey-label>
-						<grey-label v-else-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">0 - {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</grey-label>
+						<grey-label v-else-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">0 - {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit.toUpperCase()}}</grey-label>
+						
+						<grey-label v-if="cacheRef.overMaxSize != null"><span class="red">系统限制{{cacheRef.overMaxSize.count}}{{cacheRef.overMaxSize.unit.toUpperCase()}}</span> </grey-label>
+						
 						<grey-label v-if="cacheRef.methods != null && cacheRef.methods.length > 0">{{cacheRef.methods.join(", ")}}</grey-label>
 						<grey-label v-if="cacheRef.expiresTime != null && cacheRef.expiresTime.isPrior && cacheRef.expiresTime.isOn">Expires</grey-label>
 						<grey-label v-if="cacheRef.status != null && cacheRef.status.length > 0 && (cacheRef.status.length > 1 || cacheRef.status[0] != 200)">状态码：{{cacheRef.status.map(function(v) {return v.toString()}).join(", ")}}</grey-label>

@@ -19,10 +19,16 @@ Vue.component("http-cache-config-box", {
 			cacheConfig.cacheRefs = []
 		}
 
+		var maxBytes = null
+		if (this.vCachePolicy != null && this.vCachePolicy.maxBytes != null) {
+			maxBytes = this.vCachePolicy.maxBytes
+		}
+
 		return {
 			cacheConfig: cacheConfig,
 			moreOptionsVisible: false,
-			enablePolicyRefs: !cacheConfig.disablePolicyRefs
+			enablePolicyRefs: !cacheConfig.disablePolicyRefs,
+			maxBytes: maxBytes
 		}
 	},
 	watch: {
@@ -62,7 +68,7 @@ Vue.component("http-cache-config-box", {
 			<td class="title">全局缓存策略</td>
 			<td>
 				<div v-if="vCachePolicy != null">{{vCachePolicy.name}} <link-icon :href="'/servers/components/cache/policy?cachePolicyId=' + vCachePolicy.id"></link-icon>
-					<p class="comment">使用当前服务所在集群的设置。</p>
+					<p class="comment">使用当前网站所在集群的设置。</p>
 				</div>
 				<span v-else class="red">当前集群没有设置缓存策略，当前配置无法生效。</span>
 			</td>
@@ -142,7 +148,7 @@ Vue.component("http-cache-config-box", {
 	
 	<div v-show="isOn()" style="margin-top: 1em">
 		<h4>缓存条件 &nbsp; <a href="" style="font-size: 0.8em" @click.prevent="$refs.cacheRefsConfigBoxRef.addRef(false)">[添加]</a> </h4>
-		<http-cache-refs-config-box ref="cacheRefsConfigBoxRef" :v-cache-config="cacheConfig" :v-cache-refs="cacheConfig.cacheRefs" :v-web-id="vWebId"></http-cache-refs-config-box>
+		<http-cache-refs-config-box ref="cacheRefsConfigBoxRef" :v-cache-config="cacheConfig" :v-cache-refs="cacheConfig.cacheRefs" :v-web-id="vWebId" :v-max-bytes="maxBytes"></http-cache-refs-config-box>
 	</div>
 	<div class="margin"></div>
 </div>`

@@ -1061,6 +1061,45 @@ window.teaweb = {
 		}).catch(function (e) {
 			console.log(e.message);
 		})
+	},
+	convertSizeCapacityToBytes: function (c) {
+		if (c == null) {
+			return 0
+		}
+		switch (c.unit) {
+			case "byte":
+				return c.count
+			case "kb":
+				return c.count * 1024
+			case "mb":
+				return c.count * Math.pow(1024, 2)
+			case "gb":
+				return c.count * Math.pow(1024, 3)
+			case "tb":
+				return c.count * Math.pow(1024, 4)
+			case "pb":
+				return c.count * Math.pow(1024, 5)
+			case "eb":
+				return c.count * Math.pow(1024, 6)
+		}
+		return 0
+	},
+	compareSizeCapacity: function (c1, c2) {
+		let b1 = this.convertSizeCapacityToBytes(c1)
+		let b2 = this.convertSizeCapacityToBytes(c2)
+		if (b1 == b2) {
+			return 0
+		}
+		if (b1 > b2) {
+			return 1
+		}
+		return -1
+	},
+	convertSizeCapacityToString: function (c) {
+		if (c == null || c.count == null || c.unit == null) {
+			return ""
+		}
+		return c.count + c.unit.toString().toUpperCase()
 	}
 }
 

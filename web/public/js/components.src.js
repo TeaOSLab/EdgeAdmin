@@ -4641,8 +4641,7 @@ Vue.component("http-cache-refs-box", {
 			<thead>
 				<tr>
 					<th>缓存条件</th>
-					<th class="two wide">分组关系</th>
-					<th class="width10">缓存时间</th>
+					<th class="width6">缓存时间</th>
 				</tr>
 				<tr v-for="(cacheRef, index) in refs">
 					<td :class="{'color-border': cacheRef.conds != null && cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
@@ -4659,16 +4658,11 @@ Vue.component("http-cache-refs-box", {
 						<grey-label v-if="cacheRef.methods != null && cacheRef.methods.length > 0">{{cacheRef.methods.join(", ")}}</grey-label>
 						<grey-label v-if="cacheRef.expiresTime != null && cacheRef.expiresTime.isPrior && cacheRef.expiresTime.isOn">Expires</grey-label>
 						<grey-label v-if="cacheRef.status != null && cacheRef.status.length > 0 && (cacheRef.status.length > 1 || cacheRef.status[0] != 200)">状态码：{{cacheRef.status.map(function(v) {return v.toString()}).join(", ")}}</grey-label>
-						<grey-label v-if="cacheRef.allowPartialContent">区间缓存</grey-label>
+						<grey-label v-if="cacheRef.allowPartialContent">分片缓存</grey-label>
+						<grey-label v-if="cacheRef.alwaysForwardRangeRequest">Range回源</grey-label>
 						<grey-label v-if="cacheRef.enableIfNoneMatch">If-None-Match</grey-label>
 						<grey-label v-if="cacheRef.enableIfModifiedSince">If-Modified-Since</grey-label>
-					</td>
-					<td :class="{disabled: !cacheRef.isOn}">
-						<span v-if="cacheRef.conds != null">
-							<span v-if="cacheRef.conds.connector == 'and'">和</span>
-							<span v-if="cacheRef.conds.connector == 'or'">或</span>
-						</span>
-						<span v-else>或</span>
+						<grey-label v-if="cacheRef.enableReadingOriginAsync">支持异步</grey-label>
 					</td>
 					<td :class="{disabled: !cacheRef.isOn}">
 						<span v-if="!cacheRef.isReverse">{{cacheRef.life.count}} {{timeUnitName(cacheRef.life.unit)}}</span>
@@ -5063,6 +5057,7 @@ Vue.component("http-cache-ref-box", {
 				forcePartialContent: false,
 				enableIfNoneMatch: false,
 				enableIfModifiedSince: false,
+				enableReadingOriginAsync: false,
 				isReverse: this.vIsReverse,
 				methods: [],
 				expiresTime: {
@@ -5179,7 +5174,7 @@ Vue.component("http-cache-ref-box", {
 			}
 			switch (condCategory) {
 				case "simple":
-					dialog.style.width = "40em"
+					dialog.style.width = "45em"
 					break
 				case "complex":
 					let width = window.parent.innerWidth
@@ -5297,24 +5292,24 @@ Vue.component("http-cache-ref-box", {
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
-		<td>支持分片内容</td>
+		<td>支持缓存分片内容</td>
 		<td>
-			<checkbox name="allowChunkedEncoding" value="1" v-model="ref.allowChunkedEncoding"></checkbox>
-			<p class="comment">选中后，Gzip等压缩后的Chunked内容可以直接缓存，无需检查内容长度。</p>
+			<checkbox name="allowPartialContent" value="1" v-model="ref.allowPartialContent"></checkbox>
+			<p class="comment">选中后，支持缓存源站返回的某个分片的内容，该内容通过<code-label>206 Partial Content</code-label>状态码返回。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse && ref.allowPartialContent && !ref.alwaysForwardRangeReques">
+		<td>强制返回分片内容</td>
+		<td>
+			<checkbox name="forcePartialContent" value="1" v-model="ref.forcePartialContent"></checkbox>
+			<p class="comment">选中后，表示无论客户端是否发送<code-label>Range</code-label>报头，都会优先尝试返回已缓存的分片内容；如果你的应用有不支持分片内容的客户端（比如有些下载软件不支持<code-label>206 Partial Content</code-label>），请务必关闭此功能。</p>
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
-		<td>支持缓存区间内容</td>
+		<td>强制Range回源</td>
 		<td>
-			<checkbox name="allowPartialContent" value="1" v-model="ref.allowPartialContent"></checkbox>
-			<p class="comment">选中后，支持缓存源站返回的某个区间的内容，该内容通过<code-label>206 Partial Content</code-label>状态码返回。</p>
-		</td>
-	</tr>
-	<tr v-show="moreOptionsVisible && !vIsReverse && ref.allowPartialContent">
-		<td>强制返回区间内容</td>
-		<td>
-			<checkbox name="forcePartialContent" value="1" v-model="ref.forcePartialContent"></checkbox>
-			<p class="comment">选中后，表示无论客户端是否发送<code-label>Range</code-label>报头，都会优先尝试返回已缓存的区间内容；如果你的应用有不支持区间内容的客户端（比如有些下载软件不支持<code-label>206 Partial Content</code-label>），请务必关闭此功能。</p>
+			<checkbox v-model="ref.alwaysForwardRangeRequest"></checkbox>
+			<p class="comment">选中后，表示把所有包含Range报头的请求都转发到源站，而不是尝试从缓存中读取。</p>
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
@@ -5363,6 +5358,20 @@ Vue.component("http-cache-ref-box", {
 		<td>
 			<checkbox v-model="ref.enableIfModifiedSince"></checkbox>
 			<p class="comment">特殊情况下才需要开启，可能会降低缓存命中率。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>允许异步读取源站</td>
+		<td>
+			<checkbox v-model="ref.enableReadingOriginAsync"></checkbox>
+			<p class="comment">试验功能。允许客户端中断连接后，仍然继续尝试从源站读取内容并缓存。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>支持分段内容</td>
+		<td>
+			<checkbox name="allowChunkedEncoding" value="1" v-model="ref.allowChunkedEncoding"></checkbox>
+			<p class="comment">选中后，Gzip等压缩后的Chunked内容可以直接缓存，无需检查内容长度。</p>
 		</td>
 	</tr>
 	<tr v-show="false">
@@ -5672,7 +5681,7 @@ Vue.component("http-firewall-config-box", {
 			<td class="title">全局WAF策略</td>
 			<td>
 				<div v-if="vFirewallPolicy != null">{{vFirewallPolicy.name}} <span v-if="vFirewallPolicy.modeInfo != null">&nbsp; <span :class="{green: vFirewallPolicy.modeInfo.code == 'defend', blue: vFirewallPolicy.modeInfo.code == 'observe', grey: vFirewallPolicy.modeInfo.code == 'bypass'}">[{{vFirewallPolicy.modeInfo.name}}]</span>&nbsp;</span> <link-icon :href="'/servers/components/waf/policy?firewallPolicyId=' + vFirewallPolicy.id"></link-icon>
-					<p class="comment">当前服务所在集群的设置。</p>
+					<p class="comment">当前网站所在集群的设置。</p>
 				</div>
 				<span v-else class="red">当前集群没有设置WAF策略，当前配置无法生效。</span>
 			</td>
@@ -6153,10 +6162,16 @@ Vue.component("http-cache-config-box", {
 			cacheConfig.cacheRefs = []
 		}
 
+		var maxBytes = null
+		if (this.vCachePolicy != null && this.vCachePolicy.maxBytes != null) {
+			maxBytes = this.vCachePolicy.maxBytes
+		}
+
 		return {
 			cacheConfig: cacheConfig,
 			moreOptionsVisible: false,
-			enablePolicyRefs: !cacheConfig.disablePolicyRefs
+			enablePolicyRefs: !cacheConfig.disablePolicyRefs,
+			maxBytes: maxBytes
 		}
 	},
 	watch: {
@@ -6196,7 +6211,7 @@ Vue.component("http-cache-config-box", {
 			<td class="title">全局缓存策略</td>
 			<td>
 				<div v-if="vCachePolicy != null">{{vCachePolicy.name}} <link-icon :href="'/servers/components/cache/policy?cachePolicyId=' + vCachePolicy.id"></link-icon>
-					<p class="comment">使用当前服务所在集群的设置。</p>
+					<p class="comment">使用当前网站所在集群的设置。</p>
 				</div>
 				<span v-else class="red">当前集群没有设置缓存策略，当前配置无法生效。</span>
 			</td>
@@ -6276,7 +6291,7 @@ Vue.component("http-cache-config-box", {
 	
 	<div v-show="isOn()" style="margin-top: 1em">
 		<h4>缓存条件 &nbsp; <a href="" style="font-size: 0.8em" @click.prevent="$refs.cacheRefsConfigBoxRef.addRef(false)">[添加]</a> </h4>
-		<http-cache-refs-config-box ref="cacheRefsConfigBoxRef" :v-cache-config="cacheConfig" :v-cache-refs="cacheConfig.cacheRefs" :v-web-id="vWebId"></http-cache-refs-config-box>
+		<http-cache-refs-config-box ref="cacheRefsConfigBoxRef" :v-cache-config="cacheConfig" :v-cache-refs="cacheConfig.cacheRefs" :v-web-id="vWebId" :v-max-bytes="maxBytes"></http-cache-refs-config-box>
 	</div>
 	<div class="margin"></div>
 </div>`
@@ -6773,7 +6788,7 @@ Vue.component("http-access-log-partitions-box", {
 })
 
 Vue.component("http-cache-refs-config-box", {
-	props: ["v-cache-refs", "v-cache-config", "v-cache-policy-id", "v-web-id"],
+	props: ["v-cache-refs", "v-cache-config", "v-cache-policy-id", "v-web-id", "v-max-bytes"],
 	mounted: function () {
 		let that = this
 		sortTable(function (ids) {
@@ -6795,10 +6810,17 @@ Vue.component("http-cache-refs-config-box", {
 			refs = []
 		}
 
+		let maxBytes = this.vMaxBytes
+
 		let id = 0
 		refs.forEach(function (ref) {
 			id++
 			ref.id = id
+
+			// check max size
+			if (ref.maxSize != null && maxBytes != null && teaweb.compareSizeCapacity(ref.maxSize, maxBytes) > 0) {
+				ref.overMaxSize = maxBytes
+			}
 		})
 		return {
 			refs: refs,
@@ -6941,8 +6963,7 @@ Vue.component("http-cache-refs-config-box", {
 				<tr>
 					<th style="width:1em"></th>
 					<th>缓存条件</th>
-					<th class="two wide">分组关系</th>
-					<th class="width10">缓存时间</th>
+					<th style="width: 7em">缓存时间</th>
 					<th class="three op">操作</th>
 				</tr>
 			</thead>	
@@ -6955,24 +6976,23 @@ Vue.component("http-cache-refs-config-box", {
 						
 						<!-- 特殊参数 -->
 						<grey-label v-if="cacheRef.key != null && cacheRef.key.indexOf('\${args}') < 0">忽略URI参数</grey-label>
+						
 						<grey-label v-if="cacheRef.minSize != null && cacheRef.minSize.count > 0">
 							{{cacheRef.minSize.count}}{{cacheRef.minSize.unit}}
-							<span v-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">- {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</span>
+							<span v-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">- {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit.toUpperCase()}}</span>
 						</grey-label>
-						<grey-label v-else-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">0 - {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</grey-label>
+						<grey-label v-else-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">0 - {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit.toUpperCase()}}</grey-label>
+						
+						<grey-label v-if="cacheRef.overMaxSize != null"><span class="red">系统限制{{cacheRef.overMaxSize.count}}{{cacheRef.overMaxSize.unit.toUpperCase()}}</span> </grey-label>
+						
 						<grey-label v-if="cacheRef.methods != null && cacheRef.methods.length > 0">{{cacheRef.methods.join(", ")}}</grey-label>
 						<grey-label v-if="cacheRef.expiresTime != null && cacheRef.expiresTime.isPrior && cacheRef.expiresTime.isOn">Expires</grey-label>
 						<grey-label v-if="cacheRef.status != null && cacheRef.status.length > 0 && (cacheRef.status.length > 1 || cacheRef.status[0] != 200)">状态码：{{cacheRef.status.map(function(v) {return v.toString()}).join(", ")}}</grey-label>
-						<grey-label v-if="cacheRef.allowPartialContent">区间缓存</grey-label>
+						<grey-label v-if="cacheRef.allowPartialContent">分片缓存</grey-label>
+						<grey-label v-if="cacheRef.alwaysForwardRangeRequest">Range回源</grey-label>
 						<grey-label v-if="cacheRef.enableIfNoneMatch">If-None-Match</grey-label>
 						<grey-label v-if="cacheRef.enableIfModifiedSince">If-Modified-Since</grey-label>
-					</td>
-					<td :class="{disabled: !cacheRef.isOn}">
-						<span v-if="cacheRef.conds != null">
-							<span v-if="cacheRef.conds.connector == 'and'">和</span>
-							<span v-if="cacheRef.conds.connector == 'or'">或</span>
-						</span>
-						<span v-else>或</span>
+						<grey-label v-if="cacheRef.enableReadingOriginAsync">支持异步</grey-label>
 					</td>
 					<td :class="{disabled: !cacheRef.isOn}">
 						<span v-if="!cacheRef.isReverse">{{cacheRef.life.count}} {{timeUnitName(cacheRef.life.unit)}}</span>
@@ -10444,7 +10464,7 @@ Vue.component("http-compression-config-box", {
 				<td>支持Partial<br/>Content</td>
 				<td>
 					<checkbox v-model="config.enablePartialContent"></checkbox>
-					<p class="comment">支持对分区内容（PartialContent）的压缩；除非客户端有特殊要求，一般不需要启用。</p>
+					<p class="comment">支持对分片内容（PartialContent）的压缩；除非客户端有特殊要求，一般不需要启用。</p>
 				</td>
 			</tr>
 			<tr>
@@ -10471,8 +10491,23 @@ Vue.component("http-cc-config-box", {
 				enableFingerprint: true,
 				enableGET302: true,
 				onlyURLPatterns: [],
-				exceptURLPatterns: []
+				exceptURLPatterns: [],
+				useDefaultThresholds: true
 			}
+		}
+
+		if (config.thresholds == null || config.thresholds.length == 0) {
+			config.thresholds = [
+				{
+					maxRequests: 0
+				},
+				{
+					maxRequests: 0
+				},
+				{
+					maxRequests: 0
+				}
+			]
 		}
 
 		if (typeof config.enableFingerprint != "boolean") {
@@ -10491,7 +10526,12 @@ Vue.component("http-cc-config-box", {
 		return {
 			config: config,
 			moreOptionsVisible: false,
-			minQPSPerIP: config.minQPSPerIP
+			minQPSPerIP: config.minQPSPerIP,
+			useCustomThresholds: !config.useDefaultThresholds,
+
+			thresholdMaxRequests0: this.maxRequestsStringAtThresholdIndex(config, 0),
+			thresholdMaxRequests1: this.maxRequestsStringAtThresholdIndex(config, 1),
+			thresholdMaxRequests2: this.maxRequestsStringAtThresholdIndex(config, 2)
 		}
 	},
 	watch: {
@@ -10501,9 +10541,43 @@ Vue.component("http-cc-config-box", {
 				qps = 0
 			}
 			this.config.minQPSPerIP = qps
+		},
+		thresholdMaxRequests0: function (v) {
+			this.setThresholdMaxRequests(0, v)
+		},
+		thresholdMaxRequests1: function (v) {
+			this.setThresholdMaxRequests(1, v)
+		},
+		thresholdMaxRequests2: function (v) {
+			this.setThresholdMaxRequests(2, v)
+		},
+		useCustomThresholds: function (b) {
+			this.config.useDefaultThresholds = !b
 		}
 	},
 	methods: {
+		maxRequestsStringAtThresholdIndex: function (config, index) {
+			if (config.thresholds == null) {
+				return ""
+			}
+			if (index < config.thresholds.length) {
+				let s = config.thresholds[index].maxRequests.toString()
+				if (s == "0") {
+					s = ""
+				}
+				return s
+			}
+			return ""
+		},
+		setThresholdMaxRequests: function (index, v) {
+			let maxRequests = parseInt(v)
+			if (isNaN(maxRequests) || maxRequests < 0) {
+				maxRequests = 0
+			}
+			if (index < this.config.thresholds.length) {
+				this.config.thresholds[index].maxRequests = maxRequests
+			}
+		},
 		showMoreOptions: function () {
 			this.moreOptionsVisible = !this.moreOptionsVisible
 		}
@@ -10563,6 +10637,39 @@ Vue.component("http-cc-config-box", {
 			<td>
 				<checkbox v-model="config.enableGET302"></checkbox>
 				<p class="comment">选中后，表示自动通过GET302方法来校验客户端。</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="color-border">使用自定义阈值</td>
+			<td>
+				<checkbox v-model="useCustomThresholds"></checkbox>
+			</td>
+		</tr>
+		<tr v-show="!config.useDefaultThresholds">
+			<td class="color-border">自定义阈值设置</td>
+			<td>
+				<div>
+					<div class="ui input left right labeled">
+						<span class="ui label basic">单IP每5秒最多</span>
+						<input type="text" style="width: 6em" maxlength="6" v-model="thresholdMaxRequests0"/>
+						<span class="ui label basic">请求</span>
+					</div>
+				</div>
+					
+				<div style="margin-top: 1em">
+					<div class="ui input left right labeled">
+						<span class="ui label basic">单IP每60秒</span>
+						<input type="text" style="width: 6em" maxlength="6" v-model="thresholdMaxRequests1"/>
+						<span class="ui label basic">请求</span>
+					</div>
+				</div>
+				<div style="margin-top: 1em">
+					<div class="ui input left right labeled">
+						<span class="ui label basic">单IP每300秒</span>
+						<input type="text" style="width: 6em" maxlength="6" v-model="thresholdMaxRequests2"/>
+						<span class="ui label basic">请求</span>
+					</div>
+				</div>
 			</td>
 		</tr>
 	</tr>
@@ -12074,7 +12181,7 @@ Vue.component("reverse-proxy-box", {
 				</td>
 			</tr>
 			<tr v-if="family == null || family == 'http'">
-				<td>是否自动刷新缓存区<em>（AutoFlush）</em></td>
+				<td>自动刷新缓存区<em>（AutoFlush）</em></td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="reverseProxyConfig.autoFlush"/>
