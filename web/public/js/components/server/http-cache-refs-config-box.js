@@ -25,8 +25,10 @@ Vue.component("http-cache-refs-config-box", {
 
 		let id = 0
 		refs.forEach(function (ref) {
+			// preset variables
 			id++
 			ref.id = id
+			ref.visible = true
 
 			// check max size
 			if (ref.maxSize != null && maxBytes != null && maxBytes.count > 0 && teaweb.compareSizeCapacity(ref.maxSize, maxBytes) > 0) {
@@ -162,6 +164,41 @@ Vue.component("http-cache-refs-config-box", {
 					})
 					.post()
 			}
+		},
+		search: function (keyword) {
+			if (typeof keyword != "string") {
+				keyword = ""
+			}
+
+			this.refs.forEach(function (ref) {
+				if (keyword.length == 0) {
+					ref.visible = true
+					return
+				}
+				ref.visible = false
+
+				// simple cond
+				if (ref.simpleCond != null && typeof ref.simpleCond.value == "string" && teaweb.match(ref.simpleCond.value, keyword)) {
+					ref.visible = true
+					return
+				}
+
+				// composed conds
+				if (ref.conds == null || ref.conds.groups == null || ref.conds.groups.length == 0) {
+					return
+				}
+
+				ref.conds.groups.forEach(function (group) {
+					if (group.conds != null) {
+						group.conds.forEach(function (cond) {
+							if (typeof cond.value == "string" && teaweb.match(cond.value, keyword)) {
+								ref.visible = true
+							}
+						})
+					}
+				})
+			})
+			this.$forceUpdate()
 		}
 	},
 	template: `<div>
@@ -178,7 +215,7 @@ Vue.component("http-cache-refs-config-box", {
 					<th class="three op">操作</th>
 				</tr>
 			</thead>	
-			<tbody v-for="(cacheRef, index) in refs" :key="cacheRef.id" :v-id="cacheRef.id">
+			<tbody v-for="(cacheRef, index) in refs" :key="cacheRef.id" :v-id="cacheRef.id" v-show="cacheRef.visible !== false">
 				<tr>
 					<td style="text-align: center;"><i class="icon bars handle grey"></i> </td>
 					<td :class="{'color-border': cacheRef.conds != null && cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
