@@ -1,4 +1,4 @@
-package delete
+package deletes
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"

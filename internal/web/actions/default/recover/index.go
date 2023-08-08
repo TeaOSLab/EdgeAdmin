@@ -1,6 +1,6 @@
 // Copyright 2021 Liuxiangchao iwind.liu@gmail.com. All rights reserved.
 
-package recover
+package recovers
 
 import "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 
