@@ -43,8 +43,8 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 		action.Data["leftMenuItemIsDisabled"] = false
 	}
 	action.Data["leftMenuItems"] = []maps.Map{}
-	mainTab, _ := action.Data["mainTab"]
-	secondMenuItem, _ := action.Data["secondMenuItem"]
+	var mainTab = action.Data["mainTab"]
+	var secondMenuItem = action.Data["secondMenuItem"]
 
 	serverId := action.ParamInt64("serverId")
 	if serverId == 0 {
@@ -108,7 +108,7 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 	action.Data["serverFamily"] = family
 
 	// TABBAR
-	selectedTabbar, _ := action.Data["mainTab"]
+	var selectedTabbar = action.Data["mainTab"]
 	var tabbar = actionutils.NewTabbar()
 	tabbar.Add("", "", "/servers", "left arrow", false)
 	if len(serverConfig.Name) > 0 {

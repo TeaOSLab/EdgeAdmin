@@ -31,7 +31,7 @@ func (this *ExportDownloadAction) RunGet(params struct {
 	if ok {
 		this.AddHeader("Content-Disposition", "attachment; filename=\"WAF-"+types.String(params.PolicyId)+".json\";")
 		this.AddHeader("Content-Length", strconv.Itoa(len(data)))
-		this.Write(data)
+		_, _ = this.Write(data)
 	} else {
 		this.WriteString("找不到要导出的内容")
 		return

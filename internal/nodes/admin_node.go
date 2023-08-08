@@ -65,7 +65,7 @@ func (this *AdminNode) Run() {
 	this.addPortsToFirewall()
 
 	// 监听信号
-	sigQueue := make(chan os.Signal)
+	var sigQueue = make(chan os.Signal, 8)
 	signal.Notify(sigQueue, syscall.SIGTERM, syscall.SIGINT, syscall.SIGKILL, syscall.SIGQUIT)
 	go func() {
 		for range sigQueue {
@@ -106,8 +106,7 @@ func (this *AdminNode) Run() {
 // Daemon 实现守护进程
 func (this *AdminNode) Daemon() {
 	var sock = gosock.NewTmpSock(teaconst.ProcessName)
-	isDebug := lists.ContainsString(os.Args, "debug")
-	isDebug = true
+	var isDebug = lists.ContainsString(os.Args, "debug")
 	for {
 		conn, err := sock.Dial()
 		if err != nil {

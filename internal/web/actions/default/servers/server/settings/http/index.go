@@ -1,6 +1,7 @@
 package http
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/serverutils"
@@ -53,7 +54,7 @@ func (this *IndexAction) RunGet(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		_ = httpsConfig.Init(nil)
+		_ = httpsConfig.Init(context.TODO())
 		for _, port := range httpsConfig.AllPorts() {
 			if lists.ContainsInt(httpPorts, port) {
 				conflictingPorts = append(conflictingPorts, port)

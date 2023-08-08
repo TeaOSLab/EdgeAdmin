@@ -43,7 +43,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	this.Data["config"] = config
 
-	var httpAllDomainMismatchActionContentHTML = ""
+	var httpAllDomainMismatchActionContentHTML string
 	var httpAllDomainMismatchActionStatusCode = "404"
 	if config.HTTPAll.DomainMismatchAction != nil && config.HTTPAll.DomainMismatchAction.Options != nil {
 		httpAllDomainMismatchActionContentHTML = config.HTTPAll.DomainMismatchAction.Options.GetString("contentHTML")

@@ -50,12 +50,12 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	this.Data["user"] = userMap
 
-	var countAll = int64(0)
-	var countCA = int64(0)
-	var countAvailable = int64(0)
-	var countExpired = int64(0)
-	var count7Days = int64(0)
-	var count30Days = int64(0)
+	var countAll int64
+	var countCA int64
+	var countAvailable int64
+	var countExpired int64
+	var count7Days int64
+	var count30Days int64
 
 	// 计算数量
 	{

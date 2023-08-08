@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
@@ -82,7 +83,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 						this.ErrorPage(err)
 						return
 					}
-					_ = httpsConfig.Init(nil)
+					_ = httpsConfig.Init(context.TODO())
 					if httpsConfig.IsOn && len(httpsConfig.Listen) > 0 {
 						restAccessAddrs = append(restAccessAddrs, httpsConfig.FullAddresses()...)
 					}

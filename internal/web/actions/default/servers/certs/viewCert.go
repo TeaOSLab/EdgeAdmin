@@ -35,5 +35,5 @@ func (this *ViewCertAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	this.Write(certConfig.CertData)
+	_, _ = this.Write(certConfig.CertData)
 }

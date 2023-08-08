@@ -57,6 +57,6 @@ func (this *FileAction) RunGet(params struct {
 		if chunkResp.FileChunk == nil {
 			continue
 		}
-		this.Write(chunkResp.FileChunk.Data)
+		_, _ = this.Write(chunkResp.FileChunk.Data)
 	}
 }

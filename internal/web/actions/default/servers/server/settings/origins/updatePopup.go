@@ -37,7 +37,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 	this.Data["reverseProxyId"] = params.ReverseProxyId
 	this.Data["originId"] = params.OriginId
 
-	var serverType = ""
+	var serverType string
 	if params.ServerId > 0 {
 		serverTypeResp, err := this.RPC().ServerRPC().FindEnabledServerType(this.AdminContext(), &pb.FindEnabledServerTypeRequest{
 			ServerId: params.ServerId,

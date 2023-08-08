@@ -59,8 +59,8 @@ func (this *LogsAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	count := countResp.Count
-	page := this.NewPage(count, 20)
+	var count = countResp.Count
+	var page = this.NewPage(count, 20)
 
 	logsResp, err := this.RPC().NodeLogRPC().ListNodeLogs(this.AdminContext(), &pb.ListNodeLogsRequest{
 		NodeId:  params.NodeId,
@@ -73,8 +73,12 @@ func (this *LogsAction) RunGet(params struct {
 		Offset: page.Offset,
 		Size:   page.Size,
 	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 
-	logs := []maps.Map{}
+	var logs = []maps.Map{}
 	for _, log := range logsResp.NodeLogs {
 		logs = append(logs, maps.Map{
 			"tag":         log.Tag,

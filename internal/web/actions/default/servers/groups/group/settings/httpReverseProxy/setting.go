@@ -1,6 +1,7 @@
 package httpReverseProxy
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/groups/group/servergrouputils"
@@ -73,7 +74,7 @@ func (this *SettingAction) RunPost(params struct {
 		return
 	}
 
-	err = reverseProxyConfig.Init(nil)
+	err = reverseProxyConfig.Init(context.TODO())
 	if err != nil {
 		this.Fail("配置校验失败：" + err.Error())
 	}

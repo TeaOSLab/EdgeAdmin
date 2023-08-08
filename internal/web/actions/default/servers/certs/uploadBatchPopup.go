@@ -4,6 +4,7 @@ package certs
 
 import (
 	"bytes"
+	"context"
 	"crypto/tls"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
@@ -156,7 +157,7 @@ func (this *UploadBatchPopupAction) RunPost(params struct {
 			CertData: certData,
 			KeyData:  keyData,
 		}
-		err := certConfig.Init(nil)
+		err := certConfig.Init(context.TODO())
 		if err != nil {
 			this.Fail("证书验证失败：" + err.Error())
 			return

@@ -32,18 +32,18 @@ func (this *RequestCertPopupAction) RunGet(params struct {
 		return
 	}
 
-	serverNameConfigs := []*serverconfigs.ServerNameConfig{}
+	var serverNameConfigs = []*serverconfigs.ServerNameConfig{}
 	err = json.Unmarshal(serverNamesResp.ServerNamesJSON, &serverNameConfigs)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 
-	excludeServerNames := []string{}
+	var excludeServerNames = []string{}
 	if len(params.ExcludeServerNames) > 0 {
 		excludeServerNames = strings.Split(params.ExcludeServerNames, ",")
 	}
-	serverNames := []string{}
+	var serverNames = []string{}
 	for _, c := range serverNameConfigs {
 		if len(c.SubNames) == 0 {
 			if domainutils.ValidateDomainFormat(c.Name) && !lists.ContainsString(excludeServerNames, c.Name) {
@@ -64,7 +64,12 @@ func (this *RequestCertPopupAction) RunGet(params struct {
 		AdminId: this.AdminId(),
 		UserId:  0,
 	})
-	userMaps := []maps.Map{}
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	var userMaps = []maps.Map{}
 	for _, user := range acmeUsersResp.AcmeUsers {
 		description := user.Description
 		if len(description) > 0 {

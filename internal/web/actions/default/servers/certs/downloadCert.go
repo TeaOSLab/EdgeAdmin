@@ -36,5 +36,5 @@ func (this *DownloadCertAction) RunGet(params struct {
 	}
 
 	this.AddHeader("Content-Disposition", "attachment; filename=\"cert-"+strconv.FormatInt(params.CertId, 10)+".pem\";")
-	this.Write(certConfig.CertData)
+	_, _ = this.Write(certConfig.CertData)
 }

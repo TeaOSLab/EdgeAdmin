@@ -286,7 +286,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 
 	// initialize
 	this.log("initializing mysql ...")
-	var generatedPassword = ""
+	var generatedPassword string
 	{
 		var cmd = utils.NewCmd(baseDir+"/bin/mysqld", "--initialize", "--user=mysql")
 		cmd.WithStderr()

@@ -19,7 +19,7 @@ func (this *Helper) BeforeAction(action *actions.ActionObject) {
 
 	action.Data["teaMenu"] = "db"
 
-	selectedTabbar, _ := action.Data["mainTab"]
+	var selectedTabbar = action.Data["mainTab"]
 
 	var tabbar = actionutils.NewTabbar()
 	tabbar.Add(this.Lang(action, codes.DBNode_TabNodes), "", "/db", "", selectedTabbar == "db")

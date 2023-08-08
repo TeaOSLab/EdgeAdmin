@@ -101,9 +101,7 @@ func ValidateRecordValue(recordType dnsconfigs.RecordType, value string) (messag
 			return
 		}
 	case dnsconfigs.RecordTypeCNAME:
-		if strings.HasSuffix(value, ".") {
-			value = value[:len(value)-1]
-		}
+		value = strings.TrimSuffix(value, ".")
 		if !strings.Contains(value, ".") || !ValidateDomainFormat(value) {
 			message = "请输入正确的域名"
 			return
@@ -118,17 +116,13 @@ func ValidateRecordValue(recordType dnsconfigs.RecordType, value string) (messag
 			return
 		}
 	case dnsconfigs.RecordTypeNS:
-		if strings.HasSuffix(value, ".") {
-			value = value[:len(value)-1]
-		}
+		value = strings.TrimSuffix(value, ".")
 		if !strings.Contains(value, ".") || !ValidateDomainFormat(value) {
 			message = "请输入正确的DNS服务器域名"
 			return
 		}
 	case dnsconfigs.RecordTypeMX:
-		if strings.HasSuffix(value, ".") {
-			value = value[:len(value)-1]
-		}
+		value = strings.TrimSuffix(value, ".")
 		if !strings.Contains(value, ".") || !ValidateDomainFormat(value) {
 			message = "请输入正确的邮件服务器域名"
 			return

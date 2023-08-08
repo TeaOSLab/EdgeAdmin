@@ -123,5 +123,5 @@ func (this *ExportExcelAction) RunGet(params struct {
 	}
 
 	this.AddHeader("Content-Length", strconv.Itoa(buf.Len()))
-	this.Write(buf.Bytes())
+	_, _ = this.Write(buf.Bytes())
 }

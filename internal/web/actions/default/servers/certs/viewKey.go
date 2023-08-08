@@ -30,5 +30,5 @@ func (this *ViewKeyAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	this.Write(certConfig.KeyData)
+	_, _ = this.Write(certConfig.KeyData)
 }

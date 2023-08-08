@@ -36,7 +36,7 @@ func UpdateNodeIPAddresses(parentAction *actionutils.ParentAction, nodeId int64,
 		if addrId > 0 {
 			resultAddrIds = append(resultAddrIds, addrId)
 
-			var isOn = false
+			var isOn bool
 			if !addr.Has("isOn") { // 兼容老版本
 				isOn = true
 			} else {
