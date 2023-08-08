@@ -107,7 +107,7 @@ func MatchPath(action *actions.ActionObject, path string) bool {
 
 // FindParentAction 查找父级Action
 func FindParentAction(actionPtr actions.ActionWrapper) *ParentAction {
-	action, ok := actionPtr.(interface{
+	action, ok := actionPtr.(interface {
 		Parent() *ParentAction
 	})
 	if ok {
@@ -140,7 +140,7 @@ func findStack(err string) string {
 				filename = filename[strings.Index(filename, "src"):]
 			}
 
-			err += "\n\t\t" + string(filename) + ":" + fmt.Sprintf("%d", lineNo)
+			err += "\n\t\t" + filename + ":" + fmt.Sprintf("%d", lineNo)
 
 			break
 		}

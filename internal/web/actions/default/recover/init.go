@@ -1,4 +1,4 @@
-package recover
+package recovers
 
 import "github.com/iwind/TeaGo"
 

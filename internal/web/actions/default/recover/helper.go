@@ -1,4 +1,4 @@
-package recover
+package recovers
 
 import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
