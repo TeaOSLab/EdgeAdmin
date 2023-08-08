@@ -161,7 +161,7 @@ func main() {
 					if progress >= 0 {
 						if progress == 0 || progress == 1 || progress-lastProgress >= 0.1 {
 							lastProgress = progress
-							log.Println(fmt.Sprintf("%.2f%%", manager.Progress()*100))
+							log.Printf("%.2f%%", manager.Progress()*100)
 						}
 					}
 				} else {

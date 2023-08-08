@@ -26,8 +26,5 @@ func IsNewInstalled() bool {
 		return false
 	}
 	_, err = os.Stat(homeDir + "/." + teaconst.ProcessName + "/api.yaml")
-	if err != nil {
-		return true
-	}
-	return false
+	return err != nil
 }

@@ -39,7 +39,7 @@ func (this *ServiceManager) setup() {
 	this.onceLocker.Do(func() {
 		logFile := files.NewFile(Tea.Root + "/logs/service.log")
 		if logFile.Exists() {
-			logFile.Delete()
+			_ = logFile.Delete()
 		}
 
 		//logger

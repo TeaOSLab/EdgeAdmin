@@ -76,14 +76,6 @@ func (this *IndexAction) RunPost(params struct {
 		this.Fail("配置校验失败：" + err.Error())
 	}
 
-	// 允许不匹配的域名
-	allowMismatchDomains := []string{}
-	for _, domain := range params.AllowMismatchDomains {
-		if len(domain) > 0 {
-			allowMismatchDomains = append(allowMismatchDomains, domain)
-		}
-	}
-
 	// TCP端口范围
 	if params.TcpAllPortRangeMin < 1024 {
 		params.TcpAllPortRangeMin = 1024

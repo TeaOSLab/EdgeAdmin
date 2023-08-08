@@ -28,7 +28,7 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 格式化域名
 	var domain = params.Domain
-	domain = regexp.MustCompile(`^(www\.)`).ReplaceAllString(params.Domain, "")
+	domain = regexp.MustCompile(`^(www\.)`).ReplaceAllString(domain, "")
 	domain = strings.ToLower(domain)
 
 	countResp, err := this.RPC().DNSProviderRPC().CountAllEnabledDNSProviders(this.AdminContext(), &pb.CountAllEnabledDNSProvidersRequest{

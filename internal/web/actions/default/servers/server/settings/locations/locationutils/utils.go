@@ -1,6 +1,7 @@
 package locationutils
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
@@ -30,7 +31,7 @@ func FindLocationConfig(parentAction *actionutils.ParentAction, locationId int64
 		return
 	}
 
-	err = locationConfig.Init(nil)
+	err = locationConfig.Init(context.TODO())
 	if err != nil {
 		parentAction.ErrorPage(err)
 		return

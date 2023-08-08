@@ -8,7 +8,6 @@ import (
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 	"net/http"
-	"reflect"
 )
 
 type LocationHelper struct {
@@ -35,19 +34,19 @@ func (this *LocationHelper) BeforeAction(actionPtr actions.ActionWrapper) {
 
 	// 路径信息
 	var currentLocationConfig *serverconfigs.HTTPLocationConfig = nil
-	parentActionValue := reflect.ValueOf(actionPtr).Elem().FieldByName("ParentAction")
-	if parentActionValue.IsValid() {
-		parentAction, isOk := parentActionValue.Interface().(actionutils.ParentAction)
-		if isOk {
-			var locationId = action.ParamInt64("locationId")
-			locationConfig, isOk := FindLocationConfig(&parentAction, locationId)
-			if !isOk {
-				return
-			}
-			action.Data["locationId"] = locationId
-			action.Data["locationConfig"] = locationConfig
-			currentLocationConfig = locationConfig
+	parentActionValue, ok := actionPtr.(interface {
+		Parent() *actionutils.ParentAction
+	})
+	if ok {
+		var parentAction = parentActionValue.Parent()
+		var locationId = action.ParamInt64("locationId")
+		locationConfig, isOk := FindLocationConfig(parentAction, locationId)
+		if !isOk {
+			return
 		}
+		action.Data["locationId"] = locationId
+		action.Data["locationConfig"] = locationConfig
+		currentLocationConfig = locationConfig
 	}
 
 	// 左侧菜单

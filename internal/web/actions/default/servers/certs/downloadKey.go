@@ -36,5 +36,5 @@ func (this *DownloadKeyAction) RunGet(params struct {
 	}
 
 	this.AddHeader("Content-Disposition", "attachment; filename=\"key-"+strconv.FormatInt(params.CertId, 10)+".pem\";")
-	this.Write(certConfig.KeyData)
+	_, _ = this.Write(certConfig.KeyData)
 }

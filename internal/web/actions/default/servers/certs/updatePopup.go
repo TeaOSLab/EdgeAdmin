@@ -1,6 +1,7 @@
 package certs
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
@@ -120,7 +121,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 
 	// 校验
 	certConfig.IsCA = params.IsCA
-	err = certConfig.Init(nil)
+	err = certConfig.Init(context.TODO())
 	if err != nil {
 		if params.IsCA {
 			this.Fail("证书校验错误：" + err.Error())

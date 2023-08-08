@@ -5,22 +5,22 @@ import "sync"
 var eventsMap = map[string][]func(){} // event => []callbacks
 var locker = sync.Mutex{}
 
-// 增加事件回调
+// On 增加事件回调
 func On(event string, callback func()) {
 	locker.Lock()
 	defer locker.Unlock()
 
-	callbacks, _ := eventsMap[event]
+	var callbacks = eventsMap[event]
 	callbacks = append(callbacks, callback)
 	eventsMap[event] = callbacks
 }
 
-// 通知事件
+// Notify 通知事件
 func Notify(event string) {
 	locker.Lock()
-	callbacks, _ := eventsMap[event]
+	var callbacks = eventsMap[event]
 	locker.Unlock()
-	
+
 	for _, callback := range callbacks {
 		callback()
 	}

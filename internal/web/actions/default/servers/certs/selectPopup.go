@@ -172,6 +172,11 @@ func (this *SelectPopupAction) RunGet(params struct {
 		})
 	}
 
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
 	if listResp == nil {
 		this.ErrorPage(errors.New("'listResp' should not be nil"))
 		return

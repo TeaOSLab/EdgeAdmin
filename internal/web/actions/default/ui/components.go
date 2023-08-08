@@ -142,5 +142,5 @@ func (this *ComponentsAction) RunGet(params struct{}) {
 	componentsDataSum = fmt.Sprintf("%x", h.Sum(nil))
 	this.AddHeader("ETag", "\""+componentsDataSum+"\"")
 
-	this.Write(componentsData)
+	_, _ = this.Write(componentsData)
 }

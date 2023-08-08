@@ -107,13 +107,13 @@ func MatchPath(action *actions.ActionObject, path string) bool {
 
 // FindParentAction 查找父级Action
 func FindParentAction(actionPtr actions.ActionWrapper) *ParentAction {
-	parentActionValue := reflect.ValueOf(actionPtr).Elem().FieldByName("ParentAction")
-	if parentActionValue.IsValid() {
-		parentAction, isOk := parentActionValue.Interface().(ParentAction)
-		if isOk {
-			return &parentAction
-		}
+	action, ok := actionPtr.(interface{
+		Parent() *ParentAction
+	})
+	if ok {
+		return action.Parent()
 	}
+
 	return nil
 }
 
@@ -159,7 +159,7 @@ func parseAPIErr(action actions.ActionWrapper, err error) (apiNodeIsStarting boo
 	}
 
 	var isRPCConnError bool
-	err, isRPCConnError = rpcerrors.HumanError(err, apiEndpoints, Tea.ConfigFile("api.yaml"))
+	_, isRPCConnError = rpcerrors.HumanError(err, apiEndpoints, Tea.ConfigFile("api.yaml"))
 	if isRPCConnError {
 		// API节点是否正在启动
 		var sock = gosock.NewTmpSock("edge-api")

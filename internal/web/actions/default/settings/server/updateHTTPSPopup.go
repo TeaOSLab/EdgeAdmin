@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
@@ -49,7 +50,7 @@ func (this *UpdateHTTPSPopupAction) RunGet(params struct{}) {
 			CertData: certData,
 			KeyData:  keyData,
 		}
-		_ = certConfig.Init(nil)
+		_ = certConfig.Init(context.TODO())
 		certConfig.CertData = nil
 		certConfig.KeyData = nil
 		certConfigs = append(certConfigs, certConfig)

@@ -77,16 +77,23 @@ func (this *ValidateDbAction) RunPost(params struct {
 				Dsn:    params.Username + ":" + params.Password + "@tcp(" + configutils.QuoteIP(params.Host) + ":" + params.Port + ")/",
 				Prefix: "",
 			})
+			if err != nil {
+				this.Fail("尝试创建数据库失败：" + err.Error())
+				return
+			}
 
 			_, err = db.Exec("CREATE DATABASE `" + params.Database + "`")
 			if err != nil {
 				this.Fail("尝试创建数据库失败：" + err.Error())
+				return
 			}
 		} else {
 			if strings.Contains(err.Error(), "Error 1044:") {
 				this.Fail("无法连接到数据库，权限检查失败：" + err.Error())
+				return
 			}
 			this.Fail("无法连接到数据库，请检查配置：" + err.Error())
+			return
 		}
 	}
 

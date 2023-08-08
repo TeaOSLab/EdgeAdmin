@@ -1,6 +1,7 @@
 package certs
 
 import (
+	"context"
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
@@ -60,8 +61,8 @@ func (this *UploadPopupAction) RunPost(params struct {
 		Field("name", params.Name).
 		Require("请输入证书说明")
 
-	var certData = []byte{}
-	var keyData = []byte{}
+	var certData []byte
+	var keyData []byte
 
 	if params.TextMode {
 		if len(params.CertText) == 0 {
@@ -104,7 +105,7 @@ func (this *UploadPopupAction) RunPost(params struct {
 		CertData: certData,
 		KeyData:  keyData,
 	}
-	err := certConfig.Init(nil)
+	err := certConfig.Init(context.TODO())
 	if err != nil {
 		if params.IsCA {
 			this.Fail("证书校验错误：" + err.Error())

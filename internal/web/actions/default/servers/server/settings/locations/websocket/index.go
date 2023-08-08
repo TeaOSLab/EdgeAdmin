@@ -94,6 +94,10 @@ func (this *IndexAction) RunPost(params struct {
 			RequestSameOrigin:    websocketConfig.RequestSameOrigin,
 			RequestOrigin:        websocketConfig.RequestOrigin,
 		})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
 	}
 
 	websocketRef.WebsocketId = websocketConfig.Id

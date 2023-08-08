@@ -52,6 +52,10 @@ func (this *SortSetsAction) RunPost(params struct {
 		FirewallRuleGroupId:  params.GroupId,
 		FirewallRuleSetsJSON: newRefsJSON,
 	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 
 	this.Success()
 }

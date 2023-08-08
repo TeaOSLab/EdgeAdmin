@@ -31,7 +31,7 @@ func (this *ExportDataAction) RunGet(params struct {
 	defer this.CreateLogInfo(codes.IPList_LogExportIPList, params.ListId)
 
 	var err error
-	var ext = ""
+	var ext string
 	var jsonMaps = []maps.Map{}
 	var xlsxFile *xlsx.File
 	var xlsxSheet *xlsx.Sheet
@@ -146,5 +146,5 @@ func (this *ExportDataAction) RunGet(params struct {
 
 	this.AddHeader("Content-Disposition", "attachment; filename=\"ip-list-"+numberutils.FormatInt64(params.ListId)+ext+"\";")
 	this.AddHeader("Content-Length", strconv.Itoa(len(data)))
-	this.Write(data)
+	_, _ = this.Write(data)
 }

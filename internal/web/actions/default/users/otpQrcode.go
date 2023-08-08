@@ -71,5 +71,5 @@ func (this *OtpQrcodeAction) RunGet(params struct {
 		return
 	}
 	this.AddHeader("Content-Type", "image/png")
-	this.Write(data)
+	_, _ = this.Write(data)
 }

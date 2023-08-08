@@ -1,6 +1,7 @@
 package https
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
@@ -43,7 +44,7 @@ func (this *IndexAction) RunGet(params struct {
 		httpsConfig.IsOn = true
 	}
 
-	_ = httpsConfig.Init(nil)
+	_ = httpsConfig.Init(context.TODO())
 	var httpsPorts = httpsConfig.AllPorts()
 
 	// 检查http和https端口冲突

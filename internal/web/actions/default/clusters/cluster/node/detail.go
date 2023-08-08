@@ -297,7 +297,7 @@ func (this *DetailAction) RunGet(params struct {
 	}
 
 	// 缓存硬盘 & 内存容量
-	var maxCacheDiskCapacity maps.Map = nil
+	var maxCacheDiskCapacity maps.Map
 	if node.MaxCacheDiskCapacity != nil {
 		maxCacheDiskCapacity = maps.Map{
 			"count": node.MaxCacheDiskCapacity.Count,
@@ -310,7 +310,7 @@ func (this *DetailAction) RunGet(params struct {
 		}
 	}
 
-	var maxCacheMemoryCapacity maps.Map = nil
+	var maxCacheMemoryCapacity maps.Map
 	if node.MaxCacheMemoryCapacity != nil {
 		maxCacheMemoryCapacity = maps.Map{
 			"count": node.MaxCacheMemoryCapacity.Count,
