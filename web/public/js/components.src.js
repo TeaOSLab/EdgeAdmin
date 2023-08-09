@@ -5045,7 +5045,7 @@ Vue.component("http-cache-ref-box", {
 				key: "${scheme}://${host}${requestPath}${isArgs}${args}",
 				life: {count: 2, unit: "hour"},
 				status: [200],
-				maxSize: {count: 32, unit: "mb"},
+				maxSize: {count: 128, unit: "mb"},
 				minSize: {count: 0, unit: "kb"},
 				skipCacheControlValues: ["private", "no-cache", "no-store"],
 				skipSetCookie: true,
@@ -6171,12 +6171,18 @@ Vue.component("http-cache-config-box", {
 			cacheConfig: cacheConfig,
 			moreOptionsVisible: false,
 			enablePolicyRefs: !cacheConfig.disablePolicyRefs,
-			maxBytes: maxBytes
+			maxBytes: maxBytes,
+
+			searchBoxVisible: false,
+			searchKeyword: ""
 		}
 	},
 	watch: {
 		enablePolicyRefs: function (v) {
 			this.cacheConfig.disablePolicyRefs = !v
+		},
+		searchKeyword: function (v) {
+			this.$refs.cacheRefsConfigBoxRef.search(v)
 		}
 	},
 	methods: {
@@ -6201,6 +6207,18 @@ Vue.component("http-cache-config-box", {
 		},
 		changeStale: function (stale) {
 			this.cacheConfig.stale = stale
+		},
+
+		showSearchBox: function () {
+			this.searchBoxVisible = !this.searchBoxVisible
+			if (this.searchBoxVisible) {
+				let that = this
+				setTimeout(function () {
+					that.$refs.searchBox.focus()
+				})
+			} else {
+				this.searchKeyword = ""
+			}
 		}
 	},
 	template: `<div>
@@ -6290,7 +6308,12 @@ Vue.component("http-cache-config-box", {
 	</div>
 	
 	<div v-show="isOn()" style="margin-top: 1em">
-		<h4>缓存条件 &nbsp; <a href="" style="font-size: 0.8em" @click.prevent="$refs.cacheRefsConfigBoxRef.addRef(false)">[添加]</a> </h4>
+		<h4 style="position: relative">缓存条件 &nbsp; <a href="" style="font-size: 0.8em" @click.prevent="$refs.cacheRefsConfigBoxRef.addRef(false)">[添加]</a> &nbsp; <a href="" style="font-size: 0.8em" @click.prevent="showSearchBox" v-show="!searchBoxVisible">[搜索]</a> 
+			<div class="ui input small right labeled" style="position: absolute; top: -0.4em; margin-left: 0.5em; zoom: 0.9" v-show="searchBoxVisible">
+				<input type="text" placeholder="搜索..." ref="searchBox"  @keypress.enter.prevent="1" @keydown.esc="showSearchBox" v-model="searchKeyword" size="20"/>
+				<a href="" class="ui label blue" @click.prevent="showSearchBox"><i class="icon remove small"></i></a>
+			</div>
+		</h4>
 		<http-cache-refs-config-box ref="cacheRefsConfigBoxRef" :v-cache-config="cacheConfig" :v-cache-refs="cacheConfig.cacheRefs" :v-web-id="vWebId" :v-max-bytes="maxBytes"></http-cache-refs-config-box>
 	</div>
 	<div class="margin"></div>
@@ -6814,11 +6837,13 @@ Vue.component("http-cache-refs-config-box", {
 
 		let id = 0
 		refs.forEach(function (ref) {
+			// preset variables
 			id++
 			ref.id = id
+			ref.visible = true
 
 			// check max size
-			if (ref.maxSize != null && maxBytes != null && teaweb.compareSizeCapacity(ref.maxSize, maxBytes) > 0) {
+			if (ref.maxSize != null && maxBytes != null && maxBytes.count > 0 && teaweb.compareSizeCapacity(ref.maxSize, maxBytes) > 0) {
 				ref.overMaxSize = maxBytes
 			}
 		})
@@ -6951,6 +6976,41 @@ Vue.component("http-cache-refs-config-box", {
 					})
 					.post()
 			}
+		},
+		search: function (keyword) {
+			if (typeof keyword != "string") {
+				keyword = ""
+			}
+
+			this.refs.forEach(function (ref) {
+				if (keyword.length == 0) {
+					ref.visible = true
+					return
+				}
+				ref.visible = false
+
+				// simple cond
+				if (ref.simpleCond != null && typeof ref.simpleCond.value == "string" && teaweb.match(ref.simpleCond.value, keyword)) {
+					ref.visible = true
+					return
+				}
+
+				// composed conds
+				if (ref.conds == null || ref.conds.groups == null || ref.conds.groups.length == 0) {
+					return
+				}
+
+				ref.conds.groups.forEach(function (group) {
+					if (group.conds != null) {
+						group.conds.forEach(function (cond) {
+							if (typeof cond.value == "string" && teaweb.match(cond.value, keyword)) {
+								ref.visible = true
+							}
+						})
+					}
+				})
+			})
+			this.$forceUpdate()
 		}
 	},
 	template: `<div>
@@ -6967,7 +7027,7 @@ Vue.component("http-cache-refs-config-box", {
 					<th class="three op">操作</th>
 				</tr>
 			</thead>	
-			<tbody v-for="(cacheRef, index) in refs" :key="cacheRef.id" :v-id="cacheRef.id">
+			<tbody v-for="(cacheRef, index) in refs" :key="cacheRef.id" :v-id="cacheRef.id" v-show="cacheRef.visible !== false">
 				<tr>
 					<td style="text-align: center;"><i class="icon bars handle grey"></i> </td>
 					<td :class="{'color-border': cacheRef.conds != null && cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
@@ -10037,7 +10097,7 @@ Vue.component("http-cache-policy-selector", {
 	template: `<div>
 	<div v-if="cachePolicy != null" class="ui label basic">
 		<input type="hidden" name="cachePolicyId" :value="cachePolicy.id"/>
-		{{cachePolicy.name}} &nbsp; <a :href="'/servers/components/cache/policy?cachePolicyId=' + cachePolicy.id" target="_blank" title="修改"><i class="icon pencil small"></i></a>&nbsp; <a href="" @click.prevent="remove()" title="删除"><i class="icon remove small"></i></a>
+		{{cachePolicy.name}} &nbsp; <a :href="'/servers/components/cache/update?cachePolicyId=' + cachePolicy.id" target="_blank" title="修改"><i class="icon pencil small"></i></a>&nbsp; <a href="" @click.prevent="remove()" title="删除"><i class="icon remove small"></i></a>
 	</div>
 	<div v-if="cachePolicy == null">
 		<span v-if="count > 0"><a href="" @click.prevent="select">[选择已有策略]</a> &nbsp; &nbsp; </span><a href="" @click.prevent="create">[创建新策略]</a>
