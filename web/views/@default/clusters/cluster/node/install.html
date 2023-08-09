@@ -11,6 +11,15 @@
 
     <h4>方法1：通过SSH自动安装</h4>
 
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">SSH地址</td>
+            <td>
+                <span v-if="sshAddr.length > 0">{{sshAddr}} &nbsp; <a href="" @click.prevent="showSSHPopup(nodeId)">[修改]</a></span>
+                <span v-else><span class="red">尚未设置</span> &nbsp; <a href="" @click.prevent="showSSHPopup(nodeId)">[设置]</a></span>
+            </td>
+        </tr>
+    </table>
     <div v-if="installStatus != null && (installStatus.isRunning || installStatus.isFinished)"
          class="ui segment installing-box">
         <div v-if="installStatus.isRunning" class="blue">安装中...</div>
@@ -23,7 +32,7 @@
         <button class="ui button small" type="button" @click.prevent="install()">重新安装</button>
     </div>
     <div v-if="installStatus == null || (!installStatus.isFinished && !installStatus.isRunning)">
-        <button class="ui button small" type="button" @click.prevent="install()">开始安装</button>
+        <button class="ui button small primary" type="button" @click.prevent="install()">开始安装</button>
     </div>
 
     <h4>方法2：手动安装</h4>

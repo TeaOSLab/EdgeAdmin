@@ -103,4 +103,15 @@ Tea.context(function () {
                 }, 1000)
             });
     }
+
+	this.showSSHPopup = function (nodeId) {
+		teaweb.popup("/clusters/cluster/updateNodeSSH?nodeId=" + nodeId, {
+			height: "30em",
+			callback: function () {
+				teaweb.success("保存成功", function () {
+					teaweb.reload()
+				})
+			}
+		})
+	}
 })

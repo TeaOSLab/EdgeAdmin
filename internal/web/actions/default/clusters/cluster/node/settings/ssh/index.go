@@ -48,7 +48,7 @@ func (this *IndexAction) RunGet(params struct {
 		}
 
 		var grantMap = maps.Map{}
-		grantId := loginParams.GetInt64("grantId")
+		var grantId = loginParams.GetInt64("grantId")
 		if grantId > 0 {
 			grantResp, err := this.RPC().NodeGrantRPC().FindEnabledNodeGrant(this.AdminContext(), &pb.FindEnabledNodeGrantRequest{NodeGrantId: grantId})
 			if err != nil {
