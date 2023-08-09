@@ -2,9 +2,11 @@ package node
 
 import (
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/nodeutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/clusterutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -108,6 +110,26 @@ func (this *InstallAction) RunGet(params struct {
 	// 安装文件
 	var installerFiles = clusterutils.ListInstallerFiles()
 	this.Data["installerFiles"] = installerFiles
+
+	// SSH主机地址
+	this.Data["sshAddr"] = ""
+	if node.NodeLogin != nil && node.NodeLogin.Type == "ssh" && !utils.JSONIsNull(node.NodeLogin.Params) {
+		var loginParams = maps.Map{}
+		err = json.Unmarshal(node.NodeLogin.Params, &loginParams)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+
+		var host = loginParams.GetString("host")
+		if len(host) > 0 {
+			var port = loginParams.GetString("port")
+			if port == "0" {
+				port = "22"
+			}
+			this.Data["sshAddr"] = configutils.QuoteIP(host) + ":" + port
+		}
+	}
 
 	this.Show()
 }
