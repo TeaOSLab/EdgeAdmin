@@ -82,6 +82,20 @@
         </td>
     </tr>
     <tr>
+        <td>区域封禁默认提示内容</td>
+        <td>
+            <span v-if="firewallPolicy.denyCountryHTML != null && firewallPolicy.denyCountryHTML.length > 0">自定义</span>
+            <span v-else class="disabled">使用默认</span>
+        </td>
+    </tr>
+    <tr>
+        <td>省份封禁默认提示内容</td>
+        <td>
+            <span v-if="firewallPolicy.denyProvinceHTML != null && firewallPolicy.denyProvinceHTML.length > 0">自定义</span>
+            <span v-else class="disabled">使用默认</span>
+        </td>
+    </tr>
+    <tr>
         <td>描述</td>
         <td>
             <span v-if="firewallPolicy.description.length > 0">{{firewallPolicy.description}}</span>

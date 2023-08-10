@@ -76,6 +76,8 @@ func (this *UpdateAction) RunGet(params struct {
 		"synFloodConfig":     firewallPolicy.SYNFlood,
 		"log":                firewallPolicy.Log,
 		"maxRequestBodySize": types.String(firewallPolicy.MaxRequestBodySize),
+		"denyCountryHTML":    firewallPolicy.DenyCountryHTML,
+		"denyProvinceHTML":   firewallPolicy.DenyProvinceHTML,
 	}
 
 	// 预置分组
@@ -113,6 +115,8 @@ func (this *UpdateAction) RunPost(params struct {
 	SynFloodJSON       []byte
 	LogJSON            []byte
 	MaxRequestBodySize int64
+	DenyCountryHTML    string
+	DenyProvinceHTML   string
 
 	Must *actions.Must
 }) {
@@ -155,6 +159,8 @@ func (this *UpdateAction) RunPost(params struct {
 		SynFloodJSON:         params.SynFloodJSON,
 		LogJSON:              params.LogJSON,
 		MaxRequestBodySize:   params.MaxRequestBodySize,
+		DenyCountryHTML:      params.DenyCountryHTML,
+		DenyProvinceHTML:     params.DenyProvinceHTML,
 	})
 	if err != nil {
 		this.ErrorPage(err)
