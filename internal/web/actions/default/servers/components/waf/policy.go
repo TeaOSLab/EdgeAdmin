@@ -30,7 +30,7 @@ func (this *PolicyAction) RunGet(params struct {
 		return
 	}
 
-	internalGroups := []maps.Map{}
+	var internalGroups = []maps.Map{}
 	if firewallPolicy.Inbound != nil {
 		for _, group := range firewallPolicy.Inbound.Groups {
 			internalGroups = append(internalGroups, maps.Map{
@@ -101,6 +101,8 @@ func (this *PolicyAction) RunGet(params struct {
 		"log":                      firewallPolicy.Log,
 		"maxRequestBodySize":       firewallPolicy.MaxRequestBodySize,
 		"maxRequestBodySizeFormat": numberutils.FormatBytes(firewallPolicy.MaxRequestBodySize),
+		"denyCountryHTML":          firewallPolicy.DenyCountryHTML,
+		"denyProvinceHTML":         firewallPolicy.DenyProvinceHTML,
 	}
 
 	// 正在使用此策略的集群

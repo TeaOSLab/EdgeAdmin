@@ -94,6 +94,20 @@
                 </td>
             </tr>
             <tr>
+                <td>区域封禁默认提示内容</td>
+                <td>
+                    <textarea v-model="firewallPolicy.denyCountryHTML" name="denyCountryHTML" rows="3"></textarea>
+                    <p class="comment">当客户端所在区域被封禁时提示页面的HTML内容；不填则表示使用默认的提示内容；支持请求变量。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>省份封禁默认提示内容</td>
+                <td>
+                    <textarea v-model="firewallPolicy.denyProvinceHTML" name="denyProvinceHTML" rows="3"></textarea>
+                    <p class="comment">当客户端所在省份被封禁时提示页面的HTML内容；不填则表示使用默认的提示内容；支持请求变量。</p>
+                </td>
+            </tr>
+            <tr>
                 <td>描述</td>
                 <td>
                     <textarea name="description" rows="3" v-model="firewallPolicy.description"></textarea>
