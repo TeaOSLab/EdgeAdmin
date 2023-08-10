@@ -40,10 +40,13 @@ func (this *IndexAction) RunGet(params struct {
 
 	var deniedCountryIds = []int64{}
 	var allowedCountryIds = []int64{}
+	var countryHTML string
 	if policyConfig.Inbound != nil && policyConfig.Inbound.Region != nil {
 		deniedCountryIds = policyConfig.Inbound.Region.DenyCountryIds
 		allowedCountryIds = policyConfig.Inbound.Region.AllowCountryIds
+		countryHTML = policyConfig.Inbound.Region.CountryHTML
 	}
+	this.Data["countryHTML"] = countryHTML
 
 	countriesResp, err := this.RPC().RegionCountryRPC().FindAllRegionCountries(this.AdminContext(), &pb.FindAllRegionCountriesRequest{})
 	if err != nil {
@@ -91,6 +94,8 @@ func (this *IndexAction) RunPost(params struct {
 	ExceptURLPatternsJSON []byte
 	OnlyURLPatternsJSON   []byte
 
+	CountryHTML string
+
 	Must *actions.Must
 }) {
 	// 日志
@@ -127,6 +132,13 @@ func (this *IndexAction) RunPost(params struct {
 		}
 	}
 	policyConfig.Inbound.Region.CountryExceptURLPatterns = exceptURLPatterns
+
+	// 自定义提示
+	if len(params.CountryHTML) > 32<<10 {
+		this.Fail("提示内容长度不能超出32K")
+		return
+	}
+	policyConfig.Inbound.Region.CountryHTML = params.CountryHTML
 
 	// 限制URL
 	var onlyURLPatterns = []*shared.URLPattern{}
