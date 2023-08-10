@@ -8,7 +8,7 @@ Vue.component("http-pages-and-shutdown-box", {
 		let shutdownConfig = {
 			isPrior: false,
 			isOn: false,
-			bodyType: "url",
+			bodyType: "html",
 			url: "",
 			body: "",
 			status: 0
@@ -18,7 +18,7 @@ Vue.component("http-pages-and-shutdown-box", {
 				this.vShutdownConfig.body = ""
 			}
 			if (this.vShutdownConfig.bodyType == null) {
-				this.vShutdownConfig.bodyType = "url"
+				this.vShutdownConfig.bodyType = "html"
 			}
 			shutdownConfig = this.vShutdownConfig
 		}
@@ -129,8 +129,8 @@ Vue.component("http-pages-and-shutdown-box", {
 							<td>显示内容类型 *</td>
 							<td>
 								<select class="ui dropdown auto-width" v-model="shutdownConfig.bodyType">
-									<option value="url">读取URL</option>
 									<option value="html">HTML</option>
+									<option value="url">读取URL</option>
 								</select>
 							</td>
 						</tr>
