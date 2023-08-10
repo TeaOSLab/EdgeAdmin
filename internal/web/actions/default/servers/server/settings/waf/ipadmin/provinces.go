@@ -158,11 +158,11 @@ func (this *ProvincesAction) RunPost(params struct {
 	}
 	policyConfig.Inbound.Region.ProvinceOnlyURLPatterns = onlyURLPatterns
 
+	// 自定义提示
 	if len(params.ProvinceHTML) > 32<<10 {
 		this.Fail("提示内容长度不能超出32K")
 		return
 	}
-
 	policyConfig.Inbound.Region.ProvinceHTML = params.ProvinceHTML
 
 	err = policyConfig.Init()

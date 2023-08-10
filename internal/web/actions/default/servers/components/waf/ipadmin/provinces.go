@@ -40,10 +40,13 @@ func (this *ProvincesAction) RunGet(params struct {
 
 	var deniedProvinceIds = []int64{}
 	var allowedProvinceIds = []int64{}
+	var provinceHTML string
 	if policyConfig.Inbound != nil && policyConfig.Inbound.Region != nil {
 		deniedProvinceIds = policyConfig.Inbound.Region.DenyProvinceIds
 		allowedProvinceIds = policyConfig.Inbound.Region.AllowProvinceIds
+		provinceHTML = policyConfig.Inbound.Region.ProvinceHTML
 	}
+	this.Data["provinceHTML"] = provinceHTML
 
 	provincesResp, err := this.RPC().RegionProvinceRPC().FindAllRegionProvincesWithRegionCountryId(this.AdminContext(), &pb.FindAllRegionProvincesWithRegionCountryIdRequest{
 		RegionCountryId: regionconfigs.RegionChinaId,
@@ -92,6 +95,8 @@ func (this *ProvincesAction) RunPost(params struct {
 	ExceptURLPatternsJSON []byte
 	OnlyURLPatternsJSON   []byte
 
+	ProvinceHTML string
+
 	Must *actions.Must
 }) {
 	// 日志
@@ -139,6 +144,13 @@ func (this *ProvincesAction) RunPost(params struct {
 		}
 	}
 	policyConfig.Inbound.Region.ProvinceOnlyURLPatterns = onlyURLPatterns
+
+	// 自定义提示
+	if len(params.ProvinceHTML) > 32<<10 {
+		this.Fail("提示内容长度不能超出32K")
+		return
+	}
+	policyConfig.Inbound.Region.ProvinceHTML = params.ProvinceHTML
 
 	inboundJSON, err := json.Marshal(policyConfig.Inbound)
 	if err != nil {
