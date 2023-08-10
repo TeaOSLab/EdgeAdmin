@@ -45,7 +45,7 @@ Tea.context(function () {
 		teaweb.popup("/servers/certs/updatePopup?certId=" + certId, {
 			height: "30em",
 			callback: function () {
-				teaweb.success("上传成功", function () {
+				teaweb.success("修改成功", function () {
 					window.location.reload()
 				})
 			}
