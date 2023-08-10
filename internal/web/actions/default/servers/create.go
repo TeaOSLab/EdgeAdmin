@@ -347,7 +347,7 @@ func (this *CreateAction) RunPost(params struct {
 		var rootJSON []byte
 		var err error
 		if len(params.WebRoot) > 0 {
-			var rootConfig = &serverconfigs.HTTPRootConfig{}
+			var rootConfig = serverconfigs.NewHTTPRootConfig()
 			rootConfig.IsOn = true
 			rootConfig.Dir = params.WebRoot
 			rootConfig.Indexes = []string{"index.html", "index.htm"}
