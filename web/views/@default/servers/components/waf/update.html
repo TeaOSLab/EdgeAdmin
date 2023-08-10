@@ -90,7 +90,7 @@
                         <input type="text" style="width: 10em" maxlength="10" v-model="firewallPolicy.maxRequestBodySize" @input="changeMaxRequestBodySize(firewallPolicy.maxRequestBodySize)"/>
                         <span class="ui label">字节</span>
                     </div>
-                    <p class="comment"><span v-if="maxRequestBodySize > 0">当前：{{maxRequestBodySizeFormat}}。</span>WAF能够分析的最大文件内容尺寸，0表示默认，默认为1MB；此值越大，对应使用的系统内存越多，除非特殊情况，否则请谨慎修改。</p>
+                    <p class="comment"><span v-if="maxRequestBodySize > 0">当前：{{maxRequestBodySizeFormat}}。</span>WAF能够分析的最大文件内容尺寸，0表示默认，默认为512K；此值越大，对应使用的系统内存越多，除非特殊情况，否则请谨慎修改。</p>
                 </td>
             </tr>
             <tr>
