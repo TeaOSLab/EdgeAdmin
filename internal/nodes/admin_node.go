@@ -2,6 +2,7 @@ package nodes
 
 import (
 	"errors"
+	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
@@ -184,7 +185,7 @@ func (this *AdminNode) checkServer() error {
 		if err == nil {
 			err = os.WriteFile(configFile, data, 0666)
 			if err != nil {
-				return errors.New("create config file failed: " + err.Error())
+				return fmt.Errorf("create config file failed: %w", err)
 			}
 		} else {
 			templateYAML := `# environment code
@@ -204,11 +205,11 @@ https:
 `
 			err = os.WriteFile(configFile, []byte(templateYAML), 0666)
 			if err != nil {
-				return errors.New("create config file failed: " + err.Error())
+				return fmt.Errorf("create config file failed: %w", err)
 			}
 		}
 	} else {
-		return errors.New("can not read config from 'configs/server.yaml': " + err.Error())
+		return fmt.Errorf("can not read config from 'configs/server.yaml': %w", err)
 	}
 
 	return nil

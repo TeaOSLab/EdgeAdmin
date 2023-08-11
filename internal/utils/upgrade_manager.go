@@ -7,6 +7,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"errors"
+	"fmt"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/maps"
@@ -111,13 +112,13 @@ func (this *UpgradeManager) Start() error {
 		url = strings.ReplaceAll(url, "${version}", teaconst.Version)
 		req, err := http.NewRequest(http.MethodGet, url, nil)
 		if err != nil {
-			return errors.New("create url request failed: " + err.Error())
+			return fmt.Errorf("create url request failed: %w", err)
 		}
 		req.Header.Set("User-Agent", "Edge-Admin/"+teaconst.Version)
 
 		resp, err := this.client.Do(req)
 		if err != nil {
-			return errors.New("read latest version failed: " + err.Error())
+			return fmt.Errorf("read latest version failed: %w", err)
 		}
 
 		defer func() {
@@ -130,13 +131,13 @@ func (this *UpgradeManager) Start() error {
 
 		data, err := io.ReadAll(resp.Body)
 		if err != nil {
-			return errors.New("read latest version failed: " + err.Error())
+			return fmt.Errorf("read latest version failed: %w", err)
 		}
 
 		var m = maps.Map{}
 		err = json.Unmarshal(data, &m)
 		if err != nil {
-			return errors.New("invalid response data: " + err.Error() + ", origin data: " + string(data))
+			return fmt.Errorf("invalid response data: %w, origin data: %s", err, string(data))
 		}
 
 		var code = m.GetInt("code")
@@ -172,13 +173,13 @@ func (this *UpgradeManager) Start() error {
 	{
 		req, err := http.NewRequest(http.MethodGet, downloadURL, nil)
 		if err != nil {
-			return errors.New("create download request failed: " + err.Error())
+			return fmt.Errorf("create download request failed: %w", err)
 		}
 		req.Header.Set("User-Agent", "Edge-Admin/"+teaconst.Version)
 
 		resp, err := this.client.Do(req)
 		if err != nil {
-			return errors.New("download failed: " + downloadURL + ": " + err.Error())
+			return fmt.Errorf("download failed: '%s': %w", downloadURL, err)
 		}
 
 		defer func() {
@@ -201,7 +202,7 @@ func (this *UpgradeManager) Start() error {
 
 		fp, err := os.Create(destFile)
 		if err != nil {
-			return errors.New("create file failed: " + err.Error())
+			return fmt.Errorf("create file failed: %w", err)
 		}
 
 		defer func() {
@@ -217,7 +218,7 @@ func (this *UpgradeManager) Start() error {
 			if this.isCancelled {
 				return nil
 			}
-			return errors.New("download failed: " + err.Error())
+			return fmt.Errorf("download failed: %w", err)
 		}
 
 		_ = fp.Close()
@@ -228,7 +229,7 @@ func (this *UpgradeManager) Start() error {
 		if err == nil && stat.IsDir() {
 			err = os.RemoveAll(unzipDir)
 			if err != nil {
-				return errors.New("remove old dir '" + unzipDir + "' failed: " + err.Error())
+				return fmt.Errorf("remove old dir '%s' failed: %w", unzipDir, err)
 			}
 		}
 		var unzipCmd = exec.Command(unzipExe, "-q", "-o", destFile, "-d", unzipDir)
@@ -236,18 +237,18 @@ func (this *UpgradeManager) Start() error {
 		unzipCmd.Stderr = unzipStderr
 		err = unzipCmd.Run()
 		if err != nil {
-			return errors.New("unzip installation file failed: " + err.Error() + ": " + unzipStderr.String())
+			return fmt.Errorf("unzip installation file failed: %w: %s", err, unzipStderr.String())
 		}
 
 		installationFiles, err := filepath.Glob(unzipDir + "/edge-" + this.component + "/*")
 		if err != nil {
-			return errors.New("lookup installation files failed: " + err.Error())
+			return fmt.Errorf("lookup installation files failed: %w", err)
 		}
 
 		// cp to target dir
 		currentExe, err := os.Executable()
 		if err != nil {
-			return errors.New("reveal current executable file path failed: " + err.Error())
+			return fmt.Errorf("reveal current executable file path failed: %w", err)
 		}
 		var targetDir = filepath.Dir(filepath.Dir(currentExe))
 		if !Tea.IsTesting() {

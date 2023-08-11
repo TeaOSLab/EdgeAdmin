@@ -50,7 +50,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 		} else {
 			err = os.Remove(targetDir)
 			if err != nil {
-				return errors.New("clean target dir '" + targetDir + "' failed: " + err.Error())
+				return fmt.Errorf("clean target dir '%s' failed: %w", targetDir, err)
 			}
 		}
 	}
@@ -140,7 +140,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 	{
 		data, err := os.ReadFile("/etc/group")
 		if err != nil {
-			return errors.New("check user group failed: " + err.Error())
+			return fmt.Errorf("check user group failed: %w", err)
 		}
 		if !bytes.Contains(data, []byte("\nmysql:")) {
 			var cmd = utils.NewCmd(groupAddExe, "mysql")
@@ -157,7 +157,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 	{
 		data, err := os.ReadFile("/etc/passwd")
 		if err != nil {
-			return errors.New("check user failed: " + err.Error())
+			return fmt.Errorf("check user failed: %w", err)
 		}
 		if !bytes.Contains(data, []byte("\nmysql:")) {
 			var cmd *utils.Cmd
@@ -182,10 +182,10 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 			if os.IsNotExist(err) {
 				err = os.MkdirAll(parentDir, 0777)
 				if err != nil {
-					return errors.New("try to create dir '" + parentDir + "' failed: " + err.Error())
+					return fmt.Errorf("try to create dir '%s' failed: %w", parentDir, err)
 				}
 			} else {
-				return errors.New("check dir '" + parentDir + "' failed: " + err.Error())
+				return fmt.Errorf("check dir '%s' failed: %w", parentDir, err)
 			}
 		} else {
 			if !stat.IsDir() {
@@ -199,7 +199,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 	{
 		stat, err := os.Stat(xzFilePath)
 		if err != nil {
-			return errors.New("could not open the installer file: " + err.Error())
+			return fmt.Errorf("could not open the installer file: %w", err)
 		}
 		if stat.IsDir() {
 			return errors.New("'" + xzFilePath + "' not a valid file")
@@ -219,12 +219,12 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 		if err == nil {
 			err = os.RemoveAll(tmpDir)
 			if err != nil {
-				return errors.New("clean temporary directory '" + tmpDir + "' failed: " + err.Error())
+				return fmt.Errorf("clean temporary directory '%s' failed: %w", tmpDir, err)
 			}
 		}
 		err = os.Mkdir(tmpDir, 0777)
 		if err != nil {
-			return errors.New("create temporary directory '" + tmpDir + "' failed: " + err.Error())
+			return fmt.Errorf("create temporary directory '%s' failed: %w", tmpDir, err)
 		}
 	}
 
@@ -249,10 +249,10 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 		if os.IsNotExist(err) {
 			err = os.Mkdir(dataDir, 0777)
 			if err != nil {
-				return errors.New("create data dir '" + dataDir + "' failed: " + err.Error())
+				return fmt.Errorf("create data dir '%s' failed: %w", dataDir, err)
 			}
 		} else {
-			return errors.New("check data dir '" + dataDir + "' failed: " + err.Error())
+			return fmt.Errorf("check data dir '%s' failed: %w", dataDir, err)
 		}
 	}
 
@@ -262,7 +262,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 		cmd.WithStderr()
 		err = cmd.Run()
 		if err != nil {
-			return errors.New("chown data dir '" + dataDir + "' failed: " + err.Error())
+			return fmt.Errorf("chown data dir '%s' failed: %w", dataDir, err)
 		}
 	}
 
@@ -273,7 +273,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 		// backup it
 		err = os.Rename(myCnfFile, "/etc/my.cnf."+timeutil.Format("YmdHis"))
 		if err != nil {
-			return errors.New("backup '/etc/my.cnf' failed: " + err.Error())
+			return fmt.Errorf("backup '/etc/my.cnf' failed: %w", err)
 		}
 	}
 
@@ -281,7 +281,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 	var myCnfTemplate = this.createMyCnf(baseDir, dataDir)
 	err = os.WriteFile(myCnfFile, []byte(myCnfTemplate), 0666)
 	if err != nil {
-		return errors.New("write '" + myCnfFile + "' failed: " + err.Error())
+		return fmt.Errorf("write '%s' failed: %w", myCnfFile, err)
 	}
 
 	// initialize
@@ -312,7 +312,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 		var passwordFile = baseDir + "/generated-password.txt"
 		err = os.WriteFile(passwordFile, []byte(generatedPassword), 0666)
 		if err != nil {
-			return errors.New("write password failed: " + err.Error())
+			return fmt.Errorf("write password failed: %w", err)
 		}
 	}
 
@@ -320,7 +320,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 	this.log("moving files to target dir ...")
 	err = os.Rename(baseDir, targetDir)
 	if err != nil {
-		return errors.New("move '" + baseDir + "' to '" + targetDir + "' failed: " + err.Error())
+		return fmt.Errorf("move '%s' to '%s' failed: %w", baseDir, targetDir, err)
 	}
 	baseDir = targetDir
 
@@ -328,7 +328,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 	myCnfTemplate = this.createMyCnf(baseDir, baseDir+"/data")
 	err = os.WriteFile(myCnfFile, []byte(myCnfTemplate), 0666)
 	if err != nil {
-		return errors.New("create new '" + myCnfFile + "' failed: " + err.Error())
+		return fmt.Errorf("create new '%s' failed: %w", myCnfFile, err)
 	}
 
 	// start mysql
@@ -356,7 +356,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 	// change password
 	newPassword, err := this.generatePassword()
 	if err != nil {
-		return errors.New("generate new password failed: " + err.Error())
+		return fmt.Errorf("generate new password failed: %w", err)
 	}
 
 	this.log("changing mysql password ...")
@@ -373,7 +373,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 	var passwordFile = baseDir + "/generated-password.txt"
 	err = os.WriteFile(passwordFile, []byte(this.password), 0666)
 	if err != nil {
-		return errors.New("write generated file failed: " + err.Error())
+		return fmt.Errorf("write generated file failed: %w", err)
 	}
 
 	// remove temporary directory

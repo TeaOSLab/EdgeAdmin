@@ -5,6 +5,7 @@ package tasks
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
 	"github.com/TeaOSLab/EdgeAdmin/internal/goman"
@@ -63,7 +64,7 @@ func (this *CheckUpdatesTask) Loop() error {
 	if len(valueJSON) > 0 {
 		err = json.Unmarshal(valueJSON, config)
 		if err != nil {
-			return errors.New("decode config failed: " + err.Error())
+			return fmt.Errorf("decode config failed: %w", err)
 		}
 		if !config.AutoCheck {
 			return nil
@@ -90,7 +91,7 @@ func (this *CheckUpdatesTask) Loop() error {
 	apiURL = strings.ReplaceAll(apiURL, "${version}", teaconst.Version)
 	resp, err := http.Get(apiURL)
 	if err != nil {
-		return errors.New("read api failed: " + err.Error())
+		return fmt.Errorf("read api failed: %w", err)
 	}
 
 	defer func() {
@@ -98,13 +99,13 @@ func (this *CheckUpdatesTask) Loop() error {
 	}()
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return errors.New("read api failed: " + err.Error())
+		return fmt.Errorf("read api failed: %w", err)
 	}
 
 	var apiResponse = &Response{}
 	err = json.Unmarshal(data, apiResponse)
 	if err != nil {
-		return errors.New("decode version data failed: " + err.Error())
+		return fmt.Errorf("decode version data failed: %w", err)
 	}
 
 	if apiResponse.Code != 200 {
