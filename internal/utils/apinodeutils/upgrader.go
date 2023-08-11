@@ -79,7 +79,7 @@ func (this *Upgrader) Upgrade() error {
 	// 升级API节点
 	err = this.upgradeAPINode(sharedClient.Context(0), rpcClient)
 	if err != nil {
-		return errors.New("upgrade api node failed: " + err.Error())
+		return fmt.Errorf("upgrade api node failed: %w", err)
 	}
 
 	return nil
@@ -109,7 +109,7 @@ func (this *Upgrader) upgradeAPINode(ctx context.Context, rpcClient *rpc.RPCClie
 
 	localVersion, err := lookupLocalVersion()
 	if err != nil {
-		return errors.New("lookup version failed: " + err.Error())
+		return fmt.Errorf("lookup version failed: %w", err)
 	}
 
 	// 检查要升级的文件
@@ -251,7 +251,7 @@ func (this *Upgrader) upgradeNodes(ctx context.Context, rpcClient *rpc.RPCClient
 		if !ok || stringutil.VersionCompare(remoteDeployFile.Version, deployFile.Version) < 0 {
 			err = this.uploadNodeDeployFile(ctx, rpcClient, deployFile.Path)
 			if err != nil {
-				return errors.New("upload deploy file '" + filepath.Base(deployFile.Path) + "' failed: " + err.Error())
+				return fmt.Errorf("upload deploy file '%s' failed: %w", filepath.Base(deployFile.Path), err)
 			}
 		}
 	}
@@ -284,7 +284,7 @@ func (this *Upgrader) upgradeNSNodes(ctx context.Context, rpcClient *rpc.RPCClie
 		if !ok || stringutil.VersionCompare(remoteDeployFile.Version, deployFile.Version) < 0 {
 			err = this.uploadNodeDeployFile(ctx, rpcClient, deployFile.Path)
 			if err != nil {
-				return errors.New("upload deploy file '" + filepath.Base(deployFile.Path) + "' failed: " + err.Error())
+				return fmt.Errorf("upload deploy file '%s' failed: %w", filepath.Base(deployFile.Path), err)
 			}
 		}
 	}

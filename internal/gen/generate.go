@@ -5,7 +5,7 @@ package gen
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
+	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/conds/condutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -22,7 +22,7 @@ import (
 func Generate() error {
 	err := generateComponentsJSFile()
 	if err != nil {
-		return errors.New("generate 'components.src.js' failed: " + err.Error())
+		return fmt.Errorf("generate 'components.src.js' failed: %w", err)
 	}
 
 	return nil

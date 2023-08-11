@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/encrypt"
@@ -525,7 +526,7 @@ func (this *RPCClient) init() error {
 	for _, endpoint := range this.apiConfig.RPC.Endpoints {
 		u, err := url.Parse(endpoint)
 		if err != nil {
-			return errors.New("parse endpoint failed: " + err.Error())
+			return fmt.Errorf("parse endpoint failed: %w", err)
 		}
 
 		var apiHost = u.Host
