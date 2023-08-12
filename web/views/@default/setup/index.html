@@ -48,7 +48,7 @@
 	<!-- 介绍 -->
 	<div v-show="step == STEP_INTRO">
 		<div>感谢你选择使用<strong>GoEdge</strong> CDN系统，下面让我们一起开始配置系统。</div>
-		<div class="margin">在这之前如果你还没有可用的MySQL数据库，请先安装MySQL数据库再进行。</div>
+		<div class="margin">在这之前如果你还没有可用的MySQL数据库（支持MySQL 5.7.8/8.0/8.1/TiDB 3.0及以上版本），请先安装MySQL数据库再进行。</div>
         <div class="margin" style="color: grey">免责声明：GoEdge软件开发者并不对您的软件使用方法、服务对象、服务内容负道德或法律上的约束责任，在使用本软件时产生的一切法律风险自负。</div>
         <div class="margin" style="color: grey">用户协议：请在遵守中华人民共和国政策、法律、法规的前提下使用本软件；自愿承担因不当使用本软件产生的一切法律后果；承认GoEdge开发者拥有本软件的所有著作权；点击"开始"安装表示你同意此用户协议。</div>
 		<button class="ui button primary" style="margin-top: 10em" type="button" @click.prevent="goIntroNext()">开始<i class="icon long arrow right"></i></button>
