@@ -70,15 +70,14 @@
     <tr>
         <td>配置文件</td>
         <td>
-            configs/api.yaml&nbsp;
-            <download-link :v-element="'rpc-code'" :v-file="'api.yaml'">[下载]</download-link >
+            configs/api_reporter.yaml&nbsp;
+            <download-link :v-element="'rpc-code'" :v-file="'api_reporter.yaml'">[下载]</download-link >
         </td>
     </tr>
     <tr>
         <td>配置内容</td>
         <td>
-            <source-code-box id="rpc-code" type="text/yaml">rpc:
-  endpoints: [ {{apiEndpoints}} ]
+            <source-code-box id="rpc-code" type="text/yaml">rpc.endpoints: [ {{apiEndpoints}} ]
 nodeId: "{{reporter.uniqueId}}"
 secret: "{{reporter.secret}}"</source-code-box>
         </td>
