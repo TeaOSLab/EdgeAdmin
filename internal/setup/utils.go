@@ -2,8 +2,6 @@ package setup
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
-	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
-	"os"
 )
 
 var isConfigured bool
@@ -21,10 +19,5 @@ func IsConfigured() bool {
 
 // IsNewInstalled IsNew 检查是否新安装
 func IsNewInstalled() bool {
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return false
-	}
-	_, err = os.Stat(homeDir + "/." + teaconst.ProcessName + "/api.yaml")
-	return err != nil
+	return configs.IsNewInstalled()
 }

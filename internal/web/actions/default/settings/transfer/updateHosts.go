@@ -36,7 +36,7 @@ func (this *UpdateHostsAction) RunPost(params struct {
 		this.Fail("加载当前平台的API配置失败：" + err.Error())
 	}
 	var apiURL = params.Protocol + "://" + configutils.QuoteIP(params.Host) + ":" + params.Port
-	config.RPC.Endpoints = []string{apiURL}
+	config.RPCEndpoints = []string{apiURL}
 	client, err := rpc.NewRPCClient(config, false)
 	if err != nil {
 		this.Fail("检查API节点地址出错：" + err.Error())

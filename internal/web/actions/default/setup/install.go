@@ -231,14 +231,9 @@ func (this *InstallAction) RunPost(params struct {
 
 		// 写入API节点配置，完成安装
 		var apiConfig = &configs.APIConfig{
-			RPC: struct {
-				Endpoints     []string `yaml:"endpoints"`
-				DisableUpdate bool     `yaml:"disableUpdate"`
-			}{
-				Endpoints: []string{"http://" + configutils.QuoteIP(apiNodeMap.GetString("newHost")) + ":" + apiNodeMap.GetString("newPort")},
-			},
-			NodeId: resultMap.GetString("adminNodeId"),
-			Secret: resultMap.GetString("adminNodeSecret"),
+			RPCEndpoints: []string{"http://" + configutils.QuoteIP(apiNodeMap.GetString("newHost")) + ":" + apiNodeMap.GetString("newPort")},
+			NodeId:       resultMap.GetString("adminNodeId"),
+			Secret:       resultMap.GetString("adminNodeSecret"),
 		}
 
 		// 设置管理员
@@ -285,7 +280,7 @@ func (this *InstallAction) RunPost(params struct {
 			}
 		}
 
-		err = apiConfig.WriteFile(Tea.ConfigFile("api.yaml"))
+		err = apiConfig.WriteFile(Tea.ConfigFile(configs.ConfigFileName))
 		if err != nil {
 			this.Fail("保存配置失败，原因：" + err.Error())
 		}
@@ -294,14 +289,9 @@ func (this *InstallAction) RunPost(params struct {
 	} else if mode == "old" {
 		// 构造RPC
 		var apiConfig = &configs.APIConfig{
-			RPC: struct {
-				Endpoints     []string `yaml:"endpoints"`
-				DisableUpdate bool     `yaml:"disableUpdate"`
-			}{
-				Endpoints: []string{apiNodeMap.GetString("oldProtocol") + "://" + configutils.QuoteIP(apiNodeMap.GetString("oldHost")) + ":" + apiNodeMap.GetString("oldPort")},
-			},
-			NodeId: apiNodeMap.GetString("oldNodeId"),
-			Secret: apiNodeMap.GetString("oldNodeSecret"),
+			RPCEndpoints: []string{apiNodeMap.GetString("oldProtocol") + "://" + configutils.QuoteIP(apiNodeMap.GetString("oldHost")) + ":" + apiNodeMap.GetString("oldPort")},
+			NodeId:       apiNodeMap.GetString("oldNodeId"),
+			Secret:       apiNodeMap.GetString("oldNodeSecret"),
 		}
 		client, err := rpc.NewRPCClient(apiConfig, false)
 		if err != nil {
@@ -343,7 +333,7 @@ func (this *InstallAction) RunPost(params struct {
 		}
 
 		// 写入API节点配置，完成安装
-		err = apiConfig.WriteFile(Tea.ConfigFile("api.yaml"))
+		err = apiConfig.WriteFile(Tea.ConfigFile(configs.ConfigFileName))
 		if err != nil {
 			this.Fail("保存配置失败，原因：" + err.Error())
 		}

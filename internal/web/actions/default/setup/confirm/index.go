@@ -26,7 +26,7 @@ func (this *IndexAction) RunGet(params struct{}) {
 
 	config, err := configs.LoadAPIConfig()
 	if err == nil {
-		endpoints = config.RPC.Endpoints
+		endpoints = config.RPCEndpoints
 		this.Data["nodeId"] = config.NodeId
 		this.Data["secret"] = config.Secret
 		this.Data["canInstall"] = false
@@ -78,7 +78,7 @@ func (this *IndexAction) RunPost(params struct {
 			var config = &configs.APIConfig{}
 			config.NodeId = params.NodeId
 			config.Secret = params.Secret
-			config.RPC.Endpoints = []string{endpoint}
+			config.RPCEndpoints = []string{endpoint}
 			client, err := rpc.NewRPCClient(config, false)
 			if err != nil {
 				this.Fail("尝试配置RPC发生错误：" + err.Error())
@@ -124,9 +124,9 @@ func (this *IndexAction) RunPost(params struct {
 	}
 	config.NodeId = params.NodeId
 	config.Secret = params.Secret
-	config.RPC.Endpoints = endpoints
-	config.RPC.DisableUpdate = true
-	err = config.WriteFile(Tea.ConfigFile("api.yaml"))
+	config.RPCEndpoints = endpoints
+	config.RPCDisableUpdate = true
+	err = config.WriteFile(Tea.ConfigFile(configs.ConfigFileName))
 	if err != nil {
 		this.Fail("配置保存失败：" + err.Error())
 	}

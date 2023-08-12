@@ -255,7 +255,7 @@ func (this *AdminNode) addPortsToFirewall() {
 
 // 启动API节点
 func (this *AdminNode) startAPINode() {
-	configPath := Tea.Root + "/edge-api/configs/api.yaml"
+	var configPath = Tea.Root + "/edge-api/configs/api.yaml"
 	_, err := os.Stat(configPath)
 	canStart := false
 	if err == nil {
