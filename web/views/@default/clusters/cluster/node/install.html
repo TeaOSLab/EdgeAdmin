@@ -61,14 +61,19 @@
             </td>
         </tr>
         <tr>
-            <td>配置文件<em>（configs/api.yaml）</em><br/>
-            <em><download-link :v-element="'rpc-code'" :v-file="'api.yaml'">[下载]</download-link ></em></td>
+            <td>配置文件</td>
             <td>
-					<source-code-box id="rpc-code" type="text/yaml">rpc:
-    endpoints: [ {{apiEndpoints}} ]
+                configs/api_node.yaml &nbsp;
+                <download-link :v-element="'rpc-code'" :v-file="'api_node.yaml'">[下载]</download-link >
+            </td>
+        </tr>
+        <tr>
+            <td>配置内容</td>
+            <td>
+					<source-code-box id="rpc-code" type="text/yaml">rpc.endpoints: [ {{apiEndpoints}} ]
 nodeId: "{{node.uniqueId}}"
 secret: "{{node.secret}}"</source-code-box>
-                <p class="comment">手动替换edge-node安装目录下的<code-label>configs/api.yaml</code-label>文件，然后重新启动生效；如果此文件不存在，则需要创建。</p>
+                <p class="comment">手动替换edge-node安装目录下的<code-label>configs/api_node.yaml</code-label>文件，然后重新启动生效；如果此文件不存在，则需要创建。</p>
             </td>
         </tr>
         <tr>
@@ -92,11 +97,14 @@ secret: "{{node.secret}}"</source-code-box>
     <h4>配置文件</h4>
     <table class="ui table definition selectable">
         <tr>
-            <td class="title">配置文件<em>（configs/api.yaml）</em><br/>
-                <em><download-link :v-element="'rpc-code'" :v-file="'api.yaml'">[下载]</download-link ></em></td>
+            <td class="title">配置文件</td>
             <td>
-                <source-code-box id="rpc-code" type="text/yaml">rpc:
-    endpoints: [ {{apiEndpoints}} ]
+                configs/api_node.yaml  &nbsp; <download-link :v-element="'rpc-code'" :v-file="'api_node.yaml'">[下载]</download-link >
+            </td>
+        </tr>
+        <tr>
+            <td class="title">配置内容<td>
+                <source-code-box id="rpc-code" type="text/yaml">rpc.endpoints: [ {{apiEndpoints}} ]
 nodeId: "{{node.uniqueId}}"
 secret: "{{node.secret}}"</source-code-box>
             </td>
