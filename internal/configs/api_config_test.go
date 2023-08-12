@@ -2,6 +2,7 @@ package configs
 
 import (
 	_ "github.com/iwind/TeaGo/bootstrap"
+	"gopkg.in/yaml.v3"
 	"testing"
 )
 
@@ -11,10 +12,16 @@ func TestLoadAPIConfig(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(config)
+
+	configData, err := yaml.Marshal(config)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(string(configData))
 }
 
 func TestAPIConfig_WriteFile(t *testing.T) {
-	config := &APIConfig{}
+	var config = &APIConfig{}
 	err := config.WriteFile("/tmp/api_config.yaml")
 	if err != nil {
 		t.Fatal(err)
