@@ -102,14 +102,9 @@ func (this *ValidateApiAction) RunPost(params struct {
 		Field("oldNodeSecret", params.OldNodeSecret).
 		Require("请输入节点secret")
 	client, err := rpc.NewRPCClient(&configs.APIConfig{
-		RPC: struct {
-			Endpoints     []string `yaml:"endpoints"`
-			DisableUpdate bool     `yaml:"disableUpdate"`
-		}{
-			Endpoints: []string{params.OldProtocol + "://" + configutils.QuoteIP(params.OldHost) + ":" + params.OldPort},
-		},
-		NodeId: params.OldNodeId,
-		Secret: params.OldNodeSecret,
+		RPCEndpoints: []string{params.OldProtocol + "://" + configutils.QuoteIP(params.OldHost) + ":" + params.OldPort},
+		NodeId:       params.OldNodeId,
+		Secret:       params.OldNodeSecret,
 	}, false)
 	if err != nil {
 		this.FailField("oldHost", "测试API节点时出错，请检查配置，错误信息："+err.Error())

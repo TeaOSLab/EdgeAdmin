@@ -101,14 +101,9 @@ func SendMessageToCluster(ctx context.Context, clusterId int64, code string, msg
 			apiNode := apiNodeResp.ApiNode
 
 			apiRPCClient, err := rpc.NewRPCClient(&configs.APIConfig{
-				RPC: struct {
-					Endpoints     []string `yaml:"endpoints"`
-					DisableUpdate bool     `yaml:"disableUpdate"`
-				}{
-					Endpoints: apiNode.AccessAddrs,
-				},
-				NodeId: apiNode.UniqueId,
-				Secret: apiNode.Secret,
+				RPCEndpoints: apiNode.AccessAddrs,
+				NodeId:       apiNode.UniqueId,
+				Secret:       apiNode.Secret,
 			}, false)
 			if err != nil {
 				locker.Lock()
@@ -282,14 +277,9 @@ func SendMessageToNodeIds(ctx context.Context, nodeIds []int64, code string, msg
 			apiNode := apiNodeResp.ApiNode
 
 			apiRPCClient, err := rpc.NewRPCClient(&configs.APIConfig{
-				RPC: struct {
-					Endpoints     []string `yaml:"endpoints"`
-					DisableUpdate bool     `yaml:"disableUpdate"`
-				}{
-					Endpoints: apiNode.AccessAddrs,
-				},
-				NodeId: apiNode.UniqueId,
-				Secret: apiNode.Secret,
+				RPCEndpoints: apiNode.AccessAddrs,
+				NodeId:       apiNode.UniqueId,
+				Secret:       apiNode.Secret,
 			}, false)
 			if err != nil {
 				locker.Lock()

@@ -43,7 +43,7 @@ func (this *ValidateAPIAction) RunPost(params struct {
 	if err != nil {
 		this.Fail("加载当前平台的API配置失败：" + err.Error())
 	}
-	config.RPC.Endpoints = []string{params.Protocol + "://" + configutils.QuoteIP(params.Host) + ":" + params.Port}
+	config.RPCEndpoints = []string{params.Protocol + "://" + configutils.QuoteIP(params.Host) + ":" + params.Port}
 	client, err := rpc.NewRPCClient(config, false)
 	if err != nil {
 		this.Fail("检查API节点地址出错：" + err.Error())

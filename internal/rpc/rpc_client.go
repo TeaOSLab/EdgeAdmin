@@ -523,7 +523,7 @@ func (this *RPCClient) init() error {
 
 	// 重新连接
 	var conns = []*grpc.ClientConn{}
-	for _, endpoint := range this.apiConfig.RPC.Endpoints {
+	for _, endpoint := range this.apiConfig.RPCEndpoints {
 		u, err := url.Parse(endpoint)
 		if err != nil {
 			return fmt.Errorf("parse endpoint failed: %w", err)

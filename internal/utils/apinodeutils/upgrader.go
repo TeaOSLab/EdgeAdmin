@@ -57,7 +57,7 @@ func (this *Upgrader) Upgrade() error {
 		return err
 	}
 	var newAPIConfig = apiConfig.Clone()
-	newAPIConfig.RPC.Endpoints = apiNode.AccessAddrs
+	newAPIConfig.RPCEndpoints = apiNode.AccessAddrs
 
 	rpcClient, err := rpc.NewRPCClient(newAPIConfig, false)
 	if err != nil {

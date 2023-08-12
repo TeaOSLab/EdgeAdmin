@@ -1,6 +1,7 @@
 package configs
 
 import (
+	"errors"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/iwind/TeaGo/Tea"
 	"gopkg.in/yaml.v3"
@@ -8,12 +9,19 @@ import (
 	"path/filepath"
 )
 
+const ConfigFileName = "api_admin.yaml"
+const oldConfigFileName = "api.yaml"
+
 // APIConfig API配置
 type APIConfig struct {
-	RPC struct {
+	OldRPC struct {
 		Endpoints     []string `yaml:"endpoints"`
 		DisableUpdate bool     `yaml:"disableUpdate"`
 	} `yaml:"rpc"`
+
+	RPCEndpoints     []string `yaml:"rpc.endpoints" json:"rpc.endpoints"`
+	RPCDisableUpdate bool     `yaml:"rpc.disableUpdate" json:"rpc.disableUpdate"`
+
 	NodeId string `yaml:"nodeId"`
 	Secret string `yaml:"secret"`
 }
@@ -21,21 +29,22 @@ type APIConfig struct {
 // LoadAPIConfig 加载API配置
 func LoadAPIConfig() (*APIConfig, error) {
 	// 候选文件
-	var localFile = Tea.ConfigFile("api.yaml")
+	var realFile = Tea.ConfigFile(ConfigFileName)
+	var oldRealFile = Tea.ConfigFile(oldConfigFileName)
 	var isFromLocal = false
-	var paths = []string{localFile}
+	var paths = []string{realFile, oldRealFile}
 	homeDir, homeErr := os.UserHomeDir()
 	if homeErr == nil {
-		paths = append(paths, homeDir+"/."+teaconst.ProcessName+"/api.yaml")
+		paths = append(paths, homeDir+"/."+teaconst.ProcessName+"/"+ConfigFileName)
 	}
-	paths = append(paths, "/etc/"+teaconst.ProcessName+"/api.yaml")
+	paths = append(paths, "/etc/"+teaconst.ProcessName+"/"+ConfigFileName)
 
 	var data []byte
 	var err error
 	for _, path := range paths {
 		data, err = os.ReadFile(path)
 		if err == nil {
-			if path == localFile {
+			if path == realFile || path == oldRealFile {
 				isFromLocal = true
 			}
 			break
@@ -51,9 +60,14 @@ func LoadAPIConfig() (*APIConfig, error) {
 		return nil, err
 	}
 
+	err = config.Init()
+	if err != nil {
+		return nil, errors.New("init error: " + err.Error())
+	}
+
 	if !isFromLocal {
 		// 恢复文件
-		_ = os.WriteFile(localFile, data, 0666)
+		_ = os.WriteFile(realFile, data, 0666)
 	}
 
 	return config, nil
@@ -61,9 +75,9 @@ func LoadAPIConfig() (*APIConfig, error) {
 
 // ResetAPIConfig 重置配置
 func ResetAPIConfig() error {
-	var filename = "api.yaml"
+	var filename = ConfigFileName
 
-	// 重置 configs/api.yaml
+	// 重置 configs/api_admin.yaml
 	{
 		var configFile = Tea.ConfigFile(filename)
 		stat, err := os.Stat(configFile)
@@ -75,7 +89,7 @@ func ResetAPIConfig() error {
 		}
 	}
 
-	// 重置 ~/.edge-admin/api.yaml
+	// 重置 ~/.edge-admin/api_admin.yaml
 	homeDir, homeErr := os.UserHomeDir()
 	if homeErr == nil {
 		var configFile = homeDir + "/." + teaconst.ProcessName + "/" + filename
@@ -88,7 +102,7 @@ func ResetAPIConfig() error {
 		}
 	}
 
-	// 重置 /etc/edge-admin/api.yaml
+	// 重置 /etc/edge-admin/api_admin.yaml
 	{
 		var configFile = "/etc/" + teaconst.ProcessName + "/" + filename
 		stat, err := os.Stat(configFile)
@@ -101,6 +115,22 @@ func ResetAPIConfig() error {
 	}
 
 	return nil
+}
+
+func IsNewInstalled() bool {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return false
+	}
+
+	for _, filename := range []string{ConfigFileName, oldConfigFileName} {
+		_, err = os.Stat(homeDir + "/." + teaconst.ProcessName + "/" + filename)
+		if err == nil {
+			return false
+		}
+	}
+
+	return true
 }
 
 // WriteFile 写入API配置
@@ -159,11 +189,27 @@ func (this *APIConfig) WriteFile(path string) error {
 // Clone 克隆当前配置
 func (this *APIConfig) Clone() *APIConfig {
 	return &APIConfig{
-		RPC: struct {
-			Endpoints     []string `yaml:"endpoints"`
-			DisableUpdate bool     `yaml:"disableUpdate"`
-		}{},
 		NodeId: this.NodeId,
 		Secret: this.Secret,
 	}
+}
+
+func (this *APIConfig) Init() error {
+	// compatible with old
+	if len(this.RPCEndpoints) == 0 && len(this.OldRPC.Endpoints) > 0 {
+		this.RPCEndpoints = this.OldRPC.Endpoints
+		this.RPCDisableUpdate = this.OldRPC.DisableUpdate
+	}
+
+	if len(this.RPCEndpoints) == 0 {
+		return errors.New("no valid 'rpc.endpoints'")
+	}
+
+	if len(this.NodeId) == 0 {
+		return errors.New("'nodeId' required")
+	}
+	if len(this.Secret) == 0 {
+		return errors.New("'secret' required")
+	}
+	return nil
 }

@@ -155,11 +155,11 @@ func parseAPIErr(action actions.ActionWrapper, err error) (apiNodeIsStarting boo
 	var apiEndpoints = []string{}
 	apiConfig, apiConfigErr := configs.LoadAPIConfig()
 	if apiConfigErr == nil && apiConfig != nil {
-		apiEndpoints = append(apiEndpoints, apiConfig.RPC.Endpoints...)
+		apiEndpoints = append(apiEndpoints, apiConfig.RPCEndpoints...)
 	}
 
 	var isRPCConnError bool
-	_, isRPCConnError = rpcerrors.HumanError(err, apiEndpoints, Tea.ConfigFile("api.yaml"))
+	_, isRPCConnError = rpcerrors.HumanError(err, apiEndpoints, Tea.ConfigFile(configs.ConfigFileName))
 	if isRPCConnError {
 		// API节点是否正在启动
 		var sock = gosock.NewTmpSock("edge-api")

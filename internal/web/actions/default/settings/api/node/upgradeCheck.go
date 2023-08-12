@@ -43,7 +43,7 @@ func (this *UpgradeCheckAction) RunPost(params struct {
 	}
 
 	var newAPIConfig = apiConfig.Clone()
-	newAPIConfig.RPC.Endpoints = node.AccessAddrs
+	newAPIConfig.RPCEndpoints = node.AccessAddrs
 	rpcClient, err := rpc.NewRPCClient(newAPIConfig, false)
 	if err != nil {
 		this.Success()

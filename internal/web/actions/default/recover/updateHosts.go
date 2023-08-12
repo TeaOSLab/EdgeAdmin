@@ -35,14 +35,9 @@ func (this *UpdateHostsAction) RunPost(params struct {
 	}
 
 	client, err := rpc.NewRPCClient(&configs.APIConfig{
-		RPC: struct {
-			Endpoints     []string `yaml:"endpoints"`
-			DisableUpdate bool     `yaml:"disableUpdate"`
-		}{
-			Endpoints: []string{params.Protocol + "://" + configutils.QuoteIP(params.Host) + ":" + params.Port},
-		},
-		NodeId: params.NodeId,
-		Secret: params.NodeSecret,
+		RPCEndpoints: []string{params.Protocol + "://" + configutils.QuoteIP(params.Host) + ":" + params.Port},
+		NodeId:       params.NodeId,
+		Secret:       params.NodeSecret,
 	}, false)
 	if err != nil {
 		this.FailField("host", "测试API节点时出错，请检查配置，错误信息："+err.Error())
@@ -165,23 +160,18 @@ func (this *UpdateHostsAction) RunPost(params struct {
 		}
 	}
 
-	// 修改api.yaml
+	// 修改api_admin.yaml
 	var apiConfig = &configs.APIConfig{
-		RPC: struct {
-			Endpoints     []string `yaml:"endpoints"`
-			DisableUpdate bool     `yaml:"disableUpdate"`
-		}{
-			Endpoints: endpoints,
-		},
-		NodeId: adminAPIToken.NodeId,
-		Secret: adminAPIToken.Secret,
+		RPCEndpoints: endpoints,
+		NodeId:       adminAPIToken.NodeId,
+		Secret:       adminAPIToken.Secret,
 	}
-	err = apiConfig.WriteFile(Tea.Root + "/configs/api.yaml")
+	err = apiConfig.WriteFile(Tea.Root + "/configs/" + configs.ConfigFileName)
 	if err != nil {
-		this.Fail("保存configs/api.yaml失败：" + err.Error())
+		this.Fail("保存configs/" + configs.ConfigFileName + "失败：" + err.Error())
 	}
 
-	// 加载api.yaml
+	// 加载api_admin.yaml
 	rpcClient, err := rpc.SharedRPC()
 	if err != nil {
 		this.Fail("初始化RPC失败：" + err.Error())
