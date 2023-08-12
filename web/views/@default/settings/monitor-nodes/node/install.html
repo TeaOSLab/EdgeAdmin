@@ -13,8 +13,14 @@
 <div class="ui divider"></div>
 <h3>配置信息</h3>
 <table class="ui table definition selectable">
+    <tr>
+        <td class="title">配置文件</td>
+        <td>
+            configs/api.yaml &nbsp; <download-link :v-element="'api-code'" :v-file="'api.yaml'">[下载]</download-link>
+        </td>
+    </tr>
 	<tr>
-		<td class="title">configs/api.yaml<em><br/><download-link :v-element="'api-code'" :v-file="'api.yaml'">[下载]</download-link></em></td>
+		<td class="title">配置内容</td>
 		<td>
 			<source-code-box id="api-code" type="text/yaml">rpc:
     endpoints: [ {{apiEndpoints}} ]

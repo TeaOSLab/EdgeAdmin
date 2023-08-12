@@ -68,8 +68,14 @@
         <td>{{reporter.secret}}</td>
     </tr>
     <tr>
-        <td>配置文件<em>（configs/api.yaml）</em><br/>
-            <em><download-link :v-element="'rpc-code'" :v-file="'api.yaml'">[下载]</download-link ></em></td>
+        <td>配置文件</td>
+        <td>
+            configs/api.yaml&nbsp;
+            <download-link :v-element="'rpc-code'" :v-file="'api.yaml'">[下载]</download-link >
+        </td>
+    </tr>
+    <tr>
+        <td>配置内容</td>
         <td>
             <source-code-box id="rpc-code" type="text/yaml">rpc:
   endpoints: [ {{apiEndpoints}} ]
