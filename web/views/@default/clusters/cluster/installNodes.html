@@ -4,15 +4,18 @@
 {$template "/code_editor"}
 
 <div class="right-box">
-	<p>在官网下载节点安装包，然后通过修改节点安装包中的<code-label>configs/cluster.yaml</code-label>（如果此配置文件尚未创建，你需要先创建）为以下内容，启动后会自动注册节点。</p>
+	<p>在官网下载节点安装包，然后通过修改节点安装包中的<code-label>configs/api_cluster.yaml</code-label>（如果此配置文件尚未创建，你需要先创建）为以下内容，启动后会自动注册节点。</p>
 	<table class="ui table definition selectable">
+        <tr>
+            <td class="title">配置文件</td>
+            <td>
+                api_cluster.yaml &nbsp; <download-link :v-element="'cluster-config-box'" :v-file="'api_cluster.yaml'">[下载]</download-link>
+            </td>
+        </tr>
 		<tr>
-			<td class="title">cluster.yaml<br/>
-				<em><download-link :v-element="'cluster-config-box'" :v-file="'cluster.yaml'">[下载]</download-link></em>
-			</td>
+			<td class="title">配置内容</td>
 			<td>
-				<source-code-box id="cluster-config-box" type="text/yaml">rpc:
-    endpoints: [ {{cluster.endpoints}} ]
+				<source-code-box id="cluster-config-box" type="text/yaml">rpc.endpoints: [ {{cluster.endpoints}} ]
 clusterId: "{{cluster.uniqueId}}"
 secret: "{{cluster.secret}}"</source-code-box>
 			</td>
