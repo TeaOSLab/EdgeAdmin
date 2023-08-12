@@ -353,7 +353,7 @@
 
 			<div class="button-group">
 				<div class="ui divider"></div>
-                <div class="status-box"><span class="blue">{{statusText}}</span></div>
+                <div class="status-box" v-show="statusText != null && statusText.length > 0"><span class="blue">{{statusText}}</span></div>
 
 				<button class="ui button" type="button" @click.prevent="goBackAdmin"><i class="icon long arrow left"></i>上一步</button>
 				<button class="ui button primary" type="submit" v-if="!isInstalling">确认并开始安装</button>
