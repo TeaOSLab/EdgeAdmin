@@ -17,9 +17,9 @@ type APIConfig struct {
 	OldRPC struct {
 		Endpoints     []string `yaml:"endpoints"`
 		DisableUpdate bool     `yaml:"disableUpdate"`
-	} `yaml:"rpc"`
+	} `yaml:"rpc,omitempty"`
 
-	RPCEndpoints     []string `yaml:"rpc.endpoints" json:"rpc.endpoints"`
+	RPCEndpoints     []string `yaml:"rpc.endpoints,flow" json:"rpc.endpoints"`
 	RPCDisableUpdate bool     `yaml:"rpc.disableUpdate" json:"rpc.disableUpdate"`
 
 	NodeId string `yaml:"nodeId"`
