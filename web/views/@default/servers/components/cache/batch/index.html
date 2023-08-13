@@ -23,7 +23,7 @@
             <td>
                 <textarea name="keys" rows="20" ref="keysBox"></textarea>
                 <p class="comment" v-if="keyType == 'key'">每行一个URL，比如<code-label>https://example.com/hello/world.html</code-label>。</p>
-                <p class="comment" v-if="keyType == 'prefix'">每行一个URL目录，比如<code-label>https://example.com/hello/</code-label>。</p>
+                <p class="comment" v-if="keyType == 'prefix'">每行一个URL目录，比如<code-label>https://example.com/hello/</code-label>；如果只填写域名部分，表示清理全站，比如<code-label>https://example.com/</code-label>。</p>
             </td>
         </tr>
         <tr>
