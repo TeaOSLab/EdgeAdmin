@@ -1,31 +1,74 @@
 {$layout}
 
-	{$template "policy_menu"}
+{$template "policy_menu"}
 
-	<h3>选择集群</h3>
-	<select class="ui dropdown auto-width" v-model="clusterId">
-		<option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
-	</select>
-	<div class="ui divider"></div>
+<h3>选择集群</h3>
+<select class="ui dropdown auto-width" v-model="clusterId">
+    <option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
+</select>
+<div class="ui divider"></div>
 
 
-	<h3>清理</h3>
-	<p class=""><span class="red">严重注意：该操作将清理集群所有节点上的所有对应缓存。</span></p>
-	<form method="post" data-tea-action="$" data-tea-before="before" data-tea-success="success" data-tea-fail="fail" data-tea-done="done" data-tea-timeout="300">
-		<input type="hidden" name="cachePolicyId" :value="cachePolicyId"/>
-		<input type="hidden" name="clusterId" :value="clusterId"/>
-		<table class="ui table definition selectable">
-			<tr>
-				<td class="title">操作结果</td>
-				<td>
-					<div v-if="isRequesting">数据发送中...</div>
-					<span class="red" v-if="!isRequesting && !isOk && message.length > 0">失败：{{message}}</span>
-					<div v-if="!isRequesting && isOk">
-						<span v-if="results.length == 0" class="red">此集群下没有任何可用的节点。</span>
-						<div class="ui label tiny" v-for="one in results" :class="{green:one.isOk, red:!one.isOk}" style="margin-bottom: 0.5em">{{one.nodeName}}：{{one.message}}</div>
-					</div>
-				</td>
-			</tr>
-		</table>
-		<submit-btn v-if="!isRequesting">提交</submit-btn>
-	</form>
+<h3>清理</h3>
+<p class=""><span class="red">严重警告：该操作将清理集群所有节点上的所有当前策略产生的缓存；如果只是想清理单个缓存，请使用“刷新预热”功能。</span></p>
+<form method="post" data-tea-action="$" data-tea-before="before" data-tea-success="success" data-tea-fail="fail" data-tea-done="done" data-tea-timeout="300">
+    <input type="hidden" name="cachePolicyId" :value="cachePolicyId"/>
+    <input type="hidden" name="clusterId" :value="clusterId"/>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">操作原因 *</td>
+            <td>
+                <p class="comment">为了防止新手滥用此功能、导致节点崩溃，你需要选择操作原因，才能继续操作：</p>
+                <div>
+                    <radio v-model="reason" :v-value="REASON_NEW_PIE">我是一名新手，我不知道怎么清除缓存</radio>
+                </div>
+                <div style="margin-top: 0.6em">
+                    <radio v-model="reason" :v-value="REASON_BATCH_DELETE">要清理的域名太多，我比较懒，我不想用“刷新预热”功能</radio>
+                </div>
+                <div style="margin-top: 0.6em">
+                    <radio v-model="reason" :v-value="REASON_MAINTAINS">因节点磁盘空间不足或以往缓存设置错误或其他原因，想清除所有缓存，重新开始</radio>
+                </div>
+                <div style="margin-top: 0.6em">
+                    <radio v-model="reason" :v-value="REASON_ISSUE_REPORT">我怀疑“刷新预热”功能不起作用</radio>
+                </div>
+            </td>
+        </tr>
+        <tr v-show="!isReasonable()">
+            <td>新手操作建议</td>
+            <td>
+                请使用左侧主菜单中的 <a href="/servers/components/cache/batch?keyType=prefix" target="_blank">[刷新预热]</a> 功能来清理你的缓存。
+            </td>
+        </tr>
+        <tr v-show="reason == REASON_ISSUE_REPORT">
+            <td>操作建议</td>
+            <td>
+                本产品提供的 <a href="/servers/components/cache/batch?keyType=prefix" target="_blank">[刷新预热]</a> 功能运行非常可靠，如果你确认发现功能异常，且能100%几率重现问题，请及时报告给软件开发者。
+            </td>
+        </tr>
+        <tr v-show="reason == REASON_BATCH_DELETE">
+            <td>操作建议</td>
+            <td>
+                请尽可能使用 <a href="/servers/components/cache/batch?keyType=prefix" target="_blank">[刷新预热]</a> 功能，避免影响当前系统上的别的网站。
+            </td>
+        </tr>
+        <tr v-show="reason == REASON_MAINTAINS">
+            <td>操作建议</td>
+            <td>
+                缓存文件较多时，系统需要消耗更多系统资源和更多时间删除缓存文件，磁盘使用空间会逐渐恢复，操作后，请耐心等待。
+            </td>
+        </tr>
+        <tr v-show="isReasonable()">
+            <td class="title">操作结果</td>
+            <td>
+                <div v-if="isRequesting">数据发送中...</div>
+                <span class="red" v-if="!isRequesting && !isOk && message.length > 0">失败：{{message}}</span>
+                <div v-if="!isRequesting && isOk">
+                    <span v-if="results.length == 0" class="red">此集群下没有任何可用的节点。</span>
+                    <div class="ui label tiny" v-for="one in results" :class="{green:one.isOk, red:!one.isOk}" style="margin-bottom: 0.5em">{{one.nodeName}}：{{one.message}}</div>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <submit-btn v-if="!isRequesting && isReasonable()">提交</submit-btn>
+    <button class="ui button disabled" type="button" v-if="!isReasonable()">提交</button>
+</form>
