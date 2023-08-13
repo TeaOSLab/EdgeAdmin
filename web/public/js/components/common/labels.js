@@ -11,7 +11,7 @@ Vue.component("code-label", {
 			this.$emit("click", args)
 		}
 	},
-	template: `<span class="ui label basic tiny" style="padding: 3px;margin-left:2px;margin-right:2px" @click.prevent="click"><slot></slot></span>`
+	template: `<span class="ui label basic small" style="padding: 3px;margin-left:2px;margin-right:2px" @click.prevent="click"><slot></slot></span>`
 })
 
 Vue.component("code-label-plain", {

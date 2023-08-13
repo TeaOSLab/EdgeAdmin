@@ -4,216 +4,230 @@
 <h3 v-if="isUpdating">修改规则</h3>
 
 <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
-	<input type="hidden" name="ruleId" :value="rule.id"/>
-	<input type="hidden" name="optionsJSON" v-if="checkpoint != null && checkpoint.options != null" :value="JSON.stringify(checkpoint.options)"/>
-	<table class="ui table definition selectable">
-		<tr>
-			<td class="title">参数 *</td>
-			<td>
-				<select name="prefix" class="ui dropdown auto-width" @change="changeCheckpoint()" v-model="rule.checkpointPrefix">
-					<option value="">[选择参数]</option>
-					<optgroup label="特殊参数"></optgroup>
-					<option v-for="cp in checkpoints" v-if="cp.isComposed" :value="cp.prefix">{{cp.name}} - [{{cp.prefix}}]</option>
-					<optgroup label="通用参数"></optgroup>
-					<option v-for="cp in checkpoints" v-if="!cp.isComposed" :value="cp.prefix">{{cp.name}} - [{{cp.prefix}}]</option>
-				</select>
-				<p class="comment" v-if="checkpoint != null"><span class="ui label tiny basic">${<em style="font-style: normal;">{{checkpoint.prefix}}</em>}</span>{{checkpoint.description}}</p>
-			</td>
-		</tr>
+    <input type="hidden" name="ruleId" :value="rule.id"/>
+    <input type="hidden" name="optionsJSON" v-if="checkpoint != null && checkpoint.options != null" :value="JSON.stringify(checkpoint.options)"/>
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">参数 *</td>
+            <td>
+                <select name="prefix" class="ui dropdown auto-width" @change="changeCheckpoint()" v-model="rule.checkpointPrefix">
+                    <option value="">[选择参数]</option>
+                    <optgroup label="特殊参数"></optgroup>
+                    <option v-for="cp in checkpoints" v-if="cp.isComposed" :value="cp.prefix">{{cp.name}} - [{{cp.prefix}}]</option>
+                    <optgroup label="通用参数"></optgroup>
+                    <option v-for="cp in checkpoints" v-if="!cp.isComposed" :value="cp.prefix">{{cp.name}} - [{{cp.prefix}}]</option>
+                </select>
+                <p class="comment" v-if="checkpoint != null"><span class="ui label tiny basic">${<em style="font-style: normal;">{{checkpoint.prefix}}</em>}</span>{{checkpoint.description}}</p>
+            </td>
+        </tr>
 
-		<!-- 参数名 -->
-		<tr v-if="checkpoint != null && checkpoint.hasParams">
-			<td>参数名</td>
-			<td>
-				<select name="param" v-model="rule.checkpointParam" class="ui dropdown auto-width" v-if="checkpoint.params != null">
-					<option v-for="o in checkpoint.params" :value="o.value">{{o.name}}</option>
-				</select>
-				<input type="text" name="param" maxlength="100" v-model="rule.checkpointParam" v-if="checkpoint.params == null"/>
-			</td>
-		</tr>
+        <!-- 参数名 -->
+        <tr v-if="checkpoint != null && checkpoint.hasParams">
+            <td>参数名</td>
+            <td>
+                <select name="param" v-model="rule.checkpointParam" class="ui dropdown auto-width" v-if="checkpoint.params != null">
+                    <option v-for="o in checkpoint.params" :value="o.value">{{o.name}}</option>
+                </select>
+                <input type="text" name="param" maxlength="100" v-model="rule.checkpointParam" v-if="checkpoint.params == null"/>
+            </td>
+        </tr>
 
-		<!-- 组合规则的选项 -->
-		<tbody v-if="checkpoint != null && checkpoint.isComposed">
-            <tr>
-                <td colspan="2">配置选项</td>
-            </tr>
-			<tr>
-				<td colspan="2">
-                    <!-- 通用header -->
-					<http-cond-general-header-length v-if="checkpoint.prefix == 'requestGeneralHeaderLength' || checkpoint.prefix == 'responseGeneralHeaderLength'" :v-checkpoint="checkpoint"></http-cond-general-header-length>
+        <!-- 组合规则的选项 -->
+        <tbody v-if="checkpoint != null && checkpoint.isComposed">
+        <tr>
+            <td colspan="2">配置选项</td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <!-- 通用header -->
+                <http-cond-general-header-length v-if="checkpoint.prefix == 'requestGeneralHeaderLength' || checkpoint.prefix == 'responseGeneralHeaderLength'" :v-checkpoint="checkpoint"></http-cond-general-header-length>
 
-                    <!-- 防盗链 -->
-                    <http-firewall-checkpoint-referer-block v-if="checkpoint.prefix == 'refererBlock'" :v-checkpoint="checkpoint"></http-firewall-checkpoint-referer-block>
+                <!-- 防盗链 -->
+                <http-firewall-checkpoint-referer-block v-if="checkpoint.prefix == 'refererBlock'" :v-checkpoint="checkpoint"></http-firewall-checkpoint-referer-block>
 
-                    <!-- CC -->
-                    <http-firewall-checkpoint-cc v-if="checkpoint.prefix == 'cc2'" :v-checkpoint="checkpoint"></http-firewall-checkpoint-cc>
-				</td>
-			</tr>
-		</tbody>
+                <!-- CC -->
+                <http-firewall-checkpoint-cc v-if="checkpoint.prefix == 'cc2'" :v-checkpoint="checkpoint"></http-firewall-checkpoint-cc>
+            </td>
+        </tr>
+        </tbody>
 
-		<!-- 选项 -->
-		<tbody v-if="checkpoint != null && !checkpoint.isComposed && checkpoint.options != null && checkpoint.options.length > 0">
-			<tr v-for="option in checkpoint.options">
-				<td>{{option.name}}</td>
-				<td>
-					<div class="ui fields inline" v-if="option.type == 'field'">
-						<div class="ui field">
-							<input type="text" name="" :placeholder="option.placeholder" :maxlength="(option.maxLength > 0)?option.maxLength:1024" :size="option.size" v-model="option.value"/>
-						</div>
-						<div class="ui field">
-							{{option.rightLabel}}
-						</div>
-					</div>
-					<div class="ui fields inline" v-if="option.type == 'options'">
-						<div class="ui field">
-							<select class="ui dropdown" :style="'width:' + option.size + 'em'" name="" v-model="option.value">
-								<option v-for="opt in option.options" :value="opt.value">{{opt.name}}</option>
-							</select>
-						</div>
-						<div class="ui field">
-							{{option.rightLabel}}
-						</div>
-					</div>
-					<p class="comment" v-if="option.comment != null && option.comment.length > 0">{{option.comment}}</p>
-				</td>
-			</tr>
-		</tbody>
-
-		<tbody v-show="checkpoint != null && !checkpoint.isComposed">
-			<tr>
-				<td>操作符 *</td>
-				<td>
-					<select class="ui dropdown" name="operator" style="width:10em" v-model="rule.operator" @change="changeOperator()">
-						<option v-for="op in operators" :value="op.code">{{op.name}}</option>
-					</select>
-					<p class="comment" v-if="operator != null" v-html="operator.description"></p>
-				</td>
-			</tr>
-			<tr>
-				<td>
-                    <span v-if="operator != null && operator.dataType == 'regexp'">正则表达式</span>
-                    <span v-else-if="operator != null && operator.dataType == 'number'">对比数字</span>
-                    <span v-else-if="operator != null && operator.dataType == 'string'">对比字符串</span>
-                    <span v-else-if="operator != null && operator.dataType == 'strings'">一组对比字符串</span>
-                    <span v-else-if="operator != null && operator.dataType == 'string|number'">字符串或数字</span>
-                    <span v-else-if="operator != null && operator.dataType == 'version'">对比版本号</span>
-                    <span v-else-if="operator != null && operator.dataType == 'ip'">对比IP</span>
-                    <span v-else-if="operator != null && operator.dataType == 'ips'">一组对比IP</span>
-                    <span v-else>对比值</span>
-                </td>
-				<td>
-					<!-- 二进制数据 -->
-					<div v-if="rule.operator == 'contains binary'">
-						<textarea rows="3" maxlength="4096" name="value" v-model="rule.value"></textarea>
-						<p class="comment">将二进制进行Base64Encode后放在这里，比如<code-label>Hello</code-label>对应<code-label>SGVsbG8=</code-label>。</p>
-					</div>
-					<div v-else-if="rule.operator == 'not contains binary'">
-						<textarea rows="3" maxlength="4096" name="value" v-model="rule.value"></textarea>
-						<p class="comment">将二进制进行Base64Encode后放在这里，比如<code-label>Hello</code-label>对应<code-label>SGVsbG8=</code-label>。</p>
-					</div>
-
-                    <!-- bool数据 -->
-                    <div v-else-if="checkpoint != null && checkpoint.dataType == 'bool'">
-                        <select name="value" class="ui selectable auto-width" v-model="rule.value" @change="changeRuleValue">
-                            <option value="">[请选择]</option>
-                            <option value="1">是(1)</option>
-                            <option value="0">否(0)</option>
+        <!-- 选项 -->
+        <tbody v-if="checkpoint != null && !checkpoint.isComposed && checkpoint.options != null && checkpoint.options.length > 0">
+        <tr v-for="option in checkpoint.options">
+            <td>{{option.name}}</td>
+            <td>
+                <div class="ui fields inline" v-if="option.type == 'field'">
+                    <div class="ui field">
+                        <input type="text" name="" :placeholder="option.placeholder" :maxlength="(option.maxLength > 0)?option.maxLength:1024" :size="option.size" v-model="option.value"/>
+                    </div>
+                    <div class="ui field">
+                        {{option.rightLabel}}
+                    </div>
+                </div>
+                <div class="ui fields inline" v-if="option.type == 'options'">
+                    <div class="ui field">
+                        <select class="ui dropdown" :style="'width:' + option.size + 'em'" name="" v-model="option.value">
+                            <option v-for="opt in option.options" :value="opt.value">{{opt.name}}</option>
                         </select>
                     </div>
+                    <div class="ui field">
+                        {{option.rightLabel}}
+                    </div>
+                </div>
+                <p class="comment" v-if="option.comment != null && option.comment.length > 0">{{option.comment}}</p>
+            </td>
+        </tr>
+        </tbody>
 
-                    <!-- number -->
-                    <div v-else-if="operator != null && operator.dataType == 'number'">
-                        <input type="number" name="value" v-model="rule.value" @input="changeRuleValue" style="width: 16em" maxlength="30" placeholder="对比数字" step="any"/>
-                        <p class="comment">输入和参数对比的数字，比如<code-label>123</code-label>、<code-label>123.456</code-label>。</p>
+        <tbody v-show="checkpoint != null && !checkpoint.isComposed">
+        <tr>
+            <td>操作符 *</td>
+            <td>
+                <select class="ui dropdown" name="operator" style="width:10em" v-model="rule.operator" @change="changeOperator()">
+                    <option v-for="op in operators" :value="op.code">{{op.name}}</option>
+                </select>
+                <p class="comment" v-if="operator != null" v-html="operator.description"></p>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span v-if="operator != null && operator.dataType == 'regexp'">匹配正则表达式</span>
+                <span v-else-if="operator != null && operator.dataType == 'wildcard'">匹配单个通配符</span>
+                <span v-else-if="operator != null && operator.dataType == 'number'">对比数字</span>
+                <span v-else-if="operator != null && operator.dataType == 'string'">对比单个字符串</span>
+                <span v-else-if="operator != null && operator.dataType == 'strings'">对比一组字符串</span>
+                <span v-else-if="operator != null && operator.dataType == 'string|number'">对比单个字符串或数字</span>
+                <span v-else-if="operator != null && operator.dataType == 'version'">对比单个版本号</span>
+                <span v-else-if="operator != null && operator.dataType == 'versionRange'">对比版本号范围</span>
+                <span v-else-if="operator != null && operator.dataType == 'ip'">对比单个IP</span>
+                <span v-else-if="operator != null && operator.dataType == 'ips'">一组对比IP</span>
+                <span v-else>对比值</span>
+            </td>
+            <td>
+                <!-- 二进制数据 -->
+                <div v-if="rule.operator == 'contains binary'">
+                    <textarea rows="3" maxlength="4096" name="value" v-model="rule.value"></textarea>
+                    <p class="comment">将二进制进行Base64Encode后放在这里，比如<code-label>Hello</code-label>对应<code-label>SGVsbG8=</code-label>。</p>
+                </div>
+                <div v-else-if="rule.operator == 'not contains binary'">
+                    <textarea rows="3" maxlength="4096" name="value" v-model="rule.value"></textarea>
+                    <p class="comment">将二进制进行Base64Encode后放在这里，比如<code-label>Hello</code-label>对应<code-label>SGVsbG8=</code-label>。</p>
+                </div>
+
+                <!-- bool数据 -->
+                <div v-else-if="checkpoint != null && checkpoint.dataType == 'bool'">
+                    <select name="value" class="ui selectable auto-width" v-model="rule.value" @change="changeRuleValue">
+                        <option value="">[请选择]</option>
+                        <option value="1">是(1)</option>
+                        <option value="0">否(0)</option>
+                    </select>
+                </div>
+
+                <!-- wildcard -->
+                <div v-else-if="operator != null && operator.dataType == 'wildcard'">
+                    <textarea rows="3" maxlength="4096" name="value" v-model="rule.value" @input="changeRuleValue"></textarea>
+                    <p class="comment">输入包含通配符的字符串，比如<code-label>Chrome/*</code-label>、<code-label>192.168.*.*</code-label>。</p>
+                </div>
+
+                <!-- number -->
+                <div v-else-if="operator != null && operator.dataType == 'number'">
+                    <input type="number" name="value" v-model="rule.value" @input="changeRuleValue" style="width: 16em" maxlength="30" placeholder="对比数字" step="any"/>
+                    <p class="comment">输入和参数对比的数字，比如<code-label>123</code-label>、<code-label>123.456</code-label>。</p>
+                </div>
+
+                <!-- string|number -->
+                <div v-else-if="operator != null && operator.dataType == 'string|number'">
+                    <input type="text" name="value" v-model="rule.value" @input="changeRuleValue" style="width: 16em" maxlength="30" placeholder="对比字符串或数字"/>
+                    <p class="comment">输入和参数对比的字符串或数字，比如<code-label>123</code-label>、<code-label>abc</code-label>。</p>
+                </div>
+
+                <!-- version -->
+                <div v-else-if="operator != null && operator.dataType == 'version'">
+                    <input type="text" name="value" v-model="rule.value" @input="changeRuleValue" style="width: 10em" maxlength="100" placeholder="对比版本号"/>
+                    <p class="comment">输入和参数对比的版本号，比如<code-label>1.2.7</code-label>。</p>
+                </div>
+
+                <!-- versionRange -->
+                <div v-else-if="operator != null && operator.dataType == 'versionRange'">
+                    <input type="text" name="value" v-model="rule.value" @input="changeRuleValue" style="width: 10em" maxlength="100" placeholder="版本号范围"/>
+                    <p class="comment">输入和参数对比的版本号范围，比如<code-label>1.2.7,1.3.7</code-label>。</p>
+                </div>
+
+                <!-- IP -->
+                <div v-else-if="operator != null && operator.dataType == 'ip'">
+                    <input type="text" name="value" v-model="rule.value" @input="changeRuleValue" style="width: 16em" maxlength="100" placeholder="对比IP"/>
+                    <p class="comment">输入和参数对比的IP，比如<code-label>192.168.2.100</code-label>。</p>
+                </div>
+
+                <!-- 其余数据 -->
+                <div v-else>
+                    <textarea rows="3" maxlength="4096" name="value" v-model="rule.value" @input="changeRuleValue"></textarea>
+                    <p class="comment" v-if="operator != null && operator.dataType == 'regexp'">正则表达式中对于要匹配的内容中的特殊字符需要转义处理（即在字符前面加入反斜杠\），比如<code-label>.?*+()[]{}^$\</code-label>等符号要变成<code-label>\.\?\*\+\(\)\[\]\{\}\^\$\\</code-label>。</p>
+                </div>
+                <p class="comment" v-if="operator != null && operator.dataType == 'regexp' && rule.value.match(/\n/)"><span class="red">警告：发现你填写的正则表达式中包含了换行符，如果你的意图是每行都表示不同的选项，那么请使用竖杠（<code-label>|</code-label>）符号代替换行符，比如把<code-label>a换行b换行c换行</code-label>改成<code-label>a|b|c</code-label>，<a href="" @click.prevent="convertValueLine">[帮我转换]</a>。</span></p>
+
+                <!-- 特殊规则 -->
+                <div style="margin-top: 1em">
+                    <!-- geo country name -->
+                    <div v-if="checkpoint != null && checkpoint.prefix == 'geoCountryName'" >
+                        <combo-box title="已添加" width="14em" data-url="/ui/countryOptions" data-key="countries" placeholder="点这里选择国家/地区" @change="selectGeoCountryName" ref="countryComboBox" key="combo-box-country"></combo-box>
                     </div>
 
-                    <!-- string|number -->
-                    <div v-else-if="operator != null && operator.dataType == 'string|number'">
-                        <input type="text" name="value" v-model="rule.value" @input="changeRuleValue" style="width: 16em" maxlength="30" placeholder="对比字符串或数字" step="any"/>
-                        <p class="comment">输入和参数对比的字符串或数字，比如<code-label>123</code-label>、<code-label>abc</code-label>。</p>
+                    <!-- geo province name -->
+                    <div v-if="checkpoint != null && checkpoint.prefix == 'geoProvinceName'" >
+                        <combo-box title="已添加" data-url="/ui/provinceOptions" data-key="provinces" placeholder="点这里选择省份名称" @change="selectGeoProvinceName" ref="provinceComboBox" key="combo-box-province"></combo-box>
                     </div>
 
-                    <!-- version -->
-                    <div v-else-if="operator != null && operator.dataType == 'version'">
-                        <input type="text" name="value" v-model="rule.value" @input="changeRuleValue" style="width: 10em" maxlength="100" placeholder="对比版本号"/>
-                        <p class="comment">输入和参数对比的版本号，比如<code-label>1.2.7</code-label>。</p>
+                    <!-- geo city name -->
+                    <div v-if="checkpoint != null && checkpoint.prefix == 'geoCityName'" >
+                        <combo-box title="已添加" data-url="/ui/cityOptions" data-key="cities" placeholder="点这里选择城市名称" @change="selectGeoCityName" ref="cityComboBox" key="combo-box-city"></combo-box>
                     </div>
 
-                    <!-- IP -->
-                    <div v-else-if="operator != null && operator.dataType == 'ip'">
-                        <input type="text" name="value" v-model="rule.value" @input="changeRuleValue" style="width: 16em" maxlength="100" placeholder="对比IP"/>
-                        <p class="comment">输入和参数对比的IP，比如<code-label>192.168.2.100</code-label>。</p>
+                    <!-- ISP Name -->
+                    <div v-if="checkpoint != null && checkpoint.prefix == 'ispName'" >
+                        <combo-box title="已添加" data-url="/ui/providerOptions" data-key="providers" placeholder="点这里选择ISP名称" @change="selectISPName" ref="ispComboBox" key="combo-box-isp"></combo-box>
                     </div>
+                </div>
+            </td>
+        </tr>
+        <tr v-if="operator != null && operator.dataType == 'regexp'">
+            <td>正则表达式测试</td>
+            <td>
+                <a href="" v-if="!regexpTestIsOn" @click.prevent="changeRegexpTestIsOn">[输入测试字符串]</a>
+                <div v-if="regexpTestIsOn">
+                    <textarea placeholder="输入要测试的内容" rows="3" v-model="regexpTestBody" ref="regexpTestBody" @input="changeRegexpTestBody"></textarea>
+                    <p class="comment">
+                        <span v-if="regexpTestResult.isOk" class="green">{{regexpTestResult.message}}</span>
+                        <span v-if="!regexpTestResult.isOk" class="red">{{regexpTestResult.message}}</span>
 
-					<!-- 其余数据 -->
-                    <div v-else>
-					    <textarea rows="3" maxlength="4096" name="value" v-model="rule.value" @input="changeRuleValue"></textarea>
-                        <p class="comment" v-if="operator != null && operator.dataType == 'regexp'">正则表达式中对于要匹配的内容中的特殊字符需要转义处理（即在字符前面加入反斜杠\），比如<code-label>.?*+()[]{}^$\</code-label>等符号要变成<code-label>\.\?\*\+\(\)\[\]\{\}\^\$\\</code-label>。</p>
-                    </div>
-                    <p class="comment" v-if="operator != null && operator.dataType == 'regexp' && rule.value.match(/\n/)"><span class="red">警告：发现你填写的正则表达式中包含了换行符，如果你的意图是每行都表示不同的选项，那么请使用竖杠（<code-label>|</code-label>）符号代替换行符，比如把<code-label>a换行b换行c换行</code-label>改成<code-label>a|b|c</code-label>，<a href="" @click.prevent="convertValueLine">[帮我转换]</a>。</span></p>
+                        &nbsp; <a href="" @click.prevent="changeRegexpTestIsOn">[结束测试]</a>
+                    </p>
+                </div>
+            </td>
+        </tr>
+        <tr v-if="(checkpoint == null || checkpoint.dataType != 'bool') && operator != null && operator.case != 'none'">
+            <td>不区分大小写</td>
+            <td>
+                <div class="ui checkbox">
+                    <input name="case" type="checkbox" value="1"  v-model="rule.isCaseInsensitive" @change="changeCaseInsensitive"/>
+                    <label></label>
+                </div>
+                <p class="comment">开启后忽略英文字母大小写</p>
+            </td>
+        </tr>
+        <!-- 参数过滤器 -->
+        <tr v-if="checkpoint != null && !checkpoint.isComposed">
+            <td>编解码</td>
+            <td>
+                <http-firewall-param-filters-box :v-filters="rule.paramFilters"></http-firewall-param-filters-box>
+            </td>
+        </tr>
+        <tr>
+            <td>备注</td>
+            <td><input type="text" name="description" v-model="rule.description"/></td>
+        </tr>
+        </tbody>
+    </table>
 
-                    <!-- 特殊规则 -->
-                    <div style="margin-top: 1em">
-                        <!-- geo country name -->
-                        <div v-if="checkpoint != null && checkpoint.prefix == 'geoCountryName'" >
-                            <combo-box title="已添加" width="14em" data-url="/ui/countryOptions" data-key="countries" placeholder="点这里选择国家/地区" @change="selectGeoCountryName" ref="countryComboBox" key="combo-box-country"></combo-box>
-                        </div>
-
-                        <!-- geo province name -->
-                        <div v-if="checkpoint != null && checkpoint.prefix == 'geoProvinceName'" >
-                            <combo-box title="已添加" data-url="/ui/provinceOptions" data-key="provinces" placeholder="点这里选择省份名称" @change="selectGeoProvinceName" ref="provinceComboBox" key="combo-box-province"></combo-box>
-                        </div>
-
-                        <!-- geo city name -->
-                        <div v-if="checkpoint != null && checkpoint.prefix == 'geoCityName'" >
-                            <combo-box title="已添加" data-url="/ui/cityOptions" data-key="cities" placeholder="点这里选择城市名称" @change="selectGeoCityName" ref="cityComboBox" key="combo-box-city"></combo-box>
-                        </div>
-
-                        <!-- ISP Name -->
-                        <div v-if="checkpoint != null && checkpoint.prefix == 'ispName'" >
-                            <combo-box title="已添加" data-url="/ui/providerOptions" data-key="providers" placeholder="点这里选择ISP名称" @change="selectISPName" ref="ispComboBox" key="combo-box-isp"></combo-box>
-                        </div>
-                    </div>
-				</td>
-			</tr>
-            <tr v-if="operator != null && operator.dataType == 'regexp'">
-                <td>正则表达式测试</td>
-                <td>
-                    <a href="" v-if="!regexpTestIsOn" @click.prevent="changeRegexpTestIsOn">[输入测试字符串]</a>
-                    <div v-if="regexpTestIsOn">
-                        <textarea placeholder="输入要测试的内容" rows="3" v-model="regexpTestBody" ref="regexpTestBody" @input="changeRegexpTestBody"></textarea>
-                        <p class="comment">
-                            <span v-if="regexpTestResult.isOk" class="green">{{regexpTestResult.message}}</span>
-                            <span v-if="!regexpTestResult.isOk" class="red">{{regexpTestResult.message}}</span>
-
-                            &nbsp; <a href="" @click.prevent="changeRegexpTestIsOn">[结束测试]</a>
-                        </p>
-                    </div>
-                </td>
-            </tr>
-            <tr v-if="(checkpoint == null || checkpoint.dataType != 'bool') && operator != null && operator.case != 'none'">
-                <td>不区分大小写</td>
-                <td>
-                    <div class="ui checkbox">
-                        <input name="case" type="checkbox" value="1"  v-model="rule.isCaseInsensitive" @change="changeCaseInsensitive"/>
-                        <label></label>
-                    </div>
-                    <p class="comment">开启后忽略英文字母大小写</p>
-                </td>
-            </tr>
-            <!-- 参数过滤器 -->
-            <tr v-if="checkpoint != null && !checkpoint.isComposed">
-                <td>编解码</td>
-                <td>
-                    <http-firewall-param-filters-box :v-filters="rule.paramFilters"></http-firewall-param-filters-box>
-                </td>
-            </tr>
-            <tr>
-                <td>备注</td>
-                <td><input type="text" name="description" v-model="rule.description"/></td>
-            </tr>
-		</tbody>
-	</table>
-
-	<submit-btn></submit-btn>
+    <submit-btn></submit-btn>
 </form>
