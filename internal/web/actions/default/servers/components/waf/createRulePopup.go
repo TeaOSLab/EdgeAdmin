@@ -5,7 +5,6 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/iwind/TeaGo/actions"
-	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/maps"
 )
 
@@ -21,7 +20,7 @@ func (this *CreateRulePopupAction) RunGet(params struct {
 	Type string
 }) {
 	// check points
-	checkpointList := []maps.Map{}
+	var checkpointList = []maps.Map{}
 	for _, checkpoint := range firewallconfigs.AllCheckpoints {
 		if (params.Type == "inbound" && checkpoint.IsRequest) || params.Type == "outbound" {
 			checkpointList = append(checkpointList, maps.Map{
@@ -38,15 +37,17 @@ func (this *CreateRulePopupAction) RunGet(params struct {
 	}
 
 	// operators
-	this.Data["operators"] = lists.Map(firewallconfigs.AllRuleOperators, func(k int, v interface{}) interface{} {
-		def := v.(*firewallconfigs.RuleOperatorDefinition)
-		return maps.Map{
-			"name":        def.Name,
-			"code":        def.Code,
-			"description": def.Description,
-			"case":        def.CaseInsensitive,
-		}
-	})
+	var operatorMaps = []maps.Map{}
+	for _, operator := range firewallconfigs.AllRuleOperators {
+		operatorMaps = append(operatorMaps, maps.Map{
+			"name":        operator.Name,
+			"code":        operator.Code,
+			"description": operator.Description,
+			"case":        operator.CaseInsensitive,
+			"dataType":    operator.DataType,
+		})
+	}
+	this.Data["operators"] = operatorMaps
 
 	this.Data["checkpoints"] = checkpointList
 
