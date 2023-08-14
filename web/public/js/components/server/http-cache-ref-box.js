@@ -182,7 +182,7 @@ Vue.component("http-cache-ref-box", {
 				<option value="url-extension">文件扩展名</option>
 				<option value="url-eq-index">首页</option>
 				<option value="url-all">全站</option>
-				<option value="url-prefix">URL前缀</option>
+				<option value="url-prefix">URL目录前缀</option>
 				<option value="url-eq">URL完整路径</option>
 				<option value="url-wildcard-match">URL通配符</option>
 				<option value="url-regexp">URL正则匹配</option>
