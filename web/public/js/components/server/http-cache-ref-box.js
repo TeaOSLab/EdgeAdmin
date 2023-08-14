@@ -19,7 +19,7 @@ Vue.component("http-cache-ref-box", {
 				isOn: true,
 				cachePolicyId: 0,
 				key: "${scheme}://${host}${requestPath}${isArgs}${args}",
-				life: {count: 2, unit: "hour"},
+				life: {count: 1, unit: "day"},
 				status: [200],
 				maxSize: {count: 128, unit: "mb"},
 				minSize: {count: 0, unit: "kb"},
@@ -220,7 +220,7 @@ Vue.component("http-cache-ref-box", {
 	<tr v-show="!vIsReverse">
 		<td>缓存有效期 *</td>
 		<td>
-			<time-duration-box :v-value="ref.life" @change="changeLife"></time-duration-box>
+			<time-duration-box :v-value="ref.life" @change="changeLife" :v-min-unit="'minute'" maxlength="4"></time-duration-box>
 		</td>
 	</tr>
 	<tr v-show="!vIsReverse">
@@ -231,14 +231,14 @@ Vue.component("http-cache-ref-box", {
 		</td>
 	</tr>
 	<tr v-show="!vIsReverse">
+		<td colspan="2"><more-options-indicator @change="changeOptionsVisible"></more-options-indicator></td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
 		<td>缓存Key *</td>
 		<td>
 			<input type="text" v-model="ref.key" @input="changeKey(ref.key)"/>
 			<p class="comment">用来区分不同缓存内容的唯一Key。<request-variables-describer ref="variablesDescriber"></request-variables-describer>。</p>
 		</td>
-	</tr>
-	<tr v-show="!vIsReverse">
-		<td colspan="2"><more-options-indicator @change="changeOptionsVisible"></more-options-indicator></td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
 		<td>请求方法限制</td>
