@@ -5043,7 +5043,7 @@ Vue.component("http-cache-ref-box", {
 				isOn: true,
 				cachePolicyId: 0,
 				key: "${scheme}://${host}${requestPath}${isArgs}${args}",
-				life: {count: 2, unit: "hour"},
+				life: {count: 1, unit: "day"},
 				status: [200],
 				maxSize: {count: 128, unit: "mb"},
 				minSize: {count: 0, unit: "kb"},
@@ -5200,13 +5200,13 @@ Vue.component("http-cache-ref-box", {
 	},
 	template: `<tbody>
 	<tr v-if="condCategory == 'simple'">
-		<td class="title">条件类型 *</td>
+		<td class="title">缓存对象 *</td>
 		<td>
 			<select class="ui dropdown auto-width" name="condType" v-model="condType" @change="changeCondType(condType, false)">
 				<option value="url-extension">文件扩展名</option>
 				<option value="url-eq-index">首页</option>
 				<option value="url-all">全站</option>
-				<option value="url-prefix">URL前缀</option>
+				<option value="url-prefix">URL目录前缀</option>
 				<option value="url-eq">URL完整路径</option>
 				<option value="url-wildcard-match">URL通配符</option>
 				<option value="url-regexp">URL正则匹配</option>
@@ -5244,7 +5244,7 @@ Vue.component("http-cache-ref-box", {
 	<tr v-show="!vIsReverse">
 		<td>缓存有效期 *</td>
 		<td>
-			<time-duration-box :v-value="ref.life" @change="changeLife"></time-duration-box>
+			<time-duration-box :v-value="ref.life" @change="changeLife" :v-min-unit="'minute'" maxlength="4"></time-duration-box>
 		</td>
 	</tr>
 	<tr v-show="!vIsReverse">
@@ -5255,14 +5255,14 @@ Vue.component("http-cache-ref-box", {
 		</td>
 	</tr>
 	<tr v-show="!vIsReverse">
+		<td colspan="2"><more-options-indicator @change="changeOptionsVisible"></more-options-indicator></td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
 		<td>缓存Key *</td>
 		<td>
 			<input type="text" v-model="ref.key" @input="changeKey(ref.key)"/>
 			<p class="comment">用来区分不同缓存内容的唯一Key。<request-variables-describer ref="variablesDescriber"></request-variables-describer>。</p>
 		</td>
-	</tr>
-	<tr v-show="!vIsReverse">
-		<td colspan="2"><more-options-indicator @change="changeOptionsVisible"></more-options-indicator></td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
 		<td>请求方法限制</td>
@@ -17799,7 +17799,7 @@ Vue.component("dot", {
 })
 
 Vue.component("time-duration-box", {
-	props: ["name", "v-name", "v-value", "v-count", "v-unit"],
+	props: ["v-name", "v-value", "v-count", "v-unit", "placeholder", "v-min-unit", "maxlength"],
 	mounted: function () {
 		this.change()
 	},
@@ -17815,17 +17815,52 @@ Vue.component("time-duration-box", {
 			v["count"] = -1
 		}
 
-		let realName = ""
-		if (typeof this.name == "string" && this.name.length > 0) {
-			realName = this.name
-		} else if (typeof this.vName == "string" && this.vName.length > 0) {
-			realName = this.vName
+		let minUnit = this.vMinUnit
+		let units = [
+			{
+				code: "ms",
+				name: "毫秒"
+			},
+			{
+				code: "second",
+				name: "秒"
+			},
+			{
+				code: "minute",
+				name: "分钟"
+			},
+			{
+				code: "hour",
+				name: "小时"
+			},
+			{
+				code: "day",
+				name: "天"
+			}
+		]
+		let minUnitIndex = -1
+		if (minUnit != null && typeof minUnit == "string" && minUnit.length > 0) {
+			for (let i = 0; i < units.length; i++) {
+				if (units[i].code == minUnit) {
+					minUnitIndex = i
+					break
+				}
+			}
+		}
+		if (minUnitIndex > -1) {
+			units = units.slice(minUnitIndex)
+		}
+
+		let maxLength = parseInt(this.maxlength)
+		if (typeof maxLength != "number") {
+			maxLength = 10
 		}
 
 		return {
 			duration: v,
 			countString: (v.count >= 0) ? v.count.toString() : "",
-			realName: realName
+			units: units,
+			realMaxLength: maxLength
 		}
 	},
 	watch: {
@@ -17848,21 +17883,39 @@ Vue.component("time-duration-box", {
 		}
 	},
 	template: `<div class="ui fields inline" style="padding-bottom: 0; margin-bottom: 0">
-	<input type="hidden" :name="realName" :value="JSON.stringify(duration)"/>
+	<input type="hidden" :name="vName" :value="JSON.stringify(duration)"/>
 	<div class="ui field">
-		<input type="text" v-model="countString" maxlength="11" size="11" @keypress.enter.prevent="1"/>
+		<input type="text" v-model="countString" :maxlength="realMaxLength" :size="realMaxLength" :placeholder="placeholder" @keypress.enter.prevent="1"/>
 	</div>
 	<div class="ui field">
 		<select class="ui dropdown" v-model="duration.unit" @change="change">
-			<option value="ms">毫秒</option>
-			<option value="second">秒</option>
-			<option value="minute">分钟</option>
-			<option value="hour">小时</option>
-			<option value="day">天</option>
-			<option value="week">周</option>
+			<option v-for="unit in units" :value="unit.code">{{unit.name}}</option>
 		</select>
 	</div>
 </div>`
+})
+
+Vue.component("time-duration-text", {
+	props: ["v-value"],
+	methods: {
+		unitName: function (unit) {
+			switch (unit) {
+				case "ms":
+					return "毫秒"
+				case "second":
+					return "秒"
+				case "minute":
+					return "分钟"
+				case "hour":
+					return "小时"
+				case "day":
+					return "天"
+			}
+		}
+	},
+	template: `<span>
+	{{vValue.count}} {{unitName(vValue.unit)}}
+</span>`
 })
 
 Vue.component("not-found-box", {
@@ -20987,7 +21040,7 @@ Vue.component("grant-selector", {
 </div>`
 })
 
-window.REQUEST_COND_COMPONENTS = [{"type":"url-extension","name":"文件扩展名","description":"根据URL中的文件路径扩展名进行过滤","component":"http-cond-url-extension","paramsTitle":"扩展名列表","isRequest":true,"caseInsensitive":false},{"type":"url-eq-index","name":"首页","description":"检查URL路径是为\"/\"","component":"http-cond-url-eq-index","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":false},{"type":"url-all","name":"全站","description":"全站所有URL","component":"http-cond-url-all","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":false},{"type":"url-prefix","name":"URL前缀","description":"根据URL中的文件路径前缀进行过滤","component":"http-cond-url-prefix","paramsTitle":"URL前缀","isRequest":true,"caseInsensitive":true},{"type":"url-eq","name":"URL完整路径","description":"检查URL中的文件路径是否一致","component":"http-cond-url-eq","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":true},{"type":"url-regexp","name":"URL正则匹配","description":"使用正则表达式检查URL中的文件路径是否一致","component":"http-cond-url-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"url-wildcard-match","name":"URL通配符","description":"使用通配符检查URL中的文件路径是否一致","component":"http-cond-url-wildcard-match","paramsTitle":"通配符","isRequest":true,"caseInsensitive":true},{"type":"user-agent-regexp","name":"User-Agent正则匹配","description":"使用正则表达式检查User-Agent中是否含有某些浏览器和系统标识","component":"http-cond-user-agent-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"params","name":"参数匹配","description":"根据参数值进行匹配","component":"http-cond-params","paramsTitle":"参数配置","isRequest":true,"caseInsensitive":false},{"type":"url-not-extension","name":"排除：URL扩展名","description":"根据URL中的文件路径扩展名进行过滤","component":"http-cond-url-not-extension","paramsTitle":"扩展名列表","isRequest":true,"caseInsensitive":false},{"type":"url-not-prefix","name":"排除：URL前缀","description":"根据URL中的文件路径前缀进行过滤","component":"http-cond-url-not-prefix","paramsTitle":"URL前缀","isRequest":true,"caseInsensitive":true},{"type":"url-not-eq","name":"排除：URL完整路径","description":"检查URL中的文件路径是否一致","component":"http-cond-url-not-eq","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":true},{"type":"url-not-regexp","name":"排除：URL正则匹配","description":"使用正则表达式检查URL中的文件路径是否一致，如果一致，则不匹配","component":"http-cond-url-not-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"user-agent-not-regexp","name":"排除：User-Agent正则匹配","description":"使用正则表达式检查User-Agent中是否含有某些浏览器和系统标识，如果含有，则不匹配","component":"http-cond-user-agent-not-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"mime-type","name":"内容MimeType","description":"根据服务器返回的内容的MimeType进行过滤。注意：当用于缓存条件时，此条件需要结合别的请求条件使用。","component":"http-cond-mime-type","paramsTitle":"MimeType列表","isRequest":false,"caseInsensitive":false}]
+window.REQUEST_COND_COMPONENTS = [{"type":"url-extension","name":"文件扩展名","description":"根据URL中的文件路径扩展名进行过滤","component":"http-cond-url-extension","paramsTitle":"扩展名列表","isRequest":true,"caseInsensitive":false},{"type":"url-eq-index","name":"首页","description":"检查URL路径是为\"/\"","component":"http-cond-url-eq-index","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":false},{"type":"url-all","name":"全站","description":"全站所有URL","component":"http-cond-url-all","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":false},{"type":"url-prefix","name":"URL目录前缀","description":"根据URL中的文件路径前缀进行过滤","component":"http-cond-url-prefix","paramsTitle":"URL目录前缀","isRequest":true,"caseInsensitive":true},{"type":"url-eq","name":"URL完整路径","description":"检查URL中的文件路径是否一致","component":"http-cond-url-eq","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":true},{"type":"url-regexp","name":"URL正则匹配","description":"使用正则表达式检查URL中的文件路径是否一致","component":"http-cond-url-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"url-wildcard-match","name":"URL通配符","description":"使用通配符检查URL中的文件路径是否一致","component":"http-cond-url-wildcard-match","paramsTitle":"通配符","isRequest":true,"caseInsensitive":true},{"type":"user-agent-regexp","name":"User-Agent正则匹配","description":"使用正则表达式检查User-Agent中是否含有某些浏览器和系统标识","component":"http-cond-user-agent-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"params","name":"参数匹配","description":"根据参数值进行匹配","component":"http-cond-params","paramsTitle":"参数配置","isRequest":true,"caseInsensitive":false},{"type":"url-not-extension","name":"排除：URL扩展名","description":"根据URL中的文件路径扩展名进行过滤","component":"http-cond-url-not-extension","paramsTitle":"扩展名列表","isRequest":true,"caseInsensitive":false},{"type":"url-not-prefix","name":"排除：URL前缀","description":"根据URL中的文件路径前缀进行过滤","component":"http-cond-url-not-prefix","paramsTitle":"URL前缀","isRequest":true,"caseInsensitive":true},{"type":"url-not-eq","name":"排除：URL完整路径","description":"检查URL中的文件路径是否一致","component":"http-cond-url-not-eq","paramsTitle":"URL完整路径","isRequest":true,"caseInsensitive":true},{"type":"url-not-regexp","name":"排除：URL正则匹配","description":"使用正则表达式检查URL中的文件路径是否一致，如果一致，则不匹配","component":"http-cond-url-not-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"user-agent-not-regexp","name":"排除：User-Agent正则匹配","description":"使用正则表达式检查User-Agent中是否含有某些浏览器和系统标识，如果含有，则不匹配","component":"http-cond-user-agent-not-regexp","paramsTitle":"正则表达式","isRequest":true,"caseInsensitive":true},{"type":"mime-type","name":"内容MimeType","description":"根据服务器返回的内容的MimeType进行过滤。注意：当用于缓存条件时，此条件需要结合别的请求条件使用。","component":"http-cond-mime-type","paramsTitle":"MimeType列表","isRequest":false,"caseInsensitive":false}]
 
 window.REQUEST_COND_OPERATORS = [{"description":"判断是否正则表达式匹配","name":"正则表达式匹配","op":"regexp"},{"description":"判断是否正则表达式不匹配","name":"正则表达式不匹配","op":"not regexp"},{"description":"判断是否和指定的通配符匹配","name":"通配符匹配","op":"wildcard match"},{"description":"判断是否和指定的通配符不匹配","name":"通配符不匹配","op":"wildcard not match"},{"description":"使用字符串对比参数值是否相等于某个值","name":"字符串等于","op":"eq"},{"description":"参数值包含某个前缀","name":"字符串前缀","op":"prefix"},{"description":"参数值包含某个后缀","name":"字符串后缀","op":"suffix"},{"description":"参数值包含另外一个字符串","name":"字符串包含","op":"contains"},{"description":"参数值不包含另外一个字符串","name":"字符串不包含","op":"not contains"},{"description":"使用字符串对比参数值是否不相等于某个值","name":"字符串不等于","op":"not"},{"description":"判断参数值在某个列表中","name":"在列表中","op":"in"},{"description":"判断参数值不在某个列表中","name":"不在列表中","op":"not in"},{"description":"判断小写的扩展名（不带点）在某个列表中","name":"扩展名","op":"file ext"},{"description":"判断MimeType在某个列表中，支持类似于image/*的语法","name":"MimeType","op":"mime type"},{"description":"判断版本号在某个范围内，格式为version1,version2","name":"版本号范围","op":"version range"},{"description":"将参数转换为整数数字后进行对比","name":"整数等于","op":"eq int"},{"description":"将参数转换为可以有小数的浮点数字进行对比","name":"浮点数等于","op":"eq float"},{"description":"将参数转换为数字进行对比","name":"数字大于","op":"gt"},{"description":"将参数转换为数字进行对比","name":"数字大于等于","op":"gte"},{"description":"将参数转换为数字进行对比","name":"数字小于","op":"lt"},{"description":"将参数转换为数字进行对比","name":"数字小于等于","op":"lte"},{"description":"对整数参数值取模，除数为10，对比值为余数","name":"整数取模10","op":"mod 10"},{"description":"对整数参数值取模，除数为100，对比值为余数","name":"整数取模100","op":"mod 100"},{"description":"对整数参数值取模，对比值格式为：除数,余数，比如10,1","name":"整数取模","op":"mod"},{"description":"将参数转换为IP进行对比","name":"IP等于","op":"eq ip"},{"description":"将参数转换为IP进行对比","name":"IP大于","op":"gt ip"},{"description":"将参数转换为IP进行对比","name":"IP大于等于","op":"gte ip"},{"description":"将参数转换为IP进行对比","name":"IP小于","op":"lt ip"},{"description":"将参数转换为IP进行对比","name":"IP小于等于","op":"lte ip"},{"description":"IP在某个范围之内，范围格式可以是英文逗号分隔的\u003ccode-label\u003e开始IP,结束IP\u003c/code-label\u003e，比如\u003ccode-label\u003e192.168.1.100,192.168.2.200\u003c/code-label\u003e，或者CIDR格式的ip/bits，比如\u003ccode-label\u003e192.168.2.1/24\u003c/code-label\u003e","name":"IP范围","op":"ip range"},{"description":"对IP参数值取模，除数为10，对比值为余数","name":"IP取模10","op":"ip mod 10"},{"description":"对IP参数值取模，除数为100，对比值为余数","name":"IP取模100","op":"ip mod 100"},{"description":"对IP参数值取模，对比值格式为：除数,余数，比如10,1","name":"IP取模","op":"ip mod"}]
 
