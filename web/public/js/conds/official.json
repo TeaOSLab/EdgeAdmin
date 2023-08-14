@@ -27,10 +27,10 @@
   },
   {
     "type": "url-prefix",
-    "name": "URL前缀",
+    "name": "URL目录前缀",
     "description": "根据URL中的文件路径前缀进行过滤",
     "component": "http-cond-url-prefix",
-    "paramsTitle": "URL前缀",
+    "paramsTitle": "URL目录前缀",
     "isRequest": true,
     "caseInsensitive": true
   },
