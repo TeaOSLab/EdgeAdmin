@@ -176,7 +176,7 @@ Vue.component("http-cache-ref-box", {
 	},
 	template: `<tbody>
 	<tr v-if="condCategory == 'simple'">
-		<td class="title">条件类型 *</td>
+		<td class="title">缓存对象 *</td>
 		<td>
 			<select class="ui dropdown auto-width" name="condType" v-model="condType" @change="changeCondType(condType, false)">
 				<option value="url-extension">文件扩展名</option>
