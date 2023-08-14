@@ -41,12 +41,17 @@ func LoadAPIConfig() (*APIConfig, error) {
 
 	var data []byte
 	var err error
+	var isFromOld = false
 	for _, path := range paths {
 		data, err = os.ReadFile(path)
 		if err == nil {
 			if path == realFile || path == oldRealFile {
 				isFromLocal = true
 			}
+
+			// 自动生成新的配置文件
+			isFromOld = path == oldRealFile
+
 			break
 		}
 	}
@@ -68,6 +73,11 @@ func LoadAPIConfig() (*APIConfig, error) {
 	if !isFromLocal {
 		// 恢复文件
 		_ = os.WriteFile(realFile, data, 0666)
+	}
+
+	// 自动生成新配置文件
+	if isFromOld {
+		_ = config.WriteFile(Tea.ConfigFile(ConfigFileName))
 	}
 
 	return config, nil
