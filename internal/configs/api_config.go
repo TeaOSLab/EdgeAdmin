@@ -77,6 +77,7 @@ func LoadAPIConfig() (*APIConfig, error) {
 
 	// 自动生成新配置文件
 	if isFromOld {
+		config.OldRPC.Endpoints = nil
 		_ = config.WriteFile(Tea.ConfigFile(ConfigFileName))
 	}
 
