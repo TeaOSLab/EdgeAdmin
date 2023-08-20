@@ -41,7 +41,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	this.Data["reverseProxyRef"] = reverseProxyRef
 
-	var reverseProxy = &serverconfigs.ReverseProxyConfig{}
+	var reverseProxy = serverconfigs.NewReverseProxyConfig()
 	err = json.Unmarshal(reverseProxyResp.ReverseProxyJSON, reverseProxy)
 	if err != nil {
 		this.ErrorPage(err)

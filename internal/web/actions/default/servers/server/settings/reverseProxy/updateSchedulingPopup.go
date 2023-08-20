@@ -43,7 +43,7 @@ func (this *UpdateSchedulingPopupAction) RunGet(params struct {
 	}
 	configData := reverseProxyResp.ReverseProxyJSON
 
-	reverseProxyConfig := &serverconfigs.ReverseProxyConfig{}
+	var reverseProxyConfig = serverconfigs.NewReverseProxyConfig()
 	err = json.Unmarshal(configData, reverseProxyConfig)
 	if err != nil {
 		this.ErrorPage(err)
@@ -126,8 +126,8 @@ func (this *UpdateSchedulingPopupAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	configData := reverseProxyResp.ReverseProxyJSON
-	reverseProxy := &serverconfigs.ReverseProxyConfig{}
+	var configData = reverseProxyResp.ReverseProxyJSON
+	var reverseProxy = serverconfigs.NewReverseProxyConfig()
 	err = json.Unmarshal(configData, reverseProxy)
 	if err != nil {
 		this.ErrorPage(err)

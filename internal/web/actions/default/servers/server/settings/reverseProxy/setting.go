@@ -28,14 +28,14 @@ func (this *SettingAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	reverseProxyRef := &serverconfigs.ReverseProxyRef{}
+	var reverseProxyRef = &serverconfigs.ReverseProxyRef{}
 	err = json.Unmarshal(reverseProxyResp.ReverseProxyRefJSON, reverseProxyRef)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 
-	reverseProxy := &serverconfigs.ReverseProxyConfig{}
+	var reverseProxy = serverconfigs.NewReverseProxyConfig()
 	err = json.Unmarshal(reverseProxyResp.ReverseProxyJSON, reverseProxy)
 	if err != nil {
 		this.ErrorPage(err)
@@ -57,7 +57,7 @@ func (this *SettingAction) RunPost(params struct {
 }) {
 	defer this.CreateLogInfo(codes.ServerReverseProxy_LogUpdateServerReverseProxySettings, params.ServerId)
 
-	var reverseProxyConfig = &serverconfigs.ReverseProxyConfig{}
+	var reverseProxyConfig = serverconfigs.NewReverseProxyConfig()
 	err := json.Unmarshal(params.ReverseProxyJSON, reverseProxyConfig)
 	if err != nil {
 		this.ErrorPage(err)
@@ -133,6 +133,7 @@ func (this *SettingAction) RunPost(params struct {
 		ProxyProtocolJSON:        proxyProtocolJSON,
 		FollowRedirects:          reverseProxyConfig.FollowRedirects,
 		RequestHostExcludingPort: reverseProxyConfig.RequestHostExcludingPort,
+		Retry50X:                 reverseProxyConfig.Retry50X,
 	})
 	if err != nil {
 		this.ErrorPage(err)
