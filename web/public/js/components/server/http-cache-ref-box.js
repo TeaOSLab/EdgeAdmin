@@ -309,7 +309,7 @@ Vue.component("http-cache-ref-box", {
 				<input type="checkbox" value="1" v-model="ref.skipSetCookie"/>
 				<label></label>
 			</div>
-			<p class="comment">选中后，当响应的Header中有Set-Cookie时不缓存响应内容。</p>
+			<p class="comment">选中后，当响应的报头中有Set-Cookie时不缓存响应内容，防止动态内容被缓存。</p>
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
@@ -319,7 +319,7 @@ Vue.component("http-cache-ref-box", {
 				<input type="checkbox" name="enableRequestCachePragma" value="1" v-model="ref.enableRequestCachePragma"/>
 				<label></label>
 			</div>
-			<p class="comment">选中后，当请求的Header中含有Pragma: no-cache或Cache-Control: no-cache时，会跳过缓存直接读取源内容。</p>
+			<p class="comment">选中后，当请求的报头中含有Pragma: no-cache或Cache-Control: no-cache时，会跳过缓存直接读取源内容，一般仅用于调试。</p>
 		</td>
 	</tr>	
 	<tr v-show="moreOptionsVisible && !vIsReverse">
