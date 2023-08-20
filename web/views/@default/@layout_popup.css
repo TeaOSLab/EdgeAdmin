@@ -63,6 +63,7 @@ div.comment {
   padding-top: 0.4em;
   font-weight: normal;
   word-break: break-all;
+  line-height: 1.8;
 }
 p.comment em,
 div.comment em {
