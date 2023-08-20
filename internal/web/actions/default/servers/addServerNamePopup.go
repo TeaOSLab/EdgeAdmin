@@ -4,6 +4,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"net"
 	"net/url"
 	"regexp"
 	"strings"
@@ -43,6 +44,14 @@ func (this *AddServerNamePopupAction) RunPost(params struct {
 			}
 		}
 
+		// 去除端口
+		if regexp.MustCompile(`:\d+$`).MatchString(serverName) {
+			host, _, err := net.SplitHostPort(serverName)
+			if err == nil && len(host) > 0 {
+				serverName = host
+			}
+		}
+
 		params.Must.
 			Field("serverName", serverName).
 			Require("请输入域名")
@@ -69,6 +78,14 @@ func (this *AddServerNamePopupAction) RunPost(params struct {
 				u, err := url.Parse(serverName)
 				if err == nil && len(u.Host) > 0 {
 					serverName = u.Host
+				}
+			}
+
+			// 去除端口
+			if regexp.MustCompile(`:\d+$`).MatchString(serverName) {
+				host, _, err := net.SplitHostPort(serverName)
+				if err == nil && len(host) > 0 {
+					serverName = host
 				}
 			}
 
