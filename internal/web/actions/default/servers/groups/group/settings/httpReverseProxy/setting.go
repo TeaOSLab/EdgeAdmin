@@ -36,14 +36,14 @@ func (this *SettingAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	reverseProxyRef := &serverconfigs.ReverseProxyRef{}
+	var reverseProxyRef = &serverconfigs.ReverseProxyRef{}
 	err = json.Unmarshal(reverseProxyResp.ReverseProxyRefJSON, reverseProxyRef)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
 
-	reverseProxy := &serverconfigs.ReverseProxyConfig{}
+	var reverseProxy = serverconfigs.NewReverseProxyConfig()
 	err = json.Unmarshal(reverseProxyResp.ReverseProxyJSON, reverseProxy)
 	if err != nil {
 		this.ErrorPage(err)
@@ -67,7 +67,7 @@ func (this *SettingAction) RunPost(params struct {
 
 	// TODO 校验配置
 
-	var reverseProxyConfig = &serverconfigs.ReverseProxyConfig{}
+	var reverseProxyConfig = serverconfigs.NewReverseProxyConfig()
 	err := json.Unmarshal(params.ReverseProxyJSON, reverseProxyConfig)
 	if err != nil {
 		this.ErrorPage(err)
@@ -110,6 +110,7 @@ func (this *SettingAction) RunPost(params struct {
 		AddHeaders:        reverseProxyConfig.AddHeaders,
 		FollowRedirects:   reverseProxyConfig.FollowRedirects,
 		ProxyProtocolJSON: proxyProtocolJSON,
+		Retry50X:          reverseProxyConfig.Retry50X,
 	})
 	if err != nil {
 		this.ErrorPage(err)

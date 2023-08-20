@@ -34,7 +34,7 @@ func (this *SchedulingAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	reverseProxy := &serverconfigs.ReverseProxyConfig{}
+	var reverseProxy = serverconfigs.NewReverseProxyConfig()
 	err = json.Unmarshal(reverseProxyResp.ReverseProxyJSON, reverseProxy)
 	if err != nil {
 		this.ErrorPage(err)
@@ -42,8 +42,8 @@ func (this *SchedulingAction) RunGet(params struct {
 	}
 	this.Data["reverseProxyId"] = reverseProxy.Id
 
-	schedulingCode := reverseProxy.FindSchedulingConfig().Code
-	schedulingMap := schedulingconfigs.FindSchedulingType(schedulingCode)
+	var schedulingCode = reverseProxy.FindSchedulingConfig().Code
+	var schedulingMap = schedulingconfigs.FindSchedulingType(schedulingCode)
 	if schedulingMap == nil {
 		this.ErrorPage(errors.New("invalid scheduling code '" + schedulingCode + "'"))
 		return
