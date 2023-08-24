@@ -2,10 +2,10 @@ package helpers
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
-	nodes "github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
-	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/iplibrary"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/regionconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/logs"
@@ -77,23 +77,25 @@ func checkIPWithoutCache(config *systemconfigs.SecurityConfig, ipAddr string) bo
 
 	// 检查位置
 	if len(config.AllowCountryIds) > 0 || len(config.AllowProvinceIds) > 0 {
-		rpc, err := nodes.SharedRPC()
-		if err != nil {
-			logs.Println("[USER_MUST_AUTH][ERROR]" + err.Error())
+		var userRegion = iplibrary.Lookup(ip)
+		if userRegion == nil || !userRegion.IsOk() {
 			return false
 		}
-		resp, err := rpc.IPLibraryRPC().LookupIPRegion(rpc.Context(0), &pb.LookupIPRegionRequest{Ip: ipAddr})
-		if err != nil {
-			logs.Println("[USER_MUST_AUTH][ERROR]" + err.Error())
-			return false
+		if len(config.AllowCountryIds) > 0 {
+			// 检查大中华区
+			var found = false
+			for _, countryId := range config.AllowCountryIds {
+				if regionconfigs.MatchUserRegion(userRegion.CountryId(), userRegion.ProvinceId(), countryId) {
+					found = true
+					break
+				}
+			}
+
+			if !found {
+				return false
+			}
 		}
-		if resp.IpRegion == nil {
-			return true
-		}
-		if len(config.AllowCountryIds) > 0 && !lists.ContainsInt64(config.AllowCountryIds, resp.IpRegion.CountryId) {
-			return false
-		}
-		if len(config.AllowProvinceIds) > 0 && !lists.ContainsInt64(config.AllowProvinceIds, resp.IpRegion.ProvinceId) {
+		if len(config.AllowProvinceIds) > 0 && !lists.ContainsInt64(config.AllowProvinceIds, userRegion.ProvinceId()) {
 			return false
 		}
 	}
