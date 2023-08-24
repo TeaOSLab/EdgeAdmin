@@ -3,11 +3,11 @@ package log
 import (
 	"bytes"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/iplibrary"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	timeutil "github.com/iwind/TeaGo/utils/time"
 	"github.com/tealeg/xlsx/v3"
 	"strconv"
-	"strings"
 )
 
 type ExportExcelAction struct {
@@ -65,23 +65,11 @@ func (this *ExportExcelAction) RunGet(params struct {
 	for _, log := range logsResp.Logs {
 		var regionName = ""
 		var ispName = ""
-		regionResp, err := this.RPC().IPLibraryRPC().LookupIPRegion(this.AdminContext(), &pb.LookupIPRegionRequest{Ip: log.Ip})
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-		if regionResp.IpRegion != nil {
-			regionName = regionResp.IpRegion.Summary
 
-			// remove isp from regionName
-			var index = strings.LastIndex(regionName, "|")
-			if index > 0 {
-				regionName = regionName[:index]
-			}
-
-			if len(regionResp.IpRegion.Isp) > 0 {
-				ispName = regionResp.IpRegion.Isp
-			}
+		var ipRegion = iplibrary.LookupIP(log.Ip)
+		if ipRegion != nil && ipRegion.IsOk() {
+			regionName = ipRegion.RegionSummary()
+			ispName = ipRegion.ProviderName()
 		}
 
 		var row = sheet.AddRow()

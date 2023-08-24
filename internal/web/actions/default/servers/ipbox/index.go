@@ -4,10 +4,10 @@ package ipbox
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/iplibrary"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
-	"strings"
 	"time"
 )
 
@@ -25,24 +25,15 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["ip"] = params.Ip
 
 	// IP信息
-	regionResp, err := this.RPC().IPLibraryRPC().LookupIPRegion(this.AdminContext(), &pb.LookupIPRegionRequest{Ip: params.Ip})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
+
 
 	this.Data["regions"] = ""
 	this.Data["isp"] = ""
-	if regionResp.IpRegion != nil {
-		var regionName = regionResp.IpRegion.Summary
 
-		// remove isp from regionName
-		var index = strings.LastIndex(regionName, "|")
-		if index > 0 {
-			regionName = regionName[:index]
-		}
-		this.Data["regions"] = regionName
-		this.Data["isp"] = regionResp.IpRegion.Isp
+	var ipRegion = iplibrary.LookupIP(params.Ip)
+	if ipRegion != nil && ipRegion.IsOk() {
+		this.Data["regions"] = ipRegion.RegionSummary()
+		this.Data["isp"] = ipRegion.ProviderName()
 	}
 
 	// IP列表

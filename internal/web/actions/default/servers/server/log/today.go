@@ -1,6 +1,7 @@
 package log
 
 import (
+	"github.com/TeaOSLab/EdgeCommon/pkg/iplibrary"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/maps"
@@ -141,20 +142,7 @@ func (this *TodayAction) RunGet(params struct {
 	}
 
 	// 根据IP查询区域
-	var regionMap = map[string]string{} // ip => region
-	if len(ipList) > 0 {
-		resp, err := this.RPC().IPLibraryRPC().LookupIPRegions(this.AdminContext(), &pb.LookupIPRegionsRequest{IpList: ipList})
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-		if resp.IpRegionMap != nil {
-			for ip, region := range resp.IpRegionMap {
-				regionMap[ip] = region.Summary
-			}
-		}
-	}
-	this.Data["regions"] = regionMap
+	this.Data["regions"] = iplibrary.LookupIPSummaries(ipList)
 
 	// WAF相关
 	var wafInfos = map[int64]maps.Map{}                          // set id => WAF Map

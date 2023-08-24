@@ -3,6 +3,7 @@ package log
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/iplibrary"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
@@ -84,14 +85,10 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	var logMaps = []maps.Map{}
 	for _, log := range logsResp.Logs {
-		regionName := ""
-		regionResp, err := this.RPC().IPLibraryRPC().LookupIPRegion(this.AdminContext(), &pb.LookupIPRegionRequest{Ip: log.Ip})
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-		if regionResp.IpRegion != nil {
-			regionName = regionResp.IpRegion.Summary
+		var regionName = ""
+		var ipRegion = iplibrary.LookupIP(log.Ip)
+		if ipRegion != nil && ipRegion.IsOk() {
+			regionName = ipRegion.Summary()
 		}
 
 		logMaps = append(logMaps, maps.Map{

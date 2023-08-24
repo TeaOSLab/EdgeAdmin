@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/users/userutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/iplibrary"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 )
@@ -60,13 +61,9 @@ func (this *UserAction) RunGet(params struct {
 	// IP地址
 	var registeredRegion = ""
 	if len(user.RegisteredIP) > 0 {
-		regionResp, err := this.RPC().IPLibraryRPC().LookupIPRegion(this.AdminContext(), &pb.LookupIPRegionRequest{Ip: user.RegisteredIP})
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-		if regionResp.IpRegion != nil {
-			registeredRegion = regionResp.IpRegion.Summary
+		var ipRegion = iplibrary.LookupIP(user.RegisteredIP)
+		if ipRegion != nil && ipRegion.IsOk() {
+			registeredRegion = ipRegion.Summary()
 		}
 	}
 
