@@ -3,6 +3,7 @@ package waf
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/iplibrary"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/iwind/TeaGo/lists"
@@ -141,20 +142,7 @@ func (this *LogAction) RunGet(params struct {
 	this.Data["groups"] = groupMaps
 
 	// 根据IP查询区域
-	regionMap := map[string]string{} // ip => region
-	if len(ipList) > 0 {
-		resp, err := this.RPC().IPLibraryRPC().LookupIPRegions(this.AdminContext(), &pb.LookupIPRegionsRequest{IpList: ipList})
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-		if resp.IpRegionMap != nil {
-			for ip, region := range resp.IpRegionMap {
-				regionMap[ip] = region.Summary
-			}
-		}
-	}
-	this.Data["regions"] = regionMap
+	this.Data["regions"] = iplibrary.LookupIPSummaries(ipList)
 
 	// WAF相关
 	var wafInfos = map[int64]maps.Map{}                          // set id => WAF Map

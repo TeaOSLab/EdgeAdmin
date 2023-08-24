@@ -2,6 +2,7 @@ package log
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/iplibrary"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 	"net/http"
@@ -86,24 +87,11 @@ func (this *ViewPopupAction) RunGet(params struct {
 
 	// 地域相关
 	var regionMap maps.Map = nil
-	regionResp, err := this.RPC().IPLibraryRPC().LookupIPRegion(this.AdminContext(), &pb.LookupIPRegionRequest{Ip: accessLog.RemoteAddr})
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	region := regionResp.IpRegion
-	if region != nil {
-		var regionName = region.Summary
-
-		// remove isp from regionName
-		var index = strings.LastIndex(regionName, "|")
-		if index > 0 {
-			regionName = regionName[:index]
-		}
-
+	var ipRegion = iplibrary.LookupIP(accessLog.RemoteAddr)
+	if ipRegion != nil && ipRegion.IsOk() {
 		regionMap = maps.Map{
-			"full": regionName,
-			"isp":  region.Isp,
+			"full": ipRegion.RegionSummary(),
+			"isp":  ipRegion.ProviderName(),
 		}
 	}
 	this.Data["region"] = regionMap

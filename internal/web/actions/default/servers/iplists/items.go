@@ -4,11 +4,11 @@ package iplists
 
 import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/iplibrary"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
-	"strings"
 	"time"
 )
 
@@ -109,22 +109,10 @@ func (this *ItemsAction) RunGet(params struct {
 		var region = ""
 		var isp = ""
 		if len(item.IpFrom) > 0 && len(item.IpTo) == 0 {
-			regionResp, err := this.RPC().IPLibraryRPC().LookupIPRegion(this.AdminContext(), &pb.LookupIPRegionRequest{Ip: item.IpFrom})
-			if err != nil {
-				this.ErrorPage(err)
-				return
-			}
-			var ipRegion = regionResp.IpRegion
-			if ipRegion != nil {
-				region = ipRegion.Summary
-
-				// remove isp from regionName
-				var index = strings.LastIndex(region, "|")
-				if index > 0 {
-					region = region[:index]
-				}
-
-				isp = ipRegion.Isp
+			var ipRegion = iplibrary.LookupIP(item.IpFrom)
+			if ipRegion != nil && ipRegion.IsOk() {
+				region = ipRegion.RegionSummary()
+				isp = ipRegion.ProviderName()
 			}
 		}
 
