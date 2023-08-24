@@ -118,10 +118,13 @@ Vue.component("ip-list-table", {
 					<keyword :v-word="keyword">{{item.ipFrom}}</keyword> <span> <span class="small red" v-if="item.isRead != null && !item.isRead">&nbsp;New&nbsp;</span>&nbsp;<a :href="'/servers/iplists?ip=' + item.ipFrom" v-if="vShowSearchButton" title="搜索此IP"><span><i class="icon search small" style="color: #ccc"></i></span></a></span>
 					<span v-if="item.ipTo.length > 0"> - <keyword :v-word="keyword">{{item.ipTo}}</keyword></span></span>
 					<span v-else class="disabled">*</span>
+					
 					<div v-if="item.region != null && item.region.length > 0">
 						<span class="grey small">{{item.region}}</span>
 						<span v-if="item.isp != null && item.isp.length > 0 && item.isp != '内网IP'" class="grey small"><span class="disabled">|</span> {{item.isp}}</span>
 					</div>
+					<div v-else-if="item.isp != null && item.isp.length > 0 && item.isp != '内网IP'"><span class="grey small">{{item.isp}}</span></div>
+				
 					<div v-if="item.createdTime != null">
 						<span class="small grey">添加于 {{item.createdTime}}
 							<span v-if="item.list != null && item.list.id > 0">
