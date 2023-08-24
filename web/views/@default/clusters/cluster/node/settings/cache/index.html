@@ -11,7 +11,7 @@
                 <td class="title">缓存磁盘容量</td>
                 <td>
                     <size-capacity-box :v-value="node.maxCacheDiskCapacity" :v-name="'maxCacheDiskCapacityJSON'"></size-capacity-box>
-                    <p class="comment">缓存所在磁盘的最大用量，超出此用量后，将会自动尝试清理旧数据，0表示不限制。</p>
+                    <p class="comment">缓存所在磁盘的最大用量，超出此用量或磁盘接近用尽时，将会自动尝试清理旧数据，0表示不限制。</p>
                 </td>
             </tr>
             <tr>
