@@ -90,6 +90,7 @@ func (this *IndexAction) RunPost(params struct {
 	HttpAllDefaultDomain                   string
 	HttpAllNodeIPPageHTML                  string
 	HttpAllNodeIPShowPage                  bool
+	HttpAllEnableServerAddrVariable        bool
 
 	HttpAllServerName              string
 	HttpAllSupportsLowVersionHTTP  bool
@@ -167,6 +168,7 @@ func (this *IndexAction) RunPost(params struct {
 	config.HTTPAll.SupportsLowVersionHTTP = params.HttpAllSupportsLowVersionHTTP
 	config.HTTPAll.MatchCertFromAllServers = params.HttpAllMatchCertFromAllServers
 	config.HTTPAll.ForceLnRequest = params.HttpAllForceLnRequest
+	config.HTTPAll.EnableServerAddrVariable = params.HttpAllEnableServerAddrVariable
 
 	// 访问日志
 	config.HTTPAccessLog.IsOn = params.HttpAccessLogIsOn

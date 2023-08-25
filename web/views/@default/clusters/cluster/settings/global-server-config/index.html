@@ -181,6 +181,13 @@
                     <p class="comment">选中后，所有请求优先发送到L2或者更高级别节点。默认不开启的情况下，只有可以缓存的内容请求才会发送到L2或者更高级别节点。</p>
                 </td>
             </tr>
+            <tr>
+                <td>支持${serverAddr}变量</td>
+                <td>
+                    <checkbox name="httpAllEnableServerAddrVariable" v-model="config.httpAll.enableServerAddrVariable"></checkbox>
+                    <p class="comment">支持在自定义页面中使用<code-label>${serverAddr}</code-label>变量，表示访客当前正在访问的服务器地址。</p>
+                </td>
+            </tr>
         </table>
 
         <submit-btn></submit-btn>
