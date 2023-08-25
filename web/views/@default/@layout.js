@@ -60,6 +60,18 @@ Tea.context(function () {
 			.params({})
 			.success(function (resp) {
 				this.globalMessageBadge = resp.data.count
+
+				// add dot to title
+				let dots = "••• "
+				if (typeof document.title == "string") {
+					if (resp.data.count > 0) {
+						if (!document.title.startsWith(dots)) {
+							document.title = dots + document.title
+						}
+					} else if (document.title.startsWith(dots)) {
+						document.title = document.title.substring(dots.length)
+					}
+				}
 			})
 			.done(function () {
 				let delay = 6000
