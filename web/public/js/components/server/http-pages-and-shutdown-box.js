@@ -71,17 +71,21 @@ Vue.component("http-pages-and-shutdown-box", {
 		},
 		addShutdownHTMLTemplate: function () {
 			this.shutdownConfig.body  = `<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 \t<title>升级中</title>
 \t<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+\t<style>
+\t\taddress { line-height: 1.8; }
+\t</style>
 </head>
 <body>
 
 <h1>网站升级中</h1>
 <p>为了给您提供更好的服务，我们正在升级网站，请稍后重新访问。</p>
 
-<address>Request ID: \${requestId}.</address>
+<address>Connection: \${remoteAddr} (Client) -&gt; \${serverAddr} (Server)</address>
+<address>Request ID: \${requestId}</address>
 
 </body>
 </html>`
