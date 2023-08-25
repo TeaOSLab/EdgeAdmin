@@ -9,6 +9,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/maps"
 )
 
@@ -35,6 +36,7 @@ func (this *IndexAction) RunGet(params struct {
 	clusters = append(clusters, node.SecondaryNodeClusters...)
 	var allDNSRouteMaps = map[int64][]maps.Map{} // domain id => routes
 	var routeMaps = map[int64][]maps.Map{}       // domain id => routes
+	var domainIds = []int64{}
 	for _, cluster := range clusters {
 		dnsInfoResp, err := this.RPC().NodeRPC().FindEnabledNodeDNS(this.AdminContext(), &pb.FindEnabledNodeDNSRequest{
 			NodeId:        params.NodeId,
@@ -49,6 +51,13 @@ func (this *IndexAction) RunGet(params struct {
 			continue
 		}
 		var domainId = dnsInfo.DnsDomainId
+
+		// remove same domain
+		if lists.ContainsInt64(domainIds, domainId) {
+			continue
+		}
+		domainIds = append(domainIds, domainId)
+
 		var domainName = dnsInfo.DnsDomainName
 		if len(dnsInfo.Routes) > 0 {
 			for _, route := range dnsInfo.Routes {
@@ -102,12 +111,20 @@ func (this *IndexAction) RunPost(params struct {
 }) {
 	defer this.CreateLogInfo(codes.NodeDNS_LogUpdateNodeDNS, params.NodeId)
 
-	dnsRouteCodes := []string{}
+	var rawRouteCodes = []string{}
 	if len(params.DnsRoutesJSON) > 0 {
-		err := json.Unmarshal(params.DnsRoutesJSON, &dnsRouteCodes)
+		err := json.Unmarshal(params.DnsRoutesJSON, &rawRouteCodes)
 		if err != nil {
 			this.ErrorPage(err)
 			return
+		}
+	}
+
+	// remove duplications
+	var dnsRouteCodes = []string{}
+	for _, routeCode := range rawRouteCodes {
+		if !lists.ContainsString(dnsRouteCodes, routeCode) {
+			dnsRouteCodes = append(dnsRouteCodes, routeCode)
 		}
 	}
 
