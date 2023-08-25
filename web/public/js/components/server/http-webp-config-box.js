@@ -9,7 +9,7 @@ Vue.component("http-webp-config-box", {
 				quality: 50,
 				minLength: {count: 0, "unit": "kb"},
 				maxLength: {count: 0, "unit": "kb"},
-				mimeTypes: ["image/png", "image/jpeg", "image/bmp", "image/x-ico", "image/gif"],
+				mimeTypes: ["image/png", "image/jpeg", "image/bmp", "image/x-ico"],
 				extensions: [".png", ".jpeg", ".jpg", ".bmp", ".ico"],
 				conds: null
 			}
