@@ -70,6 +70,9 @@ Vue.component("dns-route-selector", {
 			this.routes.$removeIf(function (k, v) {
 				return v.code + "@" + v.domainId == route.code + "@" + route.domainId
 			})
+		},
+		clearKeyword: function () {
+			this.keyword = ""
 		}
 	},
 	watch: {
@@ -103,16 +106,22 @@ Vue.component("dns-route-selector", {
 			<tr>
 				<td class="title">所有线路</td>
 				<td>
-					<select class="ui dropdown auto-width" v-model="routeCode">
-						<option value="" v-if="keyword.length == 0">[请选择]</option>
-						<option v-for="route in searchingRoutes" :value="route.code + '@' + route.domainId">{{route.name}}（{{route.code}}/{{route.domainName}}）</option>
-					</select>
+					<span v-if="keyword.length > 0 && searchingRoutes.length == 0">没有和关键词“{{keyword}}”匹配的线路</span>
+					<span v-show="keyword.length == 0 || searchingRoutes.length > 0">
+						<select class="ui dropdown" v-model="routeCode">
+							<option value="" v-if="keyword.length == 0">[请选择]</option>
+							<option v-for="route in searchingRoutes" :value="route.code + '@' + route.domainId">{{route.name}}（{{route.code}}/{{route.domainName}}）</option>
+						</select>
+					</span>
 				</td>
 			</tr>
 			<tr>
-				<td>搜索</td>
+				<td>搜索线路</td>
 				<td>
-					<input type="text" placeholder="搜索..." size="10" style="width: 10em" v-model="keyword" ref="keywordRef" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+					<div class="ui input" :class="{'right labeled':keyword.length > 0}">
+						<input type="text" placeholder="线路名称或代号..." size="10" style="width: 10em" v-model="keyword" ref="keywordRef" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+						<a class="ui label" v-if="keyword.length > 0" @click.prevent="clearKeyword" href=""><i class="icon remove small blue"></i></a>
+					</div>
 				</td>
 			</tr>
 		</table>
