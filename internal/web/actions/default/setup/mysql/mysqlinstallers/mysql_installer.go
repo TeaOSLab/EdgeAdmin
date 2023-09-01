@@ -342,7 +342,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 		}
 
 		// waiting for startup
-		for i := 0; i < 5; i++ {
+		for i := 0; i < 30; i++ {
 			_, err = net.Dial("tcp", "127.0.0.1:3306")
 			if err != nil {
 				time.Sleep(1 * time.Second)
@@ -362,7 +362,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 	this.log("changing mysql password ...")
 	var passwordSQL = "ALTER USER 'root'@'localhost' IDENTIFIED BY '" + newPassword + "';"
 	{
-		var cmd = utils.NewCmd("sh", "-c", baseDir+"/bin/mysql --user=root --password=\""+generatedPassword+"\" --execute=\""+passwordSQL+"\" --connect-expired-password")
+		var cmd = utils.NewCmd("sh", "-c", baseDir+"/bin/mysql --host=\"127.0.0.1\" --user=root --password=\""+generatedPassword+"\" --execute=\""+passwordSQL+"\" --connect-expired-password")
 		cmd.WithStderr()
 		err = cmd.Run()
 		if err != nil {
