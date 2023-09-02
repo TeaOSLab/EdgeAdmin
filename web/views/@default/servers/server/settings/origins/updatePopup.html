@@ -63,7 +63,7 @@
             <tr v-if="origin.protocol == 'https' || origin.protocol == 'tls'">
                 <td>{{origin.protocol.toUpperCase()}}证书</td>
                 <td>
-                    <ssl-certs-box :v-single-mode="true" :v-cert="origin.cert" :v-view-size="'mini'" :v-description="'可以选择连接源站使用的证书。'"></ssl-certs-box>
+                    <ssl-certs-box :v-single-mode="true" :v-cert="origin.cert" :v-view-size="'mini'" :v-description="'可以选择连接源站使用的证书；除非源站有特殊需求，否则不需要添加。'"></ssl-certs-box>
                 </td>
             </tr>
             <tr v-show="origin.protocol != 'udp'">
