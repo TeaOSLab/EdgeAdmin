@@ -54,6 +54,20 @@
             </tr>
         </table>
 
+        <h4 style="margin-top: 0">用户套餐带宽统计</h4>
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title">数据保存天数 *</td>
+                <td>
+                    <div class="ui input right labeled">
+                        <input type="text" name="userPlanBandwidthStatCleanDays" v-model="config.userPlanBandwidthStat.clean.days" style="width:6em" maxlength="6"/>
+                        <span class="ui label">天</span>
+                    </div>
+                    <p class="comment"><pro-warning-label></pro-warning-label></p>
+                </td>
+            </tr>
+        </table>
+
         <h4 style="margin-top: 0">网站流量统计</h4>
         <table class="ui table definition selectable">
             <tr>

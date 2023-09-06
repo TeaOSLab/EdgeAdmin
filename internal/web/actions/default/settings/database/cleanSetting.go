@@ -41,6 +41,7 @@ func (this *CleanSettingAction) RunPost(params struct {
 	ServerAccessLogCleanDays             int
 	ServerBandwidthStatCleanDays         int
 	UserBandwidthStatCleanDays           int
+	UserPlanBandwidthStatCleanDays       int
 	ServerDailyStatCleanDays             int
 	ServerDomainHourlyStatCleanDays      int
 	TrafficDailyStatCleanDays            int
@@ -84,6 +85,11 @@ func (this *CleanSettingAction) RunPost(params struct {
 		params.UserBandwidthStatCleanDays = 0
 	}
 	config.UserBandwidthStat.Clean.Days = params.UserBandwidthStatCleanDays
+
+	if params.UserPlanBandwidthStatCleanDays < 0 {
+		params.UserPlanBandwidthStatCleanDays = 0
+	}
+	config.UserPlanBandwidthStat.Clean.Days = params.UserPlanBandwidthStatCleanDays
 
 	if params.ServerDailyStatCleanDays < 0 {
 		params.ServerDailyStatCleanDays = 0
