@@ -14,23 +14,35 @@
                 <td class="title color-border">禁止未绑定域名访问</td>
                 <td>
                     <checkbox name="httpAllMatchDomainStrictly" v-model="config.httpAll.matchDomainStrictly"></checkbox>
-                    <p class="comment">选中后，表示禁止未绑定的域名和IP访问。</p>
+                    <p class="comment">选中后，表示禁止未在网站绑定的域名和IP访问。</p>
                 </td>
             </tr>
-            <tr v-show="config.httpAll.matchDomainStrictly">
+
+            <tr>
+                <td class="color-border">处理未绑定域名方式</td>
+                <td>
+                    <radio name="httpAllDomainMismatchActionCode" :v-value="'page'" v-model="httpAllDomainMismatchActionCode">显示提示页面</radio> &nbsp;
+                    &nbsp; <radio name="httpAllDomainMismatchActionCode" :v-value="'close'" v-model="httpAllDomainMismatchActionCode">关闭连接</radio>
+                    <p class="comment" v-if="httpAllDomainMismatchActionCode == 'page'">显示提示内容。</p>
+                    <p class="comment" v-if="httpAllDomainMismatchActionCode == 'close'">直接关闭网络连接，不提示任何内容。</p>
+                </td>
+            </tr>
+
+            <tr v-show="config.httpAll.matchDomainStrictly && httpAllDomainMismatchActionCode == 'page'">
                 <td class="color-border">提示页面状态码</td>
                 <td>
                     <input type="text" name="httpAllDomainMismatchActionStatusCode" v-model="httpAllDomainMismatchActionStatusCode" style="width: 4em" maxlength="3"/>
                     <p class="comment">访问未绑定域名时的提示页面状态码，默认404。</p>
                 </td>
             </tr>
-            <tr v-show="config.httpAll.matchDomainStrictly">
-                <td class="color-border">未绑定域名页面提示</td>
+            <tr v-show="config.httpAll.matchDomainStrictly && httpAllDomainMismatchActionCode == 'page'">
+                <td class="color-border">提示页面内容</td>
                 <td>
                     <textarea rows="3" name="httpAllDomainMismatchActionContentHTML" v-model="httpAllDomainMismatchActionContentHTML"></textarea>
-                    <p class="comment">访问未绑定的域名时提示的文字，可以使用HTML；仅限于HTTP请求，不适于用HTTPS（HTTPS会提示证书错误）。</p>
+                    <p class="comment">访问未绑定的域名时提示页面内容，可以使用HTML；仅限于HTTP请求，不适于用HTTPS（HTTPS会提示证书错误）。</p>
                 </td>
             </tr>
+
             <tr v-show="config.httpAll.matchDomainStrictly">
                 <td class="color-border">允许例外的域名</td>
                 <td>

@@ -43,13 +43,19 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	this.Data["config"] = config
 
+	var httpAllDomainMismatchActionCode = serverconfigs.DomainMismatchActionPage
 	var httpAllDomainMismatchActionContentHTML string
 	var httpAllDomainMismatchActionStatusCode = "404"
-	if config.HTTPAll.DomainMismatchAction != nil && config.HTTPAll.DomainMismatchAction.Options != nil {
-		httpAllDomainMismatchActionContentHTML = config.HTTPAll.DomainMismatchAction.Options.GetString("contentHTML")
-		var statusCode = config.HTTPAll.DomainMismatchAction.Options.GetInt("statusCode")
-		if statusCode > 0 {
-			httpAllDomainMismatchActionStatusCode = types.String(statusCode)
+	if config.HTTPAll.DomainMismatchAction != nil {
+		httpAllDomainMismatchActionCode = config.HTTPAll.DomainMismatchAction.Code
+
+		if config.HTTPAll.DomainMismatchAction.Options != nil {
+			// 即使是非 page 处理动作，也读取这些内容，以便于在切换到 page 时，可以顺利读取到先前的设置
+			httpAllDomainMismatchActionContentHTML = config.HTTPAll.DomainMismatchAction.Options.GetString("contentHTML")
+			var statusCode = config.HTTPAll.DomainMismatchAction.Options.GetInt("statusCode")
+			if statusCode > 0 {
+				httpAllDomainMismatchActionStatusCode = types.String(statusCode)
+			}
 		}
 	} else {
 		httpAllDomainMismatchActionContentHTML = `<!DOCTYPE html>
@@ -73,6 +79,7 @@ p { color: grey; }
 </html>`
 	}
 
+	this.Data["httpAllDomainMismatchActionCode"] = httpAllDomainMismatchActionCode
 	this.Data["httpAllDomainMismatchActionContentHTML"] = httpAllDomainMismatchActionContentHTML
 	this.Data["httpAllDomainMismatchActionStatusCode"] = httpAllDomainMismatchActionStatusCode
 
@@ -83,6 +90,7 @@ func (this *IndexAction) RunPost(params struct {
 	ClusterId int64
 
 	HttpAllMatchDomainStrictly             bool
+	HttpAllDomainMismatchActionCode        string
 	HttpAllDomainMismatchActionContentHTML string
 	HttpAllDomainMismatchActionStatusCode  string
 	HttpAllAllowMismatchDomainsJSON        []byte
@@ -140,7 +148,7 @@ func (this *IndexAction) RunPost(params struct {
 
 	config.HTTPAll.MatchDomainStrictly = params.HttpAllMatchDomainStrictly
 	config.HTTPAll.DomainMismatchAction = &serverconfigs.DomainMismatchAction{
-		Code: serverconfigs.DomainMismatchActionPage,
+		Code: params.HttpAllDomainMismatchActionCode,
 		Options: maps.Map{
 			"statusCode":  domainMisMatchStatusCode,
 			"contentHTML": params.HttpAllDomainMismatchActionContentHTML,
