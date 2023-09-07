@@ -564,9 +564,11 @@ func (this *CreateAction) RunPost(params struct {
 			var remoteAddrConfig = &serverconfigs.HTTPRemoteAddrConfig{
 				IsOn:  true,
 				Value: "${rawRemoteAddr}",
+				Type:  serverconfigs.HTTPRemoteAddrTypeDefault,
 			}
 			if params.RemoteAddrIsOn {
 				remoteAddrConfig.Value = "${remoteAddr}"
+				remoteAddrConfig.Type = serverconfigs.HTTPRemoteAddrTypeProxy
 			}
 			remoteAddrConfigJSON, err := json.Marshal(remoteAddrConfig)
 			if err != nil {
