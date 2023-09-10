@@ -30,7 +30,8 @@ Vue.component("http-firewall-captcha-options", {
 		return {
 			options: options,
 			isEditing: false,
-			summary: ""
+			summary: "",
+			uiBodyWarning: ""
 		}
 	},
 	watch: {
@@ -74,6 +75,13 @@ Vue.component("http-firewall-captcha-options", {
 		},
 		"options.uiIsOn": function (v) {
 			this.updateSummary()
+		},
+		"options.uiBody": function (v) {
+			if (/<form(>|\s).+\$\{body}.*<\/form>/s.test(v)) {
+				this.uiBodyWarning = "页面模板中不能使用<form></form>标签包裹\${body}变量，否则将导致验证码表单无法提交。"
+			} else {
+				this.uiBodyWarning = ""
+			}
 		}
 	},
 	methods: {
@@ -208,7 +216,7 @@ Vue.component("http-firewall-captcha-options", {
 					<td class="color-border">页面模板</td>
 					<td>
 						<textarea spellcheck="false" rows="2" v-model="options.uiBody"></textarea>
-						<p class="comment"><span v-if="options.uiBody.length > 0 && options.uiBody.indexOf('\${body}') < 0 " class="red">模板中必须包含\${body}表示验证码表单！</span>整个页面的模板，支持HTML，其中必须使用<code-label>\${body}</code-label>变量代表验证码表单，否则将无法正常显示验证码。</p>
+						<p class="comment"><span v-if="uiBodyWarning.length > 0" class="red">警告：{{uiBodyWarning}}</span><span v-if="options.uiBody.length > 0 && options.uiBody.indexOf('\${body}') < 0 " class="red">模板中必须包含\${body}表示验证码表单！</span>整个页面的模板，支持HTML，其中必须使用<code-label>\${body}</code-label>变量代表验证码表单，否则将无法正常显示验证码。</p>
 					</td>
 				</tr>
 			</tbody>
