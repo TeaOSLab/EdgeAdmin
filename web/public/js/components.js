@@ -1015,6 +1015,14 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<combo-box title="集群" placeholder="集群名称" :v-items="clusters" :name="inputName" :v-value="vClusterId" @change="change"></combo-box>
 </div>`}),Vue.component("plan-user-selector",{props:["v-user-id"],data:function(){return{}},methods:{change:function(e){this.$emit("change",e)}},template:`<div>
 	<user-selector :v-user-id="vUserId" data-url="/plans/users/options" @change="change"></user-selector>
+</div>`}),Vue.component("plan-limit-view",{props:["value","v-single-mode"],data:function(){var e=this.value;let t=!1;return this.vSingleMode||(null!=e.trafficLimit&&e.trafficLimit.isOn&&(null!=e.trafficLimit.dailySize&&0<e.trafficLimit.dailySize.count||null!=e.trafficLimit.monthlySize&&0<e.trafficLimit.monthlySize.count)||0<e.dailyRequests||0<e.monthlyRequests)&&(t=!0),{config:e,hasLimit:t}},methods:{formatNumber:function(e){return teaweb.formatNumber(e)}},template:`<div style="font-size: 0.8em; color: grey">
+	<div class="ui divider" v-if="hasLimit"></div>
+	<div v-if="config.trafficLimit != null && config.trafficLimit.isOn">
+		<span v-if="config.trafficLimit.dailySize != null && config.trafficLimit.dailySize.count > 0">日流量限制：{{config.trafficLimit.dailySize.count}}{{config.trafficLimit.dailySize.unit.toUpperCase()}}<br/></span>
+		<span v-if="config.trafficLimit.monthlySize != null && config.trafficLimit.monthlySize.count > 0">月流量限制：{{config.trafficLimit.monthlySize.count}}{{config.trafficLimit.monthlySize.unit.toUpperCase()}}<br/></span>
+	</div>
+	<div v-if="config.dailyRequests > 0">单日请求数限制：{{formatNumber(config.dailyRequests)}}</div>
+	<div v-if="config.monthlyRequests > 0">单月请求数限制：{{formatNumber(config.monthlyRequests)}}</div>
 </div>`}),Vue.component("plan-price-view",{props:["v-plan"],data:function(){return{plan:this.vPlan}},template:`<div>
 	 <span v-if="plan.priceType == 'period'">
 	 	按时间周期计费
@@ -1065,6 +1073,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 						<input type="text" style="width: 7em" maxlength="10" v-model="monthlyPrice"/>
 						<span class="ui label">元</span>
 					</div>
+					<p class="comment">如果为0表示免费。</p>
 				</td>
 			</tr>
 			<tr>
@@ -1074,6 +1083,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 						<input type="text" style="width: 7em" maxlength="10" v-model="seasonallyPrice"/>
 						<span class="ui label">元</span>
 					</div>
+					<p class="comment">如果为0表示免费。</p>
 				</td>
 			</tr>
 			<tr>
@@ -1083,6 +1093,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 						<input type="text" style="width: 7em" maxlength="10" v-model="yearlyPrice"/>
 						<span class="ui label">元</span>
 					</div>
+					<p class="comment">如果为0表示免费。</p>
 				</td>
 			</tr>
 		</table>
@@ -1653,20 +1664,6 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<div v-for="action in vActions" style="margin-bottom: 0.3em">
 			<span :class="{red: action.category == 'block', orange: action.category == 'verify', green: action.category == 'allow'}">{{action.name}} ({{action.code.toUpperCase()}})</span>
 		</div>             
-</div>`}),Vue.component("http-request-scripts-config-box",{props:["vRequestScriptsConfig","v-is-location"],data:function(){let e=this.vRequestScriptsConfig;return{config:e=null==e?{}:e}},methods:{changeInitGroup:function(e){this.config.initGroup=e,this.$forceUpdate()},changeRequestGroup:function(e){this.config.requestGroup=e,this.$forceUpdate()}},template:`<div>
-	<input type="hidden" name="requestScriptsJSON" :value="JSON.stringify(config)"/>
-	<div class="margin"></div>
-	<h4 style="margin-bottom: 0">请求初始化</h4>
-	<p class="comment">在请求刚初始化时调用，此时自定义Header等尚未生效。</p>
-	<div>
-		<script-group-config-box :v-group="config.initGroup" @change="changeInitGroup" :v-is-location="vIsLocation"></script-group-config-box>
-	</div>
-	<h4 style="margin-bottom: 0">准备发送请求</h4>
-	<p class="comment">在准备执行请求或者转发请求之前调用，此时自定义Header、源站等已准备好。</p>
-	<div>
-		<script-group-config-box :v-group="config.requestGroup" @change="changeRequestGroup" :v-is-location="vIsLocation"></script-group-config-box>
-	</div>
-	<div class="margin"></div>
 </div>`}),Vue.component("http-firewall-rule-label",{props:["v-rule"],data:function(){return{rule:this.vRule}},methods:{showErr:function(e){teaweb.popupTip('规则校验错误，请修正：<span class="red">'+teaweb.encodeHTML(e)+"</span>")},operatorName:function(t){var i=t;return null!=typeof window.WAF_RULE_OPERATORS&&window.WAF_RULE_OPERATORS.forEach(function(e){e.code==t&&(i=e.name)}),i},isEmptyString:function(e){return"string"==typeof e&&0==e.length}},template:`<div>
 	<div class="ui label tiny basic" style="line-height: 1.5">
 		{{rule.name}}[{{rule.param}}] 
@@ -1973,7 +1970,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				<input type="checkbox" value="1" v-model="ref.skipSetCookie"/>
 				<label></label>
 			</div>
-			<p class="comment">选中后，当响应的Header中有Set-Cookie时不缓存响应内容。</p>
+			<p class="comment">选中后，当响应的报头中有Set-Cookie时不缓存响应内容，防止动态内容被缓存。</p>
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
@@ -1983,7 +1980,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 				<input type="checkbox" name="enableRequestCachePragma" value="1" v-model="ref.enableRequestCachePragma"/>
 				<label></label>
 			</div>
-			<p class="comment">选中后，当请求的Header中含有Pragma: no-cache或Cache-Control: no-cache时，会跳过缓存直接读取源内容。</p>
+			<p class="comment">选中后，当请求的报头中含有Pragma: no-cache或Cache-Control: no-cache时，会跳过缓存直接读取源内容，一般仅用于调试。</p>
 		</td>
 	</tr>	
 	<tr v-show="moreOptionsVisible && !vIsReverse">
@@ -3021,11 +3018,15 @@ example2.com
 	</div>
 	<div class="margin"></div>
 </div>`}),Vue.component("http-firewall-actions-box",{props:["v-actions","v-firewall-policy","v-action-configs","v-group-type"],mounted:function(){let o=this;Tea.action("/servers/iplists/levelOptions").success(function(e){o.ipListLevels=e.data.levels}).post(),this.loadJS(function(){let s=document.getElementById("actions-box");Sortable.create(s,{draggable:".label",handle:".icon.handle",onStart:function(){o.cancel()},onUpdate:function(e){let t=s.getElementsByClassName("label"),i=[];for(let e=0;e<t.length;e++){var n=parseInt(t[e].getAttribute("data-index"));i.push(o.configs[n])}o.configs=i}})})},data:function(){null==this.vFirewallPolicy.inbound&&(this.vFirewallPolicy.inbound={}),null==this.vFirewallPolicy.inbound.groups&&(this.vFirewallPolicy.inbound.groups=[]),null==this.vFirewallPolicy.outbound&&(this.vFirewallPolicy.outbound={}),null==this.vFirewallPolicy.outbound.groups&&(this.vFirewallPolicy.outbound.groups=[]);let t=0,e=[];null!=this.vActionConfigs&&(e=this.vActionConfigs).forEach(function(e){e.id=t++});var i=`<!DOCTYPE html>
-<html>
+<html lang="en">
 <title>403 Forbidden</title>
+	<style>
+		address { line-height: 1.8; }
+	</style>
 <body>
 <h1>403 Forbidden</h1>
-<address>Request ID: \${requestId}.</address>
+<address>Connection: \${remoteAddr} (Client) -&gt; \${serverAddr} (Server)</address>
+<address>Request ID: \${requestId}</address>
 </body>
 </html>`;return{id:t,actions:this.vActions,configs:e,isAdding:!1,editingIndex:-1,action:null,actionCode:"",actionOptions:{},ipListLevels:[],blockTimeout:"",blockTimeoutMax:"",blockScope:"global",captchaLife:"",captchaMaxFails:"",captchaFailBlockTimeout:"",get302Life:"",post307Life:"",recordIPType:"black",recordIPLevel:"critical",recordIPTimeout:"",recordIPListId:0,recordIPListName:"",tagTags:[],pageStatus:403,pageBody:i,defaultPageBody:i,redirectStatus:307,redirectURL:"",goGroupName:"",goGroupId:0,goGroup:null,goSetId:0,goSetName:"",jsCookieLife:"",jsCookieMaxFails:"",jsCookieFailBlockTimeout:"",statusOptions:[{code:301,text:"Moved Permanently"},{code:308,text:"Permanent Redirect"},{code:302,text:"Found"},{code:303,text:"See Other"},{code:307,text:"Temporary Redirect"}]}},watch:{actionCode:function(i){this.action=this.actions.$find(function(e,t){return t.code==i}),this.actionOptions={}},blockTimeout:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.timeout=0:this.actionOptions.timeout=e},blockTimeoutMax:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.timeoutMax=0:this.actionOptions.timeoutMax=e},blockScope:function(e){this.actionOptions.scope=e},captchaLife:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.life=0:this.actionOptions.life=e},captchaMaxFails:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.maxFails=0:this.actionOptions.maxFails=e},captchaFailBlockTimeout:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.failBlockTimeout=0:this.actionOptions.failBlockTimeout=e},get302Life:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.life=0:this.actionOptions.life=e},post307Life:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.life=0:this.actionOptions.life=e},recordIPType:function(e){this.recordIPListId=0},recordIPTimeout:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.timeout=0:this.actionOptions.timeout=e},goGroupId:function(i){let e=this.vFirewallPolicy.inbound.groups.$find(function(e,t){return t.id==i});null==(this.goGroup=e)?null==(e=this.vFirewallPolicy.outbound.groups.$find(function(e,t){return t.id==i}))?this.goGroupName="":(this.goGroup=e,this.goGroupName=e.name):this.goGroupName=e.name,this.goSetId=0,this.goSetName=""},goSetId:function(i){var e;null!=this.goGroup&&(null==(e=this.goGroup.sets.$find(function(e,t){return t.id==i}))?(this.goSetId=0,this.goSetName=""):this.goSetName=e.name)},jsCookieLife:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.life=0:this.actionOptions.life=e},jsCookieMaxFails:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.maxFails=0:this.actionOptions.maxFails=e},jsCookieFailBlockTimeout:function(e){e=parseInt(e),isNaN(e)?this.actionOptions.failBlockTimeout=0:this.actionOptions.failBlockTimeout=e}},methods:{add:function(){this.action=null,this.actionCode="block",this.isAdding=!0,this.actionOptions={},this.blockTimeout="",this.blockTimeoutMax="",this.blockScope="global",this.captchaLife="",this.captchaMaxFails="",this.captchaFailBlockTimeout="",this.jsCookieLife="",this.jsCookieMaxFails="",this.jsCookieFailBlockTimeout="",this.get302Life="",this.post307Life="",this.recordIPLevel="critical",this.recordIPType="black",this.recordIPTimeout="",this.recordIPListId=0,this.recordIPListName="",this.tagTags=[],this.pageStatus=403,this.pageBody=this.defaultPageBody,this.redirectStatus=307,this.redirectURL="",this.goGroupName="",this.goGroupId=0,this.goGroup=null,this.goSetId=0,this.goSetName="";let i=this;this.action=this.vActions.$find(function(e,t){return t.code==i.actionCode}),this.scroll()},remove:function(e){this.isAdding=!1,this.editingIndex=-1,this.configs.$remove(e)},update:function(e,i){if(this.isAdding&&this.editingIndex==e)this.cancel();else{switch(this.add(),this.isAdding=!0,this.editingIndex=e,this.actionCode=i.code,i.code){case"block":this.blockTimeout="",this.blockTimeoutMax="",(null!=i.options.timeout||0<i.options.timeout)&&(this.blockTimeout=i.options.timeout.toString()),(null!=i.options.timeoutMax||0<i.options.timeoutMax)&&(this.blockTimeoutMax=i.options.timeoutMax.toString()),null!=i.options.scope&&0<i.options.scope.length?this.blockScope=i.options.scope:this.blockScope="global";break;case"allow":case"log":break;case"captcha":this.captchaLife="",(null!=i.options.life||0<i.options.life)&&(this.captchaLife=i.options.life.toString()),this.captchaMaxFails="",(null!=i.options.maxFails||0<i.options.maxFails)&&(this.captchaMaxFails=i.options.maxFails.toString()),this.captchaFailBlockTimeout="",(null!=i.options.failBlockTimeout||0<i.options.failBlockTimeout)&&(this.captchaFailBlockTimeout=i.options.failBlockTimeout.toString());break;case"js_cookie":this.jsCookieLife="",(null!=i.options.life||0<i.options.life)&&(this.jsCookieLife=i.options.life.toString()),this.jsCookieMaxFails="",(null!=i.options.maxFails||0<i.options.maxFails)&&(this.jsCookieMaxFails=i.options.maxFails.toString()),this.jsCookieFailBlockTimeout="",(null!=i.options.failBlockTimeout||0<i.options.failBlockTimeout)&&(this.jsCookieFailBlockTimeout=i.options.failBlockTimeout.toString());break;case"notify":break;case"get_302":this.get302Life="",(null!=i.options.life||0<i.options.life)&&(this.get302Life=i.options.life.toString());break;case"post_307":this.post307Life="",(null!=i.options.life||0<i.options.life)&&(this.post307Life=i.options.life.toString());break;case"record_ip":if(null!=i.options){this.recordIPLevel=i.options.level,this.recordIPType=i.options.type,0<i.options.timeout&&(this.recordIPTimeout=i.options.timeout.toString());let e=this;setTimeout(function(){e.recordIPListId=i.options.ipListId,e.recordIPListName=i.options.ipListName})}break;case"tag":this.tagTags=[],null!=i.options.tags&&(this.tagTags=i.options.tags);break;case"page":this.pageStatus=403,this.pageBody=this.defaultPageBody,null!=i.options.status&&(this.pageStatus=i.options.status),null!=i.options.body&&(this.pageBody=i.options.body);break;case"redirect":this.redirectStatus=307,this.redirectURL="",null!=i.options.status&&(this.redirectStatus=i.options.status),null!=i.options.url&&(this.redirectURL=i.options.url);break;case"go_group":null!=i.options&&(this.goGroupName=i.options.groupName,this.goGroupId=i.options.groupId,this.goGroup=this.vFirewallPolicy.inbound.groups.$find(function(e,t){return t.id==i.options.groupId}));break;case"go_set":if(null!=i.options){this.goGroupName=i.options.groupName,this.goGroupId=i.options.groupId,this.goGroup=this.vFirewallPolicy.inbound.groups.$find(function(e,t){return t.id==i.options.groupId});let t=this;setTimeout(function(){var e;t.goSetId=i.options.setId,null!=t.goGroup&&null!=(e=t.goGroup.sets.$find(function(e,t){return t.id==i.options.setId}))&&(t.goSetName=e.name)})}}this.scroll()}},cancel:function(){this.isAdding=!1,this.editingIndex=-1},confirm:function(){if(null!=this.action){if(null==this.actionOptions&&(this.actionOptions={}),"record_ip"==this.actionCode){let e=parseInt(this.recordIPTimeout);if(isNaN(e)&&(e=0),this.recordIPListId<=0)return;this.actionOptions={type:this.recordIPType,level:this.recordIPLevel,timeout:e,ipListId:this.recordIPListId,ipListName:this.recordIPListName}}else if("tag"==this.actionCode){if(null==this.tagTags||0==this.tagTags.length)return;this.actionOptions={tags:this.tagTags}}else if("page"==this.actionCode){let e=this.pageStatus.toString();e=e.match(/^\d{3}$/)?parseInt(e):403,this.actionOptions={status:e,body:this.pageBody}}else if("redirect"==this.actionCode){let e=this.redirectStatus.toString();if(e=e.match(/^\d{3}$/)?parseInt(e):307,0==this.redirectURL.length)return void teaweb.warn("请输入跳转到URL");this.actionOptions={status:e,url:this.redirectURL}}else if("go_group"==this.actionCode){let e=this.goGroupId;if("string"==typeof e&&(e=parseInt(e),isNaN(e)&&(e=0)),e<=0)return;this.actionOptions={groupId:e.toString(),groupName:this.goGroupName}}else if("go_set"==this.actionCode){let e=this.goGroupId,t=("string"==typeof e&&(e=parseInt(e),isNaN(e)&&(e=0)),this.goSetId);if("string"==typeof t&&(t=parseInt(t),isNaN(t)&&(t=0)),t<=0)return;this.actionOptions={groupId:e.toString(),groupName:this.goGroupName,setId:t.toString(),setName:this.goSetName}}let e={};for(var t in this.actionOptions)this.actionOptions.hasOwnProperty(t)&&(e[t]=this.actionOptions[t]);-1<this.editingIndex?this.configs[this.editingIndex]={id:this.configs[this.editingIndex].id,code:this.actionCode,name:this.action.name,options:e}:this.configs.push({id:this.id++,code:this.actionCode,name:this.action.name,options:e}),this.cancel()}},removeRecordIPList:function(){this.recordIPListId=0},selectRecordIPList:function(){let t=this;teaweb.popup("/servers/iplists/selectPopup?type="+this.recordIPType,{width:"50em",height:"30em",callback:function(e){t.recordIPListId=e.data.list.id,t.recordIPListName=e.data.list.name}})},changeTags:function(e){this.tagTags=e},loadJS:function(t){if("undefined"!=typeof Sortable)t();else{let e=document.createElement("script");e.setAttribute("src","/js/sortable.min.js"),e.addEventListener("load",function(){t()}),document.head.appendChild(e)}},scroll:function(){setTimeout(function(){let e=document.getElementsByClassName("main");0<e.length&&e[0].scrollTo(0,1e3)},10)}},template:`<div>
 	<input type="hidden" name="actionsJSON" :value="JSON.stringify(configs)"/>
@@ -3586,17 +3587,21 @@ example2.com
 		<span v-if="count > 0"><a href="" @click.prevent="select">[选择已有策略]</a> &nbsp; &nbsp; </span><a href="" @click.prevent="create">[创建新策略]</a>
 	</div>
 </div>`}),Vue.component("http-pages-and-shutdown-box",{props:["v-pages","v-shutdown-config","v-is-location"],data:function(){let e=[],t=(null!=this.vPages&&(e=this.vPages),{isPrior:!1,isOn:!1,bodyType:"html",url:"",body:"",status:0}),i=(null!=this.vShutdownConfig&&(null==this.vShutdownConfig.body&&(this.vShutdownConfig.body=""),null==this.vShutdownConfig.bodyType&&(this.vShutdownConfig.bodyType="html"),t=this.vShutdownConfig),"");return 0<t.status&&(i=t.status.toString()),{pages:e,shutdownConfig:t,shutdownStatus:i}},watch:{shutdownStatus:function(e){e=parseInt(e);!isNaN(e)&&0<e&&e<1e3?this.shutdownConfig.status=e:this.shutdownConfig.status=0}},methods:{addPage:function(){let t=this;teaweb.popup("/servers/server/settings/pages/createPopup",{height:"26em",callback:function(e){t.pages.push(e.data.page)}})},updatePage:function(t,e){let i=this;teaweb.popup("/servers/server/settings/pages/updatePopup?pageId="+e,{height:"26em",callback:function(e){Vue.set(i.pages,t,e.data.page)}})},removePage:function(e){let t=this;teaweb.confirm("确定要移除此页面吗？",function(){t.pages.$remove(e)})},addShutdownHTMLTemplate:function(){this.shutdownConfig.body=`<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<title>升级中</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<style>
+		address { line-height: 1.8; }
+	</style>
 </head>
 <body>
 
 <h1>网站升级中</h1>
 <p>为了给您提供更好的服务，我们正在升级网站，请稍后重新访问。</p>
 
-<address>Request ID: \${requestId}.</address>
+<address>Connection: \${remoteAddr} (Client) -&gt; \${serverAddr} (Server)</address>
+<address>Request ID: \${requestId}</address>
 
 </body>
 </html>`}},template:`<div>
@@ -4000,7 +4005,7 @@ example2.com
 		<span v-if="accessLog.requestTime != null"> - 耗时:{{formatCost(accessLog.requestTime)}} ms </span><span v-if="accessLog.humanTime != null && accessLog.humanTime.length > 0" class="grey small">&nbsp; ({{accessLog.humanTime}})</span>
 		&nbsp; <a href="" @click.prevent="showLog" title="查看详情"><i class="icon expand"></i></a>
 	</div>
-</div>`});var punycode=new function(){this.utf16={decode:function(e){for(var t,i,n=[],s=0,o=e.length;s<o;){if(55296==(63488&(t=e.charCodeAt(s++)))){if(i=e.charCodeAt(s++),55296!=(64512&t)||56320!=(64512&i))throw new RangeError("UTF-16(decode): Illegal UTF-16 sequence");t=((1023&t)<<10)+(1023&i)+65536}n.push(t)}return n},encode:function(e){for(var t,i=[],n=0,s=e.length;n<s;){if(55296==(63488&(t=e[n++])))throw new RangeError("UTF-16(encode): Illegal UTF-16 value");65535<t&&(t-=65536,i.push(String.fromCharCode(t>>>10&1023|55296)),t=56320|1023&t),i.push(String.fromCharCode(t))}return i.join("")}};var b=2147483647;function y(e,t){return e+22+75*(e<26)-((0!=t)<<5)}function x(e,t,i){var n;for(e=i?Math.floor(e/700):e>>1,e+=Math.floor(e/t),n=0;455<e;n+=36)e=Math.floor(e/35);return Math.floor(n+36*e/(e+38))}this.decode=function(e,t){var i,n,s,o,a,l,r,c,d=[],p=[],u=e.length,h=128,v=0,m=72,f=e.lastIndexOf("-");for(f<0&&(f=0),n=0;n<f;++n){if(t&&(p[d.length]=e.charCodeAt(n)-65<26),128<=e.charCodeAt(n))throw new RangeError("Illegal input >= 0x80");d.push(e.charCodeAt(n))}for(s=0<f?f+1:0;s<u;){for(o=v,a=1,l=36;;l+=36){if(u<=s)throw RangeError("punycode_bad_input(1)");if(36<=(c=(c=e.charCodeAt(s++))-48<10?c-22:c-65<26?c-65:c-97<26?c-97:36))throw RangeError("punycode_bad_input(2)");if(c>Math.floor((b-v)/a))throw RangeError("punycode_overflow(1)");if(v+=c*a,c<(c=l<=m?1:m+26<=l?26:l-m))break;if(a>Math.floor(b/(36-c)))throw RangeError("punycode_overflow(2)");a*=36-c}if(m=x(v-o,i=d.length+1,0===o),Math.floor(v/i)>b-h)throw RangeError("punycode_overflow(3)");h+=Math.floor(v/i),v%=i,t&&p.splice(v,0,e.charCodeAt(s-1)-65<26),d.splice(v,0,h),v++}if(t)for(v=0,r=d.length;v<r;v++)p[v]&&(d[v]=String.fromCharCode(d[v]).toUpperCase().charCodeAt(0));return this.utf16.encode(d)},this.encode=function(e,t){t&&(c=this.utf16.decode(e));var i,n,s,o,a,l,r,c,d=(e=this.utf16.decode(e.toLowerCase())).length;if(t)for(g=0;g<d;g++)c[g]=e[g]!=c[g];for(var p,u,h=[],v=128,m=0,f=72,g=0;g<d;++g)e[g]<128&&h.push(String.fromCharCode(c?(p=e[g],u=c[g],(p-=(p-97<26)<<5)+((!u&&p-65<26)<<5)):e[g]));for(i=n=h.length,0<n&&h.push("-");i<d;){for(s=b,g=0;g<d;++g)v<=(r=e[g])&&r<s&&(s=r);if(s-v>Math.floor((b-m)/(i+1)))throw RangeError("punycode_overflow (1)");for(m+=(s-v)*(i+1),v=s,g=0;g<d;++g){if((r=e[g])<v&&++m>b)return Error("punycode_overflow(2)");if(r==v){for(o=m,a=36;!(o<(l=a<=f?1:f+26<=a?26:a-f));a+=36)h.push(String.fromCharCode(y(l+(o-l)%(36-l),0))),o=Math.floor((o-l)/(36-l));h.push(String.fromCharCode(y(o,t&&c[g]?1:0))),f=x(m,i+1,i==n),m=0,++i}}++m,++v}return h.join("")},this.ToASCII=function(e){for(var t=e.split("."),i=[],n=0;n<t.length;++n){var s=t[n];i.push(s.match(/[^A-Za-z0-9-]/)?"xn--"+punycode.encode(s):s)}return i.join(".")},this.ToUnicode=function(e){for(var t=e.split("."),i=[],n=0;n<t.length;++n){var s=t[n];i.push(s.match(/^xn--/)?punycode.decode(s.slice(4)):s)}return i.join(".")}};function sortTable(s){let e=document.createElement("script");e.setAttribute("src","/js/sortable.min.js"),e.addEventListener("load",function(){let n=document.querySelector("#sortable-table");null!=n&&Sortable.create(n,{draggable:"tbody",handle:".icon.handle",onStart:function(){},onUpdate:function(e){let t=n.querySelectorAll("tbody"),i=[];t.forEach(function(e){i.push(parseInt(e.getAttribute("v-id")))}),s(i)}})}),document.head.appendChild(e)}function sortLoad(e){let t=document.createElement("script");t.setAttribute("src","/js/sortable.min.js"),t.addEventListener("load",function(){"function"==typeof e&&e()}),document.head.appendChild(t)}function emitClick(e,arguments){let t=["click"];for(let e=0;e<arguments.length;e++)t.push(arguments[e]);e.$emit.apply(e,t)}Vue.component("http-firewall-block-options-viewer",{props:["v-block-options"],data:function(){return{options:this.vBlockOptions}},template:`<div>
+</div>`});var punycode=new function(){this.utf16={decode:function(e){for(var t,i,n=[],s=0,o=e.length;s<o;){if(55296==(63488&(t=e.charCodeAt(s++)))){if(i=e.charCodeAt(s++),55296!=(64512&t)||56320!=(64512&i))throw new RangeError("UTF-16(decode): Illegal UTF-16 sequence");t=((1023&t)<<10)+(1023&i)+65536}n.push(t)}return n},encode:function(e){for(var t,i=[],n=0,s=e.length;n<s;){if(55296==(63488&(t=e[n++])))throw new RangeError("UTF-16(encode): Illegal UTF-16 value");65535<t&&(t-=65536,i.push(String.fromCharCode(t>>>10&1023|55296)),t=56320|1023&t),i.push(String.fromCharCode(t))}return i.join("")}};var b=2147483647;function y(e,t){return e+22+75*(e<26)-((0!=t)<<5)}function x(e,t,i){var n;for(e=i?Math.floor(e/700):e>>1,e+=Math.floor(e/t),n=0;455<e;n+=36)e=Math.floor(e/35);return Math.floor(n+36*e/(e+38))}this.decode=function(e,t){var i,n,s,o,a,l,r,c,d=[],p=[],u=e.length,h=128,m=0,v=72,f=e.lastIndexOf("-");for(f<0&&(f=0),n=0;n<f;++n){if(t&&(p[d.length]=e.charCodeAt(n)-65<26),128<=e.charCodeAt(n))throw new RangeError("Illegal input >= 0x80");d.push(e.charCodeAt(n))}for(s=0<f?f+1:0;s<u;){for(o=m,a=1,l=36;;l+=36){if(u<=s)throw RangeError("punycode_bad_input(1)");if(36<=(c=(c=e.charCodeAt(s++))-48<10?c-22:c-65<26?c-65:c-97<26?c-97:36))throw RangeError("punycode_bad_input(2)");if(c>Math.floor((b-m)/a))throw RangeError("punycode_overflow(1)");if(m+=c*a,c<(c=l<=v?1:v+26<=l?26:l-v))break;if(a>Math.floor(b/(36-c)))throw RangeError("punycode_overflow(2)");a*=36-c}if(v=x(m-o,i=d.length+1,0===o),Math.floor(m/i)>b-h)throw RangeError("punycode_overflow(3)");h+=Math.floor(m/i),m%=i,t&&p.splice(m,0,e.charCodeAt(s-1)-65<26),d.splice(m,0,h),m++}if(t)for(m=0,r=d.length;m<r;m++)p[m]&&(d[m]=String.fromCharCode(d[m]).toUpperCase().charCodeAt(0));return this.utf16.encode(d)},this.encode=function(e,t){t&&(c=this.utf16.decode(e));var i,n,s,o,a,l,r,c,d=(e=this.utf16.decode(e.toLowerCase())).length;if(t)for(g=0;g<d;g++)c[g]=e[g]!=c[g];for(var p,u,h=[],m=128,v=0,f=72,g=0;g<d;++g)e[g]<128&&h.push(String.fromCharCode(c?(p=e[g],u=c[g],(p-=(p-97<26)<<5)+((!u&&p-65<26)<<5)):e[g]));for(i=n=h.length,0<n&&h.push("-");i<d;){for(s=b,g=0;g<d;++g)m<=(r=e[g])&&r<s&&(s=r);if(s-m>Math.floor((b-v)/(i+1)))throw RangeError("punycode_overflow (1)");for(v+=(s-m)*(i+1),m=s,g=0;g<d;++g){if((r=e[g])<m&&++v>b)return Error("punycode_overflow(2)");if(r==m){for(o=v,a=36;!(o<(l=a<=f?1:f+26<=a?26:a-f));a+=36)h.push(String.fromCharCode(y(l+(o-l)%(36-l),0))),o=Math.floor((o-l)/(36-l));h.push(String.fromCharCode(y(o,t&&c[g]?1:0))),f=x(v,i+1,i==n),v=0,++i}}++v,++m}return h.join("")},this.ToASCII=function(e){for(var t=e.split("."),i=[],n=0;n<t.length;++n){var s=t[n];i.push(s.match(/[^A-Za-z0-9-]/)?"xn--"+punycode.encode(s):s)}return i.join(".")},this.ToUnicode=function(e){for(var t=e.split("."),i=[],n=0;n<t.length;++n){var s=t[n];i.push(s.match(/^xn--/)?punycode.decode(s.slice(4)):s)}return i.join(".")}};function sortTable(s){let e=document.createElement("script");e.setAttribute("src","/js/sortable.min.js"),e.addEventListener("load",function(){let n=document.querySelector("#sortable-table");null!=n&&Sortable.create(n,{draggable:"tbody",handle:".icon.handle",onStart:function(){},onUpdate:function(e){let t=n.querySelectorAll("tbody"),i=[];t.forEach(function(e){i.push(parseInt(e.getAttribute("v-id")))}),s(i)}})}),document.head.appendChild(e)}function sortLoad(e){let t=document.createElement("script");t.setAttribute("src","/js/sortable.min.js"),t.addEventListener("load",function(){"function"==typeof e&&e()}),document.head.appendChild(t)}function emitClick(e,arguments){let t=["click"];for(let e=0;e<arguments.length;e++)t.push(arguments[e]);e.$emit.apply(e,t)}Vue.component("http-firewall-block-options-viewer",{props:["v-block-options"],data:function(){return{options:this.vBlockOptions}},template:`<div>
 	<span v-if="options == null">默认设置</span>
 	<div v-else>
 		状态码：{{options.statusCode}} / 提示内容：<span v-if="options.body != null && options.body.length > 0">[{{options.body.length}}字符]</span><span v-else class="disabled">[无]</span>  / 超时时间：{{options.timeout}}秒 <span v-if="options.timeoutMax > options.timeout">/ 最大封禁时长：{{options.timeoutMax}}秒</span>
@@ -4094,12 +4099,6 @@ example2.com
         </table>
     </div>
 	<div class="margin"></div>
-</div>`}),Vue.component("traffic-limit-view",{props:["v-traffic-limit"],data:function(){return{config:this.vTrafficLimit}},template:`<div>
-	<div v-if="config.isOn">
-		<span v-if="config.dailySize != null && config.dailySize.count > 0">日流量限制：{{config.dailySize.count}}{{config.dailySize.unit.toUpperCase()}}<br/></span>
-		<span v-if="config.monthlySize != null && config.monthlySize.count > 0">月流量限制：{{config.monthlySize.count}}{{config.monthlySize.unit.toUpperCase()}}<br/></span>
-	</div>
-	<span v-else class="disabled">没有限制。</span>
 </div>`}),Vue.component("http-auth-basic-auth-user-box",{props:["v-users"],data:function(){let e=this.vUsers;return{users:e=null==e?[]:e,isAdding:!1,updatingIndex:-1,username:"",password:""}},methods:{add:function(){this.isAdding=!0,this.username="",this.password="";let e=this;setTimeout(function(){e.$refs.username.focus()},100)},cancel:function(){this.isAdding=!1,this.updatingIndex=-1},confirm:function(){let e=this;0==this.username.length?teaweb.warn("请输入用户名",function(){e.$refs.username.focus()}):0==this.password.length?teaweb.warn("请输入密码",function(){e.$refs.password.focus()}):(this.updatingIndex<0?this.users.push({username:this.username,password:this.password}):(this.users[this.updatingIndex].username=this.username,this.users[this.updatingIndex].password=this.password),this.cancel())},update:function(e,t){this.updatingIndex=e,this.isAdding=!0,this.username=t.username,this.password=t.password;let i=this;setTimeout(function(){i.$refs.username.focus()},100)},remove:function(e){this.users.$remove(e)}},template:`<div>
 	<input type="hidden" name="httpAuthBasicAuthUsersJSON" :value="JSON.stringify(users)"/>
 	<div v-if="users.length > 0">
@@ -4276,7 +4275,7 @@ example2.com
 		</div>
 	</div>
 </div>`}),Vue.component("http-firewall-captcha-options-viewer",{props:["v-captcha-options"],mounted:function(){this.updateSummary()},data:function(){let e=this.vCaptchaOptions;return{options:e=null==e?{life:0,maxFails:0,failBlockTimeout:0,failBlockScopeAll:!1,uiIsOn:!1,uiTitle:"",uiPrompt:"",uiButtonTitle:"",uiShowRequestId:!1,uiCss:"",uiFooter:"",uiBody:"",cookieId:"",lang:""}:e,summary:""}},methods:{updateSummary:function(){let e=[];0<this.options.life&&e.push("有效时间"+this.options.life+"秒"),0<this.options.maxFails&&e.push("最多失败"+this.options.maxFails+"次"),0<this.options.failBlockTimeout&&e.push("失败拦截"+this.options.failBlockTimeout+"秒"),this.options.failBlockScopeAll&&e.push("全局封禁"),this.options.uiIsOn&&e.push("定制UI"),0==e.length?this.summary="默认配置":this.summary=e.join(" / ")}},template:`<div>{{summary}}</div>
-`}),Vue.component("reverse-proxy-box",{props:["v-reverse-proxy-ref","v-reverse-proxy-config","v-is-location","v-is-group","v-family"],data:function(){let e=this.vReverseProxyRef,t=(null==e&&(e={isPrior:!1,isOn:!1,reverseProxyId:0}),this.vReverseProxyConfig),i=(null==(t=null==t?{requestPath:"",stripPrefix:"",requestURI:"",requestHost:"",requestHostType:0,requestHostExcludingPort:!1,addHeaders:[],connTimeout:{count:0,unit:"second"},readTimeout:{count:0,unit:"second"},idleTimeout:{count:0,unit:"second"},maxConns:0,maxIdleConns:0,followRedirects:!1}:t).addHeaders&&(t.addHeaders=[]),null==t.connTimeout&&(t.connTimeout={count:0,unit:"second"}),null==t.readTimeout&&(t.readTimeout={count:0,unit:"second"}),null==t.idleTimeout&&(t.idleTimeout={count:0,unit:"second"}),null==t.proxyProtocol&&Vue.set(t,"proxyProtocol",{isOn:!1,version:1}),[{name:"X-Real-IP",isChecked:!1},{name:"X-Forwarded-For",isChecked:!1},{name:"X-Forwarded-By",isChecked:!1},{name:"X-Forwarded-Host",isChecked:!1},{name:"X-Forwarded-Proto",isChecked:!1}]);return i.forEach(function(e){e.isChecked=t.addHeaders.$contains(e.name)}),{reverseProxyRef:e,reverseProxyConfig:t,advancedVisible:!1,family:this.vFamily,forwardHeaders:i}},watch:{"reverseProxyConfig.requestHostType":function(e){let t=parseInt(e);isNaN(t)&&(t=0),this.reverseProxyConfig.requestHostType=t},"reverseProxyConfig.connTimeout.count":function(e){let t=parseInt(e);(isNaN(t)||t<0)&&(t=0),this.reverseProxyConfig.connTimeout.count=t},"reverseProxyConfig.readTimeout.count":function(e){let t=parseInt(e);(isNaN(t)||t<0)&&(t=0),this.reverseProxyConfig.readTimeout.count=t},"reverseProxyConfig.idleTimeout.count":function(e){let t=parseInt(e);(isNaN(t)||t<0)&&(t=0),this.reverseProxyConfig.idleTimeout.count=t},"reverseProxyConfig.maxConns":function(e){let t=parseInt(e);(isNaN(t)||t<0)&&(t=0),this.reverseProxyConfig.maxConns=t},"reverseProxyConfig.maxIdleConns":function(e){let t=parseInt(e);(isNaN(t)||t<0)&&(t=0),this.reverseProxyConfig.maxIdleConns=t},"reverseProxyConfig.proxyProtocol.version":function(e){let t=parseInt(e);isNaN(t)&&(t=1),this.reverseProxyConfig.proxyProtocol.version=t}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.reverseProxyRef.isPrior)&&this.reverseProxyRef.isOn},changeAdvancedVisible:function(e){this.advancedVisible=e},changeAddHeader:function(){this.reverseProxyConfig.addHeaders=this.forwardHeaders.filter(function(e){return e.isChecked}).map(function(e){return e.name})}},template:`<div>
+`}),Vue.component("reverse-proxy-box",{props:["v-reverse-proxy-ref","v-reverse-proxy-config","v-is-location","v-is-group","v-family"],data:function(){let e=this.vReverseProxyRef,t=(null==e&&(e={isPrior:!1,isOn:!1,reverseProxyId:0}),this.vReverseProxyConfig),i=(null==(t=null==t?{requestPath:"",stripPrefix:"",requestURI:"",requestHost:"",requestHostType:0,requestHostExcludingPort:!1,addHeaders:[],connTimeout:{count:0,unit:"second"},readTimeout:{count:0,unit:"second"},idleTimeout:{count:0,unit:"second"},maxConns:0,maxIdleConns:0,followRedirects:!1,retry50X:!0}:t).addHeaders&&(t.addHeaders=[]),null==t.connTimeout&&(t.connTimeout={count:0,unit:"second"}),null==t.readTimeout&&(t.readTimeout={count:0,unit:"second"}),null==t.idleTimeout&&(t.idleTimeout={count:0,unit:"second"}),null==t.proxyProtocol&&Vue.set(t,"proxyProtocol",{isOn:!1,version:1}),[{name:"X-Real-IP",isChecked:!1},{name:"X-Forwarded-For",isChecked:!1},{name:"X-Forwarded-By",isChecked:!1},{name:"X-Forwarded-Host",isChecked:!1},{name:"X-Forwarded-Proto",isChecked:!1}]);return i.forEach(function(e){e.isChecked=t.addHeaders.$contains(e.name)}),{reverseProxyRef:e,reverseProxyConfig:t,advancedVisible:!1,family:this.vFamily,forwardHeaders:i}},watch:{"reverseProxyConfig.requestHostType":function(e){let t=parseInt(e);isNaN(t)&&(t=0),this.reverseProxyConfig.requestHostType=t},"reverseProxyConfig.connTimeout.count":function(e){let t=parseInt(e);(isNaN(t)||t<0)&&(t=0),this.reverseProxyConfig.connTimeout.count=t},"reverseProxyConfig.readTimeout.count":function(e){let t=parseInt(e);(isNaN(t)||t<0)&&(t=0),this.reverseProxyConfig.readTimeout.count=t},"reverseProxyConfig.idleTimeout.count":function(e){let t=parseInt(e);(isNaN(t)||t<0)&&(t=0),this.reverseProxyConfig.idleTimeout.count=t},"reverseProxyConfig.maxConns":function(e){let t=parseInt(e);(isNaN(t)||t<0)&&(t=0),this.reverseProxyConfig.maxConns=t},"reverseProxyConfig.maxIdleConns":function(e){let t=parseInt(e);(isNaN(t)||t<0)&&(t=0),this.reverseProxyConfig.maxIdleConns=t},"reverseProxyConfig.proxyProtocol.version":function(e){let t=parseInt(e);isNaN(t)&&(t=1),this.reverseProxyConfig.proxyProtocol.version=t}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.reverseProxyRef.isPrior)&&this.reverseProxyRef.isOn},changeAdvancedVisible:function(e){this.advancedVisible=e},changeAddHeader:function(){this.reverseProxyConfig.addHeaders=this.forwardHeaders.filter(function(e){return e.isChecked}).map(function(e){return e.name})}},template:`<div>
 	<input type="hidden" name="reverseProxyRefJSON" :value="JSON.stringify(reverseProxyRef)"/>
 	<input type="hidden" name="reverseProxyJSON" :value="JSON.stringify(reverseProxyConfig)"/>
 	<table class="ui table selectable definition">
@@ -4289,6 +4288,7 @@ example2.com
 						<input type="checkbox" v-model="reverseProxyRef.isOn"/>
 						<label></label>
 					</div>
+					<p class="comment">选中后，所有源站设置才会生效。</p>
 				</td>
 			</tr>
 			<tr v-show="family == null || family == 'http'">
@@ -4300,7 +4300,7 @@ example2.com
 					<div v-show="reverseProxyConfig.requestHostType == 2" style="margin-top: 0.8em">
 						<input type="text" placeholder="比如example.com" v-model="reverseProxyConfig.requestHost"/>
 					</div>
-					<p class="comment">请求源站时的Host，用于修改源站接收到的域名
+					<p class="comment">请求源站时的主机名（Host），用于修改源站接收到的域名
 					<span v-if="reverseProxyConfig.requestHostType == 0">，"跟随CDN域名"是指源站接收到的域名和当前CDN访问域名保持一致</span>
 					<span v-if="reverseProxyConfig.requestHostType == 1">，"跟随源站"是指源站接收到的域名仍然是填写的源站地址中的信息，不随代理服务域名改变而改变</span>					
 					<span v-if="reverseProxyConfig.requestHostType == 2">，自定义Host内容中支持请求变量</span>。</p>
@@ -4323,7 +4323,7 @@ example2.com
 				</td>
 			</tr>
 		    <tr v-show="family == null || family == 'http'">
-		        <td>自动添加的Header</td>
+		        <td>自动添加报头</td>
 		        <td>
 		            <div>
 		                <div style="width: 14em; float: left; margin-bottom: 1em" v-for="header in forwardHeaders" :key="header.name">
@@ -4331,7 +4331,7 @@ example2.com
                         </div>
                         <div style="clear: both"></div>
                     </div>
-                    <p class="comment">选中后，会自动向源站请求添加这些Header。</p>
+                    <p class="comment">选中后，会自动向源站请求添加这些报头，以便于源站获取客户端信息。</p>
                 </td> 
             </tr>
 			<tr v-show="family == null || family == 'http'">
@@ -4422,6 +4422,13 @@ example2.com
                     <p class="comment">源站保持等待的空闲超时时间，0表示使用默认时间。</p>
                 </td>
             </tr>
+            <tr v-show="family == null || family == 'http'">
+            	<td>自动重试50X</td>
+            	<td>
+            		<checkbox v-model="reverseProxyConfig.retry50X"></checkbox>
+            		<p class="comment">选中后，表示当源站返回状态码为50X（比如502、504）时，自动重试。</p>
+				</td>
+			</tr>
             <tr v-show="family != 'unix'">
             	<td>PROXY Protocol</td>
             	<td>
@@ -4469,7 +4476,7 @@ example2.com
 			<button class="ui button tiny" type="button" @click.prevent="add">+</button>
 		</div>
 		<p class="comment">可以对参数值进行特定的编解码处理。</p>
-</div>`}),Vue.component("http-remote-addr-config-box",{props:["v-remote-addr-config","v-is-location","v-is-group"],data:function(){let e=this.vRemoteAddrConfig,t="";return(e=null==e?{isPrior:!1,isOn:!1,value:"${rawRemoteAddr}",isCustomized:!1}:e).isCustomized||"${remoteAddr}"!=e.value&&"${rawRemoteAddr}"!=e.value||(t=e.value),{config:e,options:[{name:"直接获取",description:'用户直接访问边缘节点，即 "用户 --\x3e 边缘节点" 模式，这时候可以直接从连接中读取到真实的IP地址。',value:"${rawRemoteAddr}"},{name:"从上级代理中获取",description:'用户和边缘节点之间有别的代理服务转发，即 "用户 --\x3e [第三方代理服务] --\x3e 边缘节点"，这时候只能从上级代理中获取传递的IP地址。',value:"${remoteAddr}"},{name:"[自定义]",description:"通过自定义变量来获取客户端真实的IP地址。",value:""}],optionValue:t}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeOptionValue:function(){0<this.optionValue.length?(this.config.value=this.optionValue,this.config.isCustomized=!1):this.config.isCustomized=!0}},template:`<div>
+</div>`}),Vue.component("http-remote-addr-config-box",{props:["v-remote-addr-config","v-is-location","v-is-group"],data:function(){let e=this.vRemoteAddrConfig;if(null==(e=null==e?{isPrior:!1,isOn:!1,value:"${rawRemoteAddr}",type:"default",requestHeaderName:""}:e).type||0==e.type.length)switch(e.type="default",e.value){case"${rawRemoteAddr}":case"${remoteAddrValue}":e.type="default";break;case"${remoteAddr}":e.type="proxy";break;default:null!=e.value&&0<e.value.length&&(e.type="variable")}return null!=e.value&&0!=e.value.length||(e.value="${rawRemoteAddr}"),{config:e,options:[{name:"直接获取",description:'用户直接访问边缘节点，即 "用户 --\x3e 边缘节点" 模式，这时候系统会试图从直接的连接中读取到客户端IP地址。',value:"${rawRemoteAddr}",type:"default"},{name:"从上级代理中获取",description:'用户和边缘节点之间有别的代理服务转发，即 "用户 --\x3e [第三方代理服务] --\x3e 边缘节点"，这时候只能从上级代理中获取传递的IP地址；上级代理传递的请求报头中必须包含 X-Forwarded-For 或 X-Real-IP 信息。',value:"${remoteAddr}",type:"proxy"},{name:"从请求报头中读取",description:"从自定义请求报头读取客户端IP。",value:"",type:"requestHeader"},{name:"[自定义变量]",description:"通过自定义变量来获取客户端真实的IP地址。",value:"",type:"variable"}]}},watch:{"config.requestHeaderName":function(e){"requestHeader"==this.config.type&&(this.config.value="${header."+e.trim()+"}")}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeOptionType:function(){let e=this;switch(this.config.type){case"default":this.config.value="${rawRemoteAddr}";break;case"proxy":this.config.value="${remoteAddr}";break;case"requestHeader":this.config.value="",null!=this.requestHeaderName&&0<this.requestHeaderName.length&&(this.config.value="${header."+this.requestHeaderName+"}"),setTimeout(function(){e.$refs.requestHeaderInput.focus()});break;case"variable":this.config.value="${rawRemoteAddr}",setTimeout(function(){e.$refs.variableInput.focus()})}}},template:`<div>
 	<input type="hidden" name="remoteAddrJSON" :value="JSON.stringify(config)"/>
 	<table class="ui table definition selectable">
 		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
@@ -4481,7 +4488,7 @@ example2.com
 						<input type="checkbox" value="1" v-model="config.isOn"/>
 						<label></label>
 					</div>
-					<p class="comment">选中后表示使用自定义的请求变量获取客户端IP。</p>
+					<p class="comment">选中后，表示使用自定义的请求变量获取客户端IP。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -4489,20 +4496,28 @@ example2.com
 			<tr>
 				<td>获取IP方式 *</td>
 				<td>
-					<select class="ui dropdown auto-width" v-model="optionValue" @change="changeOptionValue">
-						<option v-for="option in options" :value="option.value">{{option.name}}</option>
+					<select class="ui dropdown auto-width" v-model="config.type" @change="changeOptionType">
+						<option v-for="option in options" :value="option.type">{{option.name}}</option>
 					</select>
-					<p class="comment" v-for="option in options" v-if="option.value == optionValue && option.description.length > 0">{{option.description}}</p>
+					<p class="comment" v-for="option in options" v-if="option.type == config.type && option.description.length > 0">{{option.description}}</p>
 				</td>
 			</tr>
-			<tr v-show="optionValue.length == 0">
+			
+			<!-- read from request header -->
+			<tr v-show="config.type == 'requestHeader'">
+				<td>请求报头 *</td>
+				<td>
+					<input type="text" name="requestHeaderName" v-model="config.requestHeaderName" maxlength="100" ref="requestHeaderInput"/>
+					<p class="comment">请输入包含有客户端IP的请求报头，需要注意大小写，常见的有<code-label>X-Forwarded-For</code-label>、<code-label>X-Real-IP</code-label>、<code-label>X-Client-IP</code-label>等。</p>
+				</td>
+			</tr>
+			
+			<!-- read from variable -->
+			<tr v-show="config.type == 'variable'">
 				<td>读取IP变量值 *</td>
 				<td>
-					<input type="hidden" v-model="config.value" maxlength="100"/>
-					<div v-if="optionValue == ''" style="margin-top: 1em">
-						<input type="text" v-model="config.value" maxlength="100"/>
-						<p class="comment">通过此变量获取用户的IP地址。具体可用的请求变量列表可参考官方网站文档。</p>
-					</div>
+					<input type="text" name="value" v-model="config.value" maxlength="100" ref="variableInput"/>
+					<p class="comment">通过此变量获取用户的IP地址。具体可用的请求变量列表可参考官方网站文档；比如通过报头传递IP的情形，可以使用<code-label>\${header.你的自定义报头}</code-label>（类似于<code-label>\${header.X-Forwarded-For}</code-label>，需要注意大小写规范）。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -4674,7 +4689,7 @@ example2.com
 		</tbody>
 	</table>
 	<div class="margin"></div>
-</div>`}),Vue.component("http-webp-config-box",{props:["v-webp-config","v-is-location","v-is-group","v-require-cache"],data:function(){let e=this.vWebpConfig;return null==(e=null==e?{isPrior:!1,isOn:!1,quality:50,minLength:{count:0,unit:"kb"},maxLength:{count:0,unit:"kb"},mimeTypes:["image/png","image/jpeg","image/bmp","image/x-ico","image/gif"],extensions:[".png",".jpeg",".jpg",".bmp",".ico"],conds:null}:e).mimeTypes&&(e.mimeTypes=[]),null==e.extensions&&(e.extensions=[]),{config:e,moreOptionsVisible:!1,quality:e.quality}},watch:{quality:function(e){let t=parseInt(e);isNaN(t)?t=90:t<1?t=1:100<t&&(t=100),this.config.quality=t}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeExtensions:function(i){i.forEach(function(e,t){0<e.length&&"."!=e[0]&&(i[t]="."+e)}),this.config.extensions=i},changeMimeTypes:function(e){this.config.mimeTypes=e},changeAdvancedVisible:function(){this.moreOptionsVisible=!this.moreOptionsVisible},changeConds:function(e){this.config.conds=e}},template:`<div>
+</div>`}),Vue.component("http-webp-config-box",{props:["v-webp-config","v-is-location","v-is-group","v-require-cache"],data:function(){let e=this.vWebpConfig;return null==(e=null==e?{isPrior:!1,isOn:!1,quality:50,minLength:{count:0,unit:"kb"},maxLength:{count:0,unit:"kb"},mimeTypes:["image/png","image/jpeg","image/bmp","image/x-ico"],extensions:[".png",".jpeg",".jpg",".bmp",".ico"],conds:null}:e).mimeTypes&&(e.mimeTypes=[]),null==e.extensions&&(e.extensions=[]),{config:e,moreOptionsVisible:!1,quality:e.quality}},watch:{quality:function(e){let t=parseInt(e);isNaN(t)?t=90:t<1?t=1:100<t&&(t=100),this.config.quality=t}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeExtensions:function(i){i.forEach(function(e,t){0<e.length&&"."!=e[0]&&(i[t]="."+e)}),this.config.extensions=i},changeMimeTypes:function(e){this.config.mimeTypes=e},changeAdvancedVisible:function(){this.moreOptionsVisible=!this.moreOptionsVisible},changeConds:function(e){this.config.conds=e}},template:`<div>
 	<input type="hidden" name="webpJSON" :value="JSON.stringify(config)"/>
 	<table class="ui table definition selectable">
 		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
@@ -4686,7 +4701,7 @@ example2.com
 						<input type="checkbox" value="1" v-model="config.isOn"/>
 						<label></label>
 					</div>
-					<p class="comment">选中后表示开启自动WebP压缩<span v-if="vRequireCache">；只有满足缓存条件的图片内容才会被转换</span>。</p>
+					<p class="comment">选中后表示开启自动WebP压缩；图片的宽和高均不能超过16383像素<span v-if="vRequireCache">；只有满足缓存条件的图片内容才会被转换</span>。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -4815,7 +4830,21 @@ example2.com
             <p class="comment">{{name}}参数名称，比如<code-label>?myBucketName=BUCKET-NAME</code-label>中的<code-label>myBucketName</code-label>。</p>
         </td>
 	</tr>
-</tbody>`}),Vue.component("http-request-cond-view",{props:["v-cond"],data:function(){return{cond:this.vCond,components:window.REQUEST_COND_COMPONENTS}},methods:{typeName:function(i){var e=this.components.$find(function(e,t){return t.type==i.type});return null!=e?e.name:i.param+" "+i.operator},updateConds:function(e,t){for(var i in t)t.hasOwnProperty(i)&&(this.cond[i]=t[i])},notifyChange:function(){}},template:`<div style="margin-bottom: 0.5em">
+</tbody>`}),Vue.component("http-request-scripts-config-box",{props:["vRequestScriptsConfig","v-is-location"],data:function(){let e=this.vRequestScriptsConfig;return{config:e=null==e?{}:e}},methods:{changeInitGroup:function(e){this.config.initGroup=e,this.$forceUpdate()},changeRequestGroup:function(e){this.config.requestGroup=e,this.$forceUpdate()}},template:`<div>
+	<input type="hidden" name="requestScriptsJSON" :value="JSON.stringify(config)"/>
+	<div class="margin"></div>
+	<h4 style="margin-bottom: 0">请求初始化</h4>
+	<p class="comment">在请求刚初始化时调用，此时自定义报头等尚未生效。</p>
+	<div>
+		<script-group-config-box :v-group="config.initGroup" @change="changeInitGroup" :v-is-location="vIsLocation"></script-group-config-box>
+	</div>
+	<h4 style="margin-bottom: 0">准备发送请求</h4>
+	<p class="comment">在准备执行请求或者转发请求之前调用，此时自定义报头、源站等已准备好。</p>
+	<div>
+		<script-group-config-box :v-group="config.requestGroup" @change="changeRequestGroup" :v-is-location="vIsLocation"></script-group-config-box>
+	</div>
+	<div class="margin"></div>
+</div>`}),Vue.component("http-request-cond-view",{props:["v-cond"],data:function(){return{cond:this.vCond,components:window.REQUEST_COND_COMPONENTS}},methods:{typeName:function(i){var e=this.components.$find(function(e,t){return t.type==i.type});return null!=e?e.name:i.param+" "+i.operator},updateConds:function(e,t){for(var i in t)t.hasOwnProperty(i)&&(this.cond[i]=t[i])},notifyChange:function(){}},template:`<div style="margin-bottom: 0.5em">
 	<span class="ui label small basic">
 		<var v-if="cond.type.length == 0 || cond.type == 'params'" style="font-style: normal">{{cond.param}} <var>{{cond.operator}}</var></var>
 		<var v-if="cond.type.length > 0 && cond.type != 'params'" style="font-style: normal">{{typeName(cond)}}: </var>
@@ -5245,7 +5274,7 @@ example2.com
 		</tbody>
 	</table>
 	<div class="margin"></div>
-</div>`}),Vue.component("http-firewall-captcha-options",{props:["v-captcha-options"],mounted:function(){this.updateSummary()},data:function(){let e=this.vCaptchaOptions;return(e=null==e?{countLetters:0,life:0,maxFails:0,failBlockTimeout:0,failBlockScopeAll:!1,uiIsOn:!1,uiTitle:"",uiPrompt:"",uiButtonTitle:"",uiShowRequestId:!0,uiCss:"",uiFooter:"",uiBody:"",cookieId:"",lang:""}:e).countLetters<=0&&(e.countLetters=6),{options:e,isEditing:!1,summary:""}},watch:{"options.countLetters":function(e){let t=parseInt(e,10);isNaN(t)||t<0?t=0:10<t&&(t=10),this.options.countLetters=t},"options.life":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.life=t,this.updateSummary()},"options.maxFails":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.maxFails=t,this.updateSummary()},"options.failBlockTimeout":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.failBlockTimeout=t,this.updateSummary()},"options.failBlockScopeAll":function(e){this.updateSummary()},"options.uiIsOn":function(e){this.updateSummary()}},methods:{edit:function(){this.isEditing=!this.isEditing},updateSummary:function(){let e=[];0<this.options.life&&e.push("有效时间"+this.options.life+"秒"),0<this.options.maxFails&&e.push("最多失败"+this.options.maxFails+"次"),0<this.options.failBlockTimeout&&e.push("失败拦截"+this.options.failBlockTimeout+"秒"),this.options.failBlockScopeAll&&e.push("全局封禁"),this.options.uiIsOn&&e.push("定制UI"),0==e.length?this.summary="默认配置":this.summary=e.join(" / ")},confirm:function(){this.isEditing=!1}},template:`<div>
+</div>`}),Vue.component("http-firewall-captcha-options",{props:["v-captcha-options"],mounted:function(){this.updateSummary()},data:function(){let e=this.vCaptchaOptions;return(e=null==e?{countLetters:0,life:0,maxFails:0,failBlockTimeout:0,failBlockScopeAll:!1,uiIsOn:!1,uiTitle:"",uiPrompt:"",uiButtonTitle:"",uiShowRequestId:!0,uiCss:"",uiFooter:"",uiBody:"",cookieId:"",lang:""}:e).countLetters<=0&&(e.countLetters=6),{options:e,isEditing:!1,summary:"",uiBodyWarning:""}},watch:{"options.countLetters":function(e){let t=parseInt(e,10);isNaN(t)||t<0?t=0:10<t&&(t=10),this.options.countLetters=t},"options.life":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.life=t,this.updateSummary()},"options.maxFails":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.maxFails=t,this.updateSummary()},"options.failBlockTimeout":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.failBlockTimeout=t,this.updateSummary()},"options.failBlockScopeAll":function(e){this.updateSummary()},"options.uiIsOn":function(e){this.updateSummary()},"options.uiBody":function(e){/<form(>|\s).+\$\{body}.*<\/form>/s.test(e)?this.uiBodyWarning="页面模板中不能使用<form></form>标签包裹${body}变量，否则将导致验证码表单无法提交。":this.uiBodyWarning=""}},methods:{edit:function(){this.isEditing=!this.isEditing},updateSummary:function(){let e=[];0<this.options.life&&e.push("有效时间"+this.options.life+"秒"),0<this.options.maxFails&&e.push("最多失败"+this.options.maxFails+"次"),0<this.options.failBlockTimeout&&e.push("失败拦截"+this.options.failBlockTimeout+"秒"),this.options.failBlockScopeAll&&e.push("全局封禁"),this.options.uiIsOn&&e.push("定制UI"),0==e.length?this.summary="默认配置":this.summary=e.join(" / ")},confirm:function(){this.isEditing=!1}},template:`<div>
 	<input type="hidden" name="captchaOptionsJSON" :value="JSON.stringify(options)"/>
 	<a href="" @click.prevent="edit">{{summary}} <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
 	<div v-show="isEditing" style="margin-top: 0.5em">
@@ -5346,7 +5375,7 @@ example2.com
 					<td class="color-border">页面模板</td>
 					<td>
 						<textarea spellcheck="false" rows="2" v-model="options.uiBody"></textarea>
-						<p class="comment"><span v-if="options.uiBody.length > 0 && options.uiBody.indexOf('\${body}') < 0 " class="red">模板中必须包含\${body}表示验证码表单！</span>整个页面的模板，支持HTML，其中必须使用<code-label>\${body}</code-label>变量代表验证码表单，否则将无法正常显示验证码。</p>
+						<p class="comment"><span v-if="uiBodyWarning.length > 0" class="red">警告：{{uiBodyWarning}}</span><span v-if="options.uiBody.length > 0 && options.uiBody.indexOf('\${body}') < 0 " class="red">模板中必须包含\${body}表示验证码表单！</span>整个页面的模板，支持HTML，其中必须使用<code-label>\${body}</code-label>变量代表验证码表单，否则将无法正常显示验证码。</p>
 					</td>
 				</tr>
 			</tbody>
@@ -5545,10 +5574,13 @@ example2.com
 					<keyword :v-word="keyword">{{item.ipFrom}}</keyword> <span> <span class="small red" v-if="item.isRead != null && !item.isRead">&nbsp;New&nbsp;</span>&nbsp;<a :href="'/servers/iplists?ip=' + item.ipFrom" v-if="vShowSearchButton" title="搜索此IP"><span><i class="icon search small" style="color: #ccc"></i></span></a></span>
 					<span v-if="item.ipTo.length > 0"> - <keyword :v-word="keyword">{{item.ipTo}}</keyword></span></span>
 					<span v-else class="disabled">*</span>
+					
 					<div v-if="item.region != null && item.region.length > 0">
 						<span class="grey small">{{item.region}}</span>
 						<span v-if="item.isp != null && item.isp.length > 0 && item.isp != '内网IP'" class="grey small"><span class="disabled">|</span> {{item.isp}}</span>
 					</div>
+					<div v-else-if="item.isp != null && item.isp.length > 0 && item.isp != '内网IP'"><span class="grey small">{{item.isp}}</span></div>
+				
 					<div v-if="item.createdTime != null">
 						<span class="small grey">添加于 {{item.createdTime}}
 							<span v-if="item.list != null && item.list.id > 0">
@@ -6034,7 +6066,7 @@ example2.com
 	<div class="content">
 		<slot></slot>
 	</div>
-</div>`}),Vue.component("digit-input",{props:["value","maxlength","size","min","max","required","placeholder"],mounted:function(){let e=this;setTimeout(function(){e.check()})},data:function(){let e=this.maxlength,t=(null==e&&(e=20),this.size);return null==t&&(t=6),{realValue:this.value,realMaxLength:e,realSize:t,isValid:!0}},watch:{realValue:function(e){this.notifyChange()}},methods:{notifyChange:function(){let e=parseInt(this.realValue.toString(),10);isNaN(e)&&(e=0),this.check(),this.$emit("input",e)},check:function(){var e;null!=this.realValue&&(e=this.realValue.toString(),/^\d+$/.test(e)?(e=parseInt(e,10),isNaN(e)?this.isValid=!1:this.required?this.isValid=(null==this.min||this.min<=e)&&(null==this.max||this.max>=e):this.isValid=0==e||(null==this.min||this.min<=e)&&(null==this.max||this.max>=e)):this.isValid=!1)}},template:'<input type="text" v-model="realValue" :maxlength="realMaxLength" :size="realSize" :class="{error: !this.isValid}" :placeholder="placeholder"/>'}),Vue.component("keyword",{props:["v-word"],data:function(){let e=this.vWord;e=null==e?"":(e=(e=(e=(e=(e=(e=(e=(e=(e=e.replace(/\)/g,"\\)")).replace(/\(/g,"\\(")).replace(/\+/g,"\\+")).replace(/\^/g,"\\^")).replace(/\$/g,"\\$")).replace(/\?/g,"\\?")).replace(/\*/g,"\\*")).replace(/\[/g,"\\[")).replace(/{/g,"\\{")).replace(/\./g,"\\.");let t=this.$slots.default[0].text;if(0<e.length){let i=this,n=[],s=0;t=t.replaceAll(new RegExp("("+e+")","ig"),function(e){s++;var e='<span style="border: 1px #ccc dashed; color: #ef4d58">'+i.encodeHTML(e)+"</span>",t="$TMP__KEY__"+s.toString()+"$";return n.push([t,e]),t}),t=this.encodeHTML(t),n.forEach(function(e){t=t.replace(e[0],e[1])})}else t=this.encodeHTML(t);return{word:e,text:t}},methods:{encodeHTML:function(e){return e=(e=(e=(e=e.replace(/&/g,"&amp;")).replace(/</g,"&lt;")).replace(/>/g,"&gt;")).replace(/"/g,"&quot;")}},template:'<span><span style="display: none"><slot></slot></span><span v-html="text"></span></span>'}),Vue.component("bits-var",{props:["v-bits"],data:function(){let e=this.vBits;return"number"!=typeof e&&(e=0),{format:teaweb.splitFormat(teaweb.formatBits(e))}},template:`<var class="normal">
+</div>`}),Vue.component("digit-input",{props:["value","maxlength","size","min","max","required","placeholder"],mounted:function(){let e=this;setTimeout(function(){e.check()})},data:function(){let e=this.maxlength,t=(null==e&&(e=20),this.size);return null==t&&(t=6),{realValue:this.value,realMaxLength:e,realSize:t,isValid:!0}},watch:{realValue:function(e){this.notifyChange()}},methods:{notifyChange:function(){let e=parseInt(this.realValue.toString(),10);isNaN(e)&&(e=0),this.check(),this.$emit("input",e)},check:function(){var e;null!=this.realValue&&(e=this.realValue.toString(),/^\d+$/.test(e)?(e=parseInt(e,10),isNaN(e)?this.isValid=!1:this.required?this.isValid=(null==this.min||this.min<=e)&&(null==this.max||this.max>=e):this.isValid=0==e||(null==this.min||this.min<=e)&&(null==this.max||this.max>=e)):this.isValid=!1)}},template:'<input type="text" v-model="realValue" :maxlength="realMaxLength" :size="realSize" :class="{error: !this.isValid}" :placeholder="placeholder" autocomplete="off"/>'}),Vue.component("keyword",{props:["v-word"],data:function(){let e=this.vWord;e=null==e?"":(e=(e=(e=(e=(e=(e=(e=(e=(e=e.replace(/\)/g,"\\)")).replace(/\(/g,"\\(")).replace(/\+/g,"\\+")).replace(/\^/g,"\\^")).replace(/\$/g,"\\$")).replace(/\?/g,"\\?")).replace(/\*/g,"\\*")).replace(/\[/g,"\\[")).replace(/{/g,"\\{")).replace(/\./g,"\\.");let t=this.$slots.default[0].text;if(0<e.length){let i=this,n=[],s=0;t=t.replaceAll(new RegExp("("+e+")","ig"),function(e){s++;var e='<span style="border: 1px #ccc dashed; color: #ef4d58">'+i.encodeHTML(e)+"</span>",t="$TMP__KEY__"+s.toString()+"$";return n.push([t,e]),t}),t=this.encodeHTML(t),n.forEach(function(e){t=t.replace(e[0],e[1])})}else t=this.encodeHTML(t);return{word:e,text:t}},methods:{encodeHTML:function(e){return e=(e=(e=(e=e.replace(/&/g,"&amp;")).replace(/</g,"&lt;")).replace(/>/g,"&gt;")).replace(/"/g,"&quot;")}},template:'<span><span style="display: none"><slot></slot></span><span v-html="text"></span></span>'}),Vue.component("bits-var",{props:["v-bits"],data:function(){let e=this.vBits;return"number"!=typeof e&&(e=0),{format:teaweb.splitFormat(teaweb.formatBits(e))}},template:`<var class="normal">
 	<span>{{format[0]}}</span>{{format[1]}}
 </var>`}),Vue.component("bytes-var",{props:["v-bytes"],data:function(){let e=this.vBytes;return"number"!=typeof e&&(e=0),{format:teaweb.splitFormat(teaweb.formatBytes(e))}},template:`<var class="normal">
 	<span>{{format[0]}}</span>{{format[1]}}
@@ -6571,7 +6603,7 @@ example2.com
 		</span>
 		<span v-if="index < condsConfig.conds.length - 1"> &nbsp;<span v-if="condsConfig.connector == 'and'">且</span><span v-else>或</span>&nbsp; </span>
 	</span>
-</div>`}),Vue.component("dns-route-selector",{props:["v-all-routes","v-routes"],data:function(){let e=this.vRoutes;return(e=null==e?[]:e).$sort(function(e,t){return e.domainId==t.domainId?e.code<t.code:e.domainId<t.domainId?1:-1}),{routes:e,routeCodes:e.$map(function(e,t){return t.code+"@"+t.domainId}),isAdding:!1,routeCode:"",keyword:"",searchingRoutes:this.vAllRoutes.$copy()}},methods:{add:function(){this.isAdding=!0,this.keyword="",this.routeCode="";let e=this;setTimeout(function(){e.$refs.keywordRef.focus()},200)},cancel:function(){this.isAdding=!1},confirm:function(){if(0!=this.routeCode.length)if(this.routeCodes.$contains(this.routeCode))teaweb.warn("已经添加过此线路，不能重复添加");else{let i=this;var e=this.vAllRoutes.$find(function(e,t){return t.code+"@"+t.domainId==i.routeCode});null!=e&&(this.routeCodes.push(this.routeCode),this.routes.push(e),this.routes.$sort(function(e,t){return e.domainId==t.domainId?e.code<t.code:e.domainId<t.domainId?1:-1}),this.routeCode="",this.isAdding=!1)}},remove:function(i){this.routeCodes.$removeValue(i.code+"@"+i.domainId),this.routes.$removeIf(function(e,t){return t.code+"@"+t.domainId==i.code+"@"+i.domainId})}},watch:{keyword:function(t){if(0==t.length)return this.searchingRoutes=this.vAllRoutes.$copy(),void(this.routeCode="");this.searchingRoutes=this.vAllRoutes.filter(function(e){return teaweb.match(e.name,t)||teaweb.match(e.code,t)||teaweb.match(e.domainName,t)}),0<this.searchingRoutes.length?this.routeCode=this.searchingRoutes[0].code+"@"+this.searchingRoutes[0].domainId:this.routeCode=""}},template:`<div>
+</div>`}),Vue.component("dns-route-selector",{props:["v-all-routes","v-routes"],data:function(){let e=this.vRoutes;return(e=null==e?[]:e).$sort(function(e,t){return e.domainId==t.domainId?e.code<t.code:e.domainId<t.domainId?1:-1}),{routes:e,routeCodes:e.$map(function(e,t){return t.code+"@"+t.domainId}),isAdding:!1,routeCode:"",keyword:"",searchingRoutes:this.vAllRoutes.$copy()}},methods:{add:function(){this.isAdding=!0,this.keyword="",this.routeCode="";let e=this;setTimeout(function(){e.$refs.keywordRef.focus()},200)},cancel:function(){this.isAdding=!1},confirm:function(){if(0!=this.routeCode.length)if(this.routeCodes.$contains(this.routeCode))teaweb.warn("已经添加过此线路，不能重复添加");else{let i=this;var e=this.vAllRoutes.$find(function(e,t){return t.code+"@"+t.domainId==i.routeCode});null!=e&&(this.routeCodes.push(this.routeCode),this.routes.push(e),this.routes.$sort(function(e,t){return e.domainId==t.domainId?e.code<t.code:e.domainId<t.domainId?1:-1}),this.routeCode="",this.isAdding=!1)}},remove:function(i){this.routeCodes.$removeValue(i.code+"@"+i.domainId),this.routes.$removeIf(function(e,t){return t.code+"@"+t.domainId==i.code+"@"+i.domainId})},clearKeyword:function(){this.keyword=""}},watch:{keyword:function(t){if(0==t.length)return this.searchingRoutes=this.vAllRoutes.$copy(),void(this.routeCode="");this.searchingRoutes=this.vAllRoutes.filter(function(e){return teaweb.match(e.name,t)||teaweb.match(e.code,t)||teaweb.match(e.domainName,t)}),0<this.searchingRoutes.length?this.routeCode=this.searchingRoutes[0].code+"@"+this.searchingRoutes[0].domainId:this.routeCode=""}},template:`<div>
 	<input type="hidden" name="dnsRoutesJSON" :value="JSON.stringify(routeCodes)"/>
 	<div v-if="routes.length > 0">
 		<tiny-basic-label v-for="route in routes" :key="route.code + '@' + route.domainId">
@@ -6585,16 +6617,22 @@ example2.com
 			<tr>
 				<td class="title">所有线路</td>
 				<td>
-					<select class="ui dropdown auto-width" v-model="routeCode">
-						<option value="" v-if="keyword.length == 0">[请选择]</option>
-						<option v-for="route in searchingRoutes" :value="route.code + '@' + route.domainId">{{route.name}}（{{route.code}}/{{route.domainName}}）</option>
-					</select>
+					<span v-if="keyword.length > 0 && searchingRoutes.length == 0">没有和关键词“{{keyword}}”匹配的线路</span>
+					<span v-show="keyword.length == 0 || searchingRoutes.length > 0">
+						<select class="ui dropdown" v-model="routeCode">
+							<option value="" v-if="keyword.length == 0">[请选择]</option>
+							<option v-for="route in searchingRoutes" :value="route.code + '@' + route.domainId">{{route.name}}（{{route.code}}/{{route.domainName}}）</option>
+						</select>
+					</span>
 				</td>
 			</tr>
 			<tr>
-				<td>搜索</td>
+				<td>搜索线路</td>
 				<td>
-					<input type="text" placeholder="搜索..." size="10" style="width: 10em" v-model="keyword" ref="keywordRef" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+					<div class="ui input" :class="{'right labeled':keyword.length > 0}">
+						<input type="text" placeholder="线路名称或代号..." size="10" style="width: 10em" v-model="keyword" ref="keywordRef" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+						<a class="ui label" v-if="keyword.length > 0" @click.prevent="clearKeyword" href=""><i class="icon remove small blue"></i></a>
+					</div>
 				</td>
 			</tr>
 		</table>
