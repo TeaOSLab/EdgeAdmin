@@ -2840,6 +2840,42 @@ Vue.component("plan-user-selector", {
 </div>`
 })
 
+// 显示流量限制说明
+Vue.component("plan-limit-view", {
+	props: ["value", "v-single-mode"],
+	data: function () {
+		let config = this.value
+
+		let hasLimit = false
+		if (!this.vSingleMode) {
+			if (config.trafficLimit != null && config.trafficLimit.isOn && ((config.trafficLimit.dailySize != null && config.trafficLimit.dailySize.count > 0) || (config.trafficLimit.monthlySize != null && config.trafficLimit.monthlySize.count > 0))) {
+				hasLimit = true
+			} else if (config.dailyRequests > 0 || config.monthlyRequests > 0) {
+				hasLimit = true
+			}
+		}
+
+		return {
+			config: config,
+			hasLimit: hasLimit
+		}
+	},
+	methods: {
+		formatNumber: function (n) {
+			return teaweb.formatNumber(n)
+		}
+	},
+	template: `<div style="font-size: 0.8em; color: grey">
+	<div class="ui divider" v-if="hasLimit"></div>
+	<div v-if="config.trafficLimit != null && config.trafficLimit.isOn">
+		<span v-if="config.trafficLimit.dailySize != null && config.trafficLimit.dailySize.count > 0">日流量限制：{{config.trafficLimit.dailySize.count}}{{config.trafficLimit.dailySize.unit.toUpperCase()}}<br/></span>
+		<span v-if="config.trafficLimit.monthlySize != null && config.trafficLimit.monthlySize.count > 0">月流量限制：{{config.trafficLimit.monthlySize.count}}{{config.trafficLimit.monthlySize.unit.toUpperCase()}}<br/></span>
+	</div>
+	<div v-if="config.dailyRequests > 0">单日请求数限制：{{formatNumber(config.dailyRequests)}}</div>
+	<div v-if="config.monthlyRequests > 0">单月请求数限制：{{formatNumber(config.monthlyRequests)}}</div>
+</div>`
+})
+
 Vue.component("plan-price-view", {
 	props: ["v-plan"],
 	data: function () {
@@ -3033,6 +3069,7 @@ Vue.component("plan-price-config-box", {
 						<input type="text" style="width: 7em" maxlength="10" v-model="monthlyPrice"/>
 						<span class="ui label">元</span>
 					</div>
+					<p class="comment">如果为0表示免费。</p>
 				</td>
 			</tr>
 			<tr>
@@ -3042,6 +3079,7 @@ Vue.component("plan-price-config-box", {
 						<input type="text" style="width: 7em" maxlength="10" v-model="seasonallyPrice"/>
 						<span class="ui label">元</span>
 					</div>
+					<p class="comment">如果为0表示免费。</p>
 				</td>
 			</tr>
 			<tr>
@@ -3051,6 +3089,7 @@ Vue.component("plan-price-config-box", {
 						<input type="text" style="width: 7em" maxlength="10" v-model="yearlyPrice"/>
 						<span class="ui label">元</span>
 					</div>
+					<p class="comment">如果为0表示免费。</p>
 				</td>
 			</tr>
 		</table>
@@ -4505,44 +4544,6 @@ Vue.component("http-firewall-actions-view", {
 </div>`
 })
 
-Vue.component("http-request-scripts-config-box", {
-	props: ["vRequestScriptsConfig", "v-is-location"],
-	data: function () {
-		let config = this.vRequestScriptsConfig
-		if (config == null) {
-			config = {}
-		}
-		return {
-			config: config
-		}
-	},
-	methods: {
-		changeInitGroup: function (group) {
-			this.config.initGroup = group
-			this.$forceUpdate()
-		},
-		changeRequestGroup: function (group) {
-			this.config.requestGroup = group
-			this.$forceUpdate()
-		}
-	},
-	template: `<div>
-	<input type="hidden" name="requestScriptsJSON" :value="JSON.stringify(config)"/>
-	<div class="margin"></div>
-	<h4 style="margin-bottom: 0">请求初始化</h4>
-	<p class="comment">在请求刚初始化时调用，此时自定义Header等尚未生效。</p>
-	<div>
-		<script-group-config-box :v-group="config.initGroup" @change="changeInitGroup" :v-is-location="vIsLocation"></script-group-config-box>
-	</div>
-	<h4 style="margin-bottom: 0">准备发送请求</h4>
-	<p class="comment">在准备执行请求或者转发请求之前调用，此时自定义Header、源站等已准备好。</p>
-	<div>
-		<script-group-config-box :v-group="config.requestGroup" @change="changeRequestGroup" :v-is-location="vIsLocation"></script-group-config-box>
-	</div>
-	<div class="margin"></div>
-</div>`
-})
-
 // 显示WAF规则的标签
 Vue.component("http-firewall-rule-label", {
 	props: ["v-rule"],
@@ -5333,7 +5334,7 @@ Vue.component("http-cache-ref-box", {
 				<input type="checkbox" value="1" v-model="ref.skipSetCookie"/>
 				<label></label>
 			</div>
-			<p class="comment">选中后，当响应的Header中有Set-Cookie时不缓存响应内容。</p>
+			<p class="comment">选中后，当响应的报头中有Set-Cookie时不缓存响应内容，防止动态内容被缓存。</p>
 		</td>
 	</tr>
 	<tr v-show="moreOptionsVisible && !vIsReverse">
@@ -5343,7 +5344,7 @@ Vue.component("http-cache-ref-box", {
 				<input type="checkbox" name="enableRequestCachePragma" value="1" v-model="ref.enableRequestCachePragma"/>
 				<label></label>
 			</div>
-			<p class="comment">选中后，当请求的Header中含有Pragma: no-cache或Cache-Control: no-cache时，会跳过缓存直接读取源内容。</p>
+			<p class="comment">选中后，当请求的报头中含有Pragma: no-cache或Cache-Control: no-cache时，会跳过缓存直接读取源内容，一般仅用于调试。</p>
 		</td>
 	</tr>	
 	<tr v-show="moreOptionsVisible && !vIsReverse">
@@ -8614,11 +8615,15 @@ Vue.component("http-firewall-actions-box", {
 		}
 
 		var defaultPageBody = `<!DOCTYPE html>
-<html>
+<html lang="en">
 <title>403 Forbidden</title>
+\t<style>
+\t\taddress { line-height: 1.8; }
+\t</style>
 <body>
 <h1>403 Forbidden</h1>
-<address>Request ID: \${requestId}.</address>
+<address>Connection: \${remoteAddr} (Client) -&gt; \${serverAddr} (Server)</address>
+<address>Request ID: \${requestId}</address>
 </body>
 </html>`
 
@@ -10178,17 +10183,21 @@ Vue.component("http-pages-and-shutdown-box", {
 		},
 		addShutdownHTMLTemplate: function () {
 			this.shutdownConfig.body  = `<!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 \t<title>升级中</title>
 \t<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+\t<style>
+\t\taddress { line-height: 1.8; }
+\t</style>
 </head>
 <body>
 
 <h1>网站升级中</h1>
 <p>为了给您提供更好的服务，我们正在升级网站，请稍后重新访问。</p>
 
-<address>Request ID: \${requestId}.</address>
+<address>Connection: \${remoteAddr} (Client) -&gt; \${serverAddr} (Server)</address>
+<address>Request ID: \${requestId}</address>
 
 </body>
 </html>`
@@ -11560,23 +11569,6 @@ Vue.component("http-access-log-config-box", {
 </div>`
 })
 
-// 显示流量限制说明
-Vue.component("traffic-limit-view", {
-	props: ["v-traffic-limit"],
-	data: function () {
-		return {
-			config: this.vTrafficLimit
-		}
-	},
-	template: `<div>
-	<div v-if="config.isOn">
-		<span v-if="config.dailySize != null && config.dailySize.count > 0">日流量限制：{{config.dailySize.count}}{{config.dailySize.unit.toUpperCase()}}<br/></span>
-		<span v-if="config.monthlySize != null && config.monthlySize.count > 0">月流量限制：{{config.monthlySize.count}}{{config.monthlySize.unit.toUpperCase()}}<br/></span>
-	</div>
-	<span v-else class="disabled">没有限制。</span>
-</div>`
-})
-
 // 基本认证用户配置
 Vue.component("http-auth-basic-auth-user-box", {
 	props: ["v-users"],
@@ -12041,7 +12033,8 @@ Vue.component("reverse-proxy-box", {
 				idleTimeout: {count: 0, unit: "second"},
 				maxConns: 0,
 				maxIdleConns: 0,
-				followRedirects: false
+				followRedirects: false,
+				retry50X: true
 			}
 		}
 		if (reverseProxyConfig.addHeaders == null) {
@@ -12181,6 +12174,7 @@ Vue.component("reverse-proxy-box", {
 						<input type="checkbox" v-model="reverseProxyRef.isOn"/>
 						<label></label>
 					</div>
+					<p class="comment">选中后，所有源站设置才会生效。</p>
 				</td>
 			</tr>
 			<tr v-show="family == null || family == 'http'">
@@ -12192,7 +12186,7 @@ Vue.component("reverse-proxy-box", {
 					<div v-show="reverseProxyConfig.requestHostType == 2" style="margin-top: 0.8em">
 						<input type="text" placeholder="比如example.com" v-model="reverseProxyConfig.requestHost"/>
 					</div>
-					<p class="comment">请求源站时的Host，用于修改源站接收到的域名
+					<p class="comment">请求源站时的主机名（Host），用于修改源站接收到的域名
 					<span v-if="reverseProxyConfig.requestHostType == 0">，"跟随CDN域名"是指源站接收到的域名和当前CDN访问域名保持一致</span>
 					<span v-if="reverseProxyConfig.requestHostType == 1">，"跟随源站"是指源站接收到的域名仍然是填写的源站地址中的信息，不随代理服务域名改变而改变</span>					
 					<span v-if="reverseProxyConfig.requestHostType == 2">，自定义Host内容中支持请求变量</span>。</p>
@@ -12215,7 +12209,7 @@ Vue.component("reverse-proxy-box", {
 				</td>
 			</tr>
 		    <tr v-show="family == null || family == 'http'">
-		        <td>自动添加的Header</td>
+		        <td>自动添加报头</td>
 		        <td>
 		            <div>
 		                <div style="width: 14em; float: left; margin-bottom: 1em" v-for="header in forwardHeaders" :key="header.name">
@@ -12223,7 +12217,7 @@ Vue.component("reverse-proxy-box", {
                         </div>
                         <div style="clear: both"></div>
                     </div>
-                    <p class="comment">选中后，会自动向源站请求添加这些Header。</p>
+                    <p class="comment">选中后，会自动向源站请求添加这些报头，以便于源站获取客户端信息。</p>
                 </td> 
             </tr>
 			<tr v-show="family == null || family == 'http'">
@@ -12314,6 +12308,13 @@ Vue.component("reverse-proxy-box", {
                     <p class="comment">源站保持等待的空闲超时时间，0表示使用默认时间。</p>
                 </td>
             </tr>
+            <tr v-show="family == null || family == 'http'">
+            	<td>自动重试50X</td>
+            	<td>
+            		<checkbox v-model="reverseProxyConfig.retry50X"></checkbox>
+            		<p class="comment">选中后，表示当源站返回状态码为50X（比如502、504）时，自动重试。</p>
+				</td>
+			</tr>
             <tr v-show="family != 'unix'">
             	<td>PROXY Protocol</td>
             	<td>
@@ -12428,13 +12429,35 @@ Vue.component("http-remote-addr-config-box", {
 				isPrior: false,
 				isOn: false,
 				value: "${rawRemoteAddr}",
-				isCustomized: false
+				type: "default",
+
+				requestHeaderName: ""
 			}
 		}
 
-		let optionValue = ""
-		if (!config.isCustomized && (config.value == "${remoteAddr}" || config.value == "${rawRemoteAddr}")) {
-			optionValue = config.value
+		// type
+		if (config.type == null || config.type.length == 0) {
+			config.type = "default"
+			switch (config.value) {
+				case "${rawRemoteAddr}":
+					config.type = "default"
+					break
+				case "${remoteAddrValue}":
+					config.type = "default"
+					break
+				case "${remoteAddr}":
+					config.type = "proxy"
+					break
+				default:
+					if (config.value != null && config.value.length > 0) {
+						config.type = "variable"
+					}
+			}
+		}
+
+		// value
+		if (config.value == null || config.value.length == 0) {
+			config.value = "${rawRemoteAddr}"
 		}
 
 		return {
@@ -12442,33 +12465,70 @@ Vue.component("http-remote-addr-config-box", {
 			options: [
 				{
 					name: "直接获取",
-					description: "用户直接访问边缘节点，即 \"用户 --> 边缘节点\" 模式，这时候可以直接从连接中读取到真实的IP地址。",
-					value: "${rawRemoteAddr}"
+					description: "用户直接访问边缘节点，即 \"用户 --> 边缘节点\" 模式，这时候系统会试图从直接的连接中读取到客户端IP地址。",
+					value: "${rawRemoteAddr}",
+					type: "default"
 				},
 				{
 					name: "从上级代理中获取",
-					description: "用户和边缘节点之间有别的代理服务转发，即 \"用户 --> [第三方代理服务] --> 边缘节点\"，这时候只能从上级代理中获取传递的IP地址。",
-					value: "${remoteAddr}"
+					description: "用户和边缘节点之间有别的代理服务转发，即 \"用户 --> [第三方代理服务] --> 边缘节点\"，这时候只能从上级代理中获取传递的IP地址；上级代理传递的请求报头中必须包含 X-Forwarded-For 或 X-Real-IP 信息。",
+					value: "${remoteAddr}",
+					type: "proxy"
 				},
 				{
-					name: "[自定义]",
+					name: "从请求报头中读取",
+					description: "从自定义请求报头读取客户端IP。",
+					value: "",
+					type: "requestHeader"
+				},
+				{
+					name: "[自定义变量]",
 					description: "通过自定义变量来获取客户端真实的IP地址。",
-					value: ""
+					value: "",
+					type: "variable"
 				}
-			],
-			optionValue: optionValue
+			]
+		}
+	},
+	watch: {
+		"config.requestHeaderName": function (value) {
+			if (this.config.type == "requestHeader"){
+				this.config.value = "${header." + value.trim() + "}"
+			}
 		}
 	},
 	methods: {
 		isOn: function () {
 			return ((!this.vIsLocation && !this.vIsGroup) || this.config.isPrior) && this.config.isOn
 		},
-		changeOptionValue: function () {
-			if (this.optionValue.length > 0) {
-				this.config.value = this.optionValue
-				this.config.isCustomized = false
-			} else {
-				this.config.isCustomized = true
+		changeOptionType: function () {
+			let that = this
+
+			switch(this.config.type) {
+				case "default":
+					this.config.value = "${rawRemoteAddr}"
+					break
+				case "proxy":
+					this.config.value = "${remoteAddr}"
+					break
+				case "requestHeader":
+					this.config.value = ""
+					if (this.requestHeaderName != null && this.requestHeaderName.length > 0) {
+						this.config.value = "${header." + this.requestHeaderName + "}"
+					}
+
+					setTimeout(function () {
+						that.$refs.requestHeaderInput.focus()
+					})
+					break
+				case "variable":
+					this.config.value = "${rawRemoteAddr}"
+
+					setTimeout(function () {
+						that.$refs.variableInput.focus()
+					})
+
+					break
 			}
 		}
 	},
@@ -12484,7 +12544,7 @@ Vue.component("http-remote-addr-config-box", {
 						<input type="checkbox" value="1" v-model="config.isOn"/>
 						<label></label>
 					</div>
-					<p class="comment">选中后表示使用自定义的请求变量获取客户端IP。</p>
+					<p class="comment">选中后，表示使用自定义的请求变量获取客户端IP。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -12492,20 +12552,28 @@ Vue.component("http-remote-addr-config-box", {
 			<tr>
 				<td>获取IP方式 *</td>
 				<td>
-					<select class="ui dropdown auto-width" v-model="optionValue" @change="changeOptionValue">
-						<option v-for="option in options" :value="option.value">{{option.name}}</option>
+					<select class="ui dropdown auto-width" v-model="config.type" @change="changeOptionType">
+						<option v-for="option in options" :value="option.type">{{option.name}}</option>
 					</select>
-					<p class="comment" v-for="option in options" v-if="option.value == optionValue && option.description.length > 0">{{option.description}}</p>
+					<p class="comment" v-for="option in options" v-if="option.type == config.type && option.description.length > 0">{{option.description}}</p>
 				</td>
 			</tr>
-			<tr v-show="optionValue.length == 0">
+			
+			<!-- read from request header -->
+			<tr v-show="config.type == 'requestHeader'">
+				<td>请求报头 *</td>
+				<td>
+					<input type="text" name="requestHeaderName" v-model="config.requestHeaderName" maxlength="100" ref="requestHeaderInput"/>
+					<p class="comment">请输入包含有客户端IP的请求报头，需要注意大小写，常见的有<code-label>X-Forwarded-For</code-label>、<code-label>X-Real-IP</code-label>、<code-label>X-Client-IP</code-label>等。</p>
+				</td>
+			</tr>
+			
+			<!-- read from variable -->
+			<tr v-show="config.type == 'variable'">
 				<td>读取IP变量值 *</td>
 				<td>
-					<input type="hidden" v-model="config.value" maxlength="100"/>
-					<div v-if="optionValue == ''" style="margin-top: 1em">
-						<input type="text" v-model="config.value" maxlength="100"/>
-						<p class="comment">通过此变量获取用户的IP地址。具体可用的请求变量列表可参考官方网站文档。</p>
-					</div>
+					<input type="text" name="value" v-model="config.value" maxlength="100" ref="variableInput"/>
+					<p class="comment">通过此变量获取用户的IP地址。具体可用的请求变量列表可参考官方网站文档；比如通过报头传递IP的情形，可以使用<code-label>\${header.你的自定义报头}</code-label>（类似于<code-label>\${header.X-Forwarded-For}</code-label>，需要注意大小写规范）。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -12996,7 +13064,7 @@ Vue.component("http-webp-config-box", {
 				quality: 50,
 				minLength: {count: 0, "unit": "kb"},
 				maxLength: {count: 0, "unit": "kb"},
-				mimeTypes: ["image/png", "image/jpeg", "image/bmp", "image/x-ico", "image/gif"],
+				mimeTypes: ["image/png", "image/jpeg", "image/bmp", "image/x-ico"],
 				extensions: [".png", ".jpeg", ".jpg", ".bmp", ".ico"],
 				conds: null
 			}
@@ -13062,7 +13130,7 @@ Vue.component("http-webp-config-box", {
 						<input type="checkbox" value="1" v-model="config.isOn"/>
 						<label></label>
 					</div>
-					<p class="comment">选中后表示开启自动WebP压缩<span v-if="vRequireCache">；只有满足缓存条件的图片内容才会被转换</span>。</p>
+					<p class="comment">选中后表示开启自动WebP压缩；图片的宽和高均不能超过16383像素<span v-if="vRequireCache">；只有满足缓存条件的图片内容才会被转换</span>。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -13294,6 +13362,44 @@ Vue.component("http-oss-bucket-params", {
         </td>
 	</tr>
 </tbody>`
+})
+
+Vue.component("http-request-scripts-config-box", {
+	props: ["vRequestScriptsConfig", "v-is-location"],
+	data: function () {
+		let config = this.vRequestScriptsConfig
+		if (config == null) {
+			config = {}
+		}
+		return {
+			config: config
+		}
+	},
+	methods: {
+		changeInitGroup: function (group) {
+			this.config.initGroup = group
+			this.$forceUpdate()
+		},
+		changeRequestGroup: function (group) {
+			this.config.requestGroup = group
+			this.$forceUpdate()
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="requestScriptsJSON" :value="JSON.stringify(config)"/>
+	<div class="margin"></div>
+	<h4 style="margin-bottom: 0">请求初始化</h4>
+	<p class="comment">在请求刚初始化时调用，此时自定义报头等尚未生效。</p>
+	<div>
+		<script-group-config-box :v-group="config.initGroup" @change="changeInitGroup" :v-is-location="vIsLocation"></script-group-config-box>
+	</div>
+	<h4 style="margin-bottom: 0">准备发送请求</h4>
+	<p class="comment">在准备执行请求或者转发请求之前调用，此时自定义报头、源站等已准备好。</p>
+	<div>
+		<script-group-config-box :v-group="config.requestGroup" @change="changeRequestGroup" :v-is-location="vIsLocation"></script-group-config-box>
+	</div>
+	<div class="margin"></div>
+</div>`
 })
 
 Vue.component("http-request-cond-view", {
@@ -14923,7 +15029,8 @@ Vue.component("http-firewall-captcha-options", {
 		return {
 			options: options,
 			isEditing: false,
-			summary: ""
+			summary: "",
+			uiBodyWarning: ""
 		}
 	},
 	watch: {
@@ -14967,6 +15074,13 @@ Vue.component("http-firewall-captcha-options", {
 		},
 		"options.uiIsOn": function (v) {
 			this.updateSummary()
+		},
+		"options.uiBody": function (v) {
+			if (/<form(>|\s).+\$\{body}.*<\/form>/s.test(v)) {
+				this.uiBodyWarning = "页面模板中不能使用<form></form>标签包裹\${body}变量，否则将导致验证码表单无法提交。"
+			} else {
+				this.uiBodyWarning = ""
+			}
 		}
 	},
 	methods: {
@@ -15101,7 +15215,7 @@ Vue.component("http-firewall-captcha-options", {
 					<td class="color-border">页面模板</td>
 					<td>
 						<textarea spellcheck="false" rows="2" v-model="options.uiBody"></textarea>
-						<p class="comment"><span v-if="options.uiBody.length > 0 && options.uiBody.indexOf('\${body}') < 0 " class="red">模板中必须包含\${body}表示验证码表单！</span>整个页面的模板，支持HTML，其中必须使用<code-label>\${body}</code-label>变量代表验证码表单，否则将无法正常显示验证码。</p>
+						<p class="comment"><span v-if="uiBodyWarning.length > 0" class="red">警告：{{uiBodyWarning}}</span><span v-if="options.uiBody.length > 0 && options.uiBody.indexOf('\${body}') < 0 " class="red">模板中必须包含\${body}表示验证码表单！</span>整个页面的模板，支持HTML，其中必须使用<code-label>\${body}</code-label>变量代表验证码表单，否则将无法正常显示验证码。</p>
 					</td>
 				</tr>
 			</tbody>
@@ -15677,10 +15791,13 @@ Vue.component("ip-list-table", {
 					<keyword :v-word="keyword">{{item.ipFrom}}</keyword> <span> <span class="small red" v-if="item.isRead != null && !item.isRead">&nbsp;New&nbsp;</span>&nbsp;<a :href="'/servers/iplists?ip=' + item.ipFrom" v-if="vShowSearchButton" title="搜索此IP"><span><i class="icon search small" style="color: #ccc"></i></span></a></span>
 					<span v-if="item.ipTo.length > 0"> - <keyword :v-word="keyword">{{item.ipTo}}</keyword></span></span>
 					<span v-else class="disabled">*</span>
+					
 					<div v-if="item.region != null && item.region.length > 0">
 						<span class="grey small">{{item.region}}</span>
 						<span v-if="item.isp != null && item.isp.length > 0 && item.isp != '内网IP'" class="grey small"><span class="disabled">|</span> {{item.isp}}</span>
 					</div>
+					<div v-else-if="item.isp != null && item.isp.length > 0 && item.isp != '内网IP'"><span class="grey small">{{item.isp}}</span></div>
+				
 					<div v-if="item.createdTime != null">
 						<span class="small grey">添加于 {{item.createdTime}}
 							<span v-if="item.list != null && item.list.id > 0">
@@ -18209,7 +18326,7 @@ Vue.component("digit-input", {
 			}
 		}
 	},
-	template: `<input type="text" v-model="realValue" :maxlength="realMaxLength" :size="realSize" :class="{error: !this.isValid}" :placeholder="placeholder"/>`
+	template: `<input type="text" v-model="realValue" :maxlength="realMaxLength" :size="realSize" :class="{error: !this.isValid}" :placeholder="placeholder" autocomplete="off"/>`
 })
 
 Vue.component("keyword", {
@@ -20534,6 +20651,9 @@ Vue.component("dns-route-selector", {
 			this.routes.$removeIf(function (k, v) {
 				return v.code + "@" + v.domainId == route.code + "@" + route.domainId
 			})
+		},
+		clearKeyword: function () {
+			this.keyword = ""
 		}
 	},
 	watch: {
@@ -20567,16 +20687,22 @@ Vue.component("dns-route-selector", {
 			<tr>
 				<td class="title">所有线路</td>
 				<td>
-					<select class="ui dropdown auto-width" v-model="routeCode">
-						<option value="" v-if="keyword.length == 0">[请选择]</option>
-						<option v-for="route in searchingRoutes" :value="route.code + '@' + route.domainId">{{route.name}}（{{route.code}}/{{route.domainName}}）</option>
-					</select>
+					<span v-if="keyword.length > 0 && searchingRoutes.length == 0">没有和关键词“{{keyword}}”匹配的线路</span>
+					<span v-show="keyword.length == 0 || searchingRoutes.length > 0">
+						<select class="ui dropdown" v-model="routeCode">
+							<option value="" v-if="keyword.length == 0">[请选择]</option>
+							<option v-for="route in searchingRoutes" :value="route.code + '@' + route.domainId">{{route.name}}（{{route.code}}/{{route.domainName}}）</option>
+						</select>
+					</span>
 				</td>
 			</tr>
 			<tr>
-				<td>搜索</td>
+				<td>搜索线路</td>
 				<td>
-					<input type="text" placeholder="搜索..." size="10" style="width: 10em" v-model="keyword" ref="keywordRef" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+					<div class="ui input" :class="{'right labeled':keyword.length > 0}">
+						<input type="text" placeholder="线路名称或代号..." size="10" style="width: 10em" v-model="keyword" ref="keywordRef" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+						<a class="ui label" v-if="keyword.length > 0" @click.prevent="clearKeyword" href=""><i class="icon remove small blue"></i></a>
+					</div>
 				</td>
 			</tr>
 		</table>
