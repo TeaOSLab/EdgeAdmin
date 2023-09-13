@@ -677,7 +677,7 @@ Vue.component("http-firewall-actions-box", {
 			<span v-if="config.code == 'post_307' && config.options.life > 0">：有效期{{config.options.life}}秒</span>
 			
 			<!-- record_ip -->
-			<span v-if="config.code == 'record_ip'">：{{config.options.ipListName}}</span>
+			<span v-if="config.code == 'record_ip'">：<span :class="{red: config.options.ipListIsDeleted}">{{config.options.ipListName}}</span></span>
 			
 			<!-- tag -->
 			<span v-if="config.code == 'tag'">：{{config.options.tags.join(", ")}}</span>
