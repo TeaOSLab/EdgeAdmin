@@ -34,6 +34,7 @@
                     <span v-if="task.type == 'nodeLevelChanged'">同步L2节点</span>
                     <span v-if="task.type == 'ddosProtectionChanged'">DDoS配置</span>
                     <span v-if="task.type == 'userServersStateChanged'">用户网站状态</span>
+                    <span v-if="task.type != null && task.type.startsWith('ipListDeleted')">删除IP名单</span>
                 </td>
                 <td>
                     <span v-if="task.isDone" class="red">{{task.error}}</span>
