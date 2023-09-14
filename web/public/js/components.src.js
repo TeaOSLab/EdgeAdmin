@@ -5700,7 +5700,7 @@ Vue.component("http-firewall-config-box", {
 				</td>
 			</tr>
 		</tbody>
-		<more-options-tbody @change="changeOptionsVisible"></more-options-tbody>
+		<more-options-tbody @change="changeOptionsVisible" v-show="firewall.isOn"></more-options-tbody>
 		<tbody v-show="moreOptionsVisible">
 			<tr>
 				<td>启用系统全局规则</td>
@@ -9238,7 +9238,7 @@ Vue.component("http-firewall-actions-box", {
 			<span v-if="config.code == 'post_307' && config.options.life > 0">：有效期{{config.options.life}}秒</span>
 			
 			<!-- record_ip -->
-			<span v-if="config.code == 'record_ip'">：{{config.options.ipListName}}</span>
+			<span v-if="config.code == 'record_ip'">：<span :class="{red: config.options.ipListIsDeleted}">{{config.options.ipListName}}</span></span>
 			
 			<!-- tag -->
 			<span v-if="config.code == 'tag'">：{{config.options.tags.join(", ")}}</span>

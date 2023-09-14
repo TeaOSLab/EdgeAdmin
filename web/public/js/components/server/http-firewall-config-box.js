@@ -53,7 +53,7 @@ Vue.component("http-firewall-config-box", {
 				</td>
 			</tr>
 		</tbody>
-		<more-options-tbody @change="changeOptionsVisible"></more-options-tbody>
+		<more-options-tbody @change="changeOptionsVisible" v-show="firewall.isOn"></more-options-tbody>
 		<tbody v-show="moreOptionsVisible">
 			<tr>
 				<td>启用系统全局规则</td>
