@@ -194,6 +194,17 @@
                 </td>
             </tr>
             <tr>
+                <td>Ln请求负载均衡方法</td>
+                <td>
+                    <select class="ui dropdown auto-width" name="httpAllLnRequestSchedulingMethod" v-model="config.httpAll.lnRequestSchedulingMethod">
+                        <option value="urlMapping">URL映射</option>
+                        <option value="random">随机</option>
+                    </select>
+                    <p class="comment" v-if="config.httpAll.lnRequestSchedulingMethod == 'urlMapping'">当存在多个Ln节点时，将请求根据URL自动映射到某个固定的Ln节点。</p>
+                    <p class="comment" v-if="config.httpAll.lnRequestSchedulingMethod == 'random'">当存在多个Ln节点时，将请求随机发送到某个Ln节点。</p>
+                </td>
+            </tr>
+            <tr>
                 <td>支持${serverAddr}变量</td>
                 <td>
                     <checkbox name="httpAllEnableServerAddrVariable" v-model="config.httpAll.enableServerAddrVariable"></checkbox>

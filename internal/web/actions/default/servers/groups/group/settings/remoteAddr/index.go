@@ -66,7 +66,7 @@ func (this *IndexAction) RunPost(params struct {
 			this.FailField("requestHeaderName", "请输入请求报头")
 			return
 		}
-		if !regexp.MustCompile(`^[\w-_]+$`).MatchString(remoteAddrConfig.RequestHeaderName) {
+		if !regexp.MustCompile(`^[\w-_,]+$`).MatchString(remoteAddrConfig.RequestHeaderName) {
 			this.FailField("requestHeaderName", "请求报头中只能含有数字、英文字母、下划线、中划线")
 			return
 		}
