@@ -1,32 +1,11 @@
 {$layout}
 
 <div class="ui tabular menu tiny">
-    <a href="" class="item" :class="{active: tab == 'domainAuditing'}" @click.prevent="selectTab('domainAuditing')">域名审核配置</a>
     <a href="" class="item" :class="{active: tab == 'tcpPorts'}" @click.prevent="selectTab('tcpPorts')">TCP/TLS端口</a>
 </div>
 
 <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
     <input type="hidden" name="globalConfigJSON" :value="JSON.stringify(globalConfig)"/>
-
-    <!-- 域名审核相关配置 -->
-    <div v-show="tab == 'domainAuditing'">
-        <table class="ui table definition selectable">
-            <tr>
-                <td class="title">域名变更时是否需要审核</td>
-                <td>
-                    <checkbox v-model="globalConfig.httpAll.domainAuditingIsOn"></checkbox>
-                    <p class="comment">选中后，用户在修改域名时需要管理员审核通过才能生效。</p>
-                </td>
-            </tr>
-            <tr v-show="globalConfig.httpAll.domainAuditingIsOn">
-                <td>审核提示</td>
-                <td>
-                    <input type="text" v-model="globalConfig.httpAll.domainAuditingPrompt" maxlength="200"/>
-                    <p class="comment">提示用户需要审核的文字说明。</p>
-                </td>
-            </tr>
-        </table>
-    </div>
 
     <!-- TCP 相关 -->
     <div v-show="tab == 'tcpPorts'">
