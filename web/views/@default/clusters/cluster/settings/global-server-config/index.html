@@ -3,86 +3,92 @@
 {$template "/left_menu_with_menu"}
 
 <div class="right-box with-menu">
-    <form class="ui form" data-tea-action="$" data-tea-success="success">
+    <second-menu>
+        <a v-for="item in titleMenus" :class="{active: item.id == currentItem}" :href="'#' + item.id" class="item" @click.prevent="selectItem(item)">{{item.name}}</a>
+    </second-menu>
+
+    <form class="ui form" data-tea-action="$" data-tea-success="success" id="global-config-form">
         <csrf-token></csrf-token>
         <input type="hidden" name="clusterId" :value="clusterId"/>
 
-        <h4>域名绑定</h4>
+        <div v-show="currentItem == 'title-server-name-bind'">
+            <h4 id="title-server-name-bind">域名绑定</h4>
 
-        <table class="ui table definition selectable">
-            <tr>
-                <td class="title color-border">禁止未绑定域名访问</td>
-                <td>
-                    <checkbox name="httpAllMatchDomainStrictly" v-model="config.httpAll.matchDomainStrictly"></checkbox>
-                    <p class="comment">选中后，表示禁止未在网站绑定的域名和IP访问。</p>
-                </td>
-            </tr>
+            <table class="ui table definition selectable">
+                <tr>
+                    <td class="title color-border">禁止未绑定域名访问</td>
+                    <td>
+                        <checkbox name="httpAllMatchDomainStrictly" v-model="config.httpAll.matchDomainStrictly"></checkbox>
+                        <p class="comment">选中后，表示禁止未在网站绑定的域名和IP访问。</p>
+                    </td>
+                </tr>
 
-            <tr>
-                <td class="color-border">处理未绑定域名方式</td>
-                <td>
-                    <radio name="httpAllDomainMismatchActionCode" :v-value="'page'" v-model="httpAllDomainMismatchActionCode">显示提示页面</radio> &nbsp;
-                    &nbsp; <radio name="httpAllDomainMismatchActionCode" :v-value="'close'" v-model="httpAllDomainMismatchActionCode">关闭连接</radio>
-                    <p class="comment" v-if="httpAllDomainMismatchActionCode == 'page'">显示提示内容。</p>
-                    <p class="comment" v-if="httpAllDomainMismatchActionCode == 'close'">直接关闭网络连接，不提示任何内容。</p>
-                </td>
-            </tr>
+                <tr>
+                    <td class="color-border">处理未绑定域名方式</td>
+                    <td>
+                        <radio name="httpAllDomainMismatchActionCode" :v-value="'page'" v-model="httpAllDomainMismatchActionCode">显示提示页面</radio> &nbsp;
+                        &nbsp; <radio name="httpAllDomainMismatchActionCode" :v-value="'close'" v-model="httpAllDomainMismatchActionCode">关闭连接</radio>
+                        <p class="comment" v-if="httpAllDomainMismatchActionCode == 'page'">显示提示内容。</p>
+                        <p class="comment" v-if="httpAllDomainMismatchActionCode == 'close'">直接关闭网络连接，不提示任何内容。</p>
+                    </td>
+                </tr>
 
-            <tr v-show="config.httpAll.matchDomainStrictly && httpAllDomainMismatchActionCode == 'page'">
-                <td class="color-border">提示页面状态码</td>
-                <td>
-                    <input type="text" name="httpAllDomainMismatchActionStatusCode" v-model="httpAllDomainMismatchActionStatusCode" style="width: 4em" maxlength="3"/>
-                    <p class="comment">访问未绑定域名时的提示页面状态码，默认404。</p>
-                </td>
-            </tr>
-            <tr v-show="config.httpAll.matchDomainStrictly && httpAllDomainMismatchActionCode == 'page'">
-                <td class="color-border">提示页面内容</td>
-                <td>
-                    <textarea rows="3" name="httpAllDomainMismatchActionContentHTML" v-model="httpAllDomainMismatchActionContentHTML"></textarea>
-                    <p class="comment">访问未绑定的域名时提示页面内容，可以使用HTML；仅限于HTTP请求，不适于用HTTPS（HTTPS会提示证书错误）。</p>
-                </td>
-            </tr>
+                <tr v-show="config.httpAll.matchDomainStrictly && httpAllDomainMismatchActionCode == 'page'">
+                    <td class="color-border">提示页面状态码</td>
+                    <td>
+                        <input type="text" name="httpAllDomainMismatchActionStatusCode" v-model="httpAllDomainMismatchActionStatusCode" style="width: 4em" maxlength="3"/>
+                        <p class="comment">访问未绑定域名时的提示页面状态码，默认404。</p>
+                    </td>
+                </tr>
+                <tr v-show="config.httpAll.matchDomainStrictly && httpAllDomainMismatchActionCode == 'page'">
+                    <td class="color-border">提示页面内容</td>
+                    <td>
+                        <textarea rows="3" name="httpAllDomainMismatchActionContentHTML" v-model="httpAllDomainMismatchActionContentHTML"></textarea>
+                        <p class="comment">访问未绑定的域名时提示页面内容，可以使用HTML；仅限于HTTP请求，不适于用HTTPS（HTTPS会提示证书错误）。</p>
+                    </td>
+                </tr>
 
-            <tr v-show="config.httpAll.matchDomainStrictly">
-                <td class="color-border">允许例外的域名</td>
-                <td>
-                    <domains-box name="httpAllAllowMismatchDomainsJSON" :v-domains="config.httpAll.allowMismatchDomains"></domains-box>
-                    <p class="comment">允许这些域名不经过绑定就可以直接访问网站。</p>
-                </td>
-            </tr>
-            <tr v-show="config.httpAll.matchDomainStrictly">
-                <td class="color-border">默认域名</td>
-                <td>
-                    <input type="text" name="httpAllDefaultDomain" v-model="config.httpAll.defaultDomain"/>
-                    <p class="comment">例外域名或使用节点IP访问时使用的默认域名；如果指定的域名在集群里已经绑定到某个网站，则相当于直接访问该网站。</p>
-                </td>
-            </tr>
+                <tr v-show="config.httpAll.matchDomainStrictly">
+                    <td class="color-border">允许例外的域名</td>
+                    <td>
+                        <domains-box name="httpAllAllowMismatchDomainsJSON" :v-domains="config.httpAll.allowMismatchDomains"></domains-box>
+                        <p class="comment">允许这些域名不经过绑定就可以直接访问网站。</p>
+                    </td>
+                </tr>
+                <tr v-show="config.httpAll.matchDomainStrictly">
+                    <td class="color-border">默认域名</td>
+                    <td>
+                        <input type="text" name="httpAllDefaultDomain" v-model="config.httpAll.defaultDomain"/>
+                        <p class="comment">例外域名或使用节点IP访问时使用的默认域名；如果指定的域名在集群里已经绑定到某个网站，则相当于直接访问该网站。</p>
+                    </td>
+                </tr>
 
-            <tr v-show="config.httpAll.matchDomainStrictly">
-                <td class="color-border">允许使用节点IP访问</td>
-                <td>
-                    <checkbox name="httpAllAllowNodeIP" v-model="config.httpAll.allowNodeIP"></checkbox>
-                    <p class="comment">选中后，表示允许直接使用节点IP访问网站。</p>
-                </td>
-            </tr>
-            <tr v-show="config.httpAll.matchDomainStrictly">
-                <td class="color-border">访问节点IP显示自定义内容</td>
-                <td>
-                    <checkbox name="httpAllNodeIPShowPage" v-model="config.httpAll.nodeIPShowPage"></checkbox>
-                    <p class="comment">选中后，表示用户访问节点IP时显示自定义内容。</p>
-                </td>
-            </tr>
-            <tr v-show="config.httpAll.matchDomainStrictly && config.httpAll.nodeIPShowPage">
-                <td class="color-border">访问节点IP自定义内容</td>
-                <td>
-                    <textarea name="httpAllNodeIPPageHTML" v-model="config.httpAll.nodeIPPageHTML" rows="3" placeholder="访问节点IP时要显示的自定义内容"></textarea>
-                    <p class="comment">访问节点IP时要显示的自定义内容，支持HTML。</p>
-                </td>
-            </tr>
-        </table>
+                <tr v-show="config.httpAll.matchDomainStrictly">
+                    <td class="color-border">允许使用节点IP访问</td>
+                    <td>
+                        <checkbox name="httpAllAllowNodeIP" v-model="config.httpAll.allowNodeIP"></checkbox>
+                        <p class="comment">选中后，表示允许直接使用节点IP访问网站。</p>
+                    </td>
+                </tr>
+                <tr v-show="config.httpAll.matchDomainStrictly">
+                    <td class="color-border">访问节点IP显示自定义内容</td>
+                    <td>
+                        <checkbox name="httpAllNodeIPShowPage" v-model="config.httpAll.nodeIPShowPage"></checkbox>
+                        <p class="comment">选中后，表示用户访问节点IP时显示自定义内容。</p>
+                    </td>
+                </tr>
+                <tr v-show="config.httpAll.matchDomainStrictly && config.httpAll.nodeIPShowPage">
+                    <td class="color-border">访问节点IP自定义内容</td>
+                    <td>
+                        <textarea name="httpAllNodeIPPageHTML" v-model="config.httpAll.nodeIPPageHTML" rows="3" placeholder="访问节点IP时要显示的自定义内容"></textarea>
+                        <p class="comment">访问节点IP时要显示的自定义内容，支持HTML。</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-        <div v-show="teaIsPlus">
-            <h4>域名审核</h4>
+        <div v-show="teaIsPlus && currentItem == 'title-server-name-auditing'">
+            <h4 id="title-server-name-auditing" v-if="teaIsPlus">域名审核</h4>
             <table class="ui table definition selectable">
                 <tr>
                     <td class="title">域名变更时需要审核</td>
@@ -101,90 +107,96 @@
             </table>
         </div>
 
-        <h4>访问日志</h4>
-        <table class="ui table definition selectable">
-            <tr>
-                <td>允许记录访问日志</td>
-                <td>
-                    <checkbox name="httpAccessLogIsOn" v-model="config.httpAccessLog.isOn"></checkbox>
-                    <p class="comment">选中后，表示允许当前集群下的网站记录访问日志，否则当前集群下的所有网站都不会记录访问日志。</p>
-                </td>
-            </tr>
-            <tr>
-                <td>记录请求报头</td>
-                <td>
-                    <checkbox name="httpAccessLogEnableRequestHeaders" v-model="config.httpAccessLog.enableRequestHeaders"></checkbox>
-                    <p class="comment">选中后，表示在访问日志中记录请求报头。</p>
-                </td>
-            </tr>
-            <tr>
-                <td class="title">只记录通用请求报头</td>
-                <td>
-                    <checkbox name="httpAccessLogCommonRequestHeadersOnly" v-model="config.httpAccessLog.commonRequestHeadersOnly"></checkbox>
-                    <p class="comment">选中后，表示访问日志中只记录通用的HTTP请求报头（比如<code-label>User-Agent</code-label>），其他自定义或非标准的（比如<code-label>Test-Header</code-label>）将不记录。</p>
-                </td>
-            </tr>
-            <tr>
-                <td>记录响应报头</td>
-                <td>
-                    <checkbox name="httpAccessLogEnableResponseHeaders" v-model="config.httpAccessLog.enableResponseHeaders"></checkbox>
-                    <p class="comment">选中后，表示在访问日志中记录响应报头。</p>
-                </td>
-            </tr>
-            <tr>
-                <td>记录Cookie</td>
-                <td>
-                    <checkbox name="httpAccessLogEnableCookies" v-model="config.httpAccessLog.enableCookies"></checkbox>
-                    <p class="comment">选中后，表示访问日志中记录Cookie内容。</p>
-                </td>
-            </tr>
-            <tr>
-                <td>记录找不到网站日志</td>
-                <td>
-                    <checkbox name="httpAccessLogEnableServerNotFound" v-model="config.httpAccessLog.enableServerNotFound"></checkbox>
-                    <p class="comment">选中后，表示如果访客访问的域名对应的网站不存在也会记录日志。</p>
-                </td>
-            </tr>
-        </table>
+        <div v-show="currentItem == 'title-access-log'">
+            <h4 id="title-access-log">访问日志</h4>
+            <table class="ui table definition selectable">
+                <tr>
+                    <td>允许记录访问日志</td>
+                    <td>
+                        <checkbox name="httpAccessLogIsOn" v-model="config.httpAccessLog.isOn"></checkbox>
+                        <p class="comment">选中后，表示允许当前集群下的网站记录访问日志，否则当前集群下的所有网站都不会记录访问日志。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>记录请求报头</td>
+                    <td>
+                        <checkbox name="httpAccessLogEnableRequestHeaders" v-model="config.httpAccessLog.enableRequestHeaders"></checkbox>
+                        <p class="comment">选中后，表示在访问日志中记录请求报头。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title">只记录通用请求报头</td>
+                    <td>
+                        <checkbox name="httpAccessLogCommonRequestHeadersOnly" v-model="config.httpAccessLog.commonRequestHeadersOnly"></checkbox>
+                        <p class="comment">选中后，表示访问日志中只记录通用的HTTP请求报头（比如<code-label>User-Agent</code-label>），其他自定义或非标准的（比如<code-label>Test-Header</code-label>）将不记录。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>记录响应报头</td>
+                    <td>
+                        <checkbox name="httpAccessLogEnableResponseHeaders" v-model="config.httpAccessLog.enableResponseHeaders"></checkbox>
+                        <p class="comment">选中后，表示在访问日志中记录响应报头。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>记录Cookie</td>
+                    <td>
+                        <checkbox name="httpAccessLogEnableCookies" v-model="config.httpAccessLog.enableCookies"></checkbox>
+                        <p class="comment">选中后，表示访问日志中记录Cookie内容。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>记录找不到网站日志</td>
+                    <td>
+                        <checkbox name="httpAccessLogEnableServerNotFound" v-model="config.httpAccessLog.enableServerNotFound"></checkbox>
+                        <p class="comment">选中后，表示如果访客访问的域名对应的网站不存在也会记录日志。</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-        <h4>运行日志</h4>
-        <table class="ui table definition selectable">
-            <tr>
-                <td class="title">记录网站错误</td>
-                <td>
-                    <checkbox name="logRecordServerError" v-model="config.log.recordServerError"></checkbox>
-                    <p class="comment">在节点运行日志中记录网站相关错误详细信息，比如无法连接源站等，建议仅用于调试。</p>
-                </td>
-            </tr>
-        </table>
+        <div v-show="currentItem == 'title-server-log'">
+            <h4 id="title-server-log">运行日志</h4>
+            <table class="ui table definition selectable">
+                <tr>
+                    <td class="title">记录网站错误</td>
+                    <td>
+                        <checkbox name="logRecordServerError" v-model="config.log.recordServerError"></checkbox>
+                        <p class="comment">在节点运行日志中记录网站相关错误详细信息，比如无法连接源站等，建议仅用于调试。</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-        <h4>性能</h4>
-        <table class="ui table definition selectable">
-            <tr>
-                <td class="title">自动读数据超时</td>
-                <td>
-                    <checkbox name="performanceAutoReadTimeout" v-model="config.performance.autoReadTimeout"></checkbox>
-                    <p class="comment">从客户端读取数据时自动设置超时时间，如果超时，则自动视为慢连接，并关闭网络连接；此为专业选项，请在专家指导下进行修改。</p>
-                </td>
-            </tr>
-            <tr>
-                <td class="title">自动写数据超时</td>
-                <td>
-                    <checkbox name="performanceAutoWriteTimeout" v-model="config.performance.autoWriteTimeout"></checkbox>
-                    <p class="comment">向客户端发送数据时自动设置超时时间，如果超时，则自动视为慢连接，并关闭网络连接；此为专业选项，请在专家指导下进行修改。</p>
-                </td>
-            </tr>
-            <tr>
-                <td>调试模式</td>
-                <td>
-                    <checkbox name="performanceDebug" v-model="config.performance.debug"></checkbox>
-                    <p class="comment">开启调试模式后，将在某些信息中包含调试信息。</p>
-                </td>
-            </tr>
-        </table>
+        <div v-show="currentItem == 'title-performance'">
+            <h4 id="title-performance">性能</h4>
+            <table class="ui table definition selectable">
+                <tr>
+                    <td class="title">自动读数据超时</td>
+                    <td>
+                        <checkbox name="performanceAutoReadTimeout" v-model="config.performance.autoReadTimeout"></checkbox>
+                        <p class="comment">从客户端读取数据时自动设置超时时间，如果超时，则自动视为慢连接，并关闭网络连接；此为专业选项，请在专家指导下进行修改。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title">自动写数据超时</td>
+                    <td>
+                        <checkbox name="performanceAutoWriteTimeout" v-model="config.performance.autoWriteTimeout"></checkbox>
+                        <p class="comment">向客户端发送数据时自动设置超时时间，如果超时，则自动视为慢连接，并关闭网络连接；此为专业选项，请在专家指导下进行修改。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>调试模式</td>
+                    <td>
+                        <checkbox name="performanceDebug" v-model="config.performance.debug"></checkbox>
+                        <p class="comment">开启调试模式后，将在某些信息中包含调试信息。</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-        <div v-show="teaIsPlus">
-            <h4>Ln节点</h4>
+        <div v-show="teaIsPlus && currentItem == 'title-ln'">
+            <h4 id="title-ln" v-if="teaIsPlus">Ln节点</h4>
             <table class="ui table definition selectable">
                 <tr>
                     <td>强制Ln请求</td>
@@ -207,66 +219,70 @@
             </table>
         </div>
 
-        <h4>TCP/UDP相关</h4>
-        <table class="ui table definition selectable">
-            <tr>
-                <td class="title">允许的端口范围</td>
-                <td>
-                    <div class="ui fields inline">
-                        <div class="ui field">
-                            <input type="text" name="tcpAllPortRangeMin" maxlength="5" size="6" v-model="tcpAllPortRangeMin"/>
+        <div v-show="currentItem == 'title-tcp-udp'">
+            <h4 id="title-tcp-udp">TCP/UDP相关</h4>
+            <table class="ui table definition selectable">
+                <tr>
+                    <td class="title">允许的端口范围</td>
+                    <td>
+                        <div class="ui fields inline">
+                            <div class="ui field">
+                                <input type="text" name="tcpAllPortRangeMin" maxlength="5" size="6" v-model="tcpAllPortRangeMin"/>
+                            </div>
+                            <div class="ui field">
+                                -
+                            </div>
+                            <div class="ui field">
+                                <input type="text" name="tcpAllPortRangeMax" maxlength="5" size="6" v-model="tcpAllPortRangeMax"/>
+                            </div>
                         </div>
-                        <div class="ui field">
-                            -
-                        </div>
-                        <div class="ui field">
-                            <input type="text" name="tcpAllPortRangeMax" maxlength="5" size="6" v-model="tcpAllPortRangeMax"/>
-                        </div>
-                    </div>
-                    <p class="comment">用户创建TCP/TLS负载均衡服务时可以随机选择的端口范围，最小不能小于1024，最大不能大于65534。</p>
-                </td>
-            </tr>
-            <tr>
-                <td>排除的端口</td>
-                <td>
-                    <values-box placeholder="端口" size="6" name="tcpAllDenyPorts" :values="tcpAllDenyPorts"></values-box>
-                    <p class="comment">当为用户随机分配端口时要排除的端口。</p>
-                </td>
-            </tr>
-        </table>
+                        <p class="comment">用户创建TCP/TLS负载均衡服务时可以随机选择的端口范围，最小不能小于1024，最大不能大于65534。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>排除的端口</td>
+                    <td>
+                        <values-box placeholder="端口" size="6" name="tcpAllDenyPorts" :values="tcpAllDenyPorts"></values-box>
+                        <p class="comment">当为用户随机分配端口时要排除的端口。</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
-        <h4>其他</h4>
-        <table class="ui table definition selectable">
-            <tr>
-                <td class="title">服务器旗标</td>
-                <td>
-                    <input type="text" name="httpAllServerName" v-model="config.httpAll.serverName" maxlength="60"/>
-                    <p class="comment">服务器旗标会以<code-label>Server: 旗标</code-label>的形式出现在响应报头中。</p>
-                </td>
-            </tr>
-            <tr>
-                <td>支持低版本HTTP</td>
-                <td>
-                    <checkbox name="httpAllSupportsLowVersionHTTP" v-model="config.httpAll.supportsLowVersionHTTP"></checkbox>
-                    <p class="comment">选中后，表示支持HTTP/1.0、HTTP/0.9等低于HTTP/1.1版本的HTTP协议。低版本HTTP协议不支持分段传输内容，且无法保持连接，对系统性能有严重的负面影响。建议只有在你的用户正在使用非常老旧的设备时才启用此选项。</p>
-                </td>
-            </tr>
-            <tr>
-                <td>自动匹配证书</td>
-                <td>
-                    <checkbox name="httpAllMatchCertFromAllServers" v-model="config.httpAll.matchCertFromAllServers"></checkbox>
-                    <p class="comment">选中后，表示找不到证书时自动查找其他网站设置的证书。此功能仅仅为了兼容以往系统版本，可能会导致用户访问的网站混乱，所以请不要轻易启用。</p>
-                </td>
-            </tr>
-            <tr>
-                <td>支持${serverAddr}变量</td>
-                <td>
-                    <checkbox name="httpAllEnableServerAddrVariable" v-model="config.httpAll.enableServerAddrVariable"></checkbox>
-                    <p class="comment">支持在自定义页面中使用<code-label>${serverAddr}</code-label>变量，表示访客当前正在访问的服务器地址。</p>
-                </td>
-            </tr>
-        </table>
-
+        <div v-show="currentItem == 'title-others'">
+            <h4 id="title-others">其他</h4>
+            <table class="ui table definition selectable">
+                <tr>
+                    <td class="title">服务器旗标</td>
+                    <td>
+                        <input type="text" name="httpAllServerName" v-model="config.httpAll.serverName" maxlength="60"/>
+                        <p class="comment">服务器旗标会以<code-label>Server: 旗标</code-label>的形式出现在响应报头中。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>支持低版本HTTP</td>
+                    <td>
+                        <checkbox name="httpAllSupportsLowVersionHTTP" v-model="config.httpAll.supportsLowVersionHTTP"></checkbox>
+                        <p class="comment">选中后，表示支持HTTP/1.0、HTTP/0.9等低于HTTP/1.1版本的HTTP协议。低版本HTTP协议不支持分段传输内容，且无法保持连接，对系统性能有严重的负面影响。建议只有在你的用户正在使用非常老旧的设备时才启用此选项。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>自动匹配证书</td>
+                    <td>
+                        <checkbox name="httpAllMatchCertFromAllServers" v-model="config.httpAll.matchCertFromAllServers"></checkbox>
+                        <p class="comment">选中后，表示找不到证书时自动查找其他网站设置的证书。此功能仅仅为了兼容以往系统版本，可能会导致用户访问的网站混乱，所以请不要轻易启用。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>支持${serverAddr}变量</td>
+                    <td>
+                        <checkbox name="httpAllEnableServerAddrVariable" v-model="config.httpAll.enableServerAddrVariable"></checkbox>
+                        <p class="comment">支持在自定义页面中使用<code-label>${serverAddr}</code-label>变量，表示访客当前正在访问的服务器地址。</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="margin"></div>
         <submit-btn></submit-btn>
     </form>
 </div>
