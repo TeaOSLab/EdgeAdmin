@@ -5,7 +5,6 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/maps"
@@ -28,17 +27,7 @@ func (this *StatusAction) RunPost(params struct {
 	}
 
 	// 读取全局配置
-	globalConfig, err := dao.SharedSysSettingDAO.ReadGlobalConfig(this.AdminContext())
-	if err != nil {
-		this.ErrorPage(err)
-		return
-	}
-	auditingPrompt := ""
-	if globalConfig != nil {
-		auditingPrompt = globalConfig.HTTPAll.DomainAuditingPrompt
-	}
-
-	wg := sync.WaitGroup{}
+	var wg = sync.WaitGroup{}
 	wg.Add(len(params.ServerIds))
 
 	for _, serverId := range params.ServerIds {
@@ -98,6 +87,17 @@ func (this *StatusAction) RunPost(params struct {
 			if serverNamesResp.IsAuditing {
 				m["type"] = "auditing"
 				m["message"] = "审核中"
+
+				auditingPromptResp, err := this.RPC().ServerRPC().FindServerAuditingPrompt(this.AdminContext(), &pb.FindServerAuditingPromptRequest{ServerId: serverId})
+				if err != nil {
+					this.ErrorPage(err)
+					m["type"] = "serverErr"
+					m["message"] = "服务器错误"
+					m["todo"] = "错误信息：FindServerNames(): " + err.Error() + "，请联系管理员修复此问题"
+					return
+				}
+
+				var auditingPrompt = auditingPromptResp.PromptText
 				if len(auditingPrompt) > 0 {
 					m["todo"] = auditingPrompt
 				} else {

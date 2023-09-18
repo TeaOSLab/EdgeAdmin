@@ -7,7 +7,7 @@
         <csrf-token></csrf-token>
         <input type="hidden" name="clusterId" :value="clusterId"/>
 
-        <h4>域名</h4>
+        <h4>域名绑定</h4>
 
         <table class="ui table definition selectable">
             <tr>
@@ -80,6 +80,26 @@
                 </td>
             </tr>
         </table>
+
+        <div v-show="teaIsPlus">
+            <h4>域名审核</h4>
+            <table class="ui table definition selectable">
+                <tr>
+                    <td class="title">域名变更时需要审核</td>
+                    <td>
+                        <checkbox name="httpAllDomainAuditingIsOn" v-model="config.httpAll.domainAuditingIsOn"></checkbox>
+                        <p class="comment">选中后，用户在创建和修改域名时需要管理员审核通过才能生效。</p>
+                    </td>
+                </tr>
+                <tr v-show="config.httpAll.domainAuditingIsOn">
+                    <td>审核提示</td>
+                    <td>
+                        <input name="httpAllDomainAuditingPrompt" type="text" v-model="config.httpAll.domainAuditingPrompt" maxlength="200"/>
+                        <p class="comment">提示用户需要审核的文字说明。</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
 
         <h4>访问日志</h4>
         <table class="ui table definition selectable">

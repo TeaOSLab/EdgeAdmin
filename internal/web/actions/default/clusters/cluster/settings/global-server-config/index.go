@@ -100,6 +100,9 @@ func (this *IndexAction) RunPost(params struct {
 	HttpAllNodeIPShowPage                  bool
 	HttpAllEnableServerAddrVariable        bool
 
+	HttpAllDomainAuditingIsOn   bool
+	HttpAllDomainAuditingPrompt string
+
 	HttpAllServerName                string
 	HttpAllSupportsLowVersionHTTP    bool
 	HttpAllMatchCertFromAllServers   bool
@@ -171,6 +174,9 @@ func (this *IndexAction) RunPost(params struct {
 	config.HTTPAll.DefaultDomain = params.HttpAllDefaultDomain
 	config.HTTPAll.NodeIPShowPage = params.HttpAllNodeIPShowPage
 	config.HTTPAll.NodeIPPageHTML = params.HttpAllNodeIPPageHTML
+
+	config.HTTPAll.DomainAuditingIsOn = params.HttpAllDomainAuditingIsOn
+	config.HTTPAll.DomainAuditingPrompt = params.HttpAllDomainAuditingPrompt
 
 	// HTTP All
 	config.HTTPAll.ServerName = params.HttpAllServerName
