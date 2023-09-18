@@ -30,7 +30,7 @@
             <td class="color-border">缓存磁盘最大用量</td>
             <td>
                 <size-capacity-view :v-value="cachePolicy.capacity" :v-default-text="'不限'"></size-capacity-view>
-                <p class="comment">单个节点上缓存目录所在磁盘允许的最大容量，如果为0表示没有限制。</p>
+                <p class="comment">单个节点上缓存所在磁盘的最大用量，如果为0表示没有限制。</p>
             </td>
         </tr>
         <tr v-if="cachePolicy.options.memoryPolicy != null && cachePolicy.options.memoryPolicy.capacity != null && cachePolicy.options.memoryPolicy.capacity.count > 0">
