@@ -1,6 +1,29 @@
 Tea.context(function () {
 	this.success = NotifyReloadSuccess("保存成功")
 
+	// Menu
+	this.currentItem = ""
+
+	this.titleMenus = []
+	this.$delay(function () {
+		let elements = document.querySelectorAll("#global-config-form h4")
+		this.currentItem = elements[0].getAttribute("id")
+		for (let i = 0; i < elements.length; i++) {
+			let textContent = elements[i].textContent
+			if (textContent == null || textContent.length == 0) {
+				textContent = elements[i].innerText
+			}
+			this.titleMenus.push({
+				name: textContent,
+				id: elements[i].getAttribute("id")
+			})
+		}
+	})
+
+	this.selectItem = function (item) {
+		this.currentItem = item.id
+	}
+
 	/**
 	 * TCP端口
 	 */
