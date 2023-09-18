@@ -130,10 +130,10 @@
         <h4>运行日志</h4>
         <table class="ui table definition selectable">
             <tr>
-                <td class="title">记录服务错误</td>
+                <td class="title">记录网站错误</td>
                 <td>
                     <checkbox name="logRecordServerError" v-model="config.log.recordServerError"></checkbox>
-                    <p class="comment">在节点运行日志中记录网站相关错误，比如无法连接源站等。</p>
+                    <p class="comment">在节点运行日志中记录网站相关错误详细信息，比如无法连接源站等，建议仅用于调试。</p>
                 </td>
             </tr>
         </table>
@@ -163,6 +163,30 @@
             </tr>
         </table>
 
+        <div v-show="teaIsPlus">
+            <h4>Ln节点</h4>
+            <table class="ui table definition selectable">
+                <tr>
+                    <td>强制Ln请求</td>
+                    <td>
+                        <checkbox name="httpAllForceLnRequest" v-model="config.httpAll.forceLnRequest"></checkbox>
+                        <p class="comment">选中后，所有请求优先发送到L2或者更高级别节点。默认不开启的情况下，只有可以缓存的内容请求才会发送到L2或者更高级别节点。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Ln请求负载均衡方法</td>
+                    <td>
+                        <select class="ui dropdown auto-width" name="httpAllLnRequestSchedulingMethod" v-model="config.httpAll.lnRequestSchedulingMethod">
+                            <option value="urlMapping">URL映射</option>
+                            <option value="random">随机</option>
+                        </select>
+                        <p class="comment" v-if="config.httpAll.lnRequestSchedulingMethod == 'urlMapping'">当存在多个Ln节点时，将请求根据URL自动映射到某个固定的Ln节点。</p>
+                        <p class="comment" v-if="config.httpAll.lnRequestSchedulingMethod == 'random'">当存在多个Ln节点时，将请求随机发送到某个Ln节点。</p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
         <h4>其他</h4>
         <table class="ui table definition selectable">
             <tr>
@@ -184,24 +208,6 @@
                 <td>
                     <checkbox name="httpAllMatchCertFromAllServers" v-model="config.httpAll.matchCertFromAllServers"></checkbox>
                     <p class="comment">选中后，表示找不到证书时自动查找其他网站设置的证书。此功能仅仅为了兼容以往系统版本，可能会导致用户访问的网站混乱，所以请不要轻易启用。</p>
-                </td>
-            </tr>
-            <tr>
-                <td>强制Ln请求</td>
-                <td>
-                    <checkbox name="httpAllForceLnRequest" v-model="config.httpAll.forceLnRequest"></checkbox>
-                    <p class="comment">选中后，所有请求优先发送到L2或者更高级别节点。默认不开启的情况下，只有可以缓存的内容请求才会发送到L2或者更高级别节点。</p>
-                </td>
-            </tr>
-            <tr>
-                <td>Ln请求负载均衡方法</td>
-                <td>
-                    <select class="ui dropdown auto-width" name="httpAllLnRequestSchedulingMethod" v-model="config.httpAll.lnRequestSchedulingMethod">
-                        <option value="urlMapping">URL映射</option>
-                        <option value="random">随机</option>
-                    </select>
-                    <p class="comment" v-if="config.httpAll.lnRequestSchedulingMethod == 'urlMapping'">当存在多个Ln节点时，将请求根据URL自动映射到某个固定的Ln节点。</p>
-                    <p class="comment" v-if="config.httpAll.lnRequestSchedulingMethod == 'random'">当存在多个Ln节点时，将请求随机发送到某个Ln节点。</p>
                 </td>
             </tr>
             <tr>
