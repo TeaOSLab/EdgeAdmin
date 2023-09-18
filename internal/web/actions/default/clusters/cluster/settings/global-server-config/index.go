@@ -122,6 +122,11 @@ func (this *IndexAction) RunPost(params struct {
 	PerformanceAutoWriteTimeout bool
 	PerformanceDebug            bool
 
+	// TCP端口设置
+	TcpAllPortRangeMin int
+	TcpAllPortRangeMax int
+	TcpAllDenyPorts    []int
+
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
@@ -196,6 +201,23 @@ func (this *IndexAction) RunPost(params struct {
 
 	// 日志
 	config.Log.RecordServerError = params.LogRecordServerError
+
+	// TCP
+	if params.TcpAllPortRangeMin < 1024 {
+		params.TcpAllPortRangeMin = 1024
+	}
+	if params.TcpAllPortRangeMax > 65534 {
+		params.TcpAllPortRangeMax = 65534
+	} else if params.TcpAllPortRangeMax < 1024 {
+		params.TcpAllPortRangeMax = 1024
+	}
+	if params.TcpAllPortRangeMin > params.TcpAllPortRangeMax {
+		params.TcpAllPortRangeMin, params.TcpAllPortRangeMax = params.TcpAllPortRangeMax, params.TcpAllPortRangeMin
+	}
+
+	config.TCPAll.DenyPorts = params.TcpAllDenyPorts
+	config.TCPAll.PortRangeMin = params.TcpAllPortRangeMin
+	config.TCPAll.PortRangeMax = params.TcpAllPortRangeMax
 
 	// 性能
 	config.Performance.AutoReadTimeout = params.PerformanceAutoReadTimeout
