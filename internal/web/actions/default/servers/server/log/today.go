@@ -2,6 +2,7 @@ package log
 
 import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/iplibrary"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/maps"
@@ -53,6 +54,27 @@ func (this *TodayAction) RunGet(params struct {
 	// 检查集群全局设置
 	if !this.initClusterAccessLogConfig(params.ServerId) {
 		return
+	}
+
+	// 检查当前网站有无开启访问日志
+	this.Data["serverAccessLogIsOn"] = true
+
+	groupResp, err := this.RPC().ServerGroupRPC().FindEnabledServerGroupConfigInfo(this.AdminContext(), &pb.FindEnabledServerGroupConfigInfoRequest{
+		ServerId: params.ServerId,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	if !groupResp.HasAccessLogConfig {
+		webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithServerId(this.AdminContext(), params.ServerId)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		if webConfig != nil && webConfig.AccessLogRef != nil && !webConfig.AccessLogRef.IsOn {
+			this.Data["serverAccessLogIsOn"] = false
+		}
 	}
 
 	resp, err := this.RPC().HTTPAccessLogRPC().ListHTTPAccessLogs(this.AdminContext(), &pb.ListHTTPAccessLogsRequest{

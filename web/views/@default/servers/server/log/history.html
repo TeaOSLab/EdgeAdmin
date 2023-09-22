@@ -20,6 +20,12 @@
         <warning-message>当前集群已经设置不允许网站记录访问日志，可以在"集群设置" -- "网站设置"中修改此选项。</warning-message>
     </div>
 
+    <!-- 网站设置提醒 -->
+    <div v-if="!serverAccessLogIsOn">
+        <div class="margin"></div>
+        <warning-message>当前网站尚未启用访问日志，可以在 <a :href="'/servers/server/settings/accessLog?serverId=' + serverId">[这里]</a> 修改。</warning-message>
+    </div>
+
 	<first-menu>
 		<menu-item :href="path + '?' + query()" :active="hasError == 0 && hasWAF == 0">所有日志</menu-item>
 		<menu-item :href="path + '?' + query('hasError=1')" :active="hasError > 0">错误日志</menu-item>
