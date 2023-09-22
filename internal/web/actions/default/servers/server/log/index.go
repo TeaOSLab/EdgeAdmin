@@ -2,6 +2,7 @@ package log
 
 import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/iplibrary"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/lists"
@@ -41,8 +42,29 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 
+	// 检查当前网站有无开启访问日志
+	this.Data["serverAccessLogIsOn"] = true
+
+	groupResp, err := this.RPC().ServerGroupRPC().FindEnabledServerGroupConfigInfo(this.AdminContext(), &pb.FindEnabledServerGroupConfigInfoRequest{
+		ServerId: params.ServerId,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	if !groupResp.HasAccessLogConfig {
+		webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithServerId(this.AdminContext(), params.ServerId)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		if webConfig != nil && webConfig.AccessLogRef != nil && !webConfig.AccessLogRef.IsOn {
+			this.Data["serverAccessLogIsOn"] = false
+		}
+	}
+
 	// 记录最近使用
-	_, err := this.RPC().LatestItemRPC().IncreaseLatestItem(this.AdminContext(), &pb.IncreaseLatestItemRequest{
+	_, err = this.RPC().LatestItemRPC().IncreaseLatestItem(this.AdminContext(), &pb.IncreaseLatestItemRequest{
 		ItemType: "server",
 		ItemId:   params.ServerId,
 	})
