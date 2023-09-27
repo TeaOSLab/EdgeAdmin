@@ -10,7 +10,9 @@ Vue.component("url-patterns-box", {
 			isAdding: false,
 
 			addingPattern: {"type": "wildcard", "pattern": ""},
-			editingIndex: -1
+			editingIndex: -1,
+
+			patternIsInvalid: false
 		}
 	},
 	methods: {
@@ -71,6 +73,27 @@ Vue.component("url-patterns-box", {
 		},
 		notifyChange: function () {
 			this.$emit("input", this.patterns)
+		},
+		changePattern: function () {
+			this.patternIsInvalid = false
+			let pattern = this.addingPattern.pattern
+			switch (this.addingPattern.type) {
+				case "wildcard":
+					if (pattern.indexOf("?") >= 0) {
+						this.patternIsInvalid = true
+					}
+					break
+				case "regexp":
+					if (pattern.indexOf("?") >= 0) {
+						let pieces = pattern.split("?")
+						for (let i = 0; i < pieces.length - 1; i++) {
+							if (pieces[i].length == 0 || pieces[i][pieces[i].length - 1] != "\\") {
+								this.patternIsInvalid = true
+							}
+						}
+					}
+					break
+			}
 		}
 	},
 	template: `<div>
@@ -90,14 +113,15 @@ Vue.component("url-patterns-box", {
 				</select>
 			</div>
 			<div class="ui field">
-				<input type="text" :placeholder="(addingPattern.type == 'wildcard') ? '可以使用星号（*）通配符，不区分大小写' : '可以使用正则表达式，不区分大小写'" v-model="addingPattern.pattern" size="36" ref="patternInput" @keyup.enter="confirm()" @keypress.enter.prevent="1" spellcheck="false"/>
+				<input type="text" :placeholder="(addingPattern.type == 'wildcard') ? '可以使用星号（*）通配符，不区分大小写' : '可以使用正则表达式，不区分大小写'" v-model="addingPattern.pattern" @input="changePattern" size="36" ref="patternInput" @keyup.enter="confirm()" @keypress.enter.prevent="1" spellcheck="false"/>
+				<p class="comment" v-if="patternIsInvalid"><span class="red" style="font-weight: normal"><span v-if="addingPattern.type == 'wildcard'">通配符</span><span v-if="addingPattern.type == 'regexp'">正则表达式</span>中不能包含问号（?）及问号以后的内容。</span></p>
 			</div>
 			<div class="ui field" style="padding-left: 0">
 				<tip-icon content="通配符示例：<br/>单个路径开头：/hello/world/*<br/>单个路径结尾：*/hello/world<br/>包含某个路径：*/article/*<br/>某个域名下的所有URL：*example.com/*" v-if="addingPattern.type == 'wildcard'"></tip-icon>
 				<tip-icon content="正则表达式示例：<br/>单个路径开头：^/hello/world<br/>单个路径结尾：/hello/world$<br/>包含某个路径：/article/<br/>匹配某个数字路径：/article/(\\d+)<br/>某个域名下的所有URL：^(http|https)://example.com/" v-if="addingPattern.type == 'regexp'"></tip-icon>
 			</div>
 			<div class="ui field">
-				<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button><a href="" title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
+				<button class="ui button tiny" :class="{disabled:this.patternIsInvalid}" type="button" @click.prevent="confirm">确定</button><a href="" title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
 			</div>
 		</div>
 	</div>
