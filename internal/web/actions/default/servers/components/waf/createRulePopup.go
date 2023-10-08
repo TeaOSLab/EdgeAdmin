@@ -71,7 +71,13 @@ func (this *CreateRulePopupAction) RunPost(params struct {
 		Field("prefix", params.Prefix).
 		Require("请选择参数")
 
-	rule := &firewallconfigs.HTTPFirewallRule{
+
+	if len(params.Value) > 4096 {
+		this.FailField("value", "对比值内容长度不能超过4096个字符")
+		return
+	}
+
+	var rule = &firewallconfigs.HTTPFirewallRule{
 		Id:   params.RuleId,
 		IsOn: true,
 	}
@@ -81,7 +87,7 @@ func (this *CreateRulePopupAction) RunPost(params struct {
 		rule.Param = "${" + params.Prefix + "}"
 	}
 
-	paramFilters := []*firewallconfigs.ParamFilter{}
+	var paramFilters = []*firewallconfigs.ParamFilter{}
 	if len(params.ParamFiltersJSON) > 0 {
 		err := json.Unmarshal(params.ParamFiltersJSON, &paramFilters)
 		if err != nil {
