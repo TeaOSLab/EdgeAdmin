@@ -3804,16 +3804,6 @@ example2.com
 	</tbody>
 	<tbody v-show="moreOptionsVisible && config.isOn">
 		<tr>
-			<td>单IP最低QPS</td>
-			<td>
-				<div class="ui input right labeled">
-					<input type="text" name="minQPSPerIP" maxlength="6" style="width: 6em" v-model="minQPSPerIP"/>
-					<span class="ui label">请求数/秒</span>
-				</div>
-				<p class="comment">当某个IP在1分钟内平均QPS达到此值时，才会触发CC防护；如果设置为0，表示任何访问都会触发。</p>
-			</td>
-		</tr>
-		<tr>
 			<td>例外URL</td>
 			<td>
 				<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
@@ -3842,13 +3832,23 @@ example2.com
 			</td>
 		</tr>
 		<tr>
-			<td class="color-border">使用自定义阈值</td>
+			<td>单IP最低QPS</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" name="minQPSPerIP" maxlength="6" style="width: 6em" v-model="minQPSPerIP"/>
+					<span class="ui label">请求数/秒</span>
+				</div>
+				<p class="comment">当某个IP在1分钟内平均QPS达到此值时，才会开始检测；如果设置为0，表示任何访问都会检测。（注意这里设置的是检测开启阈值，不是拦截阈值，拦截阈值在当前表单下方可以设置）</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="color-border">使用自定义拦截阈值</td>
 			<td>
 				<checkbox v-model="useCustomThresholds"></checkbox>
 			</td>
 		</tr>
 		<tr v-show="!config.useDefaultThresholds">
-			<td class="color-border">自定义阈值设置</td>
+			<td class="color-border">自定义拦截阈值设置</td>
 			<td>
 				<div>
 					<div class="ui input left right labeled">
@@ -6026,7 +6026,7 @@ example2.com
 	<div class="ui label tiny basic" v-if="vAddresses != null" v-for="addr in vAddresses">
 		{{addr.protocol}}://<span v-if="addr.host.length > 0">{{addr.host.quoteIP()}}</span><span v-else>*</span>:{{addr.portRange}}
 	</div>
-</div>`}),Vue.component("url-patterns-box",{props:["value"],data:function(){let e=[];return{patterns:e=null!=this.value?this.value:e,isAdding:!1,addingPattern:{type:"wildcard",pattern:""},editingIndex:-1}},methods:{add:function(){this.isAdding=!0;let e=this;setTimeout(function(){e.$refs.patternInput.focus()})},edit:function(e){this.isAdding=!0,this.editingIndex=e,this.addingPattern={type:this.patterns[e].type,pattern:this.patterns[e].pattern}},confirm:function(){if(0==this.addingPattern.pattern.trim().length){let e=this;void teaweb.warn("请输入URL",function(){e.$refs.patternInput.focus()})}else this.editingIndex<0?this.patterns.push({type:this.addingPattern.type,pattern:this.addingPattern.pattern}):(this.patterns[this.editingIndex].type=this.addingPattern.type,this.patterns[this.editingIndex].pattern=this.addingPattern.pattern),this.notifyChange(),this.cancel()},remove:function(e){this.patterns.$remove(e),this.cancel(),this.notifyChange()},cancel:function(){this.isAdding=!1,this.addingPattern={type:"wildcard",pattern:""},this.editingIndex=-1},patternTypeName:function(e){switch(e){case"wildcard":return"通配符";case"regexp":return"正则"}return""},notifyChange:function(){this.$emit("input",this.patterns)}},template:`<div>
+</div>`}),Vue.component("url-patterns-box",{props:["value"],data:function(){let e=[];return{patterns:e=null!=this.value?this.value:e,isAdding:!1,addingPattern:{type:"wildcard",pattern:""},editingIndex:-1,patternIsInvalid:!1}},methods:{add:function(){this.isAdding=!0;let e=this;setTimeout(function(){e.$refs.patternInput.focus()})},edit:function(e){this.isAdding=!0,this.editingIndex=e,this.addingPattern={type:this.patterns[e].type,pattern:this.patterns[e].pattern}},confirm:function(){if(0==this.addingPattern.pattern.trim().length){let e=this;void teaweb.warn("请输入URL",function(){e.$refs.patternInput.focus()})}else this.editingIndex<0?this.patterns.push({type:this.addingPattern.type,pattern:this.addingPattern.pattern}):(this.patterns[this.editingIndex].type=this.addingPattern.type,this.patterns[this.editingIndex].pattern=this.addingPattern.pattern),this.notifyChange(),this.cancel()},remove:function(e){this.patterns.$remove(e),this.cancel(),this.notifyChange()},cancel:function(){this.isAdding=!1,this.addingPattern={type:"wildcard",pattern:""},this.editingIndex=-1},patternTypeName:function(e){switch(e){case"wildcard":return"通配符";case"regexp":return"正则"}return""},notifyChange:function(){this.$emit("input",this.patterns)},changePattern:function(){this.patternIsInvalid=!1;let e=this.addingPattern.pattern;switch(this.addingPattern.type){case"wildcard":0<=e.indexOf("?")&&(this.patternIsInvalid=!0);break;case"regexp":if(0<=e.indexOf("?")){var t=e.split("?");for(let e=0;e<t.length-1;e++)0!=t[e].length&&"\\"==t[e][t[e].length-1]||(this.patternIsInvalid=!0)}}}},template:`<div>
 	<div v-show="patterns.length > 0">
 		<div v-for="(pattern, index) in patterns" class="ui label basic small" :class="{blue: index == editingIndex, disabled: isAdding && index != editingIndex}" style="margin-bottom: 0.8em">
 			<span class="grey" style="font-weight: normal">[{{patternTypeName(pattern.type)}}]</span> <span >{{pattern.pattern}}</span> &nbsp; 
@@ -6043,14 +6043,15 @@ example2.com
 				</select>
 			</div>
 			<div class="ui field">
-				<input type="text" :placeholder="(addingPattern.type == 'wildcard') ? '可以使用星号（*）通配符，不区分大小写' : '可以使用正则表达式，不区分大小写'" v-model="addingPattern.pattern" size="36" ref="patternInput" @keyup.enter="confirm()" @keypress.enter.prevent="1" spellcheck="false"/>
+				<input type="text" :placeholder="(addingPattern.type == 'wildcard') ? '可以使用星号（*）通配符，不区分大小写' : '可以使用正则表达式，不区分大小写'" v-model="addingPattern.pattern" @input="changePattern" size="36" ref="patternInput" @keyup.enter="confirm()" @keypress.enter.prevent="1" spellcheck="false"/>
+				<p class="comment" v-if="patternIsInvalid"><span class="red" style="font-weight: normal"><span v-if="addingPattern.type == 'wildcard'">通配符</span><span v-if="addingPattern.type == 'regexp'">正则表达式</span>中不能包含问号（?）及问号以后的内容。</span></p>
 			</div>
 			<div class="ui field" style="padding-left: 0">
 				<tip-icon content="通配符示例：<br/>单个路径开头：/hello/world/*<br/>单个路径结尾：*/hello/world<br/>包含某个路径：*/article/*<br/>某个域名下的所有URL：*example.com/*" v-if="addingPattern.type == 'wildcard'"></tip-icon>
 				<tip-icon content="正则表达式示例：<br/>单个路径开头：^/hello/world<br/>单个路径结尾：/hello/world$<br/>包含某个路径：/article/<br/>匹配某个数字路径：/article/(\\d+)<br/>某个域名下的所有URL：^(http|https)://example.com/" v-if="addingPattern.type == 'regexp'"></tip-icon>
 			</div>
 			<div class="ui field">
-				<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button><a href="" title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
+				<button class="ui button tiny" :class="{disabled:this.patternIsInvalid}" type="button" @click.prevent="confirm">确定</button><a href="" title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
 			</div>
 		</div>
 	</div>

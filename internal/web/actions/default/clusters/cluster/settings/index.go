@@ -112,6 +112,7 @@ func (this *IndexAction) RunGet(params struct {
 		"clock":               clockConfig,
 		"autoRemoteStart":     cluster.AutoRemoteStart,
 		"autoInstallNftables": cluster.AutoInstallNftables,
+		"autoSystemTuning":    cluster.AutoSystemTuning,
 		"sshParams":           sshParams,
 		"domainName":          fullDomainName,
 	}
@@ -139,6 +140,7 @@ func (this *IndexAction) RunPost(params struct {
 	ClockCheckChrony    bool
 	AutoRemoteStart     bool
 	AutoInstallNftables bool
+	AutoSystemTuning    bool
 
 	Must *actions.Must
 }) {
@@ -193,6 +195,7 @@ func (this *IndexAction) RunPost(params struct {
 		ClockJSON:           clockConfigJSON,
 		AutoRemoteStart:     params.AutoRemoteStart,
 		AutoInstallNftables: params.AutoInstallNftables,
+		AutoSystemTuning:    params.AutoSystemTuning,
 		SshParamsJSON:       sshParamsJSON,
 	})
 	if err != nil {
