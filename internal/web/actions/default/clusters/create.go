@@ -64,6 +64,7 @@ func (this *CreateAction) RunPost(params struct {
 	InstallDir          string
 	SystemdServiceIsOn  bool
 	AutoInstallNftables bool
+	AutoSystemTuning    bool
 
 	// DNS相关
 	DnsDomainId int64
@@ -132,6 +133,7 @@ func (this *CreateAction) RunPost(params struct {
 		SystemServicesJSON:     systemServicesJSON,
 		GlobalServerConfigJSON: globalServerConfigJSON,
 		AutoInstallNftables:    params.AutoInstallNftables,
+		AutoSystemTuning:       params.AutoSystemTuning,
 	})
 	if err != nil {
 		this.ErrorPage(err)

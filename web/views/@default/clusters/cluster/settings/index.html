@@ -109,7 +109,14 @@
                     <td>自动安装nftables</td>
                     <td>
                         <checkbox name="autoInstallNftables" v-model="cluster.autoInstallNftables"></checkbox>
-                        <p class="comment">在Linux系统中自动尝试安装<code-label>nftables</code-label>用于安全防御；此功能需要联网从Ubuntu、CentOS等软件库中下载安装包。</p>
+                        <p class="comment">选中后，表示在Linux系统中自动尝试安装<code-label>nftables</code-label>用于安全防御；此功能需要联网从Ubuntu、CentOS等软件库中下载安装包。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>自动调节系统参数</td>
+                    <td>
+                        <checkbox name="autoSystemTuning" v-model="cluster.autoSystemTuning"></checkbox>
+                        <p class="comment">选中后，表示自动调整Linux内核等参数，以便提升性能；启用后，以往安装的边缘节点需要重启进程后才能生效。</p>
                     </td>
                 </tr>
             </tbody>
