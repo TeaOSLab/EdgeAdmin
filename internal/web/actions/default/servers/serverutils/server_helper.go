@@ -291,10 +291,11 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":     serverConfig.Web != nil && len(serverConfig.Web.RewriteRefs) > 0,
 		})
 		menuItems = append(menuItems, maps.Map{
-			"name":     this.Lang(actionPtr, codes.Server_MenuSettingWAF),
-			"url":      "/servers/server/settings/waf?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "waf",
-			"isOn":     serverConfig.Web != nil && serverConfig.Web.FirewallRef != nil && serverConfig.Web.FirewallRef.IsOn,
+			"name":       this.Lang(actionPtr, codes.Server_MenuSettingWAF),
+			"url":        "/servers/server/settings/waf?serverId=" + serverIdString,
+			"isActive":   secondMenuItem == "waf",
+			"isOn":       serverConfig.Web != nil && serverConfig.Web.FirewallRef != nil && serverConfig.Web.FirewallRef.IsOn,
+			"configCode": serverconfigs.ConfigCodeWAF,
 		})
 		menuItems = append(menuItems, maps.Map{
 			"name":       this.Lang(actionPtr, codes.Server_MenuSettingCache),
