@@ -19,12 +19,18 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct {
-	UserId  int64
-	Type    string
-	Keyword string
+	UserId   int64
+	Type     string // [empty] | ca | 7days | ...
+	Keyword  string
+	UserType string
 }) {
 	this.Data["type"] = params.Type
 	this.Data["keyword"] = params.Keyword
+
+	if params.UserId > 0 {
+		params.UserType = "user"
+	}
+	this.Data["userType"] = params.UserType
 
 	// 当前用户
 	this.Data["searchingUserId"] = params.UserId
@@ -57,12 +63,15 @@ func (this *IndexAction) RunGet(params struct {
 	var count7Days int64
 	var count30Days int64
 
+	var userOnly = params.UserType == "user" || params.UserId > 0
+
 	// 计算数量
 	{
 		// all
 		resp, err := this.RPC().SSLCertRPC().CountSSLCerts(this.AdminContext(), &pb.CountSSLCertRequest{
-			UserId:  params.UserId,
-			Keyword: params.Keyword,
+			UserId:   params.UserId,
+			Keyword:  params.Keyword,
+			UserOnly: userOnly,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -72,9 +81,10 @@ func (this *IndexAction) RunGet(params struct {
 
 		// CA
 		resp, err = this.RPC().SSLCertRPC().CountSSLCerts(this.AdminContext(), &pb.CountSSLCertRequest{
-			UserId:  params.UserId,
-			IsCA:    true,
-			Keyword: params.Keyword,
+			UserId:   params.UserId,
+			IsCA:     true,
+			Keyword:  params.Keyword,
+			UserOnly: userOnly,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -87,6 +97,7 @@ func (this *IndexAction) RunGet(params struct {
 			UserId:      params.UserId,
 			IsAvailable: true,
 			Keyword:     params.Keyword,
+			UserOnly:    userOnly,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -99,6 +110,7 @@ func (this *IndexAction) RunGet(params struct {
 			UserId:    params.UserId,
 			IsExpired: true,
 			Keyword:   params.Keyword,
+			UserOnly:  userOnly,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -111,6 +123,7 @@ func (this *IndexAction) RunGet(params struct {
 			UserId:       params.UserId,
 			ExpiringDays: 7,
 			Keyword:      params.Keyword,
+			UserOnly:     userOnly,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -123,6 +136,7 @@ func (this *IndexAction) RunGet(params struct {
 			UserId:       params.UserId,
 			ExpiringDays: 30,
 			Keyword:      params.Keyword,
+			UserOnly:     userOnly,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -146,19 +160,21 @@ func (this *IndexAction) RunGet(params struct {
 	case "":
 		page = this.NewPage(countAll)
 		listResp, err = this.RPC().SSLCertRPC().ListSSLCerts(this.AdminContext(), &pb.ListSSLCertsRequest{
-			UserId:  params.UserId,
-			Offset:  page.Offset,
-			Size:    page.Size,
-			Keyword: params.Keyword,
+			UserId:   params.UserId,
+			Offset:   page.Offset,
+			Size:     page.Size,
+			Keyword:  params.Keyword,
+			UserOnly: userOnly,
 		})
 	case "ca":
 		page = this.NewPage(countCA)
 		listResp, err = this.RPC().SSLCertRPC().ListSSLCerts(this.AdminContext(), &pb.ListSSLCertsRequest{
-			UserId:  params.UserId,
-			IsCA:    true,
-			Offset:  page.Offset,
-			Size:    page.Size,
-			Keyword: params.Keyword,
+			UserId:   params.UserId,
+			IsCA:     true,
+			Offset:   page.Offset,
+			Size:     page.Size,
+			Keyword:  params.Keyword,
+			UserOnly: userOnly,
 		})
 	case "available":
 		page = this.NewPage(countAvailable)
@@ -168,6 +184,7 @@ func (this *IndexAction) RunGet(params struct {
 			Offset:      page.Offset,
 			Size:        page.Size,
 			Keyword:     params.Keyword,
+			UserOnly:    userOnly,
 		})
 	case "expired":
 		page = this.NewPage(countExpired)
@@ -177,6 +194,7 @@ func (this *IndexAction) RunGet(params struct {
 			Offset:    page.Offset,
 			Size:      page.Size,
 			Keyword:   params.Keyword,
+			UserOnly:  userOnly,
 		})
 	case "7days":
 		page = this.NewPage(count7Days)
@@ -195,14 +213,16 @@ func (this *IndexAction) RunGet(params struct {
 			Offset:       page.Offset,
 			Size:         page.Size,
 			Keyword:      params.Keyword,
+			UserOnly:     userOnly,
 		})
 	default:
 		page = this.NewPage(countAll)
 		listResp, err = this.RPC().SSLCertRPC().ListSSLCerts(this.AdminContext(), &pb.ListSSLCertsRequest{
-			UserId:  params.UserId,
-			Keyword: params.Keyword,
-			Offset:  page.Offset,
-			Size:    page.Size,
+			UserId:   params.UserId,
+			Keyword:  params.Keyword,
+			UserOnly: userOnly,
+			Offset:   page.Offset,
+			Size:     page.Size,
 		})
 	}
 	if err != nil {
@@ -221,12 +241,30 @@ func (this *IndexAction) RunGet(params struct {
 	var certMaps = []maps.Map{}
 	var nowTime = time.Now().Unix()
 	for _, certConfig := range certConfigs {
+		// count servers
 		countServersResp, err := this.RPC().ServerRPC().CountAllEnabledServersWithSSLCertId(this.AdminContext(), &pb.CountAllEnabledServersWithSSLCertIdRequest{
 			SslCertId: certConfig.Id,
 		})
 		if err != nil {
 			this.ErrorPage(err)
 			return
+		}
+
+		// user
+		userResp, err := this.RPC().SSLCertRPC().FindSSLCertUser(this.AdminContext(), &pb.FindSSLCertUserRequest{SslCertId: certConfig.Id})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		var certUserMap = maps.Map{
+			"id": 0,
+		}
+		if userResp.User != nil {
+			certUserMap = maps.Map{
+				"id":       userResp.User.Id,
+				"username": userResp.User.Username,
+				"fullname": userResp.User.Fullname,
+			}
 		}
 
 		certMaps = append(certMaps, maps.Map{
@@ -236,6 +274,7 @@ func (this *IndexAction) RunGet(params struct {
 			"isExpired":    nowTime > certConfig.TimeEndAt,
 			"isAvailable":  nowTime <= certConfig.TimeEndAt,
 			"countServers": countServersResp.Count,
+			"user":         certUserMap,
 		})
 	}
 	this.Data["certInfos"] = certMaps

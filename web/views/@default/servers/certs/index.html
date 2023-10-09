@@ -3,12 +3,12 @@
 
 <div class="right-box without-tabbar">
 	<second-menu>
-		<menu-item :href="'/servers/certs?keyword=' + keyword + '&userId=' + searchingUserId" :active="type == ''">所有证书({{countAll}})</menu-item>
-		<menu-item :href="'/servers/certs?type=ca&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == 'ca'">CA证书({{countCA}})</menu-item>
-		<menu-item :href="'/servers/certs?type=available&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == 'available'">有效证书({{countAvailable}})</menu-item>
-		<menu-item :href="'/servers/certs?type=expired&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == 'expired'">过期证书<span :class="{red: countExpired > 0}">({{countExpired}})</span></menu-item>
-		<menu-item :href="'/servers/certs?type=7days&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == '7days'">7天内过期<span :class="{red: count7Days > 0}">({{count7Days}})</span></menu-item>
-		<menu-item :href="'/servers/certs?type=30days&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == '30days'">30天内过期({{count30Days}})</menu-item>
+		<menu-item :href="'/servers/certs?userType=' + userType + '&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == ''">所有证书({{countAll}})</menu-item>
+		<menu-item :href="'/servers/certs?userType=' + userType + '&type=ca&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == 'ca'">CA证书({{countCA}})</menu-item>
+		<menu-item :href="'/servers/certs?userType=' + userType + '&type=available&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == 'available'">有效证书({{countAvailable}})</menu-item>
+		<menu-item :href="'/servers/certs?userType=' + userType + '&type=expired&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == 'expired'">过期证书<span :class="{red: countExpired > 0}">({{countExpired}})</span></menu-item>
+		<menu-item :href="'/servers/certs?userType=' + userType + '&type=7days&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == '7days'">7天内过期<span :class="{red: count7Days > 0}">({{count7Days}})</span></menu-item>
+		<menu-item :href="'/servers/certs?userType=' + userType + '&type=30days&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == '30days'">30天内过期({{count30Days}})</menu-item>
 		<span class="item disabled">|</span>
 		<a href="" class="item" @click.prevent="uploadCert">[上传证书]</a>
         <a href="" class="item" @click.prevent="uploadBatch">[批量上传]</a>
@@ -16,6 +16,7 @@
 
     <form class="ui form">
         <input type="hidden" name="type" :value="type"/>
+        <input type="hidden" name="userType" :value="userType"/>
         <div class="ui fields inline">
             <div class="ui field">
                 <input type="text" name="keyword" placeholder="域名、说明等关键词" style="width:12em" v-model="keyword"/>
@@ -26,17 +27,23 @@
             <div class="ui field">
                 <button type="submit" class="ui button">搜索</button>
                 &nbsp;
-                <a :href="Tea.url('.', { 'type':type })" v-if="keyword.length > 0 || searchingUserId > 0">[清除条件]</a>
+                <a :href="Tea.url('.', { 'userType':userType, 'type':type })" v-if="keyword.length > 0 || searchingUserId > 0">[清除条件]</a>
             </div>
         </div>
     </form>
 
     <div v-if="searchingUserId == 0">
-        <div class="ui divider"></div>
-        <p class="comment" style="padding-top: 0">默认只显示管理员所属的证书，用户所属证书请在上面表单中选择对应用户后搜索。</p>
+        <div class="ui menu text basic tiny blue" style="margin-bottom:0">
+            <a :href="'/servers/certs?userType=&type=' + type + '&keyword=' + keyword + '&userId=' + searchingUserId" class="item" :class="{active: userType == ''}">管理员证书</a>
+            <a :href="'/servers/certs?userType=user&type=' + type + '&keyword=' + keyword + '&userId=' + searchingUserId" class="item" :class="{active: userType == 'user'}">用户证书</a>
+        </div>
+        <div class="ui divider" style="margin-top:0"></div>
     </div>
 
 	<p class="comment" v-if="certs.length == 0"><span v-if="searchingUserId > 0">当前用户下</span>暂时还没有相关的证书。</p>
+
+
+
 	<table class="ui table selectable celled" v-if="certs.length > 0">
 		<thead>
 			<tr>
@@ -72,7 +79,7 @@
 			<td>{{certInfos[index].endDay}}</td>
 			<td class="center">{{certInfos[index].countServers}}</td>
             <td>
-                <span v-if="user != null && user.id > 0"><user-link :v-user="user"></user-link></span>
+                <span v-if="certInfos[index].user != null && certInfos[index].user.id > 0"><user-link :v-user="certInfos[index].user"></user-link></span>
                 <span v-else class="disabled">管理员</span>
             </td>
 			<td nowrap="" class="center">
