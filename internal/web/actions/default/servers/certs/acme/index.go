@@ -17,12 +17,16 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct {
-	UserId  int64
-	Type    string
-	Keyword string
+	UserId   int64
+	Type     string
+	Keyword  string
+	UserType string
 }) {
 	this.Data["type"] = params.Type
 	this.Data["keyword"] = params.Keyword
+	this.Data["userType"] = params.UserType
+
+	var userOnly = params.UserId > 0 || params.UserType == "user"
 
 	// 当前用户
 	this.Data["searchingUserId"] = params.UserId
@@ -58,8 +62,9 @@ func (this *IndexAction) RunGet(params struct {
 	{
 		// all
 		resp, err := this.RPC().ACMETaskRPC().CountAllEnabledACMETasks(this.AdminContext(), &pb.CountAllEnabledACMETasksRequest{
-			UserId:  params.UserId,
-			Keyword: params.Keyword,
+			UserId:   params.UserId,
+			Keyword:  params.Keyword,
+			UserOnly: userOnly,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -72,6 +77,7 @@ func (this *IndexAction) RunGet(params struct {
 			UserId:      params.UserId,
 			IsAvailable: true,
 			Keyword:     params.Keyword,
+			UserOnly:    userOnly,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -84,6 +90,7 @@ func (this *IndexAction) RunGet(params struct {
 			UserId:    params.UserId,
 			IsExpired: true,
 			Keyword:   params.Keyword,
+			UserOnly:  userOnly,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -96,6 +103,7 @@ func (this *IndexAction) RunGet(params struct {
 			UserId:       params.UserId,
 			ExpiringDays: 7,
 			Keyword:      params.Keyword,
+			UserOnly:     userOnly,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -108,6 +116,7 @@ func (this *IndexAction) RunGet(params struct {
 			UserId:       params.UserId,
 			ExpiringDays: 30,
 			Keyword:      params.Keyword,
+			UserOnly:     userOnly,
 		})
 		if err != nil {
 			this.ErrorPage(err)
@@ -130,10 +139,11 @@ func (this *IndexAction) RunGet(params struct {
 	case "":
 		page = this.NewPage(countAll)
 		tasksResp, err = this.RPC().ACMETaskRPC().ListEnabledACMETasks(this.AdminContext(), &pb.ListEnabledACMETasksRequest{
-			UserId:  params.UserId,
-			Offset:  page.Offset,
-			Size:    page.Size,
-			Keyword: params.Keyword,
+			UserId:   params.UserId,
+			Offset:   page.Offset,
+			Size:     page.Size,
+			Keyword:  params.Keyword,
+			UserOnly: userOnly,
 		})
 	case "available":
 		page = this.NewPage(countAvailable)
@@ -143,6 +153,7 @@ func (this *IndexAction) RunGet(params struct {
 			Offset:      page.Offset,
 			Size:        page.Size,
 			Keyword:     params.Keyword,
+			UserOnly:    userOnly,
 		})
 	case "expired":
 		page = this.NewPage(countExpired)
@@ -152,6 +163,7 @@ func (this *IndexAction) RunGet(params struct {
 			Offset:    page.Offset,
 			Size:      page.Size,
 			Keyword:   params.Keyword,
+			UserOnly:  userOnly,
 		})
 	case "7days":
 		page = this.NewPage(count7Days)
@@ -161,6 +173,7 @@ func (this *IndexAction) RunGet(params struct {
 			Offset:       page.Offset,
 			Size:         page.Size,
 			Keyword:      params.Keyword,
+			UserOnly:     userOnly,
 		})
 	case "30days":
 		page = this.NewPage(count30Days)
@@ -170,14 +183,16 @@ func (this *IndexAction) RunGet(params struct {
 			Offset:       page.Offset,
 			Size:         page.Size,
 			Keyword:      params.Keyword,
+			UserOnly:     userOnly,
 		})
 	default:
 		page = this.NewPage(countAll)
 		tasksResp, err = this.RPC().ACMETaskRPC().ListEnabledACMETasks(this.AdminContext(), &pb.ListEnabledACMETasksRequest{
-			UserId:  params.UserId,
-			Keyword: params.Keyword,
-			Offset:  page.Offset,
-			Size:    page.Size,
+			UserId:   params.UserId,
+			Keyword:  params.Keyword,
+			UserOnly: userOnly,
+			Offset:   page.Offset,
+			Size:     page.Size,
 		})
 	}
 	if err != nil {
@@ -242,6 +257,23 @@ func (this *IndexAction) RunGet(params struct {
 			}
 		}
 
+		// user
+		userResp, err := this.RPC().ACMETaskRPC().FindACMETaskUser(this.AdminContext(), &pb.FindACMETaskUserRequest{AcmeTaskId: task.Id})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		var taskUserMap = maps.Map{
+			"id": 0,
+		}
+		if userResp.User != nil {
+			taskUserMap = maps.Map{
+				"id":       userResp.User.Id,
+				"username": userResp.User.Username,
+				"fullname": userResp.User.Fullname,
+			}
+		}
+
 		taskMaps = append(taskMaps, maps.Map{
 			"id":       task.Id,
 			"authType": task.AuthType,
@@ -257,6 +289,7 @@ func (this *IndexAction) RunGet(params struct {
 			"autoRenew":   task.AutoRenew,
 			"cert":        certMap,
 			"log":         logMap,
+			"user":        taskUserMap,
 		})
 	}
 	this.Data["tasks"] = taskMaps
