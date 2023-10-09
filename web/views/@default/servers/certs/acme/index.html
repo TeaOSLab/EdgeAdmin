@@ -5,14 +5,15 @@
 	{$template "menu"}
 
     <second-menu>
-        <menu-item :href="'/servers/certs/acme?keyword=' + keyword + '&userId=' + searchingUserId" :active="type == ''">所有任务({{countAll}})</menu-item>
-        <menu-item :href="'/servers/certs/acme?type=available&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == 'available'">有效证书({{countAvailable}})</menu-item>
-        <menu-item :href="'/servers/certs/acme?type=expired&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == 'expired'">过期证书<span :class="{red: countExpired > 0}">({{countExpired}})</span></menu-item>
-        <menu-item :href="'/servers/certs/acme?type=7days&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == '7days'">7天内过期<span :class="{red: count7Days > 0}">({{count7Days}})</span></menu-item>
-        <menu-item :href="'/servers/certs/acme?type=30days&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == '30days'">30天内过期({{count30Days}})</menu-item>
+        <menu-item :href="'/servers/certs/acme?userType=' + userType + '&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == ''">所有任务({{countAll}})</menu-item>
+        <menu-item :href="'/servers/certs/acme?userType=' + userType + '&type=available&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == 'available'">有效证书({{countAvailable}})</menu-item>
+        <menu-item :href="'/servers/certs/acme?userType=' + userType + '&type=expired&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == 'expired'">过期证书<span :class="{red: countExpired > 0}">({{countExpired}})</span></menu-item>
+        <menu-item :href="'/servers/certs/acme?userType=' + userType + '&type=7days&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == '7days'">7天内过期<span :class="{red: count7Days > 0}">({{count7Days}})</span></menu-item>
+        <menu-item :href="'/servers/certs/acme?userType=' + userType + '&type=30days&keyword=' + keyword + '&userId=' + searchingUserId" :active="type == '30days'">30天内过期({{count30Days}})</menu-item>
     </second-menu>
 
     <form class="ui form">
+        <input type="hidden" name="userType" :value="userType"/>
         <div class="ui fields inline">
             <div class="ui field">
                 <input type="text" name="keyword" placeholder="域名等关键词" style="width:12em" v-model="keyword"/>
@@ -24,10 +25,18 @@
             <div class="ui field">
                 <button type="submit" class="ui button">搜索</button>
 
-                <a :href="Tea.url('.')" v-if="keyword.length > 0 || searchingUserId > 0">[清除条件]</a>
+                <a :href="Tea.url('.', {userType:userType})" v-if="keyword.length > 0 || searchingUserId > 0">[清除条件]</a>
             </div>
         </div>
     </form>
+
+    <div v-if="searchingUserId == 0">
+        <div class="ui menu text basic tiny blue" style="margin-bottom:0">
+            <a :href="'/servers/certs/acme?userType=&type=' + type + '&keyword=' + keyword + '&userId=' + searchingUserId" class="item" :class="{active: userType == ''}">管理员证书</a>
+            <a :href="'/servers/certs/acme?userType=user&type=' + type + '&keyword=' + keyword + '&userId=' + searchingUserId" class="item" :class="{active: userType == 'user'}">用户证书</a>
+        </div>
+        <div class="ui divider" style="margin-top:0"></div>
+    </div>
 
 	<p class="comment" v-if="tasks.length == 0"><span v-if="searchingUserId > 0">当前用户下</span>暂时还没有证书申请任务。</p>
 
@@ -84,7 +93,7 @@
 				<span class="disabled" v-else="">-</span>
 			</td>
             <td>
-                <span v-if="user != null && user.id > 0"><user-link :v-user="user"></user-link></span>
+                <span v-if="task.user != null && task.user.id > 0"><user-link :v-user="task.user"></user-link></span>
                 <span v-else class="disabled">管理员</span>
             </td>
 			<td>
