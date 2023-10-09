@@ -88,10 +88,6 @@ func (this *UpgradeManager) Start() error {
 
 	// 检查unzip
 	unzipExe, _ := exec.LookPath("unzip")
-	if len(unzipExe) == 0 {
-		// TODO install unzip automatically or pack with a static 'unzip' file
-		return errors.New("can not find 'unzip' command")
-	}
 
 	// 检查cp
 	cpExe, _ := exec.LookPath("cp")
@@ -232,12 +228,24 @@ func (this *UpgradeManager) Start() error {
 				return fmt.Errorf("remove old dir '%s' failed: %w", unzipDir, err)
 			}
 		}
-		var unzipCmd = exec.Command(unzipExe, "-q", "-o", destFile, "-d", unzipDir)
-		var unzipStderr = &bytes.Buffer{}
-		unzipCmd.Stderr = unzipStderr
-		err = unzipCmd.Run()
-		if err != nil {
-			return fmt.Errorf("unzip installation file failed: %w: %s", err, unzipStderr.String())
+
+		if len(unzipExe) > 0 {
+			var unzipCmd = exec.Command(unzipExe, "-q", "-o", destFile, "-d", unzipDir)
+			var unzipStderr = &bytes.Buffer{}
+			unzipCmd.Stderr = unzipStderr
+			err = unzipCmd.Run()
+			if err != nil {
+				return fmt.Errorf("unzip installation file failed: %w: %s", err, unzipStderr.String())
+			}
+		} else {
+			var unzipCmd = &Unzip{
+				zipFile:   destFile,
+				targetDir: unzipDir,
+			}
+			err = unzipCmd.Run()
+			if err != nil {
+				return fmt.Errorf("unzip installation file failed: %w", err)
+			}
 		}
 
 		installationFiles, err := filepath.Glob(unzipDir + "/edge-" + this.component + "/*")
