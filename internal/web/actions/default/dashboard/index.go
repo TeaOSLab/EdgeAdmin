@@ -165,39 +165,6 @@ func (this *IndexAction) RunPost(params struct{}) {
 			"version": "",
 		}
 	}
-	if resp.UserNodeUpgradeInfo != nil {
-		this.Data["userNodeUpgradeInfo"] = maps.Map{
-			"count":   resp.UserNodeUpgradeInfo.CountNodes,
-			"version": resp.UserNodeUpgradeInfo.NewVersion,
-		}
-	} else {
-		this.Data["userNodeUpgradeInfo"] = maps.Map{
-			"count":   0,
-			"version": 0,
-		}
-	}
-	if resp.AuthorityNodeUpgradeInfo != nil {
-		this.Data["authorityNodeUpgradeInfo"] = maps.Map{
-			"count":   resp.AuthorityNodeUpgradeInfo.CountNodes,
-			"version": resp.AuthorityNodeUpgradeInfo.NewVersion,
-		}
-	} else {
-		this.Data["authorityNodeUpgradeInfo"] = maps.Map{
-			"count":   0,
-			"version": "",
-		}
-	}
-	if resp.NsNodeUpgradeInfo != nil {
-		this.Data["nsNodeUpgradeInfo"] = maps.Map{
-			"count":   resp.NsNodeUpgradeInfo.CountNodes,
-			"version": resp.NsNodeUpgradeInfo.NewVersion,
-		}
-	} else {
-		this.Data["nsNodeUpgradeInfo"] = maps.Map{
-			"count":   0,
-			"version": "",
-		}
-	}
 
 	// 域名排行
 	{
