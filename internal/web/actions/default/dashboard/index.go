@@ -154,17 +154,6 @@ func (this *IndexAction) RunPost(params struct{}) {
 			"version": "",
 		}
 	}
-	if resp.MonitorNodeUpgradeInfo != nil {
-		this.Data["monitorNodeUpgradeInfo"] = maps.Map{
-			"count":   resp.MonitorNodeUpgradeInfo.CountNodes,
-			"version": resp.MonitorNodeUpgradeInfo.NewVersion,
-		}
-	} else {
-		this.Data["monitorNodeUpgradeInfo"] = maps.Map{
-			"count":   0,
-			"version": "",
-		}
-	}
 	if resp.ApiNodeUpgradeInfo != nil {
 		this.Data["apiNodeUpgradeInfo"] = maps.Map{
 			"count":   resp.ApiNodeUpgradeInfo.CountNodes,
