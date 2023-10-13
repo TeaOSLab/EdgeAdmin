@@ -19,6 +19,7 @@ import (
 	"os/exec"
 	"regexp"
 	"runtime"
+	"strings"
 )
 
 // CheckDiskPartitions 检查服务器磁盘空间
@@ -47,6 +48,14 @@ func CheckDiskPartitions(thresholdPercent float64) (path string, usage uint64, u
 		if p.Fstype != rootFS {
 			continue
 		}
+
+		// skip some specified partitions on macOS
+		if runtime.GOOS == "darwin" {
+			if strings.Contains(p.Mountpoint, "/Developer/") {
+				continue
+			}
+		}
+
 		stat, _ := disk.Usage(p.Mountpoint)
 		if stat != nil {
 			if stat.Used < 2*uint64(sizes.G) {
