@@ -1,12 +1,18 @@
 // 使用Icon的链接方式
 Vue.component("link-icon", {
-	props: ["href", "title", "target"],
+	props: ["href", "title", "target", "size"],
 	data: function () {
+		let realSize = this.size
+		if (realSize == null || realSize.length == 0) {
+			realSize = "small"
+		}
+
 		return {
-			vTitle: (this.title == null) ? "打开链接" : this.title
+			vTitle: (this.title == null) ? "打开链接" : this.title,
+			realSize: realSize
 		}
 	},
-	template: `<span><slot></slot>&nbsp;<a :href="href" :title="vTitle" class="link grey" :target="target"><i class="icon linkify small"></i></a></span>`
+	template: `<span><slot></slot>&nbsp;<a :href="href" :title="vTitle" class="link grey" :target="target"><i class="icon linkify" :class="realSize"></i></a></span>`
 })
 
 // 带有下划虚线的连接
