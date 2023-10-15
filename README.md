@@ -46,7 +46,7 @@
 * [开发者指南](https://goedge.cn/docs/Developer/Build.md)
 
 ## 架构
-![架构](doc/architect-zh.jpg)
+![架构图](doc/architect-zh.png)
 
 其中的组件源码地址如下：
 * [边缘节点](https://github.com/TeaOSLab/EdgeNode)
