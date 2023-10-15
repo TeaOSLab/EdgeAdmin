@@ -9060,9 +9060,12 @@ Vue.component("http-firewall-actions-box", {
 				if (isNaN(timeout)) {
 					timeout = 0
 				}
-				if (this.recordIPListId <= 0) {
+				if (this.recordIPListId < 0) {
 					return
 				}
+
+				// recordIPListId can be 0
+
 				this.actionOptions = {
 					type: this.recordIPType,
 					level: this.recordIPLevel,
@@ -9410,7 +9413,7 @@ Vue.component("http-firewall-actions-box", {
 				</td>
 			</tr>
 			<tr v-if="actionCode == 'record_ip'">
-				<td>选择IP名单 *</td>
+				<td>选择IP名单</td>
 				<td>
 					<div v-if="recordIPListId > 0" class="ui label basic small">{{recordIPListName}} <a href="" @click.prevent="removeRecordIPList"><i class="icon remove small"></i></a></div>
 					<button type="button" class="ui button tiny" @click.prevent="selectRecordIPList">+</button>
@@ -16409,13 +16412,19 @@ Vue.component("menu-item", {
 
 // 使用Icon的链接方式
 Vue.component("link-icon", {
-	props: ["href", "title", "target"],
+	props: ["href", "title", "target", "size"],
 	data: function () {
+		let realSize = this.size
+		if (realSize == null || realSize.length == 0) {
+			realSize = "small"
+		}
+
 		return {
-			vTitle: (this.title == null) ? "打开链接" : this.title
+			vTitle: (this.title == null) ? "打开链接" : this.title,
+			realSize: realSize
 		}
 	},
-	template: `<span><slot></slot>&nbsp;<a :href="href" :title="vTitle" class="link grey" :target="target"><i class="icon linkify small"></i></a></span>`
+	template: `<span><slot></slot>&nbsp;<a :href="href" :title="vTitle" class="link grey" :target="target"><i class="icon linkify" :class="realSize"></i></a></span>`
 })
 
 // 带有下划虚线的连接
