@@ -388,14 +388,6 @@ func (this *RPCClient) NodeTaskRPC() pb.NodeTaskServiceClient {
 	return pb.NewNodeTaskServiceClient(this.pickConn())
 }
 
-func (this *RPCClient) AuthorityKeyRPC() pb.AuthorityKeyServiceClient {
-	return pb.NewAuthorityKeyServiceClient(this.pickConn())
-}
-
-func (this *RPCClient) AuthorityNodeRPC() pb.AuthorityNodeServiceClient {
-	return pb.NewAuthorityNodeServiceClient(this.pickConn())
-}
-
 func (this *RPCClient) LatestItemRPC() pb.LatestItemServiceClient {
 	return pb.NewLatestItemServiceClient(this.pickConn())
 }
