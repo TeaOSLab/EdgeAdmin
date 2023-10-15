@@ -499,9 +499,12 @@ Vue.component("http-firewall-actions-box", {
 				if (isNaN(timeout)) {
 					timeout = 0
 				}
-				if (this.recordIPListId <= 0) {
+				if (this.recordIPListId < 0) {
 					return
 				}
+
+				// recordIPListId can be 0
+
 				this.actionOptions = {
 					type: this.recordIPType,
 					level: this.recordIPLevel,
@@ -849,7 +852,7 @@ Vue.component("http-firewall-actions-box", {
 				</td>
 			</tr>
 			<tr v-if="actionCode == 'record_ip'">
-				<td>选择IP名单 *</td>
+				<td>选择IP名单</td>
 				<td>
 					<div v-if="recordIPListId > 0" class="ui label basic small">{{recordIPListName}} <a href="" @click.prevent="removeRecordIPList"><i class="icon remove small"></i></a></div>
 					<button type="button" class="ui button tiny" @click.prevent="selectRecordIPList">+</button>
