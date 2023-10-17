@@ -18,7 +18,7 @@
 					<option value="">[请选择]</option>
 					<option v-for="type in types" :value="type.code">{{type.name}}</option>
 				</select>
-                <p class="comment">{{typeDescription}} <span v-if="!teaIsPlus">购买商业版可获得更多厂商支持。</span></p>
+                <p class="comment" v-if="typeDescription.length > 0">{{typeDescription}} 系统会保留原有域名下的域名解析，请放心使用。<span v-if="!teaIsPlus">购买商业版可获得更多厂商支持。</span></p>
 			</td>
 		</tr>
 		<tr>
