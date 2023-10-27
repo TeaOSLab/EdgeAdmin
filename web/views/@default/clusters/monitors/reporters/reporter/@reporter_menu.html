@@ -1,8 +1,0 @@
-<first-menu>
-    <menu-item href="/clusters/monitors/reporters">所有终端</menu-item>
-    <span class="disabled item">|</span>
-    <menu-item :href="'/clusters/monitors/reporters/reporter?reporterId=' + reporter.id" code="reporter">"{{reporter.name}}"详情</menu-item>
-    <menu-item :href="'/clusters/monitors/reporters/reporter/results?reporterId=' + reporter.id" code="result">监控结果</menu-item>
-    <menu-item :href="'/clusters/monitors/reporters/reporter/logs?reporterId=' + reporter.id" code="log">运行日志</menu-item>
-    <menu-item :href="'/clusters/monitors/reporters/reporter/update?reporterId=' + reporter.id" code="update">修改</menu-item>
-</first-menu>
