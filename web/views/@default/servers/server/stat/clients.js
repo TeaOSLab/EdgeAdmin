@@ -62,7 +62,7 @@ Tea.context(function () {
 					itemStyle: {
 						color: teaweb.DefaultChartColor
 					},
-					barWidth: "20em"
+					barWidth: "10em"
 				}
 			],
 			animation: true

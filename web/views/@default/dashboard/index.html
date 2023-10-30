@@ -96,10 +96,11 @@
 
 <chart-columns-grid>
     <div class="ui column">
-        <div class="ui menu tabular" v-show="!isLoading">
+        <div class="ui menu text blue" v-show="!isLoading">
             <a href="" class="item" :class="{active: trafficTab == 'hourly'}" @click.prevent="selectTrafficTab('hourly')">24小时流量趋势</a>
             <a href="" class="item" :class="{active: trafficTab == 'daily'}" @click.prevent="selectTrafficTab('daily')">15天流量趋势</a>
         </div>
+        <div class="ui divider"></div>
 
         <!-- 按小时统计 -->
         <div class="chart-box" id="hourly-traffic-chart-box" v-show="trafficTab == 'hourly'"></div>
@@ -111,6 +112,7 @@
     <div class="ui column">
         <!-- 域名排行 -->
         <h4 v-show="!isLoading">域名访问排行 <span>（24小时）</span></h4>
+        <div class="ui divider"></div>
         <div class="chart-box" id="top-domains-chart"></div>
     </div>
 

@@ -152,13 +152,21 @@ body.expanded .right-box {
   display: inline;
 }
 .grid.chart-grid {
-  margin-top: 1em!important;
+  margin-top: 1em !important;
   margin-left: 0.4em !important;
 }
 .grid.chart-grid .column {
   margin-bottom: 1em;
   border: 1px rgba(0, 0, 0, 0.1) solid;
   border-right: 0;
+}
+.grid.chart-grid .column .menu {
+  margin-top: -0.6em !important;
+  margin-bottom: -0.6em !important;
+}
+.grid.chart-grid .column h4 span {
+  font-size: 0.8em;
+  color: grey;
 }
 .grid.chart-grid .column.with-border {
   border-right: 1px rgba(0, 0, 0, 0.1) solid;

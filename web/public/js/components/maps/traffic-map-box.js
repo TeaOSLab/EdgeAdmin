@@ -34,6 +34,14 @@ Vue.component("traffic-map-box", {
 	},
 	methods: {
 		render: function () {
+			if (this.$el.offsetWidth < 300) {
+				let that = this
+				setTimeout(function () {
+					that.render()
+				}, 100)
+				return
+			}
+
 			this.chart = teaweb.initChart(document.getElementById("traffic-map-box"));
 			let that = this
 			this.chart.setOption({

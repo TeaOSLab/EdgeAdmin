@@ -5717,7 +5717,7 @@ Vue.component("http-firewall-config-box", {
 
 // 指标图表
 Vue.component("metric-chart", {
-	props: ["v-chart", "v-stats", "v-item"],
+	props: ["v-chart", "v-stats", "v-item", "v-column" /** in column? **/],
 	mounted: function () {
 		this.load()
 	},
@@ -5905,7 +5905,7 @@ Vue.component("metric-chart", {
 							color: teaweb.DefaultChartColor
 						},
 						areaStyle: {},
-						barWidth: "20em"
+						barWidth: "10em"
 					}
 				]
 			})
@@ -6063,7 +6063,7 @@ Vue.component("metric-chart", {
 							color: teaweb.DefaultChartColor
 						},
 						areaStyle: {},
-						barWidth: "20em"
+						barWidth: "10em"
 					}
 				]
 			})
@@ -6131,7 +6131,7 @@ Vue.component("metric-chart", {
 			return time
 		}
 	},
-	template: `<div style="float: left" :style="{'width': width}">
+	template: `<div style="float: left" :style="{'width': this.vColumn ?  '' : width}" :class="{'ui column':this.vColumn}">
 	<h4>{{chart.name}} <span>（{{valueTypeName}}）</span></h4>
 	<div class="ui divider"></div>
 	<div style="height: 14em; padding-bottom: 1em; " :id="chartId" :class="{'scroll-box': chart.type == 'table'}"></div>
@@ -18438,6 +18438,87 @@ Vue.component("bits-var", {
 </var>`
 })
 
+Vue.component("chart-columns-grid", {
+	props: [],
+	mounted: function () {
+		this.columns = this.calculateColumns()
+
+		let that = this
+		window.addEventListener("resize", function () {
+			that.columns = that.calculateColumns()
+		})
+	},
+	updated: function () {
+		let totalElements = this.$el.getElementsByClassName("column").length
+		if (totalElements == this.totalElements) {
+			return
+		}
+		this.totalElements = totalElements
+		this.calculateColumns()
+	},
+	data: function () {
+		return {
+			columns: "four",
+			totalElements: 0
+		}
+	},
+	methods: {
+		calculateColumns: function () {
+			let w = window.innerWidth
+			let columns = Math.floor(w / 500)
+			if (columns == 0) {
+				columns = 1
+			}
+
+			let columnElements = this.$el.getElementsByClassName("column")
+			if (columnElements.length == 0) {
+				return "one"
+			}
+			let maxColumns = columnElements.length
+			if (columns > maxColumns) {
+				columns = maxColumns
+			}
+
+			// 添加右侧边框
+			for (let index = 0; index < columnElements.length; index++) {
+				let el = columnElements[index]
+				el.className = el.className.replace("with-border", "")
+				if (index % columns == columns - 1 || index == columnElements.length - 1 /** 最后一个 **/) {
+					el.className += " with-border"
+				}
+			}
+
+			switch (columns) {
+				case 1:
+					return "one"
+				case 2:
+					return "two"
+				case 3:
+					return "three"
+				case 4:
+					return "four"
+				case 5:
+					return "five"
+				case 6:
+					return "six"
+				case 7:
+					return "seven"
+				case 8:
+					return "eight"
+				case 9:
+					return "nine"
+				case 10:
+					return "ten"
+				default:
+					return "ten"
+			}
+		}
+	},
+	template: `<div :class="'ui ' + columns + ' columns grid chart-grid'">
+	<slot></slot>
+</div>`
+})
+
 Vue.component("bytes-var", {
 	props: ["v-bytes"],
 	data: function () {
@@ -21205,7 +21286,7 @@ window.REQUEST_COND_OPERATORS = [{"description":"判断是否正则表达式匹�
 
 window.REQUEST_VARIABLES = [{"code":"${edgeVersion}","description":"","name":"边缘节点版本"},{"code":"${remoteAddr}","description":"会依次根据X-Forwarded-For、X-Real-IP、RemoteAddr获取，适合前端有别的反向代理服务时使用，存在伪造的风险","name":"客户端地址（IP）"},{"code":"${rawRemoteAddr}","description":"返回直接连接服务的客户端原始IP地址","name":"客户端地址（IP）"},{"code":"${remotePort}","description":"","name":"客户端端口"},{"code":"${remoteUser}","description":"","name":"客户端用户名"},{"code":"${requestURI}","description":"比如/hello?name=lily","name":"请求URI"},{"code":"${requestPath}","description":"比如/hello","name":"请求路径（不包括参数）"},{"code":"${requestURL}","description":"比如https://example.com/hello?name=lily","name":"完整的请求URL"},{"code":"${requestLength}","description":"","name":"请求内容长度"},{"code":"${requestMethod}","description":"比如GET、POST","name":"请求方法"},{"code":"${requestFilename}","description":"","name":"请求文件路径"},{"code":"${requestPathExtension}","description":"请求路径中的文件扩展名，包括点符号，比如.html、.png","name":"请求文件扩展名"},{"code":"${requestPathLowerExtension}","description":"请求路径中的文件扩展名，其中大写字母会被自动转换为小写，包括点符号，比如.html、.png","name":"请求文件小写扩展名"},{"code":"${scheme}","description":"","name":"请求协议，http或https"},{"code":"${proto}","description:":"类似于HTTP/1.0","name":"包含版本的HTTP请求协议"},{"code":"${timeISO8601}","description":"比如2018-07-16T23:52:24.839+08:00","name":"ISO 8601格式的时间"},{"code":"${timeLocal}","description":"比如17/Jul/2018:09:52:24 +0800","name":"本地时间"},{"code":"${msec}","description":"比如1531756823.054","name":"带有毫秒的时间"},{"code":"${timestamp}","description":"","name":"unix时间戳，单位为秒"},{"code":"${host}","description":"","name":"主机名"},{"code":"${cname}","description":"比如38b48e4f.goedge.cn","name":"当前网站的CNAME"},{"code":"${serverName}","description":"","name":"接收请求的服务器名"},{"code":"${serverPort}","description":"","name":"接收请求的服务器端口"},{"code":"${referer}","description":"","name":"请求来源URL"},{"code":"${referer.host}","description":"","name":"请求来源URL域名"},{"code":"${userAgent}","description":"","name":"客户端信息"},{"code":"${contentType}","description":"","name":"请求头部的Content-Type"},{"code":"${cookies}","description":"","name":"所有cookie组合字符串"},{"code":"${cookie.NAME}","description":"","name":"单个cookie值"},{"code":"${isArgs}","description":"如果URL有参数，则值为`?`；否则，则值为空","name":"问号（?）标记"},{"code":"${args}","description":"","name":"所有参数组合字符串"},{"code":"${arg.NAME}","description":"","name":"单个参数值"},{"code":"${headers}","description":"","name":"所有Header信息组合字符串"},{"code":"${header.NAME}","description":"","name":"单个Header值"},{"code":"${geo.country.name}","description":"","name":"国家/地区名称"},{"code":"${geo.country.id}","description":"","name":"国家/地区ID"},{"code":"${geo.province.name}","description":"目前只包含中国省份","name":"省份名称"},{"code":"${geo.province.id}","description":"目前只包含中国省份","name":"省份ID"},{"code":"${geo.city.name}","description":"目前只包含中国城市","name":"城市名称"},{"code":"${geo.city.id}","description":"目前只包含中国城市","name":"城市名称"},{"code":"${isp.name}","description":"","name":"ISP服务商名称"},{"code":"${isp.id}","description":"","name":"ISP服务商ID"},{"code":"${browser.os.name}","description":"客户端所在操作系统名称","name":"操作系统名称"},{"code":"${browser.os.version}","description":"客户端所在操作系统版本","name":"操作系统版本"},{"code":"${browser.name}","description":"客户端浏览器名称","name":"浏览器名称"},{"code":"${browser.version}","description":"客户端浏览器版本","name":"浏览器版本"},{"code":"${browser.isMobile}","description":"如果客户端是手机，则值为1，否则为0","name":"手机标识"}]
 
-window.METRIC_HTTP_KEYS = [{"name":"客户端地址（IP）","code":"${remoteAddr}","description":"会依次根据X-Forwarded-For、X-Real-IP、RemoteAddr获取，适用于前端可能有别的反向代理的情形，存在被伪造的可能","icon":""},{"name":"直接客户端地址（IP）","code":"${rawRemoteAddr}","description":"返回直接连接服务的客户端原始IP地址","icon":""},{"name":"客户端用户名","code":"${remoteUser}","description":"通过基本认证填入的用户名","icon":""},{"name":"请求URI","code":"${requestURI}","description":"包含参数，比如/hello?name=lily","icon":""},{"name":"请求路径","code":"${requestPath}","description":"不包含参数，比如/hello","icon":""},{"name":"完整URL","code":"${requestURL}","description":"比如https://example.com/hello?name=lily","icon":""},{"name":"请求方法","code":"${requestMethod}","description":"比如GET、POST等","icon":""},{"name":"请求协议Scheme","code":"${scheme}","description":"http或https","icon":""},{"name":"文件扩展名","code":"${requestPathExtension}","description":"请求路径中的文件扩展名，包括点符号，比如.html、.png","icon":""},{"name":"小写文件扩展名","code":"${requestPathLowerExtension}","description":"请求路径中的文件扩展名小写形式，包括点符号，比如.html、.png","icon":""},{"name":"主机名","code":"${host}","description":"通常是请求的域名","icon":""},{"name":"请求协议Proto","code":"${proto}","description":"包含版本的HTTP请求协议，类似于HTTP/1.0","icon":""},{"name":"HTTP协议","code":"${proto}","description":"包含版本的HTTP请求协议，类似于HTTP/1.0","icon":""},{"name":"URL参数值","code":"${arg.NAME}","description":"单个URL参数值","icon":""},{"name":"请求来源URL","code":"${referer}","description":"请求来源Referer URL","icon":""},{"name":"请求来源URL域名","code":"${referer.host}","description":"请求来源Referer URL域名","icon":""},{"name":"Header值","code":"${header.NAME}","description":"单个Header值，比如${header.User-Agent}","icon":""},{"name":"Cookie值","code":"${cookie.NAME}","description":"单个cookie值，比如${cookie.sid}","icon":""},{"name":"状态码","code":"${status}","description":"","icon":""},{"name":"响应的Content-Type值","code":"${response.contentType}","description":"","icon":""}]
+window.METRIC_HTTP_KEYS = [{"name":"客户端地址（IP）","code":"${remoteAddr}","description":"会依次根据X-Forwarded-For、X-Real-IP、RemoteAddr获取，适用于前端可能有别的反向代理的情形，存在被伪造的可能","icon":""},{"name":"直接客户端地址（IP）","code":"${rawRemoteAddr}","description":"返回直接连接服务的客户端原始IP地址","icon":""},{"name":"客户端用户名","code":"${remoteUser}","description":"通过基本认证填入的用户名","icon":""},{"name":"请求URI","code":"${requestURI}","description":"包含参数，比如/hello?name=lily","icon":""},{"name":"请求路径","code":"${requestPath}","description":"不包含参数，比如/hello","icon":""},{"name":"完整URL","code":"${requestURL}","description":"比如https://example.com/hello?name=lily","icon":""},{"name":"请求方法","code":"${requestMethod}","description":"比如GET、POST等","icon":""},{"name":"请求协议Scheme","code":"${scheme}","description":"http或https","icon":""},{"name":"文件扩展名","code":"${requestPathExtension}","description":"请求路径中的文件扩展名，包括点符号，比如.html、.png","icon":""},{"name":"小写文件扩展名","code":"${requestPathLowerExtension}","description":"请求路径中的文件扩展名小写形式，包括点符号，比如.html、.png","icon":""},{"name":"主机名","code":"${host}","description":"通常是请求的域名","icon":""},{"name":"HTTP协议","code":"${proto}","description":"包含版本的HTTP请求协议，类似于HTTP/1.0","icon":""},{"name":"URL参数值","code":"${arg.NAME}","description":"单个URL参数值","icon":""},{"name":"请求来源URL","code":"${referer}","description":"请求来源Referer URL","icon":""},{"name":"请求来源URL域名","code":"${referer.host}","description":"请求来源Referer URL域名","icon":""},{"name":"Header值","code":"${header.NAME}","description":"单个Header值，比如${header.User-Agent}","icon":""},{"name":"Cookie值","code":"${cookie.NAME}","description":"单个cookie值，比如${cookie.sid}","icon":""},{"name":"状态码","code":"${status}","description":"","icon":""},{"name":"响应的Content-Type值","code":"${response.contentType}","description":"","icon":""}]
 
 window.IP_ADDR_THRESHOLD_ITEMS = [{"code":"nodeAvgRequests","description":"当前节点在单位时间内接收到的平均请求数。","name":"节点平均请求数","unit":"个"},{"code":"nodeAvgTrafficOut","description":"当前节点在单位时间内发送的下行流量。","name":"节点平均下行流量","unit":"M"},{"code":"nodeAvgTrafficIn","description":"当前节点在单位时间内接收的上行流量。","name":"节点平均上行流量","unit":"M"},{"code":"nodeHealthCheck","description":"当前节点健康检查结果。","name":"节点健康检查结果","unit":""},{"code":"connectivity","description":"通过区域监控得到的当前IP地址的连通性数值，取值在0和100之间。","name":"IP连通性","unit":"%"},{"code":"groupAvgRequests","description":"当前节点所在分组在单位时间内接收到的平均请求数。","name":"分组平均请求数","unit":"个"},{"code":"groupAvgTrafficOut","description":"当前节点所在分组在单位时间内发送的下行流量。","name":"分组平均下行流量","unit":"M"},{"code":"groupAvgTrafficIn","description":"当前节点所在分组在单位时间内接收的上行流量。","name":"分组平均上行流量","unit":"M"},{"code":"clusterAvgRequests","description":"当前节点所在集群在单位时间内接收到的平均请求数。","name":"集群平均请求数","unit":"个"},{"code":"clusterAvgTrafficOut","description":"当前节点所在集群在单位时间内发送的下行流量。","name":"集群平均下行流量","unit":"M"},{"code":"clusterAvgTrafficIn","description":"当前节点所在集群在单位时间内接收的上行流量。","name":"集群平均上行流量","unit":"M"}]
 
