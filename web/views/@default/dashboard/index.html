@@ -96,28 +96,32 @@
 
 <div class="ui divider" v-show="!isLoading"></div>
 
-<div class="ui menu tabular" v-show="!isLoading">
-    <a href="" class="item" :class="{active: trafficTab == 'hourly'}" @click.prevent="selectTrafficTab('hourly')">24小时流量趋势</a>
-    <a href="" class="item" :class="{active: trafficTab == 'daily'}" @click.prevent="selectTrafficTab('daily')">15天流量趋势</a>
-</div>
+<chart-columns-grid>
+    <div class="ui column">
+        <div class="ui menu tabular" v-show="!isLoading">
+            <a href="" class="item" :class="{active: trafficTab == 'hourly'}" @click.prevent="selectTrafficTab('hourly')">24小时流量趋势</a>
+            <a href="" class="item" :class="{active: trafficTab == 'daily'}" @click.prevent="selectTrafficTab('daily')">15天流量趋势</a>
+        </div>
 
-<!-- 按小时统计 -->
-<div class="chart-box" id="hourly-traffic-chart-box" v-show="trafficTab == 'hourly'"></div>
+        <!-- 按小时统计 -->
+        <div class="chart-box" id="hourly-traffic-chart-box" v-show="trafficTab == 'hourly'"></div>
 
-<!-- 按日统计 -->
-<div class="chart-box" id="daily-traffic-chart-box" v-show="trafficTab == 'daily'"></div>
+        <!-- 按日统计 -->
+        <div class="chart-box" id="daily-traffic-chart-box" v-show="trafficTab == 'daily'"></div>
+    </div>
 
-<!-- 域名排行 -->
-<h4 v-show="!isLoading">域名访问排行 <span>（24小时）</span></h4>
-<div class="chart-box" id="top-domains-chart"></div>
+    <div class="ui column">
+        <!-- 域名排行 -->
+        <h4 v-show="!isLoading">域名访问排行 <span>（24小时）</span></h4>
+        <div class="chart-box" id="top-domains-chart"></div>
+    </div>
 
-<!-- 指标 -->
-<div class="ui divider" v-if="metricCharts.length > 0"></div>
-<metric-board>
+    <!-- 指标 -->
     <metric-chart v-for="chart in metricCharts"
                   :key="chart.id"
                   :v-chart="chart.chart"
                   :v-stats="chart.stats"
-                  :v-item="chart.item">
+                  :v-item="chart.item"
+                  :v-column="true">
     </metric-chart>
-</metric-board>
+</chart-columns-grid>

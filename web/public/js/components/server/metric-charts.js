@@ -1,6 +1,6 @@
 // 指标图表
 Vue.component("metric-chart", {
-	props: ["v-chart", "v-stats", "v-item"],
+	props: ["v-chart", "v-stats", "v-item", "v-column" /** in column? **/],
 	mounted: function () {
 		this.load()
 	},
@@ -414,7 +414,7 @@ Vue.component("metric-chart", {
 			return time
 		}
 	},
-	template: `<div style="float: left" :style="{'width': width}">
+	template: `<div style="float: left" :style="{'width': this.vColumn ?  '' : width}" :class="{'ui column':this.vColumn}">
 	<h4>{{chart.name}} <span>（{{valueTypeName}}）</span></h4>
 	<div class="ui divider"></div>
 	<div style="height: 14em; padding-bottom: 1em; " :id="chartId" :class="{'scroll-box': chart.type == 'table'}"></div>
