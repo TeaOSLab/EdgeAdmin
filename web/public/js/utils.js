@@ -592,7 +592,8 @@ window.teaweb = {
 					itemStyle: {
 						color: this.DefaultChartColor
 					},
-					barWidth: "20em"
+					barWidth: "10em",
+					areaStyle: {}
 				}
 			],
 			animation: true,

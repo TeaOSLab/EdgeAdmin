@@ -188,7 +188,7 @@ Vue.component("metric-chart", {
 							color: teaweb.DefaultChartColor
 						},
 						areaStyle: {},
-						barWidth: "20em"
+						barWidth: "10em"
 					}
 				]
 			})
@@ -346,7 +346,7 @@ Vue.component("metric-chart", {
 							color: teaweb.DefaultChartColor
 						},
 						areaStyle: {},
-						barWidth: "20em"
+						barWidth: "10em"
 					}
 				]
 			})

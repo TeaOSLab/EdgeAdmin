@@ -41,7 +41,7 @@
 	}
 
 	.column:hover {
-		background: rgba(0, 0, 0, .03)!important;
+		background: rgba(0, 0, 0, .03) !important;
 
 		a {
 			display: inline;
@@ -50,13 +50,25 @@
 }
 
 .grid.chart-grid {
-	margin-top: 1em!important;
+	margin-top: 1em !important;
 	margin-left: 0.4em !important;
 
 	.column {
 		margin-bottom: 1em;
 		border: 1px rgba(0, 0, 0, .1) solid;
 		border-right: 0;
+
+		.menu {
+			margin-top: -0.6em !important;
+			margin-bottom: -0.6em !important;
+		}
+
+		h4 {
+			span {
+				font-size: 0.8em;
+				color: grey;
+			}
+		}
 	}
 
 	.column.with-border {
