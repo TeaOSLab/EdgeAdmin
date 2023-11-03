@@ -64,7 +64,7 @@ Vue.component("message-row", {
 	</tr>
 	<tr :class="{error: message.level == 'error', positive: message.level == 'success', warning: message.level == 'warning'}">
 		<td>
-			{{message.body}}
+			<pre style="padding: 0; margin:0; word-break: break-all;">{{message.body}}</pre>
 			
 			<!-- 健康检查 -->
 			<div v-if="message.type == 'HealthCheckFailed'" style="margin-top: 0.8em">
