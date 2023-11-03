@@ -105,7 +105,7 @@ Tea.context(function () {
 	this.doDNS = function () {
 		this.isRequesting = true
 		let that = this
-
+		let taskCreated = false
 		this.$post("$")
 			.params({
 				platformUserId: this.platformUserId,
@@ -120,6 +120,7 @@ Tea.context(function () {
 			})
 			.success(function (resp) {
 				this.taskId = resp.data.taskId
+				taskCreated = true
 
 				this.isRequesting = true
 				this.$post(".run")
@@ -136,7 +137,9 @@ Tea.context(function () {
 					})
 			})
 			.done(function () {
-				this.isRequesting = false
+				if (!taskCreated) {
+					this.isRequesting = false
+				}
 			})
 	}
 
