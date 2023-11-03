@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
-	"github.com/TeaOSLab/EdgeAdmin/internal/utils/sizes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/lists"
@@ -58,7 +57,7 @@ func CheckDiskPartitions(thresholdPercent float64) (path string, usage uint64, u
 
 		stat, _ := disk.Usage(p.Mountpoint)
 		if stat != nil {
-			if stat.Used < 2*uint64(sizes.G) {
+			if stat.Used < (5<<30) || stat.Free > (100<<30) {
 				continue
 			}
 			if stat.UsedPercent > thresholdPercent {
