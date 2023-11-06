@@ -198,6 +198,23 @@
             </tr>
         </tbody>
 
+        <!-- VolcEngine -->
+        <tbody v-if="provider.type == 'volcEngine'">
+            <tr>
+                <td>Access Key ID *</td>
+                <td>
+                    <input type="text" name="paramVolcEngineAccessKeyId" maxlength="100" v-model="provider.params.accessKeyId"/>
+                    <p class="comment">在火山引擎“访问控制--API访问密钥”中获取。</p>
+                </td>
+            </tr>
+            <tr>
+                <td>Secret Access Key *</td>
+                <td>
+                    <input type="text" name="paramVolcEngineAccessKeySecret" maxlength="100" v-model="provider.params.accessKeySecret"/>
+                </td>
+            </tr>
+        </tbody>
+
         <!-- EdgeDNS -->
         <tbody v-if="provider.type == 'localEdgeDNS'">
             <tr>
