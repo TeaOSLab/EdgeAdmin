@@ -145,6 +145,18 @@
         </tr>
     </tbody>
 
+    <!-- VolcEngine -->
+    <tbody v-if="provider.type == 'volcEngine'">
+        <tr>
+            <td class="color-border">Access Key ID</td>
+            <td>{{provider.apiParams.accessKeyId}}</td>
+        </tr>
+        <tr>
+            <td class="color-border">Secret Access Key</td>
+            <td>{{provider.apiParams.accessKeySecret}}</td>
+        </tr>
+    </tbody>
+
     <!-- Local EdgeDNS -->
     <tbody v-if="provider.type == 'localEdgeDNS'">
         <tr>
