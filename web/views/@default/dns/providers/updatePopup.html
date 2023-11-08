@@ -36,7 +36,7 @@
 			<tr>
 				<td>密钥Token *</td>
 				<td>
-					<input type="text" name="paramToken" maxlength="100" v-model="provider.params.token"/>
+					<input type="text" name="paramToken" maxlength="100" v-model="provider.params.token" spellcheck="false"/>
 					<p class="comment">获取方法参考：<a href="https://docs.dnspod.cn/account/5f2d466de8320f1a740d9ff3/" target="_blank">文档</a> </p>
 				</td>
 			</tr>
@@ -56,14 +56,14 @@
 			<tr>
 				<td>AccessKeyId *</td>
 				<td>
-					<input type="text" name="paramAliDNSAccessKeyId" maxlength="100" v-model="provider.params.accessKeyId"/>
+					<input type="text" name="paramAliDNSAccessKeyId" maxlength="100" v-model="provider.params.accessKeyId" spellcheck="false"/>
 					<p class="comment">登录阿里云控制台 -- 在"访问控制"中创建和获取。</p>
 				</td>
 			</tr>
 			<tr>
 				<td>AccessKeySecret *</td>
 				<td>
-					<input type="text" name="paramAliDNSAccessKeySecret" maxlength="100" v-model="provider.params.accessKeySecret"/>
+					<input type="text" name="paramAliDNSAccessKeySecret" maxlength="100" v-model="provider.params.accessKeySecret" spellcheck="false"/>
 					<p class="comment">登录阿里云控制台 -- 在"访问控制"中创建和获取。</p>
 				</td>
 			</tr>
@@ -81,21 +81,21 @@
             <tr>
                 <td>AccessKeyId *</td>
                 <td>
-                    <input type="text" name="paramHuaweiAccessKeyId" maxlength="100" v-model="provider.params.accessKeyId"/>
+                    <input type="text" name="paramHuaweiAccessKeyId" maxlength="100" v-model="provider.params.accessKeyId" spellcheck="false"/>
                     <p class="comment">登录华为云控制台 -- 在"我的凭证 -- 访问密钥"中创建和获取。</p>
                 </td>
             </tr>
             <tr>
                 <td>AccessKeySecret *</td>
                 <td>
-                    <input type="text" name="paramHuaweiAccessKeySecret" maxlength="100" v-model="provider.params.accessKeySecret"/>
+                    <input type="text" name="paramHuaweiAccessKeySecret" maxlength="100" v-model="provider.params.accessKeySecret" spellcheck="false"/>
                     <p class="comment">登录华为云控制台 -- 在"我的凭证 -- 访问密钥"中创建和获取。</p>
                 </td>
             </tr>
             <tr>
                 <td>终端节点</td>
                 <td>
-                    <input type="text" name="paramHuaweiEndpoint" maxlength="100" v-model="provider.params.endpoint"/>
+                    <input type="text" name="paramHuaweiEndpoint" maxlength="100" v-model="provider.params.endpoint" spellcheck="false"/>
                     <p class="comment">选填项。可以填写终端节点（Endpoint）区域代号或者域名，参考 <a href="https://developer.huaweicloud.com/endpoint?DNS" target="_blank">https://developer.huaweicloud.com/endpoint?DNS</a>（如果此链接失效，请到华为云开发者中心自行查找）。</p>
                 </td>
             </tr>
@@ -107,14 +107,14 @@
             <tr>
                 <td>API密钥 *</td>
                 <td>
-                    <input type="text" name="paramCloudFlareAPIKey" maxlength="100" v-model="provider.params.apiKey"/>
+                    <input type="text" name="paramCloudFlareAPIKey" maxlength="100" v-model="provider.params.apiKey" spellcheck="false"/>
                     <p class="comment">在个人资料中的"API令牌"--"API密钥"--"Global API Key"中获取。</p>
                 </td>
             </tr>
             <tr>
                 <td>账号邮箱 *</td>
                 <td>
-                    <input type="text" name="paramCloudFlareEmail" maxlength="100" v-model="provider.params.email"/>
+                    <input type="text" name="paramCloudFlareEmail" maxlength="100" v-model="provider.params.email" spellcheck="false"/>
                     <p class="comment">登录账号使用的邮箱。</p>
                 </td>
             </tr>
@@ -125,14 +125,14 @@
             <tr>
                 <td>Key *</td>
                 <td>
-                    <input type="text" name="paramGoDaddyKey" maxlength="100" v-model="provider.params.key"/>
+                    <input type="text" name="paramGoDaddyKey" maxlength="100" v-model="provider.params.key" spellcheck="false"/>
                     <p class="comment">可以在GoDaddy<a href="https://developer.godaddy.com/keys" target="_blank">开发者中心</a>添加。</p>
                 </td>
             </tr>
             <tr>
                 <td>Secret *</td>
                 <td>
-                    <input type="text" name="paramGoDaddySecret" maxlength="100" v-model="provider.params.secret"/>
+                    <input type="text" name="paramGoDaddySecret" maxlength="100" v-model="provider.params.secret" spellcheck="false"/>
                 </td>
             </tr>
         </tbody>
@@ -142,7 +142,7 @@
             <tr>
                 <td>用户认证ID<em>（auth-id）</em></td>
                 <td>
-                    <input type="text" name="paramClouDNSAuthId" maxlength="20" v-model="provider.params.authId"/>
+                    <input type="text" name="paramClouDNSAuthId" maxlength="20" v-model="provider.params.authId" spellcheck="false"/>
                     <p class="comment">和子用户认证ID二选一。可以在ClouDNS<a href="https://www.cloudns.net/api-settings/" target="_blank">API设置页面</a>添加。</p>
                 </td>
             </tr>
@@ -156,7 +156,7 @@
             <tr>
                 <td>认证密码 *<em>（auth-password）</em></td>
                 <td>
-                    <input type="password" name="paramClouDNSAuthPassword" maxlength="100" v-model="provider.params.authPassword"/>
+                    <input type="password" name="paramClouDNSAuthPassword" maxlength="100" v-model="provider.params.authPassword" spellcheck="false"/>
                     <p class="comment">用户或者子用户的认证密码。</p>
                 </td>
             </tr>
@@ -167,14 +167,14 @@
             <tr>
                 <td>API Key *</td>
                 <td>
-                    <input type="text" name="paramDNSComKey" maxlength="100" v-model="provider.params.key"/>
+                    <input type="text" name="paramDNSComKey" maxlength="100" v-model="provider.params.key" spellcheck="false"/>
                     <p class="comment">在DNS.COM控制台账号中心--API设置中创建和查看。</p>
                 </td>
             </tr>
             <tr>
                 <td>API Secret *</td>
                 <td>
-                    <input type="text" name="paramDNSComSecret" maxlength="100" v-model="provider.params.secret"/>
+                    <input type="text" name="paramDNSComSecret" maxlength="100" v-model="provider.params.secret" spellcheck="false"/>
                     <p class="comment">在DNS.COM控制台账号中心--API设置中创建和查看。</p>
                 </td>
             </tr>
@@ -185,14 +185,14 @@
             <tr>
                 <td>API ID *</td>
                 <td>
-                    <input type="text" name="paramDNSLaAPIId" maxlength="100" v-model="provider.params.apiId"/>
+                    <input type="text" name="paramDNSLaAPIId" maxlength="100" v-model="provider.params.apiId" spellcheck="false"/>
                     <p class="comment">在DNS.LA控制台我的账户菜单--API设置中创建和查看。</p>
                 </td>
             </tr>
             <tr>
                 <td>API密钥 *</td>
                 <td>
-                    <input type="text" name="paramDNSLaSecret" maxlength="100" v-model="provider.params.secret"/>
+                    <input type="text" name="paramDNSLaSecret" maxlength="100" v-model="provider.params.secret" spellcheck="false"/>
                     <p class="comment">在DNS.LA控制台我的账户菜单--API设置中创建和查看。</p>
                 </td>
             </tr>
@@ -203,14 +203,37 @@
             <tr>
                 <td>Access Key ID *</td>
                 <td>
-                    <input type="text" name="paramVolcEngineAccessKeyId" maxlength="100" v-model="provider.params.accessKeyId"/>
+                    <input type="text" name="paramVolcEngineAccessKeyId" maxlength="100" v-model="provider.params.accessKeyId" spellcheck="false"/>
                     <p class="comment">在火山引擎“访问控制--API访问密钥”中获取。</p>
                 </td>
             </tr>
             <tr>
                 <td>Secret Access Key *</td>
                 <td>
-                    <input type="text" name="paramVolcEngineAccessKeySecret" maxlength="100" v-model="provider.params.accessKeySecret"/>
+                    <input type="text" name="paramVolcEngineAccessKeySecret" maxlength="100" v-model="provider.params.accessKeySecret" spellcheck="false"/>
+                </td>
+            </tr>
+        </tbody>
+
+        <!-- Amazon Route 53 -->
+        <tbody v-if="provider.type == 'amazonRoute53'">
+            <tr>
+                <td>Access Key ID *</td>
+                <td>
+                    <input type="text" name="paramAmazonRoute53AccessKeyId" maxlength="100" v-model="provider.params.accessKeyId" spellcheck="false"/>
+                </td>
+            </tr>
+            <tr>
+                <td>Secret Access Key *</td>
+                <td>
+                    <input type="text" name="paramAmazonRoute53AccessKeySecret" maxlength="100" v-model="provider.params.accessKeySecret" spellcheck="false"/>
+                </td>
+            </tr>
+            <tr>
+                <td>API区域</td>
+                <td>
+                    <input type="text" name="paramAmazonRoute53Region" maxlength="100" v-model="provider.params.region" spellcheck="false"/>
+                    <p class="comment">通常不需要填写。</p>
                 </td>
             </tr>
         </tbody>
