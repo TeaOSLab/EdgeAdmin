@@ -157,6 +157,25 @@
         </tr>
     </tbody>
 
+    <!-- Amazon Route 53 -->
+    <tbody v-if="provider.type == 'amazonRoute53'">
+        <tr>
+            <td class="color-border">Access Key ID</td>
+            <td>{{provider.apiParams.accessKeyId}}</td>
+        </tr>
+        <tr>
+            <td class="color-border">Secret Access Key</td>
+            <td>{{provider.apiParams.accessKeySecret}}</td>
+        </tr>
+        <tr>
+            <td class="color-border">API区域</td>
+            <td>
+                <span v-if="provider.apiParams.region != null && provider.apiParams.region.length > 0">{{provider.apiParams.region}}</span>
+                <span v-else class="disabled">暂未设置</span>
+            </td>
+        </tr>
+    </tbody>
+
     <!-- Local EdgeDNS -->
     <tbody v-if="provider.type == 'localEdgeDNS'">
         <tr>
