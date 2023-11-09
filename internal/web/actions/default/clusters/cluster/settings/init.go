@@ -40,6 +40,7 @@ func init() {
 			// DNS
 			Prefix("/clusters/cluster/settings/dns").
 			GetPost("", new(dns.IndexAction)).
+			Get("/records", new(dns.RecordsAction)).
 			Post("/randomName", new(dns.RandomNameAction)).
 
 			// 系统服务设置

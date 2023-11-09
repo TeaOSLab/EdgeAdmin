@@ -1,0 +1,203 @@
+{$layout}
+{$template "../menu"}
+{$template "/left_menu_with_menu"}
+
+<div class="right-box with-menu">
+    {$template "menu"}
+
+    <!-- 基本信息 -->
+    <table class="ui table definition selectable">
+        <tr>
+            <td class="title">DNS子域名</td>
+            <td>
+                <span v-if="dnsInfo.domainName.length > 0"><var>{{dnsInfo.dnsName}}</var>.{{dnsInfo.domainName}}</span>
+                <span v-else class="disabled">没有设置</span>
+            </td>
+        </tr>
+        <tr>
+            <td>DNS服务商</td>
+            <td>
+                <div v-if="dnsInfo.providerName.length > 0">
+                    <link-icon :href="'/dns/providers/provider?providerId=' + dnsInfo.providerId">{{dnsInfo.providerTypeName}} - {{dnsInfo.providerName}}</link-icon>
+                </div>
+                <span v-else-if="dnsInfo.domainName.length == 0" class="disabled">请先设置域名</span>
+                <span v-else class="disabled">没有设置</span>
+            </td>
+        </tr>
+        <tr>
+            <td>自动设置CNAME记录</td>
+            <td>
+                <span v-if="dnsInfo.cnameRecords.length == 0" class="disabled">暂时还没有设置。</span>
+                <div v-else>
+                    <span v-for="record in dnsInfo.cnameRecords" class="ui label basic small">{{record}}</span>
+                </div>
+            </td>
+        </tr>
+        <tr v-if="dnsInfo.domainName.length > 0">
+            <td>操作</td>
+            <td>
+                <div v-if="!isSyncing">
+                    <link-red v-if="dnsHasChanges" @click.prevent="syncCluster(cluster.id)">检测到解析记录有变化，需要同步</link-red>
+                    <a href="" @click.prevent="syncCluster(cluster.id)" v-else>DNS服务商同步</a>
+                </div>
+                <span v-else>DNS服务商同步中...</span>
+            </td>
+        </tr>
+    </table>
+
+    <!-- 当前任务 -->
+    <div v-if="tasks.length > 0">
+        <h3>正在执行的任务</h3>
+        <table class="ui table selectable celled">
+            <thead>
+            <tr>
+                <th>对象</th>
+                <th>任务</th>
+                <th>状态</th>
+                <th>触发时间</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tr v-for="task in tasks">
+                <td>
+                <span v-if="(task.type == 'clusterChange' || task.type == 'clusterNodesChange') && task.cluster != null">{{task.cluster.name}}
+                    <link-icon :href="'/dns/clusters/cluster?clusterId=' + task.cluster.id" target="_top"></link-icon>
+                </span>
+                    <span v-if="task.type == 'nodeChange'">{{task.node.name}}</span>
+                    <span v-if="task.type == 'serverChange'">{{task.server.name}}</span>
+                    <span v-if="task.type == 'domainChange'">{{task.domain.name}}</span>
+                </td>
+                <td>
+                    <span v-if="task.type == 'clusterChange' || task.type == 'clusterNodesChange'">集群</span>
+                    <span v-if="task.type == 'nodeChange'">节点</span>
+                    <span v-if="task.type == 'serverChange'">网站</span>
+                    <span v-if="task.type == 'domainChange'">域名</span>
+                </td>
+                <td style="word-break: break-word; width: 26em">
+                    <span v-if="task.isDone" class="red">{{task.error}}</span>
+                    <span v-else>正在同步...</span>
+                </td>
+                <td>{{task.updatedTime}}</td>
+                <td>
+                    <a href="" title="删除" class="remove-btn" @click.prevent="deleteTask(task.id)"><i class="icon remove small grey"></i></a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- 问题合集 -->
+    <div v-if="issues.length > 0">
+        <h3>需要修复的问题</h3>
+        <table class="ui table selectable celled" v-if="issues.length > 0">
+            <thead>
+            <tr>
+                <th style="width: 50%">问题对象</th>
+                <th>问题描述</th>
+                <th class="two op">操作</th>
+            </tr>
+            </thead>
+            <tr v-for="issue in issues">
+                <td>
+                    <div v-if="issue.type == 'cluster'">
+                        集群 "{{issue.target}}" <link-icon :href="'/clusters/cluster?clusterId=' + issue.targetId"></link-icon>
+                    </div>
+                    <div v-if="issue.type == 'node'">
+                        集群 "{{issue.params.clusterName}}" 节点 "{{issue.target}}" <link-icon :href="'/clusters/cluster/node?clusterId=' + issue.params.clusterId + '&nodeId=' + issue.targetId"></link-icon>
+                    </div>
+                </td>
+                <td>
+                    <span>{{issue.description}}</span>
+                </td>
+                <td>
+                    <div v-if="issue.type == 'cluster'">
+                        <link-red @click.prevent="updateCluster(issue.targetId)">修复</link-red>
+                    </div>
+                    <div v-if="issue.type == 'node'">
+                        <link-red @click.prevent="updateNode(issue.params.clusterId, issue.targetId)">修复</link-red>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <div class="margin"></div>
+    </div>
+
+    <p class="comment">下面的DNS解析记录也可以手工在DNS服务商提供的管理平台添加。</p>
+
+    <!-- 节点DNS解析记录 -->
+    <h3>节点DNS解析记录 <span>&nbsp; ({{nodes.length}}个)</span></h3>
+    <p class="comment" v-if="nodes.length == 0">暂时没有需要设置的DNS记录。</p>
+    <table class="ui table selectable celled" v-if="nodes.length > 0">
+        <thead>
+        <tr>
+            <th>节点</th>
+            <th>子域名</th>
+            <th>记录类型</th>
+            <th>记录值</th>
+            <th>线路</th>
+            <th>状态</th>
+            <th class="two op">操作</th>
+        </tr>
+        </thead>
+        <tr v-for="node in nodes">
+            <td><link-icon :href="'/clusters/cluster/node?clusterId=' + node.clusterId + '&nodeId=' + node.id">{{node.name}}</link-icon></td>
+            <td>
+                <span v-if="dnsInfo.dnsName.length > 0">{{dnsInfo.dnsName}}</span>
+                <link-red v-else @click.prevent="updateCluster(cluster.id)">没有设置</link-red>
+            </td>
+            <td>
+                <span v-if="node.ipAddr.indexOf(':') > -1">AAAA</span>
+                <span v-else>A</span>
+            </td>
+            <td>
+                <span v-if="node.ipAddr.length > 0">{{node.ipAddr}}</span>
+                <link-red title="点击设置" v-else @click.prevent="updateNode(node.clusterId, node.id, node.ipAddrId)">没有设置</link-red>
+            </td>
+            <td>
+                <span v-if="node.route.code.length > 0">{{node.route.name}}</span>
+                <link-red v-else title="点击设置" @click.prevent="updateNode(node.clusterId, node.id, node.ipAddrId)">没有设置</link-red>
+            </td>
+            <td>
+                <span v-if="node.isBackup" class="red">备用节点</span>
+                <span v-else-if="node.isOffline" class="red">已下线</span>
+                <div v-else="">
+                <span v-if="node.isInstalled">
+                    <span class="green" v-if="node.isResolved">已解析</span>
+                    <span v-else class="red">未解析</span>
+                </span>
+                    <link-red :href="'/clusters/cluster/node/install?clusterId=' + cluster.id + '&nodeId=' + node.id" v-if="!node.isInstalled" title="节点未安装"><span class="red">未安装</span></link-red>
+                </div>
+            </td>
+            <td>
+                <link-popup @click.prevent="updateNode(node.clusterId, node.id, node.ipAddrId)">修改</link-popup>
+            </td>
+        </tr>
+    </table>
+
+    <!-- 网站解析记录 -->
+    <h3>网站解析记录 <span>&nbsp; ({{servers.length}}个)</span></h3>
+    <p class="comment" v-if="servers.length == 0">暂时没有需要设置的DNS记录。</p>
+    <table class="ui table selectable celled" v-if="servers.length > 0">
+        <thead>
+        <tr>
+            <th>网站</th>
+            <th>子域名</th>
+            <th>记录类型</th>
+            <th>记录值</th>
+            <th>状态</th>
+        </tr>
+        </thead>
+        <tr v-for="server in servers">
+            <td><link-icon :href="'/servers/server?serverId=' + server.id">{{server.name}}</link-icon> </td>
+            <td>{{server.dnsName}}</td>
+            <td>CNAME</td>
+            <td>
+                <span v-if="dnsInfo.domainName.length > 0"><var>{{dnsInfo.dnsName}}</var>.{{dnsInfo.domainName}}.</span>
+                <link-red title="点击设置"  v-else @click.prevent="updateCluster(cluster.id)">没有设置</link-red>
+            </td>
+            <td>
+                <span class="green" v-if="server.isResolved">已解析</span>
+                <span v-else class="red">未解析</span>
+            </td>
+        </tr>
+    </table>
+</div>
