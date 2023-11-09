@@ -13,7 +13,7 @@
 		<td><link-icon :href="'/clusters/cluster?clusterId=' + cluster.id">{{cluster.name}}</link-icon></td>
 	</tr>
 	<tr>
-		<td>子域名</td>
+		<td>DNS子域名</td>
 		<td>
 			<span v-if="dnsInfo.domainName.length > 0"><var>{{dnsInfo.dnsName}}</var>.{{dnsInfo.domainName}}</span>
 			<span v-else class="disabled">没有设置</span>

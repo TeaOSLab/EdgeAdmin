@@ -3,7 +3,8 @@
 {$template "/left_menu_with_menu"}
 
 <div class="right-box with-menu">
-	<p class="comment"><a :href="'/dns/clusters/cluster?clusterId=' + clusterId">查看DNS解析记录 &raquo;</a></p>
+    {$template "menu"}
+
 	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 		<input type="hidden" name="clusterId" :value="clusterId"/>
 		<csrf-token></csrf-token>
