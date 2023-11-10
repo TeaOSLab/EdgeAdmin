@@ -45,7 +45,7 @@ Vue.component("http-host-redirect-box", {
 
 			teaweb.popup("/servers/server/settings/redirects/createPopup", {
 				width: "50em",
-				height: "30em",
+				height: "36em",
 				callback: function (resp) {
 					that.id++
 					resp.data.redirect.id = that.id
@@ -60,7 +60,7 @@ Vue.component("http-host-redirect-box", {
 
 			teaweb.popup("/servers/server/settings/redirects/createPopup", {
 				width: "50em",
-				height: "30em",
+				height: "36em",
 				callback: function (resp) {
 					resp.data.redirect.id = redirect.id
 					Vue.set(that.redirects, index, resp.data.redirect)
@@ -119,6 +119,8 @@ Vue.component("http-host-redirect-box", {
 								<grey-label v-if="redirect.matchPrefix">匹配前缀</grey-label>
 								<grey-label v-if="redirect.matchRegexp">正则匹配</grey-label>
 								<grey-label v-if="!redirect.matchPrefix && !redirect.matchRegexp">精准匹配</grey-label>
+								<grey-label v-if="redirect.exceptDomains != null && redirect.exceptDomains.length > 0" v-for="domain in redirect.exceptDomains">排除:{{domain}}</grey-label>
+								<grey-label v-if="redirect.onlyDomains != null && redirect.onlyDomains.length > 0" v-for="domain in redirect.onlyDomains">仅限:{{domain}}</grey-label>
 							</div>
 						</div>
 						<div v-if="redirect.type == 'domain'">
