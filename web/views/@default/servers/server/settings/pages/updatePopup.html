@@ -18,18 +18,25 @@
                 </select>
             </td>
         </tr>
-		<tr v-show="bodyType == 'url'">
-			<td>显示页面URL *</td>
-			<td>
-				<input type="text" name="url" maxlength="500" placeholder="类似于 https://example.com/page.html" v-model="pageConfig.url"/>
-                <p class="comment">将从此URL中读取内容。</p>
-			</td>
-		</tr>
         <tr v-show="bodyType == 'html'">
             <td>显示页面HTML *</td>
             <td>
                 <textarea name="body" ref="htmlBody" v-model="pageConfig.body"></textarea>
                 <p class="comment"><a href="" @click.prevent="addHTMLTemplate">[使用模板]</a>。填写页面的HTML内容，支持请求变量。</p>
+            </td>
+        </tr>
+        <tr v-if="bodyType == 'url'">
+            <td>显示页面URL *</td>
+            <td>
+                <input type="text" name="url" maxlength="500" placeholder="类似于 https://example.com/page.html" v-model="pageConfig.url"/>
+                <p class="comment">将从此URL中读取内容。</p>
+            </td>
+        </tr>
+        <tr v-if="bodyType == 'redirectURL'">
+            <td>跳转到URL *</td>
+            <td>
+                <input type="text" name="url" maxlength="500" placeholder="类似于 https://example.com/page.html" v-model="pageConfig.url"/>
+                <p class="comment">将会跳转到此URL。</p>
             </td>
         </tr>
 		<tr>

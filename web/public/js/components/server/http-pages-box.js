@@ -73,7 +73,28 @@ Vue.component("http-pages-box", {
 				<span v-if="page.status != null && page.status.length == 1">{{page.status[0]}}</span>
 				<span v-else>{{page.status}}</span>
 			</td>
-			<td style="word-break: break-all"><span v-if="page.bodyType == 'url'">{{page.url}}</span><span v-if="page.bodyType == 'html'">[HTML内容]</span></td>
+			<td style="word-break: break-all">
+				<div v-if="page.bodyType == 'url'">
+					{{page.url}}
+					<div>
+						<grey-label>读取</grey-label>	
+						<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
+					</div>
+				</div>
+				<div v-if="page.bodyType == 'redirectURL'">
+					{{page.url}}
+					<div>
+						<grey-label>跳转</grey-label>	
+						<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
+					</div>
+				</div>
+				<div v-if="page.bodyType == 'html'">
+					[HTML内容]
+					<div>
+						<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
+					</div>
+				</div>
+			</td>
 			<td>
 				<a href="" title="修改" @click.prevent="updatePage(index, page.id)">修改</a> &nbsp; 
 				<a href="" title="删除" @click.prevent="removePage(index)">删除</a>

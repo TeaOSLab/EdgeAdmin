@@ -6,7 +6,6 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
-	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/types"
 )
@@ -20,7 +19,7 @@ func (this *CreatePopupAction) Init() {
 }
 
 func (this *CreatePopupAction) RunGet(params struct{}) {
-	this.Data["bodyTypes"] = shared.FindAllBodyTypes()
+	this.Data["bodyTypes"] = serverconfigs.FindAllHTTPPageBodyTypes()
 
 	this.Show()
 }
@@ -42,12 +41,17 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Require("请输入响应状态码")
 
 	switch params.BodyType {
-	case shared.BodyTypeURL:
+	case serverconfigs.HTTPPageBodyTypeURL:
 		params.Must.
 			Field("url", params.URL).
 			Require("请输入要显示的URL").
 			Match(	`^(?i)(http|https)://`, "请输入正确的URL")
-	case shared.BodyTypeHTML:
+	case serverconfigs.HTTPPageBodyTypeRedirectURL:
+		params.Must.
+			Field("url", params.URL).
+			Require("请输入要跳转的URL").
+			Match(	`^(?i)(http|https)://`, "请输入正确的URL")
+	case serverconfigs.HTTPPageBodyTypeHTML:
 		params.Must.
 			Field("body", params.Body).
 			Require("请输入要显示的HTML内容")

@@ -7,7 +7,6 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
-	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/types"
 	"regexp"
@@ -77,7 +76,11 @@ func (this *IndexAction) RunPost(params struct {
 			}
 
 			// check url
-			if page.BodyType == shared.BodyTypeURL && !urlReg.MatchString(page.URL) {
+			if page.BodyType == serverconfigs.HTTPPageBodyTypeURL && !urlReg.MatchString(page.URL) {
+				this.Fail("自定义页面中 '" + page.URL + "' 不是一个正确的URL，请进行修改")
+				return
+			}
+			if page.BodyType == serverconfigs.HTTPPageBodyTypeRedirectURL && !urlReg.MatchString(page.URL) {
 				this.Fail("自定义页面中 '" + page.URL + "' 不是一个正确的URL，请进行修改")
 				return
 			}
@@ -99,7 +102,7 @@ func (this *IndexAction) RunPost(params struct {
 			return
 		}
 
-		if shutdownConfig.BodyType == shared.BodyTypeURL {
+		if shutdownConfig.BodyType == serverconfigs.HTTPPageBodyTypeURL {
 			if len(shutdownConfig.URL) > 512 {
 				this.Fail("临时关闭页面中URL过长，不能超过512字节")
 				return
@@ -109,7 +112,17 @@ func (this *IndexAction) RunPost(params struct {
 				this.Fail("临时关闭页面中 '" + shutdownConfig.URL + "' 不是一个正确的URL，请进行修改")
 				return
 			}
-		} else if shutdownConfig.Body == shared.BodyTypeHTML {
+		} else if shutdownConfig.BodyType == serverconfigs.HTTPPageBodyTypeRedirectURL {
+			if len(shutdownConfig.URL) > 512 {
+				this.Fail("临时关闭页面中URL过长，不能超过512字节")
+				return
+			}
+
+			if shutdownConfig.IsOn /** 只有启用的时候才校验 **/ && !urlReg.MatchString(shutdownConfig.URL) {
+				this.Fail("临时关闭页面中 '" + shutdownConfig.URL + "' 不是一个正确的URL，请进行修改")
+				return
+			}
+		} else if shutdownConfig.Body == serverconfigs.HTTPPageBodyTypeHTML {
 			if len(shutdownConfig.Body) > 32*1024 {
 				this.Fail("临时关闭页面中HTML内容长度不能超过32K")
 				return
