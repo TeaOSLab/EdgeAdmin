@@ -16,14 +16,14 @@
 
             <table class="ui table definition selectable">
                 <tr>
-                    <td class="title color-border">禁止未绑定域名访问</td>
+                    <td class="title">禁止未绑定域名访问</td>
                     <td>
                         <checkbox name="httpAllMatchDomainStrictly" v-model="config.httpAll.matchDomainStrictly"></checkbox>
                         <p class="comment">选中后，表示禁止未在网站绑定的域名和IP访问。</p>
                     </td>
                 </tr>
 
-                <tr>
+                <tr v-show="config.httpAll.matchDomainStrictly">
                     <td class="color-border">处理未绑定域名方式</td>
                     <td>
                         <radio name="httpAllDomainMismatchActionCode" :v-value="'page'" v-model="httpAllDomainMismatchActionCode">显示提示页面</radio> &nbsp;
@@ -49,14 +49,14 @@
                 </tr>
 
                 <tr v-show="config.httpAll.matchDomainStrictly">
-                    <td class="color-border">允许例外的域名</td>
+                    <td>允许例外的域名</td>
                     <td>
                         <domains-box name="httpAllAllowMismatchDomainsJSON" :v-domains="config.httpAll.allowMismatchDomains"></domains-box>
                         <p class="comment">允许这些域名不经过绑定就可以直接访问网站。</p>
                     </td>
                 </tr>
                 <tr v-show="config.httpAll.matchDomainStrictly">
-                    <td class="color-border">默认域名</td>
+                    <td>默认域名</td>
                     <td>
                         <input type="text" name="httpAllDefaultDomain" v-model="config.httpAll.defaultDomain"/>
                         <p class="comment">例外域名或使用节点IP访问时使用的默认域名；如果指定的域名在集群里已经绑定到某个网站，则相当于直接访问该网站。</p>
@@ -70,7 +70,7 @@
                         <p class="comment">选中后，表示允许直接使用节点IP访问网站。</p>
                     </td>
                 </tr>
-                <tr v-show="config.httpAll.matchDomainStrictly">
+                <tr v-show="config.httpAll.matchDomainStrictly && config.httpAll.allowNodeIP">
                     <td class="color-border">访问节点IP显示自定义内容</td>
                     <td>
                         <checkbox name="httpAllNodeIPShowPage" v-model="config.httpAll.nodeIPShowPage"></checkbox>
