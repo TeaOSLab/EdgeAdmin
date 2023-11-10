@@ -132,7 +132,28 @@ Vue.component("http-pages-and-shutdown-box", {
 				<span v-if="page.status != null && page.status.length == 1">{{page.status[0]}}</span>
 				<span v-else>{{page.status}}</span>
 			</td>
-			<td style="word-break: break-all"><span v-if="page.bodyType == 'url'">{{page.url}}</span><span v-if="page.bodyType == 'html'">[HTML内容]</span></td>
+			<td style="word-break: break-all">
+				<div v-if="page.bodyType == 'url'">
+					{{page.url}}
+					<div>
+						<grey-label>读取</grey-label>
+						<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>	
+					</div>
+				</div>
+				<div v-if="page.bodyType == 'redirectURL'">
+					{{page.url}}
+					<div>
+						<grey-label>跳转</grey-label>	
+						<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
+					</div>
+				</div>
+				<div v-if="page.bodyType == 'html'">
+					[HTML内容]
+					<div>
+						<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
+					</div>
+				</div>
+			</td>
 			<td>
 				<a href="" title="修改" @click.prevent="updatePage(index, page.id)">修改</a> &nbsp; 
 				<a href="" title="删除" @click.prevent="removePage(index)">删除</a>
@@ -168,14 +189,22 @@ Vue.component("http-pages-and-shutdown-box", {
 					<select class="ui dropdown auto-width" v-model="shutdownConfig.bodyType">
 						<option value="html">HTML</option>
 						<option value="url">读取URL</option>
+						<option value="redirectURL">跳转URL</option>
 					</select>
 				</td>
 			</tr>
-			<tr v-show="shutdownConfig.bodyType == 'url'">
+			<tr v-if="shutdownConfig.bodyType == 'url'">
 				<td class="title">显示页面URL *</td>
 				<td>
 					<input type="text" v-model="shutdownConfig.url" placeholder="类似于 https://example.com/page.html"/>
 					<p class="comment">将从此URL中读取内容。</p>
+				</td>
+			</tr>
+			<tr v-if="shutdownConfig.bodyType == 'redirectURL'">
+				<td class="title">跳转到URL *</td>
+				<td>
+					<input type="text" v-model="shutdownConfig.url" placeholder="类似于 https://example.com/page.html"/>
+					 <p class="comment">将会跳转到此URL。</p>
 				</td>
 			</tr>
 			<tr v-show="shutdownConfig.bodyType == 'html'">
