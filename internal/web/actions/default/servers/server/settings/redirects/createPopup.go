@@ -52,7 +52,11 @@ func (this *CreatePopupAction) RunPost(params struct {
 	PortAfter       int
 	PortAfterScheme string
 
-	Status    int
+	Status int
+
+	ExceptDomainsJSON []byte
+	OnlyDomainsJSON   []byte
+
 	CondsJSON []byte
 	IsOn      bool
 
@@ -185,6 +189,27 @@ func (this *CreatePopupAction) RunPost(params struct {
 	params.Must.
 		Field("status", params.Status).
 		Gte(0, "请选择正确的跳转状态码")
+
+	// 域名
+	if len(params.ExceptDomainsJSON) > 0 {
+		var exceptDomains = []string{}
+		err := json.Unmarshal(params.ExceptDomainsJSON, &exceptDomains)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		config.ExceptDomains = exceptDomains
+	}
+
+	if len(params.OnlyDomainsJSON) > 0 {
+		var onlyDomains = []string{}
+		err := json.Unmarshal(params.OnlyDomainsJSON, &onlyDomains)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		config.OnlyDomains = onlyDomains
+	}
 
 	// 校验匹配条件
 	var conds *shared.HTTPRequestCondsConfig
