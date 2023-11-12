@@ -176,6 +176,39 @@
         </tr>
     </tbody>
 
+    <tbody v-if="provider.type == 'azureDNS'">
+        <tr>
+            <td class="color-border">Subscription ID</td>
+            <td>
+                {{provider.apiParams.subscriptionId}}
+            </td>
+        </tr>
+        <tr>
+            <td class="color-border">Tenant ID</td>
+            <td>
+                {{provider.apiParams.tenantId}}
+            </td>
+        </tr>
+        <tr>
+            <td class="color-border">Client ID</td>
+            <td>
+                {{provider.apiParams.clientId}}
+            </td>
+        </tr>
+        <tr>
+            <td class="color-border">Client Secret Value</td>
+            <td>
+                {{provider.apiParams.clientSecret}}
+            </td>
+        </tr>
+        <tr>
+            <td class="color-border">Resource Group Name</td>
+            <td>
+                {{provider.apiParams.resourceGroupName}}
+            </td>
+        </tr>
+    </tbody>
+
     <!-- Local EdgeDNS -->
     <tbody v-if="provider.type == 'localEdgeDNS'">
         <tr>

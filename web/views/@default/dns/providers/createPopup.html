@@ -238,6 +238,34 @@
             </tr>
         </tbody>
 
+        <!-- Microsoft Azure DNS -->
+        <tbody v-if="type == 'azureDNS'">
+            <tr>
+                <td>Subscription ID *</td>
+                <td>
+                    <input type="text" name="paramAzureDNSSubscriptionId" maxlength="100" spellcheck="false"/>
+                </td>
+            </tr>
+            <tr>
+                <td>Tenant ID *</td>
+                <td>
+                    <input type="text" name="paramAzureDNSTenantId" maxlength="100" spellcheck="false"/>
+                </td>
+            </tr>
+            <tr>
+                <td>Client ID *</td>
+                <td><input type="text" name="paramAzureDNSClientId" maxlength="100" spellcheck="false"/></td>
+            </tr>
+            <tr>
+                <td>Client Secret Value *</td>
+                <td><input type="text" name="paramAzureDNSClientSecret" maxlength="100" spellcheck="false"/></td>
+            </tr>
+            <tr>
+                <td>Resource Group Name *</td>
+                <td><input type="text" name="paramAzureDNSResourceGroupName" maxlength="100" spellcheck="false"/></td>
+            </tr>
+        </tbody>
+
         <!-- EdgeDNS -->
         <tbody v-if="type == 'localEdgeDNS'">
             <tr>
