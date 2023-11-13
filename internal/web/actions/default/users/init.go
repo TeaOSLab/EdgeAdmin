@@ -13,6 +13,7 @@ func init() {
 			Helper(helpers.NewUserMustAuth(configloaders.AdminModuleCodeUser)).
 			Data("teaMenu", "users").
 			Prefix("/users").
+			Data("teaSubMenu", "users").
 			Get("", new(IndexAction)).
 			GetPost("/createPopup", new(CreatePopupAction)).
 

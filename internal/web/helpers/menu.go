@@ -147,6 +147,13 @@ func FindAllMenuMaps(langCode string, nodeLogsType string, countUnreadNodeLogs i
 			"module": configloaders.AdminModuleCodeUser,
 			"name":   langs.Message(langCode, codes.AdminMenu_Users),
 			"icon":   "users",
+			"subItems": []maps.Map{
+				{
+					"name": langs.Message(langCode, codes.AdminMenu_UserList),
+					"url":  "/users",
+					"code": "users",
+				},
+			},
 		},
 		{
 			"code":     "admins",
