@@ -34,6 +34,14 @@ Vue.component("traffic-map-box", {
 	},
 	methods: {
 		render: function () {
+			if (this.$el.offsetWidth < 300) {
+				let that = this
+				setTimeout(function () {
+					that.render()
+				}, 100)
+				return
+			}
+
 			this.chart = teaweb.initChart(document.getElementById("traffic-map-box"));
 			let that = this
 			this.chart.setOption({
@@ -1125,7 +1133,7 @@ Vue.component("message-row", {
 	</tr>
 	<tr :class="{error: message.level == 'error', positive: message.level == 'success', warning: message.level == 'warning'}">
 		<td>
-			{{message.body}}
+			<pre style="padding: 0; margin:0; word-break: break-all;">{{message.body}}</pre>
 			
 			<!-- 健康检查 -->
 			<div v-if="message.type == 'HealthCheckFailed'" style="margin-top: 0.8em">
@@ -4895,7 +4903,7 @@ Vue.component("http-host-redirect-box", {
 
 			teaweb.popup("/servers/server/settings/redirects/createPopup", {
 				width: "50em",
-				height: "30em",
+				height: "36em",
 				callback: function (resp) {
 					that.id++
 					resp.data.redirect.id = that.id
@@ -4910,7 +4918,7 @@ Vue.component("http-host-redirect-box", {
 
 			teaweb.popup("/servers/server/settings/redirects/createPopup", {
 				width: "50em",
-				height: "30em",
+				height: "36em",
 				callback: function (resp) {
 					resp.data.redirect.id = redirect.id
 					Vue.set(that.redirects, index, resp.data.redirect)
@@ -4969,6 +4977,8 @@ Vue.component("http-host-redirect-box", {
 								<grey-label v-if="redirect.matchPrefix">匹配前缀</grey-label>
 								<grey-label v-if="redirect.matchRegexp">正则匹配</grey-label>
 								<grey-label v-if="!redirect.matchPrefix && !redirect.matchRegexp">精准匹配</grey-label>
+								<grey-label v-if="redirect.exceptDomains != null && redirect.exceptDomains.length > 0" v-for="domain in redirect.exceptDomains">排除:{{domain}}</grey-label>
+								<grey-label v-if="redirect.onlyDomains != null && redirect.onlyDomains.length > 0" v-for="domain in redirect.onlyDomains">仅限:{{domain}}</grey-label>
 							</div>
 						</div>
 						<div v-if="redirect.type == 'domain'">
@@ -10163,29 +10173,32 @@ Vue.component("http-pages-and-shutdown-box", {
 		addPage: function () {
 			let that = this
 			teaweb.popup("/servers/server/settings/pages/createPopup", {
-				height: "26em",
+				height: "30em",
 				callback: function (resp) {
 					that.pages.push(resp.data.page)
+					that.notifyChange()
 				}
 			})
 		},
 		updatePage: function (pageIndex, pageId) {
 			let that = this
 			teaweb.popup("/servers/server/settings/pages/updatePopup?pageId=" + pageId, {
-				height: "26em",
+				height: "30em",
 				callback: function (resp) {
 					Vue.set(that.pages, pageIndex, resp.data.page)
+					that.notifyChange()
 				}
 			})
 		},
 		removePage: function (pageIndex) {
 			let that = this
-			teaweb.confirm("确定要移除此页面吗？", function () {
+			teaweb.confirm("确定要删除此自定义页面吗？", function () {
 				that.pages.$remove(pageIndex)
+				that.notifyChange()
 			})
 		},
 		addShutdownHTMLTemplate: function () {
-			this.shutdownConfig.body  = `<!DOCTYPE html>
+			this.shutdownConfig.body = `<!DOCTYPE html>
 <html lang="en">
 <head>
 \t<title>升级中</title>
@@ -10204,80 +10217,157 @@ Vue.component("http-pages-and-shutdown-box", {
 
 </body>
 </html>`
+		},
+		notifyChange: function () {
+			let parent = this.$el.parentNode
+			while (true) {
+				if (parent == null) {
+					break
+				}
+				if (parent.tagName == "FORM") {
+					break
+				}
+				parent = parent.parentNode
+			}
+			if (parent != null) {
+				setTimeout(function () {
+					Tea.runActionOn(parent)
+				}, 100)
+			}
 		}
 	},
 	template: `<div>
 <input type="hidden" name="pagesJSON" :value="JSON.stringify(pages)"/>
 <input type="hidden" name="shutdownJSON" :value="JSON.stringify(shutdownConfig)"/>
-<table class="ui table selectable definition">
-	<tr>
-		<td class="title">自定义页面</td>
-		<td>
-			<div v-if="pages.length > 0">
-				<div class="ui label small basic" v-for="(page,index) in pages">
-					{{page.status}} -&gt; <span v-if="page.bodyType == 'url'">{{page.url}}</span><span v-if="page.bodyType == 'html'">[HTML内容]</span> <a href="" title="修改" @click.prevent="updatePage(index, page.id)"><i class="icon pencil small"></i></a> <a href="" title="删除" @click.prevent="removePage(index)"><i class="icon remove"></i></a>
+<h4 style="margin-bottom: 0.5em">自定义页面</h4>
+
+<p class="comment" style="padding-top: 0; margin-top: 0">根据响应状态码返回一些自定义页面，比如404，500等错误页面。</p>
+
+<div v-if="pages.length > 0">
+	<table class="ui table selectable celled">
+		<thead>
+			<tr>
+				<th class="two wide">响应状态码</th>
+				<th>页面类型</th>
+				<th class="two wide">新状态码</th>
+				<th>例外URL</th>
+				<th>限制URL</th>
+				<th class="two op">操作</th>
+			</tr>	
+		</thead>
+		<tr v-for="(page,index) in pages">
+			<td>
+				<a href="" @click.prevent="updatePage(index, page.id)">
+					<span v-if="page.status != null && page.status.length == 1">{{page.status[0]}}</span>
+					<span v-else>{{page.status}}</span>
+					
+					<i class="icon expand small"></i>
+				</a>
+			</td>
+			<td style="word-break: break-all">
+				<div v-if="page.bodyType == 'url'">
+					{{page.url}}
+					<div>
+						<grey-label>读取URL</grey-label>
+					</div>
 				</div>
-				<div class="ui divider"></div>
-			</div>
-			<div>
-				<button class="ui button small" type="button" @click.prevent="addPage()">+</button>
-			</div>
-			<p class="comment">根据响应状态码返回一些自定义页面，比如404，500等错误页面。</p>
-		</td>
-	</tr>	
-	<tr>
-		<td>临时关闭页面</td>
-		<td>
-			<div>
-				<table class="ui table selectable definition">
-					<prior-checkbox :v-config="shutdownConfig" v-if="vIsLocation"></prior-checkbox>
-					<tbody v-show="!vIsLocation || shutdownConfig.isPrior">
-						<tr>
-							<td class="title">临时关闭网站</td>
-							<td>
-								<div class="ui checkbox">
-									<input type="checkbox" value="1" v-model="shutdownConfig.isOn" />
-									<label></label>
-								</div>
-								<p class="comment">选中后，表示临时关闭当前网站，并显示自定义内容。</p>
-							</td>
-						</tr>
-					</tbody>
-					<tbody v-show="(!vIsLocation || shutdownConfig.isPrior) && shutdownConfig.isOn">
-						<tr>
-							<td>显示内容类型 *</td>
-							<td>
-								<select class="ui dropdown auto-width" v-model="shutdownConfig.bodyType">
-									<option value="html">HTML</option>
-									<option value="url">读取URL</option>
-								</select>
-							</td>
-						</tr>
-						<tr v-show="shutdownConfig.bodyType == 'url'">
-							<td class="title">显示页面URL *</td>
-							<td>
-								<input type="text" v-model="shutdownConfig.url" placeholder="类似于 https://example.com/page.html"/>
-								<p class="comment">将从此URL中读取内容。</p>
-							</td>
-						</tr>
-						<tr v-show="shutdownConfig.bodyType == 'html'">
-							<td>显示页面HTML *</td>
-							<td>
-								<textarea name="body" ref="shutdownHTMLBody" v-model="shutdownConfig.body"></textarea>
-								<p class="comment"><a href="" @click.prevent="addShutdownHTMLTemplate">[使用模板]</a>。填写页面的HTML内容，支持请求变量。</p>
-							</td>
-						</tr>
-						<tr>
-							<td>状态码</td>
-							<td><input type="text" size="3" maxlength="3" name="shutdownStatus" style="width:5.2em" placeholder="状态码" v-model="shutdownStatus"/></td>
-						</tr>
-					</tbody>
-				</table>
-				<p class="comment">开启临时关闭页面时，所有请求都会直接显示此页面。可用于临时升级网站或者禁止用户访问某个网页。</p>
-			</div>
-		</td>
-	</tr>
-</table>
+				<div v-if="page.bodyType == 'redirectURL'">
+					{{page.url}}
+					<div>
+						<grey-label>跳转URL</grey-label>	
+						<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
+					</div>
+				</div>
+				<div v-if="page.bodyType == 'html'">
+					[HTML内容]
+					<div>
+						<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
+					</div>
+				</div>
+			</td>
+			<td>
+				<span v-if="page.newStatus > 0">{{page.newStatus}}</span>
+				<span v-else class="disabled">保持</span>	
+			</td>
+			<td>
+				<div v-if="page.exceptURLPatterns != null && page.exceptURLPatterns">
+					<span v-for="urlPattern in page.exceptURLPatterns" class="ui basic label small">{{urlPattern.pattern}}</span>
+				</div>
+				<span v-else class="disabled">-</span>
+			</td>
+			<td>
+				<div v-if="page.onlyURLPatterns != null && page.onlyURLPatterns">
+					<span v-for="urlPattern in page.onlyURLPatterns" class="ui basic label small">{{urlPattern.pattern}}</span>
+				</div>
+				<span v-else class="disabled">-</span>
+			</td>
+			<td>
+				<a href="" title="修改" @click.prevent="updatePage(index, page.id)">修改</a> &nbsp; 
+				<a href="" title="删除" @click.prevent="removePage(index)">删除</a>
+			</td>
+		</tr>
+	</table>
+</div>
+<div style="margin-top: 1em">
+	<button class="ui button small" type="button" @click.prevent="addPage()">+添加自定义页面</button>
+</div>
+
+<h4 style="margin-top: 2em;">临时关闭页面</h4>
+<p class="comment" style="margin-top: 0; padding-top: 0">开启临时关闭页面时，所有请求都会直接显示此页面。可用于临时升级网站或者禁止用户访问某个网页。</p>	
+<div>
+	<table class="ui table selectable definition">
+		<prior-checkbox :v-config="shutdownConfig" v-if="vIsLocation"></prior-checkbox>
+		<tbody v-show="!vIsLocation || shutdownConfig.isPrior">
+			<tr>
+				<td class="title">启用临时关闭网站</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" value="1" v-model="shutdownConfig.isOn" />
+						<label></label>
+					</div>
+					<p class="comment">选中后，表示临时关闭当前网站，并显示自定义内容。</p>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="(!vIsLocation || shutdownConfig.isPrior) && shutdownConfig.isOn">
+			<tr>
+				<td>显示内容类型 *</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="shutdownConfig.bodyType">
+						<option value="html">HTML</option>
+						<option value="url">读取URL</option>
+						<option value="redirectURL">跳转URL</option>
+					</select>
+				</td>
+			</tr>
+			<tr v-if="shutdownConfig.bodyType == 'url'">
+				<td class="title">显示页面URL *</td>
+				<td>
+					<input type="text" v-model="shutdownConfig.url" placeholder="类似于 https://example.com/page.html"/>
+					<p class="comment">将从此URL中读取内容。</p>
+				</td>
+			</tr>
+			<tr v-if="shutdownConfig.bodyType == 'redirectURL'">
+				<td class="title">跳转到URL *</td>
+				<td>
+					<input type="text" v-model="shutdownConfig.url" placeholder="类似于 https://example.com/page.html"/>
+					 <p class="comment">将会跳转到此URL。</p>
+				</td>
+			</tr>
+			<tr v-show="shutdownConfig.bodyType == 'html'">
+				<td>显示页面HTML *</td>
+				<td>
+					<textarea name="body" ref="shutdownHTMLBody" v-model="shutdownConfig.body"></textarea>
+					<p class="comment"><a href="" @click.prevent="addShutdownHTMLTemplate">[使用模板]</a>。填写页面的HTML内容，支持请求变量。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>状态码</td>
+				<td><input type="text" size="3" maxlength="3" name="shutdownStatus" style="width:5.2em" placeholder="状态码" v-model="shutdownStatus"/></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
 <div class="ui margin"></div>
 </div>`
 })
@@ -15390,6 +15480,7 @@ Vue.component("http-pages-box", {
 				height: "26em",
 				callback: function (resp) {
 					that.pages.push(resp.data.page)
+					that.notifyChange()
 				}
 			})
 		},
@@ -15399,6 +15490,7 @@ Vue.component("http-pages-box", {
 				height: "26em",
 				callback: function (resp) {
 					Vue.set(that.pages, pageIndex, resp.data.page)
+					that.notifyChange()
 				}
 			})
 		},
@@ -15406,28 +15498,98 @@ Vue.component("http-pages-box", {
 			let that = this
 			teaweb.confirm("确定要移除此页面吗？", function () {
 				that.pages.$remove(pageIndex)
+				that.notifyChange()
 			})
+		},
+		notifyChange: function () {
+			let parent = this.$el.parentNode
+			while (true) {
+				if (parent == null) {
+					break
+				}
+				if (parent.tagName == "FORM") {
+					break
+				}
+				parent = parent.parentNode
+			}
+			if (parent != null) {
+				setTimeout(function () {
+					Tea.runActionOn(parent)
+				}, 100)
+			}
 		}
 	},
 	template: `<div>
 <input type="hidden" name="pagesJSON" :value="JSON.stringify(pages)"/>
-<table class="ui table selectable definition">
-	<tr>
-		<td class="title">自定义页面</td>
-		<td>
-			<div v-if="pages.length > 0">
-				<div class="ui label small basic" v-for="(page,index) in pages">
-					{{page.status}} -&gt; <span v-if="page.bodyType == 'url'">{{page.url}}</span><span v-if="page.bodyType == 'html'">[HTML内容]</span> <a href="" title="修改" @click.prevent="updatePage(index, page.id)"><i class="icon pencil small"></i></a> <a href="" title="删除" @click.prevent="removePage(index)"><i class="icon remove"></i></a>
+
+<div v-if="pages.length > 0">
+	<table class="ui table selectable celled">
+		<thead>
+			<tr>
+				<th class="two wide">响应状态码</th>
+				<th>页面类型</th>
+				<th class="two wide">新状态码</th>
+				<th>例外URL</th>
+				<th>限制URL</th>
+				<th class="two op">操作</th>
+			</tr>	
+		</thead>
+		<tr v-for="(page,index) in pages">
+			<td>
+				<a href="" @click.prevent="updatePage(index, page.id)">
+					<span v-if="page.status != null && page.status.length == 1">{{page.status[0]}}</span>
+					<span v-else>{{page.status}}</span>
+					
+					<i class="icon expand small"></i>
+				</a>
+			</td>
+			<td style="word-break: break-all">
+				<div v-if="page.bodyType == 'url'">
+					{{page.url}}
+					<div>
+						<grey-label>读取URL</grey-label>
+					</div>
 				</div>
-				<div class="ui divider"></div>
-			</div>
-			<div>
-				<button class="ui button small" type="button" @click.prevent="addPage()">+</button>
-			</div>
-			<p class="comment">根据响应状态码返回一些自定义页面，比如404，500等错误页面。</p>
-		</td>
-	</tr>
-</table>
+				<div v-if="page.bodyType == 'redirectURL'">
+					{{page.url}}
+					<div>
+						<grey-label>跳转URL</grey-label>	
+						<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
+					</div>
+				</div>
+				<div v-if="page.bodyType == 'html'">
+					[HTML内容]
+					<div>
+						<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
+					</div>
+				</div>
+			</td>
+			<td>
+				<span v-if="page.newStatus > 0">{{page.newStatus}}</span>
+				<span v-else class="disabled">保持</span>	
+			</td>
+			<td>
+				<div v-if="page.exceptURLPatterns != null && page.exceptURLPatterns">
+					<span v-for="urlPattern in page.exceptURLPatterns" class="ui basic label small">{{urlPattern.pattern}}</span>
+				</div>
+				<span v-else class="disabled">-</span>
+			</td>
+			<td>
+				<div v-if="page.onlyURLPatterns != null && page.onlyURLPatterns">
+					<span v-for="urlPattern in page.onlyURLPatterns" class="ui basic label small">{{urlPattern.pattern}}</span>
+				</div>
+				<span v-else class="disabled">-</span>
+			</td>
+			<td>
+				<a href="" title="修改" @click.prevent="updatePage(index, page.id)">修改</a> &nbsp; 
+				<a href="" title="删除" @click.prevent="removePage(index)">删除</a>
+			</td>
+		</tr>
+	</table>
+</div>
+<div style="margin-top: 1em">
+	<button class="ui button small" type="button" @click.prevent="addPage()">+添加自定义页面</button>
+</div>
 <div class="ui margin"></div>
 </div>`
 })
@@ -18126,6 +18288,7 @@ Vue.component("url-patterns-box", {
 		if (this.value != null) {
 			patterns = this.value
 		}
+
 		return {
 			patterns: patterns,
 			isAdding: false,
@@ -18133,7 +18296,9 @@ Vue.component("url-patterns-box", {
 			addingPattern: {"type": "wildcard", "pattern": ""},
 			editingIndex: -1,
 
-			patternIsInvalid: false
+			patternIsInvalid: false,
+
+			windowIsSmall: window.innerWidth < 600
 		}
 	},
 	methods: {
@@ -18226,7 +18391,7 @@ Vue.component("url-patterns-box", {
 		</div>
 	</div>
 	<div v-show="isAdding" style="margin-top: 0.5em">
-		<div class="ui fields inline">
+		<div :class="{'ui fields inline': !windowIsSmall}">
 			<div class="ui field">
 				<select class="ui dropdown auto-width" v-model="addingPattern.type">
 					<option value="wildcard">通配符</option>
