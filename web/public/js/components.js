@@ -1,4 +1,4 @@
-Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:function(){this.render()},data:function(){let i=0;var e=this.vIsAttack,t=(this.vStats.forEach(function(e){var t=parseFloat(e.percent);t>i&&(i=t),e.formattedCountRequests=teaweb.formatCount(e.countRequests)+"次",e.formattedCountAttackRequests=teaweb.formatCount(e.countAttackRequests)+"次"}),i<100&&(i*=1.2),window.innerWidth<512);return{isAttack:e,stats:this.vStats,chart:null,minOpacity:.2,maxPercent:i,selectedCountryName:"",screenIsNarrow:t}},methods:{render:function(){this.chart=teaweb.initChart(document.getElementById("traffic-map-box"));let s=this;this.chart.setOption({backgroundColor:"white",grid:{top:0,bottom:0,left:0,right:0},roam:!1,tooltip:{trigger:"item"},series:[{type:"map",map:"world",zoom:1.3,selectedMode:!1,itemStyle:{areaColor:"#E9F0F9",borderColor:"#DDD"},label:{show:!1,fontSize:"10px",color:"#fff",backgroundColor:"#8B9BD3",padding:[2,2,2,2]},emphasis:{itemStyle:{areaColor:"#8B9BD3",opacity:1},label:{show:!0,fontSize:"10px",color:"#fff",backgroundColor:"#8B9BD3",padding:[2,2,2,2]}},tooltip:{formatter:function(e){let t=e.name,i=null;return s.stats.forEach(function(e){e.name==t&&(i=e)}),null!=i?t+"<br/>流量："+i.formattedBytes+"<br/>流量占比："+i.percent+"%<br/>请求数："+i.formattedCountRequests+"<br/>攻击数："+i.formattedCountAttackRequests:t}},data:this.stats.map(function(e){let t=parseFloat(e.percent)/s.maxPercent,i=3*(t=t<s.minOpacity?s.minOpacity:t);1<i&&(i=1);let n=s.vIsAttack?"#B03A5B":"#276AC6";return{name:e.name,value:e.bytes,percent:parseFloat(e.percent),itemStyle:{areaColor:n,opacity:t},emphasis:{itemStyle:{areaColor:n,opacity:i},label:{show:!0,formatter:function(e){return e.name}}},label:{show:!1,formatter:function(e){return e.name==s.selectedCountryName?e.name:""},fontSize:"10px",color:"#fff",backgroundColor:"#8B9BD3",padding:[2,2,2,2]}}}),nameMap:window.WorldCountriesMap}]}),this.chart.resize()},selectCountry:function(n){if(null!=this.chart){let e=this.chart.getOption(),i=this;e.series[0].data.forEach(function(e){let t=e.percent/i.maxPercent;if(t<i.minOpacity&&(t=i.minOpacity),e.name==n){if(e.isSelected)return e.itemStyle.opacity=t,e.isSelected=!1,e.label.show=!1,void(i.selectedCountryName="");e.isSelected=!0,i.selectedCountryName=n,(t=1<(t*=3)?1:t)<.5&&(t=.5),e.itemStyle.opacity=t,e.label.show=!0}else e.itemStyle.opacity=t,e.isSelected=!1,e.label.show=!1}),this.chart.setOption(e)}},select:function(e){this.selectCountry(e.countryName)}},template:`<div>
+Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:function(){this.render()},data:function(){let i=0;var e=this.vIsAttack,t=(this.vStats.forEach(function(e){var t=parseFloat(e.percent);t>i&&(i=t),e.formattedCountRequests=teaweb.formatCount(e.countRequests)+"次",e.formattedCountAttackRequests=teaweb.formatCount(e.countAttackRequests)+"次"}),i<100&&(i*=1.2),window.innerWidth<512);return{isAttack:e,stats:this.vStats,chart:null,minOpacity:.2,maxPercent:i,selectedCountryName:"",screenIsNarrow:t}},methods:{render:function(){if(this.$el.offsetWidth<300){let e=this;void setTimeout(function(){e.render()},100)}else{this.chart=teaweb.initChart(document.getElementById("traffic-map-box"));let s=this;this.chart.setOption({backgroundColor:"white",grid:{top:0,bottom:0,left:0,right:0},roam:!1,tooltip:{trigger:"item"},series:[{type:"map",map:"world",zoom:1.3,selectedMode:!1,itemStyle:{areaColor:"#E9F0F9",borderColor:"#DDD"},label:{show:!1,fontSize:"10px",color:"#fff",backgroundColor:"#8B9BD3",padding:[2,2,2,2]},emphasis:{itemStyle:{areaColor:"#8B9BD3",opacity:1},label:{show:!0,fontSize:"10px",color:"#fff",backgroundColor:"#8B9BD3",padding:[2,2,2,2]}},tooltip:{formatter:function(e){let t=e.name,i=null;return s.stats.forEach(function(e){e.name==t&&(i=e)}),null!=i?t+"<br/>流量："+i.formattedBytes+"<br/>流量占比："+i.percent+"%<br/>请求数："+i.formattedCountRequests+"<br/>攻击数："+i.formattedCountAttackRequests:t}},data:this.stats.map(function(e){let t=parseFloat(e.percent)/s.maxPercent,i=3*(t=t<s.minOpacity?s.minOpacity:t);1<i&&(i=1);let n=s.vIsAttack?"#B03A5B":"#276AC6";return{name:e.name,value:e.bytes,percent:parseFloat(e.percent),itemStyle:{areaColor:n,opacity:t},emphasis:{itemStyle:{areaColor:n,opacity:i},label:{show:!0,formatter:function(e){return e.name}}},label:{show:!1,formatter:function(e){return e.name==s.selectedCountryName?e.name:""},fontSize:"10px",color:"#fff",backgroundColor:"#8B9BD3",padding:[2,2,2,2]}}}),nameMap:window.WorldCountriesMap}]}),this.chart.resize()}},selectCountry:function(n){if(null!=this.chart){let e=this.chart.getOption(),i=this;e.series[0].data.forEach(function(e){let t=e.percent/i.maxPercent;if(t<i.minOpacity&&(t=i.minOpacity),e.name==n){if(e.isSelected)return e.itemStyle.opacity=t,e.isSelected=!1,e.label.show=!1,void(i.selectedCountryName="");e.isSelected=!0,i.selectedCountryName=n,(t=1<(t*=3)?1:t)<.5&&(t=.5),e.itemStyle.opacity=t,e.label.show=!0}else e.itemStyle.opacity=t,e.isSelected=!1,e.label.show=!1}),this.chart.setOption(e)}},select:function(e){this.selectCountry(e.countryName)}},template:`<div>
 	<table style="width: 100%; border: 0; padding: 0; margin: 0">
 		<tbody>
        	<tr>
@@ -298,7 +298,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	</tr>
 	<tr :class="{error: message.level == 'error', positive: message.level == 'success', warning: message.level == 'warning'}">
 		<td>
-			{{message.body}}
+			<pre style="padding: 0; margin:0; word-break: break-all;">{{message.body}}</pre>
 			
 			<!-- 健康检查 -->
 			<div v-if="message.type == 'HealthCheckFailed'" style="margin-top: 0.8em">
@@ -1751,7 +1751,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<button class="ui button tiny" type="button" @click.prevent="uploadCert()">上传新证书</button> &nbsp;
 		<button class="ui button tiny" type="button" @click.prevent="uploadBatch()">批量上传证书</button> &nbsp;
 	</div>
-</div>`}),Vue.component("http-host-redirect-box",{props:["v-redirects"],mounted:function(){let n=this;sortTable(function(e){let i=[];e.forEach(function(t){n.redirects.forEach(function(e){e.id==t&&i.push(e)})}),n.updateRedirects(i)})},data:function(){let e=this.vRedirects,t=(null==e&&(e=[]),0);return e.forEach(function(e){t++,e.id=t}),{redirects:e,statusOptions:[{code:301,text:"Moved Permanently"},{code:308,text:"Permanent Redirect"},{code:302,text:"Found"},{code:303,text:"See Other"},{code:307,text:"Temporary Redirect"}],id:t}},methods:{add:function(){let t=this;window.UPDATING_REDIRECT=null,teaweb.popup("/servers/server/settings/redirects/createPopup",{width:"50em",height:"30em",callback:function(e){t.id++,e.data.redirect.id=t.id,t.redirects.push(e.data.redirect),t.change()}})},update:function(t,i){let n=this;window.UPDATING_REDIRECT=i,teaweb.popup("/servers/server/settings/redirects/createPopup",{width:"50em",height:"30em",callback:function(e){e.data.redirect.id=i.id,Vue.set(n.redirects,t,e.data.redirect),n.change()}})},remove:function(e){let t=this;teaweb.confirm("确定要删除这条跳转规则吗？",function(){t.redirects.$remove(e),t.change()})},change:function(){let e=this;setTimeout(function(){e.$emit("change",e.redirects)},100)},updateRedirects:function(e){this.redirects=e,this.change()}},template:`<div>
+</div>`}),Vue.component("http-host-redirect-box",{props:["v-redirects"],mounted:function(){let n=this;sortTable(function(e){let i=[];e.forEach(function(t){n.redirects.forEach(function(e){e.id==t&&i.push(e)})}),n.updateRedirects(i)})},data:function(){let e=this.vRedirects,t=(null==e&&(e=[]),0);return e.forEach(function(e){t++,e.id=t}),{redirects:e,statusOptions:[{code:301,text:"Moved Permanently"},{code:308,text:"Permanent Redirect"},{code:302,text:"Found"},{code:303,text:"See Other"},{code:307,text:"Temporary Redirect"}],id:t}},methods:{add:function(){let t=this;window.UPDATING_REDIRECT=null,teaweb.popup("/servers/server/settings/redirects/createPopup",{width:"50em",height:"36em",callback:function(e){t.id++,e.data.redirect.id=t.id,t.redirects.push(e.data.redirect),t.change()}})},update:function(t,i){let n=this;window.UPDATING_REDIRECT=i,teaweb.popup("/servers/server/settings/redirects/createPopup",{width:"50em",height:"36em",callback:function(e){e.data.redirect.id=i.id,Vue.set(n.redirects,t,e.data.redirect),n.change()}})},remove:function(e){let t=this;teaweb.confirm("确定要删除这条跳转规则吗？",function(){t.redirects.$remove(e),t.change()})},change:function(){let e=this;setTimeout(function(){e.$emit("change",e.redirects)},100)},updateRedirects:function(e){this.redirects=e,this.change()}},template:`<div>
 	<input type="hidden" name="hostRedirectsJSON" :value="JSON.stringify(redirects)"/>
 	
 	<first-menu>
@@ -1784,6 +1784,8 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 								<grey-label v-if="redirect.matchPrefix">匹配前缀</grey-label>
 								<grey-label v-if="redirect.matchRegexp">正则匹配</grey-label>
 								<grey-label v-if="!redirect.matchPrefix && !redirect.matchRegexp">精准匹配</grey-label>
+								<grey-label v-if="redirect.exceptDomains != null && redirect.exceptDomains.length > 0" v-for="domain in redirect.exceptDomains">排除:{{domain}}</grey-label>
+								<grey-label v-if="redirect.onlyDomains != null && redirect.onlyDomains.length > 0" v-for="domain in redirect.onlyDomains">仅限:{{domain}}</grey-label>
 							</div>
 						</div>
 						<div v-if="redirect.type == 'domain'">
@@ -3586,7 +3588,7 @@ example2.com
 	<div v-if="cachePolicy == null">
 		<span v-if="count > 0"><a href="" @click.prevent="select">[选择已有策略]</a> &nbsp; &nbsp; </span><a href="" @click.prevent="create">[创建新策略]</a>
 	</div>
-</div>`}),Vue.component("http-pages-and-shutdown-box",{props:["v-pages","v-shutdown-config","v-is-location"],data:function(){let e=[],t=(null!=this.vPages&&(e=this.vPages),{isPrior:!1,isOn:!1,bodyType:"html",url:"",body:"",status:0}),i=(null!=this.vShutdownConfig&&(null==this.vShutdownConfig.body&&(this.vShutdownConfig.body=""),null==this.vShutdownConfig.bodyType&&(this.vShutdownConfig.bodyType="html"),t=this.vShutdownConfig),"");return 0<t.status&&(i=t.status.toString()),{pages:e,shutdownConfig:t,shutdownStatus:i}},watch:{shutdownStatus:function(e){e=parseInt(e);!isNaN(e)&&0<e&&e<1e3?this.shutdownConfig.status=e:this.shutdownConfig.status=0}},methods:{addPage:function(){let t=this;teaweb.popup("/servers/server/settings/pages/createPopup",{height:"26em",callback:function(e){t.pages.push(e.data.page)}})},updatePage:function(t,e){let i=this;teaweb.popup("/servers/server/settings/pages/updatePopup?pageId="+e,{height:"26em",callback:function(e){Vue.set(i.pages,t,e.data.page)}})},removePage:function(e){let t=this;teaweb.confirm("确定要移除此页面吗？",function(){t.pages.$remove(e)})},addShutdownHTMLTemplate:function(){this.shutdownConfig.body=`<!DOCTYPE html>
+</div>`}),Vue.component("http-pages-and-shutdown-box",{props:["v-pages","v-shutdown-config","v-is-location"],data:function(){let e=[],t=(null!=this.vPages&&(e=this.vPages),{isPrior:!1,isOn:!1,bodyType:"html",url:"",body:"",status:0}),i=(null!=this.vShutdownConfig&&(null==this.vShutdownConfig.body&&(this.vShutdownConfig.body=""),null==this.vShutdownConfig.bodyType&&(this.vShutdownConfig.bodyType="html"),t=this.vShutdownConfig),"");return 0<t.status&&(i=t.status.toString()),{pages:e,shutdownConfig:t,shutdownStatus:i}},watch:{shutdownStatus:function(e){e=parseInt(e);!isNaN(e)&&0<e&&e<1e3?this.shutdownConfig.status=e:this.shutdownConfig.status=0}},methods:{addPage:function(){let t=this;teaweb.popup("/servers/server/settings/pages/createPopup",{height:"30em",callback:function(e){t.pages.push(e.data.page),t.notifyChange()}})},updatePage:function(t,e){let i=this;teaweb.popup("/servers/server/settings/pages/updatePopup?pageId="+e,{height:"30em",callback:function(e){Vue.set(i.pages,t,e.data.page),i.notifyChange()}})},removePage:function(e){let t=this;teaweb.confirm("确定要删除此自定义页面吗？",function(){t.pages.$remove(e),t.notifyChange()})},addShutdownHTMLTemplate:function(){this.shutdownConfig.body=`<!DOCTYPE html>
 <html lang="en">
 <head>
 	<title>升级中</title>
@@ -3604,78 +3606,138 @@ example2.com
 <address>Request ID: \${requestId}</address>
 
 </body>
-</html>`}},template:`<div>
+</html>`},notifyChange:function(){let e=this.$el.parentNode;for(;;){if(null==e)break;if("FORM"==e.tagName)break;e=e.parentNode}null!=e&&setTimeout(function(){Tea.runActionOn(e)},100)}},template:`<div>
 <input type="hidden" name="pagesJSON" :value="JSON.stringify(pages)"/>
 <input type="hidden" name="shutdownJSON" :value="JSON.stringify(shutdownConfig)"/>
-<table class="ui table selectable definition">
-	<tr>
-		<td class="title">自定义页面</td>
-		<td>
-			<div v-if="pages.length > 0">
-				<div class="ui label small basic" v-for="(page,index) in pages">
-					{{page.status}} -&gt; <span v-if="page.bodyType == 'url'">{{page.url}}</span><span v-if="page.bodyType == 'html'">[HTML内容]</span> <a href="" title="修改" @click.prevent="updatePage(index, page.id)"><i class="icon pencil small"></i></a> <a href="" title="删除" @click.prevent="removePage(index)"><i class="icon remove"></i></a>
+<h4 style="margin-bottom: 0.5em">自定义页面</h4>
+
+<p class="comment" style="padding-top: 0; margin-top: 0">根据响应状态码返回一些自定义页面，比如404，500等错误页面。</p>
+
+<div v-if="pages.length > 0">
+	<table class="ui table selectable celled">
+		<thead>
+			<tr>
+				<th class="two wide">响应状态码</th>
+				<th>页面类型</th>
+				<th class="two wide">新状态码</th>
+				<th>例外URL</th>
+				<th>限制URL</th>
+				<th class="two op">操作</th>
+			</tr>	
+		</thead>
+		<tr v-for="(page,index) in pages">
+			<td>
+				<a href="" @click.prevent="updatePage(index, page.id)">
+					<span v-if="page.status != null && page.status.length == 1">{{page.status[0]}}</span>
+					<span v-else>{{page.status}}</span>
+					
+					<i class="icon expand small"></i>
+				</a>
+			</td>
+			<td style="word-break: break-all">
+				<div v-if="page.bodyType == 'url'">
+					{{page.url}}
+					<div>
+						<grey-label>读取URL</grey-label>
+					</div>
 				</div>
-				<div class="ui divider"></div>
-			</div>
-			<div>
-				<button class="ui button small" type="button" @click.prevent="addPage()">+</button>
-			</div>
-			<p class="comment">根据响应状态码返回一些自定义页面，比如404，500等错误页面。</p>
-		</td>
-	</tr>	
-	<tr>
-		<td>临时关闭页面</td>
-		<td>
-			<div>
-				<table class="ui table selectable definition">
-					<prior-checkbox :v-config="shutdownConfig" v-if="vIsLocation"></prior-checkbox>
-					<tbody v-show="!vIsLocation || shutdownConfig.isPrior">
-						<tr>
-							<td class="title">临时关闭网站</td>
-							<td>
-								<div class="ui checkbox">
-									<input type="checkbox" value="1" v-model="shutdownConfig.isOn" />
-									<label></label>
-								</div>
-								<p class="comment">选中后，表示临时关闭当前网站，并显示自定义内容。</p>
-							</td>
-						</tr>
-					</tbody>
-					<tbody v-show="(!vIsLocation || shutdownConfig.isPrior) && shutdownConfig.isOn">
-						<tr>
-							<td>显示内容类型 *</td>
-							<td>
-								<select class="ui dropdown auto-width" v-model="shutdownConfig.bodyType">
-									<option value="html">HTML</option>
-									<option value="url">读取URL</option>
-								</select>
-							</td>
-						</tr>
-						<tr v-show="shutdownConfig.bodyType == 'url'">
-							<td class="title">显示页面URL *</td>
-							<td>
-								<input type="text" v-model="shutdownConfig.url" placeholder="类似于 https://example.com/page.html"/>
-								<p class="comment">将从此URL中读取内容。</p>
-							</td>
-						</tr>
-						<tr v-show="shutdownConfig.bodyType == 'html'">
-							<td>显示页面HTML *</td>
-							<td>
-								<textarea name="body" ref="shutdownHTMLBody" v-model="shutdownConfig.body"></textarea>
-								<p class="comment"><a href="" @click.prevent="addShutdownHTMLTemplate">[使用模板]</a>。填写页面的HTML内容，支持请求变量。</p>
-							</td>
-						</tr>
-						<tr>
-							<td>状态码</td>
-							<td><input type="text" size="3" maxlength="3" name="shutdownStatus" style="width:5.2em" placeholder="状态码" v-model="shutdownStatus"/></td>
-						</tr>
-					</tbody>
-				</table>
-				<p class="comment">开启临时关闭页面时，所有请求都会直接显示此页面。可用于临时升级网站或者禁止用户访问某个网页。</p>
-			</div>
-		</td>
-	</tr>
-</table>
+				<div v-if="page.bodyType == 'redirectURL'">
+					{{page.url}}
+					<div>
+						<grey-label>跳转URL</grey-label>	
+						<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
+					</div>
+				</div>
+				<div v-if="page.bodyType == 'html'">
+					[HTML内容]
+					<div>
+						<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
+					</div>
+				</div>
+			</td>
+			<td>
+				<span v-if="page.newStatus > 0">{{page.newStatus}}</span>
+				<span v-else class="disabled">保持</span>	
+			</td>
+			<td>
+				<div v-if="page.exceptURLPatterns != null && page.exceptURLPatterns">
+					<span v-for="urlPattern in page.exceptURLPatterns" class="ui basic label small">{{urlPattern.pattern}}</span>
+				</div>
+				<span v-else class="disabled">-</span>
+			</td>
+			<td>
+				<div v-if="page.onlyURLPatterns != null && page.onlyURLPatterns">
+					<span v-for="urlPattern in page.onlyURLPatterns" class="ui basic label small">{{urlPattern.pattern}}</span>
+				</div>
+				<span v-else class="disabled">-</span>
+			</td>
+			<td>
+				<a href="" title="修改" @click.prevent="updatePage(index, page.id)">修改</a> &nbsp; 
+				<a href="" title="删除" @click.prevent="removePage(index)">删除</a>
+			</td>
+		</tr>
+	</table>
+</div>
+<div style="margin-top: 1em">
+	<button class="ui button small" type="button" @click.prevent="addPage()">+添加自定义页面</button>
+</div>
+
+<h4 style="margin-top: 2em;">临时关闭页面</h4>
+<p class="comment" style="margin-top: 0; padding-top: 0">开启临时关闭页面时，所有请求都会直接显示此页面。可用于临时升级网站或者禁止用户访问某个网页。</p>	
+<div>
+	<table class="ui table selectable definition">
+		<prior-checkbox :v-config="shutdownConfig" v-if="vIsLocation"></prior-checkbox>
+		<tbody v-show="!vIsLocation || shutdownConfig.isPrior">
+			<tr>
+				<td class="title">启用临时关闭网站</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" value="1" v-model="shutdownConfig.isOn" />
+						<label></label>
+					</div>
+					<p class="comment">选中后，表示临时关闭当前网站，并显示自定义内容。</p>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="(!vIsLocation || shutdownConfig.isPrior) && shutdownConfig.isOn">
+			<tr>
+				<td>显示内容类型 *</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="shutdownConfig.bodyType">
+						<option value="html">HTML</option>
+						<option value="url">读取URL</option>
+						<option value="redirectURL">跳转URL</option>
+					</select>
+				</td>
+			</tr>
+			<tr v-if="shutdownConfig.bodyType == 'url'">
+				<td class="title">显示页面URL *</td>
+				<td>
+					<input type="text" v-model="shutdownConfig.url" placeholder="类似于 https://example.com/page.html"/>
+					<p class="comment">将从此URL中读取内容。</p>
+				</td>
+			</tr>
+			<tr v-if="shutdownConfig.bodyType == 'redirectURL'">
+				<td class="title">跳转到URL *</td>
+				<td>
+					<input type="text" v-model="shutdownConfig.url" placeholder="类似于 https://example.com/page.html"/>
+					 <p class="comment">将会跳转到此URL。</p>
+				</td>
+			</tr>
+			<tr v-show="shutdownConfig.bodyType == 'html'">
+				<td>显示页面HTML *</td>
+				<td>
+					<textarea name="body" ref="shutdownHTMLBody" v-model="shutdownConfig.body"></textarea>
+					<p class="comment"><a href="" @click.prevent="addShutdownHTMLTemplate">[使用模板]</a>。填写页面的HTML内容，支持请求变量。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>状态码</td>
+				<td><input type="text" size="3" maxlength="3" name="shutdownStatus" style="width:5.2em" placeholder="状态码" v-model="shutdownStatus"/></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
 <div class="ui margin"></div>
 </div>`}),Vue.component("http-compression-config-box",{props:["v-compression-config","v-is-location","v-is-group"],mounted:function(){let e=this;sortLoad(function(){e.initSortableTypes()})},data:function(){let t=this.vCompressionConfig,e=(null==(t=null==t?{isPrior:!1,isOn:!1,useDefaultTypes:!0,types:["brotli","gzip","zstd","deflate"],level:5,decompressData:!1,gzipRef:null,deflateRef:null,brotliRef:null,minLength:{count:1,unit:"kb"},maxLength:{count:32,unit:"mb"},mimeTypes:["text/*","application/javascript","application/json","application/atom+xml","application/rss+xml","application/xhtml+xml","font/*","image/svg+xml"],extensions:[".js",".json",".html",".htm",".xml",".css",".woff2",".txt"],exceptExtensions:[".apk",".ipa"],conds:null,enablePartialContent:!1}:t).types&&(t.types=[]),null==t.mimeTypes&&(t.mimeTypes=[]),null==t.extensions&&(t.extensions=[]),[{name:"Gzip",code:"gzip",isOn:!0},{name:"Deflate",code:"deflate",isOn:!0},{name:"Brotli",code:"brotli",isOn:!0},{name:"ZSTD",code:"zstd",isOn:!0}]),i=[];return t.types.forEach(function(t){e.forEach(function(e){t==e.code&&(e.isOn=!0,i.push(e))})}),e.forEach(function(e){t.types.$contains(e.code)||(e.isOn=!1,i.push(e))}),{config:t,moreOptionsVisible:!1,allTypes:i}},watch:{"config.level":function(e){let t=parseInt(e);isNaN(t)||t<1?t=1:10<t&&(t=10),this.config.level=t}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeExtensions:function(i){i.forEach(function(e,t){0<e.length&&"."!=e[0]&&(i[t]="."+e)}),this.config.extensions=i},changeExceptExtensions:function(i){i.forEach(function(e,t){0<e.length&&"."!=e[0]&&(i[t]="."+e)}),this.config.exceptExtensions=i},changeMimeTypes:function(e){this.config.mimeTypes=e},changeAdvancedVisible:function(){this.moreOptionsVisible=!this.moreOptionsVisible},changeConds:function(e){this.config.conds=e},changeType:function(){this.config.types=[];let t=this;this.allTypes.forEach(function(e){e.isOn&&t.config.types.push(e.code)})},initSortableTypes:function(){let n=document.querySelector("#compression-types-box"),s=this;Sortable.create(n,{draggable:".checkbox",handle:".icon.handle",onStart:function(){},onUpdate:function(e){let t=n.querySelectorAll(".checkbox"),i=[];t.forEach(function(e){e=e.getAttribute("data-code");i.push(e)}),s.config.types=i}})}},template:`<div>
 	<input type="hidden" name="compressionJSON" :value="JSON.stringify(config)"/>
@@ -5455,25 +5517,77 @@ example2.com
 		</tbody>
 	</table>
 	<div class="margin"></div>
-</div>`}),Vue.component("http-pages-box",{props:["v-pages"],data:function(){let e=[];return{pages:e=null!=this.vPages?this.vPages:e}},methods:{addPage:function(){let t=this;teaweb.popup("/servers/server/settings/pages/createPopup",{height:"26em",callback:function(e){t.pages.push(e.data.page)}})},updatePage:function(t,e){let i=this;teaweb.popup("/servers/server/settings/pages/updatePopup?pageId="+e,{height:"26em",callback:function(e){Vue.set(i.pages,t,e.data.page)}})},removePage:function(e){let t=this;teaweb.confirm("确定要移除此页面吗？",function(){t.pages.$remove(e)})}},template:`<div>
+</div>`}),Vue.component("http-pages-box",{props:["v-pages"],data:function(){let e=[];return{pages:e=null!=this.vPages?this.vPages:e}},methods:{addPage:function(){let t=this;teaweb.popup("/servers/server/settings/pages/createPopup",{height:"26em",callback:function(e){t.pages.push(e.data.page),t.notifyChange()}})},updatePage:function(t,e){let i=this;teaweb.popup("/servers/server/settings/pages/updatePopup?pageId="+e,{height:"26em",callback:function(e){Vue.set(i.pages,t,e.data.page),i.notifyChange()}})},removePage:function(e){let t=this;teaweb.confirm("确定要移除此页面吗？",function(){t.pages.$remove(e),t.notifyChange()})},notifyChange:function(){let e=this.$el.parentNode;for(;;){if(null==e)break;if("FORM"==e.tagName)break;e=e.parentNode}null!=e&&setTimeout(function(){Tea.runActionOn(e)},100)}},template:`<div>
 <input type="hidden" name="pagesJSON" :value="JSON.stringify(pages)"/>
-<table class="ui table selectable definition">
-	<tr>
-		<td class="title">自定义页面</td>
-		<td>
-			<div v-if="pages.length > 0">
-				<div class="ui label small basic" v-for="(page,index) in pages">
-					{{page.status}} -&gt; <span v-if="page.bodyType == 'url'">{{page.url}}</span><span v-if="page.bodyType == 'html'">[HTML内容]</span> <a href="" title="修改" @click.prevent="updatePage(index, page.id)"><i class="icon pencil small"></i></a> <a href="" title="删除" @click.prevent="removePage(index)"><i class="icon remove"></i></a>
+
+<div v-if="pages.length > 0">
+	<table class="ui table selectable celled">
+		<thead>
+			<tr>
+				<th class="two wide">响应状态码</th>
+				<th>页面类型</th>
+				<th class="two wide">新状态码</th>
+				<th>例外URL</th>
+				<th>限制URL</th>
+				<th class="two op">操作</th>
+			</tr>	
+		</thead>
+		<tr v-for="(page,index) in pages">
+			<td>
+				<a href="" @click.prevent="updatePage(index, page.id)">
+					<span v-if="page.status != null && page.status.length == 1">{{page.status[0]}}</span>
+					<span v-else>{{page.status}}</span>
+					
+					<i class="icon expand small"></i>
+				</a>
+			</td>
+			<td style="word-break: break-all">
+				<div v-if="page.bodyType == 'url'">
+					{{page.url}}
+					<div>
+						<grey-label>读取URL</grey-label>
+					</div>
 				</div>
-				<div class="ui divider"></div>
-			</div>
-			<div>
-				<button class="ui button small" type="button" @click.prevent="addPage()">+</button>
-			</div>
-			<p class="comment">根据响应状态码返回一些自定义页面，比如404，500等错误页面。</p>
-		</td>
-	</tr>
-</table>
+				<div v-if="page.bodyType == 'redirectURL'">
+					{{page.url}}
+					<div>
+						<grey-label>跳转URL</grey-label>	
+						<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
+					</div>
+				</div>
+				<div v-if="page.bodyType == 'html'">
+					[HTML内容]
+					<div>
+						<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
+					</div>
+				</div>
+			</td>
+			<td>
+				<span v-if="page.newStatus > 0">{{page.newStatus}}</span>
+				<span v-else class="disabled">保持</span>	
+			</td>
+			<td>
+				<div v-if="page.exceptURLPatterns != null && page.exceptURLPatterns">
+					<span v-for="urlPattern in page.exceptURLPatterns" class="ui basic label small">{{urlPattern.pattern}}</span>
+				</div>
+				<span v-else class="disabled">-</span>
+			</td>
+			<td>
+				<div v-if="page.onlyURLPatterns != null && page.onlyURLPatterns">
+					<span v-for="urlPattern in page.onlyURLPatterns" class="ui basic label small">{{urlPattern.pattern}}</span>
+				</div>
+				<span v-else class="disabled">-</span>
+			</td>
+			<td>
+				<a href="" title="修改" @click.prevent="updatePage(index, page.id)">修改</a> &nbsp; 
+				<a href="" title="删除" @click.prevent="removePage(index)">删除</a>
+			</td>
+		</tr>
+	</table>
+</div>
+<div style="margin-top: 1em">
+	<button class="ui button small" type="button" @click.prevent="addPage()">+添加自定义页面</button>
+</div>
 <div class="ui margin"></div>
 </div>`}),Vue.component("firewall-syn-flood-config-box",{props:["v-syn-flood-config"],data:function(){let e=this.vSynFloodConfig;return{config:e=null==e?{isOn:!1,minAttempts:10,timeoutSeconds:600,ignoreLocal:!0}:e,isEditing:!1,minAttempts:e.minAttempts,timeoutSeconds:e.timeoutSeconds}},methods:{edit:function(){this.isEditing=!this.isEditing}},watch:{minAttempts:function(e){let t=parseInt(e);(t=isNaN(t)?10:t)<5&&(t=5),this.config.minAttempts=t},timeoutSeconds:function(e){let t=parseInt(e);(t=isNaN(t)?10:t)<60&&(t=60),this.config.timeoutSeconds=t}},template:`<div>
 	<input type="hidden" name="synFloodJSON" :value="JSON.stringify(config)"/>
@@ -6026,7 +6140,7 @@ example2.com
 	<div class="ui label tiny basic" v-if="vAddresses != null" v-for="addr in vAddresses">
 		{{addr.protocol}}://<span v-if="addr.host.length > 0">{{addr.host.quoteIP()}}</span><span v-else>*</span>:{{addr.portRange}}
 	</div>
-</div>`}),Vue.component("url-patterns-box",{props:["value"],data:function(){let e=[];return{patterns:e=null!=this.value?this.value:e,isAdding:!1,addingPattern:{type:"wildcard",pattern:""},editingIndex:-1,patternIsInvalid:!1}},methods:{add:function(){this.isAdding=!0;let e=this;setTimeout(function(){e.$refs.patternInput.focus()})},edit:function(e){this.isAdding=!0,this.editingIndex=e,this.addingPattern={type:this.patterns[e].type,pattern:this.patterns[e].pattern}},confirm:function(){if(0==this.addingPattern.pattern.trim().length){let e=this;void teaweb.warn("请输入URL",function(){e.$refs.patternInput.focus()})}else this.editingIndex<0?this.patterns.push({type:this.addingPattern.type,pattern:this.addingPattern.pattern}):(this.patterns[this.editingIndex].type=this.addingPattern.type,this.patterns[this.editingIndex].pattern=this.addingPattern.pattern),this.notifyChange(),this.cancel()},remove:function(e){this.patterns.$remove(e),this.cancel(),this.notifyChange()},cancel:function(){this.isAdding=!1,this.addingPattern={type:"wildcard",pattern:""},this.editingIndex=-1},patternTypeName:function(e){switch(e){case"wildcard":return"通配符";case"regexp":return"正则"}return""},notifyChange:function(){this.$emit("input",this.patterns)},changePattern:function(){this.patternIsInvalid=!1;let e=this.addingPattern.pattern;switch(this.addingPattern.type){case"wildcard":0<=e.indexOf("?")&&(this.patternIsInvalid=!0);break;case"regexp":if(0<=e.indexOf("?")){var t=e.split("?");for(let e=0;e<t.length-1;e++)0!=t[e].length&&"\\"==t[e][t[e].length-1]||(this.patternIsInvalid=!0)}}}},template:`<div>
+</div>`}),Vue.component("url-patterns-box",{props:["value"],data:function(){let e=[];return{patterns:e=null!=this.value?this.value:e,isAdding:!1,addingPattern:{type:"wildcard",pattern:""},editingIndex:-1,patternIsInvalid:!1,windowIsSmall:window.innerWidth<600}},methods:{add:function(){this.isAdding=!0;let e=this;setTimeout(function(){e.$refs.patternInput.focus()})},edit:function(e){this.isAdding=!0,this.editingIndex=e,this.addingPattern={type:this.patterns[e].type,pattern:this.patterns[e].pattern}},confirm:function(){if(0==this.addingPattern.pattern.trim().length){let e=this;void teaweb.warn("请输入URL",function(){e.$refs.patternInput.focus()})}else this.editingIndex<0?this.patterns.push({type:this.addingPattern.type,pattern:this.addingPattern.pattern}):(this.patterns[this.editingIndex].type=this.addingPattern.type,this.patterns[this.editingIndex].pattern=this.addingPattern.pattern),this.notifyChange(),this.cancel()},remove:function(e){this.patterns.$remove(e),this.cancel(),this.notifyChange()},cancel:function(){this.isAdding=!1,this.addingPattern={type:"wildcard",pattern:""},this.editingIndex=-1},patternTypeName:function(e){switch(e){case"wildcard":return"通配符";case"regexp":return"正则"}return""},notifyChange:function(){this.$emit("input",this.patterns)},changePattern:function(){this.patternIsInvalid=!1;let e=this.addingPattern.pattern;switch(this.addingPattern.type){case"wildcard":0<=e.indexOf("?")&&(this.patternIsInvalid=!0);break;case"regexp":if(0<=e.indexOf("?")){var t=e.split("?");for(let e=0;e<t.length-1;e++)0!=t[e].length&&"\\"==t[e][t[e].length-1]||(this.patternIsInvalid=!0)}}}},template:`<div>
 	<div v-show="patterns.length > 0">
 		<div v-for="(pattern, index) in patterns" class="ui label basic small" :class="{blue: index == editingIndex, disabled: isAdding && index != editingIndex}" style="margin-bottom: 0.8em">
 			<span class="grey" style="font-weight: normal">[{{patternTypeName(pattern.type)}}]</span> <span >{{pattern.pattern}}</span> &nbsp; 
@@ -6035,7 +6149,7 @@ example2.com
 		</div>
 	</div>
 	<div v-show="isAdding" style="margin-top: 0.5em">
-		<div class="ui fields inline">
+		<div :class="{'ui fields inline': !windowIsSmall}">
 			<div class="ui field">
 				<select class="ui dropdown auto-width" v-model="addingPattern.type">
 					<option value="wildcard">通配符</option>
