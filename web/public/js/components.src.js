@@ -9799,6 +9799,7 @@ Vue.component("http-header-policy-box", {
 		},
 		addSettingHeader: function (policyId) {
 			teaweb.popup("/servers/server/settings/headers/createSetPopup?" + this.vParams + "&headerPolicyId=" + policyId + "&type=" + this.type, {
+				height: "22em",
 				callback: function () {
 					teaweb.successRefresh("保存成功")
 				}
@@ -9820,6 +9821,7 @@ Vue.component("http-header-policy-box", {
 		},
 		updateSettingPopup: function (policyId, headerId) {
 			teaweb.popup("/servers/server/settings/headers/updateSetPopup?" + this.vParams + "&headerPolicyId=" + policyId + "&headerId=" + headerId + "&type=" + this.type, {
+				height: "22em",
 				callback: function () {
 					teaweb.successRefresh("保存成功")
 				}
