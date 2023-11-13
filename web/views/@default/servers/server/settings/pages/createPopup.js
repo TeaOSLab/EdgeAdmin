@@ -22,4 +22,7 @@ Tea.context(function () {
 </body>
 </html>`
 	}
+
+	this.exceptURLPatterns = []
+	this.onlyURLPatterns = []
 })
