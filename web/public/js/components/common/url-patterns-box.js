@@ -5,6 +5,7 @@ Vue.component("url-patterns-box", {
 		if (this.value != null) {
 			patterns = this.value
 		}
+
 		return {
 			patterns: patterns,
 			isAdding: false,
@@ -12,7 +13,9 @@ Vue.component("url-patterns-box", {
 			addingPattern: {"type": "wildcard", "pattern": ""},
 			editingIndex: -1,
 
-			patternIsInvalid: false
+			patternIsInvalid: false,
+
+			windowIsSmall: window.innerWidth < 600
 		}
 	},
 	methods: {
@@ -105,7 +108,7 @@ Vue.component("url-patterns-box", {
 		</div>
 	</div>
 	<div v-show="isAdding" style="margin-top: 0.5em">
-		<div class="ui fields inline">
+		<div :class="{'ui fields inline': !windowIsSmall}">
 			<div class="ui field">
 				<select class="ui dropdown auto-width" v-model="addingPattern.type">
 					<option value="wildcard">通配符</option>

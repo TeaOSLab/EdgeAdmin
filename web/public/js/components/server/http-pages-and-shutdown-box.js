@@ -118,32 +118,38 @@ Vue.component("http-pages-and-shutdown-box", {
 
 <p class="comment" style="padding-top: 0; margin-top: 0">根据响应状态码返回一些自定义页面，比如404，500等错误页面。</p>
 
-<div v-if="pages.length > 0" style="max-width: 30em">
+<div v-if="pages.length > 0">
 	<table class="ui table selectable celled">
 		<thead>
 			<tr>
-				<th class="four wide">响应状态码</th>
+				<th class="two wide">响应状态码</th>
 				<th>页面类型</th>
-				<th style="width: 6.5em">操作</th>
+				<th class="two wide">新状态码</th>
+				<th>例外URL</th>
+				<th>限制URL</th>
+				<th class="two op">操作</th>
 			</tr>	
 		</thead>
 		<tr v-for="(page,index) in pages">
 			<td>
-				<span v-if="page.status != null && page.status.length == 1">{{page.status[0]}}</span>
-				<span v-else>{{page.status}}</span>
+				<a href="" @click.prevent="updatePage(index, page.id)">
+					<span v-if="page.status != null && page.status.length == 1">{{page.status[0]}}</span>
+					<span v-else>{{page.status}}</span>
+					
+					<i class="icon expand small"></i>
+				</a>
 			</td>
 			<td style="word-break: break-all">
 				<div v-if="page.bodyType == 'url'">
 					{{page.url}}
 					<div>
-						<grey-label>读取</grey-label>
-						<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>	
+						<grey-label>读取URL</grey-label>
 					</div>
 				</div>
 				<div v-if="page.bodyType == 'redirectURL'">
 					{{page.url}}
 					<div>
-						<grey-label>跳转</grey-label>	
+						<grey-label>跳转URL</grey-label>	
 						<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
 					</div>
 				</div>
@@ -153,6 +159,22 @@ Vue.component("http-pages-and-shutdown-box", {
 						<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
 					</div>
 				</div>
+			</td>
+			<td>
+				<span v-if="page.newStatus > 0">{{page.newStatus}}</span>
+				<span v-else class="disabled">保持</span>	
+			</td>
+			<td>
+				<div v-if="page.exceptURLPatterns != null && page.exceptURLPatterns">
+					<span v-for="urlPattern in page.exceptURLPatterns" class="ui basic label small">{{urlPattern.pattern}}</span>
+				</div>
+				<span v-else class="disabled">-</span>
+			</td>
+			<td>
+				<div v-if="page.onlyURLPatterns != null && page.onlyURLPatterns">
+					<span v-for="urlPattern in page.onlyURLPatterns" class="ui basic label small">{{urlPattern.pattern}}</span>
+				</div>
+				<span v-else class="disabled">-</span>
 			</td>
 			<td>
 				<a href="" title="修改" @click.prevent="updatePage(index, page.id)">修改</a> &nbsp; 
