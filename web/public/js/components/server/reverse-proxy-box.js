@@ -26,7 +26,8 @@ Vue.component("reverse-proxy-box", {
 				maxConns: 0,
 				maxIdleConns: 0,
 				followRedirects: false,
-				retry50X: true
+				retry50X: false,
+				retry40X: false
 			}
 		}
 		if (reverseProxyConfig.addHeaders == null) {
@@ -236,6 +237,38 @@ Vue.component("reverse-proxy-box", {
 					<p class="comment">开启后将自动刷新缓冲区数据到客户端，在类似于SSE（server-sent events）等场景下很有用。</p>
 				</td>
 			</tr>
+			<tr v-show="family == null || family == 'http'">
+            	<td>自动重试50X</td>
+            	<td>
+            		<checkbox v-model="reverseProxyConfig.retry50X"></checkbox>
+            		<p class="comment">选中后，表示当源站返回状态码为50X（比如502、504等）时，自动重试其他源站。</p>
+				</td>
+			</tr>
+			<tr v-show="family == null || family == 'http'">
+            	<td>自动重试40X</td>
+            	<td>
+            		<checkbox v-model="reverseProxyConfig.retry40X"></checkbox>
+            		<p class="comment">选中后，表示当源站返回状态码为40X（403或404）时，自动重试其他源站。</p>
+				</td>
+			</tr>
+            <tr v-show="family != 'unix'">
+            	<td>PROXY Protocol</td>
+            	<td>
+            		<checkbox name="proxyProtocolIsOn" v-model="reverseProxyConfig.proxyProtocol.isOn"></checkbox>
+            		<p class="comment">选中后表示启用PROXY Protocol，每次连接源站时都会在头部写入客户端地址信息。</p>
+				</td>
+			</tr>
+			<tr v-show="family != 'unix' && reverseProxyConfig.proxyProtocol.isOn">
+				<td>PROXY Protocol版本</td>
+				<td>
+					<select class="ui dropdown auto-width" name="proxyProtocolVersion" v-model="reverseProxyConfig.proxyProtocol.version">
+						<option value="1">1</option>
+						<option value="2">2</option>
+					</select>
+					<p class="comment" v-if="reverseProxyConfig.proxyProtocol.version == 1">发送类似于<code-label>PROXY TCP4 192.168.1.1 192.168.1.10 32567 443</code-label>的头部信息。</p>
+					<p class="comment" v-if="reverseProxyConfig.proxyProtocol.version == 2">发送二进制格式的头部信息。</p>
+				</td>
+			</tr>
 			<tr v-if="family == null || family == 'http'">
                 <td class="color-border">源站连接失败超时时间</td>
                 <td>
@@ -300,31 +333,6 @@ Vue.component("reverse-proxy-box", {
                     <p class="comment">源站保持等待的空闲超时时间，0表示使用默认时间。</p>
                 </td>
             </tr>
-            <tr v-show="family == null || family == 'http'">
-            	<td>自动重试50X</td>
-            	<td>
-            		<checkbox v-model="reverseProxyConfig.retry50X"></checkbox>
-            		<p class="comment">选中后，表示当源站返回状态码为50X（比如502、504）时，自动重试。</p>
-				</td>
-			</tr>
-            <tr v-show="family != 'unix'">
-            	<td>PROXY Protocol</td>
-            	<td>
-            		<checkbox name="proxyProtocolIsOn" v-model="reverseProxyConfig.proxyProtocol.isOn"></checkbox>
-            		<p class="comment">选中后表示启用PROXY Protocol，每次连接源站时都会在头部写入客户端地址信息。</p>
-				</td>
-			</tr>
-			<tr v-show="family != 'unix' && reverseProxyConfig.proxyProtocol.isOn">
-				<td>PROXY Protocol版本</td>
-				<td>
-					<select class="ui dropdown auto-width" name="proxyProtocolVersion" v-model="reverseProxyConfig.proxyProtocol.version">
-						<option value="1">1</option>
-						<option value="2">2</option>
-					</select>
-					<p class="comment" v-if="reverseProxyConfig.proxyProtocol.version == 1">发送类似于<code-label>PROXY TCP4 192.168.1.1 192.168.1.10 32567 443</code-label>的头部信息。</p>
-					<p class="comment" v-if="reverseProxyConfig.proxyProtocol.version == 2">发送二进制格式的头部信息。</p>
-				</td>
-			</tr>
 		</tbody>
 	</table>
 	<div class="margin"></div>
