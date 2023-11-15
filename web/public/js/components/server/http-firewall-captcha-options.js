@@ -7,6 +7,7 @@ Vue.component("http-firewall-captcha-options", {
 		let options = this.vCaptchaOptions
 		if (options == null) {
 			options = {
+				captchaType: "default",
 				countLetters: 0,
 				life: 0,
 				maxFails: 0,
@@ -27,11 +28,17 @@ Vue.component("http-firewall-captcha-options", {
 		if (options.countLetters <= 0) {
 			options.countLetters = 6
 		}
+
+		if (options.captchaType == null || options.captchaType.length == 0) {
+			options.captchaType = "default"
+		}
+
 		return {
 			options: options,
 			isEditing: false,
 			summary: "",
-			uiBodyWarning: ""
+			uiBodyWarning: "",
+			captchaTypes: window.WAF_CAPTCHA_TYPES
 		}
 	},
 	watch: {
@@ -73,6 +80,9 @@ Vue.component("http-firewall-captcha-options", {
 		"options.failBlockScopeAll": function (v) {
 			this.updateSummary()
 		},
+		"options.captchaType": function (v) {
+			this.updateSummary()
+		},
 		"options.uiIsOn": function (v) {
 			this.updateSummary()
 		},
@@ -102,9 +112,21 @@ Vue.component("http-firewall-captcha-options", {
 			if (this.options.failBlockScopeAll) {
 				summaryList.push("全局封禁")
 			}
-			if (this.options.uiIsOn) {
-				summaryList.push("定制UI")
+
+			let that = this
+			let typeDef = this.captchaTypes.$find(function (k, v) {
+				return v.code == that.options.captchaType
+			})
+			if (typeDef != null) {
+				summaryList.push("默认验证方式：" + typeDef.name)
 			}
+
+			if (this.options.captchaType == "default") {
+				if (this.options.uiIsOn) {
+					summaryList.push("定制UI")
+				}
+			}
+
 			if (summaryList.length == 0) {
 				this.summary = "默认配置"
 			} else {
@@ -121,6 +143,15 @@ Vue.component("http-firewall-captcha-options", {
 	<div v-show="isEditing" style="margin-top: 0.5em">
 		<table class="ui table definition selectable">
 			<tbody>
+				<tr>
+					<td>默认验证方式</td>
+					<td>
+						<select class="ui dropdown auto-width" v-model="options.captchaType">
+							<option v-for="captchaDef in captchaTypes" :value="captchaDef.code">{{captchaDef.name}}</option>
+						</select>
+						<p class="comment" v-for="captchaDef in captchaTypes" v-if="captchaDef.code == options.captchaType">{{captchaDef.description}}</p>
+					</td>
+				</tr>
 				<tr>
 					<td class="title">有效时间</td>
 					<td>
@@ -158,7 +189,8 @@ Vue.component("http-firewall-captcha-options", {
 						<p class="comment">是否在失败时全局封禁，默认为只封禁对单个网站的访问。</p>
 					</td>
 				</tr>
-				<tr>
+				
+				<tr v-show="options.captchaType == 'default'">
 					<td>验证码中数字个数</td>
 					<td>
 						<select class="ui dropdown auto-width" v-model="options.countLetters">
@@ -166,12 +198,13 @@ Vue.component("http-firewall-captcha-options", {
 						</select>
 					</td>
 				</tr>
-				<tr>
+				<tr v-show="options.captchaType == 'default'">
 					<td class="color-border">定制UI</td>
 					<td><checkbox v-model="options.uiIsOn"></checkbox></td>
 				</tr>
+				
 			</tbody>
-			<tbody v-show="options.uiIsOn">
+			<tbody v-show="options.uiIsOn && options.captchaType == 'default'">
 				<tr>
 					<td class="color-border">页面标题</td>
 					<td>

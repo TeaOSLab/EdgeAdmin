@@ -7,14 +7,20 @@ Vue.component("http-firewall-config-box", {
 				isPrior: false,
 				isOn: false,
 				firewallPolicyId: 0,
-				ignoreGlobalRules: false
+				ignoreGlobalRules: false,
+				defaultCaptchaType: "none"
 			}
+		}
+
+		if (firewall.defaultCaptchaType == null || firewall.defaultCaptchaType.length == 0) {
+			firewall.defaultCaptchaType = "none"
 		}
 
 		return {
 			firewall: firewall,
 			moreOptionsVisible: false,
-			execGlobalRules: !firewall.ignoreGlobalRules
+			execGlobalRules: !firewall.ignoreGlobalRules,
+			captchaTypes: window.WAF_CAPTCHA_TYPES
 		}
 	},
 	watch: {
@@ -46,7 +52,7 @@ Vue.component("http-firewall-config-box", {
 		<prior-checkbox :v-config="firewall" v-if="vIsLocation || vIsGroup"></prior-checkbox>
 		<tbody v-show="(!vIsLocation && !vIsGroup) || firewall.isPrior">
 			<tr>
-				<td class="title">启用WAF</td>
+				<td class="title">启用Web防火墙</td>
 				<td>
 					<checkbox v-model="firewall.isOn"></checkbox>
 					<p class="comment">选中后，表示启用当前网站的WAF功能。</p>
@@ -55,6 +61,15 @@ Vue.component("http-firewall-config-box", {
 		</tbody>
 		<more-options-tbody @change="changeOptionsVisible" v-show="firewall.isOn"></more-options-tbody>
 		<tbody v-show="moreOptionsVisible">
+			<tr>
+				<td>人机识别验证方式</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="firewall.defaultCaptchaType">
+						<option value="none">默认</option>
+						<option v-for="captchaType in captchaTypes" :value="captchaType.code">{{captchaType.name}}</option>
+					</select>
+				</td>
+			</tr>
 			<tr>
 				<td>启用系统全局规则</td>
 				<td>

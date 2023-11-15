@@ -25,7 +25,8 @@ Vue.component("http-firewall-captcha-options-viewer", {
 		}
 		return {
 			options: options,
-			summary: ""
+			summary: "",
+			captchaTypes: window.WAF_CAPTCHA_TYPES
 		}
 	},
 	methods: {
@@ -43,8 +44,18 @@ Vue.component("http-firewall-captcha-options-viewer", {
 			if (this.options.failBlockScopeAll) {
 				summaryList.push("全局封禁")
 			}
-			if (this.options.uiIsOn) {
-				summaryList.push("定制UI")
+			let that = this
+			let typeDef = this.captchaTypes.$find(function (k, v) {
+				return v.code == that.options.captchaType
+			})
+			if (typeDef != null) {
+				summaryList.push("默认验证方式：" + typeDef.name)
+			}
+
+			if (this.options.captchaType == "default") {
+				if (this.options.uiIsOn) {
+					summaryList.push("定制UI")
+				}
 			}
 			if (summaryList.length == 0) {
 				this.summary = "默认配置"
