@@ -68,6 +68,8 @@ Vue.component("http-firewall-config-box", {
 						<option value="none">默认</option>
 						<option v-for="captchaType in captchaTypes" :value="captchaType.code">{{captchaType.name}}</option>
 					</select>
+					<p class="comment" v-if="firewall.defaultCaptchaType == 'none'">使用系统默认的设置。</p>
+					<p class="comment" v-for="captchaType in captchaTypes" v-if="captchaType.code == firewall.defaultCaptchaType">{{captchaType.description}}</p>
 				</td>
 			</tr>
 			<tr>
