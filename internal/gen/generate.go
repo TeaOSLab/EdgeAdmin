@@ -63,7 +63,7 @@ func generateComponentsJSFile() error {
 	} else {
 		buffer.WriteString("window.REQUEST_COND_COMPONENTS = ")
 		buffer.Write(typesJSON)
-		buffer.Write([]byte{'\n', '\n'})
+		buffer.Write([]byte{';', '\n', '\n'})
 	}
 
 	// 条件操作符
@@ -73,7 +73,7 @@ func generateComponentsJSFile() error {
 	} else {
 		buffer.WriteString("window.REQUEST_COND_OPERATORS = ")
 		buffer.Write(requestOperatorsJSON)
-		buffer.Write([]byte{'\n', '\n'})
+		buffer.Write([]byte{';', '\n', '\n'})
 	}
 
 	// 请求变量
@@ -83,7 +83,7 @@ func generateComponentsJSFile() error {
 	} else {
 		buffer.WriteString("window.REQUEST_VARIABLES = ")
 		buffer.Write(requestVariablesJSON)
-		buffer.Write([]byte{'\n', '\n'})
+		buffer.Write([]byte{';', '\n', '\n'})
 	}
 
 	// 指标
@@ -93,7 +93,7 @@ func generateComponentsJSFile() error {
 	} else {
 		buffer.WriteString("window.METRIC_HTTP_KEYS = ")
 		buffer.Write(metricHTTPKeysJSON)
-		buffer.Write([]byte{'\n', '\n'})
+		buffer.Write([]byte{';', '\n', '\n'})
 	}
 
 	// IP地址阈值项目
@@ -103,7 +103,7 @@ func generateComponentsJSFile() error {
 	} else {
 		buffer.WriteString("window.IP_ADDR_THRESHOLD_ITEMS = ")
 		buffer.Write(ipAddrThresholdItemsJSON)
-		buffer.Write([]byte{'\n', '\n'})
+		buffer.Write([]byte{';', '\n', '\n'})
 	}
 
 	// IP地址阈值动作
@@ -113,7 +113,7 @@ func generateComponentsJSFile() error {
 	} else {
 		buffer.WriteString("window.IP_ADDR_THRESHOLD_ACTIONS = ")
 		buffer.Write(ipAddrThresholdActionsJSON)
-		buffer.Write([]byte{'\n', '\n'})
+		buffer.Write([]byte{';', '\n', '\n'})
 	}
 
 	// WAF操作符
@@ -123,7 +123,17 @@ func generateComponentsJSFile() error {
 	} else {
 		buffer.WriteString("window.WAF_RULE_OPERATORS = ")
 		buffer.Write(wafOperatorsJSON)
-		buffer.Write([]byte{'\n', '\n'})
+		buffer.Write([]byte{';', '\n', '\n'})
+	}
+
+	// WAF验证码类型
+	captchaTypesJSON, err := json.Marshal(firewallconfigs.FindAllCaptchaTypes())
+	if err != nil {
+		logs.Println("ComponentsAction marshal captcha types failed: " + err.Error())
+	} else {
+		buffer.WriteString("window.WAF_CAPTCHA_TYPES = ")
+		buffer.Write(captchaTypesJSON)
+		buffer.Write([]byte{';', '\n', '\n'})
 	}
 
 	fp, err := os.OpenFile(filepath.Clean(Tea.PublicFile("/js/components.src.js")), os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0777)
