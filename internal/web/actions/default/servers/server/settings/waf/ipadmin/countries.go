@@ -42,6 +42,7 @@ func (this *CountriesAction) RunGet(params struct {
 		this.NotFound("firewallPolicy", params.FirewallPolicyId)
 		return
 	}
+
 	var deniedCountryIds = []int64{}
 	var allowedCountryIds = []int64{}
 	var countryHTML = ""
@@ -94,6 +95,24 @@ func (this *CountriesAction) RunGet(params struct {
 		return
 	}
 	this.Data["wafIsOn"] = webConfig.FirewallRef != nil && webConfig.FirewallRef.IsOn
+
+	// 获取当前服务所在集群的WAF设置
+	clusterFirewallPolicy, err := dao.SharedHTTPFirewallPolicyDAO.FindEnabledHTTPFirewallPolicyWithServerId(this.AdminContext(), params.ServerId)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	if clusterFirewallPolicy != nil {
+		this.Data["clusterFirewallPolicy"] = maps.Map{
+			"id":       clusterFirewallPolicy.Id,
+			"name":     clusterFirewallPolicy.Name,
+			"isOn":     clusterFirewallPolicy.IsOn,
+			"mode":     clusterFirewallPolicy.Mode,
+			"modeInfo": firewallconfigs.FindFirewallMode(clusterFirewallPolicy.Mode),
+		}
+	} else {
+		this.Data["clusterFirewallPolicy"] = nil
+	}
 
 	this.Show()
 }

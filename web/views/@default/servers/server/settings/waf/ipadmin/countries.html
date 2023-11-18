@@ -9,6 +9,10 @@
 
     {$ if .featureIsOn}
     <warning-message v-if="!wafIsOn">当前WAF未启用，设置将在<a :href="'/servers/server/settings/waf?serverId=' + serverId">[启用]</a>后生效。</warning-message>
+    <warning-message v-if="clusterFirewallPolicy != null && clusterFirewallPolicy.mode != 'defend'">当前网站所在集群的WAF策略模式为
+        <span v-if="clusterFirewallPolicy.modeInfo != null"><strong>{{clusterFirewallPolicy.modeInfo.name}}</strong></span>
+        <span v-else>非防御模式</span>，当前设置将不会生效。
+    </warning-message>
 
 	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 		<input type="hidden" name="firewallPolicyId" :value="firewallPolicyId"/>
