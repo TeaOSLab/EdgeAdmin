@@ -338,6 +338,9 @@ Vue.component("http-firewall-actions-box", {
 			this.editingIndex = index
 
 			this.actionCode = config.code
+			this.action = this.actions.$find(function (k, v) {
+				return v.code == config.code
+			})
 
 			switch (config.code) {
 				case "block":
