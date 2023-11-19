@@ -9362,7 +9362,7 @@ Vue.component("http-firewall-actions-box", {
 						<input type="text" style="width: 5em" maxlength="9" v-model="captchaMaxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 						<span class="ui label">次</span>
 					</div>
-					<p class="comment">允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单；如果为空或者为0表示默认。</p>
+					<p class="comment"><span v-if="captchaMaxFails > 0 && captchaMaxFails < 5" class="red">建议填入一个不小于5的数字，以减少误判几率。</span>允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单；如果为空或者为0表示默认。</p>
 				</td>
 			</tr>
 			<tr v-if="actionCode == 'captcha'">
@@ -15302,7 +15302,7 @@ Vue.component("http-firewall-captcha-options", {
 							<input type="text" style="width: 5em" maxlength="9" v-model="options.maxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
 							<span class="ui label">次</span>
 						</div>
-						<p class="comment">允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单。如果为空或者为0，表示不限制。</p>
+						<p class="comment"><span v-if="options.maxFails > 0 && options.maxFails < 5" class="red">建议填入一个不小于5的数字，以减少误判几率。</span>允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单。如果为空或者为0，表示不限制。</p>
 					</td>
 				</tr>
 				<tr>
