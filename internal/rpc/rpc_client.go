@@ -20,6 +20,7 @@ import (
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/encoding/gzip"
+	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/metadata"
 	"net"
 	"net/url"
@@ -514,12 +515,15 @@ func (this *RPCClient) init() error {
 			grpc.MaxCallSendMsgSize(128<<20),
 			grpc.UseCompressor(gzip.Name),
 		)
+		var keepaliveParams = grpc.WithKeepaliveParams(keepalive.ClientParameters{
+			Time: 30 * time.Second,
+		})
 		if u.Scheme == "http" {
-			conn, err = grpc.Dial(apiHost, grpc.WithTransportCredentials(insecure.NewCredentials()), callOptions)
+			conn, err = grpc.Dial(apiHost, grpc.WithTransportCredentials(insecure.NewCredentials()), callOptions, keepaliveParams)
 		} else if u.Scheme == "https" {
 			conn, err = grpc.Dial(apiHost, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{
 				InsecureSkipVerify: true,
-			})), callOptions)
+			})), callOptions, keepaliveParams)
 		} else {
 			return errors.New("parse endpoint failed: invalid scheme '" + u.Scheme + "'")
 		}
