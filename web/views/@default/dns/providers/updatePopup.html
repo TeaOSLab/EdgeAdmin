@@ -241,28 +241,38 @@
         <!-- Microsoft Azure DNS -->
         <tbody v-if="provider.type == 'azureDNS'">
             <tr>
-                <td>Subscription ID *</td>
+                <td>订阅ID <br/><em>(Subscription ID)</em> *</td>
                 <td>
                     <input type="text" name="paramAzureDNSSubscriptionId" maxlength="100" v-model="provider.params.subscriptionId" spellcheck="false"/>
+                    <p class="comment">可以在订阅（Subscriptions）服务中查看。</p>
                 </td>
             </tr>
             <tr>
-                <td>Tenant ID *</td>
+                <td>目录(租户) ID <br/><em>(Directory Tenant ID)</em> *</td>
                 <td>
                     <input type="text" name="paramAzureDNSTenantId" maxlength="100" v-model="provider.params.tenantId" spellcheck="false"/>
+                    <p class="comment">可以在应用注册（App registrations）中对应应用概述（Overview）中查看。</p>
                 </td>
             </tr>
             <tr>
-                <td>Client ID *</td>
-                <td><input type="text" name="paramAzureDNSClientId" maxlength="100" v-model="provider.params.clientId" spellcheck="false"/></td>
+                <td>应用程序(客户端) ID <br/><em>(Client ID)</em> *</td>
+                <td><input type="text" name="paramAzureDNSClientId" maxlength="100" v-model="provider.params.clientId" spellcheck="false"/>
+                    <p class="comment">需要在应用注册（App registrations）中新注册应用程序获得。</p>
+                </td>
             </tr>
             <tr>
-                <td>Client Secret Value *</td>
-                <td><input type="text" name="paramAzureDNSClientSecret" maxlength="100" v-model="provider.params.clientSecret" spellcheck="false"/></td>
+                <td>客户端密码值 <br/><em>(Client Secret Value)</em> *</td>
+                <td>
+                    <input type="text" name="paramAzureDNSClientSecret" maxlength="100" v-model="provider.params.clientSecret" spellcheck="false"/>
+                    <p class="comment">可以在应用注册（App registrations）中对应应用的“证书和密码（Certificates &amp; secrets）”--“客户端密码（Client secrets）”中创建和查看。</p>
+                </td>
             </tr>
             <tr>
-                <td>Resource Group Name *</td>
-                <td><input type="text" name="paramAzureDNSResourceGroupName" maxlength="100" v-model="provider.params.resourceGroupName" spellcheck="false"/></td>
+                <td>资源组 <br/><em>(Resource Group Name)</em> *</td>
+                <td>
+                    <input type="text" name="paramAzureDNSResourceGroupName" maxlength="100" v-model="provider.params.resourceGroupName" spellcheck="false"/>
+                    <p class="comment">权限设置帮助：你需要在对应资源组（Resource group）-- 访问控制（Access control (IAM)）-- 角色分配（Role assignments）中添加一个角色分配（Role assignment），其中作业职能角色（Job function roles）为"DNS 区域参与者(DNS Zone Contributor)"，成员（Members）为应用注册（App registrations）中的应用程序（application）（有时需要在选择成员（select members）界面搜索应用程序（application）名称才能看到）。</p>
+                </td>
             </tr>
         </tbody>
 
