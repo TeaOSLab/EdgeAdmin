@@ -27,24 +27,47 @@
 
 		<!-- DNSPod -->
 		<tbody v-if="type == 'dnspod'">
-			<tr>
+            <tr>
+                <td>密钥类型 *</td>
+                <td>
+                    <select class="ui dropdown auto-width" name="paramDNSPodAPIType" v-model="paramDNSPodAPIType">
+                        <option value="tencentDNS">腾讯云API密钥</option>
+                        <option value="dnsPodToken">DNSPod Token</option>
+                    </select>
+                </td>
+            </tr>
+            <tr v-show="paramDNSPodAPIType == 'tencentDNS'">
+                <td>SecretId *</td>
+                <td>
+                    <input type="text" name="paramDNSPodAccessKeyId" maxlength="100"/>
+                    <p class="comment">在DNSPod控制台“账号中心--API密钥”中获取。</p>
+                </td>
+            </tr>
+            <tr v-show="paramDNSPodAPIType == 'tencentDNS'">
+                <td>SecretKey *</td>
+                <td>
+                    <input type="text" name="paramDNSPodAccessKeySecret" maxlength="100"/>
+                    <p class="comment">在DNSPod控制台“账号中心--API密钥”中获取。</p>
+                </td>
+            </tr>
+			<tr v-show="paramDNSPodAPIType == 'dnsPodToken'">
 				<td>密钥ID *</td>
 				<td>
-					<input type="text" name="paramId" maxlength="100" spellcheck="false"/>
-					<p class="comment">获取方法参考：<a href="https://docs.dnspod.cn/account/5f2d466de8320f1a740d9ff3/" target="_blank">文档</a> </p>
+					<input type="text" name="paramDNSPodId" maxlength="100" spellcheck="false"/>
+                    <p class="comment">在DNSPod控制台“账号中心--API密钥--DNSPod Token”中获取。</p>
 				</td>
 			</tr>
-			<tr>
+			<tr v-show="paramDNSPodAPIType == 'dnsPodToken'">
 				<td>密钥Token *</td>
 				<td>
-					<input type="text" name="paramToken" maxlength="100" spellcheck="false"/>
-					<p class="comment">获取方法参考：<a href="https://docs.dnspod.cn/account/5f2d466de8320f1a740d9ff3/" target="_blank">文档</a> </p>
+					<input type="text" name="paramDNSPodToken" maxlength="100" spellcheck="false"/>
+                    <p class="comment">在DNSPod控制台“账号中心--API密钥--DNSPod Token”中获取。</p>
 				</td>
 			</tr>
-            <tr>
+            <tr v-if="paramDNSPodAPIType == 'dnsPodToken'">
                 <td>区域</td>
                 <td>
-                    <select class="ui dropdown auto-width" name="paramRegion">
+                    <select class="ui dropdown auto-width" name="paramDNSPodRegion">
                         <option value="">中国站</option>
                         <option value="international">国际站</option>
                     </select>

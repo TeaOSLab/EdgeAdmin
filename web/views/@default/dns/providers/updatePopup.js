@@ -7,4 +7,9 @@ Tea.context(function () {
 			that.typeDescription = v.description
 		}
 	})
+
+	// DNSPod
+	if (this.provider.type == "dnspod" && this.provider.params != null && (this.provider.params.apiType == null || this.provider.params.apiType.length == 0)) {
+		this.provider.params.apiType = "dnsPodToken"
+	}
 })
