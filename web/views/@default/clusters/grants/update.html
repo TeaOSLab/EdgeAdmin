@@ -9,7 +9,7 @@
 			<td>名称 *</td>
 			<td>
 				<input type="text" name="name" maxlength="100" ref="focus" v-model="grant.name"/>
-                <p class="comment">起一个容易识别的名称。</p>
+                <p class="comment">为当前认证信息起一个容易识别的名称。</p>
 			</td>
 		</tr>
 
@@ -62,11 +62,11 @@
                 </td>
             </tr>
 		</tbody>
-        <tr>
+        <tr v-if="grant.username != 'root'">
             <td>执行sudo</td>
             <td>
                 <checkbox name="su" v-model="grant.su"></checkbox>
-                <p class="comment">非root的用户可以使用<code-label>sudo</code-label>获得更高权限来执行命令。</p>
+                <p class="comment">非root的用户可以使用<code-label>sudo</code-label>获得更高权限来执行命令，请确保当前用户已经加入到sudo分组中。</p>
             </td>
         </tr>
 		<tr>
