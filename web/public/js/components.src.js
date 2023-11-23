@@ -6293,10 +6293,10 @@ Vue.component("http-cache-config-box", {
 				</td>
 			</tr>
 			<tr>
-				<td>添加X-Cache Header</td>
+				<td>添加X-Cache报头</td>
 				<td>
 					<checkbox v-model="cacheConfig.addStatusHeader"></checkbox>
-					<p class="comment">选中后自动在响应Header中增加<code-label>X-Cache: BYPASS|MISS|HIT|PURGE</code-label>。</p>
+					<p class="comment">选中后自动在响应Header中增加<code-label>X-Cache: BYPASS|MISS|HIT|PURGE</code-label>；在浏览器端查看X-Cache值时请先禁用浏览器缓存，避免影响观察。</p>
 				</td>
 			</tr>
 			<tr>
