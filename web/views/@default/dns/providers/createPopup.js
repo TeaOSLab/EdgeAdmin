@@ -14,4 +14,7 @@ Tea.context(function () {
 			this.typeDescription = ""
 		}
 	}
+
+	// DNSPod
+	this.paramDNSPodAPIType = "tencentDNS"
 })

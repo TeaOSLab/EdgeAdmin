@@ -79,9 +79,13 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	Type string
 
 	// DNSPod
-	ParamId     string
-	ParamToken  string
-	ParamRegion string
+	ParamDNSPodId     string
+	ParamDNSPodToken  string
+	ParamDNSPodRegion string
+
+	ParamDNSPodAPIType         string
+	ParamDNSPodAccessKeyId     string
+	ParamDNSPodAccessKeySecret string
 
 	// AliDNS
 	ParamAliDNSAccessKeyId     string
@@ -118,18 +122,31 @@ func (this *UpdatePopupAction) RunPost(params struct {
 		Field("type", params.Type).
 		Require("请选择服务商厂家")
 
-	apiParams := maps.Map{}
+	var apiParams = maps.Map{}
 	switch params.Type {
 	case "dnspod":
-		params.Must.
-			Field("paramId", params.ParamId).
-			Require("请输入密钥ID").
-			Field("paramToken", params.ParamToken).
-			Require("请输入密钥Token")
+		apiParams["apiType"] = params.ParamDNSPodAPIType
+		switch params.ParamDNSPodAPIType {
+		case "tencentDNS":
+			params.Must.
+				Field("paramDNSPodAccessKeyId", params.ParamDNSPodAccessKeyId).
+				Require("请输入SecretId").
+				Field("paramDNSPodAccessKeySecret", params.ParamDNSPodAccessKeySecret).
+				Require("请输入SecretKey")
+			apiParams["accessKeyId"] = params.ParamDNSPodAccessKeyId
+			apiParams["accessKeySecret"] = params.ParamDNSPodAccessKeySecret
+			apiParams["region"] = params.ParamDNSPodRegion
+		default:
+			params.Must.
+				Field("paramId", params.ParamDNSPodId).
+				Require("请输入密钥ID").
+				Field("paramToken", params.ParamDNSPodToken).
+				Require("请输入密钥Token")
 
-		apiParams["id"] = params.ParamId
-		apiParams["token"] = params.ParamToken
-		apiParams["region"] = params.ParamRegion
+			apiParams["id"] = params.ParamDNSPodId
+			apiParams["token"] = params.ParamDNSPodToken
+			apiParams["region"] = params.ParamDNSPodRegion
+		}
 	case "alidns":
 		params.Must.
 			Field("paramAliDNSAccessKeyId", params.ParamAliDNSAccessKeyId).

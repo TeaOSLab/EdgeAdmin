@@ -21,15 +21,30 @@
 
 	<!-- DNSPod -->
 	<tbody v-if="provider.type == 'dnspod'">
-		<tr>
+        <tr>
+            <td class="color-border">密钥类型</td>
+            <td>
+                <span v-if="provider.apiParams.apiType == 'tencentDNS'">腾讯云API密钥</span>
+                <span v-else>DNSPod Token</span>
+            </td>
+        </tr>
+        <tr v-if="provider.apiParams.apiType == 'tencentDNS'">
+            <td class="color-border">SecretId</td>
+            <td>{{provider.apiParams.accessKeyId}}</td>
+        </tr>
+        <tr v-if="provider.apiParams.apiType == 'tencentDNS'">
+            <td class="color-border">SecretKey</td>
+            <td>{{provider.apiParams.accessKeySecret}}</td>
+        </tr>
+        <tr v-if="provider.apiParams.apiType != 'tencentDNS'">
 			<td class="color-border">密钥ID</td>
 			<td>{{provider.apiParams.id}}</td>
 		</tr>
-		<tr>
+		<tr v-if="provider.apiParams.apiType != 'tencentDNS'">
 			<td class="color-border">密钥Token</td>
 			<td>{{provider.apiParams.token}}</td>
 		</tr>
-        <tr>
+        <tr v-if="provider.apiParams.apiType != 'tencentDNS'">
             <td class="color-border">区域</td>
             <td>
                 <span v-if="provider.apiParams.region == 'international'">国际站</span>
