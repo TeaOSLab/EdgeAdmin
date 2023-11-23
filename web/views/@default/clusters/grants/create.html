@@ -8,7 +8,7 @@
 			<td>名称 *</td>
 			<td>
 				<input type="text" name="name" maxlength="100" ref="focus"/>
-                <p class="comment">起一个容易识别的名称。</p>
+                <p class="comment">为当前认证信息起一个容易识别的名称。</p>
 			</td>
 		</tr>
 
@@ -26,7 +26,7 @@
 			<tr>
 				<td>SSH用户名 *</td>
 				<td>
-					<input type="text" name="username" maxlength="100" value="root"/>
+					<input type="text" name="username" maxlength="100" value="root" v-model="username"/>
 					<p class="comment">SSH登录用户名。</p>
 				</td>
 			</tr>
@@ -42,7 +42,7 @@
             <tr>
                 <td>SSH用户名 *</td>
                 <td>
-                    <input type="text" name="username" maxlength="100" value="root"/>
+                    <input type="text" name="username" maxlength="100" value="root" v-model="username"/>
                     <p class="comment">SSH登录用户名。</p>
                 </td>
             </tr>
@@ -62,17 +62,18 @@
             </tr>
 		</tbody>
 
+        <tr v-if="username != 'root'">
+            <td>执行sudo</td>
+            <td>
+                <checkbox name="su" checked="checked"></checkbox>
+                <p class="comment">非root的用户可以使用<code-label>sudo</code-label>获得更高权限来执行命令，请确保当前用户已经加入到sudo分组中。</p>
+            </td>
+        </tr>
+
 		<tr>
 			<td colspan="2"><more-options-indicator></more-options-indicator></td>
 		</tr>
 		<tbody v-show="moreOptionsVisible">
-            <tr>
-                <td>执行sudo</td>
-                <td>
-                    <checkbox name="su"></checkbox>
-                    <p class="comment">非root的用户可以使用<code-label>sudo</code-label>获得更高权限来执行命令。</p>
-                </td>
-            </tr>
 			<tr>
 				<td>备注</td>
 				<td>
