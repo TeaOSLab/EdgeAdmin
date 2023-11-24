@@ -34,14 +34,9 @@ func TestRPCClient_NodeRPC(t *testing.T) {
 
 func TestRPC_Dial_HTTP(t *testing.T) {
 	client, err := NewRPCClient(&configs.APIConfig{
-		RPC: struct {
-			Endpoints     []string `yaml:"endpoints"`
-			DisableUpdate bool     `yaml:"disableUpdate"`
-		}{
-			Endpoints: []string{"http://127.0.0.1:8004"},
-		},
-		NodeId: "a7e55782dab39bce0901058a1e14a0e6",
-		Secret: "lvyPobI3BszkJopz5nPTocOs0OLkEJ7y",
+		RPCEndpoints: []string{"https://127.0.0.1:8003"},
+		NodeId:       "a7e55782dab39bce0901058a1e14a0e6",
+		Secret:       "lvyPobI3BszkJopz5nPTocOs0OLkEJ7y",
 	}, true)
 	if err != nil {
 		t.Fatal(err)
@@ -56,14 +51,9 @@ func TestRPC_Dial_HTTP(t *testing.T) {
 
 func TestRPC_Dial_HTTP_2(t *testing.T) {
 	client, err := NewRPCClient(&configs.APIConfig{
-		RPC: struct {
-			Endpoints     []string `yaml:"endpoints"`
-			DisableUpdate bool     `yaml:"disableUpdate"`
-		}{
-			Endpoints: []string{"https://127.0.0.1:8003"},
-		},
-		NodeId: "a7e55782dab39bce0901058a1e14a0e6",
-		Secret: "lvyPobI3BszkJopz5nPTocOs0OLkEJ7y",
+		RPCEndpoints: []string{"https://127.0.0.1:8003"},
+		NodeId:       "a7e55782dab39bce0901058a1e14a0e6",
+		Secret:       "lvyPobI3BszkJopz5nPTocOs0OLkEJ7y",
 	}, true)
 	if err != nil {
 		t.Fatal(err)
@@ -78,14 +68,9 @@ func TestRPC_Dial_HTTP_2(t *testing.T) {
 
 func TestRPC_Dial_HTTPS(t *testing.T) {
 	client, err := NewRPCClient(&configs.APIConfig{
-		RPC: struct {
-			Endpoints     []string `yaml:"endpoints"`
-			DisableUpdate bool     `yaml:"disableUpdate"`
-		}{
-			Endpoints: []string{"https://127.0.0.1:8004"},
-		},
-		NodeId: "a7e55782dab39bce0901058a1e14a0e6",
-		Secret: "lvyPobI3BszkJopz5nPTocOs0OLkEJ7y",
+		RPCEndpoints: []string{"https://127.0.0.1:8004"},
+		NodeId:       "a7e55782dab39bce0901058a1e14a0e6",
+		Secret:       "lvyPobI3BszkJopz5nPTocOs0OLkEJ7y",
 	}, true)
 	if err != nil {
 		t.Fatal(err)
