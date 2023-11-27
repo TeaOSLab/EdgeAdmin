@@ -1,7 +1,9 @@
 package clusters
 
 import (
+	"crypto/rand"
 	"encoding/json"
+	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains/domainutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
@@ -9,6 +11,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
+	"github.com/iwind/TeaGo/rands"
 )
 
 type CreateAction struct {
@@ -43,6 +46,18 @@ func (this *CreateAction) RunGet(params struct{}) {
 		return
 	}
 	this.Data["totalNodes"] = totalNodesResp.Count
+
+	// 随机子域名
+	var defaultDNSName = "g" + rands.HexString(6) + ".cdn"
+	{
+		var b = make([]byte, 3)
+		_, err = rand.Read(b)
+		if err == nil {
+			defaultDNSName = fmt.Sprintf("g%x.cdn", b)
+		}
+	}
+	this.Data["defaultDNSName"] = defaultDNSName
+	this.Data["dnsName"] = defaultDNSName
 
 	this.Show()
 }
