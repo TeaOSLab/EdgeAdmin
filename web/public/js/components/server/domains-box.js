@@ -105,7 +105,17 @@ Vue.component("domains-box", {
 			if (this.isEditing && this.editingIndex >= 0) {
 				this.domains[this.editingIndex] = this.addingDomain
 			} else {
-				this.domains.push(this.addingDomain)
+				// 分割逗号（，）、顿号（、）
+				if (this.addingDomain.match("[，、,;]")) {
+					let domainList = this.addingDomain.split(new RegExp("[，、,;]"))
+					domainList.forEach(function (v) {
+						if (v.length > 0) {
+							that.domains.push(v)
+						}
+					})
+				} else {
+					this.domains.push(this.addingDomain)
+				}
 			}
 			this.cancel()
 			this.change()
