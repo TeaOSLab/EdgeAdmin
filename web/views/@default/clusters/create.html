@@ -85,11 +85,11 @@
 			<td class="title">DNS子域名</td>
 			<td>
 				<div class="ui input right labeled">
-					<input type="text" name="dnsName" maxlength="64" style="width:10em"/>
+					<input type="text" name="dnsName" maxlength="64" style="width:10em" v-model="dnsName"/>
 					<span class="ui label" v-if="domain != null && domain.name != null && domain.name.length > 0">.{{domain.name}}</span>
                     <span class="ui label" v-else>.主域名</span>
 				</div>
-				<p class="comment">当前集群的子域名，和主域名一起组成集群节点的子域名。</p>
+				<p class="comment"><span v-if="dnsName == defaultDNSName" class="red">当前已为你生成默认的子域名。</span>当前集群的子域名，和主域名一起组成集群节点的子域名。</p>
 			</td>
 		</tr>
         <tr>
