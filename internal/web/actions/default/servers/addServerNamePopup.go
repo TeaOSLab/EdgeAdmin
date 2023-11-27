@@ -36,31 +36,43 @@ func (this *AddServerNamePopupAction) RunPost(params struct {
 		// 去除空格
 		serverName = regexp.MustCompile(`\s+`).ReplaceAllString(serverName, "")
 
-		// 处理URL
-		if regexp.MustCompile(`^(?i)(http|https|ftp)://`).MatchString(serverName) {
-			u, err := url.Parse(serverName)
-			if err == nil && len(u.Host) > 0 {
-				serverName = u.Host
+		// 是否包含了多个域名
+		var splitReg = regexp.MustCompile(`([，、｜,;|])`)
+		if splitReg.MatchString(serverName) {
+			params.ServerNames = strings.Join(splitReg.Split(serverName, -1), "\n")
+			params.Mode = "multiple"
+		} else {
+			// 处理URL
+			if regexp.MustCompile(`^(?i)(http|https|ftp)://`).MatchString(serverName) {
+				u, err := url.Parse(serverName)
+				if err == nil && len(u.Host) > 0 {
+					serverName = u.Host
+				}
 			}
-		}
 
-		// 去除端口
-		if regexp.MustCompile(`:\d+$`).MatchString(serverName) {
-			host, _, err := net.SplitHostPort(serverName)
-			if err == nil && len(host) > 0 {
-				serverName = host
+			// 去除端口
+			if regexp.MustCompile(`:\d+$`).MatchString(serverName) {
+				host, _, err := net.SplitHostPort(serverName)
+				if err == nil && len(host) > 0 {
+					serverName = host
+				}
 			}
-		}
 
-		params.Must.
-			Field("serverName", serverName).
-			Require("请输入域名")
+			params.Must.
+				Field("serverName", serverName).
+				Require("请输入域名")
 
-		this.Data["serverName"] = maps.Map{
-			"name": serverName,
-			"type": "full",
+			this.Data["serverName"] = maps.Map{
+				"name": serverName,
+				"type": "full",
+			}
+
+			this.Success()
+			return
 		}
-	} else if params.Mode == "multiple" {
+	}
+
+	if params.Mode == "multiple" {
 		if len(params.ServerNames) == 0 {
 			this.FailField("serverNames", "请输入至少域名")
 		}
@@ -99,8 +111,6 @@ func (this *AddServerNamePopupAction) RunPost(params struct {
 			"type":     "full",
 			"subNames": serverNames,
 		}
-	} else {
-		this.Fail("错误的mode参数")
 	}
 
 	this.Success()
