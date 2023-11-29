@@ -141,6 +141,23 @@ func (this *UpdateAction) RunPost(params struct {
 		this.Fail("验证码动作参数校验失败：" + err.Error())
 	}
 
+	// 检查极验配置
+	if captchaOptions.CaptchaType == firewallconfigs.CaptchaTypeGeeTest || captchaOptions.GeeTestConfig.IsOn {
+		if captchaOptions.CaptchaType == firewallconfigs.CaptchaTypeGeeTest && !captchaOptions.GeeTestConfig.IsOn {
+			this.Fail("人机识别动作配置的默认验证方式为极验-行为验，所以需要选择允许用户使用极验")
+			return
+		}
+
+		if len(captchaOptions.GeeTestConfig.CaptchaId) == 0 {
+			this.FailField("geetestCaptchaId", "请输入极验-验证ID")
+			return
+		}
+		if len(captchaOptions.GeeTestConfig.CaptchaKey) == 0 {
+			this.FailField("geetestCaptchaKey", "请输入极验-验证Key")
+			return
+		}
+	}
+
 	// 最大内容尺寸
 	if params.MaxRequestBodySize < 0 {
 		params.MaxRequestBodySize = 0
