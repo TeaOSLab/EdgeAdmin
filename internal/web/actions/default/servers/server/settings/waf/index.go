@@ -1,6 +1,7 @@
 package waf
 
 import (
+	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
@@ -50,12 +51,23 @@ func (this *IndexAction) RunGet(params struct {
 		return
 	}
 	if firewallPolicy != nil {
+		// captcha action
+		var captchaOptions = firewallconfigs.DefaultHTTPFirewallCaptchaAction()
+		if len(firewallPolicy.CaptchaOptionsJSON) > 0 {
+			err = json.Unmarshal(firewallPolicy.CaptchaOptionsJSON, captchaOptions)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+		}
+
 		this.Data["firewallPolicy"] = maps.Map{
-			"id":       firewallPolicy.Id,
-			"name":     firewallPolicy.Name,
-			"isOn":     firewallPolicy.IsOn,
-			"mode":     firewallPolicy.Mode,
-			"modeInfo": firewallconfigs.FindFirewallMode(firewallPolicy.Mode),
+			"id":            firewallPolicy.Id,
+			"name":          firewallPolicy.Name,
+			"isOn":          firewallPolicy.IsOn,
+			"mode":          firewallPolicy.Mode,
+			"modeInfo":      firewallconfigs.FindFirewallMode(firewallPolicy.Mode),
+			"captchaAction": captchaOptions,
 		}
 	} else {
 		this.Data["firewallPolicy"] = nil

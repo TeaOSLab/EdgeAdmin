@@ -57,6 +57,11 @@ Vue.component("http-firewall-captcha-options-viewer", {
 					summaryList.push("定制UI")
 				}
 			}
+
+			if (this.options.geeTestConfig.isOn) {
+				summaryList.push("已配置极验")
+			}
+
 			if (summaryList.length == 0) {
 				this.summary = "默认配置"
 			} else {

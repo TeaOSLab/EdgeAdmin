@@ -22,7 +22,12 @@ Vue.component("http-firewall-captcha-options", {
 				uiFooter: "",
 				uiBody: "",
 				cookieId: "",
-				lang: ""
+				lang: "",
+				geeTestConfig: {
+					isOn: false,
+					captchaId: "",
+					captchaKey: ""
+				}
 			}
 		}
 		if (options.countLetters <= 0) {
@@ -32,6 +37,7 @@ Vue.component("http-firewall-captcha-options", {
 		if (options.captchaType == null || options.captchaType.length == 0) {
 			options.captchaType = "default"
 		}
+
 
 		return {
 			options: options,
@@ -92,6 +98,9 @@ Vue.component("http-firewall-captcha-options", {
 			} else {
 				this.uiBodyWarning = ""
 			}
+		},
+		"options.geeTestConfig.isOn": function (v) {
+			this.updateSummary()
 		}
 	},
 	methods: {
@@ -125,6 +134,10 @@ Vue.component("http-firewall-captcha-options", {
 				if (this.options.uiIsOn) {
 					summaryList.push("定制UI")
 				}
+			}
+
+			if (this.options.geeTestConfig.isOn) {
+				summaryList.push("已配置极验")
 			}
 
 			if (summaryList.length == 0) {
@@ -202,7 +215,6 @@ Vue.component("http-firewall-captcha-options", {
 					<td class="color-border">定制UI</td>
 					<td><checkbox v-model="options.uiIsOn"></checkbox></td>
 				</tr>
-				
 			</tbody>
 			<tbody v-show="options.uiIsOn && options.captchaType == 'default'">
 				<tr>
@@ -250,6 +262,31 @@ Vue.component("http-firewall-captcha-options", {
 					<td>
 						<textarea spellcheck="false" rows="2" v-model="options.uiBody"></textarea>
 						<p class="comment"><span v-if="uiBodyWarning.length > 0" class="red">警告：{{uiBodyWarning}}</span><span v-if="options.uiBody.length > 0 && options.uiBody.indexOf('\${body}') < 0 " class="red">模板中必须包含\${body}表示验证码表单！</span>整个页面的模板，支持HTML，其中必须使用<code-label>\${body}</code-label>变量代表验证码表单，否则将无法正常显示验证码。</p>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<table class="ui table definition selectable">
+			<tr>
+				<td class="title">允许用户使用极验</td>
+				<td><checkbox v-model="options.geeTestConfig.isOn"></checkbox>
+					<p class="comment">选中后，表示允许用户在WAF设置中选择极验。</p>
+				</td>
+			</tr>
+			<tbody v-show="options.geeTestConfig.isOn">
+				<tr>
+					<td class="color-border">极验-验证ID *</td>
+					<td>
+						<input type="text" maxlength="100" name="geetestCaptchaId" v-model="options.geeTestConfig.captchaId" spellcheck="false"/>
+						<p class="comment">在极验控制台--业务管理中获取。</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="color-border">极验-验证Key *</td>
+					<td>
+						<input type="text" maxlength="100" name="geetestCaptchaKey" v-model="options.geeTestConfig.captchaKey" spellcheck="false"/>
+						<p class="comment">在极验控制台--业务管理中获取。</p>
 					</td>
 				</tr>
 			</tbody>

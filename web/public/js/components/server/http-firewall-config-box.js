@@ -16,11 +16,25 @@ Vue.component("http-firewall-config-box", {
 			firewall.defaultCaptchaType = "none"
 		}
 
+		let allCaptchaTypes = window.WAF_CAPTCHA_TYPES.$copy()
+
+		// geetest
+		let geeTestIsOn = false
+		if (this.vFirewallPolicy != null && this.vFirewallPolicy.captchaAction != null && this.vFirewallPolicy.captchaAction.geeTestConfig != null) {
+			geeTestIsOn = this.vFirewallPolicy.captchaAction.geeTestConfig.isOn
+		}
+
+		// 如果没有启用geetest，则还原
+		if (!geeTestIsOn && firewall.defaultCaptchaType == "geetest") {
+			firewall.defaultCaptchaType = "none"
+		}
+
 		return {
 			firewall: firewall,
 			moreOptionsVisible: false,
 			execGlobalRules: !firewall.ignoreGlobalRules,
-			captchaTypes: window.WAF_CAPTCHA_TYPES
+			captchaTypes: allCaptchaTypes,
+			geeTestIsOn: geeTestIsOn
 		}
 	},
 	watch: {
@@ -66,7 +80,7 @@ Vue.component("http-firewall-config-box", {
 				<td>
 					<select class="ui dropdown auto-width" v-model="firewall.defaultCaptchaType">
 						<option value="none">默认</option>
-						<option v-for="captchaType in captchaTypes" :value="captchaType.code">{{captchaType.name}}</option>
+						<option v-for="captchaType in captchaTypes" v-if="captchaType.code != 'geetest' || geeTestIsOn" :value="captchaType.code">{{captchaType.name}}</option>
 					</select>
 					<p class="comment" v-if="firewall.defaultCaptchaType == 'none'">使用系统默认的设置。</p>
 					<p class="comment" v-for="captchaType in captchaTypes" v-if="captchaType.code == firewall.defaultCaptchaType">{{captchaType.description}}</p>

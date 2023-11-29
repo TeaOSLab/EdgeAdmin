@@ -31,8 +31,8 @@ func (this *IndexAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	count := countResp.Count
-	page := this.NewPage(count)
+	var count = countResp.Count
+	var page = this.NewPage(count)
 
 	listResp, err := this.RPC().HTTPFirewallPolicyRPC().ListEnabledHTTPFirewallPolicies(this.AdminContext(), &pb.ListEnabledHTTPFirewallPoliciesRequest{
 		NodeClusterId: params.ClusterId,
@@ -44,10 +44,10 @@ func (this *IndexAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	policyMaps := []maps.Map{}
+	var policyMaps = []maps.Map{}
 	for _, policy := range listResp.HttpFirewallPolicies {
-		countInbound := 0
-		countOutbound := 0
+		var countInbound = 0
+		var countOutbound = 0
 		if len(policy.InboundJSON) > 0 {
 			inboundConfig := &firewallconfigs.HTTPFirewallInboundConfig{}
 			err = json.Unmarshal(policy.InboundJSON, inboundConfig)
@@ -72,7 +72,7 @@ func (this *IndexAction) RunGet(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		countClusters := countClustersResp.Count
+		var countClusters = countClustersResp.Count
 
 		// mode
 		if len(policy.Mode) == 0 {
