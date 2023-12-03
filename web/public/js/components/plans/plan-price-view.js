@@ -26,7 +26,7 @@ Vue.component("plan-price-view", {
 		按{{plan.bandwidthPrice.percentile}}th带宽计费 
 		<div>
 			<div v-for="range in plan.bandwidthPrice.ranges">
-				<span class="small grey">{{range.minMB}} - <span v-if="range.maxMB > 0">{{range.maxMB}}MB</span><span v-else>&infin;</span>： <span v-if="range.totalPrice > 0">{{range.totalPrice}}元</span><span v-else="">{{range.pricePerMB}}元/MB</span></span>
+				<span class="small grey">{{range.minMB}} - <span v-if="range.maxMB > 0">{{range.maxMB}}MiB</span><span v-else>&infin;</span>： <span v-if="range.totalPrice > 0">{{range.totalPrice}}元</span><span v-else="">{{range.pricePerMB}}元/MiB</span></span>
 			</div>
 		</div>
 	</div>

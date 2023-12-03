@@ -184,9 +184,9 @@
                 <td>磁盘预估写入最大速度</td>
                 <td>
                     <span v-if="node.status.diskWritingSpeedMB == 0">-</span><span v-if="node.status.diskWritingSpeedMB > 0">&gt; {{node.status.diskWritingSpeedMB}}</span>
-                    <span v-if="node.status.diskWritingSpeedMB > 1000">MB/s 极快</span>
-                    <span v-else-if="node.status.diskWritingSpeedMB > 150">MB/s 快</span>
-                    <span v-else-if="node.status.diskWritingSpeedMB > 0">MB/s 一般</span>
+                    <span v-if="node.status.diskWritingSpeedMB > 1000">MiB/s 极快</span>
+                    <span v-else-if="node.status.diskWritingSpeedMB > 150">MiB/s 快</span>
+                    <span v-else-if="node.status.diskWritingSpeedMB > 0">MiB/s 一般</span>
                 </td>
             </tr>
             <tr>

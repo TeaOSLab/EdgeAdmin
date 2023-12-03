@@ -63,12 +63,12 @@ Vue.component("size-capacity-box", {
 	<div class="ui field">
 		<select class="ui dropdown" v-model="capacity.unit" @change="change">
 			<option value="byte" v-if="supportedUnits.length == 0 || supportedUnits.$contains('byte')">字节</option>
-			<option value="kb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('kb')">KB</option>
-			<option value="mb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('mb')">MB</option>
-			<option value="gb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('gb')">GB</option>
-			<option value="tb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('tb')">TB</option>
-			<option value="pb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('pb')">PB</option>
-			<option value="eb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('eb')">EB</option>
+			<option value="kb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('kb')">KiB</option>
+			<option value="mb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('mb')">MiB</option>
+			<option value="gb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('gb')">GiB</option>
+			<option value="tb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('tb')">TiB</option>
+			<option value="pb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('pb')">PiB</option>
+			<option value="eb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('eb')">EiB</option>
 		</select>
 	</div>
 </div>`
