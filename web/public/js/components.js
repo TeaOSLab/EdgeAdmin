@@ -6344,7 +6344,7 @@ example2.com
 		<button class="ui button tiny basic" type="button" @click.prevent="add">+</button>
 	</div>
 </div>`}),Vue.component("size-capacity-view",{props:["v-default-text","v-value"],template:`<div>
-	<span v-if="vValue != null && vValue.count > 0">{{vValue.count}}{{vValue.unit.toUpperCase()}}</span>
+	<span v-if="vValue != null && vValue.count > 0">{{vValue.count}}{{vValue.unit.toUpperCase().replace(/(.)B/, "$1iB")}}</span>
 	<span v-else>{{vDefaultText}}</span>
 </div>`}),Vue.component("tip-message-box",{props:["code"],mounted:function(){let t=this;Tea.action("/ui/showTip").params({code:this.code}).success(function(e){t.visible=e.data.visible}).post()},data:function(){return{visible:!1}},methods:{close:function(){this.visible=!1,Tea.action("/ui/hideTip").params({code:this.code}).post()}},template:`<div class="ui icon message" v-if="visible">
 	<i class="icon info circle"></i>
