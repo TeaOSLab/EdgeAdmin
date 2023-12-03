@@ -2912,7 +2912,7 @@ Vue.component("plan-price-view", {
 		按{{plan.bandwidthPrice.percentile}}th带宽计费 
 		<div>
 			<div v-for="range in plan.bandwidthPrice.ranges">
-				<span class="small grey">{{range.minMB}} - <span v-if="range.maxMB > 0">{{range.maxMB}}MB</span><span v-else>&infin;</span>： <span v-if="range.totalPrice > 0">{{range.totalPrice}}元</span><span v-else="">{{range.pricePerMB}}元/MB</span></span>
+				<span class="small grey">{{range.minMB}} - <span v-if="range.maxMB > 0">{{range.maxMB}}MiB</span><span v-else>&infin;</span>： <span v-if="range.totalPrice > 0">{{range.totalPrice}}元</span><span v-else="">{{range.pricePerMB}}元/MiB</span></span>
 			</div>
 		</div>
 	</div>
@@ -3547,7 +3547,7 @@ Vue.component("plan-price-bandwidth-config-box", {
                     <option value="avg">平均带宽</option>
                 </select>
                 <p class="comment" v-if="config.bandwidthAlgo == 'secondly'">按在计时时间段内（5分钟）最高带宽峰值计算，比如5分钟内最高的某个时间点带宽为100Mbps，那么就认为此时间段内的峰值带宽为100Mbps。修改此选项会同时影响到用量统计图表。</p>
-                <p class="comment" v-if="config.bandwidthAlgo == 'avg'">按在计时时间段内（5分钟）平均带宽计算，即此时间段内的总流量除以时间段的秒数，比如5分钟（300秒）内总流量600MB，那么带宽即为<code-label>600MB * 8bit/300s = 16Mbps</code-label>；通常平均带宽算法要比峰值带宽要少很多。修改此选项会同时影响到用量统计图表。</p>
+                <p class="comment" v-if="config.bandwidthAlgo == 'avg'">按在计时时间段内（5分钟）平均带宽计算，即此时间段内的总流量除以时间段的秒数，比如5分钟（300秒）内总流量600MiB，那么带宽即为<code-label>600MiB * 8bit/300s = 16Mbps</code-label>；通常平均带宽算法要比峰值带宽要少很多。修改此选项会同时影响到用量统计图表。</p>
 			</td>
 		</tr>
 	</table>
@@ -5673,11 +5673,25 @@ Vue.component("http-firewall-config-box", {
 			firewall.defaultCaptchaType = "none"
 		}
 
+		let allCaptchaTypes = window.WAF_CAPTCHA_TYPES.$copy()
+
+		// geetest
+		let geeTestIsOn = false
+		if (this.vFirewallPolicy != null && this.vFirewallPolicy.captchaAction != null && this.vFirewallPolicy.captchaAction.geeTestConfig != null) {
+			geeTestIsOn = this.vFirewallPolicy.captchaAction.geeTestConfig.isOn
+		}
+
+		// 如果没有启用geetest，则还原
+		if (!geeTestIsOn && firewall.defaultCaptchaType == "geetest") {
+			firewall.defaultCaptchaType = "none"
+		}
+
 		return {
 			firewall: firewall,
 			moreOptionsVisible: false,
 			execGlobalRules: !firewall.ignoreGlobalRules,
-			captchaTypes: window.WAF_CAPTCHA_TYPES
+			captchaTypes: allCaptchaTypes,
+			geeTestIsOn: geeTestIsOn
 		}
 	},
 	watch: {
@@ -5723,7 +5737,7 @@ Vue.component("http-firewall-config-box", {
 				<td>
 					<select class="ui dropdown auto-width" v-model="firewall.defaultCaptchaType">
 						<option value="none">默认</option>
-						<option v-for="captchaType in captchaTypes" :value="captchaType.code">{{captchaType.name}}</option>
+						<option v-for="captchaType in captchaTypes" v-if="captchaType.code != 'geetest' || geeTestIsOn" :value="captchaType.code">{{captchaType.name}}</option>
 					</select>
 					<p class="comment" v-if="firewall.defaultCaptchaType == 'none'">使用系统默认的设置。</p>
 					<p class="comment" v-for="captchaType in captchaTypes" v-if="captchaType.code == firewall.defaultCaptchaType">{{captchaType.description}}</p>
@@ -7412,7 +7426,9 @@ Vue.component("http-optimization-config-box", {
 
 		return {
 			config: config,
-			moreOptionsVisible: false
+			htmlMoreOptions: false,
+			javascriptMoreOptions: false,
+			cssMoreOptions: false
 		}
 	},
 	methods: {
@@ -7422,41 +7438,115 @@ Vue.component("http-optimization-config-box", {
 	},
 	template: `<div>
 	<input type="hidden" name="optimizationJSON" :value="JSON.stringify(config)"/>
-	<table class="ui table definition selectable">
-		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
-		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
-			<tr>
-				<td class="title">HTML优化</td>
-				<td>
-					<div class="ui checkbox">
-						<input type="checkbox" value="1" v-model="config.html.isOn"/>
-						<label></label>
-					</div>
-					<p class="comment">可以自动优化HTML中包含的空白、注释、空标签等。只有文件可以缓存时才会被优化。</p>
-				</td>
-			</tr>
-			<tr>
-				<td class="title">Javascript优化</td>
-				<td>
-					<div class="ui checkbox">
-						<input type="checkbox" value="1" v-model="config.javascript.isOn"/>
-						<label></label>
-					</div>
-					<p class="comment">可以自动缩短Javascript中变量、函数名称等。只有文件可以缓存时才会被优化。</p>
-				</td>
-			</tr>
-				<tr>
-				<td class="title">CSS优化</td>
-				<td>
-					<div class="ui checkbox">
-						<input type="checkbox" value="1" v-model="config.css.isOn"/>
-						<label></label>
-					</div>
-					<p class="comment">可以自动去除CSS中包含的空白。只有文件可以缓存时才会被优化。</p>
-				</td>
-			</tr>
-		</tbody>
+	<table class="ui table definition selectable" v-if="vIsLocation || vIsGroup">
+		<prior-checkbox :v-config="config"></prior-checkbox>
 	</table>
+	
+	<div v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
+		<div class="margin"></div>
+		<table class="ui table definition selectable">
+			<tbody>
+				<tr>
+					<td class="title">HTML优化</td>
+					<td>
+						<div class="ui checkbox">
+							<input type="checkbox" value="1" v-model="config.html.isOn"/>
+							<label></label>
+						</div>
+						<p class="comment">可以自动优化HTML中包含的空白、注释、空标签等。只有文件可以缓存时才会被优化。</p>
+					</td>
+				</tr>
+				<tr v-show="config.html.isOn">
+					<td colspan="2"><more-options-indicator v-model="htmlMoreOptions"></more-options-indicator></td>
+				</tr>
+			</tbody>
+			<tbody v-show="htmlMoreOptions">
+				<tr>
+					<td>HTML例外URL</td>
+					<td>
+						<url-patterns-box v-model="config.html.exceptURLPatterns"></url-patterns-box>
+						<p class="comment">如果填写了例外URL，表示这些URL跳过CC防护不做处理。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>HTML限制URL</td>
+					<td>
+						<url-patterns-box v-model="config.html.onlyURLPatterns"></url-patterns-box>
+						<p class="comment">如果填写了限制URL，表示只对这些URL进行CC防护处理；如果不填则表示支持所有的URL。</p>
+					</td>
+				</tr>	
+			</tbody>
+		</table>
+		
+		<table class="ui table definition selectable">
+			<tbody>
+				<tr>
+					<td class="title">Javascript优化</td>
+					<td>
+						<div class="ui checkbox">
+							<input type="checkbox" value="1" v-model="config.javascript.isOn"/>
+							<label></label>
+						</div>
+						<p class="comment">可以自动缩短Javascript中变量、函数名称等。只有文件可以缓存时才会被优化。</p>
+					</td>
+				</tr>
+				<tr v-show="config.javascript.isOn">
+					<td colspan="2"><more-options-indicator v-model="javascriptMoreOptions"></more-options-indicator></td>
+				</tr>
+			</tbody>
+			<tbody v-show="javascriptMoreOptions">
+				<tr>
+					<td>Javascript例外URL</td>
+					<td>
+						<url-patterns-box v-model="config.javascript.exceptURLPatterns"></url-patterns-box>
+						<p class="comment">如果填写了例外URL，表示这些URL跳过CC防护不做处理。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>Javascript限制URL</td>
+					<td>
+						<url-patterns-box v-model="config.javascript.onlyURLPatterns"></url-patterns-box>
+						<p class="comment">如果填写了限制URL，表示只对这些URL进行CC防护处理；如果不填则表示支持所有的URL。</p>
+					</td>
+				</tr>	
+			</tbody>
+		</table>
+		
+		<table class="ui table definition selectable">
+			<tbody>
+				<tr>
+					<td class="title">CSS优化</td>
+					<td>
+						<div class="ui checkbox">
+							<input type="checkbox" value="1" v-model="config.css.isOn"/>
+							<label></label>
+						</div>
+						<p class="comment">可以自动去除CSS中包含的空白。只有文件可以缓存时才会被优化。</p>
+					</td>
+				</tr>
+				<tr v-show="config.css.isOn">
+					<td colspan="2"><more-options-indicator v-model="cssMoreOptions"></more-options-indicator></td>
+				</tr>
+			</tbody>
+			<tbody v-show="cssMoreOptions">
+				<tr>
+					<td>CSS例外URL</td>
+					<td>
+						<url-patterns-box v-model="config.css.exceptURLPatterns"></url-patterns-box>
+						<p class="comment">如果填写了例外URL，表示这些URL跳过CC防护不做处理。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>CSS限制URL</td>
+					<td>
+						<url-patterns-box v-model="config.css.onlyURLPatterns"></url-patterns-box>
+						<p class="comment">如果填写了限制URL，表示只对这些URL进行CC防护处理；如果不填则表示支持所有的URL。</p>
+					</td>
+				</tr>	
+			</tbody>
+		</table>
+	</div>
+	
 	<div class="margin"></div>
 </div>`
 })
@@ -8137,7 +8227,17 @@ Vue.component("domains-box", {
 			if (this.isEditing && this.editingIndex >= 0) {
 				this.domains[this.editingIndex] = this.addingDomain
 			} else {
-				this.domains.push(this.addingDomain)
+				// 分割逗号（，）、顿号（、）
+				if (this.addingDomain.match("[，、,;]")) {
+					let domainList = this.addingDomain.split(new RegExp("[，、,;]"))
+					domainList.forEach(function (v) {
+						if (v.length > 0) {
+							that.domains.push(v)
+						}
+					})
+				} else {
+					this.domains.push(this.addingDomain)
+				}
 			}
 			this.cancel()
 			this.change()
@@ -11626,7 +11726,7 @@ Vue.component("http-access-log-config-box", {
 						<label :for="'access-log-field-' + index">{{field.name}}</label>
 					</div>
 					<p class="comment">在基础信息之外要存储的信息。
-						<span class="red" v-if="hasRequestBodyField">记录"请求Body"将会显著消耗更多的系统资源，建议仅在调试时启用，最大记录尺寸为2MB。</span>
+						<span class="red" v-if="hasRequestBodyField">记录"请求Body"将会显著消耗更多的系统资源，建议仅在调试时启用，最大记录尺寸为2MiB。</span>
 					</p>
 				</td>
 			</tr>
@@ -12121,6 +12221,11 @@ Vue.component("http-firewall-captcha-options-viewer", {
 					summaryList.push("定制UI")
 				}
 			}
+
+			if (this.options.geeTestConfig.isOn) {
+				summaryList.push("已配置极验")
+			}
+
 			if (summaryList.length == 0) {
 				this.summary = "默认配置"
 			} else {
@@ -15155,7 +15260,12 @@ Vue.component("http-firewall-captcha-options", {
 				uiFooter: "",
 				uiBody: "",
 				cookieId: "",
-				lang: ""
+				lang: "",
+				geeTestConfig: {
+					isOn: false,
+					captchaId: "",
+					captchaKey: ""
+				}
 			}
 		}
 		if (options.countLetters <= 0) {
@@ -15165,6 +15275,7 @@ Vue.component("http-firewall-captcha-options", {
 		if (options.captchaType == null || options.captchaType.length == 0) {
 			options.captchaType = "default"
 		}
+
 
 		return {
 			options: options,
@@ -15225,6 +15336,9 @@ Vue.component("http-firewall-captcha-options", {
 			} else {
 				this.uiBodyWarning = ""
 			}
+		},
+		"options.geeTestConfig.isOn": function (v) {
+			this.updateSummary()
 		}
 	},
 	methods: {
@@ -15258,6 +15372,10 @@ Vue.component("http-firewall-captcha-options", {
 				if (this.options.uiIsOn) {
 					summaryList.push("定制UI")
 				}
+			}
+
+			if (this.options.geeTestConfig.isOn) {
+				summaryList.push("已配置极验")
 			}
 
 			if (summaryList.length == 0) {
@@ -15335,7 +15453,6 @@ Vue.component("http-firewall-captcha-options", {
 					<td class="color-border">定制UI</td>
 					<td><checkbox v-model="options.uiIsOn"></checkbox></td>
 				</tr>
-				
 			</tbody>
 			<tbody v-show="options.uiIsOn && options.captchaType == 'default'">
 				<tr>
@@ -15383,6 +15500,31 @@ Vue.component("http-firewall-captcha-options", {
 					<td>
 						<textarea spellcheck="false" rows="2" v-model="options.uiBody"></textarea>
 						<p class="comment"><span v-if="uiBodyWarning.length > 0" class="red">警告：{{uiBodyWarning}}</span><span v-if="options.uiBody.length > 0 && options.uiBody.indexOf('\${body}') < 0 " class="red">模板中必须包含\${body}表示验证码表单！</span>整个页面的模板，支持HTML，其中必须使用<code-label>\${body}</code-label>变量代表验证码表单，否则将无法正常显示验证码。</p>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<table class="ui table definition selectable">
+			<tr>
+				<td class="title">允许用户使用极验</td>
+				<td><checkbox v-model="options.geeTestConfig.isOn"></checkbox>
+					<p class="comment">选中后，表示允许用户在WAF设置中选择极验。</p>
+				</td>
+			</tr>
+			<tbody v-show="options.geeTestConfig.isOn">
+				<tr>
+					<td class="color-border">极验-验证ID *</td>
+					<td>
+						<input type="text" maxlength="100" name="geetestCaptchaId" v-model="options.geeTestConfig.captchaId" spellcheck="false"/>
+						<p class="comment">在极验控制台--业务管理中获取。</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="color-border">极验-验证Key *</td>
+					<td>
+						<input type="text" maxlength="100" name="geetestCaptchaKey" v-model="options.geeTestConfig.captchaKey" spellcheck="false"/>
+						<p class="comment">在极验控制台--业务管理中获取。</p>
 					</td>
 				</tr>
 			</tbody>
@@ -19216,12 +19358,12 @@ Vue.component("size-capacity-box", {
 	<div class="ui field">
 		<select class="ui dropdown" v-model="capacity.unit" @change="change">
 			<option value="byte" v-if="supportedUnits.length == 0 || supportedUnits.$contains('byte')">字节</option>
-			<option value="kb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('kb')">KB</option>
-			<option value="mb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('mb')">MB</option>
-			<option value="gb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('gb')">GB</option>
-			<option value="tb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('tb')">TB</option>
-			<option value="pb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('pb')">PB</option>
-			<option value="eb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('eb')">EB</option>
+			<option value="kb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('kb')">KiB</option>
+			<option value="mb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('mb')">MiB</option>
+			<option value="gb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('gb')">GiB</option>
+			<option value="tb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('tb')">TiB</option>
+			<option value="pb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('pb')">PiB</option>
+			<option value="eb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('eb')">EiB</option>
 		</select>
 	</div>
 </div>`
@@ -20071,11 +20213,11 @@ Vue.component("node-schedule-conds-box", {
 								</div>
 								<div class="ui field">
 									<select class="ui dropdown auto-width" v-model="valueTraffic.unit">
-										<option value="mb">MB</option>
-										<option value="gb">GB</option>
-										<option value="tb">TB</option>
-										<option value="pb">PB</option>
-										<option value="eb">EB</option>
+										<option value="mb">MiB</option>
+										<option value="gb">GiB</option>
+										<option value="tb">TiB</option>
+										<option value="pb">PiB</option>
+										<option value="eb">EiB</option>
 									</select>
 								</div>
 							</div>
@@ -21628,5 +21770,5 @@ window.IP_ADDR_THRESHOLD_ACTIONS = [{"code":"up","description":"上线当前IP�
 
 window.WAF_RULE_OPERATORS = [{"name":"正则匹配","code":"match","description":"使用正则表达式匹配，在头部使用(?i)表示不区分大小写，\u003ca href=\"https://goedge.cn/docs/Appendix/Regexp/Index.md\" target=\"_blank\"\u003e正则表达式语法 \u0026raquo;\u003c/a\u003e。","caseInsensitive":"yes","dataType":"regexp"},{"name":"正则不匹配","code":"not match","description":"使用正则表达式不匹配，在头部使用(?i)表示不区分大小写，\u003ca href=\"https://goedge.cn/docs/Appendix/Regexp/Index.md\" target=\"_blank\"\u003e正则表达式语法 \u0026raquo;\u003c/a\u003e。","caseInsensitive":"yes","dataType":"regexp"},{"name":"通配符匹配","code":"wildcard match","description":"判断是否和指定的通配符匹配，可以在对比值中使用星号通配符（*）表示任意字符。","caseInsensitive":"yes","dataType":"wildcard"},{"name":"通配符不匹配","code":"wildcard not match","description":"判断是否和指定的通配符不匹配，可以在对比值中使用星号通配符（*）表示任意字符。","caseInsensitive":"yes","dataType":"wildcard"},{"name":"字符串等于","code":"eq string","description":"使用字符串对比等于。","caseInsensitive":"no","dataType":"string"},{"name":"字符串不等于","code":"neq string","description":"使用字符串对比不等于。","caseInsensitive":"no","dataType":"string"},{"name":"包含字符串","code":"contains","description":"包含某个字符串，比如Hello World包含了World。","caseInsensitive":"no","dataType":"string"},{"name":"不包含字符串","code":"not contains","description":"不包含某个字符串，比如Hello字符串中不包含Hi。","caseInsensitive":"no","dataType":"string"},{"name":"包含任一字符串","code":"contains any","description":"包含字符串列表中的任意一个，比如/hello/world包含/hello和/hi中的/hello，对比值中每行一个字符串。","caseInsensitive":"no","dataType":"strings"},{"name":"包含所有字符串","code":"contains all","description":"包含字符串列表中的所有字符串，比如/hello/world必须包含/hello和/world，对比值中每行一个字符串。","caseInsensitive":"no","dataType":"strings"},{"name":"包含前缀","code":"prefix","description":"包含字符串前缀部分，比如/hello前缀会匹配/hello, /hello/world等。","caseInsensitive":"no","dataType":"string"},{"name":"包含后缀","code":"suffix","description":"包含字符串后缀部分，比如/hello后缀会匹配/hello, /hi/hello等。","caseInsensitive":"no","dataType":"string"},{"name":"包含二进制数据","code":"contains binary","description":"包含一组二进制数据。","caseInsensitive":"no","dataType":"string"},{"name":"不包含二进制数据","code":"not contains binary","description":"不包含一组二进制数据。","caseInsensitive":"no","dataType":"string"},{"name":"数值大于","code":"gt","description":"使用数值对比大于，对比值需要是一个数字。","caseInsensitive":"none","dataType":"number"},{"name":"数值大于等于","code":"gte","description":"使用数值对比大于等于，对比值需要是一个数字。","caseInsensitive":"none","dataType":"number"},{"name":"数值小于","code":"lt","description":"使用数值对比小于，对比值需要是一个数字。","caseInsensitive":"none","dataType":"number"},{"name":"数值小于等于","code":"lte","description":"使用数值对比小于等于，对比值需要是一个数字。","caseInsensitive":"none","dataType":"number"},{"name":"数值等于","code":"eq","description":"使用数值对比等于，对比值需要是一个数字。","caseInsensitive":"none","dataType":"number"},{"name":"数值不等于","code":"neq","description":"使用数值对比不等于，对比值需要是一个数字。","caseInsensitive":"none","dataType":"number"},{"name":"包含索引","code":"has key","description":"对于一组数据拥有某个键值或者索引。","caseInsensitive":"no","dataType":"string|number"},{"name":"版本号大于","code":"version gt","description":"对比版本号大于。","caseInsensitive":"none","dataType":"version"},{"name":"版本号小于","code":"version lt","description":"对比版本号小于","caseInsensitive":"none","dataType":"version"},{"name":"版本号范围","code":"version range","description":"判断版本号在某个范围内，格式为 起始version1,结束version2。","caseInsensitive":"none","dataType":"versionRange"},{"name":"IP等于","code":"eq ip","description":"将参数转换为IP进行对比，只能对比单个IP。","caseInsensitive":"none","dataType":"ip"},{"name":"在一组IP中","code":"in ip list","description":"判断参数IP在一组IP内，对比值中每行一个IP。","caseInsensitive":"none","dataType":"ips"},{"name":"IP大于","code":"gt ip","description":"将参数转换为IP进行对比。","caseInsensitive":"none","dataType":"ip"},{"name":"IP大于等于","code":"gte ip","description":"将参数转换为IP进行对比。","caseInsensitive":"none","dataType":"ip"},{"name":"IP小于","code":"lt ip","description":"将参数转换为IP进行对比。","caseInsensitive":"none","dataType":"ip"},{"name":"IP小于等于","code":"lte ip","description":"将参数转换为IP进行对比。","caseInsensitive":"none","dataType":"ip"},{"name":"IP范围","code":"ip range","description":"IP在某个范围之内，范围格式可以是英文逗号分隔的\u003ccode-label\u003e开始IP,结束IP\u003c/code-label\u003e，比如\u003ccode-label\u003e192.168.1.100,192.168.2.200\u003c/code-label\u003e；或者CIDR格式的ip/bits，比如\u003ccode-label\u003e192.168.2.1/24\u003c/code-label\u003e；或者单个IP。可以填写多行，每行一个IP范围。","caseInsensitive":"none","dataType":"ips"},{"name":"不在IP范围","code":"not ip range","description":"IP不在某个范围之内，范围格式可以是英文逗号分隔的\u003ccode-label\u003e开始IP,结束IP\u003c/code-label\u003e，比如\u003ccode-label\u003e192.168.1.100,192.168.2.200\u003c/code-label\u003e；或者CIDR格式的ip/bits，比如\u003ccode-label\u003e192.168.2.1/24\u003c/code-label\u003e；或者单个IP。可以填写多行，每行一个IP范围。","caseInsensitive":"none","dataType":"ips"},{"name":"IP取模10","code":"ip mod 10","description":"对IP参数值取模，除数为10，对比值为余数。","caseInsensitive":"none","dataType":"number"},{"name":"IP取模100","code":"ip mod 100","description":"对IP参数值取模，除数为100，对比值为余数。","caseInsensitive":"none","dataType":"number"},{"name":"IP取模","code":"ip mod","description":"对IP参数值取模，对比值格式为：除数,余数，比如10,1。","caseInsensitive":"none","dataType":"number"}];
 
-window.WAF_CAPTCHA_TYPES = [{"name":"验证码","code":"default","description":"通过输入验证码来验证人机。","icon":""},{"name":"点击验证","code":"oneClick","description":"通过点击界面元素来验证人机。","icon":""},{"name":"滑动解锁","code":"slide","description":"通过滑动方块解锁来验证人机。","icon":""}];
+window.WAF_CAPTCHA_TYPES = [{"name":"验证码","code":"default","description":"通过输入验证码来验证人机。","icon":""},{"name":"点击验证","code":"oneClick","description":"通过点击界面元素来验证人机。","icon":""},{"name":"滑动解锁","code":"slide","description":"通过滑动方块解锁来验证人机。","icon":""},{"name":"极验-行为验","code":"geetest","description":"使用极验-行为验提供的人机验证方式。","icon":""}];
 

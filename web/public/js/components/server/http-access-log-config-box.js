@@ -85,7 +85,7 @@ Vue.component("http-access-log-config-box", {
 						<label :for="'access-log-field-' + index">{{field.name}}</label>
 					</div>
 					<p class="comment">在基础信息之外要存储的信息。
-						<span class="red" v-if="hasRequestBodyField">记录"请求Body"将会显著消耗更多的系统资源，建议仅在调试时启用，最大记录尺寸为2MB。</span>
+						<span class="red" v-if="hasRequestBodyField">记录"请求Body"将会显著消耗更多的系统资源，建议仅在调试时启用，最大记录尺寸为2MiB。</span>
 					</p>
 				</td>
 			</tr>

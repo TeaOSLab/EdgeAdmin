@@ -30,17 +30,17 @@ func FormatBytes(bytes int64) string {
 	if bytes < Pow1024(1) {
 		return FormatInt64(bytes) + "B"
 	} else if bytes < Pow1024(2) {
-		return TrimZeroSuffix(fmt.Sprintf("%.2fKB", float64(bytes)/float64(Pow1024(1))))
+		return TrimZeroSuffix(fmt.Sprintf("%.2fKiB", float64(bytes)/float64(Pow1024(1))))
 	} else if bytes < Pow1024(3) {
-		return TrimZeroSuffix(fmt.Sprintf("%.2fMB", float64(bytes)/float64(Pow1024(2))))
+		return TrimZeroSuffix(fmt.Sprintf("%.2fMiB", float64(bytes)/float64(Pow1024(2))))
 	} else if bytes < Pow1024(4) {
-		return TrimZeroSuffix(fmt.Sprintf("%.2fGB", float64(bytes)/float64(Pow1024(3))))
+		return TrimZeroSuffix(fmt.Sprintf("%.2fGiB", float64(bytes)/float64(Pow1024(3))))
 	} else if bytes < Pow1024(5) {
-		return TrimZeroSuffix(fmt.Sprintf("%.2fTB", float64(bytes)/float64(Pow1024(4))))
+		return TrimZeroSuffix(fmt.Sprintf("%.2fTiB", float64(bytes)/float64(Pow1024(4))))
 	} else if bytes < Pow1024(6) {
-		return TrimZeroSuffix(fmt.Sprintf("%.2fPB", float64(bytes)/float64(Pow1024(5))))
+		return TrimZeroSuffix(fmt.Sprintf("%.2fPiB", float64(bytes)/float64(Pow1024(5))))
 	} else {
-		return TrimZeroSuffix(fmt.Sprintf("%.2fEB", float64(bytes)/float64(Pow1024(6))))
+		return TrimZeroSuffix(fmt.Sprintf("%.2fEiB", float64(bytes)/float64(Pow1024(6))))
 	}
 }
 

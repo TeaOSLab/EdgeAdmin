@@ -124,21 +124,21 @@ window.teaweb = {
 			return bytes + "B";
 		}
 		if (bytes < Math.pow(1024, 2)) {
-			return (Math.round(bytes * 100 / Math.pow(1024, 1)) / 100) + "KB";
+			return (Math.round(bytes * 100 / Math.pow(1024, 1)) / 100) + "KiB";
 		}
 		if (bytes < Math.pow(1024, 3)) {
-			return (Math.round(bytes * 100 / Math.pow(1024, 2)) / 100) + "MB";
+			return (Math.round(bytes * 100 / Math.pow(1024, 2)) / 100) + "MiB";
 		}
 		if (bytes < Math.pow(1024, 4)) {
-			return (Math.round(bytes * 100 / Math.pow(1024, 3)) / 100) + "GB";
+			return (Math.round(bytes * 100 / Math.pow(1024, 3)) / 100) + "GiB";
 		}
 		if (bytes < Math.pow(1024, 5)) {
-			return (Math.round(bytes * 100 / Math.pow(1024, 4)) / 100) + "TB";
+			return (Math.round(bytes * 100 / Math.pow(1024, 4)) / 100) + "TiB";
 		}
 		if (bytes < Math.pow(1024, 6)) {
-			return (Math.round(bytes * 100 / Math.pow(1024, 5)) / 100) + "PB";
+			return (Math.round(bytes * 100 / Math.pow(1024, 5)) / 100) + "PiB";
 		}
-		return (Math.round(bytes * 100 / Math.pow(1024, 6)) / 100) + "EB";
+		return (Math.round(bytes * 100 / Math.pow(1024, 6)) / 100) + "EiB";
 	},
 	formatBits: function (bits, decimal) {
 		bits = Math.ceil(bits);
