@@ -53,9 +53,9 @@
         <td>{{infos[index].typeName}} <span class="small">（{{policy.type}}）</span></td>
         <td>
             <span v-if="policy.capacity != null && policy.capacity.count > 0">
-                {{policy.capacity.count}}{{policy.capacity.unit.toUpperCase()}}
+                {{policy.capacity.count}}{{policy.capacity.unit.toUpperCase().replace(/(.)B/, "$1iB")}}
                 <span v-if="policy.type == 'file' && policy.options.memoryPolicy != null && policy.options.memoryPolicy.capacity != null && policy.options.memoryPolicy.capacity.count > 0" class="small grey" title="内存容量">
-                    （内存：{{policy.options.memoryPolicy.capacity.count}}{{policy.options.memoryPolicy.capacity.unit.toUpperCase()}}）
+                    （内存：{{policy.options.memoryPolicy.capacity.count}}{{policy.options.memoryPolicy.capacity.unit.toUpperCase().replace(/(.)B/, "$1iB")}}）
                 </span>
             </span>
             <span v-else class="disabled">不限</span>
