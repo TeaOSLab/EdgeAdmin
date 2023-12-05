@@ -132,25 +132,25 @@ func (this *StatusAction) RunPost(params struct {
 						if err != nil {
 							m["type"] = "dnsResolveErr"
 							m["message"] = "域名解析错误"
-							m["todo"] = "错误信息：解析域名'" + serverName.Name + "' CNAME记录时出错：" + err.Error() + "，请修复此问题。如果已经修改，请等待一个小时后再试。"
+							m["todo"] = "错误信息：解析域名'" + serverName.Name + "' CNAME记录时出错：" + err.Error() + "，请修复此问题。如果已经修改，请等待一个小时后再试。如果长时间无法生效，请咨询你的域名DNS服务商。"
 							return
 						}
 						if len(result) == 0 {
 							m["type"] = "dnsResolveErr"
 							m["message"] = "域名解析错误"
-							m["todo"] = "错误信息：找不到域名'" + serverName.Name + "'的CNAME记录，请修复此问题。如果已经修改，请等待一个小时后再试。"
+							m["todo"] = "错误信息：找不到域名'" + serverName.Name + "'的CNAME记录，请修复此问题。如果已经修改，请等待一个小时后再试。如果长时间无法生效，请咨询你的域名DNS服务商。"
 							return
 						}
 						if result == serverName.Name+"." {
 							m["type"] = "dnsResolveErr"
 							m["message"] = "域名解析错误"
-							m["todo"] = "错误信息：找不到域名'" + serverName.Name + "'的CNAME记录，请设置为'" + cname + "'。如果已经设置，请等待一个小时后再试。"
+							m["todo"] = "错误信息：找不到域名'" + serverName.Name + "'的CNAME记录，请设置为'" + cname + "'。如果已经设置，请等待一个小时后再试。如果长时间无法生效，请咨询你的域名DNS服务商。"
 							return
 						}
 						if result != cname {
 							m["type"] = "dnsResolveErr"
 							m["message"] = "域名解析错误"
-							m["todo"] = "错误信息：解析域名'" + serverName.Name + "' CNAME记录时出错：当前的CNAME值为" + result + "，请修改为" + cname + "。如果已经修改，请等待一个小时后再试。"
+							m["todo"] = "错误信息：解析域名'" + serverName.Name + "' CNAME记录时出错：当前的CNAME值为" + result + "，请修改为" + cname + "。如果已经修改，请等待一个小时后再试。如果长时间无法生效，请咨询你的域名DNS服务商。"
 							return
 						}
 					} else {
@@ -160,25 +160,25 @@ func (this *StatusAction) RunPost(params struct {
 							if err != nil {
 								m["type"] = "dnsResolveErr"
 								m["message"] = "域名解析错误"
-								m["todo"] = "错误信息：解析域名'" + subName + "' CNAME记录时出错：" + err.Error() + "，请修复此问题。如果已经修改，请等待一个小时后再试。"
+								m["todo"] = "错误信息：解析域名'" + subName + "' CNAME记录时出错：" + err.Error() + "，请修复此问题。如果已经修改，请等待一个小时后再试。如果长时间无法生效，请咨询你的域名DNS服务商。"
 								return
 							}
 							if len(result) == 0 {
 								m["type"] = "dnsResolveErr"
 								m["message"] = "域名解析错误"
-								m["todo"] = "错误信息：找不到域名'" + subName + "'的CNAME记录，请修复此问题。如果已经修改，请等待一个小时后再试。"
+								m["todo"] = "错误信息：找不到域名'" + subName + "'的CNAME记录，请修复此问题。如果已经修改，请等待一个小时后再试。如果长时间无法生效，请咨询你的域名DNS服务商。"
 								return
 							}
 							if result == cname+"." {
 								m["type"] = "dnsResolveErr"
 								m["message"] = "域名解析错误"
-								m["todo"] = "错误信息：找不到域名'" + serverName.Name + "'的CNAME记录，请设置为'" + cname + "'。如果已经设置，请等待一个小时后再试。"
+								m["todo"] = "错误信息：找不到域名'" + serverName.Name + "'的CNAME记录，请设置为'" + cname + "'。如果已经设置，请等待一个小时后再试。如果长时间无法生效，请咨询你的域名DNS服务商。"
 								return
 							}
 							if result != cname {
 								m["type"] = "dnsResolveErr"
 								m["message"] = "域名解析错误"
-								m["todo"] = "错误信息：解析域名'" + subName + "' CNAME记录时出错：当前的CNAME值为" + result + "，请修改为" + cname + "。如果已经修改，请等待一个小时后再试。"
+								m["todo"] = "错误信息：解析域名'" + subName + "' CNAME记录时出错：当前的CNAME值为" + result + "，请修改为" + cname + "。如果已经修改，请等待一个小时后再试。如果长时间无法生效，请咨询你的域名DNS服务商。"
 								return
 							}
 						}
