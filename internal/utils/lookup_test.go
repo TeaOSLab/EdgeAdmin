@@ -8,5 +8,8 @@ import (
 )
 
 func TestLookupCNAME(t *testing.T) {
-	t.Log(utils.LookupCNAME("www.yun4s.cn"))
+	for _, domain := range []string{"www.yun4s.cn", "example.com"} {
+		result, err := utils.LookupCNAME(domain)
+		t.Log(domain, "=>", result, err)
+	}
 }
