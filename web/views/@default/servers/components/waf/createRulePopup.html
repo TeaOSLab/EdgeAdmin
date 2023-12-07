@@ -89,7 +89,7 @@
                 <p class="comment" v-if="operator != null" v-html="operator.description"></p>
             </td>
         </tr>
-        <tr>
+        <tr v-show="operator != null && operator.dataType != 'none'">
             <td>
                 <span v-if="operator != null && operator.dataType == 'regexp'">匹配正则表达式</span>
                 <span v-else-if="operator != null && operator.dataType == 'wildcard'">匹配单个通配符</span>

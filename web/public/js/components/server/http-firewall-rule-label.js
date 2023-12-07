@@ -11,7 +11,7 @@ Vue.component("http-firewall-rule-label", {
 			teaweb.popupTip("规则校验错误，请修正：<span class=\"red\">"  + teaweb.encodeHTML(err) + "</span>")
 		},
 		operatorName: function (operatorCode) {
-			var operatorName = operatorCode
+			let operatorName = operatorCode
 			if (typeof (window.WAF_RULE_OPERATORS) != null) {
 				window.WAF_RULE_OPERATORS.forEach(function (v) {
 					if (v.code == operatorCode) {
@@ -21,6 +21,18 @@ Vue.component("http-firewall-rule-label", {
 			}
 
 			return operatorName
+		},
+		operatorDataType: function (operatorCode) {
+			let operatorDataType = "none"
+			if (typeof (window.WAF_RULE_OPERATORS) != null) {
+				window.WAF_RULE_OPERATORS.forEach(function (v) {
+					if (v.code == operatorCode) {
+						operatorDataType = v.dataType
+					}
+				})
+			}
+
+			return operatorDataType
 		},
 		isEmptyString: function (v) {
 			return typeof v == "string" && v.length == 0
@@ -45,7 +57,7 @@ Vue.component("http-firewall-rule-label", {
 			<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> 
 		<span :class="{dash:!rule.isComposed && rule.isCaseInsensitive}" :title="(!rule.isComposed && rule.isCaseInsensitive) ? '大小写不敏感':''">{{operatorName(rule.operator)}}</span> 
 			<span v-if="!isEmptyString(rule.value)">{{rule.value}}</span>
-			<span v-else class="disabled" style="font-weight: normal" title="空字符串">[空]</span>
+			<span v-else-if="operatorDataType(rule.operator) != 'none'" class="disabled" style="font-weight: normal" title="空字符串">[空]</span>
 		</span>
 		
 		<!-- description -->
