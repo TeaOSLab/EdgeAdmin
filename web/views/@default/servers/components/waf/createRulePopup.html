@@ -162,6 +162,7 @@
                 <!-- 其余数据 -->
                 <div v-else>
                     <textarea rows="3" maxlength="4096" name="value" v-model="rule.value" @input="changeRuleValue"></textarea>
+                    <p class="comment" v-if="operator != null && operator.dataType == 'strings'">每行一个数据。</p>
                     <p class="comment" v-if="operator != null && operator.dataType == 'regexp'">正则表达式中对于要匹配的内容中的特殊字符需要转义处理（即在字符前面加入反斜杠\），比如<code-label>.?*+()[]{}^$\</code-label>等符号要变成<code-label>\.\?\*\+\(\)\[\]\{\}\^\$\\</code-label>。</p>
                 </div>
                 <p class="comment" v-if="operator != null && operator.dataType == 'regexp' && rule.value.match(/\n/)"><span class="red">警告：发现你填写的正则表达式中包含了换行符，如果你的意图是每行都表示不同的选项，那么请使用竖杠（<code-label>|</code-label>）符号代替换行符，比如把<code-label>a换行b换行c换行</code-label>改成<code-label>a|b|c</code-label>，<a href="" @click.prevent="convertValueLine">[帮我转换]</a>。</span></p>
