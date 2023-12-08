@@ -129,8 +129,9 @@ func (this *ComponentsAction) RunGet(params struct{}) {
 	var wafCheckpointsMaps = []maps.Map{}
 	for _, checkpoint := range firewallconfigs.AllCheckpoints {
 		wafCheckpointsMaps = append(wafCheckpointsMaps, maps.Map{
-			"name":   checkpoint.Name,
-			"prefix": checkpoint.Prefix,
+			"name":        checkpoint.Name,
+			"prefix":      checkpoint.Prefix,
+			"description": checkpoint.Description,
 		})
 	}
 	wafCheckpointsJSON, err := json.Marshal(wafCheckpointsMaps)
