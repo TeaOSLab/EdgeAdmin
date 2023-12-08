@@ -14,6 +14,7 @@ import (
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/files"
 	"github.com/iwind/TeaGo/logs"
+	"github.com/iwind/TeaGo/maps"
 	"io"
 	"os"
 	"path/filepath"
@@ -113,6 +114,23 @@ func generateComponentsJSFile() error {
 	} else {
 		buffer.WriteString("window.IP_ADDR_THRESHOLD_ACTIONS = ")
 		buffer.Write(ipAddrThresholdActionsJSON)
+		buffer.Write([]byte{';', '\n', '\n'})
+	}
+
+	// WAF checkpoints
+	var wafCheckpointsMaps = []maps.Map{}
+	for _, checkpoint := range firewallconfigs.AllCheckpoints {
+		wafCheckpointsMaps = append(wafCheckpointsMaps, maps.Map{
+			"name":   checkpoint.Name,
+			"prefix": checkpoint.Prefix,
+		})
+	}
+	wafCheckpointsJSON, err := json.Marshal(wafCheckpointsMaps)
+	if err != nil {
+		logs.Println("ComponentsAction marshal waf rule checkpoints failed: " + err.Error())
+	} else {
+		buffer.WriteString("window.WAF_RULE_CHECKPOINTS = ")
+		buffer.Write(wafCheckpointsJSON)
 		buffer.Write([]byte{';', '\n', '\n'})
 	}
 

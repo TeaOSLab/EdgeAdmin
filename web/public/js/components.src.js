@@ -4564,8 +4564,19 @@ Vue.component("http-firewall-rule-label", {
 		showErr: function (err) {
 			teaweb.popupTip("规则校验错误，请修正：<span class=\"red\">"  + teaweb.encodeHTML(err) + "</span>")
 		},
+		calculateParamName: function (param) {
+			let paramName = ""
+			if (param != null) {
+				window.WAF_RULE_CHECKPOINTS.forEach(function (checkpoint) {
+					if (param == "${" + checkpoint.prefix + "}" || param.startsWith("${" + checkpoint.prefix + ".")) {
+						paramName = checkpoint.name
+					}
+				})
+			}
+			return paramName
+		},
 		operatorName: function (operatorCode) {
-			var operatorName = operatorCode
+			let operatorName = operatorCode
 			if (typeof (window.WAF_RULE_OPERATORS) != null) {
 				window.WAF_RULE_OPERATORS.forEach(function (v) {
 					if (v.code == operatorCode) {
@@ -4576,13 +4587,25 @@ Vue.component("http-firewall-rule-label", {
 
 			return operatorName
 		},
+		operatorDataType: function (operatorCode) {
+			let operatorDataType = "none"
+			if (typeof (window.WAF_RULE_OPERATORS) != null) {
+				window.WAF_RULE_OPERATORS.forEach(function (v) {
+					if (v.code == operatorCode) {
+						operatorDataType = v.dataType
+					}
+				})
+			}
+
+			return operatorDataType
+		},
 		isEmptyString: function (v) {
 			return typeof v == "string" && v.length == 0
 		}
 	},
 	template: `<div>
-	<div class="ui label tiny basic" style="line-height: 1.5">
-		{{rule.name}}[{{rule.param}}] 
+	<div class="ui label small basic" style="line-height: 1.5">
+		{{rule.name}} <span>{{calculateParamName(rule.param)}}<span class="small grey"> {{rule.param}}</span></span> 
 
 		<!-- cc2 -->
 		<span v-if="rule.param == '\${cc2}'">
@@ -4597,9 +4620,9 @@ Vue.component("http-firewall-rule-label", {
 
 		<span v-else>
 			<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> 
-		<span :class="{dash:!rule.isComposed && rule.isCaseInsensitive}" :title="(!rule.isComposed && rule.isCaseInsensitive) ? '大小写不敏感':''">{{operatorName(rule.operator)}}</span> 
+		<span :class="{dash:!rule.isComposed && rule.isCaseInsensitive}" :title="(!rule.isComposed && rule.isCaseInsensitive) ? '大小写不敏感':''">&lt;{{operatorName(rule.operator)}}&gt;</span> 
 			<span v-if="!isEmptyString(rule.value)">{{rule.value}}</span>
-			<span v-else class="disabled" style="font-weight: normal" title="空字符串">[空]</span>
+			<span v-else-if="operatorDataType(rule.operator) != 'none'" class="disabled" style="font-weight: normal" title="空字符串">[空]</span>
 		</span>
 		
 		<!-- description -->
@@ -13764,7 +13787,7 @@ Vue.component("http-firewall-rules-box", {
 			})
 		},
 		operatorName: function (operatorCode) {
-			var operatorName = operatorCode
+			let operatorName = operatorCode
 			if (typeof (window.WAF_RULE_OPERATORS) != null) {
 				window.WAF_RULE_OPERATORS.forEach(function (v) {
 					if (v.code == operatorCode) {
@@ -13775,6 +13798,29 @@ Vue.component("http-firewall-rules-box", {
 
 			return operatorName
 		},
+		operatorDataType: function (operatorCode) {
+			let operatorDataType = "none"
+			if (typeof (window.WAF_RULE_OPERATORS) != null) {
+				window.WAF_RULE_OPERATORS.forEach(function (v) {
+					if (v.code == operatorCode) {
+						operatorDataType = v.dataType
+					}
+				})
+			}
+
+			return operatorDataType
+		},
+		calculateParamName: function (param) {
+			let paramName = ""
+			if (param != null) {
+				window.WAF_RULE_CHECKPOINTS.forEach(function (checkpoint) {
+					if (param == "${" + checkpoint.prefix + "}" || param.startsWith("${" + checkpoint.prefix + ".")) {
+						paramName = checkpoint.name
+					}
+				})
+			}
+			return paramName
+		},
 		isEmptyString: function (v) {
 			return typeof v == "string" && v.length == 0
 		}
@@ -13783,7 +13829,7 @@ Vue.component("http-firewall-rules-box", {
 		<input type="hidden" name="rulesJSON" :value="JSON.stringify(rules)"/>
 		<div v-if="rules.length > 0">
 			<div v-for="(rule, index) in rules" class="ui label small basic" style="margin-bottom: 0.5em; line-height: 1.5">
-				{{rule.name}}[{{rule.param}}] 
+				{{rule.name}}<span>{{calculateParamName(rule.param)}}<span class="small grey"> {{rule.param}}</span></span> 
 				
 				<!-- cc2 -->
 				<span v-if="rule.param == '\${cc2}'">
@@ -13797,9 +13843,9 @@ Vue.component("http-firewall-rules-box", {
 				</span>
 				
 				<span v-else>
-					<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> <span :class="{dash:(!rule.isComposed && rule.isCaseInsensitive)}" :title="(!rule.isComposed && rule.isCaseInsensitive) ? '大小写不敏感':''">{{operatorName(rule.operator)}}</span> 
+					<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> <span :class="{dash:(!rule.isComposed && rule.isCaseInsensitive)}" :title="(!rule.isComposed && rule.isCaseInsensitive) ? '大小写不敏感':''">&lt;{{operatorName(rule.operator)}}&gt;</span> 
 						<span v-if="!isEmptyString(rule.value)">{{rule.value}}</span>
-						<span v-else class="disabled" style="font-weight: normal" title="空字符串">[空]</span>
+						<span v-else-if="operatorDataType(rule.operator) != 'none'" class="disabled" style="font-weight: normal" title="空字符串">[空]</span>
 				</span>
 				
 				<!-- description -->
@@ -21768,7 +21814,9 @@ window.IP_ADDR_THRESHOLD_ITEMS = [{"code":"nodeAvgRequests","description":"当�
 
 window.IP_ADDR_THRESHOLD_ACTIONS = [{"code":"up","description":"上线当前IP。","name":"上线"},{"code":"down","description":"下线当前IP。","name":"下线"},{"code":"notify","description":"发送已达到阈值通知。","name":"通知"},{"code":"switch","description":"在DNS中记录中将IP切换到指定的备用IP。","name":"切换"},{"code":"webHook","description":"调用外部的WebHook。","name":"WebHook"}];
 
-window.WAF_RULE_OPERATORS = [{"name":"正则匹配","code":"match","description":"使用正则表达式匹配，在头部使用(?i)表示不区分大小写，\u003ca href=\"https://goedge.cn/docs/Appendix/Regexp/Index.md\" target=\"_blank\"\u003e正则表达式语法 \u0026raquo;\u003c/a\u003e。","caseInsensitive":"yes","dataType":"regexp"},{"name":"正则不匹配","code":"not match","description":"使用正则表达式不匹配，在头部使用(?i)表示不区分大小写，\u003ca href=\"https://goedge.cn/docs/Appendix/Regexp/Index.md\" target=\"_blank\"\u003e正则表达式语法 \u0026raquo;\u003c/a\u003e。","caseInsensitive":"yes","dataType":"regexp"},{"name":"通配符匹配","code":"wildcard match","description":"判断是否和指定的通配符匹配，可以在对比值中使用星号通配符（*）表示任意字符。","caseInsensitive":"yes","dataType":"wildcard"},{"name":"通配符不匹配","code":"wildcard not match","description":"判断是否和指定的通配符不匹配，可以在对比值中使用星号通配符（*）表示任意字符。","caseInsensitive":"yes","dataType":"wildcard"},{"name":"字符串等于","code":"eq string","description":"使用字符串对比等于。","caseInsensitive":"no","dataType":"string"},{"name":"字符串不等于","code":"neq string","description":"使用字符串对比不等于。","caseInsensitive":"no","dataType":"string"},{"name":"包含字符串","code":"contains","description":"包含某个字符串，比如Hello World包含了World。","caseInsensitive":"no","dataType":"string"},{"name":"不包含字符串","code":"not contains","description":"不包含某个字符串，比如Hello字符串中不包含Hi。","caseInsensitive":"no","dataType":"string"},{"name":"包含任一字符串","code":"contains any","description":"包含字符串列表中的任意一个，比如/hello/world包含/hello和/hi中的/hello，对比值中每行一个字符串。","caseInsensitive":"no","dataType":"strings"},{"name":"包含所有字符串","code":"contains all","description":"包含字符串列表中的所有字符串，比如/hello/world必须包含/hello和/world，对比值中每行一个字符串。","caseInsensitive":"no","dataType":"strings"},{"name":"包含前缀","code":"prefix","description":"包含字符串前缀部分，比如/hello前缀会匹配/hello, /hello/world等。","caseInsensitive":"no","dataType":"string"},{"name":"包含后缀","code":"suffix","description":"包含字符串后缀部分，比如/hello后缀会匹配/hello, /hi/hello等。","caseInsensitive":"no","dataType":"string"},{"name":"包含二进制数据","code":"contains binary","description":"包含一组二进制数据。","caseInsensitive":"no","dataType":"string"},{"name":"不包含二进制数据","code":"not contains binary","description":"不包含一组二进制数据。","caseInsensitive":"no","dataType":"string"},{"name":"数值大于","code":"gt","description":"使用数值对比大于，对比值需要是一个数字。","caseInsensitive":"none","dataType":"number"},{"name":"数值大于等于","code":"gte","description":"使用数值对比大于等于，对比值需要是一个数字。","caseInsensitive":"none","dataType":"number"},{"name":"数值小于","code":"lt","description":"使用数值对比小于，对比值需要是一个数字。","caseInsensitive":"none","dataType":"number"},{"name":"数值小于等于","code":"lte","description":"使用数值对比小于等于，对比值需要是一个数字。","caseInsensitive":"none","dataType":"number"},{"name":"数值等于","code":"eq","description":"使用数值对比等于，对比值需要是一个数字。","caseInsensitive":"none","dataType":"number"},{"name":"数值不等于","code":"neq","description":"使用数值对比不等于，对比值需要是一个数字。","caseInsensitive":"none","dataType":"number"},{"name":"包含索引","code":"has key","description":"对于一组数据拥有某个键值或者索引。","caseInsensitive":"no","dataType":"string|number"},{"name":"版本号大于","code":"version gt","description":"对比版本号大于。","caseInsensitive":"none","dataType":"version"},{"name":"版本号小于","code":"version lt","description":"对比版本号小于","caseInsensitive":"none","dataType":"version"},{"name":"版本号范围","code":"version range","description":"判断版本号在某个范围内，格式为 起始version1,结束version2。","caseInsensitive":"none","dataType":"versionRange"},{"name":"IP等于","code":"eq ip","description":"将参数转换为IP进行对比，只能对比单个IP。","caseInsensitive":"none","dataType":"ip"},{"name":"在一组IP中","code":"in ip list","description":"判断参数IP在一组IP内，对比值中每行一个IP。","caseInsensitive":"none","dataType":"ips"},{"name":"IP大于","code":"gt ip","description":"将参数转换为IP进行对比。","caseInsensitive":"none","dataType":"ip"},{"name":"IP大于等于","code":"gte ip","description":"将参数转换为IP进行对比。","caseInsensitive":"none","dataType":"ip"},{"name":"IP小于","code":"lt ip","description":"将参数转换为IP进行对比。","caseInsensitive":"none","dataType":"ip"},{"name":"IP小于等于","code":"lte ip","description":"将参数转换为IP进行对比。","caseInsensitive":"none","dataType":"ip"},{"name":"IP范围","code":"ip range","description":"IP在某个范围之内，范围格式可以是英文逗号分隔的\u003ccode-label\u003e开始IP,结束IP\u003c/code-label\u003e，比如\u003ccode-label\u003e192.168.1.100,192.168.2.200\u003c/code-label\u003e；或者CIDR格式的ip/bits，比如\u003ccode-label\u003e192.168.2.1/24\u003c/code-label\u003e；或者单个IP。可以填写多行，每行一个IP范围。","caseInsensitive":"none","dataType":"ips"},{"name":"不在IP范围","code":"not ip range","description":"IP不在某个范围之内，范围格式可以是英文逗号分隔的\u003ccode-label\u003e开始IP,结束IP\u003c/code-label\u003e，比如\u003ccode-label\u003e192.168.1.100,192.168.2.200\u003c/code-label\u003e；或者CIDR格式的ip/bits，比如\u003ccode-label\u003e192.168.2.1/24\u003c/code-label\u003e；或者单个IP。可以填写多行，每行一个IP范围。","caseInsensitive":"none","dataType":"ips"},{"name":"IP取模10","code":"ip mod 10","description":"对IP参数值取模，除数为10，对比值为余数。","caseInsensitive":"none","dataType":"number"},{"name":"IP取模100","code":"ip mod 100","description":"对IP参数值取模，除数为100，对比值为余数。","caseInsensitive":"none","dataType":"number"},{"name":"IP取模","code":"ip mod","description":"对IP参数值取模，对比值格式为：除数,余数，比如10,1。","caseInsensitive":"none","dataType":"number"}];
+window.WAF_RULE_CHECKPOINTS = [{"name":"通用请求Header长度限制","prefix":"requestGeneralHeaderLength"},{"name":"通用响应Header长度限制","prefix":"responseGeneralHeaderLength"},{"name":"客户端地址（IP）","prefix":"remoteAddr"},{"name":"客户端源地址（IP）","prefix":"rawRemoteAddr"},{"name":"客户端端口","prefix":"remotePort"},{"name":"客户端用户名","prefix":"remoteUser"},{"name":"请求URI","prefix":"requestURI"},{"name":"请求路径","prefix":"requestPath"},{"name":"请求完整URL","prefix":"requestURL"},{"name":"请求内容长度","prefix":"requestLength"},{"name":"请求体内容","prefix":"requestBody"},{"name":"请求URI和请求体组合","prefix":"requestAll"},{"name":"请求表单参数","prefix":"requestForm"},{"name":"上传文件","prefix":"requestUpload"},{"name":"请求JSON参数","prefix":"requestJSON"},{"name":"请求方法","prefix":"requestMethod"},{"name":"请求协议","prefix":"scheme"},{"name":"HTTP协议版本","prefix":"proto"},{"name":"主机名","prefix":"host"},{"name":"CNAME","prefix":"cname"},{"name":"是否为CNAME","prefix":"isCNAME"},{"name":"请求来源URL","prefix":"referer"},{"name":"客户端信息","prefix":"userAgent"},{"name":"内容类型","prefix":"contentType"},{"name":"所有cookie组合字符串","prefix":"cookies"},{"name":"单个cookie值","prefix":"cookie"},{"name":"所有URL参数组合","prefix":"args"},{"name":"单个URL参数值","prefix":"arg"},{"name":"所有Header信息","prefix":"headers"},{"name":"单个Header值","prefix":"header"},{"name":"国家/地区名称","prefix":"geoCountryName"},{"name":"省份名称","prefix":"geoProvinceName"},{"name":"城市名称","prefix":"geoCityName"},{"name":"ISP名称","prefix":"ispName"},{"name":"CC统计","prefix":"cc2"},{"name":"防盗链","prefix":"refererBlock"},{"name":"CC统计（旧）","prefix":"cc"},{"name":"响应状态码","prefix":"status"},{"name":"响应Header","prefix":"responseHeader"},{"name":"响应内容","prefix":"responseBody"},{"name":"响应内容长度","prefix":"bytesSent"}];
+
+window.WAF_RULE_OPERATORS = [{"name":"正则匹配","code":"match","description":"使用正则表达式匹配，在头部使用(?i)表示不区分大小写，\u003ca href=\"https://goedge.cn/docs/Appendix/Regexp/Index.md\" target=\"_blank\"\u003e正则表达式语法 \u0026raquo;\u003c/a\u003e。","caseInsensitive":"yes","dataType":"regexp"},{"name":"正则不匹配","code":"not match","description":"使用正则表达式不匹配，在头部使用(?i)表示不区分大小写，\u003ca href=\"https://goedge.cn/docs/Appendix/Regexp/Index.md\" target=\"_blank\"\u003e正则表达式语法 \u0026raquo;\u003c/a\u003e。","caseInsensitive":"yes","dataType":"regexp"},{"name":"通配符匹配","code":"wildcard match","description":"判断是否和指定的通配符匹配，可以在对比值中使用星号通配符（*）表示任意字符。","caseInsensitive":"yes","dataType":"wildcard"},{"name":"通配符不匹配","code":"wildcard not match","description":"判断是否和指定的通配符不匹配，可以在对比值中使用星号通配符（*）表示任意字符。","caseInsensitive":"yes","dataType":"wildcard"},{"name":"字符串等于","code":"eq string","description":"使用字符串对比等于。","caseInsensitive":"no","dataType":"string"},{"name":"字符串不等于","code":"neq string","description":"使用字符串对比不等于。","caseInsensitive":"no","dataType":"string"},{"name":"包含字符串","code":"contains","description":"包含某个字符串，比如Hello World包含了World。","caseInsensitive":"no","dataType":"string"},{"name":"不包含字符串","code":"not contains","description":"不包含某个字符串，比如Hello字符串中不包含Hi。","caseInsensitive":"no","dataType":"string"},{"name":"包含任一字符串","code":"contains any","description":"包含字符串列表中的任意一个，比如/hello/world包含/hello和/hi中的/hello，对比值中每行一个字符串。","caseInsensitive":"no","dataType":"strings"},{"name":"包含所有字符串","code":"contains all","description":"包含字符串列表中的所有字符串，比如/hello/world必须包含/hello和/world，对比值中每行一个字符串。","caseInsensitive":"no","dataType":"strings"},{"name":"包含前缀","code":"prefix","description":"包含字符串前缀部分，比如/hello前缀会匹配/hello, /hello/world等。","caseInsensitive":"no","dataType":"string"},{"name":"包含后缀","code":"suffix","description":"包含字符串后缀部分，比如/hello后缀会匹配/hello, /hi/hello等。","caseInsensitive":"no","dataType":"string"},{"name":"包含任一单词","code":"contains any word","description":"包含某个独立单词，对比值中每行一个单词，比如mozilla firefox里包含了mozilla和firefox两个单词，但是不包含fire和fox这两个单词。","caseInsensitive":"no","dataType":"strings"},{"name":"包含所有单词","code":"contains all words","description":"包含所有的独立单词，对比值中每行一个单词，比如mozilla firefox里包含了mozilla和firefox两个单词，但是不包含fire和fox这两个单词。","caseInsensitive":"no","dataType":"strings"},{"name":"不包含任一单词","code":"not contains any word","description":"不包含某个独立单词，对比值中每行一个单词，比如mozilla firefox里包含了mozilla和firefox两个单词，但是不包含fire和fox这两个单词。","caseInsensitive":"no","dataType":"strings"},{"name":"包含SQL注入","code":"contains sql injection","description":"检测字符串内容是否包含SQL注入。","caseInsensitive":"none","dataType":"none"},{"name":"包含XSS注入","code":"contains xss","description":"检测字符串内容是否包含XSS注入。","caseInsensitive":"none","dataType":"none"},{"name":"包含二进制数据","code":"contains binary","description":"包含一组二进制数据。","caseInsensitive":"no","dataType":"string"},{"name":"不包含二进制数据","code":"not contains binary","description":"不包含一组二进制数据。","caseInsensitive":"no","dataType":"string"},{"name":"数值大于","code":"gt","description":"使用数值对比大于，对比值需要是一个数字。","caseInsensitive":"none","dataType":"number"},{"name":"数值大于等于","code":"gte","description":"使用数值对比大于等于，对比值需要是一个数字。","caseInsensitive":"none","dataType":"number"},{"name":"数值小于","code":"lt","description":"使用数值对比小于，对比值需要是一个数字。","caseInsensitive":"none","dataType":"number"},{"name":"数值小于等于","code":"lte","description":"使用数值对比小于等于，对比值需要是一个数字。","caseInsensitive":"none","dataType":"number"},{"name":"数值等于","code":"eq","description":"使用数值对比等于，对比值需要是一个数字。","caseInsensitive":"none","dataType":"number"},{"name":"数值不等于","code":"neq","description":"使用数值对比不等于，对比值需要是一个数字。","caseInsensitive":"none","dataType":"number"},{"name":"包含索引","code":"has key","description":"对于一组数据拥有某个键值或者索引。","caseInsensitive":"no","dataType":"string|number"},{"name":"版本号大于","code":"version gt","description":"对比版本号大于。","caseInsensitive":"none","dataType":"version"},{"name":"版本号小于","code":"version lt","description":"对比版本号小于。","caseInsensitive":"none","dataType":"version"},{"name":"版本号范围","code":"version range","description":"判断版本号在某个范围内，格式为 起始version1,结束version2。","caseInsensitive":"none","dataType":"versionRange"},{"name":"IP等于","code":"eq ip","description":"将参数转换为IP进行对比，只能对比单个IP。","caseInsensitive":"none","dataType":"ip"},{"name":"在一组IP中","code":"in ip list","description":"判断参数IP在一组IP内，对比值中每行一个IP。","caseInsensitive":"none","dataType":"ips"},{"name":"IP大于","code":"gt ip","description":"将参数转换为IP进行对比。","caseInsensitive":"none","dataType":"ip"},{"name":"IP大于等于","code":"gte ip","description":"将参数转换为IP进行对比。","caseInsensitive":"none","dataType":"ip"},{"name":"IP小于","code":"lt ip","description":"将参数转换为IP进行对比。","caseInsensitive":"none","dataType":"ip"},{"name":"IP小于等于","code":"lte ip","description":"将参数转换为IP进行对比。","caseInsensitive":"none","dataType":"ip"},{"name":"IP范围","code":"ip range","description":"IP在某个范围之内，范围格式可以是英文逗号分隔的\u003ccode-label\u003e开始IP,结束IP\u003c/code-label\u003e，比如\u003ccode-label\u003e192.168.1.100,192.168.2.200\u003c/code-label\u003e；或者CIDR格式的ip/bits，比如\u003ccode-label\u003e192.168.2.1/24\u003c/code-label\u003e；或者单个IP。可以填写多行，每行一个IP范围。","caseInsensitive":"none","dataType":"ips"},{"name":"不在IP范围","code":"not ip range","description":"IP不在某个范围之内，范围格式可以是英文逗号分隔的\u003ccode-label\u003e开始IP,结束IP\u003c/code-label\u003e，比如\u003ccode-label\u003e192.168.1.100,192.168.2.200\u003c/code-label\u003e；或者CIDR格式的ip/bits，比如\u003ccode-label\u003e192.168.2.1/24\u003c/code-label\u003e；或者单个IP。可以填写多行，每行一个IP范围。","caseInsensitive":"none","dataType":"ips"},{"name":"IP取模10","code":"ip mod 10","description":"对IP参数值取模，除数为10，对比值为余数。","caseInsensitive":"none","dataType":"number"},{"name":"IP取模100","code":"ip mod 100","description":"对IP参数值取模，除数为100，对比值为余数。","caseInsensitive":"none","dataType":"number"},{"name":"IP取模","code":"ip mod","description":"对IP参数值取模，对比值格式为：除数,余数，比如10,1。","caseInsensitive":"none","dataType":"number"}];
 
 window.WAF_CAPTCHA_TYPES = [{"name":"验证码","code":"default","description":"通过输入验证码来验证人机。","icon":""},{"name":"点击验证","code":"oneClick","description":"通过点击界面元素来验证人机。","icon":""},{"name":"滑动解锁","code":"slide","description":"通过滑动方块解锁来验证人机。","icon":""},{"name":"极验-行为验","code":"geetest","description":"使用极验-行为验提供的人机验证方式。","icon":""}];
 
