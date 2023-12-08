@@ -21,6 +21,19 @@ Vue.component("http-firewall-rule-label", {
 			}
 			return paramName
 		},
+		calculateParamDescription: function (param) {
+			let paramName = ""
+			let paramDescription = ""
+			if (param != null) {
+				window.WAF_RULE_CHECKPOINTS.forEach(function (checkpoint) {
+					if (param == "${" + checkpoint.prefix + "}" || param.startsWith("${" + checkpoint.prefix + ".")) {
+						paramName = checkpoint.name
+						paramDescription = checkpoint.description
+					}
+				})
+			}
+			return paramName + ": " + paramDescription
+		},
 		operatorName: function (operatorCode) {
 			let operatorName = operatorCode
 			if (typeof (window.WAF_RULE_OPERATORS) != null) {
@@ -32,6 +45,20 @@ Vue.component("http-firewall-rule-label", {
 			}
 
 			return operatorName
+		},
+		operatorDescription: function (operatorCode) {
+			let operatorName = operatorCode
+			let operatorDescription = ""
+			if (typeof (window.WAF_RULE_OPERATORS) != null) {
+				window.WAF_RULE_OPERATORS.forEach(function (v) {
+					if (v.code == operatorCode) {
+						operatorName = v.name
+						operatorDescription = v.description
+					}
+				})
+			}
+
+			return operatorName + ": " + operatorDescription
 		},
 		operatorDataType: function (operatorCode) {
 			let operatorDataType = "none"
@@ -51,7 +78,7 @@ Vue.component("http-firewall-rule-label", {
 	},
 	template: `<div>
 	<div class="ui label small basic" style="line-height: 1.5">
-		{{rule.name}} <span>{{calculateParamName(rule.param)}}<span class="small grey"> {{rule.param}}</span></span> 
+		{{rule.name}} <span :title="calculateParamDescription(rule.param)" class="hover">{{calculateParamName(rule.param)}}<span class="small grey"> {{rule.param}}</span></span>
 
 		<!-- cc2 -->
 		<span v-if="rule.param == '\${cc2}'">
@@ -66,8 +93,8 @@ Vue.component("http-firewall-rule-label", {
 
 		<span v-else>
 			<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> 
-		<span :class="{dash:!rule.isComposed && rule.isCaseInsensitive}" :title="(!rule.isComposed && rule.isCaseInsensitive) ? '大小写不敏感':''">&lt;{{operatorName(rule.operator)}}&gt;</span> 
-			<span v-if="!isEmptyString(rule.value)">{{rule.value}}</span>
+		<span class="hover" :class="{dash:!rule.isComposed && rule.isCaseInsensitive}" :title="operatorDescription(rule.operator) + ((!rule.isComposed && rule.isCaseInsensitive) ? '\\n[大小写不敏感] ':'')">&lt;{{operatorName(rule.operator)}}&gt;</span> 
+			<span class="hover" v-if="!isEmptyString(rule.value)">{{rule.value}}</span>
 			<span v-else-if="operatorDataType(rule.operator) != 'none'" class="disabled" style="font-weight: normal" title="空字符串">[空]</span>
 		</span>
 		
