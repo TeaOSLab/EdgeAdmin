@@ -10,6 +10,17 @@ Vue.component("http-firewall-rule-label", {
 		showErr: function (err) {
 			teaweb.popupTip("规则校验错误，请修正：<span class=\"red\">"  + teaweb.encodeHTML(err) + "</span>")
 		},
+		calculateParamName: function (param) {
+			let paramName = ""
+			if (param != null) {
+				window.WAF_RULE_CHECKPOINTS.forEach(function (checkpoint) {
+					if (param == "${" + checkpoint.prefix + "}" || param.startsWith("${" + checkpoint.prefix + ".")) {
+						paramName = checkpoint.name
+					}
+				})
+			}
+			return paramName
+		},
 		operatorName: function (operatorCode) {
 			let operatorName = operatorCode
 			if (typeof (window.WAF_RULE_OPERATORS) != null) {
@@ -39,8 +50,8 @@ Vue.component("http-firewall-rule-label", {
 		}
 	},
 	template: `<div>
-	<div class="ui label tiny basic" style="line-height: 1.5">
-		{{rule.name}}[{{rule.param}}] 
+	<div class="ui label small basic" style="line-height: 1.5">
+		{{rule.name}} <span>{{calculateParamName(rule.param)}}<span class="small grey"> {{rule.param}}</span></span> 
 
 		<!-- cc2 -->
 		<span v-if="rule.param == '\${cc2}'">
@@ -55,7 +66,7 @@ Vue.component("http-firewall-rule-label", {
 
 		<span v-else>
 			<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> 
-		<span :class="{dash:!rule.isComposed && rule.isCaseInsensitive}" :title="(!rule.isComposed && rule.isCaseInsensitive) ? '大小写不敏感':''">{{operatorName(rule.operator)}}</span> 
+		<span :class="{dash:!rule.isComposed && rule.isCaseInsensitive}" :title="(!rule.isComposed && rule.isCaseInsensitive) ? '大小写不敏感':''">&lt;{{operatorName(rule.operator)}}&gt;</span> 
 			<span v-if="!isEmptyString(rule.value)">{{rule.value}}</span>
 			<span v-else-if="operatorDataType(rule.operator) != 'none'" class="disabled" style="font-weight: normal" title="空字符串">[空]</span>
 		</span>

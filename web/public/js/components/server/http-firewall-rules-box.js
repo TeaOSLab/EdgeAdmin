@@ -60,6 +60,17 @@ Vue.component("http-firewall-rules-box", {
 
 			return operatorDataType
 		},
+		calculateParamName: function (param) {
+			let paramName = ""
+			if (param != null) {
+				window.WAF_RULE_CHECKPOINTS.forEach(function (checkpoint) {
+					if (param == "${" + checkpoint.prefix + "}" || param.startsWith("${" + checkpoint.prefix + ".")) {
+						paramName = checkpoint.name
+					}
+				})
+			}
+			return paramName
+		},
 		isEmptyString: function (v) {
 			return typeof v == "string" && v.length == 0
 		}
@@ -68,7 +79,7 @@ Vue.component("http-firewall-rules-box", {
 		<input type="hidden" name="rulesJSON" :value="JSON.stringify(rules)"/>
 		<div v-if="rules.length > 0">
 			<div v-for="(rule, index) in rules" class="ui label small basic" style="margin-bottom: 0.5em; line-height: 1.5">
-				{{rule.name}}[{{rule.param}}] 
+				{{rule.name}}<span>{{calculateParamName(rule.param)}}<span class="small grey"> {{rule.param}}</span></span> 
 				
 				<!-- cc2 -->
 				<span v-if="rule.param == '\${cc2}'">
@@ -82,7 +93,7 @@ Vue.component("http-firewall-rules-box", {
 				</span>
 				
 				<span v-else>
-					<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> <span :class="{dash:(!rule.isComposed && rule.isCaseInsensitive)}" :title="(!rule.isComposed && rule.isCaseInsensitive) ? '大小写不敏感':''">{{operatorName(rule.operator)}}</span> 
+					<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> <span :class="{dash:(!rule.isComposed && rule.isCaseInsensitive)}" :title="(!rule.isComposed && rule.isCaseInsensitive) ? '大小写不敏感':''">&lt;{{operatorName(rule.operator)}}&gt;</span> 
 						<span v-if="!isEmptyString(rule.value)">{{rule.value}}</span>
 						<span v-else-if="operatorDataType(rule.operator) != 'none'" class="disabled" style="font-weight: normal" title="空字符串">[空]</span>
 				</span>
