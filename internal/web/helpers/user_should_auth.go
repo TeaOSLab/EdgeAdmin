@@ -6,7 +6,6 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/index/loginutils"
 	"github.com/iwind/TeaGo/actions"
-	"net"
 	"net/http"
 )
 
@@ -33,12 +32,7 @@ func (this *UserShouldAuth) BeforeAction(actionPtr actions.ActionWrapper, paramN
 	action.AddHeader("Content-Security-Policy", "default-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'")
 
 	// 检查IP
-	if !checkIP(securityConfig, action.RequestRemoteIP()) {
-		action.ResponseWriter.WriteHeader(http.StatusForbidden)
-		return false
-	}
-	remoteAddr, _, _ := net.SplitHostPort(action.Request.RemoteAddr)
-	if len(remoteAddr) > 0 && remoteAddr != action.RequestRemoteIP() && !checkIP(securityConfig, remoteAddr) {
+	if !checkIP(securityConfig, loginutils.RemoteIP(action)) {
 		action.ResponseWriter.WriteHeader(http.StatusForbidden)
 		return false
 	}

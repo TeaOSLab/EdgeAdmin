@@ -12,6 +12,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/index/loginutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/helpers"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
@@ -146,7 +147,7 @@ func (this *OtpAction) RunPost(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	err = dao.SharedLogDAO.CreateAdminLog(rpcClient.Context(adminId), oplogs.LevelInfo, this.Request.URL.Path, this.Lang(codes.AdminLogin_LogOtpVerifiedSuccess), this.RequestRemoteIP(), codes.AdminLogin_LogOtpVerifiedSuccess, nil)
+	err = dao.SharedLogDAO.CreateAdminLog(rpcClient.Context(adminId), oplogs.LevelInfo, this.Request.URL.Path, this.Lang(codes.AdminLogin_LogOtpVerifiedSuccess), loginutils.RemoteIP(&this.ActionObject), codes.AdminLogin_LogOtpVerifiedSuccess, nil)
 	if err != nil {
 		utils.PrintError(err)
 	}

@@ -17,7 +17,6 @@ import (
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
-	"net"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -145,12 +144,7 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	action.AddHeader("Content-Security-Policy", "default-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'")
 
 	// 检查IP
-	if !checkIP(securityConfig, action.RequestRemoteIP()) {
-		action.ResponseWriter.WriteHeader(http.StatusForbidden)
-		return false
-	}
-	remoteAddr, _, _ := net.SplitHostPort(action.Request.RemoteAddr)
-	if len(remoteAddr) > 0 && remoteAddr != action.RequestRemoteIP() && !checkIP(securityConfig, remoteAddr) {
+	if !checkIP(securityConfig, loginutils.RemoteIP(action)) {
 		action.ResponseWriter.WriteHeader(http.StatusForbidden)
 		return false
 	}

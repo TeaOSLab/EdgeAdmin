@@ -175,7 +175,7 @@ func (this *IndexAction) RunPost(params struct {
 	})
 
 	if err != nil {
-		err = dao.SharedLogDAO.CreateAdminLog(rpcClient.Context(0), oplogs.LevelError, this.Request.URL.Path, langs.DefaultMessage(codes.AdminLogin_LogSystemError, err.Error()), this.RequestRemoteIP(), codes.AdminLogin_LogSystemError, []any{err.Error()})
+		err = dao.SharedLogDAO.CreateAdminLog(rpcClient.Context(0), oplogs.LevelError, this.Request.URL.Path, langs.DefaultMessage(codes.AdminLogin_LogSystemError, err.Error()), loginutils.RemoteIP(&this.ActionObject), codes.AdminLogin_LogSystemError, []any{err.Error()})
 		if err != nil {
 			utils.PrintError(err)
 		}
@@ -185,7 +185,7 @@ func (this *IndexAction) RunPost(params struct {
 	}
 
 	if !resp.IsOk {
-		err = dao.SharedLogDAO.CreateAdminLog(rpcClient.Context(0), oplogs.LevelWarn, this.Request.URL.Path, langs.DefaultMessage(codes.AdminLogin_LogFailed, params.Username), this.RequestRemoteIP(), codes.AdminLogin_LogFailed, []any{params.Username})
+		err = dao.SharedLogDAO.CreateAdminLog(rpcClient.Context(0), oplogs.LevelWarn, this.Request.URL.Path, langs.DefaultMessage(codes.AdminLogin_LogFailed, params.Username), loginutils.RemoteIP(&this.ActionObject), codes.AdminLogin_LogFailed, []any{params.Username})
 		if err != nil {
 			utils.PrintError(err)
 		}
@@ -225,7 +225,7 @@ func (this *IndexAction) RunPost(params struct {
 	params.Auth.StoreAdmin(adminId, params.Remember)
 
 	// 记录日志
-	err = dao.SharedLogDAO.CreateAdminLog(rpcClient.Context(adminId), oplogs.LevelInfo, this.Request.URL.Path, langs.DefaultMessage(codes.AdminLogin_LogSuccess, params.Username), this.RequestRemoteIP(), codes.AdminLogin_LogSuccess, []any{params.Username})
+	err = dao.SharedLogDAO.CreateAdminLog(rpcClient.Context(adminId), oplogs.LevelInfo, this.Request.URL.Path, langs.DefaultMessage(codes.AdminLogin_LogSuccess, params.Username), loginutils.RemoteIP(&this.ActionObject), codes.AdminLogin_LogSuccess, []any{params.Username})
 	if err != nil {
 		utils.PrintError(err)
 	}
@@ -235,7 +235,7 @@ func (this *IndexAction) RunPost(params struct {
 
 // 检查登录区域
 func (this *IndexAction) checkRegion() bool {
-	var ip = this.RequestRemoteIP()
+	var ip = loginutils.RemoteIP(&this.ActionObject)
 	var result = iplibrary.LookupIP(ip)
 	if result != nil && result.IsOk() && result.CountryId() > 0 && lists.ContainsInt64([]int64{9, 10}, result.CountryId()) {
 		return false
