@@ -77,6 +77,8 @@ func (this *IndexAction) RunPost(params struct {
 	AllowIPs           []string
 	AllowRememberLogin bool
 
+	ClientIPHeaderNames string
+
 	DenySearchEngines bool
 	DenySpiders       bool
 
@@ -136,6 +138,9 @@ func (this *IndexAction) RunPost(params struct {
 
 	// 允许本地
 	config.AllowLocal = params.AllowLocal
+
+	// 客户端IP获取方式
+	config.ClientIPHeaderNames = params.ClientIPHeaderNames
 
 	// 禁止搜索引擎和爬虫
 	config.DenySearchEngines = params.DenySearchEngines

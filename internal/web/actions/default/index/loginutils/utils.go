@@ -3,12 +3,15 @@
 package loginutils
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeCommon/pkg/iplibrary"
 	"github.com/iwind/TeaGo/actions"
 	stringutil "github.com/iwind/TeaGo/utils/string"
 	"net"
 	"net/http"
+	"regexp"
+	"strings"
 )
 
 // CalculateClientFingerprint 计算客户端指纹
@@ -17,8 +20,26 @@ func CalculateClientFingerprint(action *actions.ActionObject) string {
 }
 
 // RemoteIP 获取客户端IP
-// TODO 将来增加是否使用代理设置（即从X-Real-IP中获取IP）
 func RemoteIP(action *actions.ActionObject) string {
+	securityConfig, _ := configloaders.LoadSecurityConfig()
+
+	if securityConfig != nil {
+		if len(securityConfig.ClientIPHeaderNames) > 0 {
+			var headerNames = regexp.MustCompile(`[,;\s，、；]`).Split(securityConfig.ClientIPHeaderNames, -1)
+			for _, headerName := range headerNames {
+				headerName = http.CanonicalHeaderKey(strings.TrimSpace(headerName))
+				if len(headerName) == 0 {
+					continue
+				}
+
+				var ipValue = action.Request.Header.Get(headerName)
+				if net.ParseIP(ipValue) != nil {
+					return ipValue
+				}
+			}
+		}
+	}
+
 	ip, _, _ := net.SplitHostPort(action.Request.RemoteAddr)
 	return ip
 }

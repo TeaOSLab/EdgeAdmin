@@ -1,6 +1,7 @@
 {$layout}
 
 <div class="margin"></div>
+<p class="comment">当前安全设置只适用于管理系统，对用户网站没有任何影响。</p>
 <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 	<csrf-token></csrf-token>
 	<table class="ui table definition selectable">
@@ -56,6 +57,13 @@
             </td>
         </tr>
         <tbody v-show="moreOptionsVisible">
+            <tr>
+                <td>自定义客户端IP报头</td>
+                <td>
+                    <input type="text" name="clientIPHeaderNames" v-model="config.clientIPHeaderNames"/>
+                    <p class="comment">可以通过此报头获取客户端IP，类似于<code-label>Client-IP</code-label>，用于使用反向代理访问管理系统的情形；如果有多个报头可以使用空格隔开。</p>
+                </td>
+            </tr>
             <tr>
                 <td>禁止搜索引擎</td>
                 <td>

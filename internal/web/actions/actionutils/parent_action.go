@@ -9,6 +9,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/index/loginutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
@@ -106,7 +107,7 @@ func (this *ParentAction) CreateLog(level string, messageCode langs.MessageCode,
 			}
 		}
 	}
-	err := dao.SharedLogDAO.CreateAdminLog(this.AdminContext(), level, this.Request.URL.Path, desc, this.RequestRemoteIP(), messageCode, args)
+	err := dao.SharedLogDAO.CreateAdminLog(this.AdminContext(), level, this.Request.URL.Path, desc, loginutils.RemoteIP(&this.ActionObject), messageCode, args)
 	if err != nil {
 		utils.PrintError(err)
 	}
