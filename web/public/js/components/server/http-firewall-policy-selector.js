@@ -22,6 +22,7 @@ Vue.component("http-firewall-policy-selector", {
 		select: function () {
 			let that = this
 			teaweb.popup("/servers/components/waf/selectPopup", {
+				height: "26em",
 				callback: function (resp) {
 					that.firewallPolicy = resp.data.firewallPolicy
 				}
