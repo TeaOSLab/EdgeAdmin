@@ -6,7 +6,6 @@ Vue.component("http-webp-config-box", {
 			config = {
 				isPrior: false,
 				isOn: false,
-				quality: 50,
 				minLength: {count: 0, "unit": "kb"},
 				maxLength: {count: 0, "unit": "kb"},
 				mimeTypes: ["image/png", "image/jpeg", "image/bmp", "image/x-ico"],
@@ -24,21 +23,7 @@ Vue.component("http-webp-config-box", {
 
 		return {
 			config: config,
-			moreOptionsVisible: false,
-			quality: config.quality
-		}
-	},
-	watch: {
-		quality: function (v) {
-			let quality = parseInt(v)
-			if (isNaN(quality)) {
-				quality = 90
-			} else if (quality < 1) {
-				quality = 1
-			} else if (quality > 100) {
-				quality = 100
-			}
-			this.config.quality = quality
+			moreOptionsVisible: false
 		}
 	},
 	methods: {
@@ -93,16 +78,6 @@ Vue.component("http-webp-config-box", {
 				<td>
 					<values-box :values="config.mimeTypes" @change="changeMimeTypes" placeholder="比如 text/*"></values-box>
 					<p class="comment">响应的Content-Type里包含这些MimeType的内容将会被转成WebP。</p>
-				</td>
-			</tr>
-			<tr>
-				<td>图片质量</td>
-				<td>
-					<div class="ui input right labeled">
-						<input type="text" v-model="quality" style="width: 5em" maxlength="4"/>
-						<span class="ui label">%</span>
-					</div>
-					<p class="comment">取值在0到100之间，数值越大生成的图像越清晰，同时文件尺寸也会越大。</p>
 				</td>
 			</tr>
 			<tr>

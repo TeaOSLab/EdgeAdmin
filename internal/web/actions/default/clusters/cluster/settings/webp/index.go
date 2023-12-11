@@ -45,6 +45,7 @@ func (this *IndexAction) RunGet(params struct {
 func (this *IndexAction) RunPost(params struct {
 	ClusterId     int64
 	IsOn          bool
+	Quality       int
 	RequireCache  bool
 	MinLengthJSON []byte
 	MaxLengthJSON []byte
@@ -58,6 +59,13 @@ func (this *IndexAction) RunPost(params struct {
 		IsOn:         params.IsOn,
 		RequireCache: params.RequireCache,
 	}
+
+	if params.Quality < 0 {
+		params.Quality = 0
+	} else if params.Quality > 100 {
+		params.Quality = 100
+	}
+	config.Quality = params.Quality
 
 	if len(params.MinLengthJSON) > 0 {
 		var minLength = &shared.SizeCapacity{}
@@ -77,6 +85,11 @@ func (this *IndexAction) RunPost(params struct {
 			return
 		}
 		config.MaxLength = maxLength
+	}
+
+	err := config.Init()
+	if err != nil {
+		this.Fail("配置校验失败：" + err.Error())
 	}
 
 	configJSON, err := json.Marshal(config)
