@@ -100,7 +100,7 @@ func (this *IndexAction) RunPost(params struct {
 
 	_, err = this.RPC().NodeClusterRPC().UpdateNodeClusterWebPPolicy(this.AdminContext(), &pb.UpdateNodeClusterWebPPolicyRequest{
 		NodeClusterId:  params.ClusterId,
-		WebpPolicyJSON: configJSON,
+		WebPPolicyJSON: configJSON,
 	})
 
 	if err != nil {

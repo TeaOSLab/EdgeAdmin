@@ -180,7 +180,7 @@ func (this *ClusterHelper) createSettingMenu(cluster *pb.NodeCluster, info *pb.F
 		"name":     this.Lang(actionPtr, codes.NodeClusterMenu_SettingWebP),
 		"url":      "/clusters/cluster/settings/webp?clusterId=" + clusterId,
 		"isActive": selectedItem == "webp",
-		"isOn":     info != nil && info.WebpIsOn,
+		"isOn":     info != nil && info.WebPIsOn,
 	})
 
 	items = this.filterMenuItems1(items, info, clusterId, selectedItem, actionPtr)
