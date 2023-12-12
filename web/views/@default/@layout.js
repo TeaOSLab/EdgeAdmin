@@ -205,7 +205,20 @@ Tea.context(function () {
 				return message
 			}
 		}
+		if (window.LANG_MESSAGES_BASE != null) {
+			let message = window.LANG_MESSAGES_BASE[code]
+			if (typeof message == "string") {
+				return message
+			}
+		}
 		return "{{ LANG('" + code + "') }}"
+	}
+
+	this.switchLang = function () {
+		this.$post("/settings/lang/switch")
+			.success(function () {
+				window.location.reload()
+			})
 	}
 });
 
