@@ -24,9 +24,10 @@ func (this *SwitchAction) RunPost(params struct{}) {
 	}
 
 	this.AddCookie(&http.Cookie{
-		Name:  "edgelang",
-		Value: langCode,
-		Path:  "/",
+		Name:   "edgelang",
+		Value:  langCode,
+		Path:   "/",
+		MaxAge: 86400 * 365,
 	})
 
 	this.Success()
