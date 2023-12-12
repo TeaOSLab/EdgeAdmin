@@ -174,6 +174,17 @@ func FindAdminLang(adminId int64) string {
 	return ""
 }
 
+// UpdateAdminLang 修改某个管理员选择的语言
+func UpdateAdminLang(adminId int64, langCode string) {
+	locker.Lock()
+	defer locker.Unlock()
+
+	list, ok := sharedAdminModuleMapping[adminId]
+	if ok {
+		list.Lang = langCode
+	}
+}
+
 func FindAdminLangForAction(actionPtr actions.ActionWrapper) (langCode langs.LangCode) {
 	locker.Lock()
 	defer locker.Unlock()
