@@ -1,8 +1,11 @@
 {$layout}
 
-<warning-message v-if="serverIsChanged">服务配置已修改，请在命令行下重启后生效。</warning-message>
+<div v-if="serverIsChanged">
+    <div class="margin"></div>
+    <warning-message>服务配置已修改，请在命令行下重启后生效（<code-label>edge-admin restart</code-label>）。</warning-message>
+</div>
 
-<h3>HTTP <a href="/settings/server/http" v-if="!teaDemoEnabled" @click.prevent="updateHTTP()">修改</a><a v-if="teaDemoEnabled">[演示版无法修改]</a></h3>
+<h3>通过HTTP访问管理平台 <a href="/settings/server/http" v-if="!teaDemoEnabled" @click.prevent="updateHTTP()">修改</a><a v-if="teaDemoEnabled">[演示版无法修改]</a></h3>
 
 <table class="ui table definition selectable">
 	<tr>
@@ -22,7 +25,7 @@
 
 <div class="ui divider"></div>
 
-<h3>HTTPS <a href="" v-if="!teaDemoEnabled" @click.prevent="updateHTTPS()">修改</a><a v-if="teaDemoEnabled">[演示版无法修改]</a></h3>
+<h3>通过HTTPS访问管理平台 <a href="" v-if="!teaDemoEnabled" @click.prevent="updateHTTPS()">修改</a><a v-if="teaDemoEnabled">[演示版无法修改]</a></h3>
 <table class="ui table definition selectable">
 	<tr>
 		<td>状态</td>
