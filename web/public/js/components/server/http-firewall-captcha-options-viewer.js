@@ -58,7 +58,7 @@ Vue.component("http-firewall-captcha-options-viewer", {
 				}
 			}
 
-			if (this.options.geeTestConfig.isOn) {
+			if (this.options.geeTestConfig != null && this.options.geeTestConfig.isOn) {
 				summaryList.push("已配置极验")
 			}
 
