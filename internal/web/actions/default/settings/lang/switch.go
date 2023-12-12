@@ -3,8 +3,9 @@
 package lang
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"net/http"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
 type SwitchAction struct {
@@ -23,12 +24,13 @@ func (this *SwitchAction) RunPost(params struct{}) {
 		langCode = "zh-cn"
 	}
 
-	this.AddCookie(&http.Cookie{
-		Name:   "edgelang",
-		Value:  langCode,
-		Path:   "/",
-		MaxAge: 86400 * 365,
-	})
+	configloaders.UpdateAdminLang(this.AdminId(), langCode)
+
+	_, err := this.RPC().AdminRPC().UpdateAdminLang(this.AdminContext(), &pb.UpdateAdminLangRequest{LangCode: langCode})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 
 	this.Success()
 }
