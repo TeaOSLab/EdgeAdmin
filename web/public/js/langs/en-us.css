@@ -1,5 +1,7 @@
 .main-menu .menu .item {
-  font-size: 0.9em;
+  font-size: 0.95em;
+}
+.main-menu .menu .sub-items .item {
   line-height: 1.3;
 }
 /*# sourceMappingURL=en-us.css.map */
