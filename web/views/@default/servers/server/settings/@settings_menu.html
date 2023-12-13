@@ -8,6 +8,6 @@
     <more-items-angle
             :v-data-url="'/servers/nearby?serverId=' + server.id"
             :v-url="'/servers/server/settings?serverId=${serverId}'"></more-items-angle>
-    <span class="disabled item" style="font-size: 0.8em" v-if="leftMenuActiveItem != null && leftMenuActiveItem.configCode != null && leftMenuActiveItem.configCode.length > 0">|</span>
-    <server-config-copy-link :v-server-id="server.id" :v-config-code="leftMenuActiveItem.configCode" v-if="leftMenuActiveItem != null && leftMenuActiveItem.configCode != null && leftMenuActiveItem.configCode.length > 0"></server-config-copy-link>
+    <span class="disabled item" style="font-size: 0.8em" v-if="leftMenuActiveItem != null && leftMenuActiveItem.configCode != null && leftMenuActiveItem.configCode.length > 0 && teaIsPlus">|</span>
+    <server-config-copy-link :v-server-id="server.id" :v-config-code="leftMenuActiveItem.configCode" v-if="leftMenuActiveItem != null && leftMenuActiveItem.configCode != null && leftMenuActiveItem.configCode.length > 0 && teaIsPlus"></server-config-copy-link>
 </first-menu>
