@@ -90,7 +90,7 @@ func (this *IndexAction) RunPost(params struct {
 	// 记录日志
 	defer this.CreateLogInfo(codes.Server_ServerNamesLogUpdateServerNames, params.ServerId)
 
-	serverNames := []*serverconfigs.ServerNameConfig{}
+	var serverNames = []*serverconfigs.ServerNameConfig{}
 	err := json.Unmarshal([]byte(params.ServerNames), &serverNames)
 	if err != nil {
 		this.Fail("域名解析失败：" + err.Error())
@@ -105,10 +105,13 @@ func (this *IndexAction) RunPost(params struct {
 		this.NotFound("server", params.ServerId)
 		return
 	}
-	clusterId := serverResp.Server.NodeCluster.Id
+	var clusterId = serverResp.Server.NodeCluster.Id
+
+	// 检查套餐
+	this.checkPlan(params.ServerId, serverNames)
 
 	// 检查域名是否已经存在
-	allServerNames := serverconfigs.PlainServerNames(serverNames)
+	var allServerNames = serverconfigs.PlainServerNames(serverNames)
 	if len(allServerNames) > 0 {
 		dupResp, err := this.RPC().ServerRPC().CheckServerNameDuplicationInNodeCluster(this.AdminContext(), &pb.CheckServerNameDuplicationInNodeClusterRequest{
 			ServerNames:     allServerNames,
