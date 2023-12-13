@@ -53,12 +53,16 @@ func (this *IndexAction) RunPost(params struct {
 	defer this.CreateLogInfo(codes.ServerCache_LogUpdateCacheSettings, params.WebId)
 
 	// 校验配置
-	cacheConfig := &serverconfigs.HTTPCacheConfig{}
+	var cacheConfig = &serverconfigs.HTTPCacheConfig{}
 	err := json.Unmarshal(params.CacheJSON, cacheConfig)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
+
+	// 分组不支持主域名
+	cacheConfig.Key = nil
+
 	err = cacheConfig.Init()
 	if err != nil {
 		this.Fail("检查配置失败：" + err.Error())
