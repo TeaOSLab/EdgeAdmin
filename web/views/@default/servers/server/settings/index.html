@@ -36,6 +36,10 @@
                     </select>
                 </td>
             </tr>
+            <tr v-if="plans.length == 0 && teaIsPlus">
+                <td>选择套餐</td>
+                <td>当前网站所属用户没有可用套餐。</td>
+            </tr>
 			<tr>
 				<td :class="{'color-border':server.clusterId != oldClusterId}">部署的集群 *</td>
 				<td>
