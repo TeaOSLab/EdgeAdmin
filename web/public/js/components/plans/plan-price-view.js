@@ -19,7 +19,7 @@ Vue.component("plan-price-view", {
 	<span v-if="plan.priceType == 'traffic'">
 		按流量计费
 		<div>
-			<span class="grey small">基础价格：￥{{plan.trafficPrice.base}}元/GB</span>
+			<span class="grey small">基础价格：￥{{plan.trafficPrice.base}}元/GiB</span>
 		</div>
 	</span>
 	<div v-if="plan.priceType == 'bandwidth' && plan.bandwidthPrice != null && plan.bandwidthPrice.percentile > 0">
