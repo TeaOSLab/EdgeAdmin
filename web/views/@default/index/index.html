@@ -7,7 +7,7 @@
     {$else}
     <link rel="shortcut icon" href="/ui/image/{$ .faviconFileId}"/>
     {$end}
-    <title>登录{$.systemName}</title>
+    <title>登录{$ htmlEncode .systemName}</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
     {$TEA.VUE}
     {$TEA.SEMANTIC}
@@ -27,7 +27,7 @@
 			<input type="hidden" name="token" v-model="token"/>
 			<div class="ui segment stacked">
 				<div class="ui header">
-					登录{$.systemName}
+					登录{$ htmlEncode .systemName}
 				</div>
 				<div class="ui field">
 					<div class="ui left icon input">
