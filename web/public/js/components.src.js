@@ -2876,8 +2876,8 @@ Vue.component("plan-limit-view", {
 	template: `<div style="font-size: 0.8em; color: grey">
 	<div class="ui divider" v-if="hasLimit"></div>
 	<div v-if="config.trafficLimit != null && config.trafficLimit.isOn">
-		<span v-if="config.trafficLimit.dailySize != null && config.trafficLimit.dailySize.count > 0">日流量限制：{{config.trafficLimit.dailySize.count}}{{config.trafficLimit.dailySize.unit.toUpperCase()}}<br/></span>
-		<span v-if="config.trafficLimit.monthlySize != null && config.trafficLimit.monthlySize.count > 0">月流量限制：{{config.trafficLimit.monthlySize.count}}{{config.trafficLimit.monthlySize.unit.toUpperCase()}}<br/></span>
+		<span v-if="config.trafficLimit.dailySize != null && config.trafficLimit.dailySize.count > 0">日流量限制：{{config.trafficLimit.dailySize.count}}{{config.trafficLimit.dailySize.unit.toUpperCase().replace(/(.)B/, "$1iB")}}<br/></span>
+		<span v-if="config.trafficLimit.monthlySize != null && config.trafficLimit.monthlySize.count > 0">月流量限制：{{config.trafficLimit.monthlySize.count}}{{config.trafficLimit.monthlySize.unit.toUpperCase().replace(/(.)B/, "$1iB")}}<br/></span>
 	</div>
 	<div v-if="config.dailyRequests > 0">单日请求数限制：{{formatNumber(config.dailyRequests)}}</div>
 	<div v-if="config.monthlyRequests > 0">单月请求数限制：{{formatNumber(config.monthlyRequests)}}</div>
@@ -2905,7 +2905,7 @@ Vue.component("plan-price-view", {
 	<span v-if="plan.priceType == 'traffic'">
 		按流量计费
 		<div>
-			<span class="grey small">基础价格：￥{{plan.trafficPrice.base}}元/GB</span>
+			<span class="grey small">基础价格：￥{{plan.trafficPrice.base}}元/GiB</span>
 		</div>
 	</span>
 	<div v-if="plan.priceType == 'bandwidth' && plan.bandwidthPrice != null && plan.bandwidthPrice.percentile > 0">
@@ -6258,9 +6258,19 @@ Vue.component("http-cache-config-box", {
 			cacheConfig.cacheRefs = []
 		}
 
-		var maxBytes = null
+		let maxBytes = null
 		if (this.vCachePolicy != null && this.vCachePolicy.maxBytes != null) {
 			maxBytes = this.vCachePolicy.maxBytes
+		}
+
+		// key
+		if (cacheConfig.key == null) {
+			// use Vue.set to activate vue events
+			Vue.set(cacheConfig, "key", {
+				isOn: false,
+				scheme: "https",
+				host: ""
+			})
 		}
 
 		return {
@@ -6270,7 +6280,9 @@ Vue.component("http-cache-config-box", {
 			maxBytes: maxBytes,
 
 			searchBoxVisible: false,
-			searchKeyword: ""
+			searchKeyword: "",
+
+			keyOptionsVisible: false
 		}
 	},
 	watch: {
@@ -6345,6 +6357,44 @@ Vue.component("http-cache-config-box", {
 				</td>
 			</tr>
 		</tbody>
+		<tbody v-show="isOn() && !vIsGroup">
+			<tr>
+				<td>缓存主域名</td>
+				<td>
+					<div v-show="!cacheConfig.key.isOn">默认 &nbsp; <a href="" @click.prevent="keyOptionsVisible = !keyOptionsVisible"><span class="small">[修改]</span></a></div>
+					<div v-show="cacheConfig.key.isOn">使用主域名：{{cacheConfig.key.scheme}}://{{cacheConfig.key.host}} &nbsp;  <a href="" @click.prevent="keyOptionsVisible = !keyOptionsVisible"><span class="small">[修改]</span></a></div>
+					<div v-show="keyOptionsVisible" style="margin-top: 1em">
+						<div class="ui divider"></div>
+						<table class="ui table definition">
+							<tr>
+								<td class="title">启用主域名</td>
+								<td><checkbox v-model="cacheConfig.key.isOn"></checkbox>
+									<p class="comment">启用主域名后，所有缓存键值中的协议和域名部分都会修改为主域名，用来实现缓存不区分域名。</p>
+								</td>
+							</tr>	
+							<tr v-show="cacheConfig.key.isOn">
+								<td>主域名 *</td>
+								<td>
+									<div class="ui fields inline">
+										<div class="ui field">
+											<select class="ui dropdown" v-model="cacheConfig.key.scheme">
+												<option value="https">https://</option>
+												<option value="http">http://</option>
+											</select>
+										</div>
+										<div class="ui field">
+											<input type="text" v-model="cacheConfig.key.host" placeholder="example.com" @keyup.enter="keyOptionsVisible = false" @keypress.enter.prevent="1"/>
+										</div>
+									</div>
+									<p class="comment">此域名<strong>必须</strong>是当前网站已绑定域名，在刷新缓存时也需要使用此域名。</p>
+								</td>
+							</tr>
+						</table>
+						<button class="ui button tiny" type="button" @click.prevent="keyOptionsVisible = false">完成</button>
+					</div>
+				</td>
+			</tr>
+		</tbody>
 		<tbody v-show="isOn()">
 			<tr>
 				<td colspan="2">
@@ -6401,6 +6451,11 @@ Vue.component("http-cache-config-box", {
 	<div v-if="isOn() && moreOptionsVisible && isPlus()">
 		<h4>过时缓存策略</h4>
 		<http-cache-stale-config :v-cache-stale-config="cacheConfig.stale" @change="changeStale"></http-cache-stale-config>
+	</div>
+	
+	<div v-show="isOn()">
+		<submit-btn></submit-btn>
+		<div class="ui divider"></div>
 	</div>
 	
 	<div v-show="isOn()" style="margin-top: 1em">

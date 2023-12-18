@@ -1018,8 +1018,8 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 </div>`}),Vue.component("plan-limit-view",{props:["value","v-single-mode"],data:function(){var e=this.value;let t=!1;return this.vSingleMode||(null!=e.trafficLimit&&e.trafficLimit.isOn&&(null!=e.trafficLimit.dailySize&&0<e.trafficLimit.dailySize.count||null!=e.trafficLimit.monthlySize&&0<e.trafficLimit.monthlySize.count)||0<e.dailyRequests||0<e.monthlyRequests)&&(t=!0),{config:e,hasLimit:t}},methods:{formatNumber:function(e){return teaweb.formatNumber(e)}},template:`<div style="font-size: 0.8em; color: grey">
 	<div class="ui divider" v-if="hasLimit"></div>
 	<div v-if="config.trafficLimit != null && config.trafficLimit.isOn">
-		<span v-if="config.trafficLimit.dailySize != null && config.trafficLimit.dailySize.count > 0">日流量限制：{{config.trafficLimit.dailySize.count}}{{config.trafficLimit.dailySize.unit.toUpperCase()}}<br/></span>
-		<span v-if="config.trafficLimit.monthlySize != null && config.trafficLimit.monthlySize.count > 0">月流量限制：{{config.trafficLimit.monthlySize.count}}{{config.trafficLimit.monthlySize.unit.toUpperCase()}}<br/></span>
+		<span v-if="config.trafficLimit.dailySize != null && config.trafficLimit.dailySize.count > 0">日流量限制：{{config.trafficLimit.dailySize.count}}{{config.trafficLimit.dailySize.unit.toUpperCase().replace(/(.)B/, "$1iB")}}<br/></span>
+		<span v-if="config.trafficLimit.monthlySize != null && config.trafficLimit.monthlySize.count > 0">月流量限制：{{config.trafficLimit.monthlySize.count}}{{config.trafficLimit.monthlySize.unit.toUpperCase().replace(/(.)B/, "$1iB")}}<br/></span>
 	</div>
 	<div v-if="config.dailyRequests > 0">单日请求数限制：{{formatNumber(config.dailyRequests)}}</div>
 	<div v-if="config.monthlyRequests > 0">单月请求数限制：{{formatNumber(config.monthlyRequests)}}</div>
@@ -1037,7 +1037,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<span v-if="plan.priceType == 'traffic'">
 		按流量计费
 		<div>
-			<span class="grey small">基础价格：￥{{plan.trafficPrice.base}}元/GB</span>
+			<span class="grey small">基础价格：￥{{plan.trafficPrice.base}}元/GiB</span>
 		</div>
 	</span>
 	<div v-if="plan.priceType == 'bandwidth' && plan.bandwidthPrice != null && plan.bandwidthPrice.percentile > 0">
@@ -2178,7 +2178,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<h4>{{chart.name}} <span>（{{valueTypeName}}）</span></h4>
 	<div class="ui divider"></div>
 	<div style="height: 14em; padding-bottom: 1em; " :id="chartId" :class="{'scroll-box': chart.type == 'table'}"></div>
-</div>`}),Vue.component("metric-board",{template:"<div><slot></slot></div>"}),Vue.component("http-cache-config-box",{props:["v-cache-config","v-is-location","v-is-group","v-cache-policy","v-web-id"],data:function(){let e=this.vCacheConfig;null==(e=null==e?{isPrior:!1,isOn:!1,addStatusHeader:!0,addAgeHeader:!1,enableCacheControlMaxAge:!1,cacheRefs:[],purgeIsOn:!1,purgeKey:"",disablePolicyRefs:!1}:e).cacheRefs&&(e.cacheRefs=[]);var t=null;return null!=this.vCachePolicy&&null!=this.vCachePolicy.maxBytes&&(t=this.vCachePolicy.maxBytes),{cacheConfig:e,moreOptionsVisible:!1,enablePolicyRefs:!e.disablePolicyRefs,maxBytes:t,searchBoxVisible:!1,searchKeyword:""}},watch:{enablePolicyRefs:function(e){this.cacheConfig.disablePolicyRefs=!e},searchKeyword:function(e){this.$refs.cacheRefsConfigBoxRef.search(e)}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.cacheConfig.isPrior)&&this.cacheConfig.isOn},isPlus:function(){return Tea.Vue.teaIsPlus},generatePurgeKey:function(){let e=Math.random().toString()+Math.random().toString(),t=e.replace(/0\./g,"").replace(/\./g,""),i="";for(let e=0;e<t.length;e++)i+=String.fromCharCode(parseInt(t.substring(e,e+1))+(Math.random()<.5?"a":"A").charCodeAt(0));this.cacheConfig.purgeKey=i},showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible},changeStale:function(e){this.cacheConfig.stale=e},showSearchBox:function(){if(this.searchBoxVisible=!this.searchBoxVisible,this.searchBoxVisible){let e=this;setTimeout(function(){e.$refs.searchBox.focus()})}else this.searchKeyword=""}},template:`<div>
+</div>`}),Vue.component("metric-board",{template:"<div><slot></slot></div>"}),Vue.component("http-cache-config-box",{props:["v-cache-config","v-is-location","v-is-group","v-cache-policy","v-web-id"],data:function(){let e=this.vCacheConfig,t=(null==(e=null==e?{isPrior:!1,isOn:!1,addStatusHeader:!0,addAgeHeader:!1,enableCacheControlMaxAge:!1,cacheRefs:[],purgeIsOn:!1,purgeKey:"",disablePolicyRefs:!1}:e).cacheRefs&&(e.cacheRefs=[]),null);return null!=this.vCachePolicy&&null!=this.vCachePolicy.maxBytes&&(t=this.vCachePolicy.maxBytes),null==e.key&&Vue.set(e,"key",{isOn:!1,scheme:"https",host:""}),{cacheConfig:e,moreOptionsVisible:!1,enablePolicyRefs:!e.disablePolicyRefs,maxBytes:t,searchBoxVisible:!1,searchKeyword:"",keyOptionsVisible:!1}},watch:{enablePolicyRefs:function(e){this.cacheConfig.disablePolicyRefs=!e},searchKeyword:function(e){this.$refs.cacheRefsConfigBoxRef.search(e)}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.cacheConfig.isPrior)&&this.cacheConfig.isOn},isPlus:function(){return Tea.Vue.teaIsPlus},generatePurgeKey:function(){let e=Math.random().toString()+Math.random().toString(),t=e.replace(/0\./g,"").replace(/\./g,""),i="";for(let e=0;e<t.length;e++)i+=String.fromCharCode(parseInt(t.substring(e,e+1))+(Math.random()<.5?"a":"A").charCodeAt(0));this.cacheConfig.purgeKey=i},showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible},changeStale:function(e){this.cacheConfig.stale=e},showSearchBox:function(){if(this.searchBoxVisible=!this.searchBoxVisible,this.searchBoxVisible){let e=this;setTimeout(function(){e.$refs.searchBox.focus()})}else this.searchKeyword=""}},template:`<div>
 	<input type="hidden" name="cacheJSON" :value="JSON.stringify(cacheConfig)"/>
 	
 	<table class="ui table definition selectable" v-show="!vIsGroup">
@@ -2202,6 +2202,44 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="cacheConfig.isOn"/>
 						<label></label>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="isOn() && !vIsGroup">
+			<tr>
+				<td>缓存主域名</td>
+				<td>
+					<div v-show="!cacheConfig.key.isOn">默认 &nbsp; <a href="" @click.prevent="keyOptionsVisible = !keyOptionsVisible"><span class="small">[修改]</span></a></div>
+					<div v-show="cacheConfig.key.isOn">使用主域名：{{cacheConfig.key.scheme}}://{{cacheConfig.key.host}} &nbsp;  <a href="" @click.prevent="keyOptionsVisible = !keyOptionsVisible"><span class="small">[修改]</span></a></div>
+					<div v-show="keyOptionsVisible" style="margin-top: 1em">
+						<div class="ui divider"></div>
+						<table class="ui table definition">
+							<tr>
+								<td class="title">启用主域名</td>
+								<td><checkbox v-model="cacheConfig.key.isOn"></checkbox>
+									<p class="comment">启用主域名后，所有缓存键值中的协议和域名部分都会修改为主域名，用来实现缓存不区分域名。</p>
+								</td>
+							</tr>	
+							<tr v-show="cacheConfig.key.isOn">
+								<td>主域名 *</td>
+								<td>
+									<div class="ui fields inline">
+										<div class="ui field">
+											<select class="ui dropdown" v-model="cacheConfig.key.scheme">
+												<option value="https">https://</option>
+												<option value="http">http://</option>
+											</select>
+										</div>
+										<div class="ui field">
+											<input type="text" v-model="cacheConfig.key.host" placeholder="example.com" @keyup.enter="keyOptionsVisible = false" @keypress.enter.prevent="1"/>
+										</div>
+									</div>
+									<p class="comment">此域名<strong>必须</strong>是当前网站已绑定域名，在刷新缓存时也需要使用此域名。</p>
+								</td>
+							</tr>
+						</table>
+						<button class="ui button tiny" type="button" @click.prevent="keyOptionsVisible = false">完成</button>
 					</div>
 				</td>
 			</tr>
@@ -2262,6 +2300,11 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<div v-if="isOn() && moreOptionsVisible && isPlus()">
 		<h4>过时缓存策略</h4>
 		<http-cache-stale-config :v-cache-stale-config="cacheConfig.stale" @change="changeStale"></http-cache-stale-config>
+	</div>
+	
+	<div v-show="isOn()">
+		<submit-btn></submit-btn>
+		<div class="ui divider"></div>
 	</div>
 	
 	<div v-show="isOn()" style="margin-top: 1em">
