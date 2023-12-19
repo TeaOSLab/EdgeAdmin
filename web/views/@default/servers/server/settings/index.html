@@ -3,6 +3,13 @@
 {$template "/left_menu_with_menu"}
 
 <div class="right-box with-menu">
+    <div v-if="server.trafficLimitStatus != null">
+        <div class="ui margin"></div>
+        <warning-message>
+            <server-traffic-limit-status-viewer v-model="server.trafficLimitStatus"></server-traffic-limit-status-viewer>
+        </warning-message>
+    </div>
+
 	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 		<input type="hidden" name="serverId" :value="server.id"/>
 		<table class="ui table selectable definition">

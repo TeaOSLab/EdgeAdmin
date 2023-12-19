@@ -1,6 +1,7 @@
 package settings
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
@@ -32,7 +33,7 @@ func (this *IndexAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	clusterMaps := []maps.Map{}
+	var clusterMaps = []maps.Map{}
 	for _, cluster := range resp.NodeClusters {
 		clusterMaps = append(clusterMaps, maps.Map{
 			"id":   cluster.Id,
@@ -50,7 +51,7 @@ func (this *IndexAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	server := serverResp.Server
+	var server = serverResp.Server
 	if server == nil {
 		this.NotFound("server", params.ServerId)
 		return
@@ -71,7 +72,7 @@ func (this *IndexAction) RunGet(params struct {
 	this.initUserPlan(server)
 
 	// 集群
-	clusterId := int64(0)
+	var clusterId = int64(0)
 	this.Data["clusterName"] = ""
 	if server.NodeCluster != nil {
 		clusterId = server.NodeCluster.Id
@@ -79,7 +80,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	// 分组
-	groupMaps := []maps.Map{}
+	var groupMaps = []maps.Map{}
 	if len(server.ServerGroups) > 0 {
 		for _, group := range server.ServerGroups {
 			groupMaps = append(groupMaps, maps.Map{
@@ -89,23 +90,36 @@ func (this *IndexAction) RunGet(params struct {
 		}
 	}
 
-	this.Data["server"] = maps.Map{
-		"id":          server.Id,
-		"clusterId":   clusterId,
-		"type":        server.Type,
-		"name":        server.Name,
-		"description": server.Description,
-		"isOn":        server.IsOn,
-		"groups":      groupMaps,
+	// 域名和限流状态
+	var trafficLimitStatus *serverconfigs.TrafficLimitStatus
+	if len(server.Config) > 0 {
+		var serverConfig = &serverconfigs.ServerConfig{}
+		err = json.Unmarshal(server.Config, serverConfig)
+		if err == nil {
+			if serverConfig.TrafficLimitStatus != nil && serverConfig.TrafficLimitStatus.IsValid() {
+				trafficLimitStatus = serverConfig.TrafficLimitStatus
+			}
+		}
 	}
 
-	serverType := serverconfigs.FindServerType(server.Type)
+	this.Data["server"] = maps.Map{
+		"id":                 server.Id,
+		"clusterId":          clusterId,
+		"type":               server.Type,
+		"name":               server.Name,
+		"description":        server.Description,
+		"isOn":               server.IsOn,
+		"groups":             groupMaps,
+		"trafficLimitStatus": trafficLimitStatus,
+	}
+
+	var serverType = serverconfigs.FindServerType(server.Type)
 	if serverType == nil {
 		this.ErrorPage(errors.New("invalid server type '" + server.Type + "'"))
 		return
 	}
 
-	typeName := serverType.GetString("name")
+	var typeName = serverType.GetString("name")
 	this.Data["typeName"] = typeName
 
 	// 记录最近使用
