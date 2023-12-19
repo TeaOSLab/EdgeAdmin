@@ -159,6 +159,9 @@ Vue.component("http-cache-ref-box", {
 					}
 
 					dialog.style.width = width + "px"
+					if (this.ref.conds != null) {
+						this.ref.conds.isOn = true
+					}
 					break
 			}
 		},
