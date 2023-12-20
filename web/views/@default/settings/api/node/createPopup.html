@@ -34,9 +34,9 @@
 		</tr>
 		<tbody v-show="moreOptionsVisible">
             <tr>
-                <td :class="{'color-border': restIsOn}">是否开启HTTP API端口</td>
+                <td :class="{'color-border': restIsOn}">开启HTTP API端口</td>
                 <td>
-                    <checkbox name="restIsOn" v-model="restIsOn">是否启用HTTP API</checkbox>
+                    <checkbox name="restIsOn" v-model="restIsOn">启用HTTP API</checkbox>
                     <p class="comment">启用后用户可以通过HTTP API调用服务接口。</p>
                 </td>
             </tr>
