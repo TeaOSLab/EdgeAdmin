@@ -81,11 +81,6 @@ func FindAllMenuMaps(langCode string, nodeLogsType string, countUnreadNodeLogs i
 					"url":  "/servers/metrics",
 					"code": "metric",
 				},
-				{
-					"name": langs.Message(langCode, codes.AdminMenu_ServerGlobalSettings),
-					"url":  "/servers/components",
-					"code": "global",
-				},
 			},
 		},
 		{
