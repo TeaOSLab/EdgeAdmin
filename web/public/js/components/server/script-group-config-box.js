@@ -1,5 +1,5 @@
 Vue.component("script-group-config-box", {
-	props: ["v-group", "v-is-location"],
+	props: ["v-group", "v-auditing-status", "v-is-location"],
 	data: function () {
 		let group = this.vGroup
 		if (group == null) {
@@ -37,7 +37,7 @@ Vue.component("script-group-config-box", {
 			<prior-checkbox :v-config="group" v-if="vIsLocation"></prior-checkbox>
 		</table>
 		<div :style="{opacity: (!vIsLocation || group.isPrior) ? 1 : 0.5}">
-			<script-config-box :v-script-config="script" comment="在接收到客户端请求之后立即调用。预置req、resp变量。" @change="changeScript" :v-is-location="vIsLocation"></script-config-box>
+			<script-config-box :v-script-config="script" :v-auditing-status="vAuditingStatus" comment="在接收到客户端请求之后立即调用。预置req、resp变量。" @change="changeScript" :v-is-location="vIsLocation"></script-config-box>
 		</div>
 </div>`
 })
