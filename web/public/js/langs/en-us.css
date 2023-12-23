@@ -1,7 +1,14 @@
-.main-menu .menu .item {
+.main-menu .menu .item,
+.left-box .menu .item {
   font-size: 0.95em;
 }
-.main-menu .menu .sub-items .item {
-  line-height: 1.3;
+.main-menu .menu .sub-items .item,
+.left-box .menu .sub-items .item {
+  line-height: 1.4;
+}
+.left-box .menu .item {
+  line-height: 1.4;
+  padding-top: 0.2em !important;
+  padding-bottom: 0.2em !important;
 }
 /*# sourceMappingURL=en-us.css.map */
