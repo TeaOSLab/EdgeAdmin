@@ -104,13 +104,29 @@ Vue.component("ip-list-table", {
 				return Math.ceil(seconds / 3600) + "小时"
 			}
 			return Math.ceil(seconds / 86400) + "天"
+		},
+		cancelChecked: function () {
+			this.hasSelectedItems = false
+			this.selectedAll = false
+
+			let boxes = this.$refs.itemCheckBox
+			if (boxes == null) {
+				return
+			}
+			boxes.forEach(function (box) {
+				box.checked = false
+			})
 		}
 	},
 	template: `<div>
  <div v-show="hasSelectedItems">
+ 	<div class="ui divider"></div>
  	<button class="ui button basic" type="button" @click.prevent="deleteAll">批量删除所选</button>
  	&nbsp; &nbsp; 
  	<button class="ui button basic" type="button" @click.prevent="deleteCount" v-if="vTotal != null && vTotal >= MaxDeletes">批量删除{{MaxDeletes}}个</button>
+ 	
+ 	&nbsp; &nbsp; 
+ 	<button class="ui button basic" type="button" @click.prevent="cancelChecked">取消选中</button>
 </div>
  <table class="ui table selectable celled" v-if="items.length > 0">
         <thead>
