@@ -63,6 +63,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	var count = countResp.Count
 	var page = this.NewPage(count)
+	this.Data["totalItems"] = count
 	this.Data["page"] = page.AsHTML()
 
 	itemsResp, err := this.RPC().IPItemRPC().ListAllEnabledIPItems(this.AdminContext(), &pb.ListAllEnabledIPItemsRequest{

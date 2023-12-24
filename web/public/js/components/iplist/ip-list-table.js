@@ -1,11 +1,18 @@
 Vue.component("ip-list-table", {
-	props: ["v-items", "v-keyword", "v-show-search-button"],
+	props: ["v-items", "v-keyword", "v-show-search-button", "v-total"/** total items >= items length **/],
 	data: function () {
+		let maxDeletes = 10000
+		if (this.vTotal != null && this.vTotal > 0 && this.vTotal < maxDeletes) {
+			maxDeletes = this.vTotal
+		}
+
 		return {
 			items: this.vItems,
 			keyword: (this.vKeyword != null) ? this.vKeyword : "",
 			selectedAll: false,
-			hasSelectedItems: false
+			hasSelectedItems: false,
+
+			MaxDeletes: maxDeletes
 		}
 	},
 	methods: {
@@ -71,6 +78,21 @@ Vue.component("ip-list-table", {
 					teaweb.successToast("批量删除成功", 1200, teaweb.reload)
 				})
 		},
+		deleteCount: function () {
+			let that = this
+			teaweb.confirm("确定要批量删除当前列表中的" + this.MaxDeletes + "个IP吗？", function () {
+				let query = window.location.search
+				if (query.startsWith("?")) {
+					query = query.substring(1)
+				}
+				Tea.action("/servers/iplists/deleteCount?" + query)
+					.post()
+					.params({count: that.MaxDeletes})
+					.success(function () {
+						teaweb.successToast("批量删除成功", 1200, teaweb.reload)
+					})
+			})
+		},
 		formatSeconds: function (seconds) {
 			if (seconds < 60) {
 				return seconds + "秒"
@@ -86,7 +108,9 @@ Vue.component("ip-list-table", {
 	},
 	template: `<div>
  <div v-show="hasSelectedItems">
- 	<a href="" @click.prevent="deleteAll">[批量删除]</a>
+ 	<button class="ui button basic" type="button" @click.prevent="deleteAll">批量删除所选</button>
+ 	&nbsp; &nbsp; 
+ 	<button class="ui button basic" type="button" @click.prevent="deleteCount" v-if="vTotal != null && vTotal >= MaxDeletes">批量删除{{MaxDeletes}}个</button>
 </div>
  <table class="ui table selectable celled" v-if="items.length > 0">
         <thead>

@@ -50,6 +50,6 @@
 
 <p class="comment" v-if="items.length == 0">暂时还没有IP。</p>
 
-<ip-list-table v-if="items.length > 0" :v-items="items" @update-item="updateItem" @delete-item="deleteItem" :v-keyword="keyword" :v-show-search-button="true"></ip-list-table>
+<ip-list-table v-if="items.length > 0" :v-items="items" @update-item="updateItem" @delete-item="deleteItem" :v-keyword="keyword" :v-show-search-button="true" :v-total="totalItems"></ip-list-table>
 
 <div class="page" v-html="page"></div>
