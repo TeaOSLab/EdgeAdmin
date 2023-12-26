@@ -7,6 +7,7 @@ import (
 	"crypto/rand"
 	"errors"
 	"fmt"
+	executils "github.com/TeaOSLab/EdgeAdmin/internal/utils/exec"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/setup/mysql/mysqlinstallers/utils"
 	stringutil "github.com/iwind/TeaGo/utils/string"
 	timeutil "github.com/iwind/TeaGo/utils/time"
@@ -14,7 +15,6 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"regexp"
 	"runtime"
@@ -57,7 +57,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 
 	// check 'tar' command
 	this.log("checking 'tar' command ...")
-	var tarExe, _ = exec.LookPath("tar")
+	var tarExe, _ = executils.LookPath("tar")
 	if len(tarExe) == 0 {
 		this.log("installing 'tar' command ...")
 		err = this.installTarCommand()
@@ -70,7 +70,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 	this.log("checking system commands ...")
 	var cmdList = []string{"tar" /** again **/, "chown", "sh"}
 	for _, cmd := range cmdList {
-		cmdPath, err := exec.LookPath(cmd)
+		cmdPath, err := executils.LookPath(cmd)
 		if err != nil || len(cmdPath) == 0 {
 			return errors.New("could not find '" + cmd + "' command in this system")
 		}
@@ -87,7 +87,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 	}
 
 	// ubuntu apt
-	aptExe, err := exec.LookPath("apt")
+	aptExe, err := executils.LookPath("apt")
 	if err == nil && len(aptExe) > 0 {
 		for _, lib := range []string{"libaio1", "libncurses5"} {
 			this.log("checking " + lib + " ...")
@@ -100,7 +100,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 			time.Sleep(1 * time.Second)
 		}
 	} else { // yum
-		yumExe, err := exec.LookPath("yum")
+		yumExe, err := executils.LookPath("yum")
 		if err == nil && len(yumExe) > 0 {
 			for _, lib := range []string{"libaio", "ncurses-libs", "ncurses-compat-libs", "numactl-libs"} {
 				var cmd = utils.NewCmd("yum", "-y", "install", lib)
@@ -562,7 +562,7 @@ func (this *MySQLInstaller) log(message string) {
 
 // copy file
 func (this *MySQLInstaller) installService(baseDir string) error {
-	_, err := exec.LookPath("systemctl")
+	_, err := executils.LookPath("systemctl")
 	if err != nil {
 		return err
 	}
@@ -618,14 +618,14 @@ WantedBy=multi-user.target`
 // install 'tar' command automatically
 func (this *MySQLInstaller) installTarCommand() error {
 	// yum
-	yumExe, err := exec.LookPath("yum")
+	yumExe, err := executils.LookPath("yum")
 	if err == nil && len(yumExe) > 0 {
 		var cmd = utils.NewTimeoutCmd(10*time.Second, yumExe, "-y", "install", "tar")
 		return cmd.Run()
 	}
 
 	// apt
-	aptExe, err := exec.LookPath("apt")
+	aptExe, err := executils.LookPath("apt")
 	if err == nil && len(aptExe) > 0 {
 		var cmd = utils.NewTimeoutCmd(10*time.Second, aptExe, "-y", "install", "tar")
 		return cmd.Run()
@@ -636,7 +636,7 @@ func (this *MySQLInstaller) installTarCommand() error {
 
 func (this *MySQLInstaller) lookupGroupAdd() (string, error) {
 	for _, cmd := range []string{"groupadd", "addgroup"} {
-		path, err := exec.LookPath(cmd)
+		path, err := executils.LookPath(cmd)
 		if err == nil && len(path) > 0 {
 			return path, nil
 		}
@@ -646,7 +646,7 @@ func (this *MySQLInstaller) lookupGroupAdd() (string, error) {
 
 func (this *MySQLInstaller) lookupUserAdd() (string, error) {
 	for _, cmd := range []string{"useradd", "adduser"} {
-		path, err := exec.LookPath(cmd)
+		path, err := executils.LookPath(cmd)
 		if err == nil && len(path) > 0 {
 			return path, nil
 		}
