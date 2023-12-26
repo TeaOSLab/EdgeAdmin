@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
+	executils "github.com/TeaOSLab/EdgeAdmin/internal/utils/exec"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
@@ -87,10 +88,10 @@ func (this *UpgradeManager) Start() error {
 	}()
 
 	// 检查unzip
-	unzipExe, _ := exec.LookPath("unzip")
+	unzipExe, _ := executils.LookPath("unzip")
 
 	// 检查cp
-	cpExe, _ := exec.LookPath("cp")
+	cpExe, _ := executils.LookPath("cp")
 	if len(cpExe) == 0 {
 		return errors.New("can not find 'cp' command")
 	}
