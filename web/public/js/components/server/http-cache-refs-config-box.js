@@ -79,7 +79,17 @@ Vue.component("http-cache-refs-config-box", {
 						that.refs.push(newRef)
 					}
 
-					that.change()
+					// move to bottom
+					var afterChangeCallback = function () {
+						setTimeout(function () {
+							let rightBox = document.querySelector(".right-box")
+							if (rightBox != null) {
+								rightBox.scrollTo(0, isReverse ? 0 : 100000)
+							}
+						}, 100)
+					}
+
+					that.change(afterChangeCallback)
 				}
 			})
 		},
@@ -140,7 +150,7 @@ Vue.component("http-cache-refs-config-box", {
 			}
 			return unit
 		},
-		change: function () {
+		change: function (callback) {
 			this.$forceUpdate()
 
 			// 自动保存
@@ -159,7 +169,11 @@ Vue.component("http-cache-refs-config-box", {
 					})
 					.success(function (resp) {
 						if (resp.data.isUpdated) {
-							teaweb.successToast("保存成功")
+							teaweb.successToast("保存成功", null, function () {
+								if (typeof callback == "function") {
+									callback()
+								}
+							})
 						}
 					})
 					.post()
