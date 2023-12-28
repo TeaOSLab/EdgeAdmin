@@ -896,7 +896,7 @@ Vue.component("http-cond-params", {
 		<td>不区分大小写</td>
 		<td>
 		   <div class="ui checkbox">
-				<input type="checkbox" v-model="cond.isCaseInsensitive"/>
+				<input type="checkbox" name="condIsCaseInsensitive" v-model="cond.isCaseInsensitive"/>
 				<label></label>
 			</div>
 			<p class="comment">选中后表示对比时忽略参数值的大小写。</p>
