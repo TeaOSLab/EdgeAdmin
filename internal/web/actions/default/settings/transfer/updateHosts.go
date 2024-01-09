@@ -48,7 +48,7 @@ func (this *UpdateHostsAction) RunPost(params struct {
 	if err != nil {
 		this.FailField("host", "测试API节点时出错，请检查配置，错误信息："+err.Error())
 	}
-	_, err = client.APINodeRPC().FindCurrentAPINodeVersion(client.APIContext(0), &pb.FindCurrentAPINodeVersionRequest{})
+	_, err = client.APINodeRPC().FindCurrentAPINodeVersion(client.Context(0), &pb.FindCurrentAPINodeVersionRequest{})
 	if err != nil {
 		this.FailField("host", "无法连接此API节点，错误信息："+err.Error())
 	}
