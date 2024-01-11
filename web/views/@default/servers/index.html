@@ -39,11 +39,11 @@
         </div>
     </div>
     <div class="ui fields inline" style="margin-top: 1em">
-        <div class="ui field">
-            <checkbox name="checkDNS" :v-value="1" v-model="checkDNS">检查域名解析</checkbox>
-        </div>
         <div class="ui field" v-if="clusterId == 0 && groupId == 0 && keyword.length == 0 && latestServers.length > 0">
             <a href="" @click.prevent="showLatest()">常用<i class="icon angle" :class="{down: !latestVisible, up: latestVisible}"></i> </a>
+        </div>
+        <div class="ui field" style="position: absolute; right: 1em">
+            <checkbox name="checkDNS" :v-value="1" v-model="checkDNS">检查域名解析</checkbox>
         </div>
     </div>
 </form>
@@ -55,9 +55,16 @@
 
 <p class="ui message" v-if="servers.length == 0">暂时还没有网站。</p>
 
+<div v-if="checkedServerIds.length > 0">
+    <div class="ui divider"></div>
+    <button class="ui button basic" @click.prevent="deleteServers">删除所选{{checkedServerIds.length}}网站</button> &nbsp; &nbsp;
+    <button class="ui button basic" @click.prevent="resetCheckedServers">清除所选</button>
+</div>
+
 <table class="ui table selectable celled" v-if="servers.length > 0">
 	<thead>
 		<tr>
+            <th style="width: 1em" class="server-checkbox-td"><checkbox ref="allCheckedCheckboxes" @input="changeAllChecked"></checkbox></th>
 			<th>网站名称</th>
 			<th>所属用户</th>
 			<th>部署集群</th>
@@ -71,6 +78,7 @@
 		</tr>
 	</thead>
 	<tr v-for="server in servers">
+        <td class="server-checkbox-td"><checkbox ref="serverCheckboxes" :v-value="server.id" @input="changeServerChecked"></checkbox></td>
         <td class="server-name-td"><a :href="'/servers/server?serverId=' + server.id"><keyword :v-word="keyword">{{server.name}}</keyword></a>  &nbsp; <a :href="'/servers/server/settings?serverId=' + server.id" title="设置"><i class="icon setting grey"></i></a>
 			<div style="margin-top:0.4em">
 				<grey-label>{{server.serverTypeName}}</grey-label>
