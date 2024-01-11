@@ -13,6 +13,12 @@
 .node-logs-box::-webkit-scrollbar {
   width: 4px;
 }
+.server-checkbox-td .checkbox {
+  opacity: 50%;
+}
+.server-checkbox-td .checkbox:hover {
+  opacity: 100%;
+}
 .server-name-td {
   position: relative;
 }
