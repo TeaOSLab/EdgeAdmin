@@ -2,7 +2,7 @@
 
 {$template "menu"}
 
-<div class="ui warning message"><i class="icon warning circle"></i>如果你修改了GRPC访问地址（包含端口），可能需要手工修改其他节点的配置信息。</div>
+<div class="ui warning message"><i class="icon warning circle"></i>如果你修改了GRPC访问地址、端口、证书相关信息时，需要重启<code-label>edge-api</code-label>进程（<code-label>edge-node restart</code-label>）才能生效，并可能需要手工修改其他节点的配置信息。</div>
 
 <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 	<input type="hidden" name="nodeId" :value="node.id"/>
