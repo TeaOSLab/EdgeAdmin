@@ -1097,10 +1097,13 @@ window.teaweb = {
 		return -1
 	},
 	convertSizeCapacityToString: function (c) {
-		if (c == null || c.count == null || c.unit == null) {
+		if (c == null || c.count == null || c.unit == null || c.unit.length == 0) {
 			return ""
 		}
-		return c.count + c.unit.toString().toUpperCase()
+		if (c.unit == "byte") {
+			return c.count + "B"
+		}
+		return c.count + c.unit[0].toUpperCase() + "i" + c.unit.substring(1).toUpperCase()
 	}
 }
 
