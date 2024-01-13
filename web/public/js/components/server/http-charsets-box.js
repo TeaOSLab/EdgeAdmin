@@ -7,7 +7,8 @@ Vue.component("http-charsets-box", {
 				isPrior: false,
 				isOn: false,
 				charset: "",
-				isUpper: false
+				isUpper: false,
+				force: false
 			}
 		}
 		return {
@@ -51,13 +52,20 @@ Vue.component("http-charsets-box", {
 		<more-options-tbody @change="changeAdvancedVisible" v-if="((!vIsLocation && !vIsGroup) || charsetConfig.isPrior) && charsetConfig.isOn"></more-options-tbody>
 		<tbody v-show="((!vIsLocation && !vIsGroup) || charsetConfig.isPrior) && charsetConfig.isOn && advancedVisible">
 			<tr>
-				<td>字符编码是否大写</td>
+				<td>强制替换</td>
+				<td>
+					<checkbox v-model="charsetConfig.force"></checkbox>
+					<p class="comment">选中后，表示强制覆盖已经设置的字符集；不选中，表示如果源站已经设置了字符集，则保留不修改。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>字符编码大写</td>
 				<td>
 					<div class="ui checkbox">
 						<input type="checkbox" v-model="charsetConfig.isUpper"/>
 						<label></label>
 					</div>
-					<p class="comment">选中后将指定的字符编码转换为大写，比如默认为<span class="ui label tiny">utf-8</span>，选中后将改为<span class="ui label tiny">UTF-8</span>。</p>
+					<p class="comment">选中后将指定的字符编码转换为大写，比如默认为<code-label>utf-8</code-label>，选中后将改为<code-label>UTF-8</code-label>。</p>
 				</td>
 			</tr>
 		</tbody>
