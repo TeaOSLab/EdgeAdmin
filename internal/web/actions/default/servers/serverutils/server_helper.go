@@ -344,8 +344,6 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"configCode": serverconfigs.ConfigCodeCompression,
 		})
 
-		menuItems = this.filterMenuItems3(serverConfig, menuItems, serverIdString, secondMenuItem, actionPtr)
-
 		menuItems = append(menuItems, maps.Map{
 			"name":       this.Lang(actionPtr, codes.Server_MenuSettingPages),
 			"url":        "/servers/server/settings/pages?serverId=" + serverIdString,
@@ -373,6 +371,8 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"isOn":       serverConfig.Web != nil && serverConfig.Web.WebP != nil && serverConfig.Web.WebP.IsOn,
 			"configCode": serverconfigs.ConfigCodeWebp,
 		})
+
+		menuItems = this.filterMenuItems3(serverConfig, menuItems, serverIdString, secondMenuItem, actionPtr)
 
 		menuItems = append(menuItems, maps.Map{
 			"name":       this.Lang(actionPtr, codes.Server_MenuSettingStat),
