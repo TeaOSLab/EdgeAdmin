@@ -2871,19 +2871,22 @@ Vue.component("plan-limit-view", {
 	methods: {
 		formatNumber: function (n) {
 			return teaweb.formatNumber(n)
+		},
+		composeCapacity: function (capacity) {
+			return teaweb.convertSizeCapacityToString(capacity)
 		}
 	},
 	template: `<div style="font-size: 0.8em; color: grey">
 	<div class="ui divider" v-if="hasLimit"></div>
 	<div v-if="config.trafficLimit != null && config.trafficLimit.isOn">
-		<span v-if="config.trafficLimit.dailySize != null && config.trafficLimit.dailySize.count > 0">日流量限制：{{config.trafficLimit.dailySize.count}}{{config.trafficLimit.dailySize.unit.toUpperCase().replace(/(.)B/, "$1iB")}}<br/></span>
-		<span v-if="config.trafficLimit.monthlySize != null && config.trafficLimit.monthlySize.count > 0">月流量限制：{{config.trafficLimit.monthlySize.count}}{{config.trafficLimit.monthlySize.unit.toUpperCase().replace(/(.)B/, "$1iB")}}<br/></span>
+		<span v-if="config.trafficLimit.dailySize != null && config.trafficLimit.dailySize.count > 0">日流量限制：{{composeCapacity(config.trafficLimit.dailySize)}}<br/></span>
+		<span v-if="config.trafficLimit.monthlySize != null && config.trafficLimit.monthlySize.count > 0">月流量限制：{{composeCapacity(config.trafficLimit.monthlySize)}}<br/></span>
 	</div>
 	<div v-if="config.dailyRequests > 0">单日请求数限制：{{formatNumber(config.dailyRequests)}}</div>
 	<div v-if="config.monthlyRequests > 0">单月请求数限制：{{formatNumber(config.monthlyRequests)}}</div>
 	<div v-if="config.dailyWebsocketConnections > 0">单日Websocket限制：{{formatNumber(config.dailyWebsocketConnections)}}</div>
 	<div v-if="config.monthlyWebsocketConnections > 0">单月Websocket限制：{{formatNumber(config.monthlyWebsocketConnections)}}</div>
-	<div v-if="config.maxUploadSize != null && config.maxUploadSize.count > 0">文件上传限制：{{config.maxUploadSize.count}}{{config.maxUploadSize.unit.toUpperCase().replace(/(.)B/, "$1iB")}}</div>
+	<div v-if="config.maxUploadSize != null && config.maxUploadSize.count > 0">文件上传限制：{{composeCapacity(config.maxUploadSize)}}</div>
 </div>`
 })
 
@@ -13743,6 +13746,84 @@ Vue.component("http-firewall-block-options", {
 `
 })
 
+Vue.component("http-hls-config-box", {
+	props: ["value", "v-is-location", "v-is-group"],
+	data: function () {
+		let config = this.value
+		if (config == null) {
+			config = {
+				isPrior: false
+			}
+		}
+
+		let encryptingConfig = config.encrypting
+		if (encryptingConfig == null) {
+			encryptingConfig = {
+				isOn: false,
+				onlyURLPatterns: [],
+				exceptURLPatterns: []
+			}
+			config.encrypting = encryptingConfig
+		}
+
+		return {
+			config: config,
+
+			encryptingConfig: encryptingConfig,
+			encryptingMoreOptionsVisible: false
+		}
+	},
+	methods: {
+		isOn: function () {
+			return ((!this.vIsLocation && !this.vIsGroup) || this.config.isPrior)
+		},
+
+		showEncryptingMoreOptions: function () {
+			this.encryptingMoreOptionsVisible = !this.encryptingMoreOptionsVisible
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="hlsJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable" v-show="vIsLocation || vIsGroup">
+		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+	</table>
+	
+	<table class="ui table definition selectable" v-show="isOn()">
+		<tbody>
+			<tr>
+				<td class="title">启用HLS加密</td>
+				<td>
+					<checkbox v-model="encryptingConfig.isOn"></checkbox>
+					<p class="comment">启用后，系统会自动在<code-label>.m3u8</code-label>文件中加入<code-label>#EXT-X-KEY:METHOD=AES-128...</code-label>，并将其中的<code-label>.ts</code-label>文件内容进行加密。</p>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="encryptingConfig.isOn">
+			<tr>
+				<td colspan="2"><more-options-indicator @change="showEncryptingMoreOptions"></more-options-indicator></td>
+			</tr>
+		</tbody>
+		<tbody v-show="encryptingConfig.isOn && encryptingMoreOptionsVisible">
+			<tr>
+				<td>例外URL</td>
+				<td>
+					<url-patterns-box v-model="encryptingConfig.exceptURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>限制URL</td>
+				<td>
+					<url-patterns-box v-model="encryptingConfig.onlyURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了限制URL，表示只对这些URL进行加密处理；如果不填则表示支持所有的URL。</p>
+				</td>
+			</tr>	
+		</tbody>
+	</table>
+	<div class="margin"></div>
+</div>`
+})
+
 Vue.component("http-oss-bucket-params", {
 	props: ["v-oss-config", "v-params", "name"],
 	data: function () {
@@ -19115,8 +19196,13 @@ Vue.component("url-patterns-box", {
 
 Vue.component("size-capacity-view", {
 	props:["v-default-text", "v-value"],
+	methods: {
+		composeCapacity: function (capacity) {
+			return teaweb.convertSizeCapacityToString(capacity)
+		}
+	},
 	template: `<div>
-	<span v-if="vValue != null && vValue.count > 0">{{vValue.count}}{{vValue.unit.toUpperCase().replace(/(.)B/, "$1iB")}}</span>
+	<span v-if="vValue != null && vValue.count > 0">{{composeCapacity(vValue)}}</span>
 	<span v-else>{{vDefaultText}}</span>
 </div>`
 })

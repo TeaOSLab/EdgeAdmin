@@ -1015,17 +1015,17 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 	<combo-box title="集群" placeholder="集群名称" :v-items="clusters" :name="inputName" :v-value="vClusterId" @change="change"></combo-box>
 </div>`}),Vue.component("plan-user-selector",{props:["v-user-id"],data:function(){return{}},methods:{change:function(e){this.$emit("change",e)}},template:`<div>
 	<user-selector :v-user-id="vUserId" data-url="/plans/users/options" @change="change"></user-selector>
-</div>`}),Vue.component("plan-limit-view",{props:["value","v-single-mode"],data:function(){var e=this.value;let t=!1;return this.vSingleMode||(null!=e.trafficLimit&&e.trafficLimit.isOn&&(null!=e.trafficLimit.dailySize&&0<e.trafficLimit.dailySize.count||null!=e.trafficLimit.monthlySize&&0<e.trafficLimit.monthlySize.count)||0<e.dailyRequests||0<e.monthlyRequests)&&(t=!0),{config:e,hasLimit:t}},methods:{formatNumber:function(e){return teaweb.formatNumber(e)}},template:`<div style="font-size: 0.8em; color: grey">
+</div>`}),Vue.component("plan-limit-view",{props:["value","v-single-mode"],data:function(){var e=this.value;let t=!1;return this.vSingleMode||(null!=e.trafficLimit&&e.trafficLimit.isOn&&(null!=e.trafficLimit.dailySize&&0<e.trafficLimit.dailySize.count||null!=e.trafficLimit.monthlySize&&0<e.trafficLimit.monthlySize.count)||0<e.dailyRequests||0<e.monthlyRequests)&&(t=!0),{config:e,hasLimit:t}},methods:{formatNumber:function(e){return teaweb.formatNumber(e)},composeCapacity:function(e){return teaweb.convertSizeCapacityToString(e)}},template:`<div style="font-size: 0.8em; color: grey">
 	<div class="ui divider" v-if="hasLimit"></div>
 	<div v-if="config.trafficLimit != null && config.trafficLimit.isOn">
-		<span v-if="config.trafficLimit.dailySize != null && config.trafficLimit.dailySize.count > 0">日流量限制：{{config.trafficLimit.dailySize.count}}{{config.trafficLimit.dailySize.unit.toUpperCase().replace(/(.)B/, "$1iB")}}<br/></span>
-		<span v-if="config.trafficLimit.monthlySize != null && config.trafficLimit.monthlySize.count > 0">月流量限制：{{config.trafficLimit.monthlySize.count}}{{config.trafficLimit.monthlySize.unit.toUpperCase().replace(/(.)B/, "$1iB")}}<br/></span>
+		<span v-if="config.trafficLimit.dailySize != null && config.trafficLimit.dailySize.count > 0">日流量限制：{{composeCapacity(config.trafficLimit.dailySize)}}<br/></span>
+		<span v-if="config.trafficLimit.monthlySize != null && config.trafficLimit.monthlySize.count > 0">月流量限制：{{composeCapacity(config.trafficLimit.monthlySize)}}<br/></span>
 	</div>
 	<div v-if="config.dailyRequests > 0">单日请求数限制：{{formatNumber(config.dailyRequests)}}</div>
 	<div v-if="config.monthlyRequests > 0">单月请求数限制：{{formatNumber(config.monthlyRequests)}}</div>
 	<div v-if="config.dailyWebsocketConnections > 0">单日Websocket限制：{{formatNumber(config.dailyWebsocketConnections)}}</div>
 	<div v-if="config.monthlyWebsocketConnections > 0">单月Websocket限制：{{formatNumber(config.monthlyWebsocketConnections)}}</div>
-	<div v-if="config.maxUploadSize != null && config.maxUploadSize.count > 0">文件上传限制：{{config.maxUploadSize.count}}{{config.maxUploadSize.unit.toUpperCase().replace(/(.)B/, "$1iB")}}</div>
+	<div v-if="config.maxUploadSize != null && config.maxUploadSize.count > 0">文件上传限制：{{composeCapacity(config.maxUploadSize)}}</div>
 </div>`}),Vue.component("plan-price-view",{props:["v-plan"],data:function(){return{plan:this.vPlan}},template:`<div>
 	 <span v-if="plan.priceType == 'period'">
 	 	按时间周期计费
@@ -5025,7 +5025,46 @@ example2.com
 		</tr>
 	</table>
 </div>	
-`}),Vue.component("http-oss-bucket-params",{props:["v-oss-config","v-params","name"],data:function(){let e=this.vParams,t=(null==e&&(e=[]),this.vOssConfig);return null==t?t={bucketParam:"input",bucketName:"",bucketArgName:""}:(null!=t.bucketParam&&0==t.bucketParam.length&&(t.bucketParam="input"),null!=t.options&&null!=t.options.bucketName&&0<t.options.bucketName.length&&(t.bucketName=t.options.bucketName)),{params:e,ossConfig:t}},template:`<tbody>
+`}),Vue.component("http-hls-config-box",{props:["value","v-is-location","v-is-group"],data:function(){let e=this.value,t=(e=null==e?{isPrior:!1}:e).encrypting;return null==t&&(t={isOn:!1,onlyURLPatterns:[],exceptURLPatterns:[]},e.encrypting=t),{config:e,encryptingConfig:t,encryptingMoreOptionsVisible:!1}},methods:{isOn:function(){return!this.vIsLocation&&!this.vIsGroup||this.config.isPrior},showEncryptingMoreOptions:function(){this.encryptingMoreOptionsVisible=!this.encryptingMoreOptionsVisible}},template:`<div>
+	<input type="hidden" name="hlsJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable" v-show="vIsLocation || vIsGroup">
+		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+	</table>
+	
+	<table class="ui table definition selectable" v-show="isOn()">
+		<tbody>
+			<tr>
+				<td class="title">启用HLS加密</td>
+				<td>
+					<checkbox v-model="encryptingConfig.isOn"></checkbox>
+					<p class="comment">启用后，系统会自动在<code-label>.m3u8</code-label>文件中加入<code-label>#EXT-X-KEY:METHOD=AES-128...</code-label>，并将其中的<code-label>.ts</code-label>文件内容进行加密。</p>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="encryptingConfig.isOn">
+			<tr>
+				<td colspan="2"><more-options-indicator @change="showEncryptingMoreOptions"></more-options-indicator></td>
+			</tr>
+		</tbody>
+		<tbody v-show="encryptingConfig.isOn && encryptingMoreOptionsVisible">
+			<tr>
+				<td>例外URL</td>
+				<td>
+					<url-patterns-box v-model="encryptingConfig.exceptURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>限制URL</td>
+				<td>
+					<url-patterns-box v-model="encryptingConfig.onlyURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了限制URL，表示只对这些URL进行加密处理；如果不填则表示支持所有的URL。</p>
+				</td>
+			</tr>	
+		</tbody>
+	</table>
+	<div class="margin"></div>
+</div>`}),Vue.component("http-oss-bucket-params",{props:["v-oss-config","v-params","name"],data:function(){let e=this.vParams,t=(null==e&&(e=[]),this.vOssConfig);return null==t?t={bucketParam:"input",bucketName:"",bucketArgName:""}:(null!=t.bucketParam&&0==t.bucketParam.length&&(t.bucketParam="input"),null!=t.options&&null!=t.options.bucketName&&0<t.options.bucketName.length&&(t.bucketName=t.options.bucketName)),{params:e,ossConfig:t}},template:`<tbody>
 	<tr>
 		<td>{{name}}名称获取方式 *</td>
 		<td>
@@ -6433,8 +6472,8 @@ example2.com
 	<div v-if=!isAdding style="margin-top: 0.5em">
 		<button class="ui button tiny basic" type="button" @click.prevent="add">+</button>
 	</div>
-</div>`}),Vue.component("size-capacity-view",{props:["v-default-text","v-value"],template:`<div>
-	<span v-if="vValue != null && vValue.count > 0">{{vValue.count}}{{vValue.unit.toUpperCase().replace(/(.)B/, "$1iB")}}</span>
+</div>`}),Vue.component("size-capacity-view",{props:["v-default-text","v-value"],methods:{composeCapacity:function(e){return teaweb.convertSizeCapacityToString(e)}},template:`<div>
+	<span v-if="vValue != null && vValue.count > 0">{{composeCapacity(vValue)}}</span>
 	<span v-else>{{vDefaultText}}</span>
 </div>`}),Vue.component("tip-message-box",{props:["code"],mounted:function(){let t=this;Tea.action("/ui/showTip").params({code:this.code}).success(function(e){t.visible=e.data.visible}).post()},data:function(){return{visible:!1}},methods:{close:function(){this.visible=!1,Tea.action("/ui/hideTip").params({code:this.code}).post()}},template:`<div class="ui icon message" v-if="visible">
 	<i class="icon info circle"></i>
