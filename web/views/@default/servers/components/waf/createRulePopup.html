@@ -83,7 +83,7 @@
         <tr>
             <td>操作符 *</td>
             <td>
-                <select class="ui dropdown" name="operator" style="width:10em" v-model="rule.operator" @change="changeOperator()">
+                <select class="ui dropdown auto-width" name="operator" v-model="rule.operator" @change="changeOperator()">
                     <option v-for="op in operators" :value="op.code">{{op.name}}</option>
                 </select>
                 <p class="comment" v-if="operator != null" v-html="operator.description"></p>
