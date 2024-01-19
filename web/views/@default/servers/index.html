@@ -57,8 +57,8 @@
 
 <div v-if="checkedServerIds.length > 0">
     <div class="ui divider"></div>
-    <button class="ui button basic" @click.prevent="deleteServers">删除所选{{checkedServerIds.length}}网站</button> &nbsp; &nbsp;
-    <button class="ui button basic" @click.prevent="resetCheckedServers">取消所选</button>
+    <button class="ui button basic" @click.prevent="resetCheckedServers">取消所选</button> &nbsp; &nbsp;
+    <button class="ui button basic" @click.prevent="deleteServers">删除所选{{checkedServerIds.length}}网站</button>
 </div>
 
 <table class="ui table selectable celled" v-if="servers.length > 0">
