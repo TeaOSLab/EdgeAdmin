@@ -2,6 +2,8 @@
 
 <h3>添加规则集</h3>
 
+<p class="ui message" v-if="isGlobalPolicy">当前设置的规则集为WAF策略的规则集，将会应用于对应集群已经启用WAF的网站；如果你只是想设置某个网站相关的规则集，请到对应网站WAF功能中设置。</p>
+
 <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 	<input type="hidden" name="groupId" :value="groupId"/>
 	<table class="ui table definition selectable">

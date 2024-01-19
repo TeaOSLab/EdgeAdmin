@@ -54,7 +54,7 @@ func (this *CreateSetPopupAction) RunGet(params struct {
 	}
 
 	// 所有可选的动作
-	actionMaps := []maps.Map{}
+	var actionMaps = []maps.Map{}
 	for _, action := range firewallconfigs.AllActions {
 		actionMaps = append(actionMaps, maps.Map{
 			"name":        action.Name,
@@ -63,6 +63,9 @@ func (this *CreateSetPopupAction) RunGet(params struct {
 		})
 	}
 	this.Data["actions"] = actionMaps
+
+	// 是否为全局
+	this.Data["isGlobalPolicy"] = firewallPolicy.ServerId == 0
 
 	this.Show()
 }
