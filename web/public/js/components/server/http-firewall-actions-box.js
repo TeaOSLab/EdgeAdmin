@@ -271,7 +271,7 @@ Vue.component("http-firewall-actions-box", {
 	methods: {
 		add: function () {
 			this.action = null
-			this.actionCode = "block"
+			this.actionCode = "page"
 			this.isAdding = true
 			this.actionOptions = {}
 
