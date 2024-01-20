@@ -34,6 +34,7 @@ func (this *UpdateAction) RunGet(params struct {
 		return
 	}
 
+	// block options
 	if firewallPolicy.BlockOptions == nil {
 		firewallPolicy.BlockOptions = &firewallconfigs.HTTPFirewallBlockAction{
 			StatusCode: http.StatusForbidden,
@@ -41,6 +42,11 @@ func (this *UpdateAction) RunGet(params struct {
 			URL:        "",
 			Timeout:    60,
 		}
+	}
+
+	// page options
+	if firewallPolicy.PageOptions == nil {
+		firewallPolicy.PageOptions = firewallconfigs.DefaultHTTPFirewallPageAction()
 	}
 
 	// mode
@@ -71,6 +77,7 @@ func (this *UpdateAction) RunGet(params struct {
 		"isOn":               firewallPolicy.IsOn,
 		"mode":               firewallPolicy.Mode,
 		"blockOptions":       firewallPolicy.BlockOptions,
+		"pageOptions":        firewallPolicy.PageOptions,
 		"captchaOptions":     firewallPolicy.CaptchaOptions,
 		"useLocalFirewall":   firewallPolicy.UseLocalFirewall,
 		"synFloodConfig":     firewallPolicy.SYNFlood,
@@ -107,6 +114,7 @@ func (this *UpdateAction) RunPost(params struct {
 	Name               string
 	GroupCodes         []string
 	BlockOptionsJSON   []byte
+	PageOptionsJSON    []byte
 	CaptchaOptionsJSON []byte
 	Description        string
 	IsOn               bool
@@ -132,6 +140,19 @@ func (this *UpdateAction) RunPost(params struct {
 	err := json.Unmarshal(params.BlockOptionsJSON, blockOptions)
 	if err != nil {
 		this.Fail("拦截动作参数校验失败：" + err.Error())
+		return
+	}
+
+	// 校验显示页面选项JSON
+	var pageOptions = &firewallconfigs.HTTPFirewallPageAction{}
+	err = json.Unmarshal(params.PageOptionsJSON, pageOptions)
+	if err != nil {
+		this.Fail("校验显示页面动作配置失败：" + err.Error())
+		return
+	}
+	if pageOptions.Status < 100 && pageOptions.Status > 999 {
+		this.Fail("显示页面动作的状态码配置错误：" + types.String(pageOptions.Status))
+		return
 	}
 
 	// 校验验证码选项JSON
@@ -139,6 +160,7 @@ func (this *UpdateAction) RunPost(params struct {
 	err = json.Unmarshal(params.CaptchaOptionsJSON, captchaOptions)
 	if err != nil {
 		this.Fail("验证码动作参数校验失败：" + err.Error())
+		return
 	}
 
 	// 检查极验配置
@@ -170,6 +192,7 @@ func (this *UpdateAction) RunPost(params struct {
 		Description:          params.Description,
 		FirewallGroupCodes:   params.GroupCodes,
 		BlockOptionsJSON:     params.BlockOptionsJSON,
+		PageOptionsJSON:      params.PageOptionsJSON,
 		CaptchaOptionsJSON:   params.CaptchaOptionsJSON,
 		Mode:                 params.Mode,
 		UseLocalFirewall:     params.UseLocalFirewall,
