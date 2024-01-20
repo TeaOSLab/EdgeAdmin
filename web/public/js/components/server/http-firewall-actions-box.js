@@ -85,6 +85,8 @@ Vue.component("http-firewall-actions-box", {
 			ipListLevels: [],
 
 			// 动作参数
+			allowScope: "global",
+
 			blockTimeout: "",
 			blockTimeoutMax: "",
 			blockScope: "global",
@@ -139,6 +141,9 @@ Vue.component("http-firewall-actions-box", {
 				return v.code == code
 			})
 			this.actionOptions = {}
+		},
+		allowScope: function (v) {
+			this.actionOptions["scope"] = v
 		},
 		blockTimeout: function (v) {
 			v = parseInt(v)
@@ -279,6 +284,8 @@ Vue.component("http-firewall-actions-box", {
 			this.actionOptions = {}
 
 			// 动作参数
+			this.allowScope = "global"
+
 			this.blockTimeout = ""
 			this.blockTimeoutMax = ""
 			this.blockScope = "global"
@@ -363,6 +370,11 @@ Vue.component("http-firewall-actions-box", {
 					}
 					break
 				case "allow":
+					if (config.options != null && config.options.scope != null && config.options.scope.length > 0) {
+						this.allowScope = config.options.scope
+					} else {
+						this.allowScope = "global"
+					}
 					break
 				case "log":
 					break
@@ -674,6 +686,13 @@ Vue.component("http-firewall-actions-box", {
 		<div v-for="(config, index) in configs" :data-index="index" :key="config.id" class="ui label small basic" :class="{blue: index == editingIndex}" style="margin-bottom: 0.4em">
 			{{config.name}} <span class="small">({{config.code.toUpperCase()}})</span> 
 			
+			<!-- allow -->
+			<span class="small" v-if="config.code == 'allow' && config.options != null && config.options.scope != null && config.options.scope.length > 0">
+				<span v-if="config.options.scope == 'group'">[分组]</span>
+				<span v-if="config.options.scope == 'server'">[网站]</span>
+				<span v-if="config.options.scope == 'global'">[网站和策略]</span>
+			</span>
+			
 			<!-- block -->
 			<span v-if="config.code == 'block' && config.options.timeout > 0">：封禁时长{{config.options.timeout}}<span v-if="config.options.timeoutMax > config.options.timeout">-{{config.options.timeoutMax}}</span>秒</span>
 			
@@ -712,7 +731,7 @@ Vue.component("http-firewall-actions-box", {
 			<span v-if="config.code == 'go_set'">：{{config.options.groupName}} / {{config.options.setName}}</span>
 			
 			<!-- 范围 -->
-			<span v-if="config.options.scope != null && config.options.scope.length > 0" class="small grey">
+			<span v-if="config.code != 'allow' && config.options.scope != null && config.options.scope.length > 0" class="small grey">
 				&nbsp; 
 				<span v-if="config.options.scope == 'global'">[所有网站]</span>
 				<span v-if="config.options.scope == 'service'">[当前网站]</span>
@@ -732,6 +751,21 @@ Vue.component("http-firewall-actions-box", {
 						<option v-for="action in actions" :value="action.code">{{action.name}} ({{action.code.toUpperCase()}})</option>
 					</select>
 					<p class="comment" v-if="action != null && action.description.length > 0">{{action.description}}</p>
+				</td>
+			</tr>
+			
+			<!-- allow -->
+			<tr v-if="actionCode == 'allow'">
+				<td>有效范围</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="allowScope">
+						<option value="group">分组</option>
+						<option value="server">网站</option>
+						<option value="global">网站和策略</option>
+					</select>
+					<p class="comment" v-if="allowScope == 'group'">跳过当前分组其他规则集，继续执行其他分组的规则集。</p>
+					<p class="comment" v-if="allowScope == 'server'">跳过当前网站所有的规则集。</p>
+					<p class="comment" v-if="allowScope =='global'">跳过当前网站和网站对应WAF策略所有的规则集。</p>
 				</td>
 			</tr>
 			
