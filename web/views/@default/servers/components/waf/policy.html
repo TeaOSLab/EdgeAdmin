@@ -26,10 +26,20 @@
            </div>
         </td>
     </tr>
+</table>
+
+<h4>动作配置</h4>
+<table class="ui table definition selectable">
     <tr>
-        <td>阻止动作设置</td>
+        <td class="title">阻止动作设置</td>
         <td>
            <http-firewall-block-options-viewer :v-block-options="firewallPolicy.blockOptions"></http-firewall-block-options-viewer>
+        </td>
+    </tr>
+    <tr>
+        <td class="title">显示页面动作设置</td>
+        <td>
+            <http-firewall-page-options-viewer :v-page-options="firewallPolicy.pageOptions"></http-firewall-page-options-viewer>
         </td>
     </tr>
     <tr>
@@ -46,15 +56,12 @@
             <p class="comment" v-if="firewallPolicy.useLocalFirewall">可以在合适的时候自动使用系统自带防火墙进行防御。</p>
         </td>
     </tr>
+</table>
+
+<h4>日志配置</h4>
+<table class="ui table definition selectable">
     <tr>
-        <td>SYN Flood防御</td>
-        <td>
-            <span v-if="firewallPolicy.synFlood == null || !firewallPolicy.synFlood.isOn" class="disabled">未启用</span>
-            <firewall-syn-flood-config-viewer v-else :v-syn-flood-config="firewallPolicy.synFlood"></firewall-syn-flood-config-viewer>
-        </td>
-    </tr>
-    <tr>
-        <td :class="{'color-border':firewallPolicy.log !=null && firewallPolicy.log.isOn}">记录访问日志</td>
+        <td class="title" :class="{'color-border':firewallPolicy.log !=null && firewallPolicy.log.isOn}">记录访问日志</td>
         <td>
             <span v-if="firewallPolicy.log == null || !firewallPolicy.log.isOn">默认</span>
             <span v-else class="green">开启</span>
@@ -74,15 +81,12 @@
             <span v-else>不记录</span>
         </td>
     </tr>
+</table>
+
+<h4>区域封禁设置</h4>
+<table class="ui table definition selectable">
     <tr>
-        <td>最多检查内容尺寸</td>
-        <td>
-            <span v-if="firewallPolicy.maxRequestBodySize == 0" class="disabled">使用默认</span>
-            <span v-else>{{firewallPolicy.maxRequestBodySizeFormat}}</span>
-        </td>
-    </tr>
-    <tr>
-        <td>区域封禁默认提示内容</td>
+        <td class="title">区域封禁默认提示内容</td>
         <td>
             <span v-if="firewallPolicy.denyCountryHTML != null && firewallPolicy.denyCountryHTML.length > 0">自定义</span>
             <span v-else class="disabled">使用默认</span>
@@ -93,6 +97,24 @@
         <td>
             <span v-if="firewallPolicy.denyProvinceHTML != null && firewallPolicy.denyProvinceHTML.length > 0">自定义</span>
             <span v-else class="disabled">使用默认</span>
+        </td>
+    </tr>
+</table>
+
+<h4>其他配置</h4>
+<table class="ui table definition selectable">
+    <tr>
+        <td class="title">SYN Flood防御</td>
+        <td>
+            <span v-if="firewallPolicy.synFlood == null || !firewallPolicy.synFlood.isOn" class="disabled">未启用</span>
+            <firewall-syn-flood-config-viewer v-else :v-syn-flood-config="firewallPolicy.synFlood"></firewall-syn-flood-config-viewer>
+        </td>
+    </tr>
+    <tr>
+        <td>最多检查内容尺寸</td>
+        <td>
+            <span v-if="firewallPolicy.maxRequestBodySize == 0" class="disabled">使用默认</span>
+            <span v-else>{{firewallPolicy.maxRequestBodySizeFormat}}</span>
         </td>
     </tr>
     <tr>

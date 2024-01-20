@@ -105,6 +105,7 @@ Vue.component("http-firewall-actions-box", {
 
 			tagTags: [],
 
+			pageUseDefault: true,
 			pageStatus: 403,
 			pageBody: defaultPageBody,
 			defaultPageBody: defaultPageBody,
@@ -302,6 +303,7 @@ Vue.component("http-firewall-actions-box", {
 
 			this.tagTags = []
 
+			this.pageUseDefault = true
 			this.pageStatus = 403
 			this.pageBody = this.defaultPageBody
 
@@ -429,8 +431,14 @@ Vue.component("http-firewall-actions-box", {
 					}
 					break
 				case "page":
+					this.pageUseDefault = true
 					this.pageStatus = 403
 					this.pageBody = this.defaultPageBody
+					if (typeof config.options.useDefault === "boolean") {
+						this.pageUseDefault = config.options.useDefault
+					} else {
+						this.pageUseDefault = false
+					}
 					if (config.options.status != null) {
 						this.pageStatus = config.options.status
 					}
@@ -533,6 +541,7 @@ Vue.component("http-firewall-actions-box", {
 				}
 
 				this.actionOptions = {
+					useDefault: this.pageUseDefault,
 					status: pageStatus,
 					body: this.pageBody
 				}
@@ -691,7 +700,7 @@ Vue.component("http-firewall-actions-box", {
 			<span v-if="config.code == 'tag'">：{{config.options.tags.join(", ")}}</span>
 			
 			<!-- page -->
-			<span v-if="config.code == 'page'">：[{{config.options.status}}]</span>
+			<span v-if="config.code == 'page'">：[{{config.options.status}}]<span v-if="config.options.useDefault">&nbsp; [默认页面]</span></span>
 			
 			<!-- redirect -->
 			<span v-if="config.code == 'redirect'">：{{config.options.url}}</span>
@@ -893,11 +902,17 @@ Vue.component("http-firewall-actions-box", {
 			
 			<!-- page -->
 			<tr v-if="actionCode == 'page'">
-				<td>状态码 *</td>
+				<td>使用默认提示</td>
+				<td>
+					<checkbox v-model="pageUseDefault"></checkbox>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'page' && !pageUseDefault">
+				<td class="color-border">状态码 *</td>
 				<td><input type="text" style="width: 4em" maxlength="3" v-model="pageStatus"/></td>
 			</tr>
-			<tr v-if="actionCode == 'page'">
-				<td>网页内容</td>
+			<tr v-if="actionCode == 'page' && !pageUseDefault">
+				<td class="color-border">网页内容</td>
 				<td>
 					<textarea v-model="pageBody"></textarea>
 				</td>
