@@ -55,10 +55,12 @@ Vue.component("http-firewall-actions-box", {
 
 		var defaultPageBody = `<!DOCTYPE html>
 <html lang="en">
-<title>403 Forbidden</title>
+<head>
+\t<title>403 Forbidden</title>
 \t<style>
 \t\taddress { line-height: 1.8; }
 \t</style>
+</head>
 <body>
 <h1>403 Forbidden</h1>
 <address>Connection: \${remoteAddr} (Client) -&gt; \${serverAddr} (Server)</address>
