@@ -6,6 +6,11 @@ Vue.component("http-firewall-actions-view", {
 			<span :class="{red: action.category == 'block', orange: action.category == 'verify', green: action.category == 'allow'}">{{action.name}} ({{action.code.toUpperCase()}})
 			  	<div v-if="action.options != null">
 			  		<span class="grey small" v-if="action.code.toLowerCase() == 'page'">[{{action.options.status}}]</span>
+			  		<span class="grey small" v-if="action.code.toLowerCase() == 'allow' && action.options != null && action.options.scope != null && action.options.scope.length > 0">
+			  			<span v-if="action.options.scope == 'group'">[分组]</span>
+						<span v-if="action.options.scope == 'server'">[网站]</span>
+						<span v-if="action.options.scope == 'global'">[网站和策略]</span>	
+					</span>
 				</div>	
 			</span>
 		</div>             
