@@ -49,6 +49,7 @@ func init() {
 			Post("/start", new(node.StartAction)).
 			Post("/stop", new(node.StopAction)).
 			Post("/up", new(node.UpAction)).
+			Post("/updateIsOn", new(node.UpdateIsOnAction)).
 			Get("/detail", new(node.DetailAction)).
 			GetPost("/updateDNSPopup", new(node.UpdateDNSPopupAction)).
 			Post("/syncDomain", new(node.SyncDomainAction)).

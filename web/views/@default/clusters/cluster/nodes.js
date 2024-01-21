@@ -49,6 +49,26 @@ Tea.context(function () {
 		})
 	}
 
+	this.updateNodeOn = function (nodeId, isOn) {
+		let that = this
+		let op
+		if (isOn) {
+			op = "启用"
+		} else {
+			op = "停用"
+		}
+		teaweb.confirm("确定要" + op + "此节点吗？", function () {
+			that.$post(".node.updateIsOn")
+				.params({
+					nodeId: nodeId,
+					isOn: isOn
+				})
+				.success(function () {
+					teaweb.successRefresh(op + "成功")
+				})
+		})
+	}
+
 	/**
 	 * 显示和隐藏IP
 	 */
