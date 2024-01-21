@@ -3837,6 +3837,22 @@ Vue.component("http-stat-config-box", {
 </div>`
 })
 
+Vue.component("http-firewall-page-options-viewer", {
+	props: ["v-page-options"],
+	data: function () {
+		return {
+			options: this.vPageOptions
+		}
+	},
+	template: `<div>
+	<span v-if="options == null">默认设置</span>
+	<div v-else>
+		状态码：{{options.status}} / 提示内容：<span v-if="options.body != null && options.body.length > 0">[{{options.body.length}}字符]</span>
+	</div>
+</div>	
+`
+})
+
 Vue.component("http-request-conds-box", {
 	props: ["v-conds"],
 	data: function () {
@@ -4563,6 +4579,11 @@ Vue.component("http-firewall-actions-view", {
 			<span :class="{red: action.category == 'block', orange: action.category == 'verify', green: action.category == 'allow'}">{{action.name}} ({{action.code.toUpperCase()}})
 			  	<div v-if="action.options != null">
 			  		<span class="grey small" v-if="action.code.toLowerCase() == 'page'">[{{action.options.status}}]</span>
+			  		<span class="grey small" v-if="action.code.toLowerCase() == 'allow' && action.options != null && action.options.scope != null && action.options.scope.length > 0">
+			  			<span v-if="action.options.scope == 'group'">[分组]</span>
+						<span v-if="action.options.scope == 'server'">[网站]</span>
+						<span v-if="action.options.scope == 'global'">[网站和策略]</span>	
+					</span>
 				</div>	
 			</span>
 		</div>             
@@ -8925,10 +8946,12 @@ Vue.component("http-firewall-actions-box", {
 
 		var defaultPageBody = `<!DOCTYPE html>
 <html lang="en">
-<title>403 Forbidden</title>
+<head>
+\t<title>403 Forbidden</title>
 \t<style>
 \t\taddress { line-height: 1.8; }
 \t</style>
+</head>
 <body>
 <h1>403 Forbidden</h1>
 <address>Connection: \${remoteAddr} (Client) -&gt; \${serverAddr} (Server)</address>
@@ -8953,6 +8976,8 @@ Vue.component("http-firewall-actions-box", {
 			ipListLevels: [],
 
 			// 动作参数
+			allowScope: "global",
+
 			blockTimeout: "",
 			blockTimeoutMax: "",
 			blockScope: "global",
@@ -8973,6 +8998,7 @@ Vue.component("http-firewall-actions-box", {
 
 			tagTags: [],
 
+			pageUseDefault: true,
 			pageStatus: 403,
 			pageBody: defaultPageBody,
 			defaultPageBody: defaultPageBody,
@@ -9006,6 +9032,9 @@ Vue.component("http-firewall-actions-box", {
 				return v.code == code
 			})
 			this.actionOptions = {}
+		},
+		allowScope: function (v) {
+			this.actionOptions["scope"] = v
 		},
 		blockTimeout: function (v) {
 			v = parseInt(v)
@@ -9141,11 +9170,13 @@ Vue.component("http-firewall-actions-box", {
 	methods: {
 		add: function () {
 			this.action = null
-			this.actionCode = "block"
+			this.actionCode = "page"
 			this.isAdding = true
 			this.actionOptions = {}
 
 			// 动作参数
+			this.allowScope = "global"
+
 			this.blockTimeout = ""
 			this.blockTimeoutMax = ""
 			this.blockScope = "global"
@@ -9170,6 +9201,7 @@ Vue.component("http-firewall-actions-box", {
 
 			this.tagTags = []
 
+			this.pageUseDefault = true
 			this.pageStatus = 403
 			this.pageBody = this.defaultPageBody
 
@@ -9229,6 +9261,11 @@ Vue.component("http-firewall-actions-box", {
 					}
 					break
 				case "allow":
+					if (config.options != null && config.options.scope != null && config.options.scope.length > 0) {
+						this.allowScope = config.options.scope
+					} else {
+						this.allowScope = "global"
+					}
 					break
 				case "log":
 					break
@@ -9297,8 +9334,14 @@ Vue.component("http-firewall-actions-box", {
 					}
 					break
 				case "page":
+					this.pageUseDefault = true
 					this.pageStatus = 403
 					this.pageBody = this.defaultPageBody
+					if (typeof config.options.useDefault === "boolean") {
+						this.pageUseDefault = config.options.useDefault
+					} else {
+						this.pageUseDefault = false
+					}
 					if (config.options.status != null) {
 						this.pageStatus = config.options.status
 					}
@@ -9401,6 +9444,7 @@ Vue.component("http-firewall-actions-box", {
 				}
 
 				this.actionOptions = {
+					useDefault: this.pageUseDefault,
 					status: pageStatus,
 					body: this.pageBody
 				}
@@ -9533,6 +9577,13 @@ Vue.component("http-firewall-actions-box", {
 		<div v-for="(config, index) in configs" :data-index="index" :key="config.id" class="ui label small basic" :class="{blue: index == editingIndex}" style="margin-bottom: 0.4em">
 			{{config.name}} <span class="small">({{config.code.toUpperCase()}})</span> 
 			
+			<!-- allow -->
+			<span class="small" v-if="config.code == 'allow' && config.options != null && config.options.scope != null && config.options.scope.length > 0">
+				<span v-if="config.options.scope == 'group'">[分组]</span>
+				<span v-if="config.options.scope == 'server'">[网站]</span>
+				<span v-if="config.options.scope == 'global'">[网站和策略]</span>
+			</span>
+			
 			<!-- block -->
 			<span v-if="config.code == 'block' && config.options.timeout > 0">：封禁时长{{config.options.timeout}}<span v-if="config.options.timeoutMax > config.options.timeout">-{{config.options.timeoutMax}}</span>秒</span>
 			
@@ -9559,7 +9610,7 @@ Vue.component("http-firewall-actions-box", {
 			<span v-if="config.code == 'tag'">：{{config.options.tags.join(", ")}}</span>
 			
 			<!-- page -->
-			<span v-if="config.code == 'page'">：[{{config.options.status}}]</span>
+			<span v-if="config.code == 'page'">：[{{config.options.status}}]<span v-if="config.options.useDefault">&nbsp; [默认页面]</span></span>
 			
 			<!-- redirect -->
 			<span v-if="config.code == 'redirect'">：{{config.options.url}}</span>
@@ -9571,7 +9622,7 @@ Vue.component("http-firewall-actions-box", {
 			<span v-if="config.code == 'go_set'">：{{config.options.groupName}} / {{config.options.setName}}</span>
 			
 			<!-- 范围 -->
-			<span v-if="config.options.scope != null && config.options.scope.length > 0" class="small grey">
+			<span v-if="config.code != 'allow' && config.options.scope != null && config.options.scope.length > 0" class="small grey">
 				&nbsp; 
 				<span v-if="config.options.scope == 'global'">[所有网站]</span>
 				<span v-if="config.options.scope == 'service'">[当前网站]</span>
@@ -9591,6 +9642,21 @@ Vue.component("http-firewall-actions-box", {
 						<option v-for="action in actions" :value="action.code">{{action.name}} ({{action.code.toUpperCase()}})</option>
 					</select>
 					<p class="comment" v-if="action != null && action.description.length > 0">{{action.description}}</p>
+				</td>
+			</tr>
+			
+			<!-- allow -->
+			<tr v-if="actionCode == 'allow'">
+				<td>有效范围</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="allowScope">
+						<option value="group">分组</option>
+						<option value="server">网站</option>
+						<option value="global">网站和策略</option>
+					</select>
+					<p class="comment" v-if="allowScope == 'group'">跳过当前分组其他规则集，继续执行其他分组的规则集。</p>
+					<p class="comment" v-if="allowScope == 'server'">跳过当前网站所有的规则集。</p>
+					<p class="comment" v-if="allowScope =='global'">跳过当前网站和网站对应WAF策略所有的规则集。</p>
 				</td>
 			</tr>
 			
@@ -9761,11 +9827,17 @@ Vue.component("http-firewall-actions-box", {
 			
 			<!-- page -->
 			<tr v-if="actionCode == 'page'">
-				<td>状态码 *</td>
+				<td>使用默认提示</td>
+				<td>
+					<checkbox v-model="pageUseDefault"></checkbox>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'page' && !pageUseDefault">
+				<td class="color-border">状态码 *</td>
 				<td><input type="text" style="width: 4em" maxlength="3" v-model="pageStatus"/></td>
 			</tr>
-			<tr v-if="actionCode == 'page'">
-				<td>网页内容</td>
+			<tr v-if="actionCode == 'page' && !pageUseDefault">
+				<td class="color-border">网页内容</td>
 				<td>
 					<textarea v-model="pageBody"></textarea>
 				</td>
@@ -10674,6 +10746,74 @@ Vue.component("http-pages-and-shutdown-box", {
 </div>
 <div class="ui margin"></div>
 </div>`
+})
+
+Vue.component("http-firewall-page-options", {
+	props: ["v-page-options"],
+	data: function () {
+		var defaultPageBody = `<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>403 Forbidden</title>
+	<style>
+		address { line-height: 1.8; }
+	</style>
+</head>
+<body>
+<h1>403 Forbidden By WAF</h1>
+<address>Connection: \${remoteAddr} (Client) -&gt; \${serverAddr} (Server)</address>
+<address>Request ID: \${requestId}</address>
+</body>
+</html>`
+
+		return {
+			pageOptions: this.vPageOptions,
+			status: this.vPageOptions.status,
+			body: this.vPageOptions.body,
+			defaultPageBody: defaultPageBody,
+			isEditing: false
+		}
+	},
+	watch: {
+		status: function (v) {
+			if (typeof v === "string" && v.length != 3) {
+				return
+			}
+			let statusCode = parseInt(v)
+			if (isNaN(statusCode)) {
+				this.pageOptions.status = 403
+			} else {
+				this.pageOptions.status = statusCode
+			}
+		},
+		body: function (v) {
+			this.pageOptions.body = v
+		}
+	},
+	methods: {
+		edit: function () {
+			this.isEditing = !this.isEditing
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="pageOptionsJSON" :value="JSON.stringify(pageOptions)"/>
+	<a href="" @click.prevent="edit">状态码：{{status}} / 提示内容：<span v-if="pageOptions.body != null && pageOptions.body.length > 0">[{{pageOptions.body.length}}字符]</span><span v-else class="disabled">[无]</span>
+	 <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
+	<table class="ui table" v-show="isEditing">
+		<tr>
+			<td class="title">状态码 *</td>
+			<td><input type="text" style="width: 4em" maxlength="3" v-model="status"/></td>
+		</tr>
+		<tr>
+			<td>网页内容</td>
+			<td>
+				<textarea v-model="body"></textarea>
+				<p class="comment"><a href="" @click.prevent="body = defaultPageBody">[使用模板]</a> </p>
+			</td>
+		</tr>
+	</table>
+</div>	
+`
 })
 
 // 压缩配置
