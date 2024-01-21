@@ -70,7 +70,7 @@
         <th class="value-column center" v-if="windowWidth < miniWidth || windowWidth > columnWidth4">连接数<sort-arrow name="connectionsOrder"></sort-arrow></th>
         <th class="value-column center" v-if="windowWidth < miniWidth || windowWidth > columnWidth5">负载<sort-arrow name="loadOrder"></sort-arrow></th>
 		<th class="width6 center">状态</th>
-		<th class="two op">操作</th>
+		<th class="three op">操作</th>
 	</tr>
 	</thead>
 	<tr v-for="(node, nodeIndex) in nodes">
@@ -172,7 +172,7 @@
 			</div>
 		</td>
 		<td>
-			<a :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id">详情</a> &nbsp; <a href="" @click.prevent="deleteNode(node.id)">删除</a>
+			<a :href="'/clusters/cluster/node?clusterId=' + clusterId + '&nodeId=' + node.id">详情</a> &nbsp; <a href="" @click.prevent="updateNodeOn(node.id, !node.isOn)"><span v-if="node.isOn">停用</span><span v-else class="red">启用</span></a> &nbsp; <a href="" @click.prevent="deleteNode(node.id)">删除</a>
 		</td>
 	</tr>
 </table>
