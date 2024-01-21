@@ -53,7 +53,7 @@
     常用网站：<span v-for="(server, index) in latestServers"><a :href="'/servers/server?serverId=' + server.id">{{server.name}}</a> &nbsp; <span class="disabled" v-if="index != latestServers.length - 1">|</span> &nbsp;</span>
 </div>
 
-<p class="ui message" v-if="servers.length == 0">暂时还没有网站。</p>
+<p class="ui message" v-if="servers.length == 0">暂时还没有网站，现在去 <a href="/servers/create">[创建网站<i class="ui icon long arrow alternate right"></i> ]</a></p>
 
 <div v-if="checkedServerIds.length > 0">
     <div class="ui divider"></div>
