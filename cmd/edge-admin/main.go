@@ -11,6 +11,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/nodes"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/nodeutils"
 	_ "github.com/TeaOSLab/EdgeCommon/pkg/langs/messages"
 	"github.com/iwind/TeaGo/Tea"
 	_ "github.com/iwind/TeaGo/bootstrap"
@@ -40,7 +41,8 @@ func main() {
 		Option("demo", "switch to demo mode").
 		Option("dev", "switch to 'dev' mode").
 		Option("prod", "switch to 'prod' mode").
-		Option("upgrade [--url=URL]", "upgrade from official site or an url")
+		Option("upgrade [--url=URL]", "upgrade from official site or an url").
+		Option("install-local-node", "install a local node")
 
 	app.On("daemon", func() {
 		nodes.NewAdminNode().Daemon()
@@ -76,7 +78,7 @@ func main() {
 		fmt.Println("done")
 	})
 	app.On("recover", func() {
-		sock := gosock.NewTmpSock(teaconst.ProcessName)
+		var sock = gosock.NewTmpSock(teaconst.ProcessName)
 		if !sock.IsListening() {
 			fmt.Println("[ERROR]the service not started yet, you should start the service first")
 			return
@@ -89,7 +91,7 @@ func main() {
 		fmt.Println("enter recovery mode successfully")
 	})
 	app.On("demo", func() {
-		sock := gosock.NewTmpSock(teaconst.ProcessName)
+		var sock = gosock.NewTmpSock(teaconst.ProcessName)
 		if !sock.IsListening() {
 			fmt.Println("[ERROR]the service not started yet, you should start the service first")
 			return
@@ -177,6 +179,14 @@ func main() {
 		log.Println("finished!")
 		log.Println("restarting ...")
 		app.RunRestart()
+	})
+	app.On("install-local-node", func() {
+		err := nodeutils.InstallLocalNode()
+		if err != nil {
+			fmt.Println("[ERROR]" + err.Error())
+			return
+		}
+		fmt.Println("success")
 	})
 	app.Run(func() {
 		var adminNode = nodes.NewAdminNode()
