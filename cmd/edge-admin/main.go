@@ -11,7 +11,6 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/nodes"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web"
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/nodeutils"
 	_ "github.com/TeaOSLab/EdgeCommon/pkg/langs/messages"
 	"github.com/iwind/TeaGo/Tea"
 	_ "github.com/iwind/TeaGo/bootstrap"
@@ -179,14 +178,6 @@ func main() {
 		log.Println("finished!")
 		log.Println("restarting ...")
 		app.RunRestart()
-	})
-	app.On("install-local-node", func() {
-		err := nodeutils.InstallLocalNode()
-		if err != nil {
-			fmt.Println("[ERROR]" + err.Error())
-			return
-		}
-		fmt.Println("success")
 	})
 	app.Run(func() {
 		var adminNode = nodes.NewAdminNode()

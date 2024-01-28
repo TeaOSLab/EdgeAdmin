@@ -11,7 +11,6 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
 	"github.com/iwind/TeaGo/actions"
-	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
 	"strings"
@@ -454,15 +453,16 @@ func (this *CreateAction) RunPost(params struct {
 
 	// 开启访问日志和Websocket
 	if params.ServerType == serverconfigs.ServerTypeHTTPProxy {
-		webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithServerId(this.AdminContext(), serverId)
-		if err != nil {
-			logs.Error(err)
-		} else {
-			// 访问日志
-			if params.AccessLogIsOn {
-				_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebAccessLog(this.AdminContext(), &pb.UpdateHTTPWebAccessLogRequest{
-					HttpWebId: webConfig.Id,
-					AccessLogJSON: []byte(`{
+		webConfig, findErr := dao.SharedHTTPWebDAO.FindWebConfigWithServerId(this.AdminContext(), serverId)
+		if findErr != nil {
+			this.ErrorPage(findErr)
+			return
+		}
+		// 访问日志
+		if params.AccessLogIsOn {
+			_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebAccessLog(this.AdminContext(), &pb.UpdateHTTPWebAccessLogRequest{
+				HttpWebId: webConfig.Id,
+				AccessLogJSON: []byte(`{
 			"isPrior": false,
 			"isOn": true,
 			"fields": [1, 2, 6, 7],
@@ -477,90 +477,94 @@ func (this *CreateAction) RunPost(params struct {
 
             "firewallOnly": false
 		}`),
-				})
-				if err != nil {
-					logs.Error(err)
-				}
+			})
+			if err != nil {
+				this.ErrorPage(err)
+				return
 			}
+		}
 
-			// websocket
-			if params.WebsocketIsOn {
-				createWebSocketResp, err := this.RPC().HTTPWebsocketRPC().CreateHTTPWebsocket(this.AdminContext(), &pb.CreateHTTPWebsocketRequest{
-					HandshakeTimeoutJSON: []byte(`{
+		// websocket
+		if params.WebsocketIsOn {
+			createWebSocketResp, err := this.RPC().HTTPWebsocketRPC().CreateHTTPWebsocket(this.AdminContext(), &pb.CreateHTTPWebsocketRequest{
+				HandshakeTimeoutJSON: []byte(`{
 					"count": 30,
 					"unit": "second"
 				}`),
-					AllowAllOrigins:   true,
-					AllowedOrigins:    nil,
-					RequestSameOrigin: true,
-					RequestOrigin:     "",
-				})
-				if err != nil {
-					logs.Error(err)
-				} else {
-					websocketId := createWebSocketResp.WebsocketId
-					_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebWebsocket(this.AdminContext(), &pb.UpdateHTTPWebWebsocketRequest{
-						HttpWebId: webConfig.Id,
-						WebsocketJSON: []byte(` {
+				AllowAllOrigins:   true,
+				AllowedOrigins:    nil,
+				RequestSameOrigin: true,
+				RequestOrigin:     "",
+			})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+
+			websocketId := createWebSocketResp.WebsocketId
+			_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebWebsocket(this.AdminContext(), &pb.UpdateHTTPWebWebsocketRequest{
+				HttpWebId: webConfig.Id,
+				WebsocketJSON: []byte(`{
 				"isPrior": false,
 				"isOn": true,
 				"websocketId": ` + types.String(websocketId) + `
 			}`),
-					})
-					if err != nil {
-						logs.Error(err)
-					}
-				}
+			})
+			if err != nil {
+				this.ErrorPage(err)
+				return
 			}
+		}
 
-			// cache
-			if params.CacheIsOn {
-				var cacheConfig = &serverconfigs.HTTPCacheConfig{
-					IsPrior:         false,
-					IsOn:            true,
-					AddStatusHeader: true,
-					PurgeIsOn:       false,
-					PurgeKey:        "",
-					CacheRefs:       []*serverconfigs.HTTPCacheRef{},
-				}
-				cacheConfigJSON, err := json.Marshal(cacheConfig)
-				if err != nil {
-					this.ErrorPage(err)
-					return
-				}
-				_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebCache(this.AdminContext(), &pb.UpdateHTTPWebCacheRequest{
-					HttpWebId: webConfig.Id,
-					CacheJSON: cacheConfigJSON,
-				})
-				if err != nil {
-					this.ErrorPage(err)
-					return
-				}
+		// cache
+		if params.CacheIsOn {
+			var cacheConfig = &serverconfigs.HTTPCacheConfig{
+				IsPrior:         false,
+				IsOn:            true,
+				AddStatusHeader: true,
+				PurgeIsOn:       false,
+				PurgeKey:        "",
+				CacheRefs:       []*serverconfigs.HTTPCacheRef{},
 			}
-
-			// waf
-			if params.WafIsOn {
-				var firewallRef = &firewallconfigs.HTTPFirewallRef{
-					IsPrior:          false,
-					IsOn:             true,
-					FirewallPolicyId: 0,
-				}
-				firewallRefJSON, err := json.Marshal(firewallRef)
-				if err != nil {
-					this.ErrorPage(err)
-					return
-				}
-				_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebFirewall(this.AdminContext(), &pb.UpdateHTTPWebFirewallRequest{
-					HttpWebId:    webConfig.Id,
-					FirewallJSON: firewallRefJSON,
-				})
-				if err != nil {
-					this.ErrorPage(err)
-					return
-				}
+			cacheConfigJSON, err := json.Marshal(cacheConfig)
+			if err != nil {
+				this.ErrorPage(err)
+				return
 			}
+			_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebCache(this.AdminContext(), &pb.UpdateHTTPWebCacheRequest{
+				HttpWebId: webConfig.Id,
+				CacheJSON: cacheConfigJSON,
+			})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+		}
 
-			// remoteAddr
+		// waf
+		if params.WafIsOn {
+			var firewallRef = &firewallconfigs.HTTPFirewallRef{
+				IsPrior:          false,
+				IsOn:             true,
+				FirewallPolicyId: 0,
+			}
+			firewallRefJSON, err := json.Marshal(firewallRef)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebFirewall(this.AdminContext(), &pb.UpdateHTTPWebFirewallRequest{
+				HttpWebId:    webConfig.Id,
+				FirewallJSON: firewallRefJSON,
+			})
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+		}
+
+		// remoteAddr
+		{
 			var remoteAddrConfig = &serverconfigs.HTTPRemoteAddrConfig{
 				IsOn:  true,
 				Value: "${rawRemoteAddr}",
@@ -583,26 +587,26 @@ func (this *CreateAction) RunPost(params struct {
 				this.ErrorPage(err)
 				return
 			}
+		}
 
-			// 统计
-			if params.StatIsOn {
-				var statConfig = &serverconfigs.HTTPStatRef{
-					IsPrior: false,
-					IsOn:    true,
-				}
-				statJSON, err := json.Marshal(statConfig)
-				if err != nil {
-					this.ErrorPage(err)
-					return
-				}
-				_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebStat(this.AdminContext(), &pb.UpdateHTTPWebStatRequest{
-					HttpWebId: webConfig.Id,
-					StatJSON:  statJSON,
-				})
-				if err != nil {
-					this.ErrorPage(err)
-					return
-				}
+		// 统计
+		if params.StatIsOn {
+			var statConfig = &serverconfigs.HTTPStatRef{
+				IsPrior: false,
+				IsOn:    true,
+			}
+			statJSON, err := json.Marshal(statConfig)
+			if err != nil {
+				this.ErrorPage(err)
+				return
+			}
+			_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebStat(this.AdminContext(), &pb.UpdateHTTPWebStatRequest{
+				HttpWebId: webConfig.Id,
+				StatJSON:  statJSON,
+			})
+			if err != nil {
+				this.ErrorPage(err)
+				return
 			}
 		}
 	}
