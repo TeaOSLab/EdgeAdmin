@@ -18,6 +18,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/types"
@@ -120,6 +121,19 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 删除Cookie
 	loginutils.UnsetCookie(this.Object())
+
+	// 检查单体实例是否已经被初始化
+	{
+		settingResp, err := this.RPC().SysSettingRPC().ReadSysSetting(this.AdminContext(), &pb.ReadSysSettingRequest{Code: systemconfigs.SettingCodeStandaloneInstanceInitialized})
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+		if string(settingResp.ValueJSON) == "0" {
+			this.RedirectURL("/initPassword")
+			return
+		}
+	}
 
 	this.Show()
 }
