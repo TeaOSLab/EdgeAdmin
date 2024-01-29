@@ -10,6 +10,7 @@ func init() {
 			Prefix("").
 			GetPost("/", new(IndexAction)).
 			GetPost("/index/otp", new(OtpAction)).
+			GetPost("/initPassword", new(InitPasswordAction)).
 			EndAll()
 	})
 }
