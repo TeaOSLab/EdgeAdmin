@@ -38,6 +38,6 @@ func (this *IndexAction) RunGet(params struct {
 	if teaconst.IsPlus {
 		this.RedirectURL("/servers/server/boards?serverId=" + strconv.FormatInt(params.ServerId, 10))
 	} else {
-		this.RedirectURL("/servers/server/stat?serverId=" + strconv.FormatInt(params.ServerId, 10))
+		this.RedirectURL("/servers/server/settings?serverId=" + strconv.FormatInt(params.ServerId, 10))
 	}
 }
