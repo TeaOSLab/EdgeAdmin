@@ -15,6 +15,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"runtime"
@@ -569,6 +570,12 @@ func (this *MySQLInstaller) installService(baseDir string) error {
 
 	this.log("registering systemd service ...")
 
+	var startCmd = "${BASE_DIR}/support-files/mysql.server start"
+	bashPath, _ := exec.LookPath("bash")
+	if len(bashPath) > 0 {
+		startCmd = bashPath + " -c \"" + startCmd + "\""
+	}
+
 	var desc = `### BEGIN INIT INFO
 # Provides: mysql
 # Required-Start: $local_fs $network $remote_fs
@@ -589,7 +596,8 @@ After=network-online.target
 Type=simple
 Restart=on-failure
 RestartSec=5s
-ExecStart=${BASE_DIR}/support-files/mysql.server start
+RemainAfterExit=yes
+ExecStart=` + startCmd + `
 ExecStop=${BASE_DIR}/support-files/mysql.server stop
 ExecRestart=${BASE_DIR}/support-files/mysql.server restart
 ExecStatus=${BASE_DIR}/support-files/mysql.server status
