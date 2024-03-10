@@ -108,6 +108,6 @@ func defaultSecurityConfig() *systemconfigs.SecurityConfig {
 		Frame:                  FrameSameOrigin,
 		AllowLocal:             true,
 		CheckClientFingerprint: false,
-		CheckClientRegion:      true,
+		CheckClientRegion:      false,
 	}
 }
