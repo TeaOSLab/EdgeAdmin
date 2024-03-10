@@ -61,7 +61,7 @@
                 <td>自定义客户端IP报头</td>
                 <td>
                     <input type="text" name="clientIPHeaderNames" v-model="config.clientIPHeaderNames"/>
-                    <p class="comment">可以通过此报头获取客户端IP，类似于<code-label>X-Forwarded-For</code-label>、<code-label>Client-IP</code-label>，用于使用反向代理访问管理系统的情形；如果有多个报头可以使用空格隔开。</p>
+                    <p class="comment">可以通过此报头获取客户端IP，类似于<code-label>X-Forwarded-For X-Real-IP Client-IP</code-label>&nbsp;<a href=""><span class="small" @click.prevent="addDefaultClientIPHeaderNames('X-Forwarded-For X-Real-IP Client-IP')">[填入]</span></a>，用于使用反向代理访问管理系统的情形；如果有多个报头可以使用空格隔开。</p>
                 </td>
             </tr>
             <tr>
