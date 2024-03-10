@@ -61,7 +61,7 @@
                 <td>自定义客户端IP报头</td>
                 <td>
                     <input type="text" name="clientIPHeaderNames" v-model="config.clientIPHeaderNames"/>
-                    <p class="comment">可以通过此报头获取客户端IP，类似于<code-label>Client-IP</code-label>，用于使用反向代理访问管理系统的情形；如果有多个报头可以使用空格隔开。</p>
+                    <p class="comment">可以通过此报头获取客户端IP，类似于<code-label>X-Forwarded-For</code-label>、<code-label>Client-IP</code-label>，用于使用反向代理访问管理系统的情形；如果有多个报头可以使用空格隔开。</p>
                 </td>
             </tr>
             <tr>
@@ -89,14 +89,14 @@
                 <td>检查客户端指纹</td>
                 <td>
                     <checkbox name="checkClientFingerprint" v-model="config.checkClientFingerprint"></checkbox>
-                    <p class="comment">选中后，表示每次管理员访问时都检查客户端相关信息是否跟登录时一致。</p>
+                    <p class="comment">选中后，表示每次管理员访问时都检查客户端相关信息是否跟登录时一致；如果客户端IP或User-Agent信息变化比较频繁，请不要启用此选项；如果当前系统下游有反向代理设置，请设置当前表单中的“自定义客户端IP报头”选项。</p>
                 </td>
             </tr>
             <tr>
                 <td>检查客户端区域</td>
                 <td>
                     <checkbox name="checkClientRegion" v-model="config.checkClientRegion"></checkbox>
-                    <p class="comment">选中后，表示每次管理员访问时都检查客户端所在地理区域是否和登录时一致。</p>
+                    <p class="comment">选中后，表示每次管理员访问时都检查客户端所在地理区域是否和登录时一致；如果客户端所处地理区域变化比较频繁，请不要启用此选项；如果当前系统下游有反向代理设置，请设置当前表单中的“自定义客户端IP报头”选项。</p>
                 </td>
             </tr>
         </tbody>
