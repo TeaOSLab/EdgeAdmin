@@ -99,11 +99,24 @@ func (this *TaskAction) readTask(taskId int64) (ok bool) {
 			})
 		}
 
+		// 集群信息
+		var clusterMap = maps.Map{
+			"id":   0,
+			"name": "",
+		}
+		if key.NodeCluster != nil {
+			clusterMap = maps.Map{
+				"id":   key.NodeCluster.Id,
+				"name": key.NodeCluster.Name,
+			}
+		}
+
 		keyMaps = append(keyMaps, maps.Map{
 			"key":     key.Key,
 			"isDone":  key.IsDone,
 			"isDoing": key.IsDoing,
 			"errors":  errorMaps,
+			"cluster": clusterMap,
 		})
 	}
 

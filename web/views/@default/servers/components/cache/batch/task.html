@@ -71,18 +71,23 @@
                 <span v-if="task.keyType == 'key'">URL</span>
                 <span v-if="task.keyType == 'prefix'">前缀</span>
             </th>
+            <th class="two wide">所属集群</th>
             <th class="width5">状态</th>
         </tr>
     </thead>
     <tbody v-for="key in task.keys">
         <tr>
-            <td>{{key.key}}
-
+            <td>
+                {{key.key}}
                 <div v-if="key.errors.length > 0" style="margin-top: 0.5em">
                     <a :href="'/clusters/cluster/node?nodeId=' + err.nodeId" v-for="err in key.errors" class="ui label basic tiny red">
                         节点{{err.nodeId}}：{{err.error}}
                     </a>
                 </div>
+            </td>
+            <td>
+                <span v-if="key.cluster != null && key.cluster.id > 0">{{key.cluster.name}}</span>
+                <span v-else class="disabled">-</span>
             </td>
             <td>
                 <span v-if="key.isDone && key.errors.length == 0" class="green">完成</span>
