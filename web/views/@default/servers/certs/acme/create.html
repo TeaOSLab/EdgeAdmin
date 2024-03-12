@@ -72,7 +72,7 @@
 		<div v-show="step == 'user'">
 			<table class="ui table definition selectable">
                 <tr>
-                    <td class="title">选择服务商 *</td>
+                    <td class="title">选择证书服务商 *</td>
                     <td>
                         <select class="ui dropdown auto-width" v-model="providerCode" @change="changeProvider">
                             <option value="">[选择服务商]</option>
@@ -120,6 +120,9 @@
 								<option v-for="provider in dnsProviders" :value="provider.id">{{provider.name}}（{{provider.typeName}}）</option>
 							</select>
 						</div>
+                        <div v-else>
+                            <span>暂时没有DNS服务商，<a href="/dns/providers">[去添加]</a>。</span>
+                        </div>
 						<p class="comment">用于自动创建域名解析记录。</p>
 					</td>
 				</tr>
