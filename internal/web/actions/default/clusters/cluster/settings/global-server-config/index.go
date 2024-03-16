@@ -46,6 +46,9 @@ func (this *IndexAction) RunGet(params struct {
 	var httpAllDomainMismatchActionCode = serverconfigs.DomainMismatchActionPage
 	var httpAllDomainMismatchActionContentHTML string
 	var httpAllDomainMismatchActionStatusCode = "404"
+
+	var httpAllDomainMismatchActionRedirectURL = ""
+
 	if config.HTTPAll.DomainMismatchAction != nil {
 		httpAllDomainMismatchActionCode = config.HTTPAll.DomainMismatchAction.Code
 
@@ -55,6 +58,10 @@ func (this *IndexAction) RunGet(params struct {
 			var statusCode = config.HTTPAll.DomainMismatchAction.Options.GetInt("statusCode")
 			if statusCode > 0 {
 				httpAllDomainMismatchActionStatusCode = types.String(statusCode)
+			}
+
+			if config.HTTPAll.DomainMismatchAction.Code == serverconfigs.DomainMismatchActionRedirect {
+				httpAllDomainMismatchActionRedirectURL = config.HTTPAll.DomainMismatchAction.Options.GetString("url")
 			}
 		}
 	} else {
@@ -83,6 +90,8 @@ p { color: grey; }
 	this.Data["httpAllDomainMismatchActionContentHTML"] = httpAllDomainMismatchActionContentHTML
 	this.Data["httpAllDomainMismatchActionStatusCode"] = httpAllDomainMismatchActionStatusCode
 
+	this.Data["httpAllDomainMismatchActionRedirectURL"] = httpAllDomainMismatchActionRedirectURL
+
 	this.Show()
 }
 
@@ -93,6 +102,7 @@ func (this *IndexAction) RunPost(params struct {
 	HttpAllDomainMismatchActionCode        string
 	HttpAllDomainMismatchActionContentHTML string
 	HttpAllDomainMismatchActionStatusCode  string
+	HttpAllDomainMismatchActionRedirectURL string
 	HttpAllAllowMismatchDomainsJSON        []byte
 	HttpAllAllowNodeIP                     bool
 	HttpAllDefaultDomain                   string
@@ -156,11 +166,28 @@ func (this *IndexAction) RunPost(params struct {
 	var domainMisMatchStatusCode = types.Int(domainMisMatchStatusCodeString)
 
 	config.HTTPAll.MatchDomainStrictly = params.HttpAllMatchDomainStrictly
+
+	// validate
+	if config.HTTPAll.MatchDomainStrictly {
+		// validate redirect
+		if params.HttpAllDomainMismatchActionCode == serverconfigs.DomainMismatchActionRedirect {
+			if len(params.HttpAllDomainMismatchActionRedirectURL) == 0 {
+				this.FailField("httpAllDomainMismatchActionRedirectURL", "请输入跳转目标网址URL")
+				return
+			}
+			if !regexp.MustCompile(`(?i)(http|https)://`).MatchString(params.HttpAllDomainMismatchActionRedirectURL) {
+				this.FailField("httpAllDomainMismatchActionRedirectURL", "目标网址URL必须以http://或https://开头")
+				return
+			}
+		}
+	}
+
 	config.HTTPAll.DomainMismatchAction = &serverconfigs.DomainMismatchAction{
 		Code: params.HttpAllDomainMismatchActionCode,
 		Options: maps.Map{
-			"statusCode":  domainMisMatchStatusCode,
-			"contentHTML": params.HttpAllDomainMismatchActionContentHTML,
+			"statusCode":  domainMisMatchStatusCode,                      // page
+			"contentHTML": params.HttpAllDomainMismatchActionContentHTML, // page
+			"url":         params.HttpAllDomainMismatchActionRedirectURL, // redirect
 		},
 	}
 

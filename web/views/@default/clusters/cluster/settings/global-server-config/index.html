@@ -27,8 +27,11 @@
                     <td class="color-border">处理未绑定域名方式</td>
                     <td>
                         <radio name="httpAllDomainMismatchActionCode" :v-value="'page'" v-model="httpAllDomainMismatchActionCode">显示提示页面</radio> &nbsp;
-                        &nbsp; <radio name="httpAllDomainMismatchActionCode" :v-value="'close'" v-model="httpAllDomainMismatchActionCode">关闭连接</radio>
+                        &nbsp; <radio name="httpAllDomainMismatchActionCode" :v-value="'redirect'" v-model="httpAllDomainMismatchActionCode">跳转到网址</radio> &nbsp;
+                        <radio name="httpAllDomainMismatchActionCode" :v-value="'close'" v-model="httpAllDomainMismatchActionCode">关闭连接</radio>
+
                         <p class="comment" v-if="httpAllDomainMismatchActionCode == 'page'">显示提示内容。</p>
+                        <p class="comment" v-if="httpAllDomainMismatchActionCode == 'redirect'">跳转到一个特定URL。</p>
                         <p class="comment" v-if="httpAllDomainMismatchActionCode == 'close'">直接关闭网络连接，不提示任何内容。</p>
                     </td>
                 </tr>
@@ -45,6 +48,14 @@
                     <td>
                         <textarea rows="3" name="httpAllDomainMismatchActionContentHTML" v-model="httpAllDomainMismatchActionContentHTML"></textarea>
                         <p class="comment">访问未绑定的域名时提示页面内容，可以使用HTML；仅限于HTTP请求，不适于用HTTPS（HTTPS会提示证书错误）。</p>
+                    </td>
+                </tr>
+
+                <tr v-show="config.httpAll.matchDomainStrictly && httpAllDomainMismatchActionCode == 'redirect'">
+                    <td class="color-border">跳转目标网址URL *</td>
+                    <td>
+                        <input type="text" placeholder="https://..." name="httpAllDomainMismatchActionRedirectURL" v-model="httpAllDomainMismatchActionRedirectURL"/>
+                        <p class="comment">必须以http://或者https://开头，支持使用变量。</p>
                     </td>
                 </tr>
 
