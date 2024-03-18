@@ -46,7 +46,7 @@
                 <td>SecretKey *</td>
                 <td>
                     <input type="text" name="paramDNSPodAccessKeySecret" maxlength="100" v-model="provider.params.accessKeySecret"/>
-                    <p class="comment">在DNSPod控制台“账号中心--API密钥”中获取。</p>
+                    <p class="comment">在DNSPod控制台“账号中心--API密钥”中获取。<mask-warning></mask-warning></p>
                 </td>
             </tr>
 			<tr v-show="provider.params.apiType == null || provider.params.apiType.length == 0 || provider.params.apiType == 'dnsPodToken'">
@@ -60,7 +60,7 @@
 				<td>密钥Token *</td>
 				<td>
 					<input type="text" name="paramDNSPodToken" maxlength="100" v-model="provider.params.token" spellcheck="false"/>
-                    <p class="comment">在DNSPod控制台“账号中心--API密钥--DNSPod Token”中获取。</p>
+                    <p class="comment">在DNSPod控制台“账号中心--API密钥--DNSPod Token”中获取。<mask-warning></mask-warning></p>
 				</td>
 			</tr>
             <tr v-if="provider.params.apiType == null || provider.params.apiType.length == 0 || provider.params.apiType == 'dnsPodToken'">
@@ -87,7 +87,7 @@
 				<td>AccessKeySecret *</td>
 				<td>
 					<input type="text" name="paramAliDNSAccessKeySecret" maxlength="100" v-model="provider.params.accessKeySecret" spellcheck="false"/>
-					<p class="comment">登录阿里云控制台 -- 在"访问控制"中创建和获取。</p>
+					<p class="comment">登录阿里云控制台 -- 在"访问控制"中创建和获取。<mask-warning></mask-warning></p>
 				</td>
 			</tr>
             <tr>
@@ -112,7 +112,7 @@
                 <td>AccessKeySecret *</td>
                 <td>
                     <input type="text" name="paramHuaweiAccessKeySecret" maxlength="100" v-model="provider.params.accessKeySecret" spellcheck="false"/>
-                    <p class="comment">登录华为云控制台 -- 在"我的凭证 -- 访问密钥"中创建和获取。</p>
+                    <p class="comment">登录华为云控制台 -- 在"我的凭证 -- 访问密钥"中创建和获取。<mask-warning></mask-warning></p>
                 </td>
             </tr>
             <tr>
@@ -131,7 +131,7 @@
                 <td>API密钥 *</td>
                 <td>
                     <input type="text" name="paramCloudFlareAPIKey" maxlength="100" v-model="provider.params.apiKey" spellcheck="false"/>
-                    <p class="comment">在个人资料中的"API令牌"--"API密钥"--"Global API Key"中获取。</p>
+                    <p class="comment">在个人资料中的"API令牌"--"API密钥"--"Global API Key"中获取。<mask-warning></mask-warning></p>
                 </td>
             </tr>
             <tr>
@@ -156,6 +156,7 @@
                 <td>Secret *</td>
                 <td>
                     <input type="text" name="paramGoDaddySecret" maxlength="100" v-model="provider.params.secret" spellcheck="false"/>
+                    <p class="comment"><mask-warning></mask-warning></p>
                 </td>
             </tr>
         </tbody>
@@ -180,7 +181,7 @@
                 <td>认证密码 *<em>（auth-password）</em></td>
                 <td>
                     <input type="password" name="paramClouDNSAuthPassword" maxlength="100" v-model="provider.params.authPassword" spellcheck="false"/>
-                    <p class="comment">用户或者子用户的认证密码。</p>
+                    <p class="comment">用户或者子用户的认证密码。<mask-warning></mask-warning></p>
                 </td>
             </tr>
         </tbody>
@@ -198,7 +199,7 @@
                 <td>API Secret *</td>
                 <td>
                     <input type="text" name="paramDNSComSecret" maxlength="100" v-model="provider.params.secret" spellcheck="false"/>
-                    <p class="comment">在DNS.COM控制台账号中心--API设置中创建和查看。</p>
+                    <p class="comment">在DNS.COM控制台账号中心--API设置中创建和查看。<mask-warning></mask-warning></p>
                 </td>
             </tr>
         </tbody>
@@ -216,7 +217,7 @@
                 <td>API密钥 *</td>
                 <td>
                     <input type="text" name="paramDNSLaSecret" maxlength="100" v-model="provider.params.secret" spellcheck="false"/>
-                    <p class="comment">在DNS.LA控制台--账户信息中查看。</p>
+                    <p class="comment">在DNS.LA控制台--账户信息中查看。<mask-warning></mask-warning></p>
                 </td>
             </tr>
         </tbody>
@@ -234,6 +235,7 @@
                 <td>Secret Access Key *</td>
                 <td>
                     <input type="text" name="paramVolcEngineAccessKeySecret" maxlength="100" v-model="provider.params.accessKeySecret" spellcheck="false"/>
+                    <p class="comment"><mask-warning></mask-warning></p>
                 </td>
             </tr>
         </tbody>
@@ -250,6 +252,7 @@
                 <td>Secret Access Key *</td>
                 <td>
                     <input type="text" name="paramAmazonRoute53AccessKeySecret" maxlength="100" v-model="provider.params.accessKeySecret" spellcheck="false"/>
+                    <p class="comment"><mask-warning></mask-warning></p>
                 </td>
             </tr>
             <tr>
@@ -287,7 +290,7 @@
                 <td>客户端密码值 <br/><em>(Client Secret Value)</em> *</td>
                 <td>
                     <input type="text" name="paramAzureDNSClientSecret" maxlength="100" v-model="provider.params.clientSecret" spellcheck="false"/>
-                    <p class="comment">可以在应用注册（App registrations）中对应应用的“证书和密码（Certificates &amp; secrets）”--“客户端密码（Client secrets）”中创建和查看。</p>
+                    <p class="comment">可以在应用注册（App registrations）中对应应用的“证书和密码（Certificates &amp; secrets）”--“客户端密码（Client secrets）”中创建和查看。<mask-warning></mask-warning></p>
                 </td>
             </tr>
             <tr>
@@ -340,6 +343,7 @@
                 <td>AccessKey密钥 *</td>
                 <td>
                     <input type="text" name="paramEdgeDNSAPIAccessKeySecret" maxlength="64" v-model="provider.params.accessKeySecret"/>
+                    <p class="comment"><mask-warning></mask-warning></p>
                 </td>
             </tr>
         </tbody>

@@ -22,7 +22,10 @@ func (this *UpdatePopupAction) Init() {
 func (this *UpdatePopupAction) RunGet(params struct {
 	ProviderId int64
 }) {
-	providerResp, err := this.RPC().DNSProviderRPC().FindEnabledDNSProvider(this.AdminContext(), &pb.FindEnabledDNSProviderRequest{DnsProviderId: params.ProviderId})
+	providerResp, err := this.RPC().DNSProviderRPC().FindEnabledDNSProvider(this.AdminContext(), &pb.FindEnabledDNSProviderRequest{
+		DnsProviderId: params.ProviderId,
+		MaskParams:    true,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
