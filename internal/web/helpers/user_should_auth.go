@@ -21,6 +21,12 @@ func (this *UserShouldAuth) BeforeAction(actionPtr actions.ActionWrapper, paramN
 
 	this.action = actionPtr.Object()
 
+	// 检查请求是否合法
+	if isEvilRequest(this.action.Request) {
+		this.action.ResponseWriter.WriteHeader(http.StatusForbidden)
+		return false
+	}
+
 	// 安全相关
 	var action = this.action
 	securityConfig, _ := configloaders.LoadSecurityConfig()

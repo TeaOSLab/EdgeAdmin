@@ -88,6 +88,8 @@ func loadSecurityConfig() (*systemconfigs.SecurityConfig, error) {
 		AllowLocal:             true,
 		CheckClientFingerprint: false,
 		CheckClientRegion:      true,
+		DenySearchEngines:      true,
+		DenySpiders:            true,
 	}
 	err = json.Unmarshal(resp.ValueJSON, config)
 	if err != nil {
@@ -109,5 +111,7 @@ func defaultSecurityConfig() *systemconfigs.SecurityConfig {
 		AllowLocal:             true,
 		CheckClientFingerprint: false,
 		CheckClientRegion:      true,
+		DenySearchEngines:      true,
+		DenySpiders:            true,
 	}
 }
