@@ -34,7 +34,7 @@
 			<tr>
 				<td>SSH密码</td>
 				<td><input type="password" name="password" maxlength="100" v-model="grant.password"/>
-				<p class="comment">SSH登录用户密码。</p> </td>
+				<p class="comment">SSH登录用户密码。<mask-warning></mask-warning></p> </td>
 			</tr>
 		</tbody>
 
@@ -51,7 +51,7 @@
 				<td>RSA私钥 *</td>
 				<td>
 					<file-textarea name="privateKey" v-model="grant.privateKey" spellcheck="false" placeholder="填入RSA私钥内容或者拖动私钥文件到当前框中"></file-textarea>
-					<p class="comment">用来生成登录SSH公钥的私钥</p>
+					<p class="comment">用来生成登录SSH公钥的私钥。<mask-warning></mask-warning></p>
 				</td>
 			</tr>
             <tr>
