@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/goman"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/setup"
+	"github.com/TeaOSLab/EdgeAdmin/internal/waf/injectionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/index/loginutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
@@ -112,6 +113,13 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	// 检查请求是否合法
 	if isEvilRequest(action.Request) {
 		action.ResponseWriter.WriteHeader(http.StatusForbidden)
+		return false
+	}
+
+	// 检测注入
+	if injectionutils.DetectXSS(action.Request.RequestURI, false) || injectionutils.DetectSQLInjection(action.Request.RequestURI, false) {
+		action.ResponseWriter.WriteHeader(http.StatusForbidden)
+		_, _ = action.ResponseWriter.Write([]byte("Denied By WAF"))
 		return false
 	}
 

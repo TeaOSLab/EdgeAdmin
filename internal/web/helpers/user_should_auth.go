@@ -4,6 +4,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
+	"github.com/TeaOSLab/EdgeAdmin/internal/waf/injectionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/index/loginutils"
 	"github.com/iwind/TeaGo/actions"
 	"net/http"
@@ -24,6 +25,13 @@ func (this *UserShouldAuth) BeforeAction(actionPtr actions.ActionWrapper, paramN
 	// 检查请求是否合法
 	if isEvilRequest(this.action.Request) {
 		this.action.ResponseWriter.WriteHeader(http.StatusForbidden)
+		return false
+	}
+
+	// 检测注入
+	if injectionutils.DetectXSS(this.action.Request.RequestURI, false) || injectionutils.DetectSQLInjection(this.action.Request.RequestURI, false) {
+		this.action.ResponseWriter.WriteHeader(http.StatusForbidden)
+		_, _ = this.action.ResponseWriter.Write([]byte("Denied By WAF"))
 		return false
 	}
 
