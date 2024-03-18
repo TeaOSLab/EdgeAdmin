@@ -53,7 +53,7 @@ function build() {
 
     # generate files
     echo "generating files ..."
-	go run -tags $TAG "$ROOT"/../cmd/edge-admin/main.go generate
+	env CGO_ENABLED=0 go run -tags $TAG "$ROOT"/../cmd/edge-admin/main.go generate
 	if [ "$(which uglifyjs)" ]; then
     	echo "compress to component.js ..."
     	uglifyjs --compress --mangle -- "${JS_ROOT}"/components.src.js > "${JS_ROOT}"/components.js
@@ -99,11 +99,34 @@ function build() {
 	rm -f "$(basename "$EDGE_API_ZIP_FILE")"
 	cd - || exit
 
+	# find gcc
+	GCC_DIR=""
+	CC_PATH=""
+	CXX_PATH=""
+	if [ "${ARCH}" == "amd64" ]; then
+		GCC_DIR="/usr/local/gcc/x86_64-unknown-linux-gnu/bin"
+		CC_PATH="x86_64-unknown-linux-gnu-gcc"
+		CXX_PATH="x86_64-unknown-linux-gnu-g++"
+	fi
+	if [ "${ARCH}" == "arm64" ]; then
+		GCC_DIR="/usr/local/gcc/aarch64-unknown-linux-gnu/bin"
+		CC_PATH="aarch64-unknown-linux-gnu-gcc"
+		CXX_PATH="aarch64-unknown-linux-gnu-g++"
+	fi
+
 	# build
 	echo "building ${NAME} ..."
-	env GOOS="$OS" GOARCH="$ARCH" go build -trimpath -tags $TAG -ldflags="-s -w" -o "$DIST"/bin/${NAME} "$ROOT"/../cmd/edge-admin/main.go
+	if [ -f "${GCC_DIR}/${CC_PATH}" ]; then
+		echo "  building ${NAME} with gcc ..."
+		env CC="${GCC_DIR}/${CC_PATH}" \
+			CXX="${GCC_DIR}/${CXX_PATH}" \
+			CGO_ENABLED=1 \
+			GOOS="$OS" GOARCH="$ARCH" go build -trimpath -tags "${TAG} gcc" -ldflags="-s -w" -o "$DIST"/bin/${NAME} "$ROOT"/../cmd/edge-admin/main.go
+	else
+		GOOS="$OS" GOARCH="$ARCH" go build -trimpath -tags $TAG -ldflags="-s -w" -o "$DIST"/bin/${NAME} "$ROOT"/../cmd/edge-admin/main.go
+	fi
 	if [ ! -f "${DIST}/bin/${NAME}" ]; then
-		echo "build failed!"
+		echo "build '${NAME}' failed!"
 		exit
 	fi
 

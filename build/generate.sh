@@ -3,7 +3,7 @@
 JS_ROOT=../web/public/js
 
 echo "generating component.src.js ..."
-go run -tags=community ../cmd/edge-admin/main.go  generate
+env CGO_ENABLED=0 go run -tags=community ../cmd/edge-admin/main.go generate
 
 if [ "$(which uglifyjs)" ]; then
 	echo "compress to component.js ..."
