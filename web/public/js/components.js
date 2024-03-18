@@ -353,7 +353,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		@change="change"
 		ref="comboBox">	
 	</combo-box>
-</div>`}),Vue.component("ns-routes-selector",{props:["v-routes","name"],mounted:function(){let t=this;Tea.action("/ns/routes/options").post().success(function(e){t.routes=e.data.routes})},data:function(){let e=this.vRoutes,t=(null==e&&(e=[]),this.name);return{routeCode:"default",inputName:t="string"==typeof t&&0!=t.length?t:"routeCodes",routes:[],isAdding:!1,routeType:"default",selectedRoutes:e}},watch:{routeType:function(t){this.routeCode="";let i=this;this.routes.forEach(function(e){e.type==t&&0==i.routeCode.length&&(i.routeCode=e.code)})}},methods:{add:function(){this.isAdding=!0,this.routeType="default",this.routeCode="default",this.$emit("add")},cancel:function(){this.isAdding=!1,this.$emit("cancel")},confirm:function(){if(0!=this.routeCode.length){let t=this;this.routes.forEach(function(e){e.code==t.routeCode&&t.selectedRoutes.push(e)}),this.$emit("change",this.selectedRoutes),this.cancel()}},remove:function(e){this.selectedRoutes.$remove(e),this.$emit("change",this.selectedRoutes)}},template:`<div>
+</div>`}),Vue.component("ns-routes-selector",{props:["v-routes","name"],mounted:function(){let s=this;Tea.action("/ns/routes/options").post().success(function(e){s.routes=e.data.routes;let t={};if(null!=e.data.provinces&&0<e.data.provinces.length)for(const n of e.data.provinces){var i=n.countryCode;void 0===t[i]&&(t[i]=[]),t[i].push({name:n.name,code:n.code})}s.provinces=t})},data:function(){let e=this.vRoutes,t=(null==e&&(e=[]),this.name);return{routeCode:"default",inputName:t="string"==typeof t&&0!=t.length?t:"routeCodes",routes:[],provinces:{},provinceRouteCode:"",isAdding:!1,routeType:"default",selectedRoutes:e}},watch:{routeType:function(t){this.routeCode="";let i=this;this.routes.forEach(function(e){e.type==t&&0==i.routeCode.length&&(i.routeCode=e.code)})}},methods:{add:function(){this.isAdding=!0,this.routeType="default",this.routeCode="default",this.provinceRouteCode="",this.$emit("add")},cancel:function(){this.isAdding=!1,this.$emit("cancel")},confirm:function(){if(0!=this.routeCode.length){let e=null;for(const t of this.routes)if(t.code==this.routeCode){e=t;break}if(null!=e){if(0<this.provinceRouteCode.length&&null!=this.provinces[this.routeCode])for(const i of this.provinces[this.routeCode])if(i.code==this.provinceRouteCode){e={name:e.name+"-"+i.name,code:i.code};break}this.selectedRoutes.push(e)}this.$emit("change",this.selectedRoutes),this.cancel()}},remove:function(e){this.selectedRoutes.$remove(e),this.$emit("change",this.selectedRoutes)}},template:`<div>
 	<div v-show="selectedRoutes.length > 0">
 		<div class="ui label basic text small" v-for="(route, index) in selectedRoutes" style="margin-bottom: 0.3em">
 			<input type="hidden" :name="inputName" :value="route.code"/>
@@ -362,31 +362,44 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<div class="ui divider"></div>
 	</div>
 	<div v-if="isAdding" style="margin-bottom: 1em">
-		<div class="ui fields inline">
-			<div class="ui field">
-				<select class="ui dropdown" v-model="routeType">
-					<option value="default">[默认线路]</option>
-					<option value="user">自定义线路</option>
-					<option value="isp">运营商</option>
-					<option value="china">中国省市</option>
-					<option value="world">全球国家地区</option>
-					<option value="agent">搜索引擎</option>
-				</select>
-			</div>
-			
-			<div class="ui field">
-				<select class="ui dropdown" v-model="routeCode" style="width: 10em">
-					<option v-for="route in routes" :value="route.code" v-if="route.type == routeType">{{route.name}}</option>
-				</select>
-			</div>
-			
-			<div class="ui field">
-				<button type="button" class="ui button tiny" @click.prevent="confirm">确定</button>
-				&nbsp; <a href="" title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
-			</div>
-		</div>
+		<table class="ui table">
+			<tr>
+				<td class="title">选择类型 *</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="routeType">
+						<option value="default">[默认线路]</option>
+						<option value="user">自定义线路</option>
+						<option value="isp">运营商</option>
+						<option value="china">中国省市</option>
+						<option value="world">全球国家地区</option>
+						<option value="agent">搜索引擎</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>选择线路 *</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="routeCode">
+						<option v-for="route in routes" :value="route.code" v-if="route.type == routeType">{{route.name}}</option>
+					</select>
+				</td>
+			</tr>
+			<tr v-if="routeCode.length > 0 && provinces[routeCode] != null">
+				<td>选择省/州</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="provinceRouteCode">
+						<option value="">[全域]</option>
+						<option v-for="province in provinces[routeCode]" :value="province.code">{{province.name}}</option>
+					</select>
+				</td>
+			</tr>
+		</table>
+		<div>
+			<button type="button" class="ui button tiny" @click.prevent="confirm">确定</button>
+			&nbsp; <a href="" title="取消" @click.prevent="cancel">取消</a>
+		</div>	
 	</div>
-	<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	<button class="ui button tiny" type="button" @click.prevent="add" v-if="!isAdding">+</button>
 </div>`}),Vue.component("ns-recursion-config-box",{props:["v-recursion-config"],data:function(){let e=this.vRecursionConfig;return null==(e=null==e?{isOn:!1,hosts:[],allowDomains:[],denyDomains:[],useLocalHosts:!1}:e).hosts&&(e.hosts=[]),null==e.allowDomains&&(e.allowDomains=[]),null==e.denyDomains&&(e.denyDomains=[]),{config:e,hostIsAdding:!1,host:"",updatingHost:null}},methods:{changeHosts:function(e){this.config.hosts=e},changeAllowDomains:function(e){this.config.allowDomains=e},changeDenyDomains:function(e){this.config.denyDomains=e},removeHost:function(e){this.config.hosts.$remove(e)},addHost:function(){var t;this.updatingHost=null,this.host="",this.hostIsAdding=!this.hostIsAdding,this.hostIsAdding&&(t=this,setTimeout(function(){let e=t.$refs.hostRef;null!=e&&e.focus()},200))},updateHost:function(e){var t;this.updatingHost=e,this.host=e.host,this.hostIsAdding=!this.hostIsAdding,this.hostIsAdding&&(t=this,setTimeout(function(){let e=t.$refs.hostRef;null!=e&&e.focus()},200))},confirmHost:function(){0==this.host.length?teaweb.warn("请输入DNS地址"):(this.hostIsAdding=!1,null==this.updatingHost?this.config.hosts.push({host:this.host}):this.updatingHost.host=this.host)},cancelHost:function(){this.hostIsAdding=!1}},template:`<div>
 	<input type="hidden" name="recursionJSON" :value="JSON.stringify(config)"/>
 	<table class="ui table definition selectable">
@@ -6555,7 +6568,7 @@ example2.com
 	</div>
 </div>`}),Vue.component("digit-input",{props:["value","maxlength","size","min","max","required","placeholder"],mounted:function(){let e=this;setTimeout(function(){e.check()})},data:function(){let e=this.maxlength,t=(null==e&&(e=20),this.size);return null==t&&(t=6),{realValue:this.value,realMaxLength:e,realSize:t,isValid:!0}},watch:{realValue:function(e){this.notifyChange()}},methods:{notifyChange:function(){let e=parseInt(this.realValue.toString(),10);isNaN(e)&&(e=0),this.check(),this.$emit("input",e)},check:function(){var e;null!=this.realValue&&(e=this.realValue.toString(),/^\d+$/.test(e)?(e=parseInt(e,10),isNaN(e)?this.isValid=!1:this.required?this.isValid=(null==this.min||this.min<=e)&&(null==this.max||this.max>=e):this.isValid=0==e||(null==this.min||this.min<=e)&&(null==this.max||this.max>=e)):this.isValid=!1)}},template:'<input type="text" v-model="realValue" :maxlength="realMaxLength" :size="realSize" :class="{error: !this.isValid}" :placeholder="placeholder" autocomplete="off"/>'}),Vue.component("keyword",{props:["v-word"],data:function(){let e=this.vWord;e=null==e?"":(e=(e=(e=(e=(e=(e=(e=(e=(e=e.replace(/\)/g,"\\)")).replace(/\(/g,"\\(")).replace(/\+/g,"\\+")).replace(/\^/g,"\\^")).replace(/\$/g,"\\$")).replace(/\?/g,"\\?")).replace(/\*/g,"\\*")).replace(/\[/g,"\\[")).replace(/{/g,"\\{")).replace(/\./g,"\\.");let t=this.$slots.default[0].text;if(0<e.length){let i=this,n=[],s=0;t=t.replaceAll(new RegExp("("+e+")","ig"),function(e){s++;var e='<span style="border: 1px #ccc dashed; color: #ef4d58">'+i.encodeHTML(e)+"</span>",t="$TMP__KEY__"+s.toString()+"$";return n.push([t,e]),t}),t=this.encodeHTML(t),n.forEach(function(e){t=t.replace(e[0],e[1])})}else t=this.encodeHTML(t);return{word:e,text:t}},methods:{encodeHTML:function(e){return e=(e=(e=(e=e.replace(/&/g,"&amp;")).replace(/</g,"&lt;")).replace(/>/g,"&gt;")).replace(/"/g,"&quot;")}},template:'<span><span style="display: none"><slot></slot></span><span v-html="text"></span></span>'}),Vue.component("bits-var",{props:["v-bits"],data:function(){let e=this.vBits;return"number"!=typeof e&&(e=0),{format:teaweb.splitFormat(teaweb.formatBits(e))}},template:`<var class="normal">
 	<span>{{format[0]}}</span>{{format[1]}}
-</var>`}),Vue.component("chart-columns-grid",{props:[],mounted:function(){this.columns=this.calculateColumns();let e=this;window.addEventListener("resize",function(){e.columns=e.calculateColumns()})},updated:function(){var e=this.$el.getElementsByClassName("column").length;e!=this.totalElements&&(this.totalElements=e,this.calculateColumns())},data:function(){return{columns:"four",totalElements:0}},methods:{calculateColumns:function(){var e=window.innerWidth;let i=Math.floor(e/500);0==i&&(i=1);var n=this.$el.getElementsByClassName("column");if(0==n.length)return"one";e=n.length;i>e&&(i=e);for(let t=0;t<n.length;t++){let e=n[t];e.className=e.className.replace("with-border",""),t%i!=i-1&&t!=n.length-1||(e.className+=" with-border")}switch(i){case 1:return"one";case 2:return"two";case 3:return"three";case 4:return"four";case 5:return"five";case 6:return"six";case 7:return"seven";case 8:return"eight";case 9:return"nine";default:return"ten"}}},template:`<div :class="'ui ' + columns + ' columns grid chart-grid'">
+</var>`}),Vue.component("mask-warning",{template:'<span class="red">为了安全起见，此项数据保存后将不允许在界面查看完整明文，为避免忘记，请自行记录原始数据。</span>'}),Vue.component("chart-columns-grid",{props:[],mounted:function(){this.columns=this.calculateColumns();let e=this;window.addEventListener("resize",function(){e.columns=e.calculateColumns()})},updated:function(){var e=this.$el.getElementsByClassName("column").length;e!=this.totalElements&&(this.totalElements=e,this.calculateColumns())},data:function(){return{columns:"four",totalElements:0}},methods:{calculateColumns:function(){var e=window.innerWidth;let i=Math.floor(e/500);0==i&&(i=1);var n=this.$el.getElementsByClassName("column");if(0==n.length)return"one";e=n.length;i>e&&(i=e);for(let t=0;t<n.length;t++){let e=n[t];e.className=e.className.replace("with-border",""),t%i!=i-1&&t!=n.length-1||(e.className+=" with-border")}switch(i){case 1:return"one";case 2:return"two";case 3:return"three";case 4:return"four";case 5:return"five";case 6:return"six";case 7:return"seven";case 8:return"eight";case 9:return"nine";default:return"ten"}}},template:`<div :class="'ui ' + columns + ' columns grid chart-grid'">
 	<slot></slot>
 </div>`}),Vue.component("bytes-var",{props:["v-bytes"],data:function(){let e=this.vBytes;return"number"!=typeof e&&(e=0),{format:teaweb.splitFormat(teaweb.formatBytes(e))}},template:`<var class="normal">
 	<span>{{format[0]}}</span>{{format[1]}}
@@ -6685,7 +6698,7 @@ example2.com
 		<div>
 			<div v-for="(address, index) in ipAddresses" class="ui label tiny basic">
 				<span v-if="isIPv6(address.ip)" class="grey">[IPv6]</span> {{address.ip}}
-				<span class="small grey" v-if="address.name.length > 0">（{{address.name}}<span v-if="!address.canAccess">，不可访问</span>）</span>
+				<span class="small grey" v-if="address.name.length > 0">（备注：{{address.name}}<span v-if="!address.canAccess">，不可访问</span>）</span>
 				<span class="small grey" v-if="address.name.length == 0 && !address.canAccess">（不可访问）</span>
 				<span class="small red" v-if="!address.isOn" title="未启用">[off]</span>
 				<span class="small red" v-if="!address.isUp" title="已下线">[down]</span>
