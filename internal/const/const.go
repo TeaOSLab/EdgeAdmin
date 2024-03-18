@@ -14,7 +14,7 @@ const (
 	EncryptKey    = "8f983f4d69b83aaa0d74b21a212f6967"
 	EncryptMethod = "aes-256-cfb"
 
-	CookieSID      = "edgesid"
+	CookieSID      = "geadsid"
 	SessionAdminId = "adminId"
 
 	SystemdServiceName = "edge-admin"
