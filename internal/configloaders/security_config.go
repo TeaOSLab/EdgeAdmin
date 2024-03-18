@@ -87,7 +87,7 @@ func loadSecurityConfig() (*systemconfigs.SecurityConfig, error) {
 		Frame:                  FrameSameOrigin,
 		AllowLocal:             true,
 		CheckClientFingerprint: false,
-		CheckClientRegion:      false,
+		CheckClientRegion:      true,
 	}
 	err = json.Unmarshal(resp.ValueJSON, config)
 	if err != nil {
@@ -108,6 +108,6 @@ func defaultSecurityConfig() *systemconfigs.SecurityConfig {
 		Frame:                  FrameSameOrigin,
 		AllowLocal:             true,
 		CheckClientFingerprint: false,
-		CheckClientRegion:      false,
+		CheckClientRegion:      true,
 	}
 }
