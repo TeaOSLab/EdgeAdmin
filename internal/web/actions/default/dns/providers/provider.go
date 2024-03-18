@@ -24,7 +24,10 @@ func (this *ProviderAction) RunGet(params struct {
 	this.Data["pageNo"] = params.Page
 	this.Data["filter"] = params.Filter
 
-	providerResp, err := this.RPC().DNSProviderRPC().FindEnabledDNSProvider(this.AdminContext(), &pb.FindEnabledDNSProviderRequest{DnsProviderId: params.ProviderId})
+	providerResp, err := this.RPC().DNSProviderRPC().FindEnabledDNSProvider(this.AdminContext(), &pb.FindEnabledDNSProviderRequest{
+		DnsProviderId: params.ProviderId,
+		MaskParams:    true,
+	})
 	if err != nil {
 		this.ErrorPage(err)
 		return
