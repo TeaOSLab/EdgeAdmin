@@ -109,6 +109,12 @@ func NewUserMustAuth(module string) *userMustAuth {
 func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramName string) (goNext bool) {
 	var action = actionPtr.Object()
 
+	// 检查请求是否合法
+	if isEvilRequest(action.Request) {
+		action.ResponseWriter.WriteHeader(http.StatusForbidden)
+		return false
+	}
+
 	// 恢复模式
 	if teaconst.IsRecoverMode {
 		action.RedirectURL("/recover")

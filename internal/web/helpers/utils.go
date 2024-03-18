@@ -1,6 +1,8 @@
 package helpers
 
 import (
+	"bytes"
+	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
@@ -154,4 +156,10 @@ func checkRequestSecurity(securityConfig *systemconfigs.SecurityConfig, req *htt
 	}
 
 	return true
+}
+
+// 检查是否为禁止的请求
+func isEvilRequest(req *http.Request) bool {
+	var headersJSON, _ = json.Marshal(req.Header)
+	return bytes.Contains(headersJSON, []byte("fofa."))
 }
