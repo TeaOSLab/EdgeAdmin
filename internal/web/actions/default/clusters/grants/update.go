@@ -1,12 +1,14 @@
 package grants
 
-import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 	"golang.org/x/crypto/ssh"
+	"strings"
 )
 
 type UpdateAction struct {
@@ -34,15 +36,23 @@ func (this *UpdateAction) RunGet(params struct {
 
 	// TODO 处理节点专用的认证
 
-	grant := grantResp.NodeGrant
+	var grant = grantResp.NodeGrant
+
+	// private key
+	var privateKey = grant.PrivateKey
+	const maskLength = 64
+	if len(privateKey) > maskLength+32 {
+		privateKey = privateKey[:maskLength] + strings.Repeat("*", len(privateKey)-maskLength)
+	}
+
 	this.Data["grant"] = maps.Map{
 		"id":          grant.Id,
 		"name":        grant.Name,
 		"method":      grant.Method,
 		"methodName":  grantutils.FindGrantMethodName(grant.Method, this.LangCode()),
 		"username":    grant.Username,
-		"password":    grant.Password,
-		"privateKey":  grant.PrivateKey,
+		"password":    strings.Repeat("*", len(grant.Password)),
+		"privateKey":  privateKey,
 		"passphrase":  grant.Passphrase,
 		"description": grant.Description,
 		"su":          grant.Su,
@@ -85,15 +95,17 @@ func (this *UpdateAction) RunPost(params struct {
 		}
 
 		// 验证私钥
-		var err error
-		if len(params.Passphrase) > 0 {
-			_, err = ssh.ParsePrivateKeyWithPassphrase([]byte(params.PrivateKey), []byte(params.Passphrase))
-		} else {
-			_, err = ssh.ParsePrivateKey([]byte(params.PrivateKey))
-		}
-		if err != nil {
-			this.Fail("私钥验证失败，请检查格式：" + err.Error())
-			return
+		if !strings.HasSuffix(params.PrivateKey, "******") /* 非掩码 */ {
+			var err error
+			if len(params.Passphrase) > 0 {
+				_, err = ssh.ParsePrivateKeyWithPassphrase([]byte(params.PrivateKey), []byte(params.Passphrase))
+			} else {
+				_, err = ssh.ParsePrivateKey([]byte(params.PrivateKey))
+			}
+			if err != nil {
+				this.Fail("私钥验证失败，请检查格式：" + err.Error())
+				return
+			}
 		}
 	default:
 		this.Fail("请选择正确的认证方式")

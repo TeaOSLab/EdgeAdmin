@@ -27,7 +27,7 @@ func (this *IndexAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	page := this.NewPage(countResp.Count)
+	var page = this.NewPage(countResp.Count)
 	this.Data["page"] = page.AsHTML()
 
 	grantsResp, err := this.RPC().NodeGrantRPC().ListEnabledNodeGrants(this.AdminContext(), &pb.ListEnabledNodeGrantsRequest{
@@ -39,7 +39,7 @@ func (this *IndexAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	grantMaps := []maps.Map{}
+	var grantMaps = []maps.Map{}
 	for _, grant := range grantsResp.NodeGrants {
 		// 集群数
 		countClustersResp, err := this.RPC().NodeClusterRPC().CountAllEnabledNodeClustersWithNodeGrantId(this.AdminContext(), &pb.CountAllEnabledNodeClustersWithNodeGrantIdRequest{NodeGrantId: grant.Id})
@@ -47,7 +47,7 @@ func (this *IndexAction) RunGet(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		countClusters := countClustersResp.Count
+		var countClusters = countClustersResp.Count
 
 		// 节点数
 		countNodesResp, err := this.RPC().NodeRPC().CountAllEnabledNodesWithNodeGrantId(this.AdminContext(), &pb.CountAllEnabledNodesWithNodeGrantIdRequest{NodeGrantId: grant.Id})
@@ -55,7 +55,7 @@ func (this *IndexAction) RunGet(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		countNodes := countNodesResp.Count
+		var countNodes = countNodesResp.Count
 
 		grantMaps = append(grantMaps, maps.Map{
 			"id":   grant.Id,

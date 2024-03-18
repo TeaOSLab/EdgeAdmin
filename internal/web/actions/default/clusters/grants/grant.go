@@ -31,7 +31,14 @@ func (this *GrantAction) RunGet(params struct {
 
 	// TODO 处理节点专用的认证
 
-	grant := grantResp.NodeGrant
+	var grant = grantResp.NodeGrant
+
+	var privateKey = grant.PrivateKey
+	const maskLength = 64
+	if len(privateKey) > maskLength+32 {
+		privateKey = privateKey[:maskLength] + strings.Repeat("*", len(privateKey)-maskLength)
+	}
+
 	this.Data["grant"] = maps.Map{
 		"id":          grant.Id,
 		"name":        grant.Name,
@@ -39,7 +46,7 @@ func (this *GrantAction) RunGet(params struct {
 		"methodName":  grantutils.FindGrantMethodName(grant.Method, this.LangCode()),
 		"username":    grant.Username,
 		"password":    strings.Repeat("*", len(grant.Password)),
-		"privateKey":  grant.PrivateKey,
+		"privateKey":  privateKey,
 		"passphrase":  strings.Repeat("*", len(grant.Passphrase)),
 		"description": grant.Description,
 		"su":          grant.Su,
