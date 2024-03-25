@@ -296,6 +296,9 @@ p.margin {
   padding: 0;
 }
 @media screen and (max-width: 512px) {
+  .main-menu {
+    width: auto !important;
+  }
   .main-menu .ui.menu {
     width: 3.6em !important;
   }
