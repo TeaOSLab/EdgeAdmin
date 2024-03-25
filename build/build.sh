@@ -121,7 +121,7 @@ function build() {
 		env CC="${GCC_DIR}/${CC_PATH}" \
 			CXX="${GCC_DIR}/${CXX_PATH}" \
 			CGO_ENABLED=1 \
-			GOOS="$OS" GOARCH="$ARCH" go build -trimpath -tags "${TAG} gcc" -ldflags="-s -w" -o "$DIST"/bin/${NAME} "$ROOT"/../cmd/edge-admin/main.go
+			GOOS="$OS" GOARCH="$ARCH" go build -trimpath -tags "${TAG} gcc" -ldflags="-linkmode external -extldflags -static -s -w" -o "$DIST"/bin/${NAME} "$ROOT"/../cmd/edge-admin/main.go
 	else
 		GOOS="$OS" GOARCH="$ARCH" go build -trimpath -tags $TAG -ldflags="-s -w" -o "$DIST"/bin/${NAME} "$ROOT"/../cmd/edge-admin/main.go
 	fi
