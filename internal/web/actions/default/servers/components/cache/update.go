@@ -40,13 +40,23 @@ func (this *UpdateAction) RunGet(params struct {
 		return
 	}
 
-	// fix min free size
 	if cachePolicy.Type == serverconfigs.CachePolicyStorageFile && cachePolicy.Options != nil {
-		_, ok := cachePolicy.Options["minFreeSize"]
-		if !ok {
-			cachePolicy.Options["minFreeSize"] = &shared.SizeCapacity{
-				Count: 0,
-				Unit:  shared.SizeCapacityUnitGB,
+		// fix min free size
+		{
+			_, ok := cachePolicy.Options["minFreeSize"]
+			if !ok {
+				cachePolicy.Options["minFreeSize"] = &shared.SizeCapacity{
+					Count: 0,
+					Unit:  shared.SizeCapacityUnitGB,
+				}
+			}
+		}
+
+		// fix enableMMAP
+		{
+			_, ok := cachePolicy.Options["enableMMAP"]
+			if !ok {
+				cachePolicy.Options["enableMMAP"] = true
 			}
 		}
 	}
@@ -76,6 +86,8 @@ func (this *UpdateAction) RunPost(params struct {
 	MaxSizeJSON          []byte
 	SyncCompressionCache bool
 	FetchTimeoutJSON     []byte
+
+	EnableMMAP bool
 
 	Description string
 	IsOn        bool
@@ -137,6 +149,7 @@ func (this *UpdateAction) RunPost(params struct {
 			OpenFileCache:  openFileCacheConfig,
 			EnableSendfile: params.FileEnableSendfile,
 			MinFreeSize:    minFreeSize,
+			EnableMMAP:     params.EnableMMAP,
 		}
 	case serverconfigs.CachePolicyStorageMemory:
 		options = &serverconfigs.HTTPMemoryCacheStorage{}

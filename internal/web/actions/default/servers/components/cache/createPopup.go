@@ -41,6 +41,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 	MaxSizeJSON          []byte
 	FetchTimeoutJSON     []byte
 	SyncCompressionCache bool
+	EnableMMAP           bool
 
 	Description string
 	IsOn        bool
@@ -97,6 +98,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 			OpenFileCache:  openFileCacheConfig,
 			EnableSendfile: params.FileEnableSendfile,
 			MinFreeSize:    minFreeSize,
+			EnableMMAP:     params.EnableMMAP,
 		}
 	case serverconfigs.CachePolicyStorageMemory:
 		options = &serverconfigs.HTTPMemoryCacheStorage{}
