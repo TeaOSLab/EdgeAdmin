@@ -77,7 +77,7 @@
                         <p class="comment">缓存磁盘保留的最小空余空间，如果为0表示使用默认（目前默认保留5GiB）。</p>
                     </td>
                 </tr>
-                <tr v-show="teaIsPlus">
+                <tr>
                     <td class="color-border">启用MMAP</td>
                     <td>
                         <checkbox name="enableMMAP" v-model="cachePolicy.options.enableMMAP"></checkbox>

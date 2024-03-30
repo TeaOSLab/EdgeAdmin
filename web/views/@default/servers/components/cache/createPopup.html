@@ -70,7 +70,7 @@
                     <p class="comment">缓存磁盘保留的最小空余空间，如果为0表示自动限制（目前默认保留5GiB）。</p>
                 </td>
             </tr>
-            <tr v-show="moreOptionsVisible && policyType == 'file' && teaIsPlus">
+            <tr v-show="moreOptionsVisible && policyType == 'file'">
                 <td class="color-border">启用MMAP</td>
                 <td>
                     <checkbox name="enableMMAP" checked="checked"></checkbox>
