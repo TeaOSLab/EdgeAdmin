@@ -46,7 +46,7 @@
                 <a :href="Tea.url('.update', {cachePolicyId:cachePolicy.id})"><span class="red">请设置一个内存容量作为缓冲区，以提升缓存写入性能。</span></a>
             </td>
         </tr>
-        <tr v-if="cachePolicy.options != null && teaIsPlus">
+        <tr v-if="cachePolicy.options != null">
             <td class="color-border">启用MMAP</td>
             <td>
                 <span class="green" v-if="cachePolicy.options.enableMMAP || cachePolicy.options.enableMMAP == null">Y</span>
