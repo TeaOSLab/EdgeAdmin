@@ -27,17 +27,17 @@
             </td>
         </tr>
         <tr>
-            <td class="color-border">缓存磁盘最大用量</td>
+            <td class="color-border">缓存硬盘最大用量</td>
             <td>
                 <size-capacity-view :v-value="cachePolicy.capacity" :v-default-text="'不限'"></size-capacity-view>
-                <p class="comment">单个节点上缓存所在磁盘的最大用量，如果为0表示没有限制。</p>
+                <p class="comment">单个节点上缓存所在硬盘的最大用量，如果为0表示没有限制。</p>
             </td>
         </tr>
         <tr v-if="cachePolicy.options.memoryPolicy != null && cachePolicy.options.memoryPolicy.capacity != null && cachePolicy.options.memoryPolicy.capacity.count > 0">
             <td class="color-border">内存最大容量</td>
             <td>
                 <size-capacity-view :v-value="cachePolicy.options.memoryPolicy.capacity"></size-capacity-view>
-                <p class="comment">作为一级缓存的内存最大容量，可以作为磁盘缓冲区和存储热点缓存内容，如果为0表示不使用内存作为一级缓存。</p>
+                <p class="comment">作为一级缓存的内存最大容量，可以作为硬盘缓冲区和存储热点缓存内容，如果为0表示不使用内存作为一级缓存。</p>
             </td>
         </tr>
         <tr v-else>
@@ -62,7 +62,7 @@
             <td><span v-if="cachePolicy.options.enableSendfile" class="green">Y</span><span v-else class="disabled">N</span></td>
         </tr>
         <tr v-if="cachePolicy.options.minFreeSize != null && cachePolicy.options.minFreeSize.count > 0">
-            <td class="color-border">缓存磁盘最小空余空间</td>
+            <td class="color-border">缓存硬盘最小空余空间</td>
             <td><size-capacity-view :v-value="cachePolicy.options.minFreeSize"></size-capacity-view></td>
         </tr>
     </tbody>

@@ -26,7 +26,7 @@
                     <radio v-model="reason" :v-value="REASON_BATCH_DELETE">要清理的域名太多，我比较懒，我不想用“刷新预热”功能</radio>
                 </div>
                 <div style="margin-top: 0.6em">
-                    <radio v-model="reason" :v-value="REASON_MAINTAINS">因节点磁盘空间不足或以往缓存设置错误或其他原因，想清除所有缓存，重新开始</radio>
+                    <radio v-model="reason" :v-value="REASON_MAINTAINS">因节点硬盘空间不足或以往缓存设置错误或其他原因，想清除所有缓存，重新开始</radio>
                 </div>
                 <div style="margin-top: 0.6em">
                     <radio v-model="reason" :v-value="REASON_ISSUE_REPORT">我怀疑“刷新预热”功能不起作用</radio>
@@ -54,7 +54,7 @@
         <tr v-show="reason == REASON_MAINTAINS">
             <td>操作建议</td>
             <td>
-                缓存文件较多时，系统需要消耗更多系统资源和更多时间删除缓存文件，磁盘使用空间会逐渐恢复，操作后，请耐心等待。
+                缓存文件较多时，系统需要消耗更多系统资源和更多时间删除缓存文件，硬盘使用空间会逐渐恢复，操作后，请耐心等待。
             </td>
         </tr>
         <tr v-show="isReasonable()">

@@ -172,7 +172,7 @@
 				</td>
 			</tr>
             <tr>
-                <td>缓存磁盘容量</td>
+                <td>缓存硬盘容量</td>
                 <td>
                     <span v-if="node.maxCacheDiskCapacity == null || node.maxCacheDiskCapacity.count <= 0" class="disabled">没有限制</span>
                    <div v-else>
@@ -181,7 +181,7 @@
                 </td>
             </tr>
             <tr>
-                <td>磁盘预估写入最大速度</td>
+                <td>硬盘预估写入最大速度</td>
                 <td>
                     <span v-if="node.status.diskWritingSpeedMB == 0">-</span><span v-if="node.status.diskWritingSpeedMB > 0">&gt; {{node.status.diskWritingSpeedMB}}</span>
                     <span v-if="node.status.diskWritingSpeedMB > 1000">MiB/s 极快</span>
@@ -257,7 +257,7 @@
             <tr>
                 <td>缓存用量</td>
                 <td>
-                    磁盘：{{node.status.cacheTotalDiskSize}}  &nbsp; 内存：{{node.status.cacheTotalMemorySize}}
+                    硬盘：{{node.status.cacheTotalDiskSize}}  &nbsp; 内存：{{node.status.cacheTotalMemorySize}}
                 </td>
             </tr>
         </tbody>
