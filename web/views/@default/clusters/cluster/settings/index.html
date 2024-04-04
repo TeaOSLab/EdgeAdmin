@@ -119,6 +119,13 @@
                         <p class="comment">选中后，表示自动调整Linux内核等参数，以便提升性能；启用后，以往安装的边缘节点需要重启进程后才能生效。</p>
                     </td>
                 </tr>
+                <tr>
+                    <td>自动执行硬盘<br/>TRIM</td>
+                    <td>
+                        <checkbox name="autoTrimDisks" value="1" v-model="cluster.autoTrimDisks"></checkbox>
+                        <p class="comment">执行TRIM后可以移除SSD硬盘中无效的数据，从而显著提升SSD硬盘写入性能。</p>
+                    </td>
+                </tr>
             </tbody>
 		</table>
 		<submit-btn></submit-btn>
