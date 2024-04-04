@@ -21,7 +21,7 @@ import (
 	"strings"
 )
 
-// CheckDiskPartitions 检查服务器磁盘空间
+// CheckDiskPartitions 检查服务器硬盘空间
 func CheckDiskPartitions(thresholdPercent float64) (path string, usage uint64, usagePercent float64, shouldWarning bool) {
 	partitions, err := disk.Partitions(false)
 	if err != nil {

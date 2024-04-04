@@ -113,6 +113,7 @@ func (this *IndexAction) RunGet(params struct {
 		"autoRemoteStart":     cluster.AutoRemoteStart,
 		"autoInstallNftables": cluster.AutoInstallNftables,
 		"autoSystemTuning":    cluster.AutoSystemTuning,
+		"autoTrimDisks":       cluster.AutoTrimDisks,
 		"sshParams":           sshParams,
 		"domainName":          fullDomainName,
 	}
@@ -141,6 +142,7 @@ func (this *IndexAction) RunPost(params struct {
 	AutoRemoteStart     bool
 	AutoInstallNftables bool
 	AutoSystemTuning    bool
+	AutoTrimDisks       bool
 
 	Must *actions.Must
 }) {
@@ -196,6 +198,7 @@ func (this *IndexAction) RunPost(params struct {
 		AutoRemoteStart:     params.AutoRemoteStart,
 		AutoInstallNftables: params.AutoInstallNftables,
 		AutoSystemTuning:    params.AutoSystemTuning,
+		AutoTrimDisks:       params.AutoTrimDisks,
 		SshParamsJSON:       sshParamsJSON,
 	})
 	if err != nil {
