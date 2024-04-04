@@ -26,17 +26,17 @@
 				</td>
 			</tr>
             <tr>
-                <td class="color-border">缓存磁盘最大用量 *</td>
+                <td class="color-border">缓存硬盘最大用量 *</td>
                 <td>
                     <size-capacity-box :v-name="'capacityJSON'" :v-count="128" :v-unit="'gb'" :key="'capacityJSON1'"></size-capacity-box>
-                    <p class="comment">单个节点上缓存所在磁盘的最大用量，超出此用量或磁盘接近用尽时，将会自动尝试清理旧数据，如果为0表示没有限制。</p>
+                    <p class="comment">单个节点上缓存所在硬盘的最大用量，超出此用量或硬盘接近用尽时，将会自动尝试清理旧数据，如果为0表示没有限制。</p>
                 </td>
             </tr>
             <tr>
                 <td class="color-border">内存最大容量</td>
                 <td>
                    <size-capacity-box :v-name="'fileMemoryCapacityJSON'" :v-count="1" :v-unit="'gb'" :key="'fileMemoryCapacityJSON'"></size-capacity-box>
-                    <p class="comment">单个节点上作为一级缓存的内存最大容量，可以作为磁盘缓冲区和存储热点缓存内容，如果为0表示不使用内存作为一级缓存。</p>
+                    <p class="comment">单个节点上作为一级缓存的内存最大容量，可以作为硬盘缓冲区和存储热点缓存内容，如果为0表示不使用内存作为一级缓存。</p>
                 </td>
             </tr>
 		</tbody>
@@ -64,10 +64,10 @@
 		</tr>
         <tbody v-show="moreOptionsVisible && policyType == 'file'">
             <tr>
-                <td class="color-border">缓存磁盘最小空余空间</td>
+                <td class="color-border">缓存硬盘最小空余空间</td>
                 <td>
                     <size-capacity-box :v-name="'fileMinFreeSizeJSON'" :v-count="0" :v-unit="'gb'" :key="'minFreeSizeJSON'"></size-capacity-box>
-                    <p class="comment">缓存磁盘保留的最小空余空间，如果为0表示自动限制（目前默认保留5GiB）。</p>
+                    <p class="comment">缓存硬盘保留的最小空余空间，如果为0表示自动限制（目前默认保留5GiB）。</p>
                 </td>
             </tr>
             <tr v-show="moreOptionsVisible && policyType == 'file'">
@@ -97,7 +97,7 @@
                 <td>同步写入压缩缓存</td>
                 <td>
                     <checkbox name="syncCompressionCache"></checkbox>
-                    <p class="comment">选中后，在压缩设置开启的情况下，在缓存源站内容的同时，也会同步写入压缩缓存；不选中，表示在源站内容缓存后，下一次调用才会缓存压缩内容，防止同一时间内磁盘IO负载过高。</p>
+                    <p class="comment">选中后，在压缩设置开启的情况下，在缓存源站内容的同时，也会同步写入压缩缓存；不选中，表示在源站内容缓存后，下一次调用才会缓存压缩内容，防止同一时间内硬盘IO负载过高。</p>
                 </td>
             </tr>
             <tr>

@@ -8,21 +8,21 @@
         <input type="hidden" name="nodeId" :value="node.id"/>
         <table class="ui table definition selectable">
             <tr>
-                <td class="title">缓存磁盘容量</td>
+                <td class="title">缓存硬盘容量</td>
                 <td>
                     <size-capacity-box :v-value="node.maxCacheDiskCapacity" :v-name="'maxCacheDiskCapacityJSON'"></size-capacity-box>
-                    <p class="comment">缓存所在磁盘的最大用量，超出此用量或磁盘接近用尽时，将会自动尝试清理旧数据，0表示不限制。</p>
+                    <p class="comment">缓存所在硬盘的最大用量，超出此用量或硬盘接近用尽时，将会自动尝试清理旧数据，0表示不限制。</p>
                 </td>
             </tr>
             <tr>
-                <td>磁盘缓存主目录</td>
+                <td>硬盘缓存主目录</td>
                 <td>
                     <input type="text" name="cacheDiskDir" maxlength="500" value="" v-model="node.cacheDiskDir"/>
                     <p class="comment">存放文件缓存的主目录，通常填写绝对路径。不填则表示使用集群缓存策略中定义的目录。</p>
                 </td>
             </tr>
             <tr>
-                <td>其他磁盘缓存目录</td>
+                <td>其他硬盘缓存目录</td>
                 <td>
                     <node-cache-disk-dirs-box name="cacheDiskSubDirsJSON" v-model="node.cacheDiskSubDirs"></node-cache-disk-dirs-box>
                     <p class="comment">除了主目录外，可以在这里添加别的可用于缓存的目录；缓存目录有变更时（添加、删除或修改）需要手动将这些缓存目录清空。</p>
