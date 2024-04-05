@@ -12,7 +12,7 @@
 			<tr>
 				<td class="color-border">缓存类型 *</td>
 				<td>
-					<select class="ui dropdown auto-width" name="type" v-model="policyType">
+					<select class="ui dropdown auto-width" name="type" v-model="policyType" @change="changePolicyType">
 						<option v-for="type in types" :value="type.type">{{type.name}}</option>
 					</select>
 				</td>

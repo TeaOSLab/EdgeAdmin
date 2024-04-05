@@ -7,4 +7,20 @@ Tea.context(function () {
 	if (this.cachePolicy.type == "file" && this.cachePolicy.options.openFileCache != null && this.cachePolicy.options.openFileCache.isOn && this.cachePolicy.options.openFileCache.max > 0) {
 		this.fileOpenFileCacheMax = this.cachePolicy.options.openFileCache.max
 	}
+
+	this.changePolicyType = function () {
+		if (this.policyType == "file") {
+			let options = this.cachePolicy.options
+			if (options != null && typeof options == "object" && typeof options["dir"] === "undefined") {
+				options["enableMMAP"] = true
+				options["dir"] = "/opt/cache"
+				options["memoryPolicy"] = {
+					capacity: {
+						unit: "gb",
+						count: 2
+					}
+				}
+			}
+		}
+	}
 })
