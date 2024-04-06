@@ -3,11 +3,11 @@ package node
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/grants/grantutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/ipAddresses/ipaddressutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/iputils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -178,7 +178,7 @@ func (this *DetailAction) RunGet(params struct {
 
 			for _, route := range dnsInfo.Routes {
 				var recordType = "A"
-				if utils.IsIPv6(addr.Ip) {
+				if iputils.IsIPv6(addr.Ip) {
 					recordType = "AAAA"
 				}
 				recordMaps = append(recordMaps, maps.Map{

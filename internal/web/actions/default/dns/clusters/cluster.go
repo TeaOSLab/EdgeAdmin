@@ -1,8 +1,8 @@
 package clusters
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/iputils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
@@ -107,7 +107,7 @@ func (this *ClusterAction) RunGet(params struct {
 				var isResolved = false
 				if isInstalled && cluster.DnsDomainId > 0 && len(cluster.DnsName) > 0 && len(node.IpAddr) > 0 {
 					var recordType = "A"
-					if utils.IsIPv6(node.IpAddr) {
+					if iputils.IsIPv6(node.IpAddr) {
 						recordType = "AAAA"
 					}
 					checkResp, err := this.RPC().DNSDomainRPC().ExistDNSDomainRecord(this.AdminContext(), &pb.ExistDNSDomainRecordRequest{
@@ -145,7 +145,7 @@ func (this *ClusterAction) RunGet(params struct {
 			var isResolved = false
 			if isInstalled && len(defaultRoute) > 0 {
 				var recordType = "A"
-				if utils.IsIPv6(node.IpAddr) {
+				if iputils.IsIPv6(node.IpAddr) {
 					recordType = "AAAA"
 				}
 				checkResp, err := this.RPC().DNSDomainRPC().ExistDNSDomainRecord(this.AdminContext(), &pb.ExistDNSDomainRecordRequest{

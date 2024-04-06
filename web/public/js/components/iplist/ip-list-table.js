@@ -202,8 +202,9 @@ Vue.component("ip-list-table", {
 						<div v-if="item.isExpired" style="margin-top: 0.5em">
 							<span class="ui label tiny basic red">已过期</span>
 						</div>
-						<div  v-if="item.lifeSeconds != null && item.lifeSeconds > 0">
-							<span class="small grey">{{formatSeconds(item.lifeSeconds)}}</span>
+						<div  v-if="item.lifeSeconds != null">
+							<span class="small grey" v-if="item.lifeSeconds > 0">{{formatSeconds(item.lifeSeconds)}}</span>
+							<span class="small red">已过期</span>
 						</div>
 					</div>
 					<span v-else class="disabled">不过期</span>

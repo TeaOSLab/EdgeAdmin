@@ -1,8 +1,10 @@
 package iplists
 
-import (	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
+import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/iputils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
@@ -89,13 +91,13 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 				Require("请输入开始IP")
 
 			var ipFromLong uint64
-			if !utils.IsIPv4(params.IpFrom) {
+			if !iputils.IsIPv4(params.IpFrom) {
 				this.Fail("请输入正确的开始IP")
 			}
 			ipFromLong = utils.IP2Long(params.IpFrom)
 
 			var ipToLong uint64
-			if len(params.IpTo) > 0 && !utils.IsIPv4(params.IpTo) {
+			if len(params.IpTo) > 0 && !iputils.IsIPv4(params.IpTo) {
 				this.Fail("请输入正确的结束IP")
 			}
 			ipToLong = utils.IP2Long(params.IpTo)
@@ -170,7 +172,7 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 				Require("请输入IP")
 
 			// 校验IP格式（ipFrom）
-			if !utils.IsIPv6(params.IpFrom) {
+			if !iputils.IsIPv6(params.IpFrom) {
 				this.Fail("请输入正确的IPv6地址")
 			}
 		} else if params.Method == "batch" {
