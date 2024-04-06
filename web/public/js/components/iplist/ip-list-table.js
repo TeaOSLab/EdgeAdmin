@@ -123,7 +123,7 @@ Vue.component("ip-list-table", {
  	<div class="ui divider"></div>
  	<button class="ui button basic" type="button" @click.prevent="deleteAll">批量删除所选</button>
  	&nbsp; &nbsp; 
- 	<button class="ui button basic" type="button" @click.prevent="deleteCount" v-if="vTotal != null && vTotal >= MaxDeletes">批量删除{{MaxDeletes}}个</button>
+ 	<button class="ui button basic" type="button" @click.prevent="deleteCount" v-if="vTotal != null && vTotal >= MaxDeletes">批量删除所有搜索结果（{{MaxDeletes}}个）</button>
  	
  	&nbsp; &nbsp; 
  	<button class="ui button basic" type="button" @click.prevent="cancelChecked">取消选中</button>
