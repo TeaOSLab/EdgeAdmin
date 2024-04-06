@@ -72,7 +72,7 @@
                 <span v-if="task.keyType == 'prefix'">前缀</span>
             </th>
             <th class="two wide">所属集群</th>
-            <th class="width5">状态</th>
+            <th class="width6">状态</th>
         </tr>
     </thead>
     <tbody v-for="key in task.keys">
@@ -93,7 +93,7 @@
                 <span v-if="key.isDone && key.errors.length == 0" class="green">完成</span>
                 <span v-if="key.isDone && key.errors.length > 0" class="red">失败</span>
                 <span v-if="!key.isDone && !key.isDoing" class="grey">未执行</span>
-                <span v-if="!key.isDone && key.isDoing" class="grey">执行中</span>
+                <span v-if="!key.isDone && key.isDoing" class="grey">部分完成</span>
             </td>
         </tr>
     </tbody>
