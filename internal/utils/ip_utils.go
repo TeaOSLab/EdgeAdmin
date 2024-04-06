@@ -2,27 +2,11 @@ package utils
 
 import (
 	"bytes"
-	"encoding/binary"
 	"errors"
 	"github.com/iwind/TeaGo/types"
 	"net"
 	"strings"
 )
-
-// IP2Long 将IP转换为整型
-// 为临时过渡的函数
-func IP2Long(ip string) uint64 {
-	var i = net.ParseIP(ip)
-	if len(i) == 0 {
-		return 0
-	}
-	if i.To4() != nil {
-		return uint64(binary.BigEndian.Uint32(i.To4()))
-	}
-
-	// TODO 支持IPv6
-	return 0
-}
 
 // ExtractIP 分解IP
 // 只支持D段掩码的CIDR

@@ -1,6 +1,6 @@
 package ipadmin
 
-import (	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
+import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/iputils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
@@ -71,29 +71,32 @@ func (this *UpdateIPPopupAction) RunPost(params struct {
 			Require("请输入开始IP")
 
 		// 校验IP格式（ipFrom/ipTo）
-		var ipFromLong uint64
 		if !iputils.IsIPv4(params.IpFrom) {
-			this.Fail("请输入正确的开始IP")
+			this.FailField("ipFrom", "请输入正确的开始IP")
 		}
-		ipFromLong = utils.IP2Long(params.IpFrom)
 
-		var ipToLong uint64
 		if len(params.IpTo) > 0 && !iputils.IsIPv4(params.IpTo) {
-			this.Fail("请输入正确的结束IP")
+			this.FailField("ipTo", "请输入正确的结束IP")
 		}
-		ipToLong = utils.IP2Long(params.IpTo)
 
-		if ipFromLong > 0 && ipToLong > 0 && ipFromLong > ipToLong {
+		if len(params.IpTo) > 0 && iputils.CompareIP(params.IpFrom, params.IpTo) > 0 {
 			params.IpTo, params.IpFrom = params.IpFrom, params.IpTo
 		}
 	case "ipv6":
 		params.Must.
 			Field("ipFrom", params.IpFrom).
-			Require("请输入IP")
+			Require("请输入正确的开始IP")
 
-		// 校验IP格式（ipFrom）
 		if !iputils.IsIPv6(params.IpFrom) {
-			this.Fail("请输入正确的IPv6地址")
+			this.FailField("ipFrom", "请输入正确的IPv6地址")
+		}
+
+		if len(params.IpTo) > 0 && !iputils.IsIPv6(params.IpTo) {
+			this.FailField("ipTo", "请输入正确的IPv6地址")
+		}
+
+		if len(params.IpTo) > 0 && iputils.CompareIP(params.IpFrom, params.IpTo) > 0 {
+			params.IpTo, params.IpFrom = params.IpFrom, params.IpTo
 		}
 	case "all":
 		params.IpFrom = "0.0.0.0"
