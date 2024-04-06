@@ -1,7 +1,6 @@
 package iplists
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/iputils"
@@ -90,19 +89,15 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 				Field("ipFrom", params.IpFrom).
 				Require("请输入开始IP")
 
-			var ipFromLong uint64
 			if !iputils.IsIPv4(params.IpFrom) {
-				this.Fail("请输入正确的开始IP")
+				this.FailField("ipFrom", "请输入正确的开始IP")
 			}
-			ipFromLong = utils.IP2Long(params.IpFrom)
 
-			var ipToLong uint64
 			if len(params.IpTo) > 0 && !iputils.IsIPv4(params.IpTo) {
-				this.Fail("请输入正确的结束IP")
+				this.FailField("ipTo", "请输入正确的结束IP")
 			}
-			ipToLong = utils.IP2Long(params.IpTo)
 
-			if ipFromLong > 0 && ipToLong > 0 && ipFromLong > ipToLong {
+			if len(params.IpTo) != 0 && iputils.CompareIP(params.IpFrom, params.IpTo) > 0 {
 				params.IpTo, params.IpFrom = params.IpFrom, params.IpTo
 			}
 		} else if params.Method == "batch" {
@@ -132,7 +127,7 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 					if net.ParseIP(ipFrom) == nil || net.ParseIP(ipTo) == nil || strings.Contains(ipFrom, ":") || strings.Contains(ipTo, ":") {
 						this.FailField("ipData", "第"+types.String(index+1)+"行IP格式错误："+line)
 					}
-					if utils.IP2Long(ipFrom) > utils.IP2Long(ipTo) {
+					if len(ipTo) > 0 && iputils.CompareIP(ipFrom, ipTo) > 0 {
 						ipFrom, ipTo = ipTo, ipFrom
 					}
 					batchIPs = append(batchIPs, &ipData{
@@ -147,7 +142,7 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 					if net.ParseIP(ipFrom) == nil || net.ParseIP(ipTo) == nil || strings.Contains(ipFrom, ":") || strings.Contains(ipTo, ":") {
 						this.FailField("ipData", "第"+types.String(index+1)+"行IP格式错误："+line)
 					}
-					if utils.IP2Long(ipFrom) > utils.IP2Long(ipTo) {
+					if len(ipTo) > 0 && iputils.CompareIP(ipFrom, ipTo) > 0 {
 						ipFrom, ipTo = ipTo, ipFrom
 					}
 					batchIPs = append(batchIPs, &ipData{
@@ -169,11 +164,18 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 		if params.Method == "single" {
 			params.Must.
 				Field("ipFrom", params.IpFrom).
-				Require("请输入IP")
+				Require("请输入正确的开始IP")
 
-			// 校验IP格式（ipFrom）
 			if !iputils.IsIPv6(params.IpFrom) {
-				this.Fail("请输入正确的IPv6地址")
+				this.FailField("ipFrom", "请输入正确的IPv6地址")
+			}
+
+			if len(params.IpTo) > 0 && !iputils.IsIPv6(params.IpTo) {
+				this.FailField("ipTo", "请输入正确的IPv6地址")
+			}
+
+			if len(params.IpTo) > 0 && iputils.CompareIP(params.IpFrom, params.IpTo) > 0 {
+				params.IpTo, params.IpFrom = params.IpFrom, params.IpTo
 			}
 		} else if params.Method == "batch" {
 			if len(params.IpData) == 0 {
@@ -202,7 +204,7 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 					if net.ParseIP(ipFrom) == nil || net.ParseIP(ipTo) == nil || !strings.Contains(ipFrom, ":") || !strings.Contains(ipTo, ":") {
 						this.FailField("ipData", "第"+types.String(index+1)+"行IP格式错误："+line)
 					}
-					if utils.IP2Long(ipFrom) > utils.IP2Long(ipTo) {
+					if len(ipTo) > 0 && iputils.CompareIP(ipFrom, ipTo) > 0 {
 						ipFrom, ipTo = ipTo, ipFrom
 					}
 					batchIPs = append(batchIPs, &ipData{
@@ -217,7 +219,7 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 					if net.ParseIP(ipFrom) == nil || net.ParseIP(ipTo) == nil || !strings.Contains(ipFrom, ":") || !strings.Contains(ipTo, ":") {
 						this.FailField("ipData", "第"+types.String(index+1)+"行IP格式错误："+line)
 					}
-					if utils.IP2Long(ipFrom) > utils.IP2Long(ipTo) {
+					if len(ipTo) > 0 && iputils.CompareIP(ipFrom, ipTo) > 0 {
 						ipFrom, ipTo = ipTo, ipFrom
 					}
 					batchIPs = append(batchIPs, &ipData{
