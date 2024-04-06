@@ -5,44 +5,23 @@ import (
 	"encoding/binary"
 	"errors"
 	"github.com/iwind/TeaGo/types"
-	"math/big"
 	"net"
-	"regexp"
 	"strings"
 )
 
 // IP2Long 将IP转换为整型
+// 为临时过渡的函数
 func IP2Long(ip string) uint64 {
-	s := net.ParseIP(ip)
-	if len(s) != 16 {
+	var i = net.ParseIP(ip)
+	if len(i) == 0 {
 		return 0
 	}
+	if i.To4() != nil {
+		return uint64(binary.BigEndian.Uint32(i.To4()))
+	}
 
-	if strings.Contains(ip, ":") { // IPv6
-		bigInt := big.NewInt(0)
-		bigInt.SetBytes(s.To16())
-		return bigInt.Uint64()
-	}
-	return uint64(binary.BigEndian.Uint32(s.To4()))
-}
-
-// IsIPv4 判断是否为IPv4
-func IsIPv4(ip string) bool {
-	if !regexp.MustCompile(`^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$`).MatchString(ip) {
-		return false
-	}
-	if IP2Long(ip) == 0 {
-		return false
-	}
-	return true
-}
-
-// IsIPv6 判断是否为IPv6
-func IsIPv6(ip string) bool {
-	if !strings.Contains(ip, ":") {
-		return false
-	}
-	return len(net.ParseIP(ip)) == net.IPv6len
+	// TODO 支持IPv6
+	return 0
 }
 
 // ExtractIP 分解IP
