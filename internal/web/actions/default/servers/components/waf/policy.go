@@ -97,6 +97,7 @@ func (this *PolicyAction) RunGet(params struct {
 		"blockOptions":             firewallPolicy.BlockOptions,
 		"pageOptions":              firewallPolicy.PageOptions,
 		"captchaOptions":           firewallPolicy.CaptchaOptions,
+		"jsCookieOptions":          firewallPolicy.JSCookieOptions,
 		"useLocalFirewall":         firewallPolicy.UseLocalFirewall,
 		"synFlood":                 firewallPolicy.SYNFlood,
 		"log":                      firewallPolicy.Log,

@@ -49,6 +49,12 @@
         </td>
     </tr>
     <tr>
+        <td>JSCookie动作配置</td>
+        <td>
+            <http-firewall-js-cookie-options-viewer :v-js-cookie-options="firewallPolicy.jsCookieOptions"></http-firewall-js-cookie-options-viewer>
+        </td>
+    </tr>
+    <tr>
         <td>使用系统防火墙</td>
         <td>
             <span class="green" v-if="firewallPolicy.useLocalFirewall">启用</span>

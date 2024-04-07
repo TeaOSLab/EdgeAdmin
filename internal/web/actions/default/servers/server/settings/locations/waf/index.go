@@ -39,7 +39,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 	if firewallPolicy != nil {
 		// captcha action
-		var captchaOptions = firewallconfigs.DefaultHTTPFirewallCaptchaAction()
+		var captchaOptions = firewallconfigs.NewHTTPFirewallCaptchaAction()
 		if len(firewallPolicy.CaptchaOptionsJSON) > 0 {
 			err = json.Unmarshal(firewallPolicy.CaptchaOptionsJSON, captchaOptions)
 			if err != nil {
