@@ -119,7 +119,7 @@ Vue.component("http-firewall-captcha-options", {
 				summaryList.push("失败拦截" + this.options.failBlockTimeout + "秒")
 			}
 			if (this.options.failBlockScopeAll) {
-				summaryList.push("全局封禁")
+				summaryList.push("尝试全局封禁")
 			}
 
 			let that = this
@@ -199,7 +199,7 @@ Vue.component("http-firewall-captcha-options", {
 					<td>失败全局封禁</td>
 					<td>
 						<checkbox v-model="options.failBlockScopeAll"></checkbox>
-						<p class="comment">是否在失败时全局封禁，默认为只封禁对单个网站的访问。</p>
+						<p class="comment">选中后，表示允许系统尝试全局封禁某个IP，以提升封禁性能。</p>
 					</td>
 				</tr>
 				
