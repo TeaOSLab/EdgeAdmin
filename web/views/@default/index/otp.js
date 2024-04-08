@@ -22,10 +22,17 @@ Tea.context(function () {
 	};
 
 	this.submitSuccess = function (resp) {
-		if (this.from.length == 0) {
-			window.location = "/dashboard";
-		} else {
-			window.location = this.from;
-		}
+		// store information to local
+		localStorage.setItem("sid", resp.data.localSid)
+		localStorage.setItem("ip", resp.data.ip)
+
+		// redirect back
+		this.$delay(function () {
+			if (this.from.length == 0) {
+				window.location = "/dashboard";
+			} else {
+				window.location = this.from;
+			}
+		})
 	};
 });

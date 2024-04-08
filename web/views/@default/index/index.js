@@ -39,14 +39,21 @@ Tea.context(function () {
 	};
 
 	this.submitSuccess = function (resp) {
-		if (resp.data.requireOTP) {
-			window.location = "/index/otp?sid=" + resp.data.sid + "&remember=" + (resp.data.remember ? 1 : 0) + "&from=" + window.encodeURIComponent(this.from)
-			return
-		}
-		if (this.from.length == 0) {
-			window.location = "/dashboard";
-		} else {
-			window.location = this.from;
-		}
+		// store information to local
+		localStorage.setItem("sid", resp.data.localSid)
+		localStorage.setItem("ip", resp.data.ip)
+
+		// redirect back
+		this.$delay(function () {
+			if (resp.data.requireOTP) {
+				window.location = "/index/otp?sid=" + resp.data.sid + "&remember=" + (resp.data.remember ? 1 : 0) + "&from=" + window.encodeURIComponent(this.from)
+				return
+			}
+			if (this.from.length == 0) {
+				window.location = "/dashboard";
+			} else {
+				window.location = this.from;
+			}
+		})
 	};
 });

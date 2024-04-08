@@ -200,17 +200,21 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	}
 
 	// 检查区域
-	if securityConfig != nil && securityConfig.CheckClientRegion {
-		var oldClientIP = session.GetString("@ip")
-		var currentClientIP = loginutils.RemoteIP(action)
-		if len(oldClientIP) > 0 && len(currentClientIP) > 0 && oldClientIP != currentClientIP {
-			var oldRegion = loginutils.LookupIPRegion(oldClientIP)
-			var newRegion = loginutils.LookupIPRegion(currentClientIP)
-			if newRegion != oldRegion {
+	var oldClientIP = session.GetString("@ip")
+	var currentClientIP = loginutils.RemoteIP(action)
+	if len(oldClientIP) > 0 && len(currentClientIP) > 0 && oldClientIP != currentClientIP {
+		var oldRegion = loginutils.LookupIPRegion(oldClientIP)
+		var newRegion = loginutils.LookupIPRegion(currentClientIP)
+		if newRegion != oldRegion {
+			if securityConfig != nil && securityConfig.CheckClientRegion {
 				loginutils.UnsetCookie(action)
 				session.Delete()
 
 				this.login(action)
+				return false
+			} else {
+				// TODO 考虑IP变化时也需要验证，主要是考虑被反向代理的情形
+				action.RedirectURL("/login/validate?from=" + url.QueryEscape(action.Request.URL.String()))
 				return false
 			}
 		}

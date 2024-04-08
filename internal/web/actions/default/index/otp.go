@@ -19,6 +19,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/iwind/TeaGo/rands"
 	stringutil "github.com/iwind/TeaGo/utils/string"
 	"github.com/xlzd/gotp"
 	"time"
@@ -132,7 +133,10 @@ func (this *OtpAction) RunPost(params struct {
 	}
 
 	// 写入SESSION
-	params.Auth.StoreAdmin(adminId, params.Remember)
+	var localSid = rands.HexString(32)
+	this.Data["localSid"] = localSid
+	this.Data["ip"] = loginutils.RemoteIP(&this.ActionObject)
+	params.Auth.StoreAdmin(adminId, params.Remember, localSid)
 
 	// 删除OTP SESSION
 	_, err = this.RPC().LoginSessionRPC().DeleteLoginSession(this.AdminContext(), &pb.DeleteLoginSessionRequest{Sid: sid})

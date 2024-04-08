@@ -21,6 +21,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/lists"
+	"github.com/iwind/TeaGo/rands"
 	"github.com/iwind/TeaGo/types"
 	stringutil "github.com/iwind/TeaGo/utils/string"
 	"net"
@@ -236,7 +237,10 @@ func (this *IndexAction) RunPost(params struct {
 	}
 
 	// 写入SESSION
-	params.Auth.StoreAdmin(adminId, params.Remember)
+	var localSid = rands.HexString(32)
+	this.Data["localSid"] = localSid
+	this.Data["ip"] = loginutils.RemoteIP(&this.ActionObject)
+	params.Auth.StoreAdmin(adminId, params.Remember, localSid)
 
 	// 记录日志
 	err = dao.SharedLogDAO.CreateAdminLog(rpcClient.Context(adminId), oplogs.LevelInfo, this.Request.URL.Path, langs.DefaultMessage(codes.AdminLogin_LogSuccess, params.Username), loginutils.RemoteIP(&this.ActionObject), codes.AdminLogin_LogSuccess, []any{params.Username})

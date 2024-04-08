@@ -29,6 +29,7 @@ import (
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/tasks"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/index"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/log"
+	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/login"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/logout"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/messages"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes"

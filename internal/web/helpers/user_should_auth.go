@@ -60,12 +60,13 @@ func (this *UserShouldAuth) BeforeAction(actionPtr actions.ActionWrapper, paramN
 }
 
 // StoreAdmin 存储用户名到SESSION
-func (this *UserShouldAuth) StoreAdmin(adminId int64, remember bool) {
+func (this *UserShouldAuth) StoreAdmin(adminId int64, remember bool, localSid string) {
 	loginutils.SetCookie(this.action, remember)
 	var session = this.action.Session()
 	session.Write("adminId", numberutils.FormatInt64(adminId))
 	session.Write("@fingerprint", loginutils.CalculateClientFingerprint(this.action))
 	session.Write("@ip", loginutils.RemoteIP(this.action))
+	session.Write("@localSid", localSid)
 }
 
 func (this *UserShouldAuth) IsUser() bool {
