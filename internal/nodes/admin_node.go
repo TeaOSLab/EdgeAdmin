@@ -3,6 +3,7 @@ package nodes
 import (
 	"errors"
 	"fmt"
+	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
@@ -405,6 +406,10 @@ func (this *AdminNode) listenSock() error {
 				_ = cmd.ReplyOk()
 			case "prod": // 切换到prod
 				Tea.Env = Tea.EnvProd
+				_ = cmd.ReplyOk()
+			case "security.reset":
+				var newConfig = configloaders.NewSecurityConfig()
+				_ = configloaders.UpdateSecurityConfig(newConfig)
 				_ = cmd.ReplyOk()
 			}
 		})
