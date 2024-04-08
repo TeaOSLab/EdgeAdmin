@@ -37,6 +37,10 @@ func RemoteIP(action *actions.ActionObject) string {
 					return ipValue
 				}
 			}
+
+			if securityConfig.ClientIPHeaderOnly {
+				return ""
+			}
 		}
 	}
 

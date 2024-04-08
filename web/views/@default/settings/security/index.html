@@ -58,10 +58,17 @@
         </tr>
         <tbody v-show="moreOptionsVisible || showAll">
             <tr>
-                <td>自定义客户端IP报头</td>
+                <td class="color-border">自定义客户端IP报头</td>
                 <td>
                     <input type="text" name="clientIPHeaderNames" v-model="config.clientIPHeaderNames"/>
                     <p class="comment"><a id="client-header-names"></a>可以通过此报头获取客户端IP，类似于<code-label>X-Forwarded-For X-Real-IP True-Client-IP Client-IP</code-label>&nbsp;<a href=""><span class="small" @click.prevent="addDefaultClientIPHeaderNames('X-Forwarded-For X-Real-IP True-Client-IP Client-IP')">[填入]</span></a>，用于使用反向代理访问管理系统的情形；如果有多个报头可以使用空格隔开。</p>
+                </td>
+            </tr>
+            <tr v-show="config.clientIPHeaderNames.length > 0">
+                <td class="color-border">仅从自定义报头中获取IP</td>
+                <td>
+                    <checkbox name="clientIPHeaderOnly" v-model="config.clientIPHeaderOnly"></checkbox>
+                    <p class="comment">选中后，表示仅从自定义报头中获取IP，意味着客户端必须使用反向代理访问当前系统，不允许直接访问。</p>
                 </td>
             </tr>
             <tr>
