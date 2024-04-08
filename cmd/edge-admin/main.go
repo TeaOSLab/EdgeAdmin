@@ -41,7 +41,8 @@ func main() {
 		Option("dev", "switch to 'dev' mode").
 		Option("prod", "switch to 'prod' mode").
 		Option("upgrade [--url=URL]", "upgrade from official site or an url").
-		Option("install-local-node", "install a local node")
+		Option("install-local-node", "install a local node").
+		Option("security.reset", "reset security config")
 
 	app.On("daemon", func() {
 		nodes.NewAdminNode().Daemon()
@@ -178,6 +179,17 @@ func main() {
 		log.Println("finished!")
 		log.Println("restarting ...")
 		app.RunRestart()
+	})
+	app.On("security.reset", func() {
+		var sock = gosock.NewTmpSock(teaconst.ProcessName)
+		if !sock.IsListening() {
+			fmt.Println("[ERROR]the service not started yet, you should start the service first")
+			return
+		}
+		_, _ = sock.Send(&gosock.Command{
+			Code: "security.reset",
+		})
+		fmt.Println("ok")
 	})
 	app.Run(func() {
 		var adminNode = nodes.NewAdminNode()
