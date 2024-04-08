@@ -8,6 +8,13 @@
     </div>
 </div>
 
+<!-- XFF设置提示 -->
+<div class="ui message warning" v-if="teaXFFPrompt">
+    检测到你正在使用反向代理访问当前系统，如果你的系统确定在一个反向代理服务的上游，为了系统的正常运行，请在安全设置中设置“自定义客户端IP报头”。
+    <a href="/settings/security?showAll=1#client-header-names">[去设置]</a> &nbsp; &nbsp;
+    <a href="" @click.prevent="dismissXFFPrompt">[关闭提示]</a>
+</div>
+
 <!-- 没有节点提醒 -->
 <div class="ui icon message warning" v-if="!isLoading && dashboard.defaultClusterId > 0 && dashboard.countNodes == 0">
     <i class="icon warning circle"></i>

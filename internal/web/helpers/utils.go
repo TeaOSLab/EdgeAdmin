@@ -29,6 +29,11 @@ func init() {
 	})
 }
 
+// DisableXFFPrompt 停用XFF提示
+func DisableXFFPrompt() {
+	securityXFFPromptDisabled = true
+}
+
 // 检查用户IP并支持缓存
 func checkIP(config *systemconfigs.SecurityConfig, ipAddr string) bool {
 	ipCacheLocker.Lock()
