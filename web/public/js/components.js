@@ -3971,6 +3971,53 @@ example2.com
 		</tr>
 	</table>
 </div>	
+`}),Vue.component("http-firewall-js-cookie-options",{props:["v-js-cookie-options"],mounted:function(){this.updateSummary()},data:function(){let e=this.vJsCookieOptions;return{options:e=null==e?{life:0,maxFails:0,failBlockTimeout:0,failBlockScopeAll:!1,scope:"service"}:e,isEditing:!1,summary:""}},watch:{"options.life":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.life=t,this.updateSummary()},"options.maxFails":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.maxFails=t,this.updateSummary()},"options.failBlockTimeout":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.failBlockTimeout=t,this.updateSummary()},"options.failBlockScopeAll":function(e){this.updateSummary()}},methods:{edit:function(){this.isEditing=!this.isEditing},updateSummary:function(){let e=[];0<this.options.life&&e.push("有效时间"+this.options.life+"秒"),0<this.options.maxFails&&e.push("最多失败"+this.options.maxFails+"次"),0<this.options.failBlockTimeout&&e.push("失败拦截"+this.options.failBlockTimeout+"秒"),this.options.failBlockScopeAll&&e.push("尝试全局封禁"),0==e.length?this.summary="默认配置":this.summary=e.join(" / ")},confirm:function(){this.isEditing=!1}},template:`<div>
+	<input type="hidden" name="jsCookieOptionsJSON" :value="JSON.stringify(options)"/>
+	<a href="" @click.prevent="edit">{{summary}} <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
+	<div v-show="isEditing" style="margin-top: 0.5em">
+		<table class="ui table definition selectable">
+			<tbody>
+				<tr>
+					<td class="title">有效时间</td>
+					<td>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 5em" maxlength="9" v-model="options.life" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+							<span class="ui label">秒</span>
+						</div>
+						<p class="comment">验证通过后在这个时间内不再验证，默认3600秒。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>最多失败次数</td>
+					<td>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 5em" maxlength="9" v-model="options.maxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+							<span class="ui label">次</span>
+						</div>
+						<p class="comment"><span v-if="options.maxFails > 0 && options.maxFails < 5" class="red">建议填入一个不小于5的数字，以减少误判几率。</span>允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单。如果为空或者为0，表示不限制。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>失败拦截时间</td>
+					<td>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 5em" maxlength="9" v-model="options.failBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+							<span class="ui label">秒</span>
+						</div>
+						<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时长；如果为0表示不自动拦截。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>失败全局封禁</td>
+					<td>
+						<checkbox v-model="options.failBlockScopeAll"></checkbox>
+						<p class="comment">选中后，表示允许系统尝试全局封禁某个IP，以提升封禁性能。</p>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
 `}),Vue.component("http-compression-config-box",{props:["v-compression-config","v-is-location","v-is-group"],mounted:function(){let e=this;sortLoad(function(){e.initSortableTypes()})},data:function(){let t=this.vCompressionConfig,e=(null==(t=null==t?{isPrior:!1,isOn:!1,useDefaultTypes:!0,types:["brotli","gzip","zstd","deflate"],level:5,decompressData:!1,gzipRef:null,deflateRef:null,brotliRef:null,minLength:{count:1,unit:"kb"},maxLength:{count:32,unit:"mb"},mimeTypes:["text/*","application/javascript","application/json","application/atom+xml","application/rss+xml","application/xhtml+xml","font/*","image/svg+xml"],extensions:[".js",".json",".html",".htm",".xml",".css",".woff2",".txt"],exceptExtensions:[".apk",".ipa"],conds:null,enablePartialContent:!1}:t).types&&(t.types=[]),null==t.mimeTypes&&(t.mimeTypes=[]),null==t.extensions&&(t.extensions=[]),[{name:"Gzip",code:"gzip",isOn:!0},{name:"Deflate",code:"deflate",isOn:!0},{name:"Brotli",code:"brotli",isOn:!0},{name:"ZSTD",code:"zstd",isOn:!0}]),i=[];return t.types.forEach(function(t){e.forEach(function(e){t==e.code&&(e.isOn=!0,i.push(e))})}),e.forEach(function(e){t.types.$contains(e.code)||(e.isOn=!1,i.push(e))}),{config:t,moreOptionsVisible:!1,allTypes:i}},watch:{"config.level":function(e){let t=parseInt(e);isNaN(t)||t<1?t=1:10<t&&(t=10),this.config.level=t}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeExtensions:function(i){i.forEach(function(e,t){0<e.length&&"."!=e[0]&&(i[t]="."+e)}),this.config.extensions=i},changeExceptExtensions:function(i){i.forEach(function(e,t){0<e.length&&"."!=e[0]&&(i[t]="."+e)}),this.config.exceptExtensions=i},changeMimeTypes:function(e){this.config.mimeTypes=e},changeAdvancedVisible:function(){this.moreOptionsVisible=!this.moreOptionsVisible},changeConds:function(e){this.config.conds=e},changeType:function(){this.config.types=[];let t=this;this.allTypes.forEach(function(e){e.isOn&&t.config.types.push(e.code)})},initSortableTypes:function(){let n=document.querySelector("#compression-types-box"),s=this;Sortable.create(n,{draggable:".checkbox",handle:".icon.handle",onStart:function(){},onUpdate:function(e){let t=n.querySelectorAll(".checkbox"),i=[];t.forEach(function(e){e=e.getAttribute("data-code");i.push(e)}),s.config.types=i}})}},template:`<div>
 	<input type="hidden" name="compressionJSON" :value="JSON.stringify(config)"/>
 	<table class="ui table definition selectable">
@@ -4310,6 +4357,7 @@ example2.com
 	<span v-if="options == null">默认设置</span>
 	<div v-else>
 		状态码：{{options.statusCode}} / 提示内容：<span v-if="options.body != null && options.body.length > 0">[{{options.body.length}}字符]</span><span v-else class="disabled">[无]</span>  / 超时时间：{{options.timeout}}秒 <span v-if="options.timeoutMax > options.timeout">/ 最大封禁时长：{{options.timeoutMax}}秒</span>
+		<span v-if="options.failBlockScopeAll"> / 尝试全局封禁</span>
 	</div>
 </div>	
 `}),Vue.component("http-access-log-config-box",{props:["v-access-log-config","v-fields","v-default-field-codes","v-is-location","v-is-group"],data:function(){let t=this,i=(setTimeout(function(){t.changeFields()},100),{isPrior:!1,isOn:!1,fields:[1,2,6,7],status1:!0,status2:!0,status3:!0,status4:!0,status5:!0,firewallOnly:!1,enableClientClosed:!1});return null!=this.vAccessLogConfig&&(i=this.vAccessLogConfig),this.vFields.forEach(function(e){null==t.vAccessLogConfig?e.isChecked=t.vDefaultFieldCodes.$contains(e.code):e.isChecked=i.fields.$contains(e.code)}),{accessLog:i,hasRequestBodyField:this.vFields.$contains(8),showAdvancedOptions:!1}},methods:{changeFields:function(){this.accessLog.fields=this.vFields.filter(function(e){return e.isChecked}).map(function(e){return e.code}),this.hasRequestBodyField=this.accessLog.fields.$contains(8)},changeAdvanced:function(e){this.showAdvancedOptions=e}},template:`<div>
@@ -4576,7 +4624,8 @@ example2.com
 			</tr>
 		</tbody>
 	</table>
-</div>`}),Vue.component("ssl-certs-view",{props:["v-certs"],data:function(){let e=this.vCerts;return{certs:e=null==e?[]:e}},methods:{formatTime:function(e){return new Date(1e3*e).format("Y-m-d")},viewCert:function(e){teaweb.popup("/servers/certs/certPopup?certId="+e,{height:"28em",width:"48em"})}},template:`<div>
+</div>`}),Vue.component("http-firewall-js-cookie-options-viewer",{props:["v-js-cookie-options"],mounted:function(){this.updateSummary()},data:function(){let e=this.vJsCookieOptions;return{options:e=null==e?{life:0,maxFails:0,failBlockTimeout:0,failBlockScopeAll:!1,scope:""}:e,summary:""}},methods:{updateSummary:function(){let e=[];0<this.options.life&&e.push("有效时间"+this.options.life+"秒"),0<this.options.maxFails&&e.push("最多失败"+this.options.maxFails+"次"),0<this.options.failBlockTimeout&&e.push("失败拦截"+this.options.failBlockTimeout+"秒"),this.options.failBlockScopeAll&&e.push("尝试全局封禁"),0==e.length?this.summary="默认配置":this.summary=e.join(" / ")}},template:`<div>{{summary}}</div>
+`}),Vue.component("ssl-certs-view",{props:["v-certs"],data:function(){let e=this.vCerts;return{certs:e=null==e?[]:e}},methods:{formatTime:function(e){return new Date(1e3*e).format("Y-m-d")},viewCert:function(e){teaweb.popup("/servers/certs/certPopup?certId="+e,{height:"28em",width:"48em"})}},template:`<div>
 	<div v-if="certs != null && certs.length > 0">
 		<div class="ui label small basic" v-for="(cert, index) in certs">
 			{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp;<a href="" title="查看" @click.prevent="viewCert(cert.id)"><i class="icon expand blue"></i></a>
@@ -5070,10 +5119,11 @@ example2.com
 			</td>
 		</tr>
 	</table>
-</div>`}),Vue.component("http-firewall-block-options",{props:["v-block-options"],data:function(){return{blockOptions:this.vBlockOptions,statusCode:this.vBlockOptions.statusCode,timeout:this.vBlockOptions.timeout,timeoutMax:this.vBlockOptions.timeoutMax,isEditing:!1}},watch:{statusCode:function(e){e=parseInt(e);isNaN(e)?this.blockOptions.statusCode=403:this.blockOptions.statusCode=e},timeout:function(e){e=parseInt(e);isNaN(e)?this.blockOptions.timeout=0:this.blockOptions.timeout=e},timeoutMax:function(e){e=parseInt(e);isNaN(e)?this.blockOptions.timeoutMax=0:this.blockOptions.timeoutMax=e}},methods:{edit:function(){this.isEditing=!this.isEditing}},template:`<div>
-	<input type="hidden" name="blockOptionsJSON" :value="JSON.stringify(blockOptions)"/>
-	<a href="" @click.prevent="edit">状态码：{{statusCode}} / 提示内容：<span v-if="blockOptions.body != null && blockOptions.body.length > 0">[{{blockOptions.body.length}}字符]</span><span v-else class="disabled">[无]</span> <span v-if="timeout > 0"> / 封禁时长：{{timeout}}秒</span>
+</div>`}),Vue.component("http-firewall-block-options",{props:["v-block-options"],data:function(){return{options:this.vBlockOptions,statusCode:this.vBlockOptions.statusCode,timeout:this.vBlockOptions.timeout,timeoutMax:this.vBlockOptions.timeoutMax,isEditing:!1}},watch:{statusCode:function(e){e=parseInt(e);isNaN(e)?this.options.statusCode=403:this.options.statusCode=e},timeout:function(e){e=parseInt(e);isNaN(e)?this.options.timeout=0:this.options.timeout=e},timeoutMax:function(e){e=parseInt(e);isNaN(e)?this.options.timeoutMax=0:this.options.timeoutMax=e}},methods:{edit:function(){this.isEditing=!this.isEditing}},template:`<div>
+	<input type="hidden" name="blockOptionsJSON" :value="JSON.stringify(options)"/>
+	<a href="" @click.prevent="edit">状态码：{{statusCode}} / 提示内容：<span v-if="options.body != null && options.body.length > 0">[{{options.body.length}}字符]</span><span v-else class="disabled">[无]</span> <span v-if="timeout > 0"> / 封禁时长：{{timeout}}秒</span>
 	 <span v-if="timeoutMax > timeout"> / 最大封禁时长：{{timeoutMax}}秒</span>
+	 <span v-if="options.failBlockScopeAll"> / 尝试全局封禁</span>
 	 <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
 	<table class="ui table" v-show="isEditing">
 		<tr>
@@ -5085,7 +5135,7 @@ example2.com
 		<tr>
 			<td>提示内容</td>
 			<td>
-				<textarea rows="3" v-model="blockOptions.body"></textarea>
+				<textarea rows="3" v-model="options.body"></textarea>
 			</td>
 		</tr>
 		<tr>
@@ -5106,6 +5156,13 @@ example2.com
 					<span class="ui label">秒</span>
 				</div>
 				<p class="comment">如果最大封禁时长大于封禁时长（{{timeout}}秒），那么表示每次封禁的时候，将会在这两个时长数字之间随机选取一个数字作为最终的封禁时长。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>失败全局封禁</td>
+			<td>
+				<checkbox v-model="options.failBlockScopeAll"></checkbox>
+				<p class="comment">选中后，表示允许系统尝试全局封禁某个IP，以提升封禁性能。</p>
 			</td>
 		</tr>
 	</table>
@@ -5618,7 +5675,7 @@ example2.com
 		</tbody>
 	</table>
 	<div class="margin"></div>
-</div>`}),Vue.component("http-firewall-captcha-options",{props:["v-captcha-options"],mounted:function(){this.updateSummary()},data:function(){let e=this.vCaptchaOptions;return(e=null==e?{captchaType:"default",countLetters:0,life:0,maxFails:0,failBlockTimeout:0,failBlockScopeAll:!1,uiIsOn:!1,uiTitle:"",uiPrompt:"",uiButtonTitle:"",uiShowRequestId:!0,uiCss:"",uiFooter:"",uiBody:"",cookieId:"",lang:"",geeTestConfig:{isOn:!1,captchaId:"",captchaKey:""}}:e).countLetters<=0&&(e.countLetters=6),null!=e.captchaType&&0!=e.captchaType.length||(e.captchaType="default"),{options:e,isEditing:!1,summary:"",uiBodyWarning:"",captchaTypes:window.WAF_CAPTCHA_TYPES}},watch:{"options.countLetters":function(e){let t=parseInt(e,10);isNaN(t)||t<0?t=0:10<t&&(t=10),this.options.countLetters=t},"options.life":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.life=t,this.updateSummary()},"options.maxFails":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.maxFails=t,this.updateSummary()},"options.failBlockTimeout":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.failBlockTimeout=t,this.updateSummary()},"options.failBlockScopeAll":function(e){this.updateSummary()},"options.captchaType":function(e){this.updateSummary()},"options.uiIsOn":function(e){this.updateSummary()},"options.uiBody":function(e){/<form(>|\s).+\$\{body}.*<\/form>/s.test(e)?this.uiBodyWarning="页面模板中不能使用<form></form>标签包裹${body}变量，否则将导致验证码表单无法提交。":this.uiBodyWarning=""},"options.geeTestConfig.isOn":function(e){this.updateSummary()}},methods:{edit:function(){this.isEditing=!this.isEditing},updateSummary:function(){let e=[],i=(0<this.options.life&&e.push("有效时间"+this.options.life+"秒"),0<this.options.maxFails&&e.push("最多失败"+this.options.maxFails+"次"),0<this.options.failBlockTimeout&&e.push("失败拦截"+this.options.failBlockTimeout+"秒"),this.options.failBlockScopeAll&&e.push("全局封禁"),this);var t=this.captchaTypes.$find(function(e,t){return t.code==i.options.captchaType});null!=t&&e.push("默认验证方式："+t.name),"default"==this.options.captchaType&&this.options.uiIsOn&&e.push("定制UI"),null!=this.options.geeTestConfig&&this.options.geeTestConfig.isOn&&e.push("已配置极验"),0==e.length?this.summary="默认配置":this.summary=e.join(" / ")},confirm:function(){this.isEditing=!1}},template:`<div>
+</div>`}),Vue.component("http-firewall-captcha-options",{props:["v-captcha-options"],mounted:function(){this.updateSummary()},data:function(){let e=this.vCaptchaOptions;return(e=null==e?{captchaType:"default",countLetters:0,life:0,maxFails:0,failBlockTimeout:0,failBlockScopeAll:!1,uiIsOn:!1,uiTitle:"",uiPrompt:"",uiButtonTitle:"",uiShowRequestId:!0,uiCss:"",uiFooter:"",uiBody:"",cookieId:"",lang:"",geeTestConfig:{isOn:!1,captchaId:"",captchaKey:""}}:e).countLetters<=0&&(e.countLetters=6),null!=e.captchaType&&0!=e.captchaType.length||(e.captchaType="default"),{options:e,isEditing:!1,summary:"",uiBodyWarning:"",captchaTypes:window.WAF_CAPTCHA_TYPES}},watch:{"options.countLetters":function(e){let t=parseInt(e,10);isNaN(t)||t<0?t=0:10<t&&(t=10),this.options.countLetters=t},"options.life":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.life=t,this.updateSummary()},"options.maxFails":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.maxFails=t,this.updateSummary()},"options.failBlockTimeout":function(e){let t=parseInt(e,10);isNaN(t)&&(t=0),this.options.failBlockTimeout=t,this.updateSummary()},"options.failBlockScopeAll":function(e){this.updateSummary()},"options.captchaType":function(e){this.updateSummary()},"options.uiIsOn":function(e){this.updateSummary()},"options.uiBody":function(e){/<form(>|\s).+\$\{body}.*<\/form>/s.test(e)?this.uiBodyWarning="页面模板中不能使用<form></form>标签包裹${body}变量，否则将导致验证码表单无法提交。":this.uiBodyWarning=""},"options.geeTestConfig.isOn":function(e){this.updateSummary()}},methods:{edit:function(){this.isEditing=!this.isEditing},updateSummary:function(){let e=[],i=(0<this.options.life&&e.push("有效时间"+this.options.life+"秒"),0<this.options.maxFails&&e.push("最多失败"+this.options.maxFails+"次"),0<this.options.failBlockTimeout&&e.push("失败拦截"+this.options.failBlockTimeout+"秒"),this.options.failBlockScopeAll&&e.push("尝试全局封禁"),this);var t=this.captchaTypes.$find(function(e,t){return t.code==i.options.captchaType});null!=t&&e.push("默认验证方式："+t.name),"default"==this.options.captchaType&&this.options.uiIsOn&&e.push("定制UI"),null!=this.options.geeTestConfig&&this.options.geeTestConfig.isOn&&e.push("已配置极验"),0==e.length?this.summary="默认配置":this.summary=e.join(" / ")},confirm:function(){this.isEditing=!1}},template:`<div>
 	<input type="hidden" name="captchaOptionsJSON" :value="JSON.stringify(options)"/>
 	<a href="" @click.prevent="edit">{{summary}} <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
 	<div v-show="isEditing" style="margin-top: 0.5em">
@@ -5667,7 +5724,7 @@ example2.com
 					<td>失败全局封禁</td>
 					<td>
 						<checkbox v-model="options.failBlockScopeAll"></checkbox>
-						<p class="comment">是否在失败时全局封禁，默认为只封禁对单个网站的访问。</p>
+						<p class="comment">选中后，表示允许系统尝试全局封禁某个IP，以提升封禁性能。</p>
 					</td>
 				</tr>
 				
@@ -5976,7 +6033,7 @@ example2.com
  	<div class="ui divider"></div>
  	<button class="ui button basic" type="button" @click.prevent="deleteAll">批量删除所选</button>
  	&nbsp; &nbsp; 
- 	<button class="ui button basic" type="button" @click.prevent="deleteCount" v-if="vTotal != null && vTotal >= MaxDeletes">批量删除{{MaxDeletes}}个</button>
+ 	<button class="ui button basic" type="button" @click.prevent="deleteCount" v-if="vTotal != null && vTotal >= MaxDeletes">批量删除所有搜索结果（{{MaxDeletes}}个）</button>
  	
  	&nbsp; &nbsp; 
  	<button class="ui button basic" type="button" @click.prevent="cancelChecked">取消选中</button>
@@ -6028,8 +6085,8 @@ example2.com
 								
 								<span v-if="item.policy.id > 0">
 									<span v-if="item.policy.server != null">
-										<a :href="'/servers/server/settings/waf/ipadmin/allowList?serverId=' + item.policy.server.id + '&firewallPolicyId=' + item.policy.id" v-if="item.list.type == 'white'">[服务：{{item.policy.server.name}}]</a>
-										<a :href="'/servers/server/settings/waf/ipadmin/denyList?serverId=' + item.policy.server.id + '&firewallPolicyId=' + item.policy.id" v-if="item.list.type == 'black'">[服务：{{item.policy.server.name}}]</a>
+										<a :href="'/servers/server/settings/waf/ipadmin/allowList?serverId=' + item.policy.server.id + '&firewallPolicyId=' + item.policy.id" v-if="item.list.type == 'white'">[网站：{{item.policy.server.name}}]</a>
+										<a :href="'/servers/server/settings/waf/ipadmin/denyList?serverId=' + item.policy.server.id + '&firewallPolicyId=' + item.policy.id" v-if="item.list.type == 'black'">[网站：{{item.policy.server.name}}]</a>
 									</span>
 									<span v-else>
 										<a :href="'/servers/components/waf/ipadmin/lists?firewallPolicyId=' + item.policy.id +  '&type=' + item.list.type">[策略：{{item.policy.name}}]</a>
@@ -6052,11 +6109,12 @@ example2.com
 				<td>
 					<div v-if="item.expiredTime.length > 0">
 						{{item.expiredTime}}
-						<div v-if="item.isExpired" style="margin-top: 0.5em">
+						<div v-if="item.isExpired && item.lifeSeconds == null" style="margin-top: 0.5em">
 							<span class="ui label tiny basic red">已过期</span>
 						</div>
-						<div  v-if="item.lifeSeconds != null && item.lifeSeconds > 0">
-							<span class="small grey">{{formatSeconds(item.lifeSeconds)}}</span>
+						<div  v-if="item.lifeSeconds != null">
+							<span class="small grey" v-if="item.lifeSeconds > 0">{{formatSeconds(item.lifeSeconds)}}</span>
+							<span class="small red" v-if="item.lifeSeconds < 0">已过期</span>
 						</div>
 					</div>
 					<span v-else class="disabled">不过期</span>
@@ -6090,7 +6148,9 @@ example2.com
         {{vItem.ipFrom}}
         <span v-if="vItem.ipTo.length > 0">- {{vItem.ipTo}}</span>
     </span>
-    <span v-if="vItem.type == 'ipv6'">{{vItem.ipFrom}}</span>
+    <span v-if="vItem.type == 'ipv6'">{{vItem.ipFrom}}
+    	<span v-if="vItem.ipTo.length > 0">- {{vItem.ipTo}}</span>
+    </span>
     <span v-if="vItem.eventLevelName != null && vItem.eventLevelName.length > 0">&nbsp; 级别：{{vItem.eventLevelName}}</span>
 </span>`}),Vue.component("ip-box",{props:["v-ip"],methods:{popup:function(){let e=this.vIp;var t;null!=e&&0!=e.length||(t=this.$refs.container,null==(e=t.innerText)&&(e=t.textContent)),teaweb.popup("/servers/ipbox?ip="+e,{width:"50em",height:"30em"})}},template:'<span @click.prevent="popup()" ref="container"><slot></slot></span>'}),Vue.component("sms-sender",{props:["value","name"],mounted:function(){this.initType(this.config.type)},data:function(){let e=this.value;return{config:e=null==e?{isOn:!1,type:"webHook",webHookParams:{url:"",method:"POST"}}:e}},watch:{"config.type":function(e){this.initType(e)}},methods:{initType:function(e){"webHook"===e&&null==this.config.webHookParams&&(this.config.webHookParams={url:"",method:"POST"})},test:function(){window.TESTING_SMS_CONFIG=this.config,teaweb.popup("/users/setting/smsTest",{height:"22em"})}},template:`<div>
 	<input type="hidden" :name="name" :value="JSON.stringify(config)"/>

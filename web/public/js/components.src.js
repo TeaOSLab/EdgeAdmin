@@ -10872,6 +10872,137 @@ Vue.component("http-firewall-page-options", {
 `
 })
 
+Vue.component("http-firewall-js-cookie-options", {
+	props: ["v-js-cookie-options"],
+	mounted: function () {
+		this.updateSummary()
+	},
+	data: function () {
+		let options = this.vJsCookieOptions
+		if (options == null) {
+			options = {
+				life: 0,
+				maxFails: 0,
+				failBlockTimeout: 0,
+				failBlockScopeAll: false,
+				scope: "service"
+			}
+		}
+
+		return {
+			options: options,
+			isEditing: false,
+			summary: ""
+		}
+	},
+	watch: {
+		"options.life": function (v) {
+			let i = parseInt(v, 10)
+			if (isNaN(i)) {
+				i = 0
+			}
+			this.options.life = i
+			this.updateSummary()
+		},
+		"options.maxFails": function (v) {
+			let i = parseInt(v, 10)
+			if (isNaN(i)) {
+				i = 0
+			}
+			this.options.maxFails = i
+			this.updateSummary()
+		},
+		"options.failBlockTimeout": function (v) {
+			let i = parseInt(v, 10)
+			if (isNaN(i)) {
+				i = 0
+			}
+			this.options.failBlockTimeout = i
+			this.updateSummary()
+		},
+		"options.failBlockScopeAll": function (v) {
+			this.updateSummary()
+		}
+	},
+	methods: {
+		edit: function () {
+			this.isEditing = !this.isEditing
+		},
+		updateSummary: function () {
+			let summaryList = []
+			if (this.options.life > 0) {
+				summaryList.push("有效时间" + this.options.life + "秒")
+			}
+			if (this.options.maxFails > 0) {
+				summaryList.push("最多失败" + this.options.maxFails + "次")
+			}
+			if (this.options.failBlockTimeout > 0) {
+				summaryList.push("失败拦截" + this.options.failBlockTimeout + "秒")
+			}
+			if (this.options.failBlockScopeAll) {
+				summaryList.push("尝试全局封禁")
+			}
+
+			if (summaryList.length == 0) {
+				this.summary = "默认配置"
+			} else {
+				this.summary = summaryList.join(" / ")
+			}
+		},
+		confirm: function () {
+			this.isEditing = false
+		}
+	},
+	template: `<div>
+	<input type="hidden" name="jsCookieOptionsJSON" :value="JSON.stringify(options)"/>
+	<a href="" @click.prevent="edit">{{summary}} <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
+	<div v-show="isEditing" style="margin-top: 0.5em">
+		<table class="ui table definition selectable">
+			<tbody>
+				<tr>
+					<td class="title">有效时间</td>
+					<td>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 5em" maxlength="9" v-model="options.life" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+							<span class="ui label">秒</span>
+						</div>
+						<p class="comment">验证通过后在这个时间内不再验证，默认3600秒。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>最多失败次数</td>
+					<td>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 5em" maxlength="9" v-model="options.maxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+							<span class="ui label">次</span>
+						</div>
+						<p class="comment"><span v-if="options.maxFails > 0 && options.maxFails < 5" class="red">建议填入一个不小于5的数字，以减少误判几率。</span>允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单。如果为空或者为0，表示不限制。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>失败拦截时间</td>
+					<td>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 5em" maxlength="9" v-model="options.failBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+							<span class="ui label">秒</span>
+						</div>
+						<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时长；如果为0表示不自动拦截。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>失败全局封禁</td>
+					<td>
+						<checkbox v-model="options.failBlockScopeAll"></checkbox>
+						<p class="comment">选中后，表示允许系统尝试全局封禁某个IP，以提升封禁性能。</p>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+`
+})
+
 // 压缩配置
 Vue.component("http-compression-config-box", {
 	props: ["v-compression-config", "v-is-location", "v-is-group"],
@@ -12020,6 +12151,7 @@ Vue.component("http-firewall-block-options-viewer", {
 	<span v-if="options == null">默认设置</span>
 	<div v-else>
 		状态码：{{options.statusCode}} / 提示内容：<span v-if="options.body != null && options.body.length > 0">[{{options.body.length}}字符]</span><span v-else class="disabled">[无]</span>  / 超时时间：{{options.timeout}}秒 <span v-if="options.timeoutMax > options.timeout">/ 最大封禁时长：{{options.timeoutMax}}秒</span>
+		<span v-if="options.failBlockScopeAll"> / 尝试全局封禁</span>
 	</div>
 </div>	
 `
@@ -12548,6 +12680,54 @@ Vue.component("script-config-box", {
 		</tbody>
 	</table>
 </div>`
+})
+
+Vue.component("http-firewall-js-cookie-options-viewer", {
+	props: ["v-js-cookie-options"],
+	mounted: function () {
+		this.updateSummary()
+	},
+	data: function () {
+		let options = this.vJsCookieOptions
+		if (options == null) {
+			options = {
+				life: 0,
+				maxFails: 0,
+				failBlockTimeout: 0,
+				failBlockScopeAll: false,
+				scope: ""
+			}
+		}
+		return {
+			options: options,
+			summary: ""
+		}
+	},
+	methods: {
+		updateSummary: function () {
+			let summaryList = []
+			if (this.options.life > 0) {
+				summaryList.push("有效时间" + this.options.life + "秒")
+			}
+			if (this.options.maxFails > 0) {
+				summaryList.push("最多失败" + this.options.maxFails + "次")
+			}
+			if (this.options.failBlockTimeout > 0) {
+				summaryList.push("失败拦截" + this.options.failBlockTimeout + "秒")
+			}
+			if (this.options.failBlockScopeAll) {
+				summaryList.push("尝试全局封禁")
+			}
+
+			if (summaryList.length == 0) {
+				this.summary = "默认配置"
+			} else {
+				this.summary = summaryList.join(" / ")
+			}
+		}
+	},
+	template: `<div>{{summary}}</div>
+`
 })
 
 Vue.component("ssl-certs-view", {
@@ -13861,7 +14041,7 @@ Vue.component("http-firewall-block-options", {
 	props: ["v-block-options"],
 	data: function () {
 		return {
-			blockOptions: this.vBlockOptions,
+			options: this.vBlockOptions,
 			statusCode: this.vBlockOptions.statusCode,
 			timeout: this.vBlockOptions.timeout,
 			timeoutMax: this.vBlockOptions.timeoutMax,
@@ -13872,25 +14052,25 @@ Vue.component("http-firewall-block-options", {
 		statusCode: function (v) {
 			let statusCode = parseInt(v)
 			if (isNaN(statusCode)) {
-				this.blockOptions.statusCode = 403
+				this.options.statusCode = 403
 			} else {
-				this.blockOptions.statusCode = statusCode
+				this.options.statusCode = statusCode
 			}
 		},
 		timeout: function (v) {
 			let timeout = parseInt(v)
 			if (isNaN(timeout)) {
-				this.blockOptions.timeout = 0
+				this.options.timeout = 0
 			} else {
-				this.blockOptions.timeout = timeout
+				this.options.timeout = timeout
 			}
 		},
 		timeoutMax: function (v) {
 			let timeoutMax = parseInt(v)
 			if (isNaN(timeoutMax)) {
-				this.blockOptions.timeoutMax = 0
+				this.options.timeoutMax = 0
 			} else {
-				this.blockOptions.timeoutMax = timeoutMax
+				this.options.timeoutMax = timeoutMax
 			}
 		}
 	},
@@ -13900,9 +14080,10 @@ Vue.component("http-firewall-block-options", {
 		}
 	},
 	template: `<div>
-	<input type="hidden" name="blockOptionsJSON" :value="JSON.stringify(blockOptions)"/>
-	<a href="" @click.prevent="edit">状态码：{{statusCode}} / 提示内容：<span v-if="blockOptions.body != null && blockOptions.body.length > 0">[{{blockOptions.body.length}}字符]</span><span v-else class="disabled">[无]</span> <span v-if="timeout > 0"> / 封禁时长：{{timeout}}秒</span>
+	<input type="hidden" name="blockOptionsJSON" :value="JSON.stringify(options)"/>
+	<a href="" @click.prevent="edit">状态码：{{statusCode}} / 提示内容：<span v-if="options.body != null && options.body.length > 0">[{{options.body.length}}字符]</span><span v-else class="disabled">[无]</span> <span v-if="timeout > 0"> / 封禁时长：{{timeout}}秒</span>
 	 <span v-if="timeoutMax > timeout"> / 最大封禁时长：{{timeoutMax}}秒</span>
+	 <span v-if="options.failBlockScopeAll"> / 尝试全局封禁</span>
 	 <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
 	<table class="ui table" v-show="isEditing">
 		<tr>
@@ -13914,7 +14095,7 @@ Vue.component("http-firewall-block-options", {
 		<tr>
 			<td>提示内容</td>
 			<td>
-				<textarea rows="3" v-model="blockOptions.body"></textarea>
+				<textarea rows="3" v-model="options.body"></textarea>
 			</td>
 		</tr>
 		<tr>
@@ -13935,6 +14116,13 @@ Vue.component("http-firewall-block-options", {
 					<span class="ui label">秒</span>
 				</div>
 				<p class="comment">如果最大封禁时长大于封禁时长（{{timeout}}秒），那么表示每次封禁的时候，将会在这两个时长数字之间随机选取一个数字作为最终的封禁时长。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>失败全局封禁</td>
+			<td>
+				<checkbox v-model="options.failBlockScopeAll"></checkbox>
+				<p class="comment">选中后，表示允许系统尝试全局封禁某个IP，以提升封禁性能。</p>
 			</td>
 		</tr>
 	</table>
@@ -15883,7 +16071,7 @@ Vue.component("http-firewall-captcha-options", {
 				summaryList.push("失败拦截" + this.options.failBlockTimeout + "秒")
 			}
 			if (this.options.failBlockScopeAll) {
-				summaryList.push("全局封禁")
+				summaryList.push("尝试全局封禁")
 			}
 
 			let that = this
@@ -15963,7 +16151,7 @@ Vue.component("http-firewall-captcha-options", {
 					<td>失败全局封禁</td>
 					<td>
 						<checkbox v-model="options.failBlockScopeAll"></checkbox>
-						<p class="comment">是否在失败时全局封禁，默认为只封禁对单个网站的访问。</p>
+						<p class="comment">选中后，表示允许系统尝试全局封禁某个IP，以提升封禁性能。</p>
 					</td>
 				</tr>
 				
@@ -16703,7 +16891,7 @@ Vue.component("ip-list-table", {
  	<div class="ui divider"></div>
  	<button class="ui button basic" type="button" @click.prevent="deleteAll">批量删除所选</button>
  	&nbsp; &nbsp; 
- 	<button class="ui button basic" type="button" @click.prevent="deleteCount" v-if="vTotal != null && vTotal >= MaxDeletes">批量删除{{MaxDeletes}}个</button>
+ 	<button class="ui button basic" type="button" @click.prevent="deleteCount" v-if="vTotal != null && vTotal >= MaxDeletes">批量删除所有搜索结果（{{MaxDeletes}}个）</button>
  	
  	&nbsp; &nbsp; 
  	<button class="ui button basic" type="button" @click.prevent="cancelChecked">取消选中</button>
@@ -16755,8 +16943,8 @@ Vue.component("ip-list-table", {
 								
 								<span v-if="item.policy.id > 0">
 									<span v-if="item.policy.server != null">
-										<a :href="'/servers/server/settings/waf/ipadmin/allowList?serverId=' + item.policy.server.id + '&firewallPolicyId=' + item.policy.id" v-if="item.list.type == 'white'">[服务：{{item.policy.server.name}}]</a>
-										<a :href="'/servers/server/settings/waf/ipadmin/denyList?serverId=' + item.policy.server.id + '&firewallPolicyId=' + item.policy.id" v-if="item.list.type == 'black'">[服务：{{item.policy.server.name}}]</a>
+										<a :href="'/servers/server/settings/waf/ipadmin/allowList?serverId=' + item.policy.server.id + '&firewallPolicyId=' + item.policy.id" v-if="item.list.type == 'white'">[网站：{{item.policy.server.name}}]</a>
+										<a :href="'/servers/server/settings/waf/ipadmin/denyList?serverId=' + item.policy.server.id + '&firewallPolicyId=' + item.policy.id" v-if="item.list.type == 'black'">[网站：{{item.policy.server.name}}]</a>
 									</span>
 									<span v-else>
 										<a :href="'/servers/components/waf/ipadmin/lists?firewallPolicyId=' + item.policy.id +  '&type=' + item.list.type">[策略：{{item.policy.name}}]</a>
@@ -16779,11 +16967,12 @@ Vue.component("ip-list-table", {
 				<td>
 					<div v-if="item.expiredTime.length > 0">
 						{{item.expiredTime}}
-						<div v-if="item.isExpired" style="margin-top: 0.5em">
+						<div v-if="item.isExpired && item.lifeSeconds == null" style="margin-top: 0.5em">
 							<span class="ui label tiny basic red">已过期</span>
 						</div>
-						<div  v-if="item.lifeSeconds != null && item.lifeSeconds > 0">
-							<span class="small grey">{{formatSeconds(item.lifeSeconds)}}</span>
+						<div  v-if="item.lifeSeconds != null">
+							<span class="small grey" v-if="item.lifeSeconds > 0">{{formatSeconds(item.lifeSeconds)}}</span>
+							<span class="small red" v-if="item.lifeSeconds < 0">已过期</span>
 						</div>
 					</div>
 					<span v-else class="disabled">不过期</span>
@@ -16822,7 +17011,9 @@ Vue.component("ip-item-text", {
         {{vItem.ipFrom}}
         <span v-if="vItem.ipTo.length > 0">- {{vItem.ipTo}}</span>
     </span>
-    <span v-if="vItem.type == 'ipv6'">{{vItem.ipFrom}}</span>
+    <span v-if="vItem.type == 'ipv6'">{{vItem.ipFrom}}
+    	<span v-if="vItem.ipTo.length > 0">- {{vItem.ipTo}}</span>
+    </span>
     <span v-if="vItem.eventLevelName != null && vItem.eventLevelName.length > 0">&nbsp; 级别：{{vItem.eventLevelName}}</span>
 </span>`
 })
