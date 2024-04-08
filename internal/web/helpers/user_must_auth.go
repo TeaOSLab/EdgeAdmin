@@ -49,6 +49,9 @@ var nodeLogsType = ""
 // IP名单
 var countUnreadIPItems int64 = 0
 
+// 安全相关
+var securityXFFPromptDisabled = false
+
 func init() {
 	events.On(events.EventStart, func() {
 		// 节点日志数量
@@ -218,6 +221,15 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 				return false
 			}
 		}
+	}
+
+	// 是否正在使用反向代理模式
+	action.Data["teaXFFPrompt"] = false
+	if !securityXFFPromptDisabled &&
+		(len(action.Header("X-Forwarded-For")) > 0 || len(action.Header("X-Real-Ip")) > 0 || len(action.Header("Cf-Connecting-Ip")) > 0) &&
+		securityConfig != nil &&
+		len(securityConfig.ClientIPHeaderNames) == 0 {
+		action.Data["teaXFFPrompt"] = true
 	}
 
 	// 检查用户是否存在

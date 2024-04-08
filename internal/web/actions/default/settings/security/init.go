@@ -14,6 +14,7 @@ func init() {
 			Helper(settingutils.NewHelper("security")).
 			Prefix("/settings/security").
 			GetPost("", new(IndexAction)).
+			Post("/dismissXFFPrompt", new(DismissXFFPromptAction)).
 			EndAll()
 	})
 }

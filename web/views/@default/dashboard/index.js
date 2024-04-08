@@ -222,4 +222,12 @@ Tea.context(function () {
 				this.localLowerVersionAPINode.isRestarting = false
 			})
 	}
+
+	// 关闭XFF提示
+	this.dismissXFFPrompt = function () {
+		this.$post("/settings/security/dismissXFFPrompt")
+			.success(function () {
+				teaweb.reload()
+			})
+	}
 })
