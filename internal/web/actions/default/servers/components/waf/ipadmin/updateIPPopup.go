@@ -1,8 +1,8 @@
 package ipadmin
 
 import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeCommon/pkg/iputils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -33,6 +33,7 @@ func (this *UpdateIPPopupAction) RunGet(params struct {
 
 	this.Data["item"] = maps.Map{
 		"id":         item.Id,
+		"value":      item.Value,
 		"ipFrom":     item.IpFrom,
 		"ipTo":       item.IpTo,
 		"expiredAt":  item.ExpiredAt,
@@ -50,8 +51,7 @@ func (this *UpdateIPPopupAction) RunPost(params struct {
 	FirewallPolicyId int64
 	ItemId           int64
 
-	IpFrom     string
-	IpTo       string
+	Value      string
 	ExpiredAt  int64
 	Reason     string
 	Type       string
@@ -63,50 +63,25 @@ func (this *UpdateIPPopupAction) RunPost(params struct {
 	// 日志
 	defer this.CreateLogInfo(codes.WAF_LogUpdateIPFromWAFPolicy, params.FirewallPolicyId, params.ItemId)
 
-	// TODO 校验ItemId所属用户
-
 	switch params.Type {
-	case "ipv4":
+	case "ip":
+		// 校验IP格式
 		params.Must.
-			Field("ipFrom", params.IpFrom).
-			Require("请输入开始IP")
+			Field("value", params.Value).
+			Require("请输入IP或IP段")
 
-		// 校验IP格式（ipFrom/ipTo）
-		if !iputils.IsIPv4(params.IpFrom) {
-			this.FailField("ipFrom", "请输入正确的开始IP")
-		}
-
-		if len(params.IpTo) > 0 && !iputils.IsIPv4(params.IpTo) {
-			this.FailField("ipTo", "请输入正确的结束IP")
-		}
-
-		if len(params.IpTo) > 0 && iputils.CompareIP(params.IpFrom, params.IpTo) > 0 {
-			params.IpTo, params.IpFrom = params.IpFrom, params.IpTo
-		}
-	case "ipv6":
-		params.Must.
-			Field("ipFrom", params.IpFrom).
-			Require("请输入正确的开始IP")
-
-		if !iputils.IsIPv6(params.IpFrom) {
-			this.FailField("ipFrom", "请输入正确的IPv6地址")
-		}
-
-		if len(params.IpTo) > 0 && !iputils.IsIPv6(params.IpTo) {
-			this.FailField("ipTo", "请输入正确的IPv6地址")
-		}
-
-		if len(params.IpTo) > 0 && iputils.CompareIP(params.IpFrom, params.IpTo) > 0 {
-			params.IpTo, params.IpFrom = params.IpFrom, params.IpTo
+		_, _, _, ok := utils.ParseIPValue(params.Value)
+		if !ok {
+			this.FailField("value", "请输入正确的IP格式")
+			return
 		}
 	case "all":
-		params.IpFrom = "0.0.0.0"
+		params.Value = "0.0.0.0"
 	}
 
 	_, err := this.RPC().IPItemRPC().UpdateIPItem(this.AdminContext(), &pb.UpdateIPItemRequest{
 		IpItemId:   params.ItemId,
-		IpFrom:     params.IpFrom,
-		IpTo:       params.IpTo,
+		Value:      params.Value,
 		ExpiredAt:  params.ExpiredAt,
 		Reason:     params.Reason,
 		Type:       params.Type,

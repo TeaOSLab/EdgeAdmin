@@ -3,10 +3,65 @@ package utils
 import (
 	"bytes"
 	"errors"
+	"github.com/TeaOSLab/EdgeCommon/pkg/iputils"
 	"github.com/iwind/TeaGo/types"
 	"net"
 	"strings"
 )
+
+// ParseIPValue 解析IP值
+func ParseIPValue(value string) (newValue string, ipFrom string, ipTo string, ok bool) {
+	if len(value) == 0 {
+		return
+	}
+
+	newValue = value
+
+	// ip1-ip2
+	if strings.Contains(value, "-") {
+		var pieces = strings.Split(value, "-")
+		if len(pieces) != 2 {
+			return
+		}
+
+		ipFrom = strings.TrimSpace(pieces[0])
+		ipTo = strings.TrimSpace(pieces[1])
+
+		if !iputils.IsValid(ipFrom) || !iputils.IsValid(ipTo) {
+			return
+		}
+
+		if !iputils.IsSameVersion(ipFrom, ipTo) {
+			return
+		}
+
+		if iputils.CompareIP(ipFrom, ipTo) > 0 {
+			ipFrom, ipTo = ipTo, ipFrom
+			newValue = ipFrom + "-" + ipTo
+		}
+
+		ok = true
+		return
+	}
+
+	// ip/mask
+	if strings.Contains(value, "/") {
+		cidr, err := iputils.ParseCIDR(value)
+		if err != nil {
+			return
+		}
+		return newValue, cidr.From().String(), cidr.To().String(), true
+	}
+
+	// single value
+	if iputils.IsValid(value) {
+		ipFrom = value
+		ok = true
+		return
+	}
+
+	return
+}
 
 // ExtractIP 分解IP
 // 只支持D段掩码的CIDR

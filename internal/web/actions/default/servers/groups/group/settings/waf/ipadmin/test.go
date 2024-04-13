@@ -70,6 +70,7 @@ func (this *TestAction) RunPost(params struct {
 	if resp.IpItem != nil {
 		resultMap["item"] = maps.Map{
 			"id":             resp.IpItem.Id,
+			"value":          resp.IpItem.Value,
 			"ipFrom":         resp.IpItem.IpFrom,
 			"ipTo":           resp.IpItem.IpTo,
 			"reason":         resp.IpItem.Reason,

@@ -99,6 +99,7 @@ func (this *ListsAction) RunGet(params struct {
 
 		itemMaps = append(itemMaps, maps.Map{
 			"id":             item.Id,
+			"value":          item.Value,
 			"ipFrom":         item.IpFrom,
 			"ipTo":           item.IpTo,
 			"createdTime":    timeutil.FormatTime("Y-m-d", item.CreatedAt),
