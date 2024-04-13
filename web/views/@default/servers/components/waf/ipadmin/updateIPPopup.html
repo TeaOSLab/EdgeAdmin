@@ -24,27 +24,21 @@
 
         <!-- IPv4 -->
         <tbody v-if="type == 'ipv4'">
-        <tr>
-            <td>开始IP *</td>
-            <td>
-                <input type="text" name="ipFrom" maxlength="64" placeholder="x.x.x.x" ref="focus" v-model="item.ipFrom"/>
-            </td>
-        </tr>
-        <tr>
-            <td>结束IP</td>
-            <td>
-                <input type="text" name="ipTo" maxlength="64" placeholder="x.x.x.x" v-model="item.ipTo"/>
-                <p class="comment">只有表示IP段的时候才需要填写此项。</p>
-            </td>
-        </tr>
+            <tr>
+                <td>开始IP *</td>
+                <td>
+                    <input type="text" name="ipFrom" maxlength="64" placeholder="x.x.x.x" ref="focus" v-model="item.ipFrom"/>
+                </td>
+            </tr>
+            <tr>
+                <td>结束IP</td>
+                <td>
+                    <input type="text" name="ipTo" maxlength="64" placeholder="x.x.x.x" v-model="item.ipTo"/>
+                    <p class="comment">只有表示IP段的时候才需要填写此项。</p>
+                </td>
+            </tr>
         </tbody>
 
-        <tr>
-            <td>级别</td>
-            <td>
-                <firewall-event-level-options :v-value="item.eventLevel"></firewall-event-level-options>
-            </td>
-        </tr>
 
         <!-- IPv6 -->
         <tbody v-if="type == 'ipv6'">
@@ -63,17 +57,26 @@
                 </td>
             </tr>
         </tbody>
-		<tr>
+
+        <tr>
+            <td>过期时间</td>
+            <td>
+                <datetime-input :v-name="'expiredAt'" :v-timestamp="item.expiredAt"></datetime-input>
+                <p class="comment">在加入名单某一段时间后会失效，留空表示永久有效。</p>
+            </td>
+        </tr>
+
+        <tr>
+            <td>级别</td>
+            <td>
+                <firewall-event-level-options :v-value="item.eventLevel"></firewall-event-level-options>
+            </td>
+        </tr>
+
+        <tr>
 			<td colspan="2"><more-options-indicator></more-options-indicator></td>
 		</tr>
 		<tbody v-show="moreOptionsVisible">
-			<tr>
-				<td>过期时间</td>
-				<td>
-					<datetime-input :v-name="'expiredAt'" :v-timestamp="item.expiredAt"></datetime-input>
-					<p class="comment">在加入名单某一段时间后会失效，留空表示永久有效。</p>
-				</td>
-			</tr>
 			<tr>
 				<td>备注</td>
 				<td><input type="text" name="reason" maxlength="100" v-model="item.reason"/></td>
