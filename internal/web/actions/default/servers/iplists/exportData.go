@@ -30,7 +30,6 @@ func (this *ExportDataAction) RunGet(params struct {
 }) {
 	defer this.CreateLogInfo(codes.IPList_LogExportIPList, params.ListId)
 
-	var err error
 	var ext string
 	var jsonMaps = []maps.Map{}
 	var xlsxFile *xlsx.File
@@ -44,20 +43,16 @@ func (this *ExportDataAction) RunGet(params struct {
 	case "xlsx":
 		ext = ".xlsx"
 		xlsxFile = xlsx.NewFile()
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
+		var err error
 		xlsxSheet, err = xlsxFile.AddSheet("IP名单")
 		if err != nil {
 			this.ErrorPage(err)
 			return
 		}
 
-		row := xlsxSheet.AddRow()
+		var row = xlsxSheet.AddRow()
 		row.SetHeight(26)
-		row.AddCell().SetValue("开始IP")
-		row.AddCell().SetValue("结束IP")
+		row.AddCell().SetValue("IP/IP段")
 		row.AddCell().SetValue("过期时间戳")
 		row.AddCell().SetValue("类型")
 		row.AddCell().SetValue("级别")
@@ -93,27 +88,25 @@ func (this *ExportDataAction) RunGet(params struct {
 		for _, item := range itemsResp.IpItems {
 			switch params.Format {
 			case "xlsx":
-				row := xlsxSheet.AddRow()
+				var row = xlsxSheet.AddRow()
 				row.SetHeight(26)
-				row.AddCell().SetValue(item.IpFrom)
-				row.AddCell().SetValue(item.IpTo)
+				row.AddCell().SetValue(item.Value)
 				row.AddCell().SetValue(types.String(item.ExpiredAt))
 				row.AddCell().SetValue(item.Type)
 				row.AddCell().SetValue(item.EventLevel)
 				row.AddCell().SetValue(item.Reason)
 			case "csv":
-				err = csvWriter.Write([]string{item.IpFrom, item.IpTo, types.String(item.ExpiredAt), item.Type, item.EventLevel, item.Reason})
+				err = csvWriter.Write([]string{item.Value, types.String(item.ExpiredAt), item.Type, item.EventLevel, item.Reason})
 				if err != nil {
 					this.ErrorPage(err)
 					return
 				}
 			case "txt":
-				data = append(data, item.IpFrom+","+item.IpTo+","+types.String(item.ExpiredAt)+","+item.Type+","+item.EventLevel+","+item.Reason...)
+				data = append(data, item.Value+","+types.String(item.ExpiredAt)+","+item.Type+","+item.EventLevel+","+item.Reason...)
 				data = append(data, '\n')
 			case "json":
 				jsonMaps = append(jsonMaps, maps.Map{
-					"ipFrom":     item.IpFrom,
-					"ipTo":       item.IpTo,
+					"value":      item.Value,
 					"expiredAt":  item.ExpiredAt,
 					"type":       item.Type,
 					"eventLevel": item.EventLevel,
@@ -127,7 +120,7 @@ func (this *ExportDataAction) RunGet(params struct {
 	switch params.Format {
 	case "xlsx":
 		var buf = &bytes.Buffer{}
-		err = xlsxFile.Write(buf)
+		err := xlsxFile.Write(buf)
 		if err != nil {
 			this.ErrorPage(err)
 			return
@@ -137,6 +130,7 @@ func (this *ExportDataAction) RunGet(params struct {
 		csvWriter.Flush()
 		data = csvBuffer.Bytes()
 	case "json":
+		var err error
 		data, err = json.Marshal(jsonMaps)
 		if err != nil {
 			this.ErrorPage(err)

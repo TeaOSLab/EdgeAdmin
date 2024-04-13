@@ -6,8 +6,8 @@ import (
 	"bytes"
 	"encoding/csv"
 	"encoding/json"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
@@ -15,7 +15,6 @@ import (
 	"github.com/iwind/TeaGo/types"
 	"github.com/tealeg/xlsx/v3"
 	"io"
-	"net"
 	"regexp"
 	"strings"
 )
@@ -79,9 +78,10 @@ func (this *ImportAction) RunPost(params struct {
 	var items = []*pb.IPItem{}
 	switch ext {
 	case ".xlsx":
-		file, err := xlsx.OpenBinary(data)
-		if err != nil {
-			this.Fail("Excel读取错误：" + err.Error())
+		file, openErr := xlsx.OpenBinary(data)
+		if openErr != nil {
+			this.Fail("Excel读取错误：" + openErr.Error())
+			return
 		}
 		if len(file.Sheets) > 0 {
 			var sheet = file.Sheets[0]
@@ -136,7 +136,7 @@ func (this *ImportAction) RunPost(params struct {
 			if len(line) == 0 {
 				continue
 			}
-			item := this.createItemFromValues(strings.SplitN(string(line), ",", 6), &countIgnore)
+			item := this.createItemFromValues(strings.SplitN(string(line), ",", 5), &countIgnore)
 			if item != nil {
 				items = append(items, item)
 			}
@@ -150,6 +150,7 @@ func (this *ImportAction) RunPost(params struct {
 	for _, item := range items {
 		_, err = this.RPC().IPItemRPC().CreateIPItem(this.AdminContext(), &pb.CreateIPItemRequest{
 			IpListId:   params.ListId,
+			Value:      item.Value,
 			IpFrom:     item.IpFrom,
 			IpTo:       item.IpTo,
 			ExpiredAt:  item.ExpiredAt,
@@ -170,60 +171,45 @@ func (this *ImportAction) RunPost(params struct {
 }
 
 func (this *ImportAction) createItemFromValues(values []string, countIgnore *int) *pb.IPItem {
-	// ipFrom, ipTo, expiredAt, type, eventType, reason
+	// value, expiredAt, type, eventType, reason
 
 	var item = &pb.IPItem{}
 	switch len(values) {
 	case 1:
-		item.IpFrom = values[0]
+		item.Value = values[0]
 	case 2:
-		item.IpFrom = values[0]
-		item.IpTo = values[1]
+		item.Value = values[0]
+		item.ExpiredAt = types.Int64(values[1])
 	case 3:
-		item.IpFrom = values[0]
-		item.IpTo = values[1]
-		item.ExpiredAt = types.Int64(values[2])
+		item.Value = values[0]
+		item.ExpiredAt = types.Int64(values[1])
+		item.Type = values[2]
 	case 4:
-		item.IpFrom = values[0]
-		item.IpTo = values[1]
-		item.ExpiredAt = types.Int64(values[2])
-		item.Type = values[3]
+		item.Value = values[0]
+		item.ExpiredAt = types.Int64(values[1])
+		item.Type = values[2]
+		item.EventLevel = values[3]
 	case 5:
-		item.IpFrom = values[0]
-		item.IpTo = values[1]
-		item.ExpiredAt = types.Int64(values[2])
-		item.Type = values[3]
-		item.EventLevel = values[4]
-	case 6:
-		item.IpFrom = values[0]
-		item.IpTo = values[1]
-		item.ExpiredAt = types.Int64(values[2])
-		item.Type = values[3]
-		item.EventLevel = values[4]
-		item.Reason = values[5]
-	}
-
-	// CIDR
-	if strings.Contains(item.IpFrom, "/") {
-		ipFrom, ipTo, err := configutils.ParseCIDR(item.IpFrom)
-		if err == nil {
-			item.IpFrom = ipFrom
-			item.IpTo = ipTo
-		}
+		item.Value = values[0]
+		item.ExpiredAt = types.Int64(values[1])
+		item.Type = values[2]
+		item.EventLevel = values[3]
+		item.Reason = values[4]
 	}
 
 	if len(item.EventLevel) == 0 {
 		item.EventLevel = "critical"
 	}
 
-	if net.ParseIP(item.IpFrom) == nil {
+	newValue, ipFrom, ipTo, ok := utils.ParseIPValue(item.Value)
+	if !ok {
 		*countIgnore++
 		return nil
 	}
-	if len(item.IpTo) > 0 && net.ParseIP(item.IpTo) == nil {
-		*countIgnore++
-		return nil
-	}
+
+	item.Value = newValue
+	item.IpFrom = ipFrom
+	item.IpTo = ipTo
 
 	return item
 }

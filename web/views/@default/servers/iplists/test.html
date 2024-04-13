@@ -21,7 +21,7 @@
                     <div v-if="result.isFound">
                         <div v-if="result.item != null">
                             <div v-if="result.isAllowed">
-                                <span class="green">在白名单中 <ip-item-text :v-item="result.item"></ip-item-text>&nbsp;<a href="" @click.prevent="updateItem(result.list.id, result.item.id)" title="查看和修改"><i class="icon pencil small"></i></a></span>
+                                <span class="green">在白名单中 <ip-item-text :v-item="result.item"></ip-item-text>&nbsp;<a href="" @click.prevent="updateItem(result.item.id)" title="查看和修改"><i class="icon pencil small"></i></a></span>
                             </div>
                             <div v-else>
                                 <span class="red">在黑名单中 <ip-item-text :v-item="result.item"></ip-item-text>&nbsp;<a href="" @click.prevent="updateItem(result.item.id)" title="查看和修改"><i class="icon pencil small"></i></a></span>
