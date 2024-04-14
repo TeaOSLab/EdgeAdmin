@@ -100,7 +100,6 @@ func (this *CreateAction) RunPost(params struct {
 	var httpsConfig *serverconfigs.HTTPSProtocolConfig = nil
 	var tcpConfig *serverconfigs.TCPProtocolConfig = nil
 	var tlsConfig *serverconfigs.TLSProtocolConfig = nil
-	var unixConfig *serverconfigs.UnixProtocolConfig = nil
 	var udpConfig *serverconfigs.UDPProtocolConfig = nil
 	var webId int64 = 0
 
@@ -427,14 +426,6 @@ func (this *CreateAction) RunPost(params struct {
 			return
 		}
 		req.TlsJSON = data
-	}
-	if unixConfig != nil {
-		data, err := json.Marshal(unixConfig)
-		if err != nil {
-			this.ErrorPage(err)
-			return
-		}
-		req.UnixJSON = data
 	}
 	if udpConfig != nil {
 		data, err := json.Marshal(udpConfig)
