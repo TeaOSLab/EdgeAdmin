@@ -169,3 +169,14 @@ func (this *ParentAction) FailLang(messageCode langs.MessageCode, args ...any) {
 func (this *ParentAction) FailFieldLang(field string, messageCode langs.MessageCode, args ...any) {
 	this.FailField(field, langs.Message(this.LangCode(), messageCode, args...))
 }
+
+func (this *ParentAction) FilterHTTPFamily() bool {
+	if this.Data.GetString("serverFamily") == "http" {
+		return false
+	}
+
+	this.ResponseWriter.WriteHeader(http.StatusNotFound)
+	_, _ = this.ResponseWriter.Write([]byte("page not found"))
+
+	return true
+}

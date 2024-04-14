@@ -21,6 +21,11 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ServerId int64
 }) {
+	// 只有HTTP服务才支持
+	if this.FilterHTTPFamily() {
+		return
+	}
+
 	webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithServerId(this.AdminContext(), params.ServerId)
 	if err != nil {
 		this.ErrorPage(err)
