@@ -65,7 +65,6 @@ func (this *UpdateSchedulingPopupAction) RunGet(params struct {
 	var isHTTPFamily = false
 	var isTCPFamily = false
 	var isUDPFamily = false
-	var isUnixFamily = false
 	if params.ServerId > 0 {
 		_, serverConfig, isOk := serverutils.FindServer(this.Parent(), params.ServerId)
 		if !isOk {
@@ -74,7 +73,6 @@ func (this *UpdateSchedulingPopupAction) RunGet(params struct {
 		isHTTPFamily = serverConfig.IsHTTPFamily()
 		isTCPFamily = serverConfig.IsTCPFamily()
 		isUDPFamily = serverConfig.IsUDPFamily()
-		isUnixFamily = serverConfig.IsUnixFamily()
 	} else {
 		switch params.Family {
 		case "http":
@@ -83,8 +81,6 @@ func (this *UpdateSchedulingPopupAction) RunGet(params struct {
 			isTCPFamily = true
 		case "udp":
 			isUDPFamily = true
-		case "unix":
-			isUnixFamily = true
 		}
 	}
 
@@ -98,8 +94,7 @@ func (this *UpdateSchedulingPopupAction) RunGet(params struct {
 		}
 		if (isHTTPFamily && lists.Contains(networks, "http")) ||
 			(isTCPFamily && lists.Contains(networks, "tcp")) ||
-			(isUDPFamily && lists.Contains(networks, "udp")) ||
-			(isUnixFamily && lists.Contains(networks, "unix")) {
+			(isUDPFamily && lists.Contains(networks, "udp")) {
 			schedulingTypes = append(schedulingTypes, m)
 		}
 	}

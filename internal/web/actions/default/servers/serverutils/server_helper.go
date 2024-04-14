@@ -100,8 +100,6 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 		family = "http"
 	} else if serverConfig.IsTCPFamily() {
 		family = "tcp"
-	} else if serverConfig.IsUnixFamily() {
-		family = "unix"
 	} else if serverConfig.IsUDPFamily() {
 		family = "udp"
 	}
@@ -461,18 +459,6 @@ func (this *ServerHelper) createSettingsMenu(secondMenuItem string, serverIdStri
 			"url":      "/servers/server/settings/reverseProxy?serverId=" + serverIdString,
 			"isActive": secondMenuItem == "reverseProxy",
 			"isOn":     serverConfig.ReverseProxyRef != nil && serverConfig.ReverseProxyRef.IsOn,
-		})
-	} else if serverConfig.IsUnixFamily() {
-		menuItems = append(menuItems, maps.Map{
-			"name":     this.Lang(actionPtr, codes.Server_MenuSettingDNS),
-			"url":      "/servers/server/settings/dns?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "dns",
-		})
-		menuItems = append(menuItems, maps.Map{
-			"name":     this.Lang(actionPtr, codes.Server_MenuSettingUnix),
-			"url":      "/servers/server/settings/unix?serverId=" + serverIdString,
-			"isActive": secondMenuItem == "unix",
-			"isOn":     serverConfig.Unix != nil && serverConfig.Unix.IsOn && len(serverConfig.Unix.Listen) > 0,
 		})
 	} else if serverConfig.IsUDPFamily() {
 		menuItems = append(menuItems, maps.Map{
