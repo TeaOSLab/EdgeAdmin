@@ -50,7 +50,7 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 	if serverId == 0 {
 		return
 	}
-	serverIdString := strconv.FormatInt(serverId, 10)
+	var serverIdString = strconv.FormatInt(serverId, 10)
 	action.Data["serverId"] = serverId
 
 	// 读取server信息
@@ -95,7 +95,7 @@ func (this *ServerHelper) createLeftMenu(action *actions.ActionObject) {
 	}
 
 	// 协议簇
-	family := ""
+	var family = ""
 	if serverConfig.IsHTTPFamily() {
 		family = "http"
 	} else if serverConfig.IsTCPFamily() {

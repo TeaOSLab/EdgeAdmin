@@ -29,6 +29,11 @@ func (this *IndexAction) Init() {
 func (this *IndexAction) RunGet(params struct {
 	ServerId int64
 }) {
+	// 只有HTTP服务才支持
+	if this.FilterHTTPFamily() {
+		return
+	}
+
 	server, _, isOk := serverutils.FindServer(this.Parent(), params.ServerId)
 	if !isOk {
 		return
