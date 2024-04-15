@@ -2400,10 +2400,10 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			</td>
 		</tr>
 		<tr>
-			<td>忽略常见文件</td>
+			<td>忽略常用文件</td>
 			<td>
 				<checkbox v-model="ignoreCommonFiles"></checkbox>
-				<p class="comment">忽略js、css、jpg等常见在网页里被引用的文件名。</p>
+				<p class="comment">忽略js、css、jpg等常在网页里被引用的文件名，可以减少误判几率。</p>
 			</td>
 		</tr>
 	</table>
@@ -2511,22 +2511,22 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 		<button class="ui button tiny" @click.prevent="addRef(false)" type="button">+添加缓存条件</button> &nbsp; &nbsp; <a href="" @click.prevent="addRef(true)" style="font-size: 0.8em">+添加不缓存条件</a>
 	</div>
 	<div class="margin"></div>
-</div>`}),Vue.component("origin-list-box",{props:["v-primary-origins","v-backup-origins","v-server-type","v-params"],data:function(){return{primaryOrigins:this.vPrimaryOrigins,backupOrigins:this.vBackupOrigins}},methods:{createPrimaryOrigin:function(){teaweb.popup("/servers/server/settings/origins/addPopup?originType=primary&"+this.vParams,{width:"45em",height:"27em",callback:function(e){teaweb.success("保存成功",function(){window.location.reload()})}})},createBackupOrigin:function(){teaweb.popup("/servers/server/settings/origins/addPopup?originType=backup&"+this.vParams,{width:"45em",height:"27em",callback:function(e){teaweb.success("保存成功",function(){window.location.reload()})}})},updateOrigin:function(e,t){teaweb.popup("/servers/server/settings/origins/updatePopup?originType="+t+"&"+this.vParams+"&originId="+e,{width:"45em",height:"27em",callback:function(e){teaweb.success("保存成功",function(){window.location.reload()})}})},deleteOrigin:function(e,t){let i=this;teaweb.confirm("确定要删除此源站吗？",function(){Tea.action("/servers/server/settings/origins/delete?"+i.vParams+"&originId="+e+"&originType="+t).post().success(function(){teaweb.success("删除成功",function(){window.location.reload()})})})}},template:`<div>
+</div>`}),Vue.component("origin-list-box",{props:["v-primary-origins","v-backup-origins","v-server-type","v-params"],data:function(){return{primaryOrigins:this.vPrimaryOrigins,backupOrigins:this.vBackupOrigins}},methods:{createPrimaryOrigin:function(){teaweb.popup("/servers/server/settings/origins/addPopup?originType=primary&"+this.vParams,{width:"45em",height:"27em",callback:function(e){teaweb.success("保存成功",function(){window.location.reload()})}})},createBackupOrigin:function(){teaweb.popup("/servers/server/settings/origins/addPopup?originType=backup&"+this.vParams,{width:"45em",height:"27em",callback:function(e){teaweb.success("保存成功",function(){window.location.reload()})}})},updateOrigin:function(e,t){teaweb.popup("/servers/server/settings/origins/updatePopup?originType="+t+"&"+this.vParams+"&originId="+e,{width:"45em",height:"27em",callback:function(e){teaweb.success("保存成功",function(){window.location.reload()})}})},deleteOrigin:function(e,t,i){let n=this;teaweb.confirm("确定要删除此源站（"+t+"）吗？",function(){Tea.action("/servers/server/settings/origins/delete?"+n.vParams+"&originId="+e+"&originType="+i).post().success(function(){teaweb.success("删除成功",function(){window.location.reload()})})})},updateOriginIsOn:function(e,t,i){let n,s,o=(s=i?(n="确定要启用此源站（"+t+"）吗？","启用成功"):(n="确定要停用此源站（"+t+"）吗？","停用成功"),this);teaweb.confirm(n,function(){Tea.action("/servers/server/settings/origins/updateIsOn?"+o.vParams+"&originId="+e+"&isOn="+(i?1:0)).post().success(function(){teaweb.success(s,function(){window.location.reload()})})})}},template:`<div>
 	<h3>主要源站 <a href="" @click.prevent="createPrimaryOrigin()">[添加主要源站]</a> </h3>
 	<p class="comment" v-if="primaryOrigins.length == 0">暂时还没有主要源站。</p>
-	<origin-list-table v-if="primaryOrigins.length > 0" :v-origins="vPrimaryOrigins" :v-origin-type="'primary'" @deleteOrigin="deleteOrigin" @updateOrigin="updateOrigin"></origin-list-table>
+	<origin-list-table v-if="primaryOrigins.length > 0" :v-origins="vPrimaryOrigins" :v-origin-type="'primary'" @deleteOrigin="deleteOrigin" @updateOrigin="updateOrigin" @updateOriginIsOn="updateOriginIsOn"></origin-list-table>
 
 	<h3>备用源站 <a href="" @click.prevent="createBackupOrigin()">[添加备用源站]</a></h3>
-	<p class="comment" v-if="backupOrigins.length == 0" :v-origins="primaryOrigins">暂时还没有备用源站。</p>
-	<origin-list-table v-if="backupOrigins.length > 0" :v-origins="backupOrigins" :v-origin-type="'backup'" @deleteOrigin="deleteOrigin" @updateOrigin="updateOrigin"></origin-list-table>
-</div>`}),Vue.component("origin-list-table",{props:["v-origins","v-origin-type"],data:function(){let t=!1,e=this.vOrigins;return null!=e&&0<e.length&&e.forEach(function(e){null!=e.domains&&0<e.domains.length&&(t=!0)}),{hasMatchedDomains:t}},methods:{deleteOrigin:function(e){this.$emit("deleteOrigin",e,this.vOriginType)},updateOrigin:function(e){this.$emit("updateOrigin",e,this.vOriginType)}},template:`
+	<p class="comment" v-if="backupOrigins.length == 0">暂时还没有备用源站。</p>
+	<origin-list-table v-if="backupOrigins.length > 0" :v-origins="backupOrigins" :v-origin-type="'backup'" @deleteOrigin="deleteOrigin" @updateOrigin="updateOrigin" @updateOriginIsOn="updateOriginIsOn"></origin-list-table>
+</div>`}),Vue.component("origin-list-table",{props:["v-origins","v-origin-type"],data:function(){let t=!1,e=this.vOrigins;return null!=e&&0<e.length&&e.forEach(function(e){null!=e.domains&&0<e.domains.length&&(t=!0)}),{hasMatchedDomains:t}},methods:{deleteOrigin:function(e,t){this.$emit("deleteOrigin",e,t,this.vOriginType)},updateOrigin:function(e){this.$emit("updateOrigin",e,this.vOriginType)},updateOriginIsOn:function(e,t,i){this.$emit("updateOriginIsOn",e,t,i)}},template:`
 <table class="ui table selectable">
 	<thead>
 		<tr>
 			<th>源站地址</th>
-			<th>权重</th>
-			<th class="width10">状态</th>
-			<th class="two op">操作</th>
+			<th class="width5">权重</th>
+			<th class="width6">状态</th>
+			<th class="three op">操作</th>
 		</tr>	
 	</thead>
 	<tbody>
@@ -2551,7 +2551,8 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			</td>
 			<td>
 				<a href="" @click.prevent="updateOrigin(origin.id)">修改</a> &nbsp;
-				<a href="" @click.prevent="deleteOrigin(origin.id)">删除</a>
+				<a href="" v-if="origin.isOn" @click.prevent="updateOriginIsOn(origin.id, origin.addr, false)">停用</a><a href=""  v-if="!origin.isOn" @click.prevent="updateOriginIsOn(origin.id, origin.addr, true)"><span class="red">启用</span></a> &nbsp;
+				<a href="" @click.prevent="deleteOrigin(origin.id, origin.addr)">删除</a>
 			</td>
 		</tr>
 	</tbody>
@@ -4125,7 +4126,7 @@ example2.com
 		</tbody>
 	</table>
 	<div class="margin"></div>
-</div>`}),Vue.component("http-cc-config-box",{props:["v-cc-config","v-is-location","v-is-group"],data:function(){let e=this.vCcConfig;return null!=(e=null==e?{isPrior:!1,isOn:!1,enableFingerprint:!0,enableGET302:!0,onlyURLPatterns:[],exceptURLPatterns:[],useDefaultThresholds:!0}:e).thresholds&&0!=e.thresholds.length||(e.thresholds=[{maxRequests:0},{maxRequests:0},{maxRequests:0}]),"boolean"!=typeof e.enableFingerprint&&(e.enableFingerprint=!0),"boolean"!=typeof e.enableGET302&&(e.enableGET302=!0),null==e.onlyURLPatterns&&(e.onlyURLPatterns=[]),null==e.exceptURLPatterns&&(e.exceptURLPatterns=[]),{config:e,moreOptionsVisible:!1,minQPSPerIP:e.minQPSPerIP,useCustomThresholds:!e.useDefaultThresholds,thresholdMaxRequests0:this.maxRequestsStringAtThresholdIndex(e,0),thresholdMaxRequests1:this.maxRequestsStringAtThresholdIndex(e,1),thresholdMaxRequests2:this.maxRequestsStringAtThresholdIndex(e,2)}},watch:{minQPSPerIP:function(e){let t=parseInt(e.toString());(isNaN(t)||t<0)&&(t=0),this.config.minQPSPerIP=t},thresholdMaxRequests0:function(e){this.setThresholdMaxRequests(0,e)},thresholdMaxRequests1:function(e){this.setThresholdMaxRequests(1,e)},thresholdMaxRequests2:function(e){this.setThresholdMaxRequests(2,e)},useCustomThresholds:function(e){this.config.useDefaultThresholds=!e}},methods:{maxRequestsStringAtThresholdIndex:function(t,i){if(null==t.thresholds)return"";if(i<t.thresholds.length){let e=t.thresholds[i].maxRequests.toString();return e="0"==e?"":e}return""},setThresholdMaxRequests:function(e,t){let i=parseInt(t);(isNaN(i)||i<0)&&(i=0),e<this.config.thresholds.length&&(this.config.thresholds[e].maxRequests=i)},showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible}},template:`<div>
+</div>`}),Vue.component("http-cc-config-box",{props:["v-cc-config","v-is-location","v-is-group"],data:function(){let e=this.vCcConfig;return null!=(e=null==e?{isPrior:!1,isOn:!1,enableFingerprint:!0,enableGET302:!0,onlyURLPatterns:[],exceptURLPatterns:[],useDefaultThresholds:!0,ignoreCommonFiles:!1}:e).thresholds&&0!=e.thresholds.length||(e.thresholds=[{maxRequests:0},{maxRequests:0},{maxRequests:0}]),"boolean"!=typeof e.enableFingerprint&&(e.enableFingerprint=!0),"boolean"!=typeof e.enableGET302&&(e.enableGET302=!0),null==e.onlyURLPatterns&&(e.onlyURLPatterns=[]),null==e.exceptURLPatterns&&(e.exceptURLPatterns=[]),{config:e,moreOptionsVisible:!1,minQPSPerIP:e.minQPSPerIP,useCustomThresholds:!e.useDefaultThresholds,thresholdMaxRequests0:this.maxRequestsStringAtThresholdIndex(e,0),thresholdMaxRequests1:this.maxRequestsStringAtThresholdIndex(e,1),thresholdMaxRequests2:this.maxRequestsStringAtThresholdIndex(e,2)}},watch:{minQPSPerIP:function(e){let t=parseInt(e.toString());(isNaN(t)||t<0)&&(t=0),this.config.minQPSPerIP=t},thresholdMaxRequests0:function(e){this.setThresholdMaxRequests(0,e)},thresholdMaxRequests1:function(e){this.setThresholdMaxRequests(1,e)},thresholdMaxRequests2:function(e){this.setThresholdMaxRequests(2,e)},useCustomThresholds:function(e){this.config.useDefaultThresholds=!e}},methods:{maxRequestsStringAtThresholdIndex:function(t,i){if(null==t.thresholds)return"";if(i<t.thresholds.length){let e=t.thresholds[i].maxRequests.toString();return e="0"==e?"":e}return""},setThresholdMaxRequests:function(e,t){let i=parseInt(t);(isNaN(i)||i<0)&&(i=0),e<this.config.thresholds.length&&(this.config.thresholds[e].maxRequests=i)},showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible}},template:`<div>
 <input type="hidden" name="ccJSON" :value="JSON.stringify(config)"/>
 <table class="ui table definition selectable">
 	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
@@ -4157,7 +4158,14 @@ example2.com
 				<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
 				<p class="comment">如果填写了限制URL，表示只对这些URL进行CC防护处理；如果不填则表示支持所有的URL。</p>
 			</td>
-		</tr>	
+		</tr>
+		<tr>
+			<td>忽略常用文件</td>
+			<td>
+				<checkbox v-model="config.ignoreCommonFiles"></checkbox>
+				<p class="comment">忽略js、css、jpg等常在网页里被引用的文件名，可以减少误判几率。</p>
+			</td>
+		</tr>
 		<tr>
 			<td>检查请求来源指纹</td>
 			<td>
@@ -6065,8 +6073,12 @@ example2.com
 				</td>
 				<td>
 					<span v-if="item.type != 'all'" :class="{green: item.list != null && item.list.type == 'white'}">
-					<keyword :v-word="keyword">{{item.ipFrom}}</keyword> <span> <span class="small red" v-if="item.isRead != null && !item.isRead">&nbsp;New&nbsp;</span>&nbsp;<a :href="'/servers/iplists?ip=' + item.ipFrom" v-if="vShowSearchButton" title="搜索此IP"><span><i class="icon search small" style="color: #ccc"></i></span></a></span>
-					<span v-if="item.ipTo.length > 0"> - <keyword :v-word="keyword">{{item.ipTo}}</keyword></span></span>
+						<span v-if="item.value != null && item.value.length > 0"><keyword :v-word="keyword">{{item.value}}</keyword></span>
+						<span v-else>
+							<keyword :v-word="keyword">{{item.ipFrom}}</keyword> <span> <span class="small red" v-if="item.isRead != null && !item.isRead">&nbsp;New&nbsp;</span>&nbsp;<a :href="'/servers/iplists?ip=' + item.ipFrom" v-if="vShowSearchButton" title="搜索此IP"><span><i class="icon search small" style="color: #ccc"></i></span></a></span>
+							<span v-if="item.ipTo.length > 0"> - <keyword :v-word="keyword">{{item.ipTo}}</keyword></span>
+						</span>
+					</span>
 					<span v-else class="disabled">*</span>
 					
 					<div v-if="item.region != null && item.region.length > 0">
@@ -6144,13 +6156,13 @@ example2.com
     </table>
 </div>`}),Vue.component("ip-item-text",{props:["v-item"],template:`<span>
     <span v-if="vItem.type == 'all'">*</span>
-    <span v-if="vItem.type == 'ipv4' || vItem.type.length == 0">
-        {{vItem.ipFrom}}
-        <span v-if="vItem.ipTo.length > 0">- {{vItem.ipTo}}</span>
-    </span>
-    <span v-if="vItem.type == 'ipv6'">{{vItem.ipFrom}}
-    	<span v-if="vItem.ipTo.length > 0">- {{vItem.ipTo}}</span>
-    </span>
+    <span v-else>
+    	<span v-if="vItem.value != null && vItem.value.length > 0">{{vItem.value}}</span>
+    	<span v-else>
+			{{vItem.ipFrom}}
+			<span v-if="vItem.ipTo != null &&vItem.ipTo.length > 0">- {{vItem.ipTo}}</span>
+		</span>
+	</span>
     <span v-if="vItem.eventLevelName != null && vItem.eventLevelName.length > 0">&nbsp; 级别：{{vItem.eventLevelName}}</span>
 </span>`}),Vue.component("ip-box",{props:["v-ip"],methods:{popup:function(){let e=this.vIp;var t;null!=e&&0!=e.length||(t=this.$refs.container,null==(e=t.innerText)&&(e=t.textContent)),teaweb.popup("/servers/ipbox?ip="+e,{width:"50em",height:"30em"})}},template:'<span @click.prevent="popup()" ref="container"><slot></slot></span>'}),Vue.component("sms-sender",{props:["value","name"],mounted:function(){this.initType(this.config.type)},data:function(){let e=this.value;return{config:e=null==e?{isOn:!1,type:"webHook",webHookParams:{url:"",method:"POST"}}:e}},watch:{"config.type":function(e){this.initType(e)}},methods:{initType:function(e){"webHook"===e&&null==this.config.webHookParams&&(this.config.webHookParams={url:"",method:"POST"})},test:function(){window.TESTING_SMS_CONFIG=this.config,teaweb.popup("/users/setting/smsTest",{height:"22em"})}},template:`<div>
 	<input type="hidden" :name="name" :value="JSON.stringify(config)"/>
@@ -6347,7 +6359,7 @@ example2.com
 			<button class="ui button tiny" type="button" @click.prevent="create()">+</button> 
 		</div>
 	</div>	
-</div>`}),Vue.component("datetime-input",{props:["v-name","v-timestamp"],mounted:function(){let t=this;teaweb.datepicker(this.$refs.dayInput,function(e){t.day=e,t.hour="23",t.minute="59",t.second="59",t.change()})},data:function(){let t=this.vTimestamp,i=(null!=t?(t=parseInt(t),isNaN(t)&&(t=0)):t=0,""),n="",s="",o="";if(0<t){let e=new Date;e.setTime(1e3*t);var a=e.getFullYear().toString(),l=this.leadingZero((e.getMonth()+1).toString(),2);i=a+"-"+l+"-"+this.leadingZero(e.getDate().toString(),2),n=this.leadingZero(e.getHours().toString(),2),s=this.leadingZero(e.getMinutes().toString(),2),o=this.leadingZero(e.getSeconds().toString(),2)}return{timestamp:t,day:i,hour:n,minute:s,second:o,hasDayError:!1,hasHourError:!1,hasMinuteError:!1,hasSecondError:!1}},methods:{change:function(){if(/^\d{4}-\d{1,2}-\d{1,2}$/.test(this.day)){var t=this.day.split("-"),i=parseInt(t[0]),n=parseInt(t[1]);if(n<1||12<n)this.hasDayError=!0;else{t=parseInt(t[2]);if(t<1||32<t)this.hasDayError=!0;else if(this.hasDayError=!1,/^\d+$/.test(this.hour)){var s=parseInt(this.hour);if(isNaN(s))this.hasHourError=!0;else if(s<0||24<=s)this.hasHourError=!0;else if(this.hasHourError=!1,/^\d+$/.test(this.minute)){var o=parseInt(this.minute);if(isNaN(o))this.hasMinuteError=!0;else if(o<0||60<=o)this.hasMinuteError=!0;else if(this.hasMinuteError=!1,/^\d+$/.test(this.second)){var a=parseInt(this.second);if(isNaN(a))this.hasSecondError=!0;else if(a<0||60<=a)this.hasSecondError=!0;else{this.hasSecondError=!1;let e=new Date(i,n-1,t,s,o,a);this.timestamp=Math.floor(e.getTime()/1e3)}}else this.hasSecondError=!0}else this.hasMinuteError=!0}else this.hasHourError=!0}}else this.hasDayError=!0},leadingZero:function(t,i){if(i<=(t=t.toString()).length)return t;for(let e=0;e<i-t.length;e++)t="0"+t;return t},resultTimestamp:function(){return this.timestamp},nextDays:function(e){let t=new Date;t.setTime(t.getTime()+86400*e*1e3),this.day=t.getFullYear()+"-"+this.leadingZero(t.getMonth()+1,2)+"-"+this.leadingZero(t.getDate(),2),this.hour=this.leadingZero(t.getHours(),2),this.minute=this.leadingZero(t.getMinutes(),2),this.second=this.leadingZero(t.getSeconds(),2),this.change()},nextHours:function(e){let t=new Date;t.setTime(t.getTime()+3600*e*1e3),this.day=t.getFullYear()+"-"+this.leadingZero(t.getMonth()+1,2)+"-"+this.leadingZero(t.getDate(),2),this.hour=this.leadingZero(t.getHours(),2),this.minute=this.leadingZero(t.getMinutes(),2),this.second=this.leadingZero(t.getSeconds(),2),this.change()}},template:`<div>
+</div>`}),Vue.component("datetime-input",{props:["v-name","v-timestamp"],mounted:function(){let t=this;teaweb.datepicker(this.$refs.dayInput,function(e){t.day=e,t.hour="23",t.minute="59",t.second="59",t.change()})},data:function(){let t=this.vTimestamp,i=(null!=t?(t=parseInt(t),isNaN(t)&&(t=0)):t=0,""),n="",s="",o="";if(0<t){let e=new Date;e.setTime(1e3*t);var a=e.getFullYear().toString(),l=this.leadingZero((e.getMonth()+1).toString(),2);i=a+"-"+l+"-"+this.leadingZero(e.getDate().toString(),2),n=this.leadingZero(e.getHours().toString(),2),s=this.leadingZero(e.getMinutes().toString(),2),o=this.leadingZero(e.getSeconds().toString(),2)}return{timestamp:t,day:i,hour:n,minute:s,second:o,hasDayError:!1,hasHourError:!1,hasMinuteError:!1,hasSecondError:!1}},methods:{change:function(){if(/^\d{4}-\d{1,2}-\d{1,2}$/.test(this.day)){var t=this.day.split("-"),i=parseInt(t[0]),n=parseInt(t[1]);if(n<1||12<n)this.hasDayError=!0;else{t=parseInt(t[2]);if(t<1||32<t)this.hasDayError=!0;else if(this.hasDayError=!1,/^\d+$/.test(this.hour)){var s=parseInt(this.hour);if(isNaN(s))this.hasHourError=!0;else if(s<0||24<=s)this.hasHourError=!0;else if(this.hasHourError=!1,/^\d+$/.test(this.minute)){var o=parseInt(this.minute);if(isNaN(o))this.hasMinuteError=!0;else if(o<0||60<=o)this.hasMinuteError=!0;else if(this.hasMinuteError=!1,/^\d+$/.test(this.second)){var a=parseInt(this.second);if(isNaN(a))this.hasSecondError=!0;else if(a<0||60<=a)this.hasSecondError=!0;else{this.hasSecondError=!1;let e=new Date(i,n-1,t,s,o,a);this.timestamp=Math.floor(e.getTime()/1e3)}}else this.hasSecondError=!0}else this.hasMinuteError=!0}else this.hasHourError=!0}}else this.hasDayError=!0},leadingZero:function(t,i){if(i<=(t=t.toString()).length)return t;for(let e=0;e<i-t.length;e++)t="0"+t;return t},resultTimestamp:function(){return this.timestamp},nextYear:function(){let e=new Date;e.setFullYear(e.getFullYear()+1),this.day=e.getFullYear()+"-"+this.leadingZero(e.getMonth()+1,2)+"-"+this.leadingZero(e.getDate(),2),this.hour=this.leadingZero(e.getHours(),2),this.minute=this.leadingZero(e.getMinutes(),2),this.second=this.leadingZero(e.getSeconds(),2),this.change()},nextDays:function(e){let t=new Date;t.setTime(t.getTime()+86400*e*1e3),this.day=t.getFullYear()+"-"+this.leadingZero(t.getMonth()+1,2)+"-"+this.leadingZero(t.getDate(),2),this.hour=this.leadingZero(t.getHours(),2),this.minute=this.leadingZero(t.getMinutes(),2),this.second=this.leadingZero(t.getSeconds(),2),this.change()},nextHours:function(e){let t=new Date;t.setTime(t.getTime()+3600*e*1e3),this.day=t.getFullYear()+"-"+this.leadingZero(t.getMonth()+1,2)+"-"+this.leadingZero(t.getDate(),2),this.hour=this.leadingZero(t.getHours(),2),this.minute=this.leadingZero(t.getMinutes(),2),this.second=this.leadingZero(t.getSeconds(),2),this.change()}},template:`<div>
 	<input type="hidden" :name="vName" :value="timestamp"/>
 	<div class="ui fields inline" style="padding: 0; margin:0">
 		<div class="ui field" :class="{error: hasDayError}">
@@ -6359,7 +6371,7 @@ example2.com
 		<div class="ui field">:</div>
 		<div class="ui field" :class="{error: hasSecondError}"><input type="text" v-model="second" maxlength="2" style="width:4em" placeholder="秒" @input="change"/></div>
 	</div>
-	<p class="comment">常用时间：<a href="" @click.prevent="nextHours(1)"> &nbsp;1小时&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(1)"> &nbsp;1天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(3)"> &nbsp;3天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(7)"> &nbsp;1周&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(30)"> &nbsp;30天&nbsp; </a> </p>
+	<p class="comment">常用时间：<a href="" @click.prevent="nextHours(1)"> &nbsp;1小时&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(1)"> &nbsp;1天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(3)"> &nbsp;3天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(7)"> &nbsp;1周&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(30)"> &nbsp;30天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextYear()"> &nbsp;1年&nbsp; </a> </p>
 </div>`}),Vue.component("label-on",{props:["v-is-on"],template:'<div><span v-if="vIsOn" class="green">已启用</span><span v-if="!vIsOn" class="red">已停用</span></div>'}),Vue.component("code-label",{methods:{click:function(e){this.$emit("click",e)}},template:'<span class="ui label basic small" style="padding: 3px;margin-left:2px;margin-right:2px" @click.prevent="click"><slot></slot></span>'}),Vue.component("code-label-plain",{template:'<span class="ui label basic tiny" style="padding: 3px;margin-left:2px;margin-right:2px"><slot></slot></span>'}),Vue.component("tiny-label",{template:'<span class="ui label tiny" style="margin-bottom: 0.5em"><slot></slot></span>'}),Vue.component("tiny-basic-label",{template:'<span class="ui label tiny basic" style="margin-bottom: 0.5em"><slot></slot></span>'}),Vue.component("micro-basic-label",{template:'<span class="ui label tiny basic" style="margin-bottom: 0.5em; font-size: 0.7em; padding: 4px"><slot></slot></span>'}),Vue.component("grey-label",{props:["color"],data:function(){let e="grey";return{labelColor:e=null!=this.color&&0<this.color.length?"red":e}},template:'<span class="ui label basic tiny" :class="labelColor" style="margin-top: 0.4em; font-size: 0.7em; border: 1px solid #ddd!important; font-weight: normal;"><slot></slot></span>'}),Vue.component("optional-label",{template:'<em><span class="grey">（可选）</span></em>'}),Vue.component("plus-label",{template:'<span style="color: #B18701;">Plus专属功能。</span>'}),Vue.component("pro-warning-label",{template:'<span><i class="icon warning circle yellow"></i>注意：通常不需要修改；如要修改，请在专家指导下进行。</span>'}),Vue.component("js-page",{props:["v-max"],data:function(){let e=this.vMax;return{max:e=null==e?0:e,page:1}},methods:{updateMax:function(e){this.max=e},selectPage:function(e){this.page=e,this.$emit("change",e)}},template:`<div>
 	<div class="page" v-if="max > 1">
 		<a href="" v-for="i in max" :class="{active: i == page}" @click.prevent="selectPage(i)">{{i}}</a>
