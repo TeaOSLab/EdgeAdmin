@@ -6809,10 +6809,10 @@ Vue.component("http-firewall-checkpoint-cc", {
 			</td>
 		</tr>
 		<tr>
-			<td>忽略常见文件</td>
+			<td>忽略常用文件</td>
 			<td>
 				<checkbox v-model="ignoreCommonFiles"></checkbox>
-				<p class="comment">忽略js、css、jpg等常见在网页里被引用的文件名。</p>
+				<p class="comment">忽略js、css、jpg等常在网页里被引用的文件名，可以减少误判几率。</p>
 			</td>
 		</tr>
 	</table>
@@ -7374,13 +7374,34 @@ Vue.component("origin-list-box", {
 				}
 			})
 		},
-		deleteOrigin: function (originId, originType) {
+		deleteOrigin: function (originId, originAddr, originType) {
 			let that = this
-			teaweb.confirm("确定要删除此源站吗？", function () {
+			teaweb.confirm("确定要删除此源站（" + originAddr + "）吗？", function () {
 				Tea.action("/servers/server/settings/origins/delete?" + that.vParams + "&originId=" + originId + "&originType=" + originType)
 					.post()
 					.success(function () {
 						teaweb.success("删除成功", function () {
+							window.location.reload()
+						})
+					})
+			})
+		},
+		updateOriginIsOn: function (originId, originAddr, isOn) {
+			let message
+			let resultMessage
+			if (isOn) {
+				message = "确定要启用此源站（" + originAddr + "）吗？"
+				resultMessage = "启用成功"
+			} else {
+				message = "确定要停用此源站（" + originAddr + "）吗？"
+				resultMessage = "停用成功"
+			}
+			let that = this
+			teaweb.confirm(message, function () {
+				Tea.action("/servers/server/settings/origins/updateIsOn?" + that.vParams + "&originId=" + originId + "&isOn=" + (isOn ? 1 : 0))
+					.post()
+					.success(function () {
+						teaweb.success(resultMessage, function () {
 							window.location.reload()
 						})
 					})
@@ -7390,11 +7411,11 @@ Vue.component("origin-list-box", {
 	template: `<div>
 	<h3>主要源站 <a href="" @click.prevent="createPrimaryOrigin()">[添加主要源站]</a> </h3>
 	<p class="comment" v-if="primaryOrigins.length == 0">暂时还没有主要源站。</p>
-	<origin-list-table v-if="primaryOrigins.length > 0" :v-origins="vPrimaryOrigins" :v-origin-type="'primary'" @deleteOrigin="deleteOrigin" @updateOrigin="updateOrigin"></origin-list-table>
+	<origin-list-table v-if="primaryOrigins.length > 0" :v-origins="vPrimaryOrigins" :v-origin-type="'primary'" @deleteOrigin="deleteOrigin" @updateOrigin="updateOrigin" @updateOriginIsOn="updateOriginIsOn"></origin-list-table>
 
 	<h3>备用源站 <a href="" @click.prevent="createBackupOrigin()">[添加备用源站]</a></h3>
-	<p class="comment" v-if="backupOrigins.length == 0" :v-origins="primaryOrigins">暂时还没有备用源站。</p>
-	<origin-list-table v-if="backupOrigins.length > 0" :v-origins="backupOrigins" :v-origin-type="'backup'" @deleteOrigin="deleteOrigin" @updateOrigin="updateOrigin"></origin-list-table>
+	<p class="comment" v-if="backupOrigins.length == 0">暂时还没有备用源站。</p>
+	<origin-list-table v-if="backupOrigins.length > 0" :v-origins="backupOrigins" :v-origin-type="'backup'" @deleteOrigin="deleteOrigin" @updateOrigin="updateOrigin" @updateOriginIsOn="updateOriginIsOn"></origin-list-table>
 </div>`
 })
 
@@ -7416,11 +7437,14 @@ Vue.component("origin-list-table", {
 		}
 	},
 	methods: {
-		deleteOrigin: function (originId) {
-			this.$emit("deleteOrigin", originId, this.vOriginType)
+		deleteOrigin: function (originId, originAddr) {
+			this.$emit("deleteOrigin", originId, originAddr, this.vOriginType)
 		},
 		updateOrigin: function (originId) {
 			this.$emit("updateOrigin", originId, this.vOriginType)
+		},
+		updateOriginIsOn: function (originId, originAddr, isOn) {
+			this.$emit("updateOriginIsOn", originId, originAddr, isOn)
 		}
 	},
 	template: `
@@ -7428,9 +7452,9 @@ Vue.component("origin-list-table", {
 	<thead>
 		<tr>
 			<th>源站地址</th>
-			<th>权重</th>
-			<th class="width10">状态</th>
-			<th class="two op">操作</th>
+			<th class="width5">权重</th>
+			<th class="width6">状态</th>
+			<th class="three op">操作</th>
 		</tr>	
 	</thead>
 	<tbody>
@@ -7455,7 +7479,8 @@ Vue.component("origin-list-table", {
 			</td>
 			<td>
 				<a href="" @click.prevent="updateOrigin(origin.id)">修改</a> &nbsp;
-				<a href="" @click.prevent="deleteOrigin(origin.id)">删除</a>
+				<a href="" v-if="origin.isOn" @click.prevent="updateOriginIsOn(origin.id, origin.addr, false)">停用</a><a href=""  v-if="!origin.isOn" @click.prevent="updateOriginIsOn(origin.id, origin.addr, true)"><span class="red">启用</span></a> &nbsp;
+				<a href="" @click.prevent="deleteOrigin(origin.id, origin.addr)">删除</a>
 			</td>
 		</tr>
 	</tbody>
@@ -11285,7 +11310,8 @@ Vue.component("http-cc-config-box", {
 				enableGET302: true,
 				onlyURLPatterns: [],
 				exceptURLPatterns: [],
-				useDefaultThresholds: true
+				useDefaultThresholds: true,
+				ignoreCommonFiles: false
 			}
 		}
 
@@ -11407,7 +11433,14 @@ Vue.component("http-cc-config-box", {
 				<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
 				<p class="comment">如果填写了限制URL，表示只对这些URL进行CC防护处理；如果不填则表示支持所有的URL。</p>
 			</td>
-		</tr>	
+		</tr>
+		<tr>
+			<td>忽略常用文件</td>
+			<td>
+				<checkbox v-model="config.ignoreCommonFiles"></checkbox>
+				<p class="comment">忽略js、css、jpg等常在网页里被引用的文件名，可以减少误判几率。</p>
+			</td>
+		</tr>
 		<tr>
 			<td>检查请求来源指纹</td>
 			<td>
@@ -16923,8 +16956,12 @@ Vue.component("ip-list-table", {
 				</td>
 				<td>
 					<span v-if="item.type != 'all'" :class="{green: item.list != null && item.list.type == 'white'}">
-					<keyword :v-word="keyword">{{item.ipFrom}}</keyword> <span> <span class="small red" v-if="item.isRead != null && !item.isRead">&nbsp;New&nbsp;</span>&nbsp;<a :href="'/servers/iplists?ip=' + item.ipFrom" v-if="vShowSearchButton" title="搜索此IP"><span><i class="icon search small" style="color: #ccc"></i></span></a></span>
-					<span v-if="item.ipTo.length > 0"> - <keyword :v-word="keyword">{{item.ipTo}}</keyword></span></span>
+						<span v-if="item.value != null && item.value.length > 0"><keyword :v-word="keyword">{{item.value}}</keyword></span>
+						<span v-else>
+							<keyword :v-word="keyword">{{item.ipFrom}}</keyword> <span> <span class="small red" v-if="item.isRead != null && !item.isRead">&nbsp;New&nbsp;</span>&nbsp;<a :href="'/servers/iplists?ip=' + item.ipFrom" v-if="vShowSearchButton" title="搜索此IP"><span><i class="icon search small" style="color: #ccc"></i></span></a></span>
+							<span v-if="item.ipTo.length > 0"> - <keyword :v-word="keyword">{{item.ipTo}}</keyword></span>
+						</span>
+					</span>
 					<span v-else class="disabled">*</span>
 					
 					<div v-if="item.region != null && item.region.length > 0">
@@ -17007,13 +17044,13 @@ Vue.component("ip-item-text", {
     props: ["v-item"],
     template: `<span>
     <span v-if="vItem.type == 'all'">*</span>
-    <span v-if="vItem.type == 'ipv4' || vItem.type.length == 0">
-        {{vItem.ipFrom}}
-        <span v-if="vItem.ipTo.length > 0">- {{vItem.ipTo}}</span>
-    </span>
-    <span v-if="vItem.type == 'ipv6'">{{vItem.ipFrom}}
-    	<span v-if="vItem.ipTo.length > 0">- {{vItem.ipTo}}</span>
-    </span>
+    <span v-else>
+    	<span v-if="vItem.value != null && vItem.value.length > 0">{{vItem.value}}</span>
+    	<span v-else>
+			{{vItem.ipFrom}}
+			<span v-if="vItem.ipTo != null &&vItem.ipTo.length > 0">- {{vItem.ipTo}}</span>
+		</span>
+	</span>
     <span v-if="vItem.eventLevelName != null && vItem.eventLevelName.length > 0">&nbsp; 级别：{{vItem.eventLevelName}}</span>
 </span>`
 })
@@ -18136,6 +18173,15 @@ Vue.component("datetime-input", {
 		resultTimestamp: function () {
 			return this.timestamp
 		},
+		nextYear: function () {
+			let date = new Date()
+			date.setFullYear(date.getFullYear()+1)
+			this.day = date.getFullYear() + "-" + this.leadingZero(date.getMonth() + 1, 2) + "-" + this.leadingZero(date.getDate(), 2)
+			this.hour = this.leadingZero(date.getHours(), 2)
+			this.minute = this.leadingZero(date.getMinutes(), 2)
+			this.second = this.leadingZero(date.getSeconds(), 2)
+			this.change()
+		},
 		nextDays: function (days) {
 			let date = new Date()
 			date.setTime(date.getTime() + days * 86400 * 1000)
@@ -18167,7 +18213,7 @@ Vue.component("datetime-input", {
 		<div class="ui field">:</div>
 		<div class="ui field" :class="{error: hasSecondError}"><input type="text" v-model="second" maxlength="2" style="width:4em" placeholder="秒" @input="change"/></div>
 	</div>
-	<p class="comment">常用时间：<a href="" @click.prevent="nextHours(1)"> &nbsp;1小时&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(1)"> &nbsp;1天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(3)"> &nbsp;3天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(7)"> &nbsp;1周&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(30)"> &nbsp;30天&nbsp; </a> </p>
+	<p class="comment">常用时间：<a href="" @click.prevent="nextHours(1)"> &nbsp;1小时&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(1)"> &nbsp;1天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(3)"> &nbsp;3天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(7)"> &nbsp;1周&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(30)"> &nbsp;30天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextYear()"> &nbsp;1年&nbsp; </a> </p>
 </div>`
 })
 
