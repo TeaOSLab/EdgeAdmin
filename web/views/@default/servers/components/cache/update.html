@@ -110,7 +110,7 @@
                 <tr>
                     <td>预热超时时间</td>
                     <td>
-                        <time-duration-box :v-name="'fetchTimeoutJSON'" :v-value="cachePolicy.fetchTimeout"></time-duration-box>
+                        <time-duration-box :v-name="'fetchTimeoutJSON'" :v-value="cachePolicy.fetchTimeout" maxlength="6"></time-duration-box>
                         <p class="comment">预热读取源站的超时时间，默认20分钟。</p>
                     </td>
                 </tr>
