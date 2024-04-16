@@ -92,7 +92,7 @@ Vue.component("http-firewall-checkpoint-cc", {
 		let keys = []
 		let period = 60
 		let threshold = 1000
-		let ignoreCommonFiles = false
+		let ignoreCommonFiles = true
 		let enableFingerprint = true
 
 		let options = {}
@@ -246,7 +246,7 @@ Vue.component("http-firewall-checkpoint-cc", {
 			<td>忽略常用文件</td>
 			<td>
 				<checkbox v-model="ignoreCommonFiles"></checkbox>
-				<p class="comment">忽略js、css、jpg等常在网页里被引用的文件名，可以减少误判几率。</p>
+				<p class="comment">忽略js、css、jpg等常在网页里被引用的文件名，即对这些文件的访问不加入计数，可以减少误判几率。</p>
 			</td>
 		</tr>
 	</table>
