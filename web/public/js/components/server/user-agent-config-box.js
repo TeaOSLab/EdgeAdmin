@@ -19,7 +19,8 @@ Vue.component("user-agent-config-box", {
 				keywords: [],
 				action: "deny"
 			},
-			moreOptionsVisible: false
+			moreOptionsVisible: false,
+			batchKeywords: ""
 		}
 	},
 	methods: {
@@ -34,6 +35,10 @@ Vue.component("user-agent-config-box", {
 		},
 		add: function () {
 			this.isAdding = true
+			let that = this
+			setTimeout(function () {
+				that.$refs.batchKeywords.focus()
+			})
 		},
 		confirm: function () {
 			if (this.addingFilter.action == "deny") {
@@ -61,9 +66,18 @@ Vue.component("user-agent-config-box", {
 				keywords: [],
 				action: "deny"
 			}
+			this.batchKeywords = ""
 		},
 		changeKeywords: function (keywords) {
-			this.addingFilter.keywords = keywords
+			let arr = keywords.split(/\n/)
+			let resultKeywords = []
+			arr.forEach(function (keyword){
+				keyword = keyword.trim()
+				if (!resultKeywords.$contains(keyword)) {
+					resultKeywords.push(keyword)
+				}
+			})
+			this.addingFilter.keywords = resultKeywords
 		},
 		showMoreOptions: function () {
 			this.moreOptionsVisible = !this.moreOptionsVisible
@@ -119,8 +133,8 @@ Vue.component("user-agent-config-box", {
 							<tr>
 								<td class="title">UA关键词</td>
 								<td>
-									<values-box :v-values="addingFilter.keywords" :v-allow-empty="true" @change="changeKeywords"></values-box>
-									<p class="comment">不区分大小写，比如<code-label>Chrome</code-label>；支持<code-label>*</code-label>通配符，比如<code-label>*Firefox*</code-label>；也支持空的关键词，表示空UserAgent。</p>
+									<textarea v-model="batchKeywords" @input="changeKeywords(batchKeywords)" ref="batchKeywords" style="width: 20em" placeholder="*浏览器标识*"></textarea>
+									<p class="comment">每行一个关键词；不区分大小写，比如<code-label>Chrome</code-label>；支持<code-label>*</code-label>通配符，比如<code-label>*Firefox*</code-label>；也支持空行关键词，表示空UserAgent。</p>
 								</td>
 							</tr>
 							<tr>
