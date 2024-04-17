@@ -35,13 +35,15 @@ Vue.component("url-patterns-box", {
 			}
 		},
 		confirm: function () {
-			let pattern = this.addingPattern.pattern.trim()
-			if (pattern.length == 0) {
-				let that = this
-				teaweb.warn("请输入URL", function () {
-					that.$refs.patternInput.focus()
-				})
-				return
+			if (this.requireURL(this.addingPattern.type)) {
+				let pattern = this.addingPattern.pattern.trim()
+				if (pattern.length == 0) {
+					let that = this
+					teaweb.warn("请输入URL", function () {
+						that.$refs.patternInput.focus()
+					})
+					return
+				}
 			}
 			if (this.editingIndex < 0) {
 				this.patterns.push({
@@ -71,6 +73,12 @@ Vue.component("url-patterns-box", {
 					return "通配符"
 				case "regexp":
 					return "正则"
+				case "images":
+					return "常见图片文件"
+				case "audios":
+					return "常见音频文件"
+				case "videos":
+					return "常见视频文件"
 			}
 			return ""
 		},
@@ -97,6 +105,9 @@ Vue.component("url-patterns-box", {
 					}
 					break
 			}
+		},
+		requireURL: function (patternType) {
+			return patternType == "wildcard" || patternType == "regexp"
 		}
 	},
 	template: `<div>
@@ -113,13 +124,16 @@ Vue.component("url-patterns-box", {
 				<select class="ui dropdown auto-width" v-model="addingPattern.type">
 					<option value="wildcard">通配符</option>
 					<option value="regexp">正则表达式</option>
+					<option value="images">常见图片</option>
+					<option value="audios">常见音频</option>
+					<option value="videos">常见视频</option>
 				</select>
 			</div>
-			<div class="ui field">
+			<div class="ui field" v-show="addingPattern.type == 'wildcard' || addingPattern.type ==  'regexp'">
 				<input type="text" :placeholder="(addingPattern.type == 'wildcard') ? '可以使用星号（*）通配符，不区分大小写' : '可以使用正则表达式，不区分大小写'" v-model="addingPattern.pattern" @input="changePattern" size="36" ref="patternInput" @keyup.enter="confirm()" @keypress.enter.prevent="1" spellcheck="false"/>
 				<p class="comment" v-if="patternIsInvalid"><span class="red" style="font-weight: normal"><span v-if="addingPattern.type == 'wildcard'">通配符</span><span v-if="addingPattern.type == 'regexp'">正则表达式</span>中不能包含问号（?）及问号以后的内容。</span></p>
 			</div>
-			<div class="ui field" style="padding-left: 0">
+			<div class="ui field" style="padding-left: 0"  v-show="addingPattern.type == 'wildcard' || addingPattern.type ==  'regexp'">
 				<tip-icon content="通配符示例：<br/>单个路径开头：/hello/world/*<br/>单个路径结尾：*/hello/world<br/>包含某个路径：*/article/*<br/>某个域名下的所有URL：*example.com/*<br/>忽略某个扩展名：*.js" v-if="addingPattern.type == 'wildcard'"></tip-icon>
 				<tip-icon content="正则表达式示例：<br/>单个路径开头：^/hello/world<br/>单个路径结尾：/hello/world$<br/>包含某个路径：/article/<br/>匹配某个数字路径：/article/(\\d+)<br/>某个域名下的所有URL：^(http|https)://example.com/" v-if="addingPattern.type == 'regexp'"></tip-icon>
 			</div>
