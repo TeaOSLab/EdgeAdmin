@@ -18,7 +18,8 @@ Vue.component("user-agent-config-box", {
 			addingFilter: {
 				keywords: [],
 				action: "deny"
-			}
+			},
+			moreOptionsVisible: false
 		}
 	},
 	methods: {
@@ -63,6 +64,9 @@ Vue.component("user-agent-config-box", {
 		},
 		changeKeywords: function (keywords) {
 			this.addingFilter.keywords = keywords
+		},
+		showMoreOptions: function () {
+			this.moreOptionsVisible = !this.moreOptionsVisible
 		}
 	},
 	template: `<div>
@@ -133,6 +137,25 @@ Vue.component("user-agent-config-box", {
 					<div v-show="!isAdding" style="margin-top: 0.5em">
 						<button class="ui button tiny" type="button" @click.prevent="add">+</button>
 					</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
+			</tr>
+		</tbody>
+		<tbody v-show="moreOptionsVisible && isOn()">
+			<tr>
+				<td>例外URL</td>
+				<td>
+					<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了例外URL，表示这些URL跳过5秒盾不做处理。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>限制URL</td>
+				<td>
+					<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了限制URL，表示只对这些URL进行5秒盾处理；如果不填则表示支持所有的URL。</p>
 				</td>
 			</tr>
 		</tbody>
