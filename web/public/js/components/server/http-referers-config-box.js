@@ -20,7 +20,8 @@ Vue.component("http-referers-config-box", {
 			config.denyDomains = []
 		}
 		return {
-			config: config
+			config: config,
+			moreOptionsVisible: false
 		}
 	},
 	methods: {
@@ -38,6 +39,9 @@ Vue.component("http-referers-config-box", {
 				this.config.denyDomains = domains
 				this.$forceUpdate()
 			}
+		},
+		showMoreOptions: function () {
+			this.moreOptionsVisible = !this.moreOptionsVisible
 		}
 	},
 	template: `<div>
@@ -86,10 +90,29 @@ Vue.component("http-referers-config-box", {
 			</td>
 		</tr>
 		<tr>
+			<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
+		</tr>
+	</tbody>
+	<tbody v-show="moreOptionsVisible && isOn()">
+		<tr>
 			<td>同时检查Origin</td>
 			<td>
 				<checkbox v-model="config.checkOrigin"></checkbox>
 				<p class="comment">如果请求没有指定Referer Header，则尝试检查Origin Header，多用于跨站调用。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>例外URL</td>
+			<td>
+				<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
+				<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>限制URL</td>
+			<td>
+				<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
+				<p class="comment">如果填写了限制URL，表示只对这些URL进行处理；如果不填则表示支持所有的URL。</p>
 			</td>
 		</tr>
 	</tbody>
