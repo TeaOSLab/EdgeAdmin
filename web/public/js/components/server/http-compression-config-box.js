@@ -15,7 +15,7 @@ Vue.component("http-compression-config-box", {
 				isOn: false,
 				useDefaultTypes: true,
 				types: ["brotli", "gzip", "zstd", "deflate"],
-				level: 3,
+				level: 0,
 				decompressData: false,
 				gzipRef: null,
 				deflateRef: null,
@@ -26,7 +26,9 @@ Vue.component("http-compression-config-box", {
 				extensions: [".js", ".json", ".html", ".htm", ".xml", ".css", ".woff2", ".txt"],
 				exceptExtensions: [".apk", ".ipa"],
 				conds: null,
-				enablePartialContent: false
+				enablePartialContent: false,
+				onlyURLPatterns: [],
+				exceptURLPatterns: []
 			}
 		}
 
@@ -233,11 +235,25 @@ Vue.component("http-compression-config-box", {
 					<p class="comment">支持对分片内容（PartialContent）的压缩；除非客户端有特殊要求，一般不需要启用。</p>
 				</td>
 			</tr>
+				<tr>
+				<td>例外URL</td>
+				<td>
+					<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>限制URL</td>
+				<td>
+					<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了限制URL，表示只对这些URL进行压缩处理；如果不填则表示支持所有的URL。</p>
+				</td>
+			</tr>
 			<tr>
 				<td>匹配条件</td>
 				<td>
 					<http-request-conds-box :v-conds="config.conds" @change="changeConds"></http-request-conds-box>
-	</td>
+				</td>
 			</tr>
 		</tbody>
 	</table>
