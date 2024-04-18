@@ -15,6 +15,9 @@
 .disabled .ui.label {
   color: #ccc !important;
 }
+.ui.basic.grey.label.border-grey {
+  border-color: #ddd !important;
+}
 form .fields {
   margin-bottom: 0 !important;
 }
