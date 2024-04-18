@@ -128,15 +128,15 @@ Vue.component("origin-list-table", {
 			<td :class="{disabled:!origin.isOn}">
 				<a href="" @click.prevent="updateOrigin(origin.id)" :class="{disabled:!origin.isOn}">{{origin.addr}} &nbsp;<i class="icon expand small"></i></a>
 				<div style="margin-top: 0.3em">
-					<tiny-basic-label v-if="origin.isOSS"><i class="icon hdd outline"></i>对象存储</tiny-basic-label>
-					<tiny-basic-label v-if="origin.name.length > 0">{{origin.name}}</tiny-basic-label>
-					<tiny-basic-label v-if="origin.hasCert">证书</tiny-basic-label>
-					<tiny-basic-label v-if="origin.host != null && origin.host.length > 0">主机名: {{origin.host}}</tiny-basic-label>
-					<tiny-basic-label v-if="origin.followPort">端口跟随</tiny-basic-label>
-					<tiny-basic-label v-if="origin.addr != null && origin.addr.startsWith('https://') && origin.http2Enabled">HTTP/2</tiny-basic-label>
+					<tiny-basic-label class="grey" v-if="origin.isOSS"><i class="icon hdd outline"></i>对象存储</tiny-basic-label>
+					<tiny-basic-label class="grey" v-if="origin.name.length > 0">{{origin.name}}</tiny-basic-label>
+					<tiny-basic-label class="grey" v-if="origin.hasCert">证书</tiny-basic-label>
+					<tiny-basic-label class="grey" v-if="origin.host != null && origin.host.length > 0">主机名: {{origin.host}}</tiny-basic-label>
+					<tiny-basic-label class="grey" v-if="origin.followPort">端口跟随</tiny-basic-label>
+					<tiny-basic-label class="grey" v-if="origin.addr != null && origin.addr.startsWith('https://') && origin.http2Enabled">HTTP/2</tiny-basic-label>
 	
-					<span v-if="origin.domains != null && origin.domains.length > 0"><tiny-basic-label v-for="domain in origin.domains">匹配: {{domain}}</tiny-basic-label></span>
-					<span v-else-if="hasMatchedDomains"><tiny-basic-label>匹配: 所有域名</tiny-basic-label></span>
+					<span v-if="origin.domains != null && origin.domains.length > 0"><tiny-basic-label class="grey" v-for="domain in origin.domains">匹配: {{domain}}</tiny-basic-label></span>
+					<span v-else-if="hasMatchedDomains"><tiny-basic-label class="grey">匹配: 所有域名</tiny-basic-label></span>
 				</div>
 			</td>
 			<td :class="{disabled:!origin.isOn}">{{origin.weight}}</td>
