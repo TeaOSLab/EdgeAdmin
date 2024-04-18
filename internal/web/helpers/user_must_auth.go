@@ -224,12 +224,14 @@ func (this *userMustAuth) BeforeAction(actionPtr actions.ActionWrapper, paramNam
 	}
 
 	// 是否正在使用反向代理模式
-	action.Data["teaXFFPrompt"] = false
-	if !securityXFFPromptDisabled &&
-		(len(action.Header("X-Forwarded-For")) > 0 || len(action.Header("X-Real-Ip")) > 0 || len(action.Header("Cf-Connecting-Ip")) > 0) &&
-		securityConfig != nil &&
-		len(securityConfig.ClientIPHeaderNames) == 0 {
-		action.Data["teaXFFPrompt"] = true
+	if action.Request.Method == http.MethodGet {
+		action.Data["teaXFFPrompt"] = false
+		if !securityXFFPromptDisabled &&
+			(len(action.Header("X-Forwarded-For")) > 0 || len(action.Header("X-Real-Ip")) > 0 || len(action.Header("Cf-Connecting-Ip")) > 0) &&
+			securityConfig != nil &&
+			len(securityConfig.ClientIPHeaderNames) == 0 {
+			action.Data["teaXFFPrompt"] = true
+		}
 	}
 
 	// 检查用户是否存在
