@@ -13,9 +13,13 @@ Tea.context(function () {
 			if (textContent == null || textContent.length == 0) {
 				textContent = elements[i].innerText
 			}
+			let itemId = elements[i].getAttribute("id")
+			if (window.location.hash == "#" + itemId) {
+				this.currentItem = itemId
+			}
 			this.titleMenus.push({
 				name: textContent,
-				id: elements[i].getAttribute("id")
+				id: itemId
 			})
 		}
 	})

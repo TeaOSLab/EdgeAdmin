@@ -4,7 +4,7 @@
 
 <div class="right-box with-menu">
     <second-menu>
-        <a v-for="item in titleMenus" :class="{active: item.id == currentItem}" :href="'#' + item.id" class="item" @click.prevent="selectItem(item)">{{item.name}}</a>
+        <a v-for="item in titleMenus" :class="{active: item.id == currentItem}" :href="'#' + item.id" class="item" @click="selectItem(item)">{{item.name}}</a>
     </second-menu>
 
     <form class="ui form" data-tea-action="$" data-tea-success="success" id="global-config-form">
@@ -288,7 +288,14 @@
                     <td>支持${serverAddr}变量</td>
                     <td>
                         <checkbox name="httpAllEnableServerAddrVariable" v-model="config.httpAll.enableServerAddrVariable"></checkbox>
-                        <p class="comment">支持在自定义页面中使用<code-label>${serverAddr}</code-label>变量，表示访客当前正在访问的服务器地址。</p>
+                        <p class="comment">选中后，表示支持在自定义页面中使用<code-label>${serverAddr}</code-label>变量，用来表示访客当前正在访问的服务器地址。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>自动gzip回源</td>
+                    <td>
+                        <checkbox name="httpAllRequestOriginsWithEncodings" v-model="config.httpAll.requestOriginsWithEncodings"></checkbox>
+                        <p class="comment">选中后，表示自动使用<code-label>Accept-Encoding: gzip, ...</code-label>回源，可以用来节约源站流量。</p>
                     </td>
                 </tr>
             </table>
