@@ -42,7 +42,7 @@
                     <span class="ui label">{{origin.protocol.toLowerCase()}}://</span>
 				    <input type="text" name="addr" ref="focus" v-model="origin.addr" @input="changeAddr"/>
                 </div>
-				<p class="comment"><span class="red" v-if="addrError.length > 0">{{addrError}}</span>源站服务器地址，通常是一个IP（或域名）加端口<span v-if="serverType == 'httpProxy'">，不需要加 http:// 或 https://</span>。</p>
+				<p class="comment"><span class="red" v-if="addrError.length > 0">{{addrError}}</span>源站服务器地址，通常是一个IP（或域名）加端口，80和443端口可以省略<span v-if="serverType == 'httpProxy'">，不需要加 http:// 或 https://</span>。</p>
 			</td>
 		</tr>
         <tr v-if="(isHTTP || origin.protocol == 'tls') && !isOSS">

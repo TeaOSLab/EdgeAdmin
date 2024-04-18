@@ -36,9 +36,10 @@
 			<td>
 				<div class="ui input left labeled">
                     <span class="ui label">{{protocol.toLowerCase()}}://</span>
-                    <input type="text" name="addr" ref="focus" v-model="addr" @input="changeAddr"/>
+                    <input type="text" name="addr" ref="focus" v-model="addr" @input="changeAddr" @change="detectHTTPS"/>
                 </div>
-				<p class="comment"><span class="red" v-if="addrError.length > 0">{{addrError}}</span>源站服务器地址，通常是一个IP（或域名）加端口<span v-if="serverType == 'httpProxy'">，不需要加 http:// 或 https://</span>。</p>
+                <p class="comment" style="padding-bottom: 0; margin-bottom: 0" v-if="addrError.length == 0 && adviceHTTPS && protocol == 'http'"><span class="red">系统检测到当前源站有HTTPS协议可用，是否切换到HTTPS协议？</span> <a href="" @click.prevent="switchToHTTPS">[点此切换]</a></p>
+				<p class="comment"><span class="red" v-if="addrError.length > 0">{{addrError}}</span>源站服务器地址，通常是一个IP（或域名）加端口，80和443端口可以省略<span v-if="serverType == 'httpProxy'">，不需要加 http:// 或 https://</span>。</p>
 			</td>
 		</tr>
         <tr v-if="(isHTTP || protocol == 'tls') && !isOSS">
