@@ -3,6 +3,7 @@ package admins
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils/otputils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
@@ -29,19 +30,19 @@ func (this *OtpQrcodeAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	login := loginResp.Login
+	var login = loginResp.Login
 	if login == nil || !login.IsOn {
 		this.NotFound("adminLogin", params.AdminId)
 		return
 	}
 
-	loginParams := maps.Map{}
+	var loginParams = maps.Map{}
 	err = json.Unmarshal(login.ParamsJSON, &loginParams)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	secret := loginParams.GetString("secret")
+	var secret = loginParams.GetString("secret")
 
 	// 当前用户信息
 	adminResp, err := this.RPC().AdminRPC().FindEnabledAdmin(this.AdminContext(), &pb.FindEnabledAdminRequest{AdminId: params.AdminId})
@@ -49,7 +50,7 @@ func (this *OtpQrcodeAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	admin := adminResp.Admin
+	var admin = adminResp.Admin
 	if admin == nil {
 		this.NotFound("admin", params.AdminId)
 		return
@@ -60,8 +61,10 @@ func (this *OtpQrcodeAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	url := gotp.NewDefaultTOTP(secret).ProvisioningUri(admin.Username, uiConfig.AdminSystemName)
-	data, err := qrcode.Encode(url, qrcode.Medium, 256)
+	var url = gotp.NewDefaultTOTP(secret).ProvisioningUri(admin.Username, uiConfig.AdminSystemName)
+
+
+	data, err := qrcode.Encode(otputils.FixIssuer(url), qrcode.Medium, 256)
 	if err != nil {
 		this.ErrorPage(err)
 		return

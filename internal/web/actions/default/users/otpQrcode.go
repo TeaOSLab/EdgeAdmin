@@ -3,6 +3,7 @@ package users
 import (
 	"encoding/json"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils/otputils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
@@ -29,19 +30,19 @@ func (this *OtpQrcodeAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	login := loginResp.Login
+	var login = loginResp.Login
 	if login == nil || !login.IsOn {
 		this.NotFound("userLogin", params.UserId)
 		return
 	}
 
-	loginParams := maps.Map{}
+	var loginParams = maps.Map{}
 	err = json.Unmarshal(login.ParamsJSON, &loginParams)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
-	secret := loginParams.GetString("secret")
+	var secret = loginParams.GetString("secret")
 
 	// 当前用户信息
 	userResp, err := this.RPC().UserRPC().FindEnabledUser(this.AdminContext(), &pb.FindEnabledUserRequest{UserId: params.UserId})
@@ -55,7 +56,7 @@ func (this *OtpQrcodeAction) RunGet(params struct {
 		return
 	}
 
-	uiConfig, err := configloaders.LoadAdminUIConfig()
+	uiConfig, err := configloaders.LoadUserUIConfig()
 	if err != nil {
 		this.ErrorPage(err)
 		return
@@ -65,7 +66,7 @@ func (this *OtpQrcodeAction) RunGet(params struct {
 		productName = "GoEdge用户"
 	}
 	var url = gotp.NewDefaultTOTP(secret).ProvisioningUri(user.Username, productName)
-	data, err := qrcode.Encode(url, qrcode.Medium, 256)
+	data, err := qrcode.Encode(otputils.FixIssuer(url), qrcode.Medium, 256)
 	if err != nil {
 		this.ErrorPage(err)
 		return
