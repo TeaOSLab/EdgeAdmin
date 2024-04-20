@@ -106,8 +106,8 @@
     <tr v-if="otp != null && otp.isOn && moreOptionsVisible">
         <td>认证二维码</td>
         <td>
-            <img :src="'/users/otpQrcode?userId=' + user.id"/>
-            <p class="comment">可以通过二维码快速添加OTP认证信息到认证App中。</p>
+            <img alt="qrcode" :src="'./otpQrcode?userId=' + user.id"/>
+            <p class="comment"><a :href="'./otpQrcode?userId=' + user.id + '&download=true'">[下载]</a> &nbsp; 可以通过二维码快速添加OTP认证信息到认证App中。</p>
         </td>
     </tr>
     <tr v-if="otp != null && otp.isOn && moreOptionsVisible">

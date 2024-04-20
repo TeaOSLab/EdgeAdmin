@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/iwind/TeaGo/types"
 	"github.com/skip2/go-qrcode"
 	"github.com/xlzd/gotp"
 )
@@ -20,7 +21,8 @@ func (this *OtpQrcodeAction) Init() {
 }
 
 func (this *OtpQrcodeAction) RunGet(params struct {
-	UserId int64
+	UserId   int64
+	Download bool
 }) {
 	loginResp, err := this.RPC().LoginRPC().FindEnabledLogin(this.AdminContext(), &pb.FindEnabledLoginRequest{
 		UserId: params.UserId,
@@ -71,6 +73,11 @@ func (this *OtpQrcodeAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
+	if params.Download {
+		var filename = "OTP-USER-" + user.Username + ".png"
+		this.AddHeader("Content-Disposition", "attachment; filename=\""+filename+"\";")
+	}
 	this.AddHeader("Content-Type", "image/png")
+	this.AddHeader("Content-Length", types.String(len(data)))
 	_, _ = this.Write(data)
 }

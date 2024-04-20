@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/iwind/TeaGo/types"
 	"github.com/skip2/go-qrcode"
 	"github.com/xlzd/gotp"
 )
@@ -20,7 +21,8 @@ func (this *OtpQrcodeAction) Init() {
 }
 
 func (this *OtpQrcodeAction) RunGet(params struct {
-	AdminId int64
+	AdminId  int64
+	Download bool
 }) {
 	loginResp, err := this.RPC().LoginRPC().FindEnabledLogin(this.AdminContext(), &pb.FindEnabledLoginRequest{
 		AdminId: params.AdminId,
@@ -63,12 +65,17 @@ func (this *OtpQrcodeAction) RunGet(params struct {
 	}
 	var url = gotp.NewDefaultTOTP(secret).ProvisioningUri(admin.Username, uiConfig.AdminSystemName)
 
-
 	data, err := qrcode.Encode(otputils.FixIssuer(url), qrcode.Medium, 256)
 	if err != nil {
 		this.ErrorPage(err)
 		return
 	}
+
+	if params.Download {
+		var filename = "OTP-ADMIN-" + admin.Username + ".png"
+		this.AddHeader("Content-Disposition", "attachment; filename=\""+filename+"\";")
+	}
 	this.AddHeader("Content-Type", "image/png")
+	this.AddHeader("Content-Length", types.String(len(data)))
 	_, _ = this.Write(data)
 }
