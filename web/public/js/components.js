@@ -2366,7 +2366,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			</td>
 		</tr>
 	</table>
-</div>`}),Vue.component("http-firewall-checkpoint-cc",{props:["v-checkpoint"],data:function(){let e=[],t=60,i=1e3,n=!1,s=!0,o={},a=(null==(o=null!=window.parent.UPDATING_RULE?window.parent.UPDATING_RULE.checkpointOptions:o)&&(o={}),0==(e=null!=o.keys?o.keys:e).length&&(e=["${remoteAddr}","${requestPath}"]),null!=o.period&&(t=o.period),null!=o.threshold&&(i=o.threshold),null!=o.ignoreCommonFiles&&"boolean"==typeof o.ignoreCommonFiles&&(n=o.ignoreCommonFiles),null!=o.enableFingerprint&&"boolean"==typeof o.enableFingerprint&&(s=o.enableFingerprint),this);return setTimeout(function(){a.change()},100),{keys:e,period:t,threshold:i,ignoreCommonFiles:n,enableFingerprint:s,options:{},value:i}},watch:{period:function(){this.change()},threshold:function(){this.change()},ignoreCommonFiles:function(){this.change()},enableFingerprint:function(){this.change()}},methods:{changeKeys:function(e){this.keys=e,this.change()},change:function(){let e=parseInt(this.period.toString()),t=((isNaN(e)||e<=0)&&(e=60),parseInt(this.threshold.toString())),i=((isNaN(t)||t<=0)&&(t=1e3),this.value=t,this.ignoreCommonFiles),n=("boolean"!=typeof i&&(i=!1),this.enableFingerprint);"boolean"!=typeof n&&(n=!0),this.vCheckpoint.options=[{code:"keys",value:this.keys},{code:"period",value:e},{code:"threshold",value:t},{code:"ignoreCommonFiles",value:i},{code:"enableFingerprint",value:n}]},thresholdTooLow:function(){let e=parseInt(this.threshold.toString());return 0<(e=isNaN(e)||e<=0?1e3:e)&&e<5}},template:`<div>
+</div>`}),Vue.component("http-firewall-checkpoint-cc",{props:["v-checkpoint"],data:function(){let e=[],t=60,i=1e3,n=!0,s=!0,o={},a=(null==(o=null!=window.parent.UPDATING_RULE?window.parent.UPDATING_RULE.checkpointOptions:o)&&(o={}),0==(e=null!=o.keys?o.keys:e).length&&(e=["${remoteAddr}","${requestPath}"]),null!=o.period&&(t=o.period),null!=o.threshold&&(i=o.threshold),null!=o.ignoreCommonFiles&&"boolean"==typeof o.ignoreCommonFiles&&(n=o.ignoreCommonFiles),null!=o.enableFingerprint&&"boolean"==typeof o.enableFingerprint&&(s=o.enableFingerprint),this);return setTimeout(function(){a.change()},100),{keys:e,period:t,threshold:i,ignoreCommonFiles:n,enableFingerprint:s,options:{},value:i}},watch:{period:function(){this.change()},threshold:function(){this.change()},ignoreCommonFiles:function(){this.change()},enableFingerprint:function(){this.change()}},methods:{changeKeys:function(e){this.keys=e,this.change()},change:function(){let e=parseInt(this.period.toString()),t=((isNaN(e)||e<=0)&&(e=60),parseInt(this.threshold.toString())),i=((isNaN(t)||t<=0)&&(t=1e3),this.value=t,this.ignoreCommonFiles),n=("boolean"!=typeof i&&(i=!1),this.enableFingerprint);"boolean"!=typeof n&&(n=!0),this.vCheckpoint.options=[{code:"keys",value:this.keys},{code:"period",value:e},{code:"threshold",value:t},{code:"ignoreCommonFiles",value:i},{code:"enableFingerprint",value:n}]},thresholdTooLow:function(){let e=parseInt(this.threshold.toString());return 0<(e=isNaN(e)||e<=0?1e3:e)&&e<5}},template:`<div>
 	<input type="hidden" name="operator" value="gt"/>
 	<input type="hidden" name="value" :value="value"/>
 	<table class="ui table">
@@ -2403,7 +2403,7 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<td>忽略常用文件</td>
 			<td>
 				<checkbox v-model="ignoreCommonFiles"></checkbox>
-				<p class="comment">忽略js、css、jpg等常在网页里被引用的文件名，可以减少误判几率。</p>
+				<p class="comment">忽略js、css、jpg等常在网页里被引用的文件名，即对这些文件的访问不加入计数，可以减少误判几率。</p>
 			</td>
 		</tr>
 	</table>
@@ -2534,15 +2534,15 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<td :class="{disabled:!origin.isOn}">
 				<a href="" @click.prevent="updateOrigin(origin.id)" :class="{disabled:!origin.isOn}">{{origin.addr}} &nbsp;<i class="icon expand small"></i></a>
 				<div style="margin-top: 0.3em">
-					<tiny-basic-label v-if="origin.isOSS"><i class="icon hdd outline"></i>对象存储</tiny-basic-label>
-					<tiny-basic-label v-if="origin.name.length > 0">{{origin.name}}</tiny-basic-label>
-					<tiny-basic-label v-if="origin.hasCert">证书</tiny-basic-label>
-					<tiny-basic-label v-if="origin.host != null && origin.host.length > 0">主机名: {{origin.host}}</tiny-basic-label>
-					<tiny-basic-label v-if="origin.followPort">端口跟随</tiny-basic-label>
-					<tiny-basic-label v-if="origin.addr != null && origin.addr.startsWith('https://') && origin.http2Enabled">HTTP/2</tiny-basic-label>
+					<tiny-basic-label class="grey border-grey" v-if="origin.isOSS"><i class="icon hdd outline"></i>对象存储</tiny-basic-label>
+					<tiny-basic-label class="grey border-grey" v-if="origin.name.length > 0">{{origin.name}}</tiny-basic-label>
+					<tiny-basic-label class="grey border-grey" v-if="origin.hasCert">证书</tiny-basic-label>
+					<tiny-basic-label class="grey border-grey" v-if="origin.host != null && origin.host.length > 0">主机名: {{origin.host}}</tiny-basic-label>
+					<tiny-basic-label class="grey border-grey" v-if="origin.followPort">端口跟随</tiny-basic-label>
+					<tiny-basic-label class="grey border-grey" v-if="origin.addr != null && origin.addr.startsWith('https://') && origin.http2Enabled">HTTP/2</tiny-basic-label>
 	
-					<span v-if="origin.domains != null && origin.domains.length > 0"><tiny-basic-label v-for="domain in origin.domains">匹配: {{domain}}</tiny-basic-label></span>
-					<span v-else-if="hasMatchedDomains"><tiny-basic-label>匹配: 所有域名</tiny-basic-label></span>
+					<span v-if="origin.domains != null && origin.domains.length > 0"><tiny-basic-label class="grey border-grey" v-for="domain in origin.domains">匹配: {{domain}}</tiny-basic-label></span>
+					<span v-else-if="hasMatchedDomains"><tiny-basic-label class="grey  border-grey">匹配: 所有域名</tiny-basic-label></span>
 				</div>
 			</td>
 			<td :class="{disabled:!origin.isOn}">{{origin.weight}}</td>
@@ -2935,9 +2935,8 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 			<td>匹配条件</td>
 			<td>
 				<http-request-conds-box :v-conds="config.conds" @change="changeConds"></http-request-conds-box>
-</td>
+			</td>
 		</tr>
-	</tr>
 	</tbody>
 </table>
 <div class="margin"></div>
@@ -3035,7 +3034,7 @@ example2.com
 	</div>
 	<div class="ui divider"></div>
 	<button type="button" class="ui button tiny" @click.prevent="addProvince">修改</button> &nbsp; <button type="button" class="ui button tiny" v-show="provinces.length > 0" @click.prevent="resetProvinces">清空</button>
-</div>`}),Vue.component("http-referers-config-box",{props:["v-referers-config","v-is-location","v-is-group"],data:function(){let e=this.vReferersConfig;return null==(e=null==e?{isPrior:!1,isOn:!1,allowEmpty:!0,allowSameDomain:!0,allowDomains:[],denyDomains:[],checkOrigin:!0}:e).allowDomains&&(e.allowDomains=[]),null==e.denyDomains&&(e.denyDomains=[]),{config:e}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeAllowDomains:function(e){"object"==typeof e&&(this.config.allowDomains=e,this.$forceUpdate())},changeDenyDomains:function(e){"object"==typeof e&&(this.config.denyDomains=e,this.$forceUpdate())}},template:`<div>
+</div>`}),Vue.component("http-referers-config-box",{props:["v-referers-config","v-is-location","v-is-group"],data:function(){let e=this.vReferersConfig;return null==(e=null==e?{isPrior:!1,isOn:!1,allowEmpty:!0,allowSameDomain:!0,allowDomains:[],denyDomains:[],checkOrigin:!0}:e).allowDomains&&(e.allowDomains=[]),null==e.denyDomains&&(e.denyDomains=[]),{config:e,moreOptionsVisible:!1}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeAllowDomains:function(e){"object"==typeof e&&(this.config.allowDomains=e,this.$forceUpdate())},changeDenyDomains:function(e){"object"==typeof e&&(this.config.denyDomains=e,this.$forceUpdate())},showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible}},template:`<div>
 <input type="hidden" name="referersJSON" :value="JSON.stringify(config)"/>
 <table class="ui table selectable definition">
 	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
@@ -3081,10 +3080,29 @@ example2.com
 			</td>
 		</tr>
 		<tr>
+			<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
+		</tr>
+	</tbody>
+	<tbody v-show="moreOptionsVisible && isOn()">
+		<tr>
 			<td>同时检查Origin</td>
 			<td>
 				<checkbox v-model="config.checkOrigin"></checkbox>
 				<p class="comment">如果请求没有指定Referer Header，则尝试检查Origin Header，多用于跨站调用。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>例外URL</td>
+			<td>
+				<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
+				<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>限制URL</td>
+			<td>
+				<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
+				<p class="comment">如果填写了限制URL，表示只对这些URL进行处理；如果不填则表示支持所有的URL。</p>
 			</td>
 		</tr>
 	</tbody>
@@ -4019,7 +4037,7 @@ example2.com
 		</table>
 	</div>
 </div>
-`}),Vue.component("http-compression-config-box",{props:["v-compression-config","v-is-location","v-is-group"],mounted:function(){let e=this;sortLoad(function(){e.initSortableTypes()})},data:function(){let t=this.vCompressionConfig,e=(null==(t=null==t?{isPrior:!1,isOn:!1,useDefaultTypes:!0,types:["brotli","gzip","zstd","deflate"],level:3,decompressData:!1,gzipRef:null,deflateRef:null,brotliRef:null,minLength:{count:1,unit:"kb"},maxLength:{count:32,unit:"mb"},mimeTypes:["text/*","application/javascript","application/json","application/atom+xml","application/rss+xml","application/xhtml+xml","font/*","image/svg+xml"],extensions:[".js",".json",".html",".htm",".xml",".css",".woff2",".txt"],exceptExtensions:[".apk",".ipa"],conds:null,enablePartialContent:!1}:t).types&&(t.types=[]),null==t.mimeTypes&&(t.mimeTypes=[]),null==t.extensions&&(t.extensions=[]),[{name:"Gzip",code:"gzip",isOn:!0},{name:"Deflate",code:"deflate",isOn:!0},{name:"Brotli",code:"brotli",isOn:!0},{name:"ZSTD",code:"zstd",isOn:!0}]),i=[];return t.types.forEach(function(t){e.forEach(function(e){t==e.code&&(e.isOn=!0,i.push(e))})}),e.forEach(function(e){t.types.$contains(e.code)||(e.isOn=!1,i.push(e))}),{config:t,moreOptionsVisible:!1,allTypes:i}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeExtensions:function(i){i.forEach(function(e,t){0<e.length&&"."!=e[0]&&(i[t]="."+e)}),this.config.extensions=i},changeExceptExtensions:function(i){i.forEach(function(e,t){0<e.length&&"."!=e[0]&&(i[t]="."+e)}),this.config.exceptExtensions=i},changeMimeTypes:function(e){this.config.mimeTypes=e},changeAdvancedVisible:function(){this.moreOptionsVisible=!this.moreOptionsVisible},changeConds:function(e){this.config.conds=e},changeType:function(){this.config.types=[];let t=this;this.allTypes.forEach(function(e){e.isOn&&t.config.types.push(e.code)})},initSortableTypes:function(){let n=document.querySelector("#compression-types-box"),s=this;Sortable.create(n,{draggable:".checkbox",handle:".icon.handle",onStart:function(){},onUpdate:function(e){let t=n.querySelectorAll(".checkbox"),i=[];t.forEach(function(e){e=e.getAttribute("data-code");i.push(e)}),s.config.types=i}})}},template:`<div>
+`}),Vue.component("http-compression-config-box",{props:["v-compression-config","v-is-location","v-is-group"],mounted:function(){let e=this;sortLoad(function(){e.initSortableTypes()})},data:function(){let t=this.vCompressionConfig,e=(null==(t=null==t?{isPrior:!1,isOn:!1,useDefaultTypes:!0,types:["brotli","gzip","zstd","deflate"],level:0,decompressData:!1,gzipRef:null,deflateRef:null,brotliRef:null,minLength:{count:1,unit:"kb"},maxLength:{count:32,unit:"mb"},mimeTypes:["text/*","application/javascript","application/json","application/atom+xml","application/rss+xml","application/xhtml+xml","font/*","image/svg+xml"],extensions:[".js",".json",".html",".htm",".xml",".css",".woff2",".txt"],exceptExtensions:[".apk",".ipa"],conds:null,enablePartialContent:!1,onlyURLPatterns:[],exceptURLPatterns:[]}:t).types&&(t.types=[]),null==t.mimeTypes&&(t.mimeTypes=[]),null==t.extensions&&(t.extensions=[]),[{name:"Gzip",code:"gzip",isOn:!0},{name:"Deflate",code:"deflate",isOn:!0},{name:"Brotli",code:"brotli",isOn:!0},{name:"ZSTD",code:"zstd",isOn:!0}]),i=[];return t.types.forEach(function(t){e.forEach(function(e){t==e.code&&(e.isOn=!0,i.push(e))})}),e.forEach(function(e){t.types.$contains(e.code)||(e.isOn=!1,i.push(e))}),{config:t,moreOptionsVisible:!1,allTypes:i}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},changeExtensions:function(i){i.forEach(function(e,t){0<e.length&&"."!=e[0]&&(i[t]="."+e)}),this.config.extensions=i},changeExceptExtensions:function(i){i.forEach(function(e,t){0<e.length&&"."!=e[0]&&(i[t]="."+e)}),this.config.exceptExtensions=i},changeMimeTypes:function(e){this.config.mimeTypes=e},changeAdvancedVisible:function(){this.moreOptionsVisible=!this.moreOptionsVisible},changeConds:function(e){this.config.conds=e},changeType:function(){this.config.types=[];let t=this;this.allTypes.forEach(function(e){e.isOn&&t.config.types.push(e.code)})},initSortableTypes:function(){let n=document.querySelector("#compression-types-box"),s=this;Sortable.create(n,{draggable:".checkbox",handle:".icon.handle",onStart:function(){},onUpdate:function(e){let t=n.querySelectorAll(".checkbox"),i=[];t.forEach(function(e){e=e.getAttribute("data-code");i.push(e)}),s.config.types=i}})}},template:`<div>
 	<input type="hidden" name="compressionJSON" :value="JSON.stringify(config)"/>
 	<table class="ui table definition selectable">
 		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
@@ -4108,16 +4126,30 @@ example2.com
 					<p class="comment">支持对分片内容（PartialContent）的压缩；除非客户端有特殊要求，一般不需要启用。</p>
 				</td>
 			</tr>
+				<tr>
+				<td>例外URL</td>
+				<td>
+					<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>限制URL</td>
+				<td>
+					<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了限制URL，表示只对这些URL进行压缩处理；如果不填则表示支持所有的URL。</p>
+				</td>
+			</tr>
 			<tr>
 				<td>匹配条件</td>
 				<td>
 					<http-request-conds-box :v-conds="config.conds" @change="changeConds"></http-request-conds-box>
-	</td>
+				</td>
 			</tr>
 		</tbody>
 	</table>
 	<div class="margin"></div>
-</div>`}),Vue.component("http-cc-config-box",{props:["v-cc-config","v-is-location","v-is-group"],data:function(){let e=this.vCcConfig;return null!=(e=null==e?{isPrior:!1,isOn:!1,enableFingerprint:!0,enableGET302:!0,onlyURLPatterns:[],exceptURLPatterns:[],useDefaultThresholds:!0,ignoreCommonFiles:!1}:e).thresholds&&0!=e.thresholds.length||(e.thresholds=[{maxRequests:0},{maxRequests:0},{maxRequests:0}]),"boolean"!=typeof e.enableFingerprint&&(e.enableFingerprint=!0),"boolean"!=typeof e.enableGET302&&(e.enableGET302=!0),null==e.onlyURLPatterns&&(e.onlyURLPatterns=[]),null==e.exceptURLPatterns&&(e.exceptURLPatterns=[]),{config:e,moreOptionsVisible:!1,minQPSPerIP:e.minQPSPerIP,useCustomThresholds:!e.useDefaultThresholds,thresholdMaxRequests0:this.maxRequestsStringAtThresholdIndex(e,0),thresholdMaxRequests1:this.maxRequestsStringAtThresholdIndex(e,1),thresholdMaxRequests2:this.maxRequestsStringAtThresholdIndex(e,2)}},watch:{minQPSPerIP:function(e){let t=parseInt(e.toString());(isNaN(t)||t<0)&&(t=0),this.config.minQPSPerIP=t},thresholdMaxRequests0:function(e){this.setThresholdMaxRequests(0,e)},thresholdMaxRequests1:function(e){this.setThresholdMaxRequests(1,e)},thresholdMaxRequests2:function(e){this.setThresholdMaxRequests(2,e)},useCustomThresholds:function(e){this.config.useDefaultThresholds=!e}},methods:{maxRequestsStringAtThresholdIndex:function(t,i){if(null==t.thresholds)return"";if(i<t.thresholds.length){let e=t.thresholds[i].maxRequests.toString();return e="0"==e?"":e}return""},setThresholdMaxRequests:function(e,t){let i=parseInt(t);(isNaN(i)||i<0)&&(i=0),e<this.config.thresholds.length&&(this.config.thresholds[e].maxRequests=i)},showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible}},template:`<div>
+</div>`}),Vue.component("http-cc-config-box",{props:["v-cc-config","v-is-location","v-is-group"],data:function(){let e=this.vCcConfig;return null!=(e=null==e?{isPrior:!1,isOn:!1,enableFingerprint:!0,enableGET302:!0,onlyURLPatterns:[],exceptURLPatterns:[],useDefaultThresholds:!0,ignoreCommonFiles:!0}:e).thresholds&&0!=e.thresholds.length||(e.thresholds=[{maxRequests:0},{maxRequests:0},{maxRequests:0}]),"boolean"!=typeof e.enableFingerprint&&(e.enableFingerprint=!0),"boolean"!=typeof e.enableGET302&&(e.enableGET302=!0),null==e.onlyURLPatterns&&(e.onlyURLPatterns=[]),null==e.exceptURLPatterns&&(e.exceptURLPatterns=[]),{config:e,moreOptionsVisible:!1,minQPSPerIP:e.minQPSPerIP,useCustomThresholds:!e.useDefaultThresholds,thresholdMaxRequests0:this.maxRequestsStringAtThresholdIndex(e,0),thresholdMaxRequests1:this.maxRequestsStringAtThresholdIndex(e,1),thresholdMaxRequests2:this.maxRequestsStringAtThresholdIndex(e,2)}},watch:{minQPSPerIP:function(e){let t=parseInt(e.toString());(isNaN(t)||t<0)&&(t=0),this.config.minQPSPerIP=t},thresholdMaxRequests0:function(e){this.setThresholdMaxRequests(0,e)},thresholdMaxRequests1:function(e){this.setThresholdMaxRequests(1,e)},thresholdMaxRequests2:function(e){this.setThresholdMaxRequests(2,e)},useCustomThresholds:function(e){this.config.useDefaultThresholds=!e}},methods:{maxRequestsStringAtThresholdIndex:function(t,i){if(null==t.thresholds)return"";if(i<t.thresholds.length){let e=t.thresholds[i].maxRequests.toString();return e="0"==e?"":e}return""},setThresholdMaxRequests:function(e,t){let i=parseInt(t);(isNaN(i)||i<0)&&(i=0),e<this.config.thresholds.length&&(this.config.thresholds[e].maxRequests=i)},showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible}},template:`<div>
 <input type="hidden" name="ccJSON" :value="JSON.stringify(config)"/>
 <table class="ui table definition selectable">
 	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
@@ -4154,7 +4186,7 @@ example2.com
 			<td>忽略常用文件</td>
 			<td>
 				<checkbox v-model="config.ignoreCommonFiles"></checkbox>
-				<p class="comment">忽略js、css、jpg等常在网页里被引用的文件名，可以减少误判几率。</p>
+				<p class="comment">忽略js、css、jpg等常在网页里被引用的文件名，即对这些文件的访问不加入计数，可以减少误判几率。</p>
 			</td>
 		</tr>
 		<tr>
@@ -5817,7 +5849,7 @@ example2.com
 		</table>
 	</div>
 </div>
-`}),Vue.component("user-agent-config-box",{props:["v-is-location","v-is-group","value"],data:function(){let e=this.value;return null==(e=null==e?{isPrior:!1,isOn:!1,filters:[]}:e).filters&&(e.filters=[]),{config:e,isAdding:!1,addingFilter:{keywords:[],action:"deny"}}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},remove:function(e){let t=this;teaweb.confirm("确定要删除此名单吗？",function(){t.config.filters.$remove(e)})},add:function(){this.isAdding=!0},confirm:function(){if("deny"==this.addingFilter.action)this.config.filters.push(this.addingFilter);else{let i=-1;this.config.filters.forEach(function(e,t){"allow"==e.action&&(i=t)}),i<0?this.config.filters.unshift(this.addingFilter):this.config.filters.$insert(i+1,this.addingFilter)}this.cancel()},cancel:function(){this.isAdding=!1,this.addingFilter={keywords:[],action:"deny"}},changeKeywords:function(e){this.addingFilter.keywords=e}},template:`<div>
+`}),Vue.component("user-agent-config-box",{props:["v-is-location","v-is-group","value"],data:function(){let e=this.value;return null==(e=null==e?{isPrior:!1,isOn:!1,filters:[]}:e).filters&&(e.filters=[]),{config:e,isAdding:!1,addingFilter:{keywords:[],action:"deny"},moreOptionsVisible:!1,batchKeywords:""}},methods:{isOn:function(){return(!this.vIsLocation&&!this.vIsGroup||this.config.isPrior)&&this.config.isOn},remove:function(e){let t=this;teaweb.confirm("确定要删除此名单吗？",function(){t.config.filters.$remove(e)})},add:function(){this.isAdding=!0;let e=this;setTimeout(function(){e.$refs.batchKeywords.focus()})},confirm:function(){if("deny"==this.addingFilter.action)this.config.filters.push(this.addingFilter);else{let i=-1;this.config.filters.forEach(function(e,t){"allow"==e.action&&(i=t)}),i<0?this.config.filters.unshift(this.addingFilter):this.config.filters.$insert(i+1,this.addingFilter)}this.cancel()},cancel:function(){this.isAdding=!1,this.addingFilter={keywords:[],action:"deny"},this.batchKeywords=""},changeKeywords:function(e){let t=e.split(/\n/),i=[];t.forEach(function(e){e=e.trim(),i.$contains(e)||i.push(e)}),this.addingFilter.keywords=i},showMoreOptions:function(){this.moreOptionsVisible=!this.moreOptionsVisible}},template:`<div>
 	<input type="hidden" name="userAgentJSON" :value="JSON.stringify(config)"/>
 	<table class="ui table definition selectable">
 		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
@@ -5867,8 +5899,8 @@ example2.com
 							<tr>
 								<td class="title">UA关键词</td>
 								<td>
-									<values-box :v-values="addingFilter.keywords" :v-allow-empty="true" @change="changeKeywords"></values-box>
-									<p class="comment">不区分大小写，比如<code-label>Chrome</code-label>；支持<code-label>*</code-label>通配符，比如<code-label>*Firefox*</code-label>；也支持空的关键词，表示空UserAgent。</p>
+									<textarea v-model="batchKeywords" @input="changeKeywords(batchKeywords)" ref="batchKeywords" style="width: 20em" placeholder="*浏览器标识*"></textarea>
+									<p class="comment">每行一个关键词；不区分大小写，比如<code-label>Chrome</code-label>；支持<code-label>*</code-label>通配符，比如<code-label>*Firefox*</code-label>；也支持空行关键词，表示空UserAgent。</p>
 								</td>
 							</tr>
 							<tr>
@@ -5885,6 +5917,25 @@ example2.com
 					<div v-show="!isAdding" style="margin-top: 0.5em">
 						<button class="ui button tiny" type="button" @click.prevent="add">+</button>
 					</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
+			</tr>
+		</tbody>
+		<tbody v-show="moreOptionsVisible && isOn()">
+			<tr>
+				<td>例外URL</td>
+				<td>
+					<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>限制URL</td>
+				<td>
+					<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了限制URL，表示只对这些URL进行处理；如果不填则表示支持所有的URL。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -6588,7 +6639,7 @@ example2.com
 	<div class="ui label tiny basic" v-if="vAddresses != null" v-for="addr in vAddresses">
 		{{addr.protocol}}://<span v-if="addr.host.length > 0">{{addr.host.quoteIP()}}</span><span v-else>*</span>:{{addr.portRange}}
 	</div>
-</div>`}),Vue.component("url-patterns-box",{props:["value"],data:function(){let e=[];return{patterns:e=null!=this.value?this.value:e,isAdding:!1,addingPattern:{type:"wildcard",pattern:""},editingIndex:-1,patternIsInvalid:!1,windowIsSmall:window.innerWidth<600}},methods:{add:function(){this.isAdding=!0;let e=this;setTimeout(function(){e.$refs.patternInput.focus()})},edit:function(e){this.isAdding=!0,this.editingIndex=e,this.addingPattern={type:this.patterns[e].type,pattern:this.patterns[e].pattern}},confirm:function(){if(0==this.addingPattern.pattern.trim().length){let e=this;void teaweb.warn("请输入URL",function(){e.$refs.patternInput.focus()})}else this.editingIndex<0?this.patterns.push({type:this.addingPattern.type,pattern:this.addingPattern.pattern}):(this.patterns[this.editingIndex].type=this.addingPattern.type,this.patterns[this.editingIndex].pattern=this.addingPattern.pattern),this.notifyChange(),this.cancel()},remove:function(e){this.patterns.$remove(e),this.cancel(),this.notifyChange()},cancel:function(){this.isAdding=!1,this.addingPattern={type:"wildcard",pattern:""},this.editingIndex=-1},patternTypeName:function(e){switch(e){case"wildcard":return"通配符";case"regexp":return"正则"}return""},notifyChange:function(){this.$emit("input",this.patterns)},changePattern:function(){this.patternIsInvalid=!1;let e=this.addingPattern.pattern;switch(this.addingPattern.type){case"wildcard":0<=e.indexOf("?")&&(this.patternIsInvalid=!0);break;case"regexp":if(0<=e.indexOf("?")){var t=e.split("?");for(let e=0;e<t.length-1;e++)0!=t[e].length&&"\\"==t[e][t[e].length-1]||(this.patternIsInvalid=!0)}}}},template:`<div>
+</div>`}),Vue.component("url-patterns-box",{props:["value"],data:function(){let e=[];return{patterns:e=null!=this.value?this.value:e,isAdding:!1,addingPattern:{type:"wildcard",pattern:""},editingIndex:-1,patternIsInvalid:!1,windowIsSmall:window.innerWidth<600}},methods:{add:function(){this.isAdding=!0;let e=this;setTimeout(function(){e.$refs.patternInput.focus()})},edit:function(e){this.isAdding=!0,this.editingIndex=e,this.addingPattern={type:this.patterns[e].type,pattern:this.patterns[e].pattern}},confirm:function(){if(this.requireURL(this.addingPattern.type)&&0==this.addingPattern.pattern.trim().length){let e=this;return void teaweb.warn("请输入URL",function(){e.$refs.patternInput.focus()})}this.editingIndex<0?this.patterns.push({type:this.addingPattern.type,pattern:this.addingPattern.pattern}):(this.patterns[this.editingIndex].type=this.addingPattern.type,this.patterns[this.editingIndex].pattern=this.addingPattern.pattern),this.notifyChange(),this.cancel()},remove:function(e){this.patterns.$remove(e),this.cancel(),this.notifyChange()},cancel:function(){this.isAdding=!1,this.addingPattern={type:"wildcard",pattern:""},this.editingIndex=-1},patternTypeName:function(e){switch(e){case"wildcard":return"通配符";case"regexp":return"正则";case"images":return"常见图片文件";case"audios":return"常见音频文件";case"videos":return"常见视频文件"}return""},notifyChange:function(){this.$emit("input",this.patterns)},changePattern:function(){this.patternIsInvalid=!1;let e=this.addingPattern.pattern;switch(this.addingPattern.type){case"wildcard":0<=e.indexOf("?")&&(this.patternIsInvalid=!0);break;case"regexp":if(0<=e.indexOf("?")){var t=e.split("?");for(let e=0;e<t.length-1;e++)0!=t[e].length&&"\\"==t[e][t[e].length-1]||(this.patternIsInvalid=!0)}}},requireURL:function(e){return"wildcard"==e||"regexp"==e}},template:`<div>
 	<div v-show="patterns.length > 0">
 		<div v-for="(pattern, index) in patterns" class="ui label basic small" :class="{blue: index == editingIndex, disabled: isAdding && index != editingIndex}" style="margin-bottom: 0.8em">
 			<span class="grey" style="font-weight: normal">[{{patternTypeName(pattern.type)}}]</span> <span >{{pattern.pattern}}</span> &nbsp; 
@@ -6602,13 +6653,16 @@ example2.com
 				<select class="ui dropdown auto-width" v-model="addingPattern.type">
 					<option value="wildcard">通配符</option>
 					<option value="regexp">正则表达式</option>
+					<option value="images">常见图片</option>
+					<option value="audios">常见音频</option>
+					<option value="videos">常见视频</option>
 				</select>
 			</div>
-			<div class="ui field">
+			<div class="ui field" v-show="addingPattern.type == 'wildcard' || addingPattern.type ==  'regexp'">
 				<input type="text" :placeholder="(addingPattern.type == 'wildcard') ? '可以使用星号（*）通配符，不区分大小写' : '可以使用正则表达式，不区分大小写'" v-model="addingPattern.pattern" @input="changePattern" size="36" ref="patternInput" @keyup.enter="confirm()" @keypress.enter.prevent="1" spellcheck="false"/>
 				<p class="comment" v-if="patternIsInvalid"><span class="red" style="font-weight: normal"><span v-if="addingPattern.type == 'wildcard'">通配符</span><span v-if="addingPattern.type == 'regexp'">正则表达式</span>中不能包含问号（?）及问号以后的内容。</span></p>
 			</div>
-			<div class="ui field" style="padding-left: 0">
+			<div class="ui field" style="padding-left: 0"  v-show="addingPattern.type == 'wildcard' || addingPattern.type ==  'regexp'">
 				<tip-icon content="通配符示例：<br/>单个路径开头：/hello/world/*<br/>单个路径结尾：*/hello/world<br/>包含某个路径：*/article/*<br/>某个域名下的所有URL：*example.com/*<br/>忽略某个扩展名：*.js" v-if="addingPattern.type == 'wildcard'"></tip-icon>
 				<tip-icon content="正则表达式示例：<br/>单个路径开头：^/hello/world<br/>单个路径结尾：/hello/world$<br/>包含某个路径：/article/<br/>匹配某个数字路径：/article/(\\d+)<br/>某个域名下的所有URL：^(http|https)://example.com/" v-if="addingPattern.type == 'regexp'"></tip-icon>
 			</div>

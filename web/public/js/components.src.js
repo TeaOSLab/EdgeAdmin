@@ -6658,7 +6658,7 @@ Vue.component("http-firewall-checkpoint-cc", {
 		let keys = []
 		let period = 60
 		let threshold = 1000
-		let ignoreCommonFiles = false
+		let ignoreCommonFiles = true
 		let enableFingerprint = true
 
 		let options = {}
@@ -6812,7 +6812,7 @@ Vue.component("http-firewall-checkpoint-cc", {
 			<td>忽略常用文件</td>
 			<td>
 				<checkbox v-model="ignoreCommonFiles"></checkbox>
-				<p class="comment">忽略js、css、jpg等常在网页里被引用的文件名，可以减少误判几率。</p>
+				<p class="comment">忽略js、css、jpg等常在网页里被引用的文件名，即对这些文件的访问不加入计数，可以减少误判几率。</p>
 			</td>
 		</tr>
 	</table>
@@ -7462,15 +7462,15 @@ Vue.component("origin-list-table", {
 			<td :class="{disabled:!origin.isOn}">
 				<a href="" @click.prevent="updateOrigin(origin.id)" :class="{disabled:!origin.isOn}">{{origin.addr}} &nbsp;<i class="icon expand small"></i></a>
 				<div style="margin-top: 0.3em">
-					<tiny-basic-label v-if="origin.isOSS"><i class="icon hdd outline"></i>对象存储</tiny-basic-label>
-					<tiny-basic-label v-if="origin.name.length > 0">{{origin.name}}</tiny-basic-label>
-					<tiny-basic-label v-if="origin.hasCert">证书</tiny-basic-label>
-					<tiny-basic-label v-if="origin.host != null && origin.host.length > 0">主机名: {{origin.host}}</tiny-basic-label>
-					<tiny-basic-label v-if="origin.followPort">端口跟随</tiny-basic-label>
-					<tiny-basic-label v-if="origin.addr != null && origin.addr.startsWith('https://') && origin.http2Enabled">HTTP/2</tiny-basic-label>
+					<tiny-basic-label class="grey border-grey" v-if="origin.isOSS"><i class="icon hdd outline"></i>对象存储</tiny-basic-label>
+					<tiny-basic-label class="grey border-grey" v-if="origin.name.length > 0">{{origin.name}}</tiny-basic-label>
+					<tiny-basic-label class="grey border-grey" v-if="origin.hasCert">证书</tiny-basic-label>
+					<tiny-basic-label class="grey border-grey" v-if="origin.host != null && origin.host.length > 0">主机名: {{origin.host}}</tiny-basic-label>
+					<tiny-basic-label class="grey border-grey" v-if="origin.followPort">端口跟随</tiny-basic-label>
+					<tiny-basic-label class="grey border-grey" v-if="origin.addr != null && origin.addr.startsWith('https://') && origin.http2Enabled">HTTP/2</tiny-basic-label>
 	
-					<span v-if="origin.domains != null && origin.domains.length > 0"><tiny-basic-label v-for="domain in origin.domains">匹配: {{domain}}</tiny-basic-label></span>
-					<span v-else-if="hasMatchedDomains"><tiny-basic-label>匹配: 所有域名</tiny-basic-label></span>
+					<span v-if="origin.domains != null && origin.domains.length > 0"><tiny-basic-label class="grey border-grey" v-for="domain in origin.domains">匹配: {{domain}}</tiny-basic-label></span>
+					<span v-else-if="hasMatchedDomains"><tiny-basic-label class="grey  border-grey">匹配: 所有域名</tiny-basic-label></span>
 				</div>
 			</td>
 			<td :class="{disabled:!origin.isOn}">{{origin.weight}}</td>
@@ -8276,9 +8276,8 @@ Vue.component("uam-config-box", {
 			<td>匹配条件</td>
 			<td>
 				<http-request-conds-box :v-conds="config.conds" @change="changeConds"></http-request-conds-box>
-</td>
+			</td>
 		</tr>
-	</tr>
 	</tbody>
 </table>
 <div class="margin"></div>
@@ -8698,7 +8697,8 @@ Vue.component("http-referers-config-box", {
 			config.denyDomains = []
 		}
 		return {
-			config: config
+			config: config,
+			moreOptionsVisible: false
 		}
 	},
 	methods: {
@@ -8716,6 +8716,9 @@ Vue.component("http-referers-config-box", {
 				this.config.denyDomains = domains
 				this.$forceUpdate()
 			}
+		},
+		showMoreOptions: function () {
+			this.moreOptionsVisible = !this.moreOptionsVisible
 		}
 	},
 	template: `<div>
@@ -8764,10 +8767,29 @@ Vue.component("http-referers-config-box", {
 			</td>
 		</tr>
 		<tr>
+			<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
+		</tr>
+	</tbody>
+	<tbody v-show="moreOptionsVisible && isOn()">
+		<tr>
 			<td>同时检查Origin</td>
 			<td>
 				<checkbox v-model="config.checkOrigin"></checkbox>
 				<p class="comment">如果请求没有指定Referer Header，则尝试检查Origin Header，多用于跨站调用。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>例外URL</td>
+			<td>
+				<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
+				<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>限制URL</td>
+			<td>
+				<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
+				<p class="comment">如果填写了限制URL，表示只对这些URL进行处理；如果不填则表示支持所有的URL。</p>
 			</td>
 		</tr>
 	</tbody>
@@ -11045,7 +11067,7 @@ Vue.component("http-compression-config-box", {
 				isOn: false,
 				useDefaultTypes: true,
 				types: ["brotli", "gzip", "zstd", "deflate"],
-				level: 3,
+				level: 0,
 				decompressData: false,
 				gzipRef: null,
 				deflateRef: null,
@@ -11056,7 +11078,9 @@ Vue.component("http-compression-config-box", {
 				extensions: [".js", ".json", ".html", ".htm", ".xml", ".css", ".woff2", ".txt"],
 				exceptExtensions: [".apk", ".ipa"],
 				conds: null,
-				enablePartialContent: false
+				enablePartialContent: false,
+				onlyURLPatterns: [],
+				exceptURLPatterns: []
 			}
 		}
 
@@ -11263,11 +11287,25 @@ Vue.component("http-compression-config-box", {
 					<p class="comment">支持对分片内容（PartialContent）的压缩；除非客户端有特殊要求，一般不需要启用。</p>
 				</td>
 			</tr>
+				<tr>
+				<td>例外URL</td>
+				<td>
+					<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>限制URL</td>
+				<td>
+					<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了限制URL，表示只对这些URL进行压缩处理；如果不填则表示支持所有的URL。</p>
+				</td>
+			</tr>
 			<tr>
 				<td>匹配条件</td>
 				<td>
 					<http-request-conds-box :v-conds="config.conds" @change="changeConds"></http-request-conds-box>
-	</td>
+				</td>
 			</tr>
 		</tbody>
 	</table>
@@ -11289,7 +11327,7 @@ Vue.component("http-cc-config-box", {
 				onlyURLPatterns: [],
 				exceptURLPatterns: [],
 				useDefaultThresholds: true,
-				ignoreCommonFiles: false
+				ignoreCommonFiles: true
 			}
 		}
 
@@ -11416,7 +11454,7 @@ Vue.component("http-cc-config-box", {
 			<td>忽略常用文件</td>
 			<td>
 				<checkbox v-model="config.ignoreCommonFiles"></checkbox>
-				<p class="comment">忽略js、css、jpg等常在网页里被引用的文件名，可以减少误判几率。</p>
+				<p class="comment">忽略js、css、jpg等常在网页里被引用的文件名，即对这些文件的访问不加入计数，可以减少误判几率。</p>
 			</td>
 		</tr>
 		<tr>
@@ -16279,7 +16317,9 @@ Vue.component("user-agent-config-box", {
 			addingFilter: {
 				keywords: [],
 				action: "deny"
-			}
+			},
+			moreOptionsVisible: false,
+			batchKeywords: ""
 		}
 	},
 	methods: {
@@ -16294,6 +16334,10 @@ Vue.component("user-agent-config-box", {
 		},
 		add: function () {
 			this.isAdding = true
+			let that = this
+			setTimeout(function () {
+				that.$refs.batchKeywords.focus()
+			})
 		},
 		confirm: function () {
 			if (this.addingFilter.action == "deny") {
@@ -16321,9 +16365,21 @@ Vue.component("user-agent-config-box", {
 				keywords: [],
 				action: "deny"
 			}
+			this.batchKeywords = ""
 		},
 		changeKeywords: function (keywords) {
-			this.addingFilter.keywords = keywords
+			let arr = keywords.split(/\n/)
+			let resultKeywords = []
+			arr.forEach(function (keyword){
+				keyword = keyword.trim()
+				if (!resultKeywords.$contains(keyword)) {
+					resultKeywords.push(keyword)
+				}
+			})
+			this.addingFilter.keywords = resultKeywords
+		},
+		showMoreOptions: function () {
+			this.moreOptionsVisible = !this.moreOptionsVisible
 		}
 	},
 	template: `<div>
@@ -16376,8 +16432,8 @@ Vue.component("user-agent-config-box", {
 							<tr>
 								<td class="title">UA关键词</td>
 								<td>
-									<values-box :v-values="addingFilter.keywords" :v-allow-empty="true" @change="changeKeywords"></values-box>
-									<p class="comment">不区分大小写，比如<code-label>Chrome</code-label>；支持<code-label>*</code-label>通配符，比如<code-label>*Firefox*</code-label>；也支持空的关键词，表示空UserAgent。</p>
+									<textarea v-model="batchKeywords" @input="changeKeywords(batchKeywords)" ref="batchKeywords" style="width: 20em" placeholder="*浏览器标识*"></textarea>
+									<p class="comment">每行一个关键词；不区分大小写，比如<code-label>Chrome</code-label>；支持<code-label>*</code-label>通配符，比如<code-label>*Firefox*</code-label>；也支持空行关键词，表示空UserAgent。</p>
 								</td>
 							</tr>
 							<tr>
@@ -16394,6 +16450,25 @@ Vue.component("user-agent-config-box", {
 					<div v-show="!isAdding" style="margin-top: 0.5em">
 						<button class="ui button tiny" type="button" @click.prevent="add">+</button>
 					</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
+			</tr>
+		</tbody>
+		<tbody v-show="moreOptionsVisible && isOn()">
+			<tr>
+				<td>例外URL</td>
+				<td>
+					<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>限制URL</td>
+				<td>
+					<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了限制URL，表示只对这些URL进行处理；如果不填则表示支持所有的URL。</p>
 				</td>
 			</tr>
 		</tbody>
@@ -19506,13 +19581,15 @@ Vue.component("url-patterns-box", {
 			}
 		},
 		confirm: function () {
-			let pattern = this.addingPattern.pattern.trim()
-			if (pattern.length == 0) {
-				let that = this
-				teaweb.warn("请输入URL", function () {
-					that.$refs.patternInput.focus()
-				})
-				return
+			if (this.requireURL(this.addingPattern.type)) {
+				let pattern = this.addingPattern.pattern.trim()
+				if (pattern.length == 0) {
+					let that = this
+					teaweb.warn("请输入URL", function () {
+						that.$refs.patternInput.focus()
+					})
+					return
+				}
 			}
 			if (this.editingIndex < 0) {
 				this.patterns.push({
@@ -19542,6 +19619,12 @@ Vue.component("url-patterns-box", {
 					return "通配符"
 				case "regexp":
 					return "正则"
+				case "images":
+					return "常见图片文件"
+				case "audios":
+					return "常见音频文件"
+				case "videos":
+					return "常见视频文件"
 			}
 			return ""
 		},
@@ -19568,6 +19651,9 @@ Vue.component("url-patterns-box", {
 					}
 					break
 			}
+		},
+		requireURL: function (patternType) {
+			return patternType == "wildcard" || patternType == "regexp"
 		}
 	},
 	template: `<div>
@@ -19584,13 +19670,16 @@ Vue.component("url-patterns-box", {
 				<select class="ui dropdown auto-width" v-model="addingPattern.type">
 					<option value="wildcard">通配符</option>
 					<option value="regexp">正则表达式</option>
+					<option value="images">常见图片</option>
+					<option value="audios">常见音频</option>
+					<option value="videos">常见视频</option>
 				</select>
 			</div>
-			<div class="ui field">
+			<div class="ui field" v-show="addingPattern.type == 'wildcard' || addingPattern.type ==  'regexp'">
 				<input type="text" :placeholder="(addingPattern.type == 'wildcard') ? '可以使用星号（*）通配符，不区分大小写' : '可以使用正则表达式，不区分大小写'" v-model="addingPattern.pattern" @input="changePattern" size="36" ref="patternInput" @keyup.enter="confirm()" @keypress.enter.prevent="1" spellcheck="false"/>
 				<p class="comment" v-if="patternIsInvalid"><span class="red" style="font-weight: normal"><span v-if="addingPattern.type == 'wildcard'">通配符</span><span v-if="addingPattern.type == 'regexp'">正则表达式</span>中不能包含问号（?）及问号以后的内容。</span></p>
 			</div>
-			<div class="ui field" style="padding-left: 0">
+			<div class="ui field" style="padding-left: 0"  v-show="addingPattern.type == 'wildcard' || addingPattern.type ==  'regexp'">
 				<tip-icon content="通配符示例：<br/>单个路径开头：/hello/world/*<br/>单个路径结尾：*/hello/world<br/>包含某个路径：*/article/*<br/>某个域名下的所有URL：*example.com/*<br/>忽略某个扩展名：*.js" v-if="addingPattern.type == 'wildcard'"></tip-icon>
 				<tip-icon content="正则表达式示例：<br/>单个路径开头：^/hello/world<br/>单个路径结尾：/hello/world$<br/>包含某个路径：/article/<br/>匹配某个数字路径：/article/(\\d+)<br/>某个域名下的所有URL：^(http|https)://example.com/" v-if="addingPattern.type == 'regexp'"></tip-icon>
 			</div>
