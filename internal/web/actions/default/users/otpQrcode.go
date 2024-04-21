@@ -2,7 +2,6 @@ package users
 
 import (
 	"encoding/json"
-	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/otputils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -58,14 +57,10 @@ func (this *OtpQrcodeAction) RunGet(params struct {
 		return
 	}
 
-	uiConfig, err := configloaders.LoadUserUIConfig()
+	productName, err := this.findProductName()
 	if err != nil {
 		this.ErrorPage(err)
 		return
-	}
-	var productName = uiConfig.ProductName
-	if len(productName) == 0 {
-		productName = "GoEdge用户"
 	}
 	var url = gotp.NewDefaultTOTP(secret).ProvisioningUri(user.Username, productName)
 	data, err := qrcode.Encode(otputils.FixIssuer(url), qrcode.Medium, 256)
