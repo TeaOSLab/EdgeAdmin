@@ -55,6 +55,7 @@ func (this *IndexAction) RunPost(params struct {
 	LogoFile           *actions.File
 	DefaultPageSize    int
 	TimeZone           string
+	DnsResolverType    string
 
 	SupportModuleCDN bool
 	SupportModuleNS  bool
@@ -85,6 +86,7 @@ func (this *IndexAction) RunPost(params struct {
 	config.ShowVersion = params.ShowVersion
 	config.Version = params.Version
 	config.TimeZone = params.TimeZone
+	config.DNSResolver.Type = params.DnsResolverType
 
 	if params.DefaultPageSize > 0 {
 		config.DefaultPageSize = params.DefaultPageSize
@@ -111,10 +113,10 @@ func (this *IndexAction) RunPost(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		fileId := createResp.FileId
+		var fileId = createResp.FileId
 
 		// 上传内容
-		buf := make([]byte, 512*1024)
+		var buf = make([]byte, 512*1024)
 		reader, err := params.FaviconFile.OriginFile.Open()
 		if err != nil {
 			this.ErrorPage(err)
@@ -158,10 +160,10 @@ func (this *IndexAction) RunPost(params struct {
 			this.ErrorPage(err)
 			return
 		}
-		fileId := createResp.FileId
+		var fileId = createResp.FileId
 
 		// 上传内容
-		buf := make([]byte, 512*1024)
+		var buf = make([]byte, 512*1024)
 		reader, err := params.LogoFile.OriginFile.Open()
 		if err != nil {
 			this.ErrorPage(err)

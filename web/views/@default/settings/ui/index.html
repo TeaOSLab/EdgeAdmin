@@ -109,7 +109,18 @@
                         </select>
                     </div>
                 </div>
-                <p class="comment">显示时间使用的时区。</p>
+                <p class="comment">当前管理系统显示时间使用的时区。</p>
+            </td>
+        </tr>
+        <tr>
+            <td>使用的DNS解析库</td>
+            <td>
+                <select class="ui dropdown auto-width" name="dnsResolverType" v-model="config.dnsResolver.type">
+                    <option value="default">默认</option>
+                    <option value="cgo">CGO</option>
+                    <option value="goNative">Go原生</option>
+                </select>
+                <p class="comment">当前管理系统使用的DNS解析库；修改此项配置后，需要重启管理系统进程才会生效；通常不需要修改；如要修改，请在专家指导下进行。</p>
             </td>
         </tr>
     </table>
