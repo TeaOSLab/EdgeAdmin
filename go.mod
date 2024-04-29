@@ -8,7 +8,7 @@ require (
 	github.com/TeaOSLab/EdgeCommon v0.0.0-00010101000000-000000000000
 	github.com/cespare/xxhash/v2 v2.2.0
 	github.com/go-sql-driver/mysql v1.5.0
-	github.com/iwind/TeaGo v0.0.0-20240312020455-6f20b5121caf
+	github.com/iwind/TeaGo v0.0.0-20240429060313-31a7bc8e9cc9
 	github.com/iwind/gosock v0.0.0-20211103081026-ee4652210ca4
 	github.com/miekg/dns v1.1.43
 	github.com/quic-go/quic-go v0.42.0

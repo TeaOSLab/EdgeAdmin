@@ -30,6 +30,8 @@ github.com/google/pprof v0.0.0-20240402174815-29b9bb013b0f h1:f00RU+zOX+B3rLAmMM
 github.com/google/pprof v0.0.0-20240402174815-29b9bb013b0f/go.mod h1:kf6iHlnVGwgKolg33glAes7Yg/8iWP8ukqeldJSO7jw=
 github.com/iwind/TeaGo v0.0.0-20240312020455-6f20b5121caf h1:WA9qgiynESu/DDTnLH6npRI5AK6UL9qwJ2YZ5qhJX5E=
 github.com/iwind/TeaGo v0.0.0-20240312020455-6f20b5121caf/go.mod h1:SfqVbWyIPdVflyA6lMgicZzsoGS8pyeLiTRe8/CIpGI=
+github.com/iwind/TeaGo v0.0.0-20240429060313-31a7bc8e9cc9 h1:lqSd+OeAMzPlejoVtsmHJEeQ6/MWXCr+Ws2eX9/Rewg=
+github.com/iwind/TeaGo v0.0.0-20240429060313-31a7bc8e9cc9/go.mod h1:SfqVbWyIPdVflyA6lMgicZzsoGS8pyeLiTRe8/CIpGI=
 github.com/iwind/gosock v0.0.0-20211103081026-ee4652210ca4 h1:VWGsCqTzObdlbf7UUE3oceIpcEKi4C/YBUszQXk118A=
 github.com/iwind/gosock v0.0.0-20211103081026-ee4652210ca4/go.mod h1:H5Q7SXwbx3a97ecJkaS2sD77gspzE7HFUafBO0peEyA=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
