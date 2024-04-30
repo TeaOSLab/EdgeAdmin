@@ -114,6 +114,8 @@ func (this *IndexAction) RunGet(params struct {
 		"autoInstallNftables": cluster.AutoInstallNftables,
 		"autoSystemTuning":    cluster.AutoSystemTuning,
 		"autoTrimDisks":       cluster.AutoTrimDisks,
+		"maxConcurrentReads":  cluster.MaxConcurrentReads,
+		"maxConcurrentWrites": cluster.MaxConcurrentWrites,
 		"sshParams":           sshParams,
 		"domainName":          fullDomainName,
 	}
@@ -143,6 +145,8 @@ func (this *IndexAction) RunPost(params struct {
 	AutoInstallNftables bool
 	AutoSystemTuning    bool
 	AutoTrimDisks       bool
+	MaxConcurrentReads  int32
+	MaxConcurrentWrites int32
 
 	Must *actions.Must
 }) {
@@ -200,6 +204,8 @@ func (this *IndexAction) RunPost(params struct {
 		AutoSystemTuning:    params.AutoSystemTuning,
 		AutoTrimDisks:       params.AutoTrimDisks,
 		SshParamsJSON:       sshParamsJSON,
+		MaxConcurrentReads:  params.MaxConcurrentReads,
+		MaxConcurrentWrites: params.MaxConcurrentWrites,
 	})
 	if err != nil {
 		this.ErrorPage(err)
