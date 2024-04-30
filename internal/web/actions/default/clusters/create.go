@@ -81,6 +81,8 @@ func (this *CreateAction) RunPost(params struct {
 	AutoInstallNftables bool
 	AutoSystemTuning    bool
 	AutoTrimDisks       bool
+	MaxConcurrentReads  int32
+	MaxConcurrentWrites int32
 
 	// DNS相关
 	DnsDomainId int64
@@ -151,6 +153,8 @@ func (this *CreateAction) RunPost(params struct {
 		AutoInstallNftables:    params.AutoInstallNftables,
 		AutoSystemTuning:       params.AutoSystemTuning,
 		AutoTrimDisks:          params.AutoTrimDisks,
+		MaxConcurrentReads:     params.MaxConcurrentReads,
+		MaxConcurrentWrites:    params.MaxConcurrentWrites,
 	})
 	if err != nil {
 		this.ErrorPage(err)

@@ -126,6 +126,20 @@
                         <p class="comment">执行TRIM后可以移除SSD硬盘中无效的数据，从而显著提升SSD硬盘写入性能。</p>
                     </td>
                 </tr>
+                <tr>
+                    <td>节点I/O最大读并发数</td>
+                    <td>
+                        <input name="maxConcurrentReads" v-model="cluster.maxConcurrentReads" type="text" style="width: 5em" maxlength="4"/>
+                        <p class="comment">0表示根据系统资源自动计算；通常不需要修改，请在专业人士指导下操作。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>节点I/O最大写并发数</td>
+                    <td>
+                        <input name="maxConcurrentWrites" v-model="cluster.maxConcurrentWrites" type="text" style="width: 5em" maxlength="4"/>
+                        <p class="comment">0表示根据系统资源自动计算；通常不需要修改，请在专业人士指导下操作。</p>
+                    </td>
+                </tr>
             </tbody>
 		</table>
 		<submit-btn></submit-btn>
