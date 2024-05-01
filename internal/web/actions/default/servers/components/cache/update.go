@@ -56,7 +56,7 @@ func (this *UpdateAction) RunGet(params struct {
 		{
 			_, ok := cachePolicy.Options["enableMMAP"]
 			if !ok {
-				cachePolicy.Options["enableMMAP"] = true
+				cachePolicy.Options["enableMMAP"] = false
 			}
 		}
 	}
