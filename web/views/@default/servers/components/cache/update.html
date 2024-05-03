@@ -78,13 +78,6 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="color-border">启用MMAP</td>
-                    <td>
-                        <checkbox name="enableMMAP" v-model="cachePolicy.options.enableMMAP"></checkbox>
-                        <p class="comment">选中后，表示允许系统自动利用MMAP提升缓存读取性能。</p>
-                    </td>
-                </tr>
-                <tr>
                     <td class="color-border">缓存文件句柄缓存</td>
                     <td>
                         <input type="text" name="fileOpenFileCacheMax" v-model="fileOpenFileCacheMax" maxlength="6" value="0" style="width: 10em"/>
@@ -96,6 +89,13 @@
                     <td>
                         <checkbox name="fileEnableSendfile" v-model="cachePolicy.options.enableSendfile"></checkbox>
                         <p class="comment"><pro-warning-label></pro-warning-label><plus-label></plus-label>使用sendfile提升发送缓存文件的效率。</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="color-border">启用MMAP</td>
+                    <td>
+                        <checkbox name="enableMMAP" v-model="cachePolicy.options.enableMMAP"></checkbox>
+                        <p class="comment">选中后，表示允许系统自动利用MMAP提升缓存读取性能。</p>
                     </td>
                 </tr>
             </tbody>
