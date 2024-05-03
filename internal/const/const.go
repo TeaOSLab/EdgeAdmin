@@ -5,13 +5,11 @@ const (
 
 	APINodeVersion = "1.3.8"
 
-	ProductName   = "Edge Admin"
-	ProcessName   = "edge-admin"
-	ProductNameZH = "Edge"
+	ProductName = "Edge Admin"
+	ProcessName = "edge-admin"
 
 	Role = "admin"
 
-	EncryptKey    = "8f983f4d69b83aaa0d74b21a212f6967"
 	EncryptMethod = "aes-256-cfb"
 
 	CookieSID      = "geadsid"

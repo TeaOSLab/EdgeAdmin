@@ -9,8 +9,11 @@ import (
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/gen"
 	"github.com/TeaOSLab/EdgeAdmin/internal/nodes"
+	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
+	executils "github.com/TeaOSLab/EdgeAdmin/internal/utils/exec"
 	_ "github.com/TeaOSLab/EdgeAdmin/internal/web"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/updates/updateutils"
 	_ "github.com/TeaOSLab/EdgeCommon/pkg/langs/messages"
 	"github.com/iwind/TeaGo/Tea"
 	_ "github.com/iwind/TeaGo/bootstrap"
@@ -176,6 +179,18 @@ func main() {
 			log.Println("upgrade failed: " + err.Error())
 			return
 		}
+
+		// try to exec local 'edge-api upgrade'
+		rpcClient, err := rpc.SharedRPC()
+		if err == nil {
+			exePath, ok := updateutils.CheckLocalAPINode(rpcClient, rpcClient.Context(0))
+			if ok && len(exePath) > 0 {
+				log.Println("upgrading database ...")
+				var cmd = executils.NewCmd(exePath, "upgrade")
+				_ = cmd.Run()
+			}
+		}
+
 		log.Println("finished!")
 		log.Println("restarting ...")
 		app.RunRestart()
