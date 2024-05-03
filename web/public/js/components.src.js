@@ -10603,7 +10603,7 @@ Vue.component("http-cache-policy-selector", {
 })
 
 Vue.component("http-pages-and-shutdown-box", {
-	props: ["v-pages", "v-shutdown-config", "v-is-location"],
+	props: ["v-enable-global-pages", "v-pages", "v-shutdown-config", "v-is-location"],
 	data: function () {
 		let pages = []
 		if (this.vPages != null) {
@@ -10635,7 +10635,8 @@ Vue.component("http-pages-and-shutdown-box", {
 		return {
 			pages: pages,
 			shutdownConfig: shutdownConfig,
-			shutdownStatus: shutdownStatus
+			shutdownStatus: shutdownStatus,
+			enableGlobalPages: this.vEnableGlobalPages
 		}
 	},
 	watch: {
@@ -10718,6 +10719,7 @@ Vue.component("http-pages-and-shutdown-box", {
 	template: `<div>
 <input type="hidden" name="pagesJSON" :value="JSON.stringify(pages)"/>
 <input type="hidden" name="shutdownJSON" :value="JSON.stringify(shutdownConfig)"/>
+
 <h4 style="margin-bottom: 0.5em">自定义页面</h4>
 
 <p class="comment" style="padding-top: 0; margin-top: 0">根据响应状态码返回一些自定义页面，比如404，500等错误页面。</p>
@@ -10847,7 +10849,19 @@ Vue.component("http-pages-and-shutdown-box", {
 		</tbody>
 	</table>
 </div>
+
+<h4 style="margin-top: 2em;">其他设置</h4>
+<table class="ui table definition selectable">
+	<tr>
+		<td class="title">启用系统自定义页面</td>
+		<td>
+			<checkbox name="enableGlobalPages" v-model="enableGlobalPages"></checkbox>
+			<p class="comment">选中后，表示如果当前网站没有自定义页面，则尝试使用系统对应的自定义页面。</p>
+		</td>
+	</tr>
+</table>
 <div class="ui margin"></div>
+
 </div>`
 })
 
