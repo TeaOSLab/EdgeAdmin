@@ -9,7 +9,7 @@
 	<div class="right-box tiny">
 		<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 			<input type="hidden" name="webId" :value="webId"/>
-			<http-pages-and-shutdown-box :v-pages="pages" :v-shutdown-config="shutdownConfig" :v-is-location="true"></http-pages-and-shutdown-box>
+			<http-pages-and-shutdown-box :v-pages="pages" :v-shutdown-config="shutdownConfig" :v-is-location="true" :v-enable-global-pages="enableGlobalPages"></http-pages-and-shutdown-box>
 			<submit-btn></submit-btn>
 		</form>
 	</div>

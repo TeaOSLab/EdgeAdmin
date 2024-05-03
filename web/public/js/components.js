@@ -3808,7 +3808,7 @@ example2.com
 	<div v-if="cachePolicy == null">
 		<span v-if="count > 0"><a href="" @click.prevent="select">[选择已有策略]</a> &nbsp; &nbsp; </span><a href="" @click.prevent="create">[创建新策略]</a>
 	</div>
-</div>`}),Vue.component("http-pages-and-shutdown-box",{props:["v-pages","v-shutdown-config","v-is-location"],data:function(){let e=[],t=(null!=this.vPages&&(e=this.vPages),{isPrior:!1,isOn:!1,bodyType:"html",url:"",body:"",status:0}),i=(null!=this.vShutdownConfig&&(null==this.vShutdownConfig.body&&(this.vShutdownConfig.body=""),null==this.vShutdownConfig.bodyType&&(this.vShutdownConfig.bodyType="html"),t=this.vShutdownConfig),"");return 0<t.status&&(i=t.status.toString()),{pages:e,shutdownConfig:t,shutdownStatus:i}},watch:{shutdownStatus:function(e){e=parseInt(e);!isNaN(e)&&0<e&&e<1e3?this.shutdownConfig.status=e:this.shutdownConfig.status=0}},methods:{addPage:function(){let t=this;teaweb.popup("/servers/server/settings/pages/createPopup",{height:"30em",callback:function(e){t.pages.push(e.data.page),t.notifyChange()}})},updatePage:function(t,e){let i=this;teaweb.popup("/servers/server/settings/pages/updatePopup?pageId="+e,{height:"30em",callback:function(e){Vue.set(i.pages,t,e.data.page),i.notifyChange()}})},removePage:function(e){let t=this;teaweb.confirm("确定要删除此自定义页面吗？",function(){t.pages.$remove(e),t.notifyChange()})},addShutdownHTMLTemplate:function(){this.shutdownConfig.body=`<!DOCTYPE html>
+</div>`}),Vue.component("http-pages-and-shutdown-box",{props:["v-enable-global-pages","v-pages","v-shutdown-config","v-is-location"],data:function(){let e=[],t=(null!=this.vPages&&(e=this.vPages),{isPrior:!1,isOn:!1,bodyType:"html",url:"",body:"",status:0}),i=(null!=this.vShutdownConfig&&(null==this.vShutdownConfig.body&&(this.vShutdownConfig.body=""),null==this.vShutdownConfig.bodyType&&(this.vShutdownConfig.bodyType="html"),t=this.vShutdownConfig),"");return 0<t.status&&(i=t.status.toString()),{pages:e,shutdownConfig:t,shutdownStatus:i,enableGlobalPages:this.vEnableGlobalPages}},watch:{shutdownStatus:function(e){e=parseInt(e);!isNaN(e)&&0<e&&e<1e3?this.shutdownConfig.status=e:this.shutdownConfig.status=0}},methods:{addPage:function(){let t=this;teaweb.popup("/servers/server/settings/pages/createPopup",{height:"30em",callback:function(e){t.pages.push(e.data.page),t.notifyChange()}})},updatePage:function(t,e){let i=this;teaweb.popup("/servers/server/settings/pages/updatePopup?pageId="+e,{height:"30em",callback:function(e){Vue.set(i.pages,t,e.data.page),i.notifyChange()}})},removePage:function(e){let t=this;teaweb.confirm("确定要删除此自定义页面吗？",function(){t.pages.$remove(e),t.notifyChange()})},addShutdownHTMLTemplate:function(){this.shutdownConfig.body=`<!DOCTYPE html>
 <html lang="en">
 <head>
 	<title>升级中</title>
@@ -3829,6 +3829,7 @@ example2.com
 </html>`},notifyChange:function(){let e=this.$el.parentNode;for(;;){if(null==e)break;if("FORM"==e.tagName)break;e=e.parentNode}null!=e&&setTimeout(function(){Tea.runActionOn(e)},100)}},template:`<div>
 <input type="hidden" name="pagesJSON" :value="JSON.stringify(pages)"/>
 <input type="hidden" name="shutdownJSON" :value="JSON.stringify(shutdownConfig)"/>
+
 <h4 style="margin-bottom: 0.5em">自定义页面</h4>
 
 <p class="comment" style="padding-top: 0; margin-top: 0">根据响应状态码返回一些自定义页面，比如404，500等错误页面。</p>
@@ -3958,7 +3959,19 @@ example2.com
 		</tbody>
 	</table>
 </div>
+
+<h4 style="margin-top: 2em;">其他设置</h4>
+<table class="ui table definition selectable">
+	<tr>
+		<td class="title">启用系统自定义页面</td>
+		<td>
+			<checkbox name="enableGlobalPages" v-model="enableGlobalPages"></checkbox>
+			<p class="comment">选中后，表示如果当前网站没有自定义页面，则尝试使用系统对应的自定义页面。</p>
+		</td>
+	</tr>
+</table>
 <div class="ui margin"></div>
+
 </div>`}),Vue.component("http-firewall-page-options",{props:["v-page-options"],data:function(){return{pageOptions:this.vPageOptions,status:this.vPageOptions.status,body:this.vPageOptions.body,defaultPageBody:`<!DOCTYPE html>
 <html lang="en">
 <head>

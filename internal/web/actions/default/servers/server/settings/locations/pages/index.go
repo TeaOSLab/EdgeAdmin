@@ -25,6 +25,7 @@ func (this *IndexAction) RunGet(params struct {
 	}
 
 	this.Data["webId"] = webConfig.Id
+	this.Data["enableGlobalPages"] = webConfig.EnableGlobalPages
 	this.Data["pages"] = webConfig.Pages
 	this.Data["shutdownConfig"] = webConfig.Shutdown
 
@@ -32,16 +33,26 @@ func (this *IndexAction) RunGet(params struct {
 }
 
 func (this *IndexAction) RunPost(params struct {
-	WebId        int64
-	PagesJSON    string
-	ShutdownJSON string
-	Must         *actions.Must
+	WebId             int64
+	EnableGlobalPages bool
+	PagesJSON         string
+	ShutdownJSON      string
+	Must              *actions.Must
 }) {
 	defer this.CreateLogInfo(codes.ServerPage_LogUpdatePages, params.WebId)
 
 	// TODO 检查配置
 
-	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebPages(this.AdminContext(), &pb.UpdateHTTPWebPagesRequest{
+	_, err := this.RPC().HTTPWebRPC().UpdateHTTPWebGlobalPagesEnabled(this.AdminContext(), &pb.UpdateHTTPWebGlobalPagesEnabledRequest{
+		HttpWebId: params.WebId,
+		IsEnabled: params.EnableGlobalPages,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	_, err = this.RPC().HTTPWebRPC().UpdateHTTPWebPages(this.AdminContext(), &pb.UpdateHTTPWebPagesRequest{
 		HttpWebId: params.WebId,
 		PagesJSON: []byte(params.PagesJSON),
 	})

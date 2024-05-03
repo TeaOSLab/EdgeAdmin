@@ -5,7 +5,7 @@
 <div class="right-box without-menu">
 	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 		<input type="hidden" name="webId" :value="webId"/>
-		<http-pages-and-shutdown-box :v-pages="pages" :v-shutdown-config="shutdownConfig"></http-pages-and-shutdown-box>
+		<http-pages-and-shutdown-box :v-pages="pages" :v-shutdown-config="shutdownConfig" :v-enable-global-pages="enableGlobalPages"></http-pages-and-shutdown-box>
 		<submit-btn></submit-btn>
 	</form>
 </div>
