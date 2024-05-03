@@ -2,11 +2,13 @@
 
 <div class="ui margin"></div>
 
-<div v-show="isUpgrading">
-    <p class="ui message warning">正在下载并升级到新版本，请耐心等待 {{upgradeProgress}}%...</p>
+<div v-show="isUpgrading || isUpgraded">
+    <p class="ui message warning" v-if="!isUpgradingDB && !isUpgraded">正在下载并升级到新版本，请耐心等待 {{upgradeProgress}}% ...</p>
+    <p class="ui message warning" v-if="isUpgradingDB">正在升级数据库 ...</p>
+    <p class="ui message warning" v-if="!isUpgradingDB && isUpgraded">升级完成！</p>
 </div>
 
-<div v-show="!isUpgrading">
+<div v-show="!isUpgrading && !isUpgraded">
     <form class="ui form">
         <table class="ui table definition selectable">
             <tr>
