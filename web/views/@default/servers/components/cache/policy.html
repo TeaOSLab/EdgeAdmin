@@ -46,13 +46,6 @@
                 <a :href="Tea.url('.update', {cachePolicyId:cachePolicy.id})"><span class="red">请设置一个内存容量作为缓冲区，以提升缓存写入性能。</span></a>
             </td>
         </tr>
-        <tr v-if="cachePolicy.options != null">
-            <td class="color-border">启用MMAP</td>
-            <td>
-                <span class="green" v-if="cachePolicy.options.enableMMAP || cachePolicy.options.enableMMAP == null">Y</span>
-                <span class="disabled" v-else>N</span>
-            </td>
-        </tr>
         <tr v-if="cachePolicy.options.openFileCache != null && cachePolicy.options.openFileCache.isOn && cachePolicy.options.openFileCache.max > 0">
             <td class="color-border">缓存文件句柄缓存</td>
             <td>{{cachePolicy.options.openFileCache.max}}</td>
@@ -64,6 +57,13 @@
         <tr v-if="cachePolicy.options.minFreeSize != null && cachePolicy.options.minFreeSize.count > 0">
             <td class="color-border">缓存硬盘最小空余空间</td>
             <td><size-capacity-view :v-value="cachePolicy.options.minFreeSize"></size-capacity-view></td>
+        </tr>
+        <tr v-if="cachePolicy.options != null">
+            <td class="color-border">启用MMAP</td>
+            <td>
+                <span class="green" v-if="cachePolicy.options.enableMMAP || cachePolicy.options.enableMMAP == null">Y</span>
+                <span class="disabled" v-else>N</span>
+            </td>
         </tr>
     </tbody>
 
