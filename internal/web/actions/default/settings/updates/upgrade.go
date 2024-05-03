@@ -3,15 +3,11 @@
 package updates
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	executils "github.com/TeaOSLab/EdgeAdmin/internal/utils/exec"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
-	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
-	"github.com/iwind/TeaGo/maps"
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/updates/updateutils"
 	"os"
 	"os/exec"
 	"time"
@@ -69,7 +65,7 @@ func (this *UpgradeAction) RunPost(params struct {
 	}
 
 	// try to exec local 'edge-api upgrade'
-	exePath, ok := this.checkLocalAPINode()
+	exePath, ok := updateutils.CheckLocalAPINode(this.RPC(), this.AdminContext())
 	if ok && len(exePath) > 0 {
 		isUpgradingDB = true
 		var before = time.Now()
@@ -94,70 +90,4 @@ func (this *UpgradeAction) RunPost(params struct {
 	}
 
 	this.Success()
-}
-
-func (this *UpgradeAction) checkLocalAPINode() (exePath string, ok bool) {
-	resp, err := this.RPC().APINodeRPC().FindCurrentAPINode(this.AdminContext(), &pb.FindCurrentAPINodeRequest{})
-	if err != nil {
-		return
-	}
-	if resp.ApiNode == nil {
-		return
-	}
-	var instanceCode = resp.ApiNode.InstanceCode
-	if len(instanceCode) == 0 {
-		return
-	}
-	var statusJSON = resp.ApiNode.StatusJSON
-	if len(statusJSON) == 0 {
-		return
-	}
-
-	var status = &nodeconfigs.NodeStatus{}
-	err = json.Unmarshal(statusJSON, status)
-	if err != nil {
-		return
-	}
-
-	exePath = status.ExePath
-	if len(exePath) == 0 {
-		return
-	}
-
-	stat, err := os.Stat(exePath)
-	if err != nil {
-		return
-	}
-	if stat.IsDir() {
-		return
-	}
-
-	// 实例信息
-	{
-		var outputBuffer = &bytes.Buffer{}
-		var cmd = exec.Command(exePath, "instance")
-		cmd.Stdout = outputBuffer
-		err = cmd.Run()
-		if err != nil {
-			return
-		}
-
-		var outputBytes = outputBuffer.Bytes()
-		if len(outputBytes) == 0 {
-			return
-		}
-
-		var instanceMap = maps.Map{}
-		err = json.Unmarshal(bytes.TrimSpace(outputBytes), &instanceMap)
-		if err != nil {
-			return
-		}
-
-		if instanceMap.GetString("code") != instanceCode {
-			return
-		}
-	}
-
-	ok = true
-	return
 }
