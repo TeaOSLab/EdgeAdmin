@@ -98,8 +98,8 @@
 			<div v-else class="address-box">
 				<div v-for="(addr, index) in node.ipAddresses" v-if="node.ipAddresses.length < mostIPVisible || node.ipAddressesVisible || index < mostIPVisible" style="margin-bottom:0.3em">
 					<div class="ui label tiny basic">{{addr.ip}}
-						<span class="small" v-if="addr.name.length > 0">（{{addr.name}}<span v-if="!addr.canAccess">，不可访问</span>）</span>
-						<span class="small" v-if="addr.name.length == 0 && !addr.canAccess">（不可访问）</span>
+						<span class="small" v-if="addr.name.length > 0">（{{addr.name}}<span v-if="!addr.canAccess">，不公开访问</span>）</span>
+						<span class="small" v-if="addr.name.length == 0 && !addr.canAccess">（不公开访问）</span>
 
                         <!-- 专属集群 -->
                         <div v-if="addr.clusters != null && addr.clusters.length > 0" style="margin-top: 0.3em; font-weight: normal">
