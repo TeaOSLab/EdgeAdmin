@@ -9,7 +9,12 @@
 {$template "/left_menu_with_menu"}
 
 <div class="right-box with-menu">
-	<p class="comment">提醒：HTTP2、证书等信息修改后，可能需要清空浏览器缓存后才能浏览效果。</p>
+	<p class="comment">提醒：HTTP/2、证书等信息修改后，可能需要清空浏览器缓存后才能浏览效果。</p>
+
+    <div v-if="httpsConfig.isOn && missingCertServerNames.length > 0" class="ui message warning">
+        警告：当前网站绑定的以下域名尚未配置证书，将无法通过HTTPS协议访问：{{missingCertServerNames.join("、")}} 。
+    </div>
+
 	<form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 		<input type="hidden" name="serverId" :value="serverId"/>
 		<input type="hidden" name="serverType" :value="serverType"/>
