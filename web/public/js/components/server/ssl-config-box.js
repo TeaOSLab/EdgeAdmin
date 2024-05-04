@@ -415,7 +415,7 @@ Vue.component("ssl-config-box", {
 				</td>
 			</tr>
 			<tr>
-				<td class="title">选择证书</td>
+				<td class="title">设置证书</td>
 				<td>
 					<div v-if="policy.certs != null && policy.certs.length > 0">
 						<div class="ui label small basic" v-for="(cert, index) in policy.certs" style="margin-top: 0.2em">
