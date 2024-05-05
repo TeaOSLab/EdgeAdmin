@@ -42,6 +42,7 @@ func InitIPList(action *actionutils.ParentAction, listId int64) error {
 	action.Data["list"] = maps.Map{
 		"id":          list.Id,
 		"name":        list.Name,
+		"code":        list.Code,
 		"type":        list.Type,
 		"typeName":    typeName,
 		"description": list.Description,

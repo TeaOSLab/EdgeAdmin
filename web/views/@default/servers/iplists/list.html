@@ -9,6 +9,17 @@
         </td>
     </tr>
     <tr>
+        <td>ID</td>
+        <td>{{list.id}}</td>
+    </tr>
+    <tr>
+        <td>代号</td>
+        <td>
+            <span v-if="list.code.length > 0">{{list.code}}</span>
+            <span v-else class="disabled">没有设置</span>
+        </td>
+    </tr>
+    <tr>
         <td>类型</td>
         <td>
             {{list.typeName}}
