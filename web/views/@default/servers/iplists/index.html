@@ -9,7 +9,7 @@
         </div>
         <div class="ui field">
             <select class="ui dropdown auto-width" name="listType" v-model="listType">
-                <option value="">[类型]</option>
+                <option value="">[所有类型]</option>
                 <option value="black">黑名单</option>
                 <option value="white">白名单</option>
                 <option value="grey">灰名单</option>
@@ -17,7 +17,7 @@
         </div>
         <div class="ui field">
            <select class="ui dropdown" name="eventLevel" v-model="eventLevel">
-               <option value="">[级别]</option>
+               <option value="">[所有级别]</option>
                <option v-for="level in eventLevels" :value="level.code">{{level.name}}</option>
            </select>
         </div>

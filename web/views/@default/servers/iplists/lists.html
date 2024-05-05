@@ -25,6 +25,7 @@
         <tr>
             <th class="one wide center">ID</th>
             <th class="three wide">名称</th>
+            <th class="two wide">代号</th>
             <th class="two wide center">类型</th>
             <th>备注</th>
             <th class="two wide center">IP数量</th>
@@ -36,6 +37,10 @@
         <td>
             <a :href="'/servers/iplists/list?listId=' + list.id"><keyword :v-word="keyword">{{list.name}}</keyword></a>
             <div v-if="list.isGlobal" style="margin-top: 0.3em"><grey-label>全局</grey-label></div>
+        </td>
+        <td>
+            <span v-if="list.code != null && list.code.length > 0">{{list.code}}</span>
+            <span v-else class="disabled">-</span>
         </td>
         <td class="center">
             <span v-if="list.type == 'black'"><span class="red">黑名单</span></span>
