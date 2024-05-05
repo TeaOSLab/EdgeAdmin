@@ -5,6 +5,7 @@ Tea.context(function () {
 	this.dashboard = {}
 	this.localLowerVersionAPINode = null
 	this.countWeakAdmins = 0
+	this.todayCountIPsFormat = "0"
 
 	this.$delay(function () {
 		this.$post("$")
@@ -12,6 +13,8 @@ Tea.context(function () {
 				for (let k in resp.data) {
 					this[k] = resp.data[k]
 				}
+
+				this.todayCountIPsFormat = teaweb.formatNumber(this.todayCountIPs)
 
 				this.isLoading = false
 
