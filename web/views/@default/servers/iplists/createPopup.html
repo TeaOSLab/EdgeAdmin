@@ -1,6 +1,7 @@
 {$layout "layout_popup"}
 
-<h3>创建<var v-if="type == 'black'">黑名单</var><var v-if="type == 'white'">白名单</var></h3>
+<h3>创建<var v-if="type == 'black'">黑名单</var><var v-if="type == 'white'">白名单</var><var v-if="type == 'grey'">灰名单</var>
+</h3>
 
 <form class="ui form" data-tea-action="$" data-tea-success="success">
     <csrf-token></csrf-token>
@@ -24,7 +25,11 @@
                 <select class="ui dropdown auto-width" name="type" v-model="type">
                     <option value="black">黑名单</option>
                     <option value="white">白名单</option>
+                    <option value="grey">灰名单</option>
                 </select>
+                <p class="comment" v-if="type == 'black'">黑名单中的IP将会被禁止访问。</p>
+                <p class="comment" v-if="type == 'white'">白名单中的IP将会自动放行，优先级高于黑名单。</p>
+                <p class="comment" v-if="type == 'grey'">灰名单中的IP仅作为记录和观察使用，不影响黑名单和白名单的作用。</p>
             </td>
         </tr>
         <tr>

@@ -2,6 +2,7 @@
 
 <h3 v-if="list.type == 'white'">添加IP到白名单</h3>
 <h3 v-if="list.type == 'black'">添加IP到黑名单</h3>
+<h3 v-if="list.type == 'grey'">添加IP到灰名单</h3>
 
 <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 	<input type="hidden" name="listId" :value="listId"/>

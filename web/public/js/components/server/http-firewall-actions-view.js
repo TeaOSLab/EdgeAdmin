@@ -11,6 +11,11 @@ Vue.component("http-firewall-actions-view", {
 						<span v-if="action.options.scope == 'server'">[网站]</span>
 						<span v-if="action.options.scope == 'global'">[网站和策略]</span>	
 					</span>
+					<span class="grey small" v-if="action.code.toLowerCase() == 'record_ip'">
+						<span v-if="action.options.type == 'black'" class="red">黑名单</span>
+						<span v-if="action.options.type == 'white'" class="green">白名单</span>
+						<span v-if="action.options.type == 'grey'" class="grey">灰名单</span>
+					</span>
 				</div>	
 			</span>
 		</div>             

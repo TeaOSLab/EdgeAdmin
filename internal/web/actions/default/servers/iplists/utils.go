@@ -7,6 +7,7 @@ import (
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/ipconfigs"
 	"github.com/iwind/TeaGo/maps"
 )
 
@@ -26,10 +27,12 @@ func InitIPList(action *actionutils.ParentAction, listId int64) error {
 
 	var typeName = ""
 	switch list.Type {
-	case "black":
+	case ipconfigs.IPListTypeBlack:
 		typeName = "黑名单"
-	case "white":
+	case ipconfigs.IPListTypeWhite:
 		typeName = "白名单"
+	case ipconfigs.IPListTypeGrey:
+		typeName = "灰名单"
 	}
 
 	// IP数量

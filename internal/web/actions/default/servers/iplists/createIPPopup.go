@@ -60,7 +60,7 @@ func (this *CreateIPPopupAction) RunPost(params struct {
 	CSRF *actionutils.CSRF
 }) {
 	// 校验IPList
-	if params.ListId != firewallconfigs.GlobalListId {
+	if !firewallconfigs.IsGlobalListId(params.ListId) {
 		existsResp, err := this.RPC().IPListRPC().ExistsEnabledIPList(this.AdminContext(), &pb.ExistsEnabledIPListRequest{IpListId: params.ListId})
 		if err != nil {
 			this.ErrorPage(err)

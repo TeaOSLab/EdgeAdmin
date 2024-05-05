@@ -38,8 +38,9 @@
             <div v-if="list.isGlobal" style="margin-top: 0.3em"><grey-label>全局</grey-label></div>
         </td>
         <td class="center">
-            <span v-if="list.type == 'black'">黑名单</span>
-            <span v-if="list.type == 'white'">白名单</span>
+            <span v-if="list.type == 'black'"><span class="red">黑名单</span></span>
+            <span v-if="list.type == 'white'"><span class="green">白名单</span></span>
+            <span v-if="list.type == 'grey'"><span class="grey">灰名单</span></span>
         </td>
         <td>{{list.description}}</td>
         <td class="center">

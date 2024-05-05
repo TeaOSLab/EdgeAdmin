@@ -1,10 +1,11 @@
 <first-menu>
     <menu-item href="/servers/iplists" code="index">IP列表</menu-item>
     <span class="disabled item">|</span>
-    <menu-item href="/servers/iplists/lists?type=black" :active="type == 'black'">公共黑名单</menu-item>
-    <menu-item href="/servers/iplists/lists?type=white" :active="type == 'white'">公共白名单</menu-item>
+    <menu-item href="/servers/iplists/lists?type=black" :active="type == 'black'">黑名单</menu-item>
+    <menu-item href="/servers/iplists/lists?type=white" :active="type == 'white'">白名单</menu-item>
+    <menu-item href="/servers/iplists/lists?type=grey" :active="type == 'grey'">灰名单</menu-item>
     <span class="item disabled" v-if="type.length > 0">|</span>
     <menu-item @click.prevent="createList" v-if="type.length > 0">[创建名单]</menu-item>
     <span class="item disabled" v-if="type.length > 0">|</span>
-    <span class="item" v-if="type.length > 0"><tip-icon content="全局名单自动生效；非全局名单可以在WAF策略里引用。"></tip-icon></span>
+    <span class="item" v-if="type.length > 0"><tip-icon content="创建名单时可以选择“全局有效”就会成为全局有效名单，全局有效名单对所有网站自动生效；非全局有效名单可以在WAF策略里引用。<br/><br/>黑名单：其中的IP将会被禁止访问。<br/>白名单：其中的IP将会自动放行，优先级高于黑名单。<br/>灰名单：其中的IP仅作为记录和观察使用，不影响黑名单和白名单的作用。"></tip-icon></span>
 </first-menu>

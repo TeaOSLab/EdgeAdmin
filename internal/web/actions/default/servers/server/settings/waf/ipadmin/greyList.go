@@ -5,30 +5,41 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/ipconfigs"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
 	"time"
 )
 
-type ListsAction struct {
+type GreyListAction struct {
 	actionutils.ParentAction
 }
 
-func (this *ListsAction) Init() {
-	this.Nav("", "", "ipadmin")
+func (this *GreyListAction) Init() {
+	this.Nav("", "setting", "greyList")
+	this.SecondMenu("waf")
 }
 
-func (this *ListsAction) RunGet(params struct {
+func (this *GreyListAction) RunGet(params struct {
 	FirewallPolicyId int64
-	Type             string
+	ServerId         int64
 }) {
-	this.Data["subMenuItem"] = params.Type
-	this.Data["type"] = params.Type
+	this.Data["featureIsOn"] = true
+	this.Data["firewallPolicyId"] = params.FirewallPolicyId
 
-	listId, err := dao.SharedHTTPFirewallPolicyDAO.FindEnabledPolicyIPListIdWithType(this.AdminContext(), params.FirewallPolicyId, params.Type)
+	listId, err := dao.SharedIPListDAO.FindGreyIPListIdWithServerId(this.AdminContext(), params.ServerId)
 	if err != nil {
 		this.ErrorPage(err)
 		return
+	}
+
+	// 创建
+	if listId == 0 {
+		listId, err = dao.SharedIPListDAO.CreateIPListForServerId(this.AdminContext(), params.ServerId, ipconfigs.IPListTypeGrey)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
 	}
 
 	this.Data["listId"] = listId
@@ -104,17 +115,26 @@ func (this *ListsAction) RunGet(params struct {
 			"ipTo":           item.IpTo,
 			"createdTime":    timeutil.FormatTime("Y-m-d", item.CreatedAt),
 			"expiredTime":    expiredTime,
+			"lifeSeconds":    item.ExpiredAt - time.Now().Unix(),
 			"reason":         item.Reason,
 			"type":           item.Type,
+			"isExpired":      item.ExpiredAt > 0 && item.ExpiredAt < time.Now().Unix(),
 			"eventLevelName": firewallconfigs.FindFirewallEventLevelName(item.EventLevel),
 			"sourcePolicy":   sourcePolicyMap,
 			"sourceGroup":    sourceGroupMap,
 			"sourceSet":      sourceSetMap,
 			"sourceServer":   sourceServerMap,
-			"lifeSeconds":    item.ExpiredAt - time.Now().Unix(),
 		})
 	}
 	this.Data["items"] = itemMaps
+
+	// WAF是否启用
+	webConfig, err := dao.SharedHTTPWebDAO.FindWebConfigWithServerId(this.AdminContext(), params.ServerId)
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+	this.Data["wafIsOn"] = webConfig.FirewallRef != nil && webConfig.FirewallRef.IsOn
 
 	this.Show()
 }
