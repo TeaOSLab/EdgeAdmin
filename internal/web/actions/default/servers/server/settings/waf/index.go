@@ -49,7 +49,7 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["webId"] = webConfig.Id
 	this.Data["firewallConfig"] = webConfig.FirewallRef
 
-	// 获取当前服务所在集群的WAF设置
+	// 获取当前网站所在集群的WAF设置
 	firewallPolicy, err := dao.SharedHTTPFirewallPolicyDAO.FindEnabledHTTPFirewallPolicyWithServerId(this.AdminContext(), params.ServerId)
 	if err != nil {
 		this.ErrorPage(err)

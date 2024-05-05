@@ -36,8 +36,8 @@ func (this *ListsAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	count := countResp.Count
-	page := this.NewPage(count)
+	var count = countResp.Count
+	var page = this.NewPage(count)
 	this.Data["page"] = page.AsHTML()
 
 	listsResp, err := this.RPC().IPListRPC().ListEnabledIPLists(this.AdminContext(), &pb.ListEnabledIPListsRequest{
@@ -65,6 +65,7 @@ func (this *ListsAction) RunGet(params struct {
 			"id":          list.Id,
 			"isOn":        list.IsOn,
 			"name":        list.Name,
+			"code":        list.Code,
 			"description": list.Description,
 			"countItems":  countItems,
 			"type":        list.Type,
