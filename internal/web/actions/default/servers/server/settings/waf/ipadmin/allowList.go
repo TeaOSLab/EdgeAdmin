@@ -5,6 +5,7 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
+	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/ipconfigs"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
 	"time"
@@ -34,7 +35,7 @@ func (this *AllowListAction) RunGet(params struct {
 
 	// 创建
 	if listId == 0 {
-		listId, err = dao.SharedIPListDAO.CreateIPListForServerId(this.AdminContext(), params.ServerId, "white")
+		listId, err = dao.SharedIPListDAO.CreateIPListForServerId(this.AdminContext(), params.ServerId, ipconfigs.IPListTypeWhite)
 		if err != nil {
 			this.ErrorPage(err)
 			return

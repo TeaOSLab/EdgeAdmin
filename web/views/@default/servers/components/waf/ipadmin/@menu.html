@@ -4,5 +4,6 @@
 	<span class="item disabled">|</span>
 	<menu-item :href="'/servers/components/waf/ipadmin/lists?firewallPolicyId=' + firewallPolicyId + '&type=white'" :active="subMenuItem == 'white'">白名单</menu-item>
 	<menu-item :href="'/servers/components/waf/ipadmin/lists?firewallPolicyId=' + firewallPolicyId + '&type=black'" :active="subMenuItem == 'black'">黑名单</menu-item>
+    <menu-item :href="'/servers/components/waf/ipadmin/lists?firewallPolicyId=' + firewallPolicyId + '&type=grey'" :active="subMenuItem == 'grey'">灰名单</menu-item>
     <menu-item :href="'/servers/components/waf/ipadmin/test?firewallPolicyId=' + firewallPolicyId" :active="subMenuItem == 'test'">IP检查</menu-item>
 </second-menu>

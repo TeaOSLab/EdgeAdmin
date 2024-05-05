@@ -34,9 +34,11 @@ func (this *HttpFirewallAction) RunPost(params struct {
 		refs = inboundConfig.PublicDenyListRefs
 	case ipconfigs.IPListTypeWhite:
 		refs = inboundConfig.PublicAllowListRefs
+	case ipconfigs.IPListTypeGrey:
+		refs = inboundConfig.PublicGreyListRefs
 	}
 
-	listMaps := []maps.Map{}
+	var listMaps = []maps.Map{}
 	for _, ref := range refs {
 		listResp, err := this.RPC().IPListRPC().FindEnabledIPList(this.AdminContext(), &pb.FindEnabledIPListRequest{IpListId: ref.ListId})
 		if err != nil {

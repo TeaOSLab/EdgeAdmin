@@ -42,6 +42,9 @@ func (this *BindHTTPFirewallPopupAction) RunGet(params struct {
 		for _, ref := range inboundConfig.PublicDenyListRefs {
 			selectedIds = append(selectedIds, ref.ListId)
 		}
+		for _, ref := range inboundConfig.PublicGreyListRefs {
+			selectedIds = append(selectedIds, ref.ListId)
+		}
 	}
 
 	// 公共的名单

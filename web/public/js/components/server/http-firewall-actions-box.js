@@ -896,6 +896,7 @@ Vue.component("http-firewall-actions-box", {
 					<select class="ui dropdown auto-width" v-model="recordIPType">
 					<option value="black">黑名单</option>
 					<option value="white">白名单</option>
+					<option value="grey">灰名单</option>
 					</select>
 				</td>
 			</tr>
