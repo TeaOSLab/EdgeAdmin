@@ -242,7 +242,7 @@ Vue.component("traffic-map-box-table", {
 	   <table class="ui table selectable">
 		  <thead>
 			<tr>
-				<th colspan="2">国家/地区排行&nbsp; <tip-icon content="只有开启了统计的服务才会有记录。"></tip-icon></th>
+				<th colspan="2">国家/地区排行&nbsp; <tip-icon content="只有开启了统计的网站才会有记录。"></tip-icon></th>
 			</tr>
 		  </thead>
 		   <tbody v-if="stats.length == 0">
