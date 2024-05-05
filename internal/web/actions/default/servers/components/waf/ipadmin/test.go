@@ -66,6 +66,7 @@ func (this *TestAction) RunPost(params struct {
 			"expiredTime":    timeutil.FormatTime("Y-m-d H:i:s", resp.IpItem.ExpiredAt),
 			"type":           resp.IpItem.Type,
 			"eventLevelName": firewallconfigs.FindFirewallEventLevelName(resp.IpItem.EventLevel),
+			"listType":       resp.IpItem.ListType,
 		}
 	}
 
