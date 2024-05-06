@@ -298,6 +298,13 @@
                         <p class="comment">选中后，表示自动使用<code-label>Accept-Encoding: gzip, ...</code-label>回源，可以用来节约源站流量。</p>
                     </td>
                 </tr>
+                <tr>
+                    <td>XFF中最多地址数</td>
+                    <td>
+                        <input type="text" name="httpAllXFFMaxAddresses" v-model="config.httpAll.xffMaxAddresses"/>
+                        <p class="comment">可以转发的X-Forwarded-For中最多的地址数，如果为0表示不限制；不要轻易修改此选项，避免无法获取真实的客户端地址。</p>
+                    </td>
+                </tr>
             </table>
         </div>
         <div class="margin"></div>
