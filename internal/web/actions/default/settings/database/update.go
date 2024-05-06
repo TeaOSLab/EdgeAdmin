@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
@@ -40,55 +41,28 @@ func (this *UpdateAction) RunGet(params struct{}) {
 		return
 	}
 
-	config := &dbs.Config{}
+	// new config
+	var config = &configs.SimpleDBConfig{}
 	err = yaml.Unmarshal(data, config)
-	if err != nil {
-		this.Show()
-		return
-	}
-
-	if config.DBs == nil {
-		this.Show()
-		return
-	}
-
-	var dbConfig *dbs.DBConfig
-	for _, db := range config.DBs {
-		dbConfig = db
-		break
-	}
-
-	dsn := dbConfig.Dsn
-	cfg, err := mysql.ParseDSN(dsn)
-	if err != nil {
-		this.Data["dbConfig"] = maps.Map{
-			"host":     "",
-			"port":     "",
-			"username": "",
-			"password": "",
-			"database": "",
+	if err == nil && len(config.Host) > 0 {
+		host, port, splitErr := net.SplitHostPort(config.Host)
+		if splitErr != nil {
+			port = "3306"
 		}
+
+		this.Data["dbConfig"] = maps.Map{
+			"host":     host,
+			"port":     port,
+			"username": config.User,
+			"password": config.Password,
+			"database": config.Database,
+		}
+
 		this.Show()
 		return
 	}
 
-	host := cfg.Addr
-	port := "3306"
-	index := strings.LastIndex(cfg.Addr, ":")
-	if index > 0 {
-		host = cfg.Addr[:index]
-		port = cfg.Addr[index+1:]
-	}
-
-	this.Data["dbConfig"] = maps.Map{
-		"host":     host,
-		"port":     port,
-		"username": cfg.User,
-		"password": cfg.Passwd,
-		"database": cfg.DBName,
-	}
-
-	this.Show()
+	this.parseOldConfig(data)
 }
 
 func (this *UpdateAction) RunPost(params struct {
@@ -129,28 +103,91 @@ func (this *UpdateAction) RunPost(params struct {
 		Require("请输入连接数据库的用户名").
 		Match(`^[\w\.-]+$`, "用户名中不能包含特殊字符")
 
-	// 保存
-	dsn := params.Username + ":" + params.Password + "@tcp(" + configutils.QuoteIP(params.Host) + ":" + fmt.Sprintf("%d", params.Port) + ")/" + params.Database
-
-	configFile := Tea.ConfigFile("api_db.yaml")
-	template := `default:
-  db: "prod"
-  prefix: ""
-
-dbs:
-  prod:
-    driver: "mysql"
-    dsn: "` + dsn + `?charset=utf8mb4&timeout=30s"
-    prefix: "edge"
-    models:
-      package: internal/web/models
-`
-	err := os.WriteFile(configFile, []byte(template), 0666)
+	var config = &configs.SimpleDBConfig{
+		User:     params.Username,
+		Password: params.Password,
+		Database: params.Database,
+		Host:     configutils.QuoteIP(params.Host) + ":" + fmt.Sprintf("%d", params.Port),
+	}
+	configYAML, err := yaml.Marshal(config)
 	if err != nil {
-		this.Fail("保存配置失败：" + err.Error())
+		this.ErrorPage(err)
+		return
 	}
 
-	// TODO 让本地的节点生效
+	// 保存
+
+	var configFile = Tea.ConfigFile("api_db.yaml")
+	err = os.WriteFile(configFile, configYAML, 0666)
+	if err != nil {
+		this.Fail("保存配置失败：" + err.Error())
+		return
+	}
+
+	// TODO 思考是否让本地的API节点生效
 
 	this.Success()
+}
+
+func (this *UpdateAction) parseOldConfig(data []byte) {
+	var config = &dbs.Config{}
+	err := yaml.Unmarshal(data, config)
+	if err != nil {
+		this.Show()
+		return
+	}
+
+	if config.DBs == nil {
+		this.Show()
+		return
+	}
+
+	var dbConfig *dbs.DBConfig
+	for _, db := range config.DBs {
+		dbConfig = db
+		break
+	}
+	if dbConfig == nil {
+		this.Data["dbConfig"] = maps.Map{
+			"host":     "",
+			"port":     "",
+			"username": "",
+			"password": "",
+			"database": "",
+		}
+		this.Show()
+		return
+	}
+
+	var dsn = dbConfig.Dsn
+	cfg, err := mysql.ParseDSN(dsn)
+	if err != nil {
+		this.Data["dbConfig"] = maps.Map{
+			"host":     "",
+			"port":     "",
+			"username": "",
+			"password": "",
+			"database": "",
+		}
+		this.Show()
+		return
+	}
+
+	var host = cfg.Addr
+	var port = "3306"
+	var index = strings.LastIndex(cfg.Addr, ":")
+	if index > 0 {
+		host = cfg.Addr[:index]
+		port = cfg.Addr[index+1:]
+	}
+
+	this.Data["dbConfig"] = maps.Map{
+		"host":     host,
+		"port":     port,
+		"username": cfg.User,
+		"password": cfg.Passwd,
+		"database": cfg.DBName,
+	}
+
+	this.Show()
 }

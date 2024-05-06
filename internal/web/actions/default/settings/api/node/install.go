@@ -25,7 +25,7 @@ func (this *InstallAction) RunGet(params struct {
 		this.ErrorPage(err)
 		return
 	}
-	node := nodeResp.ApiNode
+	var node = nodeResp.ApiNode
 	if node == nil {
 		this.NotFound("apiNode", params.NodeId)
 		return
@@ -39,12 +39,12 @@ func (this *InstallAction) RunGet(params struct {
 	}
 
 	// 数据库配置
-	dbConfigMap := maps.Map{
+	var dbConfigMap = maps.Map{
 		"config":     "",
 		"error":      "",
 		"isNotFound": false,
 	}
-	dbConfigFile := Tea.ConfigFile("api_db.yaml")
+	var dbConfigFile = Tea.ConfigFile("api_db.yaml")
 	data, err := os.ReadFile(dbConfigFile)
 	dbConfigMap["config"] = string(data)
 	if err != nil {
