@@ -12,7 +12,6 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/actions"
-	"github.com/iwind/TeaGo/dbs"
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/gosock/pkg/gosock"
@@ -80,34 +79,39 @@ func (this *InstallAction) RunPost(params struct {
 		// 检查环境
 		var apiNodeDir = Tea.Root + "/edge-api"
 		for _, dir := range []string{"edge-api", "edge-api/configs", "edge-api/bin"} {
-			apiNodeDir := Tea.Root + "/" + dir
-			_, err = os.Stat(apiNodeDir)
+			var searchDir = Tea.Root + "/" + dir
+			_, err = os.Stat(searchDir)
 			if err != nil {
 				if os.IsNotExist(err) {
 					this.Fail("在当前目录（" + Tea.Root + "）下找不到" + dir + "目录，请将" + dir + "目录上传或者重新下载解压")
 				}
 				this.Fail("无法检查" + dir + "目录，发生错误：" + err.Error())
+				return
 			}
 		}
 
 		// 保存数据库配置
-		var dsn = dbMap.GetString("username") + ":" + dbMap.GetString("password") + "@tcp(" + configutils.QuoteIP(dbMap.GetString("host")) + ":" + dbMap.GetString("port") + ")/" + dbMap.GetString("database") + "?charset=utf8mb4&timeout=30s"
-		dbConfig := &dbs.Config{
-			DBs: map[string]*dbs.DBConfig{
-				"prod": {
-					Driver: "mysql",
-					Dsn:    dsn,
-					Prefix: "edge",
-				}},
+		var dbConfig = &configs.SimpleDBConfig{
+			User:     dbMap.GetString("username"),
+			Password: dbMap.GetString("password"),
+			Database: dbMap.GetString("database"),
+			Host:     configutils.QuoteIP(dbMap.GetString("host")) + ":" + dbMap.GetString("port"),
 		}
-		dbConfig.Default.DB = "prod"
 		dbConfigData, err := yaml.Marshal(dbConfig)
 		if err != nil {
 			this.Fail("生成数据库配置失败：" + err.Error())
+			return
 		}
 		err = os.WriteFile(apiNodeDir+"/configs/db.yaml", dbConfigData, 0666)
 		if err != nil {
-			this.Fail("保存数据库配置失败：" + err.Error())
+			this.Fail("保存数据库配置失败（db.yaml）：" + err.Error())
+			return
+		}
+
+		err = dbConfig.GenerateOldConfig(apiNodeDir + "/configs/.db.yaml")
+		if err != nil {
+			this.Fail("保存数据库配置失败（.db.yaml）：" + err.Error())
+			return
 		}
 
 		// 生成备份文件
@@ -130,7 +134,8 @@ func (this *InstallAction) RunPost(params struct {
 
 		err = os.WriteFile(Tea.ConfigFile("/api_db.yaml"), dbConfigData, 0666)
 		if err != nil {
-			this.Fail("保存数据库配置失败：" + err.Error())
+			this.Fail("保存数据库配置失败（api_db.yaml）：" + err.Error())
+			return
 		}
 
 		// 生成备份文件
@@ -157,8 +162,11 @@ func (this *InstallAction) RunPost(params struct {
 		{
 			this.apiSetupFinished = false
 			var cmd = exec.Command(apiNodeDir+"/bin/edge-api", "setup", "-api-node-protocol=http", "-api-node-host=\""+apiNodeMap.GetString("newHost")+"\"", "-api-node-port=\""+apiNodeMap.GetString("newPort")+"\"")
-			var output = bytes.NewBuffer([]byte{})
+			var output = bytes.NewBuffer(nil)
 			cmd.Stdout = output
+
+			var stderr = bytes.NewBuffer(nil)
+			cmd.Stderr = stderr
 
 			// 试图读取执行日志
 			go this.startReadingAPIInstallLog()
@@ -166,12 +174,13 @@ func (this *InstallAction) RunPost(params struct {
 			err = cmd.Run()
 			this.apiSetupFinished = true
 			if err != nil {
-				this.Fail("安装失败：" + err.Error())
+				this.Fail("安装失败：" + err.Error() + ": " + string(append(output.Bytes(), stderr.Bytes()...)))
 			}
 
 			var resultData = output.Bytes()
 			err = json.Unmarshal(resultData, &resultMap)
 			if err != nil {
+
 				this.Fail("安装节点时返回数据错误：" + err.Error() + "(" + string(resultData) + ")")
 			}
 			if !resultMap.GetBool("isOk") {
