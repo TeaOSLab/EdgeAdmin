@@ -110,6 +110,7 @@ func (this *IndexAction) RunPost(params struct {
 	HttpAllNodeIPShowPage                  bool
 	HttpAllEnableServerAddrVariable        bool
 	HttpAllRequestOriginsWithEncodings     bool
+	HttpAllXFFMaxAddresses                 int
 
 	HttpAllDomainAuditingIsOn   bool
 	HttpAllDomainAuditingPrompt string
@@ -219,6 +220,7 @@ func (this *IndexAction) RunPost(params struct {
 	config.HTTPAll.LnRequestSchedulingMethod = params.HttpAllLnRequestSchedulingMethod
 	config.HTTPAll.EnableServerAddrVariable = params.HttpAllEnableServerAddrVariable
 	config.HTTPAll.RequestOriginsWithEncodings = params.HttpAllRequestOriginsWithEncodings
+	config.HTTPAll.XFFMaxAddresses = params.HttpAllXFFMaxAddresses
 
 	// 访问日志
 	config.HTTPAccessLog.IsOn = params.HttpAccessLogIsOn
