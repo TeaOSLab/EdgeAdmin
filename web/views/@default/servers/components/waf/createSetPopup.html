@@ -6,42 +6,57 @@
 
 <form method="post" class="ui form" data-tea-action="$" data-tea-success="success">
 	<input type="hidden" name="groupId" :value="groupId"/>
+    <input type="hidden" name="formType" :value="useCode ? 'code' : 'normal'"/>
 	<table class="ui table definition selectable">
 		<tr>
 			<td class="title">规则集名称 *</td>
 			<td>
 				<input type="text" name="name" maxlength="100" ref="focus"/>
-                <p class="comment">可以用来描述当前规则集用途。</p>
+                <p class="comment">可以用来描述当前规则集用途。<a href="" @click.prevent="switchToCode"><span v-if="!useCode">[使用代码]</span><span v-else>[切换到常规表单]</span></a></p>
 			</td>
 		</tr>
-		<tr>
-			<td>规则 *</td>
-			<td>
-				<http-firewall-rules-box :v-rules="rules" :v-type="type"></http-firewall-rules-box>
-			</td>
-		</tr>
-		<tr v-show="rules.length > 1">
-			<td>规则之间的关系 *</td>
-			<td>
-				<select class="ui dropdown" name="connector" style="width:10em" @change="changeConnector()" v-model="selectedConnector">
-					<option v-for="connector in connectors" :value="connector.value">{{connector.name}}</option>
-				</select>
-				<p class="comment">{{selectedConnectorDescription}}</p>
-			</td>
-		</tr>
-        <tr>
-            <td>执行动作 *</td>
-            <td>
-                <http-firewall-actions-box :v-actions="actions" :v-firewall-policy="firewallPolicy"  :v-group-type="type"></http-firewall-actions-box>
-            </td>
-        </tr>
-        <tr>
-            <td>忽略局域网IP</td>
-            <td>
-                <checkbox name="ignoreLocal"></checkbox>
-                <p class="comment">选中后表示如果请求来自局域网IP，则直接跳过当前规则集。</p>
-            </td>
-        </tr>
+
+        <!-- usual form -->
+        <tbody v-show="!useCode">
+            <tr>
+                <td>规则 *</td>
+                <td>
+                    <http-firewall-rules-box :v-rules="rules" :v-type="type"></http-firewall-rules-box>
+                </td>
+            </tr>
+            <tr v-show="rules.length > 1">
+                <td>规则之间的关系 *</td>
+                <td>
+                    <select class="ui dropdown" name="connector" style="width:10em" @change="changeConnector()" v-model="selectedConnector">
+                        <option v-for="connector in connectors" :value="connector.value">{{connector.name}}</option>
+                    </select>
+                    <p class="comment">{{selectedConnectorDescription}}</p>
+                </td>
+            </tr>
+            <tr>
+                <td>执行动作 *</td>
+                <td>
+                    <http-firewall-actions-box :v-actions="actions" :v-firewall-policy="firewallPolicy"  :v-group-type="type"></http-firewall-actions-box>
+                </td>
+            </tr>
+            <tr>
+                <td>忽略局域网IP</td>
+                <td>
+                    <checkbox name="ignoreLocal"></checkbox>
+                    <p class="comment">选中后表示如果请求来自局域网IP，则直接跳过当前规则集。</p>
+                </td>
+            </tr>
+        </tbody>
+
+        <!-- code form -->
+        <tbody v-show="useCode">
+            <tr>
+                <td>规则集代码 *</td>
+                <td>
+                    <textarea name="code" ref="codeInput" placeholder="{ ... 规则集代码  ... }" rows="20"></textarea>
+                </td>
+            </tr>
+        </tbody>
 	</table>
 	<submit-btn></submit-btn>
 </form>
