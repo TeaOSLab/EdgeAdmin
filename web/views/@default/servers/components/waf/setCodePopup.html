@@ -1,0 +1,10 @@
+{$layout "layout_popup"}
+
+<h3>规则集 “{{setName}}” 代码</h3>
+
+<form class="ui form" data-tea-action="$">
+    <textarea rows="13">{{code}}</textarea>
+    <p class="comment">你可以将此段代码复制并在创建规则集的时候使用。</p>
+
+    <button class="ui button" type="button" @click.prevent="closePopup">关闭窗口</button>
+</form>

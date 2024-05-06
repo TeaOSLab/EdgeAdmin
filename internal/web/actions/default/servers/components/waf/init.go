@@ -39,6 +39,7 @@ func init() {
 			Post("/updateSetOn", new(UpdateSetOnAction)).
 			Post("/deleteSet", new(DeleteSetAction)).
 			GetPost("/updateSetPopup", new(UpdateSetPopupAction)).
+			Get("/setCodePopup", new(SetCodePopupAction)).
 			Post("/count", new(CountAction)).
 			Get("/selectPopup", new(SelectPopupAction)).
 			Post("/testRegexp", new(TestRegexpAction)).
