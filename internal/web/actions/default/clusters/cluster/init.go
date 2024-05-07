@@ -48,6 +48,7 @@ func init() {
 			Get("/logs", new(node.LogsAction)).
 			Post("/start", new(node.StartAction)).
 			Post("/stop", new(node.StopAction)).
+			Post("/uninstall", new(node.UninstallAction)).
 			Post("/up", new(node.UpAction)).
 			Post("/updateIsOn", new(node.UpdateIsOnAction)).
 			Get("/detail", new(node.DetailAction)).

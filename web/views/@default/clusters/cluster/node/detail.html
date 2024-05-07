@@ -321,8 +321,12 @@
 		<tr>
 			<td>已安装</td>
 			<td>
-				<span v-if="node.isInstalled" class="green">已安装</span>
+				<span v-if="node.isInstalled" class="green">已安装 &nbsp; <a href="" @click.prevent="showMoreOps"><span class="small">[操作]</span></a></span>
 				<a v-else :href="'/clusters/cluster/installNode?clusterId=' + clusterId + '&nodeId=' + nodeId" class="underline" title="点击进入安装界面"><span class="red">未安装</span></a>
 			</td>
 		</tr>
+        <tr v-show="moreOpsVisible && node.isInstalled">
+            <td>操作</td>
+            <td><a href="" @click.prevent="uninstallNode">[卸载]</a> </td>
+        </tr>
 	</table>
