@@ -13,6 +13,7 @@ Tea.context(function () {
 			let options = this.cachePolicy.options
 			if (options != null && typeof options == "object" && typeof options["dir"] === "undefined") {
 				options["enableMMAP"] = false
+				options["enableIncompletePartialContent"] = true
 				options["dir"] = "/opt/cache"
 				options["memoryPolicy"] = {
 					capacity: {
