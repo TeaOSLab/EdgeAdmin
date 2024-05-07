@@ -15,9 +15,12 @@ import (
 	"github.com/iwind/TeaGo/files"
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
+	"github.com/tdewolff/minify/v2"
+	"github.com/tdewolff/minify/v2/html"
 	"io"
 	"os"
 	"path/filepath"
+	"regexp"
 )
 
 func Generate() error {
@@ -39,7 +42,19 @@ func generateComponentsJSFile() error {
 	} else {
 		webRoot = Tea.Root + "/web/public/js/components/"
 	}
-	f := files.NewFile(webRoot)
+	var f = files.NewFile(webRoot)
+	var backQuoteRegexp = regexp.MustCompile("(?sU)`.+`")
+
+	var instance = minify.New()
+	instance.Add("text/html", &html.Minifier{
+		KeepComments:            false,
+		KeepConditionalComments: false,
+		KeepDefaultAttrVals:     true,
+		KeepDocumentTags:        true,
+		KeepEndTags:             true,
+		KeepQuotes:              true,
+		KeepWhitespace:          true,
+	})
 
 	f.Range(func(file *files.File) {
 		if !file.IsFile() {
@@ -53,6 +68,18 @@ func generateComponentsJSFile() error {
 			logs.Error(err)
 			return
 		}
+
+		data = backQuoteRegexp.ReplaceAllFunc(data, func(blockData []byte) []byte {
+			var minifiedData = blockData[1 : len(blockData)-1]
+			var minifyErr error
+			minifiedData, minifyErr = instance.Bytes("text/html", minifiedData)
+			if minifyErr == nil {
+				blockData = append([]byte{'`'}, minifiedData...)
+				blockData = append(blockData, '`')
+			}
+			return blockData
+		})
+
 		buffer.Write(data)
 		buffer.Write([]byte{'\n', '\n'})
 	})

@@ -14,6 +14,7 @@ require (
 	github.com/quic-go/quic-go v0.42.0
 	github.com/shirou/gopsutil/v3 v3.22.5
 	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
+	github.com/tdewolff/minify/v2 v2.20.20
 	github.com/tealeg/xlsx/v3 v3.2.3
 	github.com/xlzd/gotp v0.1.0
 	golang.org/x/crypto v0.22.0
@@ -37,6 +38,7 @@ require (
 	github.com/quic-go/qpack v0.4.0 // indirect
 	github.com/rogpeppe/fastuuid v1.2.0 // indirect
 	github.com/shabbyrobe/xmlwriter v0.0.0-20200208144257-9fca06d00ffa // indirect
+	github.com/tdewolff/parse/v2 v2.7.13 // indirect
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	go.uber.org/mock v0.4.0 // indirect
 	golang.org/x/exp v0.0.0-20240325151524-a685a6edb6d8 // indirect
