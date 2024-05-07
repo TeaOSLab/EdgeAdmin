@@ -29,11 +29,12 @@ func FindCachePolicy(parent *actionutils.ParentAction, cachePolicyId int64) (*se
 	if len(resp.HttpCachePolicyJSON) == 0 {
 		return nil, errors.New("cache policy not found")
 	}
-	config := &serverconfigs.HTTPCachePolicy{}
+	var config = &serverconfigs.HTTPCachePolicy{}
 	err = json.Unmarshal(resp.HttpCachePolicyJSON, config)
 	if err != nil {
 		return nil, err
 	}
+
 	return config, nil
 }
 

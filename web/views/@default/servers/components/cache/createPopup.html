@@ -84,6 +84,13 @@
                     <p class="comment"><pro-warning-label></pro-warning-label><plus-label></plus-label>使用sendfile提升发送缓存文件的效率。</p>
                 </td>
             </tr>
+            <tr>
+                <td class="color-border">允许读取不完整的Partial Content</td>
+                <td>
+                    <checkbox name="enableIncompletePartialContent" checked="checked"></checkbox>
+                    <p class="comment">允许在有一部分内容缓存的情况下读取分区内容，剩余的部分将会自动回源读取。</p>
+                </td>
+            </tr>
             <tr v-show="moreOptionsVisible && policyType == 'file'">
                 <td class="color-border">启用MMAP</td>
                 <td>

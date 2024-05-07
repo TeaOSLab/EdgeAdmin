@@ -59,6 +59,14 @@ func (this *UpdateAction) RunGet(params struct {
 				cachePolicy.Options["enableMMAP"] = false
 			}
 		}
+
+		// fix enableIncompletePartialContent
+		{
+			_, ok := cachePolicy.Options["enableIncompletePartialContent"]
+			if !ok {
+				cachePolicy.Options["enableIncompletePartialContent"] = true
+			}
+		}
 	}
 
 	this.Data["cachePolicy"] = cachePolicy
@@ -87,7 +95,8 @@ func (this *UpdateAction) RunPost(params struct {
 	SyncCompressionCache bool
 	FetchTimeoutJSON     []byte
 
-	EnableMMAP bool
+	EnableMMAP                     bool
+	EnableIncompletePartialContent bool
 
 	Description string
 	IsOn        bool
@@ -146,10 +155,11 @@ func (this *UpdateAction) RunPost(params struct {
 			MemoryPolicy: &serverconfigs.HTTPCachePolicy{
 				Capacity: memoryCapacity,
 			},
-			OpenFileCache:  openFileCacheConfig,
-			EnableSendfile: params.FileEnableSendfile,
-			MinFreeSize:    minFreeSize,
-			EnableMMAP:     params.EnableMMAP,
+			OpenFileCache:                  openFileCacheConfig,
+			EnableSendfile:                 params.FileEnableSendfile,
+			MinFreeSize:                    minFreeSize,
+			EnableMMAP:                     params.EnableMMAP,
+			EnableIncompletePartialContent: params.EnableIncompletePartialContent,
 		}
 	case serverconfigs.CachePolicyStorageMemory:
 		options = &serverconfigs.HTTPMemoryCacheStorage{}
