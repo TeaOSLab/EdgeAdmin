@@ -65,7 +65,7 @@
                 <http-firewall-actions-view :v-actions="set.actions"></http-firewall-actions-view>
 			</td>
 			<td>
-				<a href="" @click.prevent="updateSet(set.id)">修改</a> &nbsp; <a href="" @click.prevent="updateSetOn(set.id, false)" v-if="set.isOn">停用</a><a href="" @click.prevent="updateSetOn(set.id, true)" v-if="!set.isOn">启用</a> &nbsp; <a href="" @click.prevent="deleteSet(set.id)">删除</a>
+				<a href="" @click.prevent="updateSet(set.id)">修改</a> &nbsp; <a href="" @click.prevent="updateSetOn(set.id, false)" v-if="set.isOn">停用</a><a href="" @click.prevent="updateSetOn(set.id, true)" v-if="!set.isOn"><span class="red">启用</span></a> &nbsp; <a href="" @click.prevent="deleteSet(set.id)">删除</a>
 			</td>
 		</tr>
 		</tbody>
