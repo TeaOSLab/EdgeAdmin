@@ -46,12 +46,15 @@ func (this *CountriesAction) RunGet(params struct {
 	var deniedCountryIds = []int64{}
 	var allowedCountryIds = []int64{}
 	var countryHTML = ""
+	var allowSearchEngine bool
 	if policyConfig.Inbound != nil && policyConfig.Inbound.Region != nil {
 		deniedCountryIds = policyConfig.Inbound.Region.DenyCountryIds
 		allowedCountryIds = policyConfig.Inbound.Region.AllowCountryIds
 		countryHTML = policyConfig.Inbound.Region.CountryHTML
+		allowSearchEngine = policyConfig.Inbound.Region.AllowSearchEngine
 	}
 	this.Data["countryHTML"] = countryHTML
+	this.Data["allowSearchEngine"] = allowSearchEngine
 
 	countriesResp, err := this.RPC().RegionCountryRPC().FindAllRegionCountries(this.AdminContext(), &pb.FindAllRegionCountriesRequest{})
 	if err != nil {
@@ -126,7 +129,8 @@ func (this *CountriesAction) RunPost(params struct {
 	ExceptURLPatternsJSON []byte
 	OnlyURLPatternsJSON   []byte
 
-	CountryHTML string
+	CountryHTML       string
+	AllowSearchEngine bool
 
 	Must *actions.Must
 }) {
@@ -179,6 +183,7 @@ func (this *CountriesAction) RunPost(params struct {
 	policyConfig.Inbound.Region.CountryOnlyURLPatterns = onlyURLPatterns
 
 	policyConfig.Inbound.Region.CountryHTML = params.CountryHTML
+	policyConfig.Inbound.Region.AllowSearchEngine = params.AllowSearchEngine
 
 	if len(params.CountryHTML) > 32<<10 {
 		this.Fail("提示内容长度不能超出32K")

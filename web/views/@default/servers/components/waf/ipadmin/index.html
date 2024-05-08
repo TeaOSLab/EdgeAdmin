@@ -40,6 +40,13 @@
                     <p class="comment">当客户端所在区域被封禁时提示页面的HTML内容；不填则表示使用默认的提示内容；支持请求变量。</p>
                 </td>
             </tr>
+            <tr>
+                <td>允许搜索引擎</td>
+                <td>
+                    <checkbox name="allowSearchEngine" v-model="allowSearchEngine"></checkbox>
+                    <p class="comment">选中后，表示如果请求来自常见搜索引擎的IP，则不受区域限制。</p>
+                </td>
+            </tr>
         </tbody>
     </table>
     <submit-btn></submit-btn>

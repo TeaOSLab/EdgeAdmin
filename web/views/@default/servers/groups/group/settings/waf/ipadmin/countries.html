@@ -39,6 +39,13 @@
                     <td>限制URL &nbsp;<tip-icon content="只对这些URL做限制。"></tip-icon></td>
                     <td><url-patterns-box v-model="onlyURLPatterns"></url-patterns-box></td>
                 </tr>
+                <tr>
+                    <td>允许搜索引擎</td>
+                    <td>
+                        <checkbox name="allowSearchEngine" v-model="allowSearchEngine"></checkbox>
+                        <p class="comment">选中后，表示如果请求来自常见搜索引擎的IP，则不受区域限制。</p>
+                    </td>
+                </tr>
             </tbody>
 		</table>
 		<submit-btn></submit-btn>
