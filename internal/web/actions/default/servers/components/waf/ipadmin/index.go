@@ -41,12 +41,15 @@ func (this *IndexAction) RunGet(params struct {
 	var deniedCountryIds = []int64{}
 	var allowedCountryIds = []int64{}
 	var countryHTML string
+	var allowSearchEngine bool
 	if policyConfig.Inbound != nil && policyConfig.Inbound.Region != nil {
 		deniedCountryIds = policyConfig.Inbound.Region.DenyCountryIds
 		allowedCountryIds = policyConfig.Inbound.Region.AllowCountryIds
 		countryHTML = policyConfig.Inbound.Region.CountryHTML
+		allowSearchEngine = policyConfig.Inbound.Region.AllowSearchEngine
 	}
 	this.Data["countryHTML"] = countryHTML
+	this.Data["allowSearchEngine"] = allowSearchEngine
 
 	countriesResp, err := this.RPC().RegionCountryRPC().FindAllRegionCountries(this.AdminContext(), &pb.FindAllRegionCountriesRequest{})
 	if err != nil {
@@ -94,7 +97,8 @@ func (this *IndexAction) RunPost(params struct {
 	ExceptURLPatternsJSON []byte
 	OnlyURLPatternsJSON   []byte
 
-	CountryHTML string
+	CountryHTML       string
+	AllowSearchEngine bool
 
 	Must *actions.Must
 }) {
@@ -139,6 +143,7 @@ func (this *IndexAction) RunPost(params struct {
 		return
 	}
 	policyConfig.Inbound.Region.CountryHTML = params.CountryHTML
+	policyConfig.Inbound.Region.AllowSearchEngine = params.AllowSearchEngine
 
 	// 限制URL
 	var onlyURLPatterns = []*shared.URLPattern{}
