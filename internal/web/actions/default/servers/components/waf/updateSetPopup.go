@@ -93,11 +93,12 @@ func (this *UpdateSetPopupAction) RunPost(params struct {
 	GroupId int64
 	SetId   int64
 
-	Name        string
-	RulesJSON   []byte
-	Connector   string
-	ActionsJSON []byte
-	IgnoreLocal bool
+	Name               string
+	RulesJSON          []byte
+	Connector          string
+	ActionsJSON        []byte
+	IgnoreLocal        bool
+	IgnoreSearchEngine bool
 
 	Must *actions.Must
 }) {
@@ -149,6 +150,7 @@ func (this *UpdateSetPopupAction) RunPost(params struct {
 	setConfig.Rules = rules
 	setConfig.Actions = actionConfigs
 	setConfig.IgnoreLocal = params.IgnoreLocal
+	setConfig.IgnoreSearchEngine = params.IgnoreSearchEngine
 
 	setConfigJSON, err := json.Marshal(setConfig)
 	if err != nil {

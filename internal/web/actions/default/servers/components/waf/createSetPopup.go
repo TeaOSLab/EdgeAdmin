@@ -78,10 +78,11 @@ func (this *CreateSetPopupAction) RunPost(params struct {
 	FormType string
 
 	// normal
-	RulesJSON   []byte
-	Connector   string
-	ActionsJSON []byte
-	IgnoreLocal bool
+	RulesJSON          []byte
+	Connector          string
+	ActionsJSON        []byte
+	IgnoreLocal        bool
+	IgnoreSearchEngine bool
 
 	// code
 	Code string
@@ -133,16 +134,17 @@ func (this *CreateSetPopupAction) RunPost(params struct {
 		}
 
 		var setConfig = &firewallconfigs.HTTPFirewallRuleSet{
-			Id:          0,
-			IsOn:        true,
-			Name:        params.Name,
-			Code:        "",
-			Description: "",
-			Connector:   params.Connector,
-			RuleRefs:    nil,
-			Rules:       rules,
-			Actions:     actionConfigs,
-			IgnoreLocal: params.IgnoreLocal,
+			Id:                 0,
+			IsOn:               true,
+			Name:               params.Name,
+			Code:               "",
+			Description:        "",
+			Connector:          params.Connector,
+			RuleRefs:           nil,
+			Rules:              rules,
+			Actions:            actionConfigs,
+			IgnoreLocal:        params.IgnoreLocal,
+			IgnoreSearchEngine: params.IgnoreSearchEngine,
 		}
 
 		setConfigJSON, err = json.Marshal(setConfig)
