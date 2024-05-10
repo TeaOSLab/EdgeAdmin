@@ -301,6 +301,17 @@
             </tr>
         </tbody>
 
+        <!-- bunny.net -->
+        <tbody v-if="type == 'bunnyNet'">
+            <tr>
+                <td>API密钥 *</td>
+                <td>
+                    <input type="text" name="paramBunnyNetAPIKey" maxlength="100" spellcheck="false"/>
+                    <p class="comment">在“Edit account details" -- "API Key"中获取。<mask-warning></mask-warning></p>
+                </td>
+            </tr>
+        </tbody>
+
         <!-- EdgeDNS -->
         <tbody v-if="type == 'localEdgeDNS'">
             <tr>
