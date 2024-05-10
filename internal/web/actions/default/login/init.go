@@ -9,6 +9,7 @@ func init() {
 		server.
 			Prefix("/login").
 			GetPost("/validate", new(ValidateAction)).
+			Get("/ticket", new(TicketAction)).
 			EndAll()
 	})
 }
