@@ -224,6 +224,16 @@
         </tr>
     </tbody>
 
+    <!-- bunny.net -->
+    <tbody v-if="provider.type == 'bunnyNet'">
+        <tr>
+            <td class="color-border">API密钥</td>
+            <td>
+                {{provider.apiParams.apiKey}}
+            </td>
+        </tr>
+    </tbody>
+
     <!-- Local EdgeDNS -->
     <tbody v-if="provider.type == 'localEdgeDNS'">
         <tr>
