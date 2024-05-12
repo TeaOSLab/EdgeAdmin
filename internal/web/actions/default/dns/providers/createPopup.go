@@ -84,6 +84,8 @@ func (this *CreatePopupAction) RunPost(params struct {
 	ParamEdgeDNSAPIAccessKeyId     string
 	ParamEdgeDNSAPIAccessKeySecret string
 
+	MinTTL int32
+
 	Must *actions.Must
 	CSRF *actionutils.CSRF
 }) {
@@ -177,6 +179,7 @@ func (this *CreatePopupAction) RunPost(params struct {
 		Name:          params.Name,
 		Type:          params.Type,
 		ApiParamsJSON: apiParams.AsJSON(),
+		MinTTL:        params.MinTTL,
 	})
 	if err != nil {
 		this.ErrorPage(err)

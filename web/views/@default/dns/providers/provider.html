@@ -278,6 +278,11 @@
             <td>{{provider.apiParams.secret}}</td>
         </tr>
     </tbody>
+
+    <tr v-if="provider.minTTL > 0">
+        <td>最小TTL</td>
+        <td>{{provider.minTTL}}秒</td>
+    </tr>
 </table>
 
 

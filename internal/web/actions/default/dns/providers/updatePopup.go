@@ -50,6 +50,7 @@ func (this *UpdatePopupAction) RunGet(params struct {
 		"name":     provider.Name,
 		"type":     provider.Type,
 		"typeName": provider.TypeName,
+		"minTTL":   provider.MinTTL,
 		"params":   apiParams,
 	}
 
@@ -113,6 +114,8 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	ParamEdgeDNSAPIRole            string
 	ParamEdgeDNSAPIAccessKeyId     string
 	ParamEdgeDNSAPIAccessKeySecret string
+
+	MinTTL int32
 
 	Must *actions.Must
 	CSRF *actionutils.CSRF
@@ -208,6 +211,7 @@ func (this *UpdatePopupAction) RunPost(params struct {
 	_, err := this.RPC().DNSProviderRPC().UpdateDNSProvider(this.AdminContext(), &pb.UpdateDNSProviderRequest{
 		DnsProviderId: params.ProviderId,
 		Name:          params.Name,
+		MinTTL:        params.MinTTL,
 		ApiParamsJSON: apiParams.AsJSON(),
 	})
 	if err != nil {
