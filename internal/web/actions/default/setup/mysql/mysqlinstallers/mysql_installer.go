@@ -90,7 +90,7 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 	// ubuntu apt
 	aptGetExe, err := exec.LookPath("apt-get")
 	if err == nil && len(aptGetExe) > 0 {
-		for _, lib := range []string{"libaio1", "libncurses5"} {
+		for _, lib := range []string{"libaio1", "libncurses5", "libnuma1"} {
 			this.log("checking " + lib + " ...")
 			var cmd = utils.NewCmd(aptGetExe, "-y", "install", lib)
 			cmd.WithStderr()
@@ -105,7 +105,11 @@ func (this *MySQLInstaller) InstallFromFile(xzFilePath string, targetDir string)
 				}
 
 				if err != nil {
-					return errors.New("install " + lib + " failed: " + cmd.Stderr())
+					if lib == "libnuma1" {
+						err = nil
+					} else {
+						return errors.New("install " + lib + " failed: " + cmd.Stderr())
+					}
 				}
 			}
 			time.Sleep(1 * time.Second)
