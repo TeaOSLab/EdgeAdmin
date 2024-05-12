@@ -59,6 +59,7 @@ func (this *ProviderAction) RunGet(params struct {
 		"name":         provider.Name,
 		"type":         provider.Type,
 		"typeName":     provider.TypeName,
+		"minTTL":       provider.MinTTL,
 		"apiParams":    apiParams,
 		"localEdgeDNS": localEdgeDNSMap,
 	}
