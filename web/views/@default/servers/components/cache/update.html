@@ -98,7 +98,7 @@
                         <p class="comment">允许在有一部分内容缓存的情况下读取分区内容，剩余的部分将会自动回源读取。</p>
                     </td>
                 </tr>
-                <tr>
+                <tr v-show="false">
                     <td class="color-border">启用MMAP</td>
                     <td>
                         <checkbox name="enableMMAP" v-model="cachePolicy.options.enableMMAP"></checkbox>
