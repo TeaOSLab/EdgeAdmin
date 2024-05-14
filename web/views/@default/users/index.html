@@ -16,10 +16,17 @@
         <div class="ui field">
             <input type="text" placeholder="用户名、全名、手机号..." name="keyword" v-model="keyword"/>
         </div>
+        <div class="ui field" v-show="teaIsPlus">
+            <select class="ui dropdown" name="mobileIsVerified" v-model="mobileIsVerified">
+                <option value="-1">[手机号绑定状态]</option>
+                <option value="1">已绑定</option>
+                <option value="0">未绑定</option>
+            </select>
+        </div>
         <div class="ui field">
             <button type="submit" class="ui button">搜索</button>
             &nbsp;
-            <a :href="'/users?verifying=' + (isVerifying ? 1 : 0)" v-if="keyword.length > 0">[清除条件]</a>
+            <a :href="'/users?verifying=' + (isVerifying ? 1 : 0)" v-if="keyword.length > 0 || mobileIsVerified != -1">[清除条件]</a>
         </div>
     </div>
 </form>
@@ -31,9 +38,10 @@
 			<th>用户名</th>
 			<th>全名</th>
             <th>关联集群</th>
-			<th>手机号</th>
+            <th>绑定手机号</th>
+			<th v-if="windowWidth > columnWidth1">联系手机号</th>
 			<th>注册时间</th>
-			<th class="center width10">状态</th>
+			<th class="center" style="width: 6em">状态</th>
 			<th class="two op">操作</th>
 		</tr>
 	</thead>
@@ -60,6 +68,10 @@
             <span v-else class="disabled">-</span>
         </td>
         <td :class="{disabled:!user.isOn}">
+            <span v-if="user.verifiedMobile.length > 0">{{user.verifiedMobile}}</span>
+            <span v-else class="disabled">-</span>
+        </td>
+        <td :class="{disabled:!user.isOn}" v-if="windowWidth > columnWidth1">
             <span v-if="user.mobile.length > 0"><keyword :v-word="keyword">{{user.mobile}}</keyword></span>
             <span v-else class="disabled">-</span>
         </td>

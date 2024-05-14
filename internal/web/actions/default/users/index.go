@@ -16,11 +16,13 @@ func (this *IndexAction) Init() {
 }
 
 func (this *IndexAction) RunGet(params struct {
-	Keyword   string
-	Verifying bool
+	Keyword          string
+	Verifying        bool
+	MobileIsVerified int32 `default:"-1"`
 }) {
 	this.Data["keyword"] = params.Keyword
 	this.Data["isVerifying"] = params.Verifying
+	this.Data["mobileIsVerified"] = params.MobileIsVerified
 
 	// 未审核的总数量
 	countVerifyingUsersResp, err := this.RPC().UserRPC().CountAllEnabledUsers(this.AdminContext(), &pb.CountAllEnabledUsersRequest{
@@ -34,8 +36,9 @@ func (this *IndexAction) RunGet(params struct {
 
 	// 当前匹配的数量
 	countResp, err := this.RPC().UserRPC().CountAllEnabledUsers(this.AdminContext(), &pb.CountAllEnabledUsersRequest{
-		Keyword:     params.Keyword,
-		IsVerifying: params.Verifying,
+		Keyword:          params.Keyword,
+		IsVerifying:      params.Verifying,
+		MobileIsVerified: params.MobileIsVerified,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -46,10 +49,11 @@ func (this *IndexAction) RunGet(params struct {
 	this.Data["page"] = page.AsHTML()
 
 	usersResp, err := this.RPC().UserRPC().ListEnabledUsers(this.AdminContext(), &pb.ListEnabledUsersRequest{
-		Keyword:     params.Keyword,
-		IsVerifying: params.Verifying,
-		Offset:      page.Offset,
-		Size:        page.Size,
+		Keyword:          params.Keyword,
+		IsVerifying:      params.Verifying,
+		MobileIsVerified: params.MobileIsVerified,
+		Offset:           page.Offset,
+		Size:             page.Size,
 	})
 	if err != nil {
 		this.ErrorPage(err)
@@ -86,6 +90,7 @@ func (this *IndexAction) RunGet(params struct {
 			"isVerified":          user.IsVerified,
 			"isRejected":          user.IsRejected,
 			"identityIsSubmitted": identityIsSubmitted,
+			"verifiedMobile":      user.VerifiedMobile,
 		})
 	}
 	this.Data["users"] = userMaps
