@@ -2007,8 +2007,8 @@ Vue.component("traffic-map-box",{props:["v-stats","v-is-attack"],mounted:functio
 <td>人机识别验证方式</td>
 <td>
 <select class="ui dropdown auto-width" v-model="firewall.defaultCaptchaType"><option value="none">默认</option><option v-for="captchaType in captchaTypes" v-if="captchaType.code != 'geetest' || geeTestIsOn" :value="captchaType.code">{{captchaType.name}}</option></select>
-<p class="comment" v-if="firewall.defaultCaptchaType == 'none'">使用系统默认的设置。</p>
-<p class="comment" v-for="captchaType in captchaTypes" v-if="captchaType.code == firewall.defaultCaptchaType">{{captchaType.description}}</p>
+<p class="comment" v-if="firewall.defaultCaptchaType == 'none'">使用系统默认的设置。你需要在入站规则中添加规则集来决定哪些请求需要人机识别验证。</p>
+<p class="comment" v-for="captchaType in captchaTypes" v-if="captchaType.code == firewall.defaultCaptchaType">{{captchaType.description}}你需要在入站规则中添加规则集来决定哪些请求需要人机识别验证。</p>
 </td>
 </tr>
 <tr>
@@ -5746,7 +5746,7 @@ WAF -
 </span>
 </span>
 <span v-if="vItem.eventLevelName != null && vItem.eventLevelName.length > 0">&nbsp; 级别：{{vItem.eventLevelName}}</span>
-</span>`}),Vue.component("ip-box",{props:["v-ip"],methods:{popup:function(){let e=this.vIp;var t;null!=e&&0!=e.length||(t=this.$refs.container,null==(e=t.innerText)&&(e=t.textContent)),teaweb.popup("/servers/ipbox?ip="+e,{width:"50em",height:"30em"})}},template:'<span @click.prevent="popup()" ref="container"><slot></slot></span>'}),Vue.component("sms-sender",{props:["value","name"],mounted:function(){this.initType(this.config.type)},data:function(){let e=this.value;return{config:e=null==e?{isOn:!1,type:"webHook",webHookParams:{url:"",method:"POST"}}:e}},watch:{"config.type":function(e){this.initType(e)}},methods:{initType:function(e){"webHook"===e&&null==this.config.webHookParams&&(this.config.webHookParams={url:"",method:"POST"})},test:function(){window.TESTING_SMS_CONFIG=this.config,teaweb.popup("/users/setting/smsTest",{height:"22em"})}},template:`<div>
+</span>`}),Vue.component("ip-box",{props:["v-ip"],methods:{popup:function(){let e=this.vIp;var t;null!=e&&0!=e.length||(t=this.$refs.container,null==(e=t.innerText)&&(e=t.textContent)),teaweb.popup("/servers/ipbox?ip="+e,{width:"50em",height:"30em"})}},template:'<span @click.prevent="popup()" ref="container"><slot></slot></span>'}),Vue.component("sms-sender",{props:["value","name"],mounted:function(){this.initType(this.config.type)},data:function(){let e=this.value;return null==(e=null==e?{isOn:!1,type:"webHook",webHookParams:{url:"",method:"POST"},aliyunSMSParams:{sign:"",templateCode:"",codeVarName:"code",accessKeyId:"",accessKeySecret:""},tencentSMSParams:{sdkAppId:"",sign:"",templateId:"",accessKeyId:"",accessKeySecret:""}}:e).aliyunSMSParams&&Vue.set(e,"aliyunSMSParams",{sign:"",templateCode:"",codeVarName:"code",accessKeyId:"",accessKeySecret:""}),null==e.tencentSMSParams&&Vue.set(e,"tencentSMSParams",{sdkAppId:"",sign:"",templateId:"",accessKeyId:"",accessKeySecret:""}),{config:e}},watch:{"config.type":function(e){this.initType(e)}},methods:{initType:function(e){"webHook"===e&&null==this.config.webHookParams&&(this.config.webHookParams={url:"",method:"POST"})},test:function(){window.TESTING_SMS_CONFIG=this.config,teaweb.popup("/users/setting/smsTest",{height:"22em"})}},template:`<div>
 <input type="hidden" :name="name" :value="JSON.stringify(config)">
 <table class="ui table selectable definition">
 <tbody>
@@ -5759,23 +5759,94 @@ WAF -
 <tr>
 <td>发送渠道</td>
 <td>
-<select class="ui dropdown auto-width" v-model="config.type"><option value="webHook">WebHook</option></select>
-<p class="comment" v-if="config.type">通过WebHook的方式调用你的自定义发送短信接口。</p>
+<select class="ui dropdown auto-width" v-model="config.type"><option value="webHook">自定义HTTP接口</option><option value="aliyunSMS">阿里云短信</option><option value="tencentSMS">腾讯云短信</option></select>
+<p class="comment" v-if="config.type == 'webHook'">通过HTTP接口的方式调用你的自定义发送短信接口。</p>
+<p class="comment" v-if="config.type == 'aliyunSMS'">通过阿里云短信服务发送短信接口；<strong>目前仅支持发送验证码</strong>。</p>
+<p class="comment" v-if="config.type == 'tencentSMS'">通过腾讯云短信服务发送短信接口；<strong>目前仅支持发送验证码</strong>。</p>
 </td>
 </tr>
 <tr v-if="config.type == 'webHook' && config.webHookParams != null">
-<td class="color-border">WebHook URL地址 *</td>
+<td class="color-border">HTTP接口的URL地址 *</td>
 <td>
 <input type="text" maxlength="100" placeholder="https://..." v-model="config.webHookParams.url">
 <p class="comment">接收发送短信请求的URL，必须以<code-label>http://</code-label>或<code-label>https://</code-label>开头。</p>
 </td>
 </tr>
 <tr v-if="config.type == 'webHook' && config.webHookParams != null">
-<td class="color-border">WebHook请求方法</td>
+<td class="color-border">HTTP接口的请求方法</td>
 <td>
 <select class="ui dropdown auto-width" v-model="config.webHookParams.method"><option value="GET">GET</option><option value="POST">POST</option></select>
-<p class="comment" v-if="config.webHookParams.method == 'GET'">以在URL参数中加入mobile、body和code三个参数（<code-label>YOUR_WEB_HOOK_URL?mobile=手机号&amp;body=短信内容&code=验证码</code-label>)的方式调用你的WebHook URL地址；状态码返回200表示成功。</p>
-<p class="comment" v-if="config.webHookParams.method == 'POST'">通过POST表单发送mobile、body和code三个参数（<code-label>mobile=手机号&amp;body=短信内容&code=验证码</code-label>）的方式调用你的WebHook URL地址；状态码返回200表示成功。</p>
+<p class="comment" v-if="config.webHookParams.method == 'GET'">以在URL参数中加入mobile、body和code三个参数（<code-label>YOUR_API_URL?mobile=手机号&amp;body=短信内容&code=验证码</code-label>)的方式调用你的HTTP接口的URL地址；状态码返回200表示成功。</p>
+<p class="comment" v-if="config.webHookParams.method == 'POST'">通过POST表单发送mobile、body和code三个参数（<code-label>mobile=手机号&amp;body=短信内容&code=验证码</code-label>）的方式调用你的HTTP接口URL地址；状态码返回200表示成功。</p>
+</td>
+</tr>
+<tr v-if="config.type == 'aliyunSMS'">
+<td class="color-border">签名名称 *</td>
+<td><input type="text" v-model="config.aliyunSMSParams.sign" maxlength="12">
+<p class="comment">在阿里云短信服务 “签名管理” 中添加并通过审核后才能使用。</p>
+</td>
+</tr>
+<tr v-if="config.type == 'aliyunSMS'">
+<td class="color-border">模板CODE *</td>
+<td>
+<input type="text" v-model="config.aliyunSMSParams.templateCode" maxlength="30">
+<p class="comment">在阿里云短信服务 “模板管理” 中添加并通过审核后才能使用。</p>
+</td>
+</tr>
+<tr v-if="config.type == 'aliyunSMS'">
+<td class="color-border">模板中验证码变量名称 *</td>
+<td>
+<input type="text" v-model="config.aliyunSMSParams.codeVarName" maxlength="30">
+<p class="comment">默认为<code-label>code</code-label>，不需要带\${}等符号，即表示在模板中使用<code-label>\${<span>{{ config.aliyunSMSParams.codeVarName }}</span>}</code-label>代表要发送的验证码。</p>
+</td>
+</tr>
+<tr v-if="config.type == 'aliyunSMS'">
+<td class="color-border">AccessKey ID *</td>
+<td>
+<input type="text" v-model="config.aliyunSMSParams.accessKeyId" maxlength="100">
+<p class="comment">在阿里云 -- RAM访问控制 -- AccessKey中可以创建和获取。</p>
+</td>
+</tr>
+<tr v-if="config.type == 'aliyunSMS'">
+<td class="color-border">AccessKey Secret *</td>
+<td>
+<input type="text" v-model="config.aliyunSMSParams.accessKeySecret" maxlength="100">
+<p class="comment">和表单中的AccessKey ID对应，在阿里云 -- RAM访问控制 -- AccessKey中可以创建和获取。</p>
+</td>
+</tr>
+<tr v-if="config.type == 'tencentSMS'">
+<td>SDK应用ID *</td>
+<td>
+<input type="text" v-model="config.tencentSMSParams.sdkAppId" maxlength="30">
+<p class="comment">在腾讯云 -- 短信 -- 应用管理 -- 应用列表中可以查看。</p>
+</td>
+</tr>
+<tr v-if="config.type == 'tencentSMS'">
+<td>签名内容 *</td>
+<td>
+<input type="text" v-model="config.tencentSMSParams.sign" maxlength="12">
+<p class="comment">比如“腾讯云”，在腾讯云 -- 短信 -- 签名管理中可以查看。</p>
+</td>
+</tr>
+<tr v-if="config.type == 'tencentSMS'">
+<td>正文模板ID *</td>
+<td>
+<input type="text" v-model="config.tencentSMSParams.templateId" maxlength="50">
+<p class="comment">在腾讯云 -- 短信 -- 正文模板管理中可以查看。</p>
+</td>
+</tr>
+<tr v-if="config.type == 'tencentSMS'">
+<td>密钥SecretId *</td>
+<td>
+<input type="text" v-model="config.tencentSMSParams.accessKeyId">
+<p class="comment">同SecretKey一同在腾讯云 -- 访问管理 -- API密钥管理中获取。</p>
+</td>
+</tr>
+<tr v-if="config.type == 'tencentSMS'">
+<td>密钥SecretKey *</td>
+<td>
+<input type="text" v-model="config.tencentSMSParams.accessKeySecret">
+<p class="comment">同SecretId一同在腾讯云 -- 访问管理 -- API密钥管理中获取。</p>
 </td>
 </tr>
 <tr>
