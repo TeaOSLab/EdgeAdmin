@@ -7,6 +7,8 @@
 	<menu-item @click.prevent="createUser">[创建用户]</menu-item>
 </first-menu>
 
+<warning-message v-if="!teaIsPlus">当前系统为免费版本，这里的平台用户仅作为登记用途，无法登录系统。</warning-message>
+
 <div class="margin"></div>
 <form class="ui form" action="/users" method="get">
     <input type="hidden" name="verifying" :value="isVerifying ? 1 : 0"/>
