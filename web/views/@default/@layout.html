@@ -31,7 +31,7 @@
     <!-- 顶部导航 -->
     <div class="ui menu top-nav blue inverted small borderless" :class="(teaTheme == null || teaTheme.length == 0) ? 'theme2': teaTheme" v-cloak="">
         <a href="/" class="item">
-			<i class="ui icon leaf" v-if="teaLogoFileId == 0"></i><img v-if="teaLogoFileId > 0" :src="'/ui/image/' + teaLogoFileId" style="width: auto;height: 1.6em"/> &nbsp; {{teaTitle}}&nbsp;<sup v-if="teaShowVersion">v{{teaVersion}}</sup> &nbsp;
+			<i class="ui icon leaf" v-if="teaLogoFileId == 0"></i><img alt="logo" v-if="teaLogoFileId > 0" :src="'/ui/image/' + teaLogoFileId" style="width: auto;height: 1.6em"/> &nbsp; {{teaTitle}}&nbsp;<sup v-if="teaShowVersion">v{{teaVersion}}<span v-if="teaVersion.split('.').length == 4" title="当前版本为测试版，再次感谢您参与测试"> beta</span></sup> &nbsp;
 		</a>
 
         <div class="right menu">
