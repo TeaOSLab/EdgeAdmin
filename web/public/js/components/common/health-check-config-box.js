@@ -238,7 +238,7 @@ Vue.component("health-check-config-box", {
 			</td>
 		</tr>
 		<tr>
-			<td>自动下线<span v-if="vIsPlus">IP</span></td>
+			<td>自动上/下线<span v-if="vIsPlus">IP</span></td>
 			<td>
 				<div class="ui checkbox">
 					<input type="checkbox" value="1" v-model="healthCheck.autoDown"/>
