@@ -33,7 +33,7 @@
                             <radio name="authType" :v-value="'dns'" v-model="authType">使用DNS认证</radio>
                         </div>
                         <div v-if="authType == 'http'">
-                            <p class="comment">使用HTTP的方式请求网址<code-label>/.well-known/acme-challenge/令牌</code-label>校验，该方式要求需要实现将域名解析到集群上，之后系统会自动生成网址信息。</p>
+                            <p class="comment">使用HTTP认证的方式请求网址<code-label>/.well-known/acme-challenge/令牌</code-label>校验，该方式要求需要实现将域名解析到集群上，之后系统会自动生成网址信息；这种方式不支持泛域名证书的申请。</p>
                         </div>
                         <div v-if="authType == 'dns'">
                             <p class="comment">我们在申请免费证书的过程中需要自动增加或修改相关域名的TXT记录，请先确保你已经在"域名解析" -- <a href="/dns/providers" target="_blank">"DNS服务商"</a> 中已经添加了对应的DNS服务商账号。</p>
