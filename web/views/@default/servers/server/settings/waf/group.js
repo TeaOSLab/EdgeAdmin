@@ -32,7 +32,7 @@ Tea.context(function () {
 	// 更改分组
 	this.updateGroup = function (groupId) {
 		teaweb.popup("/servers/components/waf/updateGroupPopup?groupId=" + groupId, {
-			height: "16em",
+			height: "20em",
 			callback: function () {
 				teaweb.success("保存成功", function () {
 					window.location.reload()
