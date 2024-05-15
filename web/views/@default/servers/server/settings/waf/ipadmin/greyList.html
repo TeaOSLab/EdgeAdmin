@@ -16,7 +16,7 @@
         <span class="item">ID: {{listId}} &nbsp; <tip-icon content="ID可以用于使用API操作此IP名单；灰名单中的IP仅作为记录和观察使用，不影响黑名单和白名单的作用。"></tip-icon></span>
     </second-menu>
 
-    <warning-message v-if="!wafIsOn">当前WAF未启用，设置将在<a :href="'/servers/server/settings/waf?serverId=' + serverId">[启用]</a>后生效。</warning-message>
+    <warning-message v-if="!wafIsOn">当前WAF未启用，设置将在<a :href="'/servers/server/settings/waf?serverId=' + serverId">[启用Web防火墙]</a>后生效。</warning-message>
 
     <p class="comment" v-if="items.length == 0">暂时还没有IP。</p>
     <ip-list-table v-if="items.length > 0" :v-items="items" @update-item="updateItem" @delete-item="deleteItem"></ip-list-table>
