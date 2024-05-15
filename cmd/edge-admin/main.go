@@ -159,6 +159,9 @@ func main() {
 			for range ticker.C {
 				if manager.IsDownloading() {
 					if !isStarted {
+						if len(manager.NewVersion()) == 0 {
+							continue
+						}
 						log.Println("start downloading v" + manager.NewVersion() + " ...")
 						isStarted = true
 					}
