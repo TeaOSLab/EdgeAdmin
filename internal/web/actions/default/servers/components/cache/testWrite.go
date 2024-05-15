@@ -1,6 +1,7 @@
 package cache
 
-import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/nodeutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/messageconfigs"
@@ -42,7 +43,7 @@ func (this *TestWriteAction) RunPost(params struct {
 		Value:           []byte(params.Value),
 		LifeSeconds:     3600,
 	}
-	results, err := nodeutils.SendMessageToCluster(this.AdminContext(), params.ClusterId, messageconfigs.MessageCodeWriteCache, msg, 10)
+	results, err := nodeutils.SendMessageToCluster(this.AdminContext(), params.ClusterId, messageconfigs.MessageCodeWriteCache, msg, 10, false)
 	if err != nil {
 		this.ErrorPage(err)
 		return

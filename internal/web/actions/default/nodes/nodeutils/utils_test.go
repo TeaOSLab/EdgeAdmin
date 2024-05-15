@@ -14,7 +14,7 @@ func TestSendMessageToCluster(t *testing.T) {
 	}
 	ctx := rpcClient.Context(1)
 
-	results, err := SendMessageToCluster(ctx, 1, "test", nil, 30)
+	results, err := SendMessageToCluster(ctx, 1, "test", nil, 30, false)
 	if err != nil {
 		t.Fatal(err)
 	}
