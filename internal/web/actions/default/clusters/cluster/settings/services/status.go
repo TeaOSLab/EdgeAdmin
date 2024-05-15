@@ -26,7 +26,7 @@ func (this *StatusAction) RunPost(params struct {
 
 	Must *actions.Must
 }) {
-	results, err := nodeutils.SendMessageToCluster(this.AdminContext(), params.ClusterId, messageconfigs.MessageCodeCheckSystemdService, &messageconfigs.CheckSystemdServiceMessage{}, 10)
+	results, err := nodeutils.SendMessageToCluster(this.AdminContext(), params.ClusterId, messageconfigs.MessageCodeCheckSystemdService, &messageconfigs.CheckSystemdServiceMessage{}, 10, false)
 	if err != nil {
 		this.ErrorPage(err)
 		return

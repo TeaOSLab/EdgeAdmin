@@ -1,6 +1,7 @@
 package cache
 
-import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/nodes/nodeutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/messageconfigs"
@@ -73,7 +74,7 @@ func (this *StatAction) RunPost(params struct {
 	msg := &messageconfigs.StatCacheMessage{
 		CachePolicyJSON: cachePolicyJSON,
 	}
-	results, err := nodeutils.SendMessageToCluster(this.AdminContext(), params.ClusterId, messageconfigs.MessageCodeStatCache, msg, 10)
+	results, err := nodeutils.SendMessageToCluster(this.AdminContext(), params.ClusterId, messageconfigs.MessageCodeStatCache, msg, 10, false)
 	if err != nil {
 		this.ErrorPage(err)
 		return

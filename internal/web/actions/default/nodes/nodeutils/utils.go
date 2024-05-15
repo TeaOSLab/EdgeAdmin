@@ -20,7 +20,7 @@ type MessageResult struct {
 }
 
 // SendMessageToCluster 向集群发送命令消息
-func SendMessageToCluster(ctx context.Context, clusterId int64, code string, msg interface{}, timeoutSeconds int32) (results []*MessageResult, err error) {
+func SendMessageToCluster(ctx context.Context, clusterId int64, code string, msg any, timeoutSeconds int32, availableNodesOnly bool) (results []*MessageResult, err error) {
 	results = []*MessageResult{}
 
 	msgJSON, err := json.Marshal(msg)
@@ -41,9 +41,20 @@ func SendMessageToCluster(ctx context.Context, clusterId int64, code string, msg
 	if err != nil {
 		return results, err
 	}
-	nodes := nodesResp.Nodes
+	var nodes = nodesResp.Nodes
 	if len(nodes) == 0 {
 		return results, nil
+	}
+
+	if availableNodesOnly {
+		var newNodes []*pb.Node
+		for _, node := range nodes {
+			if !node.IsOn {
+				continue
+			}
+			newNodes = append(newNodes, node)
+		}
+		nodes = newNodes
 	}
 
 	var rpcMap = map[int64]*rpc.RPCClient{} // apiNodeId => RPCClient
@@ -54,6 +65,19 @@ func SendMessageToCluster(ctx context.Context, clusterId int64, code string, msg
 
 	for _, node := range nodes {
 		// TODO 检查是否在线
+
+		if !node.IsOn {
+			locker.Lock()
+			results = append(results, &MessageResult{
+				NodeId:   node.Id,
+				NodeName: node.Name,
+				IsOK:     false,
+				Message:  "节点尚未启用",
+			})
+			locker.Unlock()
+			wg.Done()
+			continue
+		}
 
 		if len(node.ConnectedAPINodeIds) == 0 {
 			locker.Lock()
