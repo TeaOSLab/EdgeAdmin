@@ -265,6 +265,7 @@ func (this *IndexAction) RunPost(params struct {
 
 // 检查登录区域
 func (this *IndexAction) checkRegion() bool {
+	return true // 暂时不限制
 	var ip = loginutils.RemoteIP(&this.ActionObject)
 	var result = iplibrary.LookupIP(ip)
 	if result != nil && result.IsOk() && result.CountryId() > 0 && lists.ContainsInt64([]int64{9, 10}, result.CountryId()) {
