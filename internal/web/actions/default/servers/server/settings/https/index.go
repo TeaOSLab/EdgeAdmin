@@ -147,7 +147,9 @@ func (this *IndexAction) RunGet(params struct {
 				missingServerNames = append(missingServerNames, serverName)
 			}
 		}
-		this.Data["missingCertServerNames"] = missingServerNames
+		if len(missingServerNames) > 0 {
+			this.Data["missingCertServerNames"] = missingServerNames
+		}
 	}
 
 	this.Show()
