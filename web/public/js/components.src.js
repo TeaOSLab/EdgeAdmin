@@ -203,25 +203,25 @@ Vue.component("traffic-map-box", {
 		}
 	},
 	template: `<div>
-<table style="width: 100%; border: 0; padding: 0; margin: 0">
-<tbody>
-<tr>
-<td>
-<div class="traffic-map-box" id="traffic-map-box"></div>
-</td>
-<td style="width: 14em" v-if="!screenIsNarrow">
-<traffic-map-box-table :v-stats="stats" :v-is-attack="isAttack" @select="select"></traffic-map-box-table>
-</td>
-</tr>
-</tbody>
-<tbody v-if="screenIsNarrow">
-<tr>
-<td colspan="2">
-<traffic-map-box-table :v-stats="stats" :v-is-attack="isAttack" :v-screen-is-narrow="true" @select="select"></traffic-map-box-table>
-</td>
-</tr>
-</tbody>
-</table>
+	<table style="width: 100%; border: 0; padding: 0; margin: 0">
+		<tbody>
+       	<tr>
+           <td>
+               <div class="traffic-map-box" id="traffic-map-box"></div>
+           </td>
+           <td style="width: 14em" v-if="!screenIsNarrow">
+           		<traffic-map-box-table :v-stats="stats" :v-is-attack="isAttack" @select="select"></traffic-map-box-table>
+           </td>
+       </tr>
+       </tbody>
+       <tbody v-if="screenIsNarrow">
+		   <tr>
+				<td colspan="2">
+					<traffic-map-box-table :v-stats="stats" :v-is-attack="isAttack" :v-screen-is-narrow="true" @select="select"></traffic-map-box-table>
+				</td>
+			</tr>
+		</tbody>
+   </table>
 </div>`
 })
 
@@ -239,32 +239,32 @@ Vue.component("traffic-map-box-table", {
 		}
 	},
 	template: `<div style="overflow-y: auto" :style="{'max-height':vScreenIsNarrow ? 'auto' : '16em'}" class="narrow-scrollbar">
-<table class="ui table selectable">
-<thead>
-<tr>
-<th colspan="2">国家/地区排行&nbsp; <tip-icon content="只有开启了统计的网站才会有记录。"></tip-icon></th>
-</tr>
-</thead>
-<tbody v-if="stats.length == 0">
-<tr>
-<td colspan="2">暂无数据</td>
-</tr>
-</tbody>
-<tbody>
-<tr v-for="(stat, index) in stats.slice(0, 10)">
-<td @click.prevent="select(stat.name)" style="cursor: pointer" colspan="2">
-<div class="ui progress bar" :class="{red: vIsAttack, blue:!vIsAttack}" style="margin-bottom: 0.3em">
-<div class="bar" style="min-width: 0; height: 4px;" :style="{width: stat.percent + '%'}"></div>
-</div>
-<div>{{stat.name}}</div>
-<div><span class="grey">{{stat.percent}}% </span>
-<span class="small grey" v-if="isAttack">{{stat.formattedCountAttackRequests}}</span>
-<span class="small grey" v-if="!isAttack">（{{stat.formattedBytes}}）</span></div>
-</td>
-</tr>
-</tbody>
-</table>
-</div>`
+	   <table class="ui table selectable">
+		  <thead>
+			<tr>
+				<th colspan="2">国家/地区排行&nbsp; <tip-icon content="只有开启了统计的网站才会有记录。"></tip-icon></th>
+			</tr>
+		  </thead>
+		   <tbody v-if="stats.length == 0">
+			   <tr>
+				   <td colspan="2">暂无数据</td>
+			   </tr>
+		   </tbody>
+		   <tbody>
+			   <tr v-for="(stat, index) in stats.slice(0, 10)">
+				   <td @click.prevent="select(stat.name)" style="cursor: pointer" colspan="2">
+					   <div class="ui progress bar" :class="{red: vIsAttack, blue:!vIsAttack}" style="margin-bottom: 0.3em">
+						   <div class="bar" style="min-width: 0; height: 4px;" :style="{width: stat.percent + '%'}"></div>
+					   </div>
+					  <div>{{stat.name}}</div> 
+					   <div><span class="grey">{{stat.percent}}% </span>
+					   <span class="small grey" v-if="isAttack">{{stat.formattedCountAttackRequests}}</span>
+					   <span class="small grey" v-if="!isAttack">（{{stat.formattedBytes}}）</span></div>
+				   </td>
+			   </tr>
+		   </tbody>
+	   </table>
+   </div>`
 })
 
 Vue.component("ddos-protection-ports-config-box", {
@@ -351,35 +351,35 @@ Vue.component("ddos-protection-ports-config-box", {
 		}
 	},
 	template: `<div>
-<div v-if="ports.length > 0">
-<div class="ui label basic tiny" v-for="(portConfig, index) in ports">
-{{portConfig.port}} <span class="grey small" v-if="portConfig.description.length > 0">（{{portConfig.description}}）</span> <a href @click.prevent="remove(index)" title="删除"><i class="icon remove"></i></a>
-</div>
-<div class="ui divider"></div>
-</div>
-<div v-if="isAdding">
-<div class="ui fields inline">
-<div class="ui field">
-<div class="ui input left labeled">
-<span class="ui label">端口</span>
-<input type="text" v-model="addingPort.port" ref="addingPortInput" maxlength="5" size="5" placeholder="端口号" @keyup.enter="confirm" @keypress.enter.prevent="1">
-</div>
-</div>
-<div class="ui field">
-<div class="ui input left labeled">
-<span class="ui label">备注</span>
-<input type="text" v-model="addingPort.description" maxlength="12" size="12" placeholder="备注（可选）" @keyup.enter="confirm" @keypress.enter.prevent="1">
-</div>
-</div>
-<div class="ui field">
-<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button>
-&nbsp;<a href @click.prevent="cancel()">取消</a>
-</div>
-</div>
-</div>
-<div v-if="!isAdding">
-<button class="ui button tiny" type="button" @click.prevent="add">+</button>
-</div>
+	<div v-if="ports.length > 0">
+		<div class="ui label basic tiny" v-for="(portConfig, index) in ports">
+			{{portConfig.port}} <span class="grey small" v-if="portConfig.description.length > 0">（{{portConfig.description}}）</span> <a href="" @click.prevent="remove(index)" title="删除"><i class="icon remove"></i></a>
+		</div>
+		<div class="ui divider"></div>
+	</div>
+	<div v-if="isAdding">
+		<div class="ui fields inline">
+			<div class="ui field">
+				<div class="ui input left labeled">
+					<span class="ui label">端口</span>
+					<input type="text" v-model="addingPort.port" ref="addingPortInput" maxlength="5" size="5" placeholder="端口号" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+				</div>
+			</div>
+			<div class="ui field">
+				<div class="ui input left labeled">
+					<span class="ui label">备注</span>
+					<input type="text" v-model="addingPort.description" maxlength="12" size="12" placeholder="备注（可选）" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+				</div>
+			</div>
+			<div class="ui field">
+				<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button>
+				&nbsp;<a href="" @click.prevent="cancel()">取消</a>
+			</div>
+		</div>
+	</div>
+	<div v-if="!isAdding">
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	</div>
 </div>`
 })
 
@@ -404,14 +404,14 @@ Vue.component("node-clusters-labels", {
 		}
 	},
 	template: `<div>
-<a v-if="cluster != null" :href="'/clusters/cluster?clusterId=' + cluster.id" title="主集群" style="margin-bottom: 0.3em;">
-<span class="ui label basic grey" :class="labelSize" v-if="labelSize != 'tiny'">{{cluster.name}}</span>
-<grey-label v-if="labelSize == 'tiny'">{{cluster.name}}</grey-label>
-</a>
-<a v-for="c in secondaryClusters" :href="'/clusters/cluster?clusterId=' + c.id" :class="labelSize" title="从集群">
-<span class="ui label basic grey" :class="labelSize" v-if="labelSize != 'tiny'">{{c.name}}</span>
-<grey-label v-if="labelSize == 'tiny'">{{c.name}}</grey-label>
-</a>
+	<a v-if="cluster != null" :href="'/clusters/cluster?clusterId=' + cluster.id" title="主集群" style="margin-bottom: 0.3em;">
+		<span class="ui label basic grey" :class="labelSize" v-if="labelSize != 'tiny'">{{cluster.name}}</span>
+		<grey-label v-if="labelSize == 'tiny'">{{cluster.name}}</grey-label>
+	</a>
+	<a v-for="c in secondaryClusters" :href="'/clusters/cluster?clusterId=' + c.id" :class="labelSize" title="从集群">
+		<span class="ui label basic grey" :class="labelSize" v-if="labelSize != 'tiny'">{{c.name}}</span>
+		<grey-label v-if="labelSize == 'tiny'">{{c.name}}</grey-label>
+	</a>
 </div>`
 })
 
@@ -438,7 +438,10 @@ Vue.component("cluster-selector", {
 		}
 	},
 	template: `<div>
-<select class="ui dropdown" style="max-width: 10em" name="clusterId" v-model="clusterId"><option value="0">[选择集群]</option><option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option></select>
+	<select class="ui dropdown" style="max-width: 10em" name="clusterId" v-model="clusterId">
+		<option value="0">[选择集群]</option>
+		<option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
+	</select>
 </div>`
 })
 
@@ -497,96 +500,101 @@ Vue.component("node-ddos-protection-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="ddosProtectionJSON" :value="JSON.stringify(config)">
-<p class="comment">功能说明：此功能为<strong>试验性质</strong>，目前仅能防御简单的DDoS攻击，试验期间建议仅在被攻击时启用，仅支持已安装<code-label>nftables v0.9</code-label>以上的Linux系统。<pro-warning-label></pro-warning-label></p>
-<div class="ui message" v-if="vClusterIsOn">当前节点所在集群已设置DDoS防护。</div>
-<h4>TCP设置</h4>
-<table class="ui table definition selectable">
-<prior-checkbox :v-config="config.tcp" v-if="isNode"></prior-checkbox>
-<tbody v-show="config.tcp.isPrior || !isNode">
-<tr>
-<td class="title">启用DDoS防护</td>
-<td>
-<checkbox v-model="config.tcp.isOn"></checkbox>
-</td>
-</tr>
-</tbody>
-<tbody v-show="config.tcp.isOn && (config.tcp.isPrior || !isNode)">
-<tr>
-<td class="title">单节点TCP最大连接数</td>
-<td>
-<digit-input name="tcpMaxConnections" v-model="config.tcp.maxConnections" maxlength="6" size="6" style="width: 6em"></digit-input>
-<p class="comment">单个节点可以接受的TCP最大连接数。如果为0，则默认为{{defaultConfigs.tcpMaxConnections}}。</p>
-</td>
-</tr>
-<tr>
-<td>单IP TCP最大连接数</td>
-<td>
-<digit-input name="tcpMaxConnectionsPerIP" v-model="config.tcp.maxConnectionsPerIP" maxlength="6" size="6" style="width: 6em"></digit-input>
-<p class="comment">单个IP可以连接到节点的TCP最大连接数。如果为0，则默认为{{defaultConfigs.tcpMaxConnectionsPerIP}}；最小值为{{defaultConfigs.tcpMinConnectionsPerIP}}。</p>
-</td>
-</tr>
-<tr>
-<td>单IP TCP新连接速率<em>（分钟）</em></td>
-<td>
-<div class="ui fields inline">
-<div class="ui field">
-<div class="ui input right labeled">
-<digit-input name="tcpNewConnectionsRate" v-model="config.tcp.newConnectionsRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpNewConnectionsMinRate"></digit-input>
-<span class="ui label">个新连接/每分钟</span>
-</div>
-</div>
-<div class="ui field" style="line-height: 2.4em">
-屏蔽
-</div>
-<div class="ui field">
-<div class="ui input right labeled">
-<digit-input name="tcpNewConnectionsRateBlockTimeout" v-model="config.tcp.newConnectionsRateBlockTimeout" maxlength="6" size="6" style="width: 5em"></digit-input>
-<span class="ui label">秒</span>
-</div>
-</div>
-</div>
-<p class="comment">单个IP每分钟可以创建TCP新连接的数量。如果为0，则默认为{{defaultConfigs.tcpNewConnectionsMinutelyRate}}；最小值为{{defaultConfigs.tcpNewConnectionsMinMinutelyRate}}。如果没有填写屏蔽时间，则只丢弃数据包。</p>
-</td>
-</tr>
-<tr>
-<td>单IP TCP新连接速率<em>（秒钟）</em></td>
-<td>
-<div class="ui fields inline">
-<div class="ui field">
-<div class="ui input right labeled">
-<digit-input name="tcpNewConnectionsSecondlyRate" v-model="config.tcp.newConnectionsSecondlyRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpNewConnectionsMinRate"></digit-input>
-<span class="ui label">个新连接/每秒钟</span>
-</div>
-</div>
-<div class="ui field" style="line-height: 2.4em">
-屏蔽
-</div>
-<div class="ui field">
-<div class="ui input right labeled">
-<digit-input name="tcpNewConnectionsSecondlyRateBlockTimeout" v-model="config.tcp.newConnectionsSecondlyRateBlockTimeout" maxlength="6" size="6" style="width: 5em"></digit-input>
-<span class="ui label">秒</span>
-</div>
-</div>
-</div>
-<p class="comment">单个IP每秒钟可以创建TCP新连接的数量。如果为0，则默认为{{defaultConfigs.tcpNewConnectionsSecondlyRate}}；最小值为{{defaultConfigs.tcpNewConnectionsMinSecondlyRate}}。如果没有填写屏蔽时间，则只丢弃数据包。</p>
-</td>
-</tr>
-<tr>
-<td>TCP端口列表</td>
-<td>
-<ddos-protection-ports-config-box :v-ports="config.tcp.ports" @change="changeTCPPorts"></ddos-protection-ports-config-box>
-<p class="comment">在这些端口上使用当前配置。默认为80和443两个端口。</p>
-</td>
-</tr>
-<tr>
-<td>IP白名单</td>
-<td>
-<ddos-protection-ip-list-config-box :v-ip-list="config.tcp.allowIPList" @change="changeTCPAllowIPList"></ddos-protection-ip-list-config-box>
-<p class="comment">在白名单中的IP不受当前设置的限制。</p>
-</td>
-</tr>
-</tbody>
+ <input type="hidden" name="ddosProtectionJSON" :value="JSON.stringify(config)"/>
+
+ <p class="comment">功能说明：此功能为<strong>试验性质</strong>，目前仅能防御简单的DDoS攻击，试验期间建议仅在被攻击时启用，仅支持已安装<code-label>nftables v0.9</code-label>以上的Linux系统。<pro-warning-label></pro-warning-label></p>
+
+ <div class="ui message" v-if="vClusterIsOn">当前节点所在集群已设置DDoS防护。</div>
+
+ <h4>TCP设置</h4>
+ <table class="ui table definition selectable">
+ 	<prior-checkbox :v-config="config.tcp" v-if="isNode"></prior-checkbox>
+ 	<tbody v-show="config.tcp.isPrior || !isNode">
+		<tr>
+			<td class="title">启用DDoS防护</td>
+			<td>
+				<checkbox v-model="config.tcp.isOn"></checkbox>
+			</td>
+		</tr>
+	</tbody>
+	<tbody v-show="config.tcp.isOn && (config.tcp.isPrior || !isNode)">
+		<tr>
+			<td class="title">单节点TCP最大连接数</td>
+			<td>
+				<digit-input name="tcpMaxConnections" v-model="config.tcp.maxConnections" maxlength="6" size="6" style="width: 6em"></digit-input>
+				<p class="comment">单个节点可以接受的TCP最大连接数。如果为0，则默认为{{defaultConfigs.tcpMaxConnections}}。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>单IP TCP最大连接数</td>
+			<td>
+				<digit-input name="tcpMaxConnectionsPerIP" v-model="config.tcp.maxConnectionsPerIP" maxlength="6" size="6" style="width: 6em"></digit-input>
+				<p class="comment">单个IP可以连接到节点的TCP最大连接数。如果为0，则默认为{{defaultConfigs.tcpMaxConnectionsPerIP}}；最小值为{{defaultConfigs.tcpMinConnectionsPerIP}}。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>单IP TCP新连接速率<em>（分钟）</em></td>
+			<td>
+				<div class="ui fields inline">
+					<div class="ui field">
+						<div class="ui input right labeled">
+							<digit-input name="tcpNewConnectionsRate" v-model="config.tcp.newConnectionsRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpNewConnectionsMinRate"></digit-input>
+							<span class="ui label">个新连接/每分钟</span>
+						</div>
+					</div>
+					<div class="ui field" style="line-height: 2.4em">
+						屏蔽
+					</div>
+					<div class="ui field">
+						<div class="ui input right labeled">
+							<digit-input name="tcpNewConnectionsRateBlockTimeout" v-model="config.tcp.newConnectionsRateBlockTimeout" maxlength="6" size="6" style="width: 5em"></digit-input>
+							<span class="ui label">秒</span>
+						</div>
+					</div>
+				</div>
+				
+				<p class="comment">单个IP每分钟可以创建TCP新连接的数量。如果为0，则默认为{{defaultConfigs.tcpNewConnectionsMinutelyRate}}；最小值为{{defaultConfigs.tcpNewConnectionsMinMinutelyRate}}。如果没有填写屏蔽时间，则只丢弃数据包。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>单IP TCP新连接速率<em>（秒钟）</em></td>
+			<td>
+				<div class="ui fields inline">
+					<div class="ui field">
+						<div class="ui input right labeled">
+							<digit-input name="tcpNewConnectionsSecondlyRate" v-model="config.tcp.newConnectionsSecondlyRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpNewConnectionsMinRate"></digit-input>
+							<span class="ui label">个新连接/每秒钟</span>
+						</div>
+					</div>
+					<div class="ui field" style="line-height: 2.4em">
+						屏蔽
+					</div>
+					<div class="ui field">
+						<div class="ui input right labeled">
+							<digit-input name="tcpNewConnectionsSecondlyRateBlockTimeout" v-model="config.tcp.newConnectionsSecondlyRateBlockTimeout" maxlength="6" size="6" style="width: 5em"></digit-input>
+							<span class="ui label">秒</span>
+						</div>
+					</div>
+				</div>
+				
+				<p class="comment">单个IP每秒钟可以创建TCP新连接的数量。如果为0，则默认为{{defaultConfigs.tcpNewConnectionsSecondlyRate}}；最小值为{{defaultConfigs.tcpNewConnectionsMinSecondlyRate}}。如果没有填写屏蔽时间，则只丢弃数据包。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>TCP端口列表</td>
+			<td>
+				<ddos-protection-ports-config-box :v-ports="config.tcp.ports" @change="changeTCPPorts"></ddos-protection-ports-config-box>
+				<p class="comment">在这些端口上使用当前配置。默认为80和443两个端口。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>IP白名单</td>
+			<td>
+				<ddos-protection-ip-list-config-box :v-ip-list="config.tcp.allowIPList" @change="changeTCPAllowIPList"></ddos-protection-ip-list-config-box>
+				<p class="comment">在白名单中的IP不受当前设置的限制。</p>
+			</td>
+		</tr>
+	</tbody>
 </table>
 <div class="margin"></div>
 </div>`
@@ -673,35 +681,35 @@ Vue.component("ddos-protection-ip-list-config-box", {
 		}
 	},
 	template: `<div>
-<div v-if="list.length > 0">
-<div class="ui label basic tiny" v-for="(ipConfig, index) in list">
-{{ipConfig.ip}} <span class="grey small" v-if="ipConfig.description.length > 0">（{{ipConfig.description}}）</span> <a href @click.prevent="remove(index)" title="删除"><i class="icon remove"></i></a>
-</div>
-<div class="ui divider"></div>
-</div>
-<div v-if="isAdding">
-<div class="ui fields inline">
-<div class="ui field">
-<div class="ui input left labeled">
-<span class="ui label">IP</span>
-<input type="text" v-model="addingIP.ip" ref="addingIPInput" maxlength="40" size="20" placeholder="IP" @keyup.enter="confirm" @keypress.enter.prevent="1">
-</div>
-</div>
-<div class="ui field">
-<div class="ui input left labeled">
-<span class="ui label">备注</span>
-<input type="text" v-model="addingIP.description" maxlength="10" size="10" placeholder="备注（可选）" @keyup.enter="confirm" @keypress.enter.prevent="1">
-</div>
-</div>
-<div class="ui field">
-<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button>
-&nbsp;<a href @click.prevent="cancel()">取消</a>
-</div>
-</div>
-</div>
-<div v-if="!isAdding">
-<button class="ui button tiny" type="button" @click.prevent="add">+</button>
-</div>
+	<div v-if="list.length > 0">
+		<div class="ui label basic tiny" v-for="(ipConfig, index) in list">
+			{{ipConfig.ip}} <span class="grey small" v-if="ipConfig.description.length > 0">（{{ipConfig.description}}）</span> <a href="" @click.prevent="remove(index)" title="删除"><i class="icon remove"></i></a>
+		</div>
+		<div class="ui divider"></div>
+	</div>
+	<div v-if="isAdding">
+		<div class="ui fields inline">
+			<div class="ui field">
+				<div class="ui input left labeled">
+					<span class="ui label">IP</span>
+					<input type="text" v-model="addingIP.ip" ref="addingIPInput" maxlength="40" size="20" placeholder="IP" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+				</div>
+			</div>
+			<div class="ui field">
+				<div class="ui input left labeled">
+					<span class="ui label">备注</span>
+					<input type="text" v-model="addingIP.description" maxlength="10" size="10" placeholder="备注（可选）" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+				</div>
+			</div>
+			<div class="ui field">
+				<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button>
+				&nbsp;<a href="" @click.prevent="cancel()">取消</a>
+			</div>
+		</div>
+	</div>
+	<div v-if="!isAdding">
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	</div>
 </div>`
 })
 
@@ -728,7 +736,7 @@ Vue.component("node-cluster-combo-box", {
 		}
 	},
 	template: `<div v-if="clusters.length > 0" style="min-width: 10.4em">
-<combo-box title="集群" placeholder="集群名称" :v-items="clusters" name="clusterId" :v-value="vClusterId" @change="change"></combo-box>
+	<combo-box title="集群" placeholder="集群名称" :v-items="clusters" name="clusterId" :v-value="vClusterId" @change="change"></combo-box>
 </div>`
 })
 
@@ -801,33 +809,33 @@ Vue.component("node-clusters-selector", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="primaryClusterId" :value="primaryClusterId">
-<input type="hidden" name="secondaryClusterIds" :value="JSON.stringify(secondaryClusterIds)">
-<table class="ui table">
-<tr>
-<td class="title">主集群</td>
-<td>
-<div v-if="primaryCluster != null">
-<div class="ui label basic small">{{primaryCluster.name}} &nbsp; <a href title="删除" @click.prevent="removePrimary"><i class="icon remove small"></i></a> </div>
-</div>
-<div style="margin-top: 0.6em" v-if="primaryClusterId == 0">
-<button class="ui button tiny" type="button" @click.prevent="addPrimary">+</button>
-</div>
-<p class="comment">多个集群配置有冲突时，优先使用主集群配置。</p>
-</td>
-</tr>
-<tr>
-<td>从集群</td>
-<td>
-<div v-if="secondaryClusters.length > 0">
-<div class="ui label basic small" v-for="(cluster, index) in secondaryClusters"><span class="grey">{{cluster.name}}</span> &nbsp; <a href title="删除" @click.prevent="removeSecondary(index)"><i class="icon remove small"></i></a> </div>
-</div>
-<div style="margin-top: 0.6em">
-<button class="ui button tiny" type="button" @click.prevent="addSecondary">+</button>
-</div>
-</td>
-</tr>
-</table>
+	<input type="hidden" name="primaryClusterId" :value="primaryClusterId"/>
+	<input type="hidden" name="secondaryClusterIds" :value="JSON.stringify(secondaryClusterIds)"/>
+	<table class="ui table">
+		<tr>
+			<td class="title">主集群</td>
+			<td>
+				<div v-if="primaryCluster != null">
+					<div class="ui label basic small">{{primaryCluster.name}} &nbsp; <a href="" title="删除" @click.prevent="removePrimary"><i class="icon remove small"></i></a> </div>
+				</div>
+				<div style="margin-top: 0.6em" v-if="primaryClusterId == 0">
+					<button class="ui button tiny" type="button" @click.prevent="addPrimary">+</button>
+				</div>
+				<p class="comment">多个集群配置有冲突时，优先使用主集群配置。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>从集群</td>
+			<td>
+				<div v-if="secondaryClusters.length > 0">
+					<div class="ui label basic small" v-for="(cluster, index) in secondaryClusters"><span class="grey">{{cluster.name}}</span> &nbsp; <a href="" title="删除" @click.prevent="removeSecondary(index)"><i class="icon remove small"></i></a> </div>
+				</div>
+				<div style="margin-top: 0.6em">
+					<button class="ui button tiny" type="button" @click.prevent="addSecondary">+</button>
+				</div>
+			</td>
+		</tr>
+	</table>
 </div>`
 })
 
@@ -876,8 +884,11 @@ Vue.component("message-media-selector", {
         },
     },
     template: `<div>
-<select class="ui dropdown auto-width" name="mediaType" v-model="mediaType"><option value>[选择媒介类型]</option><option v-for="media in medias" :value="media.type">{{media.name}}</option></select>
-<p class="comment" v-html="description"></p>
+    <select class="ui dropdown auto-width" name="mediaType" v-model="mediaType">
+        <option value="">[选择媒介类型]</option>
+        <option v-for="media in medias" :value="media.type">{{media.name}}</option>
+    </select>
+    <p class="comment" v-html="description"></p>
 </div>`
 })
 
@@ -929,14 +940,14 @@ Vue.component("message-receivers-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="receiversJSON" :value="JSON.stringify(receivers)">
-<div v-if="receivers.length > 0">
-<div v-for="(receiver, index) in receivers" class="ui label basic small">
-<span v-if="receiver.type == 'group'">分组：</span>{{receiver.name}} <span class="grey small" v-if="receiver.subName != null && receiver.subName.length > 0">({{receiver.subName}})</span> &nbsp; <a href title="删除" @click.prevent="removeReceiver(index)"><i class="icon remove"></i></a>
-</div>
-<div class="ui divider"></div>
-</div>
-<button type="button" class="ui button tiny" @click.prevent="addReceiver">+</button>
+        <input type="hidden" name="receiversJSON" :value="JSON.stringify(receivers)"/>           
+        <div v-if="receivers.length > 0">
+            <div v-for="(receiver, index) in receivers" class="ui label basic small">
+               <span v-if="receiver.type == 'group'">分组：</span>{{receiver.name}} <span class="grey small" v-if="receiver.subName != null && receiver.subName.length > 0">({{receiver.subName}})</span> &nbsp; <a href="" title="删除" @click.prevent="removeReceiver(index)"><i class="icon remove"></i></a>
+            </div>
+             <div class="ui divider"></div>
+        </div>
+      <button type="button" class="ui button tiny" @click.prevent="addReceiver">+</button>
 </div>`
 })
 
@@ -984,16 +995,16 @@ Vue.component("message-recipient-group-selector", {
         }
     },
     template: `<div>
-<input type="hidden" name="groupIds" :value="groupIds">
-<div v-if="groups.length > 0">
-<div>
-<div v-for="(group, index) in groups" class="ui label small basic">
-{{group.name}} &nbsp; <a href title="删除" @click.prevent="removeGroup(index)"><i class="icon remove"></i></a>
-</div>
-</div>
-<div class="ui divider"></div>
-</div>
-<button class="ui button tiny" type="button" @click.prevent="addGroup()">+</button>
+    <input type="hidden" name="groupIds" :value="groupIds"/>
+    <div v-if="groups.length > 0">
+        <div>
+            <div v-for="(group, index) in groups" class="ui label small basic">
+                {{group.name}} &nbsp; <a href="" title="删除" @click.prevent="removeGroup(index)"><i class="icon remove"></i></a>
+            </div>
+        </div>
+        <div class="ui divider"></div>
+    </div>   
+    <button class="ui button tiny" type="button" @click.prevent="addGroup()">+</button>
 </div>`
 })
 
@@ -1048,8 +1059,11 @@ Vue.component("message-media-instance-selector", {
         }
     },
     template: `<div>
-<select class="ui dropdown auto-width" name="instanceId" v-model="instanceId"><option value="0">[选择媒介]</option><option v-for="instance in instances" :value="instance.id">{{instance.name}} ({{instance.media.name}})</option></select>
-<p class="comment" v-html="description"></p>
+    <select class="ui dropdown auto-width" name="instanceId" v-model="instanceId">
+        <option value="0">[选择媒介]</option>
+        <option v-for="instance in instances" :value="instance.id">{{instance.name}} ({{instance.media.name}})</option>
+    </select>
+    <p class="comment" v-html="description"></p>
 </div>`
 })
 
@@ -1101,51 +1115,67 @@ Vue.component("message-row", {
 	},
 	template: `<div>
 <table class="ui table selectable" v-if="!isClosing">
-<tr :class="{error: message.level == 'error', positive: message.level == 'success', warning: message.level == 'warning'}">
-<td style="position: relative">
-<strong>{{message.datetime}}</strong>
-<span v-if="message.cluster != null && message.cluster.id != null">
-<span> | </span>
-<a :href="'/clusters/cluster?clusterId=' + message.cluster.id" target="_top" v-if="message.role == 'node'">集群：{{message.cluster.name}}</a>
-<a :href="'/ns/clusters/cluster?clusterId=' + message.cluster.id" target="_top" v-if="message.role == 'dns'">DNS集群：{{message.cluster.name}}</a>
-</span>
-<span v-if="message.node != null && message.node.id != null">
-<span> | </span>
-<a :href="'/clusters/cluster/node?clusterId=' + message.cluster.id + '&nodeId=' + message.node.id" target="_top" v-if="message.role == 'node'">节点：{{message.node.name}}</a>
-<a :href="'/ns/clusters/cluster/node?clusterId=' + message.cluster.id + '&nodeId=' + message.node.id" target="_top" v-if="message.role == 'dns'">DNS节点：{{message.node.name}}</a>
-</span>
-<a href style="position: absolute; right: 1em" @click.prevent="readMessage(message.id)" title="标为已读"><i class="icon check"></i></a>
-</td>
-</tr>
-<tr :class="{error: message.level == 'error', positive: message.level == 'success', warning: message.level == 'warning'}">
-<td>
-<pre style="padding: 0; margin:0; word-break: break-all;">{{message.body}}</pre>
-<div v-if="message.type == 'HealthCheckFailed'" style="margin-top: 0.8em">
-<a :href="'/clusters/cluster/node?clusterId=' + message.cluster.id + '&nodeId=' + param.node.id" v-for="param in params" class="ui label small basic" style="margin-bottom: 0.5em" target="_top">{{param.node.name}}: {{param.error}}</a>
-</div>
-<div v-if="message.type == 'ClusterDNSSyncFailed'" style="margin-top: 0.8em">
-<a :href="'/dns/clusters/cluster?clusterId=' + message.cluster.id" target="_top">查看问题 &#187;</a>
-</div>
-<div v-if="message.type == 'SSLCertExpiring'" style="margin-top: 0.8em">
-<a href @click.prevent="viewCert(params.certId)" target="_top">查看证书</a><span v-if="params != null && params.acmeTaskId > 0"> &nbsp;|&nbsp; <a :href="'/servers/certs/acme'" target="_top">查看任务&#187;</a></span>
-</div>
-<div v-if="message.type == 'SSLCertACMETaskSuccess'" style="margin-top: 0.8em">
-<a href @click.prevent="viewCert(params.certId)" target="_top">查看证书</a> &nbsp;|&nbsp; <a :href="'/servers/certs/acme'" v-if="params != null && params.acmeTaskId > 0" target="_top">查看任务&#187;</a>
-</div>
-<div v-if="message.type == 'SSLCertACMETaskFailed'" style="margin-top: 0.8em">
-<a href @click.prevent="viewCert(params.certId)" target="_top">查看证书</a> &nbsp;|&nbsp; <a :href="'/servers/certs/acme'" v-if="params != null && params.acmeTaskId > 0" target="_top">查看任务&#187;</a>
-</div>
-<div v-if="message.type == 'serverNamesRequireAuditing'" style="margin-top: 0.8em">
-<a :href="'/servers/server/settings/serverNames?serverId=' + params.serverId" target="_top">去审核</a></a>
-</div>
-<div v-if="message.type == 'NodeSchedule'" style="margin-top: 0.8em">
-<a :href="'/clusters/cluster/node/settings/schedule?clusterId=' + message.cluster.id + '&nodeId=' + message.node.id" target="_top">查看调度状态 &#187;</a>
-</div>
-<div v-if="message.type == 'NodeOfflineDay'" style="margin-top: 0.8em">
-<a :href="'/clusters/cluster/node/detail?clusterId=' + message.cluster.id + '&nodeId=' + message.node.id" target="_top">查看详情 &#187;</a>
-</div>
-</td>
-</tr>
+	<tr :class="{error: message.level == 'error', positive: message.level == 'success', warning: message.level == 'warning'}">
+		<td style="position: relative">
+			<strong>{{message.datetime}}</strong>
+			<span v-if="message.cluster != null && message.cluster.id != null">
+				<span> | </span>
+				<a :href="'/clusters/cluster?clusterId=' + message.cluster.id" target="_top" v-if="message.role == 'node'">集群：{{message.cluster.name}}</a>
+				<a :href="'/ns/clusters/cluster?clusterId=' + message.cluster.id" target="_top" v-if="message.role == 'dns'">DNS集群：{{message.cluster.name}}</a>
+			</span>
+			<span v-if="message.node != null && message.node.id != null">
+				<span> | </span>
+				<a :href="'/clusters/cluster/node?clusterId=' + message.cluster.id + '&nodeId=' + message.node.id" target="_top" v-if="message.role == 'node'">节点：{{message.node.name}}</a>
+				<a :href="'/ns/clusters/cluster/node?clusterId=' + message.cluster.id + '&nodeId=' + message.node.id" target="_top" v-if="message.role == 'dns'">DNS节点：{{message.node.name}}</a>
+			</span>
+			<a href=""  style="position: absolute; right: 1em" @click.prevent="readMessage(message.id)" title="标为已读"><i class="icon check"></i></a>
+		</td>
+	</tr>
+	<tr :class="{error: message.level == 'error', positive: message.level == 'success', warning: message.level == 'warning'}">
+		<td>
+			<pre style="padding: 0; margin:0; word-break: break-all;">{{message.body}}</pre>
+			
+			<!-- 健康检查 -->
+			<div v-if="message.type == 'HealthCheckFailed'" style="margin-top: 0.8em">
+				<a :href="'/clusters/cluster/node?clusterId=' + message.cluster.id + '&nodeId=' + param.node.id" v-for="param in params" class="ui label small basic" style="margin-bottom: 0.5em" target="_top">{{param.node.name}}: {{param.error}}</a>
+			</div>
+			
+			<!-- 集群DNS设置 -->
+			<div v-if="message.type == 'ClusterDNSSyncFailed'" style="margin-top: 0.8em">
+				<a :href="'/dns/clusters/cluster?clusterId=' + message.cluster.id" target="_top">查看问题 &raquo;</a>
+			</div>
+			
+			<!-- 证书即将过期 -->
+			<div v-if="message.type == 'SSLCertExpiring'" style="margin-top: 0.8em">
+				<a href="" @click.prevent="viewCert(params.certId)" target="_top">查看证书</a><span v-if="params != null && params.acmeTaskId > 0"> &nbsp;|&nbsp; <a :href="'/servers/certs/acme'" target="_top">查看任务&raquo;</a></span>
+			</div>
+			
+			<!-- 证书续期成功 -->
+			<div v-if="message.type == 'SSLCertACMETaskSuccess'" style="margin-top: 0.8em">
+				<a href="" @click.prevent="viewCert(params.certId)" target="_top">查看证书</a> &nbsp;|&nbsp; <a :href="'/servers/certs/acme'" v-if="params != null && params.acmeTaskId > 0" target="_top">查看任务&raquo;</a>
+			</div>
+			
+			<!-- 证书续期失败 -->
+			<div v-if="message.type == 'SSLCertACMETaskFailed'" style="margin-top: 0.8em">
+				<a href="" @click.prevent="viewCert(params.certId)" target="_top">查看证书</a> &nbsp;|&nbsp; <a :href="'/servers/certs/acme'" v-if="params != null && params.acmeTaskId > 0" target="_top">查看任务&raquo;</a>
+			</div>
+			
+			<!-- 网站域名审核 -->
+			<div v-if="message.type == 'serverNamesRequireAuditing'" style="margin-top: 0.8em">
+				<a :href="'/servers/server/settings/serverNames?serverId=' + params.serverId" target="_top">去审核</a></a>
+			</div>
+
+			<!-- 节点调度 -->
+			<div v-if="message.type == 'NodeSchedule'" style="margin-top: 0.8em">
+				<a :href="'/clusters/cluster/node/settings/schedule?clusterId=' + message.cluster.id + '&nodeId=' + message.node.id" target="_top">查看调度状态 &raquo;</a>
+			</div>
+			
+			<!-- 节点租期结束 -->
+			<div v-if="message.type == 'NodeOfflineDay'" style="margin-top: 0.8em">
+				<a :href="'/clusters/cluster/node/detail?clusterId=' + message.cluster.id + '&nodeId=' + message.node.id" target="_top">查看详情 &raquo;</a>
+			</div>
+		</td>
+	</tr>
 </table>
 <div class="margin"></div>
 </div>`
@@ -1179,8 +1209,15 @@ Vue.component("ns-domain-group-selector", {
 		}
 	},
 	template: `<div>
-<combo-box data-url="/ns/domains/groups/options" placeholder="选择分组" data-key="groups" name="groupId" :v-value="groupId" @change="change" ref="comboBox">
-</combo-box>
+	<combo-box 
+		data-url="/ns/domains/groups/options" 
+		placeholder="选择分组" 
+		data-key="groups" 
+		name="groupId"
+		:v-value="groupId" 
+		@change="change"
+		ref="comboBox">	
+	</combo-box>
 </div>`
 })
 
@@ -1301,40 +1338,52 @@ Vue.component("ns-routes-selector", {
 	}
 	,
 	template: `<div>
-<div v-show="selectedRoutes.length > 0">
-<div class="ui label basic text small" v-for="(route, index) in selectedRoutes" style="margin-bottom: 0.3em">
-<input type="hidden" :name="inputName" :value="route.code">
-{{route.name}} &nbsp; <a href title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
-</div>
-<div class="ui divider"></div>
-</div>
-<div v-if="isAdding" style="margin-bottom: 1em">
-<table class="ui table">
-<tr>
-<td class="title">选择类型 *</td>
-<td>
-<select class="ui dropdown auto-width" v-model="routeType"><option value="default">[默认线路]</option><option value="user">自定义线路</option><option value="isp">运营商</option><option value="china">中国省市</option><option value="world">全球国家地区</option><option value="agent">搜索引擎</option></select>
-</td>
-</tr>
-<tr>
-<td>选择线路 *</td>
-<td>
-<select class="ui dropdown auto-width" v-model="routeCode"><option v-for="route in routes" :value="route.code" v-if="route.type == routeType">{{route.name}}</option></select>
-</td>
-</tr>
-<tr v-if="routeCode.length > 0 && provinces[routeCode] != null">
-<td>选择省/州</td>
-<td>
-<select class="ui dropdown auto-width" v-model="provinceRouteCode"><option value>[全域]</option><option v-for="province in provinces[routeCode]" :value="province.code">{{province.name}}</option></select>
-</td>
-</tr>
-</table>
-<div>
-<button type="button" class="ui button tiny" @click.prevent="confirm">确定</button>
-&nbsp; <a href title="取消" @click.prevent="cancel">取消</a>
-</div>
-</div>
-<button class="ui button tiny" type="button" @click.prevent="add" v-if="!isAdding">+</button>
+	<div v-show="selectedRoutes.length > 0">
+		<div class="ui label basic text small" v-for="(route, index) in selectedRoutes" style="margin-bottom: 0.3em">
+			<input type="hidden" :name="inputName" :value="route.code"/>
+			{{route.name}} &nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+		</div>
+		<div class="ui divider"></div>
+	</div>
+	<div v-if="isAdding" style="margin-bottom: 1em">
+		<table class="ui table">
+			<tr>
+				<td class="title">选择类型 *</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="routeType">
+						<option value="default">[默认线路]</option>
+						<option value="user">自定义线路</option>
+						<option value="isp">运营商</option>
+						<option value="china">中国省市</option>
+						<option value="world">全球国家地区</option>
+						<option value="agent">搜索引擎</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>选择线路 *</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="routeCode">
+						<option v-for="route in routes" :value="route.code" v-if="route.type == routeType">{{route.name}}</option>
+					</select>
+				</td>
+			</tr>
+			<tr v-if="routeCode.length > 0 && provinces[routeCode] != null">
+				<td>选择省/州</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="provinceRouteCode">
+						<option value="">[全域]</option>
+						<option v-for="province in provinces[routeCode]" :value="province.code">{{province.name}}</option>
+					</select>
+				</td>
+			</tr>
+		</table>
+		<div>
+			<button type="button" class="ui button tiny" @click.prevent="confirm">确定</button>
+			&nbsp; <a href="" title="取消" @click.prevent="cancel">取消</a>
+		</div>	
+	</div>
+	<button class="ui button tiny" type="button" @click.prevent="add" v-if="!isAdding">+</button>
 </div>`
 })
 
@@ -1434,73 +1483,73 @@ Vue.component("ns-recursion-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="recursionJSON" :value="JSON.stringify(config)">
-<table class="ui table definition selectable">
-<tbody>
-<tr>
-<td class="title">启用</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" name="isOn" value="1" v-model="config.isOn">
-<label></label>
-</div>
-<p class="comment">启用后，如果找不到某个域名的解析记录，则向上一级DNS查找。</p>
-</td>
-</tr>
-</tbody>
-<tbody v-show="config.isOn">
-<tr>
-<td>从节点本机读取<br>上级DNS主机</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" name="useLocalHosts" value="1" v-model="config.useLocalHosts">
-<label></label>
-</div>
-<p class="comment">选中后，节点会试图从<code-label>/etc/resolv.conf</code-label>文件中读取DNS配置。 </p>
-</td>
-</tr>
-<tr v-show="!config.useLocalHosts">
-<td>上级DNS主机地址 *</td>
-<td>
-<div v-if="config.hosts.length > 0">
-<div v-for="(host, index) in config.hosts" class="ui label tiny basic">
-{{host.host}} &nbsp;
-<a href title="修改" @click.prevent="updateHost(host)"><i class="icon pencil tiny"></i></a>
-<a href title="删除" @click.prevent="removeHost(index)"><i class="icon remove small"></i></a>
-</div>
-<div class="ui divider"></div>
-</div>
-<div v-if="hostIsAdding">
-<div class="ui fields inline">
-<div class="ui field">
-<input type="text" placeholder="DNS主机地址" v-model="host" ref="hostRef" @keyup.enter="confirmHost" @keypress.enter.prevent="1">
-</div>
-<div class="ui field">
-<button class="ui button tiny" type="button" @click.prevent="confirmHost">确认</button> &nbsp; <a href title="取消" @click.prevent="cancelHost"><i class="icon remove small"></i></a>
-</div>
-</div>
-</div>
-<div style="margin-top: 0.5em">
-<button type="button" class="ui button tiny" @click.prevent="addHost">+</button>
-</div>
-</td>
-</tr>
-<tr>
-<td>允许的域名</td>
-<td><values-box name="allowDomains" :values="config.allowDomains" @change="changeAllowDomains"></values-box>
-<p class="comment">支持星号通配符，比如<code-label>*.example.org</code-label>。</p>
-</td>
-</tr>
-<tr>
-<td>不允许的域名</td>
-<td>
-<values-box name="denyDomains" :values="config.denyDomains" @change="changeDenyDomains"></values-box>
-<p class="comment">支持星号通配符，比如<code-label>*.example.org</code-label>。优先级比允许的域名高。</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="margin"></div>
+	<input type="hidden" name="recursionJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable">
+		<tbody>
+			<tr>
+				<td class="title">启用</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" name="isOn" value="1" v-model="config.isOn"/>
+						<label></label>
+					</div>
+					<p class="comment">启用后，如果找不到某个域名的解析记录，则向上一级DNS查找。</p>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="config.isOn">
+			<tr>
+				<td>从节点本机读取<br/>上级DNS主机</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" name="useLocalHosts" value="1" v-model="config.useLocalHosts"/>
+						<label></label>
+					</div>
+					<p class="comment">选中后，节点会试图从<code-label>/etc/resolv.conf</code-label>文件中读取DNS配置。 </p>
+				</td>
+			</tr>
+			<tr v-show="!config.useLocalHosts">
+				<td>上级DNS主机地址 *</td>
+				<td>
+					<div v-if="config.hosts.length > 0">
+						<div v-for="(host, index) in config.hosts" class="ui label tiny basic">
+							{{host.host}} &nbsp;
+							<a href="" title="修改" @click.prevent="updateHost(host)"><i class="icon pencil tiny"></i></a>
+							<a href="" title="删除" @click.prevent="removeHost(index)"><i class="icon remove small"></i></a>
+						</div>
+						<div class="ui divider"></div>
+					</div>
+					<div v-if="hostIsAdding">
+						<div class="ui fields inline">
+							<div class="ui field">
+								<input type="text" placeholder="DNS主机地址" v-model="host" ref="hostRef" @keyup.enter="confirmHost" @keypress.enter.prevent="1"/>
+							</div>
+							<div class="ui field">
+								<button class="ui button tiny" type="button" @click.prevent="confirmHost">确认</button> &nbsp; <a href="" title="取消" @click.prevent="cancelHost"><i class="icon remove small"></i></a>
+							</div>
+						</div>
+					</div>
+					<div style="margin-top: 0.5em">
+						<button type="button" class="ui button tiny" @click.prevent="addHost">+</button>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>允许的域名</td>
+				<td><values-box name="allowDomains" :values="config.allowDomains" @change="changeAllowDomains"></values-box>
+					<p class="comment">支持星号通配符，比如<code-label>*.example.org</code-label>。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>不允许的域名</td>
+				<td>
+					<values-box name="denyDomains" :values="config.denyDomains" @change="changeDenyDomains"></values-box>
+					<p class="comment">支持星号通配符，比如<code-label>*.example.org</code-label>。优先级比允许的域名高。</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -1523,33 +1572,33 @@ Vue.component("ns-access-log-ref-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="accessLogJSON" :value="JSON.stringify(config)">
-<table class="ui table definition selectable">
-<prior-checkbox :v-config="config" v-if="!vIsParent"></prior-checkbox>
-<tbody v-show="vIsParent || config.isPrior">
-<tr>
-<td class="title">启用</td>
-<td>
-<checkbox name="isOn" value="1" v-model="config.isOn"></checkbox>
-</td>
-</tr>
-<tr>
-<td>只记录失败查询</td>
-<td>
-<checkbox v-model="config.missingRecordsOnly"></checkbox>
-<p class="comment">选中后，表示只记录查询失败的日志。</p>
-</td>
-</tr>
-<tr>
-<td>包含未添加的域名</td>
-<td>
-<checkbox name="logMissingDomains" value="1" v-model="config.logMissingDomains"></checkbox>
-<p class="comment">选中后，表示日志中包含对没有在系统里创建的域名访问。</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="margin"></div>
+	<input type="hidden" name="accessLogJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable">
+		<prior-checkbox :v-config="config" v-if="!vIsParent"></prior-checkbox>
+		<tbody v-show="vIsParent || config.isPrior">
+			<tr>
+				<td class="title">启用</td>
+				<td>
+					<checkbox name="isOn" value="1" v-model="config.isOn"></checkbox>
+				</td>
+			</tr>
+			<tr>
+				<td>只记录失败查询</td>
+				<td>
+					<checkbox v-model="config.missingRecordsOnly"></checkbox>
+					<p class="comment">选中后，表示只记录查询失败的日志。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>包含未添加的域名</td>
+				<td>
+					<checkbox name="logMissingDomains" value="1" v-model="config.logMissingDomains"></checkbox>
+					<p class="comment">选中后，表示日志中包含对没有在系统里创建的域名访问。</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -1609,57 +1658,57 @@ Vue.component("ns-records-health-check-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="recordsHealthCheckJSON" :value="JSON.stringify(config)">
-<table class="ui table definition selectable">
-<tbody>
-<tr>
-<td class="title">启用健康检查</td>
-<td>
-<checkbox v-model="config.isOn"></checkbox>
-<p class="comment">选中后，表示启用当前域名下A/AAAA记录的健康检查；启用此设置后，你仍需设置单个A/AAAA记录的健康检查。</p>
-</td>
-</tr>
-</tbody>
-<tbody v-show="config.isOn">
-<tr>
-<td>默认检测端口</td>
-<td>
-<input type="text" v-model="portString" maxlength="5" style="width: 5em">
-<p class="comment">通过尝试连接A/AAAA记录中的IP加此端口来确定当前记录是否健康。</p>
-</td>
-</tr>
-<tr>
-<td>默认超时时间</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 4em" v-model="timeoutSecondsString" maxlength="3">
-<span class="ui label">秒</span>
-</div>
-</td>
-</tr>
-<tr>
-<td>默认连续上线次数</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 4em" v-model="countUpString" maxlength="3">
-<span class="ui label">次</span>
-</div>
-<p class="comment">连续检测<span v-if="config.countUp > 0">{{config.countUp}}</span><span v-else>N</span>次成功后，认为当前记录是在线的。</p>
-</td>
-</tr>
-<tr>
-<td>默认连续下线次数</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 4em" v-model="countDownString" maxlength="3">
-<span class="ui label">次</span>
-</div>
-<p class="comment">连续检测<span v-if="config.countDown > 0">{{config.countDown}}</span><span v-else>N</span>次失败后，认为当前记录是离线的。</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="margin"></div>
+	<input type="hidden" name="recordsHealthCheckJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable">
+		<tbody>
+			<tr>
+				<td class="title">启用健康检查</td>
+				<td>
+					<checkbox v-model="config.isOn"></checkbox>
+					<p class="comment">选中后，表示启用当前域名下A/AAAA记录的健康检查；启用此设置后，你仍需设置单个A/AAAA记录的健康检查。</p>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="config.isOn">
+			<tr>
+				<td>默认检测端口</td>
+				<td>
+					<input type="text" v-model="portString" maxlength="5" style="width: 5em"/>
+					<p class="comment">通过尝试连接A/AAAA记录中的IP加此端口来确定当前记录是否健康。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>默认超时时间</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 4em" v-model="timeoutSecondsString" maxlength="3"/>
+						<span class="ui label">秒</span>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>默认连续上线次数</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 4em" v-model="countUpString" maxlength="3"/>
+						<span class="ui label">次</span>
+					</div>
+					<p class="comment">连续检测<span v-if="config.countUp > 0">{{config.countUp}}</span><span v-else>N</span>次成功后，认为当前记录是在线的。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>默认连续下线次数</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 4em" v-model="countDownString" maxlength="3"/>
+						<span class="ui label">次</span>
+					</div>
+					<p class="comment">连续检测<span v-if="config.countDown > 0">{{config.countDown}}</span><span v-else>N</span>次失败后，认为当前记录是离线的。</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -1718,96 +1767,101 @@ Vue.component("ns-node-ddos-protection-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="ddosProtectionJSON" :value="JSON.stringify(config)">
-<p class="comment">功能说明：此功能为<strong>试验性质</strong>，目前仅能防御简单的DDoS攻击，试验期间建议仅在被攻击时启用，仅支持已安装<code-label>nftables v0.9</code-label>以上的Linux系统。<pro-warning-label></pro-warning-label></p>
-<div class="ui message" v-if="vClusterIsOn">当前节点所在集群已设置DDoS防护。</div>
-<h4>TCP设置</h4>
-<table class="ui table definition selectable">
-<prior-checkbox :v-config="config.tcp" v-if="isNode"></prior-checkbox>
-<tbody v-show="config.tcp.isPrior || !isNode">
-<tr>
-<td class="title">启用</td>
-<td>
-<checkbox v-model="config.tcp.isOn"></checkbox>
-</td>
-</tr>
-</tbody>
-<tbody v-show="config.tcp.isOn && (config.tcp.isPrior || !isNode)">
-<tr>
-<td class="title">单节点TCP最大连接数</td>
-<td>
-<digit-input name="tcpMaxConnections" v-model="config.tcp.maxConnections" maxlength="6" size="6" style="width: 6em"></digit-input>
-<p class="comment">单个节点可以接受的TCP最大连接数。如果为0，则默认为{{defaultConfigs.tcpMaxConnections}}。</p>
-</td>
-</tr>
-<tr>
-<td>单IP TCP最大连接数</td>
-<td>
-<digit-input name="tcpMaxConnectionsPerIP" v-model="config.tcp.maxConnectionsPerIP" maxlength="6" size="6" style="width: 6em"></digit-input>
-<p class="comment">单个IP可以连接到节点的TCP最大连接数。如果为0，则默认为{{defaultConfigs.tcpMaxConnectionsPerIP}}；最小值为{{defaultConfigs.tcpMinConnectionsPerIP}}。</p>
-</td>
-</tr>
-<tr>
-<td>单IP TCP新连接速率<em>（分钟）</em></td>
-<td>
-<div class="ui fields inline">
-<div class="ui field">
-<div class="ui input right labeled">
-<digit-input name="tcpNewConnectionsRate" v-model="config.tcp.newConnectionsRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpNewConnectionsMinRate"></digit-input>
-<span class="ui label">个新连接/每分钟</span>
-</div>
-</div>
-<div class="ui field" style="line-height: 2.4em">
-屏蔽
-</div>
-<div class="ui field">
-<div class="ui input right labeled">
-<digit-input name="tcpNewConnectionsRateBlockTimeout" v-model="config.tcp.newConnectionsRateBlockTimeout" maxlength="6" size="6" style="width: 5em"></digit-input>
-<span class="ui label">秒</span>
-</div>
-</div>
-</div>
-<p class="comment">单个IP每分钟可以创建TCP新连接的数量。如果为0，则默认为{{defaultConfigs.tcpNewConnectionsMinutelyRate}}；最小值为{{defaultConfigs.tcpNewConnectionsMinMinutelyRate}}。如果没有填写屏蔽时间，则只丢弃数据包。</p>
-</td>
-</tr>
-<tr>
-<td>单IP TCP新连接速率<em>（秒钟）</em></td>
-<td>
-<div class="ui fields inline">
-<div class="ui field">
-<div class="ui input right labeled">
-<digit-input name="tcpNewConnectionsSecondlyRate" v-model="config.tcp.newConnectionsSecondlyRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpNewConnectionsMinRate"></digit-input>
-<span class="ui label">个新连接/每秒钟</span>
-</div>
-</div>
-<div class="ui field" style="line-height: 2.4em">
-屏蔽
-</div>
-<div class="ui field">
-<div class="ui input right labeled">
-<digit-input name="tcpNewConnectionsSecondlyRateBlockTimeout" v-model="config.tcp.newConnectionsSecondlyRateBlockTimeout" maxlength="6" size="6" style="width: 5em"></digit-input>
-<span class="ui label">秒</span>
-</div>
-</div>
-</div>
-<p class="comment">单个IP每秒钟可以创建TCP新连接的数量。如果为0，则默认为{{defaultConfigs.tcpNewConnectionsSecondlyRate}}；最小值为{{defaultConfigs.tcpNewConnectionsMinSecondlyRate}}。如果没有填写屏蔽时间，则只丢弃数据包。</p>
-</td>
-</tr>
-<tr>
-<td>TCP端口列表</td>
-<td>
-<ddos-protection-ports-config-box :v-ports="config.tcp.ports" @change="changeTCPPorts"></ddos-protection-ports-config-box>
-<p class="comment">在这些端口上使用当前配置。默认为53端口。</p>
-</td>
-</tr>
-<tr>
-<td>IP白名单</td>
-<td>
-<ddos-protection-ip-list-config-box :v-ip-list="config.tcp.allowIPList" @change="changeTCPAllowIPList"></ddos-protection-ip-list-config-box>
-<p class="comment">在白名单中的IP不受当前设置的限制。</p>
-</td>
-</tr>
-</tbody>
+ <input type="hidden" name="ddosProtectionJSON" :value="JSON.stringify(config)"/>
+
+ <p class="comment">功能说明：此功能为<strong>试验性质</strong>，目前仅能防御简单的DDoS攻击，试验期间建议仅在被攻击时启用，仅支持已安装<code-label>nftables v0.9</code-label>以上的Linux系统。<pro-warning-label></pro-warning-label></p>
+
+ <div class="ui message" v-if="vClusterIsOn">当前节点所在集群已设置DDoS防护。</div>
+
+ <h4>TCP设置</h4>
+ <table class="ui table definition selectable">
+ 	<prior-checkbox :v-config="config.tcp" v-if="isNode"></prior-checkbox>
+ 	<tbody v-show="config.tcp.isPrior || !isNode">
+		<tr>
+			<td class="title">启用</td>
+			<td>
+				<checkbox v-model="config.tcp.isOn"></checkbox>
+			</td>
+		</tr>
+	</tbody>
+	<tbody v-show="config.tcp.isOn && (config.tcp.isPrior || !isNode)">
+		<tr>
+			<td class="title">单节点TCP最大连接数</td>
+			<td>
+				<digit-input name="tcpMaxConnections" v-model="config.tcp.maxConnections" maxlength="6" size="6" style="width: 6em"></digit-input>
+				<p class="comment">单个节点可以接受的TCP最大连接数。如果为0，则默认为{{defaultConfigs.tcpMaxConnections}}。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>单IP TCP最大连接数</td>
+			<td>
+				<digit-input name="tcpMaxConnectionsPerIP" v-model="config.tcp.maxConnectionsPerIP" maxlength="6" size="6" style="width: 6em"></digit-input>
+				<p class="comment">单个IP可以连接到节点的TCP最大连接数。如果为0，则默认为{{defaultConfigs.tcpMaxConnectionsPerIP}}；最小值为{{defaultConfigs.tcpMinConnectionsPerIP}}。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>单IP TCP新连接速率<em>（分钟）</em></td>
+			<td>
+				<div class="ui fields inline">
+					<div class="ui field">
+						<div class="ui input right labeled">
+							<digit-input name="tcpNewConnectionsRate" v-model="config.tcp.newConnectionsRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpNewConnectionsMinRate"></digit-input>
+							<span class="ui label">个新连接/每分钟</span>
+						</div>
+					</div>
+					<div class="ui field" style="line-height: 2.4em">
+						屏蔽
+					</div>
+					<div class="ui field">
+						<div class="ui input right labeled">
+							<digit-input name="tcpNewConnectionsRateBlockTimeout" v-model="config.tcp.newConnectionsRateBlockTimeout" maxlength="6" size="6" style="width: 5em"></digit-input>
+							<span class="ui label">秒</span>
+						</div>
+					</div>
+				</div>
+				
+				<p class="comment">单个IP每分钟可以创建TCP新连接的数量。如果为0，则默认为{{defaultConfigs.tcpNewConnectionsMinutelyRate}}；最小值为{{defaultConfigs.tcpNewConnectionsMinMinutelyRate}}。如果没有填写屏蔽时间，则只丢弃数据包。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>单IP TCP新连接速率<em>（秒钟）</em></td>
+			<td>
+				<div class="ui fields inline">
+					<div class="ui field">
+						<div class="ui input right labeled">
+							<digit-input name="tcpNewConnectionsSecondlyRate" v-model="config.tcp.newConnectionsSecondlyRate" maxlength="6" size="6" style="width: 6em" :min="defaultConfigs.tcpNewConnectionsMinRate"></digit-input>
+							<span class="ui label">个新连接/每秒钟</span>
+						</div>
+					</div>
+					<div class="ui field" style="line-height: 2.4em">
+						屏蔽
+					</div>
+					<div class="ui field">
+						<div class="ui input right labeled">
+							<digit-input name="tcpNewConnectionsSecondlyRateBlockTimeout" v-model="config.tcp.newConnectionsSecondlyRateBlockTimeout" maxlength="6" size="6" style="width: 5em"></digit-input>
+							<span class="ui label">秒</span>
+						</div>
+					</div>
+				</div>
+				
+				<p class="comment">单个IP每秒钟可以创建TCP新连接的数量。如果为0，则默认为{{defaultConfigs.tcpNewConnectionsSecondlyRate}}；最小值为{{defaultConfigs.tcpNewConnectionsMinSecondlyRate}}。如果没有填写屏蔽时间，则只丢弃数据包。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>TCP端口列表</td>
+			<td>
+				<ddos-protection-ports-config-box :v-ports="config.tcp.ports" @change="changeTCPPorts"></ddos-protection-ports-config-box>
+				<p class="comment">在这些端口上使用当前配置。默认为53端口。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>IP白名单</td>
+			<td>
+				<ddos-protection-ip-list-config-box :v-ip-list="config.tcp.allowIPList" @change="changeTCPAllowIPList"></ddos-protection-ip-list-config-box>
+				<p class="comment">在白名单中的IP不受当前设置的限制。</p>
+			</td>
+		</tr>
+	</tbody>
 </table>
 <div class="margin"></div>
 </div>`
@@ -2174,201 +2228,228 @@ Vue.component("ns-route-ranges-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="rangesJSON" :value="JSON.stringify(ranges)">
-<div v-if="ranges.length > 0">
-<div class="ui label tiny basic" v-for="(range, index) in ranges" style="margin-bottom: 0.3em">
-<span class="red" v-if="range.params.isReverse">[排除]</span>
-<span v-if="range.type == 'ipRange'">IP范围：</span>
-<span v-if="range.type == 'cidr'">CIDR：</span>
-<span v-if="range.type == 'region'"></span>
-<span v-if="range.type == 'ipRange'">{{range.params.ipFrom}} - {{range.params.ipTo}}</span>
-<span v-if="range.type == 'cidr'">{{range.params.cidr}}</span>
-<span v-if="range.type == 'region'">
-<span v-for="(region, index) in range.params.regions">
-<span v-if="region.type == 'country'">国家/地区</span>
-<span v-if="region.type == 'province'">省份</span>
-<span v-if="region.type == 'city'">城市</span>
-<span v-if="region.type == 'provider'">ISP</span>
-：{{region.name}}
-<span v-if="index < range.params.regions.length - 1" class="grey">
-&nbsp;
-<span v-if="range.connector == 'OR' || range.connector == '' || range.connector == null">或</span>
-<span v-if="range.connector == 'AND'">且</span>
-&nbsp;
-</span>
-</span>
-</span>
-&nbsp; <a href title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
-</div>
-<div class="ui divider"></div>
-</div>
-<div v-if="rangeType == 'ipRange'">
-<div style="margin-bottom: 1em" v-show="isAdding">
-<table class="ui table">
-<tr>
-<td class="title">开始IP *</td>
-<td>
-<input type="text" placeholder="开始IP" maxlength="40" size="40" style="width: 15em" v-model="ipRangeFrom" ref="ipRangeFrom" @keyup.enter="confirmIPRange" @keypress.enter.prevent="1">
-</td>
-</tr>
-<tr>
-<td>结束IP *</td>
-<td>
-<input type="text" placeholder="结束IP" maxlength="40" size="40" style="width: 15em" v-model="ipRangeTo" ref="ipRangeTo" @keyup.enter="confirmIPRange" @keypress.enter.prevent="1">
-</td>
-</tr>
-<tr>
-<td>排除</td>
-<td>
-<checkbox v-model="isReverse"></checkbox>
-<p class="comment">选中后表示线路中排除当前条件。</p>
-</td>
-</tr>
-</table>
-<button class="ui button tiny" type="button" @click.prevent="confirmIPRange">确定</button> &nbsp;
-<a href @click.prevent="cancelIPRange" title="取消"><i class="icon remove small"></i></a>
-</div>
-<div style="margin-bottom: 1em" v-show="isAddingBatch">
-<table class="ui table">
-<tr>
-<td class="title">IP范围列表 *</td>
-<td>
-<textarea rows="5" ref="batchIPRange" v-model="batchIPRange"></textarea>
-<p class="comment">每行一条，格式为<code-label>开始IP,结束IP</code-label>，比如<code-label>192.168.1.100,192.168.1.200</code-label>。</p>
-</td>
-</tr>
-<tr>
-<td>排除</td>
-<td>
-<checkbox v-model="isReverse"></checkbox>
-<p class="comment">选中后表示线路中排除当前条件。</p>
-</td>
-</tr>
-</table>
-<button class="ui button tiny" type="button" @click.prevent="confirmBatchIPRange">确定</button> &nbsp;
-<a href @click.prevent="cancelBatchIPRange" title="取消"><i class="icon remove small"></i></a>
-</div>
-<div v-if="!isAdding && !isAddingBatch">
-<button class="ui button tiny" type="button" @click.prevent="addIPRange">添加单个IP范围</button> &nbsp;
-<button class="ui button tiny" type="button" @click.prevent="addBatchIPRange">批量添加IP范围</button>
-</div>
-</div>
-<div v-if="rangeType == 'cidr'">
-<div style="margin-bottom: 1em" v-show="isAdding">
-<table class="ui table">
-<tr>
-<td class="title">CIDR *</td>
-<td>
-<input type="text" placeholder="IP/MASK" maxlength="40" size="40" style="width: 15em" v-model="ipCIDR" ref="ipCIDR" @keyup.enter="confirmIPCIDR" @keypress.enter.prevent="1">
-<p class="comment">类似于<code-label>192.168.2.1/24</code-label>。</p>
-</td>
-</tr>
-<tr>
-<td>排除</td>
-<td>
-<checkbox v-model="isReverse"></checkbox>
-<p class="comment">选中后表示线路中排除当前条件。</p>
-</td>
-</tr>
-</table>
-<button class="ui button tiny" type="button" @click.prevent="confirmIPCIDR">确定</button> &nbsp;
-<a href @click.prevent="cancelIPCIDR" title="取消"><i class="icon remove small"></i></a>
-</div>
-<div style="margin-bottom: 1em" v-show="isAddingBatch">
-<table class="ui table">
-<tr>
-<td class="title">IP范围列表 *</td>
-<td>
-<textarea rows="5" ref="batchIPCIDR" v-model="batchIPCIDR"></textarea>
-<p class="comment">每行一条，格式为<code-label>IP/MASK</code-label>，比如<code-label>192.168.2.1/24</code-label>。</p>
-</td>
-</tr>
-<tr>
-<td>排除</td>
-<td>
-<checkbox v-model="isReverse"></checkbox>
-<p class="comment">选中后表示线路中排除当前条件。</p>
-</td>
-</tr>
-</table>
-<button class="ui button tiny" type="button" @click.prevent="confirmBatchIPCIDR">确定</button> &nbsp;
-<a href @click.prevent="cancelBatchIPCIDR" title="取消"><i class="icon remove small"></i></a>
-</div>
-<div v-if="!isAdding && !isAddingBatch">
-<button class="ui button tiny" type="button" @click.prevent="addCIDR">添加单个CIDR</button> &nbsp;
-<button class="ui button tiny" type="button" @click.prevent="addBatchCIDR">批量添加CIDR</button>
-</div>
-</div>
-<div v-if="rangeType == 'region'">
-<div v-if="isAdding">
-<table class="ui table">
-<tr>
-<td>已添加</td>
-<td>
-<span v-for="(region, index) in regions">
-<span class="ui label small basic">
-<span v-if="region.type == 'country'">国家/地区</span>
-<span v-if="region.type == 'province'">省份</span>
-<span v-if="region.type == 'city'">城市</span>
-<span v-if="region.type == 'provider'">ISP</span>
-：{{region.name}} <a href title="删除" @click.prevent="removeRegion(index)"><i class="icon remove small"></i></a>
-</span>
-<span v-if="index < regions.length - 1" class="grey">
-&nbsp;
-<span v-if="regionConnector == 'OR' || regionConnector == ''">或</span>
-<span v-if="regionConnector == 'AND'">且</span>
-&nbsp;
-</span>
-</span>
-</td>
-</tr>
-<tr>
-<td class="title">添加新<span v-if="regionType == 'country'">国家/地区</span><span v-if="regionType == 'province'">省份</span><span v-if="regionType == 'city'">城市</span><span v-if="regionType == 'provider'">ISP</span>
-*</td>
-<td>
-<div v-if="regionType == 'country'">
-<combo-box title width="14em" data-url="/ui/countryOptions" data-key="countries" placeholder="点这里选择国家/地区" @change="selectRegionCountry" ref="regionCountryComboBox" key="combo-box-country"></combo-box>
-</div>
-<div v-if="regionType == 'province'">
-<combo-box title data-url="/ui/provinceOptions" data-key="provinces" placeholder="点这里选择省份" @change="selectRegionProvince" ref="regionProvinceComboBox" key="combo-box-province"></combo-box>
-</div>
-<div v-if="regionType == 'city'">
-<combo-box title data-url="/ui/cityOptions" data-key="cities" placeholder="点这里选择城市" @change="selectRegionCity" ref="regionCityComboBox" key="combo-box-city"></combo-box>
-</div>
-<div v-if="regionType == 'provider'">
-<combo-box title data-url="/ui/providerOptions" data-key="providers" placeholder="点这里选择ISP" @change="selectRegionProvider" ref="regionProviderComboBox" key="combo-box-isp"></combo-box>
-</div>
-<div style="margin-top: 1em">
-<button class="ui button tiny basic" :class="{blue: regionType == 'country'}" type="button" @click.prevent="addRegion('country')">添加国家/地区</button> &nbsp;
-<button class="ui button tiny basic" :class="{blue: regionType == 'province'}" type="button" @click.prevent="addRegion('province')">添加省份</button> &nbsp;
-<button class="ui button tiny basic" :class="{blue: regionType == 'city'}" type="button" @click.prevent="addRegion('city')">添加城市</button> &nbsp;
-<button class="ui button tiny basic" :class="{blue: regionType == 'provider'}" type="button" @click.prevent="addRegion('provider')">ISP</button> &nbsp;
-</div>
-</td>
-</tr>
-<tr>
-<td>区域之间关系</td>
-<td>
-<select class="ui dropdown auto-width" v-model="regionConnector"><option value="OR">或</option><option value="AND">且</option></select>
-<p class="comment" v-if="regionConnector == 'OR'">匹配所选任一区域即认为匹配成功。</p>
-<p class="comment" v-if="regionConnector == 'AND'">匹配所有所选区域才认为匹配成功。</p>
-</td>
-</tr>
-<tr>
-<td>排除</td>
-<td>
-<checkbox v-model="isReverse"></checkbox>
-<p class="comment">选中后表示线路中排除当前条件。</p>
-</td>
-</tr>
-</table>
-<button class="ui button tiny" type="button" @click.prevent="confirmRegions">确定</button> &nbsp;
-<a href @click.prevent="cancelRegions" title="取消"><i class="icon remove small"></i></a>
-</div>
-<div v-if="!isAdding && !isAddingBatch">
-<button class="ui button tiny" type="button" @click.prevent="addRegions">添加区域</button> &nbsp;
-</div>
-</div>
+	<input type="hidden" name="rangesJSON" :value="JSON.stringify(ranges)"/>
+	<div v-if="ranges.length > 0">
+		<div class="ui label tiny basic" v-for="(range, index) in ranges" style="margin-bottom: 0.3em">
+			<span class="red" v-if="range.params.isReverse">[排除]</span>
+			<span v-if="range.type == 'ipRange'">IP范围：</span>
+			<span v-if="range.type == 'cidr'">CIDR：</span>
+			<span v-if="range.type == 'region'"></span>
+			<span v-if="range.type == 'ipRange'">{{range.params.ipFrom}} - {{range.params.ipTo}}</span>
+			<span v-if="range.type == 'cidr'">{{range.params.cidr}}</span>
+			<span v-if="range.type == 'region'">
+				<span v-for="(region, index) in range.params.regions">
+					<span v-if="region.type == 'country'">国家/地区</span>
+					<span v-if="region.type == 'province'">省份</span>
+					<span v-if="region.type == 'city'">城市</span>
+					<span v-if="region.type == 'provider'">ISP</span>
+					：{{region.name}}
+					<span v-if="index < range.params.regions.length - 1" class="grey">
+						&nbsp;
+						<span v-if="range.connector == 'OR' || range.connector == '' || range.connector == null">或</span>
+						<span v-if="range.connector == 'AND'">且</span>
+						&nbsp;
+					</span>
+				</span>
+			</span>
+			 &nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+		</div>
+		<div class="ui divider"></div>
+	</div>
+	
+	<!-- IP范围 -->
+	<div v-if="rangeType == 'ipRange'">
+		<!-- 添加单个IP范围 -->
+		<div style="margin-bottom: 1em" v-show="isAdding">
+			<table class="ui table">
+				<tr>
+					<td class="title">开始IP *</td>
+					<td>
+						<input type="text" placeholder="开始IP" maxlength="40" size="40" style="width: 15em" v-model="ipRangeFrom" ref="ipRangeFrom"  @keyup.enter="confirmIPRange" @keypress.enter.prevent="1"/>
+					</td>
+				</tr>
+				<tr>
+					<td>结束IP *</td>
+					<td>
+						<input type="text" placeholder="结束IP" maxlength="40" size="40" style="width: 15em" v-model="ipRangeTo" ref="ipRangeTo" @keyup.enter="confirmIPRange" @keypress.enter.prevent="1"/>
+					</td>
+				</tr>
+				<tr>
+					<td>排除</td>
+					<td>
+						<checkbox v-model="isReverse"></checkbox>
+						<p class="comment">选中后表示线路中排除当前条件。</p>
+					</td>
+				</tr>
+			</table>
+			<button class="ui button tiny" type="button" @click.prevent="confirmIPRange">确定</button> &nbsp;
+					<a href="" @click.prevent="cancelIPRange" title="取消"><i class="icon remove small"></i></a>
+		</div>
+	
+		<!-- 添加多个IP范围 -->
+		<div style="margin-bottom: 1em" v-show="isAddingBatch">
+			<table class="ui table">
+				<tr>
+					<td class="title">IP范围列表 *</td>
+					<td>
+						<textarea rows="5" ref="batchIPRange" v-model="batchIPRange"></textarea>	
+						<p class="comment">每行一条，格式为<code-label>开始IP,结束IP</code-label>，比如<code-label>192.168.1.100,192.168.1.200</code-label>。</p>	
+					</td>
+				</tr>
+				<tr>
+					<td>排除</td>
+					<td>
+						<checkbox v-model="isReverse"></checkbox>
+						<p class="comment">选中后表示线路中排除当前条件。</p>
+					</td>
+				</tr>
+			</table>
+			<button class="ui button tiny" type="button" @click.prevent="confirmBatchIPRange">确定</button> &nbsp;
+				<a href="" @click.prevent="cancelBatchIPRange" title="取消"><i class="icon remove small"></i></a>
+		</div>
+		
+		<div v-if="!isAdding && !isAddingBatch">
+			<button class="ui button tiny" type="button" @click.prevent="addIPRange">添加单个IP范围</button> &nbsp;
+			<button class="ui button tiny" type="button" @click.prevent="addBatchIPRange">批量添加IP范围</button>
+		</div>
+	</div>
+	
+	<!-- CIDR -->
+	<div v-if="rangeType == 'cidr'">
+		<!-- 添加单个IP范围 -->
+		<div style="margin-bottom: 1em" v-show="isAdding">
+			<table class="ui table">
+				<tr>
+					<td class="title">CIDR *</td>
+					<td>
+						<input type="text" placeholder="IP/MASK" maxlength="40" size="40" style="width: 15em" v-model="ipCIDR" ref="ipCIDR"  @keyup.enter="confirmIPCIDR" @keypress.enter.prevent="1"/>
+						<p class="comment">类似于<code-label>192.168.2.1/24</code-label>。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>排除</td>
+					<td>
+						<checkbox v-model="isReverse"></checkbox>
+						<p class="comment">选中后表示线路中排除当前条件。</p>
+					</td>
+				</tr>
+			</table>
+			<button class="ui button tiny" type="button" @click.prevent="confirmIPCIDR">确定</button> &nbsp;
+					<a href="" @click.prevent="cancelIPCIDR" title="取消"><i class="icon remove small"></i></a>
+		</div>
+		
+		<!-- 添加多个IP范围 -->
+		<div style="margin-bottom: 1em" v-show="isAddingBatch">
+			<table class="ui table">
+				<tr>
+					<td class="title">IP范围列表 *</td>
+					<td>
+						<textarea rows="5" ref="batchIPCIDR" v-model="batchIPCIDR"></textarea>	
+						<p class="comment">每行一条，格式为<code-label>IP/MASK</code-label>，比如<code-label>192.168.2.1/24</code-label>。</p>	
+					</td>
+				</tr>
+				<tr>
+					<td>排除</td>
+					<td>
+						<checkbox v-model="isReverse"></checkbox>
+						<p class="comment">选中后表示线路中排除当前条件。</p>
+					</td>
+				</tr>
+			</table>
+			<button class="ui button tiny" type="button" @click.prevent="confirmBatchIPCIDR">确定</button> &nbsp;
+				<a href="" @click.prevent="cancelBatchIPCIDR" title="取消"><i class="icon remove small"></i></a>
+		</div>
+		
+		<div v-if="!isAdding && !isAddingBatch">
+			<button class="ui button tiny" type="button" @click.prevent="addCIDR">添加单个CIDR</button> &nbsp;
+			<button class="ui button tiny" type="button" @click.prevent="addBatchCIDR">批量添加CIDR</button>
+		</div>
+	</div>
+	
+	<!-- 区域 -->
+	<div v-if="rangeType == 'region'">
+		<!-- 添加区域 -->
+		<div v-if="isAdding">
+			<table class="ui table">
+				<tr>
+					<td>已添加</td>
+					<td>
+						<span v-for="(region, index) in regions">
+							<span class="ui label small basic">
+								<span v-if="region.type == 'country'">国家/地区</span>
+								<span v-if="region.type == 'province'">省份</span>
+								<span v-if="region.type == 'city'">城市</span>
+								<span v-if="region.type == 'provider'">ISP</span>
+								：{{region.name}} <a href="" title="删除" @click.prevent="removeRegion(index)"><i class="icon remove small"></i></a>
+							</span>
+							<span v-if="index < regions.length - 1" class="grey">
+								&nbsp;
+								<span v-if="regionConnector == 'OR' || regionConnector == ''">或</span>
+								<span v-if="regionConnector == 'AND'">且</span>
+								&nbsp;
+							</span>
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">添加新<span v-if="regionType == 'country'">国家/地区</span><span v-if="regionType == 'province'">省份</span><span v-if="regionType == 'city'">城市</span><span v-if="regionType == 'provider'">ISP</span>
+					
+					 *</td>
+					<td>
+					 	<!-- region country name -->
+						<div v-if="regionType == 'country'">
+							<combo-box title="" width="14em" data-url="/ui/countryOptions" data-key="countries" placeholder="点这里选择国家/地区" @change="selectRegionCountry" ref="regionCountryComboBox" key="combo-box-country"></combo-box>
+						</div>
+			
+						<!-- region province name -->
+						<div v-if="regionType == 'province'" >
+							<combo-box title="" data-url="/ui/provinceOptions" data-key="provinces" placeholder="点这里选择省份" @change="selectRegionProvince" ref="regionProvinceComboBox" key="combo-box-province"></combo-box>
+						</div>
+			
+						<!-- region city name -->
+						<div v-if="regionType == 'city'" >
+							<combo-box title="" data-url="/ui/cityOptions" data-key="cities" placeholder="点这里选择城市" @change="selectRegionCity" ref="regionCityComboBox" key="combo-box-city"></combo-box>
+						</div>
+			
+						<!-- ISP Name -->
+						<div v-if="regionType == 'provider'" >
+							<combo-box title="" data-url="/ui/providerOptions" data-key="providers" placeholder="点这里选择ISP" @change="selectRegionProvider" ref="regionProviderComboBox" key="combo-box-isp"></combo-box>
+						</div>
+						
+						<div style="margin-top: 1em">
+							<button class="ui button tiny basic" :class="{blue: regionType == 'country'}" type="button" @click.prevent="addRegion('country')">添加国家/地区</button> &nbsp;
+							<button class="ui button tiny basic" :class="{blue: regionType == 'province'}" type="button" @click.prevent="addRegion('province')">添加省份</button> &nbsp;
+							<button class="ui button tiny basic" :class="{blue: regionType == 'city'}" type="button" @click.prevent="addRegion('city')">添加城市</button> &nbsp;
+							<button class="ui button tiny basic" :class="{blue: regionType == 'provider'}" type="button" @click.prevent="addRegion('provider')">ISP</button> &nbsp;
+						</div>
+					</td>	
+				</tr>
+				<tr>
+					<td>区域之间关系</td>
+					<td>
+						<select class="ui dropdown auto-width" v-model="regionConnector">
+							<option value="OR">或</option>
+							<option value="AND">且</option>
+						</select>
+						<p class="comment" v-if="regionConnector == 'OR'">匹配所选任一区域即认为匹配成功。</p>
+						<p class="comment" v-if="regionConnector == 'AND'">匹配所有所选区域才认为匹配成功。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>排除</td>
+					<td>
+						<checkbox v-model="isReverse"></checkbox>
+						<p class="comment">选中后表示线路中排除当前条件。</p>
+					</td>
+				</tr>
+			</table>
+			<button class="ui button tiny" type="button" @click.prevent="confirmRegions">确定</button> &nbsp;
+				<a href="" @click.prevent="cancelRegions" title="取消"><i class="icon remove small"></i></a>
+		</div>
+		<div v-if="!isAdding && !isAddingBatch">
+			<button class="ui button tiny" type="button" @click.prevent="addRegions">添加区域</button> &nbsp;
+		</div>	
+	</div>
 </div>`
 })
 
@@ -2438,92 +2519,92 @@ Vue.component("ns-record-health-check-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="recordHealthCheckJSON" :value="JSON.stringify(config)">
-<table class="ui table definition selectable">
-<tbody>
-<tr>
-<td class="title">启用当前记录健康检查</td>
-<td>
-<checkbox v-model="config.isOn"></checkbox>
-</td>
-</tr>
-</tbody>
-<tbody v-show="config.isOn">
-<tr>
-<td>检测端口</td>
-<td>
-<span v-if="!portIsEditing" class="grey">
-默认{{parentConfig.port}}
-&nbsp; <a href @click.prevent="portIsEditing = true; portString = parentConfig.port">[修改]</a>
-</span>
-<div v-show="portIsEditing">
-<div style="margin-bottom: 0.5em">
-<a href @click.prevent="portIsEditing = false; portString = '0'">[使用默认]</a>
-</div>
-<input type="text" v-model="portString" maxlength="5" style="width: 5em">
-<p class="comment">通过尝试连接A/AAAA记录中的IP加此端口来确定当前记录是否健康。</p>
-</div>
-</td>
-</tr>
-<tr>
-<td>超时时间</td>
-<td>
-<span v-if="!timeoutSecondsIsEditing" class="grey">
-默认{{parentConfig.timeoutSeconds}}秒
-&nbsp; <a href @click.prevent="timeoutSecondsIsEditing = true; timeoutSecondsString = parentConfig.timeoutSeconds">[修改]</a>
-</span>
-<div v-show="timeoutSecondsIsEditing">
-<div style="margin-bottom: 0.5em">
-<a href @click.prevent="timeoutSecondsIsEditing = false; timeoutSecondsString = '0'">[使用默认]</a>
-</div>
-<div class="ui input right labeled">
-<input type="text" style="width: 4em" v-model="timeoutSecondsString" maxlength="3">
-<span class="ui label">秒</span>
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td>默认连续上线次数</td>
-<td>
-<span v-if="!countUpIsEditing" class="grey">
-默认{{parentConfig.countUp}}次
-&nbsp; <a href @click.prevent="countUpIsEditing = true; countUpString = parentConfig.countUp">[修改]</a>
-</span>
-<div v-show="countUpIsEditing">
-<div style="margin-bottom: 0.5em">
-<a href @click.prevent="countUpIsEditing = false; countUpString = '0'">[使用默认]</a>
-</div>
-<div class="ui input right labeled">
-<input type="text" style="width: 4em" v-model="countUpString" maxlength="3">
-<span class="ui label">次</span>
-</div>
-<p class="comment">连续检测<span v-if="config.countUp > 0">{{config.countUp}}</span><span v-else>N</span>次成功后，认为当前记录是在线的。</p>
-</div>
-</td>
-</tr>
-<tr>
-<td>默认连续下线次数</td>
-<td>
-<span v-if="!countDownIsEditing" class="grey">
-默认{{parentConfig.countDown}}次
-&nbsp; <a href @click.prevent="countDownIsEditing = true; countDownString = parentConfig.countDown">[修改]</a>
-</span>
-<div v-show="countDownIsEditing">
-<div style="margin-bottom: 0.5em">
-<a href @click.prevent="countDownIsEditing = false; countDownString = '0'">[使用默认]</a>
-</div>
-<div class="ui input right labeled">
-<input type="text" style="width: 4em" v-model="countDownString" maxlength="3">
-<span class="ui label">次</span>
-</div>
-<p class="comment">连续检测<span v-if="config.countDown > 0">{{config.countDown}}</span><span v-else>N</span>次失败后，认为当前记录是离线的。</p>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="margin"></div>
+	<input type="hidden" name="recordHealthCheckJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable">
+		<tbody>
+			<tr>
+				<td class="title">启用当前记录健康检查</td>
+				<td>
+					<checkbox v-model="config.isOn"></checkbox>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="config.isOn">
+			<tr>
+				<td>检测端口</td>
+				<td>
+					<span v-if="!portIsEditing" class="grey">
+						默认{{parentConfig.port}}
+						&nbsp; <a href="" @click.prevent="portIsEditing = true; portString = parentConfig.port">[修改]</a>
+					</span>
+					<div v-show="portIsEditing">
+						<div style="margin-bottom: 0.5em">
+							<a href="" @click.prevent="portIsEditing = false; portString = '0'">[使用默认]</a>
+						</div>
+						<input type="text" v-model="portString" maxlength="5" style="width: 5em"/>
+						<p class="comment">通过尝试连接A/AAAA记录中的IP加此端口来确定当前记录是否健康。</p>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>超时时间</td>
+				<td>
+					<span v-if="!timeoutSecondsIsEditing" class="grey">
+						默认{{parentConfig.timeoutSeconds}}秒
+						&nbsp; <a href="" @click.prevent="timeoutSecondsIsEditing = true; timeoutSecondsString = parentConfig.timeoutSeconds">[修改]</a>
+					</span>
+					<div v-show="timeoutSecondsIsEditing">
+						<div style="margin-bottom: 0.5em">
+							<a href="" @click.prevent="timeoutSecondsIsEditing = false; timeoutSecondsString = '0'">[使用默认]</a>
+						</div>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 4em" v-model="timeoutSecondsString" maxlength="3"/>
+							<span class="ui label">秒</span>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>默认连续上线次数</td>
+				<td>
+					<span v-if="!countUpIsEditing" class="grey">
+						默认{{parentConfig.countUp}}次
+						&nbsp; <a href="" @click.prevent="countUpIsEditing = true; countUpString = parentConfig.countUp">[修改]</a>
+					</span>
+					<div v-show="countUpIsEditing">
+						<div style="margin-bottom: 0.5em">
+							<a href="" @click.prevent="countUpIsEditing = false; countUpString = '0'">[使用默认]</a>
+						</div>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 4em" v-model="countUpString" maxlength="3"/>
+							<span class="ui label">次</span>
+						</div>
+						<p class="comment">连续检测<span v-if="config.countUp > 0">{{config.countUp}}</span><span v-else>N</span>次成功后，认为当前记录是在线的。</p>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>默认连续下线次数</td>
+				<td>
+					<span v-if="!countDownIsEditing" class="grey">
+						默认{{parentConfig.countDown}}次
+						&nbsp; <a href="" @click.prevent="countDownIsEditing = true; countDownString = parentConfig.countDown">[修改]</a>
+					</span>
+					<div v-show="countDownIsEditing">
+						<div style="margin-bottom: 0.5em">
+							<a href="" @click.prevent="countDownIsEditing = false; countDownString = '0'">[使用默认]</a>
+						</div>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 4em" v-model="countDownString" maxlength="3"/>
+							<span class="ui label">次</span>
+						</div>
+						<p class="comment">连续检测<span v-if="config.countDown > 0">{{config.countDown}}</span><span v-else>N</span>次失败后，认为当前记录是离线的。</p>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -2588,41 +2669,43 @@ Vue.component("ns-create-records-table", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="recordsJSON" :value="JSON.stringify(records)">
+<input type="hidden" name="recordsJSON" :value="JSON.stringify(records)"/>
 <table class="ui table selectable celled" style="max-width: 60em">
-<thead class="full-width">
-<tr>
-<th style="width:10em">记录名</th>
-<th style="width:7em">记录类型</th>
-<th>线路</th>
-<th v-if="!isAddingRoutes">记录值</th>
-<th v-if="!isAddingRoutes">TTL</th>
-<th class="one op" v-if="!isAddingRoutes">操作</th>
-</tr>
-</thead>
-<tr v-for="(record, index) in records" :key="record.index">
-<td>
-<input type="text" style="width:10em" v-model="record.name" ref="nameInputs">
-</td>
-<td>
-<select class="ui dropdown auto-width" v-model="record.type"><option v-for="type in types" :value="type.type">{{type.type}}</option></select>
-</td>
-<td>
-<ns-routes-selector @add="addRoutes" @cancel="cancelRoutes" @change="changeRoutes(record, $event)"></ns-routes-selector>
-</td>
-<td v-if="!isAddingRoutes">
-<input type="text" style="width:10em" maxlength="512" v-model="record.value">
-</td>
-<td v-if="!isAddingRoutes">
-<div class="ui input right labeled">
-<input type="text" v-model="record.ttl" style="width:5em" maxlength="8">
-<span class="ui label">秒</span>
-</div>
-</td>
-<td v-if="!isAddingRoutes">
-<a href title="删除" @click.prevent="remove(index)"><i class="icon remove"></i></a>
-</td>
-</tr>
+	<thead class="full-width">
+		<tr>
+			<th style="width:10em">记录名</th>
+			<th style="width:7em">记录类型</th>
+			<th>线路</th>
+			<th v-if="!isAddingRoutes">记录值</th>
+			<th v-if="!isAddingRoutes">TTL</th>
+			<th class="one op" v-if="!isAddingRoutes">操作</th>
+		</tr>
+	</thead>
+	<tr v-for="(record, index) in records" :key="record.index">
+		<td>
+			<input type="text" style="width:10em" v-model="record.name" ref="nameInputs"/>		
+		</td>
+		<td>
+			<select class="ui dropdown auto-width" v-model="record.type">
+				<option v-for="type in types" :value="type.type">{{type.type}}</option>
+			</select>
+		</td>
+		<td>
+			<ns-routes-selector @add="addRoutes" @cancel="cancelRoutes" @change="changeRoutes(record, $event)"></ns-routes-selector>
+		</td>
+		<td v-if="!isAddingRoutes">
+		  <input type="text" style="width:10em" maxlength="512" v-model="record.value"/>
+		</td>
+		<td v-if="!isAddingRoutes">
+			<div class="ui input right labeled">
+				<input type="text" v-model="record.ttl" style="width:5em" maxlength="8"/>
+				<span class="ui label">秒</span>
+			</div>
+		</td>
+		<td v-if="!isAddingRoutes">
+			<a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove"></i></a>
+		</td>
+	</tr>
 </table>
 <button class="ui button tiny" type="button" @click.prevent="add">+</button>
 </div>`,
@@ -2650,9 +2733,12 @@ Vue.component("ns-route-selector", {
 		}
 	},
 	template: `<div>
-<div v-if="routes.length > 0">
-<select class="ui dropdown" name="routeCode" v-model="routeCode"><option value>[线路]</option><option v-for="route in routes" :value="route.code">{{route.name}}</option></select>
-</div>
+	<div v-if="routes.length > 0">
+		<select class="ui dropdown" name="routeCode" v-model="routeCode">
+			<option value="">[线路]</option>
+			<option v-for="route in routes" :value="route.code">{{route.name}}</option>
+		</select>
+	</div>
 </div>`
 })
 
@@ -2667,7 +2753,7 @@ Vue.component("ns-user-selector", {
 		}
 	},
 	template: `<div>
-<user-selector :v-user-id="vUserId" data-url="/ns/users/options" @change="change"></user-selector>
+	<user-selector :v-user-id="vUserId" data-url="/ns/users/options" @change="change"></user-selector>
 </div>`
 })
 
@@ -2723,16 +2809,19 @@ Vue.component("ns-access-log-box", {
 		}
 	},
 	template: `<div class="access-log-row" :style="{'color': isFailure ? '#dc143c' : ''}" ref="box">
-<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey">[{{accessLog.region}}]</span> <keyword :v-word="vKeyword">{{accessLog.remoteAddr}}</keyword> [{{accessLog.timeLocal}}] [{{accessLog.networking}}] <em>{{accessLog.questionType}} <keyword :v-word="vKeyword">{{accessLog.questionName}}</keyword></em> ->
-<span v-if="accessLog.recordType != null && accessLog.recordType.length > 0"><em>{{accessLog.recordType}} <keyword :v-word="vKeyword">{{accessLog.recordValue}}</keyword></em></span>
-<span v-else class="disabled">&nbsp;[没有记录]</span>
-<div v-if="(accessLog.nsRoutes != null && accessLog.nsRoutes.length > 0) || accessLog.isRecursive" style="margin-top: 0.3em">
-<span class="ui label tiny basic grey" v-for="route in accessLog.nsRoutes">线路: {{route.name}}</span>
-<span class="ui label tiny basic grey" v-if="accessLog.isRecursive">递归DNS</span>
-</div>
-<div v-if="accessLog.error != null && accessLog.error.length > 0" style="color:#dc143c">
-<i class="icon warning circle"></i>错误：[{{accessLog.error}}]
-</div>
+	<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey">[{{accessLog.region}}]</span> <keyword :v-word="vKeyword">{{accessLog.remoteAddr}}</keyword> [{{accessLog.timeLocal}}] [{{accessLog.networking}}] <em>{{accessLog.questionType}} <keyword :v-word="vKeyword">{{accessLog.questionName}}</keyword></em> -&gt; 
+	
+	<span v-if="accessLog.recordType != null && accessLog.recordType.length > 0"><em>{{accessLog.recordType}} <keyword :v-word="vKeyword">{{accessLog.recordValue}}</keyword></em></span>
+	<span v-else class="disabled">&nbsp;[没有记录]</span>
+	
+	<!-- &nbsp; <a href="" @click.prevent="showLog" title="查看详情"><i class="icon expand"></i></a>-->
+	<div v-if="(accessLog.nsRoutes != null && accessLog.nsRoutes.length > 0) || accessLog.isRecursive" style="margin-top: 0.3em">
+		<span class="ui label tiny basic grey" v-for="route in accessLog.nsRoutes">线路: {{route.name}}</span>
+		<span class="ui label tiny basic grey" v-if="accessLog.isRecursive">递归DNS</span>
+	</div>
+	<div v-if="accessLog.error != null && accessLog.error.length > 0" style="color:#dc143c">
+		<i class="icon warning circle"></i>错误：[{{accessLog.error}}]
+	</div>
 </div>`
 })
 
@@ -2758,7 +2847,10 @@ Vue.component("ns-cluster-selector", {
 		}
 	},
 	template: `<div>
-<select class="ui dropdown auto-width" name="clusterId" v-model="clusterId"><option value="0">[选择集群]</option><option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option></select>
+	<select class="ui dropdown auto-width" name="clusterId" v-model="clusterId">
+		<option value="0">[选择集群]</option>
+		<option v-for="cluster in clusters" :value="cluster.id">{{cluster.name}}</option>
+	</select>
 </div>`
 })
 
@@ -2793,7 +2885,7 @@ Vue.component("ns-cluster-combo-box", {
 		}
 	},
 	template: `<div v-if="clusters.length > 0" style="min-width: 10.4em">
-<combo-box title="集群" placeholder="集群名称" :v-items="clusters" :name="inputName" :v-value="vClusterId" @change="change"></combo-box>
+	<combo-box title="集群" placeholder="集群名称" :v-items="clusters" :name="inputName" :v-value="vClusterId" @change="change"></combo-box>
 </div>`
 })
 
@@ -2808,7 +2900,7 @@ Vue.component("plan-user-selector", {
 		}
 	},
 	template: `<div>
-<user-selector :v-user-id="vUserId" data-url="/plans/users/options" @change="change"></user-selector>
+	<user-selector :v-user-id="vUserId" data-url="/plans/users/options" @change="change"></user-selector>
 </div>`
 })
 
@@ -2841,16 +2933,16 @@ Vue.component("plan-limit-view", {
 		}
 	},
 	template: `<div style="font-size: 0.8em; color: grey">
-<div class="ui divider" v-if="hasLimit"></div>
-<div v-if="config.trafficLimit != null && config.trafficLimit.isOn">
-<span v-if="config.trafficLimit.dailySize != null && config.trafficLimit.dailySize.count > 0">日流量限制：{{composeCapacity(config.trafficLimit.dailySize)}}<br></span>
-<span v-if="config.trafficLimit.monthlySize != null && config.trafficLimit.monthlySize.count > 0">月流量限制：{{composeCapacity(config.trafficLimit.monthlySize)}}<br></span>
-</div>
-<div v-if="config.dailyRequests > 0">单日请求数限制：{{formatNumber(config.dailyRequests)}}</div>
-<div v-if="config.monthlyRequests > 0">单月请求数限制：{{formatNumber(config.monthlyRequests)}}</div>
-<div v-if="config.dailyWebsocketConnections > 0">单日Websocket限制：{{formatNumber(config.dailyWebsocketConnections)}}</div>
-<div v-if="config.monthlyWebsocketConnections > 0">单月Websocket限制：{{formatNumber(config.monthlyWebsocketConnections)}}</div>
-<div v-if="config.maxUploadSize != null && config.maxUploadSize.count > 0">文件上传限制：{{composeCapacity(config.maxUploadSize)}}</div>
+	<div class="ui divider" v-if="hasLimit"></div>
+	<div v-if="config.trafficLimit != null && config.trafficLimit.isOn">
+		<span v-if="config.trafficLimit.dailySize != null && config.trafficLimit.dailySize.count > 0">日流量限制：{{composeCapacity(config.trafficLimit.dailySize)}}<br/></span>
+		<span v-if="config.trafficLimit.monthlySize != null && config.trafficLimit.monthlySize.count > 0">月流量限制：{{composeCapacity(config.trafficLimit.monthlySize)}}<br/></span>
+	</div>
+	<div v-if="config.dailyRequests > 0">单日请求数限制：{{formatNumber(config.dailyRequests)}}</div>
+	<div v-if="config.monthlyRequests > 0">单月请求数限制：{{formatNumber(config.monthlyRequests)}}</div>
+	<div v-if="config.dailyWebsocketConnections > 0">单日Websocket限制：{{formatNumber(config.dailyWebsocketConnections)}}</div>
+	<div v-if="config.monthlyWebsocketConnections > 0">单月Websocket限制：{{formatNumber(config.monthlyWebsocketConnections)}}</div>
+	<div v-if="config.maxUploadSize != null && config.maxUploadSize.count > 0">文件上传限制：{{composeCapacity(config.maxUploadSize)}}</div>
 </div>`
 })
 
@@ -2862,30 +2954,30 @@ Vue.component("plan-price-view", {
 		}
 	},
 	template: `<div>
-<span v-if="plan.priceType == 'period'">
-按时间周期计费
-<div>
-<span class="grey small">
-<span v-if="plan.monthlyPrice > 0">月度：￥{{plan.monthlyPrice}}元<br></span>
-<span v-if="plan.seasonallyPrice > 0">季度：￥{{plan.seasonallyPrice}}元<br></span>
-<span v-if="plan.yearlyPrice > 0">年度：￥{{plan.yearlyPrice}}元</span>
-</span>
-</div>
-</span>
-<span v-if="plan.priceType == 'traffic'">
-按流量计费
-<div>
-<span class="grey small">基础价格：￥{{plan.trafficPrice.base}}元/GiB</span>
-</div>
-</span>
-<div v-if="plan.priceType == 'bandwidth' && plan.bandwidthPrice != null && plan.bandwidthPrice.percentile > 0">
-按{{plan.bandwidthPrice.percentile}}th带宽计费
-<div>
-<div v-for="range in plan.bandwidthPrice.ranges">
-<span class="small grey">{{range.minMB}} - <span v-if="range.maxMB > 0">{{range.maxMB}}MiB</span><span v-else>&infin;</span>： <span v-if="range.totalPrice > 0">{{range.totalPrice}}元</span><span v-else>{{range.pricePerMB}}元/MiB</span></span>
-</div>
-</div>
-</div>
+	 <span v-if="plan.priceType == 'period'">
+	 	按时间周期计费
+	 	<div>
+	 		<span class="grey small">
+				<span v-if="plan.monthlyPrice > 0">月度：￥{{plan.monthlyPrice}}元<br/></span>
+				<span v-if="plan.seasonallyPrice > 0">季度：￥{{plan.seasonallyPrice}}元<br/></span>
+				<span v-if="plan.yearlyPrice > 0">年度：￥{{plan.yearlyPrice}}元</span>
+			</span>
+		</div>
+	</span>
+	<span v-if="plan.priceType == 'traffic'">
+		按流量计费
+		<div>
+			<span class="grey small">基础价格：￥{{plan.trafficPrice.base}}元/GiB</span>
+		</div>
+	</span>
+	<div v-if="plan.priceType == 'bandwidth' && plan.bandwidthPrice != null && plan.bandwidthPrice.percentile > 0">
+		按{{plan.bandwidthPrice.percentile}}th带宽计费 
+		<div>
+			<div v-for="range in plan.bandwidthPrice.ranges">
+				<span class="small grey">{{range.minMB}} - <span v-if="range.maxMB > 0">{{range.maxMB}}MiB</span><span v-else>&infin;</span>： <span v-if="range.totalPrice > 0">{{range.totalPrice}}元</span><span v-else="">{{range.pricePerMB}}元/MiB</span></span>
+			</div>
+		</div>
+	</div>
 </div>`
 })
 
@@ -3023,86 +3115,93 @@ Vue.component("plan-price-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="priceType" :value="priceType">
-<input type="hidden" name="monthlyPrice" :value="monthlyPriceNumber">
-<input type="hidden" name="seasonallyPrice" :value="seasonallyPriceNumber">
-<input type="hidden" name="yearlyPrice" :value="yearlyPriceNumber">
-<input type="hidden" name="trafficPriceJSON" :value="JSON.stringify(trafficPrice)">
-<input type="hidden" name="bandwidthPriceJSON" :value="JSON.stringify(bandwidthPrice)">
-<div>
-<radio :v-value="'bandwidth'" :value="priceType" v-model="priceType">&nbsp;按带宽</radio> &nbsp;
-<radio :v-value="'traffic'" :value="priceType" v-model="priceType">&nbsp;按流量</radio> &nbsp;
-<radio :v-value="'period'" :value="priceType" v-model="priceType" v-show="typeof(vDisablePeriod) != 'boolean' || !vDisablePeriod">&nbsp;按时间周期</radio>
-</div>
-<div v-show="priceType == 'period'">
-<div class="ui divider"></div>
-<table class="ui table">
-<tr>
-<td class="title">月度价格</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 7em" maxlength="10" v-model="monthlyPrice">
-<span class="ui label">元</span>
-</div>
-<p class="comment">如果为0表示免费。</p>
-</td>
-</tr>
-<tr>
-<td class="title">季度价格</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 7em" maxlength="10" v-model="seasonallyPrice">
-<span class="ui label">元</span>
-</div>
-<p class="comment">如果为0表示免费。</p>
-</td>
-</tr>
-<tr>
-<td class="title">年度价格</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 7em" maxlength="10" v-model="yearlyPrice">
-<span class="ui label">元</span>
-</div>
-<p class="comment">如果为0表示免费。</p>
-</td>
-</tr>
-</table>
-</div>
-<div v-show="priceType =='traffic'">
-<div class="ui divider"></div>
-<table class="ui table">
-<tr>
-<td class="title">基础流量费用 *</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" v-model="trafficPriceBase" maxlength="10" style="width: 7em">
-<span class="ui label">元/GB</span>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div v-show="priceType == 'bandwidth'">
-<div class="ui divider"></div>
-<table class="ui table">
-<tr>
-<td class="title">带宽百分位 *</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 4em" maxlength="3" v-model="bandwidthPercentile">
-<span class="ui label">th</span>
-</div>
-</td>
-</tr>
-<tr>
-<td>带宽价格</td>
-<td>
-<plan-bandwidth-ranges v-model="bandwidthPrice.ranges" @change="changeBandwidthPriceRanges"></plan-bandwidth-ranges>
-</td>
-</tr>
-</table>
-</div>
+	<input type="hidden" name="priceType" :value="priceType"/>
+	<input type="hidden" name="monthlyPrice" :value="monthlyPriceNumber"/>
+	<input type="hidden" name="seasonallyPrice" :value="seasonallyPriceNumber"/>
+	<input type="hidden" name="yearlyPrice" :value="yearlyPriceNumber"/>
+	<input type="hidden" name="trafficPriceJSON" :value="JSON.stringify(trafficPrice)"/>
+	<input type="hidden" name="bandwidthPriceJSON" :value="JSON.stringify(bandwidthPrice)"/>
+	
+	<div>
+		<radio :v-value="'bandwidth'" :value="priceType" v-model="priceType">&nbsp;按带宽</radio> &nbsp;
+		<radio :v-value="'traffic'" :value="priceType" v-model="priceType">&nbsp;按流量</radio> &nbsp;
+		<radio :v-value="'period'" :value="priceType" v-model="priceType" v-show="typeof(vDisablePeriod) != 'boolean' || !vDisablePeriod">&nbsp;按时间周期</radio>
+	</div>
+	
+	<!-- 按时间周期 -->
+	<div v-show="priceType == 'period'">
+		<div class="ui divider"></div>
+		<table class="ui table">
+			<tr>
+				<td class="title">月度价格</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 7em" maxlength="10" v-model="monthlyPrice"/>
+						<span class="ui label">元</span>
+					</div>
+					<p class="comment">如果为0表示免费。</p>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">季度价格</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 7em" maxlength="10" v-model="seasonallyPrice"/>
+						<span class="ui label">元</span>
+					</div>
+					<p class="comment">如果为0表示免费。</p>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">年度价格</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 7em" maxlength="10" v-model="yearlyPrice"/>
+						<span class="ui label">元</span>
+					</div>
+					<p class="comment">如果为0表示免费。</p>
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 按流量 -->
+	<div v-show="priceType =='traffic'">
+		<div class="ui divider"></div>
+		<table class="ui table">
+			<tr>
+				<td class="title">基础流量费用 *</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" v-model="trafficPriceBase" maxlength="10" style="width: 7em"/>
+						<span class="ui label">元/GB</span>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 按带宽 -->
+	<div v-show="priceType == 'bandwidth'">
+		<div class="ui divider"></div>
+		<table class="ui table">
+			<tr>
+				<td class="title">带宽百分位 *</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 4em" maxlength="3" v-model="bandwidthPercentile"/>
+						<span class="ui label">th</span>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>带宽价格</td>
+				<td>
+					<plan-bandwidth-ranges v-model="bandwidthPrice.ranges" @change="changeBandwidthPriceRanges"></plan-bandwidth-ranges>
+				</td>
+			</tr>
+		</table>
+	</div>
 </div>`
 })
 
@@ -3144,48 +3243,48 @@ Vue.component("plan-price-traffic-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="trafficPriceJSON" :value="JSON.stringify(config)">
-<div>
-基础流量价格：<span v-if="config.base > 0">{{config.base}}元/GB</span><span v-else class="disabled">没有设置</span> &nbsp; | &nbsp;
-阶梯价格：<span v-if="config.ranges.length > 0">{{config.ranges.length}}段</span><span v-else class="disabled">没有设置</span> &nbsp; <span v-if="config.supportRegions">| &nbsp;支持区域流量计费</span>
-<div style="margin-top: 0.5em">
-<a href @click.prevent="edit">修改 <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
-</div>
-</div>
-<div v-show="isEditing" style="margin-top: 0.5em">
-<table class="ui table definition selectable" style="margin-top: 0">
-<tr>
-<td class="title">基础流量费用</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" v-model="priceBase" maxlength="10" style="width: 7em">
-<span class="ui label">元/GB</span>
-</div>
-<p class="comment">没有定义流量阶梯价格时，使用此价格。</p>
-</td>
-</tr>
-<tr>
-<td>流量阶梯价格</td>
-<td>
-<plan-traffic-ranges v-model="config.ranges"></plan-traffic-ranges>
-</td>
-</tr>
-<tr>
-<td>支持按区域流量计费</td>
-<td>
-<checkbox v-model="config.supportRegions"></checkbox>
-<p class="comment">选中后，表示可以根据节点所在区域设置不同的流量价格；并且开启此项后才可以使用流量包。</p>
-</td>
-</tr>
-</table>
-</div>
+	<input type="hidden" name="trafficPriceJSON" :value="JSON.stringify(config)"/>
+	<div>
+		基础流量价格：<span v-if="config.base > 0">{{config.base}}元/GB</span><span v-else class="disabled">没有设置</span> &nbsp; | &nbsp; 
+		阶梯价格：<span v-if="config.ranges.length > 0">{{config.ranges.length}}段</span><span v-else class="disabled">没有设置</span>  &nbsp; <span v-if="config.supportRegions">| &nbsp;支持区域流量计费</span>
+		<div style="margin-top: 0.5em">
+			<a href="" @click.prevent="edit">修改 <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
+		</div>		
+	</div>
+	<div v-show="isEditing" style="margin-top: 0.5em">
+		<table class="ui table definition selectable" style="margin-top: 0">
+			<tr>
+				<td class="title">基础流量费用</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" v-model="priceBase" maxlength="10" style="width: 7em"/>
+						<span class="ui label">元/GB</span>
+					</div>
+					<p class="comment">没有定义流量阶梯价格时，使用此价格。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>流量阶梯价格</td>
+				<td>
+					<plan-traffic-ranges v-model="config.ranges"></plan-traffic-ranges>
+				</td>
+			</tr>
+			<tr>
+				<td>支持按区域流量计费</td>
+				<td>
+					<checkbox v-model="config.supportRegions"></checkbox>
+					<p class="comment">选中后，表示可以根据节点所在区域设置不同的流量价格；并且开启此项后才可以使用流量包。</p>
+				</td>
+			</tr>
+		</table>
+	</div>
 </div>`
 })
 
 Vue.component("plan-bandwidth-limit-view", {
 	props: ["value"],
 	template: `<div style="font-size: 0.8em; color: grey" v-if="value != null && value.bandwidthLimitPerNode != null && value.bandwidthLimitPerNode.count > 0">
-带宽限制：<bandwidth-size-capacity-view :v-value="value.bandwidthLimitPerNode"></bandwidth-size-capacity-view>
+	带宽限制：<bandwidth-size-capacity-view :v-value="value.bandwidthLimitPerNode"></bandwidth-size-capacity-view>
 </div>`
 })
 
@@ -3337,69 +3436,82 @@ Vue.component("plan-bandwidth-ranges", {
 		}
 	},
 	template: `<div>
-<div v-if="ranges.length > 0">
-<div class="ui label basic small" v-for="(range, index) in ranges" style="margin-bottom: 0.5em">
-{{formatMB(range.minMB)}} - <span v-if="range.maxMB > 0">{{formatMB(range.maxMB)}}</span><span v-else>&infin;</span> &nbsp; 价格：<span v-if="range.totalPrice > 0">{{range.totalPrice}}元</span><span v-else>{{range.pricePerMB}}元/Mbps</span>
-&nbsp; <a href title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
-</div>
-<div class="ui divider"></div>
-</div>
-<div v-if="isAdding">
-<table class="ui table">
-<tr>
-<td class="title">带宽下限 *</td>
-<td>
-<div class="ui fields inline">
-<div class="ui field">
-<input type="text" placeholder="最小带宽" style="width: 7em" maxlength="10" ref="minMB" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="minMB">
-</div>
-<div class="ui field">
-<select class="ui dropdown" v-model="minMBUnit"><option value="mb">Mbps</option><option value="gb">Gbps</option><option value="tb">Tbps</option></select>
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="title">带宽上限 *</td>
-<td>
-<div class="ui fields inline">
-<div class="ui field">
-<input type="text" placeholder="最大带宽" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="maxMB">
-</div>
-<div class="ui field">
-<select class="ui dropdown" v-model="maxMBUnit"><option value="mb">Mbps</option><option value="gb">Gbps</option><option value="tb">Tbps</option></select>
-</div>
-</div>
-<p class="comment">如果填0，表示上不封顶。</p>
-</td>
-</tr>
-<tr>
-<td class="title">单位价格</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" placeholder="单位价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="pricePerMB">
-<span class="ui label">元/Mbps</span>
-</div>
-<p class="comment">和总价格二选一。如果设置了单位价格，那么"总价格 = 单位价格 x 带宽/Mbps"。</p>
-</td>
-</tr>
-<tr>
-<td>总价格</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" placeholder="总价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="totalPrice">
-<span class="ui label">元</span>
-</div>
-<p class="comment">固定的总价格，和单位价格二选一。</p>
-</td>
-</tr>
-</table>
-<button class="ui button small" type="button" @click.prevent="confirm">确定</button> &nbsp;
-<a href title="取消" @click.prevent="cancelAdding"><i class="icon remove small"></i></a>
-</div>
-<div v-if="!isAdding">
-<button class="ui button small" type="button" @click.prevent="add">+</button>
-</div>
+	<!-- 已有价格 -->
+	<div v-if="ranges.length > 0">
+		<div class="ui label basic small" v-for="(range, index) in ranges" style="margin-bottom: 0.5em">
+			{{formatMB(range.minMB)}} - <span v-if="range.maxMB > 0">{{formatMB(range.maxMB)}}</span><span v-else>&infin;</span> &nbsp;  价格：<span v-if="range.totalPrice > 0">{{range.totalPrice}}元</span><span v-else="">{{range.pricePerMB}}元/Mbps</span>
+			&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+		</div>
+		<div class="ui divider"></div>
+	</div>
+	
+	<!-- 添加 -->
+	<div v-if="isAdding">
+		<table class="ui table">
+			<tr>
+				<td class="title">带宽下限 *</td>
+				<td>
+					<div class="ui fields inline">
+						<div class="ui field">
+							<input type="text" placeholder="最小带宽" style="width: 7em" maxlength="10" ref="minMB" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="minMB"/>
+						</div>
+						<div class="ui field">
+							<select class="ui dropdown" v-model="minMBUnit">
+								<option value="mb">Mbps</option>
+								<option value="gb">Gbps</option>
+								<option value="tb">Tbps</option>
+							</select>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">带宽上限 *</td>
+				<td>
+					<div class="ui fields inline">
+						<div class="ui field">
+							<input type="text" placeholder="最大带宽" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="maxMB"/>
+						</div>
+						<div class="ui field">
+							<select class="ui dropdown" v-model="maxMBUnit">
+								<option value="mb">Mbps</option>
+								<option value="gb">Gbps</option>
+								<option value="tb">Tbps</option>
+							</select>
+						</div>
+					</div>
+					<p class="comment">如果填0，表示上不封顶。</p>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">单位价格</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" placeholder="单位价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="pricePerMB"/>
+						<span class="ui label">元/Mbps</span>
+					</div>
+					<p class="comment">和总价格二选一。如果设置了单位价格，那么"总价格 = 单位价格 x 带宽/Mbps"。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>总价格</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" placeholder="总价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="totalPrice"/>
+						<span class="ui label">元</span>
+					</div>
+					<p class="comment">固定的总价格，和单位价格二选一。</p>
+				</td>
+			</tr>
+		</table>
+		<button class="ui button small" type="button" @click.prevent="confirm">确定</button> &nbsp;
+		<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove small"></i></a>
+	</div>
+	
+	<!-- 按钮 -->
+	<div v-if="!isAdding">
+		<button class="ui button small" type="button" @click.prevent="add">+</button>
+	</div>
 </div>`
 })
 
@@ -3451,61 +3563,64 @@ Vue.component("plan-price-bandwidth-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="bandwidthPriceJSON" :value="JSON.stringify(config)">
+<input type="hidden" name="bandwidthPriceJSON" :value="JSON.stringify(config)"/>
 <div>
-带宽百分位：<span v-if="config.percentile > 0">{{config.percentile}}th</span><span v-else class="disabled">没有设置</span> &nbsp; | &nbsp;
-基础带宽价格：<span v-if="config.base > 0">{{config.base}}元/Mbps</span><span v-else class="disabled">没有设置</span> &nbsp; | &nbsp;
-阶梯价格：<span v-if="config.ranges.length > 0">{{config.ranges.length}}段</span><span v-else class="disabled">没有设置</span> &nbsp; <span v-if="config.supportRegions">| &nbsp;支持区域带宽计费</span>
-<span v-if="config.bandwidthAlgo == 'avg'"> &nbsp;| &nbsp;使用平均带宽算法</span>
-<div style="margin-top: 0.5em">
-<a href @click.prevent="edit">修改 <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
-</div>
+	带宽百分位：<span v-if="config.percentile > 0">{{config.percentile}}th</span><span v-else class="disabled">没有设置</span> &nbsp; | &nbsp;
+	基础带宽价格：<span v-if="config.base > 0">{{config.base}}元/Mbps</span><span v-else class="disabled">没有设置</span> &nbsp; | &nbsp; 
+	阶梯价格：<span v-if="config.ranges.length > 0">{{config.ranges.length}}段</span><span v-else class="disabled">没有设置</span>  &nbsp; <span v-if="config.supportRegions">| &nbsp;支持区域带宽计费</span>
+	<span v-if="config.bandwidthAlgo == 'avg'"> &nbsp;| &nbsp;使用平均带宽算法</span>
+	<div style="margin-top: 0.5em">
+		<a href="" @click.prevent="edit">修改 <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
+	</div>		
 </div>
 <div v-show="isEditing" style="margin-top: 0.5em">
-<table class="ui table definition selectable" style="margin-top: 0">
-<tr>
-<td class="title">带宽百分位 *</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 4em" maxlength="3" v-model="bandwidthPercentile">
-<span class="ui label">th</span>
-</div>
-<p class="comment">带宽计费位置，在1-100之间。</p>
-</td>
-</tr>
-<tr>
-<td class="title">基础带宽费用</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" v-model="priceBase" maxlength="10" style="width: 7em">
-<span class="ui label">元/Mbps</span>
-</div>
-<p class="comment">没有定义带宽阶梯价格时，使用此价格。</p>
-</td>
-</tr>
-<tr>
-<td>带宽阶梯价格</td>
-<td>
-<plan-bandwidth-ranges v-model="config.ranges"></plan-bandwidth-ranges>
-</td>
-</tr>
-<tr>
-<td>支持按区域带宽计费</td>
-<td>
-<checkbox v-model="config.supportRegions"></checkbox>
-<p class="comment">选中后，表示可以根据节点所在区域设置不同的带宽价格。</p>
-</td>
-</tr>
-<tr>
-<td>带宽算法</td>
-<td>
-<select class="ui dropdown auto-width" v-model="config.bandwidthAlgo"><option value="secondly">峰值带宽</option><option value="avg">平均带宽</option></select>
-<p class="comment" v-if="config.bandwidthAlgo == 'secondly'">按在计时时间段内（5分钟）最高带宽峰值计算，比如5分钟内最高的某个时间点带宽为100Mbps，那么就认为此时间段内的峰值带宽为100Mbps。修改此选项会同时影响到用量统计图表。</p>
-<p class="comment" v-if="config.bandwidthAlgo == 'avg'">按在计时时间段内（5分钟）平均带宽计算，即此时间段内的总流量除以时间段的秒数，比如5分钟（300秒）内总流量600MiB，那么带宽即为<code-label>600MiB * 8bit/300s = 16Mbps</code-label>；通常平均带宽算法要比峰值带宽要少很多。修改此选项会同时影响到用量统计图表。</p>
-</td>
-</tr>
-</table>
-</div>
+	<table class="ui table definition selectable" style="margin-top: 0">
+		<tr>
+			<td class="title">带宽百分位 *</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" style="width: 4em" maxlength="3" v-model="bandwidthPercentile"/>
+					<span class="ui label">th</span>
+				</div>
+				<p class="comment">带宽计费位置，在1-100之间。</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="title">基础带宽费用</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" v-model="priceBase" maxlength="10" style="width: 7em"/>
+					<span class="ui label">元/Mbps</span>
+				</div>
+				<p class="comment">没有定义带宽阶梯价格时，使用此价格。</p>
+			</td>
+		</tr>	
+		<tr>
+			<td>带宽阶梯价格</td>
+			<td>
+				<plan-bandwidth-ranges v-model="config.ranges"></plan-bandwidth-ranges>
+			</td>
+		</tr>
+		<tr>
+			<td>支持按区域带宽计费</td>
+			<td>
+				<checkbox v-model="config.supportRegions"></checkbox>
+				<p class="comment">选中后，表示可以根据节点所在区域设置不同的带宽价格。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>带宽算法</td>
+			<td>
+				<select class="ui dropdown auto-width" v-model="config.bandwidthAlgo">
+                    <option value="secondly">峰值带宽</option>
+                    <option value="avg">平均带宽</option>
+                </select>
+                <p class="comment" v-if="config.bandwidthAlgo == 'secondly'">按在计时时间段内（5分钟）最高带宽峰值计算，比如5分钟内最高的某个时间点带宽为100Mbps，那么就认为此时间段内的峰值带宽为100Mbps。修改此选项会同时影响到用量统计图表。</p>
+                <p class="comment" v-if="config.bandwidthAlgo == 'avg'">按在计时时间段内（5分钟）平均带宽计算，即此时间段内的总流量除以时间段的秒数，比如5分钟（300秒）内总流量600MiB，那么带宽即为<code-label>600MiB * 8bit/300s = 16Mbps</code-label>；通常平均带宽算法要比峰值带宽要少很多。修改此选项会同时影响到用量统计图表。</p>
+			</td>
+		</tr>
+	</table>
+</div>	
 </div>`
 })
 
@@ -3663,69 +3778,84 @@ Vue.component("plan-traffic-ranges", {
 		}
 	},
 	template: `<div>
-<div v-if="ranges.length > 0">
-<div class="ui label basic small" v-for="(range, index) in ranges" style="margin-bottom: 0.5em">
-{{formatGB(range.minGB)}} - <span v-if="range.maxGB > 0">{{formatGB(range.maxGB)}}</span><span v-else>&infin;</span> &nbsp; 价格：<span v-if="range.totalPrice > 0">{{range.totalPrice}}元</span><span v-else>{{range.pricePerGB}}元/GB</span>
-&nbsp; <a href title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
-</div>
-<div class="ui divider"></div>
-</div>
-<div v-if="isAdding">
-<table class="ui table">
-<tr>
-<td class="title">流量下限 *</td>
-<td>
-<div class="ui fields inline">
-<div class="ui field">
-<input type="text" placeholder="最小流量" style="width: 7em" maxlength="10" ref="minGB" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="minGB">
-</div>
-<div class="ui field">
-<select class="ui dropdown" v-model="minGBUnit"><option value="gb">GB</option><option value="tb">TB</option><option value="pb">PB</option><option value="eb">EB</option></select>
-</div>
-</div>
-</td>
-</tr>
-<tr>
-<td class="title">流量上限 *</td>
-<td>
-<div class="ui fields inline">
-<div class="ui field">
-<input type="text" placeholder="最大流量" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="maxGB">
-</div>
-<div class="ui field">
-<select class="ui dropdown" v-model="maxGBUnit"><option value="gb">GB</option><option value="tb">TB</option><option value="pb">PB</option><option value="eb">EB</option></select>
-</div>
-</div>
-<p class="comment">如果填0，表示上不封顶。</p>
-</td>
-</tr>
-<tr>
-<td class="title">单位价格</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" placeholder="单位价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="pricePerGB">
-<span class="ui label">元/GB</span>
-</div>
-<p class="comment">和总价格二选一。如果设置了单位价格，那么"总价格 = 单位价格 x 流量/GB"。</p>
-</td>
-</tr>
-<tr>
-<td>总价格</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" placeholder="总价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="totalPrice">
-<span class="ui label">元</span>
-</div>
-<p class="comment">固定的总价格，和单位价格二选一。</p>
-</td>
-</tr>
-</table>
-<button class="ui button small" type="button" @click.prevent="confirm">确定</button> &nbsp;
-<a href title="取消" @click.prevent="cancelAdding"><i class="icon remove small"></i></a>
-</div>
-<div v-if="!isAdding">
-<button class="ui button small" type="button" @click.prevent="add">+</button>
-</div>
+	<!-- 已有价格 -->
+	<div v-if="ranges.length > 0">
+		<div class="ui label basic small" v-for="(range, index) in ranges" style="margin-bottom: 0.5em">
+			{{formatGB(range.minGB)}} - <span v-if="range.maxGB > 0">{{formatGB(range.maxGB)}}</span><span v-else>&infin;</span> &nbsp;  价格：<span v-if="range.totalPrice > 0">{{range.totalPrice}}元</span><span v-else="">{{range.pricePerGB}}元/GB</span>
+			&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+		</div>
+		<div class="ui divider"></div>
+	</div>
+	
+	<!-- 添加 -->
+	<div v-if="isAdding">
+		<table class="ui table">
+			<tr>
+				<td class="title">流量下限 *</td>
+				<td>
+					<div class="ui fields inline">
+						<div class="ui field">
+							<input type="text" placeholder="最小流量" style="width: 7em" maxlength="10" ref="minGB" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="minGB"/>
+						</div>
+						<div class="ui field">
+							<select class="ui dropdown" v-model="minGBUnit">
+								<option value="gb">GB</option>
+								<option value="tb">TB</option>
+								<option value="pb">PB</option>
+								<option value="eb">EB</option>
+							</select>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">流量上限 *</td>
+				<td>
+					<div class="ui fields inline">
+						<div class="ui field">
+							<input type="text" placeholder="最大流量" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="maxGB"/>
+						</div>
+						<div class="ui field">
+							<select class="ui dropdown" v-model="maxGBUnit">
+								<option value="gb">GB</option>
+								<option value="tb">TB</option>
+								<option value="pb">PB</option>
+								<option value="eb">EB</option>
+							</select>
+						</div>
+					</div>
+					<p class="comment">如果填0，表示上不封顶。</p>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">单位价格</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" placeholder="单位价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="pricePerGB"/>
+						<span class="ui label">元/GB</span>
+					</div>
+					<p class="comment">和总价格二选一。如果设置了单位价格，那么"总价格 = 单位价格 x 流量/GB"。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>总价格</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" placeholder="总价格" style="width: 7em" maxlength="10" @keyup.enter="confirm()" @keypress.enter.prevent="1" v-model="totalPrice"/>
+						<span class="ui label">元</span>
+					</div>
+					<p class="comment">固定的总价格，和单位价格二选一。</p>
+				</td>
+			</tr>
+		</table>
+		<button class="ui button small" type="button" @click.prevent="confirm">确定</button> &nbsp;
+		<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove small"></i></a>
+	</div>
+	
+	<!-- 按钮 -->
+	<div v-if="!isAdding">
+		<button class="ui button small" type="button" @click.prevent="add">+</button>
+	</div>
 </div>`
 })
 
@@ -3744,21 +3874,21 @@ Vue.component("http-stat-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="statJSON" :value="JSON.stringify(stat)">
-<table class="ui table definition selectable">
-<prior-checkbox :v-config="stat" v-if="vIsLocation || vIsGroup"></prior-checkbox>
-<tbody v-show="(!vIsLocation && !vIsGroup) || stat.isPrior">
-<tr>
-<td class="title">启用统计</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" v-model="stat.isOn">
-<label></label>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
+	<input type="hidden" name="statJSON" :value="JSON.stringify(stat)"/>
+	<table class="ui table definition selectable">
+		<prior-checkbox :v-config="stat" v-if="vIsLocation || vIsGroup" ></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || stat.isPrior">
+			<tr>
+				<td class="title">启用统计</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="stat.isOn"/>
+						<label></label>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 <div class="margin"></div>
 </div>`
 })
@@ -3771,11 +3901,12 @@ Vue.component("http-firewall-page-options-viewer", {
 		}
 	},
 	template: `<div>
-<span v-if="options == null">默认设置</span>
-<div v-else>
-状态码：{{options.status}} / 提示内容：<span v-if="options.body != null && options.body.length > 0">[{{options.body.length}}字符]</span>
-</div>
-</div>`
+	<span v-if="options == null">默认设置</span>
+	<div v-else>
+		状态码：{{options.status}} / 提示内容：<span v-if="options.body != null && options.body.length > 0">[{{options.body.length}}字符]</span>
+	</div>
+</div>	
+`
 })
 
 Vue.component("http-request-conds-box", {
@@ -3842,45 +3973,52 @@ Vue.component("http-request-conds-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="condsJSON" :value="JSON.stringify(conds)">
-<div v-if="conds.groups.length > 0">
-<table class="ui table">
-<tr v-for="(group, groupIndex) in conds.groups">
-<td class="title" :class="{'color-border':conds.connector == 'and'}" :style="{'border-bottom':(groupIndex < conds.groups.length-1) ? '1px solid rgba(34,36,38,.15)':''}">分组{{groupIndex+1}}</td>
-<td style="background: white; word-break: break-all" :style="{'border-bottom':(groupIndex < conds.groups.length-1) ? '1px solid rgba(34,36,38,.15)':''}">
-<var v-for="(cond, index) in group.conds" style="font-style: normal;display: inline-block; margin-bottom:0.5em">
-<span class="ui label tiny">
-<var v-if="cond.type.length == 0 || cond.type == 'params'" style="font-style: normal">{{cond.param}} <var>{{cond.operator}}</var></var>
-<var v-if="cond.type.length > 0 && cond.type != 'params'" style="font-style: normal">{{typeName(cond)}}: </var>
-{{cond.value}}
-<sup v-if="cond.isCaseInsensitive" title="不区分大小写"><i class="icon info small"></i></sup>
-</span>
-<var v-if="index < group.conds.length - 1"> {{group.connector}} &nbsp;</var>
-</var>
-</td>
-<td style="width: 5em; background: white" :style="{'border-bottom':(groupIndex < conds.groups.length-1) ? '1px solid rgba(34,36,38,.15)':''}">
-<a href title="修改分组" @click.prevent="updateGroup(groupIndex, group)"><i class="icon pencil small"></i></a> <a href title="删除分组" @click.prevent="removeGroup(groupIndex)"><i class="icon remove"></i></a>
-</td>
-</tr>
-</table>
-<div class="ui divider"></div>
-</div>
-<table class="ui table" v-if="conds.groups.length > 1">
-<tr>
-<td class="title">分组之间关系</td>
-<td>
-<select class="ui dropdown auto-width" v-model="conds.connector"><option value="and">和</option><option value="or">或</option></select>
-<p class="comment">
-<span v-if="conds.connector == 'or'">只要满足其中一个条件分组即可。</span>
-<span v-if="conds.connector == 'and'">需要满足所有条件分组。</span>
-</p>
-</td>
-</tr>
-</table>
-<div>
-<button class="ui button tiny basic" type="button" @click.prevent="addGroup()">+添加分组</button>
-</div>
-</div>
+		<input type="hidden" name="condsJSON" :value="JSON.stringify(conds)"/>
+		<div v-if="conds.groups.length > 0">
+			<table class="ui table">
+				<tr v-for="(group, groupIndex) in conds.groups">
+					<td class="title" :class="{'color-border':conds.connector == 'and'}" :style="{'border-bottom':(groupIndex < conds.groups.length-1) ? '1px solid rgba(34,36,38,.15)':''}">分组{{groupIndex+1}}</td>
+					<td style="background: white; word-break: break-all" :style="{'border-bottom':(groupIndex < conds.groups.length-1) ? '1px solid rgba(34,36,38,.15)':''}">
+						<var v-for="(cond, index) in group.conds" style="font-style: normal;display: inline-block; margin-bottom:0.5em">
+							<span class="ui label tiny">
+								<var v-if="cond.type.length == 0 || cond.type == 'params'" style="font-style: normal">{{cond.param}} <var>{{cond.operator}}</var></var>
+								<var v-if="cond.type.length > 0 && cond.type != 'params'" style="font-style: normal">{{typeName(cond)}}: </var>
+								{{cond.value}}
+								<sup v-if="cond.isCaseInsensitive" title="不区分大小写"><i class="icon info small"></i></sup>
+							</span>
+							
+							<var v-if="index < group.conds.length - 1"> {{group.connector}} &nbsp;</var>
+						</var>
+					</td>
+					<td style="width: 5em; background: white" :style="{'border-bottom':(groupIndex < conds.groups.length-1) ? '1px solid rgba(34,36,38,.15)':''}">
+						<a href="" title="修改分组" @click.prevent="updateGroup(groupIndex, group)"><i class="icon pencil small"></i></a> <a href="" title="删除分组" @click.prevent="removeGroup(groupIndex)"><i class="icon remove"></i></a>
+					</td>
+				</tr>
+			</table>
+			<div class="ui divider"></div>
+		</div>
+		
+		<!-- 分组之间关系 -->
+		<table class="ui table" v-if="conds.groups.length > 1">
+			<tr>
+				<td class="title">分组之间关系</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="conds.connector">
+						<option value="and">和</option>
+						<option value="or">或</option>
+					</select>
+					<p class="comment">
+						<span v-if="conds.connector == 'or'">只要满足其中一个条件分组即可。</span>
+						<span v-if="conds.connector == 'and'">需要满足所有条件分组。</span>
+					</p>	
+				</td>
+			</tr>
+		</table>
+		
+		<div>
+			<button class="ui button tiny basic" type="button" @click.prevent="addGroup()">+添加分组</button>
+		</div>
+	</div>	
 </div>`
 })
 
@@ -4278,202 +4416,214 @@ Vue.component("ssl-config-box", {
 		}
 	},
 	template: `<div>
-<h4>SSL/TLS相关配置</h4>
-<input type="hidden" name="sslPolicyJSON" :value="JSON.stringify(policy)">
-<table class="ui table definition selectable">
-<tbody>
-<tr v-show="vProtocol == 'https'">
-<td class="title">启用HTTP/2</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" value="1" v-model="policy.http2Enabled">
-<label></label>
-</div>
-</td>
-</tr>
-<tr v-show="vProtocol == 'https' && vSupportHttp3">
-<td class="title">启用HTTP/3</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" value="1" v-model="policy.http3Enabled">
-<label></label>
-</div>
-</td>
-</tr>
-<tr>
-<td class="title">设置证书</td>
-<td>
-<div v-if="policy.certs != null && policy.certs.length > 0">
-<div class="ui label small basic" v-for="(cert, index) in policy.certs" style="margin-top: 0.2em">
-{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp; <a href title="删除" @click.prevent="removeCert(index)"><i class="icon remove"></i></a>
-</div>
-<div class="ui divider"></div>
-</div>
-<div v-else>
-<span class="red">选择或上传证书后<span v-if="vProtocol == 'https'">HTTPS</span><span v-if="vProtocol == 'tls'">TLS</span>服务才能生效。</span>
-<div class="ui divider"></div>
-</div>
-<button class="ui button tiny" type="button" @click.prevent="selectCert()">选择已有证书</button> &nbsp;
-<span class="disabled">|</span> &nbsp;
-<button class="ui button tiny" type="button" @click.prevent="uploadCert()">上传新证书</button> &nbsp;
-<button class="ui button tiny" type="button" @click.prevent="uploadBatch()">批量上传证书</button> &nbsp;
-<span class="disabled">|</span> &nbsp;
-<button class="ui button tiny" type="button" @click.prevent="requestCert()" v-if="vServerId != null && vServerId > 0">申请免费证书</button>
-</td>
-</tr>
-<tr>
-<td>TLS最低版本</td>
-<td>
-<select v-model="policy.minVersion" class="ui dropdown auto-width"><option v-for="version in allVersions" :value="version">{{version}}</option></select>
-</td>
-</tr>
-</tbody>
-<more-options-tbody @change="changeOptionsVisible"></more-options-tbody>
-<tbody v-show="moreOptionsVisible">
-<tr>
-<td>加密算法套件<em>（CipherSuites）</em></td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" value="1" v-model="policy.cipherSuitesIsOn">
-<label>是否要自定义</label>
-</div>
-<div v-show="policy.cipherSuitesIsOn">
-<div class="ui divider"></div>
-<div class="cipher-suites-box">
-已添加套件({{policy.cipherSuites.length}})：
-<div v-for="cipherSuite in policy.cipherSuites" class="ui label tiny basic" style="margin-bottom: 0.5em">
-<input type="hidden" name="cipherSuites" :value="cipherSuite">
-<span v-html="formatCipherSuite(cipherSuite)"></span> &nbsp; <a href title="删除套件" @click.prevent="removeCipherSuite(cipherSuite)"><i class="icon remove"></i></a>
-<a href title="拖动改变顺序"><i class="icon bars handle"></i></a>
-</div>
-</div>
-<div>
-<div class="ui divider"></div>
-<span v-if="policy.cipherSuites.length > 0"><a href @click.prevent="clearCipherSuites()">[清除所有已选套件]</a> &nbsp; </span>
-<a href @click.prevent="addBatchCipherSuites(modernCipherSuites)">[添加推荐套件]</a> &nbsp;
-<a href @click.prevent="addBatchCipherSuites(intermediateCipherSuites)">[添加兼容套件]</a>
-<div class="ui divider"></div>
-</div>
-<div class="cipher-all-suites-box">
-<a href @click.prevent="showAllCipherSuites()"><span v-if="policy.cipherSuites.length == 0">所有</span>可选套件({{allCipherSuites.length}}) <i class="icon angle" :class="{down:!cipherSuitesVisible, up:cipherSuitesVisible}"></i></a>
-<a href v-if="cipherSuitesVisible" v-for="cipherSuite in allCipherSuites" class="ui label tiny" title="点击添加到自定义套件中" @click.prevent="addCipherSuite(cipherSuite)" v-html="formatCipherSuite(cipherSuite)" style="margin-bottom:0.5em"></a>
-</div>
-<p class="comment" v-if="cipherSuitesVisible">点击可选套件添加。</p>
-</div>
-</td>
-</tr>
-<tr v-show="vProtocol == 'https'">
-<td :class="{'color-border':hsts.isOn}">开启HSTS</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" name="hstsOn" v-model="hsts.isOn" value="1">
-<label></label>
-</div>
-<p class="comment">
-开启后，会自动在响应Header中加入
-<span class="ui label small">Strict-Transport-Security:
-<var v-if="!hsts.isOn">...</var>
-<var v-if="hsts.isOn"><span>max-age=</span>{{hsts.maxAge}}</var>
-<var v-if="hsts.isOn && hsts.includeSubDomains">; includeSubDomains</var>
-<var v-if="hsts.isOn && hsts.preload">; preload</var>
-</span>
-<span v-if="hsts.isOn">
-<a href @click.prevent="showMoreHSTS()">修改<i class="icon angle" :class="{down:!hstsOptionsVisible, up:hstsOptionsVisible}"></i> </a>
-</span>
-</p>
-</td>
-</tr>
-<tr v-show="hsts.isOn && hstsOptionsVisible">
-<td class="color-border">HSTS有效时间<em>（max-age）</em></td>
-<td>
-<div class="ui fields inline">
-<div class="ui field">
-<input type="text" name="hstsMaxAge" v-model="hstsMaxAgeString" maxlength="10" size="10" @input="changeHSTSMaxAge()">
-</div>
-<div class="ui field">
-秒
-</div>
-<div class="ui field">{{hsts.days}}天</div>
-</div>
-<p class="comment">
-<a href @click.prevent="setHSTSMaxAge(31536000)" :class="{active:hsts.maxAge == 31536000}">[1年/365天]</a> &nbsp; &nbsp;
-<a href @click.prevent="setHSTSMaxAge(15768000)" :class="{active:hsts.maxAge == 15768000}">[6个月/182.5天]</a> &nbsp; &nbsp;
-<a href @click.prevent="setHSTSMaxAge(2592000)" :class="{active:hsts.maxAge == 2592000}">[1个月/30天]</a>
-</p>
-</td>
-</tr>
-<tr v-show="hsts.isOn && hstsOptionsVisible">
-<td class="color-border">HSTS包含子域名<em>（includeSubDomains）</em></td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" name="hstsIncludeSubDomains" value="1" v-model="hsts.includeSubDomains">
-<label></label>
-</div>
-</td>
-</tr>
-<tr v-show="hsts.isOn && hstsOptionsVisible">
-<td class="color-border">HSTS预加载<em>（preload）</em></td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" name="hstsPreload" value="1" v-model="hsts.preload">
-<label></label>
-</div>
-</td>
-</tr>
-<tr v-show="hsts.isOn && hstsOptionsVisible">
-<td class="color-border">HSTS生效的域名</td>
-<td colspan="2">
-<div class="names-box">
-<span class="ui label tiny basic" v-for="(domain, arrayIndex) in hsts.domains" :class="{blue:hstsDomainEditingIndex == arrayIndex}">{{domain}}
-<input type="hidden" name="hstsDomains" :value="domain"> &nbsp;
-<a href @click.prevent="editHstsDomain(arrayIndex)" title="修改"><i class="icon pencil"></i></a>
-<a href @click.prevent="removeHstsDomain(arrayIndex)" title="删除"><i class="icon remove"></i></a>
-</span>
-</div>
-<div class="ui fields inline" v-if="hstsDomainAdding" style="margin-top:0.8em">
-<div class="ui field">
-<input type="text" name="addingHstsDomain" ref="addingHstsDomain" style="width:16em" maxlength="100" placeholder="域名，比如example.com" @keyup.enter="confirmAddHstsDomain()" @keypress.enter.prevent="1" v-model="addingHstsDomain">
-</div>
-<div class="ui field">
-<button class="ui button tiny" type="button" @click="confirmAddHstsDomain()">确定</button>
-&nbsp; <a href @click.prevent="cancelHstsDomainAdding()">取消</a>
-</div>
-</div>
-<div class="ui field" style="margin-top: 1em">
-<button class="ui button tiny" type="button" @click="addHstsDomain()">+</button>
-</div>
-<p class="comment">如果没有设置域名的话，则默认支持所有的域名。</p>
-</td>
-</tr>
-<tr>
-<td>OCSP Stapling</td>
-<td><checkbox name="ocspIsOn" v-model="policy.ocspIsOn"></checkbox>
-<p class="comment">选中表示启用OCSP Stapling。</p>
-</td>
-</tr>
-<tr>
-<td>客户端认证方式</td>
-<td>
-<select name="clientAuthType" v-model="policy.clientAuthType" class="ui dropdown auto-width"><option v-for="authType in allClientAuthTypes" :value="authType.type">{{authType.name}}</option></select>
-</td>
-</tr>
-<tr>
-<td>客户端认证CA证书</td>
-<td>
-<div v-if="policy.clientCACerts != null && policy.clientCACerts.length > 0">
-<div class="ui label small basic" v-for="(cert, index) in policy.clientCACerts">
-{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp; <a href title="删除" @click.prevent="removeClientCACert()"><i class="icon remove"></i></a>
-</div>
-<div class="ui divider"></div>
-</div>
-<button class="ui button tiny" type="button" @click.prevent="selectClientCACert()">选择已有证书</button> &nbsp;
-<button class="ui button tiny" type="button" @click.prevent="uploadClientCACert()">上传新证书</button>
-<p class="comment">用来校验客户端证书以增强安全性，通常不需要设置。</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="ui margin"></div>
+	<h4>SSL/TLS相关配置</h4>
+	<input type="hidden" name="sslPolicyJSON" :value="JSON.stringify(policy)"/>
+	<table class="ui table definition selectable">
+		<tbody>
+			<tr v-show="vProtocol == 'https'">
+				<td class="title">启用HTTP/2</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" value="1" v-model="policy.http2Enabled"/>
+						<label></label>
+					</div>
+				</td>
+			</tr>
+			<tr v-show="vProtocol == 'https' && vSupportHttp3">
+				<td class="title">启用HTTP/3</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" value="1" v-model="policy.http3Enabled"/>
+						<label></label>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="title">设置证书</td>
+				<td>
+					<div v-if="policy.certs != null && policy.certs.length > 0">
+						<div class="ui label small basic" v-for="(cert, index) in policy.certs" style="margin-top: 0.2em">
+							{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp; <a href="" title="删除" @click.prevent="removeCert(index)"><i class="icon remove"></i></a>
+						</div>
+						<div class="ui divider"></div>
+					</div>
+					<div v-else>
+						<span class="red">选择或上传证书后<span v-if="vProtocol == 'https'">HTTPS</span><span v-if="vProtocol == 'tls'">TLS</span>服务才能生效。</span>
+						<div class="ui divider"></div>
+					</div>
+					<button class="ui button tiny" type="button" @click.prevent="selectCert()">选择已有证书</button> &nbsp;
+					<span class="disabled">|</span> &nbsp;
+					<button class="ui button tiny" type="button" @click.prevent="uploadCert()">上传新证书</button> &nbsp;
+					<button class="ui button tiny" type="button" @click.prevent="uploadBatch()">批量上传证书</button> &nbsp;
+					<span class="disabled">|</span> &nbsp;
+					<button class="ui button tiny" type="button" @click.prevent="requestCert()" v-if="vServerId != null && vServerId > 0">申请免费证书</button>
+				</td>
+			</tr>
+			<tr>
+				<td>TLS最低版本</td>
+				<td>
+					<select v-model="policy.minVersion" class="ui dropdown auto-width">
+						<option v-for="version in allVersions" :value="version">{{version}}</option>
+					</select>
+				</td>
+			</tr>
+		</tbody>
+		<more-options-tbody @change="changeOptionsVisible"></more-options-tbody>
+		<tbody v-show="moreOptionsVisible">
+			<!-- 加密套件 -->
+			<tr>
+				<td>加密算法套件<em>（CipherSuites）</em></td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" value="1" v-model="policy.cipherSuitesIsOn" />
+						<label>是否要自定义</label>
+					</div>
+					<div v-show="policy.cipherSuitesIsOn">
+						<div class="ui divider"></div>
+						<div class="cipher-suites-box">
+							已添加套件({{policy.cipherSuites.length}})：
+							<div v-for="cipherSuite in policy.cipherSuites" class="ui label tiny basic" style="margin-bottom: 0.5em">
+								<input type="hidden" name="cipherSuites" :value="cipherSuite"/>
+								<span v-html="formatCipherSuite(cipherSuite)"></span> &nbsp; <a href="" title="删除套件" @click.prevent="removeCipherSuite(cipherSuite)"><i class="icon remove"></i></a>
+								<a href="" title="拖动改变顺序"><i class="icon bars handle"></i></a>
+							</div>
+						</div>
+						<div>
+							<div class="ui divider"></div>
+							<span v-if="policy.cipherSuites.length > 0"><a href="" @click.prevent="clearCipherSuites()">[清除所有已选套件]</a> &nbsp; </span>
+							<a href="" @click.prevent="addBatchCipherSuites(modernCipherSuites)">[添加推荐套件]</a> &nbsp;
+							<a href="" @click.prevent="addBatchCipherSuites(intermediateCipherSuites)">[添加兼容套件]</a>
+							<div class="ui divider"></div>
+						</div>
+		
+						<div class="cipher-all-suites-box">
+							<a href="" @click.prevent="showAllCipherSuites()"><span v-if="policy.cipherSuites.length == 0">所有</span>可选套件({{allCipherSuites.length}}) <i class="icon angle" :class="{down:!cipherSuitesVisible, up:cipherSuitesVisible}"></i></a>
+							<a href="" v-if="cipherSuitesVisible" v-for="cipherSuite in allCipherSuites" class="ui label tiny" title="点击添加到自定义套件中" @click.prevent="addCipherSuite(cipherSuite)" v-html="formatCipherSuite(cipherSuite)" style="margin-bottom:0.5em"></a>
+						</div>
+						<p class="comment" v-if="cipherSuitesVisible">点击可选套件添加。</p>
+					</div>
+				</td>
+			</tr>
+			
+			<!-- HSTS -->
+			<tr v-show="vProtocol == 'https'">
+				<td :class="{'color-border':hsts.isOn}">开启HSTS</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" name="hstsOn" v-model="hsts.isOn" value="1"/>
+						<label></label>
+					</div>
+					<p class="comment">
+						 开启后，会自动在响应Header中加入
+						 <span class="ui label small">Strict-Transport-Security:
+							 <var v-if="!hsts.isOn">...</var>
+							 <var v-if="hsts.isOn"><span>max-age=</span>{{hsts.maxAge}}</var>
+							 <var v-if="hsts.isOn && hsts.includeSubDomains">; includeSubDomains</var>
+							 <var v-if="hsts.isOn && hsts.preload">; preload</var>
+						 </span>
+						  <span v-if="hsts.isOn">
+							<a href="" @click.prevent="showMoreHSTS()">修改<i class="icon angle" :class="{down:!hstsOptionsVisible, up:hstsOptionsVisible}"></i> </a>
+						 </span>
+					</p>
+				</td>
+			</tr>
+			<tr v-show="hsts.isOn && hstsOptionsVisible">
+				<td class="color-border">HSTS有效时间<em>（max-age）</em></td>
+				<td>
+					<div class="ui fields inline">
+						<div class="ui field">
+							<input type="text" name="hstsMaxAge" v-model="hstsMaxAgeString" maxlength="10" size="10" @input="changeHSTSMaxAge()"/>
+						</div>
+						<div class="ui field">
+							秒
+						</div>
+						<div class="ui field">{{hsts.days}}天</div>
+					</div>
+					<p class="comment">
+						<a href="" @click.prevent="setHSTSMaxAge(31536000)" :class="{active:hsts.maxAge == 31536000}">[1年/365天]</a> &nbsp; &nbsp;
+						<a href="" @click.prevent="setHSTSMaxAge(15768000)" :class="{active:hsts.maxAge == 15768000}">[6个月/182.5天]</a> &nbsp;  &nbsp;
+						<a href="" @click.prevent="setHSTSMaxAge(2592000)"  :class="{active:hsts.maxAge == 2592000}">[1个月/30天]</a>
+					</p>
+				</td>
+			</tr>
+			<tr v-show="hsts.isOn && hstsOptionsVisible">
+				<td class="color-border">HSTS包含子域名<em>（includeSubDomains）</em></td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" name="hstsIncludeSubDomains" value="1" v-model="hsts.includeSubDomains"/>
+						<label></label>
+					</div>
+				</td>
+			</tr>
+			<tr v-show="hsts.isOn && hstsOptionsVisible">
+				<td class="color-border">HSTS预加载<em>（preload）</em></td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" name="hstsPreload" value="1" v-model="hsts.preload"/>
+						<label></label>
+					</div>
+				</td>
+			</tr>
+			<tr v-show="hsts.isOn && hstsOptionsVisible">
+				<td class="color-border">HSTS生效的域名</td>
+				<td colspan="2">
+					<div class="names-box">
+					<span class="ui label tiny basic" v-for="(domain, arrayIndex) in hsts.domains" :class="{blue:hstsDomainEditingIndex == arrayIndex}">{{domain}}
+						<input type="hidden" name="hstsDomains" :value="domain"/> &nbsp;
+						<a href="" @click.prevent="editHstsDomain(arrayIndex)" title="修改"><i class="icon pencil"></i></a>
+						<a href="" @click.prevent="removeHstsDomain(arrayIndex)" title="删除"><i class="icon remove"></i></a>
+					</span>
+					</div>
+					<div class="ui fields inline" v-if="hstsDomainAdding" style="margin-top:0.8em">
+						<div class="ui field">
+							<input type="text" name="addingHstsDomain" ref="addingHstsDomain" style="width:16em" maxlength="100" placeholder="域名，比如example.com" @keyup.enter="confirmAddHstsDomain()" @keypress.enter.prevent="1" v-model="addingHstsDomain" />
+						</div>
+						<div class="ui field">
+							<button class="ui button tiny" type="button" @click="confirmAddHstsDomain()">确定</button>
+							&nbsp; <a href="" @click.prevent="cancelHstsDomainAdding()">取消</a>
+						</div>
+					</div>
+					<div class="ui field" style="margin-top: 1em">
+						<button class="ui button tiny" type="button" @click="addHstsDomain()">+</button>
+					</div>
+					<p class="comment">如果没有设置域名的话，则默认支持所有的域名。</p>
+				</td>
+			</tr>
+			
+			<!-- OCSP -->
+			<tr>
+				<td>OCSP Stapling</td>
+				<td><checkbox name="ocspIsOn" v-model="policy.ocspIsOn"></checkbox>
+					<p class="comment">选中表示启用OCSP Stapling。</p>
+				</td>
+			</tr>
+			
+			<!-- 客户端认证 -->
+			<tr>
+				<td>客户端认证方式</td>
+				<td>
+					<select name="clientAuthType" v-model="policy.clientAuthType" class="ui dropdown auto-width">
+						<option v-for="authType in allClientAuthTypes" :value="authType.type">{{authType.name}}</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>客户端认证CA证书</td>
+				<td>
+					<div v-if="policy.clientCACerts != null && policy.clientCACerts.length > 0">
+						<div class="ui label small basic" v-for="(cert, index) in policy.clientCACerts">
+							{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp; <a href="" title="删除" @click.prevent="removeClientCACert()"><i class="icon remove"></i></a>
+						</div>
+						<div class="ui divider"></div>
+					</div>
+					<button class="ui button tiny" type="button" @click.prevent="selectClientCACert()">选择已有证书</button> &nbsp;
+					<button class="ui button tiny" type="button" @click.prevent="uploadClientCACert()">上传新证书</button>
+					<p class="comment">用来校验客户端证书以增强安全性，通常不需要设置。</p>
+				</td>
+			</tr>
+		</tbody>	
+	</table>
+	<div class="ui margin"></div>
 </div>`
 })
 
@@ -4481,23 +4631,23 @@ Vue.component("ssl-config-box", {
 Vue.component("http-firewall-actions-view", {
 	props: ["v-actions"],
 	template: `<div>
-<div v-for="action in vActions" style="margin-bottom: 0.3em">
-<span :class="{red: action.category == 'block', orange: action.category == 'verify', green: action.category == 'allow'}">{{action.name}} ({{action.code.toUpperCase()}})
-<div v-if="action.options != null">
-<span class="grey small" v-if="action.code.toLowerCase() == 'page'">[{{action.options.status}}]</span>
-<span class="grey small" v-if="action.code.toLowerCase() == 'allow' && action.options != null && action.options.scope != null && action.options.scope.length > 0">
-<span v-if="action.options.scope == 'group'">[分组]</span>
-<span v-if="action.options.scope == 'server'">[网站]</span>
-<span v-if="action.options.scope == 'global'">[网站和策略]</span>
-</span>
-<span class="grey small" v-if="action.code.toLowerCase() == 'record_ip'">
-<span v-if="action.options.type == 'black'" class="red">黑名单</span>
-<span v-if="action.options.type == 'white'" class="green">白名单</span>
-<span v-if="action.options.type == 'grey'" class="grey">灰名单</span>
-</span>
-</div>
-</span>
-</div>
+		<div v-for="action in vActions" style="margin-bottom: 0.3em">
+			<span :class="{red: action.category == 'block', orange: action.category == 'verify', green: action.category == 'allow'}">{{action.name}} ({{action.code.toUpperCase()}})
+			  	<div v-if="action.options != null">
+			  		<span class="grey small" v-if="action.code.toLowerCase() == 'page'">[{{action.options.status}}]</span>
+			  		<span class="grey small" v-if="action.code.toLowerCase() == 'allow' && action.options != null && action.options.scope != null && action.options.scope.length > 0">
+			  			<span v-if="action.options.scope == 'group'">[分组]</span>
+						<span v-if="action.options.scope == 'server'">[网站]</span>
+						<span v-if="action.options.scope == 'global'">[网站和策略]</span>	
+					</span>
+					<span class="grey small" v-if="action.code.toLowerCase() == 'record_ip'">
+						<span v-if="action.options.type == 'black'" class="red">黑名单</span>
+						<span v-if="action.options.type == 'white'" class="green">白名单</span>
+						<span v-if="action.options.type == 'grey'" class="grey">灰名单</span>
+					</span>
+				</div>	
+			</span>
+		</div>             
 </div>`
 })
 
@@ -4580,24 +4730,32 @@ Vue.component("http-firewall-rule-label", {
 		}
 	},
 	template: `<div>
-<div class="ui label small basic" style="line-height: 1.5">
-{{rule.name}} <span :title="calculateParamDescription(rule.param)" class="hover">{{calculateParamName(rule.param)}}<span class="small grey"> {{rule.param}}</span></span>
-<span v-if="rule.param == '\${cc2}'">
-{{rule.checkpointOptions.period}}秒内请求数
-</span>
-<span v-if="rule.param == '\${refererBlock}'">
-<span v-if="rule.checkpointOptions.allowDomains != null && rule.checkpointOptions.allowDomains.length > 0">允许{{rule.checkpointOptions.allowDomains}}</span>
-<span v-if="rule.checkpointOptions.denyDomains != null && rule.checkpointOptions.denyDomains.length > 0">禁止{{rule.checkpointOptions.denyDomains}}</span>
-</span>
-<span v-else>
-<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span>
-<span class="hover" :class="{dash:!rule.isComposed && rule.isCaseInsensitive}" :title="operatorDescription(rule.operator) + ((!rule.isComposed && rule.isCaseInsensitive) ? '\\n[大小写不敏感] ':'')">&lt;{{operatorName(rule.operator)}}></span>
-<span class="hover" v-if="!isEmptyString(rule.value)">{{rule.value}}</span>
-<span v-else-if="operatorDataType(rule.operator) != 'none'" class="disabled" style="font-weight: normal" title="空字符串">[空]</span>
-</span>
-<span v-if="rule.description != null && rule.description.length > 0" class="grey small">（{{rule.description}}）</span>
-<a href v-if="rule.err != null && rule.err.length > 0" @click.prevent="showErr(rule.err)" style="color: #db2828; opacity: 1; border-bottom: 1px #db2828 dashed; margin-left: 0.5em">规则错误</a>
-</div>
+	<div class="ui label small basic" style="line-height: 1.5">
+		{{rule.name}} <span :title="calculateParamDescription(rule.param)" class="hover">{{calculateParamName(rule.param)}}<span class="small grey"> {{rule.param}}</span></span>
+
+		<!-- cc2 -->
+		<span v-if="rule.param == '\${cc2}'">
+			{{rule.checkpointOptions.period}}秒内请求数
+		</span>
+
+		<!-- refererBlock -->
+		<span v-if="rule.param == '\${refererBlock}'">
+			<span v-if="rule.checkpointOptions.allowDomains != null && rule.checkpointOptions.allowDomains.length > 0">允许{{rule.checkpointOptions.allowDomains}}</span>
+			<span v-if="rule.checkpointOptions.denyDomains != null && rule.checkpointOptions.denyDomains.length > 0">禁止{{rule.checkpointOptions.denyDomains}}</span>
+		</span>
+
+		<span v-else>
+			<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> 
+		<span class="hover" :class="{dash:!rule.isComposed && rule.isCaseInsensitive}" :title="operatorDescription(rule.operator) + ((!rule.isComposed && rule.isCaseInsensitive) ? '\\n[大小写不敏感] ':'')">&lt;{{operatorName(rule.operator)}}&gt;</span> 
+			<span class="hover" v-if="!isEmptyString(rule.value)">{{rule.value}}</span>
+			<span v-else-if="operatorDataType(rule.operator) != 'none'" class="disabled" style="font-weight: normal" title="空字符串">[空]</span>
+		</span>
+		
+		<!-- description -->
+		<span v-if="rule.description != null && rule.description.length > 0" class="grey small">（{{rule.description}}）</span>
+		
+		<a href="" v-if="rule.err != null && rule.err.length > 0" @click.prevent="showErr(rule.err)" style="color: #db2828; opacity: 1; border-bottom: 1px #db2828 dashed; margin-left: 0.5em">规则错误</a>
+	</div>
 </div>`
 })
 
@@ -4633,43 +4791,46 @@ Vue.component("http-cache-refs-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="refsJSON" :value="JSON.stringify(refs)">
-<p class="comment" v-if="refs.length == 0">暂时还没有缓存条件。</p>
-<div v-show="refs.length > 0">
-<table class="ui table selectable celled">
-<thead>
-<tr>
-<th>缓存条件</th>
-<th class="width6">缓存时间</th>
-</tr>
-<tr v-for="(cacheRef, index) in refs">
-<td :class="{'color-border': cacheRef.conds != null && cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
-<http-request-conds-view :v-conds="cacheRef.conds" :class="{disabled: !cacheRef.isOn}" v-if="cacheRef.conds != null && cacheRef.conds.groups != null"></http-request-conds-view>
-<http-request-cond-view :v-cond="cacheRef.simpleCond" v-if="cacheRef.simpleCond != null"></http-request-cond-view>
-<grey-label v-if="cacheRef.key != null && cacheRef.key.indexOf('\${args}') < 0">忽略URI参数</grey-label>
-<grey-label v-if="cacheRef.minSize != null && cacheRef.minSize.count > 0">
-{{cacheRef.minSize.count}}{{cacheRef.minSize.unit}}
-<span v-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">- {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</span>
-</grey-label>
-<grey-label v-else-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">0 - {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</grey-label>
-<grey-label v-if="cacheRef.methods != null && cacheRef.methods.length > 0">{{cacheRef.methods.join(", ")}}</grey-label>
-<grey-label v-if="cacheRef.expiresTime != null && cacheRef.expiresTime.isPrior && cacheRef.expiresTime.isOn">Expires</grey-label>
-<grey-label v-if="cacheRef.status != null && cacheRef.status.length > 0 && (cacheRef.status.length > 1 || cacheRef.status[0] != 200)">状态码：{{cacheRef.status.map(function(v) {return v.toString()}).join(", ")}}</grey-label>
-<grey-label v-if="cacheRef.allowPartialContent">分片缓存</grey-label>
-<grey-label v-if="cacheRef.alwaysForwardRangeRequest">Range回源</grey-label>
-<grey-label v-if="cacheRef.enableIfNoneMatch">If-None-Match</grey-label>
-<grey-label v-if="cacheRef.enableIfModifiedSince">If-Modified-Since</grey-label>
-<grey-label v-if="cacheRef.enableReadingOriginAsync">支持异步</grey-label>
-</td>
-<td :class="{disabled: !cacheRef.isOn}">
-<span v-if="!cacheRef.isReverse">{{cacheRef.life.count}} {{timeUnitName(cacheRef.life.unit)}}</span>
-<span v-else class="red">不缓存</span>
-</td>
-</tr>
-</thead>
-</table>
-</div>
-<div class="margin"></div>
+	<input type="hidden" name="refsJSON" :value="JSON.stringify(refs)"/>
+	
+	<p class="comment" v-if="refs.length == 0">暂时还没有缓存条件。</p>
+	<div v-show="refs.length > 0">
+		<table class="ui table selectable celled">
+			<thead>
+				<tr>
+					<th>缓存条件</th>
+					<th class="width6">缓存时间</th>
+				</tr>
+				<tr v-for="(cacheRef, index) in refs">
+					<td :class="{'color-border': cacheRef.conds != null && cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
+						<http-request-conds-view :v-conds="cacheRef.conds" :class="{disabled: !cacheRef.isOn}" v-if="cacheRef.conds != null && cacheRef.conds.groups != null"></http-request-conds-view>
+							<http-request-cond-view :v-cond="cacheRef.simpleCond" v-if="cacheRef.simpleCond != null"></http-request-cond-view>
+						
+						<!-- 特殊参数 -->
+						<grey-label v-if="cacheRef.key != null && cacheRef.key.indexOf('\${args}') < 0">忽略URI参数</grey-label>
+						<grey-label v-if="cacheRef.minSize != null && cacheRef.minSize.count > 0">
+							{{cacheRef.minSize.count}}{{cacheRef.minSize.unit}}
+							<span v-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">- {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</span>
+						</grey-label>
+						<grey-label v-else-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">0 - {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit}}</grey-label>
+						<grey-label v-if="cacheRef.methods != null && cacheRef.methods.length > 0">{{cacheRef.methods.join(", ")}}</grey-label>
+						<grey-label v-if="cacheRef.expiresTime != null && cacheRef.expiresTime.isPrior && cacheRef.expiresTime.isOn">Expires</grey-label>
+						<grey-label v-if="cacheRef.status != null && cacheRef.status.length > 0 && (cacheRef.status.length > 1 || cacheRef.status[0] != 200)">状态码：{{cacheRef.status.map(function(v) {return v.toString()}).join(", ")}}</grey-label>
+						<grey-label v-if="cacheRef.allowPartialContent">分片缓存</grey-label>
+						<grey-label v-if="cacheRef.alwaysForwardRangeRequest">Range回源</grey-label>
+						<grey-label v-if="cacheRef.enableIfNoneMatch">If-None-Match</grey-label>
+						<grey-label v-if="cacheRef.enableIfModifiedSince">If-Modified-Since</grey-label>
+						<grey-label v-if="cacheRef.enableReadingOriginAsync">支持异步</grey-label>
+					</td>
+					<td :class="{disabled: !cacheRef.isOn}">
+						<span v-if="!cacheRef.isReverse">{{cacheRef.life.count}} {{timeUnitName(cacheRef.life.unit)}}</span>
+						<span v-else class="red">不缓存</span>
+					</td>
+				</tr>
+			</thead>
+		</table>
+	</div>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -4823,24 +4984,24 @@ Vue.component("ssl-certs-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="certIdsJSON" :value="JSON.stringify(certIds())">
-<div v-if="certs != null && certs.length > 0">
-<div class="ui label small basic" v-for="(cert, index) in certs">
-{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp; <a href title="删除" @click.prevent="removeCert(index)"><i class="icon remove"></i></a>
-</div>
-<div class="ui divider" v-if="buttonsVisible()"></div>
-</div>
-<div v-else>
-<span class="red" v-if="description.length == 0">选择或上传证书后<span v-if="vProtocol == 'https'">HTTPS</span><span v-if="vProtocol == 'tls'">TLS</span>服务才能生效。</span>
-<span class="grey" v-if="description.length > 0">{{description}}</span>
-<div class="ui divider" v-if="buttonsVisible()"></div>
-</div>
-<div v-if="buttonsVisible()">
-<button class="ui button tiny" type="button" @click.prevent="selectCert()">选择已有证书</button> &nbsp;
-<span class="disabled">|</span> &nbsp;
-<button class="ui button tiny" type="button" @click.prevent="uploadCert()">上传新证书</button> &nbsp;
-<button class="ui button tiny" type="button" @click.prevent="uploadBatch()">批量上传证书</button> &nbsp;
-</div>
+	<input type="hidden" name="certIdsJSON" :value="JSON.stringify(certIds())"/>
+	<div v-if="certs != null && certs.length > 0">
+		<div class="ui label small basic" v-for="(cert, index) in certs">
+			{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp; <a href="" title="删除" @click.prevent="removeCert(index)"><i class="icon remove"></i></a>
+		</div>
+		<div class="ui divider" v-if="buttonsVisible()"></div>
+	</div>
+	<div v-else>
+		<span class="red" v-if="description.length == 0">选择或上传证书后<span v-if="vProtocol == 'https'">HTTPS</span><span v-if="vProtocol == 'tls'">TLS</span>服务才能生效。</span>
+		<span class="grey" v-if="description.length > 0">{{description}}</span>
+		<div class="ui divider" v-if="buttonsVisible()"></div>
+	</div>
+	<div v-if="buttonsVisible()">
+		<button class="ui button tiny" type="button" @click.prevent="selectCert()">选择已有证书</button> &nbsp;
+		<span class="disabled">|</span> &nbsp;
+		<button class="ui button tiny" type="button" @click.prevent="uploadCert()">上传新证书</button> &nbsp;
+		<button class="ui button tiny" type="button" @click.prevent="uploadBatch()">批量上传证书</button> &nbsp;
+	</div>
 </div>`
 })
 
@@ -4933,88 +5094,91 @@ Vue.component("http-host-redirect-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="hostRedirectsJSON" :value="JSON.stringify(redirects)">
-<first-menu>
-<menu-item @click.prevent="add">[创建]</menu-item>
-</first-menu>
-<div class="margin"></div>
-<p class="comment" v-if="redirects.length == 0">暂时还没有URL跳转规则。</p>
-<div v-show="redirects.length > 0">
-<table class="ui table celled selectable" id="sortable-table">
-<thead>
-<tr>
-<th style="width: 1em"></th>
-<th>跳转前</th>
-<th style="width: 1em"></th>
-<th>跳转后</th>
-<th>HTTP状态码</th>
-<th class="two wide">状态</th>
-<th class="two op">操作</th>
-</tr>
-</thead>
-<tbody v-for="(redirect, index) in redirects" :key="redirect.id" :v-id="redirect.id">
-<tr>
-<td style="text-align: center;"><i class="icon bars handle grey"></i> </td>
-<td>
-<div v-if="redirect.type == '' || redirect.type == 'url'">
-{{redirect.beforeURL}}
-<div style="margin-top: 0.4em">
-<grey-label><strong>URL跳转</strong></grey-label>
-<grey-label v-if="redirect.matchPrefix">匹配前缀</grey-label>
-<grey-label v-if="redirect.matchRegexp">正则匹配</grey-label>
-<grey-label v-if="!redirect.matchPrefix && !redirect.matchRegexp">精准匹配</grey-label>
-<grey-label v-if="redirect.exceptDomains != null && redirect.exceptDomains.length > 0" v-for="domain in redirect.exceptDomains">排除:{{domain}}</grey-label>
-<grey-label v-if="redirect.onlyDomains != null && redirect.onlyDomains.length > 0" v-for="domain in redirect.onlyDomains">仅限:{{domain}}</grey-label>
-</div>
-</div>
-<div v-if="redirect.type == 'domain'">
-<span v-if="redirect.domainsAll">所有域名</span>
-<span v-if="!redirect.domainsAll && redirect.domainsBefore != null">
-<span v-if="redirect.domainsBefore.length == 1">{{redirect.domainsBefore[0]}}</span>
-<span v-if="redirect.domainsBefore.length > 1">{{redirect.domainsBefore[0]}}等{{redirect.domainsBefore.length}}个域名</span>
-</span>
-<div style="margin-top: 0.4em">
-<grey-label><strong>域名跳转</strong></grey-label>
-<grey-label v-if="redirect.domainAfterScheme != null && redirect.domainAfterScheme.length > 0">{{redirect.domainAfterScheme}}</grey-label>
-<grey-label v-if="redirect.domainBeforeIgnorePorts">忽略端口</grey-label>
-</div>
-</div>
-<div v-if="redirect.type == 'port'">
-<span v-if="redirect.portsAll">所有端口</span>
-<span v-if="!redirect.portsAll && redirect.portsBefore != null">
-<span v-if="redirect.portsBefore.length <= 5">{{redirect.portsBefore.join(", ")}}</span>
-<span v-if="redirect.portsBefore.length > 5">{{redirect.portsBefore.slice(0, 5).join(", ")}}等{{redirect.portsBefore.length}}个端口</span>
-</span>
-<div style="margin-top: 0.4em">
-<grey-label><strong>端口跳转</strong></grey-label>
-<grey-label v-if="redirect.portAfterScheme != null && redirect.portAfterScheme.length > 0">{{redirect.portAfterScheme}}</grey-label>
-</div>
-</div>
-<div style="margin-top: 0.5em" v-if="redirect.conds != null && redirect.conds.groups != null && redirect.conds.groups.length > 0">
-<grey-label>匹配条件</grey-label>
-</div>
-</td>
-<td nowrap>-></td>
-<td>
-<span v-if="redirect.type == '' || redirect.type == 'url'">{{redirect.afterURL}}</span>
-<span v-if="redirect.type == 'domain'">{{redirect.domainAfter}}</span>
-<span v-if="redirect.type == 'port'">{{redirect.portAfter}}</span>
-</td>
-<td>
-<span v-if="redirect.status > 0">{{redirect.status}}</span>
-<span v-else class="disabled">默认</span>
-</td>
-<td><label-on :v-is-on="redirect.isOn"></label-on></td>
-<td>
-<a href @click.prevent="update(index, redirect)">修改</a> &nbsp;
-<a href @click.prevent="remove(index)">删除</a>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="comment" v-if="redirects.length > 1">所有规则匹配顺序为从上到下，可以拖动左侧的<i class="icon bars"></i>排序。</p>
-</div>
-<div class="margin"></div>
+	<input type="hidden" name="hostRedirectsJSON" :value="JSON.stringify(redirects)"/>
+	
+	<first-menu>
+		<menu-item @click.prevent="add">[创建]</menu-item>
+	</first-menu>
+	<div class="margin"></div>
+
+	<p class="comment" v-if="redirects.length == 0">暂时还没有URL跳转规则。</p>
+	<div v-show="redirects.length > 0">
+		<table class="ui table celled selectable" id="sortable-table">
+			<thead>
+				<tr>
+					<th style="width: 1em"></th>
+					<th>跳转前</th>
+					<th style="width: 1em"></th>
+					<th>跳转后</th>
+					<th>HTTP状态码</th>
+					<th class="two wide">状态</th>
+					<th class="two op">操作</th>
+				</tr>
+			</thead>
+			<tbody v-for="(redirect, index) in redirects" :key="redirect.id" :v-id="redirect.id">
+				<tr>
+					<td style="text-align: center;"><i class="icon bars handle grey"></i> </td>
+					<td>
+						<div v-if="redirect.type == '' || redirect.type == 'url'">
+							{{redirect.beforeURL}}
+							<div style="margin-top: 0.4em">
+								<grey-label><strong>URL跳转</strong></grey-label>
+								<grey-label v-if="redirect.matchPrefix">匹配前缀</grey-label>
+								<grey-label v-if="redirect.matchRegexp">正则匹配</grey-label>
+								<grey-label v-if="!redirect.matchPrefix && !redirect.matchRegexp">精准匹配</grey-label>
+								<grey-label v-if="redirect.exceptDomains != null && redirect.exceptDomains.length > 0" v-for="domain in redirect.exceptDomains">排除:{{domain}}</grey-label>
+								<grey-label v-if="redirect.onlyDomains != null && redirect.onlyDomains.length > 0" v-for="domain in redirect.onlyDomains">仅限:{{domain}}</grey-label>
+							</div>
+						</div>
+						<div v-if="redirect.type == 'domain'">
+							<span v-if="redirect.domainsAll">所有域名</span>
+							<span v-if="!redirect.domainsAll && redirect.domainsBefore != null">
+								<span v-if="redirect.domainsBefore.length == 1">{{redirect.domainsBefore[0]}}</span>
+								<span v-if="redirect.domainsBefore.length > 1">{{redirect.domainsBefore[0]}}等{{redirect.domainsBefore.length}}个域名</span>
+							</span>
+							<div style="margin-top: 0.4em">
+								<grey-label><strong>域名跳转</strong></grey-label>
+								<grey-label v-if="redirect.domainAfterScheme != null && redirect.domainAfterScheme.length > 0">{{redirect.domainAfterScheme}}</grey-label>
+								<grey-label v-if="redirect.domainBeforeIgnorePorts">忽略端口</grey-label>
+							</div>
+						</div>
+						<div v-if="redirect.type == 'port'">
+							<span v-if="redirect.portsAll">所有端口</span>
+							<span v-if="!redirect.portsAll && redirect.portsBefore != null">
+								<span v-if="redirect.portsBefore.length <= 5">{{redirect.portsBefore.join(", ")}}</span>
+								<span v-if="redirect.portsBefore.length > 5">{{redirect.portsBefore.slice(0, 5).join(", ")}}等{{redirect.portsBefore.length}}个端口</span>
+							</span>
+							<div style="margin-top: 0.4em">
+								<grey-label><strong>端口跳转</strong></grey-label>
+								<grey-label v-if="redirect.portAfterScheme != null && redirect.portAfterScheme.length > 0">{{redirect.portAfterScheme}}</grey-label>
+							</div>
+						</div>
+						
+						<div style="margin-top: 0.5em" v-if="redirect.conds != null && redirect.conds.groups != null && redirect.conds.groups.length > 0">
+							<grey-label>匹配条件</grey-label>
+						</div>
+					</td>
+					<td nowrap="">-&gt;</td>
+					<td>
+						<span v-if="redirect.type == '' || redirect.type == 'url'">{{redirect.afterURL}}</span>
+						<span v-if="redirect.type == 'domain'">{{redirect.domainAfter}}</span>
+						<span v-if="redirect.type == 'port'">{{redirect.portAfter}}</span>
+					</td>
+					<td>
+						<span v-if="redirect.status > 0">{{redirect.status}}</span>
+						<span v-else class="disabled">默认</span>
+					</td>
+					<td><label-on :v-is-on="redirect.isOn"></label-on></td>
+					<td>
+						<a href="" @click.prevent="update(index, redirect)">修改</a> &nbsp;
+						<a href="" @click.prevent="remove(index)">删除</a>	
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p class="comment" v-if="redirects.length > 1">所有规则匹配顺序为从上到下，可以拖动左侧的<i class="icon bars"></i>排序。</p>
+	</div>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -5198,175 +5362,184 @@ Vue.component("http-cache-ref-box", {
 		}
 	},
 	template: `<tbody>
-<tr v-if="condCategory == 'simple'">
-<td class="title">缓存对象 *</td>
-<td>
-<select class="ui dropdown auto-width" name="condType" v-model="condType" @change="changeCondType(condType, false)"><option value="url-extension">文件扩展名</option><option value="url-eq-index">首页</option><option value="url-all">全站</option><option value="url-prefix">URL目录前缀</option><option value="url-eq">URL完整路径</option><option value="url-wildcard-match">URL通配符</option><option value="url-regexp">URL正则匹配</option><option value="params">参数匹配</option></select>
-<p class="comment"><a href @click.prevent="changeCondCategory('complex')">切换到复杂条件 &#187;</a></p>
-</td>
-</tr>
-<tr v-if="condCategory == 'simple'">
-<td>{{condComponent.paramsTitle}} *</td>
-<td>
-<component :is="condComponent.component" :v-cond="ref.simpleCond" v-if="condComponent.type != 'params'"></component>
-<table class="ui table" v-if="condComponent.type == 'params'">
-<component :is="condComponent.component" :v-cond="ref.simpleCond"></component>
-</table>
-</td>
-</tr>
-<tr v-if="condCategory == 'simple' && condComponent.caseInsensitive">
-<td>不区分大小写</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" name="condIsCaseInsensitive" value="1" v-model="condIsCaseInsensitive">
-<label></label>
-</div>
-<p class="comment">选中后表示对比时忽略参数值的大小写。</p>
-</td>
-</tr>
-<tr v-if="condCategory == 'complex'">
-<td class="title">匹配条件分组 *</td>
-<td>
-<http-request-conds-box :v-conds="ref.conds" @change="changeConds"></http-request-conds-box>
-<p class="comment"><a href @click.prevent="changeCondCategory('simple')">&#171; 切换到简单条件</a></p>
-</td>
-</tr>
-<tr v-show="!vIsReverse">
-<td>缓存有效期 *</td>
-<td>
-<time-duration-box :v-value="ref.life" @change="changeLife" :v-min-unit="'minute'" maxlength="4"></time-duration-box>
-</td>
-</tr>
-<tr v-show="!vIsReverse">
-<td>忽略URI参数</td>
-<td>
-<checkbox v-model="keyIgnoreArgs"></checkbox>
-<p class="comment">选中后，表示缓存Key中不包含URI参数（即问号（?））后面的内容。</p>
-</td>
-</tr>
-<tr v-show="!vIsReverse">
-<td colspan="2"><more-options-indicator @change="changeOptionsVisible"></more-options-indicator></td>
-</tr>
-<tr v-show="moreOptionsVisible && !vIsReverse">
-<td>缓存Key *</td>
-<td>
-<input type="text" v-model="ref.key" @input="changeKey(ref.key)">
-<p class="comment">用来区分不同缓存内容的唯一Key。<request-variables-describer ref="variablesDescriber"></request-variables-describer>。</p>
-</td>
-</tr>
-<tr v-show="moreOptionsVisible && !vIsReverse">
-<td>请求方法限制</td>
-<td>
-<values-box size="5" maxlength="10" :values="ref.methods" @change="changeMethods"></values-box>
-<p class="comment">允许请求的缓存方法，默认支持所有的请求方法。</p>
-</td>
-</tr>
-<tr v-show="moreOptionsVisible && !vIsReverse">
-<td>客户端过期时间<em>（Expires）</em></td>
-<td>
-<http-expires-time-config-box :v-expires-time="ref.expiresTime" @change="changeExpiresTime"></http-expires-time-config-box>
-</td>
-</tr>
-<tr v-show="moreOptionsVisible && !vIsReverse">
-<td>可缓存的最大内容尺寸</td>
-<td>
-<size-capacity-box :v-value="ref.maxSize" @change="changeMaxSize"></size-capacity-box>
-<p class="comment">内容尺寸如果高于此值则不缓存。</p>
-</td>
-</tr>
-<tr v-show="moreOptionsVisible && !vIsReverse">
-<td>可缓存的最小内容尺寸</td>
-<td>
-<size-capacity-box :v-value="ref.minSize" @change="changeMinSize"></size-capacity-box>
-<p class="comment">内容尺寸如果低于此值则不缓存。</p>
-</td>
-</tr>
-<tr v-show="moreOptionsVisible && !vIsReverse">
-<td>支持缓存分片内容</td>
-<td>
-<checkbox name="allowPartialContent" value="1" v-model="ref.allowPartialContent"></checkbox>
-<p class="comment">选中后，支持缓存源站返回的某个分片的内容，该内容通过<code-label>206 Partial Content</code-label>状态码返回。</p>
-</td>
-</tr>
-<tr v-show="moreOptionsVisible && !vIsReverse && ref.allowPartialContent && !ref.alwaysForwardRangeReques">
-<td>强制返回分片内容</td>
-<td>
-<checkbox name="forcePartialContent" value="1" v-model="ref.forcePartialContent"></checkbox>
-<p class="comment">选中后，表示无论客户端是否发送<code-label>Range</code-label>报头，都会优先尝试返回已缓存的分片内容；如果你的应用有不支持分片内容的客户端（比如有些下载软件不支持<code-label>206 Partial Content</code-label>），请务必关闭此功能。</p>
-</td>
-</tr>
-<tr v-show="moreOptionsVisible && !vIsReverse">
-<td>强制Range回源</td>
-<td>
-<checkbox v-model="ref.alwaysForwardRangeRequest"></checkbox>
-<p class="comment">选中后，表示把所有包含Range报头的请求都转发到源站，而不是尝试从缓存中读取。</p>
-</td>
-</tr>
-<tr v-show="moreOptionsVisible && !vIsReverse">
-<td>状态码列表</td>
-<td>
-<values-box name="statusList" size="3" maxlength="3" :values="ref.status" @change="changeStatusList"></values-box>
-<p class="comment">允许缓存的HTTP状态码列表。</p>
-</td>
-</tr>
-<tr v-show="moreOptionsVisible && !vIsReverse">
-<td>跳过的Cache-Control值</td>
-<td>
-<values-box name="skipResponseCacheControlValues" size="10" maxlength="100" :values="ref.skipCacheControlValues"></values-box>
-<p class="comment">当响应的Cache-Control为这些值时不缓存响应内容，而且不区分大小写。</p>
-</td>
-</tr>
-<tr v-show="moreOptionsVisible && !vIsReverse">
-<td>跳过Set-Cookie</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" value="1" v-model="ref.skipSetCookie">
-<label></label>
-</div>
-<p class="comment">选中后，当响应的报头中有Set-Cookie时不缓存响应内容，防止动态内容被缓存。</p>
-</td>
-</tr>
-<tr v-show="moreOptionsVisible && !vIsReverse">
-<td>支持请求no-cache刷新</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" name="enableRequestCachePragma" value="1" v-model="ref.enableRequestCachePragma">
-<label></label>
-</div>
-<p class="comment">选中后，当请求的报头中含有Pragma: no-cache或Cache-Control: no-cache时，会跳过缓存直接读取源内容，一般仅用于调试。</p>
-</td>
-</tr>
-<tr v-show="moreOptionsVisible && !vIsReverse">
-<td>允许If-None-Match回源</td>
-<td>
-<checkbox v-model="ref.enableIfNoneMatch"></checkbox>
-<p class="comment">特殊情况下才需要开启，可能会降低缓存命中率。</p>
-</td>
-</tr>
-<tr v-show="moreOptionsVisible && !vIsReverse">
-<td>允许If-Modified-Since回源</td>
-<td>
-<checkbox v-model="ref.enableIfModifiedSince"></checkbox>
-<p class="comment">特殊情况下才需要开启，可能会降低缓存命中率。</p>
-</td>
-</tr>
-<tr v-show="moreOptionsVisible && !vIsReverse">
-<td>允许异步读取源站</td>
-<td>
-<checkbox v-model="ref.enableReadingOriginAsync"></checkbox>
-<p class="comment">试验功能。允许客户端中断连接后，仍然继续尝试从源站读取内容并缓存。</p>
-</td>
-</tr>
-<tr v-show="moreOptionsVisible && !vIsReverse">
-<td>支持分段内容</td>
-<td>
-<checkbox name="allowChunkedEncoding" value="1" v-model="ref.allowChunkedEncoding"></checkbox>
-<p class="comment">选中后，Gzip等压缩后的Chunked内容可以直接缓存，无需检查内容长度。</p>
-</td>
-</tr>
-<tr v-show="false">
-<td colspan="2"><input type="hidden" name="cacheRefJSON" :value="JSON.stringify(ref)"></td>
-</tr>
+	<tr v-if="condCategory == 'simple'">
+		<td class="title">缓存对象 *</td>
+		<td>
+			<select class="ui dropdown auto-width" name="condType" v-model="condType" @change="changeCondType(condType, false)">
+				<option value="url-extension">文件扩展名</option>
+				<option value="url-eq-index">首页</option>
+				<option value="url-all">全站</option>
+				<option value="url-prefix">URL目录前缀</option>
+				<option value="url-eq">URL完整路径</option>
+				<option value="url-wildcard-match">URL通配符</option>
+				<option value="url-regexp">URL正则匹配</option>
+				<option value="params">参数匹配</option>
+			</select>
+			<p class="comment"><a href="" @click.prevent="changeCondCategory('complex')">切换到复杂条件 &raquo;</a></p>
+		</td>
+	</tr>
+	<tr v-if="condCategory == 'simple'">
+		<td>{{condComponent.paramsTitle}} *</td>
+		<td>
+			<component :is="condComponent.component" :v-cond="ref.simpleCond" v-if="condComponent.type != 'params'"></component>
+			<table class="ui table" v-if="condComponent.type == 'params'">
+				<component :is="condComponent.component" :v-cond="ref.simpleCond"></component>
+			</table>
+		</td>
+	</tr>
+	<tr v-if="condCategory == 'simple' && condComponent.caseInsensitive">
+		<td>不区分大小写</td>
+		<td>
+			<div class="ui checkbox">
+				<input type="checkbox" name="condIsCaseInsensitive" value="1" v-model="condIsCaseInsensitive"/>
+				<label></label>
+			</div>
+			<p class="comment">选中后表示对比时忽略参数值的大小写。</p>
+		</td>
+	</tr>
+	<tr v-if="condCategory == 'complex'">
+		<td class="title">匹配条件分组 *</td>
+		<td>
+			<http-request-conds-box :v-conds="ref.conds" @change="changeConds"></http-request-conds-box>
+			<p class="comment"><a href="" @click.prevent="changeCondCategory('simple')">&laquo; 切换到简单条件</a></p>
+		</td>
+	</tr>
+	<tr v-show="!vIsReverse">
+		<td>缓存有效期 *</td>
+		<td>
+			<time-duration-box :v-value="ref.life" @change="changeLife" :v-min-unit="'minute'" maxlength="4"></time-duration-box>
+		</td>
+	</tr>
+	<tr v-show="!vIsReverse">
+		<td>忽略URI参数</td>
+		<td>
+			<checkbox v-model="keyIgnoreArgs"></checkbox>
+			<p class="comment">选中后，表示缓存Key中不包含URI参数（即问号（?））后面的内容。</p>
+		</td>
+	</tr>
+	<tr v-show="!vIsReverse">
+		<td colspan="2"><more-options-indicator @change="changeOptionsVisible"></more-options-indicator></td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>缓存Key *</td>
+		<td>
+			<input type="text" v-model="ref.key" @input="changeKey(ref.key)"/>
+			<p class="comment">用来区分不同缓存内容的唯一Key。<request-variables-describer ref="variablesDescriber"></request-variables-describer>。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>请求方法限制</td>
+		<td>
+			<values-box size="5" maxlength="10" :values="ref.methods" @change="changeMethods"></values-box>
+			<p class="comment">允许请求的缓存方法，默认支持所有的请求方法。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>客户端过期时间<em>（Expires）</em></td>
+		<td>
+			<http-expires-time-config-box :v-expires-time="ref.expiresTime" @change="changeExpiresTime"></http-expires-time-config-box>		
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>可缓存的最大内容尺寸</td>
+		<td>
+			<size-capacity-box :v-value="ref.maxSize" @change="changeMaxSize"></size-capacity-box>
+			<p class="comment">内容尺寸如果高于此值则不缓存。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>可缓存的最小内容尺寸</td>
+		<td>
+			<size-capacity-box :v-value="ref.minSize" @change="changeMinSize"></size-capacity-box>
+			<p class="comment">内容尺寸如果低于此值则不缓存。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>支持缓存分片内容</td>
+		<td>
+			<checkbox name="allowPartialContent" value="1" v-model="ref.allowPartialContent"></checkbox>
+			<p class="comment">选中后，支持缓存源站返回的某个分片的内容，该内容通过<code-label>206 Partial Content</code-label>状态码返回。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse && ref.allowPartialContent && !ref.alwaysForwardRangeReques">
+		<td>强制返回分片内容</td>
+		<td>
+			<checkbox name="forcePartialContent" value="1" v-model="ref.forcePartialContent"></checkbox>
+			<p class="comment">选中后，表示无论客户端是否发送<code-label>Range</code-label>报头，都会优先尝试返回已缓存的分片内容；如果你的应用有不支持分片内容的客户端（比如有些下载软件不支持<code-label>206 Partial Content</code-label>），请务必关闭此功能。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>强制Range回源</td>
+		<td>
+			<checkbox v-model="ref.alwaysForwardRangeRequest"></checkbox>
+			<p class="comment">选中后，表示把所有包含Range报头的请求都转发到源站，而不是尝试从缓存中读取。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>状态码列表</td>
+		<td>
+			<values-box name="statusList" size="3" maxlength="3" :values="ref.status" @change="changeStatusList"></values-box>
+			<p class="comment">允许缓存的HTTP状态码列表。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>跳过的Cache-Control值</td>
+		<td>
+			<values-box name="skipResponseCacheControlValues" size="10" maxlength="100" :values="ref.skipCacheControlValues"></values-box>
+			<p class="comment">当响应的Cache-Control为这些值时不缓存响应内容，而且不区分大小写。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>跳过Set-Cookie</td>
+		<td>
+			<div class="ui checkbox">
+				<input type="checkbox" value="1" v-model="ref.skipSetCookie"/>
+				<label></label>
+			</div>
+			<p class="comment">选中后，当响应的报头中有Set-Cookie时不缓存响应内容，防止动态内容被缓存。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>支持请求no-cache刷新</td>
+		<td>
+			<div class="ui checkbox">
+				<input type="checkbox" name="enableRequestCachePragma" value="1" v-model="ref.enableRequestCachePragma"/>
+				<label></label>
+			</div>
+			<p class="comment">选中后，当请求的报头中含有Pragma: no-cache或Cache-Control: no-cache时，会跳过缓存直接读取源内容，一般仅用于调试。</p>
+		</td>
+	</tr>	
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>允许If-None-Match回源</td>
+		<td>
+			<checkbox v-model="ref.enableIfNoneMatch"></checkbox>
+			<p class="comment">特殊情况下才需要开启，可能会降低缓存命中率。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>允许If-Modified-Since回源</td>
+		<td>
+			<checkbox v-model="ref.enableIfModifiedSince"></checkbox>
+			<p class="comment">特殊情况下才需要开启，可能会降低缓存命中率。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>允许异步读取源站</td>
+		<td>
+			<checkbox v-model="ref.enableReadingOriginAsync"></checkbox>
+			<p class="comment">试验功能。允许客户端中断连接后，仍然继续尝试从源站读取内容并缓存。</p>
+		</td>
+	</tr>
+	<tr v-show="moreOptionsVisible && !vIsReverse">
+		<td>支持分段内容</td>
+		<td>
+			<checkbox name="allowChunkedEncoding" value="1" v-model="ref.allowChunkedEncoding"></checkbox>
+			<p class="comment">选中后，Gzip等压缩后的Chunked内容可以直接缓存，无需检查内容长度。</p>
+		</td>
+	</tr>
+	<tr v-show="false">
+		<td colspan="2"><input type="hidden" name="cacheRefJSON" :value="JSON.stringify(ref)"/></td>
+	</tr>
 </tbody>`
 })
 
@@ -5429,49 +5602,49 @@ Vue.component("http-request-limit-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="requestLimitJSON" :value="JSON.stringify(config)">
-<table class="ui table selectable definition">
-<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
-<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
-<tr>
-<td class="title">启用请求限制</td>
-<td>
-<checkbox v-model="config.isOn"></checkbox>
-</td>
-</tr>
-</tbody>
-<tbody v-show="isOn()">
-<tr>
-<td>最大并发连接数</td>
-<td>
-<input type="text" maxlength="6" v-model="maxConns">
-<p class="comment">当前网站最大并发连接数，超出此限制则响应用户<code-label>429</code-label>代码。为0表示不限制。</p>
-</td>
-</tr>
-<tr>
-<td>单IP最大并发连接数</td>
-<td>
-<input type="text" maxlength="6" v-model="maxConnsPerIP">
-<p class="comment">单IP最大连接数，统计单个IP总连接数时不区分网站，超出此限制则响应用户<code-label>429</code-label>代码。为0表示不限制。<span v-if="maxConnsPerIP > 0 && maxConnsPerIP <= 3" class="red">当前设置的并发连接数过低，可能会影响正常用户访问，建议不小于3。</span></p>
-</td>
-</tr>
-<tr>
-<td>单连接带宽限制</td>
-<td>
-<size-capacity-box :v-value="config.outBandwidthPerConn" :v-supported-units="['byte', 'kb', 'mb']"></size-capacity-box>
-<p class="comment">客户端单个请求每秒可以读取的下行流量。</p>
-</td>
-</tr>
-<tr>
-<td>单请求最大尺寸</td>
-<td>
-<size-capacity-box :v-value="config.maxBodySize" :v-supported-units="['byte', 'kb', 'mb', 'gb']"></size-capacity-box>
-<p class="comment">单个请求能发送的最大内容尺寸。</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="margin"></div>
+	<input type="hidden" name="requestLimitJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table selectable definition">
+		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
+			<tr>
+				<td class="title">启用请求限制</td>
+				<td>
+					<checkbox v-model="config.isOn"></checkbox>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="isOn()">
+			<tr>
+				<td>最大并发连接数</td>
+				<td>
+					<input type="text" maxlength="6" v-model="maxConns"/>
+					<p class="comment">当前网站最大并发连接数，超出此限制则响应用户<code-label>429</code-label>代码。为0表示不限制。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>单IP最大并发连接数</td>
+				<td>
+					<input type="text" maxlength="6" v-model="maxConnsPerIP"/>
+					<p class="comment">单IP最大连接数，统计单个IP总连接数时不区分网站，超出此限制则响应用户<code-label>429</code-label>代码。为0表示不限制。<span v-if="maxConnsPerIP > 0 && maxConnsPerIP <= 3" class="red">当前设置的并发连接数过低，可能会影响正常用户访问，建议不小于3。</span></p>
+				</td>
+			</tr>
+			<tr>
+				<td>单连接带宽限制</td>
+				<td>
+					<size-capacity-box :v-value="config.outBandwidthPerConn" :v-supported-units="['byte', 'kb', 'mb']"></size-capacity-box>
+					<p class="comment">客户端单个请求每秒可以读取的下行流量。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>单请求最大尺寸</td>
+				<td>
+					<size-capacity-box :v-value="config.maxBodySize" :v-supported-units="['byte', 'kb', 'mb', 'gb']"></size-capacity-box>
+					<p class="comment">单个请求能发送的最大内容尺寸。</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -5517,38 +5690,39 @@ Vue.component("http-header-replace-values", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="replaceValuesJSON" :value="JSON.stringify(values)">
-<div>
-<div v-for="(value, index) in values" class="ui label small" style="margin-bottom: 0.5em">
-<var>{{value.pattern}}</var><sup v-if="value.isCaseInsensitive" title="不区分大小写"><i class="icon info tiny"></i></sup> => <var v-if="value.replacement.length > 0">{{value.replacement}}</var><var v-else><span class="small grey">[空]</span></var>
-<a href @click.prevent="remove(index)" title="删除"><i class="icon remove small"></i></a>
-</div>
-</div>
-<div v-if="isAdding">
-<table class="ui table">
-<tr>
-<td class="title">替换前内容 *</td>
-<td><input type="text" v-model="addingValue.pattern" placeholder="替换前内容" ref="pattern" @keyup.enter="confirm()" @keypress.enter.prevent="1"></td>
-</tr>
-<tr>
-<td>替换后内容</td>
-<td><input type="text" v-model="addingValue.replacement" placeholder="替换后内容" @keyup.enter="confirm()" @keypress.enter.prevent="1"></td>
-</tr>
-<tr>
-<td>是否忽略大小写</td>
-<td>
-<checkbox v-model="addingValue.isCaseInsensitive"></checkbox>
-</td>
-</tr>
-</table>
-<div>
-<button type="button" class="ui button tiny" @click.prevent="confirm">确定</button> &nbsp;
-<a href title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
-</div>
-</div>
-<div v-if="!isAdding">
-<button type="button" class="ui button tiny" @click.prevent="add">+</button>
-</div>
+	<input type="hidden" name="replaceValuesJSON" :value="JSON.stringify(values)"/>
+	<div>
+		<div v-for="(value, index) in values" class="ui label small" style="margin-bottom: 0.5em">
+			<var>{{value.pattern}}</var><sup v-if="value.isCaseInsensitive" title="不区分大小写"><i class="icon info tiny"></i></sup> =&gt; <var v-if="value.replacement.length > 0">{{value.replacement}}</var><var v-else><span class="small grey">[空]</span></var>
+			<a href="" @click.prevent="remove(index)" title="删除"><i class="icon remove small"></i></a>
+		</div>
+	</div>
+	<div v-if="isAdding">
+		<table class="ui table">
+			<tr>
+				<td class="title">替换前内容 *</td>
+				<td><input type="text" v-model="addingValue.pattern" placeholder="替换前内容" ref="pattern" @keyup.enter="confirm()" @keypress.enter.prevent="1"/></td>
+			</tr>	
+			<tr>
+				<td>替换后内容</td>
+				<td><input type="text" v-model="addingValue.replacement" placeholder="替换后内容" @keyup.enter="confirm()" @keypress.enter.prevent="1"/></td>
+			</tr>
+			<tr>
+				<td>是否忽略大小写</td>
+				<td>
+					<checkbox v-model="addingValue.isCaseInsensitive"></checkbox>
+				</td>
+			</tr>
+		</table>
+
+		<div>
+			<button type="button" class="ui button tiny" @click.prevent="confirm">确定</button> &nbsp;
+			<a href="" title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
+		</div>
+	</div>
+	<div v-if="!isAdding">
+		<button type="button" class="ui button tiny" @click.prevent="add">+</button>
+	</div>
 </div>`
 })
 
@@ -5611,24 +5785,25 @@ Vue.component("http-request-conds-view", {
 		}
 	},
 	template: `<div>
-<div v-if="conds.groups.length > 0">
-<div v-for="(group, groupIndex) in conds.groups">
-<var v-for="(cond, index) in group.conds" style="font-style: normal;display: inline-block; margin-bottom:0.5em">
-<span class="ui label small basic" style="line-height: 1.5">
-<var v-if="cond.type.length == 0 || cond.type == 'params'" style="font-style: normal">{{cond.param}} <var>{{cond.operator}}</var></var>
-<var v-if="cond.type.length > 0 && cond.type != 'params'" style="font-style: normal">{{cond.typeName}}: </var>
-{{cond.value}}
-<sup v-if="cond.isCaseInsensitive" title="不区分大小写"><i class="icon info small"></i></sup>
-</span>
-<var v-if="index < group.conds.length - 1"> {{group.connector}} &nbsp;</var>
-</var>
-<div class="ui divider" v-if="groupIndex != conds.groups.length - 1" style="margin-top:0.3em;margin-bottom:0.5em"></div>
-<div>
-<span class="ui label tiny olive" v-if="group.description != null && group.description.length > 0">{{group.description}}</span>
-</div>
-</div>
-</div>
-</div>
+		<div v-if="conds.groups.length > 0">
+			<div v-for="(group, groupIndex) in conds.groups">
+				<var v-for="(cond, index) in group.conds" style="font-style: normal;display: inline-block; margin-bottom:0.5em">
+					<span class="ui label small basic" style="line-height: 1.5">
+						<var v-if="cond.type.length == 0 || cond.type == 'params'" style="font-style: normal">{{cond.param}} <var>{{cond.operator}}</var></var>
+						<var v-if="cond.type.length > 0 && cond.type != 'params'" style="font-style: normal">{{cond.typeName}}: </var>
+						{{cond.value}}
+						<sup v-if="cond.isCaseInsensitive" title="不区分大小写"><i class="icon info small"></i></sup>
+					</span>
+					
+					<var v-if="index < group.conds.length - 1"> {{group.connector}} &nbsp;</var>
+				</var>
+				<div class="ui divider" v-if="groupIndex != conds.groups.length - 1" style="margin-top:0.3em;margin-bottom:0.5em"></div>
+				<div>
+					<span class="ui label tiny olive" v-if="group.description != null && group.description.length > 0">{{group.description}}</span>
+				</div>
+			</div>	
+		</div>
+	</div>	
 </div>`
 })
 
@@ -5682,49 +5857,54 @@ Vue.component("http-firewall-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="firewallJSON" :value="JSON.stringify(firewall)">
-<table class="ui table selectable definition" v-show="!vIsGroup">
-<tr>
-<td class="title">全局WAF策略</td>
-<td>
-<div v-if="vFirewallPolicy != null">{{vFirewallPolicy.name}} <span v-if="vFirewallPolicy.modeInfo != null">&nbsp; <span :class="{green: vFirewallPolicy.modeInfo.code == 'defend', blue: vFirewallPolicy.modeInfo.code == 'observe', grey: vFirewallPolicy.modeInfo.code == 'bypass'}">[{{vFirewallPolicy.modeInfo.name}}]</span>&nbsp;</span> <link-icon :href="'/servers/components/waf/policy?firewallPolicyId=' + vFirewallPolicy.id"></link-icon>
-<p class="comment">当前网站所在集群的设置。</p>
-</div>
-<span v-else class="red">当前集群没有设置WAF策略，当前配置无法生效。</span>
-</td>
-</tr>
-</table>
-<table class="ui table selectable definition">
-<prior-checkbox :v-config="firewall" v-if="vIsLocation || vIsGroup"></prior-checkbox>
-<tbody v-show="(!vIsLocation && !vIsGroup) || firewall.isPrior">
-<tr>
-<td class="title">启用Web防火墙</td>
-<td>
-<checkbox v-model="firewall.isOn"></checkbox>
-<p class="comment">选中后，表示启用当前网站的WAF功能。</p>
-</td>
-</tr>
-</tbody>
-<more-options-tbody @change="changeOptionsVisible" v-show="firewall.isOn"></more-options-tbody>
-<tbody v-show="moreOptionsVisible">
-<tr>
-<td>人机识别验证方式</td>
-<td>
-<select class="ui dropdown auto-width" v-model="firewall.defaultCaptchaType"><option value="none">默认</option><option v-for="captchaType in captchaTypes" v-if="captchaType.code != 'geetest' || geeTestIsOn" :value="captchaType.code">{{captchaType.name}}</option></select>
-<p class="comment" v-if="firewall.defaultCaptchaType == 'none'">使用系统默认的设置。你需要在入站规则中添加规则集来决定哪些请求需要人机识别验证。</p>
-<p class="comment" v-for="captchaType in captchaTypes" v-if="captchaType.code == firewall.defaultCaptchaType">{{captchaType.description}}你需要在入站规则中添加规则集来决定哪些请求需要人机识别验证。</p>
-</td>
-</tr>
-<tr>
-<td>启用系统全局规则</td>
-<td>
-<checkbox v-model="execGlobalRules"></checkbox>
-<p class="comment">选中后，表示使用系统全局WAF策略中定义的规则。</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="margin"></div>
+	<input type="hidden" name="firewallJSON" :value="JSON.stringify(firewall)"/>
+	
+	<table class="ui table selectable definition" v-show="!vIsGroup">
+		<tr>
+			<td class="title">全局WAF策略</td>
+			<td>
+				<div v-if="vFirewallPolicy != null">{{vFirewallPolicy.name}} <span v-if="vFirewallPolicy.modeInfo != null">&nbsp; <span :class="{green: vFirewallPolicy.modeInfo.code == 'defend', blue: vFirewallPolicy.modeInfo.code == 'observe', grey: vFirewallPolicy.modeInfo.code == 'bypass'}">[{{vFirewallPolicy.modeInfo.name}}]</span>&nbsp;</span> <link-icon :href="'/servers/components/waf/policy?firewallPolicyId=' + vFirewallPolicy.id"></link-icon>
+					<p class="comment">当前网站所在集群的设置。</p>
+				</div>
+				<span v-else class="red">当前集群没有设置WAF策略，当前配置无法生效。</span>
+			</td>
+		</tr>
+	</table>
+	
+	<table class="ui table selectable definition">
+		<prior-checkbox :v-config="firewall" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || firewall.isPrior">
+			<tr>
+				<td class="title">启用Web防火墙</td>
+				<td>
+					<checkbox v-model="firewall.isOn"></checkbox>
+					<p class="comment">选中后，表示启用当前网站的WAF功能。</p>
+				</td>
+			</tr>
+		</tbody>
+		<more-options-tbody @change="changeOptionsVisible" v-show="firewall.isOn"></more-options-tbody>
+		<tbody v-show="moreOptionsVisible">
+			<tr>
+				<td>人机识别验证方式</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="firewall.defaultCaptchaType">
+						<option value="none">默认</option>
+						<option v-for="captchaType in captchaTypes" v-if="captchaType.code != 'geetest' || geeTestIsOn" :value="captchaType.code">{{captchaType.name}}</option>
+					</select>
+					<p class="comment" v-if="firewall.defaultCaptchaType == 'none'">使用系统默认的设置。你需要在入站规则中添加规则集来决定哪些请求需要人机识别验证。</p>
+					<p class="comment" v-for="captchaType in captchaTypes" v-if="captchaType.code == firewall.defaultCaptchaType">{{captchaType.description}}你需要在入站规则中添加规则集来决定哪些请求需要人机识别验证。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>启用系统全局规则</td>
+				<td>
+					<checkbox v-model="execGlobalRules"></checkbox>
+					<p class="comment">选中后，表示使用系统全局WAF策略中定义的规则。</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -6098,13 +6278,13 @@ Vue.component("metric-chart", {
 		},
 		renderTable: function (chart) {
 			let table = `<table class="ui table celled">
-<thead>
-<tr>
-<th>对象</th>
-<th>数值</th>
-<th>占比</th>
-</tr>
-</thead>`
+	<thead>
+		<tr>
+			<th>对象</th>
+			<th>数值</th>
+			<th>占比</th>
+		</tr>
+	</thead>`
 			let that = this
 			this.stats.forEach(function (v) {
 				let value = v.value
@@ -6145,9 +6325,9 @@ Vue.component("metric-chart", {
 		}
 	},
 	template: `<div style="float: left" :style="{'width': this.vColumn ?  '' : width}" :class="{'ui column':this.vColumn}">
-<h4>{{chart.name}} <span>（{{valueTypeName}}）</span></h4>
-<div class="ui divider"></div>
-<div style="height: 14em; padding-bottom: 1em;" :id="chartId" :class="{'scroll-box': chart.type == 'table'}"></div>
+	<h4>{{chart.name}} <span>（{{valueTypeName}}）</span></h4>
+	<div class="ui divider"></div>
+	<div style="height: 14em; padding-bottom: 1em; " :id="chartId" :class="{'scroll-box': chart.type == 'table'}"></div>
 </div>`
 })
 
@@ -6248,136 +6428,144 @@ Vue.component("http-cache-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="cacheJSON" :value="JSON.stringify(cacheConfig)">
-<table class="ui table definition selectable" v-show="!vIsGroup">
-<tr>
-<td class="title">全局缓存策略</td>
-<td>
-<div v-if="vCachePolicy != null">{{vCachePolicy.name}} <link-icon :href="'/servers/components/cache/policy?cachePolicyId=' + vCachePolicy.id"></link-icon>
-<p class="comment">使用当前网站所在集群的设置。</p>
-</div>
-<span v-else class="red">当前集群没有设置缓存策略，当前配置无法生效。</span>
-</td>
-</tr>
-</table>
-<table class="ui table definition selectable">
-<prior-checkbox :v-config="cacheConfig" v-if="vIsLocation || vIsGroup"></prior-checkbox>
-<tbody v-show="(!vIsLocation && !vIsGroup) || cacheConfig.isPrior">
-<tr>
-<td class="title">启用缓存</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" v-model="cacheConfig.isOn">
-<label></label>
-</div>
-</td>
-</tr>
-</tbody>
-<tbody v-show="isOn() && !vIsGroup">
-<tr>
-<td>缓存主域名</td>
-<td>
-<div v-show="!cacheConfig.key.isOn">默认 &nbsp; <a href @click.prevent="keyOptionsVisible = !keyOptionsVisible"><span class="small">[修改]</span></a></div>
-<div v-show="cacheConfig.key.isOn">使用主域名：{{cacheConfig.key.scheme}}://{{cacheConfig.key.host}} &nbsp; <a href @click.prevent="keyOptionsVisible = !keyOptionsVisible"><span class="small">[修改]</span></a></div>
-<div v-show="keyOptionsVisible" style="margin-top: 1em">
-<div class="ui divider"></div>
-<table class="ui table definition">
-<tr>
-<td class="title">启用主域名</td>
-<td><checkbox v-model="cacheConfig.key.isOn"></checkbox>
-<p class="comment">启用主域名后，所有缓存键值中的协议和域名部分都会修改为主域名，用来实现缓存不区分域名。</p>
-</td>
-</tr>
-<tr v-show="cacheConfig.key.isOn">
-<td>主域名 *</td>
-<td>
-<div class="ui fields inline">
-<div class="ui field">
-<select class="ui dropdown" v-model="cacheConfig.key.scheme"><option value="https">https://</option><option value="http">http://</option></select>
-</div>
-<div class="ui field">
-<input type="text" v-model="cacheConfig.key.host" placeholder="example.com" @keyup.enter="keyOptionsVisible = false" @keypress.enter.prevent="1">
-</div>
-</div>
-<p class="comment">此域名<strong>必须</strong>是当前网站已绑定域名，在刷新缓存时也需要使用此域名。</p>
-</td>
-</tr>
-</table>
-<button class="ui button tiny" type="button" @click.prevent="keyOptionsVisible = false">完成</button>
-</div>
-</td>
-</tr>
-</tbody>
-<tbody v-show="isOn()">
-<tr>
-<td colspan="2">
-<a href @click.prevent="showMoreOptions"><span v-if="moreOptionsVisible">收起选项</span><span v-else>更多选项</span><i class="icon angle" :class="{up: moreOptionsVisible, down:!moreOptionsVisible}"></i></a>
-</td>
-</tr>
-</tbody>
-<tbody v-show="isOn() && moreOptionsVisible">
-<tr>
-<td>使用默认缓存条件</td>
-<td>
-<checkbox v-model="enablePolicyRefs"></checkbox>
-<p class="comment">选中后使用系统全局缓存策略中已经定义的默认缓存条件。</p>
-</td>
-</tr>
-<tr>
-<td>添加X-Cache报头</td>
-<td>
-<checkbox v-model="cacheConfig.addStatusHeader"></checkbox>
-<p class="comment">选中后自动在响应报头中增加<code-label>X-Cache: BYPASS|MISS|HIT|PURGE</code-label>；在浏览器端查看X-Cache值时请先禁用浏览器缓存，避免影响观察。</p>
-</td>
-</tr>
-<tr>
-<td>添加Age Header</td>
-<td>
-<checkbox v-model="cacheConfig.addAgeHeader"></checkbox>
-<p class="comment">选中后自动在响应Header中增加<code-label>Age: [存活时间秒数]</code-label>。</p>
-</td>
-</tr>
-<tr>
-<td>支持源站控制有效时间</td>
-<td>
-<checkbox v-model="cacheConfig.enableCacheControlMaxAge"></checkbox>
-<p class="comment">选中后表示支持源站在Header中设置的<code-label>Cache-Control: max-age=[有效时间秒数]</code-label>。</p>
-</td>
-</tr>
-<tr>
-<td class="color-border">允许PURGE</td>
-<td>
-<checkbox v-model="cacheConfig.purgeIsOn"></checkbox>
-<p class="comment">允许使用PURGE方法清除某个URL缓存。</p>
-</td>
-</tr>
-<tr v-show="cacheConfig.purgeIsOn">
-<td class="color-border">PURGE Key *</td>
-<td>
-<input type="text" maxlength="200" v-model="cacheConfig.purgeKey">
-<p class="comment"><a href @click.prevent="generatePurgeKey">[随机生成]</a>。需要在PURGE方法调用时加入<code-label>X-Edge-Purge-Key: {{cacheConfig.purgeKey}}</code-label> Header。只能包含字符、数字、下划线。</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div v-if="isOn() && moreOptionsVisible && isPlus()">
-<h4>过时缓存策略</h4>
-<http-cache-stale-config :v-cache-stale-config="cacheConfig.stale" @change="changeStale"></http-cache-stale-config>
-</div>
-<div v-show="isOn()">
-<submit-btn></submit-btn>
-<div class="ui divider"></div>
-</div>
-<div v-show="isOn()" style="margin-top: 1em">
-<h4 style="position: relative">缓存条件 &nbsp; <a href style="font-size: 0.8em" @click.prevent="$refs.cacheRefsConfigBoxRef.addRef(false)">[添加]</a> &nbsp; <a href style="font-size: 0.8em" @click.prevent="showSearchBox" v-show="!searchBoxVisible">[搜索]</a>
-<div class="ui input small right labeled" style="position: absolute; top: -0.4em; margin-left: 0.5em; zoom: 0.9" v-show="searchBoxVisible">
-<input type="text" placeholder="搜索..." ref="searchBox" @keypress.enter.prevent="1" @keydown.esc="showSearchBox" v-model="searchKeyword" size="20">
-<a href class="ui label blue" @click.prevent="showSearchBox"><i class="icon remove small"></i></a>
-</div>
-</h4>
-<http-cache-refs-config-box ref="cacheRefsConfigBoxRef" :v-cache-config="cacheConfig" :v-cache-refs="cacheConfig.cacheRefs" :v-web-id="vWebId" :v-max-bytes="maxBytes"></http-cache-refs-config-box>
-</div>
-<div class="margin"></div>
+	<input type="hidden" name="cacheJSON" :value="JSON.stringify(cacheConfig)"/>
+	
+	<table class="ui table definition selectable" v-show="!vIsGroup">
+		<tr>
+			<td class="title">全局缓存策略</td>
+			<td>
+				<div v-if="vCachePolicy != null">{{vCachePolicy.name}} <link-icon :href="'/servers/components/cache/policy?cachePolicyId=' + vCachePolicy.id"></link-icon>
+					<p class="comment">使用当前网站所在集群的设置。</p>
+				</div>
+				<span v-else class="red">当前集群没有设置缓存策略，当前配置无法生效。</span>
+			</td>
+		</tr>
+	</table>
+	
+	<table class="ui table definition selectable">
+		<prior-checkbox :v-config="cacheConfig" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || cacheConfig.isPrior">
+			<tr>
+				<td class="title">启用缓存</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="cacheConfig.isOn"/>
+						<label></label>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="isOn() && !vIsGroup">
+			<tr>
+				<td>缓存主域名</td>
+				<td>
+					<div v-show="!cacheConfig.key.isOn">默认 &nbsp; <a href="" @click.prevent="keyOptionsVisible = !keyOptionsVisible"><span class="small">[修改]</span></a></div>
+					<div v-show="cacheConfig.key.isOn">使用主域名：{{cacheConfig.key.scheme}}://{{cacheConfig.key.host}} &nbsp;  <a href="" @click.prevent="keyOptionsVisible = !keyOptionsVisible"><span class="small">[修改]</span></a></div>
+					<div v-show="keyOptionsVisible" style="margin-top: 1em">
+						<div class="ui divider"></div>
+						<table class="ui table definition">
+							<tr>
+								<td class="title">启用主域名</td>
+								<td><checkbox v-model="cacheConfig.key.isOn"></checkbox>
+									<p class="comment">启用主域名后，所有缓存键值中的协议和域名部分都会修改为主域名，用来实现缓存不区分域名。</p>
+								</td>
+							</tr>	
+							<tr v-show="cacheConfig.key.isOn">
+								<td>主域名 *</td>
+								<td>
+									<div class="ui fields inline">
+										<div class="ui field">
+											<select class="ui dropdown" v-model="cacheConfig.key.scheme">
+												<option value="https">https://</option>
+												<option value="http">http://</option>
+											</select>
+										</div>
+										<div class="ui field">
+											<input type="text" v-model="cacheConfig.key.host" placeholder="example.com" @keyup.enter="keyOptionsVisible = false" @keypress.enter.prevent="1"/>
+										</div>
+									</div>
+									<p class="comment">此域名<strong>必须</strong>是当前网站已绑定域名，在刷新缓存时也需要使用此域名。</p>
+								</td>
+							</tr>
+						</table>
+						<button class="ui button tiny" type="button" @click.prevent="keyOptionsVisible = false">完成</button>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="isOn()">
+			<tr>
+				<td colspan="2">
+					<a href="" @click.prevent="showMoreOptions"><span v-if="moreOptionsVisible">收起选项</span><span v-else>更多选项</span><i class="icon angle" :class="{up: moreOptionsVisible, down:!moreOptionsVisible}"></i></a>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="isOn() && moreOptionsVisible">
+			<tr>
+				<td>使用默认缓存条件</td>
+				<td>	
+					<checkbox v-model="enablePolicyRefs"></checkbox>
+					<p class="comment">选中后使用系统全局缓存策略中已经定义的默认缓存条件。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>添加X-Cache报头</td>
+				<td>
+					<checkbox v-model="cacheConfig.addStatusHeader"></checkbox>
+					<p class="comment">选中后自动在响应报头中增加<code-label>X-Cache: BYPASS|MISS|HIT|PURGE</code-label>；在浏览器端查看X-Cache值时请先禁用浏览器缓存，避免影响观察。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>添加Age Header</td>
+				<td>
+					<checkbox v-model="cacheConfig.addAgeHeader"></checkbox>
+					<p class="comment">选中后自动在响应Header中增加<code-label>Age: [存活时间秒数]</code-label>。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>支持源站控制有效时间</td>
+				<td>
+					<checkbox v-model="cacheConfig.enableCacheControlMaxAge"></checkbox>
+					<p class="comment">选中后表示支持源站在Header中设置的<code-label>Cache-Control: max-age=[有效时间秒数]</code-label>。</p>
+				</td>
+			</tr>
+			<tr>
+				<td class="color-border">允许PURGE</td>
+				<td>
+					<checkbox v-model="cacheConfig.purgeIsOn"></checkbox>
+					<p class="comment">允许使用PURGE方法清除某个URL缓存。</p>
+				</td>
+			</tr>
+			<tr v-show="cacheConfig.purgeIsOn">
+				<td class="color-border">PURGE Key *</td>
+				<td>
+					<input type="text" maxlength="200" v-model="cacheConfig.purgeKey"/>
+					<p class="comment"><a href="" @click.prevent="generatePurgeKey">[随机生成]</a>。需要在PURGE方法调用时加入<code-label>X-Edge-Purge-Key: {{cacheConfig.purgeKey}}</code-label> Header。只能包含字符、数字、下划线。</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<div v-if="isOn() && moreOptionsVisible && isPlus()">
+		<h4>过时缓存策略</h4>
+		<http-cache-stale-config :v-cache-stale-config="cacheConfig.stale" @change="changeStale"></http-cache-stale-config>
+	</div>
+	
+	<div v-show="isOn()">
+		<submit-btn></submit-btn>
+		<div class="ui divider"></div>
+	</div>
+	
+	<div v-show="isOn()" style="margin-top: 1em">
+		<h4 style="position: relative">缓存条件 &nbsp; <a href="" style="font-size: 0.8em" @click.prevent="$refs.cacheRefsConfigBoxRef.addRef(false)">[添加]</a> &nbsp; <a href="" style="font-size: 0.8em" @click.prevent="showSearchBox" v-show="!searchBoxVisible">[搜索]</a> 
+			<div class="ui input small right labeled" style="position: absolute; top: -0.4em; margin-left: 0.5em; zoom: 0.9" v-show="searchBoxVisible">
+				<input type="text" placeholder="搜索..." ref="searchBox"  @keypress.enter.prevent="1" @keydown.esc="showSearchBox" v-model="searchKeyword" size="20"/>
+				<a href="" class="ui label blue" @click.prevent="showSearchBox"><i class="icon remove small"></i></a>
+			</div>
+		</h4>
+		<http-cache-refs-config-box ref="cacheRefsConfigBoxRef" :v-cache-config="cacheConfig" :v-cache-refs="cacheConfig.cacheRefs" :v-web-id="vWebId" :v-max-bytes="maxBytes"></http-cache-refs-config-box>
+	</div>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -6446,25 +6634,25 @@ Vue.component("http-cond-general-header-length", {
 		}
 	},
 	template: `<div>
-<table class="ui table">
-<tr>
-<td class="title">通用Header列表</td>
-<td>
-<values-box :values="headers" :placeholder="'Header'" @change="change"></values-box>
-<p class="comment">需要检查的Header列表。</p>
-</td>
-</tr>
-<tr>
-<td>Header值超出长度</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 5em" v-model="length" maxlength="6">
-<span class="ui label">字节</span>
-</div>
-<p class="comment">超出此长度认为匹配成功，0表示不限制。</p>
-</td>
-</tr>
-</table>
+	<table class="ui table">
+		<tr>
+			<td class="title">通用Header列表</td>
+			<td>
+				<values-box :values="headers" :placeholder="'Header'" @change="change"></values-box>
+				<p class="comment">需要检查的Header列表。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>Header值超出长度</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" name="" style="width: 5em" v-model="length" maxlength="6"/>
+					<span class="ui label">字节</span>
+				</div>
+				<p class="comment">超出此长度认为匹配成功，0表示不限制。</p>
+			</td>
+		</tr>
+	</table>
 </div>`
 })
 
@@ -6593,46 +6781,46 @@ Vue.component("http-firewall-checkpoint-cc", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="operator" value="gt">
-<input type="hidden" name="value" :value="value">
-<table class="ui table">
-<tr>
-<td class="title">统计对象组合 *</td>
-<td>
-<metric-keys-config-box :v-keys="keys" @change="changeKeys"></metric-keys-config-box>
-</td>
-</tr>
-<tr>
-<td>统计周期 *</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" v-model="period" style="width: 6em" maxlength="8">
-<span class="ui label">秒</span>
-</div>
-</td>
-</tr>
-<tr>
-<td>阈值 *</td>
-<td>
-<input type="text" v-model="threshold" style="width: 6em" maxlength="8">
-<p class="comment" v-if="thresholdTooLow()"><span class="red">对于网站类应用来说，当前阈值设置的太低，有可能会影响用户正常访问。</span></p>
-</td>
-</tr>
-<tr>
-<td>检查请求来源指纹</td>
-<td>
-<checkbox v-model="enableFingerprint"></checkbox>
-<p class="comment">在接收到HTTPS请求时尝试检查请求来源的指纹，用来检测代理服务和爬虫攻击；如果你在网站前面放置了别的反向代理服务，请取消此选项。</p>
-</td>
-</tr>
-<tr>
-<td>忽略常用文件</td>
-<td>
-<checkbox v-model="ignoreCommonFiles"></checkbox>
-<p class="comment">忽略js、css、jpg等常在网页里被引用的文件名，即对这些文件的访问不加入计数，可以减少误判几率。</p>
-</td>
-</tr>
-</table>
+	<input type="hidden" name="operator" value="gt"/>
+	<input type="hidden" name="value" :value="value"/>
+	<table class="ui table">
+		<tr>
+			<td class="title">统计对象组合 *</td>
+			<td>
+				<metric-keys-config-box :v-keys="keys" @change="changeKeys"></metric-keys-config-box>
+			</td>
+		</tr>
+		<tr>
+			<td>统计周期 *</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" v-model="period" style="width: 6em" maxlength="8"/>
+					<span class="ui label">秒</span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>阈值 *</td>
+			<td>
+				<input type="text" v-model="threshold" style="width: 6em" maxlength="8"/>
+				<p class="comment" v-if="thresholdTooLow()"><span class="red">对于网站类应用来说，当前阈值设置的太低，有可能会影响用户正常访问。</span></p>
+			</td>
+		</tr>
+		<tr>
+			<td>检查请求来源指纹</td>
+			<td>
+				<checkbox v-model="enableFingerprint"></checkbox>
+				<p class="comment">在接收到HTTPS请求时尝试检查请求来源的指纹，用来检测代理服务和爬虫攻击；如果你在网站前面放置了别的反向代理服务，请取消此选项。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>忽略常用文件</td>
+			<td>
+				<checkbox v-model="ignoreCommonFiles"></checkbox>
+				<p class="comment">忽略js、css、jpg等常在网页里被引用的文件名，即对这些文件的访问不加入计数，可以减少误判几率。</p>
+			</td>
+		</tr>
+	</table>
 </div>`
 })
 
@@ -6731,45 +6919,45 @@ Vue.component("http-firewall-checkpoint-referer-block", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="operator" value="eq">
-<input type="hidden" name="value" :value="value">
-<table class="ui table">
-<tr>
-<td class="title">来源域名允许为空</td>
-<td>
-<checkbox v-model="allowEmpty"></checkbox>
-<p class="comment">允许不带来源的访问。</p>
-</td>
-</tr>
-<tr>
-<td>来源域名允许一致</td>
-<td>
-<checkbox v-model="allowSameDomain"></checkbox>
-<p class="comment">允许来源域名和当前访问的域名一致，相当于在站内访问。</p>
-</td>
-</tr>
-<tr>
-<td>允许的来源域名</td>
-<td>
-<values-box :values="allowDomains" @change="changeAllowDomains"></values-box>
-<p class="comment">允许的来源域名列表，比如<code-label>example.com</code-label>（顶级域名)、<code-label>*.example.com</code-label>（example.com的所有二级域名）。单个星号<code-label>*</code-label>表示允许所有域名。</p>
-</td>
-</tr>
-<tr>
-<td>禁止的来源域名</td>
-<td>
-<values-box :values="denyDomains" @change="changeDenyDomains"></values-box>
-<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>（顶级域名）、<code-label>*.example.org</code-label>（example.org的所有二级域名）；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
-</td>
-</tr>
-<tr>
-<td>同时检查Origin</td>
-<td>
-<checkbox v-model="checkOrigin"></checkbox>
-<p class="comment">如果请求没有指定Referer Header，则尝试检查Origin Header，多用于跨站调用。</p>
-</td>
-</tr>
-</table>
+	<input type="hidden" name="operator" value="eq"/>
+	<input type="hidden" name="value" :value="value"/>
+	<table class="ui table">
+		<tr>
+			<td class="title">来源域名允许为空</td>
+			<td>
+				<checkbox v-model="allowEmpty"></checkbox>
+				<p class="comment">允许不带来源的访问。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>来源域名允许一致</td>
+			<td>
+				<checkbox v-model="allowSameDomain"></checkbox>
+				<p class="comment">允许来源域名和当前访问的域名一致，相当于在站内访问。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>允许的来源域名</td>
+			<td>
+				<values-box :values="allowDomains" @change="changeAllowDomains"></values-box>
+				<p class="comment">允许的来源域名列表，比如<code-label>example.com</code-label>（顶级域名)、<code-label>*.example.com</code-label>（example.com的所有二级域名）。单个星号<code-label>*</code-label>表示允许所有域名。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>禁止的来源域名</td>
+			<td>
+				<values-box :values="denyDomains" @change="changeDenyDomains"></values-box>
+				<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>（顶级域名）、<code-label>*.example.org</code-label>（example.org的所有二级域名）；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>同时检查Origin</td>
+			<td>
+				<checkbox v-model="checkOrigin"></checkbox>
+				<p class="comment">如果请求没有指定Referer Header，则尝试检查Origin Header，多用于跨站调用。</p>
+			</td>
+		</tr>
+	</table>
 </div>`
 })
 
@@ -6863,11 +7051,11 @@ Vue.component("http-access-log-partitions-box", {
 		}
 	},
 	template: `<div v-if="partitions.length > 1">
-<div class="ui divider" style="margin-bottom: 0"></div>
-<div class="ui menu text small blue" style="margin-bottom: 0; margin-top: 0">
-<a v-for="(p, index) in partitions" :href="url(p.code)" class="item" :class="{active: selectedPartition == p.code, disabled: p.isDisabled}">分表{{p.code+1}} <span v-if="p.hasLogs">&nbsp; <dot></dot></span> &nbsp; &nbsp; <span class="disabled" v-if="index != partitions.length - 1">|</span></a>
-</div>
-<div class="ui divider" style="margin-top: 0"></div>
+	<div class="ui divider" style="margin-bottom: 0"></div>
+	<div class="ui menu text small blue" style="margin-bottom: 0; margin-top: 0">
+		<a v-for="(p, index) in partitions" :href="url(p.code)" class="item" :class="{active: selectedPartition == p.code, disabled: p.isDisabled}">分表{{p.code+1}} <span v-if="p.hasLogs">&nbsp; <dot></dot></span> &nbsp; &nbsp; <span class="disabled" v-if="index != partitions.length - 1">|</span></a>
+	</div>
+	<div class="ui divider" style="margin-top: 0"></div>
 </div>`
 })
 
@@ -7089,56 +7277,63 @@ Vue.component("http-cache-refs-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="refsJSON" :value="JSON.stringify(refs)">
-<div>
-<p class="comment" v-if="refs.length == 0">暂时还没有缓存条件。</p>
-<table class="ui table selectable celled" v-show="refs.length > 0" id="sortable-table">
-<thead>
-<tr>
-<th style="width:1em"></th>
-<th>缓存条件</th>
-<th style="width: 7em">缓存时间</th>
-<th class="three op">操作</th>
-</tr>
-</thead>
-<tbody v-for="(cacheRef, index) in refs" :key="cacheRef.id" :v-id="cacheRef.id" v-show="cacheRef.visible !== false">
-<tr>
-<td style="text-align: center;"><i class="icon bars handle grey"></i> </td>
-<td :class="{'color-border': cacheRef.conds != null && cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
-<http-request-conds-view :v-conds="cacheRef.conds" ref="cacheRef" :class="{disabled: !cacheRef.isOn}" v-if="cacheRef.conds != null && cacheRef.conds.groups != null"></http-request-conds-view>
-<http-request-cond-view :v-cond="cacheRef.simpleCond" ref="cacheRef" v-if="cacheRef.simpleCond != null"></http-request-cond-view>
-<grey-label v-if="cacheRef.key != null && cacheRef.key.indexOf('\${args}') < 0">忽略URI参数</grey-label>
-<grey-label v-if="cacheRef.minSize != null && cacheRef.minSize.count > 0">
-{{cacheRef.minSize.count}}{{cacheRef.minSize.unit}}
-<span v-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">- {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit.toUpperCase()}}</span>
-</grey-label>
-<grey-label v-else-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">0 - {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit.toUpperCase()}}</grey-label>
-<grey-label v-if="cacheRef.overMaxSize != null"><span class="red">系统限制{{cacheRef.overMaxSize.count}}{{cacheRef.overMaxSize.unit.toUpperCase()}}</span> </grey-label>
-<grey-label v-if="cacheRef.methods != null && cacheRef.methods.length > 0">{{cacheRef.methods.join(", ")}}</grey-label>
-<grey-label v-if="cacheRef.expiresTime != null && cacheRef.expiresTime.isPrior && cacheRef.expiresTime.isOn">Expires</grey-label>
-<grey-label v-if="cacheRef.status != null && cacheRef.status.length > 0 && (cacheRef.status.length > 1 || cacheRef.status[0] != 200)">状态码：{{cacheRef.status.map(function(v) {return v.toString()}).join(", ")}}</grey-label>
-<grey-label v-if="cacheRef.allowPartialContent">分片缓存</grey-label>
-<grey-label v-if="cacheRef.alwaysForwardRangeRequest">Range回源</grey-label>
-<grey-label v-if="cacheRef.enableIfNoneMatch">If-None-Match</grey-label>
-<grey-label v-if="cacheRef.enableIfModifiedSince">If-Modified-Since</grey-label>
-<grey-label v-if="cacheRef.enableReadingOriginAsync">支持异步</grey-label>
-</td>
-<td :class="{disabled: !cacheRef.isOn}">
-<span v-if="!cacheRef.isReverse">{{cacheRef.life.count}} {{timeUnitName(cacheRef.life.unit)}}</span>
-<span v-else class="red">不缓存</span>
-</td>
-<td>
-<a href @click.prevent="updateRef(index, cacheRef)">修改</a> &nbsp;
-<a href v-if="cacheRef.isOn" @click.prevent="disableRef(cacheRef)">暂停</a><a href v-if="!cacheRef.isOn" @click.prevent="enableRef(cacheRef)"><span class="red">恢复</span></a> &nbsp;
-<a href @click.prevent="removeRef(index)">删除</a>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="comment" v-if="refs.length > 1">所有条件匹配顺序为从上到下，可以拖动左侧的<i class="icon bars"></i>排序。服务设置的优先级比全局缓存策略设置的优先级要高。</p>
-<button class="ui button tiny" @click.prevent="addRef(false)" type="button">+添加缓存条件</button> &nbsp; &nbsp; <a href @click.prevent="addRef(true)" style="font-size: 0.8em">+添加不缓存条件</a>
-</div>
-<div class="margin"></div>
+	<input type="hidden" name="refsJSON" :value="JSON.stringify(refs)"/>
+	
+	<div>
+		<p class="comment" v-if="refs.length == 0">暂时还没有缓存条件。</p>
+		<table class="ui table selectable celled" v-show="refs.length > 0" id="sortable-table">
+			<thead>
+				<tr>
+					<th style="width:1em"></th>
+					<th>缓存条件</th>
+					<th style="width: 7em">缓存时间</th>
+					<th class="three op">操作</th>
+				</tr>
+			</thead>	
+			<tbody v-for="(cacheRef, index) in refs" :key="cacheRef.id" :v-id="cacheRef.id" v-show="cacheRef.visible !== false">
+				<tr>
+					<td style="text-align: center;"><i class="icon bars handle grey"></i> </td>
+					<td :class="{'color-border': cacheRef.conds != null && cacheRef.conds.connector == 'and', disabled: !cacheRef.isOn}" :style="{'border-left':cacheRef.isReverse ? '1px #db2828 solid' : ''}">
+						<http-request-conds-view :v-conds="cacheRef.conds" ref="cacheRef" :class="{disabled: !cacheRef.isOn}" v-if="cacheRef.conds != null && cacheRef.conds.groups != null"></http-request-conds-view>
+						<http-request-cond-view :v-cond="cacheRef.simpleCond" ref="cacheRef" v-if="cacheRef.simpleCond != null"></http-request-cond-view>
+						
+						<!-- 特殊参数 -->
+						<grey-label v-if="cacheRef.key != null && cacheRef.key.indexOf('\${args}') < 0">忽略URI参数</grey-label>
+						
+						<grey-label v-if="cacheRef.minSize != null && cacheRef.minSize.count > 0">
+							{{cacheRef.minSize.count}}{{cacheRef.minSize.unit}}
+							<span v-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">- {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit.toUpperCase()}}</span>
+						</grey-label>
+						<grey-label v-else-if="cacheRef.maxSize != null && cacheRef.maxSize.count > 0">0 - {{cacheRef.maxSize.count}}{{cacheRef.maxSize.unit.toUpperCase()}}</grey-label>
+						
+						<grey-label v-if="cacheRef.overMaxSize != null"><span class="red">系统限制{{cacheRef.overMaxSize.count}}{{cacheRef.overMaxSize.unit.toUpperCase()}}</span> </grey-label>
+						
+						<grey-label v-if="cacheRef.methods != null && cacheRef.methods.length > 0">{{cacheRef.methods.join(", ")}}</grey-label>
+						<grey-label v-if="cacheRef.expiresTime != null && cacheRef.expiresTime.isPrior && cacheRef.expiresTime.isOn">Expires</grey-label>
+						<grey-label v-if="cacheRef.status != null && cacheRef.status.length > 0 && (cacheRef.status.length > 1 || cacheRef.status[0] != 200)">状态码：{{cacheRef.status.map(function(v) {return v.toString()}).join(", ")}}</grey-label>
+						<grey-label v-if="cacheRef.allowPartialContent">分片缓存</grey-label>
+						<grey-label v-if="cacheRef.alwaysForwardRangeRequest">Range回源</grey-label>
+						<grey-label v-if="cacheRef.enableIfNoneMatch">If-None-Match</grey-label>
+						<grey-label v-if="cacheRef.enableIfModifiedSince">If-Modified-Since</grey-label>
+						<grey-label v-if="cacheRef.enableReadingOriginAsync">支持异步</grey-label>
+					</td>
+					<td :class="{disabled: !cacheRef.isOn}">
+						<span v-if="!cacheRef.isReverse">{{cacheRef.life.count}} {{timeUnitName(cacheRef.life.unit)}}</span>
+						<span v-else class="red">不缓存</span>
+					</td>
+					<td>
+						<a href="" @click.prevent="updateRef(index, cacheRef)">修改</a> &nbsp;
+						<a href="" v-if="cacheRef.isOn" @click.prevent="disableRef(cacheRef)">暂停</a><a href="" v-if="!cacheRef.isOn" @click.prevent="enableRef(cacheRef)"><span class="red">恢复</span></a> &nbsp;
+						<a href="" @click.prevent="removeRef(index)">删除</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<p class="comment" v-if="refs.length > 1">所有条件匹配顺序为从上到下，可以拖动左侧的<i class="icon bars"></i>排序。服务设置的优先级比全局缓存策略设置的优先级要高。</p>
+		
+		<button class="ui button tiny" @click.prevent="addRef(false)" type="button">+添加缓存条件</button> &nbsp; &nbsp; <a href="" @click.prevent="addRef(true)" style="font-size: 0.8em">+添加不缓存条件</a>
+	</div>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -7219,12 +7414,13 @@ Vue.component("origin-list-box", {
 		}
 	},
 	template: `<div>
-<h3>主要源站 <a href @click.prevent="createPrimaryOrigin()">[添加主要源站]</a> </h3>
-<p class="comment" v-if="primaryOrigins.length == 0">暂时还没有主要源站。</p>
-<origin-list-table v-if="primaryOrigins.length > 0" :v-origins="vPrimaryOrigins" :v-origin-type="'primary'" @deleteorigin="deleteOrigin" @updateorigin="updateOrigin" @updateoriginison="updateOriginIsOn"></origin-list-table>
-<h3>备用源站 <a href @click.prevent="createBackupOrigin()">[添加备用源站]</a></h3>
-<p class="comment" v-if="backupOrigins.length == 0">暂时还没有备用源站。</p>
-<origin-list-table v-if="backupOrigins.length > 0" :v-origins="backupOrigins" :v-origin-type="'backup'" @deleteorigin="deleteOrigin" @updateorigin="updateOrigin" @updateoriginison="updateOriginIsOn"></origin-list-table>
+	<h3>主要源站 <a href="" @click.prevent="createPrimaryOrigin()">[添加主要源站]</a> </h3>
+	<p class="comment" v-if="primaryOrigins.length == 0">暂时还没有主要源站。</p>
+	<origin-list-table v-if="primaryOrigins.length > 0" :v-origins="vPrimaryOrigins" :v-origin-type="'primary'" @deleteOrigin="deleteOrigin" @updateOrigin="updateOrigin" @updateOriginIsOn="updateOriginIsOn"></origin-list-table>
+
+	<h3>备用源站 <a href="" @click.prevent="createBackupOrigin()">[添加备用源站]</a></h3>
+	<p class="comment" v-if="backupOrigins.length == 0">暂时还没有备用源站。</p>
+	<origin-list-table v-if="backupOrigins.length > 0" :v-origins="backupOrigins" :v-origin-type="'backup'" @deleteOrigin="deleteOrigin" @updateOrigin="updateOrigin" @updateOriginIsOn="updateOriginIsOn"></origin-list-table>
 </div>`
 })
 
@@ -7256,41 +7452,43 @@ Vue.component("origin-list-table", {
 			this.$emit("updateOriginIsOn", originId, originAddr, isOn)
 		}
 	},
-	template: `<table class="ui table selectable">
-<thead>
-<tr>
-<th>源站地址</th>
-<th class="width5">权重</th>
-<th class="width6">状态</th>
-<th class="three op">操作</th>
-</tr>
-</thead>
-<tbody>
-<tr v-for="origin in vOrigins">
-<td :class="{disabled:!origin.isOn}">
-<a href @click.prevent="updateOrigin(origin.id)" :class="{disabled:!origin.isOn}">{{origin.addr}} &nbsp;<i class="icon expand small"></i></a>
-<div style="margin-top: 0.3em">
-<tiny-basic-label class="grey border-grey" v-if="origin.isOSS"><i class="icon hdd outline"></i>对象存储</tiny-basic-label>
-<tiny-basic-label class="grey border-grey" v-if="origin.name.length > 0">{{origin.name}}</tiny-basic-label>
-<tiny-basic-label class="grey border-grey" v-if="origin.hasCert">证书</tiny-basic-label>
-<tiny-basic-label class="grey border-grey" v-if="origin.host != null && origin.host.length > 0">主机名: {{origin.host}}</tiny-basic-label>
-<tiny-basic-label class="grey border-grey" v-if="origin.followPort">端口跟随</tiny-basic-label>
-<tiny-basic-label class="grey border-grey" v-if="origin.addr != null && origin.addr.startsWith('https://') && origin.http2Enabled">HTTP/2</tiny-basic-label>
-<span v-if="origin.domains != null && origin.domains.length > 0"><tiny-basic-label class="grey border-grey" v-for="domain in origin.domains">匹配: {{domain}}</tiny-basic-label></span>
-<span v-else-if="hasMatchedDomains"><tiny-basic-label class="grey border-grey">匹配: 所有域名</tiny-basic-label></span>
-</div>
-</td>
-<td :class="{disabled:!origin.isOn}">{{origin.weight}}</td>
-<td>
-<label-on :v-is-on="origin.isOn"></label-on>
-</td>
-<td>
-<a href @click.prevent="updateOrigin(origin.id)">修改</a> &nbsp;
-<a href v-if="origin.isOn" @click.prevent="updateOriginIsOn(origin.id, origin.addr, false)">停用</a><a href v-if="!origin.isOn" @click.prevent="updateOriginIsOn(origin.id, origin.addr, true)"><span class="red">启用</span></a> &nbsp;
-<a href @click.prevent="deleteOrigin(origin.id, origin.addr)">删除</a>
-</td>
-</tr>
-</tbody>
+	template: `
+<table class="ui table selectable">
+	<thead>
+		<tr>
+			<th>源站地址</th>
+			<th class="width5">权重</th>
+			<th class="width6">状态</th>
+			<th class="three op">操作</th>
+		</tr>	
+	</thead>
+	<tbody>
+		<tr v-for="origin in vOrigins">
+			<td :class="{disabled:!origin.isOn}">
+				<a href="" @click.prevent="updateOrigin(origin.id)" :class="{disabled:!origin.isOn}">{{origin.addr}} &nbsp;<i class="icon expand small"></i></a>
+				<div style="margin-top: 0.3em">
+					<tiny-basic-label class="grey border-grey" v-if="origin.isOSS"><i class="icon hdd outline"></i>对象存储</tiny-basic-label>
+					<tiny-basic-label class="grey border-grey" v-if="origin.name.length > 0">{{origin.name}}</tiny-basic-label>
+					<tiny-basic-label class="grey border-grey" v-if="origin.hasCert">证书</tiny-basic-label>
+					<tiny-basic-label class="grey border-grey" v-if="origin.host != null && origin.host.length > 0">主机名: {{origin.host}}</tiny-basic-label>
+					<tiny-basic-label class="grey border-grey" v-if="origin.followPort">端口跟随</tiny-basic-label>
+					<tiny-basic-label class="grey border-grey" v-if="origin.addr != null && origin.addr.startsWith('https://') && origin.http2Enabled">HTTP/2</tiny-basic-label>
+	
+					<span v-if="origin.domains != null && origin.domains.length > 0"><tiny-basic-label class="grey border-grey" v-for="domain in origin.domains">匹配: {{domain}}</tiny-basic-label></span>
+					<span v-else-if="hasMatchedDomains"><tiny-basic-label class="grey  border-grey">匹配: 所有域名</tiny-basic-label></span>
+				</div>
+			</td>
+			<td :class="{disabled:!origin.isOn}">{{origin.weight}}</td>
+			<td>
+				<label-on :v-is-on="origin.isOn"></label-on>
+			</td>
+			<td>
+				<a href="" @click.prevent="updateOrigin(origin.id)">修改</a> &nbsp;
+				<a href="" v-if="origin.isOn" @click.prevent="updateOriginIsOn(origin.id, origin.addr, false)">停用</a><a href=""  v-if="!origin.isOn" @click.prevent="updateOriginIsOn(origin.id, origin.addr, true)"><span class="red">启用</span></a> &nbsp;
+				<a href="" @click.prevent="deleteOrigin(origin.id, origin.addr)">删除</a>
+			</td>
+		</tr>
+	</tbody>
 </table>`
 })
 
@@ -7355,64 +7553,64 @@ Vue.component("http-cors-header-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="corsJSON" :value="JSON.stringify(config)">
-<table class="ui table definition selectable">
-<tbody>
-<tr>
-<td class="title">启用CORS自适应跨域</td>
-<td>
-<checkbox v-model="config.isOn"></checkbox>
-<p class="comment">启用后，自动在响应报头中增加对应的<code-label>Access-Control-*</code-label>相关内容。</p>
-</td>
-</tr>
-</tbody>
-<tbody v-show="config.isOn">
-<tr>
-<td colspan="2"><more-options-indicator @change="changeMoreOptions"></more-options-indicator></td>
-</tr>
-</tbody>
-<tbody v-show="config.isOn && moreOptionsVisible">
-<tr>
-<td>允许的请求方法列表</td>
-<td>
-<http-methods-box :v-methods="config.allowMethods"></http-methods-box>
-<p class="comment"><a href @click.prevent="addDefaultAllowMethods">[添加默认]</a>。<code-label>Access-Control-Allow-Methods</code-label>值设置。所访问资源允许使用的方法列表，不设置则表示默认为<code-label>PUT</code-label>、<code-label>GET</code-label>、<code-label>POST</code-label>、<code-label>DELETE</code-label>、<code-label>HEAD</code-label>、<code-label>OPTIONS</code-label>、<code-label>PATCH</code-label>。</p>
-</td>
-</tr>
-<tr>
-<td>预检结果缓存时间</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 6em" maxlength="6" v-model="maxAgeSecondsString">
-<span class="ui label">秒</span>
-</div>
-<p class="comment"><code-label>Access-Control-Max-Age</code-label>值设置。预检结果缓存时间，0或者不填表示使用浏览器默认设置。注意每个浏览器有不同的缓存时间上限。</p>
-</td>
-</tr>
-<tr>
-<td>允许服务器暴露的报头</td>
-<td>
-<values-box :v-values="config.exposeHeaders"></values-box>
-<p class="comment"><code-label>Access-Control-Expose-Headers</code-label>值设置。允许服务器暴露的报头，请注意报头的大小写。</p>
-</td>
-</tr>
-<tr>
-<td>实际请求方法</td>
-<td>
-<input type="text" v-model="config.requestMethod">
-<p class="comment"><code-label>Access-Control-Request-Method</code-label>值设置。实际请求服务器时使用的方法，比如<code-label>POST</code-label>。</p>
-</td>
-</tr>
-<tr>
-<td>仅OPTIONS有效</td>
-<td>
-<checkbox v-model="config.optionsMethodOnly"></checkbox>
-<p class="comment">选中后，表示当前CORS设置仅在OPTIONS方法请求时有效。</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="margin"></div>
+	<input type="hidden" name="corsJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable">
+		<tbody>
+			<tr>
+				<td class="title">启用CORS自适应跨域</td>
+				<td>
+					<checkbox v-model="config.isOn"></checkbox>
+					<p class="comment">启用后，自动在响应报头中增加对应的<code-label>Access-Control-*</code-label>相关内容。</p>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="config.isOn">
+			<tr>
+				<td colspan="2"><more-options-indicator @change="changeMoreOptions"></more-options-indicator></td>
+			</tr>
+		</tbody>
+		<tbody v-show="config.isOn && moreOptionsVisible">
+			<tr>
+				<td>允许的请求方法列表</td>
+				<td>
+					<http-methods-box :v-methods="config.allowMethods"></http-methods-box>
+					<p class="comment"><a href="" @click.prevent="addDefaultAllowMethods">[添加默认]</a>。<code-label>Access-Control-Allow-Methods</code-label>值设置。所访问资源允许使用的方法列表，不设置则表示默认为<code-label>PUT</code-label>、<code-label>GET</code-label>、<code-label>POST</code-label>、<code-label>DELETE</code-label>、<code-label>HEAD</code-label>、<code-label>OPTIONS</code-label>、<code-label>PATCH</code-label>。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>预检结果缓存时间</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 6em" maxlength="6" v-model="maxAgeSecondsString"/>
+						<span class="ui label">秒</span>
+					</div>
+					<p class="comment"><code-label>Access-Control-Max-Age</code-label>值设置。预检结果缓存时间，0或者不填表示使用浏览器默认设置。注意每个浏览器有不同的缓存时间上限。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>允许服务器暴露的报头</td>
+				<td>
+					<values-box :v-values="config.exposeHeaders"></values-box>
+					<p class="comment"><code-label>Access-Control-Expose-Headers</code-label>值设置。允许服务器暴露的报头，请注意报头的大小写。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>实际请求方法</td>
+				<td>
+					<input type="text" v-model="config.requestMethod"/>
+					<p class="comment"><code-label>Access-Control-Request-Method</code-label>值设置。实际请求服务器时使用的方法，比如<code-label>POST</code-label>。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>仅OPTIONS有效</td>
+				<td>
+					<checkbox v-model="config.optionsMethodOnly"></checkbox>
+					<p class="comment">选中后，表示当前CORS设置仅在OPTIONS方法请求时有效。</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -7457,13 +7655,13 @@ Vue.component("http-firewall-policy-selector", {
 		}
 	},
 	template: `<div>
-<div v-if="firewallPolicy != null" class="ui label basic">
-<input type="hidden" name="httpFirewallPolicyId" :value="firewallPolicy.id">
-{{firewallPolicy.name}} &nbsp; <a :href="'/servers/components/waf/policy?firewallPolicyId=' + firewallPolicy.id" target="_blank" title="修改"><i class="icon pencil small"></i></a>&nbsp; <a href @click.prevent="remove()" title="删除"><i class="icon remove small"></i></a>
-</div>
-<div v-if="firewallPolicy == null">
-<span v-if="count > 0"><a href @click.prevent="select">[选择已有策略]</a> &nbsp; &nbsp; </span><a href @click.prevent="create">[创建新策略]</a>
-</div>
+	<div v-if="firewallPolicy != null" class="ui label basic">
+		<input type="hidden" name="httpFirewallPolicyId" :value="firewallPolicy.id"/>
+		{{firewallPolicy.name}} &nbsp; <a :href="'/servers/components/waf/policy?firewallPolicyId=' + firewallPolicy.id" target="_blank" title="修改"><i class="icon pencil small"></i></a>&nbsp; <a href="" @click.prevent="remove()" title="删除"><i class="icon remove small"></i></a>
+	</div>
+	<div v-if="firewallPolicy == null">
+		<span v-if="count > 0"><a href="" @click.prevent="select">[选择已有策略]</a> &nbsp; &nbsp; </span><a href="" @click.prevent="create">[创建新策略]</a>
+	</div>
 </div>`
 })
 
@@ -7486,113 +7684,117 @@ Vue.component("http-optimization-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="optimizationJSON" :value="JSON.stringify(config)">
-<table class="ui table definition selectable" v-if="vIsLocation || vIsGroup">
-<prior-checkbox :v-config="config"></prior-checkbox>
-</table>
-<div v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
-<div class="margin"></div>
-<table class="ui table definition selectable">
-<tbody>
-<tr>
-<td class="title">HTML优化</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" value="1" v-model="config.html.isOn">
-<label></label>
-</div>
-<p class="comment">可以自动优化HTML中包含的空白、注释、空标签等。只有文件可以缓存时才会被优化。</p>
-</td>
-</tr>
-<tr v-show="config.html.isOn">
-<td colspan="2"><more-options-indicator v-model="htmlMoreOptions"></more-options-indicator></td>
-</tr>
-</tbody>
-<tbody v-show="htmlMoreOptions">
-<tr>
-<td>HTML例外URL</td>
-<td>
-<url-patterns-box v-model="config.html.exceptURLPatterns"></url-patterns-box>
-<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
-</td>
-</tr>
-<tr>
-<td>HTML限制URL</td>
-<td>
-<url-patterns-box v-model="config.html.onlyURLPatterns"></url-patterns-box>
-<p class="comment">如果填写了限制URL，表示只对这些URL进行优化处理；如果不填则表示支持所有的URL。</p>
-</td>
-</tr>
-</tbody>
-</table>
-<table class="ui table definition selectable">
-<tbody>
-<tr>
-<td class="title">Javascript优化</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" value="1" v-model="config.javascript.isOn">
-<label></label>
-</div>
-<p class="comment">可以自动缩短Javascript中变量、函数名称等。只有文件可以缓存时才会被优化。</p>
-</td>
-</tr>
-<tr v-show="config.javascript.isOn">
-<td colspan="2"><more-options-indicator v-model="javascriptMoreOptions"></more-options-indicator></td>
-</tr>
-</tbody>
-<tbody v-show="javascriptMoreOptions">
-<tr>
-<td>Javascript例外URL</td>
-<td>
-<url-patterns-box v-model="config.javascript.exceptURLPatterns"></url-patterns-box>
-<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
-</td>
-</tr>
-<tr>
-<td>Javascript限制URL</td>
-<td>
-<url-patterns-box v-model="config.javascript.onlyURLPatterns"></url-patterns-box>
-<p class="comment">如果填写了限制URL，表示只对这些URL进行优化处理；如果不填则表示支持所有的URL。</p>
-</td>
-</tr>
-</tbody>
-</table>
-<table class="ui table definition selectable">
-<tbody>
-<tr>
-<td class="title">CSS优化</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" value="1" v-model="config.css.isOn">
-<label></label>
-</div>
-<p class="comment">可以自动去除CSS中包含的空白。只有文件可以缓存时才会被优化。</p>
-</td>
-</tr>
-<tr v-show="config.css.isOn">
-<td colspan="2"><more-options-indicator v-model="cssMoreOptions"></more-options-indicator></td>
-</tr>
-</tbody>
-<tbody v-show="cssMoreOptions">
-<tr>
-<td>CSS例外URL</td>
-<td>
-<url-patterns-box v-model="config.css.exceptURLPatterns"></url-patterns-box>
-<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
-</td>
-</tr>
-<tr>
-<td>CSS限制URL</td>
-<td>
-<url-patterns-box v-model="config.css.onlyURLPatterns"></url-patterns-box>
-<p class="comment">如果填写了限制URL，表示只对这些URL进行优化处理；如果不填则表示支持所有的URL。</p>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="margin"></div>
+	<input type="hidden" name="optimizationJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable" v-if="vIsLocation || vIsGroup">
+		<prior-checkbox :v-config="config"></prior-checkbox>
+	</table>
+	
+	<div v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
+		<div class="margin"></div>
+		<table class="ui table definition selectable">
+			<tbody>
+				<tr>
+					<td class="title">HTML优化</td>
+					<td>
+						<div class="ui checkbox">
+							<input type="checkbox" value="1" v-model="config.html.isOn"/>
+							<label></label>
+						</div>
+						<p class="comment">可以自动优化HTML中包含的空白、注释、空标签等。只有文件可以缓存时才会被优化。</p>
+					</td>
+				</tr>
+				<tr v-show="config.html.isOn">
+					<td colspan="2"><more-options-indicator v-model="htmlMoreOptions"></more-options-indicator></td>
+				</tr>
+			</tbody>
+			<tbody v-show="htmlMoreOptions">
+				<tr>
+					<td>HTML例外URL</td>
+					<td>
+						<url-patterns-box v-model="config.html.exceptURLPatterns"></url-patterns-box>
+						<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>HTML限制URL</td>
+					<td>
+						<url-patterns-box v-model="config.html.onlyURLPatterns"></url-patterns-box>
+						<p class="comment">如果填写了限制URL，表示只对这些URL进行优化处理；如果不填则表示支持所有的URL。</p>
+					</td>
+				</tr>	
+			</tbody>
+		</table>
+		
+		<table class="ui table definition selectable">
+			<tbody>
+				<tr>
+					<td class="title">Javascript优化</td>
+					<td>
+						<div class="ui checkbox">
+							<input type="checkbox" value="1" v-model="config.javascript.isOn"/>
+							<label></label>
+						</div>
+						<p class="comment">可以自动缩短Javascript中变量、函数名称等。只有文件可以缓存时才会被优化。</p>
+					</td>
+				</tr>
+				<tr v-show="config.javascript.isOn">
+					<td colspan="2"><more-options-indicator v-model="javascriptMoreOptions"></more-options-indicator></td>
+				</tr>
+			</tbody>
+			<tbody v-show="javascriptMoreOptions">
+				<tr>
+					<td>Javascript例外URL</td>
+					<td>
+						<url-patterns-box v-model="config.javascript.exceptURLPatterns"></url-patterns-box>
+						<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>Javascript限制URL</td>
+					<td>
+						<url-patterns-box v-model="config.javascript.onlyURLPatterns"></url-patterns-box>
+						<p class="comment">如果填写了限制URL，表示只对这些URL进行优化处理；如果不填则表示支持所有的URL。</p>
+					</td>
+				</tr>	
+			</tbody>
+		</table>
+		
+		<table class="ui table definition selectable">
+			<tbody>
+				<tr>
+					<td class="title">CSS优化</td>
+					<td>
+						<div class="ui checkbox">
+							<input type="checkbox" value="1" v-model="config.css.isOn"/>
+							<label></label>
+						</div>
+						<p class="comment">可以自动去除CSS中包含的空白。只有文件可以缓存时才会被优化。</p>
+					</td>
+				</tr>
+				<tr v-show="config.css.isOn">
+					<td colspan="2"><more-options-indicator v-model="cssMoreOptions"></more-options-indicator></td>
+				</tr>
+			</tbody>
+			<tbody v-show="cssMoreOptions">
+				<tr>
+					<td>CSS例外URL</td>
+					<td>
+						<url-patterns-box v-model="config.css.exceptURLPatterns"></url-patterns-box>
+						<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>CSS限制URL</td>
+					<td>
+						<url-patterns-box v-model="config.css.onlyURLPatterns"></url-patterns-box>
+						<p class="comment">如果填写了限制URL，表示只对这些URL进行优化处理；如果不填则表示支持所有的URL。</p>
+					</td>
+				</tr>	
+			</tbody>
+		</table>
+	</div>
+	
+	<div class="margin"></div>
 </div>`
 })
 
@@ -7672,88 +7874,89 @@ Vue.component("http-websocket-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="websocketRefJSON" :value="JSON.stringify(websocketRef)">
-<input type="hidden" name="websocketJSON" :value="JSON.stringify(websocketConfig)">
-<table class="ui table definition selectable">
-<prior-checkbox :v-config="websocketRef" v-if="vIsLocation || vIsGroup"></prior-checkbox>
-<tbody v-show="((!vIsLocation && !vIsGroup) || websocketRef.isPrior)">
-<tr>
-<td class="title">启用Websocket</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" v-model="websocketRef.isOn">
-<label></label>
-</div>
-</td>
-</tr>
-</tbody>
-<tbody v-show="isOn()">
-<tr>
-<td class="color-border">允许所有来源域<em>（Origin）</em></td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" v-model="websocketConfig.allowAllOrigins">
-<label></label>
-</div>
-<p class="comment">选中表示允许所有的来源域。</p>
-</td>
-</tr>
-</tbody>
-<tbody v-show="isOn() && !websocketConfig.allowAllOrigins">
-<tr>
-<td class="color-border">允许的来源域列表<em>（Origin）</em></td>
-<td>
-<div v-if="websocketConfig.allowedOrigins.length > 0">
-<div class="ui label small basic" v-for="(origin, index) in websocketConfig.allowedOrigins">
-{{origin}} <a href title="删除" @click.prevent="removeOrigin(index)"><i class="icon remove small"></i></a>
-</div>
-<div class="ui divider"></div>
-</div>
-<button class="ui button tiny" type="button" @click.prevent="createOrigin()">+</button>
-<p class="comment">只允许在列表中的来源域名访问Websocket服务。</p>
-</td>
-</tr>
-</tbody>
-<more-options-tbody @change="changeAdvancedVisible" v-show="isOn()"></more-options-tbody>
-<tbody v-show="isOn() && advancedVisible">
-<tr>
-<td class="color-border">传递请求来源域</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" v-model="websocketConfig.requestSameOrigin">
-<label></label>
-</div>
-<p class="comment">选中后，表示把接收到的请求中的<code-label>Origin</code-label>字段传递到源站。</p>
-</td>
-</tr>
-</tbody>
-<tbody v-show="isOn() && advancedVisible && !websocketConfig.requestSameOrigin">
-<tr>
-<td class="color-border">指定传递的来源域</td>
-<td>
-<input type="text" v-model="websocketConfig.requestOrigin" maxlength="200">
-<p class="comment">指定向源站传递的<span class="ui label tiny">Origin</span>字段值。</p>
-</td>
-</tr>
-</tbody>
-<tbody v-show="isOn() && false">
-<tr>
-<td>握手超时时间<em>（Handshake）</em></td>
-<td>
-<div class="ui fields inline">
-<div class="ui field">
-<input type="text" maxlength="10" v-model="handshakeTimeoutCountString" style="width:6em">
-</div>
-<div class="ui field">
-秒
-</div>
-</div>
-<p class="comment">0表示使用默认的时间设置。</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="margin"></div>
+	<input type="hidden" name="websocketRefJSON" :value="JSON.stringify(websocketRef)"/>
+	<input type="hidden" name="websocketJSON" :value="JSON.stringify(websocketConfig)"/>
+	<table class="ui table definition selectable">
+		<prior-checkbox :v-config="websocketRef" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="((!vIsLocation && !vIsGroup) || websocketRef.isPrior)">
+			<tr>
+				<td class="title">启用Websocket</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="websocketRef.isOn"/>
+						<label></label>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="isOn()">
+			<tr>
+				<td class="color-border">允许所有来源域<em>（Origin）</em></td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="websocketConfig.allowAllOrigins"/>
+						<label></label>
+					</div>
+					<p class="comment">选中表示允许所有的来源域。</p>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="isOn() && !websocketConfig.allowAllOrigins">
+			<tr>
+				<td class="color-border">允许的来源域列表<em>（Origin）</em></td>
+				<td>
+					<div v-if="websocketConfig.allowedOrigins.length > 0">
+						<div class="ui label small basic" v-for="(origin, index) in websocketConfig.allowedOrigins">
+							{{origin}} <a href="" title="删除" @click.prevent="removeOrigin(index)"><i class="icon remove small"></i></a>
+						</div>
+						<div class="ui divider"></div>
+					</div>
+					<button class="ui button tiny" type="button" @click.prevent="createOrigin()">+</button>
+					<p class="comment">只允许在列表中的来源域名访问Websocket服务。</p>
+				</td>
+			</tr>
+		</tbody>
+		<more-options-tbody @change="changeAdvancedVisible" v-show="isOn()"></more-options-tbody>
+		<tbody v-show="isOn() && advancedVisible">
+			<tr>
+				<td class="color-border">传递请求来源域</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="websocketConfig.requestSameOrigin"/>
+						<label></label>
+					</div>
+					<p class="comment">选中后，表示把接收到的请求中的<code-label>Origin</code-label>字段传递到源站。</p>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="isOn() && advancedVisible && !websocketConfig.requestSameOrigin">
+			<tr>
+				<td class="color-border">指定传递的来源域</td>
+				<td>
+					<input type="text" v-model="websocketConfig.requestOrigin" maxlength="200"/>
+					<p class="comment">指定向源站传递的<span class="ui label tiny">Origin</span>字段值。</p>
+				</td>
+			</tr>
+		</tbody>
+		<!-- TODO 这个选项暂时保留 -->
+		<tbody v-show="isOn() && false">
+			<tr>
+				<td>握手超时时间<em>（Handshake）</em></td>
+				<td>
+					<div class="ui fields inline">
+						<div class="ui field">
+							<input type="text" maxlength="10" v-model="handshakeTimeoutCountString" style="width:6em"/>
+						</div>
+						<div class="ui field">
+							秒
+						</div>
+					</div>
+					<p class="comment">0表示使用默认的时间设置。</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -7812,44 +8015,45 @@ Vue.component("http-rewrite-rule-list", {
 		}
 	},
 	template: `<div>
-<div class="margin"></div>
-<p class="comment" v-if="rewriteRules.length == 0">暂时还没有重写规则。</p>
-<table class="ui table selectable" v-if="rewriteRules.length > 0" id="sortable-table">
-<thead>
-<tr>
-<th style="width:1em"></th>
-<th>匹配规则</th>
-<th>转发目标</th>
-<th>转发方式</th>
-<th class="two wide">状态</th>
-<th class="two op">操作</th>
-</tr>
-</thead>
-<tbody v-for="rule in rewriteRules" :v-id="rule.id">
-<tr>
-<td><i class="icon bars grey handle"></i></td>
-<td>{{rule.pattern}}
-<br>
-<http-rewrite-labels-label class="ui label tiny" v-if="rule.isBreak">BREAK</http-rewrite-labels-label>
-<http-rewrite-labels-label class="ui label tiny" v-if="rule.mode == 'redirect' && rule.redirectStatus != 307">{{rule.redirectStatus}}</http-rewrite-labels-label>
-<http-rewrite-labels-label class="ui label tiny" v-if="rule.proxyHost.length > 0">Host: {{rule.proxyHost}}</http-rewrite-labels-label>
-</td>
-<td>{{rule.replace}}</td>
-<td>
-<span v-if="rule.mode == 'proxy'">隐式</span>
-<span v-if="rule.mode == 'redirect'">显示</span>
-</td>
-<td>
-<label-on :v-is-on="rule.isOn"></label-on>
-</td>
-<td>
-<a href @click.prevent="updateRewriteRule(rule.id)">修改</a> &nbsp;
-<a href @click.prevent="deleteRewriteRule(rule.id)">删除</a>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="comment" v-if="rewriteRules.length > 0">拖动左侧的<i class="icon bars grey"></i>图标可以对重写规则进行排序。</p>
+	<div class="margin"></div>
+	<p class="comment" v-if="rewriteRules.length == 0">暂时还没有重写规则。</p>
+	<table class="ui table selectable" v-if="rewriteRules.length > 0" id="sortable-table">
+		<thead>
+			<tr>
+				<th style="width:1em"></th>
+				<th>匹配规则</th>
+				<th>转发目标</th>
+				<th>转发方式</th>
+				<th class="two wide">状态</th>
+				<th class="two op">操作</th>
+			</tr>
+		</thead>
+		<tbody v-for="rule in rewriteRules" :v-id="rule.id">
+			<tr>
+				<td><i class="icon bars grey handle"></i></td>
+				<td>{{rule.pattern}}
+				<br/>
+					<http-rewrite-labels-label class="ui label tiny" v-if="rule.isBreak">BREAK</http-rewrite-labels-label>
+					<http-rewrite-labels-label class="ui label tiny" v-if="rule.mode == 'redirect' && rule.redirectStatus != 307">{{rule.redirectStatus}}</http-rewrite-labels-label>
+					<http-rewrite-labels-label class="ui label tiny" v-if="rule.proxyHost.length > 0">Host: {{rule.proxyHost}}</http-rewrite-labels-label>
+				</td>
+				<td>{{rule.replace}}</td>
+				<td>
+					<span v-if="rule.mode == 'proxy'">隐式</span>
+					<span v-if="rule.mode == 'redirect'">显示</span>
+				</td>
+				<td>
+					<label-on :v-is-on="rule.isOn"></label-on>
+				</td>
+				<td>
+					<a href="" @click.prevent="updateRewriteRule(rule.id)">修改</a> &nbsp;
+					<a href="" @click.prevent="deleteRewriteRule(rule.id)">删除</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<p class="comment" v-if="rewriteRules.length > 0">拖动左侧的<i class="icon bars grey"></i>图标可以对重写规则进行排序。</p>
+
 </div>`
 })
 
@@ -7879,6 +8083,7 @@ Vue.component("server-name-box", {
 				callback: function (resp) {
 					var serverName = resp.data.serverName
 					that.serverNames.push(serverName)
+					setTimeout(that.submitForm, 100)
 				}
 			});
 		},
@@ -7894,6 +8099,7 @@ Vue.component("server-name-box", {
 				callback: function (resp) {
 					var serverName = resp.data.serverName
 					Vue.set(that.serverNames, index, serverName)
+					setTimeout(that.submitForm, 100)
 				}
 			});
 		},
@@ -7929,6 +8135,9 @@ Vue.component("server-name-box", {
 				}
 			})
 			return result
+		},
+		submitForm: function () {
+			Tea.runActionOn(this.$refs.serverNamesRef.form)
 		}
 	},
 	watch: {
@@ -7955,27 +8164,27 @@ Vue.component("server-name-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="serverNames" :value="JSON.stringify(serverNames)">
-<div v-if="serverNames.length > 0">
-<div v-for="(serverName, index) in serverNames" class="ui label small basic" :class="{hidden: serverName.isShowing === false}">
-<em v-if="serverName.type != 'full'">{{serverName.type}}</em>
-<span v-if="serverName.subNames == null || serverName.subNames.length == 0" :class="{disabled: serverName.isShowing === false}">{{serverName.name}}</span>
-<span v-else :class="{disabled: serverName.isShowing === false}">{{serverName.subNames[0]}}等{{serverName.subNames.length}}个域名</span>
-<a href title="修改" @click.prevent="updateServerName(index, serverName)"><i class="icon pencil small"></i></a> <a href title="删除" @click.prevent="removeServerName(index)"><i class="icon remove"></i></a>
-</div>
-<div class="ui divider"></div>
-</div>
-<div class="ui fields inline">
-<div class="ui field"><a href @click.prevent="addServerName()">[添加域名绑定]</a></div>
-<div class="ui field" v-if="serverNames.length > 0"><span class="grey">|</span> </div>
-<div class="ui field" v-if="serverNames.length > 0">
-<a href @click.prevent="showSearchBox()" v-if="!isSearching"><i class="icon search small"></i></a>
-<a href @click.prevent="showSearchBox()" v-if="isSearching"><i class="icon close small"></i></a>
-</div>
-<div class="ui field" v-if="isSearching">
-<input type="text" placeholder="搜索域名" ref="keywordRef" class="ui input tiny" v-model="keyword">
-</div>
-</div>
+	<input type="hidden" name="serverNames" :value="JSON.stringify(serverNames)" ref="serverNamesRef"/>
+	<div v-if="serverNames.length > 0">
+		<div v-for="(serverName, index) in serverNames" class="ui label small basic" :class="{hidden: serverName.isShowing === false}">
+			<em v-if="serverName.type != 'full'">{{serverName.type}}</em>  
+			<span v-if="serverName.subNames == null || serverName.subNames.length == 0" :class="{disabled: serverName.isShowing === false}">{{serverName.name}}</span>
+			<span v-else :class="{disabled: serverName.isShowing === false}">{{serverName.subNames[0]}}等{{serverName.subNames.length}}个域名</span>
+			<a href="" title="修改" @click.prevent="updateServerName(index, serverName)"><i class="icon pencil small"></i></a> <a href="" title="删除" @click.prevent="removeServerName(index)"><i class="icon remove"></i></a>
+		</div>
+		<div class="ui divider"></div>
+	</div>
+	<div class="ui fields inline">
+	    <div class="ui field"><a href="" @click.prevent="addServerName()">[添加域名绑定]</a></div>
+	    <div class="ui field" v-if="serverNames.length > 0"><span class="grey">|</span> </div>
+	    <div class="ui field" v-if="serverNames.length > 0">
+	        <a href="" @click.prevent="showSearchBox()" v-if="!isSearching"><i class="icon search small"></i></a>
+	        <a href="" @click.prevent="showSearchBox()" v-if="isSearching"><i class="icon close small"></i></a>
+        </div>
+        <div class="ui field" v-if="isSearching">
+            <input type="text" placeholder="搜索域名" ref="keywordRef" class="ui input tiny" v-model="keyword"/>
+        </div>
+    </div>
 </div>`
 })
 
@@ -8033,72 +8242,72 @@ Vue.component("uam-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="uamJSON" :value="JSON.stringify(config)">
+<input type="hidden" name="uamJSON" :value="JSON.stringify(config)"/>
 <table class="ui table definition selectable">
-<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
-<tbody v-show="((!vIsLocation && !vIsGroup) || config.isPrior)">
-<tr>
-<td class="title">启用5秒盾</td>
-<td>
-<checkbox v-model="config.isOn"></checkbox>
-<p class="comment"><plus-label></plus-label>启用后，访问网站时，自动检查浏览器环境，阻止非正常访问。</p>
-</td>
-</tr>
-</tbody>
-<tbody v-show="config.isOn">
-<tr>
-<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
-</tr>
-</tbody>
-<tbody v-show="moreOptionsVisible && config.isOn">
-<tr>
-<td>验证有效期</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" name="keyLife" v-model="keyLife" maxlength="6" size="6" style="width: 6em">
-<span class="ui label">秒</span>
-</div>
-<p class="comment">单个客户端验证通过后，在这个有效期内不再重复验证；如果为0则表示系统默认。</p>
-</td>
-</tr>
-<tr>
-<td>单IP最低QPS</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" name="minQPSPerIP" maxlength="6" style="width: 6em" v-model="minQPSPerIP">
-<span class="ui label">请求数/秒</span>
-</div>
-<p class="comment">当某个IP在1分钟内平均QPS达到此值时，才会触发5秒盾；如果设置为0，表示任何访问都会触发。</p>
-</td>
-</tr>
-<tr>
-<td>加入IP白名单</td>
-<td>
-<checkbox v-model="config.addToWhiteList"></checkbox>
-<p class="comment">选中后，表示验证通过后，将访问者IP加入到临时白名单中，此IP下次访问时不再校验5秒盾；此白名单只对5秒盾有效，不影响其他规则。此选项主要用于可能无法正常使用Cookie的网站。</p>
-</td>
-</tr>
-<tr>
-<td>例外URL</td>
-<td>
-<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
-<p class="comment">如果填写了例外URL，表示这些URL跳过5秒盾不做处理。</p>
-</td>
-</tr>
-<tr>
-<td>限制URL</td>
-<td>
-<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
-<p class="comment">如果填写了限制URL，表示只对这些URL进行5秒盾处理；如果不填则表示支持所有的URL。</p>
-</td>
-</tr>
-<tr>
-<td>匹配条件</td>
-<td>
-<http-request-conds-box :v-conds="config.conds" @change="changeConds"></http-request-conds-box>
-</td>
-</tr>
-</tbody>
+	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+	<tbody v-show="((!vIsLocation && !vIsGroup) || config.isPrior)">
+		<tr>
+			<td class="title">启用5秒盾</td>
+			<td>
+				<checkbox v-model="config.isOn"></checkbox>
+				<p class="comment"><plus-label></plus-label>启用后，访问网站时，自动检查浏览器环境，阻止非正常访问。</p>
+			</td>
+		</tr>
+	</tbody>
+	<tbody v-show="config.isOn">
+		<tr>
+			<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
+		</tr>
+	</tbody>
+	<tbody v-show="moreOptionsVisible && config.isOn">
+		<tr>
+			<td>验证有效期</td>
+			<td>
+				<div class="ui input right labeled">
+                     <input type="text" name="keyLife" v-model="keyLife" maxlength="6" size="6" style="width: 6em"/>
+                     <span class="ui label">秒</span>
+                </div>
+                <p class="comment">单个客户端验证通过后，在这个有效期内不再重复验证；如果为0则表示系统默认。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>单IP最低QPS</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" name="minQPSPerIP" maxlength="6" style="width: 6em" v-model="minQPSPerIP"/>
+					<span class="ui label">请求数/秒</span>
+				</div>
+				<p class="comment">当某个IP在1分钟内平均QPS达到此值时，才会触发5秒盾；如果设置为0，表示任何访问都会触发。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>加入IP白名单</td>
+			<td>
+				<checkbox v-model="config.addToWhiteList"></checkbox>
+				<p class="comment">选中后，表示验证通过后，将访问者IP加入到临时白名单中，此IP下次访问时不再校验5秒盾；此白名单只对5秒盾有效，不影响其他规则。此选项主要用于可能无法正常使用Cookie的网站。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>例外URL</td>
+			<td>
+				<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
+				<p class="comment">如果填写了例外URL，表示这些URL跳过5秒盾不做处理。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>限制URL</td>
+			<td>
+				<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
+				<p class="comment">如果填写了限制URL，表示只对这些URL进行5秒盾处理；如果不填则表示支持所有的URL。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>匹配条件</td>
+			<td>
+				<http-request-conds-box :v-conds="config.conds" @change="changeConds"></http-request-conds-box>
+			</td>
+		</tr>
+	</tbody>
 </table>
 <div class="margin"></div>
 </div>`
@@ -8134,35 +8343,35 @@ Vue.component("http-cache-stale-config", {
 	},
 	methods: {},
 	template: `<table class="ui table definition selectable">
-<tbody>
-<tr>
-<td class="title">启用过时缓存</td>
-<td>
-<checkbox v-model="config.isOn"></checkbox>
-<p class="comment"><plus-label></plus-label>选中后，在更新缓存失败后会尝试读取过时的缓存。</p>
-</td>
-</tr>
-<tr v-show="config.isOn">
-<td>有效期</td>
-<td>
-<time-duration-box :v-value="config.life"></time-duration-box>
-<p class="comment">缓存在过期之后，仍然保留的时间。</p>
-</td>
-</tr>
-<tr v-show="config.isOn">
-<td>状态码</td>
-<td><http-status-box :v-status-list="config.status"></http-status-box>
-<p class="comment">在这些状态码出现时使用过时缓存，默认支持<code-label>50x</code-label>状态码。</p>
-</td>
-</tr>
-<tr v-show="config.isOn">
-<td>支持stale-if-error</td>
-<td>
-<checkbox v-model="config.supportStaleIfErrorHeader"></checkbox>
-<p class="comment">选中后，支持在Cache-Control中通过<code-label>stale-if-error</code-label>指定过时缓存有效期。</p>
-</td>
-</tr>
-</tbody>
+	<tbody>
+		<tr>
+			<td class="title">启用过时缓存</td>
+			<td>
+				<checkbox v-model="config.isOn"></checkbox>
+				<p class="comment"><plus-label></plus-label>选中后，在更新缓存失败后会尝试读取过时的缓存。</p>
+			</td>
+		</tr>
+		<tr v-show="config.isOn">
+			<td>有效期</td>
+			<td>
+				<time-duration-box :v-value="config.life"></time-duration-box>
+				<p class="comment">缓存在过期之后，仍然保留的时间。</p>
+			</td>
+		</tr>
+		<tr v-show="config.isOn">
+			<td>状态码</td>
+			<td><http-status-box :v-status-list="config.status"></http-status-box>
+				<p class="comment">在这些状态码出现时使用过时缓存，默认支持<code-label>50x</code-label>状态码。</p>
+			</td>
+		</tr>
+		<tr v-show="config.isOn">
+			<td>支持stale-if-error</td>
+			<td>
+				<checkbox v-model="config.supportStaleIfErrorHeader"></checkbox>
+				<p class="comment">选中后，支持在Cache-Control中通过<code-label>stale-if-error</code-label>指定过时缓存有效期。</p>
+			</td>
+		</tr>
+	</tbody>
 </table>`
 })
 
@@ -8183,10 +8392,10 @@ Vue.component("firewall-syn-flood-config-viewer", {
 		}
 	},
 	template: `<div>
-<span v-if="config.isOn">
-已启用 / <span>空连接次数：{{config.minAttempts}}次/分钟</span> / 封禁时长：{{config.timeoutSeconds}}秒 <span v-if="config.ignoreLocal">/ 忽略局域网访问</span>
-</span>
-<span v-else>未启用</span>
+	<span v-if="config.isOn">
+		已启用 / <span>空连接次数：{{config.minAttempts}}次/分钟</span> / 封禁时长：{{config.timeoutSeconds}}秒 <span v-if="config.ignoreLocal">/ 忽略局域网访问</span>
+	</span>
+	<span v-else>未启用</span>
 </div>`
 })
 
@@ -8390,49 +8599,52 @@ Vue.component("domains-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" :name="realName" :value="JSON.stringify(domains)">
-<div v-if="domains.length > 0">
-<span class="ui label small basic" v-for="(domain, index) in domains" :class="{blue: index == editingIndex}">
-<span v-if="domain.length > 0 && domain[0] == '~'" class="grey" style="font-style: normal">[正则]</span>
-<span v-if="domain.length > 0 && domain[0] == '.'" class="grey" style="font-style: normal">[后缀]</span>
-<span v-if="domain.length > 0 && domain[0] == '*'" class="grey" style="font-style: normal">[泛域名]</span>
-{{domain}}
-<span v-if="!isAdding && !isEditing">
-&nbsp; <a href title="修改" @click.prevent="edit(index)"><i class="icon pencil small"></i></a>
-&nbsp; <a href title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
-</span>
-<span v-if="isAdding || isEditing">
-&nbsp; <a class="disabled"><i class="icon pencil small"></i></a>
-&nbsp; <a class="disabled"><i class="icon remove small"></i></a>
-</span>
-</span>
-<div class="ui divider"></div>
-</div>
-<div v-if="isAdding || isEditing">
-<div class="ui fields">
-<div class="ui field" v-if="isAdding">
-<select class="ui dropdown" v-model="mode"><option value="single">单个</option><option value="batch">批量</option></select>
-</div>
-<div class="ui field">
-<div v-show="mode == 'single'">
-<input type="text" v-model="addingDomain" @keyup.enter="confirm()" @keypress.enter.prevent="1" @keydown.esc="cancel()" ref="addingDomain" :placeholder="supportWildcard ? 'example.com、*.example.com' : 'example.com、www.example.com'" size="30" maxlength="100">
-</div>
-<div v-show="mode == 'batch'">
-<textarea cols="30" v-model="batchDomains" placeholder="example1.com\nexample2.com\n每行一个域名" ref="batchDomains"></textarea>
-</div>
-</div>
-<div class="ui field">
-<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button>
-&nbsp; <a href title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
-</div>
-</div>
-<p class="comment" v-if="supportWildcard">支持普通域名（<code-label>example.com</code-label>）、泛域名（<code-label>*.example.com</code-label>）<span v-if="vSupportWildcard == undefined">、域名后缀（以点号开头，如<code-label>.example.com</code-label>）和正则表达式（以波浪号开头，如<code-label>~.*.example.com</code-label>）</span>；如果域名后有端口，请加上端口号。</p>
-<p class="comment" v-if="!supportWildcard">只支持普通域名（<code-label>example.com</code-label>、<code-label>www.example.com</code-label>）。</p>
-<div class="ui divider"></div>
-</div>
-<div style="margin-top: 0.5em" v-if="!isAdding">
-<button class="ui button tiny" type="button" @click.prevent="add">+</button>
-</div>
+	<input type="hidden" :name="realName" :value="JSON.stringify(domains)"/>
+	<div v-if="domains.length > 0">
+		<span class="ui label small basic" v-for="(domain, index) in domains" :class="{blue: index == editingIndex}">
+			<span v-if="domain.length > 0 && domain[0] == '~'" class="grey" style="font-style: normal">[正则]</span>
+			<span v-if="domain.length > 0 && domain[0] == '.'" class="grey" style="font-style: normal">[后缀]</span>
+			<span v-if="domain.length > 0 && domain[0] == '*'" class="grey" style="font-style: normal">[泛域名]</span>
+			{{domain}}
+			<span v-if="!isAdding && !isEditing">
+				&nbsp; <a href="" title="修改" @click.prevent="edit(index)"><i class="icon pencil small"></i></a>
+				&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+			</span>
+			<span v-if="isAdding || isEditing">
+				&nbsp; <a class="disabled"><i class="icon pencil small"></i></a>
+				&nbsp; <a class="disabled"><i class="icon remove small"></i></a>
+			</span>
+		</span>
+		<div class="ui divider"></div>
+	</div>
+	<div v-if="isAdding || isEditing">
+		<div class="ui fields">
+			<div class="ui field" v-if="isAdding">
+				<select class="ui dropdown" v-model="mode">
+					<option value="single">单个</option>
+					<option value="batch">批量</option>
+				</select>
+			</div>
+			<div class="ui field">
+				<div v-show="mode == 'single'">
+					<input type="text" v-model="addingDomain" @keyup.enter="confirm()" @keypress.enter.prevent="1" @keydown.esc="cancel()" ref="addingDomain" :placeholder="supportWildcard ? 'example.com、*.example.com' : 'example.com、www.example.com'" size="30" maxlength="100"/>
+				</div>
+				<div v-show="mode == 'batch'">
+					<textarea cols="30" v-model="batchDomains" placeholder="example1.com\nexample2.com\n每行一个域名" ref="batchDomains"></textarea>
+				</div>
+			</div>
+			<div class="ui field">
+				<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button>
+				&nbsp; <a href="" title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
+			</div>
+		</div>
+		<p class="comment" v-if="supportWildcard">支持普通域名（<code-label>example.com</code-label>）、泛域名（<code-label>*.example.com</code-label>）<span v-if="vSupportWildcard == undefined">、域名后缀（以点号开头，如<code-label>.example.com</code-label>）和正则表达式（以波浪号开头，如<code-label>~.*.example.com</code-label>）</span>；如果域名后有端口，请加上端口号。</p>
+		<p class="comment" v-if="!supportWildcard">只支持普通域名（<code-label>example.com</code-label>、<code-label>www.example.com</code-label>）。</p>
+		<div class="ui divider"></div>
+	</div>
+	<div style="margin-top: 0.5em" v-if="!isAdding">
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	</div>
 </div>`
 })
 
@@ -8480,15 +8692,15 @@ Vue.component("http-firewall-province-selector", {
 		}
 	},
 	template: `<div>
-<span v-if="provinces.length == 0" class="disabled">暂时没有选择<span v-if="listType =='allow'">允许</span><span v-else>封禁</span>的省份。</span>
-<div v-show="provinces.length > 0">
-<div class="ui label tiny basic" v-for="(province, index) in provinces" style="margin-bottom: 0.5em">
-<input type="hidden" :name="listType + 'ProvinceIds'" :value="province.id">
-{{province.name}} <a href @click.prevent="removeProvince(index)" title="删除"><i class="icon remove"></i></a>
-</div>
-</div>
-<div class="ui divider"></div>
-<button type="button" class="ui button tiny" @click.prevent="addProvince">修改</button> &nbsp; <button type="button" class="ui button tiny" v-show="provinces.length > 0" @click.prevent="resetProvinces">清空</button>
+	<span v-if="provinces.length == 0" class="disabled">暂时没有选择<span v-if="listType =='allow'">允许</span><span v-else>封禁</span>的省份。</span>
+	<div v-show="provinces.length > 0">
+		<div class="ui label tiny basic" v-for="(province, index) in provinces" style="margin-bottom: 0.5em">
+			<input type="hidden" :name="listType + 'ProvinceIds'" :value="province.id"/>
+			{{province.name}} <a href="" @click.prevent="removeProvince(index)" title="删除"><i class="icon remove"></i></a>
+		</div>
+	</div>
+	<div class="ui divider"></div>
+	<button type="button" class="ui button tiny" @click.prevent="addProvince">修改</button> &nbsp; <button type="button" class="ui button tiny" v-show="provinces.length > 0" @click.prevent="resetProvinces">清空</button>
 </div>`
 })
 
@@ -8539,77 +8751,77 @@ Vue.component("http-referers-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="referersJSON" :value="JSON.stringify(config)">
+<input type="hidden" name="referersJSON" :value="JSON.stringify(config)"/>
 <table class="ui table selectable definition">
-<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
-<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
-<tr>
-<td class="title">启用防盗链</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" value="1" v-model="config.isOn">
-<label></label>
-</div>
-<p class="comment">选中后表示开启防盗链。</p>
-</td>
-</tr>
-</tbody>
-<tbody v-show="isOn()">
-<tr>
-<td class="title">允许直接访问网站</td>
-<td>
-<checkbox v-model="config.allowEmpty"></checkbox>
-<p class="comment">允许用户直接访问网站，用户第一次访问网站时来源域名通常为空。</p>
-</td>
-</tr>
-<tr>
-<td>来源域名允许一致</td>
-<td>
-<checkbox v-model="config.allowSameDomain"></checkbox>
-<p class="comment">允许来源域名和当前访问的域名一致，相当于在站内访问。</p>
-</td>
-</tr>
-<tr>
-<td>允许的来源域名</td>
-<td>
-<domains-box :v-domains="config.allowDomains" @change="changeAllowDomains">></domains-box>
-<p class="comment">允许的其他来源域名列表，比如<code-label>example.com</code-label>、<code-label>*.example.com</code-label>。单个星号<code-label>*</code-label>表示允许所有域名。</p>
-</td>
-</tr>
-<tr>
-<td>禁止的来源域名</td>
-<td>
-<domains-box :v-domains="config.denyDomains" @change="changeDenyDomains"></domains-box>
-<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>、<code-label>*.example.org</code-label>；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
-</td>
-</tr>
-<tr>
-<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
-</tr>
-</tbody>
-<tbody v-show="moreOptionsVisible && isOn()">
-<tr>
-<td>同时检查Origin</td>
-<td>
-<checkbox v-model="config.checkOrigin"></checkbox>
-<p class="comment">如果请求没有指定Referer Header，则尝试检查Origin Header，多用于跨站调用。</p>
-</td>
-</tr>
-<tr>
-<td>例外URL</td>
-<td>
-<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
-<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
-</td>
-</tr>
-<tr>
-<td>限制URL</td>
-<td>
-<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
-<p class="comment">如果填写了限制URL，表示只对这些URL进行处理；如果不填则表示支持所有的URL。</p>
-</td>
-</tr>
-</tbody>
+	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+	<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
+		<tr>
+			<td class="title">启用防盗链</td>
+			<td>
+				<div class="ui checkbox">
+					<input type="checkbox" value="1" v-model="config.isOn"/>
+					<label></label>
+				</div>
+				<p class="comment">选中后表示开启防盗链。</p>
+			</td>
+		</tr>
+	</tbody>
+	<tbody v-show="isOn()">
+		<tr>
+			<td class="title">允许直接访问网站</td>
+			<td>
+				<checkbox v-model="config.allowEmpty"></checkbox>
+				<p class="comment">允许用户直接访问网站，用户第一次访问网站时来源域名通常为空。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>来源域名允许一致</td>
+			<td>
+				<checkbox v-model="config.allowSameDomain"></checkbox>
+				<p class="comment">允许来源域名和当前访问的域名一致，相当于在站内访问。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>允许的来源域名</td>
+			<td>
+				<domains-box :v-domains="config.allowDomains" @change="changeAllowDomains">></domains-box>
+				<p class="comment">允许的其他来源域名列表，比如<code-label>example.com</code-label>、<code-label>*.example.com</code-label>。单个星号<code-label>*</code-label>表示允许所有域名。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>禁止的来源域名</td>
+			<td>
+				<domains-box :v-domains="config.denyDomains" @change="changeDenyDomains"></domains-box>
+				<p class="comment">禁止的来源域名列表，比如<code-label>example.org</code-label>、<code-label>*.example.org</code-label>；除了这些禁止的来源域名外，其他域名都会被允许，除非限定了允许的来源域名。</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
+		</tr>
+	</tbody>
+	<tbody v-show="moreOptionsVisible && isOn()">
+		<tr>
+			<td>同时检查Origin</td>
+			<td>
+				<checkbox v-model="config.checkOrigin"></checkbox>
+				<p class="comment">如果请求没有指定Referer Header，则尝试检查Origin Header，多用于跨站调用。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>例外URL</td>
+			<td>
+				<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
+				<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>限制URL</td>
+			<td>
+				<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
+				<p class="comment">如果填写了限制URL，表示只对这些URL进行处理；如果不填则表示支持所有的URL。</p>
+			</td>
+		</tr>
+	</tbody>
 </table>
 <div class="ui margin"></div>
 </div>`
@@ -8642,9 +8854,9 @@ Vue.component("server-traffic-limit-status-viewer", {
 		}
 	},
 	template: `<span v-if="status != null">
-<span v-if="status.dateType == 'day'" class="small red">已达到<span v-if="status.planId > 0">套餐</span>当日{{targetTypeName}}限制</span>
-<span v-if="status.dateType == 'month'" class="small red">已达到<span v-if="status.planId > 0">套餐</span>当月{{targetTypeName}}限制</span>
-<span v-if="status.dateType == 'total'" class="small red">已达到<span v-if="status.planId > 0">套餐</span>总体{{targetTypeName}}限制</span>
+	<span v-if="status.dateType == 'day'" class="small red">已达到<span v-if="status.planId > 0">套餐</span>当日{{targetTypeName}}限制</span>
+	<span v-if="status.dateType == 'month'" class="small red">已达到<span v-if="status.planId > 0">套餐</span>当月{{targetTypeName}}限制</span>
+	<span v-if="status.dateType == 'total'" class="small red">已达到<span v-if="status.planId > 0">套餐</span>总体{{targetTypeName}}限制</span>
 </span>`
 })
 
@@ -8710,88 +8922,102 @@ Vue.component("http-redirect-to-https-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="redirectToHTTPSJSON" :value="JSON.stringify(redirectToHttpsConfig)">
-<table class="ui table selectable definition" v-if="vIsLocation">
-<prior-checkbox :v-config="redirectToHttpsConfig"></prior-checkbox>
-<tbody v-show="redirectToHttpsConfig.isPrior">
-<tr>
-<td class="title">自动跳转到HTTPS</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" v-model="redirectToHttpsConfig.isOn">
-<label></label>
-</div>
-<p class="comment">开启后，所有HTTP的请求都会自动跳转到对应的HTTPS URL上，<more-options-angle @change="changeMoreOptions"></more-options-angle></p>
-<table class="ui table" v-show="moreOptionsVisible">
-<tr>
-<td class="title">状态码</td>
-<td>
-<select class="ui dropdown auto-width" v-model="redirectToHttpsConfig.status"><option value="0">[使用默认]</option><option v-for="option in statusOptions" :value="option.code">{{option.code}} {{option.text}}</option></select>
-</td>
-</tr>
-<tr>
-<td>域名或IP地址</td>
-<td>
-<input type="text" name="host" v-model="redirectToHttpsConfig.host">
-<p class="comment">默认和用户正在访问的域名或IP地址一致。</p>
-</td>
-</tr>
-<tr>
-<td>端口</td>
-<td>
-<input type="text" name="port" v-model="portString" maxlength="5" style="width:6em">
-<p class="comment">默认端口为443。</p>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
-<div v-if="!vIsLocation">
-<div class="ui checkbox">
-<input type="checkbox" v-model="redirectToHttpsConfig.isOn">
-<label></label>
-</div>
-<p class="comment">开启后，所有HTTP的请求都会自动跳转到对应的HTTPS URL上，<more-options-angle @change="changeMoreOptions"></more-options-angle></p>
-<table class="ui table" v-show="moreOptionsVisible">
-<tr>
-<td class="title">状态码</td>
-<td>
-<select class="ui dropdown auto-width" v-model="redirectToHttpsConfig.status"><option value="0">[使用默认]</option><option v-for="option in statusOptions" :value="option.code">{{option.code}} {{option.text}}</option></select>
-</td>
-</tr>
-<tr>
-<td>跳转后域名或IP地址</td>
-<td>
-<input type="text" name="host" v-model="redirectToHttpsConfig.host">
-<p class="comment">默认和用户正在访问的域名或IP地址一致，不填写就表示使用当前的域名。</p>
-</td>
-</tr>
-<tr>
-<td>端口</td>
-<td>
-<input type="text" name="port" v-model="portString" maxlength="5" style="width:6em">
-<p class="comment">默认端口为443。</p>
-</td>
-</tr>
-<tr>
-<td>允许的域名</td>
-<td>
-<domains-box :v-domains="redirectToHttpsConfig.onlyDomains" @change="changeOnlyDomains"></domains-box>
-<p class="comment">如果填写了允许的域名，那么只有这些域名可以自动跳转。</p>
-</td>
-</tr>
-<tr>
-<td>排除的域名</td>
-<td>
-<domains-box :v-domains="redirectToHttpsConfig.exceptDomains" @change="changeExceptDomains"></domains-box>
-<p class="comment">如果填写了排除的域名，那么这些域名将不跳转。</p>
-</td>
-</tr>
-</table>
-</div>
-<div class="margin"></div>
+	<input type="hidden" name="redirectToHTTPSJSON" :value="JSON.stringify(redirectToHttpsConfig)"/>
+	
+	<!-- Location -->
+	<table class="ui table selectable definition" v-if="vIsLocation">
+		<prior-checkbox :v-config="redirectToHttpsConfig"></prior-checkbox>
+		<tbody v-show="redirectToHttpsConfig.isPrior">
+			<tr>
+				<td class="title">自动跳转到HTTPS</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="redirectToHttpsConfig.isOn"/>
+						<label></label>
+					</div>
+					<p class="comment">开启后，所有HTTP的请求都会自动跳转到对应的HTTPS URL上，<more-options-angle @change="changeMoreOptions"></more-options-angle></p>
+					
+					<!--  TODO 如果已经设置了特殊设置，需要在界面上显示 -->
+					<table class="ui table" v-show="moreOptionsVisible">
+						<tr>
+							<td class="title">状态码</td>
+							<td>
+								<select class="ui dropdown auto-width" v-model="redirectToHttpsConfig.status">
+									<option value="0">[使用默认]</option>
+									<option v-for="option in statusOptions" :value="option.code">{{option.code}} {{option.text}}</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>域名或IP地址</td>
+							<td>
+								<input type="text" name="host" v-model="redirectToHttpsConfig.host"/>
+								<p class="comment">默认和用户正在访问的域名或IP地址一致。</p>
+							</td>
+						</tr>
+						<tr>
+							<td>端口</td>
+							<td>
+								<input type="text" name="port" v-model="portString" maxlength="5" style="width:6em"/>
+								<p class="comment">默认端口为443。</p>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>	
+		</tbody>
+	</table>
+	
+	<!-- 非Location -->
+	<div v-if="!vIsLocation">
+		<div class="ui checkbox">
+			<input type="checkbox" v-model="redirectToHttpsConfig.isOn"/>
+			<label></label>
+		</div>
+		<p class="comment">开启后，所有HTTP的请求都会自动跳转到对应的HTTPS URL上，<more-options-angle @change="changeMoreOptions"></more-options-angle></p>
+		
+		<!--  TODO 如果已经设置了特殊设置，需要在界面上显示 -->
+		<table class="ui table" v-show="moreOptionsVisible">
+			<tr>
+				<td class="title">状态码</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="redirectToHttpsConfig.status">
+						<option value="0">[使用默认]</option>
+						<option v-for="option in statusOptions" :value="option.code">{{option.code}} {{option.text}}</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>跳转后域名或IP地址</td>
+				<td>
+					<input type="text" name="host" v-model="redirectToHttpsConfig.host"/>
+					<p class="comment">默认和用户正在访问的域名或IP地址一致，不填写就表示使用当前的域名。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>端口</td>
+				<td>
+					<input type="text" name="port" v-model="portString" maxlength="5" style="width:6em"/>
+					<p class="comment">默认端口为443。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>允许的域名</td>
+				<td>
+					<domains-box :v-domains="redirectToHttpsConfig.onlyDomains" @change="changeOnlyDomains"></domains-box>
+					<p class="comment">如果填写了允许的域名，那么只有这些域名可以自动跳转。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>排除的域名</td>
+				<td>
+					<domains-box :v-domains="redirectToHttpsConfig.exceptDomains" @change="changeExceptDomains"></domains-box>
+					<p class="comment">如果填写了排除的域名，那么这些域名将不跳转。</p>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -8850,7 +9076,8 @@ Vue.component("http-firewall-actions-box", {
 			})
 		}
 
-		var defaultPageBody = `<!doctype html><html lang="en">
+		var defaultPageBody = `<!DOCTYPE html>
+<html lang="en">
 <head>
 \t<title>403 Forbidden</title>
 \t<style>
@@ -8859,7 +9086,7 @@ Vue.component("http-firewall-actions-box", {
 </head>
 <body>
 <h1>403 Forbidden</h1>
-<address>Connection: \${remoteAddr} (Client) -> \${serverAddr} (Server)</address>
+<address>Connection: \${remoteAddr} (Client) -&gt; \${serverAddr} (Server)</address>
 <address>Request ID: \${requestId}</address>
 </body>
 </html>`
@@ -9477,254 +9704,334 @@ Vue.component("http-firewall-actions-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="actionsJSON" :value="JSON.stringify(configs)">
-<div v-show="configs.length > 0" style="margin-bottom: 0.5em" id="actions-box">
-<div v-for="(config, index) in configs" :data-index="index" :key="config.id" class="ui label small basic" :class="{blue: index == editingIndex}" style="margin-bottom: 0.4em">
-{{config.name}} <span class="small">({{config.code.toUpperCase()}})</span>
-<span class="small" v-if="config.code == 'allow' && config.options != null && config.options.scope != null && config.options.scope.length > 0">
-<span v-if="config.options.scope == 'group'">[分组]</span>
-<span v-if="config.options.scope == 'server'">[网站]</span>
-<span v-if="config.options.scope == 'global'">[网站和策略]</span>
-</span>
-<span v-if="config.code == 'block' && config.options.timeout > 0">：封禁时长{{config.options.timeout}}<span v-if="config.options.timeoutMax > config.options.timeout">-{{config.options.timeoutMax}}</span>秒</span>
-<span v-if="config.code == 'captcha' && config.options.life > 0">：有效期{{config.options.life}}秒
-<span v-if="config.options.maxFails > 0"> / 最多失败{{config.options.maxFails}}次</span>
-</span>
-<span v-if="config.code == 'js_cookie' && config.options.life > 0">：有效期{{config.options.life}}秒
-<span v-if="config.options.maxFails > 0"> / 最多失败{{config.options.maxFails}}次</span>
-</span>
-<span v-if="config.code == 'get_302' && config.options.life > 0">：有效期{{config.options.life}}秒</span>
-<span v-if="config.code == 'post_307' && config.options.life > 0">：有效期{{config.options.life}}秒</span>
-<span v-if="config.code == 'record_ip'">：<span :class="{red: config.options.ipListIsDeleted}">{{config.options.ipListName}}</span></span>
-<span v-if="config.code == 'tag'">：{{config.options.tags.join(", ")}}</span>
-<span v-if="config.code == 'page'">：[{{config.options.status}}]<span v-if="config.options.useDefault">&nbsp; [默认页面]</span></span>
-<span v-if="config.code == 'redirect'">：{{config.options.url}}</span>
-<span v-if="config.code == 'go_group'">：{{config.options.groupName}}</span>
-<span v-if="config.code == 'go_set'">：{{config.options.groupName}} / {{config.options.setName}}</span>
-<span v-if="config.code != 'allow' && config.options.scope != null && config.options.scope.length > 0" class="small grey">
-&nbsp;
-<span v-if="config.options.scope == 'global'">[所有网站]</span>
-<span v-if="config.options.scope == 'service'">[当前网站]</span>
-</span>
-&nbsp; <a href title="修改" @click.prevent="update(index, config)"><i class="icon pencil small"></i></a> &nbsp; <a href title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a> &nbsp; <a href title="拖动改变顺序"><i class="icon bars handle"></i></a>
-</div>
-<div class="ui divider"></div>
-</div>
-<div style="margin-bottom: 0.5em" v-if="isAdding">
-<table class="ui table" :class="{blue: editingIndex > -1}">
-<tr>
-<td class="title">动作类型 *</td>
-<td>
-<select class="ui dropdown auto-width" v-model="actionCode"><option v-for="action in actions" :value="action.code">{{action.name}} ({{action.code.toUpperCase()}})</option></select>
-<p class="comment" v-if="action != null && action.description.length > 0">{{action.description}}</p>
-</td>
-</tr>
-<tr v-if="actionCode == 'allow'">
-<td>有效范围</td>
-<td>
-<select class="ui dropdown auto-width" v-model="allowScope"><option value="group">分组</option><option value="server">网站</option><option value="global">网站和策略</option></select>
-<p class="comment" v-if="allowScope == 'group'">跳过当前分组其他规则集，继续执行其他分组的规则集。</p>
-<p class="comment" v-if="allowScope == 'server'">跳过当前网站所有的规则集。</p>
-<p class="comment" v-if="allowScope =='global'">跳过当前网站和网站对应WAF策略所有的规则集。</p>
-</td>
-</tr>
-<tr v-if="actionCode == 'block'">
-<td>封禁范围</td>
-<td>
-<select class="ui dropdown auto-width" v-model="blockScope"><option value="service">当前网站</option><option value="global">所有网站</option></select>
-<p class="comment" v-if="blockScope == 'service'">只封禁用户对当前网站的访问，其他网站不受影响。</p>
-<p class="comment" v-if="blockScope =='global'">封禁用户对所有网站的访问。</p>
-</td>
-</tr>
-<tr v-if="actionCode == 'block'">
-<td>封禁时长</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 5em" maxlength="9" v-model="blockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1">
-<span class="ui label">秒</span>
-</div>
-</td>
-</tr>
-<tr v-if="actionCode == 'block'">
-<td>最大封禁时长</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 5em" maxlength="9" v-model="blockTimeoutMax" @keyup.enter="confirm()" @keypress.enter.prevent="1">
-<span class="ui label">秒</span>
-</div>
-<p class="comment">选填项。如果同时填写了封禁时长和最大封禁时长，则会在两者之间随机选择一个数字作为最终的封禁时长。</p>
-</td>
-</tr>
-<tr v-if="actionCode == 'captcha'">
-<td>有效时间</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 5em" maxlength="9" v-model="captchaLife" @keyup.enter="confirm()" @keypress.enter.prevent="1">
-<span class="ui label">秒</span>
-</div>
-<p class="comment">验证通过后在这个时间内不再验证；如果为空或者为0表示默认。</p>
-</td>
-</tr>
-<tr v-if="actionCode == 'captcha'">
-<td>最多失败次数</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 5em" maxlength="9" v-model="captchaMaxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1">
-<span class="ui label">次</span>
-</div>
-<p class="comment"><span v-if="captchaMaxFails > 0 && captchaMaxFails < 5" class="red">建议填入一个不小于5的数字，以减少误判几率。</span>允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单；如果为空或者为0表示默认。</p>
-</td>
-</tr>
-<tr v-if="actionCode == 'captcha'">
-<td>失败拦截时间</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 5em" maxlength="9" v-model="captchaFailBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1">
-<span class="ui label">秒</span>
-</div>
-<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时间；如果为空或者为0表示默认。</p>
-</td>
-</tr>
-<tr v-if="actionCode == 'js_cookie'">
-<td>有效时间</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 5em" maxlength="9" v-model="jsCookieLife" @keyup.enter="confirm()" @keypress.enter.prevent="1">
-<span class="ui label">秒</span>
-</div>
-<p class="comment">验证通过后在这个时间内不再验证；如果为空或者为0表示默认。</p>
-</td>
-</tr>
-<tr v-if="actionCode == 'js_cookie'">
-<td>最多失败次数</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 5em" maxlength="9" v-model="jsCookieMaxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1">
-<span class="ui label">次</span>
-</div>
-<p class="comment">允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单；如果为空或者为0表示默认。</p>
-</td>
-</tr>
-<tr v-if="actionCode == 'js_cookie'">
-<td>失败拦截时间</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 5em" maxlength="9" v-model="jsCookieFailBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1">
-<span class="ui label">秒</span>
-</div>
-<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时间；如果为空或者为0表示默认。</p>
-</td>
-</tr>
-<tr v-if="actionCode == 'get_302'">
-<td>有效时间</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 5em" maxlength="9" v-model="get302Life" @keyup.enter="confirm()" @keypress.enter.prevent="1">
-<span class="ui label">秒</span>
-</div>
-<p class="comment">验证通过后在这个时间内不再验证。</p>
-</td>
-</tr>
-<tr v-if="actionCode == 'post_307'">
-<td>有效时间</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 5em" maxlength="9" v-model="post307Life" @keyup.enter="confirm()" @keypress.enter.prevent="1">
-<span class="ui label">秒</span>
-</div>
-<p class="comment">验证通过后在这个时间内不再验证。</p>
-</td>
-</tr>
-<tr v-if="actionCode == 'record_ip'">
-<td>IP名单类型 *</td>
-<td>
-<select class="ui dropdown auto-width" v-model="recordIPType"><option value="black">黑名单</option><option value="white">白名单</option><option value="grey">灰名单</option></select>
-</td>
-</tr>
-<tr v-if="actionCode == 'record_ip'">
-<td>选择IP名单</td>
-<td>
-<div v-if="recordIPListId > 0" class="ui label basic small">{{recordIPListName}} <a href @click.prevent="removeRecordIPList"><i class="icon remove small"></i></a></div>
-<button type="button" class="ui button tiny" @click.prevent="selectRecordIPList">+</button>
-<p class="comment">如不选择，则自动添加到当前策略的IP名单中。</p>
-</td>
-</tr>
-<tr v-if="actionCode == 'record_ip'">
-<td>级别</td>
-<td>
-<select class="ui dropdown auto-width" v-model="recordIPLevel"><option v-for="level in ipListLevels" :value="level.code">{{level.name}}</option></select>
-</td>
-</tr>
-<tr v-if="actionCode == 'record_ip'">
-<td>超时时间</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 6em" maxlength="9" v-model="recordIPTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1">
-<span class="ui label">秒</span>
-</div>
-<p class="comment">0表示不超时。</p>
-</td>
-</tr>
-<tr v-if="actionCode == 'tag'">
-<td>标签 *</td>
-<td>
-<values-box @change="changeTags" :values="tagTags"></values-box>
-</td>
-</tr>
-<tr v-if="actionCode == 'page'">
-<td>使用默认提示</td>
-<td>
-<checkbox v-model="pageUseDefault"></checkbox>
-</td>
-</tr>
-<tr v-if="actionCode == 'page' && !pageUseDefault">
-<td class="color-border">状态码 *</td>
-<td><input type="text" style="width: 4em" maxlength="3" v-model="pageStatus"></td>
-</tr>
-<tr v-if="actionCode == 'page' && !pageUseDefault">
-<td class="color-border">网页内容</td>
-<td>
-<textarea v-model="pageBody"></textarea>
-</td>
-</tr>
-<tr v-if="actionCode == 'redirect'">
-<td>状态码 *</td>
-<td>
-<select class="ui dropdown auto-width" v-model="redirectStatus"><option v-for="status in statusOptions" :value="status.code">{{status.code}} {{status.text}}</option></select>
-</td>
-</tr>
-<tr v-if="actionCode == 'redirect'">
-<td>跳转到URL</td>
-<td>
-<input type="text" v-model="redirectURL">
-</td>
-</tr>
-<tr v-if="actionCode == 'go_group'">
-<td>下一个分组 *</td>
-<td>
-<select class="ui dropdown auto-width" v-model="goGroupId"><option value="0">[选择分组]</option><option v-if="vFirewallPolicy.inbound != null && vFirewallPolicy.inbound.groups != null" v-for="group in vFirewallPolicy.inbound.groups" :value="group.id">入站：{{group.name}}</option><option v-if="vGroupType == 'outbound' && vFirewallPolicy.outbound != null && vFirewallPolicy.outbound.groups != null" v-for="group in vFirewallPolicy.outbound.groups" :value="group.id">出站：{{group.name}}</option></select>
-</td>
-</tr>
-<tr v-if="actionCode == 'go_set'">
-<td>下一个分组 *</td>
-<td>
-<select class="ui dropdown auto-width" v-model="goGroupId"><option value="0">[选择分组]</option><option v-if="vFirewallPolicy.inbound != null && vFirewallPolicy.inbound.groups != null" v-for="group in vFirewallPolicy.inbound.groups" :value="group.id">入站：{{group.name}}</option><option v-if="vGroupType == 'outbound' && vFirewallPolicy.outbound != null && vFirewallPolicy.outbound.groups != null" v-for="group in vFirewallPolicy.outbound.groups" :value="group.id">出站：{{group.name}}</option></select>
-</td>
-</tr>
-<tr v-if="actionCode == 'go_set' && goGroup != null">
-<td>下一个规则集 *</td>
-<td>
-<select class="ui dropdown auto-width" v-model="goSetId"><option value="0">[选择规则集]</option><option v-for="set in goGroup.sets" :value="set.id">{{set.name}}</option></select>
-</td>
-</tr>
-</table>
-<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button> &nbsp;
-<a href @click.prevent="cancel" title="取消"><i class="icon remove small"></i></a>
-</div>
-<div v-if="!isAdding">
-<button class="ui button tiny" type="button" @click.prevent="add">+</button>
-</div>
-<p class="comment">系统总是会先执行记录日志、标签等不会修改请求的动作，再执行阻止、验证码等可能改变请求的动作。</p>
+	<input type="hidden" name="actionsJSON" :value="JSON.stringify(configs)"/>
+	<div v-show="configs.length > 0" style="margin-bottom: 0.5em" id="actions-box"> 
+		<div v-for="(config, index) in configs" :data-index="index" :key="config.id" class="ui label small basic" :class="{blue: index == editingIndex}" style="margin-bottom: 0.4em">
+			{{config.name}} <span class="small">({{config.code.toUpperCase()}})</span> 
+			
+			<!-- allow -->
+			<span class="small" v-if="config.code == 'allow' && config.options != null && config.options.scope != null && config.options.scope.length > 0">
+				<span v-if="config.options.scope == 'group'">[分组]</span>
+				<span v-if="config.options.scope == 'server'">[网站]</span>
+				<span v-if="config.options.scope == 'global'">[网站和策略]</span>
+			</span>
+			
+			<!-- block -->
+			<span v-if="config.code == 'block' && config.options.timeout > 0">：封禁时长{{config.options.timeout}}<span v-if="config.options.timeoutMax > config.options.timeout">-{{config.options.timeoutMax}}</span>秒</span>
+			
+			<!-- captcha -->
+			<span v-if="config.code == 'captcha' && config.options.life > 0">：有效期{{config.options.life}}秒
+				<span v-if="config.options.maxFails > 0"> / 最多失败{{config.options.maxFails}}次</span>
+			</span>
+			
+			<!-- js cookie -->
+			<span v-if="config.code == 'js_cookie' && config.options.life > 0">：有效期{{config.options.life}}秒
+				<span v-if="config.options.maxFails > 0"> / 最多失败{{config.options.maxFails}}次</span>
+			</span>
+			
+			<!-- get 302 -->
+			<span v-if="config.code == 'get_302' && config.options.life > 0">：有效期{{config.options.life}}秒</span>
+			
+			<!-- post 307 -->
+			<span v-if="config.code == 'post_307' && config.options.life > 0">：有效期{{config.options.life}}秒</span>
+			
+			<!-- record_ip -->
+			<span v-if="config.code == 'record_ip'">：<span :class="{red: config.options.ipListIsDeleted}">{{config.options.ipListName}}</span></span>
+			
+			<!-- tag -->
+			<span v-if="config.code == 'tag'">：{{config.options.tags.join(", ")}}</span>
+			
+			<!-- page -->
+			<span v-if="config.code == 'page'">：[{{config.options.status}}]<span v-if="config.options.useDefault">&nbsp; [默认页面]</span></span>
+			
+			<!-- redirect -->
+			<span v-if="config.code == 'redirect'">：{{config.options.url}}</span>
+			
+			<!-- go_group -->
+			<span v-if="config.code == 'go_group'">：{{config.options.groupName}}</span>
+			
+			<!-- go_set -->
+			<span v-if="config.code == 'go_set'">：{{config.options.groupName}} / {{config.options.setName}}</span>
+			
+			<!-- 范围 -->
+			<span v-if="config.code != 'allow' && config.options.scope != null && config.options.scope.length > 0" class="small grey">
+				&nbsp; 
+				<span v-if="config.options.scope == 'global'">[所有网站]</span>
+				<span v-if="config.options.scope == 'service'">[当前网站]</span>
+			</span>
+			
+			<!-- 操作按钮 -->
+			 &nbsp; <a href="" title="修改" @click.prevent="update(index, config)"><i class="icon pencil small"></i></a> &nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a> &nbsp; <a href="" title="拖动改变顺序"><i class="icon bars handle"></i></a>
+		</div>
+		<div class="ui divider"></div>
+	</div>
+	<div style="margin-bottom: 0.5em" v-if="isAdding">
+		<table class="ui table" :class="{blue: editingIndex > -1}">
+			<tr>
+				<td class="title">动作类型 *</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="actionCode">
+						<option v-for="action in actions" :value="action.code">{{action.name}} ({{action.code.toUpperCase()}})</option>
+					</select>
+					<p class="comment" v-if="action != null && action.description.length > 0">{{action.description}}</p>
+				</td>
+			</tr>
+			
+			<!-- allow -->
+			<tr v-if="actionCode == 'allow'">
+				<td>有效范围</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="allowScope">
+						<option value="group">分组</option>
+						<option value="server">网站</option>
+						<option value="global">网站和策略</option>
+					</select>
+					<p class="comment" v-if="allowScope == 'group'">跳过当前分组其他规则集，继续执行其他分组的规则集。</p>
+					<p class="comment" v-if="allowScope == 'server'">跳过当前网站所有的规则集。</p>
+					<p class="comment" v-if="allowScope =='global'">跳过当前网站和网站对应WAF策略所有的规则集。</p>
+				</td>
+			</tr>
+			
+			<!-- block -->
+			<tr v-if="actionCode == 'block'">
+				<td>封禁范围</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="blockScope">
+						<option value="service">当前网站</option>
+						<option value="global">所有网站</option>
+					</select>
+					<p class="comment" v-if="blockScope == 'service'">只封禁用户对当前网站的访问，其他网站不受影响。</p>
+					<p class="comment" v-if="blockScope =='global'">封禁用户对所有网站的访问。</p>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'block'">
+				<td>封禁时长</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="blockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">秒</span>
+					</div>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'block'">
+				<td>最大封禁时长</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="blockTimeoutMax" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">秒</span>
+					</div>
+					<p class="comment">选填项。如果同时填写了封禁时长和最大封禁时长，则会在两者之间随机选择一个数字作为最终的封禁时长。</p>
+				</td>
+			</tr>
+			
+			<!-- captcha -->
+			<tr v-if="actionCode == 'captcha'">
+				<td>有效时间</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="captchaLife" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">秒</span>
+					</div>
+					<p class="comment">验证通过后在这个时间内不再验证；如果为空或者为0表示默认。</p>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'captcha'">
+				<td>最多失败次数</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="captchaMaxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">次</span>
+					</div>
+					<p class="comment"><span v-if="captchaMaxFails > 0 && captchaMaxFails < 5" class="red">建议填入一个不小于5的数字，以减少误判几率。</span>允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单；如果为空或者为0表示默认。</p>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'captcha'">
+				<td>失败拦截时间</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="captchaFailBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">秒</span>
+					</div>
+					<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时间；如果为空或者为0表示默认。</p>
+				</td>
+			</tr>
+			
+			<!-- js cookie -->
+			<tr v-if="actionCode == 'js_cookie'">
+				<td>有效时间</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="jsCookieLife" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">秒</span>
+					</div>
+					<p class="comment">验证通过后在这个时间内不再验证；如果为空或者为0表示默认。</p>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'js_cookie'">
+				<td>最多失败次数</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="jsCookieMaxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">次</span>
+					</div>
+					<p class="comment">允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单；如果为空或者为0表示默认。</p>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'js_cookie'">
+				<td>失败拦截时间</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="jsCookieFailBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">秒</span>
+					</div>
+					<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时间；如果为空或者为0表示默认。</p>
+				</td>
+			</tr>
+			
+			<!-- get_302 -->
+			<tr v-if="actionCode == 'get_302'">
+				<td>有效时间</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="get302Life" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">秒</span>
+					</div>
+					<p class="comment">验证通过后在这个时间内不再验证。</p>
+				</td>
+			</tr>
+			
+			<!-- post_307 -->
+			<tr v-if="actionCode == 'post_307'">
+				<td>有效时间</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 5em" maxlength="9" v-model="post307Life" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">秒</span>
+					</div>
+					<p class="comment">验证通过后在这个时间内不再验证。</p>
+				</td>
+			</tr>
+			
+			<!-- record_ip -->
+			<tr v-if="actionCode == 'record_ip'">
+				<td>IP名单类型 *</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="recordIPType">
+					<option value="black">黑名单</option>
+					<option value="white">白名单</option>
+					<option value="grey">灰名单</option>
+					</select>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'record_ip'">
+				<td>选择IP名单</td>
+				<td>
+					<div v-if="recordIPListId > 0" class="ui label basic small">{{recordIPListName}} <a href="" @click.prevent="removeRecordIPList"><i class="icon remove small"></i></a></div>
+					<button type="button" class="ui button tiny" @click.prevent="selectRecordIPList">+</button>
+					<p class="comment">如不选择，则自动添加到当前策略的IP名单中。</p>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'record_ip'">
+				<td>级别</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="recordIPLevel">
+						<option v-for="level in ipListLevels" :value="level.code">{{level.name}}</option>
+					</select>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'record_ip'">
+				<td>超时时间</td>
+				<td>
+					<div class="ui input right labeled">
+						<input type="text" style="width: 6em" maxlength="9" v-model="recordIPTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<span class="ui label">秒</span>
+					</div>
+					<p class="comment">0表示不超时。</p>
+				</td>
+			</tr>
+			
+			<!-- tag -->
+			<tr v-if="actionCode == 'tag'">
+				<td>标签 *</td>
+				<td>
+					<values-box @change="changeTags" :values="tagTags"></values-box>
+				</td>
+			</tr>
+			
+			<!-- page -->
+			<tr v-if="actionCode == 'page'">
+				<td>使用默认提示</td>
+				<td>
+					<checkbox v-model="pageUseDefault"></checkbox>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'page' && !pageUseDefault">
+				<td class="color-border">状态码 *</td>
+				<td><input type="text" style="width: 4em" maxlength="3" v-model="pageStatus"/></td>
+			</tr>
+			<tr v-if="actionCode == 'page' && !pageUseDefault">
+				<td class="color-border">网页内容</td>
+				<td>
+					<textarea v-model="pageBody"></textarea>
+				</td>
+			</tr>
+			
+			<!-- redirect -->
+			<tr v-if="actionCode == 'redirect'">
+				<td>状态码 *</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="redirectStatus">
+						<option v-for="status in statusOptions" :value="status.code">{{status.code}} {{status.text}}</option>
+					</select>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'redirect'">
+				<td>跳转到URL</td>
+				<td>
+					<input type="text" v-model="redirectURL"/>
+				</td>
+			</tr>
+			
+			<!-- 规则分组 -->
+			<tr v-if="actionCode == 'go_group'">
+				<td>下一个分组 *</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="goGroupId">
+						<option value="0">[选择分组]</option>
+						<option v-if="vFirewallPolicy.inbound != null && vFirewallPolicy.inbound.groups != null" v-for="group in vFirewallPolicy.inbound.groups" :value="group.id">入站：{{group.name}}</option>
+						<option v-if="vGroupType == 'outbound' && vFirewallPolicy.outbound != null && vFirewallPolicy.outbound.groups != null" v-for="group in vFirewallPolicy.outbound.groups" :value="group.id">出站：{{group.name}}</option>
+					</select>
+				</td>
+			</tr>
+			
+			<!-- 规则集 -->
+			<tr v-if="actionCode == 'go_set'">
+				<td>下一个分组 *</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="goGroupId">
+						<option value="0">[选择分组]</option>
+						<option v-if="vFirewallPolicy.inbound != null && vFirewallPolicy.inbound.groups != null" v-for="group in vFirewallPolicy.inbound.groups" :value="group.id">入站：{{group.name}}</option>
+						<option v-if="vGroupType == 'outbound' && vFirewallPolicy.outbound != null && vFirewallPolicy.outbound.groups != null" v-for="group in vFirewallPolicy.outbound.groups" :value="group.id">出站：{{group.name}}</option>
+					</select>
+				</td>
+			</tr>
+			<tr v-if="actionCode == 'go_set' && goGroup != null">
+				<td>下一个规则集 *</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="goSetId">
+						<option value="0">[选择规则集]</option>
+						<option v-for="set in goGroup.sets" :value="set.id">{{set.name}}</option>
+					</select>
+				</td>
+			</tr>
+		</table>
+		<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button> &nbsp;
+		<a href="" @click.prevent="cancel" title="取消"><i class="icon remove small"></i></a>
+	</div>
+	<div v-if="!isAdding">
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	</div>
+	<p class="comment">系统总是会先执行记录日志、标签等不会修改请求的动作，再执行阻止、验证码等可能改变请求的动作。</p>
 </div>`
 })
 
@@ -9801,66 +10108,68 @@ Vue.component("http-auth-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="authJSON" :value="JSON.stringify(authConfig)">
+<input type="hidden" name="authJSON" :value="JSON.stringify(authConfig)"/> 
 <table class="ui table selectable definition">
-<prior-checkbox :v-config="authConfig" v-if="vIsLocation"></prior-checkbox>
-<tbody v-show="!vIsLocation || authConfig.isPrior">
-<tr>
-<td class="title">启用鉴权</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" v-model="authConfig.isOn">
-<label></label>
-</div>
-</td>
-</tr>
-</tbody>
+	<prior-checkbox :v-config="authConfig" v-if="vIsLocation"></prior-checkbox>
+	<tbody v-show="!vIsLocation || authConfig.isPrior">
+		<tr>
+			<td class="title">启用鉴权</td>
+			<td>
+				<div class="ui checkbox">
+					<input type="checkbox" v-model="authConfig.isOn"/>
+					<label></label>
+				</div>
+			</td>
+		</tr>
+	</tbody>
 </table>
 <div class="margin"></div>
+<!-- 鉴权方式 -->
 <div v-show="isOn()">
-<h4>鉴权方式</h4>
-<table class="ui table selectable celled" v-show="authConfig.policyRefs.length > 0">
-<thead>
-<tr>
-<th class="three wide">名称</th>
-<th class="three wide">鉴权方法</th>
-<th>参数</th>
-<th class="two wide">状态</th>
-<th class="two op">操作</th>
-</tr>
-</thead>
-<tbody v-for="(ref, index) in authConfig.policyRefs" :key="ref.authPolicyId">
-<tr>
-<td>{{ref.authPolicy.name}}</td>
-<td>
-{{methodName(ref.authPolicy.type)}}
-</td>
-<td>
-<span v-if="ref.authPolicy.type == 'basicAuth'">{{ref.authPolicy.params.users.length}}个用户</span>
-<span v-if="ref.authPolicy.type == 'subRequest'">
-<span v-if="ref.authPolicy.params.method.length > 0" class="grey">[{{ref.authPolicy.params.method}}]</span>
-{{ref.authPolicy.params.url}}
-</span>
-<span v-if="ref.authPolicy.type == 'typeA'">{{ref.authPolicy.params.signParamName}}/有效期{{ref.authPolicy.params.life}}秒</span>
-<span v-if="ref.authPolicy.type == 'typeB'">有效期{{ref.authPolicy.params.life}}秒</span>
-<span v-if="ref.authPolicy.type == 'typeC'">有效期{{ref.authPolicy.params.life}}秒</span>
-<span v-if="ref.authPolicy.type == 'typeD'">{{ref.authPolicy.params.signParamName}}/{{ref.authPolicy.params.timestampParamName}}/有效期{{ref.authPolicy.params.life}}秒</span>
-<div v-if="(ref.authPolicy.params.exts != null && ref.authPolicy.params.exts.length > 0) || (ref.authPolicy.params.domains != null && ref.authPolicy.params.domains.length > 0)">
-<grey-label v-if="ref.authPolicy.params.exts != null" v-for="ext in ref.authPolicy.params.exts">扩展名：{{ext}}</grey-label>
-<grey-label v-if="ref.authPolicy.params.domains != null" v-for="domain in ref.authPolicy.params.domains">域名：{{domain}}</grey-label>
-</div>
-</td>
-<td>
-<label-on :v-is-on="ref.authPolicy.isOn"></label-on>
-</td>
-<td>
-<a href @click.prevent="update(index, ref.authPolicyId)">修改</a> &nbsp;
-<a href @click.prevent="remove(index)">删除</a>
-</td>
-</tr>
-</tbody>
-</table>
-<button class="ui button small" type="button" @click.prevent="add">+添加鉴权方式</button>
+	<h4>鉴权方式</h4>
+	<table class="ui table selectable celled" v-show="authConfig.policyRefs.length > 0">
+		<thead>
+			<tr>
+				<th class="three wide">名称</th>
+				<th class="three wide">鉴权方法</th>
+				<th>参数</th>
+				<th class="two wide">状态</th>
+				<th class="two op">操作</th>
+			</tr>
+		</thead>
+		<tbody v-for="(ref, index) in authConfig.policyRefs" :key="ref.authPolicyId">
+			<tr>
+				<td>{{ref.authPolicy.name}}</td>
+				<td>
+					{{methodName(ref.authPolicy.type)}}
+				</td>
+				<td>
+					<span v-if="ref.authPolicy.type == 'basicAuth'">{{ref.authPolicy.params.users.length}}个用户</span>
+					<span v-if="ref.authPolicy.type == 'subRequest'">
+						<span v-if="ref.authPolicy.params.method.length > 0" class="grey">[{{ref.authPolicy.params.method}}]</span>
+						{{ref.authPolicy.params.url}}
+					</span>
+					<span v-if="ref.authPolicy.type == 'typeA'">{{ref.authPolicy.params.signParamName}}/有效期{{ref.authPolicy.params.life}}秒</span>
+					<span v-if="ref.authPolicy.type == 'typeB'">有效期{{ref.authPolicy.params.life}}秒</span>
+					<span v-if="ref.authPolicy.type == 'typeC'">有效期{{ref.authPolicy.params.life}}秒</span>
+					<span v-if="ref.authPolicy.type == 'typeD'">{{ref.authPolicy.params.signParamName}}/{{ref.authPolicy.params.timestampParamName}}/有效期{{ref.authPolicy.params.life}}秒</span>
+					
+					<div v-if="(ref.authPolicy.params.exts != null && ref.authPolicy.params.exts.length > 0) || (ref.authPolicy.params.domains != null && ref.authPolicy.params.domains.length > 0)">
+						<grey-label v-if="ref.authPolicy.params.exts != null" v-for="ext in ref.authPolicy.params.exts">扩展名：{{ext}}</grey-label>
+						<grey-label v-if="ref.authPolicy.params.domains != null" v-for="domain in ref.authPolicy.params.domains">域名：{{domain}}</grey-label>
+					</div>
+				</td>
+				<td>
+					<label-on :v-is-on="ref.authPolicy.isOn"></label-on>
+				</td>
+				<td>
+					<a href="" @click.prevent="update(index, ref.authPolicyId)">修改</a> &nbsp;
+					<a href="" @click.prevent="remove(index)">删除</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<button class="ui button small" type="button" @click.prevent="add">+添加鉴权方式</button>
 </div>
 <div class="margin"></div>
 </div>`
@@ -9898,7 +10207,7 @@ Vue.component("user-selector", {
 		}
 	},
 	template: `<div>
-<combo-box placeholder="选择用户" :data-url="dataURL" :data-key="'users'" data-search="on" name="userId" :v-value="userId" @change="change" ref="comboBox"></combo-box>
+	<combo-box placeholder="选择用户" :data-url="dataURL" :data-key="'users'" data-search="on" name="userId" :v-value="userId" @change="change" ref="comboBox"></combo-box>
 </div>`
 })
 
@@ -10069,160 +10378,174 @@ Vue.component("http-header-policy-box", {
 		}
 	},
 	template: `<div>
-<div class="ui menu tabular small">
-<a class="item" :class="{active:type == 'response'}" @click.prevent="selectType('response')">响应报头<span v-if="responseSettingHeaders.length > 0">({{responseSettingHeaders.length}})</span></a>
-<a class="item" :class="{active:type == 'request'}" @click.prevent="selectType('request')">请求报头<span v-if="requestSettingHeaders.length > 0">({{requestSettingHeaders.length}})</span></a>
-</div>
-<div class="margin"></div>
-<input type="hidden" name="type" :value="type">
-<div v-if="(vIsLocation || vIsGroup) && type == 'request'">
-<input type="hidden" name="requestHeaderJSON" :value="JSON.stringify(requestHeaderRef)">
-<table class="ui table definition selectable">
-<prior-checkbox :v-config="requestHeaderRef"></prior-checkbox>
-</table>
-<submit-btn></submit-btn>
-</div>
-<div v-if="((!vIsLocation && !vIsGroup) || requestHeaderRef.isPrior) && type == 'request'">
-<div v-if="vHasGroupRequestConfig">
-<div class="margin"></div>
-<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#request'">网站分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
-</div>
-<div :class="{'opacity-mask': vHasGroupRequestConfig}">
-<h4>设置请求报头 &nbsp; <a href @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)" style="font-size: 0.8em">[添加新报头]</a></h4>
-<p class="comment" v-if="requestSettingHeaders.length == 0">暂时还没有自定义报头。</p>
-<table class="ui table selectable celled" v-if="requestSettingHeaders.length > 0">
-<thead>
-<tr>
-<th>名称</th>
-<th>值</th>
-<th class="two op">操作</th>
-</tr>
-</thead>
-<tbody v-for="header in requestSettingHeaders">
-<tr>
-<td class="five wide">
-<a href @click.prevent="updateSettingPopup(vRequestHeaderPolicy.id, header.id)">{{header.name}} <i class="icon expand small"></i></a>
-<div>
-<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
-<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
-<span v-if="header.domains != null && header.domains.length > 0"><grey-label v-for="domain in header.domains" :key="domain">{{domain}}</grey-label></span>
-<grey-label v-if="header.shouldAppend">附加</grey-label>
-<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
-<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
-</div>
-</td>
-<td>{{header.value}}</td>
-<td><a href @click.prevent="updateSettingPopup(vRequestHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href @click.prevent="deleteHeader(vRequestHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
-</tr>
-</tbody>
-</table>
-<h4>其他设置</h4>
-<table class="ui table definition selectable">
-<tbody>
-<tr>
-<td class="title">删除报头 <tip-icon content="可以通过此功能删除转发到源站的请求报文中不需要的报头"></tip-icon></td>
-<td>
-<div v-if="requestDeletingHeaders.length > 0">
-<div class="ui label small basic" v-for="headerName in requestDeletingHeaders">{{headerName}} <a href><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
-<div class="ui divider"></div>
-</div>
-<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vRequestHeaderPolicy.id, 'request')">+</button>
-</td>
-</tr>
-<tr>
-<td class="title">非标报头 <tip-icon content="可以通过此功能设置转发到源站的请求报文中非标准的报头，比如hello_world"></tip-icon></td>
-<td>
-<div v-if="requestNonStandardHeaders.length > 0">
-<div class="ui label small basic" v-for="headerName in requestNonStandardHeaders">{{headerName}} <a href><i class="icon remove" title="删除" @click.prevent="deleteNonStandardHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
-<div class="ui divider"></div>
-</div>
-<button class="ui button small" type="button" @click.prevent="addNonStandardHeader(vRequestHeaderPolicy.id, 'request')">+</button>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div v-if="(vIsLocation || vIsGroup) && type == 'response'">
-<input type="hidden" name="responseHeaderJSON" :value="JSON.stringify(responseHeaderRef)">
-<table class="ui table definition selectable">
-<prior-checkbox :v-config="responseHeaderRef"></prior-checkbox>
-</table>
-<submit-btn></submit-btn>
-</div>
-<div v-if="((!vIsLocation && !vIsGroup) || responseHeaderRef.isPrior) && type == 'response'">
-<div v-if="vHasGroupResponseConfig">
-<div class="margin"></div>
-<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#response'">网站分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
-</div>
-<div :class="{'opacity-mask': vHasGroupResponseConfig}">
-<h4>设置响应报头 &nbsp; <a href @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)" style="font-size: 0.8em">[添加新报头]</a></h4>
-<p class="comment" style="margin-top: 0; padding-top: 0">将会覆盖已有的同名报头。</p>
-<p class="comment" v-if="responseSettingHeaders.length == 0">暂时还没有自定义报头。</p>
-<table class="ui table selectable celled" v-if="responseSettingHeaders.length > 0">
-<thead>
-<tr>
-<th>名称</th>
-<th>值</th>
-<th class="two op">操作</th>
-</tr>
-</thead>
-<tbody v-for="header in responseSettingHeaders">
-<tr>
-<td class="five wide">
-<a href @click.prevent="updateSettingPopup(vResponseHeaderPolicy.id, header.id)">{{header.name}} <i class="icon expand small"></i></a>
-<div>
-<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
-<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
-<span v-if="header.domains != null && header.domains.length > 0"><grey-label v-for="domain in header.domains" :key="domain">{{domain}}</grey-label></span>
-<grey-label v-if="header.shouldAppend">附加</grey-label>
-<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
-<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
-</div>
-<div v-if="header.name == 'Access-Control-Allow-Origin' && header.value == '*'">
-<span class="red small">建议使用当前页面下方的"CORS自适应跨域"功能代替Access-Control-*-*相关报头。</span>
-</div>
-</td>
-<td>{{header.value}}</td>
-<td><a href @click.prevent="updateSettingPopup(vResponseHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href @click.prevent="deleteHeader(vResponseHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
-</tr>
-</tbody>
-</table>
-<h4>其他设置</h4>
-<table class="ui table definition selectable">
-<tbody>
-<tr>
-<td class="title">删除报头 <tip-icon content="可以通过此功能删除响应报文中不需要的报头"></tip-icon></td>
-<td>
-<div v-if="responseDeletingHeaders.length > 0">
-<div class="ui label small basic" v-for="headerName in responseDeletingHeaders">{{headerName}} &nbsp; <a href><i class="icon remove small" title="删除" @click.prevent="deleteDeletingHeader(vResponseHeaderPolicy.id, headerName)"></i></a></div>
-<div class="ui divider"></div>
-</div>
-<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vResponseHeaderPolicy.id, 'response')">+</button>
-</td>
-</tr>
-<tr>
-<td>非标报头 <tip-icon content="可以通过此功能设置响应报文中非标准的报头，比如hello_world"></tip-icon></td>
-<td>
-<div v-if="responseNonStandardHeaders.length > 0">
-<div class="ui label small basic" v-for="headerName in responseNonStandardHeaders">{{headerName}} &nbsp; <a href><i class="icon remove small" title="删除" @click.prevent="deleteNonStandardHeader(vResponseHeaderPolicy.id, headerName)"></i></a></div>
-<div class="ui divider"></div>
-</div>
-<button class="ui button small" type="button" @click.prevent="addNonStandardHeader(vResponseHeaderPolicy.id, 'response')">+</button>
-</td>
-</tr>
-<tr>
-<td class="title">CORS自适应跨域</td>
-<td>
-<span v-if="responseCORS.isOn" class="green">已启用</span><span class="disabled" v-else>未启用</span> &nbsp; <a href @click.prevent="updateCORS(vResponseHeaderPolicy.id)">[修改]</a>
-<p class="comment"><span v-if="!responseCORS.isOn">启用后，服务器可以</span><span v-else>服务器会</span>自动生成<code-label>Access-Control-*-*</code-label>相关的报头。</p>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="margin"></div>
+	<div class="ui menu tabular small">
+		<a class="item" :class="{active:type == 'response'}" @click.prevent="selectType('response')">响应报头<span v-if="responseSettingHeaders.length > 0">({{responseSettingHeaders.length}})</span></a>
+		<a class="item" :class="{active:type == 'request'}" @click.prevent="selectType('request')">请求报头<span v-if="requestSettingHeaders.length > 0">({{requestSettingHeaders.length}})</span></a>
+	</div>
+	
+	<div class="margin"></div>
+	
+	<input type="hidden" name="type" :value="type"/>
+	
+	<!-- 请求 -->
+	<div v-if="(vIsLocation || vIsGroup) && type == 'request'">
+		<input type="hidden" name="requestHeaderJSON" :value="JSON.stringify(requestHeaderRef)"/>
+		<table class="ui table definition selectable">
+			<prior-checkbox :v-config="requestHeaderRef"></prior-checkbox>
+		</table>
+		<submit-btn></submit-btn>
+	</div>
+	
+	<div v-if="((!vIsLocation && !vIsGroup) || requestHeaderRef.isPrior) && type == 'request'">
+		<div v-if="vHasGroupRequestConfig">
+        	<div class="margin"></div>
+        	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#request'">网站分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
+    	</div>
+    	<div :class="{'opacity-mask': vHasGroupRequestConfig}">
+		<h4>设置请求报头 &nbsp; <a href="" @click.prevent="addSettingHeader(vRequestHeaderPolicy.id)" style="font-size: 0.8em">[添加新报头]</a></h4>
+			<p class="comment" v-if="requestSettingHeaders.length == 0">暂时还没有自定义报头。</p>
+			<table class="ui table selectable celled" v-if="requestSettingHeaders.length > 0">
+				<thead>
+					<tr>
+						<th>名称</th>
+						<th>值</th>
+						<th class="two op">操作</th>
+					</tr>
+				</thead>
+				<tbody v-for="header in requestSettingHeaders">
+					<tr>
+						<td class="five wide">
+							<a href="" @click.prevent="updateSettingPopup(vRequestHeaderPolicy.id, header.id)">{{header.name}} <i class="icon expand small"></i></a>
+							<div>
+								<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
+								<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
+								<span v-if="header.domains != null && header.domains.length > 0"><grey-label v-for="domain in header.domains" :key="domain">{{domain}}</grey-label></span>
+								<grey-label v-if="header.shouldAppend">附加</grey-label>
+								<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
+								<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
+							</div>
+						</td>
+						<td>{{header.value}}</td>
+						<td><a href="" @click.prevent="updateSettingPopup(vRequestHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteHeader(vRequestHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<h4>其他设置</h4>
+			
+			<table class="ui table definition selectable">
+				<tbody>
+					<tr>
+						<td class="title">删除报头 <tip-icon content="可以通过此功能删除转发到源站的请求报文中不需要的报头"></tip-icon></td>
+						<td>
+							<div v-if="requestDeletingHeaders.length > 0">
+								<div class="ui label small basic" v-for="headerName in requestDeletingHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteDeletingHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
+								<div class="ui divider" ></div>
+							</div>
+							<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vRequestHeaderPolicy.id, 'request')">+</button>
+						</td>
+					</tr>
+					<tr>
+						<td class="title">非标报头 <tip-icon content="可以通过此功能设置转发到源站的请求报文中非标准的报头，比如hello_world"></tip-icon></td>
+						<td>
+							<div v-if="requestNonStandardHeaders.length > 0">
+								<div class="ui label small basic" v-for="headerName in requestNonStandardHeaders">{{headerName}} <a href=""><i class="icon remove" title="删除" @click.prevent="deleteNonStandardHeader(vRequestHeaderPolicy.id, headerName)"></i></a> </div>
+								<div class="ui divider" ></div>
+							</div>
+							<button class="ui button small" type="button" @click.prevent="addNonStandardHeader(vRequestHeaderPolicy.id, 'request')">+</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>			
+	</div>
+	
+	<!-- 响应 -->
+	<div v-if="(vIsLocation || vIsGroup) && type == 'response'">
+		<input type="hidden" name="responseHeaderJSON" :value="JSON.stringify(responseHeaderRef)"/>
+		<table class="ui table definition selectable">
+			<prior-checkbox :v-config="responseHeaderRef"></prior-checkbox>
+		</table>
+		<submit-btn></submit-btn>
+	</div>
+	
+	<div v-if="((!vIsLocation && !vIsGroup) || responseHeaderRef.isPrior) && type == 'response'">
+		<div v-if="vHasGroupResponseConfig">
+        	<div class="margin"></div>
+        	<warning-message>由于已经在当前<a :href="vGroupSettingUrl + '#response'">网站分组</a>中进行了对应的配置，在这里的配置将不会生效。</warning-message>
+    	</div>
+    	<div :class="{'opacity-mask': vHasGroupResponseConfig}">
+			<h4>设置响应报头 &nbsp; <a href="" @click.prevent="addSettingHeader(vResponseHeaderPolicy.id)" style="font-size: 0.8em">[添加新报头]</a></h4>
+			<p class="comment" style="margin-top: 0; padding-top: 0">将会覆盖已有的同名报头。</p>
+			<p class="comment" v-if="responseSettingHeaders.length == 0">暂时还没有自定义报头。</p>
+			<table class="ui table selectable celled" v-if="responseSettingHeaders.length > 0">
+				<thead>
+					<tr>
+						<th>名称</th>
+						<th>值</th>
+						<th class="two op">操作</th>
+					</tr>
+				</thead>
+				<tbody v-for="header in responseSettingHeaders">
+					<tr>
+						<td class="five wide">
+							<a href="" @click.prevent="updateSettingPopup(vResponseHeaderPolicy.id, header.id)">{{header.name}} <i class="icon expand small"></i></a>
+							<div>
+								<span v-if="header.status != null && header.status.codes != null && !header.status.always"><grey-label v-for="code in header.status.codes" :key="code">{{code}}</grey-label></span>
+								<span v-if="header.methods != null && header.methods.length > 0"><grey-label v-for="method in header.methods" :key="method">{{method}}</grey-label></span>
+								<span v-if="header.domains != null && header.domains.length > 0"><grey-label v-for="domain in header.domains" :key="domain">{{domain}}</grey-label></span>
+								<grey-label v-if="header.shouldAppend">附加</grey-label>
+								<grey-label v-if="header.disableRedirect">跳转禁用</grey-label>
+								<grey-label v-if="header.shouldReplace && header.replaceValues != null && header.replaceValues.length > 0">替换</grey-label>
+							</div>
+							
+							<!-- CORS -->
+							<div v-if="header.name == 'Access-Control-Allow-Origin' && header.value == '*'">
+								<span class="red small">建议使用当前页面下方的"CORS自适应跨域"功能代替Access-Control-*-*相关报头。</span>
+							</div>
+						</td>
+						<td>{{header.value}}</td>
+						<td><a href="" @click.prevent="updateSettingPopup(vResponseHeaderPolicy.id, header.id)">修改</a> &nbsp; <a href="" @click.prevent="deleteHeader(vResponseHeaderPolicy.id, 'setHeader', header.id)">删除</a> </td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<h4>其他设置</h4>
+			
+			<table class="ui table definition selectable">
+				<tbody>
+					<tr>
+						<td class="title">删除报头 <tip-icon content="可以通过此功能删除响应报文中不需要的报头"></tip-icon></td>
+						<td>
+							<div v-if="responseDeletingHeaders.length > 0">
+								<div class="ui label small basic" v-for="headerName in responseDeletingHeaders">{{headerName}} &nbsp; <a href=""><i class="icon remove small" title="删除" @click.prevent="deleteDeletingHeader(vResponseHeaderPolicy.id, headerName)"></i></a></div>
+								<div class="ui divider" ></div>
+							</div>
+							<button class="ui button small" type="button" @click.prevent="addDeletingHeader(vResponseHeaderPolicy.id, 'response')">+</button>
+						</td>
+					</tr>
+					<tr>
+						<td>非标报头 <tip-icon content="可以通过此功能设置响应报文中非标准的报头，比如hello_world"></tip-icon></td>
+						<td>
+							<div v-if="responseNonStandardHeaders.length > 0">
+								<div class="ui label small basic" v-for="headerName in responseNonStandardHeaders">{{headerName}} &nbsp; <a href=""><i class="icon remove small" title="删除" @click.prevent="deleteNonStandardHeader(vResponseHeaderPolicy.id, headerName)"></i></a></div>
+								<div class="ui divider" ></div>
+							</div>
+							<button class="ui button small" type="button" @click.prevent="addNonStandardHeader(vResponseHeaderPolicy.id, 'response')">+</button>
+						</td>
+					</tr>
+					<tr>
+						<td class="title">CORS自适应跨域</td>
+						<td>
+							<span v-if="responseCORS.isOn" class="green">已启用</span><span class="disabled" v-else="">未启用</span> &nbsp; <a href="" @click.prevent="updateCORS(vResponseHeaderPolicy.id)">[修改]</a>
+							<p class="comment"><span v-if="!responseCORS.isOn">启用后，服务器可以</span><span v-else>服务器会</span>自动生成<code-label>Access-Control-*-*</code-label>相关的报头。</p>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>		
+	</div>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -10241,19 +10564,19 @@ Vue.component("http-common-config-box", {
 		}
 	},
 	template: `<div>
-<table class="ui table definition selectable">
-<tr>
-<td class="title">合并重复的路径分隔符</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" name="mergeSlashes" value="1" v-model="config.mergeSlashes">
-<label></label>
-</div>
-<p class="comment">合并URL中重复的路径分隔符为一个，比如<code-label>//hello/world</code-label>中的<code-label>//</code-label>。</p>
-</td>
-</tr>
-</table>
-<div class="margin"></div>
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">合并重复的路径分隔符</td>
+			<td>
+				<div class="ui checkbox">
+					<input type="checkbox" name="mergeSlashes" value="1" v-model="config.mergeSlashes"/>
+					<label></label>
+				</div>
+				<p class="comment">合并URL中重复的路径分隔符为一个，比如<code-label>//hello/world</code-label>中的<code-label>//</code-label>。</p>
+			</td>
+		</tr>
+	</table>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -10299,13 +10622,13 @@ Vue.component("http-cache-policy-selector", {
 		}
 	},
 	template: `<div>
-<div v-if="cachePolicy != null" class="ui label basic">
-<input type="hidden" name="cachePolicyId" :value="cachePolicy.id">
-{{cachePolicy.name}} &nbsp; <a :href="'/servers/components/cache/update?cachePolicyId=' + cachePolicy.id" target="_blank" title="修改"><i class="icon pencil small"></i></a>&nbsp; <a href @click.prevent="remove()" title="删除"><i class="icon remove small"></i></a>
-</div>
-<div v-if="cachePolicy == null">
-<span v-if="count > 0"><a href @click.prevent="select">[选择已有策略]</a> &nbsp; &nbsp; </span><a href @click.prevent="create">[创建新策略]</a>
-</div>
+	<div v-if="cachePolicy != null" class="ui label basic">
+		<input type="hidden" name="cachePolicyId" :value="cachePolicy.id"/>
+		{{cachePolicy.name}} &nbsp; <a :href="'/servers/components/cache/update?cachePolicyId=' + cachePolicy.id" target="_blank" title="修改"><i class="icon pencil small"></i></a>&nbsp; <a href="" @click.prevent="remove()" title="删除"><i class="icon remove small"></i></a>
+	</div>
+	<div v-if="cachePolicy == null">
+		<span v-if="count > 0"><a href="" @click.prevent="select">[选择已有策略]</a> &nbsp; &nbsp; </span><a href="" @click.prevent="create">[创建新策略]</a>
+	</div>
 </div>`
 })
 
@@ -10385,19 +10708,23 @@ Vue.component("http-pages-and-shutdown-box", {
 			})
 		},
 		addShutdownHTMLTemplate: function () {
-			this.shutdownConfig.body = `<!doctype html><html lang="en">
+			this.shutdownConfig.body = `<!DOCTYPE html>
+<html lang="en">
 <head>
 \t<title>升级中</title>
-\t<meta charset="utf-8">
+\t<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 \t<style>
 \t\taddress { line-height: 1.8; }
 \t</style>
 </head>
 <body>
+
 <h1>网站升级中</h1>
 <p>为了给您提供更好的服务，我们正在升级网站，请稍后重新访问。</p>
-<address>Connection: \${remoteAddr} (Client) -> \${serverAddr} (Server)</address>
+
+<address>Connection: \${remoteAddr} (Client) -&gt; \${serverAddr} (Server)</address>
 <address>Request ID: \${requestId}</address>
+
 </body>
 </html>`
 		},
@@ -10420,156 +10747,168 @@ Vue.component("http-pages-and-shutdown-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="pagesJSON" :value="JSON.stringify(pages)">
-<input type="hidden" name="shutdownJSON" :value="JSON.stringify(shutdownConfig)">
+<input type="hidden" name="pagesJSON" :value="JSON.stringify(pages)"/>
+<input type="hidden" name="shutdownJSON" :value="JSON.stringify(shutdownConfig)"/>
+
 <h4 style="margin-bottom: 0.5em">自定义页面</h4>
+
 <p class="comment" style="padding-top: 0; margin-top: 0">根据响应状态码返回一些自定义页面，比如404，500等错误页面。</p>
+
 <div v-if="pages.length > 0">
-<table class="ui table selectable celled">
-<thead>
-<tr>
-<th class="two wide">响应状态码</th>
-<th>页面类型</th>
-<th class="two wide">新状态码</th>
-<th>例外URL</th>
-<th>限制URL</th>
-<th class="two op">操作</th>
-</tr>
-</thead>
-<tr v-for="(page,index) in pages">
-<td>
-<a href @click.prevent="updatePage(index, page.id)">
-<span v-if="page.status != null && page.status.length == 1">{{page.status[0]}}</span>
-<span v-else>{{page.status}}</span>
-<i class="icon expand small"></i>
-</a>
-</td>
-<td style="word-break: break-all">
-<div v-if="page.bodyType == 'url'">
-{{page.url}}
-<div>
-<grey-label>读取URL</grey-label>
-</div>
-</div>
-<div v-if="page.bodyType == 'redirectURL'">
-{{page.url}}
-<div>
-<grey-label>跳转URL</grey-label>
-<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
-</div>
-</div>
-<div v-if="page.bodyType == 'html'">
-[HTML内容]
-<div>
-<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
-</div>
-</div>
-</td>
-<td>
-<span v-if="page.newStatus > 0">{{page.newStatus}}</span>
-<span v-else class="disabled">保持</span>
-</td>
-<td>
-<div v-if="page.exceptURLPatterns != null && page.exceptURLPatterns">
-<span v-for="urlPattern in page.exceptURLPatterns" class="ui basic label small">{{urlPattern.pattern}}</span>
-</div>
-<span v-else class="disabled">-</span>
-</td>
-<td>
-<div v-if="page.onlyURLPatterns != null && page.onlyURLPatterns">
-<span v-for="urlPattern in page.onlyURLPatterns" class="ui basic label small">{{urlPattern.pattern}}</span>
-</div>
-<span v-else class="disabled">-</span>
-</td>
-<td>
-<a href title="修改" @click.prevent="updatePage(index, page.id)">修改</a> &nbsp;
-<a href title="删除" @click.prevent="removePage(index)">删除</a>
-</td>
-</tr>
-</table>
+	<table class="ui table selectable celled">
+		<thead>
+			<tr>
+				<th class="two wide">响应状态码</th>
+				<th>页面类型</th>
+				<th class="two wide">新状态码</th>
+				<th>例外URL</th>
+				<th>限制URL</th>
+				<th class="two op">操作</th>
+			</tr>	
+		</thead>
+		<tr v-for="(page,index) in pages">
+			<td>
+				<a href="" @click.prevent="updatePage(index, page.id)">
+					<span v-if="page.status != null && page.status.length == 1">{{page.status[0]}}</span>
+					<span v-else>{{page.status}}</span>
+					
+					<i class="icon expand small"></i>
+				</a>
+			</td>
+			<td style="word-break: break-all">
+				<div v-if="page.bodyType == 'url'">
+					{{page.url}}
+					<div>
+						<grey-label>读取URL</grey-label>
+					</div>
+				</div>
+				<div v-if="page.bodyType == 'redirectURL'">
+					{{page.url}}
+					<div>
+						<grey-label>跳转URL</grey-label>	
+						<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
+					</div>
+				</div>
+				<div v-if="page.bodyType == 'html'">
+					[HTML内容]
+					<div>
+						<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
+					</div>
+				</div>
+			</td>
+			<td>
+				<span v-if="page.newStatus > 0">{{page.newStatus}}</span>
+				<span v-else class="disabled">保持</span>	
+			</td>
+			<td>
+				<div v-if="page.exceptURLPatterns != null && page.exceptURLPatterns">
+					<span v-for="urlPattern in page.exceptURLPatterns" class="ui basic label small">{{urlPattern.pattern}}</span>
+				</div>
+				<span v-else class="disabled">-</span>
+			</td>
+			<td>
+				<div v-if="page.onlyURLPatterns != null && page.onlyURLPatterns">
+					<span v-for="urlPattern in page.onlyURLPatterns" class="ui basic label small">{{urlPattern.pattern}}</span>
+				</div>
+				<span v-else class="disabled">-</span>
+			</td>
+			<td>
+				<a href="" title="修改" @click.prevent="updatePage(index, page.id)">修改</a> &nbsp; 
+				<a href="" title="删除" @click.prevent="removePage(index)">删除</a>
+			</td>
+		</tr>
+	</table>
 </div>
 <div style="margin-top: 1em">
-<button class="ui button small" type="button" @click.prevent="addPage()">+添加自定义页面</button>
+	<button class="ui button small" type="button" @click.prevent="addPage()">+添加自定义页面</button>
 </div>
+
 <h4 style="margin-top: 2em;">临时关闭页面</h4>
-<p class="comment" style="margin-top: 0; padding-top: 0">开启临时关闭页面时，所有请求都会直接显示此页面。可用于临时升级网站或者禁止用户访问某个网页。</p>
+<p class="comment" style="margin-top: 0; padding-top: 0">开启临时关闭页面时，所有请求都会直接显示此页面。可用于临时升级网站或者禁止用户访问某个网页。</p>	
 <div>
-<table class="ui table selectable definition">
-<prior-checkbox :v-config="shutdownConfig" v-if="vIsLocation"></prior-checkbox>
-<tbody v-show="!vIsLocation || shutdownConfig.isPrior">
-<tr>
-<td class="title">启用临时关闭网站</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" value="1" v-model="shutdownConfig.isOn">
-<label></label>
+	<table class="ui table selectable definition">
+		<prior-checkbox :v-config="shutdownConfig" v-if="vIsLocation"></prior-checkbox>
+		<tbody v-show="!vIsLocation || shutdownConfig.isPrior">
+			<tr>
+				<td class="title">启用临时关闭网站</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" value="1" v-model="shutdownConfig.isOn" />
+						<label></label>
+					</div>
+					<p class="comment">选中后，表示临时关闭当前网站，并显示自定义内容。</p>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="(!vIsLocation || shutdownConfig.isPrior) && shutdownConfig.isOn">
+			<tr>
+				<td>显示内容类型 *</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="shutdownConfig.bodyType">
+						<option value="html">HTML</option>
+						<option value="url">读取URL</option>
+						<option value="redirectURL">跳转URL</option>
+					</select>
+				</td>
+			</tr>
+			<tr v-if="shutdownConfig.bodyType == 'url'">
+				<td class="title">显示页面URL *</td>
+				<td>
+					<input type="text" v-model="shutdownConfig.url" placeholder="类似于 https://example.com/page.html"/>
+					<p class="comment">将从此URL中读取内容。</p>
+				</td>
+			</tr>
+			<tr v-if="shutdownConfig.bodyType == 'redirectURL'">
+				<td class="title">跳转到URL *</td>
+				<td>
+					<input type="text" v-model="shutdownConfig.url" placeholder="类似于 https://example.com/page.html"/>
+					 <p class="comment">将会跳转到此URL。</p>
+				</td>
+			</tr>
+			<tr v-show="shutdownConfig.bodyType == 'html'">
+				<td>显示页面HTML *</td>
+				<td>
+					<textarea name="body" ref="shutdownHTMLBody" v-model="shutdownConfig.body"></textarea>
+					<p class="comment"><a href="" @click.prevent="addShutdownHTMLTemplate">[使用模板]</a>。填写页面的HTML内容，支持请求变量。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>状态码</td>
+				<td><input type="text" size="3" maxlength="3" name="shutdownStatus" style="width:5.2em" placeholder="状态码" v-model="shutdownStatus"/></td>
+			</tr>
+		</tbody>
+	</table>
 </div>
-<p class="comment">选中后，表示临时关闭当前网站，并显示自定义内容。</p>
-</td>
-</tr>
-</tbody>
-<tbody v-show="(!vIsLocation || shutdownConfig.isPrior) && shutdownConfig.isOn">
-<tr>
-<td>显示内容类型 *</td>
-<td>
-<select class="ui dropdown auto-width" v-model="shutdownConfig.bodyType"><option value="html">HTML</option><option value="url">读取URL</option><option value="redirectURL">跳转URL</option></select>
-</td>
-</tr>
-<tr v-if="shutdownConfig.bodyType == 'url'">
-<td class="title">显示页面URL *</td>
-<td>
-<input type="text" v-model="shutdownConfig.url" placeholder="类似于 https://example.com/page.html">
-<p class="comment">将从此URL中读取内容。</p>
-</td>
-</tr>
-<tr v-if="shutdownConfig.bodyType == 'redirectURL'">
-<td class="title">跳转到URL *</td>
-<td>
-<input type="text" v-model="shutdownConfig.url" placeholder="类似于 https://example.com/page.html">
-<p class="comment">将会跳转到此URL。</p>
-</td>
-</tr>
-<tr v-show="shutdownConfig.bodyType == 'html'">
-<td>显示页面HTML *</td>
-<td>
-<textarea name="body" ref="shutdownHTMLBody" v-model="shutdownConfig.body"></textarea>
-<p class="comment"><a href @click.prevent="addShutdownHTMLTemplate">[使用模板]</a>。填写页面的HTML内容，支持请求变量。</p>
-</td>
-</tr>
-<tr>
-<td>状态码</td>
-<td><input type="text" size="3" maxlength="3" name="shutdownStatus" style="width:5.2em" placeholder="状态码" v-model="shutdownStatus"></td>
-</tr>
-</tbody>
-</table>
-</div>
+
 <h4 style="margin-top: 2em;">其他设置</h4>
 <table class="ui table definition selectable">
-<tr>
-<td class="title">启用系统自定义页面</td>
-<td>
-<checkbox name="enableGlobalPages" v-model="enableGlobalPages"></checkbox>
-<p class="comment">选中后，表示如果当前网站没有自定义页面，则尝试使用系统对应的自定义页面。</p>
-</td>
-</tr>
+	<tr>
+		<td class="title">启用系统自定义页面</td>
+		<td>
+			<checkbox name="enableGlobalPages" v-model="enableGlobalPages"></checkbox>
+			<p class="comment">选中后，表示如果当前网站没有自定义页面，则尝试使用系统对应的自定义页面。</p>
+		</td>
+	</tr>
 </table>
 <div class="ui margin"></div>
+
 </div>`
 })
 
 Vue.component("http-firewall-page-options", {
 	props: ["v-page-options"],
 	data: function () {
-		var defaultPageBody = `<!doctype html><html lang="en">
+		var defaultPageBody = `<!DOCTYPE html>
+<html lang="en">
 <head>
-<title>403 Forbidden</title>
-<style>
+	<title>403 Forbidden</title>
+	<style>
 		address { line-height: 1.8; }
 	</style>
 </head>
 <body>
 <h1>403 Forbidden By WAF</h1>
-<address>Connection: \${remoteAddr} (Client) -> \${serverAddr} (Server)</address>
+<address>Connection: \${remoteAddr} (Client) -&gt; \${serverAddr} (Server)</address>
 <address>Request ID: \${requestId}</address>
 </body>
 </html>`
@@ -10604,23 +10943,24 @@ Vue.component("http-firewall-page-options", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="pageOptionsJSON" :value="JSON.stringify(pageOptions)">
-<a href @click.prevent="edit">状态码：{{status}} / 提示内容：<span v-if="pageOptions.body != null && pageOptions.body.length > 0">[{{pageOptions.body.length}}字符]</span><span v-else class="disabled">[无]</span>
-<i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
-<table class="ui table" v-show="isEditing">
-<tr>
-<td class="title">状态码 *</td>
-<td><input type="text" style="width: 4em" maxlength="3" v-model="status"></td>
-</tr>
-<tr>
-<td>网页内容</td>
-<td>
-<textarea v-model="body"></textarea>
-<p class="comment"><a href @click.prevent="body = defaultPageBody">[使用模板]</a> </p>
-</td>
-</tr>
-</table>
-</div>`
+	<input type="hidden" name="pageOptionsJSON" :value="JSON.stringify(pageOptions)"/>
+	<a href="" @click.prevent="edit">状态码：{{status}} / 提示内容：<span v-if="pageOptions.body != null && pageOptions.body.length > 0">[{{pageOptions.body.length}}字符]</span><span v-else class="disabled">[无]</span>
+	 <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
+	<table class="ui table" v-show="isEditing">
+		<tr>
+			<td class="title">状态码 *</td>
+			<td><input type="text" style="width: 4em" maxlength="3" v-model="status"/></td>
+		</tr>
+		<tr>
+			<td>网页内容</td>
+			<td>
+				<textarea v-model="body"></textarea>
+				<p class="comment"><a href="" @click.prevent="body = defaultPageBody">[使用模板]</a> </p>
+			</td>
+		</tr>
+	</table>
+</div>	
+`
 })
 
 Vue.component("http-firewall-js-cookie-options", {
@@ -10705,52 +11045,53 @@ Vue.component("http-firewall-js-cookie-options", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="jsCookieOptionsJSON" :value="JSON.stringify(options)">
-<a href @click.prevent="edit">{{summary}} <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
-<div v-show="isEditing" style="margin-top: 0.5em">
-<table class="ui table definition selectable">
-<tbody>
-<tr>
-<td class="title">有效时间</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 5em" maxlength="9" v-model="options.life" @keyup.enter="confirm()" @keypress.enter.prevent="1">
-<span class="ui label">秒</span>
+	<input type="hidden" name="jsCookieOptionsJSON" :value="JSON.stringify(options)"/>
+	<a href="" @click.prevent="edit">{{summary}} <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
+	<div v-show="isEditing" style="margin-top: 0.5em">
+		<table class="ui table definition selectable">
+			<tbody>
+				<tr>
+					<td class="title">有效时间</td>
+					<td>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 5em" maxlength="9" v-model="options.life" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+							<span class="ui label">秒</span>
+						</div>
+						<p class="comment">验证通过后在这个时间内不再验证，默认3600秒。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>最多失败次数</td>
+					<td>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 5em" maxlength="9" v-model="options.maxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+							<span class="ui label">次</span>
+						</div>
+						<p class="comment"><span v-if="options.maxFails > 0 && options.maxFails < 5" class="red">建议填入一个不小于5的数字，以减少误判几率。</span>允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单。如果为空或者为0，表示不限制。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>失败拦截时间</td>
+					<td>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 5em" maxlength="9" v-model="options.failBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+							<span class="ui label">秒</span>
+						</div>
+						<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时长；如果为0表示不自动拦截。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>失败全局封禁</td>
+					<td>
+						<checkbox v-model="options.failBlockScopeAll"></checkbox>
+						<p class="comment">选中后，表示允许系统尝试全局封禁某个IP，以提升封禁性能。</p>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </div>
-<p class="comment">验证通过后在这个时间内不再验证，默认3600秒。</p>
-</td>
-</tr>
-<tr>
-<td>最多失败次数</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 5em" maxlength="9" v-model="options.maxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1">
-<span class="ui label">次</span>
-</div>
-<p class="comment"><span v-if="options.maxFails > 0 && options.maxFails < 5" class="red">建议填入一个不小于5的数字，以减少误判几率。</span>允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单。如果为空或者为0，表示不限制。</p>
-</td>
-</tr>
-<tr>
-<td>失败拦截时间</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 5em" maxlength="9" v-model="options.failBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1">
-<span class="ui label">秒</span>
-</div>
-<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时长；如果为0表示不自动拦截。</p>
-</td>
-</tr>
-<tr>
-<td>失败全局封禁</td>
-<td>
-<checkbox v-model="options.failBlockScopeAll"></checkbox>
-<p class="comment">选中后，表示允许系统尝试全局封禁某个IP，以提升封禁性能。</p>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>`
+`
 })
 
 // 压缩配置
@@ -10902,116 +11243,117 @@ Vue.component("http-compression-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="compressionJSON" :value="JSON.stringify(config)">
-<table class="ui table definition selectable">
-<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
-<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
-<tr>
-<td class="title">启用内容压缩</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" value="1" v-model="config.isOn">
-<label></label>
-</div>
-</td>
-</tr>
-</tbody>
-<tbody v-show="isOn()">
-<tr>
-<td>支持的扩展名</td>
-<td>
-<values-box :values="config.extensions" @change="changeExtensions" placeholder="比如 .html"></values-box>
-<p class="comment">含有这些扩展名的URL将会被压缩，不区分大小写。</p>
-</td>
-</tr>
-<tr>
-<td>例外扩展名</td>
-<td>
-<values-box :values="config.exceptExtensions" @change="changeExceptExtensions" placeholder="比如 .html"></values-box>
-<p class="comment">含有这些扩展名的URL将<strong>不会</strong>被压缩，不区分大小写。</p>
-</td>
-</tr>
-<tr>
-<td>支持的MimeType</td>
-<td>
-<values-box :values="config.mimeTypes" @change="changeMimeTypes" placeholder="比如 text/*"></values-box>
-<p class="comment">响应的Content-Type里包含这些MimeType的内容将会被压缩。</p>
-</td>
-</tr>
-</tbody>
-<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
-<tbody v-show="isOn() && moreOptionsVisible">
-<tr>
-<td>压缩算法</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" v-model="config.useDefaultTypes" id="compression-use-default">
-<label v-if="config.useDefaultTypes" for="compression-use-default">使用默认顺序<span class="grey small">（brotli、gzip、 zstd、deflate）</span></label>
-<label v-if="!config.useDefaultTypes" for="compression-use-default">使用默认顺序</label>
-</div>
-<div v-show="!config.useDefaultTypes">
-<div class="ui divider"></div>
-<div id="compression-types-box">
-<div class="ui checkbox" v-for="t in allTypes" style="margin-right: 2em" :data-code="t.code">
-<input type="checkbox" v-model="t.isOn" :id="'compression-type-' + t.code" @change="changeType">
-<label :for="'compression-type-' + t.code">{{t.name}} &nbsp; <i class="icon list small grey handle"></i></label>
-</div>
-</div>
-</div>
-<p class="comment" v-show="!config.useDefaultTypes">选择支持的压缩算法和优先顺序，拖动<i class="icon list small grey"></i>图表排序。</p>
-</td>
-</tr>
-<tr>
-<td>支持已压缩内容</td>
-<td>
-<checkbox v-model="config.decompressData"></checkbox>
-<p class="comment">支持对已压缩内容尝试重新使用新的算法压缩；不选中表示保留当前的压缩格式。</p>
-</td>
-</tr>
-<tr>
-<td>内容最小长度</td>
-<td>
-<size-capacity-box :v-name="'minLength'" :v-value="config.minLength" :v-unit="'kb'"></size-capacity-box>
-<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
-</td>
-</tr>
-<tr>
-<td>内容最大长度</td>
-<td>
-<size-capacity-box :v-name="'maxLength'" :v-value="config.maxLength" :v-unit="'mb'"></size-capacity-box>
-<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
-</td>
-</tr>
-<tr>
-<td>支持Partial<br>Content</td>
-<td>
-<checkbox v-model="config.enablePartialContent"></checkbox>
-<p class="comment">支持对分片内容（PartialContent）的压缩；除非客户端有特殊要求，一般不需要启用。</p>
-</td>
-</tr>
-<tr>
-<td>例外URL</td>
-<td>
-<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
-<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
-</td>
-</tr>
-<tr>
-<td>限制URL</td>
-<td>
-<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
-<p class="comment">如果填写了限制URL，表示只对这些URL进行压缩处理；如果不填则表示支持所有的URL。</p>
-</td>
-</tr>
-<tr>
-<td>匹配条件</td>
-<td>
-<http-request-conds-box :v-conds="config.conds" @change="changeConds"></http-request-conds-box>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="margin"></div>
+	<input type="hidden" name="compressionJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable">
+		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
+			<tr>
+				<td class="title">启用内容压缩</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" value="1" v-model="config.isOn"/>
+						<label></label>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="isOn()">
+			<tr>
+				<td>支持的扩展名</td>
+				<td>
+					<values-box :values="config.extensions" @change="changeExtensions" placeholder="比如 .html"></values-box>
+					<p class="comment">含有这些扩展名的URL将会被压缩，不区分大小写。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>例外扩展名</td>
+				<td>
+					<values-box :values="config.exceptExtensions" @change="changeExceptExtensions" placeholder="比如 .html"></values-box>
+					<p class="comment">含有这些扩展名的URL将<strong>不会</strong>被压缩，不区分大小写。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>支持的MimeType</td>
+				<td>
+					<values-box :values="config.mimeTypes" @change="changeMimeTypes" placeholder="比如 text/*"></values-box>
+					<p class="comment">响应的Content-Type里包含这些MimeType的内容将会被压缩。</p>
+				</td>
+			</tr>
+		</tbody>
+		<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
+		<tbody v-show="isOn() && moreOptionsVisible">
+			<tr>
+				<td>压缩算法</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="config.useDefaultTypes" id="compression-use-default"/>
+						<label v-if="config.useDefaultTypes" for="compression-use-default">使用默认顺序<span class="grey small">（brotli、gzip、 zstd、deflate）</span></label>
+						<label v-if="!config.useDefaultTypes" for="compression-use-default">使用默认顺序</label>
+					</div>
+					<div v-show="!config.useDefaultTypes">
+						<div class="ui divider"></div>
+						<div id="compression-types-box">
+							<div class="ui checkbox" v-for="t in allTypes" style="margin-right: 2em" :data-code="t.code">
+								<input type="checkbox" v-model="t.isOn" :id="'compression-type-' + t.code" @change="changeType"/>
+								<label :for="'compression-type-' + t.code">{{t.name}} &nbsp; <i class="icon list small grey handle"></i></label>
+							</div>
+						</div>
+					</div>
+					
+					<p class="comment" v-show="!config.useDefaultTypes">选择支持的压缩算法和优先顺序，拖动<i class="icon list small grey"></i>图表排序。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>支持已压缩内容</td>
+				<td>
+					<checkbox v-model="config.decompressData"></checkbox>
+					<p class="comment">支持对已压缩内容尝试重新使用新的算法压缩；不选中表示保留当前的压缩格式。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>内容最小长度</td>
+				<td>
+					<size-capacity-box :v-name="'minLength'" :v-value="config.minLength" :v-unit="'kb'"></size-capacity-box>
+					<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>内容最大长度</td>
+				<td>
+					<size-capacity-box :v-name="'maxLength'" :v-value="config.maxLength" :v-unit="'mb'"></size-capacity-box>
+					<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>支持Partial<br/>Content</td>
+				<td>
+					<checkbox v-model="config.enablePartialContent"></checkbox>
+					<p class="comment">支持对分片内容（PartialContent）的压缩；除非客户端有特殊要求，一般不需要启用。</p>
+				</td>
+			</tr>
+				<tr>
+				<td>例外URL</td>
+				<td>
+					<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>限制URL</td>
+				<td>
+					<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了限制URL，表示只对这些URL进行压缩处理；如果不填则表示支持所有的URL。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>匹配条件</td>
+				<td>
+					<http-request-conds-box :v-conds="config.conds" @change="changeConds"></http-request-conds-box>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -11120,103 +11462,104 @@ Vue.component("http-cc-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="ccJSON" :value="JSON.stringify(config)">
+<input type="hidden" name="ccJSON" :value="JSON.stringify(config)"/>
 <table class="ui table definition selectable">
-<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
-<tbody v-show="((!vIsLocation && !vIsGroup) || config.isPrior)">
-<tr>
-<td class="title">启用CC无感防护</td>
-<td>
-<checkbox v-model="config.isOn"></checkbox>
-<p class="comment"><plus-label></plus-label>启用后，自动检测并拦截CC攻击。</p>
-</td>
-</tr>
-</tbody>
-<tbody v-show="config.isOn">
-<tr>
-<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
-</tr>
-</tbody>
-<tbody v-show="moreOptionsVisible && config.isOn">
-<tr>
-<td>例外URL</td>
-<td>
-<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
-<p class="comment">如果填写了例外URL，表示这些URL跳过CC防护不做处理。</p>
-</td>
-</tr>
-<tr>
-<td>限制URL</td>
-<td>
-<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
-<p class="comment">如果填写了限制URL，表示只对这些URL进行CC防护处理；如果不填则表示支持所有的URL。</p>
-</td>
-</tr>
-<tr>
-<td>忽略常用文件</td>
-<td>
-<checkbox v-model="config.ignoreCommonFiles"></checkbox>
-<p class="comment">忽略js、css、jpg等常在网页里被引用的文件名，即对这些文件的访问不加入计数，可以减少误判几率。</p>
-</td>
-</tr>
-<tr>
-<td>检查请求来源指纹</td>
-<td>
-<checkbox v-model="config.enableFingerprint"></checkbox>
-<p class="comment">在接收到HTTPS请求时尝试检查请求来源的指纹，用来检测代理服务和爬虫攻击；如果你在网站前面放置了别的反向代理服务，请取消此选项。</p>
-</td>
-</tr>
-<tr>
-<td>启用GET302校验</td>
-<td>
-<checkbox v-model="config.enableGET302"></checkbox>
-<p class="comment">选中后，表示自动通过GET302方法来校验客户端。</p>
-</td>
-</tr>
-<tr>
-<td>单IP最低QPS</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" name="minQPSPerIP" maxlength="6" style="width: 6em" v-model="minQPSPerIP">
-<span class="ui label">请求数/秒</span>
-</div>
-<p class="comment">当某个IP在1分钟内平均QPS达到此值时，才会开始检测；如果设置为0，表示任何访问都会检测。（注意这里设置的是检测开启阈值，不是拦截阈值，拦截阈值在当前表单下方可以设置）</p>
-</td>
-</tr>
-<tr>
-<td class="color-border">使用自定义拦截阈值</td>
-<td>
-<checkbox v-model="useCustomThresholds"></checkbox>
-</td>
-</tr>
-<tr v-show="!config.useDefaultThresholds">
-<td class="color-border">自定义拦截阈值设置</td>
-<td>
-<div>
-<div class="ui input left right labeled">
-<span class="ui label basic">单IP每5秒最多</span>
-<input type="text" style="width: 6em" maxlength="6" v-model="thresholdMaxRequests0">
-<span class="ui label basic">请求</span>
-</div>
-</div>
-<div style="margin-top: 1em">
-<div class="ui input left right labeled">
-<span class="ui label basic">单IP每60秒</span>
-<input type="text" style="width: 6em" maxlength="6" v-model="thresholdMaxRequests1">
-<span class="ui label basic">请求</span>
-</div>
-</div>
-<div style="margin-top: 1em">
-<div class="ui input left right labeled">
-<span class="ui label basic">单IP每300秒</span>
-<input type="text" style="width: 6em" maxlength="6" v-model="thresholdMaxRequests2">
-<span class="ui label basic">请求</span>
-</div>
-</div>
-</td>
-</tr>
-</tr>
-</tbody>
+	<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+	<tbody v-show="((!vIsLocation && !vIsGroup) || config.isPrior)">
+		<tr>
+			<td class="title">启用CC无感防护</td>
+			<td>
+				<checkbox v-model="config.isOn"></checkbox>
+				<p class="comment"><plus-label></plus-label>启用后，自动检测并拦截CC攻击。</p>
+			</td>
+		</tr>
+	</tbody>
+	<tbody v-show="config.isOn">
+		<tr>
+			<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
+		</tr>
+	</tbody>
+	<tbody v-show="moreOptionsVisible && config.isOn">
+		<tr>
+			<td>例外URL</td>
+			<td>
+				<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
+				<p class="comment">如果填写了例外URL，表示这些URL跳过CC防护不做处理。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>限制URL</td>
+			<td>
+				<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
+				<p class="comment">如果填写了限制URL，表示只对这些URL进行CC防护处理；如果不填则表示支持所有的URL。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>忽略常用文件</td>
+			<td>
+				<checkbox v-model="config.ignoreCommonFiles"></checkbox>
+				<p class="comment">忽略js、css、jpg等常在网页里被引用的文件名，即对这些文件的访问不加入计数，可以减少误判几率。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>检查请求来源指纹</td>
+			<td>
+				<checkbox v-model="config.enableFingerprint"></checkbox>
+				<p class="comment">在接收到HTTPS请求时尝试检查请求来源的指纹，用来检测代理服务和爬虫攻击；如果你在网站前面放置了别的反向代理服务，请取消此选项。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>启用GET302校验</td>
+			<td>
+				<checkbox v-model="config.enableGET302"></checkbox>
+				<p class="comment">选中后，表示自动通过GET302方法来校验客户端。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>单IP最低QPS</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" name="minQPSPerIP" maxlength="6" style="width: 6em" v-model="minQPSPerIP"/>
+					<span class="ui label">请求数/秒</span>
+				</div>
+				<p class="comment">当某个IP在1分钟内平均QPS达到此值时，才会开始检测；如果设置为0，表示任何访问都会检测。（注意这里设置的是检测开启阈值，不是拦截阈值，拦截阈值在当前表单下方可以设置）</p>
+			</td>
+		</tr>
+		<tr>
+			<td class="color-border">使用自定义拦截阈值</td>
+			<td>
+				<checkbox v-model="useCustomThresholds"></checkbox>
+			</td>
+		</tr>
+		<tr v-show="!config.useDefaultThresholds">
+			<td class="color-border">自定义拦截阈值设置</td>
+			<td>
+				<div>
+					<div class="ui input left right labeled">
+						<span class="ui label basic">单IP每5秒最多</span>
+						<input type="text" style="width: 6em" maxlength="6" v-model="thresholdMaxRequests0"/>
+						<span class="ui label basic">请求</span>
+					</div>
+				</div>
+					
+				<div style="margin-top: 1em">
+					<div class="ui input left right labeled">
+						<span class="ui label basic">单IP每60秒</span>
+						<input type="text" style="width: 6em" maxlength="6" v-model="thresholdMaxRequests1"/>
+						<span class="ui label basic">请求</span>
+					</div>
+				</div>
+				<div style="margin-top: 1em">
+					<div class="ui input left right labeled">
+						<span class="ui label basic">单IP每300秒</span>
+						<input type="text" style="width: 6em" maxlength="6" v-model="thresholdMaxRequests2"/>
+						<span class="ui label basic">请求</span>
+					</div>
+				</div>
+			</td>
+		</tr>
+	</tr>
+	</tbody>
 </table>
 <div class="margin"></div>
 </div>`
@@ -11261,8 +11604,10 @@ Vue.component("firewall-event-level-options", {
         }
     },
     template: `<div>
-<select class="ui dropdown auto-width" name="eventLevel" v-model="level" @change="change"><option v-for="level in levels" :value="level.code">{{level.name}}</option></select>
-<p class="comment">{{description}}</p>
+    <select class="ui dropdown auto-width" name="eventLevel" v-model="level" @change="change">
+        <option v-for="level in levels" :value="level.code">{{level.name}}</option>
+    </select>
+    <p class="comment">{{description}}</p>
 </div>`
 })
 
@@ -11284,16 +11629,16 @@ Vue.component("prior-checkbox", {
 		}
 	},
 	template: `<tbody>
-<tr :class="{active:isPrior}">
-<td class="title">打开独立配置</td>
-<td>
-<div class="ui toggle checkbox">
-<input type="checkbox" v-model="isPrior">
-<label class="red"></label>
-</div>
-<p class="comment"><strong v-if="isPrior">[已打开]</strong> {{realDescription}}。</p>
-</td>
-</tr>
+	<tr :class="{active:isPrior}">
+		<td class="title">打开独立配置</td>
+		<td>
+			<div class="ui toggle checkbox">
+				<input type="checkbox" v-model="isPrior"/>
+				<label class="red"></label>
+			</div>
+			<p class="comment"><strong v-if="isPrior">[已打开]</strong> {{realDescription}}。</p>
+		</td>
+	</tr>
 </tbody>`
 })
 
@@ -11321,49 +11666,55 @@ Vue.component("http-charsets-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="charsetJSON" :value="JSON.stringify(charsetConfig)">
-<table class="ui table definition selectable">
-<prior-checkbox :v-config="charsetConfig" v-if="vIsLocation || vIsGroup"></prior-checkbox>
-<tbody v-show="(!vIsLocation && !vIsGroup) || charsetConfig.isPrior">
-<tr>
-<td class="title">启用字符编码</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" v-model="charsetConfig.isOn">
-<label></label>
-</div>
-</td>
-</tr>
-</tbody>
-<tbody v-show="((!vIsLocation && !vIsGroup) || charsetConfig.isPrior) && charsetConfig.isOn">
-<tr>
-<td class="title">选择字符编码</td>
-<td><select class="ui dropdown" style="width:20em" name="charset" v-model="charsetConfig.charset"><option value>[未选择]</option><optgroup label="常用字符编码"></optgroup><option v-for="charset in vUsualCharsets" :value="charset.charset">{{charset.charset}}（{{charset.name}}）</option><optgroup label="全部字符编码"></optgroup><option v-for="charset in vAllCharsets" :value="charset.charset">{{charset.charset}}（{{charset.name}}）</option></select>
-</td>
-</tr>
-</tbody>
-<more-options-tbody @change="changeAdvancedVisible" v-if="((!vIsLocation && !vIsGroup) || charsetConfig.isPrior) && charsetConfig.isOn"></more-options-tbody>
-<tbody v-show="((!vIsLocation && !vIsGroup) || charsetConfig.isPrior) && charsetConfig.isOn && advancedVisible">
-<tr>
-<td>强制替换</td>
-<td>
-<checkbox v-model="charsetConfig.force"></checkbox>
-<p class="comment">选中后，表示强制覆盖已经设置的字符集；不选中，表示如果源站已经设置了字符集，则保留不修改。</p>
-</td>
-</tr>
-<tr>
-<td>字符编码大写</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" v-model="charsetConfig.isUpper">
-<label></label>
-</div>
-<p class="comment">选中后将指定的字符编码转换为大写，比如默认为<code-label>utf-8</code-label>，选中后将改为<code-label>UTF-8</code-label>。</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="margin"></div>
+	<input type="hidden" name="charsetJSON" :value="JSON.stringify(charsetConfig)"/>
+	<table class="ui table definition selectable">
+		<prior-checkbox :v-config="charsetConfig" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || charsetConfig.isPrior">
+			<tr>
+				<td class="title">启用字符编码</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="charsetConfig.isOn"/>
+						<label></label>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="((!vIsLocation && !vIsGroup) || charsetConfig.isPrior) && charsetConfig.isOn">	
+			<tr>
+				<td class="title">选择字符编码</td>
+				<td><select class="ui dropdown" style="width:20em" name="charset" v-model="charsetConfig.charset">
+						<option value="">[未选择]</option>
+						<optgroup label="常用字符编码"></optgroup>
+						<option v-for="charset in vUsualCharsets" :value="charset.charset">{{charset.charset}}（{{charset.name}}）</option>
+						<optgroup label="全部字符编码"></optgroup>
+						<option v-for="charset in vAllCharsets" :value="charset.charset">{{charset.charset}}（{{charset.name}}）</option>
+					</select>
+				</td>
+			</tr>
+		</tbody>
+		<more-options-tbody @change="changeAdvancedVisible" v-if="((!vIsLocation && !vIsGroup) || charsetConfig.isPrior) && charsetConfig.isOn"></more-options-tbody>
+		<tbody v-show="((!vIsLocation && !vIsGroup) || charsetConfig.isPrior) && charsetConfig.isOn && advancedVisible">
+			<tr>
+				<td>强制替换</td>
+				<td>
+					<checkbox v-model="charsetConfig.force"></checkbox>
+					<p class="comment">选中后，表示强制覆盖已经设置的字符集；不选中，表示如果源站已经设置了字符集，则保留不修改。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>字符编码大写</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="charsetConfig.isUpper"/>
+						<label></label>
+					</div>
+					<p class="comment">选中后将指定的字符编码转换为大写，比如默认为<code-label>utf-8</code-label>，选中后将改为<code-label>UTF-8</code-label>。</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -11404,37 +11755,37 @@ Vue.component("http-expires-time-config-box", {
 		}
 	},
 	template: `<div>
-<table class="ui table">
-<prior-checkbox :v-config="expiresTime"></prior-checkbox>
-<tbody v-show="expiresTime.isPrior">
-<tr>
-<td class="title">启用</td>
-<td><checkbox v-model="expiresTime.isOn"></checkbox>
-<p class="comment">启用后，将会在响应的Header中添加<code-label>Expires</code-label>字段，浏览器据此会将内容缓存在客户端；同时，在管理后台执行清理缓存时，也将无法清理客户端已有的缓存。</p>
-</td>
-</tr>
-<tr v-show="expiresTime.isPrior && expiresTime.isOn">
-<td>覆盖源站设置</td>
-<td>
-<checkbox v-model="expiresTime.overwrite"></checkbox>
-<p class="comment">选中后，会覆盖源站Header中已有的<code-label>Expires</code-label>字段。</p>
-</td>
-</tr>
-<tr v-show="expiresTime.isPrior && expiresTime.isOn">
-<td>自动计算时间</td>
-<td><checkbox v-model="expiresTime.autoCalculate"></checkbox>
-<p class="comment">根据已设置的缓存有效期进行计算。</p>
-</td>
-</tr>
-<tr v-show="expiresTime.isPrior && expiresTime.isOn && !expiresTime.autoCalculate">
-<td>强制缓存时间</td>
-<td>
-<time-duration-box :v-value="expiresTime.duration" @change="notifyChange"></time-duration-box>
-<p class="comment">从客户端访问的时间开始要缓存的时长。</p>
-</td>
-</tr>
-</tbody>
-</table>
+	<table class="ui table">
+		<prior-checkbox :v-config="expiresTime"></prior-checkbox>
+		<tbody v-show="expiresTime.isPrior">
+			<tr>
+				<td class="title">启用</td>
+				<td><checkbox v-model="expiresTime.isOn"></checkbox>
+					<p class="comment">启用后，将会在响应的Header中添加<code-label>Expires</code-label>字段，浏览器据此会将内容缓存在客户端；同时，在管理后台执行清理缓存时，也将无法清理客户端已有的缓存。</p>
+				</td>
+			</tr>
+			<tr v-show="expiresTime.isPrior && expiresTime.isOn">
+				<td>覆盖源站设置</td>
+				<td>
+					<checkbox v-model="expiresTime.overwrite"></checkbox>
+					<p class="comment">选中后，会覆盖源站Header中已有的<code-label>Expires</code-label>字段。</p>
+				</td>
+			</tr>
+			<tr v-show="expiresTime.isPrior && expiresTime.isOn">
+				<td>自动计算时间</td>
+				<td><checkbox v-model="expiresTime.autoCalculate"></checkbox>
+					<p class="comment">根据已设置的缓存有效期进行计算。</p>
+				</td>
+			</tr>
+			<tr v-show="expiresTime.isPrior && expiresTime.isOn && !expiresTime.autoCalculate">
+				<td>强制缓存时间</td>
+				<td>
+					<time-duration-box :v-value="expiresTime.duration" @change="notifyChange"></time-duration-box>
+					<p class="comment">从客户端访问的时间开始要缓存的时长。</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </div>`
 })
 
@@ -11517,31 +11868,41 @@ Vue.component("http-access-log-box", {
 		}
 	},
 	template: `<div style="word-break: break-all" :style="{'color': (accessLog.status >= 400) ? '#dc143c' : ''}" ref="box">
-<div>
-<a v-if="accessLog.node != null && accessLog.node.nodeCluster != null" :href="'/clusters/cluster/node?nodeId=' + accessLog.node.id + '&clusterId=' + accessLog.node.nodeCluster.id" title="点击查看节点详情" target="_top"><span class="grey">[{{accessLog.node.name}}<span v-if="!accessLog.node.name.endsWith('节点')">节点</span>]</span></a>
-<a :href="'/servers/server/log?serverId=' + accessLog.serverId" title="点击到网站" v-if="vShowServerLink && accessLog.serverId > 0"><span class="grey">[网站]</span></a>
-<span v-if="vShowServerLink && (accessLog.serverId == null || accessLog.serverId == 0)" @click.prevent="mismatch()"><span class="disabled">[网站]</span></span>
-<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey"><ip-box :v-ip="accessLog.remoteAddr">[{{accessLog.region}}]</ip-box></span>
-<ip-box><keyword :v-word="vKeyword">{{accessLog.remoteAddr}}</keyword></ip-box> [{{accessLog.timeLocal}}] <em>"<keyword :v-word="vKeyword">{{accessLog.requestMethod}}</keyword> {{accessLog.scheme}}://<keyword :v-word="vKeyword">{{accessLog.host}}</keyword><keyword :v-word="vKeyword">{{accessLog.requestURI}}</keyword> <a :href="accessLog.scheme + '://' + accessLog.host + accessLog.requestURI" target="_blank" title="新窗口打开" class="disabled"><i class="external icon tiny"></i> </a> {{accessLog.proto}}" </em> <keyword :v-word="vKeyword">{{accessLog.status}}</keyword>
-<code-label v-if="accessLog.unicodeHost != null && accessLog.unicodeHost.length > 0">{{accessLog.unicodeHost}}</code-label>
-<code-label v-if="accessLog.attrs != null && (accessLog.attrs['cache.status'] == 'HIT' || accessLog.attrs['cache.status'] == 'STALE')">cache {{accessLog.attrs['cache.status'].toLowerCase()}}</code-label>
-<code-label v-if="accessLog.firewallActions != null && accessLog.firewallActions.length > 0">waf {{accessLog.firewallActions}}</code-label>
-<span v-if="accessLog.tags != null && accessLog.tags.length > 0">- <code-label v-for="tag in accessLog.tags" :key="tag">{{tag}}</code-label>
-</span>
-<span v-if="accessLog.wafInfo != null">
-<a :href="(accessLog.wafInfo.policy.serverId == 0) ? '/servers/components/waf/group?firewallPolicyId=' +  accessLog.firewallPolicyId + '&type=inbound&groupId=' + accessLog.firewallRuleGroupId+ '#set' + accessLog.firewallRuleSetId : '/servers/server/settings/waf/group?serverId=' + accessLog.serverId + '&firewallPolicyId=' + accessLog.firewallPolicyId + '&type=inbound&groupId=' + accessLog.firewallRuleGroupId + '#set' + accessLog.firewallRuleSetId" target="_blank">
-<code-label-plain>
-<span>
-WAF -
-<span v-if="accessLog.wafInfo.group != null">{{accessLog.wafInfo.group.name}} -</span>
-<span v-if="accessLog.wafInfo.set != null">{{accessLog.wafInfo.set.name}}</span>
-</span>
-</code-label-plain>
-</a>
-</span>
-<span v-if="accessLog.requestTime != null"> - 耗时:{{formatCost(accessLog.requestTime)}} ms </span><span v-if="accessLog.humanTime != null && accessLog.humanTime.length > 0" class="grey small">&nbsp; ({{accessLog.humanTime}})</span>
-&nbsp; <a href @click.prevent="showLog" title="查看详情"><i class="icon expand"></i></a>
-</div>
+	<div>
+		<a v-if="accessLog.node != null && accessLog.node.nodeCluster != null" :href="'/clusters/cluster/node?nodeId=' + accessLog.node.id + '&clusterId=' + accessLog.node.nodeCluster.id" title="点击查看节点详情" target="_top"><span class="grey">[{{accessLog.node.name}}<span v-if="!accessLog.node.name.endsWith('节点')">节点</span>]</span></a>
+		
+		<!-- 网站 -->
+		<a :href="'/servers/server/log?serverId=' + accessLog.serverId" title="点击到网站" v-if="vShowServerLink && accessLog.serverId > 0"><span class="grey">[网站]</span></a>
+		<span v-if="vShowServerLink && (accessLog.serverId == null || accessLog.serverId == 0)" @click.prevent="mismatch()"><span class="disabled">[网站]</span></span>
+		
+		<span v-if="accessLog.region != null && accessLog.region.length > 0" class="grey"><ip-box :v-ip="accessLog.remoteAddr">[{{accessLog.region}}]</ip-box></span> 
+		<ip-box><keyword :v-word="vKeyword">{{accessLog.remoteAddr}}</keyword></ip-box> [{{accessLog.timeLocal}}] <em>&quot;<keyword :v-word="vKeyword">{{accessLog.requestMethod}}</keyword> {{accessLog.scheme}}://<keyword :v-word="vKeyword">{{accessLog.host}}</keyword><keyword :v-word="vKeyword">{{accessLog.requestURI}}</keyword> <a :href="accessLog.scheme + '://' + accessLog.host + accessLog.requestURI" target="_blank" title="新窗口打开" class="disabled"><i class="external icon tiny"></i> </a> {{accessLog.proto}}&quot; </em> <keyword :v-word="vKeyword">{{accessLog.status}}</keyword> 
+		
+		<code-label v-if="accessLog.unicodeHost != null && accessLog.unicodeHost.length > 0">{{accessLog.unicodeHost}}</code-label>
+		
+		<!-- attrs -->
+		<code-label v-if="accessLog.attrs != null && (accessLog.attrs['cache.status'] == 'HIT' || accessLog.attrs['cache.status'] == 'STALE')">cache {{accessLog.attrs['cache.status'].toLowerCase()}}</code-label> 
+		<!-- waf -->
+		<code-label v-if="accessLog.firewallActions != null && accessLog.firewallActions.length > 0">waf {{accessLog.firewallActions}}</code-label> 
+		
+		<!-- tags -->
+		<span v-if="accessLog.tags != null && accessLog.tags.length > 0">- <code-label v-for="tag in accessLog.tags" :key="tag">{{tag}}</code-label>
+		</span>
+		<span  v-if="accessLog.wafInfo != null">
+			<a :href="(accessLog.wafInfo.policy.serverId == 0) ? '/servers/components/waf/group?firewallPolicyId=' +  accessLog.firewallPolicyId + '&type=inbound&groupId=' + accessLog.firewallRuleGroupId+ '#set' + accessLog.firewallRuleSetId : '/servers/server/settings/waf/group?serverId=' + accessLog.serverId + '&firewallPolicyId=' + accessLog.firewallPolicyId + '&type=inbound&groupId=' + accessLog.firewallRuleGroupId + '#set' + accessLog.firewallRuleSetId" target="_blank">
+				<code-label-plain>
+					<span>
+						WAF -
+						<span v-if="accessLog.wafInfo.group != null">{{accessLog.wafInfo.group.name}} -</span>
+						<span v-if="accessLog.wafInfo.set != null">{{accessLog.wafInfo.set.name}}</span>
+					</span>
+				</code-label-plain>
+			</a>
+		</span>
+			
+		<span v-if="accessLog.requestTime != null"> - 耗时:{{formatCost(accessLog.requestTime)}} ms </span><span v-if="accessLog.humanTime != null && accessLog.humanTime.length > 0" class="grey small">&nbsp; ({{accessLog.humanTime}})</span>
+		&nbsp; <a href="" @click.prevent="showLog" title="查看详情"><i class="icon expand"></i></a>
+	</div>
 </div>`
 })
 
@@ -11880,12 +12241,13 @@ Vue.component("http-firewall-block-options-viewer", {
 		}
 	},
 	template: `<div>
-<span v-if="options == null">默认设置</span>
-<div v-else>
-状态码：{{options.statusCode}} / 提示内容：<span v-if="options.body != null && options.body.length > 0">[{{options.body.length}}字符]</span><span v-else class="disabled">[无]</span> / 超时时间：{{options.timeout}}秒 <span v-if="options.timeoutMax > options.timeout">/ 最大封禁时长：{{options.timeoutMax}}秒</span>
-<span v-if="options.failBlockScopeAll"> / 尝试全局封禁</span>
-</div>
-</div>`
+	<span v-if="options == null">默认设置</span>
+	<div v-else>
+		状态码：{{options.statusCode}} / 提示内容：<span v-if="options.body != null && options.body.length > 0">[{{options.body.length}}字符]</span><span v-else class="disabled">[无]</span>  / 超时时间：{{options.timeout}}秒 <span v-if="options.timeoutMax > options.timeout">/ 最大封禁时长：{{options.timeoutMax}}秒</span>
+		<span v-if="options.failBlockScopeAll"> / 尝试全局封禁</span>
+	</div>
+</div>	
+`
 })
 
 Vue.component("http-access-log-config-box", {
@@ -11943,92 +12305,93 @@ Vue.component("http-access-log-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="accessLogJSON" :value="JSON.stringify(accessLog)">
-<table class="ui table definition selectable" :class="{'opacity-mask': this.accessLog.firewallOnly}">
-<prior-checkbox :v-config="accessLog" v-if="vIsLocation || vIsGroup"></prior-checkbox>
-<tbody v-show="(!vIsLocation && !vIsGroup) || accessLog.isPrior">
-<tr>
-<td class="title">启用访问日志</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" v-model="accessLog.isOn">
-<label></label>
-</div>
-</td>
-</tr>
-</tbody>
-<tbody v-show="((!vIsLocation && !vIsGroup) || accessLog.isPrior) && accessLog.isOn">
-<tr>
-<td colspan="2"><more-options-indicator @change="changeAdvanced"></more-options-indicator></td>
-</tr>
-</tbody>
-<tbody v-show="((!vIsLocation && !vIsGroup) || accessLog.isPrior) && accessLog.isOn && showAdvancedOptions">
-<tr>
-<td>基础信息</td>
-<td><p class="comment" style="padding-top: 0">默认记录客户端IP、请求URL等基础信息。</p></td>
-</tr>
-<tr>
-<td>高级信息</td>
-<td>
-<div class="ui checkbox" v-for="(field, index) in vFields" style="width:10em;margin-bottom:0.8em">
-<input type="checkbox" v-model="field.isChecked" @change="changeFields" :id="'access-log-field-' + index">
-<label :for="'access-log-field-' + index">{{field.name}}</label>
-</div>
-<p class="comment">在基础信息之外要存储的信息。
-<span class="red" v-if="hasRequestBodyField">记录"请求Body"将会显著消耗更多的系统资源，建议仅在调试时启用，最大记录尺寸为2MiB。</span>
-</p>
-</td>
-</tr>
-<tr>
-<td>要存储的访问日志状态码</td>
-<td>
-<div class="ui checkbox" style="width:3.5em">
-<input type="checkbox" v-model="accessLog.status1">
-<label>1xx</label>
-</div>
-<div class="ui checkbox" style="width:3.5em">
-<input type="checkbox" v-model="accessLog.status2">
-<label>2xx</label>
-</div>
-<div class="ui checkbox" style="width:3.5em">
-<input type="checkbox" v-model="accessLog.status3">
-<label>3xx</label>
-</div>
-<div class="ui checkbox" style="width:3.5em">
-<input type="checkbox" v-model="accessLog.status4">
-<label>4xx</label>
-</div>
-<div class="ui checkbox" style="width:3.5em">
-<input type="checkbox" v-model="accessLog.status5">
-<label>5xx</label>
-</div>
-</td>
-</tr>
-<tr>
-<td>记录客户端中断日志</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" v-model="accessLog.enableClientClosed">
-<label></label>
-</div>
-<p class="comment">以<code-label>499</code-label>的状态码记录客户端主动中断日志。</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div v-show="((!vIsLocation && !vIsGroup) || accessLog.isPrior) && accessLog.isOn">
-<h4>WAF相关</h4>
-<table class="ui table definition selectable">
-<tr>
-<td class="title">只记录WAF相关日志</td>
-<td>
-<checkbox v-model="accessLog.firewallOnly"></checkbox>
-<p class="comment">选中后只记录WAF相关的日志。通过此选项可有效减少访问日志数量，降低网络带宽和存储压力。</p>
-</td>
-</tr>
-</table>
-</div>
-<div class="margin"></div>
+	<input type="hidden" name="accessLogJSON" :value="JSON.stringify(accessLog)"/>
+	<table class="ui table definition selectable" :class="{'opacity-mask': this.accessLog.firewallOnly}">
+		<prior-checkbox :v-config="accessLog" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || accessLog.isPrior">
+			<tr>
+				<td class="title">启用访问日志</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="accessLog.isOn"/>
+						<label></label>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="((!vIsLocation && !vIsGroup) || accessLog.isPrior) && accessLog.isOn">
+			<tr>
+				<td colspan="2"><more-options-indicator @change="changeAdvanced"></more-options-indicator></td>
+			</tr>
+		</tbody>
+		<tbody v-show="((!vIsLocation && !vIsGroup) || accessLog.isPrior) && accessLog.isOn && showAdvancedOptions">
+			<tr>
+				<td>基础信息</td>
+				<td><p class="comment" style="padding-top: 0">默认记录客户端IP、请求URL等基础信息。</p></td>
+			</tr>
+			<tr>
+				<td>高级信息</td>
+				<td>
+					<div class="ui checkbox" v-for="(field, index) in vFields" style="width:10em;margin-bottom:0.8em">
+						<input type="checkbox" v-model="field.isChecked" @change="changeFields" :id="'access-log-field-' + index"/>
+						<label :for="'access-log-field-' + index">{{field.name}}</label>
+					</div>
+					<p class="comment">在基础信息之外要存储的信息。
+						<span class="red" v-if="hasRequestBodyField">记录"请求Body"将会显著消耗更多的系统资源，建议仅在调试时启用，最大记录尺寸为2MiB。</span>
+					</p>
+				</td>
+			</tr>
+			<tr>
+				<td>要存储的访问日志状态码</td>
+				<td>
+					<div class="ui checkbox" style="width:3.5em">
+						<input type="checkbox" v-model="accessLog.status1"/>
+						<label>1xx</label>
+					</div>
+					<div class="ui checkbox" style="width:3.5em">
+						<input type="checkbox" v-model="accessLog.status2"/>
+						<label>2xx</label>
+					</div>
+					<div class="ui checkbox" style="width:3.5em">
+						<input type="checkbox" v-model="accessLog.status3"/>
+						<label>3xx</label>
+					</div>
+					<div class="ui checkbox" style="width:3.5em">
+						<input type="checkbox" v-model="accessLog.status4"/>
+						<label>4xx</label>
+					</div>
+					<div class="ui checkbox" style="width:3.5em">
+						<input type="checkbox" v-model="accessLog.status5"/>
+						<label>5xx</label>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>记录客户端中断日志</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="accessLog.enableClientClosed"/>
+						<label></label>
+					</div>
+					<p class="comment">以<code-label>499</code-label>的状态码记录客户端主动中断日志。</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	
+	<div v-show="((!vIsLocation && !vIsGroup) || accessLog.isPrior) && accessLog.isOn">
+        <h4>WAF相关</h4>
+        <table class="ui table definition selectable">
+            <tr>
+                <td class="title">只记录WAF相关日志</td>
+                <td>
+                    <checkbox v-model="accessLog.firewallOnly"></checkbox>
+                    <p class="comment">选中后只记录WAF相关的日志。通过此选项可有效减少访问日志数量，降低网络带宽和存储压力。</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -12106,31 +12469,31 @@ Vue.component("http-auth-basic-auth-user-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="httpAuthBasicAuthUsersJSON" :value="JSON.stringify(users)">
-<div v-if="users.length > 0">
-<div class="ui label small basic" v-for="(user, index) in users">
-{{user.username}} <a href title="修改" @click.prevent="update(index, user)"><i class="icon pencil tiny"></i></a>
-<a href title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
-</div>
-<div class="ui divider"></div>
-</div>
-<div v-show="isAdding">
-<div class="ui fields inline">
-<div class="ui field">
-<input type="text" placeholder="用户名" v-model="username" size="15" ref="username">
-</div>
-<div class="ui field">
-<input type="password" placeholder="密码" v-model="password" size="15" ref="password">
-</div>
-<div class="ui field">
-<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button>&nbsp;
-<a href title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
-</div>
-</div>
-</div>
-<div v-if="!isAdding" style="margin-top: 1em">
-<button class="ui button tiny" type="button" @click.prevent="add">+</button>
-</div>
+	<input type="hidden" name="httpAuthBasicAuthUsersJSON" :value="JSON.stringify(users)"/>
+	<div v-if="users.length > 0">
+		<div class="ui label small basic" v-for="(user, index) in users">
+			{{user.username}} <a href="" title="修改" @click.prevent="update(index, user)"><i class="icon pencil tiny"></i></a>
+			<a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+		</div>
+		<div class="ui divider"></div>
+	</div>
+	<div v-show="isAdding">
+		<div class="ui fields inline">
+			<div class="ui field">
+				<input type="text" placeholder="用户名" v-model="username" size="15" ref="username"/>
+			</div>
+			<div class="ui field">
+				<input type="password" placeholder="密码" v-model="password" size="15" ref="password"/>
+			</div>
+			<div class="ui field">
+				<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button>&nbsp;
+				<a href="" title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
+			</div>
+		</div>
+	</div>
+	<div v-if="!isAdding" style="margin-top: 1em">
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	</div>
 </div>`
 })
 
@@ -12158,37 +12521,81 @@ Vue.component("http-location-labels", {
 			return "/servers/server/settings/locations" + path + "?serverId=" + this.vServerId + "&locationId=" + this.location.id
 		}
 	},
-	template: `<div class="labels-box">
-<http-location-labels-label v-if="location.name != null && location.name.length > 0" :class="'olive'" :href="url('/location')">{{location.name}}</http-location-labels-label>
-<div v-if="location.domains != null && location.domains.length > 0">
-<grey-label v-for="domain in location.domains">{{domain}}</grey-label>
-</div>
-<http-location-labels-label v-if="location.isBreak" :href="url('/location')">BREAK</http-location-labels-label>
-<http-location-labels-label v-if="location.web != null && configIsOn(location.web.redirectToHTTPS)" :href="url('/http')">自动跳转HTTPS</http-location-labels-label>
-<http-location-labels-label v-if="location.web != null && configIsOn(location.web.root)" :href="url('/web')">文档根目录</http-location-labels-label>
-<http-location-labels-label v-if="refIsOn(location.reverseProxyRef, location.reverseProxy)" :v-href="url('/reverseProxy')">源站</http-location-labels-label>
-<http-location-labels-label v-if="location.web != null && location.web.uam != null && location.web.uam.isPrior"><span :class="{disabled: !location.web.uam.isOn, red:location.web.uam.isOn}">5秒盾</span></http-location-labels-label>
-<http-location-labels-label v-if="location.web != null && location.web.cc != null && location.web.cc.isPrior"><span :class="{disabled: !location.web.cc.isOn, red:location.web.cc.isOn}">CC防护</span></http-location-labels-label>
-<http-location-labels-label v-if="location.web != null && configIsOn(location.web.cache)" :v-href="url('/cache')">CACHE</http-location-labels-label>
-<http-location-labels-label v-if="location.web != null && configIsOn(location.web.charset) && location.web.charset.charset.length > 0" :href="url('/charset')">{{location.web.charset.charset}}</http-location-labels-label>
-<http-location-labels-label v-if="location.web != null && refIsOn(location.web.gzipRef, location.web.gzip) && location.web.gzip.level > 0" :href="url('/gzip')">Gzip:{{location.web.gzip.level}}</http-location-labels-label>
-<http-location-labels-label v-if="location.web != null && refIsOn(location.web.requestHeaderPolicyRef, location.web.requestHeaderPolicy) && (len(location.web.requestHeaderPolicy.addHeaders) > 0 || len(location.web.requestHeaderPolicy.setHeaders) > 0 || len(location.web.requestHeaderPolicy.replaceHeaders) > 0 || len(location.web.requestHeaderPolicy.deleteHeaders) > 0)" :href="url('/headers')">请求Header</http-location-labels-label>
-<http-location-labels-label v-if="location.web != null && refIsOn(location.web.responseHeaderPolicyRef, location.web.responseHeaderPolicy) && (len(location.web.responseHeaderPolicy.addHeaders) > 0 || len(location.web.responseHeaderPolicy.setHeaders) > 0 || len(location.web.responseHeaderPolicy.replaceHeaders) > 0 || len(location.web.responseHeaderPolicy.deleteHeaders) > 0)" :href="url('/headers')">响应Header</http-location-labels-label>
-<http-location-labels-label v-if="location.web != null && refIsOn(location.web.websocketRef, location.web.websocket)" :href="url('/websocket')">Websocket</http-location-labels-label>
-<http-location-labels-label v-if="location.web != null && location.web.requestScripts != null && ((location.web.requestScripts.initGroup != null && location.web.requestScripts.initGroup.isPrior) || (location.web.requestScripts.requestGroup != null && location.web.requestScripts.requestGroup.isPrior))" :href="url('/requestScripts')">请求脚本</http-location-labels-label>
-<http-location-labels-label v-if="location.web != null && location.web.remoteAddr != null && location.web.remoteAddr.isPrior" :href="url('/remoteAddr')" :class="{disabled: !location.web.remoteAddr.isOn}">访客IP地址</http-location-labels-label>
-<http-location-labels-label v-if="location.web != null && location.web.requestLimit != null && location.web.requestLimit.isPrior" :href="url('/requestLimit')" :class="{disabled: !location.web.requestLimit.isOn}">请求限制</http-location-labels-label>
-<div v-if="location.web != null && location.web.pages != null && location.web.pages.length > 0">
-<div v-for="page in location.web.pages" :key="page.id"><http-location-labels-label :href="url('/pages')">PAGE [状态码{{page.status[0]}}] -> {{page.url}}</http-location-labels-label></div>
-</div>
-<div v-if="location.web != null && configIsOn(location.web.shutdown)">
-<http-location-labels-label :v-class="'red'" :href="url('/pages')">临时关闭</http-location-labels-label>
-</div>
-<div v-if="location.web != null && location.web.rewriteRules != null && location.web.rewriteRules.length > 0">
-<div v-for="rewriteRule in location.web.rewriteRules">
-<http-location-labels-label :href="url('/rewrite')">REWRITE {{rewriteRule.pattern}} -> {{rewriteRule.replace}}</http-location-labels-label>
-</div>
-</div>
+	template: `	<div class="labels-box">
+	<!-- 基本信息 -->
+	<http-location-labels-label v-if="location.name != null && location.name.length > 0" :class="'olive'" :href="url('/location')">{{location.name}}</http-location-labels-label>
+	
+	<!-- domains -->
+	<div v-if="location.domains != null && location.domains.length > 0">
+		<grey-label v-for="domain in location.domains">{{domain}}</grey-label>
+	</div>
+	
+	<!-- break -->
+	<http-location-labels-label v-if="location.isBreak" :href="url('/location')">BREAK</http-location-labels-label>
+	
+	<!-- redirectToHTTPS -->
+	<http-location-labels-label v-if="location.web != null && configIsOn(location.web.redirectToHTTPS)" :href="url('/http')">自动跳转HTTPS</http-location-labels-label>
+	
+	<!-- Web -->
+	<http-location-labels-label v-if="location.web != null && configIsOn(location.web.root)" :href="url('/web')">文档根目录</http-location-labels-label>
+	
+	<!-- 反向代理 -->
+	<http-location-labels-label v-if="refIsOn(location.reverseProxyRef, location.reverseProxy)" :v-href="url('/reverseProxy')">源站</http-location-labels-label>
+	
+	<!-- UAM -->
+	<http-location-labels-label v-if="location.web != null && location.web.uam != null && location.web.uam.isPrior"><span :class="{disabled: !location.web.uam.isOn, red:location.web.uam.isOn}">5秒盾</span></http-location-labels-label>
+	
+	<!-- CC -->
+	<http-location-labels-label v-if="location.web != null && location.web.cc != null && location.web.cc.isPrior"><span :class="{disabled: !location.web.cc.isOn, red:location.web.cc.isOn}">CC防护</span></http-location-labels-label>
+	
+	<!-- WAF -->
+	<!-- TODO -->
+	
+	<!-- Cache -->
+	<http-location-labels-label v-if="location.web != null && configIsOn(location.web.cache)" :v-href="url('/cache')">CACHE</http-location-labels-label>
+	
+	<!-- Charset -->
+	<http-location-labels-label v-if="location.web != null && configIsOn(location.web.charset) && location.web.charset.charset.length > 0" :href="url('/charset')">{{location.web.charset.charset}}</http-location-labels-label>
+	
+	<!-- 访问日志 -->
+	<!-- TODO -->
+	
+	<!-- 统计 -->
+	<!-- TODO -->
+	
+	<!-- Gzip -->
+	<http-location-labels-label v-if="location.web != null && refIsOn(location.web.gzipRef, location.web.gzip) && location.web.gzip.level > 0" :href="url('/gzip')">Gzip:{{location.web.gzip.level}}</http-location-labels-label>
+	
+	<!-- HTTP Header -->
+	<http-location-labels-label v-if="location.web != null && refIsOn(location.web.requestHeaderPolicyRef, location.web.requestHeaderPolicy) && (len(location.web.requestHeaderPolicy.addHeaders) > 0 || len(location.web.requestHeaderPolicy.setHeaders) > 0 || len(location.web.requestHeaderPolicy.replaceHeaders) > 0 || len(location.web.requestHeaderPolicy.deleteHeaders) > 0)" :href="url('/headers')">请求Header</http-location-labels-label>
+	<http-location-labels-label v-if="location.web != null && refIsOn(location.web.responseHeaderPolicyRef, location.web.responseHeaderPolicy) && (len(location.web.responseHeaderPolicy.addHeaders) > 0 || len(location.web.responseHeaderPolicy.setHeaders) > 0 || len(location.web.responseHeaderPolicy.replaceHeaders) > 0 || len(location.web.responseHeaderPolicy.deleteHeaders) > 0)" :href="url('/headers')">响应Header</http-location-labels-label>
+	
+	<!-- Websocket -->
+	<http-location-labels-label v-if="location.web != null && refIsOn(location.web.websocketRef, location.web.websocket)" :href="url('/websocket')">Websocket</http-location-labels-label>
+	
+	<!-- 请求脚本 -->
+	<http-location-labels-label v-if="location.web != null && location.web.requestScripts != null && ((location.web.requestScripts.initGroup != null && location.web.requestScripts.initGroup.isPrior) || (location.web.requestScripts.requestGroup != null && location.web.requestScripts.requestGroup.isPrior))" :href="url('/requestScripts')">请求脚本</http-location-labels-label>
+	
+	<!-- 自定义访客IP地址 -->
+	<http-location-labels-label v-if="location.web != null && location.web.remoteAddr != null && location.web.remoteAddr.isPrior" :href="url('/remoteAddr')" :class="{disabled: !location.web.remoteAddr.isOn}">访客IP地址</http-location-labels-label>
+	
+	<!-- 请求限制 -->
+	<http-location-labels-label v-if="location.web != null && location.web.requestLimit != null && location.web.requestLimit.isPrior" :href="url('/requestLimit')" :class="{disabled: !location.web.requestLimit.isOn}">请求限制</http-location-labels-label>
+		
+	<!-- 自定义页面 -->
+	<div v-if="location.web != null && location.web.pages != null && location.web.pages.length > 0">
+		<div v-for="page in location.web.pages" :key="page.id"><http-location-labels-label :href="url('/pages')">PAGE [状态码{{page.status[0]}}] -&gt; {{page.url}}</http-location-labels-label></div>
+	</div>
+	<div v-if="location.web != null && configIsOn(location.web.shutdown)">
+		<http-location-labels-label :v-class="'red'" :href="url('/pages')">临时关闭</http-location-labels-label>
+	</div>
+	
+	<!-- 重写规则 -->
+	<div v-if="location.web != null && location.web.rewriteRules != null && location.web.rewriteRules.length > 0">
+		<div v-for="rewriteRule in location.web.rewriteRules">
+			<http-location-labels-label :href="url('/rewrite')">REWRITE {{rewriteRule.pattern}} -&gt; {{rewriteRule.replace}}</http-location-labels-label>
+		</div>
+	</div>
 </div>`
 })
 
@@ -12225,52 +12632,55 @@ Vue.component("http-gzip-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="gzipRefJSON" :value="JSON.stringify(vGzipRef)">
+<input type="hidden" name="gzipRefJSON" :value="JSON.stringify(vGzipRef)"/> 
 <table class="ui table selectable definition">
-<prior-checkbox :v-config="vGzipRef" v-if="vIsLocation"></prior-checkbox>
-<tbody v-show="!vIsLocation || vGzipRef.isPrior">
-<tr>
-<td class="title">启用Gzip压缩</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" v-model="vGzipRef.isOn">
-<label></label>
-</div>
+	<prior-checkbox :v-config="vGzipRef" v-if="vIsLocation"></prior-checkbox>
+	<tbody v-show="!vIsLocation || vGzipRef.isPrior">
+		<tr>
+			<td class="title">启用Gzip压缩</td>
+			<td>
+				<div class="ui checkbox">
+					<input type="checkbox" v-model="vGzipRef.isOn"/>
+					<label></label>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+	<tbody v-show="isOn()">
+		<tr>
+			<td class="title">压缩级别</td>
+			<td>
+				<select class="dropdown auto-width" name="level" v-model="gzip.level">
+					<option value="0">不压缩</option>
+					<option v-for="i in 9" :value="i">{{i}}</option>
+				</select>
+				<p class="comment">级别越高，压缩比例越大。</p>
+			</td>
+		</tr>
+	</tbody>
+	<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
+	<tbody v-show="isOn() && advancedVisible">
+		<tr>
+			<td>Gzip内容最小长度</td>
+			<td>
+				<size-capacity-box :v-name="'minLength'" :v-value="gzip.minLength" :v-unit="'kb'"></size-capacity-box>
+				<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>Gzip内容最大长度</td>
+			<td>
+				<size-capacity-box :v-name="'maxLength'" :v-value="gzip.maxLength" :v-unit="'mb'"></size-capacity-box>
+				<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>匹配条件</td>
+			<td>
+				<http-request-conds-box :v-conds="gzip.conds"></http-request-conds-box>
 </td>
-</tr>
-</tbody>
-<tbody v-show="isOn()">
-<tr>
-<td class="title">压缩级别</td>
-<td>
-<select class="dropdown auto-width" name="level" v-model="gzip.level"><option value="0">不压缩</option><option v-for="i in 9" :value="i">{{i}}</option></select>
-<p class="comment">级别越高，压缩比例越大。</p>
-</td>
-</tr>
-</tbody>
-<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
-<tbody v-show="isOn() && advancedVisible">
-<tr>
-<td>Gzip内容最小长度</td>
-<td>
-<size-capacity-box :v-name="'minLength'" :v-value="gzip.minLength" :v-unit="'kb'"></size-capacity-box>
-<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
-</td>
-</tr>
-<tr>
-<td>Gzip内容最大长度</td>
-<td>
-<size-capacity-box :v-name="'maxLength'" :v-value="gzip.maxLength" :v-unit="'mb'"></size-capacity-box>
-<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
-</td>
-</tr>
-<tr>
-<td>匹配条件</td>
-<td>
-<http-request-conds-box :v-conds="gzip.conds"></http-request-conds-box>
-</td>
-</tr>
-</tbody>
+		</tr>
+	</tbody>
 </table>
 </div>`
 })
@@ -12339,29 +12749,29 @@ Vue.component("script-config-box", {
 		}
 	},
 	template: `<div>
-<table class="ui table definition selectable">
-<tbody>
-<tr>
-<td class="title">启用脚本设置</td>
-<td><checkbox v-model="config.isOn"></checkbox></td>
-</tr>
-</tbody>
-<tbody>
-<tr :style="{opacity: !config.isOn ? 0.5 : 1}">
-<td>脚本代码</td>
-<td>
-<p class="comment" v-if="auditingStatus != null">
-<span class="green" v-if="auditingStatus.isPassed">管理员审核结果：审核通过。</span>
-<span class="red" v-else-if="auditingStatus.isRejected">管理员审核结果：驳回 &nbsp; &nbsp; 驳回理由：{{auditingStatus.rejectedReason}}</span>
-<span class="red" v-else>当前脚本将在审核后生效，请耐心等待审核结果。 <a href="/servers/user-scripts" target="_blank" v-if="isPlus()">去审核 &#187;</a></span>
-</p>
-<p class="comment" v-if="auditingStatus == null"><span class="green">管理员审核结果：审核通过。</span></p>
-<source-code-box :id="id" type="text/javascript" :read-only="false" @change="changeCode">{{config.code}}</source-code-box>
-<p class="comment">{{comment}}</p>
-</td>
-</tr>
-</tbody>
-</table>
+	<table class="ui table definition selectable">
+		<tbody>
+			<tr>
+				<td class="title">启用脚本设置</td>
+				<td><checkbox v-model="config.isOn"></checkbox></td>
+			</tr>
+		</tbody>
+		<tbody>
+			<tr :style="{opacity: !config.isOn ? 0.5 : 1}">
+				<td>脚本代码</td>	
+				<td>
+					<p class="comment" v-if="auditingStatus != null">
+						<span class="green" v-if="auditingStatus.isPassed">管理员审核结果：审核通过。</span>
+						<span class="red" v-else-if="auditingStatus.isRejected">管理员审核结果：驳回 &nbsp; &nbsp; 驳回理由：{{auditingStatus.rejectedReason}}</span>
+						<span class="red" v-else>当前脚本将在审核后生效，请耐心等待审核结果。 <a href="/servers/user-scripts" target="_blank" v-if="isPlus()">去审核 &raquo;</a></span>
+					</p>
+					<p class="comment" v-if="auditingStatus == null"><span class="green">管理员审核结果：审核通过。</span></p>
+					<source-code-box :id="id" type="text/javascript" :read-only="false" @change="changeCode">{{config.code}}</source-code-box>
+					<p class="comment">{{comment}}</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </div>`
 })
 
@@ -12409,7 +12819,8 @@ Vue.component("http-firewall-js-cookie-options-viewer", {
 			}
 		}
 	},
-	template: `<div>{{summary}}</div>`
+	template: `<div>{{summary}}</div>
+`
 })
 
 Vue.component("ssl-certs-view", {
@@ -12438,11 +12849,11 @@ Vue.component("ssl-certs-view", {
 		}
 	},
 	template: `<div>
-<div v-if="certs != null && certs.length > 0">
-<div class="ui label small basic" v-for="(cert, index) in certs">
-{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp;<a href title="查看" @click.prevent="viewCert(cert.id)"><i class="icon expand blue"></i></a>
-</div>
-</div>
+	<div v-if="certs != null && certs.length > 0">
+		<div class="ui label small basic" v-for="(cert, index) in certs">
+			{{cert.name}} / {{cert.dnsNames}} / 有效至{{formatTime(cert.timeEndAt)}} &nbsp;<a href="" title="查看" @click.prevent="viewCert(cert.id)"><i class="icon expand blue"></i></a>
+		</div>
+	</div>
 </div>`
 })
 
@@ -12517,7 +12928,8 @@ Vue.component("http-firewall-captcha-options-viewer", {
 			}
 		}
 	},
-	template: `<div>{{summary}}</div>`
+	template: `<div>{{summary}}</div>
+`
 })
 
 Vue.component("reverse-proxy-box", {
@@ -12677,184 +13089,187 @@ Vue.component("reverse-proxy-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="reverseProxyRefJSON" :value="JSON.stringify(reverseProxyRef)">
-<input type="hidden" name="reverseProxyJSON" :value="JSON.stringify(reverseProxyConfig)">
-<table class="ui table selectable definition">
-<prior-checkbox :v-config="reverseProxyRef" v-if="vIsLocation || vIsGroup"></prior-checkbox>
-<tbody v-show="(!vIsLocation && !vIsGroup) || reverseProxyRef.isPrior">
-<tr>
-<td class="title">启用源站</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" v-model="reverseProxyRef.isOn">
-<label></label>
-</div>
-<p class="comment">选中后，所有源站设置才会生效。</p>
-</td>
-</tr>
-<tr v-show="family == null || family == 'http'">
-<td>回源主机名<em>（Host）</em></td>
-<td>
-<radio :v-value="0" v-model="reverseProxyConfig.requestHostType">跟随CDN域名</radio> &nbsp;
-<radio :v-value="1" v-model="reverseProxyConfig.requestHostType">跟随源站</radio> &nbsp;
-<radio :v-value="2" v-model="reverseProxyConfig.requestHostType">自定义</radio>
-<div v-show="reverseProxyConfig.requestHostType == 2" style="margin-top: 0.8em">
-<input type="text" placeholder="比如example.com" v-model="reverseProxyConfig.requestHost">
-</div>
-<p class="comment">请求源站时的主机名（Host），用于修改源站接收到的域名
-<span v-if="reverseProxyConfig.requestHostType == 0">，"跟随CDN域名"是指源站接收到的域名和当前CDN访问域名保持一致</span>
-<span v-if="reverseProxyConfig.requestHostType == 1">，"跟随源站"是指源站接收到的域名仍然是填写的源站地址中的信息，不随代理服务域名改变而改变</span>
-<span v-if="reverseProxyConfig.requestHostType == 2">，自定义Host内容中支持请求变量</span>。</p>
-</td>
-</tr>
-<tr v-show="family == null || family == 'http'">
-<td>回源主机名移除端口</td>
-<td><checkbox v-model="reverseProxyConfig.requestHostExcludingPort"></checkbox>
-<p class="comment">选中后表示移除回源主机名中的端口部分。</p>
-</td>
-</tr>
-</tbody>
-<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
-<tbody v-show="isOn() && advancedVisible">
-<tr v-show="family == null || family == 'http'">
-<td>回源跟随</td>
-<td>
-<checkbox v-model="reverseProxyConfig.followRedirects"></checkbox>
-<p class="comment">选中后，自动读取源站跳转后的网页内容。</p>
-</td>
-</tr>
-<tr v-show="family == null || family == 'http'">
-<td>自动添加报头</td>
-<td>
-<div>
-<div style="width: 14em; float: left; margin-bottom: 1em" v-for="header in forwardHeaders" :key="header.name">
-<checkbox v-model="header.isChecked" @input="changeAddHeader">{{header.name}}</checkbox>
-</div>
-<div style="clear: both"></div>
-</div>
-<p class="comment">选中后，会自动向源站请求添加这些报头，以便于源站获取客户端信息。</p>
-</td>
-</tr>
-<tr v-show="family == null || family == 'http'">
-<td>请求URI<em>（RequestURI）</em></td>
-<td>
-<input type="text" placeholder="\${requestURI}" v-model="reverseProxyConfig.requestURI">
-<p class="comment">\${requestURI}为完整的请求URI，可以使用类似于"\${requestURI}?arg1=value1&arg2=value2"的形式添加你的参数。</p>
-</td>
-</tr>
-<tr v-show="family == null || family == 'http'">
-<td>去除URL前缀<em>（StripPrefix）</em></td>
-<td>
-<input type="text" v-model="reverseProxyConfig.stripPrefix" placeholder="/PREFIX">
-<p class="comment">可以把请求的路径部分前缀去除后再查找文件，比如把 <span class="ui label tiny">/web/app/index.html</span> 去除前缀 <span class="ui label tiny">/web</span> 后就变成 <span class="ui label tiny">/app/index.html</span>。 </p>
-</td>
-</tr>
-<tr v-if="family == null || family == 'http'">
-<td>自动刷新缓存区<em>（AutoFlush）</em></td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" v-model="reverseProxyConfig.autoFlush">
-<label></label>
-</div>
-<p class="comment">开启后将自动刷新缓冲区数据到客户端，在类似于SSE（server-sent events）等场景下很有用。</p>
-</td>
-</tr>
-<tr v-show="family == null || family == 'http'">
-<td>自动重试50X</td>
-<td>
-<checkbox v-model="reverseProxyConfig.retry50X"></checkbox>
-<p class="comment">选中后，表示当源站返回状态码为50X（比如502、504等）时，自动重试其他源站。</p>
-</td>
-</tr>
-<tr v-show="family == null || family == 'http'">
-<td>自动重试40X</td>
-<td>
-<checkbox v-model="reverseProxyConfig.retry40X"></checkbox>
-<p class="comment">选中后，表示当源站返回状态码为40X（403或404）时，自动重试其他源站。</p>
-</td>
-</tr>
-<tr v-show="family != 'unix'">
-<td>PROXY Protocol</td>
-<td>
-<checkbox name="proxyProtocolIsOn" v-model="reverseProxyConfig.proxyProtocol.isOn"></checkbox>
-<p class="comment">选中后表示启用PROXY Protocol，每次连接源站时都会在头部写入客户端地址信息。</p>
-</td>
-</tr>
-<tr v-show="family != 'unix' && reverseProxyConfig.proxyProtocol.isOn">
-<td>PROXY Protocol版本</td>
-<td>
-<select class="ui dropdown auto-width" name="proxyProtocolVersion" v-model="reverseProxyConfig.proxyProtocol.version"><option value="1">1</option><option value="2">2</option></select>
-<p class="comment" v-if="reverseProxyConfig.proxyProtocol.version == 1">发送类似于<code-label>PROXY TCP4 192.168.1.1 192.168.1.10 32567 443</code-label>的头部信息。</p>
-<p class="comment" v-if="reverseProxyConfig.proxyProtocol.version == 2">发送二进制格式的头部信息。</p>
-</td>
-</tr>
-<tr v-if="family == null || family == 'http'">
-<td class="color-border">源站连接失败超时时间</td>
-<td>
-<div class="ui fields inline">
-<div class="ui field">
-<input type="text" name="connTimeout" value="10" size="6" v-model="reverseProxyConfig.connTimeout.count">
-</div>
-<div class="ui field">
-秒
-</div>
-</div>
-<p class="comment">连接源站失败的最大超时时间，0表示不限制。</p>
-</td>
-</tr>
-<tr v-if="family == null || family == 'http'">
-<td class="color-border">源站读取超时时间</td>
-<td>
-<div class="ui fields inline">
-<div class="ui field">
-<input type="text" name="readTimeout" value="0" size="6" v-model="reverseProxyConfig.readTimeout.count">
-</div>
-<div class="ui field">
-秒
-</div>
-</div>
-<p class="comment">读取内容时的最大超时时间，0表示不限制。</p>
-</td>
-</tr>
-<tr v-if="family == null || family == 'http'">
-<td class="color-border">源站最大并发连接数</td>
-<td>
-<div class="ui fields inline">
-<div class="ui field">
-<input type="text" name="maxConns" value="0" size="6" maxlength="10" v-model="reverseProxyConfig.maxConns">
-</div>
-</div>
-<p class="comment">源站可以接受到的最大并发连接数，0表示使用系统默认。</p>
-</td>
-</tr>
-<tr v-if="family == null || family == 'http'">
-<td class="color-border">源站最大空闲连接数</td>
-<td>
-<div class="ui fields inline">
-<div class="ui field">
-<input type="text" name="maxIdleConns" value="0" size="6" maxlength="10" v-model="reverseProxyConfig.maxIdleConns">
-</div>
-</div>
-<p class="comment">当没有请求时，源站保持等待的最大空闲连接数量，0表示使用系统默认。</p>
-</td>
-</tr>
-<tr v-if="family == null || family == 'http'">
-<td class="color-border">源站最大空闲超时时间</td>
-<td>
-<div class="ui fields inline">
-<div class="ui field">
-<input type="text" name="idleTimeout" value="0" size="6" v-model="reverseProxyConfig.idleTimeout.count">
-</div>
-<div class="ui field">
-秒
-</div>
-</div>
-<p class="comment">源站保持等待的空闲超时时间，0表示使用默认时间。</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="margin"></div>
+	<input type="hidden" name="reverseProxyRefJSON" :value="JSON.stringify(reverseProxyRef)"/>
+	<input type="hidden" name="reverseProxyJSON" :value="JSON.stringify(reverseProxyConfig)"/>
+	<table class="ui table selectable definition">
+		<prior-checkbox :v-config="reverseProxyRef" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || reverseProxyRef.isPrior">
+			<tr>
+				<td class="title">启用源站</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="reverseProxyRef.isOn"/>
+						<label></label>
+					</div>
+					<p class="comment">选中后，所有源站设置才会生效。</p>
+				</td>
+			</tr>
+			<tr v-show="family == null || family == 'http'">
+				<td>回源主机名<em>（Host）</em></td>
+				<td>	
+					<radio :v-value="0" v-model="reverseProxyConfig.requestHostType">跟随CDN域名</radio> &nbsp;
+					<radio :v-value="1" v-model="reverseProxyConfig.requestHostType">跟随源站</radio> &nbsp;
+					<radio :v-value="2" v-model="reverseProxyConfig.requestHostType">自定义</radio>
+					<div v-show="reverseProxyConfig.requestHostType == 2" style="margin-top: 0.8em">
+						<input type="text" placeholder="比如example.com" v-model="reverseProxyConfig.requestHost"/>
+					</div>
+					<p class="comment">请求源站时的主机名（Host），用于修改源站接收到的域名
+					<span v-if="reverseProxyConfig.requestHostType == 0">，"跟随CDN域名"是指源站接收到的域名和当前CDN访问域名保持一致</span>
+					<span v-if="reverseProxyConfig.requestHostType == 1">，"跟随源站"是指源站接收到的域名仍然是填写的源站地址中的信息，不随代理服务域名改变而改变</span>					
+					<span v-if="reverseProxyConfig.requestHostType == 2">，自定义Host内容中支持请求变量</span>。</p>
+				</td>
+			</tr>
+			<tr v-show="family == null || family == 'http'">
+				<td>回源主机名移除端口</td>
+				<td><checkbox v-model="reverseProxyConfig.requestHostExcludingPort"></checkbox>
+					<p class="comment">选中后表示移除回源主机名中的端口部分。</p>
+				</td>
+			</tr>
+		</tbody>
+		<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
+		<tbody v-show="isOn() && advancedVisible">
+			<tr v-show="family == null || family == 'http'">
+				<td>回源跟随</td>
+				<td>
+					<checkbox v-model="reverseProxyConfig.followRedirects"></checkbox>
+					<p class="comment">选中后，自动读取源站跳转后的网页内容。</p>
+				</td>
+			</tr>
+		    <tr v-show="family == null || family == 'http'">
+		        <td>自动添加报头</td>
+		        <td>
+		            <div>
+		                <div style="width: 14em; float: left; margin-bottom: 1em" v-for="header in forwardHeaders" :key="header.name">
+		                    <checkbox v-model="header.isChecked" @input="changeAddHeader">{{header.name}}</checkbox>
+                        </div>
+                        <div style="clear: both"></div>
+                    </div>
+                    <p class="comment">选中后，会自动向源站请求添加这些报头，以便于源站获取客户端信息。</p>
+                </td> 
+            </tr>
+			<tr v-show="family == null || family == 'http'">
+				<td>请求URI<em>（RequestURI）</em></td>
+				<td>
+					<input type="text" placeholder="\${requestURI}" v-model="reverseProxyConfig.requestURI"/>
+					<p class="comment">\${requestURI}为完整的请求URI，可以使用类似于"\${requestURI}?arg1=value1&arg2=value2"的形式添加你的参数。</p>
+				</td>
+			</tr>
+			<tr v-show="family == null || family == 'http'">
+				<td>去除URL前缀<em>（StripPrefix）</em></td>
+				<td>
+					<input type="text" v-model="reverseProxyConfig.stripPrefix" placeholder="/PREFIX"/>
+					<p class="comment">可以把请求的路径部分前缀去除后再查找文件，比如把 <span class="ui label tiny">/web/app/index.html</span> 去除前缀 <span class="ui label tiny">/web</span> 后就变成 <span class="ui label tiny">/app/index.html</span>。 </p>
+				</td>
+			</tr>
+			<tr v-if="family == null || family == 'http'">
+				<td>自动刷新缓存区<em>（AutoFlush）</em></td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="reverseProxyConfig.autoFlush"/>
+						<label></label>
+					</div>
+					<p class="comment">开启后将自动刷新缓冲区数据到客户端，在类似于SSE（server-sent events）等场景下很有用。</p>
+				</td>
+			</tr>
+			<tr v-show="family == null || family == 'http'">
+            	<td>自动重试50X</td>
+            	<td>
+            		<checkbox v-model="reverseProxyConfig.retry50X"></checkbox>
+            		<p class="comment">选中后，表示当源站返回状态码为50X（比如502、504等）时，自动重试其他源站。</p>
+				</td>
+			</tr>
+			<tr v-show="family == null || family == 'http'">
+            	<td>自动重试40X</td>
+            	<td>
+            		<checkbox v-model="reverseProxyConfig.retry40X"></checkbox>
+            		<p class="comment">选中后，表示当源站返回状态码为40X（403或404）时，自动重试其他源站。</p>
+				</td>
+			</tr>
+            <tr v-show="family != 'unix'">
+            	<td>PROXY Protocol</td>
+            	<td>
+            		<checkbox name="proxyProtocolIsOn" v-model="reverseProxyConfig.proxyProtocol.isOn"></checkbox>
+            		<p class="comment">选中后表示启用PROXY Protocol，每次连接源站时都会在头部写入客户端地址信息。</p>
+				</td>
+			</tr>
+			<tr v-show="family != 'unix' && reverseProxyConfig.proxyProtocol.isOn">
+				<td>PROXY Protocol版本</td>
+				<td>
+					<select class="ui dropdown auto-width" name="proxyProtocolVersion" v-model="reverseProxyConfig.proxyProtocol.version">
+						<option value="1">1</option>
+						<option value="2">2</option>
+					</select>
+					<p class="comment" v-if="reverseProxyConfig.proxyProtocol.version == 1">发送类似于<code-label>PROXY TCP4 192.168.1.1 192.168.1.10 32567 443</code-label>的头部信息。</p>
+					<p class="comment" v-if="reverseProxyConfig.proxyProtocol.version == 2">发送二进制格式的头部信息。</p>
+				</td>
+			</tr>
+			<tr v-if="family == null || family == 'http'">
+                <td class="color-border">源站连接失败超时时间</td>
+                <td>
+                    <div class="ui fields inline">
+                        <div class="ui field">
+                            <input type="text" name="connTimeout" value="10" size="6" v-model="reverseProxyConfig.connTimeout.count"/>
+                        </div>
+                        <div class="ui field">
+                            秒
+                        </div>
+                    </div>
+                    <p class="comment">连接源站失败的最大超时时间，0表示不限制。</p>
+                </td>
+            </tr>
+            <tr v-if="family == null || family == 'http'">
+                <td class="color-border">源站读取超时时间</td>
+                <td>
+                    <div class="ui fields inline">
+                        <div class="ui field">
+                            <input type="text" name="readTimeout" value="0" size="6" v-model="reverseProxyConfig.readTimeout.count"/>
+                        </div>
+                        <div class="ui field">
+                            秒
+                        </div>
+                    </div>
+                    <p class="comment">读取内容时的最大超时时间，0表示不限制。</p>
+                </td>
+            </tr>
+            <tr v-if="family == null || family == 'http'">
+                <td class="color-border">源站最大并发连接数</td>
+                <td>
+                    <div class="ui fields inline">
+                        <div class="ui field">
+                            <input type="text" name="maxConns" value="0" size="6" maxlength="10" v-model="reverseProxyConfig.maxConns"/>
+                        </div>
+                    </div>
+                    <p class="comment">源站可以接受到的最大并发连接数，0表示使用系统默认。</p>
+                </td>
+            </tr>
+            <tr v-if="family == null || family == 'http'">
+                <td class="color-border">源站最大空闲连接数</td>
+                <td>
+                    <div class="ui fields inline">
+                        <div class="ui field">
+                            <input type="text" name="maxIdleConns" value="0" size="6" maxlength="10" v-model="reverseProxyConfig.maxIdleConns"/>
+                        </div>
+                    </div>
+                    <p class="comment">当没有请求时，源站保持等待的最大空闲连接数量，0表示使用系统默认。</p>
+                </td>
+            </tr>
+            <tr v-if="family == null || family == 'http'">
+                <td class="color-border">源站最大空闲超时时间</td>
+                <td>
+                    <div class="ui fields inline">
+                        <div class="ui field">
+                            <input type="text" name="idleTimeout" value="0" size="6" v-model="reverseProxyConfig.idleTimeout.count"/>
+                        </div>
+                        <div class="ui field">
+                            秒
+                        </div>
+                    </div>
+                    <p class="comment">源站保持等待的空闲超时时间，0表示使用默认时间。</p>
+                </td>
+            </tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -12911,28 +13326,31 @@ Vue.component("http-firewall-param-filters-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="paramFiltersJSON" :value="JSON.stringify(filters)">
-<div v-if="filters.length > 0">
-<div v-for="(filter, index) in filters" class="ui label small basic">
-{{filter.name}} <a href title="删除" @click.prevent="remove(index)"><i class="icon remove"></i></a>
-</div>
-<div class="ui divider"></div>
-</div>
-<div v-if="isAdding">
-<div class="ui fields inline">
-<div class="ui field">
-<select class="ui dropdown auto-width" v-model="addingCode"><option value>[请选择]</option><option v-for="option in options" :value="option.code">{{option.name}}</option></select>
-</div>
-<div class="ui field">
-<button class="ui button tiny" type="button" @click.prevent="confirm()">确定</button>
-&nbsp; <a href @click.prevent="cancel()" title="取消"><i class="icon remove"></i></a>
-</div>
-</div>
-</div>
-<div v-if="!isAdding">
-<button class="ui button tiny" type="button" @click.prevent="add">+</button>
-</div>
-<p class="comment">可以对参数值进行特定的编解码处理。</p>
+		<input type="hidden" name="paramFiltersJSON" :value="JSON.stringify(filters)" />
+		<div v-if="filters.length > 0">
+			<div v-for="(filter, index) in filters" class="ui label small basic">
+				{{filter.name}} <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove"></i></a>
+			</div>
+			<div class="ui divider"></div>
+		</div>
+		<div v-if="isAdding">
+			<div class="ui fields inline">
+				<div class="ui field">
+					<select class="ui dropdown auto-width" v-model="addingCode">
+						<option value="">[请选择]</option>
+						<option v-for="option in options" :value="option.code">{{option.name}}</option>
+					</select>
+				</div>
+				<div class="ui field">
+					<button class="ui button tiny" type="button" @click.prevent="confirm()">确定</button>
+					&nbsp; <a href="" @click.prevent="cancel()" title="取消"><i class="icon remove"></i></a>
+				</div>
+			</div>
+		</div>
+		<div v-if="!isAdding">
+			<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+		</div>
+		<p class="comment">可以对参数值进行特定的编解码处理。</p>
 </div>`
 })
 
@@ -13049,46 +13467,52 @@ Vue.component("http-remote-addr-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="remoteAddrJSON" :value="JSON.stringify(config)">
-<table class="ui table definition selectable">
-<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
-<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
-<tr>
-<td class="title">启用访客IP设置</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" value="1" v-model="config.isOn">
-<label></label>
-</div>
-<p class="comment">选中后，表示使用自定义的请求变量获取客户端IP。</p>
-</td>
-</tr>
-</tbody>
-<tbody v-show="isOn()">
-<tr>
-<td>获取IP方式 *</td>
-<td>
-<select class="ui dropdown auto-width" v-model="config.type" @change="changeOptionType"><option v-for="option in options" :value="option.type">{{option.name}}</option></select>
-<p class="comment" v-for="option in options" v-if="option.type == config.type && option.description.length > 0">{{option.description}}</p>
-</td>
-</tr>
-<tr v-show="config.type == 'requestHeader'">
-<td>请求报头 *</td>
-<td>
-<input type="text" name="requestHeaderName" v-model="config.requestHeaderName" maxlength="100" ref="requestHeaderInput">
-<p class="comment">请输入包含有客户端IP的请求报头，需要注意大小写，常见的有<code-label>X-Forwarded-For</code-label>、<code-label>X-Real-IP</code-label>、<code-label>X-Client-IP</code-label>等。</p>
-</td>
-</tr>
-<tr v-show="config.type == 'variable'">
-<td>读取IP变量值 *</td>
-<td>
-<input type="text" name="value" v-model="config.value" maxlength="100" ref="variableInput">
-<p class="comment">通过此变量获取用户的IP地址。具体可用的请求变量列表可参考官方网站文档；比如通过报头传递IP的情形，可以使用<code-label>\${header.你的自定义报头}</code-label>（类似于<code-label>\${header.X-Forwarded-For}</code-label>，需要注意大小写规范）。</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="margin"></div>
+	<input type="hidden" name="remoteAddrJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable">
+		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
+			<tr>
+				<td class="title">启用访客IP设置</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" value="1" v-model="config.isOn"/>
+						<label></label>
+					</div>
+					<p class="comment">选中后，表示使用自定义的请求变量获取客户端IP。</p>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="isOn()">
+			<tr>
+				<td>获取IP方式 *</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="config.type" @change="changeOptionType">
+						<option v-for="option in options" :value="option.type">{{option.name}}</option>
+					</select>
+					<p class="comment" v-for="option in options" v-if="option.type == config.type && option.description.length > 0">{{option.description}}</p>
+				</td>
+			</tr>
+			
+			<!-- read from request header -->
+			<tr v-show="config.type == 'requestHeader'">
+				<td>请求报头 *</td>
+				<td>
+					<input type="text" name="requestHeaderName" v-model="config.requestHeaderName" maxlength="100" ref="requestHeaderInput"/>
+					<p class="comment">请输入包含有客户端IP的请求报头，需要注意大小写，常见的有<code-label>X-Forwarded-For</code-label>、<code-label>X-Real-IP</code-label>、<code-label>X-Client-IP</code-label>等。</p>
+				</td>
+			</tr>
+			
+			<!-- read from variable -->
+			<tr v-show="config.type == 'variable'">
+				<td>读取IP变量值 *</td>
+				<td>
+					<input type="text" name="value" v-model="config.value" maxlength="100" ref="variableInput"/>
+					<p class="comment">通过此变量获取用户的IP地址。具体可用的请求变量列表可参考官方网站文档；比如通过报头传递IP的情形，可以使用<code-label>\${header.你的自定义报头}</code-label>（类似于<code-label>\${header.X-Forwarded-For}</code-label>，需要注意大小写规范）。</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>		
 </div>`
 })
 
@@ -13153,43 +13577,43 @@ Vue.component("http-access-log-search-box", {
 		}
 	},
 	template: `<div style="z-index: 10">
-<div class="margin"></div>
-<div class="ui fields inline">
-<div class="ui field">
-<div class="ui input left right labeled small">
-<span class="ui label basic" style="font-weight: normal">IP</span>
-<input type="text" name="ip" placeholder="x.x.x.x" size="15" v-model="ip">
-<a class="ui label basic" :class="{disabled: ip.length == 0}" @click.prevent="cleanIP"><i class="icon remove small"></i></a>
-</div>
-</div>
-<div class="ui field">
-<div class="ui input left right labeled small">
-<span class="ui label basic" style="font-weight: normal">域名</span>
-<input type="text" name="domain" placeholder="example.com" size="15" v-model="domain">
-<a class="ui label basic" :class="{disabled: domain.length == 0}" @click.prevent="cleanDomain"><i class="icon remove small"></i></a>
-</div>
-</div>
-<div class="ui field">
-<div class="ui input left right labeled small">
-<span class="ui label basic" style="font-weight: normal">关键词</span>
-<input type="text" name="keyword" v-model="keyword" placeholder="路径、UserAgent、请求ID等..." size="30">
-<a class="ui label basic" :class="{disabled: keyword.length == 0}" @click.prevent="cleanKeyword"><i class="icon remove small"></i></a>
-</div>
-</div>
-<div class="ui field"><tip-icon content="一些特殊的关键词：<br/>单个状态码：status:200<br/>状态码范围：status:500-504<br/>查询IP：ip:192.168.1.100<br/>查询URL：https://goedge.cn/docs<br/>查询路径部分：requestPath:/hello/world<br/>查询协议版本：proto:HTTP/1.1<br/>协议：scheme:http<br/>请求方法：method:POST<br/>请求来源：referer:example.com"></tip-icon></div>
-</div>
-<div class="ui fields inline" style="margin-top: 0.5em">
-<div class="ui field">
-<node-cluster-combo-box :v-cluster-id="clusterId" @change="changeCluster"></node-cluster-combo-box>
-</div>
-<div class="ui field" v-if="clusterId > 0">
-<node-combo-box :v-cluster-id="clusterId" :v-node-id="vNodeId"></node-combo-box>
-</div>
-<slot></slot>
-<div class="ui field">
-<button class="ui button small" type="submit">搜索日志</button>
-</div>
-</div>
+	<div class="margin"></div>
+	<div class="ui fields inline">
+		<div class="ui field">
+			<div class="ui input left right labeled small">
+				<span class="ui label basic" style="font-weight: normal">IP</span>
+				<input type="text" name="ip" placeholder="x.x.x.x" size="15" v-model="ip"/>
+				<a class="ui label basic" :class="{disabled: ip.length == 0}" @click.prevent="cleanIP"><i class="icon remove small"></i></a>
+			</div>
+		</div>
+		<div class="ui field">
+			<div class="ui input left right labeled small" >
+				<span class="ui label basic" style="font-weight: normal">域名</span>
+				<input type="text" name="domain" placeholder="example.com" size="15" v-model="domain"/>
+				<a class="ui label basic" :class="{disabled: domain.length == 0}" @click.prevent="cleanDomain"><i class="icon remove small"></i></a>
+			</div>
+		</div>
+		<div class="ui field">
+			<div class="ui input left right labeled small">
+				<span class="ui label basic" style="font-weight: normal">关键词</span>
+				<input type="text" name="keyword" v-model="keyword" placeholder="路径、UserAgent、请求ID等..." size="30"/>
+				<a class="ui label basic" :class="{disabled: keyword.length == 0}" @click.prevent="cleanKeyword"><i class="icon remove small"></i></a>
+			</div>
+		</div>
+		<div class="ui field"><tip-icon content="一些特殊的关键词：<br/>单个状态码：status:200<br/>状态码范围：status:500-504<br/>查询IP：ip:192.168.1.100<br/>查询URL：https://goedge.cn/docs<br/>查询路径部分：requestPath:/hello/world<br/>查询协议版本：proto:HTTP/1.1<br/>协议：scheme:http<br/>请求方法：method:POST<br/>请求来源：referer:example.com"></tip-icon></div>
+	</div>
+	<div class="ui fields inline" style="margin-top: 0.5em">
+		<div class="ui field">
+			<node-cluster-combo-box :v-cluster-id="clusterId" @change="changeCluster"></node-cluster-combo-box>
+		</div>
+		<div class="ui field" v-if="clusterId > 0">
+			<node-combo-box :v-cluster-id="clusterId" :v-node-id="vNodeId"></node-combo-box>
+		</div>
+		<slot></slot>
+		<div class="ui field">
+			<button class="ui button small" type="submit">搜索日志</button>
+		</div>
+	</div>
 </div>`
 })
 
@@ -13211,7 +13635,7 @@ Vue.component("server-config-copy-link", {
 			})
 		}
 	},
-	template: `<a href='\""' class="item" @click.prevent="copy" style="padding-right:0"><span style="font-size: 0.8em">批量</span>&nbsp;<i class="icon copy small"></i></a>`
+	template: `<a href=\"" class="item" @click.prevent="copy" style="padding-right:0"><span style="font-size: 0.8em">批量</span>&nbsp;<i class="icon copy small"></i></a>`
 })
 
 // 显示指标对象名
@@ -13264,7 +13688,7 @@ Vue.component("metric-key-label", {
 		}
 	},
 	template: `<div class="ui label basic small">
-{{keyName(this.vKey)}}
+	{{keyName(this.vKey)}}
 </div>`
 })
 
@@ -13378,36 +13802,39 @@ Vue.component("metric-keys-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="keysJSON" :value="JSON.stringify(keys)">
-<div>
-<div v-for="(key, index) in keys" class="ui label small basic">
-{{keyName(key)}} &nbsp; <a href title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
-</div>
-</div>
-<div v-if="isAdding" style="margin-top: 1em">
-<div class="ui fields inline">
-<div class="ui field">
-<select class="ui dropdown" v-model="key" @change="changeKey"><option value>[选择对象]</option><option v-for="def in keyDefs" :value="def.code">{{def.name}}</option></select>
-</div>
-<div class="ui field" v-if="key == '\${arg.NAME}'">
-<input type="text" v-model="subKey" placeholder="参数名" size="15">
-</div>
-<div class="ui field" v-if="key == '\${header.NAME}'">
-<input type="text" v-model="subKey" placeholder="Header名" size="15">
-</div>
-<div class="ui field" v-if="key == '\${cookie.NAME}'">
-<input type="text" v-model="subKey" placeholder="Cookie名" size="15">
-</div>
-<div class="ui field">
-<button type="button" class="ui button tiny" @click.prevent="confirm">确定</button>
-<a href @click.prevent="cancel"><i class="icon remove small"></i></a>
-</div>
-</div>
-<p class="comment" v-if="keyDescription.length > 0">{{keyDescription}}</p>
-</div>
-<div style="margin-top: 1em" v-if="!isAdding">
-<button type="button" class="ui button tiny" @click.prevent="add">+</button>
-</div>
+	<input type="hidden" name="keysJSON" :value="JSON.stringify(keys)"/>
+	<div>
+		<div v-for="(key, index) in keys" class="ui label small basic">
+			{{keyName(key)}} &nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+		</div>
+	</div>
+	<div v-if="isAdding" style="margin-top: 1em">
+		<div class="ui fields inline">
+			<div class="ui field">
+				<select class="ui dropdown" v-model="key" @change="changeKey">
+					<option value="">[选择对象]</option>
+					<option v-for="def in keyDefs" :value="def.code">{{def.name}}</option>
+				</select>
+			</div>
+			<div class="ui field" v-if="key == '\${arg.NAME}'">
+				<input type="text" v-model="subKey" placeholder="参数名" size="15"/>
+			</div>
+			<div class="ui field" v-if="key == '\${header.NAME}'">
+				<input type="text" v-model="subKey" placeholder="Header名" size="15">
+			</div>
+			<div class="ui field" v-if="key == '\${cookie.NAME}'">
+				<input type="text" v-model="subKey" placeholder="Cookie名" size="15">
+			</div>
+			<div class="ui field">
+				<button type="button" class="ui button tiny" @click.prevent="confirm">确定</button>
+				<a href="" @click.prevent="cancel"><i class="icon remove small"></i></a>
+			</div>
+		</div>
+		<p class="comment" v-if="keyDescription.length > 0">{{keyDescription}}</p>
+	</div>
+	<div style="margin-top: 1em" v-if="!isAdding">
+		<button type="button" class="ui button tiny" @click.prevent="add">+</button>
+	</div>
 </div>`
 })
 
@@ -13466,95 +13893,97 @@ Vue.component("http-web-root-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="rootJSON" :value="JSON.stringify(config)">
-<table class="ui table selectable definition">
-<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
-<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
-<tr>
-<td class="title">启用静态资源分发</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" v-model="config.isOn">
-<label></label>
-</div>
-</td>
-</tr>
-</tbody>
-<tbody v-show="isOn()">
-<tr>
-<td class="title">静态资源根目录</td>
-<td>
-<input type="text" name="root" v-model="config.dir" ref="focus" placeholder="类似于 /home/www">
-<p class="comment">可以访问此根目录下的静态资源。</p>
-</td>
-</tr>
-</tbody>
-<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
-<tbody v-show="isOn() && advancedVisible">
-<tr>
-<td>首页文件</td>
-<td>
-<div v-if="config.indexes.length > 0">
-<div v-for="(index, i) in config.indexes" class="ui label small basic">
-{{index}} <a href title="删除" @click.prevent="removeIndex(i)"><i class="icon remove"></i></a>
-</div>
-<div class="ui divider"></div>
-</div>
-<button class="ui button tiny" type="button" @click.prevent="addIndex()">+</button>
-<p class="comment">在URL中只有目录没有文件名时默认查找的首页文件。</p>
-</td>
-</tr>
-<tr>
-<td>例外URL</td>
-<td>
-<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
-<p class="comment">如果填写了例外URL，表示不支持通过这些URL访问。</p>
-</td>
-</tr>
-<tr>
-<td>限制URL</td>
-<td>
-<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
-<p class="comment">如果填写了限制URL，表示仅支持通过这些URL访问。</p>
-</td>
-</tr>
-<tr>
-<td>排除隐藏文件</td>
-<td>
-<checkbox v-model="config.exceptHiddenFiles"></checkbox>
-<p class="comment">排除以点（.）符号开头的隐藏目录或文件，比如<code-label>/.git/logs/HEAD</code-label></p>
-</td>
-</tr>
-<tr>
-<td>去除URL前缀</td>
-<td>
-<input type="text" v-model="config.stripPrefix" placeholder="/PREFIX">
-<p class="comment">可以把请求的路径部分前缀去除后再查找文件，比如把 <span class="ui label tiny">/web/app/index.html</span> 去除前缀 <span class="ui label tiny">/web</span> 后就变成 <span class="ui label tiny">/app/index.html</span>。 </p>
-</td>
-</tr>
-<tr>
-<td>路径解码</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" v-model="config.decodePath">
-<label></label>
-</div>
-<p class="comment">是否对请求路径进行URL解码，比如把 <span class="ui label tiny">/Web+App+Browser.html</span> 解码成 <span class="ui label tiny">/Web App Browser.html</span> 再查找文件。</p>
-</td>
-</tr>
-<tr>
-<td>终止请求</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" v-model="config.isBreak">
-<label></label>
-</div>
-<p class="comment">在找不到要访问的文件的情况下是否终止请求并返回404，如果选择终止请求，则不再尝试反向代理等设置。</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="margin"></div>
+	<input type="hidden" name="rootJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table selectable definition">
+		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
+			<tr>
+				<td class="title">启用静态资源分发</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="config.isOn"/>
+						<label></label>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="isOn()">
+			<tr>
+				<td class="title">静态资源根目录</td>
+				<td>
+					<input type="text" name="root" v-model="config.dir" ref="focus" placeholder="类似于 /home/www"/>
+					<p class="comment">可以访问此根目录下的静态资源。</p>
+				</td>
+			</tr>
+		</tbody>
+		<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
+
+		<tbody v-show="isOn() && advancedVisible">
+			<tr>
+				<td>首页文件</td>
+				<td>
+					<!-- TODO 支持排序 -->
+					<div v-if="config.indexes.length > 0">
+						<div v-for="(index, i) in config.indexes" class="ui label small basic">
+							{{index}} <a href="" title="删除" @click.prevent="removeIndex(i)"><i class="icon remove"></i></a>
+						</div>
+						<div class="ui divider"></div>
+					</div>
+					<button class="ui button tiny" type="button" @click.prevent="addIndex()">+</button>
+					<p class="comment">在URL中只有目录没有文件名时默认查找的首页文件。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>例外URL</td>
+				<td>
+					<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了例外URL，表示不支持通过这些URL访问。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>限制URL</td>
+				<td>
+					<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了限制URL，表示仅支持通过这些URL访问。</p>
+				</td>
+			</tr>	
+			<tr>
+				<td>排除隐藏文件</td>
+				<td>
+					<checkbox v-model="config.exceptHiddenFiles"></checkbox>
+					<p class="comment">排除以点（.）符号开头的隐藏目录或文件，比如<code-label>/.git/logs/HEAD</code-label></p>
+				</td>
+			</tr>
+			<tr>
+				<td>去除URL前缀</td>
+				<td>
+					<input type="text" v-model="config.stripPrefix" placeholder="/PREFIX"/>
+					<p class="comment">可以把请求的路径部分前缀去除后再查找文件，比如把 <span class="ui label tiny">/web/app/index.html</span> 去除前缀 <span class="ui label tiny">/web</span> 后就变成 <span class="ui label tiny">/app/index.html</span>。 </p>
+				</td>
+			</tr>
+			<tr>
+				<td>路径解码</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="config.decodePath"/>
+						<label></label>	
+					</div>
+					<p class="comment">是否对请求路径进行URL解码，比如把 <span class="ui label tiny">/Web+App+Browser.html</span> 解码成 <span class="ui label tiny">/Web App Browser.html</span> 再查找文件。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>终止请求</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="config.isBreak"/>
+						<label></label>	
+					</div>
+					<p class="comment">在找不到要访问的文件的情况下是否终止请求并返回404，如果选择终止请求，则不再尝试反向代理等设置。</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -13609,60 +14038,60 @@ Vue.component("http-webp-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="webpJSON" :value="JSON.stringify(config)">
-<table class="ui table definition selectable">
-<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
-<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
-<tr>
-<td class="title">启用WebP压缩</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" value="1" v-model="config.isOn">
-<label></label>
-</div>
-<p class="comment">选中后表示开启自动WebP压缩；图片的宽和高均不能超过16383像素<span v-if="vRequireCache">；只有满足缓存条件的图片内容才会被转换</span>。</p>
-</td>
-</tr>
-</tbody>
-<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
-<tbody v-show="isOn() && moreOptionsVisible">
-<tr>
-<td>支持的扩展名</td>
-<td>
-<values-box :values="config.extensions" @change="changeExtensions" placeholder="比如 .html"></values-box>
-<p class="comment">含有这些扩展名的URL将会被转成WebP，不区分大小写。</p>
-</td>
-</tr>
-<tr>
-<td>支持的MimeType</td>
-<td>
-<values-box :values="config.mimeTypes" @change="changeMimeTypes" placeholder="比如 text/*"></values-box>
-<p class="comment">响应的Content-Type里包含这些MimeType的内容将会被转成WebP。</p>
-</td>
-</tr>
-<tr>
-<td>内容最小长度</td>
-<td>
-<size-capacity-box :v-name="'minLength'" :v-value="config.minLength" :v-unit="'kb'"></size-capacity-box>
-<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
-</td>
-</tr>
-<tr>
-<td>内容最大长度</td>
-<td>
-<size-capacity-box :v-name="'maxLength'" :v-value="config.maxLength" :v-unit="'mb'"></size-capacity-box>
-<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
-</td>
-</tr>
-<tr>
-<td>匹配条件</td>
-<td>
-<http-request-conds-box :v-conds="config.conds" @change="changeConds"></http-request-conds-box>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="ui margin"></div>
+	<input type="hidden" name="webpJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable">
+		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
+			<tr>
+				<td class="title">启用WebP压缩</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" value="1" v-model="config.isOn"/>
+						<label></label>
+					</div>
+					<p class="comment">选中后表示开启自动WebP压缩；图片的宽和高均不能超过16383像素<span v-if="vRequireCache">；只有满足缓存条件的图片内容才会被转换</span>。</p>
+				</td>
+			</tr>
+		</tbody>
+		<more-options-tbody @change="changeAdvancedVisible" v-if="isOn()"></more-options-tbody>
+		<tbody v-show="isOn() && moreOptionsVisible">
+			<tr>
+				<td>支持的扩展名</td>
+				<td>
+					<values-box :values="config.extensions" @change="changeExtensions" placeholder="比如 .html"></values-box>
+					<p class="comment">含有这些扩展名的URL将会被转成WebP，不区分大小写。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>支持的MimeType</td>
+				<td>
+					<values-box :values="config.mimeTypes" @change="changeMimeTypes" placeholder="比如 text/*"></values-box>
+					<p class="comment">响应的Content-Type里包含这些MimeType的内容将会被转成WebP。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>内容最小长度</td>
+				<td>
+					<size-capacity-box :v-name="'minLength'" :v-value="config.minLength" :v-unit="'kb'"></size-capacity-box>
+					<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>内容最大长度</td>
+				<td>
+					<size-capacity-box :v-name="'maxLength'" :v-value="config.maxLength" :v-unit="'mb'"></size-capacity-box>
+					<p class="comment">0表示不限制，内容长度从文件尺寸或Content-Length中获取。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>匹配条件</td>
+				<td>
+					<http-request-conds-box :v-conds="config.conds" @change="changeConds"></http-request-conds-box>
+	</td>
+			</tr>
+		</tbody>
+	</table>			
+	<div class="ui margin"></div>
 </div>`
 })
 
@@ -13688,16 +14117,16 @@ Vue.component("origin-scheduling-view-box", {
 		}
 	},
 	template: `<div>
-<div class="margin"></div>
-<table class="ui table selectable definition">
-<tr>
-<td class="title">当前正在使用的算法</td>
-<td>
-{{scheduling.name}} &nbsp; <a href @click.prevent="update()"><span>[修改]</span></a>
-<p class="comment">{{scheduling.description}}</p>
-</td>
-</tr>
-</table>
+	<div class="margin"></div>
+	<table class="ui table selectable definition">
+		<tr>
+			<td class="title">当前正在使用的算法</td>
+			<td>
+				{{scheduling.name}} &nbsp; <a href="" @click.prevent="update()"><span>[修改]</span></a>
+				<p class="comment">{{scheduling.description}}</p>
+			</td>
+		</tr>
+	</table>
 </div>`
 })
 
@@ -13744,53 +14173,54 @@ Vue.component("http-firewall-block-options", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="blockOptionsJSON" :value="JSON.stringify(options)">
-<a href @click.prevent="edit">状态码：{{statusCode}} / 提示内容：<span v-if="options.body != null && options.body.length > 0">[{{options.body.length}}字符]</span><span v-else class="disabled">[无]</span> <span v-if="timeout > 0"> / 封禁时长：{{timeout}}秒</span>
-<span v-if="timeoutMax > timeout"> / 最大封禁时长：{{timeoutMax}}秒</span>
-<span v-if="options.failBlockScopeAll"> / 尝试全局封禁</span>
-<i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
-<table class="ui table" v-show="isEditing">
-<tr>
-<td class="title">状态码</td>
-<td>
-<input type="text" v-model="statusCode" style="width:4.5em" maxlength="3">
-</td>
-</tr>
-<tr>
-<td>提示内容</td>
-<td>
-<textarea rows="3" v-model="options.body"></textarea>
-</td>
-</tr>
-<tr>
-<td>封禁时长</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" v-model="timeout" style="width: 5em" maxlength="6">
-<span class="ui label">秒</span>
-</div>
-<p class="comment">触发阻止动作时，封禁客户端IP的时间。</p>
-</td>
-</tr>
-<tr>
-<td>最大封禁时长</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" v-model="timeoutMax" style="width: 5em" maxlength="6">
-<span class="ui label">秒</span>
-</div>
-<p class="comment">如果最大封禁时长大于封禁时长（{{timeout}}秒），那么表示每次封禁的时候，将会在这两个时长数字之间随机选取一个数字作为最终的封禁时长。</p>
-</td>
-</tr>
-<tr>
-<td>失败全局封禁</td>
-<td>
-<checkbox v-model="options.failBlockScopeAll"></checkbox>
-<p class="comment">选中后，表示允许系统尝试全局封禁某个IP，以提升封禁性能。</p>
-</td>
-</tr>
-</table>
-</div>`
+	<input type="hidden" name="blockOptionsJSON" :value="JSON.stringify(options)"/>
+	<a href="" @click.prevent="edit">状态码：{{statusCode}} / 提示内容：<span v-if="options.body != null && options.body.length > 0">[{{options.body.length}}字符]</span><span v-else class="disabled">[无]</span> <span v-if="timeout > 0"> / 封禁时长：{{timeout}}秒</span>
+	 <span v-if="timeoutMax > timeout"> / 最大封禁时长：{{timeoutMax}}秒</span>
+	 <span v-if="options.failBlockScopeAll"> / 尝试全局封禁</span>
+	 <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
+	<table class="ui table" v-show="isEditing">
+		<tr>
+			<td class="title">状态码</td>
+			<td>
+				<input type="text" v-model="statusCode" style="width:4.5em" maxlength="3"/>
+			</td>
+		</tr>
+		<tr>
+			<td>提示内容</td>
+			<td>
+				<textarea rows="3" v-model="options.body"></textarea>
+			</td>
+		</tr>
+		<tr>
+			<td>封禁时长</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" v-model="timeout" style="width: 5em" maxlength="6"/>
+					<span class="ui label">秒</span>
+				</div>
+				<p class="comment">触发阻止动作时，封禁客户端IP的时间。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>最大封禁时长</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" v-model="timeoutMax" style="width: 5em" maxlength="6"/>
+					<span class="ui label">秒</span>
+				</div>
+				<p class="comment">如果最大封禁时长大于封禁时长（{{timeout}}秒），那么表示每次封禁的时候，将会在这两个时长数字之间随机选取一个数字作为最终的封禁时长。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>失败全局封禁</td>
+			<td>
+				<checkbox v-model="options.failBlockScopeAll"></checkbox>
+				<p class="comment">选中后，表示允许系统尝试全局封禁某个IP，以提升封禁性能。</p>
+			</td>
+		</tr>
+	</table>
+</div>	
+`
 })
 
 Vue.component("http-hls-config-box", {
@@ -13830,43 +14260,44 @@ Vue.component("http-hls-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="hlsJSON" :value="JSON.stringify(config)">
-<table class="ui table definition selectable" v-show="vIsLocation || vIsGroup">
-<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
-</table>
-<table class="ui table definition selectable" v-show="isOn()">
-<tbody>
-<tr>
-<td class="title">启用HLS加密</td>
-<td>
-<checkbox v-model="encryptingConfig.isOn"></checkbox>
-<p class="comment">启用后，系统会自动在<code-label>.m3u8</code-label>文件中加入<code-label>#EXT-X-KEY:METHOD=AES-128...</code-label>，并将其中的<code-label>.ts</code-label>文件内容进行加密。</p>
-</td>
-</tr>
-</tbody>
-<tbody v-show="encryptingConfig.isOn">
-<tr>
-<td colspan="2"><more-options-indicator @change="showEncryptingMoreOptions"></more-options-indicator></td>
-</tr>
-</tbody>
-<tbody v-show="encryptingConfig.isOn && encryptingMoreOptionsVisible">
-<tr>
-<td>例外URL</td>
-<td>
-<url-patterns-box v-model="encryptingConfig.exceptURLPatterns"></url-patterns-box>
-<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
-</td>
-</tr>
-<tr>
-<td>限制URL</td>
-<td>
-<url-patterns-box v-model="encryptingConfig.onlyURLPatterns"></url-patterns-box>
-<p class="comment">如果填写了限制URL，表示只对这些URL进行加密处理；如果不填则表示支持所有的URL。</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="margin"></div>
+	<input type="hidden" name="hlsJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable" v-show="vIsLocation || vIsGroup">
+		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+	</table>
+	
+	<table class="ui table definition selectable" v-show="isOn()">
+		<tbody>
+			<tr>
+				<td class="title">启用HLS加密</td>
+				<td>
+					<checkbox v-model="encryptingConfig.isOn"></checkbox>
+					<p class="comment">启用后，系统会自动在<code-label>.m3u8</code-label>文件中加入<code-label>#EXT-X-KEY:METHOD=AES-128...</code-label>，并将其中的<code-label>.ts</code-label>文件内容进行加密。</p>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="encryptingConfig.isOn">
+			<tr>
+				<td colspan="2"><more-options-indicator @change="showEncryptingMoreOptions"></more-options-indicator></td>
+			</tr>
+		</tbody>
+		<tbody v-show="encryptingConfig.isOn && encryptingMoreOptionsVisible">
+			<tr>
+				<td>例外URL</td>
+				<td>
+					<url-patterns-box v-model="encryptingConfig.exceptURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>限制URL</td>
+				<td>
+					<url-patterns-box v-model="encryptingConfig.onlyURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了限制URL，表示只对这些URL进行加密处理；如果不填则表示支持所有的URL。</p>
+				</td>
+			</tr>	
+		</tbody>
+	</table>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -13901,27 +14332,30 @@ Vue.component("http-oss-bucket-params", {
 		}
 	},
 	template: `<tbody>
-<tr>
-<td>{{name}}名称获取方式 *</td>
-<td>
-<select class="ui dropdown auto-width" name="bucketParam" v-model="ossConfig.bucketParam"><option v-for="param in params" :value="param.code" v-if="param.example.length == 0">{{param.name.replace("\${optionName}", name)}}</option><option v-for="param in params" :value="param.code" v-if="param.example.length > 0">{{param.name}} - {{param.example}}</option></select>
-<p class="comment" v-for="param in params" v-if="param.code == ossConfig.bucketParam">{{param.description.replace("\${optionName}", name)}}</p>
-</td>
-</tr>
-<tr v-if="ossConfig.bucketParam == 'input'">
-<td>{{name}}名称 *</td>
-<td>
-<input type="text" name="bucketName" maxlength="100" v-model="ossConfig.bucketName">
-<p class="comment">{{name}}名称，类似于<code-label>bucket-12345678</code-label>。</p>
-</td>
-</tr>
-<tr v-if="ossConfig.bucketParam == 'arg'">
-<td>{{name}}参数名称 *</td>
-<td>
-<input type="text" name="bucketArgName" maxlength="100" v-model="ossConfig.bucketArgName">
-<p class="comment">{{name}}参数名称，比如<code-label>?myBucketName=BUCKET-NAME</code-label>中的<code-label>myBucketName</code-label>。</p>
-</td>
-</tr>
+	<tr>
+		<td>{{name}}名称获取方式 *</td>
+		<td>
+			<select class="ui dropdown auto-width" name="bucketParam" v-model="ossConfig.bucketParam">
+				<option v-for="param in params" :value="param.code" v-if="param.example.length == 0">{{param.name.replace("\${optionName}", name)}}</option>
+				<option v-for="param in params" :value="param.code" v-if="param.example.length > 0">{{param.name}} - {{param.example}}</option>
+			</select>
+			<p class="comment" v-for="param in params" v-if="param.code == ossConfig.bucketParam">{{param.description.replace("\${optionName}", name)}}</p>
+		</td>
+	</tr>
+    <tr v-if="ossConfig.bucketParam == 'input'">
+        <td>{{name}}名称 *</td>
+        <td>
+            <input type="text" name="bucketName" maxlength="100" v-model="ossConfig.bucketName"/>
+            <p class="comment">{{name}}名称，类似于<code-label>bucket-12345678</code-label>。</p>
+        </td>
+    </tr>
+    <tr v-if="ossConfig.bucketParam == 'arg'">
+    	<td>{{name}}参数名称 *</td>
+        <td>
+            <input type="text" name="bucketArgName" maxlength="100" v-model="ossConfig.bucketArgName"/>
+            <p class="comment">{{name}}参数名称，比如<code-label>?myBucketName=BUCKET-NAME</code-label>中的<code-label>myBucketName</code-label>。</p>
+        </td>
+	</tr>
 </tbody>`
 })
 
@@ -13948,19 +14382,19 @@ Vue.component("http-request-scripts-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="requestScriptsJSON" :value="JSON.stringify(config)">
-<div class="margin"></div>
-<h4 style="margin-bottom: 0">请求初始化</h4>
-<p class="comment">在请求刚初始化时调用，此时自定义报头等尚未生效。</p>
-<div>
-<script-group-config-box :v-group="config.initGroup" :v-auditing-status="vAuditingStatus" @change="changeInitGroup" :v-is-location="vIsLocation"></script-group-config-box>
-</div>
-<h4 style="margin-bottom: 0">准备发送请求</h4>
-<p class="comment">在准备执行请求或者转发请求之前调用，此时自定义报头、源站等已准备好。</p>
-<div>
-<script-group-config-box :v-group="config.requestGroup" :v-auditing-status="vAuditingStatus" @change="changeRequestGroup" :v-is-location="vIsLocation"></script-group-config-box>
-</div>
-<div class="margin"></div>
+	<input type="hidden" name="requestScriptsJSON" :value="JSON.stringify(config)"/>
+	<div class="margin"></div>
+	<h4 style="margin-bottom: 0">请求初始化</h4>
+	<p class="comment">在请求刚初始化时调用，此时自定义报头等尚未生效。</p>
+	<div>
+		<script-group-config-box :v-group="config.initGroup" :v-auditing-status="vAuditingStatus" @change="changeInitGroup" :v-is-location="vIsLocation"></script-group-config-box>
+	</div>
+	<h4 style="margin-bottom: 0">准备发送请求</h4>
+	<p class="comment">在准备执行请求或者转发请求之前调用，此时自定义报头、源站等已准备好。</p>
+	<div>
+		<script-group-config-box :v-group="config.requestGroup" :v-auditing-status="vAuditingStatus" @change="changeRequestGroup" :v-is-location="vIsLocation"></script-group-config-box>
+	</div>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -13994,12 +14428,12 @@ Vue.component("http-request-cond-view", {
 		}
 	},
 	template: `<div style="margin-bottom: 0.5em">
-<span class="ui label small basic">
-<var v-if="cond.type.length == 0 || cond.type == 'params'" style="font-style: normal">{{cond.param}} <var>{{cond.operator}}</var></var>
-<var v-if="cond.type.length > 0 && cond.type != 'params'" style="font-style: normal">{{typeName(cond)}}: </var>
-{{cond.value}}
-<sup v-if="cond.isCaseInsensitive" title="不区分大小写"><i class="icon info small"></i></sup>
-</span>
+	<span class="ui label small basic">
+		<var v-if="cond.type.length == 0 || cond.type == 'params'" style="font-style: normal">{{cond.param}} <var>{{cond.operator}}</var></var>
+		<var v-if="cond.type.length > 0 && cond.type != 'params'" style="font-style: normal">{{typeName(cond)}}: </var>
+		{{cond.value}}
+		<sup v-if="cond.isCaseInsensitive" title="不区分大小写"><i class="icon info small"></i></sup>
+	</span>
 </div>`
 })
 
@@ -14043,8 +14477,8 @@ Vue.component("http-header-assistant", {
 		}
 	},
 	template: `<span v-if="selectedHeaderName.length == 0">
-<a href v-for="header in matchedHeaders" class="ui label basic tiny blue" style="font-weight: normal; margin-bottom: 0.3em" @click.prevent="select(header)">{{header}}</a>
-<span v-if="matchedHeaders.length > 0">&nbsp; &nbsp;</span>
+	<a href="" v-for="header in matchedHeaders" class="ui label basic tiny blue" style="font-weight: normal; margin-bottom: 0.3em" @click.prevent="select(header)">{{header}}</a>
+	<span v-if="matchedHeaders.length > 0">&nbsp; &nbsp;</span>
 </span>`
 })
 
@@ -14153,29 +14587,37 @@ Vue.component("http-firewall-rules-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="rulesJSON" :value="JSON.stringify(rules)">
-<div v-if="rules.length > 0">
-<div v-for="(rule, index) in rules" class="ui label small basic" style="margin-bottom: 0.5em; line-height: 1.5">
-{{rule.name}} <span :title="calculateParamDescription(rule.param)" class="hover">{{calculateParamName(rule.param)}}<span class="small grey"> {{rule.param}}</span></span>
-<span v-if="rule.param == '\${cc2}'">
-{{rule.checkpointOptions.period}}秒内请求数
-</span>
-<span v-if="rule.param == '\${refererBlock}'">
-<span v-if="rule.checkpointOptions.allowDomains != null && rule.checkpointOptions.allowDomains.length > 0">允许{{rule.checkpointOptions.allowDomains}}</span>
-<span v-if="rule.checkpointOptions.denyDomains != null && rule.checkpointOptions.denyDomains.length > 0">禁止{{rule.checkpointOptions.denyDomains}}</span>
-</span>
-<span v-else>
-<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> <span class="hover" :title="operatorDescription(rule.operator) + ((!rule.isComposed && rule.isCaseInsensitive) ? '\\n[大小写不敏感] ':'')">&lt;{{operatorName(rule.operator)}}></span>
-<span v-if="!isEmptyString(rule.value)" class="hover">{{rule.value}}</span>
-<span v-else-if="operatorDataType(rule.operator) != 'none'" class="disabled" style="font-weight: normal" title="空字符串">[空]</span>
-</span>
-<span v-if="rule.description != null && rule.description.length > 0" class="grey small">（{{rule.description}}）</span>
-<a href title="修改" @click.prevent="updateRule(index, rule)"><i class="icon pencil small"></i></a>
-<a href title="删除" @click.prevent="removeRule(index)"><i class="icon remove"></i></a>
-</div>
-<div class="ui divider"></div>
-</div>
-<button class="ui button tiny" type="button" @click.prevent="addRule()">+</button>
+		<input type="hidden" name="rulesJSON" :value="JSON.stringify(rules)"/>
+		<div v-if="rules.length > 0">
+			<div v-for="(rule, index) in rules" class="ui label small basic" style="margin-bottom: 0.5em; line-height: 1.5">
+				{{rule.name}} <span :title="calculateParamDescription(rule.param)" class="hover">{{calculateParamName(rule.param)}}<span class="small grey"> {{rule.param}}</span></span>
+				
+				<!-- cc2 -->
+				<span v-if="rule.param == '\${cc2}'">
+					{{rule.checkpointOptions.period}}秒内请求数
+				</span>	
+				
+				<!-- refererBlock -->
+				<span v-if="rule.param == '\${refererBlock}'">
+					<span v-if="rule.checkpointOptions.allowDomains != null && rule.checkpointOptions.allowDomains.length > 0">允许{{rule.checkpointOptions.allowDomains}}</span>
+					<span v-if="rule.checkpointOptions.denyDomains != null && rule.checkpointOptions.denyDomains.length > 0">禁止{{rule.checkpointOptions.denyDomains}}</span>
+				</span>
+				
+				<span v-else>
+					<span v-if="rule.paramFilters != null && rule.paramFilters.length > 0" v-for="paramFilter in rule.paramFilters"> | {{paramFilter.code}}</span> <span class="hover" :title="operatorDescription(rule.operator) + ((!rule.isComposed && rule.isCaseInsensitive) ? '\\n[大小写不敏感] ':'')">&lt;{{operatorName(rule.operator)}}&gt;</span> 
+						<span v-if="!isEmptyString(rule.value)" class="hover">{{rule.value}}</span>
+						<span v-else-if="operatorDataType(rule.operator) != 'none'" class="disabled" style="font-weight: normal" title="空字符串">[空]</span>
+				</span>
+				
+				<!-- description -->
+				<span v-if="rule.description != null && rule.description.length > 0" class="grey small">（{{rule.description}}）</span>
+				
+				<a href="" title="修改" @click.prevent="updateRule(index, rule)"><i class="icon pencil small"></i></a>
+				<a href="" title="删除" @click.prevent="removeRule(index)"><i class="icon remove"></i></a>
+			</div>
+			<div class="ui divider"></div>
+		</div>
+		<button class="ui button tiny" type="button" @click.prevent="addRule()">+</button>
 </div>`
 })
 
@@ -14237,36 +14679,36 @@ Vue.component("http-fastcgi-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="fastcgiRefJSON" :value="JSON.stringify(fastcgiRef)">
-<table class="ui table definition selectable">
-<prior-checkbox :v-config="fastcgiRef" v-if="vIsLocation"></prior-checkbox>
-<tbody v-show="(!this.vIsLocation || this.fastcgiRef.isPrior)">
-<tr>
-<td class="title">启用配置</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" v-model="fastcgiRef.isOn">
-<label></label>
-</div>
-</td>
-</tr>
-</tbody>
-<tbody v-if="isOn()">
-<tr>
-<td>Fastcgi服务</td>
-<td>
-<div v-show="fastcgiConfigs.length > 0" style="margin-bottom: 0.5em">
-<div class="ui label basic small" :class="{disabled: !fastcgi.isOn}" v-for="(fastcgi, index) in fastcgiConfigs">
-{{fastcgi.address}} &nbsp; <a href title="修改" @click.prevent="updateFastcgi(fastcgi.id, index)"><i class="ui icon pencil small"></i></a> &nbsp; <a href title="删除" @click.prevent="removeFastcgi(index)"><i class="ui icon remove"></i></a>
-</div>
-<div class="ui divided"></div>
-</div>
-<button type="button" class="ui button tiny" @click.prevent="createFastcgi()">+</button>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="margin"></div>
+	<input type="hidden" name="fastcgiRefJSON" :value="JSON.stringify(fastcgiRef)"/>
+	<table class="ui table definition selectable">
+		<prior-checkbox :v-config="fastcgiRef" v-if="vIsLocation"></prior-checkbox>
+		<tbody v-show="(!this.vIsLocation || this.fastcgiRef.isPrior)">
+			<tr>
+				<td class="title">启用配置</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" v-model="fastcgiRef.isOn"/>
+						<label></label>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-if="isOn()">
+			<tr>
+				<td>Fastcgi服务</td>
+				<td>
+					<div v-show="fastcgiConfigs.length > 0" style="margin-bottom: 0.5em">
+						<div class="ui label basic small" :class="{disabled: !fastcgi.isOn}" v-for="(fastcgi, index) in fastcgiConfigs">
+							{{fastcgi.address}} &nbsp; <a href="" title="修改" @click.prevent="updateFastcgi(fastcgi.id, index)"><i class="ui icon pencil small"></i></a> &nbsp; <a href="" title="删除" @click.prevent="removeFastcgi(index)"><i class="ui icon remove"></i></a>
+						</div>
+						<div class="ui divided"></div>
+					</div>
+					<button type="button" class="ui button tiny" @click.prevent="createFastcgi()">+</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>	
+	<div class="margin"></div>
 </div>`
 })
 
@@ -14325,30 +14767,30 @@ Vue.component("http-methods-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="methodsJSON" :value="JSON.stringify(methods)">
-<div v-if="methods.length > 0">
-<span class="ui label small basic" v-for="(method, index) in methods">
-{{method}}
-&nbsp; <a href title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
-</span>
-<div class="ui divider"></div>
-</div>
-<div v-if="isAdding">
-<div class="ui fields">
-<div class="ui field">
-<input type="text" v-model="addingMethod" @keyup.enter="confirm()" @keypress.enter.prevent="1" ref="addingMethod" placeholder="如GET" size="10">
-</div>
-<div class="ui field">
-<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button>
-&nbsp; <a href title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
-</div>
-</div>
-<p class="comment">格式为大写，比如<code-label>GET</code-label>、<code-label>POST</code-label>等。</p>
-<div class="ui divider"></div>
-</div>
-<div style="margin-top: 0.5em" v-if="!isAdding">
-<button class="ui button tiny" type="button" @click.prevent="add">+</button>
-</div>
+	<input type="hidden" name="methodsJSON" :value="JSON.stringify(methods)"/>
+	<div v-if="methods.length > 0">
+		<span class="ui label small basic" v-for="(method, index) in methods">
+			{{method}}
+			&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+		</span>
+		<div class="ui divider"></div>
+	</div>
+	<div v-if="isAdding">
+		<div class="ui fields">
+			<div class="ui field">
+				<input type="text" v-model="addingMethod" @keyup.enter="confirm()" @keypress.enter.prevent="1" ref="addingMethod" placeholder="如GET" size="10"/>
+			</div>
+			<div class="ui field">
+				<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button>
+				&nbsp; <a href="" title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
+			</div>
+		</div>
+		<p class="comment">格式为大写，比如<code-label>GET</code-label>、<code-label>POST</code-label>等。</p>
+		<div class="ui divider"></div>
+	</div>
+	<div style="margin-top: 0.5em" v-if="!isAdding">
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	</div>
 </div>`
 })
 
@@ -14429,24 +14871,24 @@ Vue.component("http-cond-url-extension", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="condJSON" :value="JSON.stringify(cond)">
-<div v-if="extensions.length > 0">
-<div class="ui label small basic" v-for="(ext, index) in extensions">{{ext}} <a href title="删除" @click.prevent="removeExt(index)"><i class="icon remove small"></i></a></div>
-<div class="ui divider"></div>
-</div>
-<div class="ui fields inline" v-if="isAdding">
-<div class="ui field">
-<input type="text" size="20" maxlength="100" v-model="addingExt" ref="addingExt" placeholder=".xxx, .yyy" @keyup.enter="confirmAdding" @keypress.enter.prevent="1">
-</div>
-<div class="ui field">
-<button class="ui button tiny basic" type="button" @click.prevent="confirmAdding">确认</button>
-<a href title="取消" @click.prevent="cancelAdding"><i class="icon remove"></i></a>
-</div>
-</div>
-<div style="margin-top: 1em" v-show="!isAdding">
-<button class="ui button tiny basic" type="button" @click.prevent="addExt()">+添加扩展名</button>
-</div>
-<p class="comment">扩展名需要包含点（.）符号，例如<code-label>.jpg</code-label>、<code-label>.png</code-label>之类；多个扩展名用逗号分割。</p>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<div v-if="extensions.length > 0">
+		<div class="ui label small basic" v-for="(ext, index) in extensions">{{ext}} <a href="" title="删除" @click.prevent="removeExt(index)"><i class="icon remove small"></i></a></div>
+		<div class="ui divider"></div>
+	</div>
+	<div class="ui fields inline" v-if="isAdding">
+		<div class="ui field">
+			<input type="text" size="20" maxlength="100" v-model="addingExt" ref="addingExt" placeholder=".xxx, .yyy" @keyup.enter="confirmAdding" @keypress.enter.prevent="1" />
+		</div>
+		<div class="ui field">
+			<button class="ui button tiny basic" type="button" @click.prevent="confirmAdding">确认</button>
+			<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove"></i></a>
+		</div> 
+	</div>
+	<div style="margin-top: 1em" v-show="!isAdding">
+		<button class="ui button tiny basic" type="button" @click.prevent="addExt()">+添加扩展名</button>
+	</div>
+	<p class="comment">扩展名需要包含点（.）符号，例如<code-label>.jpg</code-label>、<code-label>.png</code-label>之类；多个扩展名用逗号分割。</p>
 </div>`
 })
 
@@ -14520,24 +14962,24 @@ Vue.component("http-cond-url-not-extension", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="condJSON" :value="JSON.stringify(cond)">
-<div v-if="extensions.length > 0">
-<div class="ui label small basic" v-for="(ext, index) in extensions">{{ext}} <a href title="删除" @click.prevent="removeExt(index)"><i class="icon remove"></i></a></div>
-<div class="ui divider"></div>
-</div>
-<div class="ui fields inline" v-if="isAdding">
-<div class="ui field">
-<input type="text" size="6" maxlength="100" v-model="addingExt" ref="addingExt" placeholder=".xxx" @keyup.enter="confirmAdding" @keypress.enter.prevent="1">
-</div>
-<div class="ui field">
-<button class="ui button tiny basic" type="button" @click.prevent="confirmAdding">确认</button>
-<a href title="取消" @click.prevent="cancelAdding"><i class="icon remove"></i></a>
-</div>
-</div>
-<div style="margin-top: 1em" v-show="!isAdding">
-<button class="ui button tiny basic" type="button" @click.prevent="addExt()">+添加扩展名</button>
-</div>
-<p class="comment">扩展名需要包含点（.）符号，例如<code-label>.jpg</code-label>、<code-label>.png</code-label>之类。</p>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<div v-if="extensions.length > 0">
+		<div class="ui label small basic" v-for="(ext, index) in extensions">{{ext}} <a href="" title="删除" @click.prevent="removeExt(index)"><i class="icon remove"></i></a></div>
+		<div class="ui divider"></div>
+	</div>
+	<div class="ui fields inline" v-if="isAdding">
+		<div class="ui field">
+			<input type="text" size="6" maxlength="100" v-model="addingExt" ref="addingExt" placeholder=".xxx" @keyup.enter="confirmAdding" @keypress.enter.prevent="1" />
+		</div>
+		<div class="ui field">
+			<button class="ui button tiny basic" type="button" @click.prevent="confirmAdding">确认</button>
+			<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove"></i></a>
+		</div> 
+	</div>
+	<div style="margin-top: 1em" v-show="!isAdding">
+		<button class="ui button tiny basic" type="button" @click.prevent="addExt()">+添加扩展名</button>
+	</div>
+	<p class="comment">扩展名需要包含点（.）符号，例如<code-label>.jpg</code-label>、<code-label>.png</code-label>之类。</p>
 </div>`
 })
 
@@ -14568,9 +15010,9 @@ Vue.component("http-cond-url-prefix", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="condJSON" :value="JSON.stringify(cond)">
-<input type="text" v-model="cond.value" ref="valueInput">
-<p class="comment">URL前缀，有此前缀的URL都将会被匹配，通常以<code-label>/</code-label>开头，比如<code-label>/static</code-label>、<code-label>/images</code-label>，不需要带域名。</p>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
+	<p class="comment">URL前缀，有此前缀的URL都将会被匹配，通常以<code-label>/</code-label>开头，比如<code-label>/static</code-label>、<code-label>/images</code-label>，不需要带域名。</p>
 </div>`
 })
 
@@ -14601,9 +15043,9 @@ Vue.component("http-cond-url-not-prefix", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="condJSON" :value="JSON.stringify(cond)">
-<input type="text" v-model="cond.value" ref="valueInput">
-<p class="comment">要排除的URL前缀，有此前缀的URL都将会被匹配，通常以<code-label>/</code-label>开头，比如<code-label>/static</code-label>、<code-label>/images</code-label>，不需要带域名。</p>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
+	<p class="comment">要排除的URL前缀，有此前缀的URL都将会被匹配，通常以<code-label>/</code-label>开头，比如<code-label>/static</code-label>、<code-label>/images</code-label>，不需要带域名。</p>
 </div>`
 })
 
@@ -14631,9 +15073,9 @@ Vue.component("http-cond-url-eq-index", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="condJSON" :value="JSON.stringify(cond)">
-<input type="text" v-model="cond.value" disabled style="background: #eee">
-<p class="comment">检查URL路径是为<code-label>/</code-label>，不需要带域名。</p>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value" disabled="disabled" style="background: #eee"/>
+	<p class="comment">检查URL路径是为<code-label>/</code-label>，不需要带域名。</p>
 </div>`
 })
 
@@ -14661,9 +15103,9 @@ Vue.component("http-cond-url-all", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="condJSON" :value="JSON.stringify(cond)">
-<input type="text" v-model="cond.value" disabled style="background: #eee">
-<p class="comment">支持全站所有URL。</p>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value" disabled="disabled" style="background: #eee"/>
+	<p class="comment">支持全站所有URL。</p>
 </div>`
 })
 
@@ -14694,9 +15136,9 @@ Vue.component("http-cond-url-eq", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="condJSON" :value="JSON.stringify(cond)">
-<input type="text" v-model="cond.value" ref="valueInput">
-<p class="comment">完整的URL路径，通常以<code-label>/</code-label>开头，比如<code-label>/static/ui.js</code-label>，不需要带域名。</p>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
+	<p class="comment">完整的URL路径，通常以<code-label>/</code-label>开头，比如<code-label>/static/ui.js</code-label>，不需要带域名。</p>
 </div>`
 })
 
@@ -14727,9 +15169,9 @@ Vue.component("http-cond-url-not-eq", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="condJSON" :value="JSON.stringify(cond)">
-<input type="text" v-model="cond.value" ref="valueInput">
-<p class="comment">要排除的完整的URL路径，通常以<code-label>/</code-label>开头，比如<code-label>/static/ui.js</code-label>，不需要带域名。</p>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
+	<p class="comment">要排除的完整的URL路径，通常以<code-label>/</code-label>开头，比如<code-label>/static/ui.js</code-label>，不需要带域名。</p>
 </div>`
 })
 
@@ -14760,9 +15202,9 @@ Vue.component("http-cond-url-regexp", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="condJSON" :value="JSON.stringify(cond)">
-<input type="text" v-model="cond.value" ref="valueInput">
-<p class="comment">匹配URL的正则表达式，比如<code-label>^/static/(.*).js$</code-label>，不需要带域名。</p>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
+	<p class="comment">匹配URL的正则表达式，比如<code-label>^/static/(.*).js$</code-label>，不需要带域名。</p>
 </div>`
 })
 
@@ -14793,9 +15235,9 @@ Vue.component("http-cond-url-not-regexp", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="condJSON" :value="JSON.stringify(cond)">
-<input type="text" v-model="cond.value" ref="valueInput">
-<p class="comment"><strong>不要</strong>匹配URL的正则表达式，意即只要匹配成功则排除此条件，比如<code-label>^/static/(.*).js$</code-label>，不需要带域名。</p>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
+	<p class="comment"><strong>不要</strong>匹配URL的正则表达式，意即只要匹配成功则排除此条件，比如<code-label>^/static/(.*).js$</code-label>，不需要带域名。</p>
 </div>`
 })
 
@@ -14826,9 +15268,9 @@ Vue.component("http-cond-url-wildcard-match", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="condJSON" :value="JSON.stringify(cond)">
-<input type="text" v-model="cond.value" ref="valueInput">
-<p class="comment">匹配URL的通配符，用星号（<code-label>*</code-label>）表示任意字符，比如（<code-label>/images/*.png</code-label>、<code-label>/static/*</code-label>，不需要带域名。</p>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
+	<p class="comment">匹配URL的通配符，用星号（<code-label>*</code-label>）表示任意字符，比如（<code-label>/images/*.png</code-label>、<code-label>/static/*</code-label>，不需要带域名。</p>
 </div>`
 })
 
@@ -14859,9 +15301,9 @@ Vue.component("http-cond-user-agent-regexp", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="condJSON" :value="JSON.stringify(cond)">
-<input type="text" v-model="cond.value" ref="valueInput">
-<p class="comment">匹配User-Agent的正则表达式，比如<code-label>Android|iPhone</code-label>。</p>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
+	<p class="comment">匹配User-Agent的正则表达式，比如<code-label>Android|iPhone</code-label>。</p>
 </div>`
 })
 
@@ -14892,9 +15334,9 @@ Vue.component("http-cond-user-agent-not-regexp", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="condJSON" :value="JSON.stringify(cond)">
-<input type="text" v-model="cond.value" ref="valueInput">
-<p class="comment">匹配User-Agent的正则表达式，比如<code-label>Android|iPhone</code-label>，如果匹配，则排除此条件。</p>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<input type="text" v-model="cond.value" ref="valueInput"/>
+	<p class="comment">匹配User-Agent的正则表达式，比如<code-label>Android|iPhone</code-label>，如果匹配，则排除此条件。</p>
 </div>`
 })
 
@@ -14957,24 +15399,24 @@ Vue.component("http-cond-mime-type", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="condJSON" :value="JSON.stringify(cond)">
-<div v-if="mimeTypes.length > 0">
-<div class="ui label small" v-for="(mimeType, index) in mimeTypes">{{mimeType}} <a href title="删除" @click.prevent="removeMimeType(index)"><i class="icon remove"></i></a></div>
-<div class="ui divider"></div>
-</div>
-<div class="ui fields inline" v-if="isAdding">
-<div class="ui field">
-<input type="text" size="16" maxlength="100" v-model="addingMimeType" ref="addingMimeType" placeholder="类似于image/png" @keyup.enter="confirmAdding" @keypress.enter.prevent="1">
-</div>
-<div class="ui field">
-<button class="ui button tiny basic" type="button" @click.prevent="confirmAdding">确认</button>
-<a href title="取消" @click.prevent="cancelAdding"><i class="icon remove"></i></a>
-</div>
-</div>
-<div style="margin-top: 1em">
-<button class="ui button tiny basic" type="button" @click.prevent="addMimeType()">+添加MimeType</button>
-</div>
-<p class="comment">服务器返回的内容的MimeType，比如<span class="ui label tiny">text/html</span>、<span class="ui label tiny">image/*</span>等。</p>
+	<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+	<div v-if="mimeTypes.length > 0">
+		<div class="ui label small" v-for="(mimeType, index) in mimeTypes">{{mimeType}} <a href="" title="删除" @click.prevent="removeMimeType(index)"><i class="icon remove"></i></a></div>
+		<div class="ui divider"></div>
+	</div>
+	<div class="ui fields inline" v-if="isAdding">
+		<div class="ui field">
+			<input type="text" size="16" maxlength="100" v-model="addingMimeType" ref="addingMimeType" placeholder="类似于image/png" @keyup.enter="confirmAdding" @keypress.enter.prevent="1" />
+		</div>
+		<div class="ui field">
+			<button class="ui button tiny basic" type="button" @click.prevent="confirmAdding">确认</button>
+			<a href="" title="取消" @click.prevent="cancelAdding"><i class="icon remove"></i></a>
+		</div> 
+	</div>
+	<div style="margin-top: 1em">
+		<button class="ui button tiny basic" type="button" @click.prevent="addMimeType()">+添加MimeType</button>
+	</div>
+	<p class="comment">服务器返回的内容的MimeType，比如<span class="ui label tiny">text/html</span>、<span class="ui label tiny">image/*</span>等。</p>
 </div>`
 })
 
@@ -15140,109 +15582,124 @@ Vue.component("http-cond-params", {
 		}
 	},
 	template: `<tbody>
-<tr>
-<td style="width: 8em">参数值</td>
-<td>
-<input type="hidden" name="condJSON" :value="JSON.stringify(cond)">
-<div>
-<div class="ui field">
-<input type="text" placeholder="\${xxx}" v-model="cond.param">
-</div>
-<div class="ui field">
-<select class="ui dropdown" style="width: 16em; color: grey" v-model="variable" @change="changeVariable"><option value>[常用参数]</option><option v-for="v in variables" :value="v.code">{{v.code}} - {{v.name}}</option></select>
-</div>
-</div>
-<p class="comment">其中可以使用变量，类似于<code-label>\${requestPath}</code-label>，也可以是多个变量的组合。</p>
-</td>
-</tr>
-<tr>
-<td>操作符</td>
-<td>
-<div>
-<select class="ui dropdown auto-width" v-model="operator" @change="changeOperator"><option v-for="operator in operators" :value="operator.op">{{operator.name}}</option></select>
-<p class="comment" v-html="operatorDescription"></p>
-</div>
-</td>
-</tr>
-<tr v-show="!['file exist', 'file not exist'].$contains(cond.operator)">
-<td>对比值</td>
-<td id="variables-value-box">
-<div v-if="['regexp', 'not regexp'].$contains(cond.operator)">
-<input type="text" v-model="stringValue">
-<p class="comment">要匹配的正则表达式，比如<code-label>^/static/(.+).js</code-label>。</p>
-</div>
-<div v-if="['eq int', 'eq float', 'gt', 'gte', 'lt', 'lte'].$contains(cond.operator)">
-<input type="text" maxlength="11" size="11" style="width: 5em" v-model="numberValue">
-<p class="comment">要对比的数字。</p>
-</div>
-<div v-if="['mod 10'].$contains(cond.operator)">
-<input type="text" maxlength="11" size="11" style="width: 5em" v-model="numberValue">
-<p class="comment">参数值除以10的余数，在0-9之间。</p>
-</div>
-<div v-if="['mod 100'].$contains(cond.operator)">
-<input type="text" maxlength="11" size="11" style="width: 5em" v-model="numberValue">
-<p class="comment">参数值除以100的余数，在0-99之间。</p>
-</div>
-<div v-if="['mod', 'ip mod'].$contains(cond.operator)">
-<div class="ui fields inline">
-<div class="ui field">除：</div>
-<div class="ui field">
-<input type="text" maxlength="11" size="11" style="width: 5em" v-model="modDivValue" placeholder="除数">
-</div>
-<div class="ui field">余：</div>
-<div class="ui field">
-<input type="text" maxlength="11" size="11" style="width: 5em" v-model="modRemValue" placeholder="余数">
-</div>
-</div>
-</div>
-<div v-if="['eq', 'not', 'prefix', 'suffix', 'contains', 'not contains'].$contains(cond.operator)">
-<input type="text" v-model="stringValue">
-<p class="comment" v-if="cond.operator == 'eq'">和参数值一致的字符串。</p>
-<p class="comment" v-if="cond.operator == 'not'">和参数值不一致的字符串。</p>
-<p class="comment" v-if="cond.operator == 'prefix'">参数值的前缀。</p>
-<p class="comment" v-if="cond.operator == 'suffix'">参数值的后缀为此字符串。</p>
-<p class="comment" v-if="cond.operator == 'contains'">参数值包含此字符串。</p>
-<p class="comment" v-if="cond.operator == 'not contains'">参数值不包含此字符串。</p>
-</div>
-<div v-if="['in', 'not in', 'file ext', 'mime type'].$contains(cond.operator)">
-<values-box @change="changeStringValues" :values="stringValues" size="15"></values-box>
-<p class="comment" v-if="cond.operator == 'in'">添加参数值列表。</p>
-<p class="comment" v-if="cond.operator == 'not in'">添加参数值列表。</p>
-<p class="comment" v-if="cond.operator == 'file ext'">添加扩展名列表，比如<code-label>png</code-label>、<code-label>html</code-label>，不包括点。</p>
-<p class="comment" v-if="cond.operator == 'mime type'">添加MimeType列表，类似于<code-label>text/html</code-label>、<code-label>image/*</code-label>。</p>
-</div>
-<div v-if="['version range'].$contains(cond.operator)">
-<div class="ui fields inline">
-<div class="ui field"><input type="text" v-model="versionRangeMinValue" maxlength="200" placeholder="最小版本" style="width: 10em"></div>
-<div class="ui field">-</div>
-<div class="ui field"><input type="text" v-model="versionRangeMaxValue" maxlength="200" placeholder="最大版本" style="width: 10em"></div>
-</div>
-</div>
-<div v-if="['eq ip', 'gt ip', 'gte ip', 'lt ip', 'lte ip', 'ip range'].$contains(cond.operator)">
-<input type="text" style="width: 10em" v-model="stringValue" placeholder="x.x.x.x">
-<p class="comment">要对比的IP。</p>
-</div>
-<div v-if="['ip mod 10'].$contains(cond.operator)">
-<input type="text" maxlength="11" size="11" style="width: 5em" v-model="numberValue">
-<p class="comment">参数中IP转换成整数后除以10的余数，在0-9之间。</p>
-</div>
-<div v-if="['ip mod 100'].$contains(cond.operator)">
-<input type="text" maxlength="11" size="11" style="width: 5em" v-model="numberValue">
-<p class="comment">参数中IP转换成整数后除以100的余数，在0-99之间。</p>
-</div>
-</td>
-</tr>
-<tr v-if="['regexp', 'not regexp', 'eq', 'not', 'prefix', 'suffix', 'contains', 'not contains', 'in', 'not in'].$contains(cond.operator)">
-<td>不区分大小写</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" name="condIsCaseInsensitive" v-model="cond.isCaseInsensitive">
-<label></label>
-</div>
-<p class="comment">选中后表示对比时忽略参数值的大小写。</p>
-</td>
-</tr>
-</tbody>`
+	<tr>
+		<td style="width: 8em">参数值</td>
+		<td>
+			<input type="hidden" name="condJSON" :value="JSON.stringify(cond)"/>
+			<div>
+				<div class="ui field">
+					<input type="text" placeholder="\${xxx}" v-model="cond.param"/>
+				</div>
+				<div class="ui field">
+					<select class="ui dropdown" style="width: 16em; color: grey" v-model="variable" @change="changeVariable">
+						<option value="">[常用参数]</option>
+						<option v-for="v in variables" :value="v.code">{{v.code}} - {{v.name}}</option>
+					</select>
+				</div>
+			</div>
+			<p class="comment">其中可以使用变量，类似于<code-label>\${requestPath}</code-label>，也可以是多个变量的组合。</p>
+		</td>
+	</tr>
+	<tr>
+		<td>操作符</td>
+		<td>
+			<div>
+				<select class="ui dropdown auto-width" v-model="operator" @change="changeOperator">
+					<option v-for="operator in operators" :value="operator.op">{{operator.name}}</option>
+				</select>
+				<p class="comment" v-html="operatorDescription"></p>
+			</div>
+		</td>
+	</tr>
+	<tr v-show="!['file exist', 'file not exist'].$contains(cond.operator)">
+		<td>对比值</td>
+		<td id="variables-value-box">
+			<!-- 正则表达式 -->
+			<div v-if="['regexp', 'not regexp'].$contains(cond.operator)">
+				<input type="text" v-model="stringValue"/>
+				<p class="comment">要匹配的正则表达式，比如<code-label>^/static/(.+).js</code-label>。</p>
+			</div>
+			
+			<!-- 数字相关 -->
+			<div v-if="['eq int', 'eq float', 'gt', 'gte', 'lt', 'lte'].$contains(cond.operator)">
+				<input type="text" maxlength="11" size="11" style="width: 5em" v-model="numberValue"/>
+				<p class="comment">要对比的数字。</p>
+			</div>
+			
+			<!-- 取模 -->
+			<div v-if="['mod 10'].$contains(cond.operator)">
+				<input type="text" maxlength="11" size="11" style="width: 5em" v-model="numberValue"/>
+				<p class="comment">参数值除以10的余数，在0-9之间。</p>
+			</div>
+			<div v-if="['mod 100'].$contains(cond.operator)">
+				<input type="text" maxlength="11" size="11" style="width: 5em" v-model="numberValue"/>
+				<p class="comment">参数值除以100的余数，在0-99之间。</p>
+			</div>
+			<div v-if="['mod', 'ip mod'].$contains(cond.operator)">
+				<div class="ui fields inline">
+					<div class="ui field">除：</div>
+					<div class="ui field">
+						<input type="text" maxlength="11" size="11" style="width: 5em" v-model="modDivValue" placeholder="除数"/>
+					</div>
+					<div class="ui field">余：</div>
+					<div class="ui field">
+						<input type="text" maxlength="11" size="11" style="width: 5em" v-model="modRemValue" placeholder="余数"/>
+					</div>
+				</div>
+			</div>
+			
+			<!-- 字符串相关 -->
+			<div v-if="['eq', 'not', 'prefix', 'suffix', 'contains', 'not contains'].$contains(cond.operator)">
+				<input type="text" v-model="stringValue"/>
+				<p class="comment" v-if="cond.operator == 'eq'">和参数值一致的字符串。</p>
+				<p class="comment" v-if="cond.operator == 'not'">和参数值不一致的字符串。</p>
+				<p class="comment" v-if="cond.operator == 'prefix'">参数值的前缀。</p>
+				<p class="comment" v-if="cond.operator == 'suffix'">参数值的后缀为此字符串。</p>
+				<p class="comment" v-if="cond.operator == 'contains'">参数值包含此字符串。</p>
+				<p class="comment" v-if="cond.operator == 'not contains'">参数值不包含此字符串。</p>
+			</div>
+			<div v-if="['in', 'not in', 'file ext', 'mime type'].$contains(cond.operator)">
+				<values-box @change="changeStringValues" :values="stringValues" size="15"></values-box>
+				<p class="comment" v-if="cond.operator == 'in'">添加参数值列表。</p>
+				<p class="comment" v-if="cond.operator == 'not in'">添加参数值列表。</p>
+				<p class="comment" v-if="cond.operator == 'file ext'">添加扩展名列表，比如<code-label>png</code-label>、<code-label>html</code-label>，不包括点。</p>
+				<p class="comment" v-if="cond.operator == 'mime type'">添加MimeType列表，类似于<code-label>text/html</code-label>、<code-label>image/*</code-label>。</p>
+			</div>
+			<div v-if="['version range'].$contains(cond.operator)">
+				<div class="ui fields inline">
+					<div class="ui field"><input type="text" v-model="versionRangeMinValue" maxlength="200" placeholder="最小版本" style="width: 10em"/></div>
+					<div class="ui field">-</div>
+					<div class="ui field"><input type="text" v-model="versionRangeMaxValue" maxlength="200" placeholder="最大版本" style="width: 10em"/></div>
+				</div>
+			</div>
+			
+			<!-- IP相关 -->
+			<div v-if="['eq ip', 'gt ip', 'gte ip', 'lt ip', 'lte ip', 'ip range'].$contains(cond.operator)">
+				<input type="text" style="width: 10em" v-model="stringValue" placeholder="x.x.x.x"/>
+				<p class="comment">要对比的IP。</p>
+			</div>
+			<div v-if="['ip mod 10'].$contains(cond.operator)">
+				<input type="text" maxlength="11" size="11" style="width: 5em" v-model="numberValue"/>
+				<p class="comment">参数中IP转换成整数后除以10的余数，在0-9之间。</p>
+			</div>
+			<div v-if="['ip mod 100'].$contains(cond.operator)">
+				<input type="text" maxlength="11" size="11" style="width: 5em" v-model="numberValue"/>
+				<p class="comment">参数中IP转换成整数后除以100的余数，在0-99之间。</p>
+			</div>
+		</td>
+	</tr>
+	<tr v-if="['regexp', 'not regexp', 'eq', 'not', 'prefix', 'suffix', 'contains', 'not contains', 'in', 'not in'].$contains(cond.operator)">
+		<td>不区分大小写</td>
+		<td>
+		   <div class="ui checkbox">
+				<input type="checkbox" name="condIsCaseInsensitive" v-model="cond.isCaseInsensitive"/>
+				<label></label>
+			</div>
+			<p class="comment">选中后表示对比时忽略参数值的大小写。</p>
+		</td>
+	</tr>
+</tbody>
+`
 })
 
 // 请求方法列表
@@ -15308,30 +15765,30 @@ Vue.component("http-status-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="statusListJSON" :value="JSON.stringify(statusList)">
-<div v-if="statusList.length > 0">
-<span class="ui label small basic" v-for="(status, index) in statusList">
-{{status}}
-&nbsp; <a href title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
-</span>
-<div class="ui divider"></div>
-</div>
-<div v-if="isAdding">
-<div class="ui fields">
-<div class="ui field">
-<input type="text" v-model="addingStatus" @keyup.enter="confirm()" @keypress.enter.prevent="1" ref="addingStatus" placeholder="如200" size="3" maxlength="3" style="width: 5em">
-</div>
-<div class="ui field">
-<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button>
-&nbsp; <a href title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
-</div>
-</div>
-<p class="comment">格式为三位数字，比如<code-label>200</code-label>、<code-label>404</code-label>等。</p>
-<div class="ui divider"></div>
-</div>
-<div style="margin-top: 0.5em" v-if="!isAdding">
-<button class="ui button tiny" type="button" @click.prevent="add">+</button>
-</div>
+	<input type="hidden" name="statusListJSON" :value="JSON.stringify(statusList)"/>
+	<div v-if="statusList.length > 0">
+		<span class="ui label small basic" v-for="(status, index) in statusList">
+			{{status}}
+			&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+		</span>
+		<div class="ui divider"></div>
+	</div>
+	<div v-if="isAdding">
+		<div class="ui fields">
+			<div class="ui field">
+				<input type="text" v-model="addingStatus" @keyup.enter="confirm()" @keypress.enter.prevent="1" ref="addingStatus" placeholder="如200" size="3" maxlength="3" style="width: 5em"/>
+			</div>
+			<div class="ui field">
+				<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button>
+				&nbsp; <a href="" title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
+			</div>
+		</div>
+		<p class="comment">格式为三位数字，比如<code-label>200</code-label>、<code-label>404</code-label>等。</p>
+		<div class="ui divider"></div>
+	</div>
+	<div style="margin-top: 0.5em" v-if="!isAdding">
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	</div>
 </div>`
 })
 
@@ -15376,16 +15833,16 @@ Vue.component("server-group-selector", {
 		}
 	},
 	template: `<div>
-<div v-if="groups.length > 0">
-<div class="ui label small basic" v-if="groups.length > 0" v-for="(group, index) in groups">
-<input type="hidden" name="groupIds" :value="group.id">
-{{group.name}} &nbsp;<a href title="删除" @click.prevent="removeGroup(index)"><i class="icon remove"></i></a>
-</div>
-<div class="ui divider"></div>
-</div>
-<div>
-<a href @click.prevent="selectGroup()">[选择分组]</a> &nbsp; <a href @click.prevent="addGroup()">[添加分组]</a>
-</div>
+	<div v-if="groups.length > 0">
+		<div class="ui label small basic" v-if="groups.length > 0" v-for="(group, index) in groups">
+			<input type="hidden" name="groupIds" :value="group.id"/>
+			{{group.name}} &nbsp;<a href="" title="删除" @click.prevent="removeGroup(index)"><i class="icon remove"></i></a>
+		</div>
+		<div class="ui divider"></div>
+	</div>
+	<div>
+		<a href="" @click.prevent="selectGroup()">[选择分组]</a> &nbsp; <a href="" @click.prevent="addGroup()">[添加分组]</a>
+	</div>
 </div>`
 })
 
@@ -15424,12 +15881,12 @@ Vue.component("script-group-config-box", {
 		}
 	},
 	template: `<div>
-<table class="ui table definition selectable">
-<prior-checkbox :v-config="group" v-if="vIsLocation"></prior-checkbox>
-</table>
-<div :style="{opacity: (!vIsLocation || group.isPrior) ? 1 : 0.5}">
-<script-config-box :v-script-config="script" :v-auditing-status="vAuditingStatus" comment="在接收到客户端请求之后立即调用。预置req、resp变量。" @change="changeScript" :v-is-location="vIsLocation"></script-config-box>
-</div>
+		<table class="ui table definition selectable">
+			<prior-checkbox :v-config="group" v-if="vIsLocation"></prior-checkbox>
+		</table>
+		<div :style="{opacity: (!vIsLocation || group.isPrior) ? 1 : 0.5}">
+			<script-config-box :v-script-config="script" :v-auditing-status="vAuditingStatus" comment="在接收到客户端请求之后立即调用。预置req、resp变量。" @change="changeScript" :v-is-location="vIsLocation"></script-config-box>
+		</div>
 </div>`
 })
 
@@ -15462,16 +15919,22 @@ Vue.component("metric-period-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="periodJSON" :value="JSON.stringify(periodConfig)">
-<div class="ui fields inline">
-<div class="ui field">
-<input type="text" v-model="periodConfig.period" maxlength="4" size="4">
-</div>
-<div class="ui field">
-<select class="ui dropdown" v-model="periodConfig.unit"><option value="minute">分钟</option><option value="hour">小时</option><option value="day">天</option><option value="week">周</option><option value="month">月</option></select>
-</div>
-</div>
-<p class="comment">在此周期内同一对象累积为同一数据。</p>
+	<input type="hidden" name="periodJSON" :value="JSON.stringify(periodConfig)"/>
+	<div class="ui fields inline">
+		<div class="ui field">
+			<input type="text" v-model="periodConfig.period" maxlength="4" size="4"/>
+		</div>
+		<div class="ui field">
+			<select class="ui dropdown" v-model="periodConfig.unit">
+				<option value="minute">分钟</option>
+				<option value="hour">小时</option>
+				<option value="day">天</option>
+				<option value="week">周</option>
+				<option value="month">月</option>
+			</select>
+		</div>
+	</div>
+	<p class="comment">在此周期内同一对象累积为同一数据。</p>
 </div>`
 })
 
@@ -15521,52 +15984,62 @@ Vue.component("traffic-limit-config-box", {
 	},
 	methods: {
 		showBodyTemplate: function () {
-			this.config.noticePageBody = `<!doctype html><html>
+			this.config.noticePageBody = `<!DOCTYPE html>
+<html>
 <head>
 <title>Traffic Limit Exceeded Warning</title>
 <body>
+
 <h1>Traffic Limit Exceeded Warning</h1>
 <p>The site traffic has exceeded the limit. Please contact with the site administrator.</p>
 <address>Request ID: \${requestId}.</address>
+
 </body>
 </html>`
 		}
 	},
 	template: `<div>
-<input type="hidden" name="trafficLimitJSON" :value="JSON.stringify(config)">
-<table class="ui table selectable definition">
-<tbody>
-<tr>
-<td class="title">启用流量限制</td>
-<td>
-<checkbox v-model="config.isOn"></checkbox>
-<p class="comment">注意：由于流量统计是每5分钟统计一次，所以超出流量限制后，对用户的提醒也会有所延迟。</p>
-</td>
-</tr>
-</tbody>
-<tbody v-show="config.isOn">
-<tr>
-<td>日流量限制</td>
-<td>
-<size-capacity-box :v-value="config.dailySize"></size-capacity-box>
-</td>
-</tr>
-<tr>
-<td>月流量限制</td>
-<td>
-<size-capacity-box :v-value="config.monthlySize"></size-capacity-box>
-</td>
-</tr>
-<tr>
-<td>网页提示内容</td>
-<td>
-<textarea v-model="config.noticePageBody"></textarea>
-<p class="comment"><a href @click.prevent="showBodyTemplate">[使用模板]</a>。当达到流量限制时网页显示的HTML内容，不填写则显示默认的提示内容，适用于网站类服务。</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="margin"></div>
+	<input type="hidden" name="trafficLimitJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table selectable definition">
+		<tbody>
+			<tr>
+				<td class="title">启用流量限制</td>
+				<td>
+					<checkbox v-model="config.isOn"></checkbox>
+					<p class="comment">注意：由于流量统计是每5分钟统计一次，所以超出流量限制后，对用户的提醒也会有所延迟。</p>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="config.isOn">
+			<tr>
+				<td>日流量限制</td>
+				<td>
+					<size-capacity-box :v-value="config.dailySize"></size-capacity-box>
+				</td>
+			</tr>
+			<tr>
+				<td>月流量限制</td>
+				<td>
+					<size-capacity-box :v-value="config.monthlySize"></size-capacity-box>
+				</td>
+			</tr>
+			<!--<tr>
+				<td>总体限制</td>
+				<td>
+					<size-capacity-box :v-value="config.totalSize"></size-capacity-box>
+					<p class="comment"></p>
+				</td>
+			</tr>-->
+			<tr>
+				<td>网页提示内容</td>
+				<td>
+					<textarea v-model="config.noticePageBody"></textarea>
+					<p class="comment"><a href="" @click.prevent="showBodyTemplate">[使用模板]</a>。当达到流量限制时网页显示的HTML内容，不填写则显示默认的提示内容，适用于网站类服务。</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -15723,142 +16196,149 @@ Vue.component("http-firewall-captcha-options", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="captchaOptionsJSON" :value="JSON.stringify(options)">
-<a href @click.prevent="edit">{{summary}} <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
-<div v-show="isEditing" style="margin-top: 0.5em">
-<table class="ui table definition selectable">
-<tbody>
-<tr>
-<td>默认验证方式</td>
-<td>
-<select class="ui dropdown auto-width" v-model="options.captchaType"><option v-for="captchaDef in captchaTypes" :value="captchaDef.code">{{captchaDef.name}}</option></select>
-<p class="comment" v-for="captchaDef in captchaTypes" v-if="captchaDef.code == options.captchaType">{{captchaDef.description}}</p>
-</td>
-</tr>
-<tr>
-<td class="title">有效时间</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 5em" maxlength="9" v-model="options.life" @keyup.enter="confirm()" @keypress.enter.prevent="1">
-<span class="ui label">秒</span>
+	<input type="hidden" name="captchaOptionsJSON" :value="JSON.stringify(options)"/>
+	<a href="" @click.prevent="edit">{{summary}} <i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i></a>
+	<div v-show="isEditing" style="margin-top: 0.5em">
+		<table class="ui table definition selectable">
+			<tbody>
+				<tr>
+					<td>默认验证方式</td>
+					<td>
+						<select class="ui dropdown auto-width" v-model="options.captchaType">
+							<option v-for="captchaDef in captchaTypes" :value="captchaDef.code">{{captchaDef.name}}</option>
+						</select>
+						<p class="comment" v-for="captchaDef in captchaTypes" v-if="captchaDef.code == options.captchaType">{{captchaDef.description}}</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="title">有效时间</td>
+					<td>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 5em" maxlength="9" v-model="options.life" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+							<span class="ui label">秒</span>
+						</div>
+						<p class="comment">验证通过后在这个时间内不再验证，默认600秒。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>最多失败次数</td>
+					<td>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 5em" maxlength="9" v-model="options.maxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+							<span class="ui label">次</span>
+						</div>
+						<p class="comment"><span v-if="options.maxFails > 0 && options.maxFails < 5" class="red">建议填入一个不小于5的数字，以减少误判几率。</span>允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单。如果为空或者为0，表示不限制。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>失败拦截时间</td>
+					<td>
+						<div class="ui input right labeled">
+							<input type="text" style="width: 5em" maxlength="9" v-model="options.failBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+							<span class="ui label">秒</span>
+						</div>
+						<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时长；如果为0表示不自动拦截。</p>
+					</td>
+				</tr>
+				<tr>
+					<td>失败全局封禁</td>
+					<td>
+						<checkbox v-model="options.failBlockScopeAll"></checkbox>
+						<p class="comment">选中后，表示允许系统尝试全局封禁某个IP，以提升封禁性能。</p>
+					</td>
+				</tr>
+				
+				<tr v-show="options.captchaType == 'default'">
+					<td>验证码中数字个数</td>
+					<td>
+						<select class="ui dropdown auto-width" v-model="options.countLetters">
+							<option v-for="i in 10" :value="i">{{i}}</option>
+						</select>
+					</td>
+				</tr>
+				<tr v-show="options.captchaType == 'default'">
+					<td class="color-border">定制UI</td>
+					<td><checkbox v-model="options.uiIsOn"></checkbox></td>
+				</tr>
+			</tbody>
+			<tbody v-show="options.uiIsOn && options.captchaType == 'default'">
+				<tr>
+					<td class="color-border">页面标题</td>
+					<td>
+						<input type="text" v-model="options.uiTitle" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="color-border">按钮标题</td>
+					<td>
+						<input type="text" v-model="options.uiButtonTitle" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+						<p class="comment">类似于<code-label>提交验证</code-label>。</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="color-border">显示请求ID</td>
+					<td>
+						<checkbox v-model="options.uiShowRequestId"></checkbox>
+						<p class="comment">在界面上显示请求ID，方便用户报告问题。</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="color-border">CSS样式</td>
+					<td>
+						<textarea spellcheck="false" v-model="options.uiCss" rows="2"></textarea>
+					</td>
+				</tr>
+				<tr>
+					<td class="color-border">页头提示</td>
+					<td>
+						<textarea spellcheck="false" v-model="options.uiPrompt" rows="2"></textarea>
+						<p class="comment">类似于<code-label>请输入上面的验证码</code-label>，支持HTML。</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="color-border">页尾提示</td>
+					<td>
+						<textarea spellcheck="false" v-model="options.uiFooter" rows="2"></textarea>
+						<p class="comment">支持HTML。</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="color-border">页面模板</td>
+					<td>
+						<textarea spellcheck="false" rows="2" v-model="options.uiBody"></textarea>
+						<p class="comment"><span v-if="uiBodyWarning.length > 0" class="red">警告：{{uiBodyWarning}}</span><span v-if="options.uiBody.length > 0 && options.uiBody.indexOf('\${body}') < 0 " class="red">模板中必须包含\${body}表示验证码表单！</span>整个页面的模板，支持HTML，其中必须使用<code-label>\${body}</code-label>变量代表验证码表单，否则将无法正常显示验证码。</p>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<table class="ui table definition selectable">
+			<tr>
+				<td class="title">允许用户使用极验</td>
+				<td><checkbox v-model="options.geeTestConfig.isOn"></checkbox>
+					<p class="comment">选中后，表示允许用户在WAF设置中选择极验。</p>
+				</td>
+			</tr>
+			<tbody v-show="options.geeTestConfig.isOn">
+				<tr>
+					<td class="color-border">极验-验证ID *</td>
+					<td>
+						<input type="text" maxlength="100" name="geetestCaptchaId" v-model="options.geeTestConfig.captchaId" spellcheck="false"/>
+						<p class="comment">在极验控制台--业务管理中获取。</p>
+					</td>
+				</tr>
+				<tr>
+					<td class="color-border">极验-验证Key *</td>
+					<td>
+						<input type="text" maxlength="100" name="geetestCaptchaKey" v-model="options.geeTestConfig.captchaKey" spellcheck="false"/>
+						<p class="comment">在极验控制台--业务管理中获取。</p>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </div>
-<p class="comment">验证通过后在这个时间内不再验证，默认600秒。</p>
-</td>
-</tr>
-<tr>
-<td>最多失败次数</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 5em" maxlength="9" v-model="options.maxFails" @keyup.enter="confirm()" @keypress.enter.prevent="1">
-<span class="ui label">次</span>
-</div>
-<p class="comment"><span v-if="options.maxFails > 0 && options.maxFails < 5" class="red">建议填入一个不小于5的数字，以减少误判几率。</span>允许用户失败尝试的最多次数，超过这个次数将被自动加入黑名单。如果为空或者为0，表示不限制。</p>
-</td>
-</tr>
-<tr>
-<td>失败拦截时间</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" style="width: 5em" maxlength="9" v-model="options.failBlockTimeout" @keyup.enter="confirm()" @keypress.enter.prevent="1">
-<span class="ui label">秒</span>
-</div>
-<p class="comment">在达到最多失败次数（大于0）时，自动拦截的时长；如果为0表示不自动拦截。</p>
-</td>
-</tr>
-<tr>
-<td>失败全局封禁</td>
-<td>
-<checkbox v-model="options.failBlockScopeAll"></checkbox>
-<p class="comment">选中后，表示允许系统尝试全局封禁某个IP，以提升封禁性能。</p>
-</td>
-</tr>
-<tr v-show="options.captchaType == 'default'">
-<td>验证码中数字个数</td>
-<td>
-<select class="ui dropdown auto-width" v-model="options.countLetters"><option v-for="i in 10" :value="i">{{i}}</option></select>
-</td>
-</tr>
-<tr v-show="options.captchaType == 'default'">
-<td class="color-border">定制UI</td>
-<td><checkbox v-model="options.uiIsOn"></checkbox></td>
-</tr>
-</tbody>
-<tbody v-show="options.uiIsOn && options.captchaType == 'default'">
-<tr>
-<td class="color-border">页面标题</td>
-<td>
-<input type="text" v-model="options.uiTitle" @keyup.enter="confirm()" @keypress.enter.prevent="1">
-</td>
-</tr>
-<tr>
-<td class="color-border">按钮标题</td>
-<td>
-<input type="text" v-model="options.uiButtonTitle" @keyup.enter="confirm()" @keypress.enter.prevent="1">
-<p class="comment">类似于<code-label>提交验证</code-label>。</p>
-</td>
-</tr>
-<tr>
-<td class="color-border">显示请求ID</td>
-<td>
-<checkbox v-model="options.uiShowRequestId"></checkbox>
-<p class="comment">在界面上显示请求ID，方便用户报告问题。</p>
-</td>
-</tr>
-<tr>
-<td class="color-border">CSS样式</td>
-<td>
-<textarea spellcheck="false" v-model="options.uiCss" rows="2"></textarea>
-</td>
-</tr>
-<tr>
-<td class="color-border">页头提示</td>
-<td>
-<textarea spellcheck="false" v-model="options.uiPrompt" rows="2"></textarea>
-<p class="comment">类似于<code-label>请输入上面的验证码</code-label>，支持HTML。</p>
-</td>
-</tr>
-<tr>
-<td class="color-border">页尾提示</td>
-<td>
-<textarea spellcheck="false" v-model="options.uiFooter" rows="2"></textarea>
-<p class="comment">支持HTML。</p>
-</td>
-</tr>
-<tr>
-<td class="color-border">页面模板</td>
-<td>
-<textarea spellcheck="false" rows="2" v-model="options.uiBody"></textarea>
-<p class="comment"><span v-if="uiBodyWarning.length > 0" class="red">警告：{{uiBodyWarning}}</span><span v-if="options.uiBody.length > 0 && options.uiBody.indexOf('\${body}') < 0 " class="red">模板中必须包含\${body}表示验证码表单！</span>整个页面的模板，支持HTML，其中必须使用<code-label>\${body}</code-label>变量代表验证码表单，否则将无法正常显示验证码。</p>
-</td>
-</tr>
-</tbody>
-</table>
-<table class="ui table definition selectable">
-<tr>
-<td class="title">允许用户使用极验</td>
-<td><checkbox v-model="options.geeTestConfig.isOn"></checkbox>
-<p class="comment">选中后，表示允许用户在WAF设置中选择极验。</p>
-</td>
-</tr>
-<tbody v-show="options.geeTestConfig.isOn">
-<tr>
-<td class="color-border">极验-验证ID *</td>
-<td>
-<input type="text" maxlength="100" name="geetestCaptchaId" v-model="options.geeTestConfig.captchaId" spellcheck="false">
-<p class="comment">在极验控制台--业务管理中获取。</p>
-</td>
-</tr>
-<tr>
-<td class="color-border">极验-验证Key *</td>
-<td>
-<input type="text" maxlength="100" name="geetestCaptchaKey" v-model="options.geeTestConfig.captchaKey" spellcheck="false">
-<p class="comment">在极验控制台--业务管理中获取。</p>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>`
+`
 })
 
 Vue.component("user-agent-config-box", {
@@ -15947,94 +16427,97 @@ Vue.component("user-agent-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="userAgentJSON" :value="JSON.stringify(config)">
-<table class="ui table definition selectable">
-<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
-<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
-<tr>
-<td class="title">启用UA名单</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" value="1" v-model="config.isOn">
-<label></label>
-</div>
-<p class="comment">选中后表示开启UserAgent名单。</p>
-</td>
-</tr>
-</tbody>
-<tbody v-show="isOn()">
-<tr>
-<td>UA名单</td>
-<td>
-<div v-if="config.filters.length > 0">
-<table class="ui table celled">
-<thead class="full-width">
-<tr>
-<th>UA关键词</th>
-<th class="two wide">动作</th>
-<th class="one op">操作</th>
-</tr>
-</thead>
-<tbody v-for="(filter, index) in config.filters">
-<tr>
-<td style="background: white">
-<span v-for="keyword in filter.keywords" class="ui label basic tiny">
-<span v-if="keyword.length > 0">{{keyword}}</span>
-<span v-if="keyword.length == 0" class="disabled">[空]</span>
-</span>
-</td>
-<td>
-<span v-if="filter.action == 'allow'" class="green">允许</span><span v-if="filter.action == 'deny'" class="red">不允许</span>
-</td>
-<td><a href @click.prevent="remove(index)">删除</a></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div v-if="isAdding" style="margin-top: 0.5em">
-<table class="ui table definition">
-<tr>
-<td class="title">UA关键词</td>
-<td>
-<textarea v-model="batchKeywords" @input="changeKeywords(batchKeywords)" ref="batchKeywords" style="width: 20em" placeholder="*浏览器标识*"></textarea>
-<p class="comment">每行一个关键词；不区分大小写，比如<code-label>Chrome</code-label>；支持<code-label>*</code-label>通配符，比如<code-label>*Firefox*</code-label>；也支持空行关键词，表示空UserAgent。</p>
-</td>
-</tr>
-<tr>
-<td>动作</td>
-<td><select class="ui dropdown auto-width" v-model="addingFilter.action"><option value="deny">不允许</option><option value="allow">允许</option></select>
-</td>
-</tr>
-</table>
-<button type="button" class="ui button tiny" @click.prevent="confirm">保存</button> &nbsp; <a href @click.prevent="cancel" title="取消"><i class="icon remove small"></i></a>
-</div>
-<div v-show="!isAdding" style="margin-top: 0.5em">
-<button class="ui button tiny" type="button" @click.prevent="add">+</button>
-</div>
-</td>
-</tr>
-<tr>
-<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
-</tr>
-</tbody>
-<tbody v-show="moreOptionsVisible && isOn()">
-<tr>
-<td>例外URL</td>
-<td>
-<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
-<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
-</td>
-</tr>
-<tr>
-<td>限制URL</td>
-<td>
-<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
-<p class="comment">如果填写了限制URL，表示只对这些URL进行处理；如果不填则表示支持所有的URL。</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="margin"></div>
+	<input type="hidden" name="userAgentJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable">
+		<prior-checkbox :v-config="config" v-if="vIsLocation || vIsGroup"></prior-checkbox>
+		<tbody v-show="(!vIsLocation && !vIsGroup) || config.isPrior">
+			<tr>
+				<td class="title">启用UA名单</td>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" value="1" v-model="config.isOn"/>
+						<label></label>
+					</div>
+					<p class="comment">选中后表示开启UserAgent名单。</p>
+				</td>
+			</tr>
+		</tbody>
+		<tbody v-show="isOn()">
+			<tr>
+				<td>UA名单</td>
+				<td>
+					<div v-if="config.filters.length > 0">
+						<table class="ui table celled">
+							<thead class="full-width">
+								<tr>
+									<th>UA关键词</th>
+									<th class="two wide">动作</th>
+									<th class="one op">操作</th>
+								</tr>
+							</thead>
+							<tbody v-for="(filter, index) in config.filters">
+								<tr>
+									<td style="background: white">
+										<span v-for="keyword in filter.keywords" class="ui label basic tiny">
+											<span v-if="keyword.length > 0">{{keyword}}</span>
+											<span v-if="keyword.length == 0" class="disabled">[空]</span>
+										</span>
+									</td>
+									<td>
+										<span v-if="filter.action == 'allow'" class="green">允许</span><span v-if="filter.action == 'deny'" class="red">不允许</span>
+									</td>
+									<td><a href="" @click.prevent="remove(index)">删除</a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div v-if="isAdding" style="margin-top: 0.5em">
+						<table class="ui table definition">
+							<tr>
+								<td class="title">UA关键词</td>
+								<td>
+									<textarea v-model="batchKeywords" @input="changeKeywords(batchKeywords)" ref="batchKeywords" style="width: 20em" placeholder="*浏览器标识*"></textarea>
+									<p class="comment">每行一个关键词；不区分大小写，比如<code-label>Chrome</code-label>；支持<code-label>*</code-label>通配符，比如<code-label>*Firefox*</code-label>；也支持空行关键词，表示空UserAgent。</p>
+								</td>
+							</tr>
+							<tr>
+								<td>动作</td>
+								<td><select class="ui dropdown auto-width" v-model="addingFilter.action">
+										<option value="deny">不允许</option>
+										<option value="allow">允许</option>
+									</select>
+								</td>
+							</tr>
+						</table>
+						<button type="button" class="ui button tiny" @click.prevent="confirm">保存</button> &nbsp; <a href="" @click.prevent="cancel" title="取消"><i class="icon remove small"></i></a>
+					</div>
+					<div v-show="!isAdding" style="margin-top: 0.5em">
+						<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2"><more-options-indicator @change="showMoreOptions"></more-options-indicator></td>
+			</tr>
+		</tbody>
+		<tbody v-show="moreOptionsVisible && isOn()">
+			<tr>
+				<td>例外URL</td>
+				<td>
+					<url-patterns-box v-model="config.exceptURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了例外URL，表示这些URL跳过不做处理。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>限制URL</td>
+				<td>
+					<url-patterns-box v-model="config.onlyURLPatterns"></url-patterns-box>
+					<p class="comment">如果填写了限制URL，表示只对这些URL进行处理；如果不填则表示支持所有的URL。</p>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -16097,73 +16580,75 @@ Vue.component("http-pages-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="pagesJSON" :value="JSON.stringify(pages)">
+<input type="hidden" name="pagesJSON" :value="JSON.stringify(pages)"/>
+
 <div v-if="pages.length > 0">
-<table class="ui table selectable celled">
-<thead>
-<tr>
-<th class="two wide">响应状态码</th>
-<th>页面类型</th>
-<th class="two wide">新状态码</th>
-<th>例外URL</th>
-<th>限制URL</th>
-<th class="two op">操作</th>
-</tr>
-</thead>
-<tr v-for="(page,index) in pages">
-<td>
-<a href @click.prevent="updatePage(index, page.id)">
-<span v-if="page.status != null && page.status.length == 1">{{page.status[0]}}</span>
-<span v-else>{{page.status}}</span>
-<i class="icon expand small"></i>
-</a>
-</td>
-<td style="word-break: break-all">
-<div v-if="page.bodyType == 'url'">
-{{page.url}}
-<div>
-<grey-label>读取URL</grey-label>
-</div>
-</div>
-<div v-if="page.bodyType == 'redirectURL'">
-{{page.url}}
-<div>
-<grey-label>跳转URL</grey-label>
-<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
-</div>
-</div>
-<div v-if="page.bodyType == 'html'">
-[HTML内容]
-<div>
-<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
-</div>
-</div>
-</td>
-<td>
-<span v-if="page.newStatus > 0">{{page.newStatus}}</span>
-<span v-else class="disabled">保持</span>
-</td>
-<td>
-<div v-if="page.exceptURLPatterns != null && page.exceptURLPatterns">
-<span v-for="urlPattern in page.exceptURLPatterns" class="ui basic label small">{{urlPattern.pattern}}</span>
-</div>
-<span v-else class="disabled">-</span>
-</td>
-<td>
-<div v-if="page.onlyURLPatterns != null && page.onlyURLPatterns">
-<span v-for="urlPattern in page.onlyURLPatterns" class="ui basic label small">{{urlPattern.pattern}}</span>
-</div>
-<span v-else class="disabled">-</span>
-</td>
-<td>
-<a href title="修改" @click.prevent="updatePage(index, page.id)">修改</a> &nbsp;
-<a href title="删除" @click.prevent="removePage(index)">删除</a>
-</td>
-</tr>
-</table>
+	<table class="ui table selectable celled">
+		<thead>
+			<tr>
+				<th class="two wide">响应状态码</th>
+				<th>页面类型</th>
+				<th class="two wide">新状态码</th>
+				<th>例外URL</th>
+				<th>限制URL</th>
+				<th class="two op">操作</th>
+			</tr>	
+		</thead>
+		<tr v-for="(page,index) in pages">
+			<td>
+				<a href="" @click.prevent="updatePage(index, page.id)">
+					<span v-if="page.status != null && page.status.length == 1">{{page.status[0]}}</span>
+					<span v-else>{{page.status}}</span>
+					
+					<i class="icon expand small"></i>
+				</a>
+			</td>
+			<td style="word-break: break-all">
+				<div v-if="page.bodyType == 'url'">
+					{{page.url}}
+					<div>
+						<grey-label>读取URL</grey-label>
+					</div>
+				</div>
+				<div v-if="page.bodyType == 'redirectURL'">
+					{{page.url}}
+					<div>
+						<grey-label>跳转URL</grey-label>	
+						<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
+					</div>
+				</div>
+				<div v-if="page.bodyType == 'html'">
+					[HTML内容]
+					<div>
+						<grey-label v-if="page.newStatus > 0">{{page.newStatus}}</grey-label>
+					</div>
+				</div>
+			</td>
+			<td>
+				<span v-if="page.newStatus > 0">{{page.newStatus}}</span>
+				<span v-else class="disabled">保持</span>	
+			</td>
+			<td>
+				<div v-if="page.exceptURLPatterns != null && page.exceptURLPatterns">
+					<span v-for="urlPattern in page.exceptURLPatterns" class="ui basic label small">{{urlPattern.pattern}}</span>
+				</div>
+				<span v-else class="disabled">-</span>
+			</td>
+			<td>
+				<div v-if="page.onlyURLPatterns != null && page.onlyURLPatterns">
+					<span v-for="urlPattern in page.onlyURLPatterns" class="ui basic label small">{{urlPattern.pattern}}</span>
+				</div>
+				<span v-else class="disabled">-</span>
+			</td>
+			<td>
+				<a href="" title="修改" @click.prevent="updatePage(index, page.id)">修改</a> &nbsp; 
+				<a href="" title="删除" @click.prevent="removePage(index)">删除</a>
+			</td>
+		</tr>
+	</table>
 </div>
 <div style="margin-top: 1em">
-<button class="ui button small" type="button" @click.prevent="addPage()">+添加自定义页面</button>
+	<button class="ui button small" type="button" @click.prevent="addPage()">+添加自定义页面</button>
 </div>
 <div class="ui margin"></div>
 </div>`
@@ -16216,48 +16701,49 @@ Vue.component("firewall-syn-flood-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="synFloodJSON" :value="JSON.stringify(config)">
-<a href @click.prevent="edit">
-<span v-if="config.isOn">
-已启用 / <span>空连接次数：{{config.minAttempts}}次/分钟</span> / 封禁时长：{{config.timeoutSeconds}}秒 <span v-if="config.ignoreLocal">/ 忽略局域网访问</span>
-</span>
-<span v-else>未启用</span>
-<i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i>
-</a>
-<table class="ui table selectable" v-show="isEditing">
-<tr>
-<td class="title">启用</td>
-<td>
-<checkbox v-model="config.isOn"></checkbox>
-<p class="comment">启用后，WAF将会尝试自动检测并阻止SYN Flood攻击。此功能需要节点已安装并启用nftables或Firewalld。</p>
-</td>
-</tr>
-<tr>
-<td>空连接次数</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" v-model="minAttempts" style="width: 5em" maxlength="4">
-<span class="ui label">次/分钟</span>
-</div>
-<p class="comment">超过此数字的"空连接"将被视为SYN Flood攻击，为了防止误判，此数值默认不小于5。</p>
-</td>
-</tr>
-<tr>
-<td>封禁时长</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" v-model="timeoutSeconds" style="width: 5em" maxlength="8">
-<span class="ui label">秒</span>
-</div>
-</td>
-</tr>
-<tr>
-<td>忽略局域网访问</td>
-<td>
-<checkbox v-model="config.ignoreLocal"></checkbox>
-</td>
-</tr>
-</table>
+	<input type="hidden" name="synFloodJSON" :value="JSON.stringify(config)"/>
+	<a href="" @click.prevent="edit">
+		<span v-if="config.isOn">
+			已启用 / <span>空连接次数：{{config.minAttempts}}次/分钟</span> / 封禁时长：{{config.timeoutSeconds}}秒 <span v-if="config.ignoreLocal">/ 忽略局域网访问</span>
+		</span>
+		<span v-else>未启用</span>
+		<i class="icon angle" :class="{up: isEditing, down: !isEditing}"></i>
+	</a>
+	
+	<table class="ui table selectable" v-show="isEditing">
+		<tr>
+			<td class="title">启用</td>
+			<td>
+				<checkbox v-model="config.isOn"></checkbox>
+				<p class="comment">启用后，WAF将会尝试自动检测并阻止SYN Flood攻击。此功能需要节点已安装并启用nftables或Firewalld。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>空连接次数</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" v-model="minAttempts" style="width: 5em" maxlength="4"/>
+					<span class="ui label">次/分钟</span>
+				</div>
+				<p class="comment">超过此数字的"空连接"将被视为SYN Flood攻击，为了防止误判，此数值默认不小于5。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>封禁时长</td>
+			<td>
+				<div class="ui input right labeled">
+					<input type="text" v-model="timeoutSeconds" style="width: 5em" maxlength="8"/>
+					<span class="ui label">秒</span>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>忽略局域网访问</td>
+			<td>
+				<checkbox v-model="config.ignoreLocal"></checkbox>
+			</td>
+		</tr>
+	</table>
 </div>`
 })
 
@@ -16305,15 +16791,15 @@ Vue.component("http-firewall-region-selector", {
 		}
 	},
 	template: `<div>
-<span v-if="countries.length == 0" class="disabled">暂时没有选择<span v-if="listType =='allow'">允许</span><span v-else>封禁</span>的区域。</span>
-<div v-show="countries.length > 0">
-<div class="ui label tiny basic" v-for="(country, index) in countries" style="margin-bottom: 0.5em">
-<input type="hidden" :name="listType + 'CountryIds'" :value="country.id">
-({{country.letter}}){{country.name}} <a href @click.prevent="removeCountry(index)" title="删除"><i class="icon remove"></i></a>
-</div>
-</div>
-<div class="ui divider"></div>
-<button type="button" class="ui button tiny" @click.prevent="addCountry">修改</button> &nbsp; <button type="button" class="ui button tiny" v-show="countries.length > 0" @click.prevent="resetCountries">清空</button>
+	<span v-if="countries.length == 0" class="disabled">暂时没有选择<span v-if="listType =='allow'">允许</span><span v-else>封禁</span>的区域。</span>
+	<div v-show="countries.length > 0">
+		<div class="ui label tiny basic" v-for="(country, index) in countries" style="margin-bottom: 0.5em">
+			<input type="hidden" :name="listType + 'CountryIds'" :value="country.id"/>
+			({{country.letter}}){{country.name}} <a href="" @click.prevent="removeCountry(index)" title="删除"><i class="icon remove"></i></a>
+		</div>
+	</div>
+	<div class="ui divider"></div>
+	<button type="button" class="ui button tiny" @click.prevent="addCountry">修改</button> &nbsp; <button type="button" class="ui button tiny" v-show="countries.length > 0" @click.prevent="resetCountries">清空</button>
 </div>`
 })
 
@@ -16340,7 +16826,10 @@ Vue.component("admin-selector", {
         }
     },
     template: `<div>
-<select class="ui dropdown auto-width" name="adminId" v-model="adminId"><option value="0">[选择系统用户]</option><option v-for="admin in admins" :value="admin.id">{{admin.name}}（{{admin.username}}）</option></select>
+    <select class="ui dropdown auto-width" name="adminId" v-model="adminId">
+        <option value="0">[选择系统用户]</option>
+        <option v-for="admin in admins" :value="admin.id">{{admin.name}}（{{admin.username}}）</option>
+    </select>
 </div>`
 })
 
@@ -16399,11 +16888,11 @@ Vue.component("ip-list-bind-box", {
 		}
 	},
 	template: `<div>
-<a href @click.prevent="bind()" style="color: rgba(0,0,0,.6)">绑定+</a> &nbsp; <span v-if="lists.length > 0"><span class="disabled small">|&nbsp;</span> 已绑定：</span>
-<div class="ui label basic small" v-for="(list, index) in lists">
-<a :href="'/servers/iplists/list?listId=' + list.id" title="点击查看详情" style="opacity: 1">{{list.name}}</a>
-<a href title="删除" @click.prevent="remove(index, list.id)"><i class="icon remove small"></i></a>
-</div>
+	<a href="" @click.prevent="bind()" style="color: rgba(0,0,0,.6)">绑定+</a> &nbsp; <span v-if="lists.length > 0"><span class="disabled small">|&nbsp;</span> 已绑定：</span>
+	<div class="ui label basic small" v-for="(list, index) in lists">
+		<a :href="'/servers/iplists/list?listId=' + list.id" title="点击查看详情" style="opacity: 1">{{list.name}}</a>
+		<a href="" title="删除" @click.prevent="remove(index, list.id)"><i class="icon remove small"></i></a>
+	</div>
 </div>`
 })
 
@@ -16528,133 +17017,139 @@ Vue.component("ip-list-table", {
 		}
 	},
 	template: `<div>
-<div v-show="hasSelectedItems">
-<div class="ui divider"></div>
-<button class="ui button basic" type="button" @click.prevent="deleteAll">批量删除所选</button>
-&nbsp; &nbsp;
-<button class="ui button basic" type="button" @click.prevent="deleteCount" v-if="vTotal != null && vTotal >= MaxDeletes">批量删除所有搜索结果（{{MaxDeletes}}个）</button>
-&nbsp; &nbsp;
-<button class="ui button basic" type="button" @click.prevent="cancelChecked">取消选中</button>
+ <div v-show="hasSelectedItems">
+ 	<div class="ui divider"></div>
+ 	<button class="ui button basic" type="button" @click.prevent="deleteAll">批量删除所选</button>
+ 	&nbsp; &nbsp; 
+ 	<button class="ui button basic" type="button" @click.prevent="deleteCount" v-if="vTotal != null && vTotal >= MaxDeletes">批量删除所有搜索结果（{{MaxDeletes}}个）</button>
+ 	
+ 	&nbsp; &nbsp; 
+ 	<button class="ui button basic" type="button" @click.prevent="cancelChecked">取消选中</button>
 </div>
-<table class="ui table selectable celled" v-if="items.length > 0">
-<thead>
-<tr>
-<th style="width: 1em">
-<div class="ui checkbox">
-<input type="checkbox" v-model="selectedAll" @change="changeSelectedAll">
-<label></label>
-</div>
-</th>
-<th style="width:18em">IP</th>
-<th style="width: 6em">类型</th>
-<th style="width: 6em">级别</th>
-<th style="width: 12em">过期时间</th>
-<th>备注</th>
-<th class="three op">操作</th>
-</tr>
-</thead>
-<tbody v-for="item in items">
-<tr>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" :value="item.id" @change="changeSelected" ref="itemCheckBox">
-<label></label>
-</div>
-</td>
-<td>
-<span v-if="item.type != 'all'" :class="{green: item.list != null && item.list.type == 'white', grey: item.list != null && item.list.type == 'grey'}">
-<span v-if="item.value != null && item.value.length > 0"><keyword :v-word="keyword">{{item.value}}</keyword></span>
-<span v-else>
-<keyword :v-word="keyword">{{item.ipFrom}}</keyword> <span> <span class="small red" v-if="item.isRead != null && !item.isRead">&nbsp;New&nbsp;</span>&nbsp;<a :href="'/servers/iplists?ip=' + item.ipFrom" v-if="vShowSearchButton" title="搜索此IP"><span><i class="icon search small" style="color: #ccc"></i></span></a></span>
-<span v-if="item.ipTo.length > 0"> - <keyword :v-word="keyword">{{item.ipTo}}</keyword></span>
-</span>
-</span>
-<span v-else class="disabled">*</span>
-<div v-if="item.region != null && item.region.length > 0">
-<span class="grey small">{{item.region}}</span>
-<span v-if="item.isp != null && item.isp.length > 0 && item.isp != '内网IP'" class="grey small"><span class="disabled">|</span> {{item.isp}}</span>
-</div>
-<div v-else-if="item.isp != null && item.isp.length > 0 && item.isp != '内网IP'"><span class="grey small">{{item.isp}}</span></div>
-<div v-if="item.createdTime != null">
-<span class="small grey">添加于 {{item.createdTime}}
-<span v-if="item.list != null && item.list.id > 0">
-@
-<a :href="'/servers/iplists/list?listId=' + item.list.id" v-if="item.policy.id == 0"><span>[<span v-if="item.list.type == 'black'">黑</span><span v-if="item.list.type == 'white'">白</span><span v-if="item.list.type == 'grey'">灰</span>名单：{{item.list.name}}]</span></a>
-<span v-else>[<span v-if="item.list.type == 'black'">黑</span><span v-if="item.list.type == 'white'">白</span><span v-if="item.list.type == 'grey'">灰</span>名单：{{item.list.name}}</span>
-<span v-if="item.policy.id > 0">
-<span v-if="item.policy.server != null">
-<a :href="'/servers/server/settings/waf/ipadmin/allowList?serverId=' + item.policy.server.id + '&firewallPolicyId=' + item.policy.id" v-if="item.list.type == 'white'">[网站：{{item.policy.server.name}}]</a>
-<a :href="'/servers/server/settings/waf/ipadmin/denyList?serverId=' + item.policy.server.id + '&firewallPolicyId=' + item.policy.id" v-if="item.list.type == 'black'">[网站：{{item.policy.server.name}}]</a>
-<a :href="'/servers/server/settings/waf/ipadmin/greyList?serverId=' + item.policy.server.id + '&firewallPolicyId=' + item.policy.id" v-if="item.list.type == 'grey'">[网站：{{item.policy.server.name}}]</a>
-</span>
-<span v-else>
-<a :href="'/servers/components/waf/ipadmin/lists?firewallPolicyId=' + item.policy.id +  '&type=' + item.list.type">[策略：{{item.policy.name}}]</a>
-</span>
-</span>
-</span>
-</span>
-</div>
-</td>
-<td>
-<span v-if="item.type.length == 0">IPv4</span>
-<span v-else-if="item.type == 'ipv4'">IPv4</span>
-<span v-else-if="item.type == 'ipv6'">IPv6</span>
-<span v-else-if="item.type == 'all'"><strong>所有IP</strong></span>
-</td>
-<td>
-<span v-if="item.eventLevelName != null && item.eventLevelName.length > 0">{{item.eventLevelName}}</span>
-<span v-else class="disabled">-</span>
-</td>
-<td>
-<div v-if="item.expiredTime.length > 0">
-{{item.expiredTime}}
-<div v-if="item.isExpired && item.lifeSeconds == null" style="margin-top: 0.5em">
-<span class="ui label tiny basic red">已过期</span>
-</div>
-<div v-if="item.lifeSeconds != null">
-<span class="small grey" v-if="item.lifeSeconds > 0">{{formatSeconds(item.lifeSeconds)}}</span>
-<span class="small red" v-if="item.lifeSeconds < 0">已过期</span>
-</div>
-</div>
-<span v-else class="disabled">不过期</span>
-</td>
-<td>
-<span v-if="item.reason.length > 0">{{item.reason}}</span>
-<span v-else class="disabled">-</span>
-<div v-if="item.sourceNode != null && item.sourceNode.id > 0" style="margin-top: 0.4em">
-<a :href="'/clusters/cluster/node?clusterId=' + item.sourceNode.clusterId + '&nodeId=' + item.sourceNode.id"><span class="small"><i class="icon cloud"></i>{{item.sourceNode.name}}</span></a>
-</div>
-<div style="margin-top: 0.4em" v-if="item.sourceServer != null && item.sourceServer.id > 0">
-<a :href="'/servers/server?serverId=' + item.sourceServer.id" style="border: 0"><span class="small"><i class="icon clone outline"></i>{{item.sourceServer.name}}</span></a>
-</div>
-<div v-if="item.sourcePolicy != null && item.sourcePolicy.id > 0" style="margin-top: 0.4em">
-<a :href="'/servers/components/waf/group?firewallPolicyId=' +  item.sourcePolicy.id + '&type=inbound&groupId=' + item.sourceGroup.id + '#set' + item.sourceSet.id" v-if="item.sourcePolicy.serverId == 0"><span class="small"><i class="icon shield"></i>{{item.sourcePolicy.name}} &#187; {{item.sourceGroup.name}} &#187; {{item.sourceSet.name}}</span></a>
-<a :href="'/servers/server/settings/waf/group?serverId=' + item.sourcePolicy.serverId + '&firewallPolicyId=' + item.sourcePolicy.id + '&type=inbound&groupId=' + item.sourceGroup.id + '#set' + item.sourceSet.id" v-if="item.sourcePolicy.serverId > 0"><span class="small"><i class="icon shield"></i> {{item.sourcePolicy.name}} &#187; {{item.sourceGroup.name}} &#187; {{item.sourceSet.name}}</span></a>
-</div>
-</td>
-<td>
-<a href @click.prevent="viewLogs(item.id)">日志</a> &nbsp;
-<a href @click.prevent="updateItem(item.id)">修改</a> &nbsp;
-<a href @click.prevent="deleteItem(item.id)">删除</a>
-</td>
-</tr>
-</tbody>
-</table>
+ <table class="ui table selectable celled" v-if="items.length > 0">
+        <thead>
+            <tr>
+            	<th style="width: 1em">
+            		<div class="ui checkbox">
+						<input type="checkbox" v-model="selectedAll" @change="changeSelectedAll"/>
+						<label></label>
+					</div>
+				</th>
+                <th style="width:18em">IP</th>
+                <th style="width: 6em">类型</th>
+                <th style="width: 6em">级别</th>
+                <th style="width: 12em">过期时间</th>
+                <th>备注</th>
+                <th class="three op">操作</th>
+            </tr>
+        </thead>
+		<tbody v-for="item in items">
+			<tr>
+				<td>
+					<div class="ui checkbox">
+						<input type="checkbox" :value="item.id" @change="changeSelected" ref="itemCheckBox"/>
+						<label></label>
+					</div>
+				</td>
+				<td>
+					<span v-if="item.type != 'all'" :class="{green: item.list != null && item.list.type == 'white', grey: item.list != null && item.list.type == 'grey'}">
+						<span v-if="item.value != null && item.value.length > 0"><keyword :v-word="keyword">{{item.value}}</keyword></span>
+						<span v-else>
+							<keyword :v-word="keyword">{{item.ipFrom}}</keyword> <span> <span class="small red" v-if="item.isRead != null && !item.isRead">&nbsp;New&nbsp;</span>&nbsp;<a :href="'/servers/iplists?ip=' + item.ipFrom" v-if="vShowSearchButton" title="搜索此IP"><span><i class="icon search small" style="color: #ccc"></i></span></a></span>
+							<span v-if="item.ipTo.length > 0"> - <keyword :v-word="keyword">{{item.ipTo}}</keyword></span>
+						</span>
+					</span>
+					<span v-else class="disabled">*</span>
+					
+					<div v-if="item.region != null && item.region.length > 0">
+						<span class="grey small">{{item.region}}</span>
+						<span v-if="item.isp != null && item.isp.length > 0 && item.isp != '内网IP'" class="grey small"><span class="disabled">|</span> {{item.isp}}</span>
+					</div>
+					<div v-else-if="item.isp != null && item.isp.length > 0 && item.isp != '内网IP'"><span class="grey small">{{item.isp}}</span></div>
+				
+					<div v-if="item.createdTime != null">
+						<span class="small grey">添加于 {{item.createdTime}}
+							<span v-if="item.list != null && item.list.id > 0">
+								@ 
+								
+								<a :href="'/servers/iplists/list?listId=' + item.list.id" v-if="item.policy.id == 0"><span>[<span v-if="item.list.type == 'black'">黑</span><span v-if="item.list.type == 'white'">白</span><span v-if="item.list.type == 'grey'">灰</span>名单：{{item.list.name}}]</span></a>
+								<span v-else>[<span v-if="item.list.type == 'black'">黑</span><span v-if="item.list.type == 'white'">白</span><span v-if="item.list.type == 'grey'">灰</span>名单：{{item.list.name}}</span>
+								
+								<span v-if="item.policy.id > 0">
+									<span v-if="item.policy.server != null">
+										<a :href="'/servers/server/settings/waf/ipadmin/allowList?serverId=' + item.policy.server.id + '&firewallPolicyId=' + item.policy.id" v-if="item.list.type == 'white'">[网站：{{item.policy.server.name}}]</a>
+										<a :href="'/servers/server/settings/waf/ipadmin/denyList?serverId=' + item.policy.server.id + '&firewallPolicyId=' + item.policy.id" v-if="item.list.type == 'black'">[网站：{{item.policy.server.name}}]</a>
+										<a :href="'/servers/server/settings/waf/ipadmin/greyList?serverId=' + item.policy.server.id + '&firewallPolicyId=' + item.policy.id" v-if="item.list.type == 'grey'">[网站：{{item.policy.server.name}}]</a>
+									</span>
+									<span v-else>
+										<a :href="'/servers/components/waf/ipadmin/lists?firewallPolicyId=' + item.policy.id +  '&type=' + item.list.type">[策略：{{item.policy.name}}]</a>
+									</span>
+								</span>
+							</span>
+						</span>
+					</div>
+				</td>
+				<td>
+					<span v-if="item.type.length == 0">IPv4</span>
+					<span v-else-if="item.type == 'ipv4'">IPv4</span>
+					<span v-else-if="item.type == 'ipv6'">IPv6</span>
+					<span v-else-if="item.type == 'all'"><strong>所有IP</strong></span>
+				</td>
+				<td>
+					<span v-if="item.eventLevelName != null && item.eventLevelName.length > 0">{{item.eventLevelName}}</span>
+					<span v-else class="disabled">-</span>
+				</td>
+				<td>
+					<div v-if="item.expiredTime.length > 0">
+						{{item.expiredTime}}
+						<div v-if="item.isExpired && item.lifeSeconds == null" style="margin-top: 0.5em">
+							<span class="ui label tiny basic red">已过期</span>
+						</div>
+						<div  v-if="item.lifeSeconds != null">
+							<span class="small grey" v-if="item.lifeSeconds > 0">{{formatSeconds(item.lifeSeconds)}}</span>
+							<span class="small red" v-if="item.lifeSeconds < 0">已过期</span>
+						</div>
+					</div>
+					<span v-else class="disabled">不过期</span>
+				</td>
+				<td>
+					<span v-if="item.reason.length > 0">{{item.reason}}</span>
+					<span v-else class="disabled">-</span>
+					
+					<div v-if="item.sourceNode != null && item.sourceNode.id > 0" style="margin-top: 0.4em">
+						<a :href="'/clusters/cluster/node?clusterId=' + item.sourceNode.clusterId + '&nodeId=' + item.sourceNode.id"><span class="small"><i class="icon cloud"></i>{{item.sourceNode.name}}</span></a>
+					</div>
+					<div style="margin-top: 0.4em" v-if="item.sourceServer != null && item.sourceServer.id > 0">
+						<a :href="'/servers/server?serverId=' + item.sourceServer.id" style="border: 0"><span class="small "><i class="icon clone outline"></i>{{item.sourceServer.name}}</span></a>
+					</div>
+					<div v-if="item.sourcePolicy != null && item.sourcePolicy.id > 0" style="margin-top: 0.4em">
+						<a :href="'/servers/components/waf/group?firewallPolicyId=' +  item.sourcePolicy.id + '&type=inbound&groupId=' + item.sourceGroup.id + '#set' + item.sourceSet.id" v-if="item.sourcePolicy.serverId == 0"><span class="small "><i class="icon shield"></i>{{item.sourcePolicy.name}} &raquo; {{item.sourceGroup.name}} &raquo; {{item.sourceSet.name}}</span></a>
+						<a :href="'/servers/server/settings/waf/group?serverId=' + item.sourcePolicy.serverId + '&firewallPolicyId=' + item.sourcePolicy.id + '&type=inbound&groupId=' + item.sourceGroup.id + '#set' + item.sourceSet.id" v-if="item.sourcePolicy.serverId > 0"><span class="small "><i class="icon shield"></i> {{item.sourcePolicy.name}} &raquo; {{item.sourceGroup.name}} &raquo; {{item.sourceSet.name}}</span></a>
+					</div>
+				</td>
+				<td>
+					<a href="" @click.prevent="viewLogs(item.id)">日志</a> &nbsp;
+					<a href="" @click.prevent="updateItem(item.id)">修改</a> &nbsp;
+					<a href="" @click.prevent="deleteItem(item.id)">删除</a>
+				</td>
+			</tr>
+        </tbody>
+    </table>
 </div>`
 })
 
 Vue.component("ip-item-text", {
     props: ["v-item"],
     template: `<span>
-<span v-if="vItem.type == 'all'">*</span>
-<span v-else>
-<span v-if="vItem.value != null && vItem.value.length > 0">{{vItem.value}}</span>
-<span v-else>
-{{vItem.ipFrom}}
-<span v-if="vItem.ipTo != null &&vItem.ipTo.length > 0">- {{vItem.ipTo}}</span>
-</span>
-</span>
-<span v-if="vItem.eventLevelName != null && vItem.eventLevelName.length > 0">&nbsp; 级别：{{vItem.eventLevelName}}</span>
+    <span v-if="vItem.type == 'all'">*</span>
+    <span v-else>
+    	<span v-if="vItem.value != null && vItem.value.length > 0">{{vItem.value}}</span>
+    	<span v-else>
+			{{vItem.ipFrom}}
+			<span v-if="vItem.ipTo != null &&vItem.ipTo.length > 0">- {{vItem.ipTo}}</span>
+		</span>
+	</span>
+    <span v-if="vItem.eventLevelName != null && vItem.eventLevelName.length > 0">&nbsp; 级别：{{vItem.eventLevelName}}</span>
 </span>`
 })
 
@@ -16762,115 +17257,129 @@ Vue.component("sms-sender", {
 		}
 	},
 	template: `<div>
-<input type="hidden" :name="name" :value="JSON.stringify(config)">
-<table class="ui table selectable definition">
-<tbody>
-<tr>
-<td class="title">启用</td>
-<td><checkbox v-model="config.isOn"></checkbox></td>
-</tr>
-</tbody>
-<tbody v-show="config.isOn">
-<tr>
-<td>发送渠道</td>
-<td>
-<select class="ui dropdown auto-width" v-model="config.type"><option value="webHook">自定义HTTP接口</option><option value="aliyunSMS">阿里云短信</option><option value="tencentSMS">腾讯云短信</option></select>
-<p class="comment" v-if="config.type == 'webHook'">通过HTTP接口的方式调用你的自定义发送短信接口。</p>
-<p class="comment" v-if="config.type == 'aliyunSMS'">通过阿里云短信服务发送短信接口；<strong>目前仅支持发送验证码</strong>。</p>
-<p class="comment" v-if="config.type == 'tencentSMS'">通过腾讯云短信服务发送短信接口；<strong>目前仅支持发送验证码</strong>。</p>
-</td>
-</tr>
-<tr v-if="config.type == 'webHook' && config.webHookParams != null">
-<td class="color-border">HTTP接口的URL地址 *</td>
-<td>
-<input type="text" maxlength="100" placeholder="https://..." v-model="config.webHookParams.url">
-<p class="comment">接收发送短信请求的URL，必须以<code-label>http://</code-label>或<code-label>https://</code-label>开头。</p>
-</td>
-</tr>
-<tr v-if="config.type == 'webHook' && config.webHookParams != null">
-<td class="color-border">HTTP接口的请求方法</td>
-<td>
-<select class="ui dropdown auto-width" v-model="config.webHookParams.method"><option value="GET">GET</option><option value="POST">POST</option></select>
-<p class="comment" v-if="config.webHookParams.method == 'GET'">以在URL参数中加入mobile、body和code三个参数（<code-label>YOUR_API_URL?mobile=手机号&amp;body=短信内容&code=验证码</code-label>)的方式调用你的HTTP接口的URL地址；状态码返回200表示成功。</p>
-<p class="comment" v-if="config.webHookParams.method == 'POST'">通过POST表单发送mobile、body和code三个参数（<code-label>mobile=手机号&amp;body=短信内容&code=验证码</code-label>）的方式调用你的HTTP接口URL地址；状态码返回200表示成功。</p>
-</td>
-</tr>
-<tr v-if="config.type == 'aliyunSMS'">
-<td class="color-border">签名名称 *</td>
-<td><input type="text" v-model="config.aliyunSMSParams.sign" maxlength="12">
-<p class="comment">在阿里云短信服务 “签名管理” 中添加并通过审核后才能使用。</p>
-</td>
-</tr>
-<tr v-if="config.type == 'aliyunSMS'">
-<td class="color-border">模板CODE *</td>
-<td>
-<input type="text" v-model="config.aliyunSMSParams.templateCode" maxlength="30">
-<p class="comment">在阿里云短信服务 “模板管理” 中添加并通过审核后才能使用。</p>
-</td>
-</tr>
-<tr v-if="config.type == 'aliyunSMS'">
-<td class="color-border">模板中验证码变量名称 *</td>
-<td>
-<input type="text" v-model="config.aliyunSMSParams.codeVarName" maxlength="30">
-<p class="comment">默认为<code-label>code</code-label>，不需要带\${}等符号，即表示在模板中使用<code-label>\${<span>{{ config.aliyunSMSParams.codeVarName }}</span>}</code-label>代表要发送的验证码。</p>
-</td>
-</tr>
-<tr v-if="config.type == 'aliyunSMS'">
-<td class="color-border">AccessKey ID *</td>
-<td>
-<input type="text" v-model="config.aliyunSMSParams.accessKeyId" maxlength="100">
-<p class="comment">在阿里云 -- RAM访问控制 -- AccessKey中可以创建和获取。</p>
-</td>
-</tr>
-<tr v-if="config.type == 'aliyunSMS'">
-<td class="color-border">AccessKey Secret *</td>
-<td>
-<input type="text" v-model="config.aliyunSMSParams.accessKeySecret" maxlength="100">
-<p class="comment">和表单中的AccessKey ID对应，在阿里云 -- RAM访问控制 -- AccessKey中可以创建和获取。</p>
-</td>
-</tr>
-<tr v-if="config.type == 'tencentSMS'">
-<td>SDK应用ID *</td>
-<td>
-<input type="text" v-model="config.tencentSMSParams.sdkAppId" maxlength="30">
-<p class="comment">在腾讯云 -- 短信 -- 应用管理 -- 应用列表中可以查看。</p>
-</td>
-</tr>
-<tr v-if="config.type == 'tencentSMS'">
-<td>签名内容 *</td>
-<td>
-<input type="text" v-model="config.tencentSMSParams.sign" maxlength="12">
-<p class="comment">比如“腾讯云”，在腾讯云 -- 短信 -- 签名管理中可以查看。</p>
-</td>
-</tr>
-<tr v-if="config.type == 'tencentSMS'">
-<td>正文模板ID *</td>
-<td>
-<input type="text" v-model="config.tencentSMSParams.templateId" maxlength="50">
-<p class="comment">在腾讯云 -- 短信 -- 正文模板管理中可以查看。</p>
-</td>
-</tr>
-<tr v-if="config.type == 'tencentSMS'">
-<td>密钥SecretId *</td>
-<td>
-<input type="text" v-model="config.tencentSMSParams.accessKeyId">
-<p class="comment">同SecretKey一同在腾讯云 -- 访问管理 -- API密钥管理中获取。</p>
-</td>
-</tr>
-<tr v-if="config.type == 'tencentSMS'">
-<td>密钥SecretKey *</td>
-<td>
-<input type="text" v-model="config.tencentSMSParams.accessKeySecret">
-<p class="comment">同SecretId一同在腾讯云 -- 访问管理 -- API密钥管理中获取。</p>
-</td>
-</tr>
-<tr>
-<td>发送测试</td>
-<td><a href @click.prevent="test">[点此测试]</a></td>
-</tr>
-</tbody>
-</table>
-<div class="margin"></div>
+	<input type="hidden" :name="name" :value="JSON.stringify(config)"/>
+	<table class="ui table selectable definition">
+		<tbody>
+			<tr>
+				<td class="title">启用</td>
+				<td><checkbox v-model="config.isOn"></checkbox></td>
+			</tr>
+		</tbody>
+		<tbody v-show="config.isOn">
+			<tr>
+				<td>发送渠道</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="config.type">
+						<option value="webHook">自定义HTTP接口</option>
+						<option value="aliyunSMS">阿里云短信</option>
+						<option value="tencentSMS">腾讯云短信</option>
+					</select>
+					<p class="comment" v-if="config.type == 'webHook'">通过HTTP接口的方式调用你的自定义发送短信接口。</p>
+					<p class="comment" v-if="config.type == 'aliyunSMS'">通过阿里云短信服务发送短信接口；<strong>目前仅支持发送验证码</strong>。</p>
+					<p class="comment" v-if="config.type == 'tencentSMS'">通过腾讯云短信服务发送短信接口；<strong>目前仅支持发送验证码</strong>。</p>
+				</td>				
+			</tr>
+			
+			<!-- webhook -->
+			<tr v-if="config.type == 'webHook' && config.webHookParams != null">
+				<td class="color-border">HTTP接口的URL地址 *</td>
+				<td>
+					<input type="text" maxlength="100" placeholder="https://..." v-model="config.webHookParams.url"/>
+					<p class="comment">接收发送短信请求的URL，必须以<code-label>http://</code-label>或<code-label>https://</code-label>开头。</p>
+				</td>
+			</tr>
+			<tr v-if="config.type == 'webHook' && config.webHookParams != null">
+				<td class="color-border">HTTP接口的请求方法</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model="config.webHookParams.method">
+						<option value="GET">GET</option>
+						<option value="POST">POST</option>
+					</select>
+					<p class="comment" v-if="config.webHookParams.method == 'GET'">以在URL参数中加入mobile、body和code三个参数（<code-label>YOUR_API_URL?mobile=手机号&amp;body=短信内容&code=验证码</code-label>)的方式调用你的HTTP接口的URL地址；状态码返回200表示成功。</p>
+					<p class="comment" v-if="config.webHookParams.method == 'POST'">通过POST表单发送mobile、body和code三个参数（<code-label>mobile=手机号&amp;body=短信内容&code=验证码</code-label>）的方式调用你的HTTP接口URL地址；状态码返回200表示成功。</p>
+				</td>
+			</tr>
+			
+			<!-- aliyun sms -->
+			<tr v-if="config.type == 'aliyunSMS'">
+				<td class="color-border">签名名称 *</td>
+				<td><input type="text" v-model="config.aliyunSMSParams.sign" maxlength="12"/>
+					<p class="comment">在阿里云短信服务 “签名管理” 中添加并通过审核后才能使用。</p>
+				</td>
+			</tr>
+			<tr v-if="config.type == 'aliyunSMS'">
+				<td class="color-border">模板CODE *</td>
+				<td>
+					<input type="text" v-model="config.aliyunSMSParams.templateCode" maxlength="30"/>
+					<p class="comment">在阿里云短信服务 “模板管理” 中添加并通过审核后才能使用。</p>
+				</td>
+			</tr>
+			<tr v-if="config.type == 'aliyunSMS'">
+				<td class="color-border">模板中验证码变量名称 *</td>
+				<td>
+					<input type="text" v-model="config.aliyunSMSParams.codeVarName" maxlength="30"/>
+					<p class="comment">默认为<code-label>code</code-label>，不需要带\${}等符号，即表示在模板中使用<code-label>\${<span>{{ config.aliyunSMSParams.codeVarName }}</span>}</code-label>代表要发送的验证码。</p>
+				</td>
+			</tr>
+			<tr v-if="config.type == 'aliyunSMS'">
+				<td class="color-border">AccessKey ID *</td>
+				<td>
+					<input type="text" v-model="config.aliyunSMSParams.accessKeyId" maxlength="100"/>
+					<p class="comment">在阿里云 -- RAM访问控制 -- AccessKey中可以创建和获取。</p>
+				</td>
+			</tr>
+			<tr v-if="config.type == 'aliyunSMS'">
+				<td class="color-border">AccessKey Secret *</td>
+				<td>
+					<input type="text" v-model="config.aliyunSMSParams.accessKeySecret" maxlength="100"/>
+					<p class="comment">和表单中的AccessKey ID对应，在阿里云 -- RAM访问控制 -- AccessKey中可以创建和获取。</p>
+				</td>
+			</tr>
+			
+			<!-- tencent sms -->
+			<tr v-if="config.type == 'tencentSMS'">
+				<td>SDK应用ID *</td>
+				<td>
+					<input type="text" v-model="config.tencentSMSParams.sdkAppId" maxlength="30"/>
+					<p class="comment">在腾讯云 -- 短信 -- 应用管理 -- 应用列表中可以查看。</p>
+				</td>
+			</tr>
+			<tr v-if="config.type == 'tencentSMS'">
+				<td>签名内容 *</td>
+				<td>
+					<input type="text" v-model="config.tencentSMSParams.sign" maxlength="12"/>
+					<p class="comment">比如“腾讯云”，在腾讯云 -- 短信 -- 签名管理中可以查看。</p>
+				</td>
+			</tr>
+			<tr v-if="config.type == 'tencentSMS'">
+				<td>正文模板ID *</td>
+				<td>
+					<input type="text" v-model="config.tencentSMSParams.templateId" maxlength="50"/>
+					<p class="comment">在腾讯云 -- 短信 -- 正文模板管理中可以查看。</p>
+				</td>
+			</tr>
+			<tr v-if="config.type == 'tencentSMS'">
+				<td>密钥SecretId *</td>
+				<td>
+					<input type="text" v-model="config.tencentSMSParams.accessKeyId"/>
+					<p class="comment">同SecretKey一同在腾讯云 -- 访问管理 -- API密钥管理中获取。</p>
+				</td>
+			</tr>
+			<tr v-if="config.type == 'tencentSMS'">
+				<td>密钥SecretKey *</td>
+				<td>
+					<input type="text" v-model="config.tencentSMSParams.accessKeySecret"/>
+					<p class="comment">同SecretId一同在腾讯云 -- 访问管理 -- API密钥管理中获取。</p>
+				</td>
+			</tr>
+			
+			<tr>
+				<td>发送测试</td>
+				<td><a href="" @click.prevent="test">[点此测试]</a></td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -16916,64 +17425,64 @@ Vue.component("email-sender", {
 		}
 	},
 	template: `<div>
-<input type="hidden" :name="name" :value="JSON.stringify(config)">
-<table class="ui table selectable definition">
-<tbody>
-<tr>
-<td class="title">启用</td>
-<td><checkbox v-model="config.isOn"></checkbox></td>
-</tr>
-</tbody>
-<tbody v-show="config.isOn">
-<tr>
-<td>SMTP地址 *</td>
-<td>
-<input type="text" :name="name + 'SmtpHost'" v-model="config.smtpHost">
-<p class="comment">SMTP主机地址，比如<code-label>smtp.qq.com</code-label>，目前仅支持TLS协议，如不清楚，请查询对应邮件服务商文档。</p>
-</td>
-</tr>
-<tr>
-<td>SMTP端口 *</td>
-<td>
-<input type="text" :name="name + 'SmtpPort'" v-model="smtpPortString" style="width: 5em" maxlength="5">
-<p class="comment">SMTP主机端口，比如<code-label>587</code-label>、<code-label>465</code-label>，如不清楚，请查询对应邮件服务商文档。</p>
-</td>
-</tr>
-<tr>
-<td>用户名 *</td>
-<td>
-<input type="text" :name="name + 'Username'" v-model="config.username">
-<p class="comment">通常为发件人邮箱地址。</p>
-</td>
-</tr>
-<tr>
-<td>密码 *</td>
-<td>
-<input type="password" :name="name + 'Password'" v-model="config.password">
-<p class="comment">邮箱登录密码或授权码，如不清楚，请查询对应邮件服务商文档。。</p>
-</td>
-</tr>
-<tr>
-<td>发件人Email *</td>
-<td>
-<input type="text" :name="name + 'FromEmail'" v-model="config.fromEmail" maxlength="128">
-<p class="comment">使用的发件人邮箱地址，通常和发件用户名一致。</p>
-</td>
-</tr>
-<tr>
-<td>发件人名称</td>
-<td>
-<input type="text" :name="name + 'FromName'" v-model="config.fromName" maxlength="30">
-<p class="comment">使用的发件人名称，默认使用系统设置的<a href="/settings/ui" target="_blank">产品名称</a>。</p>
-</td>
-</tr>
-<tr>
-<td>发送测试</td>
-<td><a href @click.prevent="test">[点此测试]</a></td>
-</tr>
-</tbody>
-</table>
-<div class="margin"></div>
+	<input type="hidden" :name="name" :value="JSON.stringify(config)"/>
+	<table class="ui table selectable definition">
+		<tbody>
+			<tr>
+				<td class="title">启用</td>
+				<td><checkbox v-model="config.isOn"></checkbox></td>
+			</tr>
+		</tbody>
+		<tbody v-show="config.isOn">
+			<tr>
+				<td>SMTP地址 *</td>
+				<td>
+					<input type="text" :name="name + 'SmtpHost'" v-model="config.smtpHost"/>
+					<p class="comment">SMTP主机地址，比如<code-label>smtp.qq.com</code-label>，目前仅支持TLS协议，如不清楚，请查询对应邮件服务商文档。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>SMTP端口 *</td>
+				<td>
+					<input type="text" :name="name + 'SmtpPort'" v-model="smtpPortString" style="width: 5em" maxlength="5"/>
+					<p class="comment">SMTP主机端口，比如<code-label>587</code-label>、<code-label>465</code-label>，如不清楚，请查询对应邮件服务商文档。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>用户名 *</td>
+				<td>
+					<input type="text" :name="name + 'Username'" v-model="config.username"/>
+					<p class="comment">通常为发件人邮箱地址。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>密码 *</td>
+				<td>
+					<input type="password" :name="name + 'Password'" v-model="config.password"/>
+					<p class="comment">邮箱登录密码或授权码，如不清楚，请查询对应邮件服务商文档。。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>发件人Email *</td>
+				<td>
+					<input type="text" :name="name + 'FromEmail'" v-model="config.fromEmail" maxlength="128"/>
+					<p class="comment">使用的发件人邮箱地址，通常和发件用户名一致。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>发件人名称</td>
+				<td>
+					<input type="text" :name="name + 'FromName'" v-model="config.fromName" maxlength="30"/>
+					<p class="comment">使用的发件人名称，默认使用系统设置的<a href="/settings/ui" target="_blank">产品名称</a>。</p>
+				</td>
+			</tr>
+			<tr>
+				<td>发送测试</td>
+				<td><a href="" @click.prevent="test">[点此测试]</a></td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -16983,7 +17492,7 @@ Vue.component("api-node-selector", {
 		return {}
 	},
 	template: `<div>
-暂未实现
+	暂未实现
 </div>`
 })
 
@@ -17027,20 +17536,20 @@ Vue.component("api-node-addresses-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" :name="vName" :value="JSON.stringify(addrs)">
-<div v-if="addrs.length > 0">
-<div>
-<div v-for="(addr, index) in addrs" class="ui label small basic">
-{{addr.protocol}}://{{addr.host.quoteIP()}}:{{addr.portRange}}</span>
-<a href title="修改" @click.prevent="updateAddr(index, addr)"><i class="icon pencil small"></i></a>
-<a href title="删除" @click.prevent="removeAddr(index)"><i class="icon remove"></i></a>
-</div>
-</div>
-<div class="ui divider"></div>
-</div>
-<div>
-<button class="ui button small" type="button" @click.prevent="addAddr()">+</button>
-</div>
+	<input type="hidden" :name="vName" :value="JSON.stringify(addrs)"/>
+	<div v-if="addrs.length > 0">
+		<div>
+			<div v-for="(addr, index) in addrs" class="ui label small basic">
+				{{addr.protocol}}://{{addr.host.quoteIP()}}:{{addr.portRange}}</span>
+				<a href="" title="修改" @click.prevent="updateAddr(index, addr)"><i class="icon pencil small"></i></a>
+				<a href="" title="删除" @click.prevent="removeAddr(index)"><i class="icon remove"></i></a>
+			</div>
+		</div>
+		<div class="ui divider"></div>
+	</div>
+	<div>
+		<button class="ui button small" type="button" @click.prevent="addAddr()">+</button>
+	</div>
 </div>`
 })
 
@@ -17098,7 +17607,7 @@ Vue.component("page-box", {
 		})
 	},
 	template: `<div>
-<div class="page" v-html="page"></div>
+	<div class="page" v-html="page"></div>
 </div>`
 })
 
@@ -17219,26 +17728,26 @@ Vue.component("network-addresses-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" :name="name" :value="JSON.stringify(addresses)">
-<div v-show="!isEditing">
-<div v-if="addresses.length > 0">
-<div class="ui label small basic" v-for="(addr, index) in addresses">
-{{addr.protocol}}://<span v-if="addr.host.length > 0">{{addr.host.quoteIP()}}</span><span v-if="addr.host.length == 0">*</span>:<span v-if="addr.portRange.indexOf('-')<0">{{addr.portRange}}</span><span v-else style="font-style: italic">{{addr.portRange}}</span>
-</div>
-&nbsp; &nbsp; <a href @click.prevent="edit" style="font-size: 0.9em">[修改]</a>
-</div>
-</div>
-<div v-show="isEditing || addresses.length == 0">
-<div v-if="addresses.length > 0">
-<div class="ui label small basic" v-for="(addr, index) in addresses">
-{{addr.protocol}}://<span v-if="addr.host.length > 0">{{addr.host.quoteIP()}}</span><span v-if="addr.host.length == 0">*</span>:<span v-if="addr.portRange.indexOf('-')<0">{{addr.portRange}}</span><span v-else style="font-style: italic">{{addr.portRange}}</span>
-<a href @click.prevent="updateAddr(index, addr)" title="修改"><i class="icon pencil small"></i></a>
-<a href @click.prevent="removeAddr(index)" title="删除"><i class="icon remove"></i></a>
-</div>
-<div class="ui divider"></div>
-</div>
-<a href @click.prevent="addAddr()">[添加端口绑定]</a>
-</div>
+	<input type="hidden" :name="name" :value="JSON.stringify(addresses)"/>
+	<div v-show="!isEditing">
+		<div v-if="addresses.length > 0">
+			<div class="ui label small basic" v-for="(addr, index) in addresses">
+				{{addr.protocol}}://<span v-if="addr.host.length > 0">{{addr.host.quoteIP()}}</span><span v-if="addr.host.length == 0">*</span>:<span v-if="addr.portRange.indexOf('-')<0">{{addr.portRange}}</span><span v-else style="font-style: italic">{{addr.portRange}}</span>
+			</div>
+			&nbsp; &nbsp; <a href="" @click.prevent="edit" style="font-size: 0.9em">[修改]</a>
+		</div>	
+	</div>
+	<div v-show="isEditing || addresses.length == 0">
+		<div v-if="addresses.length > 0">
+			<div class="ui label small basic" v-for="(addr, index) in addresses">
+				{{addr.protocol}}://<span v-if="addr.host.length > 0">{{addr.host.quoteIP()}}</span><span v-if="addr.host.length == 0">*</span>:<span v-if="addr.portRange.indexOf('-')<0">{{addr.portRange}}</span><span v-else style="font-style: italic">{{addr.portRange}}</span>
+				<a href="" @click.prevent="updateAddr(index, addr)" title="修改"><i class="icon pencil small"></i></a>
+				<a href="" @click.prevent="removeAddr(index)" title="删除"><i class="icon remove"></i></a> 
+			</div>
+			<div class="ui divider"></div>
+		</div>
+		<a href="" @click.prevent="addAddr()">[添加端口绑定]</a>
+	</div>
 </div>`
 })
 
@@ -17330,7 +17839,7 @@ Vue.component("more-items-angle", {
 			return false
 		}
 	},
-	template: `<a href class="item" @click.prevent="show" style="padding-right: 0"><span style="font-size: 0.8em">切换</span><i class="icon angle" :class="{down: !visible, up: visible}"></i></a>`
+	template: `<a href="" class="item" @click.prevent="show" style="padding-right: 0"><span style="font-size: 0.8em">切换</span><i class="icon angle" :class="{down: !visible, up: visible}"></i></a>`
 })
 
 /**
@@ -17428,7 +17937,7 @@ Vue.component("link-popup", {
 			emitClick(this, arguments)
 		}
 	},
-	template: `<a href :title="title" @click.prevent="clickPrevent"><slot></slot></a>`
+	template: `<a href="" :title="title" @click.prevent="clickPrevent"><slot></slot></a>`
 })
 
 Vue.component("popup-icon", {
@@ -17442,7 +17951,7 @@ Vue.component("popup-icon", {
 			}
 		}
 	},
-	template: `<span><slot></slot>&nbsp;<a href :title="title" @click.prevent="clickPrevent"><i class="icon expand small"></i></a></span>`
+	template: `<span><slot></slot>&nbsp;<a href="" :title="title" @click.prevent="clickPrevent"><i class="icon expand small"></i></a></span>`
 })
 
 // 小提示
@@ -17453,7 +17962,7 @@ Vue.component("tip-icon", {
 			teaweb.popupTip(this.content)
 		}
 	},
-	template: `<a href title="查看帮助" @click.prevent="showTip"><i class="icon question circle grey"></i></a>`
+	template: `<a href="" title="查看帮助" @click.prevent="showTip"><i class="icon question circle grey"></i></a>`
 })
 
 // 提交点击事件
@@ -17507,19 +18016,19 @@ Vue.component("countries-selector", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="countryIdsJSON" :value="JSON.stringify(countryIds)">
-<div v-if="countries.length > 0" style="margin-bottom: 0.5em">
-<div v-for="(country, index) in countries" class="ui label tiny basic">{{country.name}} <a href title="删除" @click.prevent="remove(index)"><i class="icon remove"></i></a></div>
-<div class="ui divider"></div>
-</div>
-<div>
-<button class="ui button tiny" type="button" @click.prevent="add">+</button>
-</div>
+	<input type="hidden" name="countryIdsJSON" :value="JSON.stringify(countryIds)"/>
+	<div v-if="countries.length > 0" style="margin-bottom: 0.5em">
+		<div v-for="(country, index) in countries" class="ui label tiny basic">{{country.name}} <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove"></i></a></div>
+		<div class="ui divider"></div>
+	</div>
+	<div>
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	</div>
 </div>`
 })
 
 Vue.component("raquo-item", {
-	template: `<span class="item disabled" style="padding: 0">&#187;</span>`
+	template: `<span class="item disabled" style="padding: 0">&raquo;</span>`
 })
 
 Vue.component("bandwidth-size-capacity-view", {
@@ -17534,7 +18043,7 @@ Vue.component("bandwidth-size-capacity-view", {
 		}
 	},
 	template: `<span>
-<span v-if="capacity != null && capacity.count > 0">{{capacity.count}}{{capacity.unit}}</span>
+	<span v-if="capacity != null && capacity.count > 0">{{capacity.count}}{{capacity.unit}}</span>
 </span>`
 })
 
@@ -17551,9 +18060,9 @@ Vue.component("more-options-tbody", {
 		}
 	},
 	template: `<tbody>
-<tr>
-<td colspan="2"><a href @click.prevent="show()"><span v-if="!isVisible">更多选项</span><span v-if="isVisible">收起选项</span><i class="icon angle" :class="{down:!isVisible, up:isVisible}"></i></a></td>
-</tr>
+	<tr>
+		<td colspan="2"><a href="" @click.prevent="show()"><span v-if="!isVisible">更多选项</span><span v-if="isVisible">收起选项</span><i class="icon angle" :class="{down:!isVisible, up:isVisible}"></i></a></td>
+	</tr>
 </tbody>`
 })
 
@@ -17694,41 +18203,42 @@ Vue.component("values-box", {
 		}
 	},
 	template: `<div>
-<div v-show="!isEditing && realValues.length > 0">
-<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">
-<span v-if="value.toString().length > 0">{{value}}</span>
-<span v-if="value.toString().length == 0" class="disabled">[空]</span>
-</div>
-<a href @click.prevent="startEditing" style="font-size: 0.8em; margin-left: 0.2em">[修改]</a>
-</div>
-<div v-show="isEditing || realValues.length == 0">
-<div style="margin-bottom: 1em" v-if="realValues.length > 0">
-<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">
-<span v-if="value.toString().length > 0">{{value}}</span>
-<span v-if="value.toString().length == 0" class="disabled">[空]</span>
-<input type="hidden" :name="name" :value="value">
-&nbsp; <a href @click.prevent="update(index)" title="修改"><i class="icon pencil small"></i></a>
-<a href @click.prevent="remove(index)" title="删除"><i class="icon remove"></i></a>
-</div>
-<div class="ui divider"></div>
-</div>
-<div v-if="isAdding || isUpdating">
-<div class="ui fields inline">
-<div class="ui field">
-<input type="text" :size="size" :maxlength="maxlength" :placeholder="placeholder" v-model="value" ref="value" @keyup.enter="confirm()" @keypress.enter.prevent="1">
-</div>
-<div class="ui field">
-<button class="ui button small" type="button" @click.prevent="confirm()">确定</button>
-</div>
-<div class="ui field">
-<a href @click.prevent="cancel()" title="取消"><i class="icon remove small"></i></a>
-</div>
-</div>
-</div>
-<div v-if="!isAdding && !isUpdating">
-<button class="ui button tiny" type="button" @click.prevent="create()">+</button>
-</div>
-</div>
+	<div v-show="!isEditing && realValues.length > 0">
+		<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">
+			<span v-if="value.toString().length > 0">{{value}}</span>
+			<span v-if="value.toString().length == 0" class="disabled">[空]</span>
+		</div>
+		<a href="" @click.prevent="startEditing" style="font-size: 0.8em; margin-left: 0.2em">[修改]</a>
+	</div>
+	<div v-show="isEditing || realValues.length == 0">
+		<div style="margin-bottom: 1em" v-if="realValues.length > 0">
+			<div class="ui label tiny basic" v-for="(value, index) in realValues" style="margin-top:0.4em;margin-bottom:0.4em">
+				<span v-if="value.toString().length > 0">{{value}}</span>
+				<span v-if="value.toString().length == 0" class="disabled">[空]</span>
+				<input type="hidden" :name="name" :value="value"/>
+				&nbsp; <a href="" @click.prevent="update(index)" title="修改"><i class="icon pencil small" ></i></a> 
+				<a href="" @click.prevent="remove(index)" title="删除"><i class="icon remove"></i></a> 
+			</div> 
+			<div class="ui divider"></div>
+		</div> 
+		<!-- 添加|修改 -->
+		<div v-if="isAdding || isUpdating">
+			<div class="ui fields inline">
+				<div class="ui field">
+					<input type="text" :size="size" :maxlength="maxlength" :placeholder="placeholder" v-model="value" ref="value" @keyup.enter="confirm()" @keypress.enter.prevent="1"/>
+				</div> 
+				<div class="ui field">
+					<button class="ui button small" type="button" @click.prevent="confirm()">确定</button> 
+				</div>
+				<div class="ui field">
+					<a href="" @click.prevent="cancel()" title="取消"><i class="icon remove small"></i></a> 
+				</div> 
+			</div> 
+		</div> 
+		<div v-if="!isAdding && !isUpdating">
+			<button class="ui button tiny" type="button" @click.prevent="create()">+</button> 
+		</div>
+	</div>	
 </div>`
 });
 
@@ -17903,18 +18413,18 @@ Vue.component("datetime-input", {
 		}
 	},
 	template: `<div>
-<input type="hidden" :name="vName" :value="timestamp">
-<div class="ui fields inline" style="padding: 0; margin:0">
-<div class="ui field" :class="{error: hasDayError}">
-<input type="text" v-model="day" placeholder="YYYY-MM-DD" style="width:8.6em" maxlength="10" @input="change" ref="dayInput">
-</div>
-<div class="ui field" :class="{error: hasHourError}"><input type="text" v-model="hour" maxlength="2" style="width:4em" placeholder="时" @input="change"></div>
-<div class="ui field">:</div>
-<div class="ui field" :class="{error: hasMinuteError}"><input type="text" v-model="minute" maxlength="2" style="width:4em" placeholder="分" @input="change"></div>
-<div class="ui field">:</div>
-<div class="ui field" :class="{error: hasSecondError}"><input type="text" v-model="second" maxlength="2" style="width:4em" placeholder="秒" @input="change"></div>
-</div>
-<p class="comment">常用时间：<a href @click.prevent="nextHours(1)"> &nbsp;1小时&nbsp; </a> <span class="disabled">|</span> <a href @click.prevent="nextDays(1)"> &nbsp;1天&nbsp; </a> <span class="disabled">|</span> <a href @click.prevent="nextDays(3)"> &nbsp;3天&nbsp; </a> <span class="disabled">|</span> <a href @click.prevent="nextDays(7)"> &nbsp;1周&nbsp; </a> <span class="disabled">|</span> <a href @click.prevent="nextDays(30)"> &nbsp;30天&nbsp; </a> <span class="disabled">|</span> <a href @click.prevent="nextYear()"> &nbsp;1年&nbsp; </a> </p>
+	<input type="hidden" :name="vName" :value="timestamp"/>
+	<div class="ui fields inline" style="padding: 0; margin:0">
+		<div class="ui field" :class="{error: hasDayError}">
+			<input type="text" v-model="day" placeholder="YYYY-MM-DD" style="width:8.6em" maxlength="10" @input="change" ref="dayInput"/>
+		</div>
+		<div class="ui field" :class="{error: hasHourError}"><input type="text" v-model="hour" maxlength="2" style="width:4em" placeholder="时" @input="change"/></div>
+		<div class="ui field">:</div>
+		<div class="ui field" :class="{error: hasMinuteError}"><input type="text" v-model="minute" maxlength="2" style="width:4em" placeholder="分" @input="change"/></div>
+		<div class="ui field">:</div>
+		<div class="ui field" :class="{error: hasSecondError}"><input type="text" v-model="second" maxlength="2" style="width:4em" placeholder="秒" @input="change"/></div>
+	</div>
+	<p class="comment">常用时间：<a href="" @click.prevent="nextHours(1)"> &nbsp;1小时&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(1)"> &nbsp;1天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(3)"> &nbsp;3天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(7)"> &nbsp;1周&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextDays(30)"> &nbsp;30天&nbsp; </a> <span class="disabled">|</span> <a href="" @click.prevent="nextYear()"> &nbsp;1年&nbsp; </a> </p>
 </div>`
 })
 
@@ -18007,9 +18517,9 @@ Vue.component("js-page", {
 		}
 	},
 	template:`<div>
-<div class="page" v-if="max > 1">
-<a href v-for="i in max" :class="{active: i == page}" @click.prevent="selectPage(i)">{{i}}</a>
-</div>
+	<div class="page" v-if="max > 1">
+		<a href="" v-for="i in max" :class="{active: i == page}" @click.prevent="selectPage(i)">{{i}}</a>
+	</div>
 </div>`
 })
 
@@ -18079,7 +18589,9 @@ Vue.component("page-size-selector", {
 			window.ChangePageSize(this.pageSize)
 		}
 	},
-	template: `<select class="ui dropdown" style="height:34px;padding-top:0;padding-bottom:0;margin-left:1em;color:#666" v-model="pageSize"><option value="10">[每页]</option><option value="10" selected>10条</option><option value="20">20条</option><option value="30">30条</option><option value="40">40条</option><option value="50">50条</option><option value="60">60条</option><option value="70">70条</option><option value="80">80条</option><option value="90">90条</option><option value="100">100条</option></select>`
+	template: `<select class="ui dropdown" style="height:34px;padding-top:0;padding-bottom:0;margin-left:1em;color:#666" v-model="pageSize">
+\t<option value="10">[每页]</option><option value="10" selected="selected">10条</option><option value="20">20条</option><option value="30">30条</option><option value="40">40条</option><option value="50">50条</option><option value="60">60条</option><option value="70">70条</option><option value="80">80条</option><option value="90">90条</option><option value="100">100条</option>
+</select>`
 })
 
 /**
@@ -18097,8 +18609,8 @@ Vue.component("second-menu", {
 
 Vue.component("loading-message", {
 	template: `<div class="ui message loading">
-<div class="ui active inline loader small"></div> &nbsp; <slot></slot>
-</div>`
+        <div class="ui active inline loader small"></div>  &nbsp; <slot></slot>
+    </div>`
 })
 
 Vue.component("file-textarea", {
@@ -18144,7 +18656,7 @@ Vue.component("more-options-angle", {
 			this.$emit("change", this.isVisible)
 		}
 	},
-	template: `<a href @click.prevent="show()"><span v-if="!isVisible">更多选项</span><span v-if="isVisible">收起选项</span><i class="icon angle" :class="{down:!isVisible, up:isVisible}"></i></a>`
+	template: `<a href="" @click.prevent="show()"><span v-if="!isVisible">更多选项</span><span v-if="isVisible">收起选项</span><i class="icon angle" :class="{down:!isVisible, up:isVisible}"></i></a>`
 })
 
 Vue.component("columns-grid", {
@@ -18215,7 +18727,7 @@ Vue.component("columns-grid", {
 		}
 	},
 	template: `<div :class="'ui ' + columns + ' columns grid counter-chart'">
-<slot></slot>
+	<slot></slot>
 </div>`
 })
 
@@ -18305,13 +18817,21 @@ Vue.component("bandwidth-size-capacity-box", {
 		}
 	},
 	template: `<div class="ui fields inline">
-<input type="hidden" :name="vName" :value="JSON.stringify(capacity)">
-<div class="ui field">
-<input type="text" v-model="countString" :maxlength="vMaxlength" :size="vSize">
-</div>
-<div class="ui field">
-<select class="ui dropdown" v-model="capacity.unit" @change="change"><option value="b" v-if="supportedUnits.length == 0 || supportedUnits.$contains('b')">Bps</option><option value="kb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('kb')">Kbps</option><option value="mb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('mb')">Mbps</option><option value="gb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('gb')">Gbps</option><option value="tb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('tb')">Tbps</option><option value="pb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('pb')">Pbps</option><option value="eb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('eb')">Ebps</option></select>
-</div>
+	<input type="hidden" :name="vName" :value="JSON.stringify(capacity)"/>
+	<div class="ui field">
+		<input type="text" v-model="countString" :maxlength="vMaxlength" :size="vSize"/>
+	</div>
+	<div class="ui field">
+		<select class="ui dropdown" v-model="capacity.unit" @change="change">
+			<option value="b" v-if="supportedUnits.length == 0 || supportedUnits.$contains('b')">Bps</option>
+			<option value="kb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('kb')">Kbps</option>
+			<option value="mb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('mb')">Mbps</option>
+			<option value="gb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('gb')">Gbps</option>
+			<option value="tb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('tb')">Tbps</option>
+			<option value="pb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('pb')">Pbps</option>
+			<option value="eb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('eb')">Ebps</option>
+		</select>
+	</div>
 </div>`
 })
 
@@ -18491,147 +19011,150 @@ Vue.component("health-check-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="healthCheckJSON" :value="JSON.stringify(healthCheck)">
+<input type="hidden" name="healthCheckJSON" :value="JSON.stringify(healthCheck)"/>
 <table class="ui table definition selectable">
-<tbody>
-<tr>
-<td class="title">启用健康检查</td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" value="1" v-model="healthCheck.isOn">
-<label></label>
-</div>
-<p class="comment">通过访问节点上的网站URL来确定节点是否健康。</p>
-</td>
-</tr>
-</tbody>
-<tbody v-show="healthCheck.isOn">
-<tr>
-<td>检测URL *</td>
-<td>
-<div v-if="healthCheck.url.length > 0" style="margin-bottom: 1em"><code-label>{{healthCheck.url}}</code-label> &nbsp; <a href @click.prevent="editURL"><span class="small">修改 <i class="icon angle" :class="{down: !urlIsEditing, up: urlIsEditing}"></i></span></a> </div>
-<div v-show="urlIsEditing">
-<table class="ui table">
-<tr>
-<td class="title">协议</td>
-<td>
-<select class="ui dropdown auto-width" v-model="urlProtocol"><option value="http">http://</option><option value="https">https://</option></select>
-</td>
-</tr>
-<tr>
-<td>域名</td>
-<td>
-<input type="text" v-model="urlHost" @change="onChangeURLHost">
-<p class="comment"><span v-if="hostErr.length > 0" class="red">{{hostErr}}</span>已经部署到当前集群的一个域名；如果为空则使用节点IP作为域名。<span class="red" v-if="urlProtocol == 'https' && urlHost.length == 0">如果协议是https，这里必须填写一个已经设置了SSL证书的域名。</span></p>
-</td>
-</tr>
-<tr>
-<td>端口</td>
-<td>
-<input type="text" maxlength="5" style="width:5.4em" placeholder="端口" v-model="urlPort">
-<p class="comment">域名或者IP的端口，可选项，默认为80/443。</p>
-</td>
-</tr>
-<tr>
-<td>RequestURI</td>
-<td><input type="text" v-model="urlRequestURI" placeholder="/" style="width:20em">
-<p class="comment">请求的路径，可以带参数，可选项。</p>
-</td>
-</tr>
-</table>
-<div class="ui divider"></div>
-<p class="comment" v-if="healthCheck.url.length > 0">拼接后的检测URL：<code-label>{{healthCheck.url}}</code-label>，其中\${host}指的是域名。</p>
-</div>
-</td>
-</tr>
-<tr>
-<td>检测时间间隔</td>
-<td>
-<time-duration-box :v-value="healthCheck.interval"></time-duration-box>
-<p class="comment">两次检查之间的间隔。</p>
-</td>
-</tr>
-<tr>
-<td>自动下线<span v-if="vIsPlus">IP</span></td>
-<td>
-<div class="ui checkbox">
-<input type="checkbox" value="1" v-model="healthCheck.autoDown">
-<label></label>
-</div>
-<p class="comment">选中后系统会根据健康检查的结果自动标记<span v-if="vIsPlus">节点IP</span><span v-else>节点</span>的上线/下线状态，并可能自动同步DNS设置。<span v-if="!vIsPlus">注意：免费版的只能整体上下线整个节点，商业版的可以下线单个IP。</span></p>
-</td>
-</tr>
-<tr v-show="healthCheck.autoDown">
-<td>连续上线次数</td>
-<td>
-<input type="text" v-model="healthCheck.countUp" style="width:5em" maxlength="6">
-<p class="comment">连续{{healthCheck.countUp}}次检查成功后自动恢复上线。</p>
-</td>
-</tr>
-<tr v-show="healthCheck.autoDown">
-<td>连续下线次数</td>
-<td>
-<input type="text" v-model="healthCheck.countDown" style="width:5em" maxlength="6">
-<p class="comment">连续{{healthCheck.countDown}}次检查失败后自动下线。</p>
-</td>
-</tr>
-</tbody>
-<tbody v-show="healthCheck.isOn">
-<tr>
-<td colspan="2"><more-options-angle @change="showAdvanced"></more-options-angle></td>
-</tr>
-</tbody>
-<tbody v-show="advancedVisible && healthCheck.isOn">
-<tr>
-<td>允许的状态码</td>
-<td>
-<values-box :values="healthCheck.statusCodes" maxlength="3" @change="changeStatus"></values-box>
-<p class="comment">允许检测URL返回的状态码列表。</p>
-</td>
-</tr>
-<tr>
-<td>超时时间</td>
-<td>
-<time-duration-box :v-value="healthCheck.timeout"></time-duration-box>
-<p class="comment">读取检测URL超时时间。</p>
-</td>
-</tr>
-<tr>
-<td>连续尝试次数</td>
-<td>
-<input type="text" v-model="healthCheck.countTries" style="width: 5em" maxlength="2">
-<p class="comment">如果读取检测URL失败后需要再次尝试的次数。</p>
-</td>
-</tr>
-<tr>
-<td>每次尝试间隔</td>
-<td>
-<time-duration-box :v-value="healthCheck.tryDelay"></time-duration-box>
-<p class="comment">如果读取检测URL失败后再次尝试时的间隔时间。</p>
-</td>
-</tr>
-<tr>
-<td>终端信息<em>（User-Agent）</em></td>
-<td>
-<input type="text" v-model="healthCheck.userAgent" maxlength="200">
-<p class="comment">发送到服务器的User-Agent值，不填写表示使用默认值。</p>
-</td>
-</tr>
-<tr>
-<td>只基础请求</td>
-<td>
-<checkbox v-model="healthCheck.onlyBasicRequest"></checkbox>
-<p class="comment">只做基础的请求，不处理反向代理（不检查源站）、WAF等。</p>
-</td>
-</tr>
-<tr>
-<td>记录访问日志</td>
-<td>
-<checkbox v-model="healthCheck.accessLogIsOn"></checkbox>
-<p class="comment">记录健康检查的访问日志。</p>
-</td>
-</tr>
-</tbody>
+	<tbody>
+		<tr>
+			<td class="title">启用健康检查</td>
+			<td>
+				<div class="ui checkbox">
+					<input type="checkbox" value="1" v-model="healthCheck.isOn"/>
+					<label></label>
+				</div>
+				<p class="comment">通过访问节点上的网站URL来确定节点是否健康。</p>
+			</td>
+		</tr>
+	</tbody>
+	<tbody v-show="healthCheck.isOn">
+		<tr>
+			<td>检测URL *</td>
+			<td>
+				<div v-if="healthCheck.url.length > 0" style="margin-bottom: 1em"><code-label>{{healthCheck.url}}</code-label> &nbsp; <a href="" @click.prevent="editURL"><span class="small">修改 <i class="icon angle" :class="{down: !urlIsEditing, up: urlIsEditing}"></i></span></a> </div>
+				<div v-show="urlIsEditing">
+					<table class="ui table">
+						 <tr>
+							<td class="title">协议</td> 
+							<td>
+								<select class="ui dropdown auto-width" v-model="urlProtocol">
+								<option value="http">http://</option>
+								<option value="https">https://</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>域名</td>
+							<td>
+								<input type="text" v-model="urlHost" @change="onChangeURLHost"/>
+								<p class="comment"><span v-if="hostErr.length > 0" class="red">{{hostErr}}</span>已经部署到当前集群的一个域名；如果为空则使用节点IP作为域名。<span class="red" v-if="urlProtocol == 'https' && urlHost.length == 0">如果协议是https，这里必须填写一个已经设置了SSL证书的域名。</span></p>
+							</td>
+						</tr>
+						<tr>
+							<td>端口</td>
+							<td>
+								<input type="text" maxlength="5" style="width:5.4em" placeholder="端口" v-model="urlPort"/>
+								<p class="comment">域名或者IP的端口，可选项，默认为80/443。</p>
+							</td>
+						</tr>
+						<tr>
+							<td>RequestURI</td>
+							<td><input type="text" v-model="urlRequestURI" placeholder="/" style="width:20em"/>
+								<p class="comment">请求的路径，可以带参数，可选项。</p>
+							</td>
+						</tr>
+					</table>
+					<div class="ui divider"></div>
+					<p class="comment" v-if="healthCheck.url.length > 0">拼接后的检测URL：<code-label>{{healthCheck.url}}</code-label>，其中\${host}指的是域名。</p>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>检测时间间隔</td>
+			<td>
+				<time-duration-box :v-value="healthCheck.interval"></time-duration-box>
+				<p class="comment">两次检查之间的间隔。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>自动上/下线<span v-if="vIsPlus">IP</span></td>
+			<td>
+				<div class="ui checkbox">
+					<input type="checkbox" value="1" v-model="healthCheck.autoDown"/>
+					<label></label>
+				</div>
+				<p class="comment">选中后系统会根据健康检查的结果自动标记<span v-if="vIsPlus">节点IP</span><span v-else>节点</span>的上线/下线状态，并可能自动同步DNS设置。<span v-if="!vIsPlus">注意：免费版的只能整体上下线整个节点，商业版的可以下线单个IP。</span></p>
+			</td>
+		</tr>
+		<tr v-show="healthCheck.autoDown">
+			<td>连续上线次数</td>
+			<td>
+				<input type="text" v-model="healthCheck.countUp" style="width:5em" maxlength="6"/>
+				<p class="comment">连续{{healthCheck.countUp}}次检查成功后自动恢复上线。</p>
+			</td>
+		</tr>
+		<tr v-show="healthCheck.autoDown">
+			<td>连续下线次数</td>
+			<td>
+				<input type="text" v-model="healthCheck.countDown" style="width:5em" maxlength="6"/>
+				<p class="comment">连续{{healthCheck.countDown}}次检查失败后自动下线。</p>
+			</td>
+		</tr>
+	</tbody>
+	<tbody v-show="healthCheck.isOn">
+		<tr>
+			<td colspan="2"><more-options-angle @change="showAdvanced"></more-options-angle></td>
+		</tr>
+	</tbody>
+	<tbody v-show="advancedVisible && healthCheck.isOn">
+		<tr>
+			<td>允许的状态码</td>
+			<td>
+				<values-box :values="healthCheck.statusCodes" maxlength="3" @change="changeStatus"></values-box>
+				<p class="comment">允许检测URL返回的状态码列表。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>超时时间</td>
+			<td>
+				<time-duration-box :v-value="healthCheck.timeout"></time-duration-box>
+				<p class="comment">读取检测URL超时时间。</p>
+			</td>	
+		</tr>
+		<tr>
+			<td>连续尝试次数</td>
+			<td>
+				<input type="text" v-model="healthCheck.countTries" style="width: 5em" maxlength="2"/>
+				<p class="comment">如果读取检测URL失败后需要再次尝试的次数。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>每次尝试间隔</td>
+			<td>
+				<time-duration-box :v-value="healthCheck.tryDelay"></time-duration-box>
+				<p class="comment">如果读取检测URL失败后再次尝试时的间隔时间。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>终端信息<em>（User-Agent）</em></td>
+			<td>
+				<input type="text" v-model="healthCheck.userAgent" maxlength="200"/>
+				<p class="comment">发送到服务器的User-Agent值，不填写表示使用默认值。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>只基础请求</td>
+			<td>
+				<checkbox v-model="healthCheck.onlyBasicRequest"></checkbox>
+				<p class="comment">只做基础的请求，不处理反向代理（不检查源站）、WAF等。</p>
+			</td>
+		</tr>
+		<tr>
+			<td>记录访问日志</td>
+			<td>
+				<checkbox v-model="healthCheck.accessLogIsOn"></checkbox>
+				<p class="comment">记录健康检查的访问日志。</p>
+			</td>
+		</tr>
+	</tbody>
 </table>
 <div class="margin"></div>
 </div>`
@@ -18667,7 +19190,7 @@ Vue.component("request-variables-describer", {
 		}
 	},
 	template: `<span>
-<span v-for="(v, index) in vars"><code-label :title="v.description">{{v.code}}</code-label> - {{v.name}}<span v-if="index < vars.length-1">；</span></span>
+	<span v-for="(v, index) in vars"><code-label :title="v.description">{{v.code}}</code-label> - {{v.name}}<span v-if="index < vars.length-1">；</span></span>
 </span>`
 })
 
@@ -18921,23 +19444,28 @@ Vue.component("combo-box", {
 		}
 	},
 	template: `<div style="display: inline; z-index: 10; background: white" class="combo-box">
-<div v-if="selectedItem == null">
-<input type="text" v-model="keyword" :placeholder="placeholder" :size="size" :style="{'width': styleWidth}" @input="changeKeyword" @focus="show" @blur="hide" @keyup.enter="confirm()" @keypress.enter.prevent="1" ref="searchBox" @keydown.down.prevent="downItem" @keydown.up.prevent="upItem">
-</div>
-<div v-if="selectedItem != null">
-<input type="hidden" :name="name" :value="selectedItem.value">
-<span class="ui label basic" style="line-height: 1.4; font-weight: normal; font-size: 1em" ref="selectedLabel"><span><span v-if="title != null && title.length > 0">{{title}}：</span>{{selectedItem.name}}</span>
-<a href title="清除" @click.prevent="reset"><i class="icon remove small"></i></a>
-</span>
-</div>
-<div v-show="selectedItem == null && items.length > 0 && visible">
-<div class="ui menu vertical small narrow-scrollbar" ref="menu">
-<a href v-for="(item, index) in items" ref="itemRef" class="item" :class="{active: index == hoverIndex, blue: index == hoverIndex}" @click.prevent="selectItem(item)" style="line-height: 1.4">
-<span v-if="item.fullname != null && item.fullname.length > 0">{{item.fullname}}</span>
-<span v-else>{{item.name}}</span>
-</a>
-</div>
-</div>
+	<!-- 搜索框 -->
+	<div v-if="selectedItem == null">
+		<input type="text" v-model="keyword" :placeholder="placeholder" :size="size" :style="{'width': styleWidth}"  @input="changeKeyword" @focus="show" @blur="hide" @keyup.enter="confirm()" @keypress.enter.prevent="1" ref="searchBox" @keydown.down.prevent="downItem" @keydown.up.prevent="upItem"/>
+	</div>
+	
+	<!-- 当前选中 -->
+	<div v-if="selectedItem != null">
+		<input type="hidden" :name="name" :value="selectedItem.value"/>
+		<span class="ui label basic" style="line-height: 1.4; font-weight: normal; font-size: 1em" ref="selectedLabel"><span><span v-if="title != null && title.length > 0">{{title}}：</span>{{selectedItem.name}}</span>
+			<a href="" title="清除" @click.prevent="reset"><i class="icon remove small"></i></a>
+		</span>
+	</div>
+	
+	<!-- 菜单 -->
+	<div v-show="selectedItem == null && items.length > 0 && visible">
+		<div class="ui menu vertical small narrow-scrollbar" ref="menu">
+			<a href="" v-for="(item, index) in items" ref="itemRef" class="item" :class="{active: index == hoverIndex, blue: index == hoverIndex}" @click.prevent="selectItem(item)" style="line-height: 1.4">
+				<span v-if="item.fullname != null && item.fullname.length > 0">{{item.fullname}}</span>
+				<span v-else>{{item.name}}</span>
+			</a>
+		</div>
+	</div>
 </div>`
 })
 
@@ -18968,10 +19496,10 @@ Vue.component("search-box", {
 		}
 	},
 	template: `<div>
-<div class="ui input small" :class="{'right labeled': realValue.length > 0}">
-<input type="text" :placeholder="placeholder" :style="{width: realWidth}" @input="onInput" v-model="realValue" ref="valueRef">
-<a href class="ui label blue" v-if="realValue.length > 0" @click.prevent="clearValue" style="padding-right: 0"><i class="icon remove"></i></a>
-</div>
+	<div class="ui input small" :class="{'right labeled': realValue.length > 0}">
+		<input type="text" :placeholder="placeholder" :style="{width: realWidth}" @input="onInput" v-model="realValue" ref="valueRef"/>
+		<a href="" class="ui label blue" v-if="realValue.length > 0" @click.prevent="clearValue" style="padding-right: 0"><i class="icon remove"></i></a>
+	</div>
 </div>`
 })
 
@@ -19064,13 +19592,15 @@ Vue.component("time-duration-box", {
 		}
 	},
 	template: `<div class="ui fields inline" style="padding-bottom: 0; margin-bottom: 0">
-<input type="hidden" :name="vName" :value="JSON.stringify(duration)">
-<div class="ui field">
-<input type="text" v-model="countString" :maxlength="realMaxLength" :size="realMaxLength" :placeholder="placeholder" @keypress.enter.prevent="1">
-</div>
-<div class="ui field">
-<select class="ui dropdown" v-model="duration.unit" @change="change"><option v-for="unit in units" :value="unit.code">{{unit.name}}</option></select>
-</div>
+	<input type="hidden" :name="vName" :value="JSON.stringify(duration)"/>
+	<div class="ui field">
+		<input type="text" v-model="countString" :maxlength="realMaxLength" :size="realMaxLength" :placeholder="placeholder" @keypress.enter.prevent="1"/>
+	</div>
+	<div class="ui field">
+		<select class="ui dropdown" v-model="duration.unit" @change="change">
+			<option v-for="unit in units" :value="unit.code">{{unit.name}}</option>
+		</select>
+	</div>
 </div>`
 })
 
@@ -19093,15 +19623,15 @@ Vue.component("time-duration-text", {
 		}
 	},
 	template: `<span>
-{{vValue.count}} {{unitName(vValue.unit)}}
+	{{vValue.count}} {{unitName(vValue.unit)}}
 </span>`
 })
 
 Vue.component("not-found-box", {
 	props: ["message"],
 	template: `<div style="text-align: center; margin-top: 5em;">
-<div style="font-size: 2em; margin-bottom: 1em"><i class="icon exclamation triangle large grey"></i></div>
-<p class="comment">{{message}}<slot></slot></p>
+	<div style="font-size: 2em; margin-bottom: 1em"><i class="icon exclamation triangle large grey"></i></div>
+	<p class="comment">{{message}}<slot></slot></p>
 </div>`
 })
 
@@ -19158,17 +19688,17 @@ Vue.component("checkbox", {
 		}
 	},
 	template: `<div class="ui checkbox">
-<input type="checkbox" :name="name" :value="elementValue" :id="elementId" @change="change" v-model="newValue">
-<label :for="elementId"><slot></slot></label>
+	<input type="checkbox" :name="name" :value="elementValue" :id="elementId" @change="change" v-model="newValue"/>
+	<label :for="elementId"><slot></slot></label>
 </div>`
 })
 
 Vue.component("network-addresses-view", {
 	props: ["v-addresses"],
 	template: `<div>
-<div class="ui label tiny basic" v-if="vAddresses != null" v-for="addr in vAddresses">
-{{addr.protocol}}://<span v-if="addr.host.length > 0">{{addr.host.quoteIP()}}</span><span v-else>*</span>:{{addr.portRange}}
-</div>
+	<div class="ui label tiny basic" v-if="vAddresses != null" v-for="addr in vAddresses">
+		{{addr.protocol}}://<span v-if="addr.host.length > 0">{{addr.host.quoteIP()}}</span><span v-else>*</span>:{{addr.portRange}}
+	</div>
 </div>`
 })
 
@@ -19285,34 +19815,40 @@ Vue.component("url-patterns-box", {
 		}
 	},
 	template: `<div>
-<div v-show="patterns.length > 0">
-<div v-for="(pattern, index) in patterns" class="ui label basic small" :class="{blue: index == editingIndex, disabled: isAdding && index != editingIndex}" style="margin-bottom: 0.8em">
-<span class="grey" style="font-weight: normal">[{{patternTypeName(pattern.type)}}]</span> <span>{{pattern.pattern}}</span> &nbsp;
-<a href title="修改" @click.prevent="edit(index)"><i class="icon pencil tiny"></i></a>
-<a href title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
-</div>
-</div>
-<div v-show="isAdding" style="margin-top: 0.5em">
-<div :class="{'ui fields inline': !windowIsSmall}">
-<div class="ui field">
-<select class="ui dropdown auto-width" v-model="addingPattern.type"><option value="wildcard">通配符</option><option value="regexp">正则表达式</option><option value="images">常见图片</option><option value="audios">常见音频</option><option value="videos">常见视频</option></select>
-</div>
-<div class="ui field" v-show="addingPattern.type == 'wildcard' || addingPattern.type ==  'regexp'">
-<input type="text" :placeholder="(addingPattern.type == 'wildcard') ? '可以使用星号（*）通配符，不区分大小写' : '可以使用正则表达式，不区分大小写'" v-model="addingPattern.pattern" @input="changePattern" size="36" ref="patternInput" @keyup.enter="confirm()" @keypress.enter.prevent="1" spellcheck="false">
-<p class="comment" v-if="patternIsInvalid"><span class="red" style="font-weight: normal"><span v-if="addingPattern.type == 'wildcard'">通配符</span><span v-if="addingPattern.type == 'regexp'">正则表达式</span>中不能包含问号（?）及问号以后的内容。</span></p>
-</div>
-<div class="ui field" style="padding-left: 0" v-show="addingPattern.type == 'wildcard' || addingPattern.type ==  'regexp'">
-<tip-icon content="通配符示例：<br/>单个路径开头：/hello/world/*<br/>单个路径结尾：*/hello/world<br/>包含某个路径：*/article/*<br/>某个域名下的所有URL：*example.com/*<br/>忽略某个扩展名：*.js" v-if="addingPattern.type == 'wildcard'"></tip-icon>
-<tip-icon content="正则表达式示例：<br/>单个路径开头：^/hello/world<br/>单个路径结尾：/hello/world$<br/>包含某个路径：/article/<br/>匹配某个数字路径：/article/(\\d+)<br/>某个域名下的所有URL：^(http|https)://example.com/" v-if="addingPattern.type == 'regexp'"></tip-icon>
-</div>
-<div class="ui field">
-<button class="ui button tiny" :class="{disabled:this.patternIsInvalid}" type="button" @click.prevent="confirm">确定</button><a href title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
-</div>
-</div>
-</div>
-<div v-if=!isAdding style="margin-top: 0.5em">
-<button class="ui button tiny basic" type="button" @click.prevent="add">+</button>
-</div>
+	<div v-show="patterns.length > 0">
+		<div v-for="(pattern, index) in patterns" class="ui label basic small" :class="{blue: index == editingIndex, disabled: isAdding && index != editingIndex}" style="margin-bottom: 0.8em">
+			<span class="grey" style="font-weight: normal">[{{patternTypeName(pattern.type)}}]</span> <span >{{pattern.pattern}}</span> &nbsp; 
+			<a href="" title="修改" @click.prevent="edit(index)"><i class="icon pencil tiny"></i></a> 
+			<a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+		</div>
+	</div>
+	<div v-show="isAdding" style="margin-top: 0.5em">
+		<div :class="{'ui fields inline': !windowIsSmall}">
+			<div class="ui field">
+				<select class="ui dropdown auto-width" v-model="addingPattern.type">
+					<option value="wildcard">通配符</option>
+					<option value="regexp">正则表达式</option>
+					<option value="images">常见图片</option>
+					<option value="audios">常见音频</option>
+					<option value="videos">常见视频</option>
+				</select>
+			</div>
+			<div class="ui field" v-show="addingPattern.type == 'wildcard' || addingPattern.type ==  'regexp'">
+				<input type="text" :placeholder="(addingPattern.type == 'wildcard') ? '可以使用星号（*）通配符，不区分大小写' : '可以使用正则表达式，不区分大小写'" v-model="addingPattern.pattern" @input="changePattern" size="36" ref="patternInput" @keyup.enter="confirm()" @keypress.enter.prevent="1" spellcheck="false"/>
+				<p class="comment" v-if="patternIsInvalid"><span class="red" style="font-weight: normal"><span v-if="addingPattern.type == 'wildcard'">通配符</span><span v-if="addingPattern.type == 'regexp'">正则表达式</span>中不能包含问号（?）及问号以后的内容。</span></p>
+			</div>
+			<div class="ui field" style="padding-left: 0"  v-show="addingPattern.type == 'wildcard' || addingPattern.type ==  'regexp'">
+				<tip-icon content="通配符示例：<br/>单个路径开头：/hello/world/*<br/>单个路径结尾：*/hello/world<br/>包含某个路径：*/article/*<br/>某个域名下的所有URL：*example.com/*<br/>忽略某个扩展名：*.js" v-if="addingPattern.type == 'wildcard'"></tip-icon>
+				<tip-icon content="正则表达式示例：<br/>单个路径开头：^/hello/world<br/>单个路径结尾：/hello/world$<br/>包含某个路径：/article/<br/>匹配某个数字路径：/article/(\\d+)<br/>某个域名下的所有URL：^(http|https)://example.com/" v-if="addingPattern.type == 'regexp'"></tip-icon>
+			</div>
+			<div class="ui field">
+				<button class="ui button tiny" :class="{disabled:this.patternIsInvalid}" type="button" @click.prevent="confirm">确定</button><a href="" title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
+			</div>
+		</div>
+	</div>
+	<div v-if=!isAdding style="margin-top: 0.5em">
+		<button class="ui button tiny basic" type="button" @click.prevent="add">+</button>
+	</div>
 </div>`
 })
 
@@ -19324,8 +19860,8 @@ Vue.component("size-capacity-view", {
 		}
 	},
 	template: `<div>
-<span v-if="vValue != null && vValue.count > 0">{{composeCapacity(vValue)}}</span>
-<span v-else>{{vDefaultText}}</span>
+	<span v-if="vValue != null && vValue.count > 0">{{composeCapacity(vValue)}}</span>
+	<span v-else>{{vDefaultText}}</span>
 </div>`
 })
 
@@ -19359,11 +19895,11 @@ Vue.component("tip-message-box", {
 		}
 	},
 	template: `<div class="ui icon message" v-if="visible">
-<i class="icon info circle"></i>
-<i class="close icon" title="取消" @click.prevent="close" style="margin-top: 1em"></i>
-<div class="content">
-<slot></slot>
-</div>
+	<i class="icon info circle"></i>
+	<i class="close icon" title="取消" @click.prevent="close" style="margin-top: 1em"></i>
+	<div class="content">
+		<slot></slot>
+	</div>
 </div>`
 })
 
@@ -19428,7 +19964,7 @@ Vue.component("digit-input", {
 			}
 		}
 	},
-	template: `<input type="text" v-model="realValue" :maxlength="realMaxLength" :size="realSize" :class="{error: !this.isValid}" :placeholder="placeholder" autocomplete="off">`
+	template: `<input type="text" v-model="realValue" :maxlength="realMaxLength" :size="realSize" :class="{error: !this.isValid}" :placeholder="placeholder" autocomplete="off"/>`
 })
 
 Vue.component("keyword", {
@@ -19503,7 +20039,7 @@ Vue.component("bits-var", {
 		}
 	},
 	template:`<var class="normal">
-<span>{{format[0]}}</span>{{format[1]}}
+	<span>{{format[0]}}</span>{{format[1]}}
 </var>`
 })
 
@@ -19588,7 +20124,7 @@ Vue.component("chart-columns-grid", {
 		}
 	},
 	template: `<div :class="'ui ' + columns + ' columns grid chart-grid'">
-<slot></slot>
+	<slot></slot>
 </div>`
 })
 
@@ -19605,7 +20141,7 @@ Vue.component("bytes-var", {
 		}
 	},
 	template:`<var class="normal">
-<span>{{format[0]}}</span>{{format[1]}}
+	<span>{{format[0]}}</span>{{format[1]}}
 </var>`
 })
 
@@ -19618,7 +20154,7 @@ Vue.component("node-log-row", {
 		}
 	},
 	template: `<div>
-<pre class="log-box" style="margin: 0; padding: 0"><span :class="{red:log.level == 'error', orange:log.level == 'warning', green: log.level == 'success'}"><span v-if="!log.isToday">[{{log.createdTime}}]</span><strong v-if="log.isToday">[{{log.createdTime}}]</strong><keyword :v-word="keyword">[{{log.tag}}]{{log.description}}</keyword></span> &nbsp; <span v-if="log.count > 1" class="ui label tiny" :class="{red:log.level == 'error', orange:log.level == 'warning'}">共{{log.count}}条</span> <span v-if="log.server != null && log.server.id > 0"><a :href="'/servers/server?serverId=' + log.server.id" class="ui label tiny basic">{{log.server.name}}</a></span></pre>
+	<pre class="log-box" style="margin: 0; padding: 0"><span :class="{red:log.level == 'error', orange:log.level == 'warning', green: log.level == 'success'}"><span v-if="!log.isToday">[{{log.createdTime}}]</span><strong v-if="log.isToday">[{{log.createdTime}}]</strong><keyword :v-word="keyword">[{{log.tag}}]{{log.description}}</keyword></span> &nbsp; <span v-if="log.count > 1" class="ui label tiny" :class="{red:log.level == 'error', orange:log.level == 'warning'}">共{{log.count}}条</span> <span v-if="log.server != null && log.server.id > 0"><a :href="'/servers/server?serverId=' + log.server.id" class="ui label tiny basic">{{log.server.name}}</a></span></pre>
 </div>`
 })
 
@@ -19663,14 +20199,14 @@ Vue.component("provinces-selector", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="provinceIdsJSON" :value="JSON.stringify(provinceIds)">
-<div v-if="provinces.length > 0" style="margin-bottom: 0.5em">
-<div v-for="(province, index) in provinces" class="ui label tiny basic">{{province.name}} <a href title="删除" @click.prevent="remove(index)"><i class="icon remove"></i></a></div>
-<div class="ui divider"></div>
-</div>
-<div>
-<button class="ui button tiny" type="button" @click.prevent="add">+</button>
-</div>
+	<input type="hidden" name="provinceIdsJSON" :value="JSON.stringify(provinceIds)"/>
+	<div v-if="provinces.length > 0" style="margin-bottom: 0.5em">
+		<div v-for="(province, index) in provinces" class="ui label tiny basic">{{province.name}} <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove"></i></a></div>
+		<div class="ui divider"></div>
+	</div>
+	<div>
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	</div>
 </div>`
 })
 
@@ -19704,7 +20240,7 @@ Vue.component("csrf-token", {
 				})
 		}
 	},
-	template: `<input type="hidden" name="csrfToken" :value="token" ref="token">`
+	template: `<input type="hidden" name="csrfToken" :value="token" ref="token"/>`
 })
 
 
@@ -19735,8 +20271,8 @@ Vue.component("radio", {
 		}
 	},
 	template: `<div class="ui checkbox radio">
-<input type="radio" :name="name" :value="vValue" :id="elementId" @change="change" :checked="(vValue == value)">
-<label :for="elementId"><slot></slot></label>
+	<input type="radio" :name="name" :value="vValue" :id="elementId" @change="change" :checked="(vValue == value)"/>
+	<label :for="elementId"><slot></slot></label>
 </div>`
 })
 
@@ -19755,7 +20291,7 @@ Vue.component("copy-to-clipboard", {
 			teaweb.successToast("已复制到剪切板")
 		}
 	},
-	template: `<a href title="拷贝到剪切板" :data-clipboard-target="'#' + vTarget" @click.prevent="copy"><i class="ui icon copy small"></i></em></a>`
+	template: `<a href="" title="拷贝到剪切板" :data-clipboard-target="'#' + vTarget" @click.prevent="copy"><i class="ui icon copy small"></i></em></a>`
 })
 
 // 节点角色名称
@@ -19885,8 +20421,8 @@ Vue.component("source-code-box", {
 		}
 	},
 	template: `<div class="source-code-box">
-<div style="display: none" :id="valueBoxId"><slot></slot></div>
-<textarea :id="'source-code-box-' + index" :name="name"></textarea>
+	<div style="display: none" :id="valueBoxId"><slot></slot></div>
+	<textarea :id="'source-code-box-' + index" :name="name"></textarea>
 </div>`
 })
 
@@ -19948,13 +20484,21 @@ Vue.component("size-capacity-box", {
 		}
 	},
 	template: `<div class="ui fields inline">
-<input type="hidden" :name="vName" :value="JSON.stringify(capacity)">
-<div class="ui field">
-<input type="text" v-model="countString" :maxlength="vMaxlength" :size="vSize">
-</div>
-<div class="ui field">
-<select class="ui dropdown" v-model="capacity.unit" @change="change"><option value="byte" v-if="supportedUnits.length == 0 || supportedUnits.$contains('byte')">字节</option><option value="kb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('kb')">KiB</option><option value="mb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('mb')">MiB</option><option value="gb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('gb')">GiB</option><option value="tb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('tb')">TiB</option><option value="pb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('pb')">PiB</option><option value="eb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('eb')">EiB</option></select>
-</div>
+	<input type="hidden" :name="vName" :value="JSON.stringify(capacity)"/>
+	<div class="ui field">
+		<input type="text" v-model="countString" :maxlength="vMaxlength" :size="vSize"/>
+	</div>
+	<div class="ui field">
+		<select class="ui dropdown" v-model="capacity.unit" @change="change">
+			<option value="byte" v-if="supportedUnits.length == 0 || supportedUnits.$contains('byte')">字节</option>
+			<option value="kb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('kb')">KiB</option>
+			<option value="mb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('mb')">MiB</option>
+			<option value="gb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('gb')">GiB</option>
+			<option value="tb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('tb')">TiB</option>
+			<option value="pb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('pb')">PiB</option>
+			<option value="eb" v-if="supportedUnits.length == 0 || supportedUnits.$contains('eb')">EiB</option>
+		</select>
+	</div>
 </div>`
 })
 
@@ -19962,11 +20506,12 @@ Vue.component("size-capacity-box", {
  * 二级菜单
  */
 Vue.component("inner-menu", {
-	template: `<div class="second-menu" style="width:80%;position: absolute;top:-8px;right:1em">
-<div class="ui menu text blue small">
-<slot></slot>
-</div>
-</div>`
+	template: `
+		<div class="second-menu" style="width:80%;position: absolute;top:-8px;right:1em"> 
+			<div class="ui menu text blue small">
+				<slot></slot>
+			</div> 
+		</div>`
 });
 
 Vue.component("datepicker", {
@@ -20025,7 +20570,7 @@ Vue.component("datepicker", {
 		}
 	},
 	template: `<div style="display: inline-block">
-<input type="text" :name="realName" v-model="day" :placeholder="realPlaceholder" style="width:8.6em" maxlength="10" @input="change" ref="dayInput" autocomplete="off">
+	<input type="text" :name="realName" v-model="day" :placeholder="realPlaceholder" style="width:8.6em" maxlength="10" @input="change" ref="dayInput" autocomplete="off"/>
 </div>`
 })
 
@@ -20095,8 +20640,8 @@ Vue.component("user-link", {
 		}
 	},
 	template: `<div style="display: inline-block">
-<span v-if="user.id > 0"><keyword :v-word="vKeyword">{{user.fullname}}</keyword><span class="small grey">（<keyword :v-word="vKeyword">{{user.username}}</keyword>）</span></span>
-<span v-else class="disabled">[已删除]</span>
+	<span v-if="user.id > 0"><keyword :v-word="vKeyword">{{user.fullname}}</keyword><span class="small grey">（<keyword :v-word="vKeyword">{{user.username}}</keyword>）</span></span>
+	<span v-else class="disabled">[已删除]</span>
 </div>`
 })
 
@@ -20171,25 +20716,25 @@ Vue.component("report-node-groups-selector", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="reportNodeGroupIdsJSON" :value="JSON.stringify(groupIds)">
-<span class="disabled" v-if="isLoaded && groups.length == 0">还没有分组。</span>
-<div v-if="groups.length > 0">
-<div>
-<div class="ui checkbox">
-<input type="checkbox" v-model="allGroups" id="all-group">
-<label for="all-group">全部分组</label>
-</div>
-<div class="ui divider" v-if="!allGroups"></div>
-</div>
-<div v-show="!allGroups">
-<div v-for="group in groups" :key="group.id" style="float: left; width: 7.6em; margin-bottom: 0.5em">
-<div class="ui checkbox">
-<input type="checkbox" v-model="group.isChecked" value="1" :id="'report-node-group-' + group.id" @click.prevent="check(group)">
-<label :for="'report-node-group-' + group.id">{{group.name}}</label>
-</div>
-</div>
-</div>
-</div>
+	<input type="hidden" name="reportNodeGroupIdsJSON" :value="JSON.stringify(groupIds)"/>
+	<span class="disabled" v-if="isLoaded && groups.length == 0">还没有分组。</span>
+	<div v-if="groups.length > 0">
+		<div>
+			<div class="ui checkbox">
+				<input type="checkbox" v-model="allGroups" id="all-group"/>
+				<label for="all-group">全部分组</label>
+			</div>
+			<div class="ui divider" v-if="!allGroups"></div>
+		</div>
+		<div v-show="!allGroups">
+			<div v-for="group in groups" :key="group.id" style="float: left; width: 7.6em; margin-bottom: 0.5em">
+				<div class="ui checkbox">
+					<input type="checkbox" v-model="group.isChecked" value="1" :id="'report-node-group-' + group.id" @click.prevent="check(group)"/>
+					<label :for="'report-node-group-' + group.id">{{group.name}}</label>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>`
 })
 
@@ -20204,7 +20749,7 @@ Vue.component("finance-user-selector", {
 		}
 	},
 	template: `<div>
-<user-selector :v-user-id="vUserId" data-url="/finance/users/options" @change="change"></user-selector>
+	<user-selector :v-user-id="vUserId" data-url="/finance/users/options" @change="change"></user-selector>
 </div>`
 })
 
@@ -20262,26 +20807,29 @@ Vue.component("node-cache-disk-dirs-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" :name="name" :value="JSON.stringify(dirs)">
-<div style="margin-bottom: 0.3em">
-<span class="ui label small basic" v-for="(dir, index) in dirs">
-<i class="icon folder"></i>{{dir.path}} &nbsp; <a href title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
-</span>
-</div>
-<div v-if="isAdding">
-<div class="ui fields inline">
-<div class="ui field">
-<input type="text" style="width: 30em" v-model="addingPath" @keyup.enter="confirm()" @keypress.enter.prevent="1" @keydown.esc="cancel()" ref="addingPath" placeholder="新的缓存目录，比如 /mnt/cache">
-</div>
-<div class="ui field">
-<button class="ui button small" type="button" @click.prevent="confirm">确定</button>
-&nbsp; <a href title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
-</div>
-</div>
-</div>
-<div v-if="!isAdding">
-<button class="ui button tiny" type="button" @click.prevent="add">+</button>
-</div>
+	<input type="hidden" :name="name" :value="JSON.stringify(dirs)"/>
+	<div style="margin-bottom: 0.3em">
+		<span class="ui label small basic" v-for="(dir, index) in dirs">
+			<i class="icon folder"></i>{{dir.path}}  &nbsp;  <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+		</span>
+	</div>
+	
+	<!-- 添加 -->
+	<div v-if="isAdding">
+		<div class="ui fields inline">
+			<div class="ui field">
+				<input type="text" style="width: 30em" v-model="addingPath" @keyup.enter="confirm()" @keypress.enter.prevent="1" @keydown.esc="cancel()" ref="addingPath" placeholder="新的缓存目录，比如 /mnt/cache"/>
+			</div>
+			<div class="ui field">
+				<button class="ui button small" type="button" @click.prevent="confirm">确定</button>
+				&nbsp; <a href="" title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
+			</div>
+		</div>
+	</div>
+	
+	<div v-if="!isAdding">
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	</div>
 </div>`
 })
 
@@ -20325,17 +20873,17 @@ Vue.component("node-ip-address-clusters-selector", {
 		}
 	},
 	template: `<div>
-<span v-if="!hasCheckedCluster">默认用于所有集群 &nbsp; <a href @click.prevent="showClusters">修改 <i class="icon angle" :class="{down: !clustersVisible, up:clustersVisible}"></i></a></span>
-<div v-if="hasCheckedCluster">
-<span v-for="cluster in clusters" class="ui label basic small" v-if="cluster.isChecked">{{cluster.name}}</span> &nbsp; <a href @click.prevent="showClusters">修改 <i class="icon angle" :class="{down: !clustersVisible, up:clustersVisible}"></i></a>
-<p class="comment">当前IP仅在所选集群中有效。</p>
-</div>
-<div v-show="clustersVisible">
-<div class="ui divider"></div>
-<checkbox v-for="cluster in clusters" :v-value="cluster.id" :value="cluster.isChecked ? cluster.id : 0" style="margin-right: 1em" @input="changeCluster(cluster)" name="clusterIds">
-{{cluster.name}}
-</checkbox>
-</div>
+  <span v-if="!hasCheckedCluster">默认用于所有集群 &nbsp; <a href="" @click.prevent="showClusters">修改 <i class="icon angle" :class="{down: !clustersVisible, up:clustersVisible}"></i></a></span>
+	<div v-if="hasCheckedCluster">
+		<span v-for="cluster in clusters" class="ui label basic small" v-if="cluster.isChecked">{{cluster.name}}</span> &nbsp; <a href="" @click.prevent="showClusters">修改 <i class="icon angle" :class="{down: !clustersVisible, up:clustersVisible}"></i></a>
+		<p class="comment">当前IP仅在所选集群中有效。</p>
+	</div>
+	<div v-show="clustersVisible">
+		<div class="ui divider"></div>
+		<checkbox v-for="cluster in clusters" :v-value="cluster.id" :value="cluster.isChecked ? cluster.id : 0" style="margin-right: 1em" @input="changeCluster(cluster)" name="clusterIds">
+			{{cluster.name}}
+		</checkbox>
+	</div>
 </div>`
 })
 
@@ -20387,16 +20935,16 @@ Vue.component("node-login-suggest-ports", {
 		}
 	},
 	template: `<span>
-<span v-if="isLoading">正在检查端口...</span>
-<span v-if="availablePorts.length > 0">
-可能端口：<a href v-for="port in availablePorts" @click.prevent="selectPort(port)" class="ui label tiny basic blue" style="border: 1px #2185d0 dashed; font-weight: normal">{{port}}</a>
-&nbsp; &nbsp;
-</span>
-<span v-if="ports.length > 0">
-常用端口：<a href v-for="port in ports" @click.prevent="selectPort(port)" class="ui label tiny basic blue" style="border: 1px #2185d0 dashed;  font-weight: normal">{{port}}</a>
-</span>
-<span v-if="ports.length == 0">常用端口有22等。</span>
-<span v-if="ports.length > 0" class="grey small">（可以点击要使用的端口）</span>
+	<span v-if="isLoading">正在检查端口...</span>
+	<span v-if="availablePorts.length > 0">
+		可能端口：<a href="" v-for="port in availablePorts" @click.prevent="selectPort(port)" class="ui label tiny basic blue" style="border: 1px #2185d0 dashed; font-weight: normal">{{port}}</a>
+		&nbsp; &nbsp;
+	</span>
+	<span v-if="ports.length > 0">
+		常用端口：<a href="" v-for="port in ports" @click.prevent="selectPort(port)" class="ui label tiny basic blue" style="border: 1px #2185d0 dashed;  font-weight: normal">{{port}}</a>
+	</span>
+	<span v-if="ports.length == 0">常用端口有22等。</span>
+	<span v-if="ports.length > 0" class="grey small">（可以点击要使用的端口）</span>
 </span>`
 })
 
@@ -20429,13 +20977,13 @@ Vue.component("node-group-selector", {
 		}
 	},
 	template: `<div>
-<div class="ui label small basic" v-if="selectedGroup != null">
-<input type="hidden" name="groupId" :value="selectedGroup.id">
-{{selectedGroup.name}} &nbsp;<a href title="删除" @click.prevent="removeGroup()"><i class="icon remove"></i></a>
-</div>
-<div v-if="selectedGroup == null">
-<a href @click.prevent="selectGroup()">[选择分组]</a> &nbsp; <a href @click.prevent="addGroup()">[添加分组]</a>
-</div>
+	<div class="ui label small basic" v-if="selectedGroup != null">
+		<input type="hidden" name="groupId" :value="selectedGroup.id"/>
+		{{selectedGroup.name}} &nbsp;<a href="" title="删除" @click.prevent="removeGroup()"><i class="icon remove"></i></a>
+	</div>
+	<div v-if="selectedGroup == null">
+		<a href="" @click.prevent="selectGroup()">[选择分组]</a> &nbsp; <a href="" @click.prevent="addGroup()">[添加分组]</a>
+	</div>
 </div>`
 })
 
@@ -20494,30 +21042,31 @@ Vue.component("node-ip-addresses-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="ipAddressesJSON" :value="JSON.stringify(ipAddresses)">
-<div v-if="ipAddresses.length > 0">
-<div>
-<div v-for="(address, index) in ipAddresses" class="ui label tiny basic">
-<span v-if="isIPv6(address.ip)" class="grey">[IPv6]</span> {{address.ip}}
-<span class="small grey" v-if="address.name.length > 0">（备注：{{address.name}}<span v-if="!address.canAccess">，不公开访问</span>）</span>
-<span class="small grey" v-if="address.name.length == 0 && !address.canAccess">（不公开访问）</span>
-<span class="small red" v-if="!address.isOn" title="未启用">[off]</span>
-<span class="small red" v-if="!address.isUp" title="已下线">[down]</span>
-<span class="small" v-if="address.thresholds != null && address.thresholds.length > 0">[{{address.thresholds.length}}个阈值]</span>
-&nbsp;
-<span v-if="address.clusters != null && address.clusters.length > 0">
-&nbsp; <span class="small grey">专属集群：[</span><span v-for="(cluster, index) in address.clusters" class="small grey">{{cluster.name}}<span v-if="index < address.clusters.length - 1">，</span></span><span class="small grey">]</span>
-&nbsp;
-</span>
-<a href title="修改" @click.prevent="updateIPAddress(index, address)"><i class="icon pencil small"></i></a>
-<a href title="删除" @click.prevent="removeIPAddress(index)"><i class="icon remove"></i></a>
-</div>
-</div>
-<div class="ui divider"></div>
-</div>
-<div>
-<button class="ui button small" type="button" @click.prevent="addIPAddress()">+</button>
-</div>
+	<input type="hidden" name="ipAddressesJSON" :value="JSON.stringify(ipAddresses)"/>
+	<div v-if="ipAddresses.length > 0">
+		<div>
+			<div v-for="(address, index) in ipAddresses" class="ui label tiny basic">
+				<span v-if="isIPv6(address.ip)" class="grey">[IPv6]</span> {{address.ip}}
+				<span class="small grey" v-if="address.name.length > 0">（备注：{{address.name}}<span v-if="!address.canAccess">，不公开访问</span>）</span>
+				<span class="small grey" v-if="address.name.length == 0 && !address.canAccess">（不公开访问）</span>
+				<span class="small red" v-if="!address.isOn" title="未启用">[off]</span>
+				<span class="small red" v-if="!address.isUp" title="已下线">[down]</span>
+				<span class="small" v-if="address.thresholds != null && address.thresholds.length > 0">[{{address.thresholds.length}}个阈值]</span>
+				&nbsp;
+				 <span v-if="address.clusters != null && address.clusters.length > 0">
+					&nbsp; <span class="small grey">专属集群：[</span><span v-for="(cluster, index) in address.clusters" class="small grey">{{cluster.name}}<span v-if="index < address.clusters.length - 1">，</span></span><span class="small grey">]</span>
+					&nbsp;
+				</span>
+				
+				<a href="" title="修改" @click.prevent="updateIPAddress(index, address)"><i class="icon pencil small"></i></a>
+				<a href="" title="删除" @click.prevent="removeIPAddress(index)"><i class="icon remove"></i></a>
+			</div>
+		</div>
+		<div class="ui divider"></div>
+	</div>
+	<div>
+		<button class="ui button small" type="button" @click.prevent="addIPAddress()">+</button>
+	</div>
 </div>`
 })
 
@@ -20734,87 +21283,117 @@ Vue.component("node-schedule-conds-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="condsJSON" :value="JSON.stringify(this.condsConfig)">
-<div v-if="condsConfig.conds.length > 0" style="margin-bottom: 1em">
-<span v-for="(cond, index) in condsConfig.conds">
-<span class="ui label basic small">
-<span>{{paramMap[cond.param].name}}
-<span v-if="paramMap[cond.param].operators != null && paramMap[cond.param].operators.length > 0"><span class="grey">{{operatorMap[cond.operator]}}</span> {{cond.valueFormat}}</span>
-&nbsp; <a href title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
-</span>
-</span>
-<span v-if="index < condsConfig.conds.length - 1"> &nbsp;<span v-if="condsConfig.connector == 'and'">且</span><span v-else>或</span>&nbsp; </span>
-</span>
-</div>
-<div v-if="isAdding">
-<table class="ui table">
-<tbody>
-<tr>
-<td class="title">参数</td>
-<td>
-<select class="ui dropdown auto-width" v-model="paramCode"><option value>[选择参数]</option><option v-for="paramOption in params" :value="paramOption.code">{{paramOption.name}}</option></select>
-<p class="comment" v-if="param != null">{{param.description}}</p>
-</td>
-</tr>
-<tr v-if="param != null && param.operators != null && param.operators.length > 0">
-<td>操作符</td>
-<td>
-<select class="ui dropdown auto-width" v-if="param != null" v-model="operator"><option value>[选择操作符]</option><option v-for="operator in param.operators" :value="operator">{{operatorMap[operator]}}</option></select>
-</td>
-</tr>
-<tr v-if="param != null && param.operators != null && param.operators.length > 0">
-<td>{{param.valueName}}</td>
-<td>
-<div v-if="param.valueType == 'bandwidth'">
-<div class="ui fields inline">
-<div class="ui field">
-<input type="text" maxlength="10" size="6" v-model="valueBandwidth.count" @keyup.enter="confirm" @keypress.enter.prevent="1">
-</div>
-<div class="ui field">
-<select class="ui dropdown auto-width" v-model="valueBandwidth.unit"><option value="gb">Gbps</option><option value="mb">Mbps</option></select>
-</div>
-</div>
-</div>
-<div v-if="param.valueType == 'traffic'">
-<div class="ui fields inline">
-<div class="ui field">
-<input type="text" maxlength="10" size="6" v-model="valueTraffic.count" @keyup.enter="confirm" @keypress.enter.prevent="1">
-</div>
-<div class="ui field">
-<select class="ui dropdown auto-width" v-model="valueTraffic.unit"><option value="mb">MiB</option><option value="gb">GiB</option><option value="tb">TiB</option><option value="pb">PiB</option><option value="eb">EiB</option></select>
-</div>
-</div>
-</div>
-<div v-if="param.valueType == 'cpu'">
-<div class="ui input right labeled">
-<input type="text" v-model="valueCPU" maxlength="3" size="3" style="width: 4em" @keyup.enter="confirm" @keypress.enter.prevent="1">
-<span class="ui label">%</span>
-</div>
-</div>
-<div v-if="param.valueType == 'memory'">
-<div class="ui input right labeled">
-<input type="text" v-model="valueMemory" maxlength="3" size="3" style="width: 4em" @keyup.enter="confirm" @keypress.enter.prevent="1">
-<span class="ui label">%</span>
-</div>
-</div>
-<div v-if="param.valueType == 'load'">
-<input type="text" v-model="valueLoad" maxlength="3" size="3" style="width: 4em" @keyup.enter="confirm" @keypress.enter.prevent="1">
-</div>
-<div v-if="param.valueType == 'rate'">
-<div class="ui input right labeled">
-<input type="text" v-model="valueRate" maxlength="8" size="8" style="width: 8em" @keyup.enter="confirm" @keypress.enter.prevent="1">
-<span class="ui label">/秒</span>
-</div>
-</div>
-</td>
-</tr>
-</tbody>
-</table>
-<button class="ui button small" type="button" @click.prevent="confirm">确定</button> &nbsp; <a href @click.prevent="cancel">取消</a>
-</div>
-<div v-if="!isAdding">
-<button class="ui button small" type="button" @click.prevent="add">+</button>
-</div>
+	<input type="hidden" name="condsJSON" :value="JSON.stringify(this.condsConfig)"/>
+	
+	<!-- 已有条件 -->
+	<div v-if="condsConfig.conds.length > 0" style="margin-bottom: 1em">
+		<span v-for="(cond, index) in condsConfig.conds">
+			<span class="ui label basic small">
+				<span>{{paramMap[cond.param].name}} 
+					<span v-if="paramMap[cond.param].operators != null && paramMap[cond.param].operators.length > 0"><span class="grey">{{operatorMap[cond.operator]}}</span> {{cond.valueFormat}}</span> 
+					&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+				</span>
+			</span>
+			<span v-if="index < condsConfig.conds.length - 1"> &nbsp;<span v-if="condsConfig.connector == 'and'">且</span><span v-else>或</span>&nbsp; </span>
+		</span>
+	</div>
+	
+	<div v-if="isAdding">
+		<table class="ui table">
+			<tbody>
+				<tr>
+					<td class="title">参数</td>
+					<td>
+						<select class="ui dropdown auto-width" v-model="paramCode">
+							<option value="">[选择参数]</option>
+							<option v-for="paramOption in params" :value="paramOption.code">{{paramOption.name}}</option>
+						</select>
+						<p class="comment" v-if="param != null">{{param.description}}</p>
+					</td>
+				</tr>
+				<tr v-if="param != null && param.operators != null && param.operators.length > 0">
+					<td>操作符</td>
+					<td>
+						<select class="ui dropdown auto-width" v-if="param != null" v-model="operator">
+							<option value="">[选择操作符]</option>
+							<option v-for="operator in param.operators" :value="operator">{{operatorMap[operator]}}</option>
+						</select>
+					</td>
+				</tr>
+				<tr v-if="param != null && param.operators != null && param.operators.length > 0">
+					<td>{{param.valueName}}</td>
+					<td>
+						<!-- 带宽 -->
+						<div v-if="param.valueType == 'bandwidth'">
+							<div class="ui fields inline">
+								<div class="ui field">
+									<input type="text" maxlength="10" size="6" v-model="valueBandwidth.count" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+								</div>
+								<div class="ui field">
+									<select class="ui dropdown auto-width" v-model="valueBandwidth.unit">
+										<option value="gb">Gbps</option>
+										<option value="mb">Mbps</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						
+						<!-- 流量 -->
+						<div v-if="param.valueType == 'traffic'">
+							<div class="ui fields inline">
+								<div class="ui field">
+									<input type="text" maxlength="10" size="6" v-model="valueTraffic.count" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+								</div>
+								<div class="ui field">
+									<select class="ui dropdown auto-width" v-model="valueTraffic.unit">
+										<option value="mb">MiB</option>
+										<option value="gb">GiB</option>
+										<option value="tb">TiB</option>
+										<option value="pb">PiB</option>
+										<option value="eb">EiB</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						
+						<!-- cpu -->
+						<div v-if="param.valueType == 'cpu'">
+							<div class="ui input right labeled">
+								<input type="text" v-model="valueCPU" maxlength="3" size="3" style="width: 4em" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+								<span class="ui label">%</span>
+							</div>
+						</div>
+						
+						<!-- memory -->
+						<div v-if="param.valueType == 'memory'">
+							<div class="ui input right labeled">
+								<input type="text" v-model="valueMemory" maxlength="3" size="3" style="width: 4em" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+								<span class="ui label">%</span>
+							</div>
+						</div>
+						
+						<!-- load -->
+						<div v-if="param.valueType == 'load'">
+							<input type="text" v-model="valueLoad" maxlength="3" size="3" style="width: 4em" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+						</div>
+						
+						<!-- rate -->
+						<div v-if="param.valueType == 'rate'">
+							<div class="ui input right labeled">
+								<input type="text" v-model="valueRate" maxlength="8" size="8" style="width: 8em" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+								<span class="ui label">/秒</span>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<button class="ui button small" type="button" @click.prevent="confirm">确定</button> &nbsp; <a href="" @click.prevent="cancel">取消</a>
+	</div>
+	
+	<div v-if="!isAdding">
+		<button class="ui button small" type="button" @click.prevent="add">+</button>
+	</div>
 </div>`
 })
 
@@ -20848,17 +21427,21 @@ Vue.component("node-schedule-action-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="actionJSON" :value="JSON.stringify(actionConfig)">
-<div>
-<div>
-<select class="ui dropdown auto-width" v-model="actionConfig.code"><option value>[选择动作]</option><option v-for="action in actions" :value="action.code">{{action.name}}</option></select>
-</div>
-<p class="comment" v-if="currentAction != null">{{currentAction.description}}</p>
-<div v-if="actionConfig.code == 'webHook'">
-<input type="text" placeholder="https://..." v-model="actionConfig.params.url">
-<p class="comment">接收通知的URL。</p>
-</div>
-</div>
+	<input type="hidden" name="actionJSON" :value="JSON.stringify(actionConfig)"/>
+	<div>
+		<div>
+			<select class="ui dropdown auto-width" v-model="actionConfig.code">
+				<option value="">[选择动作]</option>
+				<option v-for="action in actions" :value="action.code">{{action.name}}</option>
+			</select>
+		</div>
+		<p class="comment" v-if="currentAction != null">{{currentAction.description}}</p>
+		
+		<div v-if="actionConfig.code == 'webHook'">
+			<input type="text" placeholder="https://..." v-model="actionConfig.params.url"/>
+			<p class="comment">接收通知的URL。</p>
+		</div>
+	</div>
 </div>`
 })
 
@@ -20960,33 +21543,38 @@ Vue.component("node-ip-address-thresholds-view", {
 		}
 	},
 	template: `<div>
-<div v-if="thresholds.length > 0">
-<div class="ui label basic small" v-for="(threshold, index) in thresholds" style="margin-bottom: 0.8em">
-<span v-for="(item, itemIndex) in threshold.items">
-<span>
-<span v-if="item.item != 'nodeHealthCheck'">
-[{{item.duration}}{{itemDurationUnitName(item.durationUnit)}}]
-</span>
-{{itemName(item.item)}}
-<span v-if="item.item == 'nodeHealthCheck'">
-<span v-if="item.value == 1">成功</span>
-<span v-if="item.value == 0">失败</span>
-</span>
-<span v-else>
-<span v-if="item.item == 'connectivity' && item.options != null && item.options.groups != null && item.options.groups.length > 0">[<span v-for="(group, groupIndex) in item.options.groups">{{group.name}} <span v-if="groupIndex != item.options.groups.length - 1">&nbsp; </span></span>]</span>
-<span class="grey">[{{itemOperatorName(item.operator)}}]</span> {{item.value}}{{itemUnitName(item.item)}} &nbsp;
-</span>
-</span>
-<span v-if="itemIndex != threshold.items.length - 1" style="font-style: italic">AND &nbsp;</span></span>
-->
-<span v-for="(action, actionIndex) in threshold.actions">{{actionName(action.action)}}
-<span v-if="action.action == 'switch'">到{{action.options.ips.join(", ")}}</span>
-<span v-if="action.action == 'webHook'" class="small grey">({{action.options.url}})</span>
-&nbsp;
-<span v-if="actionIndex != threshold.actions.length - 1" style="font-style: italic">AND &nbsp;</span>
-</span>
-</div>
-</div>
+	<!-- 已有条件 -->
+	<div v-if="thresholds.length > 0">
+		<div class="ui label basic small" v-for="(threshold, index) in thresholds" style="margin-bottom: 0.8em">
+			<span v-for="(item, itemIndex) in threshold.items">
+				<span>
+					<span v-if="item.item != 'nodeHealthCheck'">
+						[{{item.duration}}{{itemDurationUnitName(item.durationUnit)}}]
+					</span>	 
+					{{itemName(item.item)}}
+					
+					<span v-if="item.item == 'nodeHealthCheck'">
+						<!-- 健康检查 -->
+						<span v-if="item.value == 1">成功</span>
+						<span v-if="item.value == 0">失败</span>
+					</span>
+					<span v-else>
+						<!-- 连通性 -->
+						<span v-if="item.item == 'connectivity' && item.options != null && item.options.groups != null && item.options.groups.length > 0">[<span v-for="(group, groupIndex) in item.options.groups">{{group.name}} <span v-if="groupIndex != item.options.groups.length - 1">&nbsp; </span></span>]</span>
+						
+						 <span class="grey">[{{itemOperatorName(item.operator)}}]</span> {{item.value}}{{itemUnitName(item.item)}} &nbsp;
+					 </span>
+				 </span>
+				 <span v-if="itemIndex != threshold.items.length - 1" style="font-style: italic">AND &nbsp;</span></span>
+				-&gt;
+				<span v-for="(action, actionIndex) in threshold.actions">{{actionName(action.action)}}
+				<span v-if="action.action == 'switch'">到{{action.options.ips.join(", ")}}</span>
+				<span v-if="action.action == 'webHook'" class="small grey">({{action.options.url}})</span>
+				 &nbsp;					 
+				 <span v-if="actionIndex != threshold.actions.length - 1" style="font-style: italic">AND &nbsp;</span>
+			 </span>
+		</div>
+	</div>
 </div>`
 })
 
@@ -21351,170 +21939,206 @@ Vue.component("node-ip-address-thresholds-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="thresholdsJSON" :value="JSON.stringify(thresholds)">
-<div v-if="thresholds.length > 0">
-<div class="ui label basic small" v-for="(threshold, index) in thresholds">
-<span v-for="(item, itemIndex) in threshold.items">
-<span v-if="item.item != 'nodeHealthCheck'">
-[{{item.duration}}{{itemDurationUnitName(item.durationUnit)}}]
-</span>
-{{itemName(item.item)}}
-<span v-if="item.item == 'nodeHealthCheck'">
-<span v-if="item.value == 1">成功</span>
-<span v-if="item.value == 0">失败</span>
-</span>
-<span v-else>
-<span v-if="item.item == 'connectivity' && item.options != null && item.options.groups != null && item.options.groups.length > 0">[<span v-for="(group, groupIndex) in item.options.groups">{{group.name}} <span v-if="groupIndex != item.options.groups.length - 1">&nbsp; </span></span>]</span>
-<span class="grey">[{{itemOperatorName(item.operator)}}]</span> &nbsp;{{item.value}}{{itemUnitName(item.item)}}
-</span>
-&nbsp;<span v-if="itemIndex != threshold.items.length - 1" style="font-style: italic">AND &nbsp;</span>
-</span>
-->
-<span v-for="(action, actionIndex) in threshold.actions">{{actionName(action.action)}}
-<span v-if="action.action == 'switch'">到{{action.options.ips.join(", ")}}</span>
-<span v-if="action.action == 'webHook'" class="small grey">({{action.options.url}})</span>
-&nbsp;<span v-if="actionIndex != threshold.actions.length - 1" style="font-style: italic">AND &nbsp;</span></span>
-&nbsp;
-<a href title="修改" @click.prevent="update(index)"><i class="icon pencil small"></i></a>
-<a href title="删除" @click.prevent="remove(index)"><i class="icon small remove"></i></a>
-</div>
-</div>
-<div v-if="isAdding" style="margin-top: 0.5em">
-<table class="ui table celled">
-<thead>
-<tr>
-<td style="width: 50%; background: #f9fafb; border-bottom: 1px solid rgba(34,36,38,.1)">阈值</td>
-<th>动作</th>
-</tr>
-</thead>
-<tr>
-<td style="background: white">
-<div>
-<div v-for="(item, index) in addingThreshold.items" class="ui label basic small" style="margin-bottom: 0.5em;">
-<span v-if="item.item != 'nodeHealthCheck'">
-[{{item.duration}}{{itemDurationUnitName(item.durationUnit)}}]
-</span>
-{{itemName(item.item)}}
-<span v-if="item.item == 'nodeHealthCheck'">
-<span v-if="item.value == 1">成功</span>
-<span v-if="item.value == 0">失败</span>
-</span>
-<span v-else>
-<span v-if="item.item == 'connectivity' && item.options != null && item.options.groups != null && item.options.groups.length > 0">[<span v-for="(group, groupIndex) in item.options.groups">{{group.name}} <span v-if="groupIndex != item.options.groups.length - 1">&nbsp; </span></span>]</span>
-<span class="grey">[{{itemOperatorName(item.operator)}}]</span> {{item.value}}{{itemUnitName(item.item)}}
-</span>
-&nbsp;
-<a href title="删除" @click.prevent="removeItem(index)"><i class="icon remove small"></i></a>
-</div>
-</div>
-<div v-if="isAddingItem" style="margin-top: 0.8em">
-<table class="ui table">
-<tr>
-<td style="width: 6em">统计项目</td>
-<td>
-<select class="ui dropdown auto-width" v-model="itemCode"><option v-for="item in allItems" :value="item.code">{{item.name}}</option></select>
-<p class="comment" style="font-weight: normal" v-for="item in allItems" v-if="item.code == itemCode">{{item.description}}</p>
-</td>
-</tr>
-<tr v-show="itemCode != 'nodeHealthCheck'">
-<td>统计周期</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" v-model="itemDuration" style="width: 4em" maxlength="4" ref="itemDuration" @keyup.enter="confirmItem()" @keypress.enter.prevent="1">
-<span class="ui label">分钟</span>
-</div>
-</td>
-</tr>
-<tr v-show="itemCode != 'nodeHealthCheck'">
-<td>操作符</td>
-<td>
-<select class="ui dropdown auto-width" v-model="itemOperator"><option v-for="operator in allOperators" :value="operator.code">{{operator.name}}</option></select>
-</td>
-</tr>
-<tr v-show="itemCode != 'nodeHealthCheck'">
-<td>对比值</td>
-<td>
-<div class="ui input right labeled">
-<input type="text" maxlength="20" style="width: 5em" v-model="itemValue" ref="itemValue" @keyup.enter="confirmItem()" @keypress.enter.prevent="1">
-<span class="ui label" v-for="item in allItems" v-if="item.code == itemCode">{{item.unit}}</span>
-</div>
-</td>
-</tr>
-<tr v-show="itemCode == 'nodeHealthCheck'">
-<td>检查结果</td>
-<td>
-<select class="ui dropdown auto-width" v-model="itemValue"><option value="1">成功</option><option value="0">失败</option></select>
-<p class="comment" style="font-weight: normal">只有状态发生改变的时候才会触发。</p>
-</td>
-</tr>
-<tr v-if="itemCode == 'connectivity'">
-<td>终端分组</td>
-<td style="font-weight: normal">
-<div style="zoom: 0.8"><report-node-groups-selector @change="changeReportGroups"></report-node-groups-selector></div>
-</td>
-</tr>
-</table>
-<div style="margin-top: 0.8em">
-<button class="ui button tiny" type="button" @click.prevent="confirmItem">确定</button> &nbsp;
-<a href title="取消" @click.prevent="cancelItem"><i class="icon remove small"></i></a>
-</div>
-</div>
-<div style="margin-top: 0.8em" v-if="!isAddingItem">
-<button class="ui button tiny" type="button" @click.prevent="addItem">+</button>
-</div>
-</td>
-<td style="background: white">
-<div>
-<div v-for="(action, index) in addingThreshold.actions" class="ui label basic small" style="margin-bottom: 0.5em">
-{{actionName(action.action)}} &nbsp;
-<span v-if="action.action == 'switch'">到{{action.options.ips.join(", ")}}</span>
-<span v-if="action.action == 'webHook'" class="small grey">({{action.options.url}})</span>
-<a href title="删除" @click.prevent="removeAction(index)"><i class="icon remove small"></i></a>
-</div>
-</div>
-<div v-if="isAddingAction" style="margin-top: 0.8em">
-<table class="ui table">
-<tr>
-<td style="width: 6em">动作类型</td>
-<td>
-<select class="ui dropdown auto-width" v-model="actionCode"><option v-for="action in allActions" :value="action.code">{{action.name}}</option></select>
-<p class="comment" v-for="action in allActions" v-if="action.code == actionCode">{{action.description}}</p>
-</td>
-</tr>
-<tr v-if="actionCode == 'switch'">
-<td>备用IP *</td>
-<td>
-<textarea rows="2" v-model="actionBackupIPs" ref="actionBackupIPs"></textarea>
-<p class="comment">每行一个备用IP。</p>
-</td>
-</tr>
-<tr v-if="actionCode == 'webHook'">
-<td>URL *</td>
-<td>
-<input type="text" maxlength="1000" placeholder="https://..." v-model="actionWebHookURL" ref="webHookURL" @keyup.enter="confirmAction()" @keypress.enter.prevent="1">
-<p class="comment">完整的URL，比如<code-label>https://example.com/webhook/api</code-label>，系统会在触发阈值的时候通过GET调用此URL。</p>
-</td>
-</tr>
-</table>
-<div style="margin-top: 0.8em">
-<button class="ui button tiny" type="button" @click.prevent="confirmAction">确定</button> &nbsp;
-<a href title="取消" @click.prevent="cancelAction"><i class="icon remove small"></i></a>
-</div>
-</div>
-<div style="margin-top: 0.8em" v-if="!isAddingAction">
-<button class="ui button tiny" type="button" @click.prevent="addAction">+</button>
-</div>
-</td>
-</tr>
-</table>
-<div>
-<button class="ui button tiny" :class="{disabled: (isAddingItem || isAddingAction)}" type="button" @click.prevent="confirm">确定</button> &nbsp;
-<a href title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
-</div>
-</div>
-<div v-if="!isAdding" style="margin-top: 0.5em">
-<button class="ui button tiny" type="button" @click.prevent="add">+</button>
-</div>
+	<input type="hidden" name="thresholdsJSON" :value="JSON.stringify(thresholds)"/>
+		
+	<!-- 已有条件 -->
+	<div v-if="thresholds.length > 0">
+		<div class="ui label basic small" v-for="(threshold, index) in thresholds">
+			<span v-for="(item, itemIndex) in threshold.items">
+				<span v-if="item.item != 'nodeHealthCheck'">
+					[{{item.duration}}{{itemDurationUnitName(item.durationUnit)}}]
+				</span> 
+				{{itemName(item.item)}}
+				
+				<span v-if="item.item == 'nodeHealthCheck'">
+					<!-- 健康检查 -->
+					<span v-if="item.value == 1">成功</span>
+					<span v-if="item.value == 0">失败</span>
+				</span>
+				<span v-else>
+					<!-- 连通性 -->
+					<span v-if="item.item == 'connectivity' && item.options != null && item.options.groups != null && item.options.groups.length > 0">[<span v-for="(group, groupIndex) in item.options.groups">{{group.name}} <span v-if="groupIndex != item.options.groups.length - 1">&nbsp; </span></span>]</span>
+				
+					<span  class="grey">[{{itemOperatorName(item.operator)}}]</span> &nbsp;{{item.value}}{{itemUnitName(item.item)}} 
+			 	</span>
+			 	&nbsp;<span v-if="itemIndex != threshold.items.length - 1" style="font-style: italic">AND &nbsp;</span>
+			</span>
+			-&gt;
+			<span v-for="(action, actionIndex) in threshold.actions">{{actionName(action.action)}}
+			<span v-if="action.action == 'switch'">到{{action.options.ips.join(", ")}}</span>
+			<span v-if="action.action == 'webHook'" class="small grey">({{action.options.url}})</span>
+			 &nbsp;<span v-if="actionIndex != threshold.actions.length - 1" style="font-style: italic">AND &nbsp;</span></span>
+			&nbsp;
+			<a href="" title="修改" @click.prevent="update(index)"><i class="icon pencil small"></i></a> 
+			<a href="" title="删除" @click.prevent="remove(index)"><i class="icon small remove"></i></a>
+		</div>
+	</div>
+	
+	<!-- 新阈值 -->
+	<div v-if="isAdding" style="margin-top: 0.5em">
+		<table class="ui table celled">
+			<thead>
+				<tr>
+					<td style="width: 50%; background: #f9fafb; border-bottom: 1px solid rgba(34,36,38,.1)">阈值</td>
+					<th>动作</th>
+				</tr>
+			</thead>
+			<tr>
+				<td style="background: white">
+					<!-- 已经添加的项目 -->
+					<div>
+						<div v-for="(item, index) in addingThreshold.items" class="ui label basic small" style="margin-bottom: 0.5em;">
+							<span v-if="item.item != 'nodeHealthCheck'">
+								[{{item.duration}}{{itemDurationUnitName(item.durationUnit)}}]
+							</span> 
+							{{itemName(item.item)}}
+							
+							<span v-if="item.item == 'nodeHealthCheck'">
+								<!-- 健康检查 -->
+								<span v-if="item.value == 1">成功</span>
+								<span v-if="item.value == 0">失败</span>
+							</span>
+							<span v-else>
+								<!-- 连通性 -->
+								<span v-if="item.item == 'connectivity' && item.options != null && item.options.groups != null && item.options.groups.length > 0">[<span v-for="(group, groupIndex) in item.options.groups">{{group.name}} <span v-if="groupIndex != item.options.groups.length - 1">&nbsp; </span></span>]</span>
+								 <span class="grey">[{{itemOperatorName(item.operator)}}]</span> {{item.value}}{{itemUnitName(item.item)}}
+							 </span> 
+							 &nbsp;
+							<a href="" title="删除" @click.prevent="removeItem(index)"><i class="icon remove small"></i></a>
+						</div>
+					</div>
+					
+					<!-- 正在添加的项目 -->
+					<div v-if="isAddingItem" style="margin-top: 0.8em">
+						<table class="ui table">
+							<tr>
+								<td style="width: 6em">统计项目</td>
+								<td>
+									<select class="ui dropdown auto-width" v-model="itemCode">
+									<option v-for="item in allItems" :value="item.code">{{item.name}}</option>
+									</select>
+									<p class="comment" style="font-weight: normal" v-for="item in allItems" v-if="item.code == itemCode">{{item.description}}</p>
+								</td>
+							</tr>
+							<tr v-show="itemCode != 'nodeHealthCheck'">
+								<td>统计周期</td>
+								<td>
+									<div class="ui input right labeled">
+										<input type="text" v-model="itemDuration" style="width: 4em" maxlength="4" ref="itemDuration" @keyup.enter="confirmItem()" @keypress.enter.prevent="1"/>
+										<span class="ui label">分钟</span>
+									</div>
+								</td>
+							</tr>
+							<tr v-show="itemCode != 'nodeHealthCheck'">
+								<td>操作符</td>
+								<td>
+									<select class="ui dropdown auto-width" v-model="itemOperator">
+										<option v-for="operator in allOperators" :value="operator.code">{{operator.name}}</option>
+									</select>
+								</td>
+							</tr>
+							<tr v-show="itemCode != 'nodeHealthCheck'">
+								<td>对比值</td>
+								<td>
+									<div class="ui input right labeled">
+										<input type="text" maxlength="20" style="width: 5em" v-model="itemValue" ref="itemValue" @keyup.enter="confirmItem()" @keypress.enter.prevent="1"/>
+										<span class="ui label" v-for="item in allItems" v-if="item.code == itemCode">{{item.unit}}</span>
+									</div>
+								</td>
+							</tr>
+							<tr v-show="itemCode == 'nodeHealthCheck'">
+								<td>检查结果</td>
+								<td>
+									<select class="ui dropdown auto-width" v-model="itemValue">
+										<option value="1">成功</option>
+										<option value="0">失败</option>
+									</select>
+									<p class="comment" style="font-weight: normal">只有状态发生改变的时候才会触发。</p>
+								</td>
+							</tr>
+							
+							<!-- 连通性 -->
+							<tr v-if="itemCode == 'connectivity'">
+								<td>终端分组</td>
+								<td style="font-weight: normal">
+									<div style="zoom: 0.8"><report-node-groups-selector @change="changeReportGroups"></report-node-groups-selector></div>
+								</td>
+							</tr>
+						</table>
+						<div style="margin-top: 0.8em">
+							<button class="ui button tiny" type="button" @click.prevent="confirmItem">确定</button>							 &nbsp;
+							<a href="" title="取消" @click.prevent="cancelItem"><i class="icon remove small"></i></a>
+						</div>
+					</div>
+					<div style="margin-top: 0.8em" v-if="!isAddingItem">
+						<button class="ui button tiny" type="button" @click.prevent="addItem">+</button>
+					</div>
+				</td>
+				<td style="background: white">
+					<!-- 已经添加的动作 -->
+					<div>
+						<div v-for="(action, index) in addingThreshold.actions" class="ui label basic small" style="margin-bottom: 0.5em">
+							{{actionName(action.action)}} &nbsp;
+							<span v-if="action.action == 'switch'">到{{action.options.ips.join(", ")}}</span>
+							<span v-if="action.action == 'webHook'" class="small grey">({{action.options.url}})</span>
+							<a href="" title="删除" @click.prevent="removeAction(index)"><i class="icon remove small"></i></a>
+						</div>
+					</div>
+					
+					<!-- 正在添加的动作 -->
+					<div v-if="isAddingAction" style="margin-top: 0.8em">
+						<table class="ui table">
+							<tr>
+								<td style="width: 6em">动作类型</td>
+								<td>
+									<select class="ui dropdown auto-width" v-model="actionCode">
+										<option v-for="action in allActions" :value="action.code">{{action.name}}</option>
+									</select>
+									<p class="comment" v-for="action in allActions" v-if="action.code == actionCode">{{action.description}}</p>
+								</td>
+							</tr>
+							
+							<!-- 切换 -->
+							<tr v-if="actionCode == 'switch'">
+								<td>备用IP *</td>
+								<td>
+									<textarea rows="2" v-model="actionBackupIPs" ref="actionBackupIPs"></textarea>
+									<p class="comment">每行一个备用IP。</p>
+								</td>
+							</tr>
+							
+							<!-- WebHook -->
+							<tr v-if="actionCode == 'webHook'">
+								<td>URL *</td>
+								<td>
+									<input type="text" maxlength="1000" placeholder="https://..." v-model="actionWebHookURL" ref="webHookURL" @keyup.enter="confirmAction()" @keypress.enter.prevent="1"/>
+									<p class="comment">完整的URL，比如<code-label>https://example.com/webhook/api</code-label>，系统会在触发阈值的时候通过GET调用此URL。</p>
+								</td>
+							</tr>
+						</table>
+						<div style="margin-top: 0.8em">
+							<button class="ui button tiny" type="button" @click.prevent="confirmAction">确定</button>	 &nbsp;
+							<a href="" title="取消" @click.prevent="cancelAction"><i class="icon remove small"></i></a>
+						</div>
+					</div>
+					
+					<div style="margin-top: 0.8em" v-if="!isAddingAction">
+						<button class="ui button tiny" type="button" @click.prevent="addAction">+</button>
+					</div>	
+				</td>
+			</tr>
+		</table>
+		
+		<!-- 添加阈值 -->
+		<div>
+			<button class="ui button tiny" :class="{disabled: (isAddingItem || isAddingAction)}" type="button" @click.prevent="confirm">确定</button> &nbsp;
+			<a href="" title="取消" @click.prevent="cancel"><i class="icon remove small"></i></a>
+		</div>
+	</div>
+	
+	<div v-if="!isAdding" style="margin-top: 0.5em">
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	</div>
 </div>`
 })
 
@@ -21547,13 +22171,13 @@ Vue.component("node-region-selector", {
 		}
 	},
 	template: `<div>
-<div class="ui label small basic" v-if="selectedRegion != null">
-<input type="hidden" name="regionId" :value="selectedRegion.id">
-{{selectedRegion.name}} &nbsp;<a href title="删除" @click.prevent="removeRegion()"><i class="icon remove"></i></a>
-</div>
-<div v-if="selectedRegion == null">
-<a href @click.prevent="selectRegion()">[选择区域]</a> &nbsp; <a href @click.prevent="addRegion()">[添加区域]</a>
-</div>
+	<div class="ui label small basic" v-if="selectedRegion != null">
+		<input type="hidden" name="regionId" :value="selectedRegion.id"/>
+		{{selectedRegion.name}} &nbsp;<a href="" title="删除" @click.prevent="removeRegion()"><i class="icon remove"></i></a>
+	</div>
+	<div v-if="selectedRegion == null">
+		<a href="" @click.prevent="selectRegion()">[选择区域]</a> &nbsp; <a href="" @click.prevent="addRegion()">[添加区域]</a>
+	</div>
 </div>`
 })
 
@@ -21574,7 +22198,7 @@ Vue.component("node-combo-box", {
 		}
 	},
 	template: `<div v-if="nodes.length > 0">
-<combo-box title="节点" placeholder="节点名称" :v-items="nodes" name="nodeId" :v-value="vNodeId"></combo-box>
+	<combo-box title="节点" placeholder="节点名称" :v-items="nodes" name="nodeId" :v-value="vNodeId"></combo-box>
 </div>`
 })
 
@@ -21608,8 +22232,11 @@ Vue.component("node-level-selector", {
 		}
 	},
 	template: `<div>
-<select class="ui dropdown auto-width" name="level" v-model="levelCode"><option v-for="level in levels" :value="level.code">{{level.name}}</option></select>
-<p class="comment" v-if="typeof(levels[levelCode - 1]) != null"><plus-label></plus-label>{{levels[levelCode - 1].description}}</p>
+	<select class="ui dropdown auto-width" name="level" v-model="levelCode">
+	<option v-for="level in levels" :value="level.code">{{level.name}}</option>
+</select>
+<p class="comment" v-if="typeof(levels[levelCode - 1]) != null"><plus-label
+></plus-label>{{levels[levelCode - 1].description}}</p>
 </div>`
 })
 
@@ -21664,14 +22291,14 @@ Vue.component("node-schedule-conds-viewer", {
 		}
 	},
 	template: `<div>
-<span v-for="(cond, index) in condsConfig.conds">
-<span class="ui label basic small">
-<span>{{paramMap[cond.param].name}}
-<span v-if="paramMap[cond.param].operators != null && paramMap[cond.param].operators.length > 0"><span class="grey">{{operatorMap[cond.operator]}}</span> {{cond.valueFormat}}</span>
-</span>
-</span>
-<span v-if="index < condsConfig.conds.length - 1"> &nbsp;<span v-if="condsConfig.connector == 'and'">且</span><span v-else>或</span>&nbsp; </span>
-</span>
+	<span v-for="(cond, index) in condsConfig.conds">
+		<span class="ui label basic small">
+			<span>{{paramMap[cond.param].name}} 
+				<span v-if="paramMap[cond.param].operators != null && paramMap[cond.param].operators.length > 0"><span class="grey">{{operatorMap[cond.operator]}}</span> {{cond.valueFormat}}</span> 
+			</span>
+		</span>
+		<span v-if="index < condsConfig.conds.length - 1"> &nbsp;<span v-if="condsConfig.connector == 'and'">且</span><span v-else>或</span>&nbsp; </span>
+	</span>
 </div>`
 })
 
@@ -21770,37 +22397,41 @@ Vue.component("dns-route-selector", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="dnsRoutesJSON" :value="JSON.stringify(routeCodes)">
-<div v-if="routes.length > 0">
-<tiny-basic-label v-for="route in routes" :key="route.code + '@' + route.domainId">
-{{route.name}} <span class="grey small">（{{route.domainName}}）</span><a href @click.prevent="remove(route)"><i class="icon remove"></i></a>
-</tiny-basic-label>
-<div class="ui divider"></div>
-</div>
-<button type="button" class="ui button small" @click.prevent="add" v-if="!isAdding">+</button>
-<div v-if="isAdding">
-<table class="ui table">
-<tr>
-<td class="title">所有线路</td>
-<td>
-<span v-if="keyword.length > 0 && searchingRoutes.length == 0">没有和关键词“{{keyword}}”匹配的线路</span>
-<span v-show="keyword.length == 0 || searchingRoutes.length > 0">
-<select class="ui dropdown" v-model="routeCode"><option value v-if="keyword.length == 0">[请选择]</option><option v-for="route in searchingRoutes" :value="route.code + '@' + route.domainId">{{route.name}}（{{route.code}}/{{route.domainName}}）</option></select>
-</span>
-</td>
-</tr>
-<tr>
-<td>搜索线路</td>
-<td>
-<div class="ui input" :class="{'right labeled':keyword.length > 0}">
-<input type="text" placeholder="线路名称或代号..." size="10" style="width: 10em" v-model="keyword" ref="keywordRef" @keyup.enter="confirm" @keypress.enter.prevent="1">
-<a class="ui label" v-if="keyword.length > 0" @click.prevent="clearKeyword" href><i class="icon remove small blue"></i></a>
-</div>
-</td>
-</tr>
-</table>
-<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button> &nbsp; <a href @click.prevent="cancel()"><i class="icon remove small"></i></a>
-</div>
+	<input type="hidden" name="dnsRoutesJSON" :value="JSON.stringify(routeCodes)"/>
+	<div v-if="routes.length > 0">
+		<tiny-basic-label v-for="route in routes" :key="route.code + '@' + route.domainId">
+			{{route.name}} <span class="grey small">（{{route.domainName}}）</span><a href="" @click.prevent="remove(route)"><i class="icon remove"></i></a>
+		</tiny-basic-label>
+		<div class="ui divider"></div>
+	</div>
+	<button type="button" class="ui button small" @click.prevent="add" v-if="!isAdding">+</button>
+	<div v-if="isAdding">
+		<table class="ui table">
+			<tr>
+				<td class="title">所有线路</td>
+				<td>
+					<span v-if="keyword.length > 0 && searchingRoutes.length == 0">没有和关键词“{{keyword}}”匹配的线路</span>
+					<span v-show="keyword.length == 0 || searchingRoutes.length > 0">
+						<select class="ui dropdown" v-model="routeCode">
+							<option value="" v-if="keyword.length == 0">[请选择]</option>
+							<option v-for="route in searchingRoutes" :value="route.code + '@' + route.domainId">{{route.name}}（{{route.code}}/{{route.domainName}}）</option>
+						</select>
+					</span>
+				</td>
+			</tr>
+			<tr>
+				<td>搜索线路</td>
+				<td>
+					<div class="ui input" :class="{'right labeled':keyword.length > 0}">
+						<input type="text" placeholder="线路名称或代号..." size="10" style="width: 10em" v-model="keyword" ref="keywordRef" @keyup.enter="confirm" @keypress.enter.prevent="1"/>
+						<a class="ui label" v-if="keyword.length > 0" @click.prevent="clearKeyword" href=""><i class="icon remove small blue"></i></a>
+					</div>
+				</td>
+			</tr>
+		</table>
+		
+		<button class="ui button tiny" type="button" @click.prevent="confirm">确定</button> &nbsp; <a href="" @click.prevent="cancel()"><i class="icon remove small"></i></a>
+	</div>
 </div>`
 })
 
@@ -21863,17 +22494,17 @@ Vue.component("dns-domain-selector", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="dnsDomainId" :value="domainId">
-<div v-if="domainName.length > 0">
-<span class="ui label small basic">
-<span v-if="providerName != null && providerName.length > 0">{{providerName}} &#187; </span> {{domainName}}
-<a href @click.prevent="update"><i class="icon pencil small"></i></a>
-<a href @click.prevent="remove()"><i class="icon remove"></i></a>
-</span>
-</div>
-<div v-if="domainName.length == 0">
-<a href @click.prevent="select()">[选择域名]</a>
-</div>
+	<input type="hidden" name="dnsDomainId" :value="domainId"/>
+	<div v-if="domainName.length > 0">
+		<span class="ui label small basic">
+			<span v-if="providerName != null && providerName.length > 0">{{providerName}} &raquo; </span> {{domainName}}
+			<a href="" @click.prevent="update"><i class="icon pencil small"></i></a>
+			<a href="" @click.prevent="remove()"><i class="icon remove"></i></a>
+		</span>
+	</div>
+	<div v-if="domainName.length == 0">
+		<a href="" @click.prevent="select()">[选择域名]</a>
+	</div>
 </div>`
 })
 
@@ -21905,17 +22536,19 @@ Vue.component("dns-resolver-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="dnsResolverJSON" :value="JSON.stringify(config)">
-<table class="ui table definition selectable">
-<tr>
-<td class="title">使用的DNS解析库</td>
-<td>
-<select class="ui dropdown auto-width" v-model="config.type"><option v-for="t in types" :value="t.code">{{t.name}}</option></select>
-<p class="comment">边缘节点使用的DNS解析库。修改此项配置后，需要重启节点进程才会生效。<pro-warning-label></pro-warning-label></p>
-</td>
-</tr>
-</table>
-<div class="margin"></div>
+	<input type="hidden" name="dnsResolverJSON" :value="JSON.stringify(config)"/>
+	<table class="ui table definition selectable">
+		<tr>
+			<td class="title">使用的DNS解析库</td>
+			<td>
+				<select class="ui dropdown auto-width" v-model="config.type">
+					<option v-for="t in types" :value="t.code">{{t.name}}</option>
+				</select>
+				<p class="comment">边缘节点使用的DNS解析库。修改此项配置后，需要重启节点进程才会生效。<pro-warning-label></pro-warning-label></p>
+			</td>
+		</tr>
+	</table>
+	<div class="margin"></div>
 </div>`
 })
 
@@ -21976,28 +22609,30 @@ Vue.component("dns-resolvers-config-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" :name="formName" :value="JSON.stringify(resolvers)">
-<div v-if="resolvers.length > 0">
-<div v-for="(resolver, index) in resolvers" class="ui label basic small">
-<span v-if="resolver.protocol.length > 0">{{resolver.protocol}}</span>{{resolver.host}}<span v-if="resolver.port > 0">:{{resolver.port}}</span>
-&nbsp;
-<a href title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
-</div>
-</div>
-<div v-if="isAdding" style="margin-top: 1em">
-<div class="ui fields inline">
-<div class="ui field">
-<input type="text" placeholder="x.x.x.x" @keyup.enter="confirm" @keypress.enter.prevent="1" ref="hostRef" v-model="host">
-</div>
-<div class="ui field">
-<button class="ui button tiny" type="button" @click.prevent="confirm">确认</button>
-&nbsp; <a href @click.prevent="cancel" title="取消"><i class="icon remove small"></i></a>
-</div>
-</div>
-</div>
-<div v-if="!isAdding" style="margin-top: 1em">
-<button class="ui button tiny" type="button" @click.prevent="add">+</button>
-</div>
+	<input type="hidden" :name="formName" :value="JSON.stringify(resolvers)"/>
+	<div v-if="resolvers.length > 0">
+		<div v-for="(resolver, index) in resolvers" class="ui label basic small">
+			<span v-if="resolver.protocol.length > 0">{{resolver.protocol}}</span>{{resolver.host}}<span v-if="resolver.port > 0">:{{resolver.port}}</span>
+			&nbsp;
+			<a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+		</div>
+	</div>
+	
+	<div v-if="isAdding" style="margin-top: 1em">
+		<div class="ui fields inline">
+			<div class="ui field">
+				<input type="text" placeholder="x.x.x.x" @keyup.enter="confirm" @keypress.enter.prevent="1" ref="hostRef" v-model="host"/>
+			</div>
+			<div class="ui field">
+				<button class="ui button tiny" type="button" @click.prevent="confirm">确认</button>
+				&nbsp; <a href="" @click.prevent="cancel" title="取消"><i class="icon remove small"></i></a>
+			</div>
+		</div>
+	</div>
+	
+	<div v-if="!isAdding" style="margin-top: 1em">
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	</div>
 </div>`
 })
 
@@ -22115,58 +22750,66 @@ Vue.component("ad-instance-objects-box", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="objectCodesJSON" :value="JSON.stringify(objectCodes)">
-<div>
-<div v-if="objects.length == 0"><span class="grey">暂时还没有设置任何防护对象。</span></div>
-<div v-if="objects.length > 0">
-<table class="ui table">
-<tr>
-<td class="title">已选中防护对象</td>
-<td>
-<div v-for="(object, index) in objects" class="ui label basic small" style="margin-bottom: 0.5em">
-<span v-if="object.type == 'server'">网站：{{object.name}}</span>
-&nbsp; <a href title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
-</div>
-</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="margin"></div>
-<div v-if="isAdding">
-<table class="ui table celled">
-<tr>
-<td class="title">对象类型</td>
-<td>网站</td>
-</tr>
-<tr>
-<td>网站列表</td>
-<td>
-<span v-if="serversIsLoading">加载中...</span>
-<div v-if="!serversIsLoading && servers.length == 0">暂时还没有可选的网站。</div>
-<table class="ui table" v-show="!serversIsLoading && servers.length > 0">
-<thead class="full-width">
-<tr>
-<th>网站名称</th>
-<th class="one op">操作</th>
-</tr>
-</thead>
-<tr v-for="server in servers">
-<td style="background: white">{{server.name}}</td>
-<td>
-<a href @click.prevent="selectServerObject(server)" v-if="!existObjectCode('server:' + server.id)">选中</a>
-<a href @click.prevent="removeObjectCode('server:' + server.id)" v-else><span class="red">取消</span></a>
-</td>
-</tr>
-</table>
-<js-page ref="serverPage" @change="changeServerPage"></js-page>
-</td>
-</tr>
-</table>
-</div>
-<div v-if="!isAdding">
-<button class="ui button tiny" type="button" @click.prevent="add">+</button>
-</div>
+	<input type="hidden" name="objectCodesJSON" :value="JSON.stringify(objectCodes)"/>
+	
+	<!-- 已有对象 -->
+	<div>
+		<div v-if="objects.length == 0"><span class="grey">暂时还没有设置任何防护对象。</span></div>
+		<div v-if="objects.length > 0">
+			<table class="ui table">
+				<tr>
+					<td class="title">已选中防护对象</td>
+					<td>
+						<div v-for="(object, index) in objects" class="ui label basic small" style="margin-bottom: 0.5em">
+							<span v-if="object.type == 'server'">网站：{{object.name}}</span>
+							&nbsp; <a href="" title="删除" @click.prevent="remove(index)"><i class="icon remove small"></i></a>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div class="margin"></div>
+	
+	<!-- 添加表单 -->
+	<div v-if="isAdding">
+		<table class="ui table celled">
+			<tr>
+				<td class="title">对象类型</td>
+				<td>网站</td>
+			</tr>
+			<!-- 网站列表 -->
+			<tr>
+				<td>网站列表</td>
+				<td>
+					<span v-if="serversIsLoading">加载中...</span>
+					<div v-if="!serversIsLoading && servers.length == 0">暂时还没有可选的网站。</div>
+					<table class="ui table" v-show="!serversIsLoading && servers.length > 0">
+						<thead class="full-width">
+							<tr>
+								<th>网站名称</th>
+								<th class="one op">操作</th>
+							</tr>	
+						</thead>
+						<tr v-for="server in servers">
+							<td style="background: white">{{server.name}}</td>
+							<td>
+								<a href="" @click.prevent="selectServerObject(server)" v-if="!existObjectCode('server:' + server.id)">选中</a>
+								<a href="" @click.prevent="removeObjectCode('server:' + server.id)" v-else><span class="red">取消</span></a>
+							</td>
+						</tr>
+					</table>
+					
+					<js-page ref="serverPage" @change="changeServerPage"></js-page>
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+	<!-- 添加按钮 -->
+	<div v-if="!isAdding">
+		<button class="ui button tiny" type="button" @click.prevent="add">+</button>
+	</div>
 </div>`
 })
 
@@ -22238,11 +22881,11 @@ Vue.component("grant-selector", {
 		}
 	},
 	template: `<div>
-<input type="hidden" name="grantId" :value="grantId">
-<div class="ui label small basic" v-if="grant != null">{{grant.name}}<span class="small grey">（{{grant.methodName}}）</span><span class="small grey" v-if="grant.username != null && grant.username.length > 0">（{{grant.username}}）</span> <a href title="修改" @click.prevent="update()"><i class="icon pencil small"></i></a> <a href title="删除" @click.prevent="remove()"><i class="icon remove"></i></a> </div>
-<div v-if="grant == null">
-<a href @click.prevent="select()">[选择已有认证]</a> &nbsp; &nbsp; <a href @click.prevent="create()">[添加新认证]</a>
-</div>
+	<input type="hidden" name="grantId" :value="grantId"/>
+	<div class="ui label small basic" v-if="grant != null">{{grant.name}}<span class="small grey">（{{grant.methodName}}）</span><span class="small grey" v-if="grant.username != null && grant.username.length > 0">（{{grant.username}}）</span> <a href="" title="修改" @click.prevent="update()"><i class="icon pencil small"></i></a> <a href="" title="删除" @click.prevent="remove()"><i class="icon remove"></i></a> </div>
+	<div v-if="grant == null">
+		<a href="" @click.prevent="select()">[选择已有认证]</a> &nbsp; &nbsp; <a href="" @click.prevent="create()">[添加新认证]</a>
+	</div>
 </div>`
 })
 
