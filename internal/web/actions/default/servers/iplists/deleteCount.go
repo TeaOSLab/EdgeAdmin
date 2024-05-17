@@ -1,4 +1,4 @@
-// Copyright 2023 Liuxiangchao iwind.liu@gmail.com. All rights reserved.
+// Copyright 2023 GoEdge CDN goedge.cdn@gmail.com. All rights reserved.
 
 package iplists
 
