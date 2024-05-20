@@ -7416,11 +7416,11 @@ Vue.component("origin-list-box", {
 	template: `<div>
 	<h3>主要源站 <a href="" @click.prevent="createPrimaryOrigin()">[添加主要源站]</a> </h3>
 	<p class="comment" v-if="primaryOrigins.length == 0">暂时还没有主要源站。</p>
-	<origin-list-table v-if="primaryOrigins.length > 0" :v-origins="vPrimaryOrigins" :v-origin-type="'primary'" @deleteOrigin="deleteOrigin" @updateOrigin="updateOrigin" @updateOriginIsOn="updateOriginIsOn"></origin-list-table>
+	<origin-list-table v-if="primaryOrigins.length > 0" :v-origins="vPrimaryOrigins" :v-origin-type="'primary'" @delete-origin="deleteOrigin" @update-origin="updateOrigin" @update-origin-is-on="updateOriginIsOn"></origin-list-table>
 
 	<h3>备用源站 <a href="" @click.prevent="createBackupOrigin()">[添加备用源站]</a></h3>
 	<p class="comment" v-if="backupOrigins.length == 0">暂时还没有备用源站。</p>
-	<origin-list-table v-if="backupOrigins.length > 0" :v-origins="backupOrigins" :v-origin-type="'backup'" @deleteOrigin="deleteOrigin" @updateOrigin="updateOrigin" @updateOriginIsOn="updateOriginIsOn"></origin-list-table>
+	<origin-list-table v-if="backupOrigins.length > 0" :v-origins="backupOrigins" :v-origin-type="'backup'" @delete-origin="deleteOrigin" @update-origin="updateOrigin" @update-origin-is-on="updateOriginIsOn"></origin-list-table>
 </div>`
 })
 
@@ -7443,13 +7443,13 @@ Vue.component("origin-list-table", {
 	},
 	methods: {
 		deleteOrigin: function (originId, originAddr) {
-			this.$emit("deleteOrigin", originId, originAddr, this.vOriginType)
+			this.$emit("delete-origin", originId, originAddr, this.vOriginType)
 		},
 		updateOrigin: function (originId) {
-			this.$emit("updateOrigin", originId, this.vOriginType)
+			this.$emit("update-origin", originId, this.vOriginType)
 		},
 		updateOriginIsOn: function (originId, originAddr, isOn) {
-			this.$emit("updateOriginIsOn", originId, originAddr, isOn)
+			this.$emit("update-origin-is-on", originId, originAddr, isOn)
 		}
 	},
 	template: `
