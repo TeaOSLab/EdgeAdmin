@@ -73,7 +73,7 @@ Vue.component("server-name-box", {
 			return result
 		},
 		submitForm: function () {
-			Tea.runActionOn(this.$refs.serverNamesRef.form)
+			//Tea.runActionOn(this.$refs.serverNamesRef.form)
 		}
 	},
 	watch: {
