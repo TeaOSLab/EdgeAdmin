@@ -38,12 +38,12 @@
 * 流量限制
 
 ## 在线演示
-* [http://demo.goedge.cn](http://demo.goedge.cn)
+* [http://demo.goedge.cloud](http://demo.goedge.cloud)
 
 ## 文档
-* [新手指南](https://goedge.cn/docs/QuickStart/Index.md)
-* [完整文档](https://goedge.cn/docs)
-* [开发者指南](https://goedge.cn/docs/Developer/Build.md)
+* [新手指南](https://goedge.cloud/docs/QuickStart/Index.md)
+* [完整文档](https://goedge.cloud/docs)
+* [开发者指南](https://goedge.cloud/docs/Developer/Build.md)
 
 ## 架构
 ![架构图](doc/architect-zh.png)
@@ -52,6 +52,3 @@
 * [边缘节点](https://github.com/TeaOSLab/EdgeNode)
 * [API节点](https://github.com/TeaOSLab/EdgeAPI)
 * [管理平台](https://github.com/TeaOSLab/EdgeAdmin)
-
-## 感谢
-* 感谢 [Gitee](https://gitee.com/) 提供国内源代码托管平台
