@@ -1,8 +1,9 @@
 package groups
 
 import (
-	"github.com/iwind/TeaGo/actions"
 	"net/http"
+
+	"github.com/iwind/TeaGo/actions"
 )
 
 type Helper struct {

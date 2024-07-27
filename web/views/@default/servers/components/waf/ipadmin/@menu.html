@@ -1,6 +1,7 @@
 <second-menu style="margin-top:-1em">
 	<menu-item :href="'/servers/components/waf/ipadmin?firewallPolicyId=' + firewallPolicyId" :active="subMenuItem == 'region'">国家/地区封禁</menu-item>
 	<menu-item :href="'/servers/components/waf/ipadmin/provinces?firewallPolicyId=' + firewallPolicyId" :active="subMenuItem == 'province'">省份封禁</menu-item>
+	<menu-item :href="'/servers/components/waf/ipadmin/providers?firewallPolicyId=' + firewallPolicyId" :active="subMenuItem == 'provider'">运营商封禁</menu-item>
 	<span class="item disabled">|</span>
 	<menu-item :href="'/servers/components/waf/ipadmin/lists?firewallPolicyId=' + firewallPolicyId + '&type=white'" :active="subMenuItem == 'white'">白名单</menu-item>
 	<menu-item :href="'/servers/components/waf/ipadmin/lists?firewallPolicyId=' + firewallPolicyId + '&type=black'" :active="subMenuItem == 'black'">黑名单</menu-item>

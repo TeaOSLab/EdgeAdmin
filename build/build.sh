@@ -103,23 +103,21 @@ function build() {
 	GCC_DIR=""
 	CC_PATH=""
 	CXX_PATH=""
-	if [ "${ARCH}" == "amd64" ]; then
-		GCC_DIR="/usr/local/gcc/x86_64-unknown-linux-gnu/bin"
-		CC_PATH="x86_64-unknown-linux-gnu-gcc"
-		CXX_PATH="x86_64-unknown-linux-gnu-g++"
+	if [[ "${ARCH}" == "amd64" && "${OS}" == "linux" ]]; then
+		CC_PATH=$(command -v x86_64-linux-musl-gcc)
+		CXX_PATH=$(command -v x86_64-linux-musl-g++)
 	fi
-	if [ "${ARCH}" == "arm64" ]; then
-		GCC_DIR="/usr/local/gcc/aarch64-unknown-linux-gnu/bin"
-		CC_PATH="aarch64-unknown-linux-gnu-gcc"
-		CXX_PATH="aarch64-unknown-linux-gnu-g++"
+	if [[ "${ARCH}" == "arm64" && "${OS}" == "linux" ]]; then
+		CC_PATH=$(command -v aarch64-linux-musl-gcc)
+		CXX_PATH=$(command -v aarch64-linux-musl-g++)
 	fi
 
 	# build
 	echo "building ${NAME} ..."
-	if [ -f "${GCC_DIR}/${CC_PATH}" ]; then
-		echo "  building ${NAME} with gcc ..."
-		env CC="${GCC_DIR}/${CC_PATH}" \
-			CXX="${GCC_DIR}/${CXX_PATH}" \
+	if [ -f $CC_PATH ]; then
+		echo "  building ${NAME} with musl gcc ..."
+		env CC=$CC_PATH \
+			CXX=$CXX_PATH \
 			CGO_ENABLED=1 \
 			GOOS="$OS" GOARCH="$ARCH" go build -trimpath -tags "${TAG} gcc" -ldflags="-linkmode external -extldflags -static -s -w" -o "$DIST"/bin/${NAME} "$ROOT"/../cmd/edge-admin/main.go
 	else

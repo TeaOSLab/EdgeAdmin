@@ -5,6 +5,7 @@ package transfer
 import (
 	"bytes"
 	"encoding/json"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"

@@ -4,6 +4,7 @@ package system
 
 import (
 	"encoding/json"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/nodeutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
@@ -35,6 +36,8 @@ func (this *IndexAction) RunGet(params struct {
 	// 获取节点信息
 	var nodeMap = this.Data["node"].(maps.Map)
 	nodeMap["maxCPU"] = node.MaxCPU
+	nodeMap["bypassMobileCheckbox"] = node.BypassMobile > 0
+	nodeMap["bypassMobile"] = node.BypassMobile
 
 	// DNS
 	dnsResolverResp, err := this.RPC().NodeRPC().FindNodeDNSResolver(this.AdminContext(), &pb.FindNodeDNSResolverRequest{NodeId: params.NodeId})
@@ -75,6 +78,8 @@ func (this *IndexAction) RunPost(params struct {
 	NodeId int64
 	MaxCPU int32
 
+	BypassMobile int32
+
 	DnsResolverJSON []byte
 
 	ApiNodeAddrsJSON []byte
@@ -92,6 +97,16 @@ func (this *IndexAction) RunPost(params struct {
 	_, err := this.RPC().NodeRPC().UpdateNodeSystem(this.AdminContext(), &pb.UpdateNodeSystemRequest{
 		NodeId: params.NodeId,
 		MaxCPU: params.MaxCPU,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
+
+	// bypass 移动
+	_, err = this.RPC().NodeRPC().UpdateNodeBypassMobile(this.AdminContext(), &pb.UpdateNodeBypassMobile{
+		NodeId:       params.NodeId,
+		BypassMobile: params.BypassMobile,
 	})
 	if err != nil {
 		this.ErrorPage(err)

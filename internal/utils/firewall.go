@@ -1,13 +1,14 @@
-// Copyright 2022 GoEdge CDN goedge.cdn@gmail.com. All rights reserved. Official site: https://goedge.cn .
+// Copyright 2022 GoEdge CDN goedge.cdn@gmail.com. All rights reserved. Official site: https://goedge.cloud .
 
 package utils
 
 import (
+	"os/exec"
+	"runtime"
+
 	executils "github.com/TeaOSLab/EdgeAdmin/internal/utils/exec"
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/types"
-	"os/exec"
-	"runtime"
 )
 
 func AddPortsToFirewall(ports []int) {

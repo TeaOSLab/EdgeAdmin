@@ -3,12 +3,13 @@
 package api
 
 import (
+	"sort"
+	"strings"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
-	"sort"
-	"strings"
 )
 
 type MethodStatsAction struct {

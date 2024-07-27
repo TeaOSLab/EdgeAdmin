@@ -2,6 +2,9 @@ package locations
 
 import (
 	"encoding/json"
+	"regexp"
+	"strings"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
@@ -9,8 +12,6 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/shared"
 	"github.com/iwind/TeaGo/actions"
-	"regexp"
-	"strings"
 )
 
 // CreateAction 创建路由规则

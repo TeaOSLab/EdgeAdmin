@@ -4,9 +4,10 @@ package ui
 
 import (
 	"encoding/json"
+	"os"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/iwind/TeaGo/Tea"
-	"os"
 )
 
 type HideTipAction struct {

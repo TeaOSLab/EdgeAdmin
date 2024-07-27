@@ -3,6 +3,10 @@ package origins
 import (
 	"encoding/json"
 	"errors"
+	"net/url"
+	"regexp"
+	"strings"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
@@ -12,9 +16,6 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/sslconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/types"
-	"net/url"
-	"regexp"
-	"strings"
 )
 
 // AddPopupAction 添加源站

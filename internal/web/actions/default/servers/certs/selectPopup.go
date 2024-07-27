@@ -3,6 +3,9 @@ package certs
 import (
 	"encoding/json"
 	"errors"
+	"strings"
+	"time"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -11,8 +14,6 @@ import (
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
-	"strings"
-	"time"
 )
 
 // SelectPopupAction 选择证书

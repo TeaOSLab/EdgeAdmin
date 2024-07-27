@@ -3,9 +3,10 @@
 package logs
 
 import (
+	"strings"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
-	"strings"
 )
 
 // PartitionDataAction 读取分区表

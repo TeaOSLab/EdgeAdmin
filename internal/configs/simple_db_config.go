@@ -1,14 +1,15 @@
-// Copyright 2024 GoEdge CDN goedge.cdn@gmail.com. All rights reserved. Official site: https://goedge.cn .
+// Copyright 2024 GoEdge CDN goedge.cdn@gmail.com. All rights reserved. Official site: https://goedge.cloud .
 
 package configs
 
 import (
 	"fmt"
+	"net/url"
+	"os"
+
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/dbs"
 	"gopkg.in/yaml.v3"
-	"net/url"
-	"os"
 )
 
 type SimpleDBConfig struct {
@@ -22,7 +23,7 @@ type SimpleDBConfig struct {
 func (this *SimpleDBConfig) GenerateOldConfig(targetFile string) error {
 	var dbConfig = &dbs.DBConfig{
 		Driver: "mysql",
-		Dsn:    url.QueryEscape(this.User) + ":" + url.QueryEscape(this.Password) + "@tcp(" + this.Host + ")/" + url.PathEscape(this.Database) + "?charset=utf8mb4&timeout=30s&multiStatements=true",
+		Dsn:    url.QueryEscape(this.User) + ":" + this.Password + "@tcp(" + this.Host + ")/" + url.PathEscape(this.Database) + "?charset=utf8mb4&timeout=30s&multiStatements=true",
 		Prefix: "edge",
 	}
 	dbConfig.Models.Package = "internal/db/models"

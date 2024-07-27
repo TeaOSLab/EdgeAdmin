@@ -2,11 +2,12 @@ package locations
 
 import (
 	"encoding/json"
+	"strings"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/maps"
-	"strings"
 )
 
 type IndexAction struct {

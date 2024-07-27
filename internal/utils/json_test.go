@@ -3,9 +3,10 @@
 package utils_test
 
 import (
+	"testing"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/iwind/TeaGo/assert"
-	"testing"
 )
 
 func TestJSONClone(t *testing.T) {
@@ -24,7 +25,6 @@ func TestJSONClone(t *testing.T) {
 		t.Logf("%p, %#v", c, c)
 	}
 }
-
 
 func TestJSONIsNull(t *testing.T) {
 	var a = assert.NewAssertion(t)

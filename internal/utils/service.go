@@ -1,14 +1,15 @@
 package utils
 
 import (
-	"github.com/iwind/TeaGo/Tea"
-	"github.com/iwind/TeaGo/files"
-	"github.com/iwind/TeaGo/logs"
 	"log"
 	"os"
 	"path/filepath"
 	"runtime"
 	"sync"
+
+	"github.com/iwind/TeaGo/Tea"
+	"github.com/iwind/TeaGo/files"
+	"github.com/iwind/TeaGo/logs"
 )
 
 // 服务管理器
@@ -42,7 +43,7 @@ func (this *ServiceManager) setup() {
 			_ = logFile.Delete()
 		}
 
-		//logger
+		// logger
 		fp, err := os.OpenFile(Tea.Root+"/logs/service.log", os.O_WRONLY|os.O_APPEND|os.O_CREATE, 0666)
 		if err != nil {
 			logs.Error(err)

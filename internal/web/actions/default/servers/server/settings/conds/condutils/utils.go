@@ -2,11 +2,13 @@ package condutils
 
 import (
 	"encoding/json"
+	"os"
+	"path/filepath"
+
 	"github.com/iwind/TeaGo/Tea"
 	_ "github.com/iwind/TeaGo/bootstrap"
 	"github.com/iwind/TeaGo/files"
 	"github.com/iwind/TeaGo/logs"
-	"path/filepath"
 )
 
 type CondJSComponent struct {
@@ -26,6 +28,10 @@ func ReadAllAvailableCondTypes() []*CondJSComponent {
 	dir := Tea.Root + "/web/"
 	if Tea.IsTesting() {
 		dir = filepath.Dir(Tea.Root) + "/web"
+	}
+	gitDir, gDirFound := os.LookupEnv("GithubDIR")
+	if gDirFound {
+		dir = gitDir + "/EdgeAdmin/web"
 	}
 	dir += "/public/js/conds/"
 	jsonFiles := files.NewFile(dir).List()

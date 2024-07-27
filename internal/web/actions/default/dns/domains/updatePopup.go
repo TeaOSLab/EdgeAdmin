@@ -1,12 +1,14 @@
 package domains
 
-import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (
+	"strings"
+
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/dns/domains/domainutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
-	"strings"
 )
 
 type UpdatePopupAction struct {

@@ -2,10 +2,11 @@ package actionutils
 
 import (
 	"fmt"
-	"github.com/iwind/TeaGo/actions"
 	"math"
 	"net/url"
 	"strings"
+
+	"github.com/iwind/TeaGo/actions"
 )
 
 type Page struct {

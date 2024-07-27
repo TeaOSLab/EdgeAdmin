@@ -1,9 +1,10 @@
 package ttlcache
 
 import (
-	"github.com/iwind/TeaGo/rands"
 	"testing"
 	"time"
+
+	"github.com/iwind/TeaGo/rands"
 )
 
 func TestPiece_Add(t *testing.T) {

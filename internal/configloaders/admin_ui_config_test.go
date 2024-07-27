@@ -1,9 +1,10 @@
 package configloaders
 
 import (
-	_ "github.com/iwind/TeaGo/bootstrap"
 	"testing"
 	"time"
+
+	_ "github.com/iwind/TeaGo/bootstrap"
 )
 
 func TestLoadUIConfig(t *testing.T) {

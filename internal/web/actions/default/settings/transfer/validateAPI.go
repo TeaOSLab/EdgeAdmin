@@ -4,6 +4,8 @@ package transfer
 
 import (
 	"encoding/json"
+	"regexp"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
@@ -14,7 +16,6 @@ import (
 	"github.com/iwind/TeaGo/lists"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"regexp"
 )
 
 type ValidateAPIAction struct {

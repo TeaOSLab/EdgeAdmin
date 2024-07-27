@@ -1,4 +1,4 @@
-// Copyright 2022 GoEdge CDN goedge.cdn@gmail.com. All rights reserved. Official site: https://goedge.cn .
+// Copyright 2022 GoEdge CDN goedge.cdn@gmail.com. All rights reserved. Official site: https://goedge.cloud .
 
 package utils
 
@@ -8,12 +8,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
-	executils "github.com/TeaOSLab/EdgeAdmin/internal/utils/exec"
-	"github.com/iwind/TeaGo/Tea"
-	"github.com/iwind/TeaGo/maps"
-	"github.com/iwind/TeaGo/types"
-	stringutil "github.com/iwind/TeaGo/utils/string"
 	"io"
 	"net/http"
 	"os"
@@ -22,6 +16,13 @@ import (
 	"runtime"
 	"strings"
 	"time"
+
+	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
+	executils "github.com/TeaOSLab/EdgeAdmin/internal/utils/exec"
+	"github.com/iwind/TeaGo/Tea"
+	"github.com/iwind/TeaGo/maps"
+	"github.com/iwind/TeaGo/types"
+	stringutil "github.com/iwind/TeaGo/utils/string"
 )
 
 type UpgradeFileWriter struct {

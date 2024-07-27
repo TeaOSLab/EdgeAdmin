@@ -3,9 +3,10 @@
 package cluster
 
 import (
+	"strconv"
+
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"strconv"
 )
 
 type IndexAction struct {

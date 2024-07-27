@@ -1,10 +1,11 @@
 package nodeutils
 
 import (
+	"testing"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	_ "github.com/iwind/TeaGo/bootstrap"
 	"github.com/iwind/TeaGo/logs"
-	"testing"
 )
 
 func TestSendMessageToCluster(t *testing.T) {

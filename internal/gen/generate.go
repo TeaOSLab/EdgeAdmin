@@ -6,6 +6,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/server/settings/conds/condutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
@@ -15,9 +19,6 @@ import (
 	"github.com/iwind/TeaGo/files"
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
-	"io"
-	"os"
-	"path/filepath"
 )
 
 func Generate() error {
@@ -39,8 +40,11 @@ func generateComponentsJSFile() error {
 	} else {
 		webRoot = Tea.Root + "/web/public/js/components/"
 	}
-	var f = files.NewFile(webRoot)
-
+	gitDir, gDirFound := os.LookupEnv("GithubDIR")
+	if gDirFound {
+		webRoot = gitDir + "/EdgeAdmin/web/public/js/components/"
+	}
+	f := files.NewFile(webRoot)
 	f.Range(func(file *files.File) {
 		if !file.IsFile() {
 			return
@@ -156,7 +160,12 @@ func generateComponentsJSFile() error {
 		buffer.Write([]byte{';', '\n', '\n'})
 	}
 
-	fp, err := os.OpenFile(filepath.Clean(Tea.PublicFile("/js/components.src.js")), os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0777)
+	pubPath := Tea.PublicFile("/js/components.src.js")
+	if gDirFound {
+		pubPath = gitDir + "/EdgeAdmin/web/public/js/components.src.js"
+	}
+
+	fp, err := os.OpenFile(filepath.Clean(pubPath), os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0777)
 	if err != nil {
 		return err
 	}

@@ -3,16 +3,17 @@
 package setup
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
-	"github.com/iwind/TeaGo/dbs"
-	"github.com/iwind/TeaGo/maps"
 	"net"
 	"net/url"
 	"os"
 	"runtime"
 	"strings"
 	"time"
+
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
+	"github.com/iwind/TeaGo/dbs"
+	"github.com/iwind/TeaGo/maps"
 )
 
 // DetectDBAction 尝试从本地服务器中发现MySQL

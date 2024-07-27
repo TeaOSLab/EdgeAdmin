@@ -2,6 +2,9 @@ package index
 
 import (
 	"fmt"
+	"net"
+	"time"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
@@ -24,8 +27,6 @@ import (
 	"github.com/iwind/TeaGo/rands"
 	"github.com/iwind/TeaGo/types"
 	stringutil "github.com/iwind/TeaGo/utils/string"
-	"net"
-	"time"
 )
 
 const regionDenyMessage = "当前软件系统暂时不为你所在的区域提供服务。"

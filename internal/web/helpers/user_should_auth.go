@@ -1,12 +1,13 @@
 package helpers
 
 import (
+	"net/http"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils/numberutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/index/loginutils"
 	"github.com/iwind/TeaGo/actions"
-	"net/http"
 )
 
 type UserShouldAuth struct {

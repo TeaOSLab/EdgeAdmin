@@ -1,11 +1,12 @@
-// Copyright 2022 GoEdge CDN goedge.cdn@gmail.com. All rights reserved. Official site: https://goedge.cn .
+// Copyright 2022 GoEdge CDN goedge.cdn@gmail.com. All rights reserved. Official site: https://goedge.cloud .
 
 package executils_test
 
 import (
-	executils "github.com/TeaOSLab/EdgeAdmin/internal/utils/exec"
 	"testing"
 	"time"
+
+	executils "github.com/TeaOSLab/EdgeAdmin/internal/utils/exec"
 )
 
 func TestNewTimeoutCmd_Sleep(t *testing.T) {

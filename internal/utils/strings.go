@@ -1,8 +1,9 @@
 package utils
 
 import (
-	"github.com/iwind/TeaGo/types"
 	"strings"
+
+	"github.com/iwind/TeaGo/types"
 )
 
 // FormatAddress format address

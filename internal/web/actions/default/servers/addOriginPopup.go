@@ -2,6 +2,10 @@ package servers
 
 import (
 	"encoding/json"
+	"net/url"
+	"regexp"
+	"strings"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
@@ -10,9 +14,6 @@ import (
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
-	"net/url"
-	"regexp"
-	"strings"
 )
 
 type AddOriginPopupAction struct {

@@ -5,16 +5,17 @@ package updates
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
+	"runtime"
+	"strings"
+
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/iwind/TeaGo/maps"
 	stringutil "github.com/iwind/TeaGo/utils/string"
-	"io"
-	"net/http"
-	"runtime"
-	"strings"
 )
 
 type IndexAction struct {

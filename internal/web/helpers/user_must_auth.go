@@ -1,6 +1,11 @@
 package helpers
 
 import (
+	"net/http"
+	"net/url"
+	"reflect"
+	"strings"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
@@ -17,10 +22,6 @@ import (
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/logs"
 	"github.com/iwind/TeaGo/maps"
-	"net/http"
-	"net/url"
-	"reflect"
-	"strings"
 )
 
 var nodeLogsCountChanges = make(chan bool, 1)

@@ -1,8 +1,9 @@
 package tasks
 
 import (
-	_ "github.com/iwind/TeaGo/bootstrap"
 	"testing"
+
+	_ "github.com/iwind/TeaGo/bootstrap"
 )
 
 func TestSyncAPINodesTask_Loop(t *testing.T) {

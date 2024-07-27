@@ -3,10 +3,11 @@
 package waf
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/iwind/TeaGo/maps"
 	"regexp"
 	"strings"
+
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/iwind/TeaGo/maps"
 )
 
 type TestRegexpAction struct {

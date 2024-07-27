@@ -1,10 +1,11 @@
 package apinodeutils
 
 import (
+	"regexp"
+
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/files"
 	stringutil "github.com/iwind/TeaGo/utils/string"
-	"regexp"
 )
 
 // DeployManager 节点部署文件管理器

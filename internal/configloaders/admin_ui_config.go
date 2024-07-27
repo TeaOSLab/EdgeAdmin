@@ -2,6 +2,9 @@ package configloaders
 
 import (
 	"encoding/json"
+	"reflect"
+	"time"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
@@ -9,8 +12,6 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/iwind/TeaGo/logs"
-	"reflect"
-	"time"
 )
 
 var sharedAdminUIConfig *systemconfigs.AdminUIConfig = nil

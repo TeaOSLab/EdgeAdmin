@@ -4,13 +4,14 @@ package utils
 
 import (
 	"errors"
+	"os"
+	"os/exec"
+	"regexp"
+
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	executils "github.com/TeaOSLab/EdgeAdmin/internal/utils/exec"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/files"
-	"os"
-	"os/exec"
-	"regexp"
 )
 
 var systemdServiceFile = "/etc/systemd/system/edge-admin.service"

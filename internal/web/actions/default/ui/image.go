@@ -1,11 +1,12 @@
 package ui
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
-	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"mime"
 	"path/filepath"
 	"strconv"
+
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 )
 
 // 公开的图片，不需要检查用户权限

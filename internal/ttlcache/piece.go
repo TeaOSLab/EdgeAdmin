@@ -1,9 +1,10 @@
 package ttlcache
 
 import (
-	"github.com/iwind/TeaGo/types"
 	"sync"
 	"time"
+
+	"github.com/iwind/TeaGo/types"
 )
 
 type Piece struct {
@@ -16,7 +17,7 @@ func NewPiece(maxItems int) *Piece {
 	return &Piece{m: map[uint64]*Item{}, maxItems: maxItems}
 }
 
-func (this *Piece) Add(key uint64, item *Item) () {
+func (this *Piece) Add(key uint64, item *Item) {
 	this.locker.Lock()
 	if len(this.m) >= this.maxItems {
 		this.locker.Unlock()

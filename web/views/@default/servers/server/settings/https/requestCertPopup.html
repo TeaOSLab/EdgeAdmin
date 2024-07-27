@@ -18,7 +18,7 @@
 				</div>
 			</td>
 		</tr>
-		<tr>
+		<tr v-if="!asyncCreateCert">
 			<td>证书用户 *</td>
 			<td>
 				<div v-if="users.length > 0">
@@ -33,6 +33,24 @@
 					<input type="text" name="userEmail" maxlength="100" placeholder="用户E-mail" ref="focus"/>
 					<p class="comment">用来申请证书的用户邮箱，可以任意填写，只要格式正确即可。</p>
 				</div>
+			</td>
+		</tr>
+		<tr>
+			<td>异步申请证书</td>
+			<td>
+				<checkbox name="asyncCreateCert" v-model="asyncCreateCert">启用</checkbox>
+				<p class="comment">建议域名多的时候勾选，异步并发执行证书申请，申请成功后会自动绑定到服务</p>
+			</td>
+		</tr>
+		<tr v-if="asyncCreateCert">
+			<td>证书类型</td>
+			<td class="ui fields inline">
+				<div class="ui field">
+					<select class="ui dropdown" name="providerCode" v-model="providerCode">
+						<option value="letsencrypt">Let's Encrypt</option>
+					</select>
+				</div>
+				<p class="comment">选择证书类型。</p>
 			</td>
 		</tr>
 	</table>

@@ -4,6 +4,11 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
+	"log"
+	"os"
+	"os/exec"
+	"time"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/apps"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
@@ -19,10 +24,6 @@ import (
 	_ "github.com/iwind/TeaGo/bootstrap"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/gosock/pkg/gosock"
-	"log"
-	"os"
-	"os/exec"
-	"time"
 )
 
 func main() {

@@ -1,6 +1,11 @@
 package cache
 
-import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
+import (
+	"net/http"
+	"strconv"
+	"strings"
+
+	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/cache/cacheutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -8,9 +13,6 @@ import (	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
-	"net/http"
-	"strconv"
-	"strings"
 )
 
 type PurgeAction struct {

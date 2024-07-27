@@ -1,4 +1,4 @@
-// Copyright 2022 GoEdge CDN goedge.cdn@gmail.com. All rights reserved. Official site: https://goedge.cn .
+// Copyright 2022 GoEdge CDN goedge.cdn@gmail.com. All rights reserved. Official site: https://goedge.cloud .
 
 package dashboardutils
 
@@ -6,6 +6,12 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"os"
+	"os/exec"
+	"regexp"
+	"runtime"
+	"strings"
+
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
@@ -14,11 +20,6 @@ import (
 	"github.com/iwind/TeaGo/maps"
 	stringutil "github.com/iwind/TeaGo/utils/string"
 	"github.com/shirou/gopsutil/v3/disk"
-	"os"
-	"os/exec"
-	"regexp"
-	"runtime"
-	"strings"
 )
 
 // CheckDiskPartitions 检查服务器硬盘空间

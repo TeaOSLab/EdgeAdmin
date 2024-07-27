@@ -3,6 +3,12 @@ package setup
 import (
 	"bytes"
 	"encoding/json"
+	"io"
+	"os"
+	"os/exec"
+	"strings"
+	"time"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/nodes"
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
@@ -16,11 +22,6 @@ import (
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/gosock/pkg/gosock"
 	"gopkg.in/yaml.v3"
-	"io"
-	"os"
-	"os/exec"
-	"strings"
-	"time"
 )
 
 type InstallAction struct {

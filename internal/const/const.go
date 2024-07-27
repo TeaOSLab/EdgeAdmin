@@ -1,9 +1,9 @@
 package teaconst
 
 const (
-	Version = "1.3.9"
+	Version = "1.4.1"
 
-	APINodeVersion = "1.3.9"
+	APINodeVersion = "1.4.1"
 
 	ProductName = "Edge Admin"
 	ProcessName = "edge-admin"
@@ -16,5 +16,5 @@ const (
 	SessionAdminId = "adminId"
 
 	SystemdServiceName = "edge-admin"
-	UpdatesURL         = "https://goedge.cn/api/boot/versions?os=${os}&arch=${arch}&version=${version}"
+	UpdatesURL         = "https://goedge.cloud/api/boot/versions?os=${os}&arch=${arch}&version=${version}"
 )

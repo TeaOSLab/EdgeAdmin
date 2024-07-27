@@ -1,16 +1,17 @@
-// Copyright 2023 GoEdge CDN goedge.cdn@gmail.com. All rights reserved. Official site: https://goedge.cn .
+// Copyright 2023 GoEdge CDN goedge.cdn@gmail.com. All rights reserved. Official site: https://goedge.cloud .
 //go:build gcc
 
 package injectionutils_test
 
 import (
+	"runtime"
+	"strings"
+	"testing"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/waf/injectionutils"
 	"github.com/iwind/TeaGo/assert"
 	"github.com/iwind/TeaGo/rands"
 	"github.com/iwind/TeaGo/types"
-	"runtime"
-	"strings"
-	"testing"
 )
 
 func TestDetectSQLInjection(t *testing.T) {

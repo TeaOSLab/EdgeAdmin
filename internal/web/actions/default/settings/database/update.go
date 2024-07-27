@@ -2,6 +2,11 @@ package database
 
 import (
 	"fmt"
+	"net"
+	"os"
+	"regexp"
+	"strings"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
@@ -12,10 +17,6 @@ import (
 	"github.com/iwind/TeaGo/dbs"
 	"github.com/iwind/TeaGo/maps"
 	"gopkg.in/yaml.v3"
-	"net"
-	"os"
-	"regexp"
-	"strings"
 )
 
 type UpdateAction struct {

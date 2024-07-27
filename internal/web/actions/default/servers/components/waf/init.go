@@ -47,6 +47,7 @@ func init() {
 			// IP管理
 			GetPost("/ipadmin", new(ipadmin.IndexAction)).
 			GetPost("/ipadmin/provinces", new(ipadmin.ProvincesAction)).
+			GetPost("/ipadmin/providers", new(ipadmin.ProvidersAction)).
 			Get("/ipadmin/lists", new(ipadmin.ListsAction)).
 			GetPost("/ipadmin/updateIPPopup", new(ipadmin.UpdateIPPopupAction)).
 			Post("/ipadmin/deleteIP", new(ipadmin.DeleteIPAction)).

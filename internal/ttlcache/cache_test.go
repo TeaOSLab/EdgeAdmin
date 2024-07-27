@@ -1,11 +1,12 @@
 package ttlcache
 
 import (
-	"github.com/iwind/TeaGo/rands"
 	"runtime"
 	"strconv"
 	"testing"
 	"time"
+
+	"github.com/iwind/TeaGo/rands"
 )
 
 func TestNewCache(t *testing.T) {
@@ -68,7 +69,7 @@ func TestCache_Read(t *testing.T) {
 
 	total := 0
 	for _, piece := range cache.pieces {
-		//t.Log(len(piece.m), "keys")
+		// t.Log(len(piece.m), "keys")
 		total += len(piece.m)
 	}
 	t.Log(total, "total keys")

@@ -1,10 +1,12 @@
-// Copyright 2023 GoEdge CDN goedge.cdn@gmail.com. All rights reserved. Official site: https://goedge.cn .
+// Copyright 2023 GoEdge CDN goedge.cdn@gmail.com. All rights reserved. Official site: https://goedge.cloud .
 
 package index
 
 import (
 	"encoding/json"
 	"fmt"
+	"time"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/oplogs"
@@ -22,7 +24,6 @@ import (
 	"github.com/iwind/TeaGo/rands"
 	stringutil "github.com/iwind/TeaGo/utils/string"
 	"github.com/xlzd/gotp"
-	"time"
 )
 
 type OtpAction struct {
@@ -44,7 +45,7 @@ func (this *OtpAction) RunGet(params struct {
 		return
 	}
 
-	//// 是否新安装
+	// // 是否新安装
 	if setup.IsNewInstalled() {
 		this.RedirectURL("/setup/confirm")
 		return

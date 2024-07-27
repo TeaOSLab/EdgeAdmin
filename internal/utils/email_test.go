@@ -1,11 +1,12 @@
-// Copyright 2022 GoEdge CDN goedge.cdn@gmail.com. All rights reserved. Official site: https://goedge.cn .
+// Copyright 2022 GoEdge CDN goedge.cdn@gmail.com. All rights reserved. Official site: https://goedge.cloud .
 
 package utils_test
 
 import (
+	"testing"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/iwind/TeaGo/assert"
-	"testing"
 )
 
 func TestValidateEmail(t *testing.T) {

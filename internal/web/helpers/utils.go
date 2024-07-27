@@ -3,6 +3,12 @@ package helpers
 import (
 	"bytes"
 	"encoding/json"
+	"net"
+	"net/http"
+	"net/url"
+	"regexp"
+	"sync"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/configutils"
@@ -11,11 +17,6 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/systemconfigs"
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/logs"
-	"net"
-	"net/http"
-	"net/url"
-	"regexp"
-	"sync"
 )
 
 var ipCacheMap = map[string]bool{} // ip => bool

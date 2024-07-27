@@ -1,16 +1,17 @@
-// Copyright 2023 GoEdge CDN goedge.cdn@gmail.com. All rights reserved. Official site: https://goedge.cn .
+// Copyright 2023 GoEdge CDN goedge.cdn@gmail.com. All rights reserved. Official site: https://goedge.cloud .
 
 package updates
 
 import (
 	"fmt"
+	"os"
+	"os/exec"
+	"time"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	executils "github.com/TeaOSLab/EdgeAdmin/internal/utils/exec"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/settings/updates/updateutils"
-	"os"
-	"os/exec"
-	"time"
 )
 
 var upgradeProgress float32

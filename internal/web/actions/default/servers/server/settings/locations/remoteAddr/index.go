@@ -4,13 +4,14 @@ package remoteAddr
 
 import (
 	"encoding/json"
+	"regexp"
+	"strings"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs"
 	"github.com/iwind/TeaGo/actions"
-	"regexp"
-	"strings"
 )
 
 type IndexAction struct {

@@ -2,13 +2,14 @@ package adminserverutils
 
 import (
 	"errors"
+	"net"
+	"os"
+	"time"
+
 	"github.com/iwind/TeaGo"
 	"github.com/iwind/TeaGo/Tea"
 	"github.com/iwind/TeaGo/types"
 	"gopkg.in/yaml.v3"
-	"net"
-	"os"
-	"time"
 )
 
 var ServerConfigIsChanged = false

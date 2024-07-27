@@ -4,10 +4,11 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
-	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
-	"github.com/iwind/TeaGo/types"
 	"strconv"
 	"time"
+
+	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
+	"github.com/iwind/TeaGo/types"
 )
 
 // Generate 生成Token

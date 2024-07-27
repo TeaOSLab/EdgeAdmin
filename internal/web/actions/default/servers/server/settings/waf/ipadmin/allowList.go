@@ -1,6 +1,8 @@
 package ipadmin
 
 import (
+	"time"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/dao"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
@@ -8,7 +10,6 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/ipconfigs"
 	"github.com/iwind/TeaGo/maps"
 	timeutil "github.com/iwind/TeaGo/utils/time"
-	"time"
 )
 
 type AllowListAction struct {

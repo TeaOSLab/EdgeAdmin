@@ -4,6 +4,8 @@ package ddosProtection
 
 import (
 	"encoding/json"
+	"net"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
 	"github.com/TeaOSLab/EdgeCommon/pkg/nodeconfigs"
@@ -11,7 +13,6 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/ddosconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/types"
-	"net"
 )
 
 type IndexAction struct {

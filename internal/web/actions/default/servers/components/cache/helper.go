@@ -1,10 +1,11 @@
 package cache
 
 import (
+	"net/http"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/components/cache/cacheutils"
 	"github.com/iwind/TeaGo/actions"
-	"net/http"
 )
 
 type Helper struct {

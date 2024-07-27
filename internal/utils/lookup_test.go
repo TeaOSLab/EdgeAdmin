@@ -3,8 +3,9 @@
 package utils_test
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"testing"
+
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 )
 
 func TestLookupCNAME(t *testing.T) {

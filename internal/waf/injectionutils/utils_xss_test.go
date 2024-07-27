@@ -1,13 +1,14 @@
-// Copyright 2023 GoEdge CDN goedge.cdn@gmail.com. All rights reserved. Official site: https://goedge.cn .
+// Copyright 2023 GoEdge CDN goedge.cdn@gmail.com. All rights reserved. Official site: https://goedge.cloud .
 //go:build gcc
 
 package injectionutils_test
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/waf/injectionutils"
-	"github.com/iwind/TeaGo/assert"
 	"runtime"
 	"testing"
+
+	"github.com/TeaOSLab/EdgeAdmin/internal/waf/injectionutils"
+	"github.com/iwind/TeaGo/assert"
 )
 
 func TestDetectXSS(t *testing.T) {

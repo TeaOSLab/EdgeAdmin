@@ -1,8 +1,9 @@
 package configloaders
 
 import (
-	"github.com/iwind/TeaGo/logs"
 	"testing"
+
+	"github.com/iwind/TeaGo/logs"
 )
 
 func TestLoadAdminModuleMapping(t *testing.T) {

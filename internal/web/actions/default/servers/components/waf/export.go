@@ -2,6 +2,8 @@ package waf
 
 import (
 	"encoding/json"
+	"time"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/ttlcache"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
@@ -9,7 +11,6 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/serverconfigs/firewallconfigs"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/rands"
-	"time"
 )
 
 type ExportAction struct {

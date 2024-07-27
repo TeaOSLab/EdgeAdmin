@@ -14,6 +14,23 @@
                     <p class="comment">当前节点可以使用的最多的CPU线程数，如果为0则默认为总的CPU线程数。<pro-warning-label></pro-warning-label></p>
                 </td>
             </tr>
+            <tr v-show="teaIsPlus">
+                <td class="title">BYPASS 移动</td>
+                <td>
+                    <div class="ui checkbox">
+                        <input type="checkbox" id="bypassMobileCheckbox" :name="bypassMobileCheckbox" v-model="node.bypassMobileCheckbox" @change="changeBypassMobile"/>
+                        <label for="bypassMobileCheckbox"><slot></slot></label>
+                    </div>
+                    <p class="comment"><plus-label></plus-label>选中后，可优化移动网络访问成功率，对于正常站点，会增加访问延迟，节点需安装nftables。<pro-warning-label></pro-warning-label></p>
+                </td>
+            </tr>
+            <tr v-show="teaIsPlus && node.bypassMobileCheckbox">
+                <td class="title">BYPASS 移动，窗口大小</td>
+                <td>
+                    <input type="text" name="bypassMobile" v-model="node.bypassMobile"/>
+                    <p class="comment"><plus-label></plus-label>TCP接收窗口大小，默认值17。<pro-warning-label></pro-warning-label></p>
+                </td>
+            </tr>
         </table>
 
         <h4>DNS解析</h4>

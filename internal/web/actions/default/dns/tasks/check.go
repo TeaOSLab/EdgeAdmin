@@ -1,9 +1,10 @@
 package tasks
 
 import (
+	"time"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
-	"time"
 )
 
 type CheckAction struct {

@@ -3,12 +3,13 @@ package userutils
 import (
 	"context"
 	"errors"
+	"strings"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/rpc"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/TeaOSLab/EdgeCommon/pkg/userconfigs"
 	"github.com/iwind/TeaGo/maps"
-	"strings"
 )
 
 var ErrUserNotFound = errors.New("not found user")

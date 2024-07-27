@@ -1,6 +1,8 @@
 package tasks
 
 import (
+	"time"
+
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
 	"github.com/TeaOSLab/EdgeAdmin/internal/goman"
@@ -12,7 +14,6 @@ import (
 	_ "github.com/iwind/TeaGo/bootstrap"
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/logs"
-	"time"
 )
 
 func init() {

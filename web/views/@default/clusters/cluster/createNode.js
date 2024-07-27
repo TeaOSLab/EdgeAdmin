@@ -24,6 +24,30 @@ Tea.context(function () {
 		})
 	}
 
+	this.secondaryClusters = []
+	this.secondaryClusterIds = this.secondaryClusters.map(function (v) {
+		return v.id
+	})
+
+	this.addSecondary = function () {
+		let that = this
+		let selectedClusterIds = [this.clusterId].concat(this.secondaryClusterIds)
+		teaweb.popup("/clusters/selectPopup?selectedClusterIds=" + selectedClusterIds.join(",") + "&mode=multiple", {
+			height: "30em",
+			width: "50em",
+			callback: function (resp) {
+				if (resp.data.cluster != null) {
+					that.secondaryClusterIds.push(resp.data.cluster.id)
+					that.secondaryClusters.push(resp.data.cluster)
+				}
+			}
+		})
+	}
+	this.removeSecondary = function (index) {
+		this.secondaryClusterIds.$remove(index)
+		this.secondaryClusters.$remove(index)
+	}
+
 	/**
 	 * 安装
 	 */
@@ -34,6 +58,7 @@ Tea.context(function () {
 	this.switchInstallMethod = function (method) {
 		this.installMethod = method
 	}
+
 
 	this.selectSSHHost = function (host) {
 		this.sshHost = host

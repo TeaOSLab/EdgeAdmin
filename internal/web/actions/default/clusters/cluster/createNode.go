@@ -2,6 +2,11 @@ package cluster
 
 import (
 	"encoding/json"
+	"net"
+	"regexp"
+	"strconv"
+	"strings"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/clusterutils"
@@ -11,10 +16,6 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
-	"net"
-	"regexp"
-	"strconv"
-	"strings"
 )
 
 // CreateNodeAction 创建节点
@@ -123,6 +124,8 @@ func (this *CreateNodeAction) RunPost(params struct {
 
 	DnsDomainId   int64
 	DnsRoutesJSON []byte
+
+	SecondaryClusterIds []byte
 
 	Must *actions.Must
 }) {
@@ -342,5 +345,30 @@ func (this *CreateNodeAction) RunPost(params struct {
 		}
 	}
 
+	var secondaryClusterIds = []int64{}
+	if len(params.SecondaryClusterIds) > 0 {
+		err := json.Unmarshal(params.SecondaryClusterIds, &secondaryClusterIds)
+		if err != nil {
+			this.ErrorPage(err)
+			return
+		}
+	}
+
+	_, err = this.RPC().NodeRPC().UpdateNode(this.AdminContext(), &pb.UpdateNodeRequest{
+		NodeId:                  nodeResp.Node.Id,
+		NodeGroupId:             params.GroupId,
+		NodeRegionId:            params.RegionId,
+		Name:                    nodeResp.Node.Name,
+		NodeClusterId:           params.ClusterId,
+		SecondaryNodeClusterIds: secondaryClusterIds,
+		IsOn:                    true,
+		Level:                   nodeResp.Node.Level,
+		LnAddrs:                 nodeResp.Node.LnAddrs,
+		EnableIPLists:           nodeResp.Node.EnableIPLists,
+	})
+	if err != nil {
+		this.ErrorPage(err)
+		return
+	}
 	this.Success()
 }

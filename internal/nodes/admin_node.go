@@ -3,6 +3,16 @@ package nodes
 import (
 	"errors"
 	"fmt"
+	"log"
+	"net"
+	"os"
+	"os/exec"
+	"os/signal"
+	"path/filepath"
+	"strings"
+	"syscall"
+	"time"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/configloaders"
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
@@ -18,15 +28,6 @@ import (
 	"github.com/iwind/TeaGo/types"
 	"github.com/iwind/gosock/pkg/gosock"
 	"gopkg.in/yaml.v3"
-	"log"
-	"net"
-	"os"
-	"os/exec"
-	"os/signal"
-	"path/filepath"
-	"strings"
-	"syscall"
-	"time"
 )
 
 var SharedAdminNode *AdminNode = nil

@@ -3,6 +3,8 @@ package http
 import (
 	"context"
 	"encoding/json"
+	"regexp"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/servers/serverutils"
 	"github.com/TeaOSLab/EdgeCommon/pkg/langs/codes"
@@ -13,7 +15,6 @@ import (
 	"github.com/iwind/TeaGo/lists"
 	"github.com/iwind/TeaGo/maps"
 	"github.com/iwind/TeaGo/types"
-	"regexp"
 )
 
 type IndexAction struct {

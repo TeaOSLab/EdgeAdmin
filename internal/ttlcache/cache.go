@@ -1,8 +1,9 @@
 package ttlcache
 
 import (
-	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"time"
+
+	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 )
 
 var DefaultCache = NewCache()

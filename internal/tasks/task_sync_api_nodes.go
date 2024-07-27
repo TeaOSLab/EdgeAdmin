@@ -3,6 +3,12 @@ package tasks
 import (
 	"context"
 	"crypto/tls"
+	"net/url"
+	"sort"
+	"strings"
+	"sync"
+	"time"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/configs"
 	teaconst "github.com/TeaOSLab/EdgeAdmin/internal/const"
 	"github.com/TeaOSLab/EdgeAdmin/internal/events"
@@ -15,11 +21,6 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/credentials/insecure"
-	"net/url"
-	"sort"
-	"strings"
-	"sync"
-	"time"
 )
 
 func init() {

@@ -2,6 +2,9 @@ package node
 
 import (
 	"encoding/json"
+	"path/filepath"
+	"strings"
+
 	"github.com/TeaOSLab/EdgeAdmin/internal/utils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/actionutils"
 	"github.com/TeaOSLab/EdgeAdmin/internal/web/actions/default/clusters/cluster/node/nodeutils"
@@ -12,8 +15,6 @@ import (
 	"github.com/TeaOSLab/EdgeCommon/pkg/rpc/pb"
 	"github.com/iwind/TeaGo/actions"
 	"github.com/iwind/TeaGo/maps"
-	"path/filepath"
-	"strings"
 )
 
 // InstallAction 安装节点
