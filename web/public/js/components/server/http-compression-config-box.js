@@ -15,7 +15,7 @@ Vue.component("http-compression-config-box", {
 				isOn: false,
 				useDefaultTypes: true,
 				types: ["brotli", "gzip", "zstd", "deflate"],
-				level: 0,
+				level: 2,
 				decompressData: false,
 				gzipRef: null,
 				deflateRef: null,
@@ -40,6 +40,9 @@ Vue.component("http-compression-config-box", {
 		}
 		if (config.extensions == null) {
 			config.extensions = []
+		}
+		if (config.level == null || config.level <= 0) {
+			config.level = 2
 		}
 
 		let allTypes = [
@@ -162,6 +165,15 @@ Vue.component("http-compression-config-box", {
 			</tr>
 		</tbody>
 		<tbody v-show="isOn()">
+			<tr>
+				<td>压缩级别</td>
+				<td>
+					<select class="ui dropdown auto-width" v-model.number="config.level">
+						<option v-for="i in 12" :value="i">{{i}}</option>
+					</select>
+					<p class="comment">级别越高，压缩比例越大。</p>
+				</td>
+			</tr>
 			<tr>
 				<td>支持的扩展名</td>
 				<td>
